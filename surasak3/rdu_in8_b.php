@@ -9,13 +9,16 @@ $db->exec("SET NAMES UTF8");
 // $quarter = input_get('quarter');
 $date = input_get('date');
 
+$date_start = bc_to_ad($date.'-01');
+$date_end = bc_to_ad($date.'-'.date("t", strtotime($date_start)));
+
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in8` 
-SELECT a.`hn`,a.`organ`,a.`maintenance`,
-b.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor` 
+SELECT a.`hn`,a.`date`,a.`organ`,a.`maintenance`,
+b.`row_id`,b.`svdate`,b.`icd10`,a.`date_hn`,b.`diag`,b.`doctor`,b.`ptname`
 FROM ( 
-    SELECT `trauma_id` AS `row_id`,`hn`,`organ`,`maintenance`,`date_hn`
+    SELECT `trauma_id` AS `row_id`,`date`,`hn`,`organ`,`maintenance`,`date_hn`
     FROM `rdu_trauma` 
-    WHERE `date` LIKE '$date%' 
+    WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND ( 
         `organ` REGEXP 'มีด|mc|แผล|ทิ่ม|แทง|บาด' 
     )
@@ -24,14 +27,18 @@ FROM (
 LEFT JOIN ( 
     SELECT `diag_id` AS `row_id`,`svdate`,`icd10`,`date_hn`,`diag`,`doctor`,`ptname` 
     FROM `rdu_diag` 
-    WHERE `svdate` LIKE '$date%' 
+    WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
-        OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
+        OR `icd10` REGEXP 'S(1[6-9]|2[0-1])' 
         OR `icd10` REGEXP 'S(2[8-9]|3[0-1])' 
         OR `icd10` REGEXP 'S(3[8-9]|4[0-1])' 
-        OR `icd10` REGEXP 'S{1}([4-8]([6-9]|[0-1]))' 
-        OR `icd10` REGEXP 'S(8[6-9]|9[0-1]|9[6-9])' 
+        OR `icd10` REGEXP 'S(4[6-9]|5[0-1])' 
+        OR `icd10` REGEXP 'S(5[6-9]|6[0-1])' 
+        OR `icd10` REGEXP 'S(6[6-9]|7[0-1])' 
+        OR `icd10` REGEXP 'S(7[6-9]|8[0-1])' 
+        OR `icd10` REGEXP 'S(8[6-9]|9[0-1])' 
+        OR `icd10` REGEXP 'S(9[6-9])' 
         OR `icd10` REGEXP 'X([0-1][0-9])' 
         OR `icd10` REGEXP 'X([2-3][0-9])' 
     ) 
@@ -77,8 +84,6 @@ body, button{
         <th>อายุ</th>
         <th>Diag</th>
         <th>ICD-10</th>
-        <th>Drug code</th>
-        <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
 <?php 
@@ -93,8 +98,6 @@ foreach ($items as $key => $item) {
             <td><?=$item['age'];?></td>
             <td><?=$item['diag'];?></td>
             <td><?=$item['icd10'];?></td>
-            <td><?=$item['drugcode'];?></td>
-            <td><?=$item['amount'];?></td>
             <td><?=$item['doctor'];?></td>
     </tr>
     <?php

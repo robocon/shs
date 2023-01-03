@@ -52,8 +52,9 @@ if(file_exists($filePath))
 
 $sql_diag = "SELECT a.`row_id`,a.`hn`,a.`an` AS `vn`,a.`diag`,a.`icd10`,a.`type`,a.`svdate`, 
 CONCAT(SUBSTRING(a.`svdate`,1,10),a.`hn`) AS `date_hn`, 
-CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) AS `date_opday`,
-a.`office`, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`,b.`dbirth`, TIMESTAMPDIFF(YEAR, SUBSTRING(toEn(b.`dbirth`), 1, 10), NOW()) AS `age`
+CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) AS `date_opday`, 
+a.`office`, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`,b.`dbirth`, 
+TIMESTAMPDIFF(YEAR, toEn(b.`dbirth`), NOW()) AS `age` 
 FROM `diag` AS a 
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE ( a.`svdate_en` >= '$date_start_en' AND a.`svdate_en` <= '$date_end_en' ) 

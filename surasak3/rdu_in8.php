@@ -24,11 +24,15 @@ LEFT JOIN (
     WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
     AND ( 
         `icd10` IN ( 'S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11' ) 
-        OR `icd10` IN ( 'S16', 'S17', 'S18', 'S19', 'S20', 'S21' ) 
+        OR `icd10` REGEXP 'S(1[6-9]|2[0-1])' 
         OR `icd10` REGEXP 'S(2[8-9]|3[0-1])' 
         OR `icd10` REGEXP 'S(3[8-9]|4[0-1])' 
-        OR `icd10` REGEXP 'S{1}([4-8]([6-9]|[0-1]))' 
-        OR `icd10` REGEXP 'S(8[6-9]|9[0-1]|9[6-9])' 
+        OR `icd10` REGEXP 'S(4[6-9]|5[0-1])' 
+        OR `icd10` REGEXP 'S(5[6-9]|6[0-1])' 
+        OR `icd10` REGEXP 'S(6[6-9]|7[0-1])' 
+        OR `icd10` REGEXP 'S(7[6-9]|8[0-1])' 
+        OR `icd10` REGEXP 'S(8[6-9]|9[0-1])' 
+        OR `icd10` REGEXP 'S(9[6-9])' 
         OR `icd10` REGEXP 'X([0-1][0-9])' 
         OR `icd10` REGEXP 'X([2-3][0-9])' 
     ) 
