@@ -165,11 +165,11 @@ echo "<hr />";
  
  $year=(date("Y")+543);
 
-$num = n;
+$num = 'n';
 include("connect.inc");
 $query = "SELECT row,depart,head,datetime,programmer,date,p_edit,dateend 
 FROM com_support 
-WHERE status ='$num' and date like '$year%'
+WHERE status ='$num' and dateend like '$year%'
 ORDER BY dateend desc ";
 $result_all = mysql_query($query) or die("Query failed111");
 $all_rows = mysql_num_rows($result_all);
