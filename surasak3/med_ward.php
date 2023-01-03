@@ -167,20 +167,10 @@ if ( $action === 'save' ) {
         // // Line Notification ในไลน์กลุ่ม
         // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
 		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
-		// $chOne = curl_init(); 
-		// curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-		// curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-		// curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-		// curl_setopt( $chOne, CURLOPT_POST, 1); 
-		// curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-		// $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-		// curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
-		// curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-		// $result = curl_exec( $chOne ); 
-		// curl_close($chOne);
+		
 
-        $_SESSION['line_msg'] = $sMessage;
-        $_SESSION['line_type'] = 'ward';
+        // $_SESSION['line_msg'] = $sMessage;
+        // $_SESSION['line_type'] = 'ward';
 
         redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
@@ -294,22 +284,6 @@ if( isset($_SESSION['x-msg']) ){
 
             }
 
-            // async function sendLineNotify(){ 
-            //     var line_message = '<?=$_SESSION['line_msg'];?>';
-            //     var line_type = '<?=$_SESSION['line_type'];?>';
-            //     var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
-            //     const response =await fetch(targetTxt, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-type': 'application/x-www-form-urlencoded' 
-            //         },
-            //         body: JSON.stringify({
-            //             'message': line_message, 
-            //             'depart': line_type
-            //         })
-            //     });
-            //     var body = await response.text();
-            // }
             sendLineNotifyV2();
         </script>
         <?php
