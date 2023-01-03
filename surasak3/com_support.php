@@ -192,11 +192,10 @@ $result = mysql_query($query) or die("Query failed111");
         print" <tr>";
         print"  <th bgcolor=#73C6B6>ลำดับแจ้ง</th>";
         print"  <th bgcolor=#73C6B6>แผนก</th>";
-        print"  <th bgcolor=#73C6B6>หัวข้อ</th>";
-        print"  <th bgcolor=#73C6B6>วันเวลาที่ร้องขอ</th>";
-		print"  <th bgcolor=#73C6B6>ผู้รับผิดชอบ</th>";
+        print"  <th bgcolor=#73C6B6>หัวข้อ</th>";;
 		print"  <th bgcolor=#73C6B6>การดำเนิการ</th>";
-		print"  <th bgcolor=#73C6B6>วันเวลาที่ดำเนินการ</th>";
+		print"  <th bgcolor=#73C6B6 width='10%'>ผู้รับผิดชอบ</th>";
+		print"  <th bgcolor=#73C6B6 width='8%'>วันเวลาที่ดำเนินการ</th>";
 		print"  <th bgcolor=#73C6B6>พิมพ์</th>";
       
         print" </tr>";
@@ -204,11 +203,10 @@ $result = mysql_query($query) or die("Query failed111");
             print (" <tr>\n".
                 "  <td BGCOLOR=#D5F5E3  align='center'>$row</td>\n".
                 "  <td BGCOLOR=#D5F5E3>$depart</td>\n".
-                "  <td BGCOLOR=#D5F5E3><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
-                "  <td BGCOLOR=#D5F5E3>$date</td>\n".
-				"  <td BGCOLOR=#D5F5E3>$programmer</td>\n".
+                "  <td BGCOLOR=#D5F5E3><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".           
 				"  <td BGCOLOR=#D5F5E3>$p_edit</td>\n".
-				"  <td BGCOLOR=#D5F5E3>$dateend</td>\n".
+				"  <td BGCOLOR=#D5F5E3>$programmer</td>\n".
+				"  <td BGCOLOR=#D5F5E3 align='center'>$dateend</td>\n".
 				"  <td BGCOLOR=#D5F5E3><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n".
                 " </tr>\n");
   				}
