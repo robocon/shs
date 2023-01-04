@@ -1,6 +1,6 @@
 <?php
 session_start();
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
 if (isset($sOfficer)){} else {die;} //for security
 
 $thdatehn="";
@@ -88,6 +88,11 @@ if($_POST['lockptright5']=="lock"){
 
 	$name = $_POST['name'];
 	$surname = $_POST['surname'];
+
+if(empty($name) OR empty($surname)){ 
+	echo "ข้อมูลไม่ครบถ้วนกรุณาตรวจสอบข้อมูลอีกครั้ง";
+	exit;
+}
 
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
@@ -1169,14 +1174,7 @@ $structure = '../image_patient';
 ?>
 
 <br>
-<a href="javascript:void(0);" onclick="openAuthenWin();">ขอเลข Authen Code ผ่าน API</a>
-<script>
-	function openAuthenWin(){ 
-		var urlParam = '?'+encodeURIComponent('idcard')+'='+encodeURIComponent('<?=$idcard;?>');
-		window.open("http://localhost/sm3/sm3dev/surasak3/getAuthenCode.php"+urlParam,"authenWin","_blank");
-	}
-</script>
-
+<a href="http://localhost/sm3dev/surasak3/authen_preload.php" target="_blank" style="font-size:28px;">ขอเลข Authen Code ผ่าน API</a>
 
 <br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="addQueue('kewadd.php')">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
 	$result = Mysql_Query($sql);
