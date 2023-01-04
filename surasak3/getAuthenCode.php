@@ -64,11 +64,27 @@ if($action==='save'){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ขอ AuthenCode ผ่าน API</title>
+    <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size: 18px;
+        }
+        .chk_table{
+            border-collapse: collapse;
+        }
+
+        .chk_table th,
+        .chk_table td{
+            padding: 3px;
+            border: 1px solid black;
+            font-size: 16pt;
+        }
+    </style>
 </head>
 <body>
 
-<p><b>ทดสอบการขอ Authen ผ่าน NHSO Secure Smartcard Agent</b></p>
-<p><b>ใช้งานผ่าน Google Chrome, Firefox, Microsoft Edge เท่านั้น</b></p>
+<p style="margin:0; padding:0;"><b>ทดสอบการขอ Authen ผ่าน NHSO Secure Smartcard Agent</b></p>
+<p style="margin:0; padding:0;"><b>ใช้งานผ่าน Google Chrome, Firefox, Microsoft Edge เท่านั้น</b></p>
 
 <?php 
 $to_page = sprintf("%d", $_POST['to_page']);
@@ -186,44 +202,50 @@ if ($to_page=="0") {
         <b>ประวัติการขอ Authen Code 5 ครั้งล่าสุด</b>
     </div>
     <div>
-    <?php 
-    $get_idcard = sprintf("%s", $_GET['idcard']);
-    $contents = file_get_contents("http://localhost:8189/api/nhso-service/latest-5-authen-code-all-hospital/$get_idcard");
-    $lastItems = json_decode($contents, true);
-    if(empty($lastItems)){
+        <?php 
+        $get_idcard = sprintf("%s", $_GET['idcard']);
         ?>
-        <p><b>ไม่พบข้อมูลการขอ AuthenCode</b></p>
-        <?php
-    }else{
-        ?>
-        <table>
-            <tr>
-                <th>#</th>
-                <th>hcode</th>
-                <th>claimType</th>
-                <th>claimCode</th>
-                <th>claimDateTime</th>
-            </tr>
-            <?php 
-            $i = 1;
-            foreach ($lastItems as $key => $item) {
-                ?>
-                <tr>
-                    <td><?=$i;?></td>
-                    <td><?=$item['hcode'];?></td>
-                    <td><?=$item['claimType'];?></td>
-                    <td><?=$item['claimCode'];?></td>
-                    <td><?=$item['claimDateTime'];?></td>
-                </tr>
-                <?php
-                $i++;
-            }
-            ?>
-        </table>
-        <?php
-    }
-    ?>
+        <button type="button" onclick="getHistory(<?=$get_idcard;?>)">ดูประวัติ</button>
     </div>
+    <div id="resHistory"></div>
 </div>
+
+<script>
+    function getHistory(idcard){
+        loadHistory(idcard);
+    }
+
+    async function loadHistory(idcard){ 
+        var res = document.getElementById('resHistory');
+        var response = await fetch('http://localhost:8189/api/nhso-service/latest-5-authen-code-all-hospital/'+idcard);
+        if(response.ok){
+            var data = await response.json();
+            if(data.length==0){
+                res.innerHTML = '<p><b>ไม่พบข้อมูลการขอ AuthenCode</b></p>';
+
+            }else{ 
+                var table = '<table class="chk_table"><tr><th>#</th><th>hcode</th><th>claimType</th><th>claimCode</th><th>claimDateTime</th></tr>';
+                var i = 1;
+                data.forEach(el => {
+                    table+='<tr>';
+                    table+='<td>'+i+'</td>';
+                    table+='<td>'+el.hcode+'</td>';
+                    table+='<td>'+el.claimType+'</td>';
+                    table+='<td>'+el.claimCode+'</td>';
+                    table+='<td>'+el.claimDateTime+'</td>';
+                    table+='</td>';
+                    i++;
+                });
+                table+='</table>';
+                res.innerHTML = table;
+            }
+
+        }else{
+            res.innerHTML = 'ไม่พบ SmartCard Agent กรุณาติดตั้ง <a href="https://www.nhso.go.th/downloads/208" target="_blank">NHSO Secure SmartCard Agent.</a> ก่อนใช้งาน';
+        
+        }
+    }
+</script>
+
 </body>
 </html>
