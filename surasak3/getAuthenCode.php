@@ -39,18 +39,17 @@ if($action==='save'){
     $output = curl_exec($curl);
     curl_close($curl);
     $save = json_decode($output, true);
-    
 
     if(!empty($save['status']) && $save['status']!=400){
         ?>
         <p><b>AuthenCode:</b> <?=$save['claimCode'];?></p>
-        <a href="javascript:window.close();">ปิดหน้าต่าง</a>
+        <p><a href="javascript:window.close();">ปิดหน้าต่าง</a></p>
         <?php
     }else{
         ?>
-        <p style="color:red;"><b><?=$save['errors'][1]['defaultMessage'];?></b></p>
-        <a href="javascript:window.close();">ปิดหน้าต่าง</a>
-        <a href="getAuthenCode.php">กลับไปหน้าการขอ AuthenCode API</a>
+        <p style="color:red;"><b><?=$save['errors'][0]['defaultMessage'];?></b></p>
+        <p><a href="javascript:window.close();">ปิดหน้าต่าง</a></p>
+        <p><a href="getAuthenCode.php">กลับไปหน้าการขอ AuthenCode API</a></p>
         <?php
     }
     
