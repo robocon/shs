@@ -50,10 +50,23 @@ if($action==='save'){
         ?>
         <p style="color:red;"><b><?=$save['errors'][1]['defaultMessage'];?></b></p>
         <a href="javascript:window.close();">ปิดหน้าต่าง</a>
-        <a href="getAuthenCode.php">ปิดหน้าต่าง</a>
+        <a href="getAuthenCode.php">กลับไปหน้าการขอ AuthenCode API</a>
         <?php
     }
     
+    exit;
+}elseif ($action==='getOpcard') {
+
+    $idcard = $_REQUEST['idcard'];
+    $q = $dbi->query("SELECT `hn`,`phone` FROM `opcard` WHERE `idcard`='$idcard' LIMIT 1");
+    $hn = $mobile = '';
+    if($q->num_rows > 0){
+        $op = $q->fetch_assoc();
+        $hn = $op['hn'];
+        $mobile = $op['phone'];
+    }
+    header('Content-Type: application/json');
+    echo json_encode(array('hn'=>$hn, 'mobile'=>$mobile));
     exit;
 }
 ?>
@@ -79,6 +92,10 @@ if($action==='save'){
             border: 1px solid black;
             font-size: 16pt;
         }
+        .tb_title{
+            text-align: right;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -86,116 +103,63 @@ if($action==='save'){
 <p style="margin:0; padding:0;"><b>ทดสอบการขอ Authen ผ่าน NHSO Secure Smartcard Agent</b></p>
 <p style="margin:0; padding:0;"><b>ใช้งานผ่าน Google Chrome, Firefox, Microsoft Edge เท่านั้น</b></p>
 
-<?php 
-$to_page = sprintf("%d", $_POST['to_page']);
-if ($to_page=="0") {
-    ?>
-    <form action="getAuthenCode.php" method="POST">
-        <div>
-            <button type="submit">ตรวจสอบสิทธิเบื้องต้น</button>
-            <input type="hidden" name="to_page" value="2">
-        </div>
-    </form>
-    <?php
-}elseif ($to_page=="2") { 
+<form action="getAuthenCode.php" method="POST" id="mainForm">
+    <div>
+        <button type="submit">ตรวจสอบสิทธิเบื้องต้น</button>
+    </div>
+    <div id="resMain"></div>
+</form>
+<script>
+    document.getElementById("mainForm").addEventListener('submit', (ev) => {
+        ev.preventDefault();
+        readSmartCard();
+    });
 
-    $url = 'http://localhost:8189/api/smartcard/read?readImageFlag=false';
-    $curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, $url); 
-	curl_setopt( $curl, CURLOPT_FRESH_CONNECT, 1); 
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
-	$result = curl_exec( $curl ); 
-	curl_close($curl);
-    $res_data = json_decode($result, true);
-    if(!empty($res_data['status']) && $res_data['status']==418){
-        ?>
-        <div style="color:red;"><b><?=$res_data['message'];?></b></div>
-        <a href="getAuthenCode.php">ดำเนินการใหม่อีกครั้ง</a>
-        <?php
+    async function readSmartCard(){ 
+        var res = document.getElementById("resMain");
+        var response = await fetch('http://localhost:8189/api/smartcard/read?readImageFlag=true');
+        var data = await response.json();
+        
+        if(data.status==418){
+            res.innerHTML = '<div style="color:red;"><b>'+res.message+'</b></div>';
+            
+        }else if(data.status==500){
+            res.innerHTML = '<div style="color:red;"><b>กรุณาเสียบบัตรประชาชนผู้มารับบริการ</b></div>';
+            
+        }else{
+            console.log(data);
+            var resOpcard = await fetch('getAuthenCode.php?action=getOpcard&idcard='+data.pid);
+            var opcardTxt = await resOpcard.json();
 
-    }elseif(!empty($res_data['status']) && $res_data['status']=500){
-        ?>
-        <div style="color:red;"><b>กรุณาเสียบบัตรประชาชน</b></div>
-        <a href="getAuthenCode.php">ดำเนินการใหม่อีกครั้ง</a>
-        <?php
+            // console.log(opcardTxt);
 
-    }else{
+            var resHtml = ' <table>';
+            resHtml += '<tr><td rowspan="8"><img src="data:image/jpg;base64,'+data.image+'" style="height:150px;"></td></tr>';
+            resHtml += '<tr><td class="tb_title">HN:</td><td colspan="3">'+opcardTxt.hn+'</td></tr>';
+            resHtml += '<tr><td class="tb_title">บัตรปชช:</td><td>'+data.pid+'</td><td class="tb_title">ชื่อ-สกุล:</td><td>'+data.fname+' '+data.lname+'</td></tr>';
+            resHtml += '<tr><td class="tb_title">เพศ:</td><td>'+data.sex+'</td><td class="tb_title">อายุ:</td><td>'+data.age+'</td></tr>';
+            resHtml += '<tr><td class="tb_title">เบอร์โทร:</td><td>'+opcardTxt.mobile+'</td><td class="tb_title"></td><td></td></tr>';
+            resHtml += '<tr><td class="tb_title">โรงพยาบาลหลัก:</td><td>'+data.hospMain.hname+' ('+data.hospMain.hcode+')</td><td></td><td></td></tr>';
+            resHtml += '<tr><td class="tb_title">สิทธิ์การรักษา:</td><td colspan="3">'+data.mainInscl+' - '+data.subInscl+'</td></tr>';
+            resHtml += '<tr valign="top"><td class="tb_title">เลือกการเข้ารับบริการ</td><td colspan="3">';
+            data.claimTypes.forEach(el=>{ 
 
-        $idcard = $res_data['pid'];
-        $q = $dbi->query("SELECT `hn`,`phone` FROM `opcard` WHERE `idcard`='$idcard' LIMIT 1");
-        $hn = $mobile = '';
-        if($q->num_rows > 0){
-            $op = $q->fetch_assoc();
-            $hn = $op['hn'];
-            $mobile = $op['phone'];
+                var url = 'getAuthenCode.php?action=save';
+                url += '&pid='+data.pid;
+                url += '&claimType='+el.claimType;
+                url += '&mobile='+opcardTxt.mobile;
+                url += '&correlationId='+data.correlationId;
+                url += '&hn='+opcardTxt.hn;
+                url += '&hcode='+data.hospMain.hcode;
+                
+                resHtml += '<a href="'+url+'" onclick="return confirm(\'ยืนยันการบันทึกข้อมูล\');">'+el.claimTypeName+'</a><br>';
+            });
+            resHtml += '</tr>';
+            resHtml += '</table>';
+            res.innerHTML = resHtml;
         }
-
-        ?>
-        <style>
-            .tb_title{
-                text-align: right;
-                font-weight: bold;
-            }
-        </style>
-        <table>
-            <tr>
-                <td class="tb_title">HN:</td>
-                <td colspan="3"><?=$hn;?></td>
-            </tr>
-            <tr>
-                <td class="tb_title">บัตรปชช:</td>
-                <td><?=$res_data['pid'];?></td>
-                <td class="tb_title">ชื่อ-สกุล:</td>
-                <td><?=$res_data['fname'].'  '.$res_data['lname'];?></td>
-            </tr>
-            <tr>
-                <td class="tb_title">เพศ:</td>
-                <td><?=$res_data['sex'];?></td>
-                <td class="tb_title">อายุ:</td>
-                <td><?=$res_data['age'];?></td>
-            </tr>
-            <tr>
-                <td class="tb_title">เบอร์โทร:</td>
-                <td><?=$mobile;?></td>
-                <td class="tb_title"></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="tb_title">โรงพยาบาลหลัก:</td>
-                <td><?=$res_data['hospMain']['hname'].' ('.$res_data['hospMain']['hcode'].')';?></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td class="tb_title">สิทธิ์การรักษา:</td>
-                <td colspan="3"><?=$res_data['mainInscl'].' - '.$res_data['subInscl'];?></td>
-            </tr>
-            <tr>
-                <td class="tb_title">การเข้ารับบริการ</td>
-                <td colspan="3">
-                    <?php
-                    foreach ($res_data['claimTypes'] as $key => $value) {
-
-                        $url = 'getAuthenCode.php?action=save';
-                        $url .= '&pid='.$res_data['pid'];
-                        $url .= '&claimType='.$value['claimType'];
-                        $url .= '&mobile='.$mobile;
-                        $url .= '&correlationId='.$res_data['correlationId'];
-                        $url .= '&hn='.$hn;
-                        $url .= '&hcode='.$res_data['hospMain']['hcode'];
-
-                        ?>
-                        <a href="<?=$url;?>" onclick="return confirm('ยืนยันการบันทึกข้อมูล');"><?=$value['claimTypeName'];?></a><br>
-                        <?php
-                    }
-                    ?>
-                </td>
-            </tr>
-        </table>
-        <?php
     }
-}
-?>
+</script>
 <br>
 <div>
     <div>
