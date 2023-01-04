@@ -1,5 +1,6 @@
 <?php
 session_start();
+error_reporting(E_ALL);
 if (isset($sOfficer)){} else {die;} //for security
 
 $thdatehn="";
@@ -1166,7 +1167,16 @@ $structure = '../image_patient';
 
 
 ?>
- 
+
+<br>
+<a href="javascript:void(0);" onclick="openAuthenWin();">ขอเลข Authen Code ผ่าน API</a>
+<script>
+	function openAuthenWin(){ 
+		var urlParam = '?'+encodeURIComponent('idcard')+'='+encodeURIComponent('<?=$idcard;?>');
+		window.open("http://localhost/sm3/sm3dev/surasak3/getAuthenCode.php"+urlParam,"authenWin","_blank");
+	}
+</script>
+
 
 <br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="addQueue('kewadd.php')">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
 	$result = Mysql_Query($sql);
