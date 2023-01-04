@@ -456,7 +456,7 @@ for($i=0;$i<$count;$i++){
 			}";
 			
 			if($part=='DDY'){ 
-				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."');"; 
+				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".iconv('TIS620','UTF-8',$_SESSION["list_drug_reason"][$i])."');"; 
 				
 				
 
@@ -476,7 +476,7 @@ for($i=0;$i<$count;$i++){
 				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."')"; 
 				
 			}*/else if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
-				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'DDY','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."');";
+				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'DDY','".$_SESSION["list_drugcode"][$i]."','".iconv('TIS620','UTF-8',$_SESSION["list_drug_reason"][$i])."');";
 			}else{
 				echo " document.getElementById('reason').style.display = 'none';clearobt(document.form1.reason);";
 			}
