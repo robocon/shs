@@ -109,7 +109,8 @@ if($action==='save'){
     <div id="resMain"></div>
 </form>
 <script>
-    document.getElementById("mainForm").addEventListener('submit', (ev) => {
+    document.getElementById("mainForm").addEventListener('submit', (ev) => { 
+        document.getElementById('resMain').innerHTML = 'กำลังโหลดข้อมูล...';
         ev.preventDefault();
         readSmartCard();
     });
@@ -180,7 +181,8 @@ if($action==='save'){
 </div>
 
 <script>
-    function getHistory(idcard){
+    function getHistory(idcard){ 
+        document.getElementById('resHistory').innerHTML = 'กำลังโหลดข้อมูล...';
         loadHistory(idcard);
     }
 
