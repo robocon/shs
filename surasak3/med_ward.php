@@ -19,6 +19,8 @@ function parse_size($size) {
 }
 
 $db = Mysql::load();
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF-8");
 
 mysql_query("SET CHARACTER SET utf8 ");
 
@@ -192,7 +194,49 @@ if ( $action === 'save' ) {
     exit;
 }elseif ($action === 'saveTest') {
 
-    // dump($_REQUEST);
+    $files = set_files($_FILES['file']);
+
+    $an = input_post('an');
+    $hn = input_post('hn');
+    $ptname = input_post('ptname');
+    $idcard = input_post('idcard');
+    $bedcode = input_post('bedCode');
+    $editor = trim($_SESSION['sOfficer']);
+    
+    $path_file = 'med_scan/';
+
+    $uploadOk = 0;
+
+    // $ids = array();
+
+    // count file
+    $firstTime = false;
+    $q = $dbi->query("SELECT `id` FROM `med_scan` WHERE `an` = '$an' ");
+    if( $q->num_rows == 0 ){
+        $firstTime = true;
+    }
+
+    $prefix = substr(strrchr($file_name, "."), 1);
+    $rand = rand(10000000, 99999999);
+    $new_file = $rand.'.'.$prefix;
+
+    $full_path = $path_file.$new_file;
+
+    $test_upload = move_uploaded_file($tmp_name, $full_path);
+
+    $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
+    VALUES 
+    (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW(), 'y');";
+    
+
+    $fullWardName = getFullWardName(trim($bedcode));
+    $newAn = '';
+    if ($firstTime == true) {
+        $newAn = ' (รับใหม่)';
+    }
+    
+    $sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
+
     echo json_encode($_REQUEST);
     exit;
 
@@ -447,9 +491,7 @@ if ( $page === 'search_an' ) {
                         if (request.readyState === 4) {
                             if (request.status >= 200 && request.status < 400) {
 
-                                // console.log(request.responseText);
                                 var d = JSON.parse(request.responseText);
-                                console.log(d);
                                 document.getElementById("resSave").innerHTML += "บันทึกข้อมูล "+d.imgName+" เรียบร้อย <br>";
                                 // document.getElementById("display-name-text").innerHTML = this.responseText;
                                 // document.getElementById("display-name").style.display = '';
