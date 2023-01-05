@@ -2,6 +2,19 @@
 session_start();
 
 include("connect.inc");
+
+function send_line_noti($sMessage, $sToken){
+	$curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_POST, 1); 
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
+}
+
 function jschars($str)
 {
 	$str = str_replace("'", " ", $str);
@@ -139,15 +152,13 @@ $count = count($_SESSION["list_drugcode"]);
 	$pricetype["DPN1"] = 0;
 	$total_item=0;
 	$Netprice = 0;
-
-	$ptrightCode = substr($_SESSION["ptright_now"],0,3);
 	
 	for($i=0;$i<$count;$i++){
 		
 		
-		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free,`lock`  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 		$result = Mysql_Query($sql);
-		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free, $drugLock) = Mysql_fetch_row($result);
+		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);
 				
 		if($_SESSION["list_drugamount"][$i] > 0){
 			if($part == "DPY"){
@@ -196,15 +207,6 @@ $count = count($_SESSION["list_drugcode"]);
 				$pricetype["DDY1"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
 				
 			}
-		}elseif ($part=='DDL' && $drugLock=='N' && $ptrightCode=='R07') {
-
-			$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
-			$result = Mysql_Query($sql);
-			list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
-
-			$pricetype["DDN1"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
-			$pricetype["DDL1"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
-
 		}
 			
 		
@@ -263,10 +265,10 @@ $k3=$k2+50;
 
 	for($i=0;$i<$count;$i++){
 		
-		$sql = "Select tradname, part, salepri, freepri, unit, `lock`  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+		$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 
 		$result = Mysql_Query($sql);
-		list($tradname, $part, $salepri, $freepri, $unit, $drugLock) = Mysql_fetch_row($result);
+		list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
 		
 		if($part == "DPY"){
 			if($freepri > $salepri)
@@ -287,11 +289,6 @@ $k3=$k2+50;
 			if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
 				$part="DDN";
 			}
-
-			if ($part=='DDL' && $drugLock=='N' && $ptrightCode=='R07'){
-				$part="DDN";
-			}
-
 		}
 
 $chkDate=substr($Thidate,0,7);
@@ -834,22 +831,7 @@ $doctor_name=$_SESSION["dt_doctor"];
 
 		$sToken = "7ZCg8RDDGKBjaFP5pTElicwHE4Ax3a4FLGBFTXN8FRm"; // test
 		$sMessage ="แพทย์สั่งจ่ายยา\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nสิทธิ: $ptright\nแพทย์: $doctor_name";
-			$chOne = curl_init(); 
-			// notify-api.line.me
-			// 203.104.138.174
-			// curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
-			curl_setopt( $chOne, CURLOPT_URL, "http://192.168.129.143/send_notify.php"); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-			// curl_setopt ($chOne, CURLOPT_SSLVERSION, 6);
-			curl_setopt( $chOne, CURLOPT_POST, 1); 
-			curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-			// $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-			$headers = array( 'Content-type: application/x-www-form-urlencoded' );
-			curl_setopt( $chOne, CURLOPT_HTTPHEADER, $headers); 
-			curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-			$result = curl_exec( $chOne ); 
-			curl_close($chOne);	
+		send_line_noti($sMessage, $sToken);	
 		
 }
 //-----------------------------------//	

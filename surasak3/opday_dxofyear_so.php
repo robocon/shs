@@ -7,6 +7,23 @@ $month = sprintf("%02d", (empty($_POST['month']) ? date('m') : $_POST['month'] )
 $year = sprintf("%d", (empty($_POST['year']) ? date('Y') : $_POST['year'] ));
 
 $year_range = range(date('Y',strtotime("-5 year")), date('Y'));
+
+
+
+		$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+		$result = mysql_query($query) or die("Query failed");
+		
+		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+			if (!mysql_data_seek($result, $i)) {
+				echo "Cannot seek to row $i\n";
+				continue;
+			}
+				if(!($row = mysql_fetch_object($result)))
+				continue;
+		}
+		$nPrefix=$row->prefix;
+		$chknPrefix="25".$nPrefix;
+		
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,16 +71,12 @@ if($page==='search'){
     $dbi->query("SET NAMES UTF8");
 
     $thidate = ($year+543)."-$month-$day";
-    $sql = "SELECT a.*, b.`row_id`,b.`thidate`,b.`hn`,b.`ptname`,b.`camp` 
-    FROM (
-        SELECT `row_id`AS`opday_id`, `thidate`AS`opday_date`, `hn`AS`opday_hn`, `vn`AS`opday_vn`, 
-        `ptname`AS`opday_ptname`,`camp`AS`opday_camp`,CONCAT((SUBSTRING(`thidate`,1,4)-543),SUBSTRING(`thidate`,5,6),`hn`) AS `enDateHn` 
+    $sql = "SELECT `row_id` AS`opday_id`, `thidate` AS `opday_date`, `hn` AS `opday_hn`, `vn` AS `opday_vn`, `toborow`, `ptright`,
+        `ptname` AS `opday_ptname`,`camp` AS `opday_camp`,CONCAT((SUBSTRING(`thidate`,1,4)-543),SUBSTRING(`thidate`,5,6),`hn`) AS `enDateHn` 
         FROM `opday` 
         WHERE `thidate` LIKE '$thidate%' 
-        AND `ptright` LIKE 'R22%' 
-    ) AS a 
-    LEFT JOIN `condxofyear_so` AS b ON b.`thdatehn` = a.`enDateHn` 
-    ";
+        AND (`ptright` LIKE 'R22%' && `toborow` LIKE 'EX26%')";
+		//echo $sql;
     $q = $dbi->query($sql);
     if($q->num_rows > 0){
         ?>
@@ -73,8 +86,12 @@ if($page==='search'){
                 <th>ชื่อ-สกุล</th>
                 <th>HN</th>
                 <th>VN</th>
+				<th>การมาโรงพยาบาล</th>
+				<th>สิทธิการรักษา</th>
                 <th>วันที่ลงทะเบียน</th>
-                <th>วันที่แพทย์ลงผล</th>
+                <th>วันที่ซักประวัติ/คัดกรอง</th>
+				<th>วันที่แพทย์อ่านผล</th>
+				<th>แพทย์</th>
                 <th>สังกัด</th>
             </tr>
         
@@ -83,18 +100,34 @@ if($page==='search'){
         
         while ($a = $q->fetch_assoc()) { 
             $style = '';
-            if(empty($a['thidate'])){
+
+			
+   $query="SELECT  thidate FROM dxofyear  WHERE hn = '".$a['opday_hn']."' and yearchk='$nPrefix' group by hn order by row_id desc";
+  	//echo $query."<br>";
+   $result = mysql_query($query);
+   list($opddate)=mysql_fetch_array($result);
+   
+   $query1="SELECT  thidate,doctor FROM condxofyear_so  WHERE hn = '".$a['opday_hn']."' and yearcheck='$chknPrefix' group by hn order by row_id desc";
+  	//echo $query;
+   $result1 = mysql_query($query1);
+   list($dxdate,$doctor)=mysql_fetch_array($result1);   
+   
+            if(empty($dxdate)){
                 $style = 'style="background-color:#ffff92;"';
-            }
+            }   
         ?>
             <tr>
-                <td><?=$i;?></td>
-                <td><?=$a['opday_ptname'];?></td>
+                <td <?=$style;?>><?=$i;?></td>
+                <td <?=$style;?>><?=$a['opday_ptname'];?></td>
                 <td <?=$style;?>><?=$a['opday_hn'];?></td>
-                <td><?=$a['opday_vn'];?></td>
-                <td><?=$a['opday_date'];?></td>
-                <td <?=$style;?>><?=$a['thidate'];?></td>
-                <td><?=$a['opday_camp'];?></td>
+                <td <?=$style;?>><?=$a['opday_vn'];?></td>
+				<td <?=$style;?>><?=$a['toborow'];?></td>
+				<td <?=$style;?>><?=$a['ptright'];?></td>
+                <td <?=$style;?>><?=$a['opday_date'];?></td>
+                <td <?=$style;?>><?=$opddate;?></td>
+				<td <?=$style;?>><?=$dxdate;?></td>
+				<td <?=$style;?>><?=$doctor;?></td>
+				<td <?=$style;?>><?=$a['opday_camp'];?></td>
             </tr>
         
         <?php
