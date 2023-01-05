@@ -1174,7 +1174,7 @@ $structure = '../image_patient';
 ?>
 
 <br>
-<a href="http://localhost/sm3dev/surasak3/authen_preload.php" target="_blank" style="font-size:28px;">ขอเลข Authen Code ผ่าน API</a>
+<a href="http://192.168.129.143/newauthen/authen_preload.php?idcard=<?=$cHn;?>" target="_blank" style="font-size:28px;">ขอเลข Authen Code ผ่าน API</a>
 
 <br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="addQueue('kewadd.php')">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
 	$result = Mysql_Query($sql);
