@@ -71,14 +71,15 @@ if($action==='save'){
 
     $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
     $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nรายละเอียด: $detail\n";
-    $chOne = curl_init(); 
-    curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
-    curl_setopt( $chOne, CURLOPT_POST, 1); 
-    curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-    curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded')); 
-    curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-    $result = curl_exec( $chOne ); 
-    curl_close($chOne);
+    $curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_POST, 1); 
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
     
     redirect('com_support_detail.php?id='.$com_id);
 

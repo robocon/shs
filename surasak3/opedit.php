@@ -1,3 +1,6 @@
+<?php 
+error_reporting(E_ALL);
+?>
 <meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8,chrome=1">
 <style>
 body {
@@ -852,7 +855,7 @@ return $pAge;
      <select name="goup" id="goup">
         <option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
         <?
-						include("connect.inc");
+						// include("connect.inc");
 						$query = "SELECT * 
 						FROM `grouptype` 
 						WHERE `status` = 'y'
@@ -877,50 +880,10 @@ return $pAge;
 						?>
       </select></td>
     <td align="right" class="fonthead">สังกัด:</td>
-    <td><!--<select size="1" name="camp" id="camp">
-      <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
-      <option value="M01 พลเรือน">พลเรือน</option>
-      <option value="M02 ร.17 พัน2">ร.17 พัน2</option>
-      <option value="M03 มณฑลทหารบกที่32">มณฑลทหารบกที่32</option>
-      <option value="M04 ร.พ.ค่ายสุรศักดิ์มนตรี">ร.พ.ค่ายสุรศักดิ์มนตรี</option>
-      <option value="M05 ช.พัน4">ช.พัน4</option>
-      <option value="M06 ร้อยฝึกรบพิเศษประตูผา">ร้อยฝึกรบพิเศษประตูผา</option>
-      <option value="M0301 บก.มทบ.32">บก.มทบ.32</option>
-      <option value="M0302 กกพ.มทบ.32">กกพ.มทบ.32</option>
-      <option value="M0303 กขว.,ฝผท.มทบ.32">กขว.,ฝผท.มทบ.32</option>
-      <option value="M0304 กยก.มทบ.32">กยก.มทบ.32</option>
-      <option value="M0305 กกบ.มทบ.32">กกบ.มทบ.32</option>
-      <option value="M0306 กกร.มทบ.32">กกร.มทบ.32</option>
-      <option value="M0307 ฝคง.มทบ.32">ฝคง.มทบ.32</option>
-      <option value="M0308 ฝกง.มทบ.32">ฝกง.มทบ.32</option>
-      <option value="M0309 ฝสก.มทบ.32">ฝสก.มทบ.32</option>
-      <option value="M0310 ฝปบฝ.มทบ.32">ฝปบฝ.มทบ.32</option>
-      <option value="M0311 ผพธ.มทบ.32">ผพธ.มทบ.32</option>
-      <option value="M0312 อก.ศาล มทบ.32">อก.ศาล มทบ.32</option>
-      <option value="M0313 ฝสวส.มทบ.32">ฝสวส.มทบ.32</option>
-      <option value="M0314 ฝธน.มทบ.32">ฝธน.มทบ.32</option>
-      <option value="M0315 อศจ.มทบ.32">อศจ.มทบ.32</option>
-      <option value="M0316 ร้อย.มทบ.32">ร้อย.มทบ.32</option>
-      <option value="M0317 สขส.มทบ.32">สขส.มทบ.32</option>
-      <option value="M0313 รจ.มทบ.32">รจ.มทบ.32</option>
-      <option value="M0318 ผยย.มทบ.32">ผยย.มทบ.32</option>
-      <option value="M0319 สส.มทบ.32">สส.มทบ.32</option>
-      <option value="M0320 ฝสห.มทบ.32">ฝสห.มทบ.32</option>
-      <option value="M0321 ร้อย.สห.มทบ.32">ร้อย.สห.มทบ.32</option>
-      <option value="M0322 มว.ดย.มทบ.32">มว.ดย.มทบ.32</option>
-      <option value="M0323 ผสพ.มทบ.32">ผสพ.มทบ.32</option>
-      <option value="M0324 สรรพกำลัง มทบ.32">สรรพกำลัง มทบ.32</option>
-      <option value="M0325 ศฝ.นศท.มทบ.32">ศฝ.นศท.มทบ.32</option>
-      <option value="M0326 ศาล.มทบ.32">ศาล.มทบ.32</option>
-      <option value="M0327 ศูนย์โทรศัพท์ มทบ.32">ศูนย์โทรศัพท์ มทบ.32</option>
-      <option value="M0328 ผปบ.มทบ.32">ผปบ.มทบ.32</option>
-      <option value="M08 สัสดีจังหวัดลำปาง">สัสดีจังหวัดลำปาง</option>
-      <option value="M09 มว.คลัง สป.๓ฯ">มว.คลัง สป.๓ฯ</option>
-      <option value="M10 กรม ทพ.33">กรม ทพ.33</option>
-      <option value="M07 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>
-    </select>-->
+    <td>
 		<SELECT NAME="camp" id="camp">
 		<option value="<?=$cCamp;?>" selected><?=$cCamp;?></option>
+		<option value="">-------</option>
 		<option value=""><-เลือก-></option>
       <? 
 		$sqlcamp="SELECT * FROM `camp` order by row_id";
@@ -1014,7 +977,7 @@ return $pAge;
 		}
 	}
 
-	include("connect.inc");
+	// include("connect.inc");
 	$sql = "Select * From ptright Order by code ASC ";
 	$result = mysql_query($sql) or die(mysql_error());
 	while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
@@ -1206,7 +1169,7 @@ $dis = mysql_fetch_assoc($q);
     <td><select size="1" name="idguard" id="idguard">
             <option  selected="selected" value="0" >--------------------เลือก--------------------</option>
             <?
-						include("connect.inc");
+						// include("connect.inc");
 						$query = "SELECT * from guardtype order by guard_id asc";
 						$result = mysql_query($query);
 						while($tbrows=mysql_fetch_assoc($result)){
