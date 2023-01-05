@@ -218,8 +218,7 @@ if($_POST["cigarette"]=="1"){
 		`cvriskscore_lab`= '".$_POST["cvriskscore_lab"]."', 
 		`pregnancy` = '$preg',
 		`smoke_ncd`='$smoke_ncd',
-		`drink_ncd`='$drink_ncd'
-
+		`drink_ncd`='$drink_ncd' 
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 
 	}else{
@@ -1138,7 +1137,7 @@ mmHg </td>
 				<input type="radio" name="cigarette" id="cig1" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1"> สูบ&nbsp;&nbsp;&nbsp;
 			</label>
 			<label for="cig0">
-				<input type="radio" name="cigarette" id="cig0" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')"> ไม่เคยสูบ ตลอดชีวิตไม่สูบเลย&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="cigarette" id="cig0" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')"> ไม่เคยสูบ&nbsp;&nbsp;&nbsp;
 			</label>
 			<label for="cig2">
 				<input type="radio" name="cigarette" id="cig2" value="2" <?php echo $cigarette2;?> onClick="togglediv1('kbk')"> เคยสูบแต่เลิกแล้ว&nbsp;&nbsp;&nbsp;
@@ -1195,7 +1194,7 @@ mmHg </td>
 						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol1" value="1" <?php echo $alcohol1;?> onclick="toggle_drink(this.value)"> ดื่ม&nbsp;&nbsp;&nbsp;
 					</label>
 					<label for="alcohol2">
-						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol2" value="0" <?php echo $alcohol0;?> onclick="toggle_drink(this.value)"> ไม่ดื่ม / ตลอดชีวิตไม่ดื่มเลย&nbsp;&nbsp;&nbsp;
+						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol2" value="0" <?php echo $alcohol0;?> onclick="toggle_drink(this.value)"> ไม่ดื่ม&nbsp;&nbsp;&nbsp;
 					</label>
 					<label for="alcohol3">
 						<input type="radio" class="da_alcohol" name="alcohol" id="alcohol3" value="2" <?php echo $alcohol2;?> onclick="toggle_drink(this.value)"> เคยดื่มแต่หยุดแล้ว 1 ปีขึ้นไป&nbsp;&nbsp;&nbsp;
@@ -1402,9 +1401,9 @@ mmHg </td>
 			?>
 			<td valign="top" align="right" width="200" class="data_show">ประวัติการได้รับวัคซีน Covid-19</td>
 			<td align="left" colspan="5">
-				<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine1" value="1" <? if($covid19_vaccine=="1"){ echo "checked='checked'";}?>>ได้รับการฉีด
+				<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine1" value="1" <? if($covid19_vaccine=="1"){ echo "checked='checked'";}?>> <label for="covid19_vaccine1">ได้รับการฉีด</label>
 				<span style="margin-left:10px;">
-				<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine2" value="0" <? if($covid19_vaccine=="0"){ echo "checked='checked'";}?>> ยังไม่ได้รับการฉีด
+					<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine2" value="0" <? if($covid19_vaccine=="0"){ echo "checked='checked'";}?>> <label for="covid19_vaccine2">ยังไม่ได้รับการฉีด</label>
 				</span>
 				<strong style="margin-left:20px; color: <?=$vaccinecolor;?>;"><?=$txtvaccine;?></strong>
 				<div>
@@ -1413,9 +1412,28 @@ mmHg </td>
 				</div>
 				<script type="text/javascript">
 
+					function newXmlHttp(){
+						var xmlhttp = false;
+						try{
+							xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+						}catch(e){
+							try{
+								xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+							}catch(e){
+								xmlhttp = false;
+							}
+						}
+						if(!xmlhttp && document.createElement){
+							xmlhttp = new XMLHttpRequest();
+						}
+						return xmlhttp;
+					}
+
 					function moph_check_vaccine(idcard){ 
-						document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบ...';
-						setTimeout(callRequestMoph(idcard), 1500);
+						document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบข้อมูล...';
+						setTimeout(function(){
+							callRequestMoph(idcard);
+						}, 1500);
 					}
 
 					function callRequestMoph(idcard){
@@ -1423,34 +1441,33 @@ mmHg </td>
 					}
 
 					function callRequest(idcard) {
-						var request = new XMLHttpRequest();
+						var request = new newXmlHttp();
 						request.open('GET', 'http://192.168.129.143/moph/?page=ImmunizationHistory&cid='+idcard, true);
 
-						request.onload = function () {
-							if (this.status >= 200 && this.status < 400) {
-
-								var d = JSON.parse(this.responseText);
-								if(d.MessageCode===200){
-									var vacc = d.result.vaccine_certificate[0].vaccination_list;
-									var vaccTxt = '';
-									for (var index = 0; index < vacc.length; index++) {
-										var el = vacc[index];
-										vaccTxt += '<b>เข็มที่</b>:'+el.vaccine_dose_no+' <b>วันที่</b>:'+el.vaccine_date+' <b>ที่</b>:'+el.vaccine_place+' <b>วัคซีน</b>:'+el.vaccine_manufacturer_name+"<br>";
+						request.onreadystatechange = function () {
+							if (request.readyState === 4) {
+								if (request.status >= 200 && request.status < 400) { 
+									try {
+										var d = JSON.parse(request.responseText);
+										if(d.MessageCode===200){
+											var vacc = d.result.vaccine_certificate[0].vaccination_list;
+											var vaccTxt = '';
+											for (var index = 0; index < vacc.length; index++) {
+												var el = vacc[index];
+												vaccTxt += '<b>เข็มที่</b>:'+el.vaccine_dose_no+' <b>วันที่</b>:'+el.vaccine_date+' <b>ที่</b>:'+el.vaccine_place+' <b>วัคซีน</b>:'+el.vaccine_manufacturer_name+"<br>";
+											}
+											document.getElementById("resVacc").innerHTML = vaccTxt;
+										}else{
+											document.getElementById("resVacc").innerHTML = d.Message+' (กดตรวจสอบข้อมูลอีกครั้ง)';
+										}
+									} catch (error) {
+										alert("เบราเซอร์เก่าเกินไป กรุณาอัพเกรดเป็นเบราเซอร์เวอร์ชั่นใหม่");
 									}
-									document.getElementById("resVacc").innerHTML = vaccTxt;
-								}else{
-									document.getElementById("resVacc").innerHTML = d.Message+' (กดตรวจสอบข้อมูลอีกครั้ง)';
+								} else {
+									// Error :(
+									document.getElementById("resVacc").innerHTML = 'สัญญาณอินทราเน็ตมีปัญหา กรุณาลองใหม่อีกครั้ง';
 								}
-								
-
-							} else {
-								// We reached our target server, but it returned an error
-								// error();
-							}
-						};
-
-						request.onerror = function () {
-							document.getElementById("resVacc").innerHTML = 'สัญญาณอินทราเน็ตมีปัญหา กรุณาลองใหม่อีกครั้ง';
+							} 
 						};
 
 						request.send();
