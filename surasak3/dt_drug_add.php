@@ -152,13 +152,15 @@ $count = count($_SESSION["list_drugcode"]);
 	$pricetype["DPN1"] = 0;
 	$total_item=0;
 	$Netprice = 0;
+
+	$ptrightCode = substr($_SESSION["ptright_now"],0,3);
 	
 	for($i=0;$i<$count;$i++){
 		
 		
-		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free,`lock`  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 		$result = Mysql_Query($sql);
-		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);
+		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free, $drugLock) = Mysql_fetch_row($result);
 				
 		if($_SESSION["list_drugamount"][$i] > 0){
 			if($part == "DPY"){
@@ -207,6 +209,15 @@ $count = count($_SESSION["list_drugcode"]);
 				$pricetype["DDY1"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
 				
 			}
+		}elseif ($part=='DDL' && $drugLock=='N' && $ptrightCode=='R07') {
+
+			$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+			$result = Mysql_Query($sql);
+			list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
+
+			$pricetype["DDN1"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
+			$pricetype["DDL1"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
+
 		}
 			
 		
@@ -265,10 +276,10 @@ $k3=$k2+50;
 
 	for($i=0;$i<$count;$i++){
 		
-		$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+		$sql = "Select tradname, part, salepri, freepri, unit, `lock`  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 
 		$result = Mysql_Query($sql);
-		list($tradname, $part, $salepri, $freepri, $unit ) = Mysql_fetch_row($result);
+		list($tradname, $part, $salepri, $freepri, $unit, $drugLock) = Mysql_fetch_row($result);
 		
 		if($part == "DPY"){
 			if($freepri > $salepri)
@@ -289,6 +300,11 @@ $k3=$k2+50;
 			if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
 				$part="DDN";
 			}
+
+			if ($part=='DDL' && $drugLock=='N' && $ptrightCode=='R07'){
+				$part="DDN";
+			}
+
 		}
 
 $chkDate=substr($Thidate,0,7);
