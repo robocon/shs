@@ -81,6 +81,10 @@ if($action==='save'){
             font-family: "TH SarabunPSK";
             font-size: 18px;
         }
+        p{
+            margin:0;
+            padding:0;
+        }
         .chk_table{
             border-collapse: collapse;
         }
@@ -95,12 +99,13 @@ if($action==='save'){
             text-align: right;
             font-weight: bold;
         }
+
     </style>
 </head>
 <body>
 
-<p style="margin:0; padding:0;"><b>ทดสอบการขอ Authen ผ่าน NHSO Secure Smartcard Agent</b></p>
-<p style="margin:0; padding:0;"><b>ใช้งานผ่าน Google Chrome, Firefox, Microsoft Edge เท่านั้น</b></p>
+<p><b>ทดสอบการขอ Authen ผ่าน NHSO Secure Smartcard Agent</b></p>
+<p><b>ใช้งานผ่าน Google Chrome, Firefox, Microsoft Edge เท่านั้น</b></p>
 
 <form action="getAuthenCode.php" method="POST" id="mainForm">
     <div>
@@ -122,7 +127,7 @@ if($action==='save'){
             var data = await response.json();
             
             if(data.status==418){
-                res.innerHTML = '<div style="color:red;"><b>'+res.message+'</b></div>';
+                res.innerHTML = '<div style="color:red;"><b>'+data.message+'</b></div>';
                 
             }else if(data.status==500){
                 res.innerHTML = '<div style="color:red;"><b>กรุณาเสียบบัตรประชาชนผู้มารับบริการ</b></div>';
@@ -160,8 +165,9 @@ if($action==='save'){
                 res.innerHTML = resHtml;
             }
         } catch (error) {
-            res.innerHTML = '<div>ไม่พบ SmartCard Agent กรุณาติดตั้ง <a href="https://www.nhso.go.th/downloads/208" target="_blank">NHSO Secure SmartCard Agent.</a> ก่อนใช้งาน</div>';
-            res.innerHTML += '<div><a href="https://drive.google.com/file/d/1-FSr-wGYGN_hpMtTSfYuKpYPnOq9uVyk/view" target="_blank">ชั้นตอนการติดตั้ง</a></div>';
+            res.innerHTML = '<div>&gt;&gt;&gt;ไม่พบ SmartCard Agent กรุณาติดตั้ง <a href="https://www.nhso.go.th/downloads/208" target="_blank">NHSO Secure SmartCard Agent.</a> ก่อนใช้งาน</div>';
+            res.innerHTML += '<div>&gt;&gt;&gt;<a href="https://drive.google.com/file/d/1-FSr-wGYGN_hpMtTSfYuKpYPnOq9uVyk/view" target="_blank">คลิกที่นี่เพื่อดูขั้นตอนการติดตั้ง</a></div>';
+            res.innerHTML += '<div><img src="AuthenClub-QrCode.jpg"><p>สอบถามปัญหาได้ในโอเพนแชท "Authen Club"</p></div>';
         }
         
     }
@@ -214,8 +220,9 @@ if($action==='save'){
 
             }
         } catch (error) {
-            res.innerHTML = '<div>ไม่พบ SmartCard Agent กรุณาติดตั้ง <a href="https://www.nhso.go.th/downloads/208" target="_blank">NHSO Secure SmartCard Agent.</a> ก่อนใช้งาน</div>';
-            res.innerHTML += '<div><a href="https://drive.google.com/file/d/1-FSr-wGYGN_hpMtTSfYuKpYPnOq9uVyk/view" target="_blank">ชั้นตอนการติดตั้ง</a></div>';
+            res.innerHTML = '<div>&gt;&gt;&gt;&nbsp;ไม่พบ SmartCard Agent กรุณาติดตั้ง <a href="https://www.nhso.go.th/downloads/208" target="_blank">NHSO Secure SmartCard Agent.</a> ก่อนใช้งาน</div>';
+            res.innerHTML += '<div>&gt;&gt;&gt;&nbsp;<a href="https://drive.google.com/file/d/1-FSr-wGYGN_hpMtTSfYuKpYPnOq9uVyk/view" target="_blank">คลิกที่นี่เพื่อดูขั้นตอนการติดตั้ง</a></div>';
+            res.innerHTML += '<div><img src="AuthenClub-QrCode.jpg"><p>สอบถามปัญหาได้ในโอเพนแชท "Authen Club"</p></div>';
         }
         
     }
