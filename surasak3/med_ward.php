@@ -6,6 +6,18 @@ if(empty($_SESSION['sOfficer'])){
     exit;
 }
 
+function parse_size($size) {
+    $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+    $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+    if ($unit) {
+        // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+        return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+    }
+    else {
+        return round($size);
+    }
+}
+
 $db = Mysql::load();
 
 mysql_query("SET CHARACTER SET utf8 ");
@@ -178,6 +190,12 @@ if ( $action === 'save' ) {
     }
 
     exit;
+}elseif ($action === 'saveTest') {
+
+    // dump($_REQUEST);
+    echo json_encode($_REQUEST);
+    exit;
+
 }elseif ($action === 'delete') {
     
     $id = input_get('id');
@@ -349,10 +367,13 @@ if ( $page === 'search_an' ) {
         $idcard = $ipt['idcard'];
         $bedcode = $ipt['bedcode'];
 
+        $upload_file_size = ini_get('upload_max_filesize');
+        $upload_max = parse_size($upload_file_size);
+        
         ?>
         <fieldset>
             <legend>ข้อมูลผู้ป่วย</legend>
-            <form action="med_ward.php" method="post" enctype="multipart/form-data">
+            <form action="med_ward.php" id="uploadForm" method="post" enctype="multipart/form-data">
                 <div>
                     <b>AN:</b> <?=$ipt['an'];?><br>
                     <b>HN:</b> <?=$ipt['hn'];?><br>
@@ -360,20 +381,158 @@ if ( $page === 'search_an' ) {
                     <b>แพทย์:</b> <?=$ipt['doctor'];?>
                 </div>
                 <div>
-                    เลือกไฟล์ <input type="file" name="file[]" multiple>
+                    เลือกไฟล์ <input type="file" id="file" name="file[]" multiple accept="image/*">
                 </div>
                 <div><u>* อนุญาตให้ใช้ไฟล์นามสกุล .jpg, .jpeg และ .png เท่านั้น</u></div>
+                <div><u>* ขนาดของไฟล์ไม่เกิน <?=$upload_file_size;?></u></div>
+                <div>
+                    <div><h3>ตัวอย่างไฟล์อัพโหลด</h3></div>
+                    <div id="imgPreview"></div>
+                </div>
                 <div>
                     <button type="submit">บันทึกข้อมูล</button>
-                    <input type="hidden" name="action" value="save">
-                    <input type="hidden" name="an" value="<?=$an;?>" >
-                    <input type="hidden" name="hn" value="<?=$hn;?>" >
-                    <input type="hidden" name="ptname" value="<?=$ptname;?>" >
-                    <input type="hidden" name="idcard" value="<?=$idcard;?>" >
-                    <input type="hidden" name="bedCode" value="<?=$bedcode;?>">
+                    <input type="hidden" id="formAction" name="action" value="saveTest">
+                    <input type="hidden" id="formAn" name="an" value="<?=$an;?>" >
+                    <input type="hidden" id="formHn" name="hn" value="<?=$hn;?>" >
+                    <input type="hidden" id="formPtname" name="ptname" value="<?=$ptname;?>" >
+                    <input type="hidden" id="formIdcard" name="idcard" value="<?=$idcard;?>" >
+                    <input type="hidden" id="formBedCode" name="bedCode" value="<?=$bedcode;?>">
                 </div>
+                <div id="resSave"></div>
             </form>
         </fieldset>
+        <script type="text/javascript">
+
+            function newXmlHttp(){
+                var xmlhttp = false;
+                try{
+                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+                }catch(e){
+                    try{
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch(e){
+                        xmlhttp = false;
+                    }
+                }
+                if(!xmlhttp && document.createElement){
+                    xmlhttp = new XMLHttpRequest();
+                }
+                return xmlhttp;
+            }
+
+            document.getElementById("uploadForm").onsubmit = function(ev){ 
+                ev.preventDefault();
+
+                var el = document.getElementsByClassName('hiddenFileUpload');
+                for (var i=0; i < el.length; i++) {
+
+                    var test_str = [];
+                    test_str.push(encodeURIComponent('action')+"="+encodeURIComponent(document.getElementById("formAction").value));
+                    test_str.push(encodeURIComponent('an')+"="+encodeURIComponent(document.getElementById("formAn").value));
+                    test_str.push(encodeURIComponent('hn')+"="+encodeURIComponent(document.getElementById("formHn").value));
+                    test_str.push(encodeURIComponent('ptname')+"="+encodeURIComponent(document.getElementById("formPtname").value));
+                    test_str.push(encodeURIComponent('idcard')+"="+encodeURIComponent(document.getElementById("formIdcard").value));
+                    test_str.push(encodeURIComponent('bedCode')+"="+encodeURIComponent(document.getElementById("formBedCode").value));
+                    test_str.push(encodeURIComponent('image')+"="+encodeURIComponent(el[i].value));
+                    test_str.push(encodeURIComponent('imgName')+"="+encodeURIComponent(el[i].getAttribute('data-name')));
+                    var data = test_str.join("&");
+
+                    var request = new newXmlHttp();
+                    request.open('POST', 'med_ward.php', false);
+                    request.setRequestHeader( 
+                        'Content-Type',
+                        'application/x-www-form-urlencoded; charset=UTF-8'
+                    );
+                    request.onreadystatechange = function() {
+                        if (request.readyState === 4) {
+                            if (request.status >= 200 && request.status < 400) {
+
+                                // console.log(request.responseText);
+                                var d = JSON.parse(request.responseText);
+                                console.log(d);
+                                document.getElementById("resSave").innerHTML += "บันทึกข้อมูล "+d.imgName+" เรียบร้อย <br>";
+                                // document.getElementById("display-name-text").innerHTML = this.responseText;
+                                // document.getElementById("display-name").style.display = '';
+
+                            } else {
+                                // Error :(
+                            }
+                        }
+                    };
+                    request.send(data);
+                }
+            }
+
+            var maxFileSize = <?=$upload_max;?>;
+            document.getElementById("file").onchange = function(ev){ 
+
+                // ถ้าอัพโหลดใหม่ให้ล้าง html เก่าออกไปก่อน
+                document.getElementById("imgPreview").innerHTML = '';
+
+                var fileList = this.files;
+
+                // ไฟล์เกิน2ไฟล์ไม่ให้ผ่าน
+                if(fileList.length>2){
+                    ev.preventDefault();
+                    alert("ไม่อนุญาตให้อัพโหลดเกิน 2ไฟล์ กรุณาเลือกไฟล์ใหม่อีกครั้ง");
+                    return false;
+                }
+
+                // ถ้าไฟล์ใหญ่เกินไปให้ยกเลิก
+                for (var ii = 0; ii < fileList.length; ii++) {
+                    var imTest = fileList[ii];
+                    if(imTest.size>maxFileSize){ 
+                        ev.preventDefault();
+                        alert("ขนาดไฟล์ใหญ่เกินไป กรุณาเลือกไฟล์ใหม่อีกครั้ง");
+                        return false;
+                    }
+                }
+
+                var valid_files = ['image/png','image/jpeg'];
+                var myOl = document.createElement("ol");
+                
+                for (var index = 0; index < fileList.length; index++) {
+                    var im = fileList[index];
+                    
+                    if( valid_files.indexOf(im.type) > -1 ){ 
+                        // li
+                        var myLi = document.createElement("li");
+
+                        // img ที่เป็นรูปตัวอย่าง เข้าไปใน li
+                        var img = document.createElement("img");
+                        img.src = URL.createObjectURL(im);
+                        img.height = 80;
+                        myLi.appendChild(img);
+
+                        // เพิ่มข้อความ เข้าไปใน li
+                        var textnode = document.createTextNode(im.name);
+                        myLi.appendChild(textnode);
+                        
+                        // ทีแรกอยากให้ input:hidden ติดไปกับ li แต่ยังทำไม่ได้
+                        const reader = new FileReader();
+                        reader.file = im;
+                        reader.onload = function(e) {
+                            var myInput = document.createElement("input");
+                            myInput.setAttribute('type', "hidden");
+                            myInput.setAttribute('name', "data[]");
+                            myInput.setAttribute('class', "hiddenFileUpload");
+                            myInput.setAttribute('value', reader.result);
+                            myInput.setAttribute('data-name', reader.file.name);
+                            myLi.appendChild(myInput);
+
+                        }
+                        reader.readAsDataURL(im);
+                        
+                        // เอา liทั้งหมดใส่ใน ol
+                        myOl.appendChild(myLi);
+                    }else{
+                        alert(im.name+" << ไฟล์ผิดประเภท ระบบไม่อนุญาตให้อัพโหลดเด้อจ้า");
+                    }
+                    
+                } // End for
+                document.getElementById("imgPreview").appendChild(myOl);
+            }
+        </script>
         <?php
     }else{
         echo "ไม่พบข้อมูล $an";
