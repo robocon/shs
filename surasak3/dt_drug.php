@@ -2505,6 +2505,8 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	}
 
+	// แจ้งเตือน+Block ยาในหญิงตั้งครรภ์และให้นมบุตร
+	// เดี๋ยวปรับการดึงยาจากฐานข้อมูลอีกที
 	var preg = '<?=trim($_SESSION['pregnancy']);?>';
 	var preg_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
 	var preg_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
@@ -2905,7 +2907,9 @@ function checkForm1(){
 
 	}
 	 
-	 
+	/**
+	 * ต้องเช็กแล้วแจ้งเตือนการให้ยาในหญิงตั้งครรภ์และให้นมบุตรตรงนี้อีกจุด
+	 */
 
 	if( document.form1.drug_code.value == "1PLAQ-N" || document.form1.drug_code.value == "1ZITH-C" ){ 
 	
