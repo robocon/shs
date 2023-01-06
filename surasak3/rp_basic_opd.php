@@ -150,8 +150,9 @@ body,td,th {
 		<td width="40">Pain Score</td>
 		<td width="40">CV Risk ไม่มีผลเลือด </td>
 		<td width="40">CV Risk มีผลเลือด</td>
-		<td width="40" >CV Risk ไม่มีผลเลือด <br>ระบบคำนวณ</td>
-		<td width="40">CV Risk มีผลเลือด<br>ระบบคำนวณ</td>
+		<td width="40" bgcolor="#F5B7B1">CV Risk ไม่มีผลเลือด <br>ระบบคำนวณ</td>
+		<td width="40" bgcolor="#F5B7B1">โคเรสเตอรอลรวม<br>Cholesterol</td>
+		<td width="40" bgcolor="#F5B7B1">CV Risk มีผลเลือด<br>ระบบคำนวณ</td>
 		<td width="100">ประเภท</td>
 		<td width="220">อาการ</td>
         <td width="169">แพทย์</td>
@@ -256,31 +257,47 @@ body,td,th {
 				$final=(1-$z)*100;
 				
 				$pfullscore=number_format($final,2);
+				if($pfullscore >=30){
+					$pfullscore="$pfullscore<br> >30%";
+				}else{
+					$pfullscore=$pfullscore;
+				}						
 				
 				//---------------จบ-----------------//
 				
 				
 				//--------- มีผลเลือด -----------//
 				$date_now=date("Y-m-d");
-				$sql1 = "Select a.profilecode, count(b.labcode), a.testgroupname From (Select * From resulthead where hn='".$hn."' AND orderdate like '".$date_now."%' ) as a INNER JOIN resultdetail as b ON a.autonumber = b.autonumber WHERE b.labcode='chol' group by a.profilecode  Order by  a.testgroupname ASC, b.seq ASC";
-				echo $sql1."<br>";
-				$result = mysql_query($sql1);				
+				$sql1 = "Select b.result From (Select * From resulthead where hn='".$hn."' AND orderdate like '".$date_now."%' ) as a INNER JOIN resultdetail as b ON a.autonumber = b.autonumber WHERE b.labcode='CHOL' group by a.profilecode  Order by  a.testgroupname ASC, b.seq ASC";
+				//echo $sql1."<br>";
+				$result1 = mysql_query($sql1);	
+				$num1=mysql_num_rows($result1);	
 				
-				
-				$fullscore_lab=(0.08183*$age)+(0.39499*$sex)+(0.02084*$sbp)+(0.69974*$diabetes)+(0.00212*$chol)+(0.459*$smoke);
-								
-				$yy=$fullscore_lab-7.720484;	
-				$xx=0.978296;
-				
-				$yy=exp($yy);
-				$zz=pow($xx,$yy);
-				
-				$final_lab=(1-$zz)*100;
-				
-				$pfullscore_lab=number_format($final_lab,2);				
+				if($num1 > 0){
+					list($chol)=mysql_fetch_array($result1);
+					$fullscore_lab=(0.08183*$age)+(0.39499*$sex)+(0.02084*$sbp)+(0.69974*$diabetes)+(0.00212*$chol)+(0.459*$smoke);
+									
+					$yy=$fullscore_lab-7.04423;	
+					$xx=0.978296;
+					
+					$yy=exp($yy);
+					$zz=pow($xx,$yy);
+					
+					$final_lab=(1-$zz)*100;
+					
+					$pfullscore_lab=number_format($final_lab,2);
+					if($pfullscore_lab >=30){
+						$pfullscore_lab="$pfullscore_lab<br> >30%";
+					}else{
+						$pfullscore_lab=$pfullscore_lab;
+					}		
+				}else{
+					$chol="";
+					$pfullscore_lab="";
+				}		
 				//---------------จบ-----------------//
 				
-				
+				//exp(x) สำหรับหาค่าเอ็กโปรเนเชียล (exponential) เช่น exp(23)
 				
 
 				
@@ -321,8 +338,9 @@ body,td,th {
 		<td width="40" align="center"><?php echo $painscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore_lab;?></td>
-		<td width="40" align="center"><?php echo $pfullscore;?></td>
-		<td width="40" align="center"><?php echo $pfullscore_lab;?></td>		
+		<td width="40" align="center" bgcolor="#F5B7B1"><?php echo $pfullscore;?></td>
+		<td width="40" align="center" bgcolor="#F5B7B1"><?php echo $chol;?></td>
+		<td width="40" align="center" bgcolor="#F5B7B1"><?php echo $pfullscore_lab;?></td>		
 		<td width="100" align="center"><?php if($rows3['opdtype']=="SI"){ echo "OP Self Isolation";}else if($rows3['opdtype']=="OP"){echo "ผู้ป่วยทั่วไป";}else{echo "ไม่ระบุ";} ?></td>
 		<td align="left"><?php echo $organ;?></td>
         <td align="left"><?php echo $doctor;?></td>
