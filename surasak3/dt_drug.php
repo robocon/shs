@@ -2361,23 +2361,19 @@ function clearobt(nameojt){
 	}
 	document.getElementById("drReason1").removeAttribute('disabled');
 }
-<?php 
-// ถ้าเป็นหมอธนบดินทร์ 
-if( $_SESSION['sIdname'] == 'md19921' ){
-?>
+
 function addobtreason(nameojt,path,dc,sl){
-
 	if(path == "DDY"){
-		
-		/*nameojt.options[nameojt.options.length]=new Option("ใช้ยาในบัญชียาหลักแล้วไม่ดีขึ้น","ใช้ยาในบัญชียาหลักแห่งชาติแล้วไม่ดีขึ้น");
-		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักที่ใช้รักษาตามข้อบ่งชี้","ไม่มียาในบัญชียาหลักแห่งชาติที่ใช้รักษาตามข้อบ่งชี้");
-		nameojt.options[nameojt.options.length]=new Option("แพ้ยาในบัญชียาหลักแห่งชาติ","แพ้ยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชีได้","มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชียาหลักต่อไปได้");
 
-		nameojt.options[nameojt.options.length]=new Option("ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา","ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา(drug interaction)กับยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน","ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน");
-		nameojt.options[nameojt.options.length]=new Option("มีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย","มีความจำเป็นที่ต้องใช้ยานอกบัญชียาหลักเพราะมีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย");*/
-		nameojt.options[nameojt.options.length]=new Option("","");  
+		<?php 
+		// ถ้าเป็นหมอธนบดินจะมีตัวเลือกที่เป็นค่าว่างเพิ่มขึ้นมา
+		if( $_SESSION['sIdname'] == 'md19921' ){
+			?>
+			nameojt.options[nameojt.options.length]=new Option("",""); 
+			<?php
+		}
+		?>
+
 		nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา","A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา");  
 		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย","B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย");
 		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด","C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด");
@@ -2386,108 +2382,60 @@ function addobtreason(nameojt,path,dc,sl){
 		nameojt.options[nameojt.options.length]=new Option("ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า","E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า");
 		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)","F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)");
 		nameojt.value = sl;
-		
 
-	}/*else{
-<?
-}else{
-?>	
-function addobtreason(nameojt,path,dc,sl){
-
-	if(path == "DDY"){
-		
-		/*nameojt.options[nameojt.options.length]=new Option("ใช้ยาในบัญชียาหลักแล้วไม่ดีขึ้น","ใช้ยาในบัญชียาหลักแห่งชาติแล้วไม่ดีขึ้น");
-		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักที่ใช้รักษาตามข้อบ่งชี้","ไม่มียาในบัญชียาหลักแห่งชาติที่ใช้รักษาตามข้อบ่งชี้");
-		nameojt.options[nameojt.options.length]=new Option("แพ้ยาในบัญชียาหลักแห่งชาติ","แพ้ยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชีได้","มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชียาหลักต่อไปได้");
-
-		nameojt.options[nameojt.options.length]=new Option("ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา","ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา(drug interaction)กับยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน","ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน");
-		nameojt.options[nameojt.options.length]=new Option("มีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย","มีความจำเป็นที่ต้องใช้ยานอกบัญชียาหลักเพราะมีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย");*/
-		nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา","A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา");  
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย","B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย");
-		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด","C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด");
-		nameojt.options[nameojt.options.length]=new Option("มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ","D มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ");
-
-		nameojt.options[nameojt.options.length]=new Option("ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า","E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า");
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)","F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)");
-		nameojt.value = sl;
-		
-
-	}/*else{
-<?
-}
-?>
-		if(dc=="1NEUT300*$"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-			
-        }else if(dc=="1NEUT100*$"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-        }else if(dc=="1NEU100-C"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-        }else if(dc=="1NEU300-C"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-
-
-		}else if(dc=="1PLAV*"){
-			nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยที่มีข้อห้ามใช้หรือแพ้aspirin","ผู้ป่วยที่มีข้อห้ามใช้หรือแพ้aspirin");
-			nameojt.options[nameojt.options.length]=new Option("ใช้ระยะสั้นในการใส่ stent","ใช้ระยะสั้นในการใส่ stent");
-			nameojt.options[nameojt.options.length]=new Option("AF หรือ antiphospholipid syndrome ซึ่งไม่สามารถใช้ anticoagulant ได้","AF หรือ antiphospholipid syndrome ซึ่งไม่สามารถใช้ anticoagulant ได้");
-			nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยที่มี multiple thrombotic risk factors ซึ่งไม่สามารถควบคุมได้","ผู้ป่วยที่มี multiple thrombotic risk factors ซึ่งไม่สามารถควบคุมได้");
-			
-		}
-		
-		if(sl != ''){
-			nameojt.value = sl;
-		}else{
-			nameojt.selectedIndex = 0;
-		}
-
-	}*/
-
-	
-	if(nameojt.value == '' && sl != ""){
-			nameojt.options[nameojt.options.length]=new Option("กรุณาเลือกเหตุผล","กรุณาเลือกเหตุผล");
-			nameojt.value = sl;
-			nameojt.selectedIndex = 6;
-			//nameojt.options[nameojt.options.length]=new Option(sl,sl);
-			//nameojt.value = sl;
 	}
-	
+
+	if(nameojt.value == '' && sl != ""){
+		nameojt.options[nameojt.options.length]=new Option("กรุณาเลือกเหตุผล","กรุณาเลือกเหตุผล");
+		nameojt.value = sl;
+		nameojt.selectedIndex = 6;
+	}
 
 }
-
 
 function pregAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "PREGNANCY WARNING<br>ยา "+genname+"("+tradname+") <br>มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>";
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById("pregContainer").style.display = "";
 }
 
 function pregBlock(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "ยา "+genname+"("+tradname+") <br>มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>";
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById('list').innerHTML='';
 	document.getElementById("pregContainer").style.display = "";
 }
 
 function lacAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "LACTATION WARNING<br>ยา "+genname+"("+tradname+") <br>มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>";
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
+
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById("pregContainer").style.display = "";
 }
 
 function lacBlock(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "ยา "+genname+"("+tradname+") <br>มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>";
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById('list').innerHTML='';
 	document.getElementById("pregContainer").style.display = "";
 }
@@ -2496,15 +2444,7 @@ function closePreg(){
 	document.getElementById("pregContainer").style.display = "none";
 }
 
-function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
-
-	var doctor_id = document.getElementById('doctor_id').value;
-	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
-		if( drugcode == '6VISL' || drugcode == '6HIAL' ){
-			alert('ยาควบคุมราคา กรุณาให้จักษุแพทย์สั่งยา');
-		}
-	}
-
+function testPreg(drugcode,tradname,genname){
 	// แจ้งเตือน+Block ยาในหญิงตั้งครรภ์และให้นมบุตร
 	// เดี๋ยวปรับการดึงยาจากฐานข้อมูลอีกที
 	var preg = '<?=trim($_SESSION['pregnancy']);?>';
@@ -2518,6 +2458,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		for (var index = 0; index < preg_alert.length; index++) {
 			if(preg_alert[index]==drugcode){
 				pregAlert(tradname,genname);
+				return true;
 			}
 		}
 
@@ -2532,6 +2473,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		for (var index = 0; index < lac_alert.length; index++) {
 			if(lac_alert[index]==drugcode){
 				lacAlert(tradname,genname);
+				return true;
 			}
 		}
 
@@ -2542,7 +2484,22 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			}
 		}
 	}
+}
 
+
+function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
+
+	var doctor_id = document.getElementById('doctor_id').value;
+	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
+		if( drugcode == '6VISL' || drugcode == '6HIAL' ){
+			alert('ยาควบคุมราคา กรุณาให้จักษุแพทย์สั่งยา');
+		}
+	}
+
+	var resPreg = testPreg(drugcode,tradname,genname);
+	if(resPreg===false){
+		return false;
+	}
 
 	var returnstr;
 
@@ -2910,6 +2867,10 @@ function checkForm1(){
 	/**
 	 * ต้องเช็กแล้วแจ้งเตือนการให้ยาในหญิงตั้งครรภ์และให้นมบุตรตรงนี้อีกจุด
 	 */
+	var resPreg = testPreg(document.form1.drug_code.value,'','');
+	if(resPreg===false){
+		return false;
+	}
 
 	if( document.form1.drug_code.value == "1PLAQ-N" || document.form1.drug_code.value == "1ZITH-C" ){ 
 	
