@@ -20,7 +20,7 @@ function parse_size($size) {
 
 $db = Mysql::load();
 $dbi = new mysqli(HOST, USER, PASS, DB);
-$dbi->query("SET NAMES UTF-8");
+$dbi->query("SET NAMES UTF8");
 
 mysql_query("SET CHARACTER SET utf8 ");
 
@@ -96,120 +96,28 @@ function set_log($error){
 $action = input('action');
 if ( $action === 'save' ) {
     
-    $files = set_files($_FILES['file']);
+    $an = sprintf("%s", $_POST['an']);
+    $hn = sprintf("%s", $_POST['hn']);
+    $ptname = sprintf("%s", $_POST['ptname']);
+    $idcard = sprintf("%s", $_POST['idcard']);
+    $bedcode = sprintf("%s", $_POST['bedCode']);
+    $editor = sprintf("%s", trim($_SESSION['sOfficer']));
+    $file_name = $_POST['imgName'];
+    $lineImage = $_POST['image'];
 
-    $an = input_post('an');
-    $hn = input_post('hn');
-    $ptname = input_post('ptname');
-    $idcard = input_post('idcard');
-    $bedcode = input_post('bedCode');
-    $editor = trim($_SESSION['sOfficer']);
-    
+    // แยก header กับ body ในตัว base64
+    list($b64Prefix, $b64Data) = explode(',', $image);
+
+    // ถ้าไม่ใช่ Image จะไม่ให้ผ่าน
+    if(preg_match("/image\/.+/", $lineImage) === false){
+        echo "Invalid Type";
+        exit;
+    }
+
     $path_file = 'med_scan/';
-
     $uploadOk = 0;
 
-    $ids = array();
-
-    // count file
-    $firstTime = false;
-    $q = mysql_query("SELECT `id` FROM `med_scan` WHERE `an` = '$an' ");
-    if( mysql_num_rows($q) == 0 ){
-        $firstTime = true;
-    }
-
-    foreach ($files as $key => $file) {
-
-        $fileOk = 0;
-        $tmp_name = $file["tmp_name"];
-        $file_name = basename($file["name"]);
-
-        $imageFileType = strtolower(pathinfo($file_name,PATHINFO_EXTENSION));
-        $imgSize = getimagesize($tmp_name);
-
-        if($file['error'] !== UPLOAD_ERR_OK){
-            $fileOk = 1;
-        }
-
-        if( $imgSize !== false ){
-            $fileOk = 1;
-        }
-
-        if( $imageFileType === 'jpg' OR $imageFileType === 'jpeg' OR $imageFileType === 'png' ){
-            $fileOk = 1;
-        }
-
-        if( $fileOk === 1 ){
-
-            $prefix = substr(strrchr($file_name, "."), 1);
-            $rand = rand(10000000, 99999999);
-            $new_file = $rand.'.'.$prefix;
-
-            $full_path = $path_file.$new_file;
-
-            $test_upload = move_uploaded_file($tmp_name, $full_path);
-
-            $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
-            VALUES 
-            (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW(), 'y');";
-            $q = mysql_query($sqlInsert);
-            if( $q === false ){
-                $err = set_log(mysql_error());
-            }else{
-                $ids[] = mysql_insert_id();
-            }
-
-            $uploadOk = 1;
-
-        }else{
-            $uploadOk = 0;
-        }
-
-    }
-
-    if( $uploadOk === 1 ){
-
-        $_SESSION['line_msg'] = null;
-        $_SESSION['line_type'] = null;
-
-        $fullWardName = getFullWardName(trim($bedcode));
-        $newAn = '';
-        if ($firstTime == true) {
-            $newAn = ' (รับใหม่)';
-        }
-        
-        // // Line Notification ในไลน์กลุ่ม
-        // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
-		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
-		
-
-        // $_SESSION['line_msg'] = $sMessage;
-        // $_SESSION['line_type'] = 'ward';
-
-        redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
-    }elseif ( $uploadOk === 0 ) {
-        redirect('med_ward.php','ไฟล์อัพโหลดมีปัญหา '.$err['id'].' ' .$err['msg']);
-    }
-
-    exit;
-}elseif ($action === 'saveTest') {
-
-    $files = set_files($_FILES['file']);
-
-    $an = input_post('an');
-    $hn = input_post('hn');
-    $ptname = input_post('ptname');
-    $idcard = input_post('idcard');
-    $bedcode = input_post('bedCode');
-    $editor = trim($_SESSION['sOfficer']);
-    
-    $path_file = 'med_scan/';
-
-    $uploadOk = 0;
-
-    // $ids = array();
-
-    // count file
+    // ถ้าเป็นผู้ป่วยใหม่จะมีการแจ้งว่าเป็นรับใหม่
     $firstTime = false;
     $q = $dbi->query("SELECT `id` FROM `med_scan` WHERE `an` = '$an' ");
     if( $q->num_rows == 0 ){
@@ -222,22 +130,63 @@ if ( $action === 'save' ) {
 
     $full_path = $path_file.$new_file;
 
-    $test_upload = move_uploaded_file($tmp_name, $full_path);
+    $test_upload = file_put_contents($full_path, base64_decode($b64Data));
 
-    $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
-    VALUES 
-    (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW(), 'y');";
-    
-
-    $fullWardName = getFullWardName(trim($bedcode));
-    $newAn = '';
-    if ($firstTime == true) {
-        $newAn = ' (รับใหม่)';
+    $err = '';
+    if($test_upload !== false){
+        $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
+        VALUES 
+        (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW(), 'y');";
+        $q = $dbi->query($sqlInsert);
+        
+        if( $q === false ){
+            $err = $dbi->error;
+            set_log($dbi->error);
+        }
     }
-    
-    $sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn;
 
-    echo json_encode($_REQUEST);
+    $resMedSave = array();
+
+    if($test_upload === false OR !empty($err)){
+
+        $msg = '';
+        if($test_upload===false){
+            $msg += 'ไฟล์อัพโหลดมีปัญหากรุณาตรวจสอบการแนบไฟล์อีกครั้ง';
+        }
+        if(!empty($err)){
+            $msg += ' การบันทึกข้อมูลไม่สำเร็จ ['.$err.']';
+        }
+
+        $resMedSave = array(
+            'status' => 400,
+            'message' => $msg
+        );
+
+    }else{
+
+        $fullWardName = getFullWardName(trim($bedcode));
+        $newAn = '';
+        if ($firstTime == true) {
+            $newAn = ' (รับใหม่)';
+        }
+        
+        // // Line Notification ในไลน์กลุ่ม
+        // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
+		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn.' บันทึกโดย: '.$editor;
+
+        $resMedSave = array(
+            'status' => 200,
+            'message' => 'บันทึกข้อมูลเรียบร้อย',
+            'line_msg' => $sMessage,
+            'line_type' => 'test',
+            'line_img' => $lineImage,
+            'file_name' => $file_name
+        );
+
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($resMedSave);
     exit;
 
 }elseif ($action === 'delete') {
@@ -329,9 +278,11 @@ if( isset($_SESSION['x-msg']) ){
 
                 var line_message = '<?=$_SESSION['line_msg'];?>';
                 var line_type = '<?=$_SESSION['line_type'];?>';
+                var line_image = '<?=$_SESSION['line_img'];?>';
                 var test_str = [];
                 test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
                 test_str.push(encodeURIComponent('depart')+"="+encodeURIComponent(line_type));
+                test_str.push(encodeURIComponent('image')+"="+encodeURIComponent(line_image));
                 var data = test_str.join("&");
 
                 var request = new XMLHttpRequest();
@@ -340,7 +291,8 @@ if( isset($_SESSION['x-msg']) ){
                         // console.log(request.responseText);
                     }
                 };
-                request.open('POST', 'http://192.168.129.143/send_notify.php', false);
+                // request.open('POST', 'http://192.168.129.143/send_notify.php', false);
+                request.open('POST', 'http://localhost:8080/sm3dev/send_notify.php', false);
                 request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.send(data); 
 
@@ -413,6 +365,9 @@ if ( $page === 'search_an' ) {
 
         $upload_file_size = ini_get('upload_max_filesize');
         $upload_max = parse_size($upload_file_size);
+
+        // $post_max_size = ini_get('post_max_size');
+        // $post_max = parse_size($post_max_size);
         
         ?>
         <fieldset>
@@ -430,12 +385,15 @@ if ( $page === 'search_an' ) {
                 <div><u>* อนุญาตให้ใช้ไฟล์นามสกุล .jpg, .jpeg และ .png เท่านั้น</u></div>
                 <div><u>* ขนาดของไฟล์ไม่เกิน <?=$upload_file_size;?></u></div>
                 <div>
+                    <?=$post_max_size;?>
+                </div>
+                <div>
                     <div><h3>ตัวอย่างไฟล์อัพโหลด</h3></div>
                     <div id="imgPreview"></div>
                 </div>
                 <div>
                     <button type="submit">บันทึกข้อมูล</button>
-                    <input type="hidden" id="formAction" name="action" value="saveTest">
+                    <input type="hidden" id="formAction" name="action" value="save">
                     <input type="hidden" id="formAn" name="an" value="<?=$an;?>" >
                     <input type="hidden" id="formHn" name="hn" value="<?=$hn;?>" >
                     <input type="hidden" id="formPtname" name="ptname" value="<?=$ptname;?>" >
@@ -467,42 +425,111 @@ if ( $page === 'search_an' ) {
             document.getElementById("uploadForm").onsubmit = function(ev){ 
                 ev.preventDefault();
 
+                var divResSave = document.getElementById("resSave");
+
                 var el = document.getElementsByClassName('hiddenFileUpload');
-                for (var i=0; i < el.length; i++) {
+                if(el.length > 0){
 
-                    var test_str = [];
-                    test_str.push(encodeURIComponent('action')+"="+encodeURIComponent(document.getElementById("formAction").value));
-                    test_str.push(encodeURIComponent('an')+"="+encodeURIComponent(document.getElementById("formAn").value));
-                    test_str.push(encodeURIComponent('hn')+"="+encodeURIComponent(document.getElementById("formHn").value));
-                    test_str.push(encodeURIComponent('ptname')+"="+encodeURIComponent(document.getElementById("formPtname").value));
-                    test_str.push(encodeURIComponent('idcard')+"="+encodeURIComponent(document.getElementById("formIdcard").value));
-                    test_str.push(encodeURIComponent('bedCode')+"="+encodeURIComponent(document.getElementById("formBedCode").value));
-                    test_str.push(encodeURIComponent('image')+"="+encodeURIComponent(el[i].value));
-                    test_str.push(encodeURIComponent('imgName')+"="+encodeURIComponent(el[i].getAttribute('data-name')));
-                    var data = test_str.join("&");
+                    // เก็บรายการรูปภาพ
+                    var push_image = [];
+                    var push_data = new Object();
 
-                    var request = new newXmlHttp();
-                    request.open('POST', 'med_ward.php', false);
-                    request.setRequestHeader( 
-                        'Content-Type',
-                        'application/x-www-form-urlencoded; charset=UTF-8'
-                    );
-                    request.onreadystatechange = function() {
-                        if (request.readyState === 4) {
-                            if (request.status >= 200 && request.status < 400) {
+                    for (var i=0; i < el.length; i++) {
 
-                                var d = JSON.parse(request.responseText);
-                                document.getElementById("resSave").innerHTML += "บันทึกข้อมูล "+d.imgName+" เรียบร้อย <br>";
-                                // document.getElementById("display-name-text").innerHTML = this.responseText;
-                                // document.getElementById("display-name").style.display = '';
+                        var test_str = [];
+                        test_str.push(encodeURIComponent('action')+"="+encodeURIComponent(document.getElementById("formAction").value));
+                        test_str.push(encodeURIComponent('an')+"="+encodeURIComponent(document.getElementById("formAn").value));
+                        test_str.push(encodeURIComponent('hn')+"="+encodeURIComponent(document.getElementById("formHn").value));
+                        test_str.push(encodeURIComponent('ptname')+"="+encodeURIComponent(document.getElementById("formPtname").value));
+                        test_str.push(encodeURIComponent('idcard')+"="+encodeURIComponent(document.getElementById("formIdcard").value));
+                        test_str.push(encodeURIComponent('bedCode')+"="+encodeURIComponent(document.getElementById("formBedCode").value));
+                        test_str.push(encodeURIComponent('image')+"="+encodeURIComponent(el[i].value));
+                        test_str.push(encodeURIComponent('imgName')+"="+encodeURIComponent(el[i].getAttribute('data-name')));
+                        var data = test_str.join("&");
 
-                            } else {
-                                // Error :(
+                        var request = new newXmlHttp();
+                        request.open('POST', 'med_ward.php', false);
+                        request.setRequestHeader( 
+                            'Content-Type',
+                            'application/x-www-form-urlencoded; charset=UTF-8'
+                        );
+                        request.onreadystatechange = function() {
+                            if (request.readyState === 4) {
+                                if (request.status >= 200 && request.status < 400) {
+
+                                    try {
+                                        var d = JSON.parse(request.responseText);
+                                        if(d.status===200){
+                                            divResSave.innerHTML += "บันทึกข้อมูล "+d.file_name+" เรียบร้อย <br>";
+
+                                            push_image.push(d.line_img);
+                                            push_data = {
+                                                'line_msg' : d.line_msg,
+                                                'line_type' : d.line_type
+                                            }
+                                            // sendNotifyCrossServer(d);
+
+                                        }else{
+                                            divResSave.innerHTML += "บันทึกข้อมูล "+d.file_name+" ไม่สมบูรณ์ "+d.message+"<br>";
+                                        }
+                                    } catch (error) {
+                                        divResSave.innerHTML = "เบราเซอร์เก่าเกินไป กรุณาอัพเกรดเป็นเบราเซอร์เวอร์ชั่นใหม่ เช่น Google Chrome";
+                                        
+                                    }
+
+                                } else {
+                                    divResSave.innerHTML = "อินเตอร์เน็ตมีปัญหา";
+                                }
+                            }
+                        };
+                        request.send(data);
+                    } // End for
+
+                    sendNotifyCrossServer(push_data, push_image);
+
+                }else{
+                    divResSave = '<p style="color:red;"><b>กรุณาแนบไฟล์ก่อนทำการบันทึกข้อมูล</b></p>';
+                }
+                
+            }
+
+            function sendNotifyCrossServer(d,img){
+                
+                var divResSave = document.getElementById("resSave");
+                // var test_str = [];
+                // test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(d.line_msg));
+                // test_str.push(encodeURIComponent('depart')+"="+encodeURIComponent(d.line_type));
+
+                // test_str.push(encodeURIComponent('line_image')+"="+encodeURIComponent(d.line_img));
+                // var data = test_str.join("&");
+
+                var myJson = JSON.stringify({
+                    'data' : d,
+                    'images' : img
+                });
+
+                var request = new newXmlHttp();
+                request.open('POST', 'http://localhost/sm3dev/send_notify.php', false);
+                request.setRequestHeader( 
+                    'Content-Type',
+                    'application/x-www-form-urlencoded'
+                );
+                request.onreadystatechange = function() {
+                    if (request.readyState === 4) {
+                        if (request.status >= 200 && request.status < 400) {
+                            var s = JSON.parse(request.responseText);
+                            if(s.status===200){
+                                divResSave.innerHTML += '<div><b>บันทึกข้อมูลเสร็จสมบูรณ์ โปรดรอสักครู่ระบบกำลังทำการรีเฟรชหน้าจอ</b></div>';
+                                setTimeout(function(){
+                                    // Simulate a mouse click:
+                                    window.location.href = "med_ward.php";
+                                }, 5000);
                             }
                         }
-                    };
-                    request.send(data);
-                }
+                    }
+                };
+                request.send(myJson);
+
             }
 
             var maxFileSize = <?=$upload_max;?>;
