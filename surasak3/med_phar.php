@@ -1,6 +1,11 @@
 <?php 
 
 include 'bootstrap.php';
+
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
+
+
 $action = input('action');
 $page = input('page');
 
@@ -13,7 +18,7 @@ $wards = array(
 	'47' => 'หอผู้ป่วย Home Isolation',
 	'48' => 'หอผู้ป่วย รพ.สนาม'
 );
-mysql_query("SET CHARACTER SET utf8 ");
+
 /*
 เตียง1-9 ,301-310 พิเศษชั้นสาม
 เตียง10-17,201-207 พิเศษชั้นสอง
@@ -35,7 +40,7 @@ function getFullWardName($cbedcode){
 }
 
 if ($action === 'active') {
-    $confirm = trim($_SESSION['sOfficer']);
+    $confirm = sprintf("%s", trim($_SESSION['sOfficer']));
     $id = input_get('id');
     $an = input_get('an');
 
@@ -44,44 +49,26 @@ if ($action === 'active') {
     `confirm`='y', 
     `lasteditor`='$confirm' 
     WHERE (`id`='$id');";
-    $q = mysql_query($sql);
+    $q = $dbi->query($sql);
     if( $q !== false ){ 
         $_SESSION['line_msg'] = null;
         $_SESSION['line_type'] = null;
         
-        // Line Notification ในไลน์กลุ่ม
-        // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
-        $sMessage = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย");
-        // $chOne = curl_init(); 
-        // curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
-        // curl_setopt( $chOne, CURLOPT_POST, 1); 
-        // curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-        // curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' )); 
-        // curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-        // $result = curl_exec( $chOne ); 
-
-        // if($result==false){
-        //     $extra_txt = curl_error($chOne);
-        // }
-
-        // curl_close($chOne);
-        $_SESSION['line_msg'] = $sMessage;
+        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย\nบันทึกโดย: $confirm");
         $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
     }else{
-        $err = set_log(mysql_error());
+        $err = set_log($dbi->error);
         $msg = 'ไม่สามารถบันทึกข้อมูลได้'.$err['id'].' ' .$err['msg'];
     }
 
-    redirect('med_phar.php?action=print&id='.$id,$msg);
+    redirect('med_phar.php?action=print&id='.$id, $msg);
     exit;
 }elseif ( $action === 'print' ) {
     
-    $sql = "SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ";
-    $q = mysql_query($sql);
-
-    $item = mysql_fetch_assoc($q);
+    $q = $dbi->query("SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ");
+    $item = $q->fetch_assoc();
 
     ?>
     <style>
@@ -98,49 +85,44 @@ if ($action === 'active') {
     <!-- 210mm is 793.7007874px -->
     <!-- 190mm is 718.11023622px -->
     <img src="<?=$item['path'];?>" width="700px" id="mainImg">
-    <script>
+    <script type="text/javascript">
 
         <?php 
         if(isset($_SESSION['line_msg'])){ 
         ?>
+            function newXmlHttp(){
+                var xmlhttp = false;
+                try{
+                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+                }catch(e){
+                    try{
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch(e){
+                        xmlhttp = false;
+                    }
+                }
+                if(!xmlhttp && document.createElement){
+                    xmlhttp = new XMLHttpRequest();
+                }
+                return xmlhttp;
+            }
 
             function sendLineNotifyV2(){
-
                 var line_message = '<?=$_SESSION['line_msg'];?>';
                 var line_type = '<?=$_SESSION['line_type'];?>';
                 var test_str = [];
                 test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
-                test_str.push(encodeURIComponent('depart')+"="+encodeURIComponent(line_type));
-                var data = test_str.join("&");
-
-                var request = new XMLHttpRequest();
+                test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
+                var dataPost = test_str.join("&");
+                var request = new newXmlHttp();
+                request.open('POST', 'http://192.168.129.143/send_notify_v2.php', false);
+                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.onreadystatechange = function(){
                     if( request.readyState == 4 && request.status == 200 ){
-                        // console.log(request.responseText);
                     }
                 };
-                request.open('POST', 'http://192.168.129.143/send_notify.php', false);
-                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                request.send(data); 
-
+                request.send(dataPost); 
             }
-
-            // async function sendLineNotify(){ 
-            //     var line_message = '<?=$_SESSION['line_msg'];?>';
-            //     var line_type = '<?=$_SESSION['line_type'];?>';
-            //     var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
-            //     const response =await fetch(targetTxt, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-type': 'application/x-www-form-urlencoded' 
-            //         },
-            //         body: JSON.stringify({
-            //             'message': line_message, 
-            //             'depart': line_type
-            //         })
-            //     });
-            //     var body = await response.text();
-            // }
             sendLineNotifyV2();
 
             <?php
@@ -148,8 +130,6 @@ if ($action === 'active') {
             unset($_SESSION['line_type']);
         }
         ?>
-        
-        
         function print_img(){
             window.print();
         }
@@ -164,6 +144,15 @@ if ($action === 'active') {
 }elseif ($action === 'clear_an') {
     unset($_SESSION['fix_an']);
     redirect('med_phar.php');
+    exit;
+}elseif ($action==='cancel') {
+    
+    $sOfficer = sprintf("%s", trim($_SESSION['sOfficer']));
+    $id = sprintf("%d", $_GET['id']);
+    $q = $dbi->query("UPDATE `med_scan` SET `confirm` = 'n', `lasteditor` = '$sOfficer' WHERE `id` = '$id' ");
+    if($q!==false){
+        redirect('med_phar.php','ยกเลิกรายการเรียบร้อย');
+    }
     exit;
 }
 
@@ -250,9 +239,6 @@ if( isset($_SESSION['x-msg']) ){
 <div style="display: none;"><?=var_dump($_SERVER['HTTP_USER_AGENT']);?></div>
 
 <?php 
-
-
-
 if ( $_GET['fill_an'] ) {
     $_SESSION['fix_an'] = $_GET['fill_an'];
 }
@@ -278,9 +264,9 @@ WHERE a.`confirm` IS NULL
 $where 
 AND a.`status` = 'y' 
 ORDER BY a.`id` DESC";
-//echo $sql;
-$q = mysql_query($sql);
-if ( mysql_num_rows($q) > 0 ) {
+
+$q = $dbi->query($sql);
+if ( $q->num_rows > 0 ) {
     
     ?>
     <table class="chk_table">
@@ -289,10 +275,11 @@ if ( mysql_num_rows($q) > 0 ) {
             <th>ข้อมูลผู้ป่วย</th>
             <th>ไฟล์</th>
             <th>ยืนยันการรับข้อมูล</th>
+            <th>ยกเลิก</th>
         </tr>
     
     <?php
-    while ($item = mysql_fetch_assoc($q)) {
+    while ($item = $q->fetch_assoc()) {
 
         $fullWardName = getFullWardName(trim($item['bedcode']));
         ?>
@@ -308,24 +295,32 @@ if ( mysql_num_rows($q) > 0 ) {
             </td>
             <td>
                 <?php 
+
+                if(is_file($item['path'])){
+                    $image = '<a href="javascript:void(0)"><img class="showImg" src="'.$item['path'].'" width="200px;"></a>';
+                }else{
+                    $image = 'ไม่พบไฟล์แนบ กรุณาติดต่อหอผู้ป่วยเพื่ออัพโหลดไฟล์เข้ามาใหม่';
+                }
+
                 if( preg_match('/MSIE/',$_SERVER['HTTP_USER_AGENT']) > 0 ){
                     ?>
                     <!--[if lt IE 9]>
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
                     <![endif]-->
                     <!--[if gte IE 9]>
-                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
+                    <?=$image;?>
                     <![endif]-->
                     <?php
                 }else{
-                    ?>
-                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
-                    <?php
+                    echo $image;
                 }
                 ?>
             </td>
             <td style="vertical-align: middle;">
                 <a href="med_phar.php?action=active&id=<?=$item['id'];?>&an=<?=$item['an'];?>" class="btnActive">Active & Print</a>
+            </td>
+            <td style="vertical-align: middle;">
+                <a href="med_phar.php?action=cancel&id=<?=$item['id'];?>" class="btnActive" onclick="return confirm('ยืนยันที่จะยกเลิกข้อมูลหรือไม่?');">ยกเลิกรายการ</a>
             </td>
         </tr>
         <?php
@@ -376,8 +371,8 @@ $yearRange = range('2019', date('Y'));
 <?php 
 if ( $page === 'searchFile' ) {
     
-    $typeSearch = input_post('typeSearch');
-    $an = input('an');
+    $typeSearch = sprintf("%s", $_POST['typeSearch']);
+    $an = sprintf("%s", $_POST['an']);
 
     if($typeSearch=='an'){
         $where = " AND a.`an` = '$an' ";
@@ -400,8 +395,8 @@ if ( $page === 'searchFile' ) {
     AND a.`status` = 'y' 
     ORDER BY a.`id` DESC";
     
-    $q = mysql_query($sql);
-    if ( mysql_num_rows($q) > 0 ) {
+    $q = $dbi->query($sql);
+    if ( $q->num_rows > 0 ) {
 
         ?>
         <table class="chk_table">
@@ -413,7 +408,7 @@ if ( $page === 'searchFile' ) {
             </tr>
         
         <?php
-        while ($item = mysql_fetch_assoc($q)) { 
+        while ($item = $q->fetch_assoc()) { 
 
             $fullWardName = getFullWardName(trim($item['bedcode']));
 
@@ -430,17 +425,24 @@ if ( $page === 'searchFile' ) {
                 </td>
                 <td>
                 <?php 
+                
+                if(is_file($item['path'])){
+                    $image = '<a href="javascript:void(0)"><img class="showImg" src="'.$item['path'].'" width="200px;"></a>';
+                }else{
+                    $image = 'ไม่พบไฟล์แนบ กรุณาติดต่อหอผู้ป่วยเพื่ออัพโหลดไฟล์เข้ามาใหม่';
+                }
+
                 if( preg_match('/MSIE/',$_SERVER['HTTP_USER_AGENT']) > 0 ){ 
                     ?>
                     <!--[if lt IE 9]>
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
                     <![endif]-->
                     <!--[if gte IE 9]>
-                    <a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a>
+                    <?=$image;?>
                     <![endif]-->
                     <?php
                 }else{
-                    ?><a href="javascript:void(0)"><img class="showImg" src="<?=$item['path'];?>" width="200px;"></a><?php
+                    echo $image;
                 }
                 ?>
                 </td>
