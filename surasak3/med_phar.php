@@ -312,9 +312,7 @@ if ( $q->num_rows > 0 ) {
                     <![endif]-->
                     <?php
                 }else{
-                    ?>
-                    <?=$image;?>
-                    <?php
+                    echo $image;
                 }
                 ?>
             </td>
@@ -429,7 +427,7 @@ if ( $page === 'searchFile' ) {
                 <?php 
                 
                 if(is_file($item['path'])){
-                    $image = '<img class="showImg" src="'.$item['path'].'" width="200px;">';
+                    $image = '<a href="javascript:void(0)"><img class="showImg" src="'.$item['path'].'" width="200px;"></a>';
                 }else{
                     $image = 'ไม่พบไฟล์แนบ กรุณาติดต่อหอผู้ป่วยเพื่ออัพโหลดไฟล์เข้ามาใหม่';
                 }
@@ -440,11 +438,11 @@ if ( $page === 'searchFile' ) {
                     <a href="<?=$item['path'];?>" target="_blank"><img src="<?=$item['path'];?>" width="200px;"></a>
                     <![endif]-->
                     <!--[if gte IE 9]>
-                    <a href="javascript:void(0)"><?=$image;?></a>
+                    <?=$image;?>
                     <![endif]-->
                     <?php
                 }else{
-                    ?><a href="javascript:void(0)"><?=$image;?></a><?php
+                    echo $image;
                 }
                 ?>
                 </td>
