@@ -35,7 +35,7 @@ function getFullWardName($cbedcode){
 }
 
 if ($action === 'active') {
-    $confirm = trim($_SESSION['sOfficer']);
+    $confirm = sprintf("%s", trim($_SESSION['sOfficer']));
     $id = input_get('id');
     $an = input_get('an');
 
@@ -49,23 +49,7 @@ if ($action === 'active') {
         $_SESSION['line_msg'] = null;
         $_SESSION['line_type'] = null;
         
-        // Line Notification ในไลน์กลุ่ม
-        // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5";
-        $sMessage = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย");
-        // $chOne = curl_init(); 
-        // curl_setopt( $chOne, CURLOPT_URL, "http://192.168.128.103/send_notify.php"); 
-        // curl_setopt( $chOne, CURLOPT_POST, 1); 
-        // curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-        // curl_setopt($chOne, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' )); 
-        // curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-        // $result = curl_exec( $chOne ); 
-
-        // if($result==false){
-        //     $extra_txt = curl_error($chOne);
-        // }
-
-        // curl_close($chOne);
-        $_SESSION['line_msg'] = $sMessage;
+        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย\nบันทึกโดย: $confirm");
         $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
@@ -98,49 +82,44 @@ if ($action === 'active') {
     <!-- 210mm is 793.7007874px -->
     <!-- 190mm is 718.11023622px -->
     <img src="<?=$item['path'];?>" width="700px" id="mainImg">
-    <script>
+    <script type="text/javascript">
 
         <?php 
         if(isset($_SESSION['line_msg'])){ 
         ?>
+            function newXmlHttp(){
+                var xmlhttp = false;
+                try{
+                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+                }catch(e){
+                    try{
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch(e){
+                        xmlhttp = false;
+                    }
+                }
+                if(!xmlhttp && document.createElement){
+                    xmlhttp = new XMLHttpRequest();
+                }
+                return xmlhttp;
+            }
 
             function sendLineNotifyV2(){
-
                 var line_message = '<?=$_SESSION['line_msg'];?>';
                 var line_type = '<?=$_SESSION['line_type'];?>';
                 var test_str = [];
                 test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
                 test_str.push(encodeURIComponent('depart')+"="+encodeURIComponent(line_type));
-                var data = test_str.join("&");
-
-                var request = new XMLHttpRequest();
+                var dataPost = test_str.join("&");
+                var request = new newXmlHttp();
+                request.open('POST', 'http://192.168.129.143/send_notify_v2.php', false);
+                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.onreadystatechange = function(){
                     if( request.readyState == 4 && request.status == 200 ){
-                        // console.log(request.responseText);
                     }
                 };
-                request.open('POST', 'http://192.168.129.143/send_notify.php', false);
-                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                request.send(data); 
-
+                request.send(dataPost); 
             }
-
-            // async function sendLineNotify(){ 
-            //     var line_message = '<?=$_SESSION['line_msg'];?>';
-            //     var line_type = '<?=$_SESSION['line_type'];?>';
-            //     var targetTxt = 'http://e-medical-certificate.com/send_notify.php';
-            //     const response =await fetch(targetTxt, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-type': 'application/x-www-form-urlencoded' 
-            //         },
-            //         body: JSON.stringify({
-            //             'message': line_message, 
-            //             'depart': line_type
-            //         })
-            //     });
-            //     var body = await response.text();
-            // }
             sendLineNotifyV2();
 
             <?php
@@ -148,8 +127,6 @@ if ($action === 'active') {
             unset($_SESSION['line_type']);
         }
         ?>
-        
-        
         function print_img(){
             window.print();
         }
