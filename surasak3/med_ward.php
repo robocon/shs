@@ -252,9 +252,6 @@ tr{
     background-color: #ffffff;
     border: 2px solid #000000;
 }
-#imgContent{
-    max-width: 210mm;
-}
 #imgBtnClose{
     text-align: center; 
     background-color: #b8b8b8;
@@ -620,8 +617,8 @@ if ( $page === 'search_an' ) {
     WHERE a.`an` = '$an' 
     AND a.`status` = 'y' 
     ORDER BY a.`id` DESC";
-    $q = mysql_query($sql);
-    if ( mysql_num_rows($q) > 0 ) {
+    $q = $dbi->query($sql);
+    if ( $q->num_rows > 0 ) {
 
         ?>
         <table class="chk_table">
@@ -633,7 +630,7 @@ if ( $page === 'search_an' ) {
             </tr>
         
         <?php
-        while ($item = mysql_fetch_assoc($q)) {
+        while ($item = $q->fetch_array()) {
             $id = $item['id'];
             $fullWardName = getFullWardName(trim($item['bedcode']));
             ?>
@@ -648,7 +645,18 @@ if ( $page === 'search_an' ) {
                     <p><?=$fullWardName;?></p>
                 </td>
                 <td>
-                    <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>
+                    <?php 
+                    if(is_file($item['path'])===false){
+                        ?>
+                        <p>ไม่พบไฟล์แนบ</p>
+                        <?php
+                    }else{
+                        ?>
+                        <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>
+                        <?php
+                    }
+                    ?>
+                    
                 </td>
                 <td>
                     <a href="med_ward.php?action=delete&id=<?=$id;?>" onclick="return confirmDelete();">ลบ</a>
@@ -687,7 +695,12 @@ if ( $page === 'search_an' ) {
         var item = imgs[index];
         
         item.addEventListener('click', function(event) {
+
+            var height = screen.height;
+            var width = screen.width/1.8;
             document.getElementById('imgContent').setAttribute('src', this.getAttribute('src'));
+            document.getElementById('imgContent').setAttribute('style', 'max-height:'+height+'px');
+            document.getElementById('imgContent').setAttribute('style', 'max-width:'+width+'px');
             document.getElementById('imgContainer').style.display = ''; // show
 
             var doc = document.documentElement;
