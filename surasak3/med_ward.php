@@ -1,5 +1,7 @@
 <?php 
 include 'bootstrap.php';
+include 'includes/JSON.php';
+
 
 if(empty($_SESSION['sOfficer'])){
     header("Location: login_page.php");
@@ -115,6 +117,9 @@ if ( $action === 'save' ) {
     }
 
     $path_file = 'med_scan/';
+    if(is_dir($path_file)==false){
+        mkdir($path_file, 0777);
+    }
     $uploadOk = 0;
 
     // ถ้าเป็นผู้ป่วยใหม่จะมีการแจ้งว่าเป็นรับใหม่
@@ -129,9 +134,8 @@ if ( $action === 'save' ) {
     $new_file = $rand.'.'.$prefix;
 
     $full_path = $path_file.$new_file;
-
     $test_upload = file_put_contents($full_path, base64_decode($b64Data));
-
+    
     $err = '';
     if($test_upload !== false){
         $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
@@ -145,8 +149,7 @@ if ( $action === 'save' ) {
         }
     }
 
-    $resMedSave = array();
-
+    $resMedSave = null;
     if($test_upload === false OR !empty($err)){
 
         $msg = '';
@@ -172,7 +175,7 @@ if ( $action === 'save' ) {
         
         // // Line Notification ในไลน์กลุ่ม
         // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
-		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn.' บันทึกโดย: '.$editor;
+		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname $newAn\nบันทึกโดย: $editor";
 
         $resMedSave = array(
             'status' => 200,
@@ -186,7 +189,8 @@ if ( $action === 'save' ) {
     }
 
     header('Content-Type: application/json');
-    echo json_encode($resMedSave);
+    $json = new Services_JSON();
+    echo $json->encode($resMedSave);
     exit;
 
 }elseif ($action === 'delete') {
@@ -426,6 +430,7 @@ if ( $page === 'search_an' ) {
                 ev.preventDefault();
 
                 var divResSave = document.getElementById("resSave");
+                divResSave.innerHTML = '<div><img src="images/Spinner-1s-28px.gif">กำลังบันทึกข้อมูล กรุณารอสักครู่...</div>';
 
                 var el = document.getElementsByClassName('hiddenFileUpload');
                 if(el.length > 0){
@@ -519,7 +524,7 @@ if ( $page === 'search_an' ) {
                         if (request.status >= 200 && request.status < 400) {
                             var s = JSON.parse(request.responseText);
                             if(s.status===200){
-                                divResSave.innerHTML += '<div><b>บันทึกข้อมูลเสร็จสมบูรณ์ โปรดรอสักครู่ระบบกำลังทำการรีเฟรชหน้าจอ</b></div>';
+                                divResSave.innerHTML += '<div style="color:green;"><b>บันทึกข้อมูลเสร็จสมบูรณ์ โปรดรอสักครู่ระบบกำลังทำการรีเฟรชหน้าจอ</b></div>';
                                 setTimeout(function(){
                                     // Simulate a mouse click:
                                     window.location.href = "med_ward.php";

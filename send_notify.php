@@ -1,6 +1,6 @@
 <?php 
 header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
+
 
 $data = file_get_contents( "php://input" );
 $data = json_decode($data, true);
@@ -41,6 +41,8 @@ function sendImage($sMessage, $sFile, $sToken){
         echo curl_error($ch);
     }
     curl_close($ch);
+
+    return $result;
 }
 
 $checkDepart = false;
@@ -70,7 +72,7 @@ if($checkDepart===false or empty($sMessage)){
 
 if(count($images)>0){ 
 
-    $result = sendMsg($sMessage, $sToken);
+    // $result = sendMsg($sMessage, $sToken);
 
     $i=1;
     foreach ($images as $key => $image) {
@@ -93,7 +95,13 @@ if(count($images)>0){
         // var_dump($test_upload);
         $cfile = new CurlFile($new_file);
         
-        sendImage('ไฟล์แนบที่'.$i, $cfile, $sToken);
+        if($i==1){
+            $sMessage = $sMessage."\nไฟล์แนบที่$i";
+        }else{
+            $sMessage = "ไฟล์แนบที่$i";
+        }
+
+        $result = sendImage($sMessage, $cfile, $sToken);
         
         // ส่งเสร็จแล้วค่อยลบไฟล์
         unlink($new_file);
@@ -102,7 +110,8 @@ if(count($images)>0){
     }
     
 }else{ 
+
     $result = sendMsg($sMessage, $sToken);
 }
-
+header('Content-Type: application/json');
 echo $result;
