@@ -54,7 +54,7 @@ if ($action === 'active') {
         $_SESSION['line_msg'] = null;
         $_SESSION['line_type'] = null;
         
-        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย\nบันทึกโดย: $confirm");
+        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย บันทึกโดย: $confirm");
         $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
