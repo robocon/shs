@@ -125,7 +125,7 @@ print " <tr>";
 print " <td width='7%' height='236'></td>";
 print "   <td width='48%' height='236'>รหัสบริษัท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='comcode' size='15' tabindex='1' value='$cComcode'><br>";
 print "  รหัสยา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input class='txtsarabun'  type='text' name='drugcode' size='15' tabindex='2' value='$cDrugcode' readonly ><br>";
+print "  <input class='txtsarabun'  type='text' name='drugcode' id='drugcode' size='15' tabindex='2' value='$cDrugcode' readonly ><br>";
 print "   ชื่อการค้า&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='tradname' size='40' tabindex='3' value='$cTradname'><br>";
 print "  ชื่อสามัญ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  <input class='txtsarabun'  type='text' name='genname' size='40' tabindex='4' value='$cGenname'><br>";
@@ -304,6 +304,70 @@ $name=$result1["name"];
 <?
 	}
 }
+?>
+<style>
+p{
+    margin: 0;
+    padding: 0;
+}
+label:hover{
+    cursor: pointer;
+}
+</style>
+<br>
+<p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')"> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')"> ห้ามใช้ยา</label></p>
+<p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')"> แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')"> ห้ามใช้ยา</label></p>
+<script type="text/javascript">
+    function newXmlHttp(){
+	var xmlhttp = false;
+		try{
+			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		}catch(e){
+            try{
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}catch(e){
+				xmlhttp = false;
+			}
+		}
+
+		if(!xmlhttp && document.createElement){
+			xmlhttp = new XMLHttpRequest();
+		}
+	    return xmlhttp;
+	}
+    
+    function save_preg(part){ 
+        var drugcode = document.getElementById("drugcode").value;
+        var data = '?drugcode='+encodeURIComponent(drugcode);
+        if(part==='preg_alert'){
+            data += '&preg=pregnancy&preg_alert=alert';
+
+        }else if(part==='preg_block'){
+            data += '&preg=pregnancy&preg_alert=block';
+
+        }else if(part==='lact_alert'){
+            data += '&preg=lactation&preg_alert=alert';
+
+        }else if(part==='lact_block'){
+            data += '&preg=lactation&preg_alert=block';
+        }
+
+        var xhr = new newXmlHttp();
+
+        xhr.onreadystatechange = function(){
+            if( xhr.readyState == 4 && xhr.status == 200 ){
+                if(xhr.status>=200&&xhr.status<400){
+                    xhr.responseText
+                }
+                // console.log(request.responseText);
+            }
+        };
+        xhr.open('POST', 'dgedit.php', false);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send(data);
+    }
+</script>
+<?php
 print "   </tr>";
 print "<tr>";
 print "  <td></td>";
