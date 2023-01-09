@@ -2581,16 +2581,17 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 		 
 		<table>
 			<tr>
-				<td><label for="freshWound">แผลสด : </label></td>
+				<td><label for="freshWound">แผลสด: </label></td>
 				<td>
-				<input type="checkbox" name="freshWound" id="freshWound" value="1">&nbsp;เป็นมาแล้ว&nbsp;<select name="woundhours" id="woundhours">
-						<option value="">เลือกข้อมูล</option>
+					<input type="checkbox" name="freshWound" id="freshWound" value="1">&nbsp;เป็นมาแล้ว&nbsp;<select name="woundhours" id="woundhours">
+					<option value="">เลือกข้อมูล</option>
 						<?php 
 						for ($i=1; $i <= 24; $i++) { 
 							?><option value="<?=$i;?>"><?=$i;?></option><?php
 						}
 						?>
-					</select> ชั่วโมง				</td>
+					</select> ชั่วโมง <span style="font-size:14px; color:#df5d00;">ตัวชี้วัด RDU</span>
+				</td>
 			</tr>
 		</table>
 		
