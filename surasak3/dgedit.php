@@ -96,7 +96,6 @@ background-color:#F8F9F9;
    else {
       echo "ไม่พบ รหัส : $drugcode ";
            }    
-include("unconnect.inc");
 ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -279,19 +278,32 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
           <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
 <?php
-print "    <br>กลุ่มอาการแพ้ยา&nbsp;&nbsp;&nbsp;";
-?>
-<select name="drugreact_group">
-          <option value='' <? if($drugreact_group==''){ echo "selected"; } ?>>------------------------------------------ ไม่ระบุ ------------------------------------------</option>
-		  <option value='1' <? if($drugreact_group=='1'){ echo "selected"; } ?>>1 = กลุ่ม beta-lactam antibiotics ( Penicillins, Cephalosporins, Carbapenems )</option>
-          <option value='2' <? if($drugreact_group=='2'){ echo "selected"; } ?>>2 = กลุ่ม Sulfonamide</option>
-		  <option value='3' <? if($drugreact_group=='3'){ echo "selected"; } ?>>3 = กลุ่ม Fluoroquinolone</option>
-		  <option value='4' <? if($drugreact_group=='4'){ echo "selected"; } ?>>4 = กลุ่ม NSAIDs</option>
-		  <option value='5' <? if($drugreact_group=='5'){ echo "selected"; } ?>>5 = กลุ่ม Antiepileptics (Aromatic)</option>
-		  <option value='6' <? if($drugreact_group=='6'){ echo "selected"; } ?>>6 = กลุ่ม G6PD Deficiency</option>
-</select>
-<?
+print "    <br><b>กลุ่มยาที่มีโอกาสแพ้</b>&nbsp;&nbsp;&nbsp;";
+$sql1="select * from drugreact_group";
+//echo $sql1;
+$query1=mysql_query($sql1);
+$n=0;
+$num=mysql_num_rows($query1);
+//echo "==>$num";
+while($result1=mysql_fetch_array($query1)){
+$n++;
+$id=$result1["id"];	
+$name=$result1["name"];
 
+	$sql2="select * from drugreact_group_list where drugcode='$cDrugcode' and drugreact_group='$id'";
+	$query2=mysql_query($sql2);
+	$result2=mysql_fetch_array($query2);
+	$drugreact_group=$result2["drugreact_group"];
+	if($id==$drugreact_group){
+?>		
+	<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' checked > <?=$name;?></div>
+<?
+	}else{	
+?>
+<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' > <?=$name;?></div>
+<?
+	}
+}
 print "   </tr>";
 print "<tr>";
 print "  <td></td>";
@@ -385,7 +397,9 @@ print "</tr>";
     </td>
   </tr>
 </table>
-
+<?
+include("unconnect.inc");
+?>
 
 
 
