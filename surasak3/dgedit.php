@@ -1,3 +1,11 @@
+<?php 
+session_start();
+include("connect.inc");
+if(empty($_SESSION['sIdname'])){
+    echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
+    exit;
+}
+?>
 <style type="text/css">
 <!--
 body{ font-family:"TH SarabunPSK"; 
@@ -23,8 +31,6 @@ background-color:#F8F9F9;
 -->
 </style>
 <?php
-    include("connect.inc");
-
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
 	//echo $query;
     $result = mysql_query($query)
@@ -92,6 +98,15 @@ background-color:#F8F9F9;
 		$active = $row->drug_active;
 		$had = $row->had;
 		$ised = $row->ised;
+
+        $preg_type = $lac_type = '';
+        $q2 = mysql_query("SELECT `preg_type`, `lac_type` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' ");
+        if( mysql_num_rows($q2) > 0 ){
+            $pp = mysql_fetch_assoc($q2);
+            $preg_type = $pp['preg_type'];
+            $lac_type = $pp['lac_type'];
+        }
+
                   }  
    else {
       echo "ไม่พบ รหัส : $drugcode ";
@@ -315,8 +330,17 @@ label:hover{
 }
 </style>
 <br>
-<p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')"> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')"> ห้ามใช้ยา</label></p>
-<p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')"> แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')"> ห้ามใช้ยา</label></p>
+<?php 
+$p1 = ($preg_type=='alert') ? 'checked="checked"' : '' ;
+$p2= ($preg_type=='block') ? 'checked="checked"' : '' ;
+
+$l1 = ($lac_type=='alert') ? 'checked="checked"' : '' ;
+$l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
+
+?>
+<p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
+<p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
+<p id="resPreg"></p>
 <script type="text/javascript">
     function newXmlHttp(){
 	var xmlhttp = false;
@@ -338,7 +362,7 @@ label:hover{
     
     function save_preg(part){ 
         var drugcode = document.getElementById("drugcode").value;
-        var data = '?drugcode='+encodeURIComponent(drugcode);
+        var data = 'drugcode='+encodeURIComponent(drugcode);
         if(part==='preg_alert'){
             data += '&preg=pregnancy&preg_alert=alert';
 
@@ -357,12 +381,20 @@ label:hover{
         xhr.onreadystatechange = function(){
             if( xhr.readyState == 4 && xhr.status == 200 ){
                 if(xhr.status>=200&&xhr.status<400){
-                    xhr.responseText
+                    var res = JSON.parse(xhr.responseText);
+                    
+                    var html = '';
+                    if(res.status === 200){
+                        html = '<span style="color:green">'+res.message+'</span>';
+                    }else{
+                        html = '<span style="color:red">'+res.message+'</span>';
+                    }
+                    document.getElementById('resPreg').innerHTML = html;
                 }
-                // console.log(request.responseText);
+                
             }
         };
-        xhr.open('POST', 'dgedit.php', false);
+        xhr.open('POST', 'dgedit_preg.php', true);
         xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
         xhr.send(data);
     }
