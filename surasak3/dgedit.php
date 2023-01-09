@@ -1,3 +1,11 @@
+<?php 
+session_start();
+include("connect.inc");
+if(empty($_SESSION['sIdname'])){
+    echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
+    exit;
+}
+?>
 <style type="text/css">
 <!--
 body{ font-family:"TH SarabunPSK"; 
@@ -23,8 +31,6 @@ background-color:#F8F9F9;
 -->
 </style>
 <?php
-    include("connect.inc");
-
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
 	//echo $query;
     $result = mysql_query($query)
@@ -92,11 +98,19 @@ background-color:#F8F9F9;
 		$active = $row->drug_active;
 		$had = $row->had;
 		$ised = $row->ised;
+
+        $preg_type = $lac_type = '';
+        $q2 = mysql_query("SELECT `preg_type`, `lac_type` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' ");
+        if( mysql_num_rows($q2) > 0 ){
+            $pp = mysql_fetch_assoc($q2);
+            $preg_type = $pp['preg_type'];
+            $lac_type = $pp['lac_type'];
+        }
+
                   }  
    else {
       echo "ไม่พบ รหัส : $drugcode ";
            }    
-include("unconnect.inc");
 ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -126,7 +140,7 @@ print " <tr>";
 print " <td width='7%' height='236'></td>";
 print "   <td width='48%' height='236'>รหัสบริษัท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='comcode' size='15' tabindex='1' value='$cComcode'><br>";
 print "  รหัสยา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input class='txtsarabun'  type='text' name='drugcode' size='15' tabindex='2' value='$cDrugcode' readonly ><br>";
+print "  <input class='txtsarabun'  type='text' name='drugcode' id='drugcode' size='15' tabindex='2' value='$cDrugcode' readonly ><br>";
 print "   ชื่อการค้า&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input class='txtsarabun'  type='text' name='tradname' size='40' tabindex='3' value='$cTradname'><br>";
 print "  ชื่อสามัญ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  <input class='txtsarabun'  type='text' name='genname' size='40' tabindex='4' value='$cGenname'><br>";
@@ -279,19 +293,113 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
           <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
 <?php
-print "    <br>กลุ่มอาการแพ้ยา&nbsp;&nbsp;&nbsp;";
-?>
-<select name="drugreact_group">
-          <option value='' <? if($drugreact_group==''){ echo "selected"; } ?>>------------------------------------------ ไม่ระบุ ------------------------------------------</option>
-		  <option value='1' <? if($drugreact_group=='1'){ echo "selected"; } ?>>1 = กลุ่ม beta-lactam antibiotics ( Penicillins, Cephalosporins, Carbapenems )</option>
-          <option value='2' <? if($drugreact_group=='2'){ echo "selected"; } ?>>2 = กลุ่ม Sulfonamide</option>
-		  <option value='3' <? if($drugreact_group=='3'){ echo "selected"; } ?>>3 = กลุ่ม Fluoroquinolone</option>
-		  <option value='4' <? if($drugreact_group=='4'){ echo "selected"; } ?>>4 = กลุ่ม NSAIDs</option>
-		  <option value='5' <? if($drugreact_group=='5'){ echo "selected"; } ?>>5 = กลุ่ม Antiepileptics (Aromatic)</option>
-		  <option value='6' <? if($drugreact_group=='6'){ echo "selected"; } ?>>6 = กลุ่ม G6PD Deficiency</option>
-</select>
-<?
+print "    <br><b>กลุ่มยาที่มีโอกาสแพ้</b>&nbsp;&nbsp;&nbsp;";
+$sql1="select * from drugreact_group";
+//echo $sql1;
+$query1=mysql_query($sql1);
+$n=0;
+$num=mysql_num_rows($query1);
+//echo "==>$num";
+while($result1=mysql_fetch_array($query1)){
+$n++;
+$id=$result1["id"];	
+$name=$result1["name"];
 
+	$sql2="select * from drugreact_group_list where drugcode='$cDrugcode' and drugreact_group='$id'";
+	$query2=mysql_query($sql2);
+	$result2=mysql_fetch_array($query2);
+	$drugreact_group=$result2["drugreact_group"];
+	if($id==$drugreact_group){
+?>		
+	<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' checked > <?=$name;?></div>
+<?
+	}else{	
+?>
+<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' > <?=$name;?></div>
+<?
+	}
+}
+?>
+<style>
+p{
+    margin: 0;
+    padding: 0;
+}
+label:hover{
+    cursor: pointer;
+}
+</style>
+<br>
+<?php 
+$p1 = ($preg_type=='alert') ? 'checked="checked"' : '' ;
+$p2= ($preg_type=='block') ? 'checked="checked"' : '' ;
+
+$l1 = ($lac_type=='alert') ? 'checked="checked"' : '' ;
+$l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
+
+?>
+<p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
+<p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
+<p id="resPreg"></p>
+<script type="text/javascript">
+    function newXmlHttp(){
+	var xmlhttp = false;
+		try{
+			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		}catch(e){
+            try{
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}catch(e){
+				xmlhttp = false;
+			}
+		}
+
+		if(!xmlhttp && document.createElement){
+			xmlhttp = new XMLHttpRequest();
+		}
+	    return xmlhttp;
+	}
+    
+    function save_preg(part){ 
+        var drugcode = document.getElementById("drugcode").value;
+        var data = 'drugcode='+encodeURIComponent(drugcode);
+        if(part==='preg_alert'){
+            data += '&preg=pregnancy&preg_alert=alert';
+
+        }else if(part==='preg_block'){
+            data += '&preg=pregnancy&preg_alert=block';
+
+        }else if(part==='lact_alert'){
+            data += '&preg=lactation&preg_alert=alert';
+
+        }else if(part==='lact_block'){
+            data += '&preg=lactation&preg_alert=block';
+        }
+
+        var xhr = new newXmlHttp();
+
+        xhr.onreadystatechange = function(){
+            if( xhr.readyState == 4 && xhr.status == 200 ){
+                if(xhr.status>=200&&xhr.status<400){
+                    var res = JSON.parse(xhr.responseText);
+                    
+                    var html = '';
+                    if(res.status === 200){
+                        html = '<span style="color:green">'+res.message+'</span>';
+                    }else{
+                        html = '<span style="color:red">'+res.message+'</span>';
+                    }
+                    document.getElementById('resPreg').innerHTML = html;
+                }
+                
+            }
+        };
+        xhr.open('POST', 'dgedit_preg.php', true);
+        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+        xhr.send(data);
+    }
+</script>
+<?php
 print "   </tr>";
 print "<tr>";
 print "  <td></td>";
@@ -385,7 +493,9 @@ print "</tr>";
     </td>
   </tr>
 </table>
-
+<?
+include("unconnect.inc");
+?>
 
 
 

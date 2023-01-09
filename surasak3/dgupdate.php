@@ -52,6 +52,156 @@ packpri_vat= '$packpri_vat ',
 	}else{
 			$typedrug=$_POST["typedrug"];
 	}
+	
+	if(isset($_POST["drugreact_group1"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group1"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 1
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group1"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '1'";
+		mysql_query($del);			
+
+	}
+	
+
+	if(isset($_POST["drugreact_group2"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group2"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 2
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group2"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '2'";
+		mysql_query($del);			
+
+	}	
+	
+
+	if(isset($_POST["drugreact_group3"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group3"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 3
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group3"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '3'";
+		mysql_query($del);			
+
+	}	
+	
+	
+	if(isset($_POST["drugreact_group4"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group4"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 4
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group4"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '4'";
+		mysql_query($del);			
+
+	}	
+	
+	
+	if(isset($_POST["drugreact_group5"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group5"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 5
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group5"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '5'";
+		mysql_query($del);			
+
+	}	
+	
+	
+	if(isset($_POST["drugreact_group6"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group6"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 6
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group6"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '6'";
+		mysql_query($del);			
+
+	}	
+
+
+	if(isset($_POST["drugreact_group7"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group7"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 7
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group7"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '7'";
+		mysql_query($del);			
+
+	}	
+	
+
+	if(isset($_POST["drugreact_group8"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group8"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 8
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group8"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '8'";
+		mysql_query($del);			
+
+	}
+
+
+	if(isset($_POST["drugreact_group9"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group9"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 9
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group9"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '9'";
+		mysql_query($del);			
+
+	}	
+	
+	
+	if(isset($_POST["drugreact_group10"])){  //ถ้ามีตัวแปรนี้
+		$strsql="select * from drugreact_group_list where drugcode='$drugcode' and drugreact_group='".$_POST["drugreact_group10"]."'";
+		$strquery=mysql_query($strsql);
+		$strnum=mysql_num_rows($strquery);
+		if($strnum < 1){  //ถ้ายาชนิดนี้ไม่มีการลงโอกากาสแพ้ยากลุ่มที่ 10
+			$add="insert into drugreact_group_list SET officer='".$_SESSION["sIdname"]."', last_update='".date("Y-m-d H:i:s")."', drugcode='$drugcode', drugreact_group='".$_POST["drugreact_group10"]."'";
+			mysql_query($add);
+		}
+	}else{
+		$del="DELETE FROM `drugreact_group_list` WHERE drugcode='$drugcode' and `drugreact_group` = '10'";
+		mysql_query($del);			
+
+	}	
+	
 	//ไม่ได้แก้ไขรหัสยา
  $query ="update druglst SET comcode='$comcode', 
   		tradname= '$tradname',
@@ -97,8 +247,7 @@ packpri_vat= '$packpri_vat ',
 		drug_active = '".$_POST["active"]."',
 		ised = '".$_POST["ised"]."',
 		had = '".$_POST["had"]."',
-		drug_innovation =  '".$_POST['drug_innovation']."',
-		drugreact_group =  '".$_POST['drugreact_group']."'		
+		drug_innovation =  '".$_POST['drug_innovation']."' 	
         WHERE drugcode='$drugcode' limit 1";
 //echo $query;
         $result = mysql_query($query)
@@ -113,8 +262,7 @@ packpri_vat= '$packpri_vat ',
         }else{
 	   $date=date("Y-m-d H:i:s");
 	   $sql = "INSERT INTO `drug_edit_log` (`id` ,`update_code`,`date_edit`,`user_edit`) VALUES (NULL , '".mysql_real_escape_string($query)."', '$date', '".$_SESSION["sIdname"]."');";
-	   $query = mysql_query($sql);
-	   
+	   $query = mysql_query($sql);   
         echo "บันทึกแก้ไขข้อมูลเรียบร้อย";
           }
 include("unconnect.inc");
