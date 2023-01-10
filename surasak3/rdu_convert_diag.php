@@ -24,11 +24,11 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-11-01';
-$date_end = '2565-11-30';
+$date_start = '2565-12-01';
+$date_end = '2565-12-30';
 
-$date_start_en = '2022-11-01';
-$date_end_en = '2022-11-30';
+$date_start_en = '2022-12-01';
+$date_end_en = '2022-12-30';
 
 $quarter = 1;
 $year = '2566';
