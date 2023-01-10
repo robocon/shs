@@ -330,75 +330,6 @@ label:hover{
 }
 </style>
 <br>
-<?php 
-$p1 = ($preg_type=='alert') ? 'checked="checked"' : '' ;
-$p2= ($preg_type=='block') ? 'checked="checked"' : '' ;
-
-$l1 = ($lac_type=='alert') ? 'checked="checked"' : '' ;
-$l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
-
-?>
-<p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
-<p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
-<p id="resPreg"></p>
-<script type="text/javascript">
-    function newXmlHttp(){
-	var xmlhttp = false;
-		try{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}catch(e){
-            try{
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}catch(e){
-				xmlhttp = false;
-			}
-		}
-
-		if(!xmlhttp && document.createElement){
-			xmlhttp = new XMLHttpRequest();
-		}
-	    return xmlhttp;
-	}
-    
-    function save_preg(part){ 
-        var drugcode = document.getElementById("drugcode").value;
-        var data = 'drugcode='+encodeURIComponent(drugcode);
-        if(part==='preg_alert'){
-            data += '&preg=pregnancy&preg_alert=alert';
-
-        }else if(part==='preg_block'){
-            data += '&preg=pregnancy&preg_alert=block';
-
-        }else if(part==='lact_alert'){
-            data += '&preg=lactation&preg_alert=alert';
-
-        }else if(part==='lact_block'){
-            data += '&preg=lactation&preg_alert=block';
-        }
-
-        var xhr = new newXmlHttp();
-
-        xhr.onreadystatechange = function(){
-            if( xhr.readyState == 4 && xhr.status == 200 ){
-                if(xhr.status>=200&&xhr.status<400){
-                    var res = JSON.parse(xhr.responseText);
-                    
-                    var html = '';
-                    if(res.status === 200){
-                        html = '<span style="color:green">'+res.message+'</span>';
-                    }else{
-                        html = '<span style="color:red">'+res.message+'</span>';
-                    }
-                    document.getElementById('resPreg').innerHTML = html;
-                }
-                
-            }
-        };
-        xhr.open('POST', 'dgedit_preg.php', true);
-        xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-        xhr.send(data);
-    }
-</script>
 <?php
 print "   </tr>";
 print "<tr>";
@@ -479,7 +410,80 @@ print "<td colspan='2'>ยา ED/NED&nbsp;&nbsp;&nbsp;";
 <?
 print "</td>";
 print "</tr>";
+ 
+$p1 = ($preg_type=='alert') ? 'checked="checked"' : '' ;
+$p2= ($preg_type=='block') ? 'checked="checked"' : '' ;
+
+$l1 = ($lac_type=='alert') ? 'checked="checked"' : '' ;
+$l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
+
 ?>
+<tr>
+    <td ></td>
+    <td colspan="2">
+        <p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
+        <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
+        <p id="resPreg"></p>
+        <script type="text/javascript">
+            function newXmlHttp(){
+            var xmlhttp = false;
+                try{
+                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+                }catch(e){
+                    try{
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }catch(e){
+                        xmlhttp = false;
+                    }
+                }
+
+                if(!xmlhttp && document.createElement){
+                    xmlhttp = new XMLHttpRequest();
+                }
+                return xmlhttp;
+            }
+            
+            function save_preg(part){ 
+                var drugcode = document.getElementById("drugcode").value;
+                var data = 'drugcode='+encodeURIComponent(drugcode);
+                if(part==='preg_alert'){
+                    data += '&preg=pregnancy&preg_alert=alert';
+
+                }else if(part==='preg_block'){
+                    data += '&preg=pregnancy&preg_alert=block';
+
+                }else if(part==='lact_alert'){
+                    data += '&preg=lactation&preg_alert=alert';
+
+                }else if(part==='lact_block'){
+                    data += '&preg=lactation&preg_alert=block';
+                }
+
+                var xhr = new newXmlHttp();
+
+                xhr.onreadystatechange = function(){
+                    if( xhr.readyState == 4 && xhr.status == 200 ){
+                        if(xhr.status>=200&&xhr.status<400){
+                            var res = JSON.parse(xhr.responseText);
+                            
+                            var html = '';
+                            if(res.status === 200){
+                                html = '<span style="color:green">'+res.message+'</span>';
+                            }else{
+                                html = '<span style="color:red">'+res.message+'</span>';
+                            }
+                            document.getElementById('resPreg').innerHTML = html;
+                        }
+                        
+                    }
+                };
+                xhr.open('POST', 'dgedit_preg.php', true);
+                xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+                xhr.send(data);
+            }
+        </script>
+    </td>
+</tr>
 <tr align="center">
 <td  width='7%' height='76'></td>
 <td colspan="2" width='93%' height='76'>
