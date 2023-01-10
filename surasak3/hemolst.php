@@ -48,7 +48,7 @@ $today="$yr-$m-$d";
         $time=substr($date,11);
 
         // dphardep
-        $shortDate = substr($date, 1,10);
+        $shortDate = substr($date, 0,10);
         $sql_dp = "SELECT `row_id`,`date`,`ptname`,`hn`,`tvn`,`stkcutdate`,`price`
         FROM `dphardep` 
         WHERE `date` LIKE '$shortDate%' 
@@ -57,7 +57,7 @@ $today="$yr-$m-$d";
         AND `price` > 0";
         $dp = mysql_query($sql_dp);
         $dpPrice = 0;
-        if(mysql_num_rows($sql_db) > 0){
+        if(mysql_num_rows($dp) > 0){
             $dpItem = mysql_fetch_assoc($dp);
             $dpPrice = $dpItem['price'];
         }
