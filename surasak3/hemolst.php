@@ -20,8 +20,6 @@ $today="$yr-$m-$d";
 </style>
 
 <?php
-//    $detail="ค่ายา";
-    // $num=0;
 
     $hd_name_list = array('FU18'=>'ไตเทียม1','FU39'=>'ไตเทียม2');
     $appdate_en = ($yr-543)."-$m-$d";
@@ -49,6 +47,22 @@ $today="$yr-$m-$d";
         $num++;
         $time=substr($date,11);
 
+        // dphardep
+        $shortDate = substr($date, 1,10);
+        $sql_dp = "SELECT `row_id`,`date`,`ptname`,`hn`,`tvn`,`stkcutdate`,`price`
+        FROM `dphardep` 
+        WHERE `date` LIKE '$shortDate%' 
+        AND `hn` = '$hn' 
+        AND `tvn` = '$vn' 
+        AND `price` > 0";
+        $dp = mysql_query($sql_dp);
+        $dpPrice = 0;
+        if(mysql_num_rows($sql_db) > 0){
+            $dpItem = mysql_fetch_assoc($dp);
+            $dpPrice = $dpItem['price'];
+        }
+        // end dpahrdep
+
         $testPaid = (int) $paid;
         $bgcolor = (empty($testPaid)) ? 'FFC2EC' : 'A0DB9E' ;
 
@@ -70,6 +84,7 @@ $today="$yr-$m-$d";
            "  <td>$detail</td>".
            "  <td>$price</td>".
            "  <td>$paid</td>".
+           "  <td>$dpPrice</td>".
            "  <td>$ptright</td>".
            "</tr>";
         // echo $html;
@@ -96,6 +111,7 @@ $today="$yr-$m-$d";
   <th>รายการ</th>
   <th>รวมเงิน</th>
   <th>จ่ายเงิน</th>
+  <th>ค่ายา</th>
   <th>สิทธิ์</th>
   </tr>
 <?php
@@ -122,6 +138,7 @@ foreach ($group_hd['FU18'] as $key => $value) {
   <th>รายการ</th>
   <th>รวมเงิน</th>
   <th>จ่ายเงิน</th>
+  <th>ค่ายา</th>
   <th>สิทธิ์</th>
   </tr>
 <?php
