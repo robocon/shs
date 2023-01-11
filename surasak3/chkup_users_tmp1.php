@@ -30,7 +30,7 @@ include("connect.inc");
 ?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>&nbsp;&nbsp;<a href ="regiment_data.php" >ข้อมูลสังกัดและผู้รับบริการ</a>
 <p align="center" style="font-weight:bold;">นำเข้ารายชื่อผู้รับบริการ</p>
-<form name="form1" method="post" action="chkup_users_tmp.php" >
+<form name="form1" method="post" action="chkup_users_tmp1.php" >
 <input name="act" type="hidden" value="show">
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
@@ -57,7 +57,7 @@ include("connect.inc");
         <select name="camp" id="camp" class="txtsarabun">
           <option value="all" selected>ทุกหน่วย</option>
 		 <?
-		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and thidate like '2023-01-10%'";
+		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2'";
 		 $query=mysql_query($sql);
 		 while($rows=mysql_fetch_array($query)){
 		 $camp=$rows["camp"];
@@ -78,14 +78,14 @@ if($_POST["act"]=="show"){
 $nPrefix=$_POST["year1"];
 
 	if($_POST["camp"]=="all"){
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix'  and thidate like '2023-01-10%'
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' 
 		GROUP BY hn 
-		ORDER BY row_id ASC, substring(age,1,2) DESC";
+		ORDER BY camp ASC, age DESC";
 	}else{
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and thidate like '2023-01-10%'
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix'
 		AND `camp`='$_POST[camp]' 
 		GROUP BY hn 
-		ORDER BY row_id ASC";	
+		ORDER BY age DESC";	
 		
 	}	
 	//echo $sql1;
@@ -110,25 +110,40 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
     <td width="1%"  align="center"  bgcolor="#FFFFFF"><strong>ชื่อ</strong></td>
     <td width="2%"  align="center"  bgcolor="#FFFFFF"><strong>นามสกุล</strong></td>
     <td width="3%"  align="center"  bgcolor="#FFFFFF"><strong>เลขบัตรประชาชน</strong></td>
-	<td width="3%"  align="center"  bgcolor="#FFFFFF"><strong>เลข HN</strong></td>
-    <td width="1%"  align="center"  bgcolor="#FFFFFF"><strong>วันเกิด</strong></td>
-    <td width="2%"  align="center"  bgcolor="#FFFFFF"><strong>เดือนเกิด (ตัวเลข)</strong></td>
-	<td width="2%"  align="center"  bgcolor="#FFFFFF"><strong>ปีเกิด พ.ศ.</strong></td>
+    <td width="1%"  align="center"  bgcolor="#FFFFFF"><strong>วัน/เดือน/ปีเกิด</strong></td>
 	<td width="2%"  align="center"  bgcolor="#FFFFFF"><strong>อายุ</strong></td>
-	<td width="2%"  align="center"  bgcolor="#FFFFFF"><strong>เพศ (ชาย=1/หญิง=2)</strong></td>
+    <td width="5%" align="center"><strong>รอบเอว</strong></td>
+    <td width="5%" align="center"><strong>น้ำหนัก</strong></td>
+    <td width="5%" align="center"><strong>ส่วนสูง</strong></td>
+    <td width="5%" align="center"><strong>BMI</strong></td>
+    <td width="7%" align="center"><strong>ความดันโลหิต</strong></td>
+	<td width="7%" align="center"><strong>CBC</strong></td>
+	<td width="7%" align="center"><strong>ข้อแนะนำ</strong></td>
+	<td width="7%" align="center"><strong>UA</strong></td>
+	<td width="7%" align="center"><strong>ข้อแนะนำ</strong></td>
+	<td width="7%" align="center"><strong>เบาหวาน (FBS)</strong></td>
+	<td width="7%" align="center"><strong>เก๊าฑ์ (URIC)</strong></td>
+	<td width="7%" align="center"><strong>การทำงานของไต (BUN)</strong></td>
+	<td width="7%" align="center"><strong>การทำงานของไต (CR)</strong></td>
+	<td width="7%" align="center"><strong>ไขมันในเลือด (Cholesterol)</strong></td>
+	<td width="7%" align="center"><strong>ไขมันในเลือด (Triglyseride)</strong></td>
+	<td width="7%" align="center"><strong>การทำงานของตับ (AST)</strong></td>
+	<td width="7%" align="center"><strong>การทำงานของตับ (ALT)</strong></td>
+	<td width="7%" align="center"><strong>การทำงานของตับ (ALK)</strong></td>
+	
   </tr>
   <?php
-	while($arr1=mysql_fetch_array($query1)){  
-	$age=substr($arr1["age"],0,2);	
+	while($rows=mysql_fetch_array($query1)){  
+	$age=substr($rows["age"],0,2);	
 	
-	$opsql="select hn,yot,name,surname,idcard,sex, DAY(dbirth) as bday,MONTH(dbirth) as bmonth,(YEAR(dbirth)) as byear from opcard where hn='$arr1[hn]'";
+	$opsql="select hn,yot,name,surname,idcard,sex, DAY(dbirth) as bday,MONTH(dbirth) as bmonth,(YEAR(dbirth)) as byear from opcard where hn='$rows[hn]'";
 	//echo $opsql."<br>";
 	$opquery=mysql_query($opsql);
 	list($hn,$yot,$name,$surname,$idcard,$gender,$bday,$bmonth,$byear)=mysql_fetch_row($opquery);	
 	
 	$bday=sprintf("%02d", $bday);
 	$bmonth=sprintf("%02d", $bmonth);
-	
+	$birthday="$bday/$bmonth/$byear";
 	
 	if(!empty($gender)){
 		if($gender=="ช"){
@@ -202,19 +217,72 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
 		$yot="พลเอก";
 	}else if($yot=="พล.อ.หญิง"){
 		$yot="พลเอกหญิง";
-	}	
+	}
+
+if($rows["prawat"]=="0"){ $prawat="ไม่มีโรคประจำตัว";}else if($rows["prawat"]=="1"){ $prawat="ความดันโลหิตสูง";}else if($rows["prawat"]=="2"){ $prawat="เบาหวาน";}else if($rows["prawat"]=="3"){ $prawat="โรคหัวใจและหลอดเลือด";}else if($rows["prawat"]=="4"){ $prawat="ไขมันในเลือดสูง";}else if($rows["prawat"]=="5"){ $prawat="โรคที่กำหนดไว้ตั้งแต่ 2 โรคขึ้นไป";}else if($rows["prawat"]=="6"){ $prawat="โรคประจำตัวอื่นๆ";}else if($rows["prawat"]=="7"){ $prawat="โรคเก๊าท์";}else if($rows["prawat"]=="8"){ $prawat="โรคถุงลมโป่งพอง";}
+
+
+if(!empty($rows["bp1"]) && !empty($rows["bp2"])){
+	$bp63=$rows["bp1"]."/".$rows["bp2"];
+}else{
+	$bp63="";
+}
+
+
+if($rows["cigarette"]=="0"){
+	$cigarette="ไม่เคยสูบบุหรี่";
+}else if($rows["cigarette"]=="1"){
+	$cigarette="เคยสูบ แต่เลิกแล้ว";
+}else if($rows["cigarette"]=="2"){
+	$cigarette="สูบบุหรี่ เป็นครั้งคราว";
+}else if($rows["cigarette"]=="3"){
+	$cigarette="สูบบุหรี่ เป็นประจำ";
+}
+
+if($rows["alcohol"]=="0"){
+	$alcohol="ไม่เคยดื่ม";
+}else if($rows["alcohol"]=="1"){
+	$alcohol="เคยดื่ม แต่เลิกแล้ว";
+}else if($rows["alcohol"]=="2"){
+	$alcohol="ดื่ม เป็นครั้งคราว";
+}else if($rows["alcohol"]=="3"){
+	$alcohol="ดื่ม เป็นประจำ";
+}
+
+
+if($rows["exercise"]=="0"){
+	$exercise="ไม่เคยออกกำลังกาย";
+}else if($rows["exercise"]=="1"){
+	$exercise="ออกกำลังกาย ต่ำกว่าเกณฑ์";
+}else if($rows["exercise"]=="2"){
+	$exercise="ออกกำลังกาย ตามเกณฑ์";
+}	
   ?>
   <tr>
     <td width="1%"  align="center"  bgcolor="#FFFFFF"><?=$yot;?></td>
-    <td width="1%"  align="center"  bgcolor="#FFFFFF"><?=$name;?></td>
-    <td width="2%"  align="center"  bgcolor="#FFFFFF"><?=$surname;?></td>
+    <td width="1%"  align="left"  bgcolor="#FFFFFF"><?=$name;?></td>
+    <td width="2%"  align="left"  bgcolor="#FFFFFF"><?=$surname;?></td>
     <td width="3%"  align="center"  bgcolor="#FFFFFF"><?=$idcard;?></td>
-	<td width="3%"  align="center"  bgcolor="#FFFFFF"><?=$hn;?></td>
-    <td width="1%"  align="center"  bgcolor="#FFFFFF"><?=$bday;?></td>
-    <td width="1%"  align="center"  bgcolor="#FFFFFF"><?=$bmonth;?></td>
-    <td width="2%"  align="center"  bgcolor="#FFFFFF"><?=$byear;?></td>
+    <td width="1%"  align="center"  bgcolor="#FFFFFF"><?=$birthday;?></td>
     <td width="3%"  align="center"  bgcolor="#FFFFFF"><?=$age;?></td>
-	<td width="3%"  align="center"  bgcolor="#FFFFFF"><?=$sex;?></td>
+    <td align="center"><?=round($rows["round_"]);?></td>
+    <td align="center"><?=round($rows["weight"]);?></td>
+    <td align="center"><?=round($rows["height"]);?></td>
+    <td align="center"><?=$rows["bmi"];?></td>
+	<td align="center"><?=$bp63;?></td>	
+	<td align="center"><?=$rows["stat_cbc"];?></td>
+	<td align="center"><?=$rows["reason_cbc"];?></td>
+	<td align="center"><?=$rows["stat_ua"];?></td>
+	<td align="center"><?=$rows["reason_ua"];?></td>
+	<td align="center"><?=$rows["bs"];?></td>
+	<td align="center"><?=$rows["uric"];?></td>
+	<td align="center"><?=$rows["bun"];?></td>
+	<td align="center"><?=$rows["cr"];?></td>
+	<td align="center"><?=$rows["chol"];?></td>
+	<td align="center"><?=$rows["tg"];?></td>
+	<td align="center"><?=$rows["sgot"];?></td>
+	<td align="center"><?=$rows["sgpt"];?></td>
+	<td align="center"><?=$rows["alk"];?></td>
   </tr>  
   <?php
 	}

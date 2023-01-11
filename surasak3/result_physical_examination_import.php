@@ -76,13 +76,13 @@ include("connect.inc");
 
 if($_POST["act"]=="show"){
 $nPrefix=$_POST["year1"];
-
+//12088 ยอด 1041  ราย
 	if($_POST["camp"]=="all"){
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' 
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and thidate like '2023-01-10%'
 		GROUP BY hn 
 		ORDER BY row_id ASC, substring(age,1,2) DESC";
 	}else{
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' 
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and thidate like '2023-01-10%'
 		AND `camp`='$_POST[camp]' 
 		GROUP BY hn 
 		ORDER BY row_id ASC";		
@@ -161,6 +161,14 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
 	
 		$lab_ecode=$result["labcode"];
 		$lab_result=$result["result"];
+		
+		if($lab_ecode=="WBC"){
+			$lab_result=$lab_result*1000;	
+		}	
+		if($lab_ecode=="PLTC"){
+			$lab_result=$lab_result*1000;	
+		}		
+		
   ?>
   <tr>
     <td width="1%"  align="center"  bgcolor="#FFFFFF"><?=$vday;?></td>
