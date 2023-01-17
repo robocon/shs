@@ -2702,8 +2702,8 @@ function alert500(){
 	
 	if(eval(document.getElementById("total_all_price").value) > 700){
 		
-		var ptright = '<?=mb_substr($_SESSION["ptright_now"], 0, 3);?>';
-		var ptrightDetail = '<?=mb_substr($_SESSION["ptright_now"], 3, mb_strlen($_SESSION["ptright_now"]));?>';
+		var ptright = '<?=substr($_SESSION["ptright_now"], 0, 3);?>';
+		var ptrightDetail = '<?=substr($_SESSION["ptright_now"], 3, strlen($_SESSION["ptright_now"]));?>';
 		
 		var stat = '';
 		xmlhttp = newXmlHttp();
