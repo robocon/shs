@@ -2395,7 +2395,7 @@ function pregAlert(tradname,genname){
 function pregBlock(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
 	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
-	var htmlTxt = '';
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
 	if(tradname!=''){
 		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
 	}
@@ -2420,7 +2420,7 @@ function lacAlert(tradname,genname){
 function lacBlock(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
 	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
-	var htmlTxt = '';
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
 	if(tradname!=''){
 		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
 	}
@@ -2701,18 +2701,21 @@ function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount,
 function alert500(){
 	
 	if(eval(document.getElementById("total_all_price").value) > 700){
-
-	var ptright = '<?php echo substr($_SESSION["ptright_now"],0,3);?>';
-	var stat = '';
-	xmlhttp = newXmlHttp();
-	url = 'dt_drug.php?action=alert500';
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	stat = xmlhttp.responseText;
-	stat = stat.substr(4);
+		
+		var ptright = '<?=mb_substr($_SESSION["ptright_now"], 0, 3);?>';
+		var ptrightDetail = '<?=mb_substr($_SESSION["ptright_now"], 3, mb_strlen($_SESSION["ptright_now"]));?>';
+		
+		var stat = '';
+		xmlhttp = newXmlHttp();
+		url = 'dt_drug.php?action=alert500';
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
+		stat = xmlhttp.responseText;
+		stat = stat.substr(4);
 		if(stat == '0'){
 			if((ptright == 'R07' || ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
-					alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ <?php echo substr($_SESSION["ptright_now"],4);?>");
+				alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ "+ptrightDetail);
+					
 			}
 		}
 	}
@@ -3795,6 +3798,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		left:220px;
 		background:#ffffff;
 		border:1px solid #000000;
+		box-shadow: black 0.1em 0.1em 0.2em;
 	}
 	#pregCloseBtn:hover{
 		cursor: pointer;
