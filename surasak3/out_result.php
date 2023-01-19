@@ -27,6 +27,9 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 	$echo = sprintf("%s", $_POST['echo']);
 	$abi = sprintf("%s", $_POST['abi']);
 
+	$eye_pressure = sprintf("%s", $_POST['eye_pressure']);
+	$eye_pressure_detail = sprintf("%s", $_POST['eye_pressure_detail']);
+
 	if( $data1 == "update" ){
 
 		if($_POST['eye']=="ปกติ"){
@@ -90,7 +93,10 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`outPsaResult` = '$outPsaResult',
 		`cimt` = '$cimt', 
 		`echo` = '$echo', 
-		`abi` = '$abi' 
+		`abi` = '$abi',
+		`eye_pressure` = '$eye_pressure',
+		`eye_pressure_detail` = '$eye_pressure_detail'
+
 		WHERE `row_id` ='".$_POST['row_id']."';";
 	}else if( $data1=="insert" ){
 		$active = "y";
@@ -152,7 +158,9 @@ if(isset($_POST['okhn2']) && isset($_POST['form_status'])){
 		`outPsaResult` = '$outPsaResult',
 		`cimt` = '$cimt',
 		`echo` = '$echo',
-		`abi` = '$abi' ";
+		`abi` = '$abi',
+		`eye_pressure` = '$eye_pressure',
+		`eye_pressure_detail` = '$eye_pressure_detail' ";
 			
 	}
 	
@@ -523,6 +531,27 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
 								}
 
 								document.getElementById('hidden_div1').style.display = "none";
+								return false;
+							}
+							</script>
+						</td>
+					</tr>
+					<tr>
+						<td class="pdx">ผลตรวจ ความดันตา</td>
+						<td colspan="2" class="pdx">
+							<label for="eye_pressure1"><input type="radio" name="eye_pressure" id="eye_pressure1" value="ปกติ" class="pdxhead" <?php if($arrchk['eye_pressure']=="ปกติ"){ echo "checked='checked'";} ?> />ปกติ</label>&nbsp;
+							<label for="eye_pressure2"><input type="radio" name="eye_pressure" id="eye_pressure2" value="ผิดปกติ" class="pdxhead" <?php if($arrchk['eye_pressure']=="ผิดปกติ"){ echo "checked='checked'";} ?> onclick="javascript: document.getElementById('eyePresDiv').style.display='';" /> ผิดปกติ</label>&nbsp;<? if($arrchk['eye']=="ผิดปกติ"){ echo "<span class='pdx'>".$arrchk['eye_detail']."</span>";} ?>
+							<span id="eyePresDiv" style="display: none;" class="pdx">
+								ระบุความผิดปกติ : 
+								<input name="eye_pressure_detail" type="text" class="pdxhead" size="50" id="eye_pressure_detail" value="<?=$arrchk['eye_pressure_detail']?>" />
+							</span>
+							
+							<a href="javascript: void(0);" onclick="return cancelEyePres()">[ยกเลิก]</a>
+							<script>
+							function cancelEyePres(){
+								document.getElementById('eyePresDiv').style.display = "none";
+								document.getElementById('eye_pressure1').checked = false;
+								document.getElementById('eye_pressure2').checked = false;
 								return false;
 							}
 							</script>
