@@ -282,7 +282,7 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 	}
 
 	?>
-	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="page-break-after: always;"></div>
 	<div style="line-height: 18.897637795px;">&nbsp;</div>
 	<div class="display-sticker">
 		<div><b>EYE Screening</b></div>
@@ -312,7 +312,7 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 	if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
 	{
 	?>
-	<!-- <div style="page-break-after: always;"></div> -->
+	<div style="page-break-after: always;"></div>
 	<div style="line-height: 18.897637795px;">&nbsp;</div>
 	<div class="display-sticker">
 		<div><b>Nursing DX</b></div>

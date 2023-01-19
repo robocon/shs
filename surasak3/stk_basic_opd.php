@@ -265,8 +265,9 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		
 		if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
 		{
+			$pdf->AddPage();
 			$getY = $pdf->getY();
-			$pdf->SetXY(2, $getY+10);
+			$pdf->SetXY(2, $getY);
 			$pdf->SetFont('THSarabun','B',14);
 			$pdf->Write(5, "Nursing DX");
 			
@@ -434,7 +435,7 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		$pdf->SetFont('THSarabun','',14);
 		$pdf->Write(5, 'ผู้ป่วยรับทราบ ');
 		$pdf->SetFont('THSarabun','U',14);
-		$pdf->Write(5, $_SESSION['sOfficer']);
+		$pdf->Write(5, to874($_SESSION['sOfficer']));
 		$pdf->SetFont('THSarabun','',14);
 		$pdf->Write(5, ' /RN,PN ');
 	}
