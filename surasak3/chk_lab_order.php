@@ -194,7 +194,7 @@ if( $action == false ){
                 $surname = iconv('TIS620', 'UTF8', $surname);
 
                 $ptname = $name.' '.$surname;
-                $lab_sso = strtolower(str_replace(array('"',' '), '', $lab_sso));
+                // $lab_sso = strtolower(str_replace(array('"',' '), '', $lab_sso));
                 
                 $find_bs = false;
                 
