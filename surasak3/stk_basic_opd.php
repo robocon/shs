@@ -180,8 +180,6 @@ $full_text .= "อาการ: ".iconv("UTF-8","WINDOWS-874",trim(htmlspecialchars_decode
 if ( !empty($hpi) ) { 
 	$full_text .= "HPI: ".iconv("UTF-8","WINDOWS-874",trim(htmlspecialchars_decode($hpi, ENT_QUOTES)))." \n";
 }
-// $cvriskscore = iconv("UTF-8","WINDOWS874",$cvriskscore);
-//$cvriskscore_lab = iconv("UTF-8","WINDOWS874",$cvriskscore_lab);
 
 if ( !empty($cvriskscore) ) { 
 	$full_text .= "CV Risk Score: ".$cvriskscore." \n";
@@ -190,7 +188,7 @@ if ( !empty($cvriskscore) ) {
 if ( !empty($cvriskscore_lab) ) { 
 	$full_text .= "CV Risk Score(LAB): ".$cvriskscore_lab." \n";
 }
-//$full_text = iconv("UTF-8","WINDOWS-874",$full_text);
+
 $pdf->SetXY(2, 2);
 $pdf->MultiCell(0, 5, $full_text);
 

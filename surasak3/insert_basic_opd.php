@@ -1,11 +1,12 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 // README! 
 // พิมพ์สติกเกอร์แบบ HTML สำหรับหน้าซักประวัติที่เป็นฟอร์มกรอกข้อมูล
 session_start();
+include("connect.inc"); 
+mysql_query("SET NAMES UTF-8");
+
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -20,7 +21,7 @@ $month["10"] ="ตุลาคม";
 $month["11"] ="พฤศจิกายน";
 $month["12"] ="ธันวาคม";
 
-include("connect.inc"); 
+
 
 function calcage($birth){
 
@@ -46,10 +47,10 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill` From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' limit 1 ";
 
 $result_dt_hn = Mysql_Query($sql);
-list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill,$cvriskscore,$cvriskscore_lab) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 if($cigarette==0){$cigarette='ไม่สูบ';}
 else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';}
@@ -100,20 +101,9 @@ if($drugreact == 0){
 <script type="text/javascript">
 window.onload = function(){
 	window.print();
-    setTimeout(function () { 
-        window.close();
-		<?php 
-		// หน้า reprint (rp_basic_opd.php) จะส่ง $_GET reprint=yes ไม่ต้องให้ redirect ทำงาน
-		// ถ้ามาจากหน้าบันทึกซักประวัติ จะสั่งให้หน้า parent (basic_opd.php) redirect กลับไปที่ basic_opd.php ให้กรอก HN คนต่อไป
-		if(!empty($_GET['reprint']) && $_GET['reprint'] != 'yes')
-		{
-			?>
-			// force parent redirect to basic_opd.php
-			window.opener.location.href = "basic_opd.php";
-			<?php
-		}
-		?>
-    }, 1000);
+	setTimeout(function(){ 
+		window.close();
+	},1000);
 }
 </script>
 <style>
@@ -138,10 +128,10 @@ table td, .display-sticker>div, p{
 </style>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
 	<tr>
-		<td>HN : <?=$hn;?>, <?=$thidate;?> <?=$cAge;?></td>
+		<td>HN : <?=$hn;?>, VN:<?=$vn;?>, <?=$thidate;?> <?=$cAge;?></td>
 	</tr>
 	<tr>
-		<td>VN:<?=$vn;?>, T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
+		<td>T : <?=$temperature;?> C, P : <?=$pause;?> ครั้ง/นาที , R : <?=$rate;?> ครั้ง/นาที </td>
 	</tr>
 	<tr>
 		<td>BP : <?=$bp1;?> / <?=$bp2;?> mmHg, นน : <?=$weight;?> กก., สส : <?=$height;?> ซม.</td>
@@ -222,7 +212,7 @@ table td, .display-sticker>div, p{
 		<td>Triage Gr. : <?=$grade;?> สภาวะจิตใจ : <?=$mind;?></td>
 	</tr>
 	<tr>
-		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=$clinic;?></td>
+		<td>ลักษณะ : <?=$type;?>, คลินิก : <?=substr($clinic,3);?></td>
 	</tr>
 	<tr>
 		<td>โรคประจำตัว : <?=trim($congenital_disease);?></td>
@@ -247,14 +237,13 @@ table td, .display-sticker>div, p{
 		</tr>
 		<?php
 	}
-
-	if(!empty($organ))
-	{
+	$organ = trim($organ);
+	if(!empty($organ)){
 		?>
 		<tr>
 			<td>อาการ : <?=trim($organ);?></td>
 		</tr>
-		<?php
+		<?php 
 	}
 
 	if ( !empty($hpi) ) {
@@ -264,12 +253,23 @@ table td, .display-sticker>div, p{
 		</tr>
 		<?php
 	}
+	if ( !empty($cvriskscore) ) {
+		?>
+		<tr>
+			<td>CV Risk Score: <?=$cvriskscore;?></td>
+		</tr>
+		<?php
+	}
+	if ( !empty($cvriskscore_lab) ) {
+		?>
+		<tr>
+			<td>CV Risk Score(LAB): <?=$cvriskscore_lab;?></td>
+		</tr>
+		<?php
+	}	
 	?>
 </table>
-
 <?php 
-
-
 if($_SESSION['smenucode'] == 'ADMEYE')
 {
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
@@ -411,4 +411,3 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 	<p class="display-sticker">ผู้ป่วยรับทราบ <span class="underline_notfix"><?=$_SESSION['sOfficer'];?></span><b> /RN,PN</b></p>
 	<?php
 }
-?>

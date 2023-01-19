@@ -1023,6 +1023,7 @@ function checkForm(){
 		return false;
 	}else if(document.f2.covid19_vaccine1.checked == false && document.f2.covid19_vaccine2.checked == false){
 		alert('กรุณาเลือกการคัดกรองประวัติการได้รับวัคซีนโควิด19 ด้วยครับ');
+		document.getElementById("covid19_vaccine1").focus();
 		return false;			
 	}else if(document.f2.opdtype1.checked == false && document.f2.opdtype2.checked == false && document.f2.opdtype3.checked == false && document.f2.opdtype4.checked == false){
 		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
@@ -1287,14 +1288,14 @@ mmHg </td>
 					}
 
 					// ถ้าคลิกในช่องให้ default ที่แพ้
-					document.getElementById('drugreact_code').onclick = function(){ 
-						document.getElementById('drugreact2').checked = true;
-					}
+					// document.getElementById('drugreact_code').onclick = function(){ 
+					// 	document.getElementById('drugreact2').checked = true;
+					// }
 
-					// ยกปุ่มขึ้นแล้วค่อย get value
-					document.getElementById('drugreact_code').onkeyup = function(){ 
-						doKeyup_drugreact(this.value);
-					}
+					// // ยกปุ่มขึ้นแล้วค่อย get value
+					// document.getElementById('drugreact_code').onkeyup = function(){ 
+					// 	doKeyup_drugreact(this.value);
+					// }
 
 					function doKeyup_drugreact(drugcode){
 						if(drugcode.length >= 2)
