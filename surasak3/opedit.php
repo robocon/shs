@@ -1,5 +1,6 @@
 <?php 
 error_reporting(E_ALL);
+include("connect.inc");
 ?>
 <meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8,chrome=1">
 <style>
@@ -64,6 +65,7 @@ legend {
 
 .style1 {color: #FF0000}
 </style>
+<script type="text/javascript" src="js/jql.min.js"></script>
 <script language="JavaScript1.2">
 <!--
 window.moveTo(0,0);
@@ -469,7 +471,7 @@ return $pAge;
 				<div id="res_yot" style="position: absolute; top: 0; left: 0; background-color: #ffffff; z-index: 1; padding: 4px; display: none;">
 					<div id="close_res_yot" style="text-align: center; background-color: #bbbbbb;" onClick="close_res_yot()">[ปิดหน้าต่าง]</div>
 					
-					<table style="width:600px;">
+					<table style="width:600px; border-collapse: collapse;">
 						<tr>
 							<td colspan="4">ค้นหาคำนำหน้า : <input type="text" id="search_res_yot"></td>
 						</tr>
@@ -479,15 +481,14 @@ return $pAge;
 							<th></th>
 						</tr>
 						<?php 
-						$sql_prefix = "SELECT * FROM `f43_person_1`";
+						$sql_prefix = "SELECT * FROM `f43_person_1` ORDER BY `sort` ASC";
 						$q = mysql_query($sql_prefix);
 						if($q!==false)
 						{
 							$pref_i = 0;
 							while ($pref = mysql_fetch_assoc($q)) {
-								$mod = ( ($pref_i % 2) == 0 ) ? 'style="background-color: #bbbbbb;"' : '';
 								?>
-								<tr <?=$mod;?> class="find_my_prefix" data-prefix="<?=$pref['detail'];?>">
+								<tr class="find_my_prefix" data-prefix="<?=$pref['detail'];?>" style="border-bottom: 1pt solid #b8b8b8;">
 									<td><?=$pref['abbreviations'];?></td>
 									<td><?=$pref['detail'];?></td>
 									<td><a href="javascript:void(0)" style="color: #a67a42;" data-prefix-selected="<?=$pref['abbreviations'];?>" class="prefix-selected">เลือก</a></td>
@@ -694,7 +695,32 @@ return $pAge;
     <td align="right" class="fonthead"> บ้านเลขที่:</td>
     <td><input type="text" name="address" size="10" value="<?=$cAddress;?>"></td>
     <td align="right" class="fonthead">ตำบล:</td>
-    <td><input type="text" name="tambol" size="10" value="<?=$cTambol;?>"></td>
+    <td>
+		<style>
+			#pvContain{
+				position: relative;
+			}
+			#pvContent{
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 600px;
+				background-color: #ffffff;
+				padding: 4px;
+			}
+			.selectedPv:hover{
+				cursor: pointer;
+				background-color: #cbcbcb;
+			}
+			.selectedPv{
+				padding-bottom: 4px;
+			}
+		</style>
+		<input type="text" name="tambol" size="10" value="<?=$cTambol;?>" onkeyup="findPv(this.value)">
+		<div id="pvContain" style="display:none;">
+			<div id="pvContent"></div>
+		</div>
+	</td>
     <td align="right" class="fonthead">อำเภอ:</td>
     <td><input type="text" name="ampur" size="10"  value="<?=$cAmpur;?>"></td>
     <td align="right" class="fonthead">จังหวัด:</td>
@@ -705,7 +731,57 @@ return $pAge;
     <td colspan="7" bgcolor="#CCE9FD">&nbsp;</td>
   </tr>
   <tr>
-    <td align="right" bgcolor="#CCE9FD" class="fonttitle">ข้อมูลภาษาอังกฤษ</td>
+    <td align="right" bgcolor="#CCE9FD" class="fonttitle">ข้อมูลภาษาอังกฤษ
+		<script type="text/javascript">
+			<?php 
+			// โหลด json ผ่าน file_get_contents ของ php
+			// แล้วค่อยเอาตัวแปรใน php ยัดผ่าน javascript อีกที
+			$json_data = file_get_contents('js/thailand_raw_database.json');
+			?>
+			var thailand_data = JSON.parse('<?=$json_data;?>');
+			function findPv(v){ 
+
+				// v = v.trim();
+				if(v.length<3){
+				return false;
+				}
+
+				var thai_post_data = new JQL(thailand_data);
+				var res1 = thai_post_data.select('*').where('district').contains(v).fetch();
+				var res2 = thai_post_data.select('*').where('amphoe').contains(v).fetch();
+				var res3 = thai_post_data.select('*').where('province').contains(v).fetch();
+				var res123 = res1.concat(res2,res3);
+
+				if(res123.length === 0){
+				return false;
+				}
+
+				var resTxt = '<div style="width: 100%;text-align: center;color: red;cursor: pointer;background-color: #ffd6d6;" onclick="closePv()">ปิด</div>';
+				resTxt += '<ul>';
+				for (var index = 0; index < res123.length; index++) {
+				var element = res123[index];
+				resTxt += '<li class="selectedPv" onclick="setupData(\''+element.district+'\',\''+element.amphoe+'\',\''+element.province+'\')">ต.'+element.district+'&nbsp;&nbsp;>>&nbsp;&nbsp;อ.'+element.amphoe+'&nbsp;&nbsp;>>&nbsp;&nbsp;จ.'+element.province+' ('+element.zipcode+')</li>';
+				}
+				resTxt += '</ul>';
+
+				document.getElementById("pvContent").innerHTML = resTxt;
+				document.getElementById('pvContain').style.display = '';
+
+			}
+			
+			function setupData(district,amphoe,province){
+				document.f1.tambol.value = district;
+				document.f1.ampur.value = amphoe;
+				document.f1.changwat.value = province;
+
+				document.getElementById('pvContain').style.display = 'none';
+				
+			}
+			function closePv(){
+				document.getElementById('pvContain').style.display = 'none';
+			}
+		</script>
+	</td>
     <td colspan="7" bgcolor="#CCE9FD" class="fonttitle"><span class="style1">***</span></td>
     </tr>
   <tr>
@@ -855,7 +931,6 @@ return $pAge;
      <select name="goup" id="goup">
         <option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
         <?
-						// include("connect.inc");
 						$query = "SELECT * 
 						FROM `grouptype` 
 						WHERE `status` = 'y'
@@ -880,10 +955,50 @@ return $pAge;
 						?>
       </select></td>
     <td align="right" class="fonthead">สังกัด:</td>
-    <td>
+    <td><!--<select size="1" name="camp" id="camp">
+      <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
+      <option value="M01 พลเรือน">พลเรือน</option>
+      <option value="M02 ร.17 พัน2">ร.17 พัน2</option>
+      <option value="M03 มณฑลทหารบกที่32">มณฑลทหารบกที่32</option>
+      <option value="M04 ร.พ.ค่ายสุรศักดิ์มนตรี">ร.พ.ค่ายสุรศักดิ์มนตรี</option>
+      <option value="M05 ช.พัน4">ช.พัน4</option>
+      <option value="M06 ร้อยฝึกรบพิเศษประตูผา">ร้อยฝึกรบพิเศษประตูผา</option>
+      <option value="M0301 บก.มทบ.32">บก.มทบ.32</option>
+      <option value="M0302 กกพ.มทบ.32">กกพ.มทบ.32</option>
+      <option value="M0303 กขว.,ฝผท.มทบ.32">กขว.,ฝผท.มทบ.32</option>
+      <option value="M0304 กยก.มทบ.32">กยก.มทบ.32</option>
+      <option value="M0305 กกบ.มทบ.32">กกบ.มทบ.32</option>
+      <option value="M0306 กกร.มทบ.32">กกร.มทบ.32</option>
+      <option value="M0307 ฝคง.มทบ.32">ฝคง.มทบ.32</option>
+      <option value="M0308 ฝกง.มทบ.32">ฝกง.มทบ.32</option>
+      <option value="M0309 ฝสก.มทบ.32">ฝสก.มทบ.32</option>
+      <option value="M0310 ฝปบฝ.มทบ.32">ฝปบฝ.มทบ.32</option>
+      <option value="M0311 ผพธ.มทบ.32">ผพธ.มทบ.32</option>
+      <option value="M0312 อก.ศาล มทบ.32">อก.ศาล มทบ.32</option>
+      <option value="M0313 ฝสวส.มทบ.32">ฝสวส.มทบ.32</option>
+      <option value="M0314 ฝธน.มทบ.32">ฝธน.มทบ.32</option>
+      <option value="M0315 อศจ.มทบ.32">อศจ.มทบ.32</option>
+      <option value="M0316 ร้อย.มทบ.32">ร้อย.มทบ.32</option>
+      <option value="M0317 สขส.มทบ.32">สขส.มทบ.32</option>
+      <option value="M0313 รจ.มทบ.32">รจ.มทบ.32</option>
+      <option value="M0318 ผยย.มทบ.32">ผยย.มทบ.32</option>
+      <option value="M0319 สส.มทบ.32">สส.มทบ.32</option>
+      <option value="M0320 ฝสห.มทบ.32">ฝสห.มทบ.32</option>
+      <option value="M0321 ร้อย.สห.มทบ.32">ร้อย.สห.มทบ.32</option>
+      <option value="M0322 มว.ดย.มทบ.32">มว.ดย.มทบ.32</option>
+      <option value="M0323 ผสพ.มทบ.32">ผสพ.มทบ.32</option>
+      <option value="M0324 สรรพกำลัง มทบ.32">สรรพกำลัง มทบ.32</option>
+      <option value="M0325 ศฝ.นศท.มทบ.32">ศฝ.นศท.มทบ.32</option>
+      <option value="M0326 ศาล.มทบ.32">ศาล.มทบ.32</option>
+      <option value="M0327 ศูนย์โทรศัพท์ มทบ.32">ศูนย์โทรศัพท์ มทบ.32</option>
+      <option value="M0328 ผปบ.มทบ.32">ผปบ.มทบ.32</option>
+      <option value="M08 สัสดีจังหวัดลำปาง">สัสดีจังหวัดลำปาง</option>
+      <option value="M09 มว.คลัง สป.๓ฯ">มว.คลัง สป.๓ฯ</option>
+      <option value="M10 กรม ทพ.33">กรม ทพ.33</option>
+      <option value="M07 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>
+    </select>-->
 		<SELECT NAME="camp" id="camp">
 		<option value="<?=$cCamp;?>" selected><?=$cCamp;?></option>
-		<option value="">-------</option>
 		<option value=""><-เลือก-></option>
       <? 
 		$sqlcamp="SELECT * FROM `camp` order by row_id";
@@ -977,7 +1092,6 @@ return $pAge;
 		}
 	}
 
-	// include("connect.inc");
 	$sql = "Select * From ptright Order by code ASC ";
 	$result = mysql_query($sql) or die(mysql_error());
 	while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
@@ -1169,7 +1283,7 @@ $dis = mysql_fetch_assoc($q);
     <td><select size="1" name="idguard" id="idguard">
             <option  selected="selected" value="0" >--------------------เลือก--------------------</option>
             <?
-						// include("connect.inc");
+			
 						$query = "SELECT * from guardtype order by guard_id asc";
 						$result = mysql_query($query);
 						while($tbrows=mysql_fetch_assoc($result)){
@@ -1750,7 +1864,11 @@ function close_res_yot(){
 				var patt = new RegExp("("+search_key+")");
 				if(search_key.length < 3)
 				{
-					return;
+					for (var ii = 0; ii < $('.find_my_prefix').length; ii++) {
+						var fi = $('.find_my_prefix')[ii];
+						$(fi).show();
+					}
+					return false;
 				}
 
 				for (var index = 0; index < $('.find_my_prefix').length; index++) {

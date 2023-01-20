@@ -599,7 +599,7 @@ if(is_file($imgPtPath)===false){
         var thailand_data = JSON.parse('<?=$json_data;?>');
         function findPv(v){ 
 
-          v = v.trim();
+          // v = v.trim();
           if(v.length<3){
             return false;
           }
