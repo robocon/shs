@@ -42,8 +42,9 @@ list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $he
 $ht = $height/100;
 $bmi=number_format($weight /($ht*$ht),2);
 
+
 if( empty($painscore) ){
-	$painscore = '-';
+	$painscore = '0';
 }
 
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
