@@ -211,7 +211,7 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		$pdf->AddPage();
 
 		$getY = $pdf->getY();
-		$pdf->SetXY(2, $getY+5);
+		$pdf->SetXY(2, $getY);
 		$pdf->SetFont('THSarabun','B',14);
 		$pdf->Write(5, "EYE Screening");
 
@@ -263,6 +263,10 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		$pdf->Write(5, " with glass ");
 		$pdf->SetFont('THSarabun','U',14);
 		$pdf->Write(5, $esl_glass);
+
+		$pdf->SetXY(2, $getY+10);
+		$pdf->SetFont('THSarabun','B',14);
+		$pdf->Write(5, to874($_SESSION['sOfficer']));
 		
 		if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
 		{
@@ -436,7 +440,7 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		$pdf->SetFont('THSarabun','',14);
 		$pdf->Write(5, 'ผู้ป่วยรับทราบ ');
 		$pdf->SetFont('THSarabun','U',14);
-		$pdf->Write(5, to874($_SESSION['sOfficer']));
+		$pdf->Write(5, '                        ');
 		$pdf->SetFont('THSarabun','',14);
 		$pdf->Write(5, ' /RN,PN ');
 	}
