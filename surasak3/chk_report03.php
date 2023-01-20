@@ -7,6 +7,7 @@
  * เพื่อระบุให้ชัดเจนไปเลยว่าเป็น lab ที่มาจากการ import โดยผู้ใช้งานที่ผ่านระบบ "นำเข้า Order Lab"
  */
 include 'bootstrap.php';
+include 'connect.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
@@ -14,9 +15,7 @@ $db = Mysql::load();
 $sql = "SELECT `name`,`yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
 $company = $db->get_item();
-
 $year_checkup = substr($company['yearchk'], 2,2);
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -74,30 +73,29 @@ function calcage($birth){
 
 <body>
 <?php
-
-// $xraydate ="18-09-2017";
-
 $sql1 = "SELECT a.*, a.`HN` AS `hn`, 
 b.`date_checkup` AS `show_date`, b.`name` AS `company_name`,c.`agey` AS `age2`,
 CONCAT(c.`name`,' ',c.`surname`) AS `opcardchk_name`, c.`exam_no` 
-FROM `out_result_chkup` AS a 
-LEFT JOIN `chk_company_list` AS b ON b.`code` = a.`part` 
+FROM ( 
+	SELECT * FROM `out_result_chkup` WHERE `part` = '$showpart' 
+) AS a 
+LEFT JOIN ( 
+	SELECT * FROM `chk_company_list` WHERE `code` = '$showpart' 
+) AS b ON b.`code` = a.`part` 
 LEFT JOIN (
-
 	SELECT * FROM `opcardchk` WHERE `part` = '$showpart' 
-
 ) AS c ON c.`HN` = a.`hn` 
-WHERE a.`part` = '$showpart' 
-ORDER BY c.`exam_no` ASC";
-$row2 = mysql_query($sql1) or die ( mysql_error() );
+ORDER BY c.`HN` ASC";
 
-$out_result_rows = mysql_num_rows($row2);
+$db->select($sql1);
+$out_result_rows = $db->get_rows();
 if( $out_result_rows == 0 ){
 	echo "ยังไม่พบข้อมูลการบันทึกผลการซักประวัติ";
 	exit;
 }
 
-while($result = mysql_fetch_assoc($row2)){
+$out_result_items = $db->get_items();
+foreach($out_result_items AS $result){
 
 	$age = $result["age"];
 	$age2 = $result['age2'];
@@ -678,6 +676,16 @@ if (mysql_num_rows($q) > 0) {
 		$testLabnumber = $labChk['labnumber'];
 		$labItemList[] = " `labnumber` = '$testLabnumber' ";
 	}
+
+	if($showpart == 'มหาวิทยาลัยสวนดุสิต 66'){ 
+		$sql_qdc = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = 'มหาวิทยาลัยสวนดุสิต ศูนย์การศึกษา ลำปาง 64 (เฉพาะ HAV IgM)' AND `hn` = '$hn' ";
+		$db->select($sql_qdc);
+		$qdc_items = $db->get_items();
+		foreach ($qdc_items as $aqdc) {
+			$labItemList[] = " `labnumber` = '".$aqdc['labnumber']."' ";
+		}
+	}
+
 	$defLabNumber = implode(' OR ', $labItemList);
 	$defLabNumber = " AND ( $defLabNumber )";
 }
@@ -698,7 +706,7 @@ FROM (
 		AND `profilecode` != 'CA125' 
 		AND `profilecode` != '38302' 
 
-		AND `profilecode` != 'AHAV' 
+		-- AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
 		AND `profilecode` != 'WET' 
