@@ -62,9 +62,9 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="37" align="center">รายการตรวจ</th>
+    <th colspan="39" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
-    <th colspan="2" align="center">สรุปผลการตรวจ</th>
+    <th colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
 
   <tr>
@@ -110,6 +110,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
     <th width="6%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th width="7%">ความดันตา</th>
     <th width="7%">ผลการได้ยิน</th>
     <th width="7%">แมมโมแกรม</th>
     <th width="5%" align="center">พบแพทย์</th>
@@ -1011,6 +1012,14 @@ if($flag=="N"){
     // แมมโมแกรม
     if( !empty($result2["mammogram"]) ){
         echo $result2["mammogram"];
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
+    // ความดันตา
+    if( !empty($result2["eye_pressure"]) ){
+        echo $result2["eye_pressure"].( !empty($result2["eye_pressure_detail"]) ? $result2["eye_pressure_detail"] : '' );
     }
     ?>
     </td>

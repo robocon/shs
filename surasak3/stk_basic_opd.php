@@ -47,6 +47,7 @@ list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $he
 $ht = $height/100;
 $bmi=number_format($weight /($ht*$ht),2);
 
+
 if( empty($painscore) ){
 	$painscore = '0';
 }

@@ -1441,70 +1441,70 @@ if ( $group2_rows > 0 ) {
 			} 
 			?>   
 
-						<?php if( !empty($result['altra']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['altra'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['cimt']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['cimt'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['echo']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['echo'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['abi']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['abi'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['psa']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['psa'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['hpv']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['hpv'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['mammogram']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['mammogram'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['hearing']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจการได้ยิน</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['hearing'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
+				<?php if( !empty($result['altra']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['altra'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['cimt']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['cimt'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['echo']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['echo'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['abi']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['abi'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['psa']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['psa'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
+				<?php if( !empty($result['hpv']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['hpv'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
+				<?php if( !empty($result['mammogram']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['mammogram'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
+				<?php if( !empty($result['hearing']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจการได้ยิน</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['hearing'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
 				<?php 
 				if( !empty($result['bone_density']) ){
 					?>
@@ -1520,6 +1520,19 @@ if ( $group2_rows > 0 ) {
 					<tr>
 						<td><strong class="text" style="font-size:18px"> <u>สายตาอาชีวอนามัย + สายตาสั้น, ยาว</u> </strong> </td>
 						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['occupa_health'];?></strong> </td>
+					</tr>
+					<?php
+				}
+
+				if( !empty($result['eye_pressure']) ){ 
+					$eye_pressure_detail = '';
+					if(!empty($result['eye_pressure_detail'])){
+						$eye_pressure_detail = " (".$result['eye_pressure_detail'].")";
+					}
+					?>
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลตรวจความดันตา</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['eye_pressure'].$eye_pressure_detail;?></strong> </td>
 					</tr>
 					<?php
 				}
