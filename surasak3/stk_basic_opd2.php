@@ -301,6 +301,9 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 				<td>PH <span class="underline"><?=$item['esl_ph'];?></span></td>
 				<td>with glass <span class="underline"><?=$item['esl_glass'];?></span></td>
 			</tr>
+			<tr>
+				<td colspan="4"><?=$_SESSION['sOfficer'];?></td>
+			</tr>
 		</table>
 	</div>
 
@@ -404,7 +407,7 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		<?php
 	}
 	?>
-	<p class="display-sticker">ผู้ป่วยรับทราบ <span class="underline_notfix"><?=$_SESSION['sOfficer'];?></span><b> /RN,PN</b></p>
+	<p class="display-sticker">ผู้ป่วยรับทราบ <span class="underline_notfix">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><b> /RN,PN</b></p>
 	<?php
 }
 ?>
