@@ -463,12 +463,10 @@ if ($action == 'print' && ($type == 'admit' || $type == 'dc')) {
     }
 </style>
 
-<form method="post" action="<?php echo $PHP_SELF ?>">
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตรวจสอบการใช้ยาตาม HN</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" name="hn" size="12">
-    </p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<form method="post" action="hndrugcheck.php">
+    <p>ตรวจสอบการใช้ยาตาม HN</p>
+    <p>HN <input type="text" name="hn" size="12"></p>
+    <p>
         <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>&larr;ไปเมนู</a>
     </p>
 </form>
@@ -522,7 +520,7 @@ if (!empty($b1)) {
 
         ?>
         <div>
-            <p><b>ชื่อ-สกุล :</b> <?= $user['yot'] . $user['name'] . $user['surname']; ?> <b>เลขบัตรประชาชน : </b><?= $user['idcard']; ?> <b>เพศ : </b><?= $user['sex']; ?></p>
+            <p><b>ชื่อ-สกุล :</b> <?= $user['yot'] . $user['name'] .'  '. $user['surname']; ?> <b>เลขบัตรประชาชน : </b><?= $user['idcard']; ?> <b>เพศ : </b><?= $user['sex']; ?></p>
             <p><b>HN : </b><?= $user['hn']; ?> <b>สิทธิการรักษา : </b><?= $user['ptright']; ?></p>
             <p><b>แพ้ยา : </b><?= $react_txt; ?></p>
         </div>
@@ -603,14 +601,15 @@ if (!empty($b1)) {
         <?php
         if (!empty($hn)) {
 
-            $query = "SELECT `row_id`,hn,an,date,drugcode,tradname, slcode,amount, price,part,idno 
-                FROM drugrx WHERE hn = '$hn'  ORDER BY date DESC ";
-            $result = mysql_query($query) or die("Query failed");
+            $last3years = (date('Y', strtotime("-3 years"))+543).date('-m-d', strtotime("-3 years"));
+
+            $query = "SELECT `row_id`,`hn`,`an`,`date`,`drugcode`,`tradname`, `slcode`,`amount`, `price`,`part`,`idno` 
+            FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$last3years' ORDER BY `date` DESC ";
+            $result = mysql_query($query) or die( mysql_error() );
 
             while (list($row_id, $hn, $an, $date, $drugcode, $tradname, $slcode, $amount, $price, $part, $idno) = mysql_fetch_row($result)) {
 
-                $sql = "Select doctor,idname From phardep where date = '$date'  ";
-                list($doctor1, $idname1)  = mysql_fetch_row(Mysql_Query($sql));
+                list($doctor1, $idname1, $tvn)  = mysql_fetch_row(Mysql_Query("SELECT `doctor`,`idname`,`tvn` FROM `phardep` where `row_id` = '$idno'  "));
 
                 $sql1 = "SELECT * FROM `druglst` WHERE drugcode='$drugcode' and had='Y' ";
                 $result1 = mysql_query($sql1);
@@ -637,12 +636,12 @@ if (!empty($b1)) {
 
                 $vn = '';
                 if (empty($an)) {
-                    $q_phar = mysql_query("SELECT `tvn` FROM `phardep` WHERE `row_id` = '$idno' ");
-                    $pha = mysql_fetch_assoc($q_phar);
-                    $vn = $pha['tvn'];
+                    // $q_phar = mysql_query("SELECT `tvn` FROM `phardep` WHERE `row_id` = '$idno' ");
+                    // $pha = mysql_fetch_assoc($q_phar);
+                    $vn = $tvn;
                 }
 
-        ?>
+                ?>
                 <tr bgcolor="<?= $bg; ?>">
                     <td>
                         <input type="checkbox" name="rows_id[]" id="row_<?= $row_id; ?>" value="<?= $row_id; ?>">
@@ -661,7 +660,7 @@ if (!empty($b1)) {
                     <td><?= $doctor1; ?></td>
                     <td><?= $idname1; ?></td>
                 </tr>
-        <?php
+            <?php
             }
 
             include("unconnect.inc");
