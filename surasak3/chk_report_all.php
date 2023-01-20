@@ -62,7 +62,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="39" align="center">รายการตรวจ</th>
+    <th colspan="40" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -94,6 +94,8 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">FOBT</th>
     <th width="6%" align="center">AFP</th>
     <th width="6%" align="center">Anti-HAV IgG</th>
+    <th width="6%" align="center">Anti HAV IgM</th>
+    
     
     <th width="6%" align="center">Stool Exam</th>
     <th width="6%" align="center">Stool Culture</th>
@@ -822,6 +824,30 @@ GROUP BY `profilecode`
         WHERE `hn` = '$pt_hn' 
         AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
         AND `profilecode` = 'HAVTOT' 
+        GROUP BY `profilecode` 
+
+    ) AS a
+    INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+    WHERE b.result !='DELETE' OR b.result !='*' ";
+    
+    $query13 = mysql_query($sql);
+    list($result, $flag) = mysql_fetch_array($query13);
+
+    echo $result;
+    ?>
+</td>
+<!-- Anti HAV IgM -->
+<td align="center">
+    <?php 
+
+    $sql = "SELECT b.`result`, b.`flag` 
+    FROM ( 
+
+        SELECT *, MAX(`autonumber`) AS `latest_number`
+        FROM `resulthead` 
+        WHERE `hn` = '$pt_hn' 
+        AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+        AND `profilecode` = 'AHAV' 
         GROUP BY `profilecode` 
 
     ) AS a

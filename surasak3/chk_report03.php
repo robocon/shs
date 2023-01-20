@@ -678,6 +678,17 @@ if (mysql_num_rows($q) > 0) {
 		$testLabnumber = $labChk['labnumber'];
 		$labItemList[] = " `labnumber` = '$testLabnumber' ";
 	}
+
+	if($showpart == 'มหาวิทยาลัยสวนดุสิต 66'){
+		$sql_qdc = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = 'มหาวิทยาลัยสวนดุสิต ศูนย์การศึกษา ลำปาง 64 (เฉพาะ HAV IgM)' AND `hn` = '$hn' ";
+		$qdc = mysql_query($sql_qdc);
+		while ($aqdc = mysql_fetch_assoc($qdc)) {
+			# code...
+			// $testLabnumber = $aqdc['labnumber'];
+			$labItemList[] = " `labnumber` = '".$aqdc['labnumber']."' ";
+		}
+	}
+
 	$defLabNumber = implode(' OR ', $labItemList);
 	$defLabNumber = " AND ( $defLabNumber )";
 }
@@ -698,7 +709,7 @@ FROM (
 		AND `profilecode` != 'CA125' 
 		AND `profilecode` != '38302' 
 
-		AND `profilecode` != 'AHAV' 
+		-- AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
 		AND `profilecode` != 'WET' 
