@@ -103,7 +103,11 @@ if ($type === 'patdata') {
             detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
         </div>
         <div>
-            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
+            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>"> 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','OTHER')">OTHER</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','PATHO')">PATHO</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','EMER')">EMER</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','PHYSI')">PHYSI</a> 
         </div>
         <div>
             part <input type="text" name="part" id="part" value="<?=$item['part'];?>">
@@ -127,29 +131,11 @@ if ($type === 'patdata') {
     <script>
         function searchLab(){
             var lc = document.getElementById('code').value;
-
             var myWindow = window.open("edit_opacc_lab.php?action=searchLab&code="+lc, "myWindow", "width=600,height=200");
+        }
 
-            /*
-            var request = new XMLHttpRequest();
-            request.open('GET', 'edit_opacc5.php?action=searchLab&code='+lc, true);
-
-            request.onreadystatechange = function() {
-            if (this.readyState === 4) {
-                if (this.status >= 200 && this.status < 400) {
-                    // Success!
-                    var data = JSON.parse(this.responseText);
-
-                } else {
-                    // Error :(
-                }
-            }
-            };
-
-            request.send();
-            request = null;
-            */
-
+        function quickAdd(id,txt){
+            document.getElementById(id).value = txt;
         }
     </script>
     <?php
@@ -169,10 +155,16 @@ if ($type === 'patdata') {
             date <input type="text" name="date" id="date" value="<?=$item['date'];?>">
         </div>
         <div>
-            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
+            depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>"> 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','OTHER')">OTHER</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','PATHO')">PATHO</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','EMER')">EMER</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','PHYSI')">PHYSI</a> 
         </div>
         <div>
-            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
+            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>"> 
+            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการแพทย์')">ค่าบริการทางการแพทย์</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการพยาบาล')">ค่าบริการทางการพยาบาล</a>
         </div>
         <div>
             price <input type="text" name="price" id="price" value="<?=$item['price'];?>">
@@ -195,6 +187,11 @@ if ($type === 'patdata') {
         <input type="hidden" name="type" value="depart">
         <input type="hidden" name="id" value="<?=$item['row_id'];?>">
         <input type="hidden" name="action" value="save">
+        <script>
+            function quickAdd(id,txt){
+                document.getElementById(id).value = txt;
+            }
+        </script>
     </form>
     <?php 
 
@@ -217,9 +214,15 @@ if ($type === 'patdata') {
         </div>
         <div>
             depart <input type="text" name="depart" id="depart" value="<?=$item['depart'];?>">
+            <a href="javascript:void(0);" onclick="quickAdd('depart','OTHER')">OTHER</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','PATHO')">PATHO</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','EMER')">EMER</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('depart','PHYSI')">PHYSI</a> 
         </div>
         <div>
-            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>">
+            detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>"> 
+            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการแพทย์')">ค่าบริการทางการแพทย์</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการพยาบาล')">ค่าบริการทางการพยาบาล</a>
         </div>
         <div>
             credit <input type="text" name="credit" id="credit" value="<?=$item['credit'];?>">
@@ -242,6 +245,11 @@ if ($type === 'patdata') {
         <input type="hidden" name="type" value="opacc">
         <input type="hidden" name="id" value="<?=$item['row_id'];?>">
         <input type="hidden" name="action" value="save">
+        <script>
+            function quickAdd(id,txt){
+                document.getElementById(id).value = txt;
+            }
+        </script>
     </form>
     <?php
 }

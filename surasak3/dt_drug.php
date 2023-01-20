@@ -181,9 +181,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 ///////////////////////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	$count = count($_SESSION["list_drugcode"]);
-	$sql ="select toborow,SUBSTRING(`ptright`,1,3) AS ptrightCode from opday where hn='".$_SESSION["hn_now"]."' AND thidate like '".((date("Y")+543).date("-m-d"))."%' ";
+	$sql ="select toborow from opday where hn='".$_SESSION["hn_now"]."' AND thidate like '".((date("Y")+543).date("-m-d"))."%' ";
 	$rows = mysql_query($sql);
-	list($tobor, $ptrightCode) = mysql_fetch_array($rows);
+	list($tobor) = mysql_fetch_array($rows);
 	$exopd = substr($tobor,0,4);
 	if($exopd=="EX02"){
 		$code = "ER";
@@ -281,14 +281,13 @@ for($i=0;$i<$count;$i++){
 		list($d, $a, $s) = mysql_fetch_row($result);
 		array_push($remark,"<FONT style=\"font-size: 20px;\" COLOR=\"red\">เคยจ่ายยาครั้งสุดท้าย วันที่ ".$d." จำนวน ".$a." วิธีใช้ ".$s."</FONT>");
 	}
-	
-	//echo "++>".$_SESSION["list_drugcode"][$i];
-	if(isset($_SESSION["list_drugcode"][$i])){
-		$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free, `lock` From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
-		//echo "$i==>".$sql."<br>";
-		$result = Mysql_Query($sql);
-		list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free, $drugLock) = Mysql_fetch_row($result);						
-	}
+			//echo "++>".$_SESSION["list_drugcode"][$i];
+			if(isset($_SESSION["list_drugcode"][$i])){
+				$sql = "Select tradname, unit, stock, salepri, freepri, part, medical_sup_free  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
+				//echo "$i==>".$sql."<br>";
+				$result = Mysql_Query($sql);
+				list($drugname,$unit, $stock, $salepri, $freepri, $part, $medical_sup_free) = Mysql_fetch_row($result);						
+			}
 			//echo $_SESSION["list_drug_part"][$i]."<br>";
 			
 			/*if(isset($_SESSION["list_drug_part"][$i])){  //ถ้าตัวแปรนี้มีอยู่จริง
@@ -351,9 +350,17 @@ for($i=0;$i<$count;$i++){
 			if(count($remark) > 0){
 				$list_remark = implode("<BR>",$remark);
 			}
+
+			if($part == "DDY"){
+				$style=" style=\"color:#0000FF\" ";
+			}else if($part == "DDN"|| $part == "DSN" || $part == "DPN"){
+				$style = " style=\"color:#FF0000\" ";
+			}else if($part == "DDL"){
+				$style = " style=\"color:#000000\" ";
+			}else{
+				$style="";	
+			}
 			
-			//// CONVERT IF ////
-			//// สลับ if($part == "DDY") ไปด้านล่างเพราะในเงื่อนไขที่เช็ก list_drug_reason เป็น F มีการแทนค่า $part="DDN" ////
 			if($part == "DDY"){
 				if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
 					
@@ -367,24 +374,7 @@ for($i=0;$i<$count;$i++){
 				}else{
 					echo "<INPUT TYPE=\"hidden\" name=\"ddnnew\" value=\"$i\">";
 				}
-			}elseif ($part=='DDL' && $drugLock=='N' && $ptrightCode=='R07') {
-				$pricetype["DDN"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
-				$pricetype["DDY"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
-				$part="DDN";
 			}
-
-
-			if($part == "DDY"){
-				$style=" style=\"color:#0000FF\" ";
-			}else if($part == "DDN"|| $part == "DSN" || $part == "DPN"){
-				$style = " style=\"color:#FF0000\" ";
-			}else if($part == "DDL"){
-				$style = " style=\"color:#000000\" ";
-			}else{
-				$style="";	
-			}
-			//// END CONVERT IF ////
-
 			//แก้ช่อง textbox จำนวน <TD align='right'><input name='piece$i' value='".$_SESSION["list_drugamount"][$i]."' type='text' size=3> &nbsp;&nbsp;</TD>
 			//แก้ช่องวิธีใช้ <input name='act$i' value='".$_SESSION["list_drugslip"][$i]."' type='text' size=5 onKeyPress=addslip2('slip2',this.value,2,$i); >
 			
@@ -456,7 +446,7 @@ for($i=0;$i<$count;$i++){
 			}";
 			
 			if($part=='DDY'){ 
-				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."');"; 
+				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".iconv('TIS620','UTF-8',$_SESSION["list_drug_reason"][$i])."');"; 
 				
 				
 
@@ -476,20 +466,10 @@ for($i=0;$i<$count;$i++){
 				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'".$part."','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."')"; 
 				
 			}*/else if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
-				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'DDY','".$_SESSION["list_drugcode"][$i]."','".$_SESSION["list_drug_reason"][$i]."');";
+				echo " document.getElementById('reason').style.display = '';clearobt(document.form1.reason);addobtreason(document.form1.reason,'DDY','".$_SESSION["list_drugcode"][$i]."','".iconv('TIS620','UTF-8',$_SESSION["list_drug_reason"][$i])."');";
 			}else{
 				echo " document.getElementById('reason').style.display = 'none';clearobt(document.form1.reason);";
 			}
-
-			$ptrightCode = substr($_SESSION["ptright_now"],0,3);
-			if($ptrightCode=="R07" && $drugLock=="N"){
-				echo "document.getElementById('drReason1').setAttribute('disabled', 'disabled');";
-			}
-
-			if(!empty($_SESSION['list_drug_reason2'][$i])){
-				echo "document.form1.reason2.selectedIndex=".$_SESSION['list_drug_reason2'][$i].";";
-			}
-
 			echo "\">แก้ไข</A></TD>
 			</TR>
 			";
@@ -786,12 +766,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
 	}
 
-	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.`lock`,b.lock_dr, b.drug_lockintern,b.drug_active   
+	$sql = "
+	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
-	HAVING sum( a.amount ) >0";
-	
+	HAVING sum( a.amount ) >0
+	";
+	//echo $sql;
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	$numitem=mysql_num_rows($result);
 	$i=0;
@@ -799,27 +781,38 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	$n=0;
 	while($arr = Mysql_fetch_assoc($result)){
 	
-		//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
-		if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL"){
-				if($arr["amount"] > 10){
-					$arr["amount"]=10;
-				}else{
-					$arr["amount"]=$arr["amount"];
-				}
-		}	
+			//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
+			if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL"){
+					if($arr["amount"] > 10){
+						$arr["amount"]=10;
+					}else{
+						$arr["amount"]=$arr["amount"];
+					}
+			}	
 
-		//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 14 เม็ดให้ Remed ได้แค่ 14 เม็ด  12/03/65
-		//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 30 เม็ดให้ Remed ได้แค่ 30 เม็ด  24/05/65
-		if($arr["drugcode"]=="1NEX40"){
-				if($arr["amount"] > 30){
-					$arr["amount"]=30;
-				}else{
-					$arr["amount"]=$arr["amount"];
-				}
-		}
+			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 14 เม็ดให้ Remed ได้แค่ 14 เม็ด  12/03/65
+			//// เช็คจำนวนยา NEXIUM ถ้าเคยสั่งเกิน 30 เม็ดให้ Remed ได้แค่ 30 เม็ด  24/05/65
+			// if($arr["drugcode"]=="1NEX40"){
+			// 		if($arr["amount"] > 30){
+			// 			$arr["amount"]=30;
+			// 		}else{
+			// 			$arr["amount"]=$arr["amount"];
+			// 		}
+			// }
+
+			//// เช็คจำนวนยา 1XA.5-NN ถ้าเคยสั่งเกิน 20 เม็ดให้ Remed ได้แค่  20 เม็ด  07/1265
+			//// เช็คจำนวนยา 1XA.5-NN ถ้าเคยสั่งเกิน 20 เม็ดให้ Remed ได้แค่ 20 เม็ด  07/12/65
+			// if($arr["drugcode"]=="1XA.5-NN"){
+			// 		if($arr["amount"] > 20){
+			// 			$arr["amount"]=20;
+			// 		}else{
+			// 			$arr["amount"]=$arr["amount"];
+			// 		}
+			// }
+
+	
 	
 		$arr["reason"] = "";
-
 		if($arr["part"] == "DDY" && $arr["reason"] == ""){
 				//$arr["reason"] = "ไม่มีสูตรยานี้ในบัญชียา ED";
 		}
@@ -1457,20 +1450,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					}
 				}
 
-				// พื้นหลัง สีแดงๆชมพูๆ
-				$bgcolor="#FF99CC";
-
+				
+					$bgcolor="#FF99CC";
+				
 				if($arr["part"] == "DDY"){
-					$style = " style='color:#0000FF;' "; // สีน้ำเงิน
+					$style = " style='color:#0000FF;' ";
 				}elseif($arr["part"] == "DDN" || $arr["part"] == "DSN" || $arr["part"] == "DPN"){
-					$style = " style='color:#FF0000;' "; // สีแดง
+					$style = " style='color:#FF0000;' ";
 				}else{
 					$style = "";
-				}
-
-				// สิทธิประกันสังคมที่คีย์รหัสผ่าน
-				if( ( $arr['part']=='DDL' OR $arr['part']=='DDY' ) && $ptrightCode=='R07' && $arr['lock'] == 'N'){
-					$style = " style='color:#FF0000;' ";
 				}
 
 				$arr["genname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["genname"]);
@@ -2361,23 +2349,19 @@ function clearobt(nameojt){
 	}
 	document.getElementById("drReason1").removeAttribute('disabled');
 }
-<?php 
-// ถ้าเป็นหมอธนบดินทร์ 
-if( $_SESSION['sIdname'] == 'md19921' ){
-?>
+
 function addobtreason(nameojt,path,dc,sl){
-
 	if(path == "DDY"){
-		
-		/*nameojt.options[nameojt.options.length]=new Option("ใช้ยาในบัญชียาหลักแล้วไม่ดีขึ้น","ใช้ยาในบัญชียาหลักแห่งชาติแล้วไม่ดีขึ้น");
-		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักที่ใช้รักษาตามข้อบ่งชี้","ไม่มียาในบัญชียาหลักแห่งชาติที่ใช้รักษาตามข้อบ่งชี้");
-		nameojt.options[nameojt.options.length]=new Option("แพ้ยาในบัญชียาหลักแห่งชาติ","แพ้ยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชีได้","มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชียาหลักต่อไปได้");
 
-		nameojt.options[nameojt.options.length]=new Option("ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา","ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา(drug interaction)กับยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน","ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน");
-		nameojt.options[nameojt.options.length]=new Option("มีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย","มีความจำเป็นที่ต้องใช้ยานอกบัญชียาหลักเพราะมีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย");*/
-		nameojt.options[nameojt.options.length]=new Option("","");  
+		<?php 
+		// ถ้าเป็นหมอธนบดินจะมีตัวเลือกที่เป็นค่าว่างเพิ่มขึ้นมา
+		if( $_SESSION['sIdname'] == 'md19921' ){
+			?>
+			nameojt.options[nameojt.options.length]=new Option("",""); 
+			<?php
+		}
+		?>
+
 		nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา","A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา");  
 		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย","B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย");
 		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด","C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด");
@@ -2386,108 +2370,62 @@ function addobtreason(nameojt,path,dc,sl){
 		nameojt.options[nameojt.options.length]=new Option("ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า","E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า");
 		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)","F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)");
 		nameojt.value = sl;
-		
 
-	}/*else{
-<?
-}else{
-?>	
-function addobtreason(nameojt,path,dc,sl){
-
-	if(path == "DDY"){
-		
-		/*nameojt.options[nameojt.options.length]=new Option("ใช้ยาในบัญชียาหลักแล้วไม่ดีขึ้น","ใช้ยาในบัญชียาหลักแห่งชาติแล้วไม่ดีขึ้น");
-		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักที่ใช้รักษาตามข้อบ่งชี้","ไม่มียาในบัญชียาหลักแห่งชาติที่ใช้รักษาตามข้อบ่งชี้");
-		nameojt.options[nameojt.options.length]=new Option("แพ้ยาในบัญชียาหลักแห่งชาติ","แพ้ยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชีได้","มีอาการข้างเคียงจนไม่สามารถใช้ยาในบัญชียาหลักต่อไปได้");
-
-		nameojt.options[nameojt.options.length]=new Option("ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา","ยาที่ผู้ป่วยต้องใช้ร่วมมีปัญหาอันตรกิริยา(drug interaction)กับยาในบัญชียาหลักแห่งชาติ");
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน","ผู้ป่วยมีความเสียงสูงที่จะเกิดภาวะแทรกซ้อน");
-		nameojt.options[nameojt.options.length]=new Option("มีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย","มีความจำเป็นที่ต้องใช้ยานอกบัญชียาหลักเพราะมีรายงานทางการแพทย์สนับสนุนเพื่อประโยชน์ของผู้ป่วย");*/
-		nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา","A เกิดอาการข้างเคียงในการใช้ยาในบัญชียาหลักแห่งชาติ (ADR) หรือแพ้ยา");  
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย","B ผู้ป่วยใช้ยาในบัญชียาหลักแห่งชาติแล้ว ผลการรักษาไม่บรรลุเป้าหมาย");
-		nameojt.options[nameojt.options.length]=new Option("ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด","C ไม่มียาในบัญชียาหลักแห่งชาติให้ใช้ แต่ผู้ป่วยมีข้อบ่งชี้การใช้ยานี้ตามที่ อย. กำหนด");
-		nameojt.options[nameojt.options.length]=new Option("มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ","D มี Contraindication หรือ drug interaction กับยาในบัญชียาหลักแห่งชาติ");
-
-		nameojt.options[nameojt.options.length]=new Option("ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า","E ยาในบัญชียาหลักแห่งชาติราคาแพงกว่า");
-		nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)","F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)");
-		nameojt.value = sl;
-		
-
-	}/*else{
-<?
-}
-?>
-		if(dc=="1NEUT300*$"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-			
-        }else if(dc=="1NEUT100*$"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-        }else if(dc=="1NEU100-C"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-        }else if(dc=="1NEU300-C"){
-			nameojt.options[nameojt.options.length]=new Option("ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท","ใช้บรรเทาอาการปวดซึ่งเกิดจากความผิดปกติของเส้นประสาท");
-			nameojt.options[nameojt.options.length]=new Option("ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น","ล้มเหลวจากการใช้ยาแก้ปวดกลุ่มอื่น");
-			nameojt.options[nameojt.options.length]=new Option("เกิดอาการข้างเคียงจากยากลุ่มอื่น","เกิดอาการข้างเคียงจากยากลุ่มอื่น");
-
-
-		}else if(dc=="1PLAV*"){
-			nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยที่มีข้อห้ามใช้หรือแพ้aspirin","ผู้ป่วยที่มีข้อห้ามใช้หรือแพ้aspirin");
-			nameojt.options[nameojt.options.length]=new Option("ใช้ระยะสั้นในการใส่ stent","ใช้ระยะสั้นในการใส่ stent");
-			nameojt.options[nameojt.options.length]=new Option("AF หรือ antiphospholipid syndrome ซึ่งไม่สามารถใช้ anticoagulant ได้","AF หรือ antiphospholipid syndrome ซึ่งไม่สามารถใช้ anticoagulant ได้");
-			nameojt.options[nameojt.options.length]=new Option("ผู้ป่วยที่มี multiple thrombotic risk factors ซึ่งไม่สามารถควบคุมได้","ผู้ป่วยที่มี multiple thrombotic risk factors ซึ่งไม่สามารถควบคุมได้");
-			
-		}
-		
-		if(sl != ''){
-			nameojt.value = sl;
-		}else{
-			nameojt.selectedIndex = 0;
-		}
-
-	}*/
-
-	
-	if(nameojt.value == '' && sl != ""){
-			nameojt.options[nameojt.options.length]=new Option("กรุณาเลือกเหตุผล","กรุณาเลือกเหตุผล");
-			nameojt.value = sl;
-			nameojt.selectedIndex = 6;
-			//nameojt.options[nameojt.options.length]=new Option(sl,sl);
-			//nameojt.value = sl;
 	}
-	
+
+	if(nameojt.value == '' && sl != ""){
+		nameojt.options[nameojt.options.length]=new Option("กรุณาเลือกเหตุผล","กรุณาเลือกเหตุผล");
+		nameojt.value = sl;
+		nameojt.selectedIndex = 6;
+	}
 
 }
-
 
 function pregAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "PREGNANCY WARNING<br>ยา "+genname+"("+tradname+") <br>มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>";
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById("pregContainer").style.display = "";
 }
 
 function pregBlock(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "ยา "+genname+"("+tradname+") <br>มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>";
+	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b style="color:red;"><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById('list').innerHTML='';
 	document.getElementById("pregContainer").style.display = "";
 }
 
 function lacAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "LACTATION WARNING<br>ยา "+genname+"("+tradname+") <br>มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>";
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
+
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById("pregContainer").style.display = "";
 }
 
 function lacBlock(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
-	document.getElementById("pregContent").innerHTML = "ยา "+genname+"("+tradname+") <br>มีข้อมูลสนับสนุนไม่เพียงพอจึง<b><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>";
+	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
+	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
+	if(tradname!=''){
+		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+	}
+	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b style="color:red;"><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
 	document.getElementById('list').innerHTML='';
 	document.getElementById("pregContainer").style.display = "";
 }
@@ -2495,6 +2433,53 @@ function lacBlock(tradname,genname){
 function closePreg(){
 	document.getElementById("pregContainer").style.display = "none";
 }
+
+function testPreg(drugcode,tradname,genname){
+	// แจ้งเตือน+Block ยาในหญิงตั้งครรภ์และให้นมบุตร
+	// เดี๋ยวปรับการดึงยาจากฐานข้อมูลอีกที
+	var preg = '<?=trim($_SESSION['pregnancy']);?>';
+	var preg_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
+	var preg_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
+	// var preg_block = [];
+
+	var lac_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
+	var lac_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
+	// var lac_block = [];
+
+	if(preg == 'pregnancy'){
+		for (var index = 0; index < preg_alert.length; index++) {
+			if(preg_alert[index]==drugcode){
+				pregAlert(tradname,genname);
+				return true;
+			}
+		}
+
+		for (var index = 0; index < preg_block.length; index++) {
+			if(preg_block[index]==drugcode){
+				pregBlock(tradname,genname);
+				// return false;
+				return true;
+			}
+		}
+		
+	}else if(preg == 'lactation'){
+		for (var index = 0; index < lac_alert.length; index++) {
+			if(lac_alert[index]==drugcode){
+				lacAlert(tradname,genname);
+				return true;
+			}
+		}
+
+		for (var index = 0; index < lac_block.length; index++) {
+			if(lac_block[index]==drugcode){
+				lacBlock(tradname,genname);
+				// return false;
+				return true;
+			}
+		}
+	}
+}
+
 
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
@@ -2505,42 +2490,10 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	}
 
-	var preg = '<?=trim($_SESSION['pregnancy']);?>';
-	var preg_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
-	var preg_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
-
-	var lac_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
-	var lac_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
-
-	if(preg == 'pregnancy'){
-		for (var index = 0; index < preg_alert.length; index++) {
-			if(preg_alert[index]==drugcode){
-				pregAlert(tradname,genname);
-			}
-		}
-
-		for (var index = 0; index < preg_block.length; index++) {
-			if(preg_block[index]==drugcode){
-				pregBlock(tradname,genname);
-				return false;
-			}
-		}
-		
-	}else if(preg == 'lactation'){
-		for (var index = 0; index < lac_alert.length; index++) {
-			if(lac_alert[index]==drugcode){
-				lacAlert(tradname,genname);
-			}
-		}
-
-		for (var index = 0; index < lac_block.length; index++) {
-			if(lac_block[index]==drugcode){
-				lacBlock(tradname,genname);
-				return false;
-			}
-		}
+	var resPreg = testPreg(drugcode,tradname,genname);
+	if(resPreg===false){
+		return false;
 	}
-
 
 	var returnstr;
 
@@ -2574,16 +2527,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			sl="";
 		}
 		addobtreason(document.form1.reason,vl[2],drugcode,sl);
-
-		// console.log(ptrightCode);
-		// console.log(drugLock);
-		
-		if(ptrightCode=="R07" && drugLock=="N"){
-			var lastItem = document.getElementById("drReason1").length - 1;
-			document.getElementById("drReason1").options[lastItem].selected = 'selected';
-			document.getElementById("drReason1").setAttribute('disabled', 'disabled');
-		}
-
 	}else{
 		document.getElementById('reason').style.display = 'none';
 	}
@@ -2758,18 +2701,21 @@ function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount,
 function alert500(){
 	
 	if(eval(document.getElementById("total_all_price").value) > 700){
-
-	var ptright = '<?php echo substr($_SESSION["ptright_now"],0,3);?>';
-	var stat = '';
-	xmlhttp = newXmlHttp();
-	url = 'dt_drug.php?action=alert500';
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	stat = xmlhttp.responseText;
-	stat = stat.substr(4);
+		
+		var ptright = '<?=substr($_SESSION["ptright_now"], 0, 3);?>';
+		var ptrightDetail = '<?=substr($_SESSION["ptright_now"], 3, strlen($_SESSION["ptright_now"]));?>';
+		
+		var stat = '';
+		xmlhttp = newXmlHttp();
+		url = 'dt_drug.php?action=alert500';
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
+		stat = xmlhttp.responseText;
+		stat = stat.substr(4);
 		if(stat == '0'){
 			if((ptright == 'R07' || ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
-					alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ <?php echo substr($_SESSION["ptright_now"],4);?>");
+				alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ "+ptrightDetail);
+					
 			}
 		}
 	}
@@ -2896,15 +2842,15 @@ function checkForm1(){
 
 	return_drug_interaction = drug_interaction(document.form1.drug_code.value);
 
-	// ใบงาน 3840 แจ้งเตือนให้จ่าย 20
-	if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
-		
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้แอลปาโซแลม  ไม่เกิน 20เม็ดต่อคน");  
-		document.form1.drug_amount.focus();
-		return false;
 
-	}
-	 
+	// ใบงาน 3840 แจ้งเตือนให้จ่าย 20
+	// if( document.form1.drug_code.value == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
+		
+	// 	alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้แอลปาโซแลม  ไม่เกิน 20เม็ดต่อคน");  
+	// 	document.form1.drug_amount.focus();
+	// 	return false;
+
+	// }
 	 
 
 	if( document.form1.drug_code.value == "1PLAQ-N" || document.form1.drug_code.value == "1ZITH-C" ){ 
@@ -2987,13 +2933,14 @@ function checkForm1(){
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");
 		document.form1.drug_amount.focus();
 */
-	}else if( document.form1.drug_code.value == "1NEX40" && eval(document.form1.drug_amount.value) > 30 ){ 
-		
-		
+	}
+	/*
+	else if( document.form1.drug_code.value == "1NEX40" && eval(document.form1.drug_amount.value) > 30 ){ 
 		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ยาNEXIUM ไม่เกิน 14เม็ดต่อคน");  
 		document.form1.drug_amount.focus();
-
-	}else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
+	}
+	*/
+	else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
 		document.form1.drug_inject_amount.focus();
 	}else if(document.getElementById('drug_inject_slip').style.display == '' && document.form1.drug_inject_slip.value==''){
@@ -3851,6 +3798,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		left:220px;
 		background:#ffffff;
 		border:1px solid #000000;
+		box-shadow: black 0.1em 0.1em 0.2em;
 	}
 	#pregCloseBtn:hover{
 		cursor: pointer;

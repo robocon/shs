@@ -148,8 +148,11 @@ body,td,th {
         <td width="40">นน.</td>
         <td width="40">BP</td>
 		<td width="40">Pain Score</td>
-		<td width="40">CV Risk ไม่มีผลเลือด</td>
+		<td width="40">CV Risk ไม่มีผลเลือด </td>
 		<td width="40">CV Risk มีผลเลือด</td>
+		<td width="40" bgcolor="#F5B7B1">CV Risk ไม่มีผลเลือด <br>ระบบคำนวณ</td>
+		<td width="40" bgcolor="#F5B7B1">โคเรสเตอรอลรวม<br>Cholesterol</td>
+		<td width="40" bgcolor="#F5B7B1">CV Risk มีผลเลือด<br>ระบบคำนวณ</td>
 		<td width="100">ประเภท</td>
 		<td width="220">อาการ</td>
         <td width="169">แพทย์</td>
@@ -238,88 +241,65 @@ body,td,th {
 				$rows3=mysql_fetch_array($query3);
 				$age=substr($rows3["age"],0,2);
 				//echo $age."<br>";				
-				$fullscore=0;
-				//if(!empty($age) && !empty($sex) && !empty($age) && !empty($sbp) && !empty($diabetes) && !empty($whtr) && !empty($smoke)){
-					//$fullscore=(0.0794420169146399*$age)+(0.127658073818733*$sex)+(0.0193509871323239*$sbp)+(0.584543504554125*$diabetes)+(0.0351256637183026*$finalwhtr)+(0.459312425773018*$smoke);	
-
-													
-					//$fullscore = (0.0794420169146399 * $age) + (0.127658073818733 * $sex) + (0.019350987 * $sbp) + (0.58454 * $diabetes) + (3.512566 * ($waist / $height)) + (0.459 * $smoke);
-				/*}else{
-					$fullscore="";
-				}*/
 				
 				
-/*FullScore = (0.0794420169146399*age) +
-(0.127658073818733*sex) + (0.0193509871323239*sbp) +
-(0.584543504554125*diabetes) +
-(0.0351256637183026*whtr*100) + (0.459312425773018*smoke)
-
-
-o PFullScore= 1 - (0.964588)exp(FullScore-7.712325)			*/	
+				$waist=$waist*2.54;
 				
+				//--------- ไม่มีผลเลือด -----------//
+				$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
+								
+				$y=$fullscore-7.720484;	
+				$x=0.978296;
 				
-				
-				if($hn=="50-313"){
-					//echo $fullscore."<br>";
-				//print("$waist=$waist*0.39370<br>");
-				$waist=round($waist);
-				
-/*				$height=floor($height);
-				$whtr=$waist/$height;*/
-				$whtr=$waist*100;
-									
-//print("$whtr=$waist*100<br>");
-
-$fullscore=(0.0794420169146399*$age)+(0.127658073818733*$sex)+(0.0193509871323239*$sbp)+(0.584543504554125*$diabetes)+(0.0351256637183026*$whtr)+(0.459312425773018*$smoke);						
-print("<br>");
-print("คำนวณหาค่า CV risk <br>");
-print("อายุ : 70<br>");
-print("เพศหญิง : 0<br>");
-print("ความดันโลหิต : 110<br>");
-print("รอบเอว : 35<br>");
-print("ไม่สูบบุหรี่ : 0<br>");
-print("<hr>");
-					
-				print("FullScore = (0.0794420169146399*age) +
-(0.127658073818733*sex) + (0.0193509871323239*sbp) +
-(0.584543504554125*diabetes) +
-(0.0351256637183026*whtr*100) + (0.459312425773018*smoke) <br>");
-					
-print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.127658073818733*$sex)+(0.0193509871323239*$sbp)+(0.584543504554125*$diabetes)+(0.0351256637183026*$whtr)+(0.459312425773018*$smoke)"."<br>");
-					
-				print("<hr>");				
-				$y=$fullscore-7.712325;
-				//echo "$y=$fullscore-7.712325";
-					
-				$x=0.964588;
-				print("ค่า Fullscore : $fullscore <br>");
-				print("ค่า X : $x <br>");
-				print("ค่า Y : $y <br>");
-				print("<hr>");
-				print("ใช้สูตร PFullScore= 1 - (0.964588)exp(FullScore-7.712325) <br>");
-				print("แทนค่าด้วย PFullScore= 1 - ($x)exp($fullscore-7.712325) <br>");
+				$y=exp($y);
 				$z=pow($x,$y);
-				print("หาค่า X ยกกำลัง Y ได้ = $z<br>");
-				print("ค่า Z : $z <br>");
-				print("<hr>");
-				print("นำเอา 1-ผลลัพธ์จากยกกำลัง = 1-$z<br>");
-				$final=1-$z;
-				print("ผลลัพธ์1-$z คือ $final<br>");				
-				print("ค่า Full Final : $final <br>");
-				//$pfullscore1=1-0.978296;
-				//$pfullscore2=$fullscore-7.720484;
 				
-				//$fullfinall=$finall*100;
-				$fullfinal=number_format($final,2);
+				$final=(1-$z)*100;
 				
-				//echo "$fullfinall <br>";
-				
-				//echo pow(2,5) ;
-
-				
+				$pfullscore=number_format($final,2);
+				if($pfullscore >=30){
+					$pfullscore="$pfullscore<br> >30%";
 				}else{
-				$fullfinall="";
-				}
+					$pfullscore=$pfullscore;
+				}						
+				
+				//---------------จบ-----------------//
+				
+				
+				//--------- มีผลเลือด -----------//
+				$date_now=date("Y-m-d");
+				$sql1 = "Select b.result From (Select * From resulthead where hn='".$hn."' AND orderdate like '".$date_now."%' ) as a INNER JOIN resultdetail as b ON a.autonumber = b.autonumber WHERE b.labcode='CHOL' group by a.profilecode  Order by  a.testgroupname ASC, b.seq ASC";
+				//echo $sql1."<br>";
+				$result1 = mysql_query($sql1);	
+				$num1=mysql_num_rows($result1);	
+				
+				if($num1 > 0){
+					list($chol)=mysql_fetch_array($result1);
+					$fullscore_lab=(0.08183*$age)+(0.39499*$sex)+(0.02084*$sbp)+(0.69974*$diabetes)+(0.00212*$chol)+(0.459*$smoke);
+									
+					$yy=$fullscore_lab-7.04423;	
+					$xx=0.978296;
+					
+					$yy=exp($yy);
+					$zz=pow($xx,$yy);
+					
+					$final_lab=(1-$zz)*100;
+					
+					$pfullscore_lab=number_format($final_lab,2);
+					if($pfullscore_lab >=30){
+						$pfullscore_lab="$pfullscore_lab<br> >30%";
+					}else{
+						$pfullscore_lab=$pfullscore_lab;
+					}		
+				}else{
+					$chol="";
+					$pfullscore_lab="";
+				}		
+				//---------------จบ-----------------//
+				
+				//exp(x) สำหรับหาค่าเอ็กโปรเนเชียล (exponential) เช่น exp(23)
+				
+
 				
 		
 		$d=substr($thidate,8,2);
@@ -358,6 +338,9 @@ print("แทน Fullscore ด้วย $fullscore=(0.0794420169146399*$age)+(0.
 		<td width="40" align="center"><?php echo $painscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore_lab;?></td>
+		<td width="40" align="center" bgcolor="#F5B7B1"><?php echo $pfullscore;?></td>
+		<td width="40" align="center" bgcolor="#F5B7B1"><?php echo $chol;?></td>
+		<td width="40" align="center" bgcolor="#F5B7B1"><?php echo $pfullscore_lab;?></td>		
 		<td width="100" align="center"><?php if($rows3['opdtype']=="SI"){ echo "OP Self Isolation";}else if($rows3['opdtype']=="OP"){echo "ผู้ป่วยทั่วไป";}else{echo "ไม่ระบุ";} ?></td>
 		<td align="left"><?php echo $organ;?></td>
         <td align="left"><?php echo $doctor;?></td>

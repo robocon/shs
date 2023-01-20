@@ -156,7 +156,7 @@ if( !$action ){
 <?php 
 } else if( $action === 'form' ){
 ?>
-	<form action="regis_patient.php" method="post" enctype="multipart/form-data">
+	<form action="regis_patient.php" method="post" id="adminForm" enctype="multipart/form-data">
 		<input type="file" id="patient" name="patient[]" multiple="">
 		<button type="submit" id="upload_patient">อัพโหลด</button>
 		<input type="hidden" name="task" value="save">
@@ -172,7 +172,7 @@ if( !$action ){
 	<script type="text/javascript">
 	$(function(){
 		
-		$(document).on('change', '#patient', function(){
+		$(document).on('change', '#patient', function(ev){
 			
 			var input = $('#patient'),
 			list = $('#fileList'),
@@ -183,6 +183,13 @@ if( !$action ){
 			list.empty();
 			$('#res-files').empty();
 			
+			if(files.length > 2){ 
+				alert('ไม่อนุญาตให้อัพโหลดไฟล์เกินครั้งละ2ไฟล์');
+				ev.preventDefault();
+				ev.stopPropagation();
+				return false;
+			}
+
 			// Show file name
 			for (var x = 0; x < files.length; x++) {
 				var file = files[x];
@@ -195,7 +202,8 @@ if( !$action ){
 	                reader.onload = function(e) {
 						
 						var html = '<li>';
-						html += this.file.name;
+						html += '<img src="'+e.target.result+'"><br>';
+						html += this.file.name+'<br>';
 						html += '<input type="hidden" name="data[]" class="data-upload" data-name="'+this.file.name+'" value="'+e.target.result+'"> ';
 						html += '</li>';
 	
@@ -206,7 +214,7 @@ if( !$action ){
 			}
 		});
 
-		$(document).on('click', '#upload_patient', function(e){
+		$(document).on('submit', '#adminForm', function(e){
 			e.preventDefault();
 			var res_item = $('#res-files');
 			$('.data-upload').each(function(){

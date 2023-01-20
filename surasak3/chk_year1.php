@@ -40,7 +40,7 @@ $appd1=$thiyr.'-'.$appmo.'-'.$appdate;
 
 
   print "จำนวนรายการที่บันทึก/กดดู = รายชื่อผู้ป่วย<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
-   $query="SELECT  camp,COUNT(*) AS duplicate FROM chkup_solider  WHERE yearchkup = '$year'   GROUP BY camp HAVING duplicate > 0 ORDER BY camp";
+   $query="SELECT  camp,COUNT(*) AS duplicate FROM      WHERE yearchkup = '$year'   GROUP BY camp HAVING duplicate > 0 ORDER BY camp";
    $result = mysql_query($query);
      $n=0;
  while (list ($camp,$duplicate) = mysql_fetch_row ($result)) {

@@ -7,6 +7,7 @@
  * เพื่อระบุให้ชัดเจนไปเลยว่าเป็น lab ที่มาจากการ import โดยผู้ใช้งานที่ผ่านระบบ "นำเข้า Order Lab"
  */
 include 'bootstrap.php';
+include 'connect.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
@@ -14,9 +15,7 @@ $db = Mysql::load();
 $sql = "SELECT `name`,`yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
 $company = $db->get_item();
-
 $year_checkup = substr($company['yearchk'], 2,2);
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -74,30 +73,29 @@ function calcage($birth){
 
 <body>
 <?php
-
-// $xraydate ="18-09-2017";
-
 $sql1 = "SELECT a.*, a.`HN` AS `hn`, 
 b.`date_checkup` AS `show_date`, b.`name` AS `company_name`,c.`agey` AS `age2`,
 CONCAT(c.`name`,' ',c.`surname`) AS `opcardchk_name`, c.`exam_no` 
-FROM `out_result_chkup` AS a 
-LEFT JOIN `chk_company_list` AS b ON b.`code` = a.`part` 
+FROM ( 
+	SELECT * FROM `out_result_chkup` WHERE `part` = '$showpart' 
+) AS a 
+LEFT JOIN ( 
+	SELECT * FROM `chk_company_list` WHERE `code` = '$showpart' 
+) AS b ON b.`code` = a.`part` 
 LEFT JOIN (
-
 	SELECT * FROM `opcardchk` WHERE `part` = '$showpart' 
-
 ) AS c ON c.`HN` = a.`hn` 
-WHERE a.`part` = '$showpart' 
-ORDER BY c.`exam_no` ASC";
-$row2 = mysql_query($sql1) or die ( mysql_error() );
+ORDER BY c.`HN` ASC";
 
-$out_result_rows = mysql_num_rows($row2);
+$db->select($sql1);
+$out_result_rows = $db->get_rows();
 if( $out_result_rows == 0 ){
 	echo "ยังไม่พบข้อมูลการบันทึกผลการซักประวัติ";
 	exit;
 }
 
-while($result = mysql_fetch_assoc($row2)){
+$out_result_items = $db->get_items();
+foreach($out_result_items AS $result){
 
 	$age = $result["age"];
 	$age2 = $result['age2'];
@@ -588,6 +586,7 @@ if( $num > 0 ){
 										
 							if($objResult["labcode"]=="RBCU"){
 
+								/*
 								$rbculen=strlen($objResult["result"]);
 								if($rbculen >=5){
 									$rbcu1=substr($objResult["result"],0,2);
@@ -612,6 +611,12 @@ if( $num > 0 ){
 										$showresultua="ผิดปกติ";
 									}
 								}	
+								*/
+								
+								$showresultua="ปกติ";
+								if ($objResult['flag']!='N') {
+									$showresultua="ผิดปกติ";
+								}
 								
 							}else{
 								
@@ -671,6 +676,16 @@ if (mysql_num_rows($q) > 0) {
 		$testLabnumber = $labChk['labnumber'];
 		$labItemList[] = " `labnumber` = '$testLabnumber' ";
 	}
+
+	if($showpart == 'มหาวิทยาลัยสวนดุสิต 66'){ 
+		$sql_qdc = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = 'มหาวิทยาลัยสวนดุสิต ศูนย์การศึกษา ลำปาง 64 (เฉพาะ HAV IgM)' AND `hn` = '$hn' ";
+		$db->select($sql_qdc);
+		$qdc_items = $db->get_items();
+		foreach ($qdc_items as $aqdc) {
+			$labItemList[] = " `labnumber` = '".$aqdc['labnumber']."' ";
+		}
+	}
+
 	$defLabNumber = implode(' OR ', $labItemList);
 	$defLabNumber = " AND ( $defLabNumber )";
 }
@@ -691,7 +706,7 @@ FROM (
 		AND `profilecode` != 'CA125' 
 		AND `profilecode` != '38302' 
 
-		AND `profilecode` != 'AHAV' 
+		-- AND `profilecode` != 'AHAV' 
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
 		AND `profilecode` != 'WET' 
@@ -838,6 +853,8 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="เชื้อซิฟิลิส";
 									}else if($objResult["labname"]=="Stool Occult"){
 										$labmean="ตรวจเลือดในอุจจาระ";
+									}else if($objResult["labname"]=="HBA1C"){
+										$labmean="ระดับน้ำตาลสะสม";
 									}
 
 									$app = '';
@@ -1065,9 +1082,22 @@ $outlab_row = mysql_num_rows($outlab_query);
 										}
 
 									}
+
+									if( $objResult["labcode"]=='HBA1CC'){
+										if( $objResult['flag'] == 'N' ){
+											$app = 'ปกติ';
+										}elseif ( $objResult['flag'] != 'N' ) {
+											$app = 'ผิดปกติ';
+										}
+									}
+									// labcode=EAG labname=EVERAGE GLUCOSE 3 MONTH
+									// พ่วงมากับ HBA1C
+									if( $objResult["labcode"]=='EAG'){
+										$app = $objResult["normalrange"];
+										$objResult["normalrange"] = '';
+									}
 									
-
-
+									
 									// if($objResult['labcode'] == 'HAVTOT'){
 									// 	if($objResult["flag"]=="N"){
 									// 		$app="ปกติ";	
@@ -1419,70 +1449,70 @@ if ( $group2_rows > 0 ) {
 			} 
 			?>   
 
-						<?php if( !empty($result['altra']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['altra'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['cimt']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['cimt'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['echo']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['echo'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['abi']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['abi'];?>
-								</strong> </td>
-							</tr>
-						<?php } ?>
-						<?php if( !empty($result['psa']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['psa'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['hpv']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['hpv'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['mammogram']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['mammogram'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
-						<?php if( !empty($result['hearing']) ){ ?>           
-							<tr>
-								<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจการได้ยิน</u> </strong> </td>
-								<td><strong class="text" style="margin-left: 9px;"> :
-									<?=$result['hearing'];?>
-								</strong> </td>
-							</tr>
-						<? } ?>
+				<?php if( !empty($result['altra']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจอัลตร้าซาวด์ช่องท้อง</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['altra'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['cimt']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['cimt'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['echo']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['echo'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['abi']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['abi'];?>
+						</strong> </td>
+					</tr>
+				<?php } ?>
+				<?php if( !empty($result['psa']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจต่อมลูกหมากโดยการคลำ</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['psa'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
+				<?php if( !empty($result['hpv']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจมะเร็งปากมดลูก</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['hpv'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
+				<?php if( !empty($result['mammogram']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจแมมโมแกรม</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['mammogram'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
+				<?php if( !empty($result['hearing']) ){ ?>           
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลการตรวจการได้ยิน</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> :
+							<?=$result['hearing'];?>
+						</strong> </td>
+					</tr>
+				<? } ?>
 				<?php 
 				if( !empty($result['bone_density']) ){
 					?>
@@ -1498,6 +1528,19 @@ if ( $group2_rows > 0 ) {
 					<tr>
 						<td><strong class="text" style="font-size:18px"> <u>สายตาอาชีวอนามัย + สายตาสั้น, ยาว</u> </strong> </td>
 						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['occupa_health'];?></strong> </td>
+					</tr>
+					<?php
+				}
+
+				if( !empty($result['eye_pressure']) ){ 
+					$eye_pressure_detail = '';
+					if(!empty($result['eye_pressure_detail'])){
+						$eye_pressure_detail = " (".$result['eye_pressure_detail'].")";
+					}
+					?>
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลตรวจความดันตา</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['eye_pressure'].$eye_pressure_detail;?></strong> </td>
 					</tr>
 					<?php
 				}

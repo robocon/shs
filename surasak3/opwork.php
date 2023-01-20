@@ -88,6 +88,11 @@ if($_POST['lockptright5']=="lock"){
 	$name = $_POST['name'];
 	$surname = $_POST['surname'];
 
+	if(empty($name) OR empty($surname)){ 
+		echo "ข้อมูลไม่ครบถ้วนกรุณาตรวจสอบข้อมูลอีกครั้ง";
+		exit;
+	}
+
 	//$note=$_POST['note'].'/'.$hospcode;
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
 
@@ -1166,7 +1171,10 @@ $structure = '../image_patient';
 
 
 ?>
- 
+<!--
+<br>
+<a href="http://192.168.129.143/newauthen/authen_preload.php?idcard=<?=$cHn;?>" target="_blank" style="font-size:28px;">ขอเลข Authen Code ผ่าน API</a>
+-->
 
 <br>1...คิวตรวจโรคทั่วไป&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="addQueue('kewadd.php')">คิวตรวจโรคทั่วไป (<?php $sql = "Select runno From runno where title ='kew' ";
 	$result = Mysql_Query($sql);
@@ -1277,8 +1285,8 @@ if ( mysql_num_rows($qIp) > 0 ) {
 	<?php
 }
 ?>
-
-<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น</a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="updatevn1.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น (มีค่ายา/ค่ารักษาพยาบาลแล้ว)</a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น (ไม่มีค่ารักษาพยาบาล)</a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
 <script>
 function chType(){

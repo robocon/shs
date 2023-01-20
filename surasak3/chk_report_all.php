@@ -62,9 +62,9 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="35" align="center">รายการตรวจ</th>
+    <th colspan="40" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
-    <th colspan="2" align="center">สรุปผลการตรวจ</th>
+    <th colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
 
   <tr>
@@ -88,10 +88,15 @@ $company = mysql_fetch_assoc($q);
 
     <th width="7%" align="center">Anti HCV</th>
     <th width="7%" align="center">Anti-HIV</th>
+    <th width="6%" align="center">HBA1C</th>
+    <th width="6%" align="center">Anti-HBs</th>
 
     <th width="6%" align="center">FOBT</th>
     <th width="6%" align="center">AFP</th>
     <th width="6%" align="center">Anti-HAV IgG</th>
+    <th width="6%" align="center">Anti HAV IgM</th>
+    
+    
     <th width="6%" align="center">Stool Exam</th>
     <th width="6%" align="center">Stool Culture</th>
     <th width="6%" align="center">Stool Occult</th>
@@ -107,6 +112,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
     <th width="6%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th width="7%">ความดันตา</th>
     <th width="7%">ผลการได้ยิน</th>
     <th width="7%">แมมโมแกรม</th>
     <th width="5%" align="center">พบแพทย์</th>
@@ -154,12 +160,14 @@ while($result = mysql_fetch_array($out_result_sql)){
 
     $i++;
     $ptname=$result2["ptname"];
+    $bp="&nbsp;";
+
     if($result2["bp1"] && $result2["bp2"]){
         $bp=$result2["bp1"]."/".$result2["bp2"];
-    }else if($result2["bp3"] && $result2["bp4"]){
+    }
+    
+    if($result2["bp3"] && $result2["bp4"]){
         $bp=$result2["bp3"]."/".$result2["bp4"];
-    }else{
-        $bp="&nbsp;";
     }
     if($result["congenital_disease"]=="ปฎิเสธ" || empty($result["congenital_disease"])){
         $disease="ไม่มี";
@@ -703,7 +711,56 @@ if(mysql_num_rows($query12) > 0)
     }
     echo $result;
 }
-?></td>
+?>
+</td>
+
+<td align="center">
+<?php
+// HBA1CC
+$sql12="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'HBA1C' GROUP BY `profilecode` 
+) AS a 
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber 
+WHERE b.labcode = 'HBA1CC' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+GROUP BY a.`profilecode` ";
+$query12=mysql_query($sql12);
+if(mysql_num_rows($query12) > 0)
+{
+    list($hba1c,$flag)=mysql_fetch_array($query12);
+    echo $hba1c;
+}
+?>
+</td>
+
+<td align="center">
+<?php
+// Anti-HBs
+$sql12="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` 
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'ANTIHB' GROUP BY `profilecode` 
+) AS a 
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber 
+WHERE b.labcode = 'ANTIHB' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+GROUP BY a.`profilecode` ";
+$query12=mysql_query($sql12);
+if(mysql_num_rows($query12) > 0)
+{
+    list($antihb,$flag)=mysql_fetch_array($query12);
+    $antihb = 'Negative';
+    if( $flag != 'N' ){ 
+        $antihb = 'Positive';
+    }
+    echo $antihb;
+}
+?>
+</td>
 
 <td align="center">
 <?php
@@ -767,6 +824,30 @@ GROUP BY `profilecode`
         WHERE `hn` = '$pt_hn' 
         AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
         AND `profilecode` = 'HAVTOT' 
+        GROUP BY `profilecode` 
+
+    ) AS a
+    INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+    WHERE b.result !='DELETE' OR b.result !='*' ";
+    
+    $query13 = mysql_query($sql);
+    list($result, $flag) = mysql_fetch_array($query13);
+
+    echo $result;
+    ?>
+</td>
+<!-- Anti HAV IgM -->
+<td align="center">
+    <?php 
+
+    $sql = "SELECT b.`result`, b.`flag` 
+    FROM ( 
+
+        SELECT *, MAX(`autonumber`) AS `latest_number`
+        FROM `resulthead` 
+        WHERE `hn` = '$pt_hn' 
+        AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+        AND `profilecode` = 'AHAV' 
         GROUP BY `profilecode` 
 
     ) AS a
@@ -957,6 +1038,14 @@ if($flag=="N"){
     // แมมโมแกรม
     if( !empty($result2["mammogram"]) ){
         echo $result2["mammogram"];
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
+    // ความดันตา
+    if( !empty($result2["eye_pressure"]) ){
+        echo $result2["eye_pressure"].( !empty($result2["eye_pressure_detail"]) ? $result2["eye_pressure_detail"] : '' );
     }
     ?>
     </td>

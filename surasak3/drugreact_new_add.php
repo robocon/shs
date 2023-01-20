@@ -12,9 +12,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 	$sql = "Select drugcode,tradname,genname from druglst where tradname like '%".$_GET["search"]."%' or drugcode like '%".$_GET["search"]."%' or genname like '%".$_GET["search"]."%' and drug_active='y' limit 20 ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
-	if(Mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: center; margin-top:100px; width:500px; height:430px; overflow:auto; \">";
-
+	if(Mysql_num_rows($result) > 0){		
+		echo "<Div style=\"position: absolute;text-align: center; margin-top:400px; width:500px; height:430px; overflow:auto; \">";	
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\">
 		<tr align=\"center\" bgcolor=\"#333333\">
 		<td width=\"80\"><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td>
@@ -39,8 +38,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 		
 		echo "</TABLE></Div>";
 	}
-
-exit();
+	exit();
 }
 ?>
 <style type="text/css">
@@ -126,9 +124,10 @@ function checkList(){
 </script>
 <h3 style="margin-top:20px;">ระบบบันทึกการแพ้ยา รูปแบบใหม่
 <span style="margin-left: 35px;"><input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="fontsarabun" /></span>
+<span style="margin-left: 35px;"><input type="button" name="button" id="button" value="บันทึกแพ้ยา" onclick="window.location='drugreact_new_add.php' " class="fontsarabun" /></span>
 <span style="margin-left: 50px;"><input type="button" name="button" id="button" value="รายชื่อผู้ป่วยแพ้ยา" onclick="window.open('list_drugreact.php') " class="fontsarabun" /></span>
 </h3>
-
+<div align="center">
 <form action="drugreact_new_add.php" method="post">
     <fieldset style="width: 300px;">
         <legend>ค้นหาตาม HN</legend>
@@ -141,7 +140,7 @@ function checkList(){
         </div>
     </fieldset>
 </form>
-
+</div>
 <?php 
 
 $page = $_POST['page'];
@@ -156,7 +155,7 @@ if ( $page == 'search' ) {
 
     if ( $num > 0 ) {
         ?>
-        <table class="chk_table" width="60%" bgcolor="#FFFFFF">
+        <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
             <tr>
                 <th>HN</th>
                 <th>ชื่อ - นามสกุล</th>
@@ -183,36 +182,13 @@ if ( $page == 'search' ) {
         <?php
     }else{
         ?>
-        <p><b>ไม่พบข้อมูลการนัด</b></p>
+        <p><b>ไม่พบข้อมูล</b></p>
         <?php
     }
-}else if( $_GET["page"] == 'show' ) {
-    $hn = $_GET['hn'];
-    $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
-    $query=mysql_query($sql);	
-	$result = mysql_fetch_array($query);
-	$ptname=$result['yot']." ".$result['name']." ".$result['surname'];
-?>
-<h3 align="center">ข้อมูลส่วนตัว</h3>
-<TABLE bgcolor="#FFFFFF" width="90%" align="center" border="0" cellpadding="5" cellspacing="5">
-<TR>
-	<TD width="15%" align="right"><strong>HN : </strong></TD>
-	<TD width="15%"><?php echo $result["hn"];?>	</TD>
-	<TD width="15%" align="right"><strong>ชื่อ - นามสกุล : </strong></TD>
-	<TD width="30%"><?php echo $ptname;?>	</TD>	
-	<TD width="10%" align="right"><strong>เบอร์โทรศัพท์ : </strong></TD>
-	<TD width="15%"><?php echo $result["phone"];?></TD>		
-</TR>
-<TR>
-	<TD width="15%" align="right"><strong>เลขที่บัตรประชาชน : </strong></TD>
-	<TD width="15%"><?php echo $result["idcard"];?>	</TD>
-	<TD width="15%" align="right"><strong>โรคประจำตัว : </strong></TD>
-	<TD colspan="3" width="30%"><?php echo $result["congenital_disease"];?>	</TD>	
-</TR>
-</table>
+?>	
 <h3 align="center">ประวัติการแพ้ยา</h3>
 <?
-    $dsql = "SELECT * FROM `drugreact` WHERE `hn` = '$hn'";
+    $dsql = "SELECT * FROM `drugreact` WHERE `hn` = '$hn' order by groupname";
     $dquery=mysql_query($dsql);
 	$dnum=mysql_num_rows($dquery);
 	
@@ -220,27 +196,109 @@ if ( $page == 'search' ) {
     if ( $dnum > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
-            <tr>
+            <tr style="background-color:#16A085;">
                 <th>รหัสยา</th>
                 <th>ชื่อการค้า</th>
                 <th>ชื่อสามัญ</th>
                 <th>อาการแพ้</th>
-				<th>ผลข้างเคียง</th>
-				<th width="10%">ประเมินอาการ</th>
-                <th colspan="2">ดำเนินการ</th>
+				<th width="10%">ผลข้างเคียง</th>
+				<th>ประเมินอาการ</th>
+				<th>กลุ่มที่แพ้</th>
+				<th>ผู้บันทึก</th>
+				<th>ผู้แก้ไข</th>
             </tr>
             <?php
             while($ditem = mysql_fetch_array($dquery)){
                 ?>
-                <tr>
+                <tr style="background-color:#D5F5E3;">
                     <td align="center"><?=$ditem['drugcode'];?></td>
                     <td><?=$ditem['tradname'];?></td>
                     <td><?=$ditem['genname'];?></td>
                     <td><?=$ditem['advreact'];?></td>
 					<td><?=$ditem['sideeffects'];?></td>
 					<td align="center"><?=$ditem['asses'];?></td>
-					<td align="center"><a href="drugreact_new_add.php?page=showedit&row_id=<?=$ditem['row_id'];?>&hn=<?=$ditem['hn'];?>">แก้ไข</a></td>
-					<td align="center"><a href="drugreact_new_add.php?page=del&row_id=<?=$ditem['row_id'];?>&hn=<?=$ditem['hn'];?>" onclick="return confirm('ท่านต้องการลบข้อมูลรายการนี้ใช่หรือไม่');">ลบ</a></td>
+					<td align="center"><?=$ditem['groupname'];?></td>
+					<td><?=$ditem['officer'];?></td>
+					<td><?=$ditem['officer1'];?></td>					
+                </tr>
+                <?php
+            }
+            ?>
+        </table>
+        <?php
+    }else{
+        ?>
+        <p align="center">-------------------------------------- ไม่พบข้อมูลการแพ้ยาของผู้ป่วยรายนี้ -------------------------------------- 
+		<hr>
+		</p>
+    <?php
+    }
+	?>
+<?	
+}else if( $_GET["page"] == 'show' ) {
+    $hn = $_GET['hn'];
+    $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
+    $query=mysql_query($sql);	
+	$result = mysql_fetch_array($query);
+	$ptname=$result['yot']." ".$result['name']." ".$result['surname'];
+?>
+<TABLE bgcolor="#FFFFFF" width="90%" align="center" border="0" cellpadding="10" cellspacing="0">
+<TR style="background-color:#16A085;">
+	<TD colspan="6" align="center" style="font-size: 20px;font-weight:bold;">ข้อมูลส่วนตัว</TD>
+</TR>	
+<TR style="background-color:#D5F5E3;">
+	<TD width="15%" align="right"><strong>HN : </strong></TD>
+	<TD width="15%"><?php echo $result["hn"];?>	</TD>
+	<TD width="15%" align="right"><strong>ชื่อ - นามสกุล : </strong></TD>
+	<TD width="30%"><?php echo $ptname;?>	</TD>	
+	<TD width="10%" align="right"><strong>เบอร์โทรศัพท์ : </strong></TD>
+	<TD width="15%"><?php echo $result["phone"];?></TD>		
+</TR>
+<TR style="background-color:#D5F5E3;">
+	<TD width="15%" align="right"><strong>เลขที่บัตรประชาชน : </strong></TD>
+	<TD width="15%"><?php echo $result["idcard"];?>	</TD>
+	<TD width="15%" align="right"><strong>โรคประจำตัว : </strong></TD>
+	<TD colspan="3" width="30%"><?php echo $result["congenital_disease"];?></TD>	
+</TR>
+
+</TABLE>
+<h3 align="center">ประวัติการแพ้ยา</h3>
+<?
+    $dsql = "SELECT * FROM `drugreact` WHERE `hn` = '$hn' order by groupname";
+    $dquery=mysql_query($dsql);
+	$dnum=mysql_num_rows($dquery);
+	
+
+    if ( $dnum > 0 ) {
+        ?>
+        <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
+            <tr style="background-color:#16A085;">
+                <th>รหัสยา</th>
+                <th>ชื่อการค้า</th>
+                <th>ชื่อสามัญ</th>
+                <th>อาการแพ้</th>
+				<th width="10%">ผลข้างเคียง</th>
+				<th>ประเมินอาการ</th>
+				<th>กลุ่มที่แพ้</th>
+				<th>ผู้บันทึก</th>
+				<th>ผู้แก้ไข</th>
+                <th colspan="2" width="10%">ดำเนินการ</th>
+            </tr>
+            <?php
+            while($ditem = mysql_fetch_array($dquery)){
+                ?>
+                <tr style="background-color:#D5F5E3;">
+                    <td align="center"><?=$ditem['drugcode'];?></td>
+                    <td><?=$ditem['tradname'];?></td>
+                    <td><?=$ditem['genname'];?></td>
+                    <td><?=$ditem['advreact'];?></td>
+					<td><?=$ditem['sideeffects'];?></td>
+					<td align="center"><?=$ditem['asses'];?></td>
+					<td align="center"><?=$ditem['groupname'];?></td>
+					<td><?=$ditem['officer'];?></td>
+					<td><?=$ditem['officer1'];?></td>
+					<td align="center"><a href="drugreact_new_add.php?page=showedit&row_id=<?=$ditem['row_id'];?>&hn=<?=$ditem['hn'];?>">แก้ไขข้อมูล</a></td>
+					<td align="center"><a href="drugreact_new_add.php?page=del&row_id=<?=$ditem['row_id'];?>&hn=<?=$ditem['hn'];?>" onclick="return confirm('ท่านต้องการลบข้อมูลรายการนี้ใช่หรือไม่');">ลบข้อมูล</a></td>
                 </tr>
                 <?php
             }
@@ -369,9 +427,11 @@ if ( $page == 'search' ) {
 	$result = mysql_fetch_array($query);
 	$ptname=$result['yot']." ".$result['name']." ".$result['surname'];
 ?>
-<h3 align="center">ข้อมูลส่วนตัว</h3>
-<TABLE bgcolor="#FFFFFF" width="90%" align="center" border="0" cellpadding="5" cellspacing="5">
-<TR>
+<TABLE bgcolor="#FFFFFF" width="90%" align="center" border="0" cellpadding="5" cellspacing="0">
+<TR style="background-color:#16A085;">
+	<TD colspan="6" align="center" style="font-size: 20px;font-weight:bold;">ข้อมูลส่วนตัว</TD>
+</TR>
+<TR style="background-color:#D5F5E3;">
 	<TD width="15%" align="right"><strong>HN : </strong></TD>
 	<TD width="15%"><?php echo $result["hn"];?>	</TD>
 	<TD width="15%" align="right"><strong>ชื่อ - นามสกุล : </strong></TD>
@@ -379,7 +439,7 @@ if ( $page == 'search' ) {
 	<TD width="10%" align="right"><strong>เบอร์โทรศัพท์ : </strong></TD>
 	<TD width="15%"><?php echo $result["phone"];?></TD>		
 </TR>
-<TR>
+<TR style="background-color:#D5F5E3;">
 	<TD width="15%" align="right"><strong>เลขที่บัตรประชาชน : </strong></TD>
 	<TD width="15%"><?php echo $result["idcard"];?>	</TD>
 	<TD width="15%" align="right"><strong>โรคประจำตัว : </strong></TD>
@@ -596,21 +656,9 @@ if (in_array("", $variable)){
 }
 
 
-
-
-
-
-
-	foreach ($variable as $key => $value) {
-		//echo 'ตัวแปรที่ '.$key.' คือ ' .$value.'<br>';			
-	}
-
 ?>
 <h3 align="center">ระบบแก้ไขข้อมูลการแพ้ยา</h3>
 <Div id="list" style="left:200PX;top:30PX;position:absolute;" class="fontsarabun"></Div>
-<p align="center">อาการแพ้ : <?php echo $dresult["advreact"];?>
-<hr>
-</p>
 <FORM name="f1" METHOD=POST ACTION="drugreact_new_add.php" onsubmit="return checkList()">
 <input name="act" type="hidden" value="edit"/>
 <input name="row_id" type="hidden" value="<?php echo $dresult["row_id"];?>" />
@@ -746,7 +794,16 @@ if($_POST["act"]=="add"){
 		$advreact=$advreact.",".$advreact_other;
 	}
 	
-		$add="insert into drugreact SET hn='$hn',drugcode='$drugcode',tradname='$tradname',genname='$genname',advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer='".$_SESSION['sOfficer']."'";
+		$add="insert into drugreact SET hn='$hn',
+		drugcode='$drugcode',
+		tradname='$tradname',
+		genname='$genname',
+		advreact='$advreact',
+		sideeffects='$sideeffects',
+		asses='$asses',
+		reporter='$reporter',
+		date='$report_date',
+		officer='".$_SESSION['sOfficer']."'";
 		//echo $edit;
 		if(mysql_query($add)){
 
@@ -828,7 +885,7 @@ if($_POST["act"]=="edit"){
 		$advreact=$advreact.",".$advreact_other;
 	}	
 
-		$edit="update drugreact SET advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer='".$_SESSION['sOfficer']."' where row_id='".$row_id."'";
+		$edit="update drugreact SET advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer1='".$_SESSION['sOfficer']."' where row_id='".$row_id."'";
 		//echo $edit;
 		if(mysql_query($edit)){	
 			// เก็บข้อมูลเข้าแฟ้ม drugallergy

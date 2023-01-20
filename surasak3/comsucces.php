@@ -2,6 +2,18 @@
 session_start();
 include("connect.inc");
 
+function send_line_noti($sMessage, $sToken){
+	$curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_POST, 1); 
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
+}
+
 if($_REQUEST['do']=='edit'){
 
 	function DateDiff($strDate1,$strDate2){
@@ -32,30 +44,10 @@ if($_REQUEST['do']=='edit'){
 
 		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
 		$sMessage = "สรุปปิดงาน\nลำดับแจ้ง: $row\nเรื่อง: $head\nผู้แจ้ง: $user\nดำเนินการเรียบร้อยโดย $programmer";
-		$chOne = curl_init(); 
-		curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-		curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-		curl_setopt( $chOne, CURLOPT_POST, 1); 
-		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-		curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
-		curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-		$result = curl_exec( $chOne ); 
-		curl_close($chOne);
+		send_line_noti($sMessage, $sToken);
 
 		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		$chTwo = curl_init(); 
-		curl_setopt( $chTwo, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-		curl_setopt( $chTwo, CURLOPT_SSL_VERIFYHOST, 0); 
-		curl_setopt( $chTwo, CURLOPT_SSL_VERIFYPEER, 0); 
-		curl_setopt( $chTwo, CURLOPT_POST, 1); 
-		curl_setopt( $chTwo, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$tokenTwo.'', );
-		curl_setopt($chTwo, CURLOPT_HTTPHEADER, $headers); 
-		curl_setopt( $chTwo, CURLOPT_RETURNTRANSFER, 1); 
-		$result = curl_exec( $chTwo ); 
-		curl_close($chTwo);
+		send_line_noti($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
 		header("Location: com_support.php");

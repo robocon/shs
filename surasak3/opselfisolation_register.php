@@ -1014,6 +1014,21 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 
 
 <?
+
+function send_line_noti($sMessage, $sToken){
+	$curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_POST, 1); 
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
+}
+
+
+
 if($_POST["act"]=="add"){
 	//print_r($_POST);
 	
@@ -1206,20 +1221,10 @@ if($_POST["act"]=="add"){
 												opdtype='".$_POST["opdtype"]."'";	
 	//echo $add;
 	if($query=mysql_query($add)){
-		
+		//กลุ่ม OPSI (ARI) order
 		$sToken = "7ZCg8RDDGKBjaFP5pTElicwHE4Ax3a4FLGBFTXN8FRm"; // test
-		$sMessage =iconv('UTF-8','UTF-8',"บันทึกข้อมูลสำเร็จ\nกลุ่มอาการ: $color\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nน้ำหนัก: $weight กก.\nส่วนสูง: $height ซม.\nค่า BMI: $bmi\nสิทธิ: $subptright\nแพ้ยา: $drugreact $all_drugreact\nรายการยา: $phar\nเจ้าหน้าที่: $sOfficer");
-		$chOne = curl_init(); 
-		curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-		curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-		curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-		curl_setopt( $chOne, CURLOPT_POST, 1); 
-		curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-		$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-		curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
-		curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-		$result = curl_exec( $chOne ); 
-		curl_close($chOne);			
+		$sMessage ="บันทึกข้อมูลสำเร็จ\nกลุ่มอาการ: $color\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nน้ำหนัก: $weight กก.\nส่วนสูง: $height ซม.\nค่า BMI: $bmi\nสิทธิ: $ptright\nแพ้ยา: $drugreact $all_drugreact\nรายการยา: $phar\nเจ้าหน้าที่: $sOfficer";
+		send_line_noti($sMessage, $sToken);			
 		
 		echo "<script>alert('บันทึกข้อมูลเรียบร้อย');window.close();</script>";
 	}
@@ -1336,18 +1341,8 @@ if($_POST["act"]=="edit"){
 		//echo $edit;
 		if($query=mysql_query($edit)){
 			$sToken = "7ZCg8RDDGKBjaFP5pTElicwHE4Ax3a4FLGBFTXN8FRm"; // test
-			$sMessage =iconv('UTF-8','UTF-8',"ติดตามอาการ\nวันที่รับบริการ :  $visit_date\nHN: $hn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nสิทธิ: $subptright\nเจ้าหน้าที่: $sOfficer");
-			$chOne = curl_init(); 
-			curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-			curl_setopt( $chOne, CURLOPT_POST, 1); 
-			curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-			$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-			curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
-			curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-			$result = curl_exec( $chOne ); 
-			curl_close($chOne);	
+			$sMessage ="ติดตามอาการ\nวันที่รับบริการ :  $visit_date\nHN: $hn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nสิทธิ: $ptright\nเจ้าหน้าที่: $sOfficer";
+			send_line_noti($sMessage, $sToken);	
 			
 			echo "<script>alert('บันทึกติดตามอาการผู้ป่วยเรียบร้อย');window.close();</script>";
 		}
@@ -1463,18 +1458,8 @@ if($_POST["act"]=="edit"){
 		//echo $edit;
 		if($query=mysql_query($edit)){
 			$sToken = "7ZCg8RDDGKBjaFP5pTElicwHE4Ax3a4FLGBFTXN8FRm"; // test
-			$sMessage =iconv('UTF-8','UTF-8',"แก้ไขข้อมูลสำเร็จ\nกลุ่มอาการ:  $color\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nน้ำหนัก: $weight กก.\nส่วนสูง: $height ซม.\nค่า BMI: $bmi\nสิทธิ: $subptright\nแพ้ยา: $drugreact $all_drugreact\nรายการยา: $phar\nเจ้าหน้าที่: $sOfficer");
-			$chOne = curl_init(); 
-			curl_setopt( $chOne, CURLOPT_URL, "https://203.104.138.174/api/notify"); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
-			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
-			curl_setopt( $chOne, CURLOPT_POST, 1); 
-			curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$sMessage); 
-			$headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
-			curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers); 
-			curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1); 
-			$result = curl_exec( $chOne ); 
-			curl_close($chOne);	
+			$sMessage ="แก้ไขข้อมูลสำเร็จ\nกลุ่มอาการ:  $color\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nน้ำหนัก: $weight กก.\nส่วนสูง: $height ซม.\nค่า BMI: $bmi\nสิทธิ: $ptright\nแพ้ยา: $drugreact $all_drugreact\nรายการยา: $phar\nเจ้าหน้าที่: $sOfficer";
+			send_line_noti($sMessage, $sToken);	
 			
 			echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.close();</script>";
 		}

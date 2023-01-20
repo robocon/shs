@@ -1529,7 +1529,7 @@ function view_expenses(an) {
 	tooltip.style.left=document.body.scrollLeft+event.clientX+l;
 	tooltip.style.top=document.body.scrollTop+event.clientY+r;
 	tooltip.innerHTML="";
-	tooltip.innerHTML = tooltip.innerHTML+"<TABLE border=\"1\" bordercolor=\"blue\"><TR><TD align=\""+al+"\">"+detail+"</TD></TR></TABLE>";
+	tooltip.innerHTML = tooltip.innerHTML+"<TABLE border=\"1\" bordercolor=\"#CB4335\" cellpadding=\"5\" cellspacing=\"0\"><TR><TD align=\""+al+"\">"+detail+"</TD></TR></TABLE>";
 	tooltip.style.display="";
 }
 	
@@ -1544,7 +1544,7 @@ function view_expenses(an) {
 	
     
 </script>
-<div id = "tooltip" onMouseOver="tooltip.style.display=''; " onMouseOut="hid_tooltip();" style="position:absolute;display:none;background-color:#FFFFFF;" >
+<div id = "tooltip" onMouseOver="tooltip.style.display=''; " onMouseOut="hid_tooltip();" style="position:absolute;display:none;background-color:#FDEDEC;" >
 </div>
 <?php 
 $urlOpd = "";
@@ -2581,16 +2581,17 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 		 
 		<table>
 			<tr>
-				<td><label for="freshWound">แผลสด : </label></td>
+				<td><label for="freshWound">แผลสด: </label></td>
 				<td>
-				<input type="checkbox" name="freshWound" id="freshWound" value="1">&nbsp;เป็นมาแล้ว&nbsp;<select name="woundhours" id="woundhours">
-						<option value="">เลือกข้อมูล</option>
+					<input type="checkbox" name="freshWound" id="freshWound" value="1">&nbsp;เป็นมาแล้ว&nbsp;<select name="woundhours" id="woundhours">
+					<option value="">เลือกข้อมูล</option>
 						<?php 
 						for ($i=1; $i <= 24; $i++) { 
 							?><option value="<?=$i;?>"><?=$i;?></option><?php
 						}
 						?>
-					</select> ชั่วโมง				</td>
+					</select> ชั่วโมง <span style="font-size:14px; color:#df5d00;">ตัวชี้วัด RDU</span>
+				</td>
 			</tr>
 		</table>
 		
@@ -2925,8 +2926,9 @@ function rediv(xx){
         <td >DX/อาการ/การรักษา</td>
 		<td >ปภ</td>
 		<td >trauma</td>
-
 		<td >ลบ</td>
+		<td bgcolor="#F1948A">สี<br>สถานะ<br>[ 1 ]</td>
+		<td bgcolor="#73C6B6">สถานะ<br>ผู้ป่วย<br>[ 2 ]</td>
       </tr>
 	  <?php
 		
@@ -2934,7 +2936,7 @@ function rediv(xx){
 		//$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.trauma, a.type_wounded, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name From trauma as a, opcard as b where a.hn = b.hn Order by date_in DESC,  h_date desc ".$limit;
 		
 
-		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor From trauma as a ".$where."  Order by date_in DESC,  h_date desc ".$limit;
+		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, a.date_in, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor From trauma as a ".$where."  Order by date_in DESC,  h_date desc ".$limit;
 
 
 		$result = Mysql_Query($sql) or die(Mysql_Error());
@@ -2946,23 +2948,47 @@ $list_hn = array();
 		}
 
 	$sql = "Select hn, CONCAT(yot,' ',name,' ',surname) as full_name From opcard where hn in ('".implode("','",$list_hn)."') ";
+	//echo $sql;
 	$result2 = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result2)){
 
 		$hn[$arr["hn"]] = $arr["full_name"];
-
+		//echo "==>".$hn[$arr["hn"]]."<br>";
 	}
 
 		mysql_data_seek  ( $result , 0);
 		$i=0;
 		while($arr = Mysql_fetch_assoc($result)){
 			if($i%2 == 0){
-				$bgcolor = "#FFFFB7";
+				$bgcolor = "#FCF3CF";
 			}else{
-				$bgcolor = "#FFFFFF";
+				$bgcolor = "#F8F9F9";
 			}
 			$i++;
-	  ?>
+list($y,$m,$d)=explode("-",$arr["date_in"]);
+$chkdate=date("Y-m-d");
+$thdatehn="$d-$m-$y".$arr["hn"];
+			
+$sql1="select typecolor,chanel_status,queue_type from queue_er where register_date = '".$chkdate."' and hn='".$arr["hn"]."' order by id desc limit 1";
+//echo $sql1."<br>";
+$query1=mysql_query($sql1);
+$num=mysql_num_rows($query1);
+list($typecolor,$chanel_status,$queue_type)=mysql_fetch_array($query1);	
+
+if($queue_type=="R"){
+	$statuscolor="#fe4a4a";
+}else if($queue_type=="P"){
+	$statuscolor="#ff6699";
+}else if($queue_type=="Y"){
+	$statuscolor="#fcdc04";
+}else if($queue_type=="G"){
+	$statuscolor="#00cc66";
+}else if($queue_type=="W"){
+	$statuscolor="#ffffff";
+}else{
+	$statuscolor="#F8F9F9";
+}	
+?>
       <tr bgcolor="<?php echo $bgcolor;?>">
         <td align="center">
 		
@@ -2976,7 +3002,7 @@ $list_hn = array();
 							else
 							{window.open('er_stiker_lab.php?hn=<?php echo urlencode($arr["hn"]);?>&p2=true','_blank');
 							}" ><?php echo $arr["time_in2"];?></A></td>
-        <td><A HREF="trauma.php?action=edit&id=<?php echo $arr["row_id"];?>" onmouseover= "show_tooltip('<?php echo $hn[$arr["hn"]];?>','center',0,0);" onMouseOut="hid_tooltip();" style="text-decoration:none;"><?php echo $arr["hn"];?></A></td>
+        <td><A HREF="trauma.php?action=edit&id=<?php echo $arr["row_id"];?>" onmouseover= "show_tooltip('<?php echo $hn[$arr["hn"]];?>','center',0,0);" onMouseOut="hid_tooltip();" style="text-decoration:none;"><?php echo $arr["hn"];?></A></td>	
         <td>
 		<TABLE>
 		<TR>
@@ -2987,7 +3013,7 @@ $list_hn = array();
 		</TR>
 		<TR>
 			<TD align='right'>อาการ : </TD>
-			<TD><A HREF="javascript:void(0);" <?php if(strlen($arr["organ"]) > 18){?> Onclick="document.getElementById('organ').value='<?php echo $arr["organ"];?>';" onmouseover= "show_tooltip('<?php echo jschars($arr["organ"]);?>','left',0,0);" onMouseOut="hid_tooltip();" <?php }else{ ?><?php }?> style="color: #0000FF;text-decoration:none;"><?php echo substr($arr["organ"],0,18); if(strlen($arr["organ"]) > 18) echo " ...";?></A></TD>
+			<TD><A HREF="javascript:void(0);" <?php if(strlen($arr["organ"]) > 18){?> Onclick="document.getElementById('organ').value='<?php echo $arr["organ"];?>';" onmouseover= "show_tooltip('<?php echo jschars($arr["organ"]);?>','left',0,0);" onMouseOut="hid_tooltip();" <?php }else{ ?><?php }?> style="color: #0000FF;text-decoration:none;"><?php echo $detail=iconv_substr($arr["organ"],0,18,'UTF-8'); if(strlen($arr["organ"]) > 18) echo " ...";?></A></TD>
 		</TR>
 		<TR>
 			<TD align='right'>รักษา : </TD>
@@ -3000,6 +3026,28 @@ $list_hn = array();
 		<td><?php echo $arr["type_wounded"],",&nbsp;&nbsp;",$arr["type_wounded2"];?></td>
 		<td align="center"><?php if($arr["trauma"]=="nontrauma") echo "non<BR>trauma"; else echo $arr["trauma"];?></td>
 		<td align="center"><A HREF="#" onClick="if(confirm('ท่านต้องการลบรายการนี้ใช้หรือไม่')){ window.location.href='<?php echo $_SERVER['PHP_MYSELF'];?>?action=del&id=<?php echo $arr["row_id"];?>'; }">ลบ</A><BR><BR><A HREF="consent4.php?id=<?php echo $arr["row_id"]; ?>&hn=<?php echo urlencode($arr["hn"]); ?>&doctor=<?php echo urlencode($arr["doctor"]);?>" target="_blank">ใบยินยอม</A></td>
+		<?
+		if($num > 0){
+		?>
+		<td align="center" bgcolor="<?php echo $statuscolor;?>"><a href='../../smartQ/er_generate.php?thdatehn=<?=$thdatehn;?>' target='_blank'><?=$typecolor;?></a></td>
+		<?
+		}else{
+		?>
+		<td><a href='../../smartQ/er_generate.php?thdatehn=<?=$thdatehn;?>' target='_blank'>กำหนดสีผู้ป่วย</a></td>
+		<?
+		}
+		?>
+		<?
+		if(!empty($chanel_status)){
+		?>
+		<td align="center"><a href='../../smartQ/er_queue.php' target='_blank'><?=$chanel_status;?></a></td>
+		<?
+		}else{
+		?>
+		<td><a href='../../smartQ/er_queue.php' target='_blank'>ปรับสถานะ</a></td>
+		<?
+		}
+		?>
       </tr>
 	  <?php }?>
     </table></td>
