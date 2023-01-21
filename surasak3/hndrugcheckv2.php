@@ -37,7 +37,12 @@ if($action==='search'){
     if(empty($id)){
         $res = array('status'=>400,'message' => 'ข้อมูลผิดพลาด');
     }else{
-        $q = $dbi->query("SELECT * FROM `drugrx` WHERE `idno` = '$id' ");
+        $q = $dbi->query(" SELECT a.*, b.`tradname`
+        FROM ( 
+            SELECT `row_id` AS `id`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `idno` = '$id' 
+        ) AS a 
+        LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode`
+        ");
         $a_rows = $q->num_rows;
         if($a_rows>0){
             $items = array();
@@ -61,9 +66,20 @@ if($action==='search'){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medication Reconciliation</title>
+    <style>
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        label{
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <table style="width:50%;">
+<div class="clearfix">
+    <table style="width:30%; float:left;">
         <tr>
             <td>
                 <p>ตรวจสอบยาเดิมในโรงพยาบาล</p>
@@ -82,7 +98,7 @@ if($action==='search'){
             </td>
         </tr>
     </table>
-    <form action="hndrugcheckv2.php" method="post" style="width:50%;">
+    <form action="hndrugcheck_print.php" method="post" id="phardepSearch" target="_blank" style="width:70%; float:right;">
         <table>
             <tr>
                 <td>
@@ -91,51 +107,122 @@ if($action==='search'){
                 </td>
             </tr>
             <tr>
-                <td id="showFromSelected">
+                <td>
                     <table>
-                        <tr>
-                            <th>รายการยา/ความแรง</th>
-                            <th>วิธีใช้</th>
-                            <th>จำนวน</th>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="checkall" id="checkall">#</th>
+                                <th>รายการยา/ความแรง</th>
+                                <th>วิธีใช้</th>
+                                <th>จำนวน</th>
+                            </tr>
+                        </thead>
+                        <tbody id="showFromSelected"></tbody>
                     </table>
                 </td>
             </tr>
         </table>
         <button type="submit">พิมพ์ใบ MR</button>
     </form>
-    <script>
-        document.getElementById("hnSearch").onsubmit = function(e){
-            e.preventDefault();
-            var hn = document.getElementById("hn").value;
-            searchPhardep(hn);
+</div>
+<script type="template/javascript" id="drug_template">
+<tr>
+    <td><input type="checkbox" class="dItem" name="drug_id[]" id="dId{{drug_id}}" value="{{drug_id}}"></td>
+    <td><label for="dId{{drug_id}}">{{item_id}}.{{drug_tradname}}</label></td>
+    <td>{{drug_slcode}}</td>
+    <td>{{drug_amount}}</td>
+</tr>
+</script>
+<script>
+    document.getElementById("hnSearch").onsubmit = function(e){
+        e.preventDefault();
+        var hn = document.getElementById("hn").value;
+        searchPhardep(hn);
+        return false;
+    }
+
+    async function searchPhardep(hn){
+        var res = await fetch("hndrugcheckv2.php?action=search&hn="+hn);
+        var data = await res.json();
+        if(data.status===400){
+            document.getElementById("findDate").innerHTML = data.message;
+        }else{
+            var html = '';
+            data.items.forEach(el => {
+                html += '<div><input type="radio" name="dateSelect" id="dateSelect'+el.id+'" onclick="findDrugrx(\''+el.id+'\')"><label for="dateSelect'+el.id+'">'+el.date+' VN: '+el.tvn+'</label></div>';
+            });
+            document.getElementById("findDate").innerHTML = html;
+        }
+    }
+
+    async function findDrugrx(id){
+        var res = await fetch("hndrugcheckv2.php?action=showDrugrx&id="+id);
+        var data = await res.json();
+
+        var html = '';
+        
+        var i =1;
+        data.items.forEach(el => { 
+            var tem = document.getElementById('drug_template').innerHTML;
+            // console.log(el);
+            tem = tem.replace(/{{item_id}}/g, i, tem);
+            tem = tem.replace(/{{drug_id}}/g, el.id, tem);
+            tem = tem.replace(/{{drug_tradname}}/g, el.tradname, tem);
+            tem = tem.replace(/{{drug_slcode}}/g, el.slcode, tem);
+            tem = tem.replace(/{{drug_amount}}/g, el.amount, tem);
+            i++;
+            html += tem;
+        });
+        document.getElementById('showFromSelected').innerHTML = html;
+
+    }
+
+    document.getElementById("checkall").onclick = function(){
+        var myCheck = this.checked;
+        var allItem = document.getElementsByClassName("dItem");
+        for (let index = 0; index < allItem.length; index++) {
+            const element = allItem[index];
+            element.checked = myCheck;
+        }
+    }
+
+    document.getElementById("phardepSearch").onsubmit = function(e){
+        // e.preventDefault();
+        var allItem = document.getElementsByClassName("dItem");
+        if(allItem.length === 0){
+            alert("กรุณาเลือก Visit ที่ต้องการ");
             return false;
         }
 
-        async function searchPhardep(hn){
-            var res = await fetch("hndrugcheckv2.php?action=search&hn="+hn);
-            var data = await res.json();
-            if(data.status===400){
-                document.getElementById("findDate").innerHTML = data.message;
-            }else{
-                var html = '';
-                data.items.forEach(el => {
-                    html += '<div><input type="radio" name="dateSelect" id="dateSelect" onclick="findDrugrx(\''+el.id+'\')"> '+el.date+'</div>';
-                });
-                document.getElementById("findDate").innerHTML = html;
+        var checkSelected = false;
+        data = [];
+        for (let index = 0; index < allItem.length; index++) {
+            if(allItem[index].checked === true){
+                checkSelected = true;
+                data.push(allItem[index].value);
             }
         }
-
-        async function findDrugrx(id){
-            var res = await fetch("hndrugcheckv2.php?action=showDrugrx&id="+id);
-            var data = await res.json();
+        if(checkSelected===false){
+            alert("กรุณาเลือกรายการยา");
+            return false;
         }
 
-    </script>
+        // phardepPrint(data);
+
+        // return false;
+    }
+
+    async function phardepPrint(){
+        await fetch('hndrugcheck_print.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+    }
+    
+
+</script>
 </body>
 </html>
