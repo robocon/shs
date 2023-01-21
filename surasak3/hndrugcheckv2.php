@@ -144,6 +144,7 @@ if($action==='search'){
     async function searchPhardep(hn){
         var res = await fetch("hndrugcheckv2.php?action=search&hn="+hn);
         var data = await res.json();
+        document.getElementById("showFromSelected").innerHTML = '';
         if(data.status===400){
             document.getElementById("findDate").innerHTML = data.message;
         }else{
