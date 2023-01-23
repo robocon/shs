@@ -3,9 +3,9 @@ session_start();
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- TemplateBeginEditable name="doctitle" -->
-    <title>ระบบรายงานเหตุการณ์สำคัญ/อุบัติการณ์/ความไม่สอดคล้อง</title>
+    <title>๏ฟฝะบ๏ฟฝ๏ฟฝ๏ฟฝยงาน๏ฟฝหตุก๏ฟฝรณ๏ฟฝ๏ฟฝำคัญ/๏ฟฝุบัติก๏ฟฝรณ๏ฟฝ/๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝอด๏ฟฝ๏ฟฝ๏ฟฝอง</title>
     <!-- TemplateEndEditable -->
     <link type="text/css" href="../menu.css" rel="stylesheet" />
     <script type="text/javascript" src="../jquery.js"></script>
@@ -51,44 +51,44 @@ div#copyright a:hover { color:#fff; }*/
 <div id="no_print">
 <div id="menu">
   <ul class="menu">
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน้าแรก</span></a></li>
-        <li><a href="gward_report_doctor.php" class="parent"><span>รายงานผู้ป่วยในตามแพทย์</span></a></li>
-		<li><a href="report_wardlog.php" class="parent"><span>รายงานการเปลี่ยนข้อมูลผู้ป่วย</span></a></li>
+        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน๏ฟฝ๏ฟฝ๏ฟฝรก</span></a></li>
+        <li><a href="gward_report_doctor.php" class="parent"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝในต๏ฟฝ๏ฟฝแพท๏ฟฝ๏ฟฝ</span></a></li>
+		<li><a href="report_wardlog.php" class="parent"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝลผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
 
      	
-        <li><a href="#"><span>สถิติหอผู้ป่วยประจำเดือน</span></a></li>
+        <li><a href="#"><span>สถิต๏ฟฝ๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยป๏ฟฝะจ๏ฟฝ๏ฟฝ๏ฟฝอน</span></a></li>
      
      <ul>
-	  	<li class="last"><a href="report_fward.php"><span>หอผู้ป่วยรวม</span></a></li>
-	  	<li class="last"><a href="report_gward.php"><span>หอผู้ป่วยสูติ</span></a></li>
-          	<li class="last"><a href="report_icuward.php"><span>หอผู้ป่วยหนัก</span></a></li>
-              	<li class="last"><a href="report_vipward.php"><span>หอผู้ป่วยพิเศษ</span></a></li>
+	  	<li class="last"><a href="report_fward.php"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+	  	<li class="last"><a href="report_gward.php"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝูต๏ฟฝ</span></a></li>
+          	<li class="last"><a href="report_icuward.php"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก</span></a></li>
+              	<li class="last"><a href="report_vipward.php"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยพ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
        	</ul>
-        <li><a href="#"><span>Diagnosis ประจำปี</span></a></li>
+        <li><a href="#"><span>Diagnosis ๏ฟฝ๏ฟฝะจำป๏ฟฝ</span></a></li>
      
      <ul>
-	  	<li class="last"><a href="report_icd10_ofyear.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
-	  	<li class="last"><a href="report_icd10_ofyear.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
-          	<li class="last"><a href="report_icd10_ofyear.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
-              	<li class="last"><a href="report_icd10_ofyear.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
+	  	<li class="last"><a href="report_icd10_ofyear.php?code=42"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+	  	<li class="last"><a href="report_icd10_ofyear.php?code=43"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝูต๏ฟฝ</span></a></li>
+          	<li class="last"><a href="report_icd10_ofyear.php?code=44"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก</span></a></li>
+              	<li class="last"><a href="report_icd10_ofyear.php?code=45"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยพ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
        	</ul>
-        <li><a href="#"><span>Diagnosis Top5 ประจำปี</span></a></li>
+        <li><a href="#"><span>Diagnosis Top5 ๏ฟฝ๏ฟฝะจำป๏ฟฝ</span></a></li>
      
      <ul>
-	  	<li class="last"><a href="report_icd10_top5.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
-	  	<li class="last"><a href="report_icd10_top5.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
-          	<li class="last"><a href="report_icd10_top5.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
-              	<li class="last"><a href="report_icd10_top5.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
+	  	<li class="last"><a href="report_icd10_top5.php?code=42"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+	  	<li class="last"><a href="report_icd10_top5.php?code=43"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝูต๏ฟฝ</span></a></li>
+          	<li class="last"><a href="report_icd10_top5.php?code=44"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก</span></a></li>
+              	<li class="last"><a href="report_icd10_top5.php?code=45"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยพ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
        	</ul>
-         <li><a href="#"><span>รายงานผู้ป่วยเสียชีวิต</span></a></li>
+         <li><a href="#"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝิต</span></a></li>
      
      <ul>
-	  	<li class="last"><a href="report_dead.php?code=42"><span>หอผู้ป่วยรวม</span></a></li>
-	  	<li class="last"><a href="report_dead.php?code=43"><span>หอผู้ป่วยสูติ</span></a></li>
-          	<li class="last"><a href="report_dead.php?code=44"><span>หอผู้ป่วยหนัก</span></a></li>
-              	<li class="last"><a href="report_dead.php?code=45"><span>หอผู้ป่วยพิเศษ</span></a></li>
+	  	<li class="last"><a href="report_dead.php?code=42"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+	  	<li class="last"><a href="report_dead.php?code=43"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝูต๏ฟฝ</span></a></li>
+          	<li class="last"><a href="report_dead.php?code=44"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝหนัก</span></a></li>
+              	<li class="last"><a href="report_dead.php?code=45"><span>๏ฟฝอผ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝยพ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
        	</ul>
-        <li><a href="report_age15.php" class="parent"><span>รายชื่อเด็กอายุต่ำกว่า 15ปี</span></a></li>
+        <li><a href="report_age15.php" class="parent"><span>๏ฟฝ๏ฟฝยช๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝุต๏ฟฝำก๏ฟฝ๏ฟฝ๏ฟฝ 15๏ฟฝ๏ฟฝ</span></a></li>
     </ul>
 </div>
 
