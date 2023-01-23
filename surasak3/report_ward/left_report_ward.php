@@ -36,7 +36,7 @@ color: #FFF;
 <div id="no_print">
 <table border="0" class="f1">
   <tr>
-    <td align="center"><a href="../../nindex.htm" class="f1" target="_parent">กลับเมนูหลัก</a></td>
+    <td align="center"><a href="../nindex.htm" class="f1" target="_parent">กลับเมนูหลัก</a></td>
   </tr>
   <tr>
     <td>&nbsp;</td>

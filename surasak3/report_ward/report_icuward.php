@@ -51,7 +51,7 @@ div#copyright a:hover { color:#fff; }*/
 <div id="no_print">
 <div id="menu">
 <ul class="menu">
-  <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>หน้าแรก</span></a></li>
+  <li><a href="../nindex.htm" class="parent"><span>หน้าแรก</span></a></li>
   <li><a href="gward_report_doctor.php" class="parent"><span>รายงานผู้ป่วยในตามแพทย์</span></a></li>
   <li><a href="report_wardlog.php" class="parent"><span>รายงานการเปลี่ยนข้อมูลผู้ป่วย</span></a></li>
 
