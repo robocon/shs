@@ -21,6 +21,7 @@
   <th bgcolor=CC9900>รายการ</th>
   <th bgcolor=CC9900>ราคา</th>
     <th bgcolor=CC9900>เบิกไม่ได้</th>
+    <th bgcolor=CC9900>สถานะใช้งาน</th>
  </tr>
 <?php
     include("connect.inc");
@@ -31,19 +32,24 @@
 		$dpt = $cDepart;
 	}
 
-    $query = "SELECT code,detail,price,depart,nprice FROM labcare WHERE depart = '".$dpt."' ORDER BY code ASC ";
+    $query = "SELECT code,detail,price,depart,nprice,labstatus FROM labcare WHERE depart = '".$dpt."' ORDER BY code ASC ";
 
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($code, $detail, $price,$depart,$nprice) = mysql_fetch_row ($result)) {
-        print (" <tr>\n".
-           "  <td BGCOLOR=99CCFF><a target='left'  href=\"labpaste.php? vCode=$code\">$code</a></td>\n".
-           "  <td BGCOLOR=99CCFF>$detail</td>\n".
-           "  <td BGCOLOR=99CCFF>$price</td>\n".
-			       "  <td BGCOLOR=99CCFF>$nprice</td>\n".
-           " </tr>\n");
-         }
+    while (list ($code, $detail, $price,$depart,$nprice, $labstatus) = mysql_fetch_row ($result)) { 
+        $color = '';
+        if ($labstatus=='N') {
+            $color = 'style="background-color: red !important; "';
+        }
+        print (" <tr $color >\n".
+        "  <td BGCOLOR=99CCFF><a target='left'  href=\"labpaste.php? vCode=$code\">$code</a></td>\n".
+        "  <td BGCOLOR=99CCFF>$detail</td>\n".
+        "  <td BGCOLOR=99CCFF>$price</td>\n".
+        "  <td BGCOLOR=99CCFF>$nprice</td>\n".
+        "  <td BGCOLOR=99CCFF>$labstatus</td>\n".
+        " </tr>\n");
+    }
     include("unconnect.inc");
 ?>
 </table>
