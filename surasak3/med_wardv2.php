@@ -1,4 +1,4 @@
-<?php 255
+<?php
 include 'bootstrap.php';
 include 'includes/JSON.php';
 
@@ -215,7 +215,7 @@ if ( $action === 'save' ) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>อัพโหลดไฟล์ Doctor Order</title>
+    <title>อัพโหลดไฟล์ Doctor Order V2</title>
 </head>
 <body>
 
@@ -292,8 +292,8 @@ if( isset($_SESSION['x-msg']) ){
                         // console.log(request.responseText);
                     }
                 };
-                // request.open('POST', 'http://192.168.129.143/send_notify.php', false);
-                request.open('POST', 'http://localhost:8080/sm3dev/send_notify.php', false);
+                request.open('POST', 'http://192.168.129.143/send_notify.php', true);
+                // request.open('POST', 'http://localhost:8080/sm3dev/send_notify.php', false);
                 request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.send(data); 
 
@@ -318,7 +318,7 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
     <div>Scan Order<br>Tablet/Mobile</div>
 </div>
 <div>
-<h3>อัพโหลดไฟล์ Doctor Order</h3>
+<h3>อัพโหลดไฟล์ Doctor Order V2</h3>
 </div>
 <fieldset style="width:80%;">
     <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
@@ -405,7 +405,6 @@ if ( $page === 'search_an' ) {
             </form>
         </fieldset>
         <script type="text/javascript">
-
             function newXmlHttp(){
                 var xmlhttp = false;
                 try{
@@ -427,14 +426,14 @@ if ( $page === 'search_an' ) {
                 ev.preventDefault();
 
                 var divResSave = document.getElementById("resSave");
-                divResSave.innerHTML = '<div><img src="images/Spinner-1s-28px.gif">กำลังบันทึกข้อมูล กรุณารอสักครู่...</div>';
+                divResSave.innerHTML = '<div><img src="images/Spinner-1s-28px.gif"><b>กำลังบันทึกข้อมูล กรุณารอสักครู่...</b></div>';
 
                 var el = document.getElementsByClassName('hiddenFileUpload');
                 if(el.length > 0){
 
                     // เก็บรายการรูปภาพ
                     var push_image = [];
-                    var push_data = new Object();
+                    let push_data = new Object();
 
                     for (var i=0; i < el.length; i++) {
 
@@ -469,7 +468,6 @@ if ( $page === 'search_an' ) {
                                                 'line_msg' : d.line_msg,
                                                 'line_type' : d.line_type
                                             }
-                                            // sendNotifyCrossServer(d);
 
                                         }else{
                                             divResSave.innerHTML += "บันทึกข้อมูล "+d.file_name+" ไม่สมบูรณ์ "+d.message+"<br>";
@@ -486,7 +484,7 @@ if ( $page === 'search_an' ) {
                         };
                         request.send(data);
                     } // End for
-
+                    
                     sendNotifyCrossServer(push_data, push_image);
 
                 }else{
@@ -498,6 +496,7 @@ if ( $page === 'search_an' ) {
             function sendNotifyCrossServer(d,img){
                 
                 var divResSave = document.getElementById("resSave");
+                let getHn = document.getElementById("formAn").value;
                 // var test_str = [];
                 // test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(d.line_msg));
                 // test_str.push(encodeURIComponent('depart')+"="+encodeURIComponent(d.line_type));
@@ -511,7 +510,8 @@ if ( $page === 'search_an' ) {
                 });
 
                 var request = new newXmlHttp();
-                request.open('POST', 'http://localhost/sm3dev/send_notify.php', false);
+                // request.open('POST', 'http://localhost/sm3dev/send_notify.php', false);
+                request.open('POST', 'http://192.168.129.143/send_notify.php', true);
                 request.setRequestHeader( 
                     'Content-Type',
                     'application/x-www-form-urlencoded'
@@ -524,14 +524,27 @@ if ( $page === 'search_an' ) {
                                 divResSave.innerHTML += '<div style="color:green;"><b>บันทึกข้อมูลเสร็จสมบูรณ์ โปรดรอสักครู่ระบบกำลังทำการรีเฟรชหน้าจอ</b></div>';
                                 setTimeout(function(){
                                     // Simulate a mouse click:
-                                    window.location.href = "med_wardv2.php";
+                                    window.location.href = "med_wardv2.php?fill_an="+getHn;
                                 }, 5000);
+                            }else{
+                                divResSave.innerHTML = '<div style="color:red;"><b>'+s.message+'</b></div>';
                             }
+                        }else{
+                            crossServerError()
                         }
                     }
                 };
                 request.send(myJson);
 
+            }
+
+            function crossServerError(){ 
+                let getHn = document.getElementById("formAn").value;
+                document.getElementById("resSave").innerHTML += '<div style="color:red;"><b>ระบบอินเตอร์เน็ตมีปัญหาไม่สามารถส่ง Line Notify ได้</b></div>';
+                setTimeout(function(){
+                    // Simulate a mouse click:
+                    window.location.href = "med_wardv2.php?fill_an="+getHn;
+                }, 10000);
             }
 
             var maxFileSize = <?=$upload_max;?>;
@@ -687,6 +700,20 @@ if ( $page === 'search_an' ) {
     <div id="imgBtnClose">[Close]</div>
     <div><img src="" alt="" id="imgContent"></div>
 </div>
+<style>
+    #notify-ie{
+        background-color: #ffff97;
+        border: 2px solid #464600;
+        padding: 4px;
+        text-align: center;
+        vertical-align: middle;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
 <script>
     
     // open popup
@@ -715,6 +742,15 @@ if ( $page === 'search_an' ) {
     imgBtn[0].addEventListener('click', function(event){
         document.getElementById('imgContainer').style.display = 'none';
     });
+
+    if(/Trident\/|MSIE/.test(window.navigator.userAgent)){ 
+        document.body.appendChild(document.createElement("br"));
+        const el = document.createElement("div");
+        el.setAttribute("id","notify-ie");
+        el.innerHTML = 'ไมโครซอฟหยุด Support Internet Explorer ตั้งแต่ 15 มิถุนายน 2022 เป็นต้นไป<br>ดาวโหลด/อัพเดท เป็น <a href="https://www.microsoft.com/th-th/edge?r=1">Microsoft Edge</a> ได้แล้ววันนี้';
+        document.body.appendChild(el);
+
+    }
     
 </script>
 
