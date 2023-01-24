@@ -441,8 +441,6 @@ if($_SESSION['smenucode'] == 'ADMEYE')
 		$pdf->Write(5, 'ผู้ป่วยรับทราบ ');
 		$pdf->SetFont('THSarabun','U',14);
 		$pdf->Write(5, '                        ');
-		$pdf->SetFont('THSarabun','',14);
-		$pdf->Write(5, ' /RN,PN ');
 	}
 }
 
