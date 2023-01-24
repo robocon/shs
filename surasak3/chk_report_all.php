@@ -1027,6 +1027,14 @@ if($flag=="N"){
     </td>
     <td>
     <?php 
+    // ความดันตา
+    if( !empty($result2["eye_pressure"]) ){
+        echo $result2["eye_pressure"].( !empty($result2["eye_pressure_detail"]) ? $result2["eye_pressure_detail"] : '' );
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
     // ผลการได้ยิน
     if( !empty($hearing) ){
         echo $hearing;
@@ -1041,14 +1049,7 @@ if($flag=="N"){
     }
     ?>
     </td>
-    <td>
-    <?php 
-    // ความดันตา
-    if( !empty($result2["eye_pressure"]) ){
-        echo $result2["eye_pressure"].( !empty($result2["eye_pressure_detail"]) ? $result2["eye_pressure_detail"] : '' );
-    }
-    ?>
-    </td>
+    
     <td>&nbsp;</td>
     <td>&nbsp;</td>
      <td>&nbsp;</td>
