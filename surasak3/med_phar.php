@@ -6,8 +6,8 @@ $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
 
-$action = input('action');
-$page = input('page');
+$action = sprintf("%s", $_REQUEST['action']);
+$page = sprintf("%s", $_REQUEST['page']);
 
 $wards = array(
     '42' => 'หอผู้ป่วยรวม',
@@ -66,10 +66,9 @@ if ($action === 'active') {
     redirect('med_phar.php?action=print&id='.$id, $msg);
     exit;
 }elseif ( $action === 'print' ) {
-    
+    $id = sprintf("%s", $_REQUEST['id']);
     $q = $dbi->query("SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ");
     $item = $q->fetch_assoc();
-
     ?>
     <style>
     @media print{
@@ -139,8 +138,8 @@ if ($action === 'active') {
         };
     </script>
     <?php
-
     exit;
+
 }elseif ($action === 'clear_an') {
     unset($_SESSION['fix_an']);
     redirect('med_phar.php');
