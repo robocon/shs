@@ -284,14 +284,7 @@ document.getElementById('aLink').focus();
 	}else if($_POST["code"]=="12723"){
     $query = "SELECT code,depart,detail,price,yprice,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
 	}else{ 
-		$query = "SELECT `code`,`depart`,`detail`,`price`,`yprice`,`nprice` 
-		FROM `labcare` 
-		WHERE ( 
-			`code` LIKE '".$_POST["code"]."%' 
-			OR `codelab` LIKE '".$_POST["code"]."%' 
-			OR `detail` LIKE '%".$_POST["code"]."%' 
-		) 
-		AND `labstatus` ='Y' AND `version` !='OLD'";
+		$query = "SELECT `code`,`depart`,`detail`,`price`,`yprice`,`nprice` FROM `labcare` WHERE ( `code` LIKE '".$_POST["code"]."%' OR `codelab` LIKE '".$_POST["code"]."%' ) AND `labstatus` ='Y' AND `version` !='OLD'";
 	}
     $result = mysql_query($query)
         or die("Query failed");
