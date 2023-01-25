@@ -47,7 +47,10 @@ font-weight: bold;
 	}
 ?>
 <script type="text/javascript">
-
+function newWindowsPaperless()
+{
+	window.open("dt_paperLess.php?hn=<?=$_SESSION['hn_now'];?>", "MsgWindow", "width=1024,height=768,scrollbars=yes,top=1,left=1");
+}
 /***********************************************
 * AnyLink Drop Down Menu- ? Dynamic Drive (www.dynamicdrive.com)
 * This notice MUST stay intact for legal use
@@ -60,9 +63,11 @@ var menu1=new Array();
 menu1[0]='<a href="dt_diag.php" >บันทึกการวินิจฉัยโรค</a>'
 menu1[1]='<a href="dt_diag_lit.php" >ดูผลการวินิจฉัยย้อนหลัง</a>'
 menu1[2]='<a href="dt_admit_lit.php" >ดูประวัติการ Admit</a>'
-menu1[3]='<a href="dt_colonocopy.php" >Colonoscopy</a>'
-menu1[4]='<a href="dt_esophago.php" >Esophago</a>'
-menu1[5]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
+menu1[3]='<a href="javascript:void(0)" onclick="newWindowsPaperless()" >ดูประวัติออนไลน์(e-OPD)</a>'
+menu1[4]='<a href="dt_colonocopy.php" >Colonoscopy</a>'
+menu1[5]='<a href="dt_esophago.php" >Esophago</a>'
+menu1[6]='<a href="compareopd.php" >เปรียบเทียบผลย้อนหลัง</a>'
+
 <?php
 /*if($sIdname == "md19364" || $sIdname == "md28422" || $sIdname == "md31386" ){
 	echo "menu1[3]='<a href=\"dt_colonocopy.php\" >Colonoscopy</a>'\n";
