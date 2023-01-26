@@ -18,7 +18,7 @@ function sendMsg($sMessage, $sToken){
     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
     $result = curl_exec( $ch );
     if($result===false){
-        echo curl_error($ch);
+        $result =  '{"status":400,"message":"'.curl_error($ch).'"}';
     }
     curl_close($ch);
 
@@ -38,7 +38,7 @@ function sendImage($sMessage, $sFile, $sToken){
     curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
     $result = curl_exec( $ch );
     if($result===false){
-        echo curl_error($ch);
+        $result =  '{"status":400,"message":"'.curl_error($ch).'"}';
     }
     curl_close($ch);
 
