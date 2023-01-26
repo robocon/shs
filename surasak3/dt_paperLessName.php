@@ -2,7 +2,7 @@
 require_once 'bootstrap.php';
 $hn = sprintf("%s", $_GET['hn']);
 $dbi = new mysqli(HOST,USER,PASS,DB);
-$q = $dbi->query("SELECT * FROM `pdfs` WHERE `hn` = '$hn' AND `status` = 1 ORDER BY `id` DESC LIMIT 10");
+$q = $dbi->query("SELECT * FROM `test_pdf` WHERE `hn` = '$hn' AND `status` = 1 ORDER BY `id` DESC LIMIT 10");
 if ($q->num_rows>0) {
     ?>
     <h1>HN : <?=$hn;?></h1>
@@ -11,13 +11,14 @@ if ($q->num_rows>0) {
     while($item = $q->fetch_assoc()){
         $id = $item['id'];
         $file = $item['file'];
-        if (file_exists(paperLessPath.$file)) {
+        // dump($file);
+        // if (file_exists($file)) {
             ?>
             <div>
                 <div><p><a href="dt_paperLessFile.php?hn=<?=$hn;?>&id=<?=$id;?>&file=<?=$file;?>" target="right"><?=$item['dateTM'];?></a></p></div>
             </div>
             <?php
-        }
+        // }
     }
 }else{
     ?>

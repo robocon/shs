@@ -1,5 +1,6 @@
 <?php 
 require_once 'bootstrap.php';
+define(paperHost,'http://localhost/shsPaperLess/');
 $hn = sprintf("%s", $_GET['hn']);
 $id = sprintf("%s", $_GET['id']);
 $file = sprintf("%s", $_GET['file']);
