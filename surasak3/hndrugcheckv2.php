@@ -42,7 +42,7 @@ if($action==='search'){
             SELECT `row_id` AS `id`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `idno` = '$id' 
         ) AS a 
         LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode`
-        ");
+        WHERE a.`amount` > 0");
         $a_rows = $q->num_rows;
         if($a_rows>0){
             $items = array();
@@ -123,17 +123,19 @@ if($action==='search'){
             </tr>
         </table>
         <button type="submit">พิมพ์ใบ MR</button>
+        <input type="hidden" name="phardep_id" id="phardep_id">
     </form>
 </div>
 <script type="template/javascript" id="drug_template">
 <tr>
     <td><input type="checkbox" class="dItem" name="drug_id[]" id="dId{{drug_id}}" value="{{drug_id}}"></td>
     <td><label for="dId{{drug_id}}">{{item_id}}.{{drug_tradname}}</label></td>
-    <td>{{drug_slcode}}</td>
-    <td>{{drug_amount}}</td>
+    <td align="center">{{drug_slcode}}</td>
+    <td align="right">{{drug_amount}}</td>
 </tr>
 </script>
 <script>
+    // เลือก HH
     document.getElementById("hnSearch").onsubmit = function(e){
         e.preventDefault();
         var hn = document.getElementById("hn").value;
@@ -141,6 +143,7 @@ if($action==='search'){
         return false;
     }
 
+    // แสดงรายการ Visit
     async function searchPhardep(hn){
         var res = await fetch("hndrugcheckv2.php?action=search&hn="+hn);
         var data = await res.json();
@@ -156,7 +159,9 @@ if($action==='search'){
         }
     }
 
-    async function findDrugrx(id){
+    // คลิกจาก Visit
+    async function findDrugrx(id){ 
+        
         var res = await fetch("hndrugcheckv2.php?action=showDrugrx&id="+id);
         var data = await res.json();
 
@@ -175,7 +180,10 @@ if($action==='search'){
             html += tem;
         });
         document.getElementById('showFromSelected').innerHTML = html;
-
+        document.getElementById("checkall").checked = false;
+        document.getElementById("other").value = '';
+        document.getElementById("phardep_id").value = id;
+        
     }
 
     document.getElementById("checkall").onclick = function(){
