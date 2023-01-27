@@ -39,9 +39,16 @@ foreach ($drug_ids as $key => $d) {
 }
 
 $phardep_id = sprintf("%s", $_REQUEST['phardep_id']);
-$q = $dbi->query("SELECT SUBSTRING(`date`,1,10) AS `date` FROM `phardep` WHERE `row_id` = '$phardep_id' ");
+$q = $dbi->query("SELECT SUBSTRING(`date`,1,10) AS `date`,`hn`,`ptname` FROM `phardep` WHERE `row_id` = '$phardep_id' ");
 $ph = $q->fetch_assoc();
 
+$hn = $ph['hn'];
+$ptname = $ph['ptname'];
+
+$q = $dbi->query("SELECT `idcard`,TIMESTAMPDIFF(YEAR, thDateToEn(`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age` FROM `opcard` WHERE `hn` = '$hn' ");
+$op = $q->fetch_assoc();
+$idcard = $op['idcard'];
+$age = $op['age'];
 
 // A4 ยาวทั้งหมด 210mm สูง 297mm
 $pdf = new MedSHS('P', 'mm', 'A4');
@@ -92,8 +99,24 @@ $pdf->Write(5, $pdf->conv('(  ) อื่นๆ______________________'));
 $pdf->Rect(135, 25.5, 68, 32);
 $pdf->SetXY(135, 25.5);
 $pdf->Write(5, $pdf->conv('ชื่อ:___________________________อายุ:__________ปี'));
+
+$pdf->SetFont('THSarabun','B',10);
+$pdf->SetXY(139, 25.5);
+$pdf->Cell(40, 5, $pdf->conv($ptname),0,1);
+$pdf->SetXY(185, 25.5);
+$pdf->Cell(10, 5, $pdf->conv($age),0,1);
+
+$pdf->SetFont('THSarabun','',12);
 $pdf->SetXY(135, 30.5);
 $pdf->Cell(68, 5, $pdf->conv('เลขบัตรปชช:_____________HN:________AN:________'),0,1);
+
+$pdf->SetFont('THSarabun','B',10);
+$pdf->SetXY(150, 30.5);
+$pdf->Cell(20, 5, $pdf->conv($idcard),0,1);
+$pdf->SetXY(174, 30.5);
+$pdf->Cell(13, 5, $pdf->conv($hn),0,1);
+
+$pdf->SetFont('THSarabun','',12);
 $pdf->SetXY(135, 35.5);
 $pdf->Cell(68, 5, $pdf->conv('วันที่ Admit_____________________เวลา:_________น.'),0,1);
 $pdf->SetXY(135, 40.5);
@@ -228,7 +251,7 @@ $pdf->SetTextColor(0,0,0);
 $pdf->SetFont('THSarabun','',12);
 
 $i = 1;
-$lastY = 0;
+// $lastY = 0;
 foreach ($drug_items as $key => $di) {
 
     $drug_y = $pdf->GetY();
@@ -278,10 +301,10 @@ foreach ($drug_items as $key => $di) {
 }
 
 
-
-
-
-
+/** 
+ * หัวข้อส่วนที่2 
+ */
+$lastY = $pdf->GetY();
 $pdf->SetFont('THSarabun','',12);
 $pdf->SetFillColor(0,0,0);
 $pdf->SetTextColor(255,255,255);
@@ -292,38 +315,430 @@ $pdf->SetFillColor(255,255,255);
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFont('THSarabun','B',12);
 
+$lastY = $pdf->GetY(); // <<=== รับค่าใหม่
 $pdf->Rect(5, $lastY, 29.5, 28);
-$pdf->SetXY(5, $lastY+14);
+$pdf->SetXY(5, $lastY+12);
 $pdf->Cell(29.5, 5, $pdf->conv('ชื่อและขนาดยา'),0,1,'C');
 
 $pdf->Rect(34.5, $lastY, 22.5, 28);
-$pdf->SetXY(34.5, $lastY+14);
+$pdf->SetXY(34.5, $lastY+12);
 $pdf->Cell(22.5, 5, $pdf->conv('วิธีใช้'),0,1,'C');
 
 $pdf->Rect(57, $lastY, 12.5, 28);
-$pdf->SetXY(57, $lastY+14);
+$pdf->SetXY(57, $lastY+12);
 $pdf->Cell(12.5, 5, $pdf->conv('จำนวน'),0,1,'C');
 
 $pdf->Rect(69.5, $lastY, 20, 28);
-$pdf->SetXY(69.5, $lastY+14);
+$pdf->SetXY(69.5, $lastY+12);
 $pdf->Cell(20, 5, $pdf->conv('LAST DOSE'),0,1,'C');
-$pdf->SetXY(69.5, $lastY+18);
+$pdf->SetXY(69.5, $lastY+17);
 $pdf->Cell(20, 5, $pdf->conv('(วัน/เวลา)'),0,1,'C');
 
 
+## รับเข้า ##
+$pdf->Rect(89.5, $lastY, 37.5, 18.5);
+$pdf->SetXY(89.5, $lastY+7);
+$pdf->Cell(37.5, 5, $pdf->conv('รับเข้า'),0,1,'C');
+
+$pdf->SetFont('THSarabun','B',10);
+$pdf->SetXY(89.5, $lastY+18.5);
+$pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
+$pdf->SetXY(96, $lastY+18.5);
+$pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
+
+$pdf->SetFont('THSarabun','B',8);
+$pdf->Rect(102.5, $lastY+18.5, 6.5, 9.5);
+$pdf->SetXY(102.5, $lastY+18.5);
+$pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
+$pdf->SetXY(102.5, $lastY+23.5);
+$pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
+
+$pdf->Rect(109, $lastY+18.5, 18, 9.5);
+$pdf->SetXY(109, $lastY+18.5);
+$pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
+$pdf->SetXY(109, $lastY+23.5);
+$pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
+## รับเข้า ##
 
 
+## ย้ายวอร์ด ##
+$pdf->SetFont('THSarabun','B',12);
+$pdf->Rect(127, $lastY, 37.5, 18.5);
+$pdf->SetXY(127, $lastY);
+$pdf->Cell(37.5, 5, $pdf->conv('ย้ายวอร์ด'),0,1,'C');
 
-// ขึ้นหน้ากระดาษใหม่ ก่อนขึ้นขณะแรกรับ
-// $footer_h = $pdf->GetY();
-if( $pdf->GetY() > 240 ){
-    $pdf->AddPage();
-    // $footer_h = $get_header_y;
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(127, $lastY+5);
+$pdf->Cell(37.5, 4, $pdf->conv('จากวอร์ด_____________________'),0,1,'L');
+$pdf->SetXY(127, $lastY+9);
+$pdf->Cell(37.5, 4, $pdf->conv('ไปวอร์ด______________________'),0,1,'L');
+$pdf->SetXY(127, $lastY+13);
+$pdf->Cell(37.5, 4, $pdf->conv('วันที่_____________เวลา_______น.'),0,1,'L');
+
+$pdf->SetFont('THSarabun','B',10);
+$pdf->SetXY(127, $lastY+18.5);
+$pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
+$pdf->SetXY(133.5, $lastY+18.5);
+$pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
+
+$pdf->SetFont('THSarabun','B',8);
+$pdf->Rect(140, $lastY+18.5, 6.5, 9.5);
+$pdf->SetXY(140, $lastY+18.5);
+$pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
+$pdf->SetXY(140, $lastY+23.5);
+$pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
+
+$pdf->Rect(146.5, $lastY+18.5, 18, 9.5);
+$pdf->SetXY(146.5, $lastY+18.5);
+$pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
+$pdf->SetXY(146.5, $lastY+23.5);
+$pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
+
+
+## จำหน่าย ##
+$pdf->SetFont('THSarabun','B',12);
+$pdf->Rect(164.5, $lastY, 38.5, 18.5);
+$pdf->SetXY(164.5, $lastY+7);
+$pdf->Cell(38.5, 5, $pdf->conv('จำหน่าย'),0,1,'C');
+
+$pdf->SetFont('THSarabun','B',10);
+$pdf->SetXY(164.5, $lastY+18.5);
+$pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
+$pdf->SetXY(171, $lastY+18.5);
+$pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
+
+$pdf->SetFont('THSarabun','B',8);
+$pdf->Rect(177.5, $lastY+18.5, 6.5, 9.5);
+$pdf->SetXY(177.5, $lastY+18.5);
+$pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
+$pdf->SetXY(177.5, $lastY+23.5);
+$pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
+
+$pdf->Rect(184, $lastY+18.5, 19, 9.5);
+$pdf->SetXY(184, $lastY+18.5);
+$pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
+$pdf->SetXY(184, $lastY+23.5);
+$pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
+
+
+// ถ้าไม่ได้กรอก ยานอก ให้ default เป็น 2บรรทัด
+if (empty($other)) {
+    $other = 2;
+}
+
+for ($i=0; $i < $other; $i++) { 
+
+    $drug_y = $pdf->GetY();
+
+    // ชื่อยา
+    $pdf->Rect(5, $drug_y, 29.5, 10);
+    $pdf->Rect(5, $drug_y, 5, 5);
+
+    // วิธีใช้ 
+    $pdf->Rect(34.5, $drug_y, 22.5, 10);
+
+    // จำนวน
+    $pdf->Rect(57, $drug_y, 12.5, 10);
+
+    // Last dose
+    $pdf->Rect(69.5, $drug_y, 20, 10);
+
+    // รับเข้า
+    $pdf->Rect(89.5, $drug_y, 6.5, 10);
+    $pdf->Rect(96, $drug_y, 6.5, 10);
+    $pdf->Rect(102.5, $drug_y, 6.5, 10);
+    $pdf->Rect(109, $drug_y, 18, 10);
+
+    // ย้ายวอร์ด
+    $pdf->Rect(127, $drug_y, 6.5, 10);
+    $pdf->Rect(133.5, $drug_y, 6.5, 10);
+    $pdf->Rect(140, $drug_y, 6.5, 10);
+    $pdf->Rect(146.5, $drug_y, 18, 10);
+
+    // // จำหน่าย
+    $pdf->Rect(164.5, $drug_y, 6.5, 10);
+    $pdf->Rect(171, $drug_y, 6.5, 10);
+    $pdf->Rect(177.5, $drug_y, 6.5, 10);
+    $pdf->Rect(184, $drug_y, 19, 10);
+
+    $pdf->SetY($drug_y+10);
 }
 
 
+// ขึ้นหน้ากระดาษใหม่ ก่อนขึ้นขณะแรกรับ
+if( $pdf->GetY() > 240 ){
+    $pdf->AddPage();
+}
+
+$lastY = $pdf->GetY();
+$pdf->SetFont('THSarabun','',12);
+$pdf->SetFillColor(0,0,0);
+$pdf->SetTextColor(255,255,255);
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ขณะแรกรับ'), 1, 1, 'L',true);
+
+$pdf->SetFillColor(255,255,255);
+$pdf->SetTextColor(0,0,0);
+$pdf->SetFont('THSarabun','B',12);
+
+$lastY = $pdf->GetY();
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของแพทย์'), 1, 1, 'C',true);
+$pdf->SetXY(71, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของเภสัช'), 1, 1, 'C',true);
+$pdf->SetXY(137, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของพยาบาล'), 1, 1, 'C',true);
+
+// ส่วนของแพทย์
+$lastY = $pdf->GetY();
+$pdf->Rect(5, $lastY, 66, 32.5);
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5, $pdf->conv('[  ] ยืนยันคำสั่ง'),0,1,'L');
+$pdf->SetXY(5, $lastY+5);
+$pdf->Cell(66, 5, $pdf->conv('[  ] เปลี่ยนแปลง (ระบุ)__________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+10);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+14);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+18);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+22);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('แพทย์__________________________วันที่_________________'),0,1,'L');
+
+// ส่วนของเภสัช
+$pdf->SetFont('THSarabun','',9);
+$pdf->Rect(71, $lastY, 66, 32.5); // กล่องใหญ่
+$pdf->Rect(71, $lastY, 33, 14); // กล่องย่อย1
+$pdf->SetXY(71, $lastY);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Untreated indications'),0,1,'L');
+$pdf->SetXY(71, $lastY+4);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Dosage too height/'),0,1,'L');
+$pdf->SetXY(71, $lastY+8);
+$pdf->Cell(33, 4, $pdf->conv('too low/ wrong frequency'),0,1,'L');
+
+$pdf->Rect(104, $lastY, 33, 14); // กล่องย่อย2
+$pdf->SetXY(104, $lastY);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Duplication of drug therapy'),0,1,'L');
+$pdf->SetXY(104, $lastY+4);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Drug interraction'),0,1,'L');
+$pdf->SetXY(104, $lastY+8);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Administration error'),0,1,'L');
+
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(71, $lastY+14);
+$pdf->Cell(66, 5, $pdf->conv('เรียนแพทย์/พยาบาล____________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+19);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+23);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('เภสัชกร__________________________วันที่________________'),0,1,'L');
+
+// ส่วนของพยาบาล
+$pdf->SetFont('THSarabun','',10);
+$pdf->Rect(137, $lastY, 66, 32.5);
+$pdf->SetXY(137, $lastY);
+$pdf->Cell(66, 5, $pdf->conv('เรียนแพทย์/เภสัชกร____________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+4);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+8);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+12);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+17);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+22);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('พยาบาล__________________________วันที่________________'),0,1,'L');
 
 
+
+$pdf->setY($lastY+32.5);/* !!!! !!!! */
+
+$lastY = $pdf->GetY();
+$pdf->SetFont('THSarabun','',12);
+$pdf->SetFillColor(0,0,0);
+$pdf->SetTextColor(255,255,255);
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ขณะย้ายวอร์ด'), 1, 1, 'L',true);
+
+$pdf->SetFillColor(255,255,255);
+$pdf->SetTextColor(0,0,0);
+$pdf->SetFont('THSarabun','B',12);
+
+
+
+
+$lastY = $pdf->GetY();
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของแพทย์'), 1, 1, 'C',true);
+$pdf->SetXY(71, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของเภสัช'), 1, 1, 'C',true);
+$pdf->SetXY(137, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของพยาบาล'), 1, 1, 'C',true);
+
+// ส่วนของแพทย์
+$lastY = $pdf->GetY();
+$pdf->Rect(5, $lastY, 66, 32.5);
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5, $pdf->conv('[  ] ยืนยันคำสั่ง'),0,1,'L');
+$pdf->SetXY(5, $lastY+5);
+$pdf->Cell(66, 5, $pdf->conv('[  ] เปลี่ยนแปลง (ระบุ)__________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+10);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+14);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+18);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+22);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('แพทย์__________________________วันที่_________________'),0,1,'L');
+
+// ส่วนของเภสัช
+$pdf->SetFont('THSarabun','',9);
+$pdf->Rect(71, $lastY, 66, 32.5); // กล่องใหญ่
+$pdf->Rect(71, $lastY, 33, 14); // กล่องย่อย1
+$pdf->SetXY(71, $lastY);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Untreated indications'),0,1,'L');
+$pdf->SetXY(71, $lastY+4);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Dosage too height/'),0,1,'L');
+$pdf->SetXY(71, $lastY+8);
+$pdf->Cell(33, 4, $pdf->conv('too low/ wrong frequency'),0,1,'L');
+
+$pdf->Rect(104, $lastY, 33, 14); // กล่องย่อย2
+$pdf->SetXY(104, $lastY);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Duplication of drug therapy'),0,1,'L');
+$pdf->SetXY(104, $lastY+4);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Drug interraction'),0,1,'L');
+$pdf->SetXY(104, $lastY+8);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Administration error'),0,1,'L');
+
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(71, $lastY+14);
+$pdf->Cell(66, 5, $pdf->conv('เรียนแพทย์/พยาบาล____________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+19);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+23);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('เภสัชกร__________________________วันที่________________'),0,1,'L');
+
+// ส่วนของพยาบาล
+$pdf->SetFont('THSarabun','',10);
+$pdf->Rect(137, $lastY, 66, 32.5);
+$pdf->SetXY(137, $lastY);
+$pdf->Cell(66, 5, $pdf->conv('เรียนแพทย์/เภสัชกร____________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+4);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+8);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+12);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+17);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+22);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('พยาบาล__________________________วันที่________________'),0,1,'L');
+
+
+$pdf->setY($lastY+32.5);/* !!!! !!!! */
+
+// ขึ้นหน้ากระดาษใหม่ ก่อนขึ้นขณะแรกรับ
+if( $pdf->GetY() > 240 ){
+    $pdf->AddPage();
+}
+
+$lastY = $pdf->GetY();
+$pdf->SetFont('THSarabun','',12);
+$pdf->SetFillColor(0,0,0);
+$pdf->SetTextColor(255,255,255);
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ขณะจำหน่าย'), 1, 1, 'L',true);
+
+$pdf->SetFillColor(255,255,255);
+$pdf->SetTextColor(0,0,0);
+$pdf->SetFont('THSarabun','B',12);
+
+$lastY = $pdf->GetY();
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของแพทย์'), 1, 1, 'C',true);
+$pdf->SetXY(71, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของเภสัช'), 1, 1, 'C',true);
+$pdf->SetXY(137, $lastY);
+$pdf->Cell(66, 5.5, $pdf->conv('ส่วนของพยาบาล'), 1, 1, 'C',true);
+
+// ส่วนของแพทย์
+$lastY = $pdf->GetY();
+$pdf->Rect(5, $lastY, 66, 32.5);
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(5, $lastY);
+$pdf->Cell(66, 5, $pdf->conv('[  ] ยืนยันคำสั่ง'),0,1,'L');
+$pdf->SetXY(5, $lastY+5);
+$pdf->Cell(66, 5, $pdf->conv('[  ] เปลี่ยนแปลง (ระบุ)__________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+10);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+14);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+18);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+22);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(5, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('แพทย์__________________________วันที่_________________'),0,1,'L');
+
+// ส่วนของเภสัช
+$pdf->SetFont('THSarabun','',9);
+$pdf->Rect(71, $lastY, 66, 32.5); // กล่องใหญ่
+$pdf->Rect(71, $lastY, 33, 14); // กล่องย่อย1
+$pdf->SetXY(71, $lastY);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Untreated indications'),0,1,'L');
+$pdf->SetXY(71, $lastY+4);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Dosage too height/'),0,1,'L');
+$pdf->SetXY(71, $lastY+8);
+$pdf->Cell(33, 4, $pdf->conv('too low/ wrong frequency'),0,1,'L');
+
+$pdf->Rect(104, $lastY, 33, 14); // กล่องย่อย2
+$pdf->SetXY(104, $lastY);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Duplication of drug therapy'),0,1,'L');
+$pdf->SetXY(104, $lastY+4);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Drug interraction'),0,1,'L');
+$pdf->SetXY(104, $lastY+8);
+$pdf->Cell(33, 4, $pdf->conv('[  ] Administration error'),0,1,'L');
+
+$pdf->SetFont('THSarabun','',10);
+$pdf->SetXY(71, $lastY+14);
+$pdf->Cell(66, 5, $pdf->conv('เรียนแพทย์/พยาบาล____________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+19);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+23);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(71, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('เภสัชกร__________________________วันที่________________'),0,1,'L');
+
+// ส่วนของพยาบาล
+$pdf->SetFont('THSarabun','',10);
+$pdf->Rect(137, $lastY, 66, 32.5);
+$pdf->SetXY(137, $lastY);
+$pdf->Cell(66, 5, $pdf->conv('เรียนแพทย์/เภสัชกร____________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+4);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+8);
+$pdf->Cell(66, 4, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+12);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+17);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+22);
+$pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
+$pdf->SetXY(137, $lastY+27);
+$pdf->Cell(66, 5, $pdf->conv('พยาบาล__________________________วันที่________________'),0,1,'L');
 
 
 $pdf->Output();
