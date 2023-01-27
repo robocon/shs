@@ -126,6 +126,17 @@ if($action==='search'){
         <input type="hidden" name="phardep_id" id="phardep_id">
     </form>
 </div>
+<?php 
+
+$ua = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
+if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
+	?>
+    <div id="notify-ie">
+        <p>ไมโครซอฟหยุด Support Internet Explorer ตั้งแต่ 15 มิถุนายน 2022 เป็นต้นไป<br>ดาวโหลด/อัพเดท เป็น <a href="https://www.microsoft.com/th-th/edge?r=1">Microsoft Edge</a> ได้แล้ววันนี้</p>
+    </div>
+    <?php
+}
+?>
 <script type="template/javascript" id="drug_template">
 <tr>
     <td><input type="checkbox" class="dItem" name="drug_id[]" id="dId{{drug_id}}" value="{{drug_id}}"></td>
@@ -134,7 +145,22 @@ if($action==='search'){
     <td align="right">{{drug_amount}}</td>
 </tr>
 </script>
+<style>
+    #notify-ie{
+        background-color: #ffff97;
+        border: 2px solid #464600;
+        padding: 4px;
+        text-align: center;
+        vertical-align: middle;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
 <script>
+    
     // เลือก HH
     document.getElementById("hnSearch").onsubmit = function(e){
         e.preventDefault();
