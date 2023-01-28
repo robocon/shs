@@ -83,7 +83,7 @@ if($action==='search'){
 <body>
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 d-print-none">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="#">HOME</a>
+			<a class="navbar-brand" href="../nindex.htm">HOME</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
