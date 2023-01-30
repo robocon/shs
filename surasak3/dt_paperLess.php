@@ -49,6 +49,9 @@ $hn = sprintf("%s", $_GET['hn']);
 		#fullPage{
 			position:fixed;
 		}
+		.thumbContain{
+			border-bottom:1px solid #b8b8b8;
+		}
 	</style>
 	<div class="clearfix">
 		<div id="left-menu">
@@ -59,6 +62,7 @@ $hn = sprintf("%s", $_GET['hn']);
 		</div>
 	</div>
 	<script type="text/javascript">
+
 		function newXmlHttp(){
 			var xmlhttp = false;
 			try{
@@ -76,6 +80,8 @@ $hn = sprintf("%s", $_GET['hn']);
 			return xmlhttp;
 		}
 
+		var def_fullm_th = {'01':'มกราคม', '02':'กุมภาพันธ์', '03':'มีนาคม', '04':'เมษายน', '05':'พฤษภาคม', '06':'มิถุนายน', '07':'กรกฎาคม', '08':'สิงหาคม', '09':'กันยายน', '10':'ตุลาคม', '11':'พฤศจิกายน', '12':'ธันวาคม'};
+
 		window.onload = function(){ 
 			var request = new newXmlHttp();
 			var hn = '<?=$hn;?>';
@@ -87,10 +93,20 @@ $hn = sprintf("%s", $_GET['hn']);
 							var d = JSON.parse(request.responseText);
 							
 							if(d.totalCount>0){ 
+								d.list.reverse();
 								var html = '';
 								for (var index = 0; index < d.list.length; index++) {
 									const element = d.list[index];
-									html += '<div class="column"><img src="'+element.thumbnail+'" alt="Lights" class="thumbImg" onclick="myFunction(\''+element.original+'\');"></div>';
+
+									var dateSplit = element.date.split(" ");
+									var dd = dateSplit[0].split("-");
+									var year = parseInt(dd[0])+543;
+									var month = def_fullm_th[dd[1]];
+
+									html += '<div class="column thumbContain">';
+									html += '<img src="'+element.thumbnail+'" alt="Lights" class="thumbImg" onclick="myFunction(\''+element.original+'\');">';
+									html += '<p><b>'+dd[2]+' '+month+' '+year+'</b></p>';
+									html += '</div>';
 								}
 								document.getElementById('thumbList').innerHTML = html;
 							}else{
