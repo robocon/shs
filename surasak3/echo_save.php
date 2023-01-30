@@ -81,7 +81,7 @@ if(empty($id)){
         `ms_mvapht`, `ms_mva2d`, `ms_mr`, `as`, `as_pgrad`, `as_mngrad`, 
         `as_ar`, `as_aipht`, `ps`, `ps_pgrad`, `ps_mngrad`, `ps_pr`, 
         `ps_pr_pgrad`, `ts`, `ts_mngrad`, `ts_tvapht`, `ts_tva2d`, `ts_tr`, 
-        `ts_rvsp`, `cardio_finding`, `diag`, `doctor`, `staff` 
+        `ts_rvsp`, `cardio_finding`, `diag`, `doctor`, `staff`, `status`
     ) VALUES ( 
         NULL, NOW(), '$thdatehn', '$ptname', '$hn', '$type', '$vn', 
         '$pause', '$bp', '$age', '$echo_no', '$ao', '$la', 
@@ -91,7 +91,7 @@ if(empty($id)){
         '$ms_mvapht', '$ms_mva2d', '$ms_mr', '$as', '$as_pgrad', '$as_mngrad', 
         '$as_ar', '$as_aipht', '$ps', '$ps_pgrad', '$ps_mngrad', '$ps_pr', 
         '$ps_pr_pgrad', '$ts', '$ts_mngrad', '$ts_tvapht', '$ts_tva2d', '$ts_tr', 
-        '$ts_rvsp', '$cardio_finding', '$diag', '$doctor', '$staff'
+        '$ts_rvsp', '$cardio_finding', '$diag', '$doctor', '$staff', 'y'
     );";
     $save = $dbi->query($sql);
     $insert_id = $dbi->insert_id;

@@ -50,9 +50,16 @@ if ($q->num_rows > 0) {
 
 $a = $q->fetch_assoc();
 list($mDate, $mTime) = explode(' ', $a['date']);
+
+// ถ้ามีการส่งค่าผ่าน GET เข้ามาด้วย
+if($_GET['date']){
+    list($mDate, $mTime) = explode(' ', $_GET['date']);
+}
+
 list($h,$i,$s) = explode(':', $mTime);
 list($y,$m,$d) = ad_to_bc(explode('-', $mDate));
 $th_date = $d.' '.$def_month_th[$m].' '.$y;
+
 ?>
 <table width="100%">
     <tr style="border-bottom: 1px solid #000000;">
