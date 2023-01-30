@@ -1,119 +1,121 @@
 <?php
 session_start();
 ?>
-    <style type="text/css">
-    *{
+<style type="text/css">
+    * {
         font-family: 'TH SarabunPSK';
         font-size: 15pt;
     }
-    body{
+
+    body {
         padding: 2pt;
     }
-    h3{
+
+    h3 {
         font-size: 18pt;
         padding: 0;
         margin: 0;
     }
-    @media print{
-        .noPrint{
+
+    @media print {
+        .noPrint {
             display: none;
         }
     }
-    .underline{
+
+    .underline {
         border-bottom: 1px solid black;
         padding: 0 8px;
     }
-    </style>
-<?
+</style>
+<?php
 include 'includes/connect.php';
 global $hn;
-$ward_lists = array(
-    42 => 'ÀÕºŸÈªË«¬√«¡', 43 => 'ÀÕºŸÈªË«¬ Ÿµ‘', 44 => 'ÀÕºŸÈªË«¬ICU', 45 => 'ÀÕºŸÈªË«¬æ‘‡»…'
-);
+$ward_lists = array(42 => '‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏£‡∏ß‡∏°', 43 => '‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏™‡∏π‡∏ï‡∏¥', 44 => '‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ICU', 45 => '‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏û‡∏¥‡πÄ‡∏®‡∏©');
 
 $action = $_POST['action'];
 $type = $_POST['type'];
-if( $action == 'print' && ($type=='admit' || $type=='dc')){
+if ($action == 'print' && ($type == 'admit' || $type == 'dc')) {
 
     $ids = $_POST['rows_id'];
     $hn = $_POST['hn'];
-//echo $type;
-    //$type_txt = ($type === 'admit') ? 'Admit' : 'D/C';
-	if($type == 'admit'){
-		$type_txt ="Admit";
-	}else if($type == 'dc'){
-		$type_txt ="D/C";
-	}else{
-		$type_txt ="MR";
-	}
-//echo $type_txt;    
+
+    if ($type == 'admit') {
+        $type_txt = "Admit";
+    } else if ($type == 'dc') {
+        $type_txt = "D/C";
+    } else {
+        $type_txt = "MR";
+    }
+
     $sql = "SELECT *, SUBSTRING(`bedcode`, 1, 2) AS `ward_code`
     FROM `ipcard` 
     WHERE `hn` = '$hn' 
     ORDER BY `row_id` DESC 
     LIMIT 1";
-    $q = mysql_query($sql) or die( mysql_error() );
+    $q = mysql_query($sql) or die(mysql_error());
     $user = mysql_fetch_assoc($q);
 
     $ward_name = $ward_lists[$user['ward_code']];
 
     $wardExTest = preg_match('/45.+/', $user['bedcode']);
-    if( $wardExTest > 0 ){
-        
-        // ‡™Á°«Ë“‡ªÁπ™—Èπ3 ∂È“‰¡Ë„™Ë‡ªÁπ™—Èπ2
+    if ($wardExTest > 0) {
+
+        // ‡πÄ‡∏ä‡πá‡∏Å‡∏ß‡πà‡∏≤‡πÄ‡∏õ‡πá‡∏ô‡∏ä‡∏±‡πâ‡∏ô3 ‡∏ñ‡πâ‡∏≤‡πÑ‡∏°‡πà‡πÉ‡∏ä‡πà‡πÄ‡∏õ‡πá‡∏ô‡∏ä‡∏±‡πâ‡∏ô2
         $wardR3Test = preg_match('/R3\d+|B\d+/', $user['bedcode']);
         $wardBxTest = preg_match('/B[0-9]+/', $user['bedcode']);
-        $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? '™—Èπ3' : '™—Èπ2' ;
-        $ward_name = $ward_name.' '.$exName;
+        $exName = ($wardR3Test > 0 or $wardBxTest > 0) ? '‡∏ä‡∏±‡πâ‡∏ô3' : '‡∏ä‡∏±‡πâ‡∏ô2';
+        $ward_name = $ward_name . ' ' . $exName;
     }
 
 
-    $id_lists = "'".implode("','", $ids)."'";
+    $id_lists = "'" . implode("','", $ids) . "'";
+
     $sql = "SELECT a.`tradname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
     FROM `drugrx` AS a 
     LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode` 
     WHERE a.`row_id` IN ($id_lists)";
-    $q = mysql_query($sql) or die( mysql_error() );
+    $q = mysql_query($sql) or die(mysql_error());
 
-    ?>
-    <h3 style="text-align: center;">¬“‡¥‘¡¢ÕßºŸÈªË«¬ √æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ ≈”ª“ß</h3>
+?>
+    <h3 style="text-align: center;">‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ ‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏•‡∏≥‡∏õ‡∏≤‡∏á</h3>
     <table>
         <tr>
-            <td><b>™◊ËÕ</b>: <span class="underline"><?=$user['ptname'];?></span></td>
-            <td><b>HN</b>: <span class="underline"><?=$user['hn'];?></span></td>
-            <td><b>AN</b>: <span class="underline"><?=$user['an'];?></span></td>
+            <td><b>‡∏ä‡∏∑‡πà‡∏≠</b>: <span class="underline"><?= $user['ptname']; ?></span></td>
+            <td><b>HN</b>: <span class="underline"><?= $user['hn']; ?></span></td>
+            <td><b>AN</b>: <span class="underline"><?= $user['an']; ?></span></td>
         </tr>
         <tr>
-            <td><b>ÀÕºŸÈªË«¬</b>: <span class="underline"><?=$ward_name;?></span></td>
-            <td><b>«—π∑’Ë</b>: <span class="underline"><?=$user['date'];?></span></td>
-            <td><b>Dx</b>: <span class="underline"><?=$user['diag'];?></span></td>
+            <td><b>‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</b>: <span class="underline"><?= $ward_name; ?></span></td>
+            <td><b>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</b>: <span class="underline"><?= $user['date']; ?></span></td>
+            <td><b>Dx</b>: <span class="underline"><?= $user['diag']; ?></span></td>
         </tr>
     </table>
-    <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
+    <table border="1" cellspacing="0" cellpadding="3" bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
         <tr>
             <th rowspan="2" width="2%">#</th>
-            <th rowspan="2" width="25%">™◊ËÕ¬“</th>
-            <th rowspan="2" width="40%">°“√„™È</th>
-            <th rowspan="2">®”π«π</th>
-            <th rowspan="2">«—π∑’Ë</th>
-            <th colspan="3"><?=$type_txt;?></th>
+            <th rowspan="2" width="25%">‡∏ä‡∏∑‡πà‡∏≠‡∏¢‡∏≤</th>
+            <th rowspan="2" width="40%">‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ</th>
+            <th rowspan="2">‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</th>
+            <th rowspan="2">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</th>
+            <th colspan="3"><?= $type_txt; ?></th>
         </tr>
         <tr>
-            <th>„™ÈµËÕ</th>
+            <th>‡πÉ‡∏ä‡πâ‡∏ï‡πà‡∏≠</th>
             <th>Hold</th>
             <th>Off</th>
         </tr>
         <?php
         $i = 1;
-        while( $item = mysql_fetch_assoc($q) ) {
+        while ($item = mysql_fetch_assoc($q)) {
             list($date, $time) = explode(' ', $item['date']);
-            ?>
-             <tr>
-                <td><?=$i;?></td>
-                <td><?=$item['tradname'];?></td>
-                <td><?=$item['detail1'].$item['detail2'].$item['detail3'];?></td>
-                <td align="right"><?=$item['amount'];?></td>
-                <td><?=$date;?></td>
+        ?>
+            <tr>
+                <td><?= $i; ?></td>
+                <td><?= $item['tradname']; ?></td>
+                <td><?= $item['detail1'] . $item['detail2'] . $item['detail3']; ?></td>
+                <td align="right"><?= $item['amount']; ?></td>
+                <td><?= $date; ?></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -121,49 +123,49 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             <?php
             ++$i;
         }
-        
+
         $other_name = $_POST['other_name'];
         $other_sl = $_POST['other_sl'];
         $other_amount = $_POST['other_amount'];
-        
+
         $rows = count($other_name);
-        if( $rows > 0 ){
-            for( $x = 0; $x < $rows; $x++ ){
+        if ($rows > 0) {
+            for ($x = 0; $x < $rows; $x++) {
                 $tradname = $other_name[$x];
                 $other_sl = $other_sl[$x];
                 $other_amount = $other_amount[$x];
-                ?>
+            ?>
                 <tr>
-                    <td><?=$i;?></td>
-                    <td><?=$tradname;?></td>
-                    <td><?=$other_sl;?></td>
-                    <td align="right"><?=$other_amount;?></td>
-                    <td><?=$date;?></td>
+                    <td><?= $i; ?></td>
+                    <td><?= $tradname; ?></td>
+                    <td><?= $other_sl; ?></td>
+                    <td align="right"><?= $other_amount; ?></td>
+                    <td><?= $date; ?></td>
                     <td></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <?php
+        <?php
                 $i++;
             }
         }
-            
+
         ?>
 
 
     </table>
     <table width="100%">
         <tr>
-            <td width="50%">·æ∑¬Ï..................................................</td>
-            <td>«—π∑’Ë..................................................</td>
+            <td width="50%">‡πÅ‡∏û‡∏ó‡∏¢‡πå..................................................</td>
+            <td>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà..................................................</td>
         </tr>
         <tr>
-            <td width="50%">‡¿ —™..................................................</td>
-            <td>«—π∑’Ë..................................................</td>
+            <td width="50%">‡πÄ‡∏†‡∏™‡∏±‡∏ä..................................................</td>
+            <td>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà..................................................</td>
         </tr>
         <tr>
-            <td width="50%">æ¬“∫“≈..................................................</td>
-            <td>«—π∑’Ë..................................................</td>
+            <td width="50%">‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•..................................................</td>
+            <td>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà..................................................</td>
         </tr>
         <tr>
             <td colspan="2">
@@ -171,120 +173,121 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                     <tr>
                         <td valign="top">Note: </td>
                         <td>
-                            æ¬“∫“≈ÀÕºŸÈªË«¬µ√«® Õ∫°“√®—¥°“√¬“‡¥‘¡¢ÕßºŸÈªË«¬„πøÕ√Ï¡π’È„ÀÈ‡√’¬∫√ÈÕ¬§√∫∂È«π<br>
-                            ·≈– Ëß·∫∫øÕ√Ï¡π’Èæ√ÈÕ¡ Dr's order D/C „π«—π∑’ËºŸÈªË«¬°≈—∫∫È“π∑ÿ°√“¬<br>
-                            ‡æ◊ËÕ∑” Med.reconcile „ÀÈ ¡∫Ÿ√≥Ï°ËÕπºŸÈªË«¬°≈—∫∫È“π+π” µ‘°‡°Õ√Ï‰ªµ‘¥ OPD Card                        </td>
+                            ‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡∏Å‡∏≤‡∏£‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÉ‡∏ô‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏ô‡∏µ‡πâ‡πÉ‡∏´‡πâ‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡∏Ñ‡∏£‡∏ö‡∏ñ‡πâ‡∏ß‡∏ô<br>
+                            ‡πÅ‡∏•‡∏∞‡∏™‡πà‡∏á‡πÅ‡∏ö‡∏ö‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏ô‡∏µ‡πâ‡∏û‡∏£‡πâ‡∏≠‡∏° Dr's order D/C ‡πÉ‡∏ô‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏Å‡∏•‡∏±‡∏ö‡∏ö‡πâ‡∏≤‡∏ô‡∏ó‡∏∏‡∏Å‡∏£‡∏≤‡∏¢<br>
+                            ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ó‡∏≥ Med.reconcile ‡πÉ‡∏´‡πâ‡∏™‡∏°‡∏ö‡∏π‡∏£‡∏ì‡πå‡∏Å‡πà‡∏≠‡∏ô‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏Å‡∏•‡∏±‡∏ö‡∏ö‡πâ‡∏≤‡∏ô+‡∏ô‡∏≥‡∏™‡∏ï‡∏¥‡∏Å‡πÄ‡∏Å‡∏≠‡∏£‡πå‡πÑ‡∏õ‡∏ï‡∏¥‡∏î OPD Card </td>
                     </tr>
-                </table>            </td>
+                </table>
+            </td>
         </tr>
     </table>
-<div class="noPrint">
-        <button onclick="println()">æ‘¡æÏ„∫</button>
+    <div class="noPrint">
+        <button onclick="println()">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö</button>
     </div>
     <script type="text/javascript">
-        function println(){
+        function println() {
             window.print();
         }
     </script>
-    <?php
+<?php
     exit;
-}else if( $action == 'print' && $type=='mr'){
+} else if ($action == 'print' && $type == 'mr') {
     $ids = $_POST['rows_id'];
     $hn = $_POST['hn'];
-//echo $type;
+    //echo $type;
     //$type_txt = ($type === 'admit') ? 'Admit' : 'D/C';
-	if($type == 'admit'){
-		$type_txt ="Admit";
-	}else if($type == 'dc'){
-		$type_txt ="D/C";
-	}else{
-		$type_txt ="MR";
-	}
-//echo $type_txt;    
+    if ($type == 'admit') {
+        $type_txt = "Admit";
+    } else if ($type == 'dc') {
+        $type_txt = "D/C";
+    } else {
+        $type_txt = "MR";
+    }
+    //echo $type_txt;    
     $sql = "SELECT *, SUBSTRING(`bedcode`, 1, 2) AS `ward_code`
     FROM `ipcard` 
     WHERE `hn` = '$hn' 
     ORDER BY `row_id` DESC 
     LIMIT 1";
-    $q = mysql_query($sql) or die( mysql_error() );
+    $q = mysql_query($sql) or die(mysql_error());
     $user = mysql_fetch_assoc($q);
 
     $ward_name = $ward_lists[$user['ward_code']];
 
     $wardExTest = preg_match('/45.+/', $user['bedcode']);
-    if( $wardExTest > 0 ){
-        
-        // ‡™Á°«Ë“‡ªÁπ™—Èπ3 ∂È“‰¡Ë„™Ë‡ªÁπ™—Èπ2
+    if ($wardExTest > 0) {
+
+        // ‡πÄ‡∏ä‡πá‡∏Å‡∏ß‡πà‡∏≤‡πÄ‡∏õ‡πá‡∏ô‡∏ä‡∏±‡πâ‡∏ô3 ‡∏ñ‡πâ‡∏≤‡πÑ‡∏°‡πà‡πÉ‡∏ä‡πà‡πÄ‡∏õ‡πá‡∏ô‡∏ä‡∏±‡πâ‡∏ô2
         $wardR3Test = preg_match('/R3\d+|B\d+/', $user['bedcode']);
         $wardBxTest = preg_match('/B[0-9]+/', $user['bedcode']);
-        $exName = ( $wardR3Test > 0 OR $wardBxTest > 0 ) ? '™—Èπ3' : '™—Èπ2' ;
-        $ward_name = $ward_name.' '.$exName;
+        $exName = ($wardR3Test > 0 or $wardBxTest > 0) ? '‡∏ä‡∏±‡πâ‡∏ô3' : '‡∏ä‡∏±‡πâ‡∏ô2';
+        $ward_name = $ward_name . ' ' . $exName;
     }
 
 
-    $id_lists = "'".implode("','", $ids)."'";
+    $id_lists = "'" . implode("','", $ids) . "'";
     $sql = "SELECT a.`tradname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
     FROM `drugrx` AS a 
     LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode` 
     WHERE a.`row_id` IN ($id_lists)";
-    $q = mysql_query($sql) or die( mysql_error() );
+    $q = mysql_query($sql) or die(mysql_error());
 
-    ?>
-    <h3 style="text-align: center;">¬“‡¥‘¡¢ÕßºŸÈªË«¬ √æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ ≈”ª“ß</h3>
+?>
+    <h3 style="text-align: center;">‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ ‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏•‡∏≥‡∏õ‡∏≤‡∏á</h3>
     <table>
         <tr>
-            <td><b>™◊ËÕ</b>: <span class="underline"><?=$user['ptname'];?></span></td>
-            <td><b>HN</b>: <span class="underline"><?=$user['hn'];?></span></td>
-            <td><b>AN</b>: <span class="underline"><?=$user['an'];?></span></td>
+            <td><b>‡∏ä‡∏∑‡πà‡∏≠</b>: <span class="underline"><?= $user['ptname']; ?></span></td>
+            <td><b>HN</b>: <span class="underline"><?= $user['hn']; ?></span></td>
+            <td><b>AN</b>: <span class="underline"><?= $user['an']; ?></span></td>
         </tr>
         <tr>
-            <td><b>ÀÕºŸÈªË«¬</b>: <span class="underline"><?=$ward_name;?></span></td>
-            <td><strong>‚√§</strong>: <span class="underline">
-              <?=$user['diag'];?>
-            </span></td>
-            <td><strong>·æ∑¬Ï</strong>: <span class="underline"><?=substr($user['doctor'],5);?></span></td>
+            <td><b>‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</b>: <span class="underline"><?= $ward_name; ?></span></td>
+            <td><strong>‡πÇ‡∏£‡∏Ñ</strong>: <span class="underline">
+                    <?= $user['diag']; ?>
+                </span></td>
+            <td><strong>‡πÅ‡∏û‡∏ó‡∏¢‡πå</strong>: <span class="underline"><?= substr($user['doctor'], 5); ?></span></td>
         </tr>
         <tr>
-          <td><b>«—π∑’Ë Admit: </b><span class="underline">
-          <?=$user['date'];?>
-          </span></td>
-          <td><b>«—π∑’Ë D/C: </b><span class="underline">
-          <?=$user['dcdate'];?>
-          </span></td>
-          <td>&nbsp;</td>
+            <td><b>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà Admit: </b><span class="underline">
+                    <?= $user['date']; ?>
+                </span></td>
+            <td><b>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà D/C: </b><span class="underline">
+                    <?= $user['dcdate']; ?>
+                </span></td>
+            <td>&nbsp;</td>
         </tr>
     </table>
-    <table border="1" cellspacing="0" cellpadding="3"  bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
+    <table border="1" cellspacing="0" cellpadding="3" bordercolor="#000000" style="border-collapse:collapse; width: 100%;">
         <tr>
             <th rowspan="2" width="2%">#</th>
-            <th rowspan="2" width="15%">™◊ËÕ¬“</th>
-            <th rowspan="2" width="27%">«‘∏’„™È</th>
-            <th width="7%" rowspan="2">®”π«π</th>
-            <th width="15%" rowspan="2">«—π∑’Ë‰¥È¬“≈Ë“ ÿ¥</th>
+            <th rowspan="2" width="15%">‡∏ä‡∏∑‡πà‡∏≠‡∏¢‡∏≤</th>
+            <th rowspan="2" width="27%">‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ</th>
+            <th width="7%" rowspan="2">‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</th>
+            <th width="15%" rowspan="2">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡πÑ‡∏î‡πâ‡∏¢‡∏≤‡∏•‡πà‡∏≤‡∏™‡∏∏‡∏î</th>
             <th colspan="3">Admit</th>
             <th colspan="3">D/C</th>
         </tr>
         <tr>
-            <th width="4%">„™ÈµËÕ</th>
+            <th width="4%">‡πÉ‡∏ä‡πâ‡∏ï‡πà‡∏≠</th>
             <th width="4%">Off</th>
-            <th width="9%">‡Àµÿº≈∑’Ë —Ëß<br />
-            À¬ÿ¥¬“/‡ª≈’Ë¬π¬“</th>
-          <th width="4%">„™ÈµËÕ</th>
-          <th width="4%">Off</th>
-          <th width="9%">‡Àµÿº≈∑’Ë —Ëß<br />
-          À¬ÿ¥¬“/‡ª≈’Ë¬π¬“</th>
+            <th width="9%">‡πÄ‡∏´‡∏ï‡∏∏‡∏ú‡∏•‡∏ó‡∏µ‡πà‡∏™‡∏±‡πà‡∏á<br />
+                ‡∏´‡∏¢‡∏∏‡∏î‡∏¢‡∏≤/‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡∏¢‡∏≤</th>
+            <th width="4%">‡πÉ‡∏ä‡πâ‡∏ï‡πà‡∏≠</th>
+            <th width="4%">Off</th>
+            <th width="9%">‡πÄ‡∏´‡∏ï‡∏∏‡∏ú‡∏•‡∏ó‡∏µ‡πà‡∏™‡∏±‡πà‡∏á<br />
+                ‡∏´‡∏¢‡∏∏‡∏î‡∏¢‡∏≤/‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô‡∏¢‡∏≤</th>
         </tr>
         <?php
         $i = 1;
-        while( $item = mysql_fetch_assoc($q) ) {
+        while ($item = mysql_fetch_assoc($q)) {
             list($date, $time) = explode(' ', $item['date']);
-            ?>
-             <tr>
-                <td><?=$i;?></td>
-                <td><?=$item['tradname'];?></td>
-                <td><?=$item['detail1'].$item['detail2'].$item['detail3'];?></td>
-                <td align="right"><?=$item['amount'];?></td>
-                <td><?=$date;?></td>
+        ?>
+            <tr>
+                <td><?= $i; ?></td>
+                <td><?= $item['tradname']; ?></td>
+                <td><?= $item['detail1'] . $item['detail2'] . $item['detail3']; ?></td>
+                <td align="right"><?= $item['amount']; ?></td>
+                <td><?= $date; ?></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -295,24 +298,24 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             <?php
             ++$i;
         }
-        
+
         $other_name = $_POST['other_name'];
         $other_sl = $_POST['other_sl'];
         $other_amount = $_POST['other_amount'];
-        
+
         $rows = count($other_name);
-        if( $rows > 0 ){
-            for( $x = 0; $x < $rows; $x++ ){
+        if ($rows > 0) {
+            for ($x = 0; $x < $rows; $x++) {
                 $tradname = $other_name[$x];
                 $other_sl = $other_sl[$x];
                 $other_amount = $other_amount[$x];
-                ?>
+            ?>
                 <tr>
-                    <td><?=$i;?></td>
-                    <td><?=$tradname;?></td>
-                    <td><?=$other_sl;?></td>
-                    <td align="right"><?=$other_amount;?></td>
-                    <td><?=$date;?></td>
+                    <td><?= $i; ?></td>
+                    <td><?= $tradname; ?></td>
+                    <td><?= $other_sl; ?></td>
+                    <td align="right"><?= $other_amount; ?></td>
+                    <td><?= $date; ?></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -320,107 +323,111 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                     <td></td>
                     <td></td>
                 </tr>
-                <?php
+        <?php
                 $i++;
             }
         }
-            
+
         ?>
     </table>
     <table width="100%">
         <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
         </tr>
         <tr>
-            <td width="31%">·æ∑¬Ï..................................................</td>
-            <td width="31%">«—π∑’Ë..................................................</td>
-            <td width="38%">§«“¡‡ÀÁπ·æ∑¬Ï</td>
+            <td width="31%">‡πÅ‡∏û‡∏ó‡∏¢‡πå..................................................</td>
+            <td width="31%">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà..................................................</td>
+            <td width="38%">‡∏Ñ‡∏ß‡∏≤‡∏°‡πÄ‡∏´‡πá‡∏ô‡πÅ‡∏û‡∏ó‡∏¢‡πå</td>
         </tr>
         <tr>
-            <td width="31%">‡¿ —™..................................................</td>
-            <td width="31%">«—π∑’Ë..................................................</td>
-            <td width="38%" rowspan="2" valign="top" bordercolor="#000000"><table width="90%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
-              <tr>
-                <td width="16%">&nbsp;</td>
-                <td width="84%">§π‰¢È‰¥È√—∫¬“µËÕ‡π◊ËÕß</td>
-              </tr>
-              <tr>
-                <td>&nbsp;</td>
-                <td>‰¡Ë‰¥È√—∫¬“µËÕ‡π◊ËÕß</td>
-              </tr>
-            </table></td>
+            <td width="31%">‡πÄ‡∏†‡∏™‡∏±‡∏ä..................................................</td>
+            <td width="31%">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà..................................................</td>
+            <td width="38%" rowspan="2" valign="top" bordercolor="#000000">
+                <table width="90%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+                    <tr>
+                        <td width="16%">&nbsp;</td>
+                        <td width="84%">‡∏Ñ‡∏ô‡πÑ‡∏Ç‡πâ‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡∏ï‡πà‡∏≠‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡∏ï‡πà‡∏≠‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á</td>
+                    </tr>
+                </table>
+            </td>
         </tr>
         <tr>
-            <td width="31%">æ¬“∫“≈..................................................</td>
-            <td width="31%">«—π∑’Ë..................................................</td>
+            <td width="31%">‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•..................................................</td>
+            <td width="31%">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà..................................................</td>
         </tr>
         <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td valign="top" bordercolor="#000000">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td valign="top" bordercolor="#000000">&nbsp;</td>
         </tr>
         <tr>
-          <td colspan="3">Pharmacist note (¢Õª√÷°…“·æ∑¬Ï)</td>
+            <td colspan="3">Pharmacist note (‡∏Ç‡∏≠‡∏õ‡∏£‡∏∂‡∏Å‡∏©‡∏≤‡πÅ‡∏û‡∏ó‡∏¢‡πå)</td>
         </tr>
         <tr>
-          <td colspan="3"><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
-            <tr>
-              <td width="25%">&nbsp;</td>
-              <td width="7%">&nbsp;</td>
-              <td width="24%">Unnecessary drug therapy</td>
-              <td width="44%">‰¥È√—∫¬“∑’Ë‰¡Ë®”‡ªÁπ</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Need for additional drug therapy</td>
-              <td> ¡§«√‰¥È√—∫¬“‡æ‘Ë¡‡µ‘¡</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Improper drug selection</td>
-              <td>°“√‡≈◊Õ°„™È¬“∑’Ë‰¡Ë‡À¡“– ¡</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Dosage too low</td>
-              <td>‰¥È¢π“¥¬“µË”‡°‘π‰ª</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Dosage too hign</td>
-              <td>‰¥È¢π“¥¬“ Ÿß‡°‘π‰ª</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Adverse drug reaction</td>
-              <td>‡°‘¥Õ“°“√‰¡Ëæ÷ßª√– ß§Ï®“°°“√„™È¬“</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Drug interaction</td>
-              <td>ªØ‘°‘√‘¬“√–À«Ë“ß¬“</td>
-            </tr>
-            <tr>
-              <td>&nbsp;</td>
-              <td>&nbsp;</td>
-              <td>Non-Compliance</td>
-              <td>§«“¡√Ë«¡¡◊Õ„π°“√„™È¬“</td>
-            </tr>
+            <td colspan="3">
+                <table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+                    <tr>
+                        <td width="25%">&nbsp;</td>
+                        <td width="7%">&nbsp;</td>
+                        <td width="24%">Unnecessary drug therapy</td>
+                        <td width="44%">‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡∏ó‡∏µ‡πà‡πÑ‡∏°‡πà‡∏à‡∏≥‡πÄ‡∏õ‡πá‡∏ô</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Need for additional drug therapy</td>
+                        <td>‡∏™‡∏°‡∏Ñ‡∏ß‡∏£‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡πÄ‡∏û‡∏¥‡πà‡∏°‡πÄ‡∏ï‡∏¥‡∏°</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Improper drug selection</td>
+                        <td>‡∏Å‡∏≤‡∏£‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÉ‡∏ä‡πâ‡∏¢‡∏≤‡∏ó‡∏µ‡πà‡πÑ‡∏°‡πà‡πÄ‡∏´‡∏°‡∏≤‡∏∞‡∏™‡∏°</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Dosage too low</td>
+                        <td>‡πÑ‡∏î‡πâ‡∏Ç‡∏ô‡∏≤‡∏î‡∏¢‡∏≤‡∏ï‡πà‡∏≥‡πÄ‡∏Å‡∏¥‡∏ô‡πÑ‡∏õ</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Dosage too hign</td>
+                        <td>‡πÑ‡∏î‡πâ‡∏Ç‡∏ô‡∏≤‡∏î‡∏¢‡∏≤‡∏™‡∏π‡∏á‡πÄ‡∏Å‡∏¥‡∏ô‡πÑ‡∏õ</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Adverse drug reaction</td>
+                        <td>‡πÄ‡∏Å‡∏¥‡∏î‡∏≠‡∏≤‡∏Å‡∏≤‡∏£‡πÑ‡∏°‡πà‡∏û‡∏∂‡∏á‡∏õ‡∏£‡∏∞‡∏™‡∏á‡∏Ñ‡πå‡∏à‡∏≤‡∏Å‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ‡∏¢‡∏≤</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Drug interaction</td>
+                        <td>‡∏õ‡∏è‡∏¥‡∏Å‡∏¥‡∏£‡∏¥‡∏¢‡∏≤‡∏£‡∏∞‡∏´‡∏ß‡πà‡∏≤‡∏á‡∏¢‡∏≤</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>Non-Compliance</td>
+                        <td>‡∏Ñ‡∏ß‡∏≤‡∏°‡∏£‡πà‡∏ß‡∏°‡∏°‡∏∑‡∏≠‡πÉ‡∏ô‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ‡∏¢‡∏≤</td>
+                    </tr>
 
-          </table></td>
+                </table>
+            </td>
         </tr>
         <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td valign="top" bordercolor="#000000">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td valign="top" bordercolor="#000000">&nbsp;</td>
         </tr>
         <tr>
             <td colspan="3">
@@ -428,106 +435,104 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                     <tr>
                         <td valign="top">Note: </td>
                         <td>
-                            æ¬“∫“≈ÀÕºŸÈªË«¬µ√«® Õ∫°“√®—¥°“√¬“‡¥‘¡¢ÕßºŸÈªË«¬„πøÕ√Ï¡π’È„ÀÈ‡√’¬∫√ÈÕ¬§√∫∂È«π<br>
-                            ·≈– Ëß·∫∫øÕ√Ï¡π’Èæ√ÈÕ¡ Dr's order D/C „π«—π∑’ËºŸÈªË«¬°≈—∫∫È“π∑ÿ°√“¬<br>
-                            ‡æ◊ËÕ∑” Med.reconcile „ÀÈ ¡∫Ÿ√≥Ï°ËÕπºŸÈªË«¬°≈—∫∫È“π+π” µ‘°‡°Õ√Ï‰ªµ‘¥ OPD Card                        </td>
+                            ‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡∏Å‡∏≤‡∏£‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÉ‡∏ô‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏ô‡∏µ‡πâ‡πÉ‡∏´‡πâ‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡∏Ñ‡∏£‡∏ö‡∏ñ‡πâ‡∏ß‡∏ô<br>
+                            ‡πÅ‡∏•‡∏∞‡∏™‡πà‡∏á‡πÅ‡∏ö‡∏ö‡∏ü‡∏≠‡∏£‡πå‡∏°‡∏ô‡∏µ‡πâ‡∏û‡∏£‡πâ‡∏≠‡∏° Dr's order D/C ‡πÉ‡∏ô‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏Å‡∏•‡∏±‡∏ö‡∏ö‡πâ‡∏≤‡∏ô‡∏ó‡∏∏‡∏Å‡∏£‡∏≤‡∏¢<br>
+                            ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏ó‡∏≥ Med.reconcile ‡πÉ‡∏´‡πâ‡∏™‡∏°‡∏ö‡∏π‡∏£‡∏ì‡πå‡∏Å‡πà‡∏≠‡∏ô‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏Å‡∏•‡∏±‡∏ö‡∏ö‡πâ‡∏≤‡∏ô+‡∏ô‡∏≥‡∏™‡∏ï‡∏¥‡∏Å‡πÄ‡∏Å‡∏≠‡∏£‡πå‡πÑ‡∏õ‡∏ï‡∏¥‡∏î OPD Card </td>
                     </tr>
-                </table>            </td>
+                </table>
+            </td>
         </tr>
     </table>
     <div class="noPrint">
-        <button onclick="println()">æ‘¡æÏ„∫</button>
+        <button onclick="println()">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö</button>
     </div>
     <script type="text/javascript">
-        function println(){
+        function println() {
             window.print();
         }
     </script>
-    <?php
+<?php
     exit;
-
 }
 ?>
 
 <style>
-    p{
+    p {
         margin: 0;
         padding: 0;
     }
 </style>
 
-<form method="post" action="<?php echo $PHP_SELF ?>">
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;µ√«® Õ∫°“√„™È¬“µ“¡ HN</p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="text" name="hn" size="12"></p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="      µ°≈ß      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'>&larr;‰ª‡¡πŸ</a></p>
+<form method="post" action="hndrugcheck.php">
+    <p>‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ‡∏¢‡∏≤‡∏ï‡∏≤‡∏° HN</p>
+    <p>HN <input type="text" name="hn" size="12"></p>
+    <p>
+        <input type="submit" value="      ‡∏ï‡∏Å‡∏•‡∏á      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>&larr;‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</a>
+    </p>
 </form>
 
 <form action="hndrugcheck.php" method="post" target="_blank">
     <div>
-        <button type="submit" value="admit" onclick="add_type('admit')">æ‘¡æÏ„∫ Admit</button>
-        <button type="submit" value="dc" onclick="add_type('dc')">æ‘¡æÏ„∫ D/C</button>
-        <button type="submit" value="mr" onclick="add_type('mr')">æ‘¡æÏ„∫ MR</button>
-        
-<input type="hidden" name="type" id="type">
-        <input type="hidden" name="hn" value="<?=$hn;?>">
+        <button type="submit" value="admit" onclick="add_type('admit')">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö Admit</button>
+        <button type="submit" value="dc" onclick="add_type('dc')">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö D/C</button>
+        <button type="submit" value="mr" onclick="add_type('mr')">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö MR</button>
+
+        <input type="hidden" name="type" id="type">
+        <input type="hidden" name="hn" value="<?= $hn; ?>">
         <input type="hidden" name="action" value="print">
     </div>
     <div>
         <fieldset>
-            <legend>‡æ‘Ë¡¬“πÕ° √æ.</legend>
+            <legend>‡πÄ‡∏û‡∏¥‡πà‡∏°‡∏¢‡∏≤‡∏ô‡∏≠‡∏Å ‡∏£‡∏û.</legend>
             <div>
-                <label for="">™◊ËÕ¬“</label>
+                <label for="">‡∏ä‡∏∑‡πà‡∏≠‡∏¢‡∏≤</label>
                 <input type="text" name="drug_name" id="drug_name">
             </div>
             <div>
-                <label for="">°“√„™È¬“</label>
+                <label for="">‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ‡∏¢‡∏≤</label>
                 <input type="text" name="drug_sl" id="drug_sl">
             </div>
             <div>
-                <label for="">®”π«π</label>
+                <label for="">‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</label>
                 <input type="text" name="drug_amount" id="drug_amount">
             </div>
-            <button onclick="return add_other()">‡æ‘Ë¡¬“πÕ°</button>
+            <button onclick="return add_other()">‡πÄ‡∏û‡∏¥‡πà‡∏°‡∏¢‡∏≤‡∏ô‡∏≠‡∏Å</button>
         </fieldset>
     </div>
 </form>
 
-<?php 
+<?php
 $b1 = trim($_POST['B1']);
-if(!empty($b1)){
+if (!empty($b1)) {
 
     $q_op = mysql_query("SELECT * FROM `opcard` WHERE `hn` = '$hn' ");
-    if(mysql_num_rows($q_op)>0){ 
+    if (mysql_num_rows($q_op) > 0) {
         $user = mysql_fetch_assoc($q_op);
 
         $q_rea = mysql_query("SELECT * FROM `drugreact` WHERE `hn` = '$hn'");
-        $react_txt = "‰¡Ë·æÈ¬“";
-        if(mysql_num_rows($q_rea)){
+        $react_txt = "‡πÑ‡∏°‡πà‡πÅ‡∏û‡πâ‡∏¢‡∏≤";
+        if (mysql_num_rows($q_rea)) {
             $react_txt = "";
             while ($b = mysql_fetch_assoc($q_rea)) {
-                $react_txt .= '<b>'.$b['tradname'].'</b>('.$b['drugcode'].') '.$b['advreact']."<br>";
+                $react_txt .= '<b>' . $b['tradname'] . '</b>(' . $b['drugcode'] . ') ' . $b['advreact'] . "<br>";
             }
-
         }
 
         ?>
         <div>
-            <p><b>™◊ËÕ- °ÿ≈ :</b> <?=$user['yot'].$user['name'].$user['surname'];?> <b>‡≈¢∫—µ√ª√–™“™π : </b><?=$user['idcard'];?> <b>‡æ» : </b><?=$user['sex'];?></p>
-            <p><b>HN : </b><?=$user['hn'];?> <b> ‘∑∏‘°“√√—°…“ : </b><?=$user['ptright'];?></p>
-            <p><b>·æÈ¬“ : </b><?=$react_txt;?></p>
+            <p><b>‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• :</b> <?= $user['yot'] . $user['name'] .'  '. $user['surname']; ?> <b>‡πÄ‡∏•‡∏Ç‡∏ö‡∏±‡∏ï‡∏£‡∏õ‡∏£‡∏∞‡∏ä‡∏≤‡∏ä‡∏ô : </b><?= $user['idcard']; ?> <b>‡πÄ‡∏û‡∏® : </b><?= $user['sex']; ?></p>
+            <p><b>HN : </b><?= $user['hn']; ?> <b>‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤ : </b><?= $user['ptright']; ?></p>
+            <p><b>‡πÅ‡∏û‡πâ‡∏¢‡∏≤ : </b><?= $react_txt; ?></p>
         </div>
         <?php
-    }else{
-        echo "‰¡Ëæ∫ HN °√ÿ≥“µ√«® Õ∫¢ÈÕ¡Ÿ≈Õ’°§√—Èß";
+    } else {
+        echo "‡πÑ‡∏°‡πà‡∏û‡∏ö HN ‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏≠‡∏µ‡∏Å‡∏Ñ‡∏£‡∏±‡πâ‡∏á";
         exit;
     }
 }
 ?>
-    <script type="template/javascript" id="drug_template">
-        <tr bgcolor="F5DEB3">
-            <td></td>
+<script type="template/javascript" id="drug_template">
+    <tr bgcolor="F5DEB3">
             <td></td>
             <td></td>
             <td></td>
@@ -535,131 +540,131 @@ if(!empty($b1)){
             <td></td>
             <td><input type="hidden" name="other_name[]" value="{{tradname}}">{{tradname}}</td>
             <td><input type="hidden" name="other_sl[]" value="{{slcode}}">{{slcode}}</td>
-            <td></td>
             <td><input type="hidden" name="other_amount[]" value="{{amount}}">{{amount}}</td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
-    </script>
-    <script type="text/javascript">
-        function add_other(){
-            var drug_name = document.getElementById('drug_name');
-            var drug_sl = document.getElementById('drug_sl');
-            var drug_amount = document.getElementById('drug_amount');
+</script>
+<script type="text/javascript">
+    function add_other() {
+        var drug_name = document.getElementById('drug_name');
+        var drug_sl = document.getElementById('drug_sl');
+        var drug_amount = document.getElementById('drug_amount');
 
-            if( drug_name.value == '' || drug_sl.value == '' || drug_amount.value == '' ){
-                alert('°√ÿ≥“°√Õ°¢ÈÕ¡Ÿ≈„ÀÈ§√∫');
-                return false;
-            }
-
-            var tem = document.getElementById('drug_template').innerHTML;
-            
-            tem = tem.replace(/{{tradname}}/g, drug_name.value, tem);
-            tem = tem.replace(/{{slcode}}/g, drug_sl.value, tem);
-            tem = tem.replace(/{{amount}}/g, drug_amount.value, tem);
-
-            var main_content = document.getElementById('main_content');
-            main_content.innerHTML = tem+main_content.innerHTML;
-
-            drug_name.value = '';
-            drug_sl.value = '';
-            drug_amount.value = '';
-
+        if (drug_name.value == '' || drug_sl.value == '' || drug_amount.value == '') {
+            alert('‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏Å‡∏£‡∏≠‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏´‡πâ‡∏Ñ‡∏£‡∏ö');
             return false;
         }
 
-        function add_type(type){
-            document.getElementById('type').value = type;
-        }
-    </script>
-    <table>
-        <thead>
-            <tr bgcolor="CD853F">
-                <th ></th>
-                <th>HN</th>
-                <th>AN</th>
-                <th>VN</th>
-                <th>«—π·≈–‡«≈“</th>
-                <th>drugcode</th>
-                <th>™◊ËÕ¬“</th>
-                <th>«‘∏’„™È</th>
-                <th></th>
-                <th>®”π«π</th>
-                <th>√“§“</th>
-                <th>part</th>
-                <th>·æ∑¬Ï</th>
-                <th>ºŸÈµ—¥</th>
-            </tr>
-        </thead>
-        <tbody id="main_content">
-            <?php
-            if( !empty($hn) ){
-                
-                $query = "SELECT `row_id`,hn,an,date,drugcode,tradname, slcode,amount, price,part,idno 
-                FROM drugrx WHERE hn = '$hn'  ORDER BY date DESC " ;
-                $result = mysql_query($query) or die("Query failed");
+        var tem = document.getElementById('drug_template').innerHTML;
 
-                while (list ($row_id,$hn,$an,$date,$drugcode,$tradname,$slcode,$amount,$price,$part,$idno) = mysql_fetch_row ($result)) {
+        tem = tem.replace(/{{tradname}}/g, drug_name.value, tem);
+        tem = tem.replace(/{{slcode}}/g, drug_sl.value, tem);
+        tem = tem.replace(/{{amount}}/g, drug_amount.value, tem);
 
-                    $sql = "Select doctor,idname From phardep where date = '$date'  ";
-                    list($doctor1,$idname1)  = mysql_fetch_row(Mysql_Query($sql));
+        var main_content = document.getElementById('main_content');
+        main_content.innerHTML = tem + main_content.innerHTML;
 
-                    $sql1 = "SELECT * FROM `druglst` WHERE drugcode='$drugcode' and had='Y' ";
-                    $result1 = mysql_query($sql1);
-                    $num = mysql_num_rows($result1);
-                    if( $num > 0 ){
-                        $bg="#CC3333";
-                    }else{
-                        $bg="#F5DEB3";
-                    }
+        drug_name.value = '';
+        drug_sl.value = '';
+        drug_amount.value = '';
 
-                    $q_slip = mysql_query("SELECT * FROM `drugslip` WHERE `slcode` = '$slcode' ");
-                    $dsl = mysql_fetch_assoc($q_slip);
+        return false;
+    }
 
-                    $full_detail = '';
-                    if(!empty($dsl['detail1'])){
-                        $full_detail .= $dsl['detail1']."<br>";
-                    }
-                    if(!empty($dsl['detail2'])){
-                        $full_detail .= $dsl['detail2']."<br>";
-                    }
-                    if(!empty($dsl['detail3'])){
-                        $full_detail .= $dsl['detail3']."<br>";
-                    }
+    function add_type(type) {
+        document.getElementById('type').value = type;
+    }
+</script>
+<table>
+    <thead>
+        <tr bgcolor="CD853F">
+            <th></th>
+            <th>HN</th>
+            <th>AN</th>
+            <th>VN</th>
+            <th>‡∏ß‡∏±‡∏ô‡πÅ‡∏•‡∏∞‡πÄ‡∏ß‡∏•‡∏≤</th>
+            <th>drugcode</th>
+            <th>‡∏ä‡∏∑‡πà‡∏≠‡∏¢‡∏≤</th>
+            <th>‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ</th>
+            <th></th>
+            <th>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</th>
+            <th>‡∏£‡∏≤‡∏Ñ‡∏≤</th>
+            <th>part</th>
+            <th>‡πÅ‡∏û‡∏ó‡∏¢‡πå</th>
+            <th>‡∏ú‡∏π‡πâ‡∏ï‡∏±‡∏î</th>
+        </tr>
+    </thead>
+    <tbody id="main_content">
+        <?php
+        if (!empty($hn)) {
 
-                    $vn = '';
-                    if(empty($an)){
-                        $q_phar = mysql_query("SELECT `tvn` FROM `phardep` WHERE `row_id` = '$idno' ");
-                        $pha = mysql_fetch_assoc($q_phar);
-                        $vn = $pha['tvn'];
-                    }
+            $last3years = (date('Y', strtotime("-3 years"))+543).date('-m-d', strtotime("-3 years"));
 
-                    ?>
-                    <tr bgcolor="<?=$bg;?>">
-                        <td >
-                            <input type="checkbox" name="rows_id[]" id="row_<?=$row_id;?>" value="<?=$row_id;?>">
-                        </td>
-                        <td><label for="row_<?=$row_id;?>"><?=$hn;?></label></td>
-                        <td><?=$an;?></td>
-                        <td><?=$vn;?></td>
-                        <td><?=$date;?></a></td>
-                        <td><?=$drugcode;?></td>
-                        <td><?=$tradname;?></td>
-                        <td><?=$slcode;?></td>
-                        <td><?=$full_detail;?></td>
-                        <td><?=$amount;?></td>
-                        <td><?=$price;?></td>
-                        <td><?=$part;?></td>
-                        <td><?=$doctor1;?></td>
-                        <td><?=$idname1;?></td>
-                    </tr>
-                    <?php
+            $query = "SELECT `row_id`,`hn`,`an`,`date`,`drugcode`,`tradname`, `slcode`,`amount`, `price`,`part`,`idno` 
+            FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$last3years' ORDER BY `date` DESC ";
+            $result = mysql_query($query) or die( mysql_error() );
+
+            while (list($row_id, $hn, $an, $date, $drugcode, $tradname, $slcode, $amount, $price, $part, $idno) = mysql_fetch_row($result)) {
+
+                list($doctor1, $idname1, $tvn)  = mysql_fetch_row(Mysql_Query("SELECT `doctor`,`idname`,`tvn` FROM `phardep` where `row_id` = '$idno'  "));
+
+                $sql1 = "SELECT * FROM `druglst` WHERE drugcode='$drugcode' and had='Y' ";
+                $result1 = mysql_query($sql1);
+                $num = mysql_num_rows($result1);
+                if ($num > 0) {
+                    $bg = "#CC3333";
+                } else {
+                    $bg = "#F5DEB3";
                 }
-                
-                include("unconnect.inc");
+
+                $q_slip = mysql_query("SELECT * FROM `drugslip` WHERE `slcode` = '$slcode' ");
+                $dsl = mysql_fetch_assoc($q_slip);
+
+                $full_detail = '';
+                if (!empty($dsl['detail1'])) {
+                    $full_detail .= $dsl['detail1'] . "<br>";
+                }
+                if (!empty($dsl['detail2'])) {
+                    $full_detail .= $dsl['detail2'] . "<br>";
+                }
+                if (!empty($dsl['detail3'])) {
+                    $full_detail .= $dsl['detail3'] . "<br>";
+                }
+
+                $vn = '';
+                if (empty($an)) {
+                    // $q_phar = mysql_query("SELECT `tvn` FROM `phardep` WHERE `row_id` = '$idno' ");
+                    // $pha = mysql_fetch_assoc($q_phar);
+                    $vn = $tvn;
+                }
+
+                ?>
+                <tr bgcolor="<?= $bg; ?>">
+                    <td>
+                        <input type="checkbox" name="rows_id[]" id="row_<?= $row_id; ?>" value="<?= $row_id; ?>">
+                    </td>
+                    <td><label for="row_<?= $row_id; ?>"><?= $hn; ?></label></td>
+                    <td><?= $an; ?></td>
+                    <td><?= $vn; ?></td>
+                    <td><?= $date; ?></a></td>
+                    <td><?= $drugcode; ?></td>
+                    <td><?= $tradname; ?></td>
+                    <td><?= $slcode; ?></td>
+                    <td><?= $full_detail; ?></td>
+                    <td><?= $amount; ?></td>
+                    <td><?= $price; ?></td>
+                    <td><?= $part; ?></td>
+                    <td><?= $doctor1; ?></td>
+                    <td><?= $idname1; ?></td>
+                </tr>
+            <?php
             }
-            ?>
-        </tbody>
-    </table>
+
+            include("unconnect.inc");
+        }
+        ?>
+    </tbody>
+</table>
