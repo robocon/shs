@@ -229,22 +229,18 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
             return false;
         }
 
-        var checkSelected = false;
-        data = [];
-        for (let index = 0; index < allItem.length; index++) {
-            if(allItem[index].checked === true){
-                checkSelected = true;
-                data.push(allItem[index].value);
-            }
-        }
-        if(checkSelected===false){
-            alert("กรุณาเลือกรายการยา");
-            return false;
-        }
-
-        // phardepPrint(data);
-
-        // return false;
+        // var checkSelected = false;
+        // data = [];
+        // for (let index = 0; index < allItem.length; index++) {
+        //     if(allItem[index].checked === true){
+        //         checkSelected = true;
+        //         data.push(allItem[index].value);
+        //     }
+        // }
+        // if(checkSelected===false){
+        //     alert("กรุณาเลือกรายการยา");
+        //     return false;
+        // }
     }
 
     async function phardepPrint(){
@@ -257,7 +253,6 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
         });
     }
     
-
 </script>
 </body>
 </html>

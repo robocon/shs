@@ -22,20 +22,21 @@ $dbi->query("SET NAMES UTF8");
 $other = sprintf("%d", $_REQUEST['other']);
 
 $drug_ids = $_REQUEST['drug_id'];
-
 $drug_items = array();
-foreach ($drug_ids as $key => $d) {
-    $sql = " SELECT a.*, b.`tradname`, c.`detail` 
-    FROM ( 
-        SELECT `row_id` AS `id`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `row_id` = '$d' 
-    ) AS a 
-    LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode` 
-    LEFT JOIN ( 
-        SELECT `slcode`,CONCAT(TRIM(`detail1`),TRIM(`detail2`),TRIM(`detail3`)) AS `detail` FROM `drugslip` 
-    ) AS c ON a.`slcode` = c.`slcode` ";
-    $q = $dbi->query($sql);
-    $drug_items[] = $q->fetch_assoc();
-
+if(count($drug_ids)>0){
+    foreach ($drug_ids as $key => $d) {
+        $sqlDrugItem = " SELECT a.*, b.`tradname`, c.`detail` 
+        FROM ( 
+            SELECT `row_id` AS `id`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `row_id` = '$d' 
+        ) AS a 
+        LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode` 
+        LEFT JOIN ( 
+            SELECT `slcode`,CONCAT(TRIM(`detail1`),TRIM(`detail2`),TRIM(`detail3`)) AS `detail` FROM `drugslip` 
+        ) AS c ON a.`slcode` = c.`slcode` ";
+        $qDurgItem = $dbi->query($sqlDrugItem);
+        $drug_items[] = $qDurgItem->fetch_assoc();
+    
+    }
 }
 
 $phardep_id = sprintf("%s", $_REQUEST['phardep_id']);
@@ -45,8 +46,8 @@ $ph = $q->fetch_assoc();
 $hn = $ph['hn'];
 $ptname = $ph['ptname'];
 
-$q = $dbi->query("SELECT `idcard`,TIMESTAMPDIFF(YEAR, thDateToEn(`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age` FROM `opcard` WHERE `hn` = '$hn' ");
-$op = $q->fetch_assoc();
+$qOp = $dbi->query("SELECT `idcard`,TIMESTAMPDIFF(YEAR, thDateToEn(`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age` FROM `opcard` WHERE `hn` = '$hn' ");
+$op = $qOp->fetch_assoc();
 $idcard = $op['idcard'];
 $age = $op['age'];
 
@@ -126,180 +127,183 @@ $pdf->Cell(68, 5, $pdf->conv('อาการนำ:____________________________
 $pdf->SetXY(135, 50.5);
 $pdf->Cell(68, 5, $pdf->conv('แพ้ยา:_______________________________________'),0,1);
 
-// title ส่วนที่2
-$pdf->SetFillColor(0,0,0);
-$pdf->SetTextColor(255,255,255);
-$pdf->SetXY(5, 55.5);
-$pdf->Cell(198, 6.5, $pdf->conv('ส่วนที่ 1 ยาเดิมรับจากโรงพยาบาลค่ายสุรศักดิ์มนตรี'), 1, 1, 'L',true);
+if(!empty($drug_items)){
 
-$pdf->SetFillColor(255,255,255);
-$pdf->SetTextColor(0,0,0);
-$pdf->SetFont('THSarabun','B',12);
+    // title ส่วนที่2
+    $pdf->SetFillColor(0,0,0);
+    $pdf->SetTextColor(255,255,255);
+    $pdf->SetXY(5, 55.5);
+    $pdf->Cell(198, 6.5, $pdf->conv('ส่วนที่ 1 ยาเดิมรับจากโรงพยาบาลค่ายสุรศักดิ์มนตรี'), 1, 1, 'L',true);
 
-$pdf->Rect(5, 62, 29.5, 28);
-$pdf->SetXY(5, 74);
-$pdf->Cell(29.5, 5, $pdf->conv('ชื่อและขนาดยา'),0,1,'C');
+    $pdf->SetFillColor(255,255,255);
+    $pdf->SetTextColor(0,0,0);
+    $pdf->SetFont('THSarabun','B',12);
 
-$pdf->Rect(34.5, 62, 22.5, 28);
-$pdf->SetXY(34.5, 74);
-$pdf->Cell(22.5, 5, $pdf->conv('วิธีใช้'),0,1,'C');
+    $pdf->Rect(5, 62, 29.5, 28);
+    $pdf->SetXY(5, 74);
+    $pdf->Cell(29.5, 5, $pdf->conv('ชื่อและขนาดยา'),0,1,'C');
 
-$pdf->Rect(57, 62, 12.5, 28);
-$pdf->SetXY(57, 74);
-$pdf->Cell(12.5, 5, $pdf->conv('จำนวน'),0,1,'C');
+    $pdf->Rect(34.5, 62, 22.5, 28);
+    $pdf->SetXY(34.5, 74);
+    $pdf->Cell(22.5, 5, $pdf->conv('วิธีใช้'),0,1,'C');
 
-$pdf->Rect(69.5, 62, 20, 28);
-$pdf->SetXY(69.5, 74);
-$pdf->Cell(20, 5, $pdf->conv('LAST DOSE'),0,1,'C');
-$pdf->SetXY(69.5, 79);
-$pdf->Cell(20, 5, $pdf->conv('(วัน/เวลา)'),0,1,'C');
+    $pdf->Rect(57, 62, 12.5, 28);
+    $pdf->SetXY(57, 74);
+    $pdf->Cell(12.5, 5, $pdf->conv('จำนวน'),0,1,'C');
 
-## รับเข้า ##
-$pdf->Rect(89.5, 62, 37.5, 18.5);
-$pdf->SetXY(89.5, 69);
-$pdf->Cell(37.5, 5, $pdf->conv('รับเข้า'),0,1,'C');
+    $pdf->Rect(69.5, 62, 20, 28);
+    $pdf->SetXY(69.5, 74);
+    $pdf->Cell(20, 5, $pdf->conv('LAST DOSE'),0,1,'C');
+    $pdf->SetXY(69.5, 79);
+    $pdf->Cell(20, 5, $pdf->conv('(วัน/เวลา)'),0,1,'C');
 
-$pdf->SetFont('THSarabun','B',10);
-$pdf->SetXY(89.5, 80.5);
-$pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
-$pdf->SetXY(96, 80.5);
-$pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
+    ## รับเข้า ##
+    $pdf->Rect(89.5, 62, 37.5, 18.5);
+    $pdf->SetXY(89.5, 69);
+    $pdf->Cell(37.5, 5, $pdf->conv('รับเข้า'),0,1,'C');
 
-$pdf->SetFont('THSarabun','B',8);
-$pdf->Rect(102.5, 80.5, 6.5, 9.5);
-$pdf->SetXY(102.5, 80.5);
-$pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
-$pdf->SetXY(102.5, 85.5);
-$pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
+    $pdf->SetFont('THSarabun','B',10);
+    $pdf->SetXY(89.5, 80.5);
+    $pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
+    $pdf->SetXY(96, 80.5);
+    $pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
 
-$pdf->Rect(109, 80.5, 18, 9.5);
-$pdf->SetXY(109, 80.5);
-$pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
-$pdf->SetXY(109, 85.5);
-$pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
-## รับเข้า ##
+    $pdf->SetFont('THSarabun','B',8);
+    $pdf->Rect(102.5, 80.5, 6.5, 9.5);
+    $pdf->SetXY(102.5, 80.5);
+    $pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
+    $pdf->SetXY(102.5, 85.5);
+    $pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
 
-## ย้ายวอร์ด ##
-$pdf->SetFont('THSarabun','B',12);
-$pdf->Rect(127, 62, 37.5, 18.5);
-$pdf->SetXY(127, 62);
-$pdf->Cell(37.5, 5, $pdf->conv('ย้ายวอร์ด'),0,1,'C');
+    $pdf->Rect(109, 80.5, 18, 9.5);
+    $pdf->SetXY(109, 80.5);
+    $pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
+    $pdf->SetXY(109, 85.5);
+    $pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
+    ## รับเข้า ##
 
-$pdf->SetFont('THSarabun','',10);
-$pdf->SetXY(127, 67);
-$pdf->Cell(37.5, 4, $pdf->conv('จากวอร์ด_____________________'),0,1,'L');
-$pdf->SetXY(127, 71);
-$pdf->Cell(37.5, 4, $pdf->conv('ไปวอร์ด______________________'),0,1,'L');
-$pdf->SetXY(127, 75);
-$pdf->Cell(37.5, 4, $pdf->conv('วันที่_____________เวลา_______น.'),0,1,'L');
+    ## ย้ายวอร์ด ##
+    $pdf->SetFont('THSarabun','B',12);
+    $pdf->Rect(127, 62, 37.5, 18.5);
+    $pdf->SetXY(127, 62);
+    $pdf->Cell(37.5, 5, $pdf->conv('ย้ายวอร์ด'),0,1,'C');
 
-$pdf->SetFont('THSarabun','B',10);
-$pdf->SetXY(127, 80.5);
-$pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
-$pdf->SetXY(133.5, 80.5);
-$pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
-
-$pdf->SetFont('THSarabun','B',8);
-$pdf->Rect(140, 80.5, 6.5, 9.5);
-$pdf->SetXY(140, 80.5);
-$pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
-$pdf->SetXY(140, 85.5);
-$pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
-
-$pdf->Rect(146.5, 80.5, 18, 9.5);
-$pdf->SetXY(146.5, 80.5);
-$pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
-$pdf->SetXY(146.5, 85.5);
-$pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
-## ย้ายวอร์ด ##
-
-## จำหน่าย ##
-$pdf->SetFont('THSarabun','B',12);
-$pdf->Rect(164.5, 62, 38.5, 18.5);
-$pdf->SetXY(164.5, 69);
-$pdf->Cell(38.5, 5, $pdf->conv('จำหน่าย'),0,1,'C');
-
-$pdf->SetFont('THSarabun','B',10);
-$pdf->SetXY(164.5, 80.5);
-$pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
-$pdf->SetXY(171, 80.5);
-$pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
-
-$pdf->SetFont('THSarabun','B',8);
-$pdf->Rect(177.5, 80.5, 6.5, 9.5);
-$pdf->SetXY(177.5, 80.5);
-$pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
-$pdf->SetXY(177.5, 85.5);
-$pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
-
-$pdf->Rect(184, 80.5, 19, 9.5);
-$pdf->SetXY(184, 80.5);
-$pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
-$pdf->SetXY(184, 85.5);
-$pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
-## จำหน่าย ##
-
-
-$pdf->SetFont('THSarabun','',12);
-$pdf->SetFillColor(184,184,184);
-$pdf->SetTextColor(0,0,0);
-$pdf->Cell(198, 6.5, $pdf->conv('วันที่รับยาครั้งล่าสุด: '.$ph['date']), 1, 1, 'L',true);
-
-// รีเซ็ตให้พื้นหลังเป็นสีขาวและตัวหนังสือสีดำ
-$pdf->SetFillColor(255,255,255);
-$pdf->SetTextColor(0,0,0);
-$pdf->SetFont('THSarabun','',12);
-
-$i = 1;
-// $lastY = 0;
-foreach ($drug_items as $key => $di) {
-
-    $drug_y = $pdf->GetY();
     $pdf->SetFont('THSarabun','',10);
-    $lh = $muticell_h = $pdf->GetMultiCellHeight(22.5, 5, $pdf->conv($di['detail']));
+    $pdf->SetXY(127, 67);
+    $pdf->Cell(37.5, 4, $pdf->conv('จากวอร์ด_____________________'),0,1,'L');
+    $pdf->SetXY(127, 71);
+    $pdf->Cell(37.5, 4, $pdf->conv('ไปวอร์ด______________________'),0,1,'L');
+    $pdf->SetXY(127, 75);
+    $pdf->Cell(37.5, 4, $pdf->conv('วันที่_____________เวลา_______น.'),0,1,'L');
 
-    // dump($lh/2);
+    $pdf->SetFont('THSarabun','B',10);
+    $pdf->SetXY(127, 80.5);
+    $pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
+    $pdf->SetXY(133.5, 80.5);
+    $pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
 
-    // ชื่อยา
-    $pdf->Rect(5, $drug_y, 29.5, $muticell_h);
-    $pdf->Cell(5, 5, $pdf->conv($i),1,0,'C');
-    $pdf->SetXY(5, $drug_y+(floor($lh/2)-2));
-    $pdf->Cell(29.5, 5, $pdf->conv($di['drugcode']),0,0,'C');
+    $pdf->SetFont('THSarabun','B',8);
+    $pdf->Rect(140, 80.5, 6.5, 9.5);
+    $pdf->SetXY(140, 80.5);
+    $pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
+    $pdf->SetXY(140, 85.5);
+    $pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
 
-    // วิธีใช้ 
-    $pdf->SetXY(34.5, $drug_y);
-    $pdf->MultiCell(22.5, 5, $pdf->conv($di['detail']), 1);
+    $pdf->Rect(146.5, 80.5, 18, 9.5);
+    $pdf->SetXY(146.5, 80.5);
+    $pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
+    $pdf->SetXY(146.5, 85.5);
+    $pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
+    ## ย้ายวอร์ด ##
 
-    // จำนวน
-    $pdf->SetXY(57, $drug_y);
-    $pdf->Cell(12.5, $muticell_h, $pdf->conv($i),1,0,'C');
+    ## จำหน่าย ##
+    $pdf->SetFont('THSarabun','B',12);
+    $pdf->Rect(164.5, 62, 38.5, 18.5);
+    $pdf->SetXY(164.5, 69);
+    $pdf->Cell(38.5, 5, $pdf->conv('จำหน่าย'),0,1,'C');
 
-    // Last dose
-    $pdf->Rect(69.5, $drug_y, 20, $muticell_h);
+    $pdf->SetFont('THSarabun','B',10);
+    $pdf->SetXY(164.5, 80.5);
+    $pdf->Cell(6.5, 9.5, $pdf->conv('ใช้ต่อ'),1,1,'C');
+    $pdf->SetXY(171, 80.5);
+    $pdf->Cell(6.5, 9.5, $pdf->conv('หยุด'),1,1,'C');
 
-    // รับเข้า
-    $pdf->Rect(89.5, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(96, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(102.5, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(109, $drug_y, 18, $muticell_h);
+    $pdf->SetFont('THSarabun','B',8);
+    $pdf->Rect(177.5, 80.5, 6.5, 9.5);
+    $pdf->SetXY(177.5, 80.5);
+    $pdf->Cell(6.5, 5, $pdf->conv("เปลี่ยน"),0,1,'C');
+    $pdf->SetXY(177.5, 85.5);
+    $pdf->Cell(6.5, 4.5, $pdf->conv("แปลง"),0,1,'C');
 
-    // ย้ายวอร์ด
-    $pdf->Rect(127, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(133.5, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(140, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(146.5, $drug_y, 18, $muticell_h);
+    $pdf->Rect(184, 80.5, 19, 9.5);
+    $pdf->SetXY(184, 80.5);
+    $pdf->Cell(18, 5, $pdf->conv('เหตุผลที่'),0,1,'C');
+    $pdf->SetXY(184, 85.5);
+    $pdf->Cell(18, 4.5, $pdf->conv("เปลี่ยนแปลง/หยุดยา"),0,1,'C');
+    ## จำหน่าย ##
 
-    // // จำหน่าย
-    $pdf->Rect(164.5, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(171, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(177.5, $drug_y, 6.5, $muticell_h);
-    $pdf->Rect(184, $drug_y, 19, $muticell_h);
 
-    $lastY = $drug_y + $muticell_h;
-    $pdf->SetY($lastY);
-    $i++;
+    $pdf->SetFont('THSarabun','',12);
+    $pdf->SetFillColor(184,184,184);
+    $pdf->SetTextColor(0,0,0);
+    $pdf->Cell(198, 6.5, $pdf->conv('วันที่รับยาครั้งล่าสุด: '.$ph['date']), 1, 1, 'L',true);
+
+    // รีเซ็ตให้พื้นหลังเป็นสีขาวและตัวหนังสือสีดำ
+    $pdf->SetFillColor(255,255,255);
+    $pdf->SetTextColor(0,0,0);
+    $pdf->SetFont('THSarabun','',12);
+
+    $i = 1;
+    // $lastY = 0;
+    foreach ($drug_items as $key => $di) {
+
+        $drug_y = $pdf->GetY();
+        $pdf->SetFont('THSarabun','',10);
+        $lh = $muticell_h = $pdf->GetMultiCellHeight(22.5, 5, $pdf->conv($di['detail']));
+
+        // dump($lh/2);
+
+        // ชื่อยา
+        $pdf->Rect(5, $drug_y, 29.5, $muticell_h);
+        $pdf->Cell(5, 5, $pdf->conv($i),1,0,'C');
+        $pdf->SetXY(5, $drug_y+(floor($lh/2)-2));
+        $pdf->Cell(29.5, 5, $pdf->conv($di['drugcode']),0,0,'C');
+
+        // วิธีใช้ 
+        $pdf->SetXY(34.5, $drug_y);
+        $pdf->MultiCell(22.5, 5, $pdf->conv($di['detail']), 1);
+
+        // จำนวน
+        $pdf->SetXY(57, $drug_y);
+        $pdf->Cell(12.5, $muticell_h, $pdf->conv($i),1,0,'C');
+
+        // Last dose
+        $pdf->Rect(69.5, $drug_y, 20, $muticell_h);
+
+        // รับเข้า
+        $pdf->Rect(89.5, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(96, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(102.5, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(109, $drug_y, 18, $muticell_h);
+
+        // ย้ายวอร์ด
+        $pdf->Rect(127, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(133.5, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(140, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(146.5, $drug_y, 18, $muticell_h);
+
+        // // จำหน่าย
+        $pdf->Rect(164.5, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(171, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(177.5, $drug_y, 6.5, $muticell_h);
+        $pdf->Rect(184, $drug_y, 19, $muticell_h);
+
+        $lastY = $drug_y + $muticell_h;
+        $pdf->SetY($lastY);
+        $i++;
+    }
+
 }
-
 
 /** 
  * หัวข้อส่วนที่2 
