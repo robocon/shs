@@ -111,14 +111,13 @@ $hn = sprintf("%s", $_GET['hn']);
 		}
 		
 		function myFunction(url){ 
-			var sh = screen.height-68;
 			var p = document.getElementById("fullPage");
-			p.setAttribute("style", "max-height: "+sh+"px;");
+			p.setAttribute("style", "max-height: "+window.innerHeight+"px;");
 			p.innerHTML='';
 
 			var img = document.createElement("img");
 			img.src = url;
-			img.height = sh;
+			img.style = "max-height: "+window.innerHeight+"px;";
 
 			p.appendChild(img);
 		}
