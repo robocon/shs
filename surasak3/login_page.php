@@ -2,12 +2,8 @@
 	
 include 'bootstrap.php';
 
-if( isset($_SESSION['sIdname']) ){
-	// redirect('../nindex.htm');
-}
-
 // redirect to where are you from
-$match = preg_match('/login\_page/', $_SERVER['HTTP_REFERER']);
+$match = preg_match('/login_page/', $_SERVER['HTTP_REFERER']);
 if( isset($_SERVER['HTTP_REFERER']) && $match === 0 ){
 	$actual_link = "http://".$_SERVER['HTTP_HOST']."/sm3/surasak3/";
 	$_SESSION['refer'] = str_replace($actual_link, '', $_SERVER['HTTP_REFERER']);
