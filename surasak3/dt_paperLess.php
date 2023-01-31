@@ -21,12 +21,19 @@ $hn = sprintf("%s", $_GET['hn']);
 </head>
 <body>
 	<style>
+		body{
+			margin: 0;
+		}
 		.thumbImg{
 			max-height: 200px;
+			box-shadow: 5px 5px 5px #b8b8b8;
 		}
 		.thumbImg:hover{
 			cursor: pointer;
-			box-shadow: 5px 5px 5px #b8b8b8;
+			box-shadow: 5px 5px 5px #666666;
+		}
+		#thumbList{
+			margin-top: 5em;
 		}
 		#thumbList > .column{
 			margin-bottom: 8px;
@@ -55,6 +62,7 @@ $hn = sprintf("%s", $_GET['hn']);
 	</style>
 	<div class="clearfix">
 		<div id="left-menu">
+			<div style="position: fixed;width: 20%;background-color: #ffffff;box-shadow: 0px 4px 4px #b8b8b8;"><h3>ข้อมูลการมาโรงพยาบาล</h3></div>
 			<div class="row" id="thumbList"></div>
 		</div>
 		<div id="right-menu">
