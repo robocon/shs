@@ -30,7 +30,7 @@ font-size:20px;
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script><body bgcolor="#60c4b8">
-<div style="margin-top: 30px;">
+<div style="margin-top: 30px; margin-left: 30px;">
 <form method="post" action="ophn_eopd.php">
     <p style="font-size:24px;"><b>ค้นหาคนไข้ e-OPD จากHN</p>
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -45,26 +45,16 @@ font-size:20px;
 <script type="text/javascript">
     document.getElementById('aLink').focus();
 </script>
-
-<table width="100%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
+<table width="80%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
 <tr>
         <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
       <th bgcolor=#009688 width="47"><span class="style2">ยศ</span></th>
       <th width="77" bgcolor=#009688><span class="style2">ชื่อ</span></th>
 
       <th width="69" bgcolor=#009688><span class="style2">สกุล</span></th>
-      <th width="174" bgcolor=#009688><span class="style2">ใบต่อแบบใหม่</span></th>
-      <th width="98" bgcolor=#009688><span class="style2">มา รพ.</span></th>
-      <th width="130" bgcolor=#009688><span class="style2">ตรวจนอน</span></th>
-      <th width="81" bgcolor=#009688><span class="style2">ใบต่อ</span></th>
-<!-- <th bgcolor=6495ED>ใบยานอก</th>
-        <th bgcolor=6495ED>ใบสั่งยา</th>
-        <th bgcolor=6495ED>ใบตรวจโรค</th>-->       
-        <th bgcolor=#009688 colspan="5"><span class="style2">ใบตรวจโรค</span></th>
-        <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธ.ออมสิน</span></th>
-        <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธปท.</span></th>
-		<th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ททท.</span></th>
-	  <th width="120" bgcolor="#009688">&nbsp;</th>
+      <th width="174" bgcolor=#009688><span class="style2">สิทธิการรักษา</span></th>
+	  <th width="120" bgcolor="#009688">การมาโรงพยาบาล</th>
+	  <th width="120" bgcolor="#009688">สติ๊กเกอร์ QR CODE</th>
     </tr>
 
     <?php
@@ -138,30 +128,12 @@ font-size:20px;
             "  <td BGCOLOR=".$color.">$yot</td>\n".
             "  <td BGCOLOR=".$color.">$name</td>\n".
             "  <td BGCOLOR=".$color.">$surname</td>\n".
-            "  <td BGCOLOR=".$color."><a target=_BLANK  href=\"opdcard_opregis.php?cHn=$hn\">$ptright</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
-            // "  <td BGCOLOR=".$color."><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"opdprint2.php?cHn=$hn\">ใบต่อ</a></td>\n".
-            /*"  <td BGCOLOR=".$color."><a target= _BLANK href=\"edprint.php?cHn=$hn\">ใบยานอก</td>\n".
-            "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผู้ป่วยนัด</td>\n".
-            "  <td BGCOLOR=".$color."><a target= _BLANK href=\"rg_appoint1.php?cHn=$hn\">ใบตรวจโรค</td>\n".*/
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointhdvn.php?cHn=$hn\">ไต</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointdenvn.php?cHn=$hn\">ฟัน</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointeyevn.php?cHn=$hn\">ตา</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appointbgvn.php?cHn=$hn\">สูติ</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"rg_appoint.php?cHn=$hn\">ผป.นัด</a></td>\n".
-			"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"gsb_chk.php\">ตรวจสอบ</a></td>\n".
-			"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"bot_chk.php\">ตรวจสอบ</a></td>\n".
-            "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".
+            "  <td BGCOLOR=".$color.">$ptright</td>\n".
 			"<td bgcolor=\"$color\" align=\"center\">
-            <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('dt_paperLess.php?hn=$hn')\">ค้นหา<br>e-OPD</button><br>
-            <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
+            <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('dt_paperLess.php?hn=$hn')\">ดูประวัติการรักษา<br>e-OPD</button>
             </td>".
-			/*"<td bgcolor=\"$color\" align=\"center\">
-            <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
-            <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
-            </td>".*/
+			"<td bgcolor=\"$color\" align=\"center\"><a target= _BLANK href=\"printQrCode_opd.php?hn=$hn\">พิมพ์ QR Code</a>
+            </td>".
             " </tr>\n");
         }
         ?>

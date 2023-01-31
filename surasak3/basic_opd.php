@@ -166,7 +166,7 @@ $thidatehn = $thidate.$_REQUEST["hn"];
 $thidatevn = $thidate.$_POST["vn"];
 $thidate_now = (date("Y")+543).date("-m-d").date(" H:i:s");
 
-if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "") ){
+if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "")  || (isset($_POST["print_new_opd"]) && $_POST["print_new_opd"] != "")){
 
 $strSQL1 = "SELECT * FROM doctor WHERE status='y' and row_id= '$_POST[doctor]'";
 $result1 = mysql_query($strSQL1);
@@ -546,16 +546,20 @@ if($_POST["cigarette"]=="1"){
 		$plus = "";
 	}
 
-	$time = "4";
-	$path = 'insert_basic_opd.php';
+		$time = "4";
+		$path = 'insert_basic_opd.php';	
+		
 	if($_POST["print_basic_opd"] == "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		$time = "6";
 		$path = 'stk_basic_opd.php';
-
-	}elseif ($_POST["basic_opd"] == "ตกลง&สติกเกอร์ OPD") {
+	}else if($_POST["print_new_opd"] == "พิมพ์ใบตรวจโรคผู้ป่วยนอก"){
+		//echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+		$time = "6";
+		$path = 'digital_opd.php';		
+	}else if($_POST["basic_opd"] == "ตกลง&สติกเกอร์ OPD") {
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
-		
+	
 	}
 
 	// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
@@ -654,9 +658,13 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
     <strong>กรอก HN :</strong> 
   <input name="hn" type="text" class="txtsarabun" id="hn" size="20" maxlength="20" autofocus />&nbsp;&nbsp;
   <input name="Submit" type="submit" class="txtsarabun" value="   ตกลง   " />
-
-
-
+<?php
+if($_SESSION["smenucode"]=="ADM"){  
+?>
+<span style="margin-left: 30px;"><input type="button" name="button" id="button" value="ดูประวัติการรักษา E-OPD" onclick="window.open('dt_paperLess.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></span>
+<?
+}
+?>
   <BR>
  <INPUT TYPE="hidden" NAME="unshow" value="1">&nbsp;&nbsp;<!--ไม่ประกาศ คิว ผู้ป่วย-->
 </form>
@@ -668,6 +676,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_register.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
 &nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
+ &nbsp;&nbsp;<input type="button" name="button" id="button" value="ข้อมูลใบตรวจโรคผู้ป่วยนอก" onclick="window.open('opd_reprint.php') " class="txtsarabun" /> 
  </p>
 <hr>
 <p>&nbsp; </p>
@@ -2205,7 +2214,13 @@ mmHg </td>
            &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
            &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
            &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; ปริ้นสติกเกอร์แบบ PDF" />
-           
+           <?php 
+		   //print_r($_SESSION);
+		   //if($_SESSION["smenucode"]=="ADM"){
+			   print "&nbsp;&nbsp;<input name=\"print_new_opd\" type=\"submit\" class=\"txtsarabun\" id=\"print_new_opd\" value=\"พิมพ์ใบตรวจโรคผู้ป่วยนอก\" />";
+		   //}
+		   ?> 
+		   
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
            

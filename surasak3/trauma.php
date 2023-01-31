@@ -68,8 +68,9 @@ return $pAge;
 	}else{
 		$image="";
 	}
-
 		echo $arr["yot"]." ".$arr["name"]." ".$arr["surname"]."  อายุ : ".calcage($arr["dbirth"])." เพศ : ".$sex."  <BR>สิทธิ์ : ".$arr["ptright"]."  tel : ".$arr["phone"]."&nbsp;ผู้เกี่ยวข้อง : ".$arr["ptffone"]."<BR><center>$image</center><A HREF=\"consent4.php?hn=".urlencode($_GET["hn"])."\" target=\"_blank\">ออกใบยินยอม</A>";
+		
+		echo "<span style='margin-left:20px;'><INPUT TYPE=\"button\" value=\"ประวัติการรักษา E-OPD\" Onclick=\"window.open('dt_paperLess.php?hn=".urlencode($_GET["hn"])."');\"></span>";	
 		exit();
 	}
 	
@@ -2042,8 +2043,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 	<TD colspan="7">
 	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?php echo $arr["hn"];?>" onKeyPress="check_number_hn(event);" title="สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้น">&nbsp;<INPUT TYPE="button" value="View" Onclick="if(checksom()){viewdetail('view',document.getElementById('hn').value);document.getElementById('vn').value='';}">
 	&nbsp;<INPUT TYPE="button" value="ซักประวัติ" Onclick="window.open('basic_opd.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
-	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);">
-	
+	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<script type="text/javascript">
 		var input_hn = document.getElementById("hn");
 		if( input_hn.addEventListener ){
@@ -2926,6 +2926,7 @@ function rediv(xx){
         <td >DX/อาการ/การรักษา</td>
 		<td >ปภ</td>
 		<td >trauma</td>
+		<td >ประวัติการรักษา</td>
 		<td >ลบ</td>
 		<td bgcolor="#F1948A">สี<br>สถานะ<br>[ 1 ]</td>
 		<td bgcolor="#73C6B6">สถานะ<br>ผู้ป่วย<br>[ 2 ]</td>
@@ -3025,6 +3026,7 @@ if($queue_type=="R"){
 		</td>
 		<td><?php echo $arr["type_wounded"],",&nbsp;&nbsp;",$arr["type_wounded2"];?></td>
 		<td align="center"><?php if($arr["trauma"]=="nontrauma") echo "non<BR>trauma"; else echo $arr["trauma"];?></td>
+		<td align="center"><a href="dt_paperLess.php?hn=<?php echo $arr["hn"];?>" target="_blank">ดูข้อมูล</a></td>
 		<td align="center"><A HREF="#" onClick="if(confirm('ท่านต้องการลบรายการนี้ใช้หรือไม่')){ window.location.href='<?php echo $_SERVER['PHP_MYSELF'];?>?action=del&id=<?php echo $arr["row_id"];?>'; }">ลบ</A><BR><BR><A HREF="consent4.php?id=<?php echo $arr["row_id"]; ?>&hn=<?php echo urlencode($arr["hn"]); ?>&doctor=<?php echo urlencode($arr["doctor"]);?>" target="_blank">ใบยินยอม</A></td>
 		<?
 		if($num > 0){

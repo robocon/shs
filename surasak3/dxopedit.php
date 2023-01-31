@@ -935,7 +935,11 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
                         <TD><strong>
                         <?=$ctoborow;?>
                         </strong></TD>
+
 </TR>
+<tr>
+	<td colspan="6" align="center"><INPUT TYPE="button" value="ประวัติการรักษา E-OPD" Onclick="window.open('dt_paperLess.php?hn=<?=urlencode($cHn);?>');"></td>
+</tr>
 <?
 $date=explode(" ",$cthidate);
 $date1=$date[0];
