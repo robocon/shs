@@ -1,5 +1,18 @@
 <?php
+require_once 'bootstrap.php';
+include_once 'includes/JSON.php';
+$json = new Services_JSON();
+
 $hn = sprintf("%s", $_GET['hn']);
+
+$ch = curl_init(); 
+curl_setopt($ch, CURLOPT_URL, 'http://192.168.131.240:8081/api/getopcard?opcard_id='.$hn);
+curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$result = curl_exec( $ch );
+$items = $json->decode($result);
 
 /*
 ?>
@@ -21,12 +34,19 @@ $hn = sprintf("%s", $_GET['hn']);
 </head>
 <body>
 	<style>
+		body{
+			margin: 0;
+		}
 		.thumbImg{
 			max-height: 200px;
+			box-shadow: 5px 5px 5px #b8b8b8;
 		}
 		.thumbImg:hover{
 			cursor: pointer;
-			box-shadow: 5px 5px 5px #b8b8b8;
+			box-shadow: 5px 5px 5px #666666;
+		}
+		#thumbList{
+			margin-top: 5em;
 		}
 		#thumbList > .column{
 			margin-bottom: 8px;
@@ -55,7 +75,22 @@ $hn = sprintf("%s", $_GET['hn']);
 	</style>
 	<div class="clearfix">
 		<div id="left-menu">
-			<div class="row" id="thumbList"></div>
+			<div style="position: fixed;width: 20%;background-color: #ffffff;box-shadow: 0px 4px 4px #b8b8b8;"><h3>ข้อมูลการมาโรงพยาบาล</h3></div>
+			<div class="row" id="thumbList">
+			<?php 
+			$items_reverse = array_reverse($items->list);
+			foreach ($items_reverse as $key => $item) {
+				list($dateEp, $timeEp) = explode(' ', $item->date);
+				list($y, $m, $d) = explode('-', $dateEp);
+				?>
+				<div class="column thumbContain">
+					<img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" onclick="myFunction('<?=$item->original;?>');">
+					<p><b><?=$d.' '.$def_fullm_th[$m].' '.($y+543);?></b></p>
+				</div>
+				<?php
+			}
+			?>
+			</div>
 		</div>
 		<div id="right-menu">
 			<div id="fullPage"></div>
@@ -82,6 +117,7 @@ $hn = sprintf("%s", $_GET['hn']);
 
 		var def_fullm_th = {'01':'มกราคม', '02':'กุมภาพันธ์', '03':'มีนาคม', '04':'เมษายน', '05':'พฤษภาคม', '06':'มิถุนายน', '07':'กรกฎาคม', '08':'สิงหาคม', '09':'กันยายน', '10':'ตุลาคม', '11':'พฤศจิกายน', '12':'ธันวาคม'};
 
+		/*
 		window.onload = function(){ 
 			var request = new newXmlHttp();
 			var hn = '<?=$hn;?>';
@@ -115,6 +151,7 @@ $hn = sprintf("%s", $_GET['hn']);
 
 						} catch (error) {
 							// alert("เบราเซอร์เก่าเกินไป กรุณาอัพเกรดเป็นเบราเซอร์เวอร์ชั่นใหม่");
+              // alert("asdfadsf");
 						}
 					} else {
 						// Error :(
@@ -125,15 +162,23 @@ $hn = sprintf("%s", $_GET['hn']);
 
 			request.send();
 		}
+		*/
 		
 		function myFunction(url){ 
+
+			if(window.innerHeight!=='undefined'){
+				var scHeight = window.innerHeight;
+			}else{
+				var scHeight = window.screen.height;
+			}
+			
 			var p = document.getElementById("fullPage");
-			p.setAttribute("style", "max-height: "+window.innerHeight+"px;");
+			p.setAttribute("style", "max-height: "+scHeight+"px;");
 			p.innerHTML='';
 
 			var img = document.createElement("img");
 			img.src = url;
-			img.style = "max-height: "+window.innerHeight+"px;";
+			img.setAttribute("style", "max-height: "+scHeight+"px;");
 
 			p.appendChild(img);
 		}
