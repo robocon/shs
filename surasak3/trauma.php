@@ -2353,24 +2353,51 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 	</TD>
 </TR>
 <TR>
-	<TD align="right" valign="top">CPG : </TD><TD  colspan="5">
+	<TD align="right" valign="top">CPG : </TD><TD  colspan="6">
 		<TABLE border='0'>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="10" <?php if(isset($cpg["10"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ copd ใช่หรือไม่?')){ return false;}"> COPD</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="20" <?php if(isset($cpg["20"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ MI ใช่หรือไม่?')){ return false;}"> MI</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="30" <?php if(isset($cpg["30"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ sepsis ใช่หรือไม่?')){ return false;}"> sepsis</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="40" <?php if(isset($cpg["40"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ head injury ใช่หรือไม่?')){ return false;}" > head injury</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="50" <?php if(isset($cpg["50"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ Stroke Fast track ใช่หรือไม่?')){ return false;}" >Stroke Fast track</TD>
-		</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="10" <?php if(isset($cpg["10"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ copd ใช่หรือไม่?')){ return false;}"> COPD</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="20" <?php if(isset($cpg["20"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ MI ใช่หรือไม่?')){ return false;}"> MI</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" id="cpg_sepsis" NAME="cpg[]" VALUE="30" <?php if(isset($cpg["30"])) echo "Checked"; ?>> sepsis</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="40" <?php if(isset($cpg["40"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ head injury ใช่หรือไม่?')){ return false;}" > head injury</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="50" <?php if(isset($cpg["50"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ Stroke Fast track ใช่หรือไม่?')){ return false;}" >Stroke Fast track</TD>
+			</TR>
 		</TABLE>
+		<div id="sepsis_contain" style="display:none;">
+			<p>Lactate <input type="text" name="lactate" id="lactate" size="3"> เวลา <input type="text" name="lac_time" id="lac_time" size="2" onkeyup="addTime('lac_time',this.value);"> น.</p>
+			<p>H/C ขวด 1 เวลา <input type="text" name="hc1_time" id="hc1_time" size="2" onkeyup="addTime('hc1_time',this.value);"> น.</p>
+			<p>H/C ขวด 2 เวลา <input type="text" name="hc2_time" id="hc2_time" size="2" onkeyup="addTime('hc2_time',this.value);"> น.</p>
+			<p>UA, UC เวลา <input type="text" name="uauc_time" id="uauc_time" size="2" onkeyup="addTime('uauc_time',this.value);"> น.</p>
+			<p>IVF <input type="text" name="ivf" id="ivf" size="3"> เวลา <input type="text" name="ivf_time" id="ivf_time" size="2" onkeyup="addTime('ivf_time',this.value);"> น.</p>
+			<p>ATB <input type="text" name="atb" id="atb" size="3"> เวลา <input type="text" name="atb_time" id="atb_time" size="2" onkeyup="addTime('atb_time',this.value);"> น.</p>
+			<script type="text/javascript">
+				document.getElementById("cpg_sepsis").onclick = function(){
+					var c = confirm('คุณต้องการลงบันทึกการทำ sepsis ใช่หรือไม่?');
+					if(c===true){ 
+						document.getElementById("sepsis_contain").style.display = '';
+						this.checked = true;
+					}else{
+						document.getElementById("sepsis_contain").style.display = 'none';
+						this.checked = true;
+					}
+					return c;
+				}
+
+				function addTime(fid, val){
+					if(val.length==2){
+						document.getElementById(fid).value = val+':';
+					}
+				}
+			</script>
+		</div>
 	</TD>
 </TR>
 <TR>
