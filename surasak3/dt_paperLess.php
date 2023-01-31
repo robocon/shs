@@ -77,17 +77,21 @@ $items = $json->decode($result);
 		<div id="left-menu">
 			<div style="position: fixed;width: 20%;background-color: #ffffff;box-shadow: 0px 4px 4px #b8b8b8;"><h3>ข้อมูลการมาโรงพยาบาล</h3></div>
 			<div class="row" id="thumbList">
-			<?php 
-			$items_reverse = array_reverse($items->list);
-			foreach ($items_reverse as $key => $item) {
-				list($dateEp, $timeEp) = explode(' ', $item->date);
-				list($y, $m, $d) = explode('-', $dateEp);
-				?>
-				<div class="column thumbContain">
-					<img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" onclick="myFunction('<?=$item->original;?>');">
-					<p><b><?=$d.' '.$def_fullm_th[$m].' '.($y+543);?></b></p>
-				</div>
-				<?php
+			<?php
+			if ($items->totalCount > 0) { 
+				$items_reverse = array_reverse($items->list);
+				foreach ($items_reverse as $key => $item) {
+					list($dateEp, $timeEp) = explode(' ', $item->date);
+					list($y, $m, $d) = explode('-', $dateEp);
+					?>
+					<div class="column thumbContain">
+						<img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" onclick="myFunction('<?=$item->original;?>');">
+						<p><b><?=$d.' '.$def_fullm_th[$m].' '.($y+543);?></b></p>
+					</div>
+					<?php
+				}
+			}else{
+				?><p>ยังไม่มีประวัติ e-OPD</p><?php
 			}
 			?>
 			</div>
