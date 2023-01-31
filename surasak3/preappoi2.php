@@ -781,6 +781,14 @@ function fncSubmit(strPage)
 }
 </script>
 
+<?php 
+// แจ้งเตือน กรณีเลือกวันที่ย้อนหลัง
+if($date_en < date('Y-m-d')){ 
+	?>
+	<div style="text-align: center; font-weight: bold; color: red;"><h3>แจ้งเตือน! คุณกำลังเลือกวันที่ย้อนหลัง</h3></div>
+	<?php
+}
+?>
 <TABLE border="0">
 <TR valign="top">
 	<TD>
@@ -876,16 +884,18 @@ function fncSubmit(strPage)
 			var dt = this.value.split(" ");
 			var doctorName = '<?=$codedr;?>';
 			var date = encodeURIComponent('<?=$date_en;?>');
-			if(dt[0]==="FU08"){
+			var dateCheck = '<?=date('l',strtotime($date_en));?>';
+			
+			if(dt[0]==="FU08" && dateCheck=='Friday'){
 				var req = newXmlHttp();
 				req.open('GET', 'preappoi2.php?action=viewecho&date='+date+'&doctor='+doctorName, true);
 				req.onreadystatechange = function () {
 				if (req.readyState === 4) {
 					if (req.status >= 200 && req.status < 400) { 
 						var response = req.responseText.trim();
-						console.log(response);
-						if(parseInt(response)==5){
-							document.getElementById("echoResponse").innerHTML = "แจ้งเตือน!!! ยอดนัดหมอวิรดาที่จะทำ Echo ถึงจำนวนที่กำหนดแล้ว กรุณาติดต่อพยาบาลหน้าห้องเพื่อทำการนัด";
+						
+						if(parseInt(response)>=5){
+							document.getElementById("echoResponse").innerHTML = "<b>แจ้งเตือน!!!</b> ยอดนัดหมอวิรดาที่จะทำ Echo ถึงจำนวนที่กำหนดแล้ว กรุณาติดต่อพยาบาลหน้าห้องเพื่อทำการนัด";
 							document.getElementById("echoResponse").style.display = '';
 						}
 					}
