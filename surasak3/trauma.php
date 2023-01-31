@@ -2371,7 +2371,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="50" <?php if(isset($cpg["50"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ Stroke Fast track ใช่หรือไม่?')){ return false;}" >Stroke Fast track</TD>
 			</TR>
 		</TABLE>
-		<div id="sepsis_contain" style="display:none;">
+		<div id="sepsis_contain" style="display:none; background: #d8d8d8; padding: 4px 4px;">
 			<p>Lactate <input type="text" name="lactate" id="lactate" size="3"> เวลา <input type="text" name="lac_time" id="lac_time" size="2" onkeyup="addTime('lac_time',this.value);"> น.</p>
 			<p>H/C ขวด 1 เวลา <input type="text" name="hc1_time" id="hc1_time" size="2" onkeyup="addTime('hc1_time',this.value);"> น.</p>
 			<p>H/C ขวด 2 เวลา <input type="text" name="hc2_time" id="hc2_time" size="2" onkeyup="addTime('hc2_time',this.value);"> น.</p>
@@ -2379,16 +2379,22 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			<p>IVF <input type="text" name="ivf" id="ivf" size="3"> เวลา <input type="text" name="ivf_time" id="ivf_time" size="2" onkeyup="addTime('ivf_time',this.value);"> น.</p>
 			<p>ATB <input type="text" name="atb" id="atb" size="3"> เวลา <input type="text" name="atb_time" id="atb_time" size="2" onkeyup="addTime('atb_time',this.value);"> น.</p>
 			<script type="text/javascript">
-				document.getElementById("cpg_sepsis").onclick = function(){
-					var c = confirm('คุณต้องการลงบันทึกการทำ sepsis ใช่หรือไม่?');
-					if(c===true){ 
+				document.getElementById("cpg_sepsis").onclick = function(){ 
+
+					var sep_check = document.getElementById("cpg_sepsis").checked;
+					// console.log(sep_check);
+
+					// var c = confirm('คุณต้องการลงบันทึกการทำ sepsis ใช่หรือไม่?');
+					if(sep_check===true){ 
 						document.getElementById("sepsis_contain").style.display = '';
-						this.checked = true;
+						// document.getElementById("cpg_sepsis").checked = true;
 					}else{
 						document.getElementById("sepsis_contain").style.display = 'none';
-						this.checked = true;
+						// document.getElementById("cpg_sepsis").checked = false;
 					}
-					return c;
+
+					// document.getElementById("cpg_sepsis").checked = c;
+					// return c;
 				}
 
 				function addTime(fid, val){
