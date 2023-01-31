@@ -10,8 +10,8 @@ global $dt_doctor, $cdoctor, $doctor;
 }
 
 include("connect.inc");   
-
-if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
+$action = sprintf("%s", $_GET['action']);
+if(isset($action)  && $action == "viewlist"){
 
 	// var_dump($_SESSION);
 	$count = count($_SESSION["list_code"]);
@@ -27,7 +27,7 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	</TABLE>";
 
 	exit();
-}else if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
+}else if(isset($action) && $action == "addtolist"){
 
 	//************************** แสดงรายการ lab  ********************************************************
 
@@ -47,7 +47,7 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	}
 
 	exit();
-}else if(isset($_GET["action"]) && $_GET["action"] == "delete"){
+}else if(isset($action) && $action == "delete"){
 	
 	$count = count($_SESSION["list_code"]);
 	
@@ -65,7 +65,7 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 
 
 	exit();
-}else if(isset($_GET["action"]) && $_GET["action"] == "lab"){
+}else if(isset($action) && $action == "lab"){
 
 	$sql = "Select code, detail From labcare where  detail like '%".$_GET["search"]."%' AND part = 'lab' AND (left(code,1) >='0' AND left(code,1) <='9') Order by numbered ASC";
 
@@ -111,6 +111,20 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	}
 
 exit();
+}elseif ($action=="viewecho") {
+	
+	$date = sprintf("%s", $_GET['date']);
+	$doctor = sprintf("%s", $_GET['doctor']);
+
+	$sql = "SELECT * 
+	FROM `appoint` 
+	WHERE ( `appdate_en` = '$date' AND `apptime` != 'ยกเลิกการนัด' )
+	AND `doctor` LIKE '$doctor%' 
+	AND ( `detail` LIKE 'FU08%' OR `detail2` LIKE '%echo%' )";
+	$q = mysql_query($sql);
+	$rows = mysql_num_rows($q);
+	echo $rows;
+	exit;
 }
 
 
@@ -123,7 +137,12 @@ if( !$_POST['date_appoint'] ){
 	exit;
 }
 
-// @todo ยังไม่ได้ทำ lock นัดแบบแบ่งเช้า-บ่าย
+// @todo ยังไม่ได้ทำ lock นัดแบบแบ่งเช้า-บ่าย 
+
+$months = array(
+	'มกราคม' => '01', 'กุมภาพันธ์' => '02','มีนาคม' => '03', 'เมษายน' => '04','พฤษภาคม' => '05', 'มิถุนายน' => '06',
+	'กรกฎาคม' => '07', 'สิงหาคม' => '08','กันยายน' => '09', 'ตุลาคม' => '10','พฤศจิกายน' => '11', 'ธันวาคม' => '12',
+);
 
 // ถ้าเป็น POST ที่ส่งมาจาก preappoi1.php ให้เข้าเงื่อนไขในการตรวจสอบ
 // ถ้าคนคีย์ไม่ใช่พี่หล้าสูติ หรือ หมอที่นัดไม่ใช่หมอขชล ก็ยังให้เข้าเงื่อนไขตรวจสอบอยู่
@@ -153,11 +172,6 @@ if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทร
 	GROUP BY `hn`;";
 	$query = mysql_query($sql);
 	$appoint_rows = (int) mysql_num_rows($query);
-
-	$months = array(
-		'มกราคม' => '01', 'กุมภาพันธ์' => '02','มีนาคม' => '03', 'เมษายน' => '04','พฤษภาคม' => '05', 'มิถุนายน' => '06',
-		'กรกฎาคม' => '07', 'สิงหาคม' => '08','กันยายน' => '09', 'ตุลาคม' => '10','พฤศจิกายน' => '11', 'ธันวาคม' => '12',
-	);
 	
 	$th_day = array(
 		0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์',
@@ -264,6 +278,11 @@ if(isset($_POST['B1'])){
 
 	$cdoctor=$dt_doctor;
 	$cdate_appoint = $_POST['date_appoint'];
+
+	list($thD, $thM, $thY) = explode(' ',$cdate_appoint);
+	$date_en = ($thY-543).'-'.$months[$thM].'-'.$thD;
+
+
 	  // session_register("cappdate");
 	 // session_register("cappmo");
 	 // session_register("cthiyr");
@@ -849,7 +868,37 @@ function fncSubmit(strPage)
 	  }
 		?>
       </select>
-    </font></td>
+	  
+    </font>
+
+	<script>
+		document.getElementById("detail").onchange = function(){
+			var dt = this.value.split(" ");
+			var doctorName = '<?=$codedr;?>';
+			var date = encodeURIComponent('<?=$date_en;?>');
+			if(dt[0]==="FU08"){
+				var req = newXmlHttp();
+				req.open('GET', 'preappoi2.php?action=viewecho&date='+date+'&doctor='+doctorName, true);
+				req.onreadystatechange = function () {
+				if (req.readyState === 4) {
+					if (req.status >= 200 && req.status < 400) { 
+						var response = req.responseText.trim();
+						console.log(response);
+						if(parseInt(response)==5){
+							document.getElementById("echoResponse").innerHTML = "แจ้งเตือน!!! ยอดนัดหมอวิรดาที่จะทำ Echo ถึงจำนวนที่กำหนดแล้ว กรุณาติดต่อพยาบาลหน้าห้องเพื่อทำการนัด";
+							document.getElementById("echoResponse").style.display = '';
+						}
+					}
+				}}
+				req.send();
+			}else{
+				document.getElementById("echoResponse").innerHTML = "";
+				document.getElementById("echoResponse").style.display = 'none';
+			}
+		}
+	</script>
+
+</td>
     <td width="280"><font face="Angsana New">
 
 	<?php 
@@ -862,7 +911,11 @@ function fncSubmit(strPage)
 <option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
 <option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
 <option value="ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่">ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่</option>
-</select></font></td></tr>
+</select></font>
+</td></tr>
+<tr>
+	<td id="echoResponse" style="color:red; display:none;" colspan="3"></td>
+</tr>
 
   <tr style="display:none" id="setor">
     <td>&nbsp;</td>
