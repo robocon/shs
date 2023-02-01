@@ -282,7 +282,6 @@ session_unregister("Ptright1");
             
             $sql .= "ORDER BY `doctor`;";
 
-            // dump($sql);
             $q = $dbi->query($sql);
             if($q->num_rows > 0){
 
@@ -297,7 +296,7 @@ session_unregister("Ptright1");
                     <th>detail</th>
                     <th>patho</th>
                     <th>xray</th>
-                    <th width="8%"></th>
+                    <th width="10%">พิมพ์สติกเกอร์</th>
                 </tr>
             <?php 
             
@@ -313,8 +312,11 @@ session_unregister("Ptright1");
                     <td><?=$a['patho'];?></td>
                     <td><?=$a['xray'];?></td>
                     <td>
-                        <a href="">Sticker 80x50</a><br>
-                        <a href="">Sticker 50x30</a>
+                        <a href="">80x50 QR-Code</a><br>
+                        <a href="">80x50 QR-Code + VN</a><br><br>
+
+                        <a href="">50x30 QR-Code</a><br>
+                        <a href="">50x30 QR-Code + VN</a>
                     </td>
                 </tr>
                 <?php
