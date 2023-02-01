@@ -2380,21 +2380,12 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			<p>ATB <input type="text" name="atb" id="atb" size="3"> เวลา <input type="text" name="atb_time" id="atb_time" size="2" onkeyup="addTime('atb_time',this.value);"> น.</p>
 			<script type="text/javascript">
 				document.getElementById("cpg_sepsis").onclick = function(){ 
-
 					var sep_check = document.getElementById("cpg_sepsis").checked;
-					// console.log(sep_check);
-
-					// var c = confirm('คุณต้องการลงบันทึกการทำ sepsis ใช่หรือไม่?');
 					if(sep_check===true){ 
 						document.getElementById("sepsis_contain").style.display = '';
-						// document.getElementById("cpg_sepsis").checked = true;
 					}else{
 						document.getElementById("sepsis_contain").style.display = 'none';
-						// document.getElementById("cpg_sepsis").checked = false;
 					}
-
-					// document.getElementById("cpg_sepsis").checked = c;
-					// return c;
 				}
 
 				function addTime(fid, val){
