@@ -364,3 +364,14 @@ $rowpt = mysql_query($sqlpt);
 	<input type="submit" value="   ตกลง   " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	&nbsp; <input type="reset" value=" ยกเลิก " name="B2"></font></p>
 </form>
+<p>
+	<?php $dateHn = date('d-m-') . (date('Y') + 543) . $cHn;?>
+	<a href="digital_opd.php?dthn=<?=$dateHn;?>" target="_blank">พิมพ์ใบตรวจโรค (ใบต่อ)</a>
+</p>
+<p>
+	<a href="printQrCode_opd.php?hn=<?=$cHn;?>" target="_blank">พิมพ์สติ๊กเกอร์ QR CODE</a>
+</p>
+<p>
+<a href="digital_opd_form.php?dthn=<?=$dateHn;?>" target="_blank">พิมพ์แบบฟอร์มใบตรวจโรค (กรณีใช้ต่อด้านหลัง)</a>
+
+</p>
