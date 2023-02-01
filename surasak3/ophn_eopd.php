@@ -132,7 +132,7 @@ font-size:20px;
 			"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('dt_paperLess.php?hn=$hn')\">ดูประวัติการรักษา<br>e-OPD</button>
             </td>".
-			"<td bgcolor=\"$color\" align=\"center\"><a target= _BLANK href=\"printQrCode_opd.php?hn=$hn\">พิมพ์ QR Code</a>
+			"<td bgcolor=\"$color\" align=\"center\"><a target= _BLANK href=\"printQrCode_opd2.php?hn=$hn\">พิมพ์ QR Code</a>
             </td>".
             " </tr>\n");
         }

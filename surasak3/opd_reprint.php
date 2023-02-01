@@ -115,7 +115,7 @@ font-size:20px;
    		   "  <td BGCOLOR=#A2D9CE>$doctor</td>\n".
 		   "  <td BGCOLOR=#A2D9CE>$clinic</td>\n".
 		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"digital_opd.php?dthn=".urlencode($thdatehn)."\">พิมพ์</A></td>\n".
-		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\">พิมพ์</A></td>\n".
+		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\">พิมพ์</A></td>\n".
 		   "  <td BGCOLOR=#A2D9CE>$printapp</td>\n".
 		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"digital_opd_form.php?dthn=".urlencode($thdatehn)."\">พิมพ์แบบฟอร์ม</A></td>\n".
 		   " </tr>\n");
