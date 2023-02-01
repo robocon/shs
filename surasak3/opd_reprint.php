@@ -66,10 +66,10 @@ font-size:20px;
   <th bgcolor="#16A085">การมาโรงพยาบาล</th>
   <th bgcolor="#16A085">แพทย์</th>
   <th bgcolor="#16A085">คลินิก</th>  
-  <th bgcolor="#16A085">ใบตรวจโรค</th>
+  <th bgcolor="#16A085" width="10%">ใบตรวจโรค <br>(ใบต่อ)</th>
   <th bgcolor="#16A085">สติ๊กเกอร์ QR CODE</th>
   <th bgcolor="#16A085">ใบนัด</th>
-  <th bgcolor="#16A085">แบบฟอร์มใบตรวจโรค</th>
+  <th bgcolor="#16A085" width="10%">แบบฟอร์มใบตรวจโรค<br> (กรณีใช้ต่อด้านหลัง)</th>
  </tr>
 
 <?php

@@ -553,7 +553,7 @@ if($_POST["cigarette"]=="1"){
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		$time = "6";
 		$path = 'stk_basic_opd.php';
-	}else if($_POST["print_new_opd"] == "พิมพ์ใบตรวจโรคผู้ป่วยนอก"){
+	}else if($_POST["print_new_opd"] == "บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก"){
 		//echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		$time = "6";
 		$path = 'digital_opd.php';		
@@ -2211,15 +2211,9 @@ mmHg </td>
            <td colspan="6" align="center" class="data_show">
           
            <input name="printvn" type="submit" class="txtsarabun" id="printvn" value="พิมพ์ใบตรวจโรค" />
-           &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />
-           &nbsp;<input name="basic_opd" type="submit" class="txtsarabun" id="basic_opd"  onclick="return checkList()" value="ตกลง&amp;สติกเกอร์ OPD" />
-           &nbsp;&nbsp;<input name="print_basic_opd" type="submit" class="txtsarabun" id="print_basic_opd" value="ตกลง &amp; ปริ้นสติกเกอร์แบบ PDF" />
-           <?php 
-		   //print_r($_SESSION);
-		   //if($_SESSION["smenucode"]=="ADM"){
-			   print "&nbsp;&nbsp;<input name=\"print_new_opd\" type=\"submit\" class=\"txtsarabun\" id=\"print_new_opd\" value=\"พิมพ์ใบตรวจโรคผู้ป่วยนอก\" />";
-		   //}
-		   ?> 
+           &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />       
+		   
+		   &nbsp;&nbsp;<input name="print_new_opd" type="submit" class="txtsarabun" id="print_new_opd" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" />
 		   
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
