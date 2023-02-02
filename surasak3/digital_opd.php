@@ -113,6 +113,15 @@ if($drugreact == 0){
 	
 if($congenital_disease == ""){
 	$congenital_disease="ปฎิเสธ";
+}else{
+	if( strstr( $congenital_disease, "HIV" ) || strstr( $congenital_disease, "B24" ) || strstr( $congenital_disease, "เชื้อราในสมอง" )) {
+		$sql113 = "Select napnumber From hiv where hn='".$hn."' ";
+		$result113 = Mysql_Query($sql113);
+		list($napnumber) = Mysql_fetch_row($result113);		
+		$congenital_disease=$napnumber;		
+	}else{
+		$congenital_disease=$congenital_disease;
+	}	
 }	
 ?>
 <style type="text/css">
