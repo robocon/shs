@@ -205,6 +205,8 @@ if($_POST["cigarette"]=="1"){
 	$preg = sprintf('%s', $_POST['preg']);
 	$smoke_ncd = sprintf('%s', $_POST['smoke_ncd']);
 	$drink_ncd = sprintf('%s', $_POST['drink_ncd']);
+
+	$congenital_disease = sprintf("%s", $_POST["congenital_disease"]);
 	
 	$sql = "Select row_id From opd where thdatehn = '".$thidatehn."' limit 1";
 	$res_row_opd = Mysql_Query($sql);
@@ -222,7 +224,7 @@ if($_POST["cigarette"]=="1"){
 		`bp1`  = '".$_POST["bp1"]."', 
 		`bp2`  = '".$_POST["bp2"]."', 
 		`drugreact`  = '".$_POST["drugreact"]."', 
-		`congenital_disease`  = '".$_POST["congenital_disease"]."', 
+		`congenital_disease`  = '$congenital_disease', 
 		`type`  = '".$_POST["type"]."', 
 		`organ`  = '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', 
 		`doctor` = '".$doctorname."',  

@@ -97,9 +97,9 @@ if($drugreact == 0){
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood,$congenital_disease) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood) = Mysql_fetch_row($result111);
 	
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
@@ -387,6 +387,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
 	$item = mysql_fetch_assoc($q);
+	$pt_hn = $item['hn'];
 
 	if(empty($item['esr_not']))
 	{
@@ -430,6 +431,11 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	?>
 	<div style="page-break-after: always;"></div>
 	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<div style="position:relative;">
+		<div style="position:absolute; right:0; top:0;">
+			<img src="printQrCode.php?hn=<?=$pt_hn;?>&size=3&margin=1" alt="">
+		</div>
+	</div>
 	<div class="display-sticker">
 		<div><b>Nursing DX</b></div>
 		<?php 
