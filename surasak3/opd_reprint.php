@@ -27,11 +27,11 @@ font-size:20px;
 <div style="margin-left:50px; margin-top: 30px;">
 <form method="post" action="opd_reprint.php">
     <p style="font-size:24px;"><b>ค้นหาจาก</b></p>
-    <div>HN ผู้ป่วย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div><b>HN ผู้ป่วย</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40">
     </div>
 	<div>หรือ</div>
-    <div>ประเภท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div><b>ประเภท</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <select name="case" id="case" class="txtsarabun">
               <?php 
 		echo "<option value='' >------------เลือกดูข้อมูล------------</option>";
@@ -43,15 +43,37 @@ font-size:20px;
 		
 		}
 		?>
-            </select>
+        </select>
+    </div>
+    <div>หรือ</div>
+    <div>
+        <?php
+        $post_clinic = $_POST['clinic'];
+        ?>
+        <b>คลินิก</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <select name="clinic" id="clinic" class="txtsarabun">
+            <option value="0">แสดงทั้งหมด</option>
+            <?php
+            $q = mysql_query("SELECT * FROM `clinic` ORDER BY `code`");
+            while ($a = mysql_fetch_assoc($q)) {
+                ?><option value="<?=$a['detail'];?>"><?=$a['detail'];?></option><?php
+            }
+            ?>
+        </select>
     </div> 	
     <p style="margin-left:100px;">
     <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
-    &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     ">
+    &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     " onclick="clearData()">
     </p>
 </form>
 <script type="text/javascript">
     document.getElementById('aLink').focus();
+    function clearData(){
+        document.getElementById("clinic").selectedIndex = 0;
+        document.getElementById("case").selectedIndex = 0;
+        document.getElementById("aLink").value = '';
+        
+    }
 </script>
 </div>
 <div style="margin-left:50px;">
@@ -81,11 +103,15 @@ font-size:20px;
 		$case=substr($_POST["case"],0,4);
 		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE toborow LIKE '".$case."%' and thidate LIKE '$today%' ORDER BY row_id DESC ";
 		echo "<div style='font-size:22px;'>ข้อมูลที่ค้นหาจากประเภทการมาโรงพยาบาล</div>";
-	}else{
+	}else if(!empty($_POST["clinic"])){
+        $cli = sprintf("%s", $_POST["clinic"]);
+        $query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE clinic = '$cli' and thidate LIKE '$today%' ORDER BY row_id DESC ";
+		echo "<div style='font-size:22px;'>ข้อมูลที่ค้นหาจากประเภทการมาโรงพยาบาล</div>";
+    }else{
 		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE thidate LIKE '$today%' ORDER BY row_id DESC ";
 		echo "<div style='font-size:22px;'>ข้อมูลทั้งหมดที่ลงทะเบียนวันนี้</div>";
 	}	
-	//echo $query;
+	
 	$result = mysql_query($query)
         or die("Query failed");
 
