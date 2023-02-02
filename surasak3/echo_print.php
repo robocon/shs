@@ -61,6 +61,11 @@ list($y,$m,$d) = ad_to_bc(explode('-', $mDate));
 $th_date = $d.' '.$def_month_th[$m].' '.$y;
 
 ?>
+<div style="position:relative;">
+    <div style="position:absolute; right:0; top:0;">
+        <img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt="">
+    </div>
+</div>
 <table width="100%">
     <tr style="border-bottom: 1px solid #000000;">
         <td colspan="2">
