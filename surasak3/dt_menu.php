@@ -248,6 +248,7 @@ document.onclick=hidemenu
 	<TABLE border="0"  height="40" width="100%">
 	<TR align="center" bgcolor="#FFFFC1">
 		<TD width="100" align="center" ><A HREF="<?php echo $first_page;?>" >ผู้ป่วยใหม่</A></TD>
+		<TD width="100" align="center" ><A HREF="javascript:void(0);" onclick="newWindowsPaperless()">e-OPD</A></TD>
 		<TD width="100" align="center" ><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu1, '190px')" onMouseout="delayhidemenu()">DIAG</A></TD>
 
 		<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu2, '190px')" onMouseout="delayhidemenu()">จ่ายยา</A></TD>
@@ -259,7 +260,8 @@ document.onclick=hidemenu
 
 		<TD width="100" align="center"><A HREF="dt_appoint.php" >ใบนัด</A></TD>
 
-		<!--<TD width="100" align="center"><A HREF="dxdr_ofyear1_dr.php" >CHKUP</A>--><TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu6, '190px')" onMouseout="delayhidemenu()">CHKUP</A></TD></TD>
+		<!--<TD width="100" align="center"><A HREF="dxdr_ofyear1_dr.php" >CHKUP</A>-->
+		<TD width="100" align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu6, '190px')" onMouseout="delayhidemenu()">CHKUP</A></TD></TD>
 
 		<TD width="100"align="center"><A HREF="#" onClick="return clickreturnvalue()" onMouseover="dropdownmenu(this, event, menu5, '190px')" onMouseout="delayhidemenu()">เอกสาร</A></TD>
 	<?php } ?>

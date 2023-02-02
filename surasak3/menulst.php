@@ -209,7 +209,11 @@ if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
                 "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
 				" </tr>\n");	
 }							 
-echo '<div id="test_dr_menu" style="display: none;">'.$sOfficer.'</div>';
+?>
+<tr style="background-color: #00850a;">
+	<td><a href="ophn_eopd.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 20px;">:: ค้นหา e-OPD จาก HN</a></td>
+</tr>
+<?php
 if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
  $query = "SELECT menu,script,target FROM menulst WHERE menucode LIKE '$menucode%' AND status='Y'  ".$sort;
  $result = mysql_query($query) or die( mysql_error($Conn) );
