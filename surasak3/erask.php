@@ -369,7 +369,8 @@ $rowpt = mysql_query($sqlpt);
 	<a href="digital_opd.php?dthn=<?=$dateHn;?>" target="_blank">พิมพ์ใบตรวจโรค (ใบต่อ)</a>
 </p>
 <p>
-	<a href="printQrCode_opd.php?hn=<?=$cHn;?>" target="_blank">พิมพ์สติ๊กเกอร์ QR CODE</a>
+	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=80" target="_blank">สติ๊กเกอร์ QR CODE (กระดาษ 80x50)</a><br>
+	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" target="_blank">สติ๊กเกอร์ QR CODE (กระดาษ 30x50)</a>
 </p>
 <p>
 <a href="digital_opd_form.php?dthn=<?=$dateHn;?>" target="_blank">พิมพ์แบบฟอร์มใบตรวจโรค (กรณีใช้ต่อด้านหลัง)</a>

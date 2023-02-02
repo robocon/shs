@@ -6,7 +6,6 @@ $dbi->query("SET NAMES UTF8");
 
 $hn = sprintf("%s", $_REQUEST['hn']);
 $size = sprintf("%s", $_REQUEST['stickersize']);
-$thdateHn = sprintf("%s", $_REQUEST['thdatehn']);
 
 ?>
 <style>
@@ -30,9 +29,16 @@ if (empty($size) OR $size==80) {
 }
 ?>
 <div style="width: <?=$width;?>; height: <?=$height;?>; text-align:left;">
-    <div style="float:left; text-align:center;">
+<div>
         <img src="printQrCode.php?hn=<?=$hn;?>&<?=$urlSize;?>&margin=1" alt="">
+    </div>
+    <div>
         <p><?=$hn;?></p>
         <p><?=$a['ptname'];?></p>
     </div>
 </div>
+<script type="text/javascript">
+    window.onload = function(){
+        window.print();
+    }
+</script>
