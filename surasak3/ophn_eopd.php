@@ -249,7 +249,7 @@ session_unregister("Ptright1");
             
 
             $sql_tmp = "CREATE TEMPORARY TABLE `appoint_tmp` 
-            SELECT `hn`,`ptname`,`doctor`,`room`,`detail`, TRIM(`detail2`) AS `detail2`, TRIM(`patho`) AS `patho`, TRIM(`xray`) AS `xray` 
+            SELECT `appdate_en`,`hn`,`ptname`,`doctor`,`room`,`detail`, TRIM(`detail2`) AS `detail2`, TRIM(`patho`) AS `patho`, TRIM(`xray`) AS `xray` 
             FROM `appoint` 
             WHERE `appdate_en` = '$date' AND `apptime` != 'ยกเลิกการนัด' ";
             $dbi->query($sql_tmp);
@@ -284,7 +284,6 @@ session_unregister("Ptright1");
 
             $q = $dbi->query($sql);
             if($q->num_rows > 0){
-
             
             ?>
             <table class="chk_table">
@@ -301,6 +300,10 @@ session_unregister("Ptright1");
             <?php 
             
             while ($a = $q->fetch_assoc()) {
+
+                list($y, $m, $d) = explode('-', ad_to_bc($a['appdate_en']));
+
+                $thdatehn = "$d-$m-$yhn";
                 ?>
                 <tr>
                     <td><?=$a['hn'];?></td>
@@ -312,8 +315,8 @@ session_unregister("Ptright1");
                     <td><?=$a['patho'];?></td>
                     <td><?=$a['xray'];?></td>
                     <td>
-                        <a href="">80x50 QR-Code</a><br>
-                        <a href="">80x50 QR-Code + VN</a><br><br>
+                        <a href="sticker80.php?hn=<?=$a['hn'];?>">80x50 QR-Code</a><br>
+                        <a href="sticker80.php?hn=<?=$a['hn'];?>&showvn=vn&thdatehn=<?=$thdatehn;?>">80x50 QR-Code + VN</a><br><br>
 
                         <a href="">50x30 QR-Code</a><br>
                         <a href="">50x30 QR-Code + VN</a>
