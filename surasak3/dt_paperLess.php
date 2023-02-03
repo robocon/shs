@@ -15,7 +15,7 @@ $hn = sprintf("%s", $_GET['hn']);
 	}
 </style>
 <h3>ดูประวัติออนไลน์(e-OPD)</h3>
-<frameset cols="19%,80%">
+<frameset cols="20%,80%">
 <iframe name="left" src="dt_paperLessListItem.php?hn=<?=$hn;?>" scrolling="auto" style="width: 19%;height: 93%;"></iframe>
-<iframe name="right" src="" scrolling="auto" style="width: 80%; height: 93%;"></iframe>
+<iframe name="right" src="" scrolling="auto" style="width: 79%; height: 93%;"></iframe>
 </frameset>
