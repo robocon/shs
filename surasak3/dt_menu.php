@@ -49,7 +49,10 @@ font-weight: bold;
 <script type="text/javascript">
 function newWindowsPaperless()
 {
-	window.open("dt_paperLess.php?hn=<?=$_SESSION['hn_now'];?>", "MsgWindow", "width=1024,height=768,scrollbars=yes,top=1,left=1");
+	var height = window.screen.height;
+	var width = window.screen.width;
+
+	window.open("dt_paperLess.php?hn=<?=$_SESSION['hn_now'];?>", "MsgWindow", "width="+width+",height="+height+",scrollbars=yes,top=1,left=1");
 }
 /***********************************************
 * AnyLink Drop Down Menu- ? Dynamic Drive (www.dynamicdrive.com)
