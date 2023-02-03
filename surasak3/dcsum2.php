@@ -15,10 +15,10 @@ $Thaitime=date("H:i");
            $ageM=12+$ageM;
                     }
       if ($ageM==0){
-           $pAge="$ageY ª’";
+           $pAge="$ageY ‡∏õ‡∏µ";
              }
       else{
-            $pAge="$ageY ª’ $ageM ‡¥◊Õπ";
+            $pAge="$ageY ‡∏õ‡∏µ $ageM ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô";
                         }
       return $pAge;
           }
@@ -40,7 +40,7 @@ $Thaitime=date("H:i");
 
 
 
-//print opd card ∑’Ëπ’Ë ®“° opdcardprn.htm  by frontpage
+//print opd card ‡∏ó‡∏µ‡πà‡∏ô‡∏µ‡πà ‡∏à‡∏≤‡∏Å opdcardprn.htm  by frontpage
 
 print "<HTML>";
 print "<script>";
@@ -70,7 +70,7 @@ print "<TITLE>Crystal Report Viewer</TITLE>";
 print "</head>";
 print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
 print "<DIV style='z-index:0'> &nbsp; </div>";
-//print "<DIV style='left:500PX;top:190PX;width:600PX;height:30PX;'><span class='fc1-1'>ÀÕºŸÈªË«¬:&nbsp;$bed</span></DIV>";
+//print "<DIV style='left:500PX;top:190PX;width:600PX;height:30PX;'><span class='fc1-1'>‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢:&nbsp;$bed</span></DIV>";
 print "<DIV style='left:120PX;top:555PX;width:600PX;height:30PX;'><span class='fc1-1'>$Thaidate&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Thaitime</span></DIV>";
 //print "<DIV style='left:350PX;top:100PX;width:200PX;height:30PX;'><span class='fc1-1'>$an</span></DIV>";
 print "<DIV style='left:390PX;top:130PX;width:200PX;height:30PX;'><span class='fc1-0'>$hn</span></DIV>";
@@ -82,10 +82,10 @@ print "<DIV style='left:200PX;top:105PX;width:600PX;height:30PX;'><span class='f
 print "<DIV style='left:155PX;top:490PX;width:600PX;height:30PX;'><span class='fc1-0'>$cPtname </span></DIV>";
 
 print "<DIV style='left:430PX;top:105PX;width:200PX;height:30PX;'><span class='fc1-1'>$cAge</span></DIV>";
-//print "<DIV style='left:70PX;top:180PX;width:400PX;height:30PX;'><span class='fc1-1'> ‘∑∏‘:&nbsp;$ptright</span></DIV>";
+//print "<DIV style='left:70PX;top:180PX;width:400PX;height:30PX;'><span class='fc1-1'>‡∏™‡∏¥‡∏ó‡∏ò‡∏¥:&nbsp;$ptright</span></DIV>";
 //print "<DIV style='left:330PX;top:65PX;width:200PX;height:30PX;'><span class='fc1-1'>&nbsp; $sex</span></DIV>";
-//print "<DIV style='left:308PX;top:88PX;width:600PX;height:30PX;'><span class='fc1-1'>$address&nbsp;µ”∫≈$tambol&nbsp;Õ”‡¿Õ$ampur&nbsp;®—ßÀ«—¥$changwat ‚∑√ $phone</span></DIV>";
-//print "<DIV style='left:298PX;top:108PX;width:700PX;height:30PX;'><span class='fc1-1'>ºŸÈ∑’Ëµ‘¥µËÕ‰¥È:&nbsp;$ptf ‡°’Ë¬«¢ÈÕß‡ªÁπ :&nbsp;$ptfadd ‚∑√»—æ∑Ï :&nbsp;$ptffone&nbsp;&nbsp;&nbsp; </span></DIV>";
+//print "<DIV style='left:308PX;top:88PX;width:600PX;height:30PX;'><span class='fc1-1'>$address&nbsp;‡∏ï‡∏≥‡∏ö‡∏•$tambol&nbsp;‡∏≠‡∏≥‡πÄ‡∏†‡∏≠$ampur&nbsp;‡∏à‡∏±‡∏á‡∏´‡∏ß‡∏±‡∏î$changwat ‡πÇ‡∏ó‡∏£ $phone</span></DIV>";
+//print "<DIV style='left:298PX;top:108PX;width:700PX;height:30PX;'><span class='fc1-1'>‡∏ú‡∏π‡πâ‡∏ó‡∏µ‡πà‡∏ï‡∏¥‡∏î‡∏ï‡πà‡∏≠‡πÑ‡∏î‡πâ:&nbsp;$ptf ‡πÄ‡∏Å‡∏µ‡πà‡∏¢‡∏ß‡∏Ç‡πâ‡∏≠‡∏á‡πÄ‡∏õ‡πá‡∏ô :&nbsp;$ptfadd ‡πÇ‡∏ó‡∏£‡∏®‡∏±‡∏û‡∏ó‡πå :&nbsp;$ptffone&nbsp;&nbsp;&nbsp; </span></DIV>";
 
  }
 include("unconnect.inc");

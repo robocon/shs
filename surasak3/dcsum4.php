@@ -15,10 +15,10 @@ $Thaitime=date("H:i");
            $ageM=12+$ageM;
                     }
       if ($ageM==0){
-           $pAge="$ageY ª’";
+           $pAge="$ageY ‡∏õ‡∏µ";
              }
       else{
-            $pAge="$ageY ª’ $ageM ‡¥◊Õπ";
+            $pAge="$ageY ‡∏õ‡∏µ $ageM ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô";
                         }
       return $pAge;
           }
@@ -40,7 +40,7 @@ $Thaitime=date("H:i");
 
 
 
-//print opd card ∑’Ëπ’Ë ®“° opdcardprn.htm  by frontpage
+//print opd card ‡∏ó‡∏µ‡πà‡∏ô‡∏µ‡πà ‡∏à‡∏≤‡∏Å opdcardprn.htm  by frontpage
 
 print "<HTML>";
 print "<script>";
@@ -72,7 +72,7 @@ print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGI
 print "<DIV style='z-index:0'> &nbsp; </div>";
 print "<DIV style='left:100PX;top:110PX;width:200PX;height:30PX;'><span class='fc1-0'>AN:$an</span></DIV>";
 print "<DIV style='left:230PX;top:110PX;width:200PX;height:30PX;'><span class='fc1-0'>HN:$hn</span></DIV>";
-print "<DIV style='left:380PX;top:110PX;width:600PX;height:30PX;'><span class='fc1-0'>™◊ËÕ- °ÿ≈:$cPtname </span></DIV>";
+print "<DIV style='left:380PX;top:110PX;width:600PX;height:30PX;'><span class='fc1-0'>‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•:$cPtname </span></DIV>";
 
 
  }

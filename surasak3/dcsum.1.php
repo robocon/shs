@@ -1,26 +1,29 @@
+
+
 <?php
 session_start();
-$Thaidate=date("d-m-").(date("Y")+543);
+    $Thaidate=date("d-m-").(date("Y")+543);
 $Thaitime=date("H:i");
-Function calcage($birth){
-	$today = getdate();   
-	$nY  = $today['year']; 
-	$nM = $today['mon'] ;
-	$bY=substr($birth,0,4)-543;
-	$bM=substr($birth,5,2);
-	$ageY=$nY-$bY;
-	$ageM=$nM-$bM;
-	if ($ageM<0) {
-		$ageY=$ageY-1;
-		$ageM=12+$ageM;
-	}
-	if ($ageM==0){
-		$pAge="$ageY ª’";
-	}else{
-		$pAge="$ageY ª’ $ageM ‡¥◊Õπ";
-	}
-	return $pAge;
-}
+	Function calcage($birth){
+      $today = getdate();   
+      $nY  = $today['year']; 
+      $nM = $today['mon'] ;
+      $bY=substr($birth,0,4)-543;
+      $bM=substr($birth,5,2);
+      $ageY=$nY-$bY;
+      $ageM=$nM-$bM;
+       if ($ageM<0) {
+           $ageY=$ageY-1;
+           $ageM=12+$ageM;
+                    }
+      if ($ageM==0){
+           $pAge="$ageY ‡∏õ‡∏µ";
+             }
+      else{
+            $pAge="$ageY ‡∏õ‡∏µ $ageM ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô";
+                        }
+      return $pAge;
+          }
    
     include("connect.inc");
 
@@ -35,10 +38,10 @@ Function calcage($birth){
     $birthdate="$d-$m-$y"; //print into opdcard
     $cAge=calcage($dbirth);
     $cPtname=$yot.' '.$name.' '.$surname;
-if($sex=='™'){
-	$sex1='™“¬';
+if($sex=='‡∏ä'){
+	$sex1='‡∏ä‡∏≤‡∏¢';
 }else {
-	$sex1='À≠‘ß';
+	$sex1='‡∏´‡∏ç‡∏¥‡∏á';
 }
 
  $ddate=substr($date,8,2);
@@ -47,35 +50,21 @@ if($sex=='™'){
 	$tdate=substr($date,11,5); 
  $adate="$ddate-$mdate-$ydate"; 
 
-//print opd card ∑’Ëπ’Ë ®“° opdcardprn.htm  by frontpage
+//print opd card ‡∏ó‡∏µ‡πà‡∏ô‡∏µ‡πà ‡∏à‡∏≤‡∏Å opdcardprn.htm  by frontpage
 
 
 
 //end opdcard
 
 ?>
-<style type="text/css">
-
-/*@font-face{
-	font-family: "THSarabunNew";
-	src: url("fonts/webfont/THSarabunNew.eot");
-	src: url("fonts/webfont/THSarabunNew.eot#iefix"),
-	url("fonts/webfont/THSarabunNew.woff") format('embedded-opentype'),
-	url("fonts/THSarabunNew.ttf") format('truetype'),
-	url("fonts/webfont/THSarabunNew.svg#ludger_duvernayregular") format('svg');
-	font-weight: normal;
-	font-style: normal;
-}*/
-
+<style>
 .head{
 	font-family:"TH SarabunPSK";
 	font-size:20px;
-	line-height: 20px;
 }
 .table2{
 	font-family:"TH SarabunPSK";
 	font-size:20px;
-	line-height: 20px;
 }
 .table{
 	font-family:"TH SarabunPSK";
@@ -88,39 +77,39 @@ if($sex=='™'){
 </style>
 <body onLoad="window.print();">
 <div align="center" class="head">DISCHARGE SUMMARY</div>
-<div align="center" class="head">FORT SURASAKMONTRI HOSPITAL FR-MDO-001/1 , 05, 01 ,  .§. 52</div>
+<div align="center" class="head">FORT SURASAKMONTRI HOSPITAL FR-MDO-001/1 , 05, 01 , ‡∏™.‡∏Ñ. 52</div>
 <BR />
 <table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-bottom-color:#000000; border-bottom-style:none;" class="table">
   <tr>
     <td colspan="5">
     <table width="100%" border="0" align="center" class="table2">
       <tr>
-        <td width="40%"  >ADMIT : &nbsp;<?=$adate;?>&nbsp;‡«≈“:&nbsp;<?=$tdate;?>&nbsp;&nbsp;</td>
+        <td width="40%"  >ADMIT : &nbsp;<?=$adate;?>&nbsp;‡πÄ‡∏ß‡∏•‡∏≤:&nbsp;<?=$tdate;?>&nbsp;&nbsp;</td>
         <td width="23%"  ><strong class="head">AN:&nbsp; <?=$an;?></strong></td>
         <td width="37%" ><strong class="head">HN:&nbsp;<?=$hn;?></strong></td>
       </tr>
       <tr>
-        <td><strong class="head">™◊ËÕ:&nbsp;<?=$cPtname;?></strong>   Õ“¬ÿ:&nbsp;<?=$cAge?></td>
-        <td>‡æ»:<?=$sex1;?></td>
-        <td>  —ß°—¥:&nbsp;<?=$camp;?></td>
+        <td><strong class="head">‡∏ä‡∏∑‡πà‡∏≠:&nbsp;<?=$cPtname;?></strong>   ‡∏≠‡∏≤‡∏¢‡∏∏:&nbsp;<?=$cAge?></td>
+        <td>‡πÄ‡∏û‡∏®:<?=$sex1;?></td>
+        <td> ‡∏™‡∏±‡∏á‡∏Å‡∏±‡∏î:&nbsp;<?=$camp;?></td>
       </tr>
       <tr>
-        <td>‡≈¢ ª™™.&nbsp;<?=$idcard;?></td>
-        <td>«/¥/ª.‡°‘¥:&nbsp;<?=$birthdate;?></td>
-        <td>  ‘∑∏‘:&nbsp;<?=$ptright;?></td>
+        <td>‡πÄ‡∏•‡∏Ç ‡∏õ‡∏ä‡∏ä.&nbsp;<?=$idcard;?></td>
+        <td>‡∏ß/‡∏î/‡∏õ.‡πÄ‡∏Å‡∏¥‡∏î:&nbsp;<?=$birthdate;?></td>
+        <td> ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥:&nbsp;<?=$ptright;?></td>
       </tr>
       <tr>
-        <td>∫È“π‡≈¢∑’Ë <?=$address;?>&nbsp;µ”∫≈<?=$tambol;?>&nbsp;Õ”‡¿Õ <?=$ampur;?>&nbsp;</td>
-        <td>®—ßÀ«—¥:
+        <td>‡∏ö‡πâ‡∏≤‡∏ô‡πÄ‡∏•‡∏Ç‡∏ó‡∏µ‡πà <?=$address;?>&nbsp;‡∏ï‡∏≥‡∏ö‡∏•<?=$tambol;?>&nbsp;‡∏≠‡∏≥‡πÄ‡∏†‡∏≠ <?=$ampur;?>&nbsp;</td>
+        <td>‡∏à‡∏±‡∏á‡∏´‡∏ß‡∏±‡∏î:
           <?=$changwat;?></td>
-        <td>‚∑√:
+        <td>‡πÇ‡∏ó‡∏£:
           <?=$phone;?></td>
         </tr>
       <tr>
-        <td>ºŸÈ∑’Ëµ‘¥µËÕ‰¥È:&nbsp;<?=$ptf;?> ‡°’Ë¬«¢ÈÕß‡ªÁπ :&nbsp;<?=$ptfadd;?></td>
-        <td>&nbsp;‚∑√»—æ∑Ï :&nbsp;
+        <td>‡∏ú‡∏π‡πâ‡∏ó‡∏µ‡πà‡∏ï‡∏¥‡∏î‡∏ï‡πà‡∏≠‡πÑ‡∏î‡πâ:&nbsp;<?=$ptf;?> ‡πÄ‡∏Å‡∏µ‡πà‡∏¢‡∏ß‡∏Ç‡πâ‡∏≠‡∏á‡πÄ‡∏õ‡πá‡∏ô :&nbsp;<?=$ptfadd;?></td>
+        <td>&nbsp;‡πÇ‡∏ó‡∏£‡∏®‡∏±‡∏û‡∏ó‡πå :&nbsp;
           <?=$ptffone;?></td>
-        <td>ÀÕ√—∫&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ÀÕ®”ÀπË“¬</td>
+        <td>‡∏´‡∏≠‡∏£‡∏±‡∏ö&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‡∏´‡∏≠‡∏à‡∏≥‡∏´‡∏ô‡πà‡∏≤‡∏¢</td>
       </tr>
     </table></td>
   </tr>
@@ -144,11 +133,11 @@ OF STAY <br />
       </table>
     <p></p></td>
     <td align="center" valign="top"><p>BIRTH<br />
-WEIGHT</p>
+      WEIGHT</p>
     <p>GRAMS</p></td>
   </tr>
 </table>
-<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;" class="table">
+<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;"" class="table">
   <tr>
     <td width="26%">Diagnosis</td>
     <td width="10%" align="center">ICD</td>
@@ -179,7 +168,7 @@ WEIGHT</p>
     <br>
     <br>
     <br>
-    <br>
+<br>
     <br /></td>
     <td align="center">&nbsp;</td>
     <td align="center"><br />
@@ -245,7 +234,7 @@ WEIGHT</p>
     </table></td>
   </tr>
 </table>
-<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;" class="table">
+<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#000000" style="border-collapse:collapse; border-top-color:#FFF; border-bottom-style:none;"" class="table">
 <tr>
 <td width="50%"  align="center" valign="middle">DISCHARGE STATUS</td>
 <td width="40%"  align="center" valign="middle">TYPE OF DISCHARGE</td>
