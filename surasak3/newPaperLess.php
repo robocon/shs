@@ -5,27 +5,9 @@ $json = new Services_JSON();
 
 $hn = sprintf("%s", $_GET['hn']);
 
-// $ch = curl_init(); 
-// curl_setopt($ch, CURLOPT_URL, 'http://192.168.131.240:8081/api/getopcard?opcard_id='.$hn);
-// curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-// curl_setopt($ch, CURLOPT_HEADER, 0);
-// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-// $result = curl_exec( $ch );
-// $items = $json->decode($result);
-
-/*
-?>
-<frameset cols="25%,75%">
-<frame name="left" src="dt_paperLessName.php?hn=<?=$hn;?>" scrolling="auto" />
-<frame name="right" src="" scrolling="auto" />
-</frameset>
-<?php 
-*/
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -67,21 +49,119 @@ $hn = sprintf("%s", $_GET['hn']);
 			float:right;
 		}
 		#fullPage{
-			position:fixed;
+			/* position:fixed; */
+            width: 400px;
+            float: left;
 		}
 		.thumbContain{
 			border-bottom:1px solid #b8b8b8;
 		}
+        * {box-sizing: border-box;}
+
+        .img-zoom-container {
+            position: relative;
+        }
+
+        .img-zoom-lens {
+            position: absolute;
+            border: 2px solid red;
+            /*set the size of the lens:*/
+            width: 180px;
+            height: 180px;
+        }
+
+        .img-zoom-result {
+            border: 1px solid #d4d4d4;
+            /*set the size of the result div:*/
+            width: 300px;
+            height: 700px;
+        }
+        #myresult{
+            float: left;
+        }
 	</style>
 	<div class="clearfix">
 		<div id="left-menu">
 			<div class="row" id="thumbList"></div>
 		</div>
-		<div id="right-menu">
+		<div id="right-menu" class="img-zoom-container clearfix">
 			<div id="fullPage"></div>
+            <div id="myresult" class="img-zoom-result" style="float:left;"></div>
 		</div>
 	</div>
 	<script type="text/javascript">
+        
+        function imageZoom(imgID, resultID) {
+            var img, lens, result, cx, cy;
+            img = document.getElementById(imgID);
+            result = document.getElementById(resultID);
+            /* Create lens: */
+            lens = document.createElement("DIV");
+            lens.setAttribute("class", "img-zoom-lens");
+            /* Insert lens: */
+            img.parentElement.insertBefore(lens, img);
+            /* Calculate the ratio between result DIV and lens: */
+            cx = result.offsetWidth / lens.offsetWidth;
+            cy = result.offsetHeight / lens.offsetHeight;
+            /* Set background properties for the result DIV */
+            result.style.backgroundImage = "url('" + img.src + "')";
+            result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+            /* Execute a function when someone moves the cursor over the image, or the lens: */
+            lens.addEventListener("mousemove", moveLens);
+            img.addEventListener("mousemove", moveLens);
+            /* And also for touch screens: */
+            lens.addEventListener("touchmove", moveLens);
+            img.addEventListener("touchmove", moveLens);
+
+            function moveLens(e) {
+                var pos, x, y;
+                /* Prevent any other actions that may occur when moving over the image */
+                e.preventDefault();
+                /* Get the cursor's x and y positions: */
+                pos = getCursorPos(e);
+                /* Calculate the position of the lens: */
+                x = pos.x - (lens.offsetWidth / 2);
+                y = pos.y - (lens.offsetHeight / 2);
+                /* Prevent the lens from being positioned outside the image: */
+                if (x > img.width - lens.offsetWidth) {
+                    x = img.width - lens.offsetWidth;
+                }
+                if (x < 0) {
+                    x = 0;
+                }
+                if (y > img.height - lens.offsetHeight) {
+                    y = img.height - lens.offsetHeight;
+                }
+                if (y < 0) {
+                    y = 0;
+                }
+                /* Set the position of the lens: */
+                lens.style.left = x + "px";
+                lens.style.top = y + "px";
+                /* Display what the lens "sees": */
+                result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
+            }
+
+            function getCursorPos(e) {
+                var a, x = 0,
+                    y = 0;
+                e = e || window.event;
+                /* Get the x and y positions of the image: */
+                a = img.getBoundingClientRect();
+                /* Calculate the cursor's x and y coordinates, relative to the image: */
+                x = e.pageX - a.left;
+                y = e.pageY - a.top;
+                /* Consider any page scrolling: */
+                x = x - window.pageXOffset;
+                y = y - window.pageYOffset;
+                return {
+                    x: x,
+                    y: y
+                };
+            }
+        }
+
+        
 
 		function newXmlHttp(){
 			var xmlhttp = false;
@@ -155,15 +235,25 @@ $hn = sprintf("%s", $_GET['hn']);
 				var scHeight = window.screen.height;
 			}
 			
-			var p = document.getElementById("fullPage");
-			p.setAttribute("style", "max-height: "+scHeight+"px;");
-			p.innerHTML='';
+			// var p = document.getElementById("fullPage");
+			// p.setAttribute("style", "max-height: "+scHeight+"px;");
+			// p.innerHTML='';
 
 			var img = document.createElement("img");
 			img.src = url;
-			img.setAttribute("style", "max-height: "+scHeight+"px;");
+			img.setAttribute("id", "myZoomImage");
+            img.setAttribute("style", "width: 400px; float: left;");
+            // img.setAttribute("style", "");
 
-			p.appendChild(img);
+            var rightMenu = document.getElementById("right-menu");
+            rightMenu.innerHTML = '';
+
+			rightMenu.append(img);
+            rightMenu.innerHTML += '<div id="myresult" class="img-zoom-result" style="float:left;"></div>';
+
+            document.getElementById("myresult").setAttribute("style", "background-image: url("+url+"); float:left; width: 63%;");
+
+            imageZoom("myZoomImage", "myresult");
 		}
 	</script>
 </body>
