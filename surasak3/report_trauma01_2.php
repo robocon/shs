@@ -5,7 +5,7 @@ include("connect.inc");
 ?>
 <html>
 <head>
-<title> √ÿª</title>
+<title>‡∏™‡∏£‡∏∏‡∏õ</title>
 <style type="text/css">
 
 
@@ -36,29 +36,29 @@ body,td,th {
 	$list_ptright = array();
 	
 	$list_ptright["P01"] = "-------";
-	$list_ptright["P02"] = "∑À“√ (π)";
-	$list_ptright["P03"] = "∑À“√ (π )";
-	$list_ptright["P04"] = "∑À“√ (æ≈œ)";
-	$list_ptright["P05"] = "§√Õ∫§√—«";
-	$list_ptright["P06"] = "æ.µÈπ";
-	$list_ptright["P07"] = "æ.";
-	$list_ptright["P08"] = "ª√–°—π —ß§¡";
-	$list_ptright["P09"] = "30∫“∑";
-	$list_ptright["P10"] = "30∫“∑©ÿ°‡©‘π";
-	$list_ptright["P11"] = "æ√∫.";
-	$list_ptright["P12"] = "°∑.44";
+	$list_ptright["P02"] = "‡∏ó‡∏´‡∏≤‡∏£ (‡∏ô)";
+	$list_ptright["P03"] = "‡∏ó‡∏´‡∏≤‡∏£ (‡∏ô‡∏™)";
+	$list_ptright["P04"] = "‡∏ó‡∏´‡∏≤‡∏£ (‡∏û‡∏•‡∏Ø)";
+	$list_ptright["P05"] = "‡∏Ñ‡∏£‡∏≠‡∏ö‡∏Ñ‡∏£‡∏±‡∏ß";
+	$list_ptright["P06"] = "‡∏û.‡∏ï‡πâ‡∏ô";
+	$list_ptright["P07"] = "‡∏û.";
+	$list_ptright["P08"] = "‡∏õ‡∏£‡∏∞‡∏Å‡∏±‡∏ô‡∏™‡∏±‡∏á‡∏Ñ‡∏°";
+	$list_ptright["P09"] = "30‡∏ö‡∏≤‡∏ó";
+	$list_ptright["P10"] = "30‡∏ö‡∏≤‡∏ó‡∏â‡∏∏‡∏Å‡πÄ‡∏â‡∏¥‡∏ô";
+	$list_ptright["P11"] = "‡∏û‡∏£‡∏ö.";
+	$list_ptright["P12"] = "‡∏Å‡∏ó.44";
 	
 	function echo_ka($time){
 		
 
 		if($time >= "07:31" && $time < "15:31"){
-			$ka = "‡™È“";
+			$ka = "‡πÄ‡∏ä‡πâ‡∏≤";
 		}else if($time >= "15:31" && $time < "23:31"){
-			$ka = "∫Ë“¬";
+			$ka = "‡∏ö‡πà‡∏≤‡∏¢";
 		}else if($time >= "23:31" && $time <= "23:59"){
-			$ka = "¥÷°";
+			$ka = "‡∏î‡∏∂‡∏Å";
 		}else if($time >= "00:00" && $time < "07:31"){
-			$ka = "¥÷°";
+			$ka = "‡∏î‡∏∂‡∏Å";
 		}
 		
 		return $ka;
@@ -116,29 +116,29 @@ body,td,th {
 	<TABLE id="form_01">
 	<TR>
 		<TD>
-		«—π∑’Ë&nbsp;&nbsp; 
+		‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà&nbsp;&nbsp; 
 	<input type='text' name='d' size='2' value='<?php echo $day_now;?>'>&nbsp;&nbsp;
-	‡¥◊Õπ&nbsp; <input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;&nbsp;
-	æ.». <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>		</TD>
+	‡πÄ‡∏î‡∏∑‡∏≠‡∏ô&nbsp; <input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;&nbsp;
+	‡∏û.‡∏®. <input type='text' name='yr' size='8' value='<?php echo $year_now;?>'>		</TD>
 	</TR>
 	<TR>
 		<TD>
-		∂÷ß «—π∑’Ë&nbsp;&nbsp; 
+		‡∏ñ‡∏∂‡∏á ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà&nbsp;&nbsp; 
 	<input type='text' name='d2' size='2' value='<?php echo $day_now2;?>'>&nbsp;&nbsp;
-	‡¥◊Õπ&nbsp; <input type='text' name='m2' size='4' value='<?php echo $month_now2;?>'>&nbsp;&nbsp;&nbsp;
-	æ.». <input type='text' name='yr2' size='8' value='<?php echo $year_now2;?>'>		</TD>
+	‡πÄ‡∏î‡∏∑‡∏≠‡∏ô&nbsp; <input type='text' name='m2' size='4' value='<?php echo $month_now2;?>'>&nbsp;&nbsp;&nbsp;
+	‡∏û.‡∏®. <input type='text' name='yr2' size='8' value='<?php echo $year_now2;?>'>		</TD>
 	</TR>
 	<TR>
 		<TD>trauma : <SELECT NAME="trauma" >
-			<Option value="">¥Ÿ∑—ÈßÀ¡¥</Option>
+			<Option value="">‡∏î‡∏π‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</Option>
 			<Option value="trauma" <?php if($_POST["trauma"] == "trauma") echo "Selected"; ?>>Trauma</Option>
 			<Option value="nontrauma" <?php if($_POST["trauma"] == "nontrauma") echo "Selected"; ?>>Non Trauma</Option>
 			<Option value="opd" <?php if($_POST["trauma"] == "opd") echo "Selected"; ?>>OPD</Option>
 	</SELECT></TD>
 	</TR>
 	<TR>
-		<TD>ª√–‡¿∑ : <SELECT NAME="type_wounded">
-			<Option value="">¥Ÿ∑—ÈßÀ¡¥</Option>
+		<TD>‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó : <SELECT NAME="type_wounded">
+			<Option value="">‡∏î‡∏π‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</Option>
 			<Option value="1" <?php if($_POST["type_wounded"] == "1") echo " Selected ";?>>1</Option>
 			<Option value="2" <?php if($_POST["type_wounded"] == "2") echo " Selected ";?>>2</Option>
 			<Option value="3" <?php if($_POST["type_wounded"] == "3") echo " Selected ";?>>3</Option>
@@ -147,18 +147,18 @@ body,td,th {
 	</SELECT></TD>
 	</TR>
 	<TR>
-		<TD>º≈°“√√—°…“ : <SELECT NAME="cure" >
-			<Option value="">¥Ÿ∑—ÈßÀ¡¥</Option>
+		<TD>‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤ : <SELECT NAME="cure" >
+			<Option value="">‡∏î‡∏π‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</Option>
 			<Option value="admit" <?php if($_POST["cure"] == "admit") echo "Selected"; ?> >Admit</Option>
 			<Option value="d/c" <?php if($_POST["cure"] == "d/c") echo "Selected"; ?>>D/c</Option>
 			<Option value="refer" <?php if($_POST["cure"] == "refer") echo "Selected"; ?>>Refer</Option>
 			<Option value="death" <?php if($_POST["cure"] == "death") echo "Selected"; ?>>Death</Option>
-			<Option value="no" <?php if($_POST["cure"] == "no") echo "Selected"; ?>>‰¡Ë√Õ√—∫∫√‘°“√</Option>
+			<Option value="no" <?php if($_POST["cure"] == "no") echo "Selected"; ?>>‡πÑ‡∏°‡πà‡∏£‡∏≠‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£</Option>
 	</SELECT></TD>
 	</TR>
 	<TR>
-		<TD>·æ∑¬Ï : <select size="1" name="doctor">
-			<option value="" selected>¥Ÿ∑—ÈßÀ¡¥</option>
+		<TD>‡πÅ‡∏û‡∏ó‡∏¢‡πå : <select size="1" name="doctor">
+			<option value="" selected>‡∏î‡∏π‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</option>
 			<?php
 
 	$sql = "Select name From doctor where status = 'y' AND row_id != '0' Order by name ASC ";
@@ -173,9 +173,9 @@ body,td,th {
 		</select></TD>
 	</TR>
 	<TR>
-	  <TD>ºŸÈπ” Ëß : 
+	  <TD>‡∏ú‡∏π‡πâ‡∏ô‡∏≥‡∏™‡πà‡∏á : 
 	    <input name="sender[]" type="checkbox" value="1">
-      ¡“‡Õß 
+      ‡∏°‡∏≤‡πÄ‡∏≠‡∏á 
       <input name="sender[]" type="checkbox"  value="2">
       ALS 
       <input name="sender[]" type="checkbox"  value="3">
@@ -183,13 +183,13 @@ body,td,th {
       <input name="sender[]" type="checkbox"  value="4">
       FR 
       <input name="sender[]" type="checkbox"  value="5">
-      Õ◊ËπÊ </TD>
+      ‡∏≠‡∏∑‡πà‡∏ô‡πÜ </TD>
 	  </TR>
 	<TR>
-		<TD><INPUT TYPE="checkbox" NAME="repeat" value="1"> ‡≈◊Õ°‡©æ“–¡“µ√«®´È”</TD>
+		<TD><INPUT TYPE="checkbox" NAME="repeat" value="1"> ‡πÄ‡∏•‡∏∑‡∏≠‡∏Å‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡∏°‡∏≤‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥</TD>
 	</TR>
 	<TR>
-		<TD><input type='submit' name="submit" value='     µ°≈ß     ' > <INPUT TYPE="button" value="print" onClick="wprint();"></TD>
+		<TD><input type='submit' name="submit" value='     ‡∏ï‡∏Å‡∏•‡∏á     ' > <INPUT TYPE="button" value="print" onClick="wprint();"></TD>
 	</TR>
 	</TABLE>
 	</form>
@@ -228,7 +228,7 @@ if(isset($_POST["submit"])){
 		}
 		
 
-				$sql = "SELECT a.`row_id` , a.`vn` , a.`hn` , a.`an` , a.`dx` , a.`organ` , a.`maintenance` , a.`doctor` , CONCAT( b.`yot` , ' ', b.`name` , ' ', b.`surname` ) AS `full_name` , `age` , `list_ptright` , left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , `type_wounded2` , `repeat`, `to_or`,  `to_lr` , `to_hpt_lp` FROM `trauma` AS a, `opcard` AS b WHERE a.`hn` = b.`hn` ".$where." ".$where2." ORDER BY a.`date_in` ASC , `h_date` ASC";
+				$sql = "SELECT a.`row_id` , a.`vn` , a.`hn` , a.`an` , a.`dx` , a.`organ` , a.`maintenance` , a.`doctor` , CONCAT( b.`yot` , ' ', b.`name` , ' ', b.`surname` ) AS `full_name` , `age` , `list_ptright` , left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , `type_wounded2` , `repeat`, `to_or`,  `to_lr` , `to_hpt_lp`, `condition`,  `temperature`,  `pause`,  `rate`,  `bp1`,  `bp2`,  `o2sat`  ,  `painscore`  FROM `trauma` AS a, `opcard` AS b WHERE a.`hn` = b.`hn` ".$where." ".$where2." ORDER BY a.`date_in` ASC , `h_date` ASC";
 
 		$echoka = "";
 		$echoka1 = "";
@@ -237,42 +237,48 @@ if(isset($_POST["submit"])){
 		$result = Mysql_Query($sql);
 		$rows = Mysql_num_rows($result);
 		?>
-®”π«π¢ÈÕ¡Ÿ≈∑—ÈßÀ¡¥  <?php echo $rows;?>
+‡∏à‡∏≥‡∏ô‡∏ß‡∏ô‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î  <?php echo $rows;?>
 <TABLE cellpadding="2" cellspacing="0" border="1" bordercolor="#000000" style='BORDER-COLLAPSE: collapse'>
 <TR>
 	<TD align="center">No.</TD>
 	<TD align="center">HN</TD>
 	<TD align="center">AN</TD>
 	
-	<TD>¬»™◊ËÕ- °ÿ≈</TD>
-	<TD align="center">Õ“¬ÿ</TD>
-	<TD align="center"> —ß°—¥</TD>
+	<TD>‡∏¢‡∏®‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</TD>
+	<TD align="center">‡∏≠‡∏≤‡∏¢‡∏∏</TD>
+	<TD align="center">‡∏™‡∏±‡∏á‡∏Å‡∏±‡∏î</TD>
 	<TD align="center">Dx.</TD>
 	<TD align="center">Dr.</TD>
-	<TD align="center">ª√–‡¿∑∑’Ë 1</TD>
-	<TD align="center">ª√–‡¿∑∑’Ë 2</TD>
-	<TD align="center">Õ“°“√</TD>
-	<TD align="center">°“√√—°…“</TD>
-	<TD align="center">«—π∑’Ëµ√«®</TD>
-	<TD align="center">‡«≈“‡¢È“</TD>
-	<TD align="center">‡«≈“µ√«®</TD>
-	<TD align="center">™Ë«ß‡«≈“1</TD>
+	<TD align="center">‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó‡∏ó‡∏µ‡πà 1</TD>
+	<TD align="center">‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó‡∏ó‡∏µ‡πà 2</TD>
+	<TD align="center">‡∏≠‡∏≤‡∏Å‡∏≤‡∏£</TD>
+	<TD align="center">‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</TD>
+	<TD align="center">‡∏™‡∏†‡∏≤‡∏û‡πÅ‡∏£‡∏Å‡∏£‡∏±‡∏ö</TD>
+	<TD align="center">T</TD>
+	<TD align="center">P</TD>
+	<TD align="center">R</TD>
+	<TD align="center">BP</TD>
+	<TD align="center">O2sat</TD>	
+	<TD align="center">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà‡∏ï‡∏£‡∏ß‡∏à</TD>
+	<TD align="center">‡πÄ‡∏ß‡∏•‡∏≤‡πÄ‡∏Ç‡πâ‡∏≤</TD>
+	<TD align="center">‡πÄ‡∏ß‡∏•‡∏≤‡∏ï‡∏£‡∏ß‡∏à</TD>
+	<TD align="center">‡∏ä‡πà‡∏ß‡∏á‡πÄ‡∏ß‡∏•‡∏≤1</TD>
 	<TD align="center">D/C</TD>
-	<TD align="center">™Ë«ß‡«≈“2</TD>
-	<TD align="center">À¡“¬‡Àµÿ</TD>
+	<TD align="center">‡∏ä‡πà‡∏ß‡∏á‡πÄ‡∏ß‡∏•‡∏≤2</TD>
+	<TD align="center">‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏´‡∏ï‡∏∏</TD>
 </TR>
 <?php
 
 
 
-		while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded, $type_wounded2, $repeat,$to_or, $to_lr, $to_hpt_lp) = Mysql_fetch_row($result)){
+		while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded, $type_wounded2, $repeat,$to_or, $to_lr, $to_hpt_lp,$condition,$temperature,$pause,$rate,$bp1,$bp2,$o2sat,$painscore) = Mysql_fetch_row($result)){
 
 $bgcolor= "#FFFFFF";	
 
 	/*$echoka = echo_ka($time_in);
 
 	if($echoka != $echoka1 && !empty($_POST["d"])){
-		echo "<TR bgcolor=\"#FFFFCC\"><TD colspan=\"17\">&nbsp;&nbsp;<B>«—π∑’Ë ".$date_in." ‡«√ ".$echoka."</B></TD></TR>";
+		echo "<TR bgcolor=\"#FFFFCC\"><TD colspan=\"17\">&nbsp;&nbsp;<B>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà ".$date_in." ‡πÄ‡∏ß‡∏£ ".$echoka."</B></TD></TR>";
 		$echoka1 = $echoka;
 		$i=0;
 	}*/
@@ -300,7 +306,7 @@ $bgcolor= "#FFFFFF";
 			if($sec_between1 < 0)
 				$sec_between1 = "N/A";
 			else
-				$sec_between1 .= " π“∑’";
+				$sec_between1 .= " ‡∏ô‡∏≤‡∏ó‡∏µ";
 			
 			
 
@@ -321,13 +327,20 @@ $bgcolor= "#FFFFFF";
 			if($sec_between2 < 0)
 				$sec_between2 = "N/A";
 			else
-				$sec_between2 .= " π“∑’";
+				$sec_between2 .= " ‡∏ô‡∏≤‡∏ó‡∏µ";
 		
 
 
 		if(empty($_POST["d"])){
 			$time_in = $date_in."<BR>".$time_in;
 		}
+
+		if(!empty($bp1) && !empty($bp2)){
+			$bp="$bp1/$bp2";
+		}else{
+			$bp="";
+		}
+
 
 		$i++;
 		echo "<TR bgcolor=\"".$bgcolor."\">
@@ -342,8 +355,14 @@ $bgcolor= "#FFFFFF";
 						<TD>",substr($doctor,5),"</TD>
 						<TD align=\"center\">",$type_wounded,"</TD>
 						<TD align=\"center\">",$type_wounded2,"</TD>
-						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("Õ“°“√")."&fn=organ&row_id=".$row_id."\" target=\"_blank\">",$organ,"</A></TD>
-						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("°“√√—°…“")."&fn=maintenance&row_id=".$row_id."\" target=\"_blank\">",$maintenance,"</A></TD>
+						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("‡∏≠‡∏≤‡∏Å‡∏≤‡∏£")."&fn=organ&row_id=".$row_id."\" target=\"_blank\">",$organ,"</A><div>O2sat : ",$o2sat,"</div><div>pain score : ",$painscore,"</div></TD>
+						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤")."&fn=maintenance&row_id=".$row_id."\" target=\"_blank\">",$maintenance,"</A></TD>
+						<TD align=\"center\">",$condition,"</TD>
+						<TD align=\"center\">",$temperature,"</TD>
+						<TD align=\"center\">",$pause,"</TD>
+						<TD align=\"center\">",$rate,"</TD>
+						<TD align=\"center\">",$bp,"</TD>
+						<TD align=\"center\">",$o2sat,"</TD>						
 						<TD align=\"center\">",$date_in,"</TD>
 						<TD align=\"center\">",$time_in,"</TD>
 						<TD>&nbsp;",($time_diag=='00:00' ? '&nbsp;':$time_diag),"</TD>
@@ -352,26 +371,26 @@ $bgcolor= "#FFFFFF";
 						<TD align=\"center\">".$sec_between2."</TD>
 						";
 			if($cure == "admit")
-				$remark = "Admit ÀÕºŸÈªË«¬ ".$admit_ward." ";
+				$remark = "Admit ‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ ".$admit_ward." ";
 			else if($cure == "refer")
 				$remark = "Refer ".$refer_hospital." ";
 			else if($cure == "no")
-				$remark = "‰¡Ë√Õ√—∫∫√‘°“√ ";
+				$remark = "‡πÑ‡∏°‡πà‡∏£‡∏≠‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£ ";
 			else
 				$remark = "&nbsp;";
 			
 			if($repeat == "1"){
-				$remark .= " (¡“µ√«®´È”)";
+				$remark .= " (‡∏°‡∏≤‡∏ï‡∏£‡∏ß‡∏à‡∏ã‡πâ‡∏≥)";
 			}
 
 			if($to_or == "1"){
-				$remark .= "  ËßµËÕ OR<BR>";
+				$remark .= " ‡∏™‡πà‡∏á‡∏ï‡πà‡∏≠ OR<BR>";
 			}
 			if($to_lr == "1"){
-				$remark .= "  ËßµËÕ LR<BR>";
+				$remark .= " ‡∏™‡πà‡∏á‡∏ï‡πà‡∏≠ LR<BR>";
 			}
 			if($to_hpt_lp == "1"){
-				$remark .= " ·π–π”√—°…“µËÕ√æ.≈”ª“ß<BR>";
+				$remark .= " ‡πÅ‡∏ô‡∏∞‡∏ô‡∏≥‡∏£‡∏±‡∏Å‡∏©‡∏≤‡∏ï‡πà‡∏≠‡∏£‡∏û.‡∏•‡∏≥‡∏õ‡∏≤‡∏á<BR>";
 			}
 
 			echo "<TD>".$remark."</TD>";

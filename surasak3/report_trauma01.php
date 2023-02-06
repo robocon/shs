@@ -171,8 +171,11 @@ if(isset($_POST["submit"])){
 		$select_day3 = $_POST["d"]."-".$_POST["m"]."-".$_POST["yr"];
 
 		if(!empty($_POST["d"])){
-			$select_day2 = (date("Y",mktime(0,0,0,$_POST["m"],$_POST["d"]+1,$_POST["yr"]-543))+543).date("-m-d",mktime(0,0,0,$_POST["m"],$_POST["d"]+1,$_POST["yr"]-543));
-		
+
+			$prev_en = ($_POST["yr"]-543) . "-" . $_POST["m"] . "-" . $_POST["d"];
+			$prev_date = strtotime("-1 day", strtotime($prev_en));
+			$select_day2 = (date("Y",$prev_date)+543).date("-m-d",$prev_date);
+			
 			$where_date = " ( 
 			(date_in = '".$select_day."' AND (time_in >= '07:31:00' AND time_in <= '23:59:59' )) 
 				OR 
