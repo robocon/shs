@@ -3089,6 +3089,49 @@ if($queue_type=="R"){
 			<TD align='right'>รักษา : </TD>
 			<TD><A HREF="javascript:void(0);" <?php if(strlen($arr["maintenance"]) > 18){?> onmouseover= "show_tooltip('<?php echo jschars($arr["maintenance"]);?>','left',0,0);" onMouseOut="hid_tooltip();" <?php }else{ ?> Onclick="document.getElementById('maintenance').value='<?php echo $arr["maintenance"];?>';" <?php }?>  style="color: #0000FF;text-decoration:none;"><span class="sub-string"><?php echo $arr["maintenance"];?></span></A></TD>
 		</TR>
+		<?php
+		$qq = mysql_query("SELECT * FROM `trauma_cpg` WHERE `for_id` = '".$arr['row_id']."' AND `code_cpg` = '30' ");
+		if (mysql_num_rows($qq) > 0) {
+			$cpg = mysql_fetch_assoc($qq);
+
+			$cepsis = '';
+			if (!empty($cpg['lactate'])) { 
+				$cepsis .= "Lactate ".$cpg['lactate']." เวลา ".$cpg['lac_time']." น.<br>";
+			}
+			if(!empty($cpg['hc1_time'])){
+				$cepsis .= "H/C ขวด 1 เวลา ".$cpg['hc1_time']." น.<br>";
+			}
+			if (!empty($cpg['hc2_time'])) { 
+				$cepsis .= "H/C ขวด 2 เวลา ".$cpg['hc2_time']." น.<br>";
+			}
+			
+			if (!empty($cpg['uauc_time'])) {
+				$cepsis .= "UA, UC เวลา ".$cpg['uauc_time']." น.<br>";
+			}
+			
+			if (!empty($cpg['ivf'])) {
+				$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['hc1_time']." น.<br>";
+			}
+			
+			if (!empty($cpg['atb'])) {
+				$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['hc1_time']." น.";
+			}
+
+			if (!empty($cepsis)) {
+			?>
+			<tr>
+				<td>Sepsis: </td>
+				<td>
+					<?php
+					
+					?>
+					<a href="javascript:void(0);" onmouseover="show_tooltip('<?=$cepsis;?>','left',0,0)" onmouseout="hid_tooltip();">Lactate <?=$cpg['lactate'];?> เวลา <?=$cpg['lac_time'];?></a>
+				</td>
+			</tr>
+			<?php
+			}
+		}
+		?>
 		</TABLE>
 		
 		
