@@ -16,13 +16,44 @@ font-size:20px;
 	font-family:"TH SarabunPSK";
 	font-size: 20px;
 	}
+	
+a:link{
+  background-color: white;
+  color: black;
+  border: 2px solid #2980B9;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  width: 5em;  
+  
+}
+
+a:visited {
+  background-color: #229954;
+  color: white;
+  border: 2px solid #229954;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight:bold;
+}
+
+a:hover, a:active {
+  background-color: #85C1E9;
+  color: #000000;
+  font-weight:bold;
+}
+	
 </style>
 <title>ลงรหัสโรคผู้ป่วยนอก</title>
 <?php
+	
     $today=date("d-m-").(date("Y")+543);
-    print "<strong class=\"txtsarabun\" style=\"font-size:24px;\">รายการใบตรวจโรคผู้ป่วยนอก</strong>";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
-    $today=(date("Y")+543)."-".date("m-d");
+    print "<strong class=\"txtsarabun\" style='font-size:28px;'>รายการใบตรวจโรคผู้ป่วยนอก</strong>";
+	print "<strong class=\"txtsarabun\" style='margin-left:20px;font-size:28px;'>วันที่ $today</strong>";
+    $today=(date("Y")+543)."-".date("m-d");	
 ?>
 <div style="margin-left:50px; margin-top: 30px;">
 <form method="post" action="coder_reprint.php">
@@ -88,6 +119,7 @@ font-size:20px;
     <p style="margin-left:100px;">
     <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
     &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     ">
+	&nbsp;&nbsp;&nbsp;&nbsp; <input type="button" name="button" id="button" value="   กลับหน้าหลัก   " onclick="window.location='../nindex.htm'" class="txtsarabun" />
     </p>
 </form>
 <script type="text/javascript">
@@ -103,12 +135,12 @@ font-size:20px;
 ?>
 <p style="font-size:24px;"><b>วันที่เลือกดูข้อมูล  <?=$showdate1;?></b></p>
 <div style="margin-left:50px;">
-<table width="90%" bordercolor="#000000">
+<table width="90%" bordercolor="#000000" cellpadding="5">
  <tr>
   <th bgcolor="#16A085">#</th>
   <th bgcolor="#16A085">เวลา</th>
   <th bgcolor="#16A085">ชื่อ</th>
-  <th bgcolor="#16A085">HN</th>
+  <th bgcolor="#16A085" width="10%">HN</th>
   <th bgcolor="#16A085">VN</th>
   <th bgcolor="#16A085">AN</th>
   <th bgcolor="#16A085">รหัสโรค ICD10</th>  
@@ -118,21 +150,21 @@ font-size:20px;
   <th bgcolor="#16A085">แพทย์</th>
   <th bgcolor="#16A085">คลินิก</th>
   <th bgcolor="#16A085">การคืน OPD</th>
-  <!--<th bgcolor="#16A085">ผู้บันทึกล่าสุด</th>
-  <th bgcolor="#16A085">วันที่ลงรหัส</th>-->
+  <th bgcolor="#16A085">ผู้บันทึกล่าสุด</th>
+  <!--<th bgcolor="#16A085">วันที่ลงรหัส</th>-->
  </tr>
 
 <?php
     $num=0;
 	if(!empty($_POST["hn"])){
-		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow,an,icd10,diag,dxgroup,goup,okopd FROM opday WHERE thidate like '$date%' and hn='".$_POST["hn"]."' and thidate LIKE '$today%' ORDER BY row_id ASC ";
+		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow,an,icd10,diag,dxgroup,goup,okopd,officer2 FROM opday WHERE thidate like '$date%' and hn='".$_POST["hn"]."' and thidate LIKE '$today%' and (toborow NOT LIKE 'EX05%' && toborow NOT LIKE 'EX13%') ORDER BY row_id ASC ";
 		echo "<div style='font-size:22px;'>ข้อมูลที่ค้นหาจาก HN ผู้ป่วย</div>";
 	}else if(!empty($_POST["case"])){
 		$case=substr($_POST["case"],0,4);
-		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow,an,icd10,diag,dxgroup,goup,okopd FROM opday WHERE thidate like '$date%' and toborow LIKE '".$case."%' and thidate LIKE '$today%' ORDER BY row_id ASC ";
+		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow,an,icd10,diag,dxgroup,goup,okopd,officer2 FROM opday WHERE thidate like '$date%' and toborow LIKE '".$case."%' and thidate LIKE '$today%' and (toborow NOT LIKE 'EX05%' && toborow NOT LIKE 'EX13%') ORDER BY row_id ASC ";
 		echo "<div style='font-size:22px;'>ข้อมูลที่ค้นหาจากประเภทการมาโรงพยาบาล</div>";
 	}else{
-		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow,an,icd10,diag,dxgroup,goup,okopd FROM opday WHERE thidate like '$date%' ORDER BY row_id ASC ";
+		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow,an,icd10,diag,dxgroup,goup,okopd,officer2 FROM opday WHERE thidate like '$date%' and (toborow NOT LIKE 'EX05%' && toborow NOT LIKE 'EX13%') ORDER BY row_id ASC ";
 		echo "<div style='font-size:22px;'>ข้อมูลทั้งหมดที่ลงทะเบียนวันนี้</div>";
 	}	
 	//echo $query;
@@ -140,7 +172,7 @@ font-size:20px;
         or die("Query failed");
 
 
-    while (list ($thidate,$thdatehn,$ptname,$hn,$ptright,$doctor,$vn,$clinic,$toborow,$an,$icd10,$diag,$dxgroup,$goup,$okopd) = mysql_fetch_row ($result)) {
+    while (list ($thidate,$thdatehn,$ptname,$hn,$ptright,$doctor,$vn,$clinic,$toborow,$an,$icd10,$diag,$dxgroup,$goup,$okopd,$office) = mysql_fetch_row ($result)) {
         $num++;
         $time=substr($thidate,11);		
 
@@ -154,7 +186,7 @@ font-size:20px;
 if($icd10==""){
 	$statusicd10="#F5B7B1";
 }else{
-	if($office=="ศิริวรรณ ปันทะรส" || $office=="ศิริวรรณ ปันทะรส" || $office=="อัญชัญ  ฉิมทิม"  || $office=="ทิพย์วรรณ จันทราช"){
+	if($office=="ศิริวรรณ ปันทะรส" || $office=="ศรินทร รัตนชมภู" || $office=="อัญชัญ  ฉิมทิม"  || $office=="ทิพย์วรรณ จันทราช"){
 		$statusicd10="#76D7C4";
 	}else{
 		$statusicd10="#EAEDED";
@@ -164,8 +196,8 @@ if($icd10==""){
            "  <td align='center'>$num</td>\n".
            "  <td>$time</td>\n".
            "  <td>$ptname</td>\n".
-           "  <td><a  href=\"dxopedit.php? cTdatehn=".urlencode($thdatehn)."&cPtname=".urlencode($ptname)."&cHn=".urlencode($hn)."&cGoup=".urlencode($goup)."&cDxg=".urlencode($dxgroup)."&cIcd10=".urlencode($icd10)."&cVn=".urlencode($vn)."\" target=\"_BLANK\" >$hn</a></td>\n".
-           "  <td>$vn</td>\n".
+           "  <td align='center'><a  href=\"dxopedit.php? cTdatehn=".urlencode($thdatehn)."&cPtname=".urlencode($ptname)."&cHn=".urlencode($hn)."&cGoup=".urlencode($goup)."&cDxg=".urlencode($dxgroup)."&cIcd10=".urlencode($icd10)."&cVn=".urlencode($vn)."\" target=\"_BLANK\" >$hn</a></td>\n".
+           "  <td align='center'>$vn</td>\n".
 		   "  <td>$an</td>\n".
 		   "  <td align='center'><strong>$icd10</strong></td>\n".		   
 		   "  <td>$diag</td>\n".
@@ -173,9 +205,9 @@ if($icd10==""){
 		   "  <td>$toborow</td>\n".
    		   "  <td>$doctor</td>\n".
 		   "  <td>$clinic</td>\n".
-		   "  <td>$okopd</td>\n".
-		  /* "  <td>$office</td>\n".
-		   "  <td>$regisdate</td>\n".	*/	   
+		   "  <td align='center'>$okopd</td>\n".
+		   "  <td>$office</td>\n".
+		  /* "  <td>$regisdate</td>\n".	*/	   
 		   " </tr>\n");
        }
     include("unconnect.inc");

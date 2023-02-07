@@ -1,6 +1,12 @@
 <?php
 include("connect.inc");  
 session_start();
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
 ?>
 <style>
 body {
@@ -16,12 +22,30 @@ font-size:20px;
 	font-family:"TH SarabunPSK";
 	font-size: 20px;
 	}
+	
+
+a:link, a:visited {
+  background-color: white;
+  color: black;
+  border: 2px solid #2980B9;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight:bold;
+}
+
+a:hover, a:active {
+  background-color: #2980B9;
+  color: white;
+}
+
 </style>
 <title>พิมพ์ใบตรวจโรคผู้ป่วยนอก</title>
 <?php
     $today=date("d-m-").(date("Y")+543);
-    print "<strong class=\"txtsarabun\">วันที่ $today  รายการใบตรวจโรคผู้ป่วยนอก</strong>";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
+    print "<strong class=\"txtsarabun\" style='font-size:28px;'>รายการใบตรวจโรคผู้ป่วยนอก</strong>";
+	print "<strong class=\"txtsarabun\" style='margin-left:20px;font-size:28px;'>วันที่ $today</strong>";
     $today=(date("Y")+543)."-".date("m-d");
 ?>
 <div style="margin-left:50px; margin-top: 30px;">
@@ -64,6 +88,7 @@ font-size:20px;
     <p style="margin-left:100px;">
     <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
     &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     " onclick="clearData()">
+	&nbsp;&nbsp;&nbsp;&nbsp; <input type="button" name="button" id="button" value="   กลับหน้าหลัก   " onclick="window.location='../nindex.htm'" class="txtsarabun" />
     </p>
 </form>
 <script type="text/javascript">
@@ -77,7 +102,7 @@ font-size:20px;
 </script>
 </div>
 <div style="margin-left:50px;">
-<table width="90%">
+<table width="95%" cellpadding="5">
  <tr>
   <th bgcolor="#16A085">#</th>
   <th bgcolor="#16A085">เวลา</th>
@@ -89,8 +114,8 @@ font-size:20px;
   <th bgcolor="#16A085">แพทย์</th>
   <th bgcolor="#16A085">คลินิก</th>  
   <th bgcolor="#16A085" width="10%">ใบตรวจโรค <br>(ใบต่อ)</th>
-  <th bgcolor="#16A085">สติ๊กเกอร์ QR CODE</th>
-  <th bgcolor="#16A085">ใบนัด</th>
+  <th bgcolor="#16A085" width="12%">สติ๊กเกอร์ QR CODE</th>
+  <th bgcolor="#16A085" width="10%">ใบนัด</th>
   <th bgcolor="#16A085" width="10%">แบบฟอร์มใบตรวจโรค<br> (กรณีใช้ต่อด้านหลัง)</th>
  </tr>
 
@@ -112,9 +137,10 @@ font-size:20px;
 		echo "<div style='font-size:22px;'>ข้อมูลทั้งหมดที่ลงทะเบียนวันนี้</div>";
 	}	
 	
-	$result = mysql_query($query)
-        or die("Query failed");
-
+	$result = mysql_query($query)or die("Query failed");
+	$numrows = mysql_num_rows($result);
+        
+	if($numrows > 0){
 
     while (list ($thidate,$thdatehn,$ptname,$hn,$ptright,$doctor,$vn,$clinic,$toborow) = mysql_fetch_row ($result)) {
         $num++;
@@ -125,28 +151,51 @@ font-size:20px;
 	$numapp=mysql_num_rows($result112);
 	list($row_id) = Mysql_fetch_row($result112);
 	if($numapp > 0){
-		$printapp="<A target=_BLANK HREF=\"appinsert2.php?row_id=".urlencode($row_id)."\">พิมพ์</A>";	
+		$printapp="<A target=_BLANK HREF=\"appinsert2.php?row_id=".urlencode($row_id)."\"><img src='images/print-green.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบนัด</div></A>";	
 	}else{
 		$printapp="";
-	}		
+	}
 
-        print (" <tr>\n".
-           "  <td BGCOLOR=#A2D9CE align='center'>$num</td>\n".
-           "  <td BGCOLOR=#A2D9CE>$time</td>\n".
-           "  <td BGCOLOR=#A2D9CE>$ptname</td>\n".
-           "  <td BGCOLOR=#A2D9CE>$hn</td>\n".
-           "  <td BGCOLOR=#A2D9CE>$vn</td>\n".
-		   "  <td BGCOLOR=#A2D9CE>$ptright</td>\n".
-		   "  <td BGCOLOR=#A2D9CE>$toborow</td>\n".
-   		   "  <td BGCOLOR=#A2D9CE>$doctor</td>\n".
-		   "  <td BGCOLOR=#A2D9CE>$clinic</td>\n".
-		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"digital_opd.php?dthn=".urlencode($thdatehn)."\">พิมพ์</A></td>\n".
-		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\">พิมพ์</A></td>\n".
-		   "  <td BGCOLOR=#A2D9CE>$printapp</td>\n".
-		   "  <td BGCOLOR=#A2D9CE align='center'><A target=_BLANK HREF=\"digital_opd_form.php?dthn=".urlencode($thdatehn)."\">พิมพ์แบบฟอร์ม</A></td>\n".
+	if($_SESSION["smenucode"]=="ADMMAINOPD"){
+		$printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์</div></A>";
+	}else if($_SESSION["smenucode"]=="ADM"){
+		$printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์ ใหญ่</div></A>
+		<div style='margin-top:20px;'><A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์เล็ก</div></A></div>";
+	}else{
+		$printstk="<A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์</div></A>";
+	}	
+
+
+if($num%2==0){
+	$bg = "#A2D9CE";
+}else{
+	$bg = "#FFFFFF";
+}
+	//print_r($_SESSION);
+        print (" <tr BGCOLOR='$bg'>\n".
+           "  <td align='center'>$num</td>\n".
+           "  <td>$time</td>\n".
+           "  <td>$ptname</td>\n".
+           "  <td>$hn</td>\n".
+           "  <td>$vn</td>\n".
+		   "  <td>$ptright</td>\n".
+		   "  <td>$toborow</td>\n".
+   		   "  <td>$doctor</td>\n".
+		   "  <td>$clinic</td>\n".
+		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd.php?dthn=".urlencode($thdatehn)."\"><img src='images/printer.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์เอกสาร</div></A></td>\n".
+		   "  <td align='center'>$printstk</td>\n".
+		   "  <td align='center'>$printapp</td>\n".
+		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd_form.php?dthn=".urlencode($thdatehn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์แบบฟอร์ม</div></A></td>\n".
 		   " </tr>\n");
        }
+	}else{
+		print (" <tr>\n".
+           "  <td colspan='13' BGCOLOR=#FADBD8 align='center' style='color:red; font-weight:bold; font-size:24px;'>------------------ ไม่พบข้อมูล ------------------</td>\n".
+		   " </tr>\n");   
+	}		
     include("unconnect.inc");
 ?>
 </table>
+
+
 </div>

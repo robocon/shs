@@ -111,13 +111,27 @@ font-size:18px;
 	font-size: 28px;
 	font-weight: bold;
 }
-.buttonred {
-  background-color: #f44336; /* red */
+.button-blue {
+  background-color: #008CBA; /* blue */;
   font-family:"TH SarabunPSK"; 
   border: none;
   border-radius: 12px;
   color: white;
-  padding: 12px 28px;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 22px;
+  font-weight:bold;
+}
+
+.button-red {
+  background-color: #f44336; /* red */;
+  font-family:"TH SarabunPSK"; 
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 5px 15px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -126,10 +140,31 @@ font-size:18px;
 }
 
 .button-green {
-	background-color: #4CAF50;
-	font-family:"TH SarabunPSK"; 
-	font-size: 18px;
-	
+  background-color: #45B39D; /* green */;
+  font-family:"TH SarabunPSK"; 
+  border: none;
+  border-radius: 12px;
+  color: white;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 22px;
+  font-weight:bold;
+}
+
+.button-gray {
+  background-color: #CACFD2 /* Gray */;
+  font-family:"TH SarabunPSK"; 
+  border: none;
+  border-radius: 12px;
+  color: black;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 22px;
+  font-weight:bold;
 }
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
@@ -562,8 +597,10 @@ if($_POST["cigarette"]=="1"){
 	}else if($_POST["basic_opd"] == "ตกลง&สติกเกอร์ OPD") {
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 	
+	}else if($_POST["basic_opd"] == "ตกลง&สติกเกอร์ OPD") {
+		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('insert_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
+	
 	}
-
 	// echo "<center><br /><a href=\"basic_opd.php\" style=\"font-family:'MS Sans Serif'; font-size:14px; color:#FF0000;\"> &lt;&lt;  กลับ</a></center>";
 
 	if($plus == ""){
@@ -643,7 +680,9 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$nPrefix=$row->prefix;
 	$showyear="25".$nPrefix;
 ?>
-<p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ OPD</strong> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a>&nbsp;&nbsp;<a href="appoint_covid.php" target="_blank">ออกใบนัด ATK ล่วงหน้า (กลุ่มเสี่ยง)</a> &nbsp;&nbsp;<a href="Edx_ofyear_out.php" target="_blank">โปรแกรมซักประวัติตรวจสุขภาพ สำหรับใบรับรองแพทย์อิเล็กทรอนิกส์</a></p>
+<div style="margin-left:10px;">
+<p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ/คัดกรอง ผู้ป่วยนอก (OPD)</strong>
+<div style="font-weight:bold;"><a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a>&nbsp;&nbsp;<a href="appoint_covid.php" target="_blank">ออกใบนัด ATK ล่วงหน้า (กลุ่มเสี่ยง)</a> &nbsp;&nbsp;<a href="Edx_ofyear_out.php" target="_blank">โปรแกรมซักประวัติตรวจสุขภาพ สำหรับใบรับรองแพทย์อิเล็กทรอนิกส์</a></p></div>
 <form id="f1" name="f1" method="post" action="">
 <div><strong>ประเภทผู้ป่วย :</strong></div>
 <input type="radio" name="type" id="type1" value="SI" onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
@@ -660,27 +699,30 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
     <strong>กรอก HN :</strong> 
   <input name="hn" type="text" class="txtsarabun" id="hn" size="20" maxlength="20" autofocus />&nbsp;&nbsp;
   <input name="Submit" type="submit" class="txtsarabun" value="   ตกลง   " />
-<?php
-if($_SESSION["smenucode"]=="ADM"){  
-?>
-<span style="margin-left: 30px;"><input type="button" name="button" id="button" value="ดูประวัติการรักษา E-OPD" onclick="window.open('dt_paperLess.php?hn=<?php echo $hn;?>') " class="txtsarabun" /></span>
-<?
-}
-?>
+
+
+<!-------- ดูประวัติการรักษา ------------->
+<span style="margin-left: 30px;"><input type="button" name="button" id="button" value="  เรียกดูประวัติการรักษา E-OPD " onclick="window.open('dt_paperLess.php?hn=<?php echo $hn;?>') " class="button-green" /></span>
+
+
+
   <BR>
  <INPUT TYPE="hidden" NAME="unshow" value="1">&nbsp;&nbsp;<!--ไม่ประกาศ คิว ผู้ป่วย-->
 </form>
- <p><span class="tb_font">
-  <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" />
- </span>&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />
+ <p><span class="tb_font" style="margin-left:10px;">
+<input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" />
+&nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />
- &nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
+ &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" /> <br>
+ 
+<div style="margin-left:10px;"><input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_register.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
-&nbsp;&nbsp;<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
- &nbsp;&nbsp;<input type="button" name="button" id="button" value="ข้อมูลใบตรวจโรคผู้ป่วยนอก" onclick="window.open('opd_reprint.php') " class="txtsarabun" /> 
- </p>
+<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" /></div>
+</span></p>
+</div>
 <hr>
+
 <p>&nbsp; </p>
  
  <?php
@@ -873,7 +915,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
  ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
-    <td align="center"><div style="margin: 5px 5px 5px 5px;"><img src="../shs.png" width="119" height="92" border="0" /></div>      <span class="style1">โปรแกรมซักประวัติผู้ป่วยนอก</span></td>
+    <td align="center"><div style="margin: 5px 5px 5px 5px;"><img src="../shs.png" width="119" height="92" border="0" /></div>      <span class="style1">โปรแกรมซักประวัติ/คัดกรองผู้ป่วยนอก</span></td>
   </tr>
 </table>
 
@@ -2198,10 +2240,9 @@ mmHg </td>
 			if( $testRows == 0 ){
 				?>
 				<tr>
-					<td>&nbsp;</td>
-					<td colspan="5" style="color: red;">
-						<u>ผู้ป่วยไม่ได้คิดค่าบริการ 50.- <b><a href="service50.php" target="_blank">คลิกที่นี่</a></b> เพื่อคิดค่าบริการ</u><br>
-					</td>
+					<td align="center" colspan="6" style="color: red;"><div style="font-size: 24px;font-weight:bold;">
+						<u>!!! ผู้ป่วยไม่ได้คิดค่าบริการ 50.- <b><a href="service50.php" target="_blank">คลิกที่นี่</a></b> เพื่อคิดค่าบริการ</u><br>
+					</div></td>
 				</tr>
 				<?php 
 			}
@@ -2212,11 +2253,12 @@ mmHg </td>
          <tr>
            <td colspan="6" align="center" class="data_show">
           
-           <input name="printvn" type="submit" class="txtsarabun" id="printvn" value="พิมพ์ใบตรวจโรค" />
-           &nbsp;<input type="button" class="txtsarabun" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />       
+           <input name="printvn" type="submit" class="button-green" id="printvn" value="  พิมพ์ใบสั่งยา  " />
+           &nbsp;<input type="button" class="button-gray" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />       
 		   
-		   &nbsp;&nbsp;<input name="print_new_opd" type="submit" class="txtsarabun" id="print_new_opd" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" />
+		   &nbsp;&nbsp;<button name="print_new_opd" type="submit" class="button-blue" id="print_new_opd" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" /><img src="images/data-storage.png" height="22px" width="22px" />&nbsp;&nbsp;บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก</button>
 		   
+		   <span style="margin-left: 10px;"><button type="button" name="button" id="button" onclick="window.open('digital_opd_form.php?dthn=<?php echo $thidatehn;?>') " class="button-red" /><img src="images/printer.png" height="22px" width="22px" />&nbsp;&nbsp;แบบฟอร์มใบตรวจโรค</button></span>
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
            

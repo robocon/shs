@@ -31,10 +31,15 @@ body {
     font-family: "TH SarabunPSK";
     }
 </style>	
+<script language="javascript">
+//window.opener.location.reload();
+//window.opener.location.reload(true);
+window.print();
+	setTimeout(function(){ 
+            window.close();
+	}, 1000);
+</script>
 <?php 
-
-
-
 $hn = $_GET['hn'];
 
 	$sql111 = "Select dbirth,sex,goup From opcard where hn='".$hn."' ";
@@ -51,23 +56,29 @@ $hn = $_GET['hn'];
 	list($thidate,$vn,$ptname,$ptright,$toborow) = Mysql_fetch_row($result112);	
 	
 	$toborow=substr($toborow,5);
-	$ptright=substr($ptright,4);
+	$ptright=trim($ptright);
+	$ptright=substr($ptright,3);
+	
+	list($y,$m,$d)=explode("-",substr($thidate,0,10));
+	$svdate="$d/$m/$y";
 ?>
+<div style="margin-top:-10px;">
 <table border="0" align="center" width="100%" cellpadding="0" cellspacing="0">
-  <tr >
-    <th rowspan="4" width="8%" align="center"><img src="printQrCode.php?hn=<?php echo $hn;?>&size=4&level=2&margin=1"></th>
-    <th width="80%" valign="top" align="left"><div style="font-size:24px; font-weight:bold;">HN: <?php echo $hn;?></div></th>
+  <tr>
+    <th rowspan="2" width="8%" align="center" valign="center"><img src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1"></th>
+	<th width="80%" valign="top" align="left"></th>
   </tr>   
   <tr>
-	<th width="80%" valign="top" align="left"><strong style="font-size:20px;"><?php echo $ptname;?></strong></div></th>
-  </tr> 
-  <tr>
-	<th width="80%" valign="top" align="left"><span style="font-size:16px; font-weight:bold;">VN: <?php echo $vn;?></span><span style="font-size:16px; margin-left: 10px;"><?php echo $sex;?></span><span style="margin-left: 10px;"><?php echo $cAge;?></span></th>
-  </tr>   
-  <tr>
-	<th width="80%" valign="top" align="left"><div style="font-size:16px;"><?=date("d-m-").(date("Y")+543)." ".date("H:i:s");?></div></th>
+	<th width="80%" valign="top" align="left">
+	<div><strong style="font-size:16px;">วัน/เดือน/ปี: <?php echo $svdate;?></strong></div>
+	<div style="font-size:24px; font-weight:bold; ">HN: <?php echo $hn;?></div>
+	<div><strong style="font-size:16px;"><?php echo $ptname;?></strong></div>
+	<div><span style="font-size:16px; font-weight:bold;">VN: <?php echo $vn;?></span><span style="font-size:14px; margin-left: 10px;"><?php echo $sex;?></span><span style="margin-left: 10px;"><?php echo $cAge;?></span></div>
+	<div style="font-size:14px;"><?=date("Y-m-d")." ".date("H:i:s");?></div>
+	</th>
   </tr>  
   <tr>
-	<th colspan="2" align="left"><span style="margin-left: 15px;"><?php echo $ptright;?></span><span style="margin-left: 15px; font-size:16px;"><?php echo $toborow;?></span></th>
-  </tr>
+	<th colspan="3" align="left"><span style="margin-left: 15px;"><?php echo $ptright;?></span><span style="margin-left: 15px; font-size:16px;"><?php echo $toborow;?></span></th>
+  </tr>  
 </table>
+</div>

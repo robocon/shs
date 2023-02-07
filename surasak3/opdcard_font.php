@@ -212,7 +212,9 @@ if($congenital_disease == ""){
 	
 
 
-	$address="$address $tambol $ampur $changwat";		
+	$address="$address $tambol $ampur $changwat";	
+
+$regisdate=DateThai($regisdate);	
 ?>
 <div class="narrowWaisted">
 
