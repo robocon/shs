@@ -1034,6 +1034,9 @@ if($flag=="N"){
     ?>
     </td>
     <td>
+        <!-- ภาวะสุขภาพโดยรวม -->
+    </td>
+    <td>
     <?php 
     // ผลการได้ยิน
     if( !empty($hearing) ){
@@ -1052,7 +1055,6 @@ if($flag=="N"){
     
     <td>&nbsp;</td>
     <td>&nbsp;</td>
-     <td>&nbsp;</td>
   </tr>
 <? } ?>  
 </table>
