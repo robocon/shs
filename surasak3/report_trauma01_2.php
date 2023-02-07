@@ -204,32 +204,35 @@ if(isset($_POST["submit"])){
 		}
 		
 		
-		$where .= " AND ( `date_in`  between '".$select_day." 00:00:00' AND '".$select_day2." 23:59:59' ) ";
+		$where .= " AND ( a.`date_in` >= '".$select_day."' AND a.`date_in` <= '".$select_day2."' ) ";
 
 
 		if($_POST["trauma"] != ""){
-			$where .= " AND `trauma` = '".$_POST["trauma"]."'";
+			$where .= " AND a.`trauma` = '".$_POST["trauma"]."'";
 		}
 
 		if($_POST["cure"] != ""){
-			$where .= " AND `cure` = '".$_POST["cure"]."'";
+			$where .= " AND a.`cure` = '".$_POST["cure"]."'";
 		}
 
 		if($_POST["doctor"] != ""){
-			$where .= " AND `doctor` = '".$_POST["doctor"]."'";
+			$where .= " AND a.`doctor` = '".$_POST["doctor"]."'";
 		}
 
 		if(isset($_POST["repeat"]) && $_POST["repeat"] == "1" ){
-			$where .= " AND `repeat` = '1' ";
+			$where .= " AND a.`repeat` = '1' ";
 		}
 
 		if(isset($_POST["type_wounded"]) && $_POST["type_wounded"] != "" ){
-			$where .= " AND `type_wounded` = '".$_POST["type_wounded"]."' ";
+			$where .= " AND a.`type_wounded` = '".$_POST["type_wounded"]."' ";
 		}
 		
 
-				$sql = "SELECT a.`row_id` , a.`vn` , a.`hn` , a.`an` , a.`dx` , a.`organ` , a.`maintenance` , a.`doctor` , CONCAT( b.`yot` , ' ', b.`name` , ' ', b.`surname` ) AS `full_name` , `age` , `list_ptright` , left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , `type_wounded2` , `repeat`, `to_or`,  `to_lr` , `to_hpt_lp`, `condition`,  `temperature`,  `pause`,  `rate`,  `bp1`,  `bp2`,  `o2sat`  ,  `painscore`  FROM `trauma` AS a, `opcard` AS b WHERE a.`hn` = b.`hn` ".$where." ".$where2." ORDER BY a.`date_in` ASC , `h_date` ASC";
-
+		$sql = "SELECT a.`row_id` , a.`vn` , a.`hn` , a.`an` , a.`dx` , a.`organ` , a.`maintenance` , a.`doctor` , CONCAT( b.`yot` , ' ', b.`name` , ' ', b.`surname` ) AS `full_name` , `age` , `list_ptright` , left( `time_in` , 5 ) AS `left2in` , left( `time_out` , 5 ) AS `left2` , `cure` , `admit_ward` , `refer_hospital` , CONCAT( a.`time_in` , ' ', date_format( a.`date` , '%H:%i:%s' ) ) AS `h_date` , `time_in` , left( `time_diag` , 5 ) AS `time_diag2` , date_format( `date_in` , '%d/%m/%Y' ) AS `date_in2` , `type_wounded` , `type_wounded2` , `repeat`, `to_or`,  `to_lr` , `to_hpt_lp`, `condition`,  `temperature`,  `pause`,  `rate`,  `bp1`,  `bp2`,  `o2sat`  ,  `painscore`  
+		FROM `trauma` AS a, 
+		`opcard` AS b 
+		WHERE a.`hn` = b.`hn` ".$where." ".$where2." ORDER BY a.`date_in` ASC , `h_date` ASC";
+		
 		$echoka = "";
 		$echoka1 = "";
 		$i=0;
@@ -271,7 +274,34 @@ if(isset($_POST["submit"])){
 
 
 
-		while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded, $type_wounded2, $repeat,$to_or, $to_lr, $to_hpt_lp,$condition,$temperature,$pause,$rate,$bp1,$bp2,$o2sat,$painscore) = Mysql_fetch_row($result)){
+while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded, $type_wounded2, $repeat,$to_or, $to_lr, $to_hpt_lp,$condition,$temperature,$pause,$rate,$bp1,$bp2,$o2sat,$painscore) = Mysql_fetch_row($result)){
+
+	$cepsis = '';
+	$qq = mysql_query("SELECT * FROM `trauma_cpg` WHERE `for_id` = '$row_id' AND `code_cpg` = '30' ");
+	if (mysql_num_rows($qq) > 0) {
+		$cpg = mysql_fetch_assoc($qq);
+		if (!empty($cpg['lactate'])) { 
+			$cepsis .= "Lactate ".$cpg['lactate']." เวลา ".$cpg['lac_time']." น.<br>";
+		}
+		if(!empty($cpg['hc1_time'])){
+			$cepsis .= "H/C ขวด 1 เวลา ".$cpg['hc1_time']." น.<br>";
+		}
+		if (!empty($cpg['hc2_time'])) { 
+			$cepsis .= "H/C ขวด 2 เวลา ".$cpg['hc2_time']." น.<br>";
+		}
+		
+		if (!empty($cpg['uauc_time'])) {
+			$cepsis .= "UA, UC เวลา ".$cpg['uauc_time']." น.<br>";
+		}
+		
+		if (!empty($cpg['ivf'])) {
+			$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['hc1_time']." น.<br>";
+		}
+		
+		if (!empty($cpg['atb'])) {
+			$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['hc1_time']." น.";
+		}
+	}
 
 $bgcolor= "#FFFFFF";	
 
@@ -355,7 +385,7 @@ $bgcolor= "#FFFFFF";
 						<TD>",substr($doctor,5),"</TD>
 						<TD align=\"center\">",$type_wounded,"</TD>
 						<TD align=\"center\">",$type_wounded2,"</TD>
-						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("อาการ")."&fn=organ&row_id=".$row_id."\" target=\"_blank\">",$organ,"</A><div>O2sat : ",$o2sat,"</div><div>pain score : ",$painscore,"</div></TD>
+						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("อาการ")."&fn=organ&row_id=".$row_id."\" target=\"_blank\">",$organ,"</A><div>O2sat : ",$o2sat,"</div><div>pain score : ",$painscore,"</div><div>$cepsis</div></TD>
 						<TD><A HREF=\"trauma_edit.php?title_name=".urlencode("การรักษา")."&fn=maintenance&row_id=".$row_id."\" target=\"_blank\">",$maintenance,"</A></TD>
 						<TD align=\"center\">",$condition,"</TD>
 						<TD align=\"center\">",$temperature,"</TD>
