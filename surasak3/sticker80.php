@@ -12,6 +12,11 @@ $size = sprintf("%s", $_REQUEST['stickersize']);
     *{font-family: "TH SarabunPSK";font-weight: bold;}
     body{margin: 0;padding: 0;}
     p {margin: 0;padding: 0;}
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
 </style>
 <?php
 $sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn' ";
@@ -27,7 +32,8 @@ if (empty($size) OR $size==80) {
     $height = '26mm';
 }
 ?>
-<div style="width: <?=$width;?>; height: <?=$height;?>; text-align:left;">
+<!-- เอา height ออกไปก่อน เพราะมีปัญหากับ ie บางเครื่องมันล้นกระดาษ 50 -->
+<div style="max-width: <?=$width;?>; diplay:block; text-align:left;" class="clearfix">
     <div style="float:left;">
         <img src="printQrCode.php?hn=<?=$hn;?>&<?=$urlSize;?>&margin=1" alt="">
     </div>
@@ -38,6 +44,8 @@ if (empty($size) OR $size==80) {
 </div>
 <script type="text/javascript">
     window.onload = function(){
-        window.print();
+        setTimeout(function(){
+            window.print();
+        }, 1000);
     }
 </script>
