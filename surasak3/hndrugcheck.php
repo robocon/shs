@@ -467,7 +467,7 @@ if ($action == 'print' && ($type == 'admit' || $type == 'dc')) {
     <p>ตรวจสอบการใช้ยาตาม HN</p>
     <p>HN <input type="text" name="hn" size="12"></p>
     <p>
-        <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>&larr;ไปเมนู</a>
+        <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>&larr;ไปเมนู</a>&nbsp;|&nbsp;<a href="hndrugcheckv2.php">Medication Reconciliation</a>
     </p>
 </form>
 
