@@ -14,8 +14,7 @@ $size = sprintf("%s", $_REQUEST['stickersize']);
     p {margin: 0;padding: 0;}
 </style>
 <?php
-$thdateHn = date('d-m-').(date('Y')+543).$hn;
-$sql = "SELECT `thidate`,`hn`,`vn`,`ptname`,`age`,`toborow`,`ptright` FROM `opday` WHERE `thdatehn` = '$thdateHn' ";
+$sql = "SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn' ";
 $q = $dbi->query($sql);
 $a = $q->fetch_assoc();
 if (empty($size) OR $size==80) { 
@@ -25,15 +24,15 @@ if (empty($size) OR $size==80) {
 }elseif ($size==30) {
     $urlSize = 'size=3';
     $width = '50mm';
-    $height = '30mm';
+    $height = '26mm';
 }
 ?>
 <div style="width: <?=$width;?>; height: <?=$height;?>; text-align:left;">
-<div>
+    <div style="float:left;">
         <img src="printQrCode.php?hn=<?=$hn;?>&<?=$urlSize;?>&margin=1" alt="">
     </div>
-    <div>
-        <p><?=$hn;?></p>
+    <div style="float:left;">
+        <p>HN: <?=$hn;?></p>
         <p><?=$a['ptname'];?></p>
     </div>
 </div>
