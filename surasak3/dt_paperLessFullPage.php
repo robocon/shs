@@ -10,7 +10,7 @@ curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0);
 curl_setopt( $ch, CURLOPT_SSLVERSION, 6);
 curl_setopt( $ch, CURLOPT_POST, 1); 
-curl_setopt( $ch, CURLOPT_POSTFIELDS, array('file'=>$file, 'sOfficer'=>$sOfficer, 'hn'=>$hn, 'date'=>date('c'))); 
+curl_setopt( $ch, CURLOPT_POSTFIELDS, array('file'=>$file, 'sOfficer'=>$sOfficer, 'hn'=>$hn, 'date'=>date('c'), 'action' => 'view')); 
 curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-type: multipart/form-data' )); 
 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec( $ch );
