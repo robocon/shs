@@ -118,7 +118,7 @@ if(isset($_POST["submit"])){
 	<TR >
 	<TD align="right">ตั้งแต่วันที่ :</TD>
 	<TD>
-		<INPUT TYPE="text" NAME="d" value="<?php if(isset($_POST["d"])) echo $_POST["d"]; else echo "1";?>" size="2" maxlength="2"> / 
+		<INPUT TYPE="text" NAME="d" value="<?php if(isset($_POST["d"])) echo $_POST["d"]; else echo "01";?>" size="2" maxlength="2"> / 
 		<SELECT NAME="m">
 		<?php
 		foreach($month as $value => $index){
@@ -184,15 +184,15 @@ if(isset($_POST["submit"])){
 		
 		
 
-		$where = "  ( `date_in`  between '".$select_day." 00:00:00' AND '".$select_day2." 23:59:59' ) AND `cure` = 'admit' AND type_wounded2 in ('1', '2')";
+		$where = "  ( `date_in` >= '".$select_day."' AND `date_in` <= '".$select_day2."' ) AND `cure` = 'admit' AND type_wounded2 in ('1', '2')";
 		
 
 		$sql = "Select   a.`row_id`, a.`vn`, a.`hn`, a.`an`, a.`dx`, a.`organ`, a.`maintenance`, a.`doctor`, CONCAT(b.`yot`,' ',b.`name`,' ',b.`surname`) as `full_name`, `age`, `list_ptright`, left(`time_in`,5) as `left2in`, left(`time_out`, 5) as `left2`, `cure`, `admit_ward`, `refer_hospital`, CONCAT(a.`time_in`,' ',date_format(a.`date`,'%H:%i:%s')) as `h_date`, `time_in`, left(`time_diag`,5) as `time_diag2`, date_format(`date_in`,'%d/%m/%Y') as `date_in2`, `type_wounded2`, `repeat`, `type_patient`, `cause_refer`, `doc_refer`,  `nurse`,  `assistant_nurse`,  `estimate`,  `cradle`, `doc_txt`,  `no_estimate`, b.`phone`, a.`consult`, `er_tell`, `suggestion` , `comment_admit`   , `admit_ward`
 		From (
-						SELECT * 
-						FROM `trauma` 
-						WHERE ".$where."
-					) AS `a`, 
+			SELECT * 
+			FROM `trauma` 
+			WHERE ".$where."
+		) AS `a`, 
 		`opcard` as `b` 
 		where a.`hn` = b.`hn`  
 		Order by `date_in` ASC, `h_date` ASC ";
@@ -229,7 +229,34 @@ if(isset($_POST["submit"])){
 
 
 
-		while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded2, $repeat, $type_patient,$cause_refer, $doc_refer, $nurse, $assistant_nurse, $estimate, $cradle,$doc_txt,$no_estimate, $phone,$consult, $er_tell, $suggestion, $comment_admit, $admit_ward ) = Mysql_fetch_row($result)){
+while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $age, $list_ptright2, $time_in, $time_out, $cure, $admit_ward, $refer_hospital, $h_date, $time_in, $time_diag, $date_in, $type_wounded2, $repeat, $type_patient,$cause_refer, $doc_refer, $nurse, $assistant_nurse, $estimate, $cradle,$doc_txt,$no_estimate, $phone,$consult, $er_tell, $suggestion, $comment_admit, $admit_ward ) = Mysql_fetch_row($result)){
+
+	$cepsis = '';
+	$qq = mysql_query("SELECT * FROM `trauma_cpg` WHERE `for_id` = '$row_id' AND `code_cpg` = '30' ");
+	if (mysql_num_rows($qq) > 0) {
+		$cpg = mysql_fetch_assoc($qq);
+		if (!empty($cpg['lactate'])) { 
+			$cepsis .= "Lactate ".$cpg['lactate']." เวลา ".$cpg['lac_time']." น.<br>";
+		}
+		if(!empty($cpg['hc1_time'])){
+			$cepsis .= "H/C ขวด 1 เวลา ".$cpg['hc1_time']." น.<br>";
+		}
+		if (!empty($cpg['hc2_time'])) { 
+			$cepsis .= "H/C ขวด 2 เวลา ".$cpg['hc2_time']." น.<br>";
+		}
+		
+		if (!empty($cpg['uauc_time'])) {
+			$cepsis .= "UA, UC เวลา ".$cpg['uauc_time']." น.<br>";
+		}
+		
+		if (!empty($cpg['ivf'])) {
+			$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['hc1_time']." น.<br>";
+		}
+		
+		if (!empty($cpg['atb'])) {
+			$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['hc1_time']." น.";
+		}
+	}
 
 $bgcolor= "#FFFFFF";	
 
@@ -247,7 +274,7 @@ $i++;
 						<TD width='120'>",$fullname,"</TD>
 						<TD align='center'>",$type_wounded2,"</TD>
 						<TD width='100'>",$list_ptright[$list_ptright2],"</TD>
-						<TD>",$organ,"</TD>
+						<TD>",$organ,"<div>$cepsis</div></TD>
 						<TD>",$dx,"</TD>
 						<TD>",$maintenance,"</TD>
 						<TD>",$admit_ward,"</TD>
