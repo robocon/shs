@@ -43,6 +43,14 @@ $_SESSION["name_trauma_word"] = "";
 return $pAge;
 }
 
+if (!function_exists('dump')) {
+	function dump($txt){
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
+}
+
 /********************************************* AJAX *********************************************************************/
 	 if(isset($_GET["action"]) && $_GET["action"] =="view"){
 		//header("content-type: application/x-javascript; charset=UTF-8");
@@ -567,7 +575,7 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		$sql ="INSERT INTO `trauma` (  `date` , `vn` , `hn` , `an`, `age` , `list_ptright` , `list_ptright2` , `disease_people` , `drug_alert` , `dx`, `organ`, `maintenance`, `doctor`,  `type_accident` , `wounded_vehicle` , `wounded_detail` , `cause_accident` , `spirits` , `belt` , `helmet` , `sender` , `als_sender` , `cure`,  `time_diag` , `time_in` , `time_out`, `officer`, `trauma`, `obs`, `type_wounded`, `type_wounded2`, `accident_detail`, `date_in`,`etc_sender`, `with_cause_accident`, `list_with_cause_accident`, `admit_ward`, `refer_hospital`, `repeat`, `cause_refer`, `type_patient`, `means_refer`, `take_care`,`doc_refer`, `nurse`, `assistant_nurse`, `estimate`, `no_estimate`, `cradle`, `doc_txt`, `consult`, `to_or`, `to_lr`, `to_etc`, `er_tell`, `problem_refer`, `suggestion`, `to_hpt_lp`, `out_changwat` ,`fresh_wound`,`wound_hours`, `weight` ,`height`,`bmi`, `temperature`,`pause`,`rate`,`bp1`,`bp2`,`o2sat`,`painscore`,`condition`) VALUES ('".$thaidate."', '".$_POST["vn"]."', '".$_POST["hn"]."', '".$_POST["an"]."', '".calcage($dbirth)."', '".$_POST["list_ptright"]."', '".$_POST["list_ptright2"]."', '".jschars($_POST["disease_people"])."', '".jschars($_POST["drug_alert"])."', '".jschars($_POST["dx"])."', '".jschars($_POST["organ"])."', '".jschars($_POST["maintenance"])."', '".$_POST["doctor"]."', '".$_POST["type_accident"]."', '".$_POST["wounded_vehicle"]."', '".$_POST["wounded_detail"]."', '".$_POST["cause_accident"]."', '".$_POST["spirits"]."', '".$_POST["belt"]."', '".$_POST["helmet"]."', '".$_POST["sender"]."', '".$_POST["als_sender"]."', '".$_POST["cure"]."', '".$time_diag."', '".$time_in."', '".$time_out."', '".$_SESSION["sOfficer"]."', '".$_POST["trauma"]."', '".$_POST["obs"]."', '".$_POST["type_wounded"]."', '".$_POST["type_wounded2"]."', '".$_POST["accident_detail"]."','".$_POST["date_in"]."','".$_POST["etc_sender"]."','".$_POST["with_cause_accident"]."','".$_POST["list_with_cause_accident"]."','".$_POST["admit_ward"]."','".$_POST["refer_hospital"]."', '".$_POST["repeat"]."', '".$_POST["cause_refer"]."', '".$_POST["type_patient"]."', '".$_POST["means_refer"]."', '".$_POST["take_care"]."','".$_POST["doc_refer"]."', '".$_POST["nurse"]."', '".$_POST["assistant_nurse"]."', '".$_POST["estimate"]."', ".$_POST["no_estimate"].", '".$_POST["cradle"]."', '".$_POST["doc_txt"]."', '".$_POST["consult"]."', '".$_POST["to_or"]."', '".$_POST["to_lr"]."', '".$_POST["to_etc"]."', '".$_POST["er_tell"]."', '".$_POST["problem_refer"]."', '".$_POST["suggestion"]."', '".$_POST["to_hpt_lp"]."','".$_POST["out_changwat"]."', $freshWound, $woundhours, '".$_POST["weight"]."', '".$_POST["height"]."','".$_POST["bmi"]."','".$_POST["temperature"]."','".$_POST["pause"]."','".$_POST["rate"]."','".$_POST["bp1"]."','".$_POST["bp2"]."','".$_POST["o2sat"]."','".$_POST["painscore"]."','".$_POST["condition"]."');";
 		$result = Mysql_Query($sql) or die(Mysql_error());
 		$id= Mysql_insert_id();
-		
+
 		if($result){
 			if(trim($_POST["disease_people"]) != "ปฏิเสธ"){
 				$sql = "Update opcard set congenital_disease = '".$_POST["disease_people"]."' Where hn='".$_POST["hn"]."' limit 1 ;";
@@ -586,9 +594,28 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 
 			$count = count($_POST["cpg"]);
 			for($i=0;$i<$count;$i++){
-				
-				$sql = "INSERT INTO `trauma_cpg` (`for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`) values ('".$id."','".$thaidate."','".$_POST["date_in"]."','".$time_in."', '".$_POST["cpg"][$i]."');";
-				$result2 = Mysql_Query($sql);
+
+				if ($_POST["cpg"][$i] == "30") { 
+
+					$lactate = sprintf("%s", $_POST['lactate']);
+					$lac_time = sprintf("%s", $_POST['lac_time']);
+					$hc1_time = sprintf("%s", $_POST['hc1_time']);
+					$hc2_time = sprintf("%s", $_POST['hc2_time']);
+					$uauc_time = sprintf("%s", $_POST['uauc_time']);
+					$ivf = sprintf("%s", $_POST['ivf']);
+					$ivf_time = sprintf("%s", $_POST['ivf_time']);
+					$atb = sprintf("%s", $_POST['atb']);
+					$atb_time = sprintf("%s", $_POST['atb_time']);
+
+					$sql = "INSERT INTO `trauma_cpg` ( `for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`, `lactate`, `lac_time`, `hc1_time`, `hc2_time`, `uauc_time`, `ivf`, `ivf_time`, `atb`, `atb_time` 
+					) VALUES ( '$id', '$thaidate', '".$_POST["date_in"]."', '$time_in', '".$_POST["cpg"][$i]."', '$lactate', '$lac_time', '$hc1_time', '$hc2_time', '$uauc_time', '$ivf', '$ivf_time', '$atb', '$atb_time' );";
+					$result2 = mysql_query($sql);
+
+				}else{
+					$sql = "INSERT INTO `trauma_cpg` (`for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`) values ('".$id."','".$thaidate."','".$_POST["date_in"]."','".$time_in."', '".$_POST["cpg"][$i]."');";
+					$result2 = Mysql_Query($sql);
+					
+				}
 
 			}
 
@@ -653,7 +680,7 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		);";
 		mysql_query($sql) or die( mysql_error() );
 		// บันทึกข้อมูลเข้า ADMISSION
-		
+
 		
 		if($result){
 			
@@ -864,12 +891,30 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 		}
 
 		$count = count($_POST["cpg"]);
-			for($i=0;$i<$count;$i++){
-				
-				$sql = "INSERT INTO `trauma_cpg` (`for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`) values ('".$id."','".$thaidate."','".$_POST["date_in"]."','".$time_in."', '".$_POST["cpg"][$i]."');";
-				$result2 = Mysql_Query($sql);
+		for($i=0;$i<$count;$i++){
 
+			if ($_POST["cpg"][$i] == "30") {
+
+				$lactate = sprintf("%s", $_POST['lactate']);
+				$lac_time = sprintf("%s", $_POST['lac_time']);
+				$hc1_time = sprintf("%s", $_POST['hc1_time']);
+				$hc2_time = sprintf("%s", $_POST['hc2_time']);
+				$uauc_time = sprintf("%s", $_POST['uauc_time']);
+				$ivf = sprintf("%s", $_POST['ivf']);
+				$ivf_time = sprintf("%s", $_POST['ivf_time']);
+				$atb = sprintf("%s", $_POST['atb']);
+				$atb_time = sprintf("%s", $_POST['atb_time']);
+
+				$sql = "INSERT INTO `trauma_cpg` ( `for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`, `lactate`, `lac_time`, `hc1_time`, `hc2_time`, `uauc_time`, `ivf`, `ivf_time`, `atb`, `atb_time` 
+						) VALUES ( '$id', '$thaidate', '" . $_POST["date_in"] . "', '$time_in', '" . $_POST["cpg"][$i] . "', '$lactate', '$lac_time', '$hc1_time', '$hc2_time', '$uauc_time', '$ivf', '$ivf_time', '$atb', '$atb_time' );";
+				$result2 = mysql_query($sql);
+
+			}else{
+				$sql = "INSERT INTO `trauma_cpg` (`for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`) values ('".$id."','".$thaidate."','".$_POST["date_in"]."','".$time_in."', '".$_POST["cpg"][$i]."');";
+					$result2 = Mysql_Query($sql);
 			}
+
+		}
 		
 
 		if($_POST["cure"] == "refer"){
@@ -2353,24 +2398,48 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 	</TD>
 </TR>
 <TR>
-	<TD align="right" valign="top">CPG : </TD><TD  colspan="5">
+	<TD align="right" valign="top">CPG : </TD><TD  colspan="6">
 		<TABLE border='0'>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="10" <?php if(isset($cpg["10"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ copd ใช่หรือไม่?')){ return false;}"> COPD</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="20" <?php if(isset($cpg["20"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ MI ใช่หรือไม่?')){ return false;}"> MI</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="30" <?php if(isset($cpg["30"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ sepsis ใช่หรือไม่?')){ return false;}"> sepsis</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="40" <?php if(isset($cpg["40"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ head injury ใช่หรือไม่?')){ return false;}" > head injury</TD>
-		</TR>
-		<TR>
-			<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="50" <?php if(isset($cpg["50"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ Stroke Fast track ใช่หรือไม่?')){ return false;}" >Stroke Fast track</TD>
-		</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="10" <?php if(isset($cpg["10"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ copd ใช่หรือไม่?')){ return false;}"> COPD</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="20" <?php if(isset($cpg["20"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ MI ใช่หรือไม่?')){ return false;}"> MI</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" id="cpg_sepsis" NAME="cpg[]" VALUE="30" <?php if(isset($cpg["30"])) echo "Checked"; ?>> <label for="cpg_sepsis">sepsis</label></TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="40" <?php if(isset($cpg["40"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ head injury ใช่หรือไม่?')){ return false;}" > head injury</TD>
+			</TR>
+			<TR>
+				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="50" <?php if(isset($cpg["50"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ Stroke Fast track ใช่หรือไม่?')){ return false;}" >Stroke Fast track</TD>
+			</TR>
 		</TABLE>
+		<div id="sepsis_contain" style="display:none; background: #d8d8d8; padding: 4px 4px;">
+			<p>Lactate <input type="text" name="lactate" id="lactate" size="3"> เวลา <input type="text" name="lac_time" id="lac_time" size="2" onkeyup="addTime('lac_time',this.value);"> น.</p>
+			<p>H/C ขวด 1 เวลา <input type="text" name="hc1_time" id="hc1_time" size="2" onkeyup="addTime('hc1_time',this.value);"> น.</p>
+			<p>H/C ขวด 2 เวลา <input type="text" name="hc2_time" id="hc2_time" size="2" onkeyup="addTime('hc2_time',this.value);"> น.</p>
+			<p>UA, UC เวลา <input type="text" name="uauc_time" id="uauc_time" size="2" onkeyup="addTime('uauc_time',this.value);"> น.</p>
+			<p>IVF <input type="text" name="ivf" id="ivf" size="3"> เวลา <input type="text" name="ivf_time" id="ivf_time" size="2" onkeyup="addTime('ivf_time',this.value);"> น.</p>
+			<p>ATB <input type="text" name="atb" id="atb" size="3"> เวลา <input type="text" name="atb_time" id="atb_time" size="2" onkeyup="addTime('atb_time',this.value);"> น.</p>
+			<script type="text/javascript">
+				document.getElementById("cpg_sepsis").onclick = function(){ 
+					var sep_check = document.getElementById("cpg_sepsis").checked;
+					if(sep_check===true){ 
+						document.getElementById("sepsis_contain").style.display = '';
+					}else{
+						document.getElementById("sepsis_contain").style.display = 'none';
+					}
+				}
+
+				function addTime(fid, val){
+					if(val.length==2){
+						document.getElementById(fid).value = val+':';
+					}
+				}
+			</script>
+		</div>
 	</TD>
 </TR>
 <TR>
@@ -3020,6 +3089,49 @@ if($queue_type=="R"){
 			<TD align='right'>รักษา : </TD>
 			<TD><A HREF="javascript:void(0);" <?php if(strlen($arr["maintenance"]) > 18){?> onmouseover= "show_tooltip('<?php echo jschars($arr["maintenance"]);?>','left',0,0);" onMouseOut="hid_tooltip();" <?php }else{ ?> Onclick="document.getElementById('maintenance').value='<?php echo $arr["maintenance"];?>';" <?php }?>  style="color: #0000FF;text-decoration:none;"><span class="sub-string"><?php echo $arr["maintenance"];?></span></A></TD>
 		</TR>
+		<?php
+		$qq = mysql_query("SELECT * FROM `trauma_cpg` WHERE `for_id` = '".$arr['row_id']."' AND `code_cpg` = '30' ");
+		if (mysql_num_rows($qq) > 0) {
+			$cpg = mysql_fetch_assoc($qq);
+
+			$cepsis = '';
+			if (!empty($cpg['lactate'])) { 
+				$cepsis .= "Lactate ".$cpg['lactate']." เวลา ".$cpg['lac_time']." น.<br>";
+			}
+			if(!empty($cpg['hc1_time'])){
+				$cepsis .= "H/C ขวด 1 เวลา ".$cpg['hc1_time']." น.<br>";
+			}
+			if (!empty($cpg['hc2_time'])) { 
+				$cepsis .= "H/C ขวด 2 เวลา ".$cpg['hc2_time']." น.<br>";
+			}
+			
+			if (!empty($cpg['uauc_time'])) {
+				$cepsis .= "UA, UC เวลา ".$cpg['uauc_time']." น.<br>";
+			}
+			
+			if (!empty($cpg['ivf'])) {
+				$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['hc1_time']." น.<br>";
+			}
+			
+			if (!empty($cpg['atb'])) {
+				$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['hc1_time']." น.";
+			}
+
+			if (!empty($cepsis)) {
+			?>
+			<tr>
+				<td>Sepsis: </td>
+				<td>
+					<?php
+					
+					?>
+					<a href="javascript:void(0);" onmouseover="show_tooltip('<?=$cepsis;?>','left',0,0)" onmouseout="hid_tooltip();">Lactate <?=$cpg['lactate'];?> เวลา <?=$cpg['lac_time'];?></a>
+				</td>
+			</tr>
+			<?php
+			}
+		}
+		?>
 		</TABLE>
 		
 		
