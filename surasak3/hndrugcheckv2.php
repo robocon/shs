@@ -1,5 +1,6 @@
 <?php 
 include_once 'bootstrap.php';
+include_once 'includes/JSON.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -27,7 +28,9 @@ if($action==='search'){
             $res = array('status'=>200,'count' => $a_rows,'items' => $items);
         }
     }
-    echo json_encode($res);
+    
+    $json = new Services_JSON();
+    echo $json->encode($res);
     exit;
 
 }elseif ($action==='showDrugrx') {
@@ -54,7 +57,8 @@ if($action==='search'){
             $res = array('status'=>400,'message' => 'ไม่พบข้อมูล');
         }
     }
-    echo json_encode($res);
+    $json = new Services_JSON();
+    echo $json->encode($res);
     exit;
 }
 
