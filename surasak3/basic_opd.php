@@ -1989,54 +1989,45 @@ mmHg </td>
 								$nurse_dx3 = (!empty($eye['nurse_dx3'])) ? 'checked="checked"' : '' ;
 								$nurse_dx4 = (!empty($eye['nurse_dx4'])) ? 'checked="checked"' : '' ;
 								$nurse_dx5 = (!empty($eye['nurse_dx5'])) ? 'checked="checked"' : '' ;
+								$nurse_dx6 = (!empty($eye['nurse_dx6'])) ? 'checked="checked"' : '' ;
+								$nurse_dx7 = (!empty($eye['nurse_dx7'])) ? 'checked="checked"' : '' ;
+								$nurse_dx8 = (!empty($eye['nurse_dx8'])) ? 'checked="checked"' : '' ;
+								
+								/**
+								 * @important
+								 * ยกเลิกฟิลด์ nurse_dx3_txt, nurse_dx2_txt
+								 */
+
 								?>
 								<table style="min-width: 800px;">
 									<tr>
 										<td><input type="checkbox" name="nurse_dx1" id="nurse_dx1" value="มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค" <?=$nurse_dx1;?> > <label for="nurse_dx1">มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค</label><input type="text" name="nurse_dx1_txt" id="nurse_dx1_txt" value="<?=$eye['nurse_dx1_txt'];?>" ></td>
-										<td><input type="checkbox" name="nurse_dx2" id="nurse_dx2" value="ต้องการข้อมูลเกี่ยวกับการให้บริการ" <?=$nurse_dx2;?>> <label for="nurse_dx2">ต้องการข้อมูลเกี่ยวกับการให้บริการ</label><input type="text" name="nurse_dx2_txt" id="nurse_dx2_txt" value="<?=$eye['nurse_dx2_txt'];?>" ></td>
+										<td><input type="checkbox" name="nurse_dx2" id="nurse_dx2" value="มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรควุ้นน้ำลูกตาเสื่อม" <?=$nurse_dx2;?>> <label for="nurse_dx2">มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรควุ้นน้ำลูกตาเสื่อม</label></td>
 									</tr>
 									<tr>
-										<td><input type="checkbox" name="nurse_dx3" id="nurse_dx3" value="ต้องการความรู้/การปรึกษาเรื่อง" <?=$nurse_dx3;?>> <label for="nurse_dx3">ต้องการความรู้/การปรึกษาเรื่อง</label><input type="text" name="nurse_dx3_txt" id="nurse_dx3_txt" value="<?=$eye['nurse_dx3_txt'];?>" ></td>
-										<td><input type="checkbox" name="nurse_dx4" id="nurse_dx4" value="ไม่สุขสบาย: ปวด, เคืองตา" <?=$nurse_dx4;?>> <label for="nurse_dx4">ไม่สุขสบาย: ปวด, เคืองตา</label></td>
+										<td><input type="checkbox" name="nurse_dx3" id="nurse_dx3" value="ต้องการความรู้/การปรึกษาเรื่องการปฏิบัติตัวหลังlaser / การหยอดยาหดม่านตา หรือยาขยายม่านตา" <?=$nurse_dx3;?>> <label for="nurse_dx3">ต้องการความรู้/การปรึกษาเรื่องการปฏิบัติตัวหลังlaser / การหยอดยาหดม่านตา หรือยาขยายม่านตา</label></td>
+										<td><input type="checkbox" name="nurse_dx4" id="nurse_dx4" value="ไม่สุขสบาย: ปวด, เคืองตา, แสบตา" <?=$nurse_dx4;?>> <label for="nurse_dx4">ไม่สุขสบาย: ปวด, เคืองตา, แสบตา</label></td>
 									</tr>
 									<tr>
-										<td colspan="2"><input type="checkbox" name="nurse_dx5" id="nurse_dx5" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง" <?=$nurse_dx5;?>> <label for="nurse_dx5">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง</label></td>
+										<td><input type="checkbox" name="nurse_dx5" id="nurse_dx5" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง" <?=$nurse_dx5;?>> <label for="nurse_dx5">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง</label></td>
+										<td><input type="checkbox" name="nurse_dx6" id="nurse_dx6" value="เสี่ยงต่อการเกิดอุบัติเหตุ จากตาสู้แสงจ้าไม่ได้ ตาพร่ามัว" <?=$nurse_dx6;?>> <label for="nurse_dx6">เสี่ยงต่อการเกิดอุบัติเหตุ จากตาสู้แสงจ้าไม่ได้ ตาพร่ามัว</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="nurse_dx7" id="nurse_dx7" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากตาพร่ามัว จากการได้รับยาหยอดขยายม่านตา" <?=$nurse_dx7;?>> <label for="nurse_dx7">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากตาพร่ามัว จากการได้รับยาหยอดขยายม่านตา</label></td>
+										<td><input type="checkbox" name="nurse_dx8" id="nurse_dx8" value="ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ." <?=$nurse_dx8;?>> <label for="nurse_dx8">ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ.</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="text" name="nurse_dx9_txt" id="nurse_dx9_txt" value="<?=$nurse_dx9_txt;?>" size="50"></td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 						<script type="text/javascript">
 							document.getElementById('nurse_dx1').onclick = function(){
-								
-								if(this.checked==true)
-								{
+								if(this.checked==true){
 									document.getElementById('nurse_dx1_txt').focus();
-								}
-								else
-								{
+								}else{
 									document.getElementById('nurse_dx1_txt').value = '';
-								}
-							};
-
-							document.getElementById('nurse_dx2').onclick = function(){
-								if(this.checked==true)
-								{
-									document.getElementById('nurse_dx2_txt').focus();
-								}
-								else
-								{
-									document.getElementById('nurse_dx2_txt').value = '';
-								}
-							};
-
-							document.getElementById('nurse_dx3').onclick = function(){
-								if(this.checked==true)
-								{
-									document.getElementById('nurse_dx3_txt').focus();
-								}
-								else
-								{
-									document.getElementById('nurse_dx3_txt').value = '';
 								}
 							};
 						</script>
