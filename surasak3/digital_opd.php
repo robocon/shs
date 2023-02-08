@@ -470,6 +470,18 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 		if(!empty($item['nurse_dx5'])){
 			?><div>- <?=$item['nurse_dx5'];?></div><?php
 		}
+		if(!empty($item['nurse_dx6'])){
+			?><div>- <?=$item['nurse_dx6'];?></div><?php
+		}
+		if(!empty($item['nurse_dx7'])){
+			?><div>- <?=$item['nurse_dx7'];?></div><?php
+		}
+		if(!empty($item['nurse_dx8'])){
+			?><div>- <?=$item['nurse_dx8'];?></div><?php
+		}
+		if(!empty($item['nurse_dx9_txt'])){
+			?><div>- <?=$item['nurse_dx9_txt'];?></div><?php
+		}
 		?>
 	</div>
 	<?php 

@@ -330,62 +330,77 @@ if($_POST["cigarette"]=="1"){
 
 	if($_SESSION['smenucode'] == 'ADMEYE')
 	{
+
+		/** 
+		ALTER TABLE `pt_opd_eye` 
+		ADD `nurse_dx6` varchar(255) NULL AFTER `nurse_dx5`,
+		ADD `nurse_dx7` varchar(255) NULL AFTER `nurse_dx6`,
+		ADD `nurse_dx8` varchar(255) NULL AFTER `nurse_dx7`,
+		ADD `nurse_dx9_txt` text NULL AFTER `nurse_dx8`;
+		*/
+		$hn = $_REQUEST['hn'];
+		$ptname = $_POST["ptname"];
+
+		$antiplatelet = $_POST['antiplatelet'];
+		$antiplatelet_txt = $_POST['antiplatelet_txt'];
+		$esr = $_POST['esr'];
+		$esr_ph = $_POST['esr_ph'];
+		$esr_glass = $_POST['esr_glass'];
+		$esr_not = $_POST['esr_not'];
+		$esl = $_POST['esl'];
+		$esl_ph = $_POST['esl_ph'];
+		$esl_glass = $_POST['esl_glass'];
+		$esl_not = $_POST['esl_not'];
+		$nurse_dx1 = $_POST['nurse_dx1'];
+		$nurse_dx1_txt = $_POST['nurse_dx1_txt'];
+		$nurse_dx2 = $_POST['nurse_dx2'];
+		$nurse_dx2_txt = $_POST['nurse_dx2_txt'];
+		$nurse_dx3 = $_POST['nurse_dx3'];
+		$nurse_dx3_txt = $_POST['nurse_dx3_txt'];
+		$nurse_dx4 = $_POST['nurse_dx4'];
+		$nurse_dx5 = $_POST['nurse_dx5'];
+		$nurse_dx6 = $_POST['nurse_dx6'];
+		$nurse_dx7 = $_POST['nurse_dx7'];
+		$nurse_dx8 = $_POST['nurse_dx8'];
+		$nurse_dx9_txt = $_POST['nurse_dx9_txt'];
+		$imp1 = $_POST['imp1'];
+		$imp2 = $_POST['imp2'];
+		$imp2_txt = $_POST['imp2_txt'];
+		$imp3 = $_POST['imp3'];
+		$imp4 = $_POST['imp4'];
+		$imp5 = $_POST['imp5'];
+		$imp6 = $_POST['imp6'];
+		$imp6_txt = $_POST['imp6_txt'];
+		$eva1 = $_POST['eva1'];
+		$eva2 = $_POST['eva2'];
+		$eva3 = $_POST['eva3'];
+		$eva4 = $_POST['eva4'];
+		$eva5 = $_POST['eva5'];
+		$eva6 = $_POST['eva6'];
+		$eva7 = $_POST['eva7'];
+		$eva8 = $_POST['eva8'];
+		$eva9 = $_POST['eva9'];
+		$eva10 = $_POST['eva10'];
+		$eva10_txt = $_POST['eva10_txt'];
+
+
 		// ถ้ายังไม่มีใน pt_opd_eye และอยู่ในกลุ่มของห้องตา
 		$sql_find_opd_eye = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$thidatehn' ";
 		$q_opd_eye = $dbi->query($sql_find_opd_eye);
 		if($q_opd_eye->num_rows == 0){
 
-			$hn = $_REQUEST['hn'];
-			$ptname = $_POST["ptname"];
-
-			$antiplatelet = $_POST['antiplatelet'];
-			$antiplatelet_txt = $_POST['antiplatelet_txt'];
-			$esr = $_POST['esr'];
-			$esr_ph = $_POST['esr_ph'];
-			$esr_glass = $_POST['esr_glass'];
-			$esr_not = $_POST['esr_not'];
-			$esl = $_POST['esl'];
-			$esl_ph = $_POST['esl_ph'];
-			$esl_glass = $_POST['esl_glass'];
-			$esl_not = $_POST['esl_not'];
-			$nurse_dx1 = $_POST['nurse_dx1'];
-			$nurse_dx1_txt = $_POST['nurse_dx1_txt'];
-			$nurse_dx2 = $_POST['nurse_dx2'];
-			$nurse_dx2_txt = $_POST['nurse_dx2_txt'];
-			$nurse_dx3 = $_POST['nurse_dx3'];
-			$nurse_dx3_txt = $_POST['nurse_dx3_txt'];
-			$nurse_dx4 = $_POST['nurse_dx4'];
-			$nurse_dx5 = $_POST['nurse_dx5'];
-			$imp1 = $_POST['imp1'];
-			$imp2 = $_POST['imp2'];
-			$imp2_txt = $_POST['imp2_txt'];
-			$imp3 = $_POST['imp3'];
-			$imp4 = $_POST['imp4'];
-			$imp5 = $_POST['imp5'];
-			$imp6 = $_POST['imp6'];
-			$imp6_txt = $_POST['imp6_txt'];
-			$eva1 = $_POST['eva1'];
-			$eva2 = $_POST['eva2'];
-			$eva3 = $_POST['eva3'];
-			$eva4 = $_POST['eva4'];
-			$eva5 = $_POST['eva5'];
-			$eva6 = $_POST['eva6'];
-			$eva7 = $_POST['eva7'];
-			$eva8 = $_POST['eva8'];
-			$eva9 = $_POST['eva9'];
-			$eva10 = $_POST['eva10'];
-			$eva10_txt = $_POST['eva10_txt'];
-			
 			$opd_eye_sql = "INSERT INTO `pt_opd_eye` (
 				`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
 				`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
 				`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
+				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`,
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
 				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`
 			) VALUES (
 				NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
 				'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
 				'$nurse_dx1', '$nurse_dx1_txt', '$nurse_dx2', '$nurse_dx2_txt', '$nurse_dx3', '$nurse_dx3_txt', '$nurse_dx4', '$nurse_dx5', 
+				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt',
 				'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
 				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt' 
 			);";
