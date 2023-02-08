@@ -938,7 +938,7 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 
 </TR>
 <tr>
-	<td colspan="6" align="center"><INPUT TYPE="button" value="ประวัติการรักษา E-OPD" Onclick="window.open('dt_paperLess.php?hn=<?=urlencode($cHn);?>');"></td>
+	<td colspan="6" align="center"><button type='button' onclick="window.open('dt_paperLess.php?hn=<?php echo $cHn;?>') " class='txtsarabun'><img src='images/views.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>ข้อมูลประวัติการรักษา<br><?=$cHn;?></div></button></td>
 </tr>
 <?
 $date=explode(" ",$cthidate);

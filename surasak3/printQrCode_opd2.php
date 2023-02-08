@@ -43,7 +43,7 @@ body {
 window.print();
 	setTimeout(function(){ 
             window.close();
-	}, 1000);
+	}, 5000);
 </script>
 <?php 
 

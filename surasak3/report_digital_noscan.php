@@ -66,6 +66,9 @@ a:hover, a:active {
 	
 	list($y,$m,$d)=explode("-",$date);
 	$showdate="$d/$m/$y";
+	
+	$yy=$y-543;
+	$regisdate_en="$yy-$m-$d";
 ?>
 <div style="margin-left:50px;">
 <table border="0" width="90%" bordercolor="#000000">
@@ -101,13 +104,19 @@ a:hover, a:active {
 	$result111 = Mysql_Query($sql111);
 	list($opcard_id) = Mysql_fetch_row($result111);
 
-	$sql112 = "Select opday_id From digital_opcard where opcard_id='$opcard_id' and last_update LIKE '$regisdate_en%' group by opcard_id order by row_id desc limit 1 ";
+	$sql112 = "Select last_update,opday_id From digital_opcard where opcard_id='$opcard_id' and last_update LIKE '$regisdate_en%' order by opday_id ASC limit 1 ";
 	//echo "Pt: $hn==>".$sql112."<br>";
 	$result112 = Mysql_Query($sql112);
 	$numapp=mysql_num_rows($result112);
-	list($opday_id) = Mysql_fetch_row($result112);
+	list($last_update,$opday_id) = Mysql_fetch_row($result112);
+	
+	$sql113 = "Select count(row_id) as countfile From digital_opcard where opcard_id='$opcard_id' and last_update LIKE '$regisdate_en%'";
+	//echo "Pt: $hn==>".$sql113."<br>";
+	$result113 = Mysql_Query($sql113);
+	$numapp=mysql_num_rows($result113);
+	list($countfile) = Mysql_fetch_row($result113);	
 
-		if($opday_id==$row_id){
+		if($opday_id==0 && $countfile ==0){
 			$num++;
 		$statusicd10="#FFFFFF";	
 	

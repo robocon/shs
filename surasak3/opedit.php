@@ -192,6 +192,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
          }
     if($result){
 	//	$cRegisdate=$row->regisdate;
+		$cRow_id =$row->row_id;
 		$cIdcard =$row->idcard;
 		$cMid=$row->mid;
 		$cHn =$row->hn;
@@ -447,10 +448,23 @@ return $pAge;
 	}else{
 		$color = "#339966";
 	}
+	
+	$sql112 = "Select last_update,opcard_id From digital_opcard where opcard_id='$cRow_id' group by opcard_id order by row_id ASC limit 1 ";
+	//echo "Pt: $hn==>".$sql112."<br>";
+	$result112 = Mysql_Query($sql112);
+	$numapp=mysql_num_rows($result112);
+	list($last_update,$opcard_id) = Mysql_fetch_row($result112);
+
+	if($numapp > 0){
+		$showscan="<p align='right' style='color:red; font-size:28px; margin-right: 20px;'><img src='images/bookmark-blue.png' height='28px' width='28px' /> <strong>วันที่เริ่มสแกนเอกสาร $last_update</strong></p>";
+	}else{
+		$showscan="<p align='right' style='color:blue; font-size:24px;'><strong>ยังไม่ได้เริ่มสแกนเอกสาร</strong></p>";
+	}	
 ?>
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
+<?php echo $showscan; ?>
 <form name='f1' method='POST' action='opwork.php' onsubmit='return checkForm();' enctype="multipart/form-data">
 <fieldset>
     <legend>ข้อมูลประวัติส่วนตัว :  HN : <a href="printpt.php?hn=<?=$cHn;?>" target="_blank"><font color="#FF0000"><?=$cHn;?></font></a></legend>

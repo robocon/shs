@@ -210,8 +210,11 @@ if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
 				" </tr>\n");	
 }							 
 ?>
-<tr style="background-color: #00850a;">
-	<td><a href="ophn_eopd.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 20px;">:: ค้นหา e-OPD จาก HN</a></td>
+<tr style="background-color: #16A085;">
+	<td><a href="opd_reprint.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 18px;">:: ใบตรวจโรคผู้ป่วยนอกวันนี้</a></td>
+</tr>
+<tr style="background-color: #16A085;">
+	<td><a href="ophn_eopd.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 18px;">:: ค้นหา e-OPD จาก HN</a></td>
 </tr>
 <?php
 if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
@@ -220,7 +223,7 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
 
  	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
                print (" <tr>\n".
-                  "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+                  "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer01' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
                   " </tr>\n");
                   };
 }elseif($sOfficer=='ภูภูมิ วุฒิธาดา (ว.33906)'){
@@ -229,7 +232,7 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
     
     while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
-        "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+        "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer02' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
         " </tr>\n");
     }
 }elseif($sOfficer=='วริทธิ์ พสุธาดล (ว.38228)'){
@@ -238,7 +241,7 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
     
     while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
         print (" <tr>\n".
-        "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+        "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer03' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
         " </tr>\n");
     }
 }elseif($sOfficer=='ธนบดินทร์ ผลศรีนาค (ว.19921)'){
@@ -247,7 +250,7 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
 	
 			while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 				   print (" <tr>\n".
-					  "  <td BGCOLOR='#005555'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+					  "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer04' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
 					  " </tr>\n");
 					  } 
 }else{
@@ -255,7 +258,7 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
 $sql2="select * from menu_user WHERE member_code='".$sRowid."'";
 $result2= mysql_query($sql2) or die( mysql_error($Conn) );
 $rows=mysql_num_rows($result2);
-
+$userRowId = "&sOfficer=".$_SESSION['sOfficer']."&dt_doctor=".$_SESSION['dt_doctor'];
 if($rows){///  ถ้ามี rows
 
  $query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
@@ -263,7 +266,7 @@ if($rows){///  ถ้ามี rows
 
         while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
                print (" <tr>\n".
-                  "  <td BGCOLOR='#008484'><a target='$target' href=\"$link?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+                  "  <td BGCOLOR='#008484'><a target='$target' class='menulst-refer05' href=\"$link?$userRowId\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
                   " </tr>\n");
                   }
 				  		  
@@ -274,7 +277,7 @@ if($rows){///  ถ้ามี rows
 
 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 	print (" <tr>\n".
-	"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
+	"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
 	" </tr>\n");
 	}
 				  
@@ -291,7 +294,7 @@ if($rows){///  ถ้ามี rows
 		" </tr>\n");
 	};
 	print (" <tr>\n".
-	"  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
+	"  <td BGCOLOR='#008400'><a target='_top' class='menulst-refer07' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
 	" </tr>\n");
 
 	print "</table>";

@@ -1,7 +1,12 @@
 <?php
 session_start();
 include("connect.inc");
-
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -113,6 +118,19 @@ if($drugreact == 0){
 	
 if($congenital_disease == ""){
 	$congenital_disease="ปฎิเสธ";
+}else{
+	if( strstr( $congenital_disease, "HIV" ) || strstr( $congenital_disease, "hiv" ) || strstr( $congenital_disease, "B24" ) || strstr( $congenital_disease, "b24" ) || strstr( $congenital_disease, "เชื้อราในสมอง" )) {
+		$sql113 = "Select napnumber From hiv where hn='".$hn."' ";
+		$result113 = Mysql_Query($sql113);
+		list($napnumber) = Mysql_fetch_row($result113);		
+		if(!empty($napnumber)){
+			$congenital_disease=$napnumber;		
+		}else{
+			$congenital_disease="ปฎิเสธ";
+		}	
+	}else{
+		$congenital_disease=$congenital_disease;
+	}	
 }	
 ?>
 <style type="text/css">
@@ -175,6 +193,14 @@ p.text {
     word-wrap: break-word;
 }
 </style>
+<script language="javascript">
+//window.opener.location.reload();
+//window.opener.location.reload(true);
+window.print();
+	setTimeout(function(){ 
+            window.close();
+	}, 1000);
+</script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
 <div class="narrowWaisted">
 

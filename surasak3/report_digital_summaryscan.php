@@ -4,7 +4,7 @@ session_start();
 ?>
 <style>
 body {
-	background-color: #D0ECE7;
+	background-color: #FEF5E7;
     font-family: "TH SarabunPSK";
     font-size: 20px;
     }
@@ -33,9 +33,9 @@ a:link{
 
 	
 </style>
-<title>อัพโหลดประวัติการรักษา</title>
+<title>อัพโหลดสรุปประวัติการรักษา</title>
 <?php
-	print "<strong class=\"txtsarabun\" style='font-size:28px;'>ข้อมูลป่วยนอกที่อัพโหลดประวัติการรักษาเรียบร้อย</strong>";
+	print "<strong class=\"txtsarabun\" style='font-size:28px;'>ข้อมูลป่วยนอกที่อัพโหลดสรุปประวัติการรักษาเรียบร้อย</strong>";
 ?>
 <? 
 	$date=$_GET["getdate"];
@@ -92,7 +92,7 @@ a:link{
 
 		
 		$statusicd10="#FFFFFF";	
-		if($opday_id==$row_id){
+		if($opday_id==0 && $countfile > 0){
 		$i++;
         print (" <tr BGCOLOR='$statusicd10'>\n".
            "  <td align='center'>$i</td>\n".

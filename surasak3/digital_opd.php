@@ -1,7 +1,12 @@
 <?php
 session_start();
 include("connect.inc");
-
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -97,9 +102,9 @@ if($drugreact == 0){
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood,$congenital_disease) = Mysql_fetch_row($result111);
 	
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
@@ -114,11 +119,15 @@ if($drugreact == 0){
 if($congenital_disease == ""){
 	$congenital_disease="ปฎิเสธ";
 }else{
-	if( strstr( $congenital_disease, "HIV" ) || strstr( $congenital_disease, "B24" ) || strstr( $congenital_disease, "เชื้อราในสมอง" )) {
+	if( strstr( $congenital_disease, "HIV" ) || strstr( $congenital_disease, "hiv" ) || strstr( $congenital_disease, "B24" ) || strstr( $congenital_disease, "b24" ) || strstr( $congenital_disease, "เชื้อราในสมอง" )) {
 		$sql113 = "Select napnumber From hiv where hn='".$hn."' ";
 		$result113 = Mysql_Query($sql113);
 		list($napnumber) = Mysql_fetch_row($result113);		
-		$congenital_disease=$napnumber;		
+		if(!empty($napnumber)){
+			$congenital_disease=$napnumber;		
+		}else{
+			$congenital_disease="ปฎิเสธ";
+		}	
 	}else{
 		$congenital_disease=$congenital_disease;
 	}	
@@ -184,6 +193,14 @@ p.text {
     word-wrap: break-word;
 }
 </style>
+<script language="javascript">
+//window.opener.location.reload();
+//window.opener.location.reload(true);
+window.print();
+	setTimeout(function(){ 
+            window.close();
+	}, 1000);
+</script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
 <div class="narrowWaisted">
 
@@ -387,7 +404,6 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
 	$item = mysql_fetch_assoc($q);
-	$pt_hn = $item['hn'];
 
 	if(empty($item['esr_not']))
 	{
@@ -398,7 +414,6 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	<!-- <div style="page-break-after: always;"></div> -->
 	<div style="line-height: 18.897637795px;">&nbsp;</div>
 	<div class="display-sticker">
-		<div>ยาต้านการแข็งตัวของเกล็ดเลือด: <?= $item['antiplatelet'].(!empty($item['antiplatelet_txt']) ? ' ('.$item['antiplatelet_txt'].')' : '' );?></div>
 		<div><b>EYE Screening</b></div>
 		<table>
 			<tr>
@@ -429,13 +444,8 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	if(!empty($item['nurse_dx1']) OR !empty($item['nurse_dx2']) OR !empty($item['nurse_dx3']) OR !empty($item['nurse_dx4']) OR !empty($item['nurse_dx5']))
 	{
 	?>
-	<div style="page-break-after: always;"></div>
+	<!-- <div style="page-break-after: always;"></div> -->
 	<div style="line-height: 18.897637795px;">&nbsp;</div>
-	<div style="position:relative;">
-		<div style="position:absolute; right:0; top:0;">
-			<img src="printQrCode.php?hn=<?=$pt_hn;?>&size=3&margin=1" alt="">
-		</div>
-	</div>
 	<div class="display-sticker">
 		<div><b>Nursing DX</b></div>
 		<?php 
