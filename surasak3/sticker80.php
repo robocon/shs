@@ -33,7 +33,7 @@ if (empty($size) OR $size==80) {
 }
 ?>
 <!-- เอา height ออกไปก่อน เพราะมีปัญหากับ ie บางเครื่องมันล้นกระดาษ 50 -->
-<div style="max-width: <?=$width;?>; diplay:block; text-align:left;" class="clearfix">
+<div style="max-width: <?=$width;?>; diplay:block; text-align:left; margin-top: 4px; margin-left: 4px;" class="clearfix">
     <div style="float:left;">
         <img src="printQrCode.php?hn=<?=$hn;?>&<?=$urlSize;?>&margin=1" alt="">
     </div>
