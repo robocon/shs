@@ -337,6 +337,15 @@ if($_POST["cigarette"]=="1"){
 		ADD `nurse_dx7` varchar(255) NULL AFTER `nurse_dx6`,
 		ADD `nurse_dx8` varchar(255) NULL AFTER `nurse_dx7`,
 		ADD `nurse_dx9_txt` text NULL AFTER `nurse_dx8`;
+
+		ALTER TABLE `pt_opd_eye` 
+		ADD `imp7` varchar(255) NULL AFTER `imp6_txt`,
+		ADD `imp8` varchar(255) NULL AFTER `imp7`,
+		ADD `imp9` varchar(255) NULL AFTER `imp8`,
+		ADD `imp10` varchar(255) NULL AFTER `imp9`,
+		ADD `imp11` varchar(255) NULL AFTER `imp10`,
+		ADD `imp12` varchar(255) NULL AFTER `imp11`,
+		ADD `imp13_txt` text NULL AFTER `imp12`;
 		*/
 		$hn = $_REQUEST['hn'];
 		$ptname = $_POST["ptname"];
@@ -371,6 +380,14 @@ if($_POST["cigarette"]=="1"){
 		$imp5 = $_POST['imp5'];
 		$imp6 = $_POST['imp6'];
 		$imp6_txt = $_POST['imp6_txt'];
+		$imp7 = $_POST['imp7'];
+		$imp8 = $_POST['imp8'];
+		$imp9 = $_POST['imp9'];
+		$imp10 = $_POST['imp10'];
+		$imp11 = $_POST['imp11'];
+		$imp12 = $_POST['imp12'];
+		$imp13_txt = $_POST['imp13_txt'];
+
 		$eva1 = $_POST['eva1'];
 		$eva2 = $_POST['eva2'];
 		$eva3 = $_POST['eva3'];
@@ -393,15 +410,17 @@ if($_POST["cigarette"]=="1"){
 				`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
 				`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
 				`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
-				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`,
+				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, 
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
-				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`
+				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
+				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt` 
 			) VALUES (
 				NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
 				'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
 				'$nurse_dx1', '$nurse_dx1_txt', '$nurse_dx2', '$nurse_dx2_txt', '$nurse_dx3', '$nurse_dx3_txt', '$nurse_dx4', '$nurse_dx5', 
-				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt',
+				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt', 
 				'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
+				'$imp7','$imp8','$imp9','$imp10','$imp11','$imp12','$imp13_txt', 
 				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt' 
 			);";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
@@ -2009,10 +2028,8 @@ mmHg </td>
 								$nurse_dx8 = (!empty($eye['nurse_dx8'])) ? 'checked="checked"' : '' ;
 								
 								/**
-								 * @important
-								 * ยกเลิกฟิลด์ nurse_dx3_txt, nurse_dx2_txt
+								 * 2566-02-09 หน้างานปรับฟอร์มใหม่ขอยกเลิกฟิลด์ nurse_dx3_txt, nurse_dx2_txt
 								 */
-
 								?>
 								<table style="min-width: 800px;">
 									<tr>
@@ -2032,7 +2049,7 @@ mmHg </td>
 										<td><input type="checkbox" name="nurse_dx8" id="nurse_dx8" value="ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ." <?=$nurse_dx8;?>> <label for="nurse_dx8">ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ.</label></td>
 									</tr>
 									<tr>
-										<td colspan="2"><input type="text" name="nurse_dx9_txt" id="nurse_dx9_txt" value="<?=$nurse_dx9_txt;?>" size="50"></td>
+										<td colspan="2"><input type="text" name="nurse_dx9_txt" id="nurse_dx9_txt" value="<?=$eye['nurse_dx9_txt'];?>" size="50"></td>
 									</tr>
 								</table>
 							</td>
@@ -2059,42 +2076,64 @@ mmHg </td>
 								$imp4 = (!empty($eye['imp4'])) ? 'checked="checked"' : '' ;
 								$imp5 = (!empty($eye['imp5'])) ? 'checked="checked"' : '' ;
 								$imp6 = (!empty($eye['imp6'])) ? 'checked="checked"' : '' ;
+								$imp7 = (!empty($eye['imp7'])) ? 'checked="checked"' : '' ;
+								$imp8 = (!empty($eye['imp8'])) ? 'checked="checked"' : '' ;
+								$imp9 = (!empty($eye['imp9'])) ? 'checked="checked"' : '' ;
+								$imp10 = (!empty($eye['imp10'])) ? 'checked="checked"' : '' ;
+								$imp11 = (!empty($eye['imp11'])) ? 'checked="checked"' : '' ;
+								$imp12 = (!empty($eye['imp12'])) ? 'checked="checked"' : '' ;
 								?>
 								<table>
 									<tr>
-										<td colspan="2"><input type="checkbox" name="imp1" id="imp1" value="เฝ้าระวังการเกิด fall" <?=$imp1;?> ><label for="imp1">เฝ้าระวังการเกิด fall</label></td>
+										<td colspan="2"><input type="checkbox" name="imp1" id="imp1" value="เฝ้าระวังการเกิด fall, แนะนำการระมัดระวังพลัดตกหกล้มต่อที่บ้าน" <?=$imp1;?> ><label for="imp1">เฝ้าระวังการเกิด fall, แนะนำการระมัดระวังพลัดตกหกล้มต่อที่บ้าน</label></td>
 									</tr>
 									<tr>
 										<td colspan="2"><input type="checkbox" name="imp2" id="imp2" value="ให้ความรู้/การปรึกษาเรื่อง" <?=$imp2;?>><label for="imp2">ให้ความรู้/การปรึกษาเรื่อง</label><input type="text" name="imp2_txt" id="imp2_txt" value="<?=$eye['imp2_txt'];?>"></td>
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="imp3" id="imp3" value="แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$imp3;?>><label for="imp3">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
-										<td><input type="checkbox" name="imp4" id="imp4" value="เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา" <?=$imp4;?>><label for="imp4">เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา</label></td>
+										<td><input type="checkbox" name="imp4" id="imp4" value="เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser / หลังหยอดยาหดม่านตา หรือ ขยายม่านตา" <?=$imp4;?>><label for="imp4">เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser / หลังหยอดยาหดม่านตา หรือ ขยายม่านตา</label></td>
 									</tr>
 									<tr>
-										<td><input type="checkbox" name="imp5" id="imp5" value="ประเมินศักยภาพในการดูแลตนเอง" <?=$imp5;?>><label for="imp5">ประเมินศักยภาพในการดูแลตนเอง</label></td>
+										<td><input type="checkbox" name="imp5" id="imp5" value="ให้ความรู้/การปรึกษาเรื่องการทำความสะอาดเปลือกตา หลีกเลี่ยงการขยี้ตา Cold/Warm compression" <?=$imp5;?>><label for="imp5">ให้ความรู้/การปรึกษาเรื่องการทำความสะอาดเปลือกตา หลีกเลี่ยงการขยี้ตา Cold/Warm compression</label></td>
 										<td><input type="checkbox" name="imp6" id="imp6" value="บรรเทาอาการเจ็บปวด ดูแล" <?=$imp6;?>><label for="imp6">บรรเทาอาการเจ็บปวด ดูแล</label><input type="text" name="imp6_txt" id="imp6_txt" value="<?=$eye['imp6_txt'];?>"></td>
 									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp7" id="imp7" value="ให้ความรู้/การปรึกษาเรื่องการแยกของใช้ร่วมกับคนอื่นในบ้าน ล้างมือให้สะอาด แนะนำ Airborne-Contact Precaution" <?=$imp7;?>><label for="imp7">ให้ความรู้/การปรึกษาเรื่องการแยกของใช้ร่วมกับคนอื่นในบ้าน ล้างมือให้สะอาด แนะนำ Airborne-Contact Precaution</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp8" id="imp8" value="ให้ความรู้/การปรึกษาเรื่อง absolute bed rest, นอนศรีษะสูง HOB 30-45 องศา" <?=$imp8;?>><label for="imp8">ให้ความรู้/การปรึกษาเรื่อง absolute bed rest, นอนศรีษะสูง HOB 30-45 องศา</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp9" id="imp9" value="ให้ความรู้/การปรึกษาเรื่อง การเตรียมตัวผ่าตัดต้อกระจก" <?=$imp9;?>><label for="imp9">ให้ความรู้/การปรึกษาเรื่อง การเตรียมตัวผ่าตัดต้อกระจก</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp10" id="imp10" value="ให้ความรู้/การปรึกษาเรื่องการกระพริบตา พักสายตาเป็นระยะๆ ใช้แว่นกรองแสง" <?=$imp10;?>><label for="imp10">ให้ความรู้/การปรึกษาเรื่องการกระพริบตา พักสายตาเป็นระยะๆ ใช้แว่นกรองแสง</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp11" id="imp11" value="ให้ความรู้/การปรึกษาเรื่องตาพร่ามัว หลังหยอดยาขยายม่านตา 4-6 ชม. อาการตาพร่ามัวจะดีขึ้นเมื่อหมดฤทธิ์ยาหลีกเลี่ยงการขับรถ" <?=$imp11;?>><label for="imp11">ให้ความรู้/การปรึกษาเรื่องตาพร่ามัว หลังหยอดยาขยายม่านตา 4-6 ชม. อาการตาพร่ามัวจะดีขึ้นเมื่อหมดฤทธิ์ยาหลีกเลี่ยงการขับรถ</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp12" id="imp12" value="หลีกเลี่ยงการขยี้ตา เลี่ยงการกลอกตา" <?=$imp12;?>><label for="imp12">หลีกเลี่ยงการขยี้ตา เลี่ยงการกลอกตา</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="text" name="imp13_txt" id="imp13_txt" value="<?=$eye['imp13_txt'];?>" size="50"></td>
+									</tr>
+									
 								</table>
 								<script type="text/javascript">
 									document.getElementById('imp2').addEventListener('click', function () {
-										if(this.checked==true)
-										{
+										if(this.checked==true){
 											document.getElementById('imp2_txt').focus();
-										}
-										else
-										{
+										}else{
 											document.getElementById('imp2_txt').value = '';
 										}
 									}, false);
 
 									document.getElementById('imp6').onclick = function(){
-										if(this.checked==true)
-										{
+										if(this.checked==true){
 											document.getElementById('imp6_txt').focus();
-										}
-										else
-										{
+										}else{
 											document.getElementById('imp6_txt').value = '';
 										}
 									};

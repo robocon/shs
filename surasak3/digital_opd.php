@@ -447,7 +447,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	){
 	?>
 	<div style="page-break-after: always;"></div>
-	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<!-- <div style="line-height: 18.897637795px;">&nbsp;</div> -->
 	<div class="display-sticker">
 		<div style="float:right; text-align:center;">
 			<img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt=""><br>
@@ -487,7 +487,10 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	<?php 
 	}
 
-	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) 
+	OR !empty($item['imp5']) OR !empty($item['imp6']) OR !empty($item['imp7']) OR !empty($item['imp8']) 
+	OR !empty($item['imp9']) OR !empty($item['imp10']) OR !empty($item['imp11']) OR !empty($item['imp12']) 
+	OR !empty($item['imp13_txt']))
 	{
 	?>
 	<!-- <div style="page-break-after: always;"></div> -->
@@ -509,6 +512,27 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 		}
 		if(!empty($item['imp6'])){
 			?><div>- <?=$item['imp6'];?> <span class="underline_notfix"><?=$item['imp6_txt'];?></span></div><?php
+		}
+		if(!empty($item['imp7'])){
+			?><div>- <?=$item['imp7'];?></div><?php
+		}
+		if(!empty($item['imp8'])){
+			?><div>- <?=$item['imp8'];?></div><?php
+		}
+		if(!empty($item['imp9'])){
+			?><div>- <?=$item['imp9'];?></div><?php
+		}
+		if(!empty($item['imp10'])){
+			?><div>- <?=$item['imp10'];?></div><?php
+		}
+		if(!empty($item['imp11'])){
+			?><div>- <?=$item['imp11'];?></div><?php
+		}
+		if(!empty($item['imp12'])){
+			?><div>- <?=$item['imp12'];?></div><?php
+		}
+		if(!empty($item['imp13_txt'])){
+			?><div>- <?=$item['imp13_txt'];?></div><?php
 		}
 		?>
 	</div>
