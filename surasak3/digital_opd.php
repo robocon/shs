@@ -412,7 +412,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 
 	?>
 	<!-- <div style="page-break-after: always;"></div> -->
-	<div style="line-height: 18.897637795px;">&nbsp;</div>
+	<!-- <div style="line-height: 18.897637795px;">&nbsp;</div> -->
 	<div class="display-sticker">
 		<div><b>EYE Screening</b></div>
 		<table>
@@ -451,7 +451,8 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	<div class="display-sticker">
 		<div style="float:right; text-align:center;">
 			<img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt=""><br>
-			<b><?=$hn;?></b>
+			<b><?=$hn;?></b><br>
+			<b><?=$ptname;?></b>
 		</div>
 		<div><b>Nursing DX</b></div>
 		<?php 
@@ -553,30 +554,37 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 			if(!empty($item['eva1'])){
 				?><div>- <?=$item['eva1'];?></div><?php
 			}
+
 			if(!empty($item['eva2'])){
 				?><div>- <?=$item['eva2'];?></div><?php
 			}
 			if(!empty($item['eva3'])){
 				?><div>- <?=$item['eva3'];?></div><?php
 			}
+
 			if(!empty($item['eva4'])){
 				?><div>- <?=$item['eva4'];?></div><?php
 			}
-			if(!empty($item['eva5'])){
-				?><div>- <?=$item['eva5'];?></div><?php
+			if(!empty($item['eva5']) OR !empty($item['eva6']) OR !empty($item['eva7']) OR !empty($item['eva8']) OR !empty($item['eva9'])){ 
+				?><div><?php
+				if(!empty($item['eva5'])){
+					?> - <?=$item['eva5'];?><?php
+				}
+				if(!empty($item['eva6'])){
+					?> - <?=$item['eva6'];?><?php
+				}
+				if(!empty($item['eva7'])){
+					?> - <?=$item['eva7'];?><?php
+				}
+				if(!empty($item['eva8'])){
+					?> - <?=$item['eva8'];?><?php
+				}
+				if(!empty($item['eva9'])){
+					?> - <?=$item['eva9'];?><?php
+				}
+				?></div><?php
 			}
-			if(!empty($item['eva6'])){
-				?><div>- <?=$item['eva6'];?></div><?php
-			}
-			if(!empty($item['eva7'])){
-				?><div>- <?=$item['eva7'];?></div><?php
-			}
-			if(!empty($item['eva8'])){
-				?><div>- <?=$item['eva8'];?></div><?php
-			}
-			if(!empty($item['eva9'])){
-				?><div>- <?=$item['eva9'];?></div><?php
-			}
+			
 			if(!empty($item['eva11'])){
 				?><div>- <?=$item['eva11'];?> <span class="underline_notfix"><?=$item['eva11_txt'];?></span></div><?php
 			}
@@ -602,15 +610,12 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 				?><div>- <?=$item['eva10'];?> <span class="underline_notfix"><?=$item['eva10_txt'];?></span></div><?php
 			}
 			if(!empty($item['eva18'])){
-				?><div><?=$item['eva18'];?>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ</div><?php
+				?><div><b><?=$item['eva18'];?>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ</b></div><?php
 			}
 			?>
 		</div>
 		<?php
 	}
-	?>
-	<p class="display-sticker">ผู้ป่วยรับทราบ <span class="underline_notfix">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
-	<?php
 }
 
 }

@@ -456,8 +456,11 @@ if($_POST["cigarette"]=="1"){
 			`thdatehn`='$thidatehn', `opd`='$opd_id', `hn`='$hn', `ptname`='$ptname', `antiplatelet`='$antiplatelet', `antiplatelet_txt`='$antiplatelet_txt', 
 			`esr`='$esr', `esr_ph`='$esr_ph', `esr_glass`='$esr_glass', `esr_not`='$esr_not', `esl`='$esl', `esl_ph`='$esl_ph', `esl_glass`='$esl_glass', `esl_not`='$esl_not', 
 			`nurse_dx1`='$nurse_dx1', `nurse_dx1_txt`='$nurse_dx1_txt', `nurse_dx2`='$nurse_dx2', `nurse_dx2_txt`='$nurse_dx2_txt', `nurse_dx3`='$nurse_dx3', `nurse_dx3_txt`='$nurse_dx3_txt', `nurse_dx4`='$nurse_dx4', `nurse_dx5`='$nurse_dx5', 
+			`nurse_dx6`='$nurse_dx6',`nurse_dx7`='$nurse_dx7',`nurse_dx8`='$nurse_dx8',`nurse_dx9_txt`='$nurse_dx9_txt', 
 			`imp1`='$imp1', `imp2`='$imp2', `imp2_txt`='$imp2_txt', `imp3`='$imp3', `imp4`='$imp4', `imp5`='$imp5', `imp6`='$imp6', `imp6_txt`='$imp6_txt', 
-			`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt' 
+			`imp7`='$imp7',`imp8`='$imp8',`imp9`='$imp9',`imp10`='$imp10',`imp11`='$imp11',`imp12`='$imp12',`imp13_txt`='$imp13_txt', 
+			`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt', 
+			`eva11`='$eva11',`eva11_txt`='$eva11_txt',`eva12`='$eva12',`eva13`='$eva13',`eva14`='$eva14',`eva15`='$eva15',`eva16`='$eva16',`eva17`='$eva17',`eva18`='$eva18' 
 			WHERE `id` = '$id' ;";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
 
@@ -2232,7 +2235,7 @@ mmHg </td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" name="eva18" id="eva18" value="ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้"><label for="eva18"> ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้</label>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ
+											<input type="checkbox" name="eva18" id="eva18" value="ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้" <?=$eva18;?> ><label for="eva18"> ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้</label>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ
 										</td>
 									</tr>
 								</table>
