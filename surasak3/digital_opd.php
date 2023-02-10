@@ -539,7 +539,10 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	<?php 
 	}
 
-	if(!empty($item['imp1']) OR !empty($item['imp2']) OR !empty($item['imp3']) OR !empty($item['imp4']) OR !empty($item['imp5']) OR !empty($item['imp6']))
+	if(!empty($item['eva1']) OR !empty($item['eva2']) OR !empty($item['eva3']) OR !empty($item['eva4']) OR !empty($item['eva5']) OR !empty($item['eva6']) 
+	OR !empty($item['eva7']) OR !empty($item['eva8']) OR !empty($item['eva9']) OR !empty($item['eva10']) OR !empty($item['eva11']) OR !empty($item['eva12']) 
+	OR !empty($item['eva13']) OR !empty($item['eva14']) OR !empty($item['eva15']) OR !empty($item['eva16']) OR !empty($item['eva17']) OR !empty($item['eva18']) 
+	)
 	{
 		?>
 		<!-- <div style="page-break-after: always;"></div> -->
@@ -574,8 +577,32 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 			if(!empty($item['eva9'])){
 				?><div>- <?=$item['eva9'];?></div><?php
 			}
+			if(!empty($item['eva11'])){
+				?><div>- <?=$item['eva11'];?> <span class="underline_notfix"><?=$item['eva11_txt'];?></span></div><?php
+			}
+			if(!empty($item['eva12'])){
+				?><div>- <?=$item['eva12'];?></div><?php
+			}
+			if(!empty($item['eva13'])){
+				?><div>- <?=$item['eva13'];?></div><?php
+			}
+			if(!empty($item['eva14'])){
+				?><div>- <?=$item['eva14'];?></div><?php
+			}
+			if(!empty($item['eva15'])){
+				?><div>- <?=$item['eva15'];?></div><?php
+			}
+			if(!empty($item['eva16'])){
+				?><div>- <?=$item['eva16'];?></div><?php
+			}
+			if(!empty($item['eva17'])){
+				?><div>- <?=$item['eva17'];?></div><?php
+			}
 			if(!empty($item['eva10'])){
 				?><div>- <?=$item['eva10'];?> <span class="underline_notfix"><?=$item['eva10_txt'];?></span></div><?php
+			}
+			if(!empty($item['eva18'])){
+				?><div><?=$item['eva18'];?>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ</div><?php
 			}
 			?>
 		</div>

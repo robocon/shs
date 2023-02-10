@@ -410,6 +410,15 @@ if($_POST["cigarette"]=="1"){
 		$eva9 = $_POST['eva9'];
 		$eva10 = $_POST['eva10'];
 		$eva10_txt = $_POST['eva10_txt'];
+		$eva11 = $_POST['eva11'];
+		$eva11_txt = $_POST['eva11_txt'];
+		$eva12 = $_POST['eva12'];
+		$eva13 = $_POST['eva13'];
+		$eva14 = $_POST['eva14'];
+		$eva15 = $_POST['eva15'];
+		$eva16 = $_POST['eva16'];
+		$eva17 = $_POST['eva17'];
+		$eva18 = $_POST['eva18'];
 
 
 		// ถ้ายังไม่มีใน pt_opd_eye และอยู่ในกลุ่มของห้องตา
@@ -424,7 +433,8 @@ if($_POST["cigarette"]=="1"){
 				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, 
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
 				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
-				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt` 
+				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`, 
+				`eva11`,`eva11_txt`,`eva12`,`eva13`,`eva14`,`eva15`,`eva16`,`eva17`,`eva18` 
 			) VALUES (
 				NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
 				'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
@@ -432,7 +442,8 @@ if($_POST["cigarette"]=="1"){
 				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt', 
 				'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
 				'$imp7','$imp8','$imp9','$imp10','$imp11','$imp12','$imp13_txt', 
-				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt' 
+				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt', 
+				'$eva11','$eva11_txt','$eva12','$eva13','$eva14','$eva15','$eva16','$eva17','$eva18' 
 			);";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
 		}
@@ -2221,7 +2232,7 @@ mmHg </td>
 									</tr>
 									<tr>
 										<td>
-											<input type="checkbox" name="eva18" id="eva18" value="ผู้ป่วย/ญาติ รับรทราบและปฏิบัติได้"><label for="eva18">ผู้ป่วย/ญาติ รับรทราบและปฏิบัติได้</label>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ
+											<input type="checkbox" name="eva18" id="eva18" value="ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้"><label for="eva18"> ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้</label>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ
 										</td>
 									</tr>
 								</table>
