@@ -1,16 +1,16 @@
-<?php    
-if(isset($_GET["action"]) && $_GET["action"] =="refresh"){
-header("content-type: application/x-javascript; charset=UTF-8");
+<?php
+if (isset($_GET["action"]) && $_GET["action"] == "refresh") {
+	// header("content-type: application/x-javascript; charset=UTF-8");
 
 }
-	include("connect.inc");
+include("connect.inc");
 
 
-	
-if(isset($_GET["action"]) && $_GET["action"] =="refresh"){
-	
 
-print ("<table>
+if (isset($_GET["action"]) && $_GET["action"] == "refresh") {
+
+
+	print("<table>
  <tr>
 	<th bgcolor=6495ED><font face='Angsana New'>#</th>
 	<th bgcolor=6495ED><font face='Angsana New'>VN</th>
@@ -28,116 +28,122 @@ print ("<table>
 	
  </tr>");
 
-  //  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew FROM dphardep WHERE whokey='DR' and date LIKE '$today%'  AND dr_cancle is null ORDER BY stkcutdate, row_id  DESC ";
+	//  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew FROM dphardep WHERE whokey='DR' and date LIKE '$today%'  AND dr_cancle is null ORDER BY stkcutdate, row_id  DESC ";
 
-  $query = "SELECT tvn, date,ptname,hn,price,row_id,accno,ptright,doctor, stkcutdate,kew,kewphar,pharin,idname FROM dphardep WHERE left(doctor,2) != 'HD' AND whokey='DR' and (date LIKE '0000-00-00%' or date ='') and hn='".$_GET['hn']."' AND dr_cancle is null  ORDER BY stkcutdate, hn  DESC ";
-  //echo $query;
+	$query = "SELECT `tvn`, `date`,`ptname`,`hn`,`price`,`row_id`,`accno`,`ptright`,`doctor`, `stkcutdate`,`kew`,`kewphar`,`pharin`,`idname` 
+	FROM `dphardep` 
+	WHERE left(doctor,2) != 'HD' 
+	AND `whokey`='DR' 
+	AND (`date` LIKE '0000-00-00%' or `date` ='') 
+	AND `hn`='" . $_GET['hn'] . "' 
+	AND `dr_cancle` is null  ORDER BY `stkcutdate`, `hn`  DESC ";
 
-    $result = mysql_query($query) or die("Query failed");
+	$result = mysql_query($query) or die("Query failed");
 
-	$num=mysql_num_rows($result);
+	$num = mysql_num_rows($result);
 
-    while (list ($tvn,$date,$ptname,$hn,$price,$row_id,$accno,$ptright,$doctor, $stkcutdate,$kew,$kewphar,$pharin,$idname) = mysql_fetch_row ($result)) {
-        
+	while (list($tvn, $date, $ptname, $hn, $price, $row_id, $accno, $ptright, $doctor, $stkcutdate, $kew, $kewphar, $pharin, $idname) = mysql_fetch_row($result)) {
 
-        $time=substr($date,11);
-		if($stkcutdate == "")
-			$bgcolor="#66CDAA";
+
+		$time = substr($date, 11);
+		if ($stkcutdate == "")
+			$bgcolor = "#66CDAA";
 		else
-			$bgcolor="#FFFFFF";
+			$bgcolor = "#FFFFFF";
 
-        print (" <tr>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$num</td>\n".
-			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$tvn</td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$time</td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'><a target=_self  href=\"drxdetail_not.php? sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright\">$ptname</a></td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$hn</td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$price</td>\n".
-		   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$ptright</td>\n".
-   		   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$doctor</td>\n".
-			  "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$idname</td>\n".
-			   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kew</td>\n".
-			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kewphar</td>\n".
-			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$pharin</td>\n".
-			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$stkcutdate</td>\n".
-		   " </tr>\n");
-		   $num--;
-		}
-   
+		print(" <tr>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$num</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$tvn</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$time</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'><a target=_self  href=\"drxdetail_not.php? sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright\">$ptname</a></td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$hn</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$price</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$ptright</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$doctor</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$idname</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$kew</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$kewphar</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$pharin</td>\n" .
+			"  <td BGCOLOR='" . $bgcolor . "'><font face='Angsana New'>$stkcutdate</td>\n" .
+			" </tr>\n");
+		$num--;
+	}
 
-print ("</table>");
 
-exit();
+	print("</table>");
+
+	exit();
 }
 
 
-    print "<font face='Angsana New'>รายการใบสั่งยาค้างจ่ายจากแพทย์ ";
-    print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
-	
+print "<font face='Angsana New'>รายการใบสั่งยาค้างจ่ายจากแพทย์ ";
+print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
+print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
+
 
 ?>
 <html>
+
 <head>
 </head>
+
 <body>
 
-<SCRIPT LANGUAGE="JavaScript">
-	t = 1*1000;
-	
-	setTimeout("searchSuggest();",t);
+	<SCRIPT LANGUAGE="JavaScript">
+		t = 1 * 1000;
 
-	function newXmlHttp(){
-	var xmlhttp = false;
+		// setTimeout("searchSuggest();", t);
 
-		try{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}catch(e){
-		try{
-			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}catch(e){
-				xmlhttp = false;
+		function newXmlHttp() {
+			var xmlhttp = false;
+
+			try {
+				xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				try {
+					xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				} catch (e) {
+					xmlhttp = false;
+				}
 			}
+
+			if (!xmlhttp && document.createElement) {
+				xmlhttp = new XMLHttpRequest();
+			}
+			return xmlhttp;
 		}
 
-		if(!xmlhttp && document.createElement){
-			xmlhttp = new XMLHttpRequest();
-		}
-	return xmlhttp;
-}
-
-function searchSuggest() {
-	
-			url = 'drxlist_not.php?action=refresh&hn=<?php echo $_GET["hn_drx"];?>';
+		function searchSuggest() {
+			var hn = document.getElementById("hn_drx").value;
+			url = 'drxlist_not.php?action=refresh&hn='+hn;
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, false);
 			xmlhttp.send(null);
 			document.getElementById("list").innerHTML = xmlhttp.responseText;
-tt = 20*1000;
-setTimeout("searchSuggest();",tt);
-}
+			tt = 20 * 1000;
+			setTimeout("searchSuggest();", tt);
 
-</SCRIPT>
+			return false;
+		}
 
-<FORM METHOD=GET ACTION="drxlist_not.php">
-<TABLE>
-<TR>
-	<TD>HN : </TD>
-	<TD><INPUT TYPE="text" NAME="hn_drx"></TD>
-	<TD><INPUT TYPE="submit" value="ตกลง">&nbsp;</TD>
-</TR>
-</TABLE>
+	</SCRIPT>
+
+	<FORM METHOD="GET" ACTION="drxlist_not.php" onsubmit="return searchSuggest();">
+		<TABLE>
+			<TR>
+				<TD>HN : </TD>
+				<TD><INPUT TYPE="text" NAME="hn_drx" id="hn_drx"></TD>
+				<TD><INPUT TYPE="submit" value="ตกลง">&nbsp;</TD>
+			</TR>
+		</TABLE>
 
 
-</FORM>
-<div id="list">
+	</FORM>
+	<div id="list">
 
-</div>
+	</div>
 
 </body>
+
 </html>
-<?php  include("unconnect.inc");?>
-
-
-
-
+<?php include("unconnect.inc"); ?>
