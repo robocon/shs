@@ -331,33 +331,6 @@ if($_POST["cigarette"]=="1"){
 	if($_SESSION['smenucode'] == 'ADMEYE')
 	{
 
-		/** 
-		ALTER TABLE `pt_opd_eye` 
-		ADD `nurse_dx6` varchar(255) NULL AFTER `nurse_dx5`,
-		ADD `nurse_dx7` varchar(255) NULL AFTER `nurse_dx6`,
-		ADD `nurse_dx8` varchar(255) NULL AFTER `nurse_dx7`,
-		ADD `nurse_dx9_txt` text NULL AFTER `nurse_dx8`;
-
-		ALTER TABLE `pt_opd_eye` 
-		ADD `imp7` varchar(255) NULL AFTER `imp6_txt`,
-		ADD `imp8` varchar(255) NULL AFTER `imp7`,
-		ADD `imp9` varchar(255) NULL AFTER `imp8`,
-		ADD `imp10` varchar(255) NULL AFTER `imp9`,
-		ADD `imp11` varchar(255) NULL AFTER `imp10`,
-		ADD `imp12` varchar(255) NULL AFTER `imp11`,
-		ADD `imp13_txt` text NULL AFTER `imp12`;
-
-		ALTER TABLE `pt_opd_eye` 
-		ADD `eva11` varchar(255) NULL AFTER `eva10`,
-		ADD `eva11_txt` text NULL AFTER `eva11`,
-		ADD `eva12` varchar(255) NULL AFTER `eva11_txt`,
-		ADD `eva13` varchar(255) NULL AFTER `eva12`,
-		ADD `eva14` varchar(255) NULL AFTER `eva13`,
-		ADD `eva15` varchar(255) NULL AFTER `eva14`,
-		ADD `eva16` varchar(255) NULL AFTER `eva15`,
-		ADD `eva17` varchar(255) NULL AFTER `eva16`,
-		ADD `eva18` varchar(255) NULL AFTER `eva17`;
-		*/
 		$hn = $_REQUEST['hn'];
 		$ptname = $_POST["ptname"];
 
