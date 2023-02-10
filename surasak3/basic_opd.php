@@ -346,6 +346,17 @@ if($_POST["cigarette"]=="1"){
 		ADD `imp11` varchar(255) NULL AFTER `imp10`,
 		ADD `imp12` varchar(255) NULL AFTER `imp11`,
 		ADD `imp13_txt` text NULL AFTER `imp12`;
+
+		ALTER TABLE `pt_opd_eye` 
+		ADD `eva11` varchar(255) NULL AFTER `eva10`,
+		ADD `eva11_txt` text NULL AFTER `eva11`,
+		ADD `eva12` varchar(255) NULL AFTER `eva11_txt`,
+		ADD `eva13` varchar(255) NULL AFTER `eva12`,
+		ADD `eva14` varchar(255) NULL AFTER `eva13`,
+		ADD `eva15` varchar(255) NULL AFTER `eva14`,
+		ADD `eva16` varchar(255) NULL AFTER `eva15`,
+		ADD `eva17` varchar(255) NULL AFTER `eva16`,
+		ADD `eva18` varchar(255) NULL AFTER `eva17`;
 		*/
 		$hn = $_REQUEST['hn'];
 		$ptname = $_POST["ptname"];
@@ -2157,16 +2168,23 @@ mmHg </td>
 								$eva8 = (!empty($eye['eva8'])) ? 'checked="checked"' : '' ;
 								$eva9 = (!empty($eye['eva9'])) ? 'checked="checked"' : '' ;
 								$eva10 = (!empty($eye['eva10'])) ? 'checked="checked"' : '' ;
+								$eva11 = (!empty($eye['eva11'])) ? 'checked="checked"' : '' ;
+								$eva12 = (!empty($eye['eva12'])) ? 'checked="checked"' : '' ;
+								$eva13 = (!empty($eye['eva13'])) ? 'checked="checked"' : '' ;
+								$eva14 = (!empty($eye['eva14'])) ? 'checked="checked"' : '' ;
+								$eva15 = (!empty($eye['eva15'])) ? 'checked="checked"' : '' ;
+								$eva16 = (!empty($eye['eva16'])) ? 'checked="checked"' : '' ;
+								$eva17 = (!empty($eye['eva17'])) ? 'checked="checked"' : '' ;
+								$eva18 = (!empty($eye['eva18'])) ? 'checked="checked"' : '' ;
 								?>
 								<table>
+									
 									<tr>
-										<td>ให้คำแนะนำตาม D METHOD</td>
+										<td><input type="checkbox" name="eva1" id="eva1" value="ผู้ป่วยมีความรู้เรื่องโรคที่เป็น ผป.คลายความวิตกกังวล" <?=$eva1;?> > <label for="eva1">ผู้ป่วยมีความรู้เรื่องโรคที่เป็น ผป.คลายความวิตกกังวล</label></td>
 									</tr>
+
 									<tr>
-										<td><input type="checkbox" name="eva1" id="eva1" value="ผู้ป่วยมีความรู้เรื่องโรคที่เป็น" <?=$eva1;?> > <label for="eva1">ผู้ป่วยมีความรู้เรื่องโรคที่เป็น</label></td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" name="eva2" id="eva2" value="แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$eva2;?>> <label for="eva2">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
+										<td><input type="checkbox" name="eva2" id="eva2" value="ให้คำแนะนำตาม D METHOD" <?=$eva2;?>> <label for="eva2">ให้คำแนะนำตาม D METHOD</label></td>
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="eva3" id="eva3" value="แนะนำการระมัดระวังพลัดตกหกล้ม" <?=$eva3;?>> <label for="eva3">แนะนำการระมัดระวังพลัดตกหกล้ม</label></td>
@@ -2178,20 +2196,50 @@ mmHg </td>
 										<td><input type="checkbox" name="eva5" id="eva5" value="เน้นย้ำการมาตรวจตามนัด" <?=$eva5;?>> <label for="eva5">เน้นย้ำการมาตรวจตามนัด</label> <input type="checkbox" name="eva6" id="eva6" value="รักษาตามสิทธิ" <?=$eva6;?>><label for="eva6">รักษาตามสิทธิ</label> <input type="checkbox" name="eva7" id="eva7" value="ส่งตัวรักษาต่อ" <?=$eva7;?>><label for="eva7">ส่งตัวรักษาต่อ</label> <input type="checkbox" name="eva8" id="eva8" value="ไม่นัด" <?=$eva8;?>><label for="eva8">ไม่นัด</label> <input type="checkbox" name="eva9" id="eva9" value="ทานยาและหยอดยาตามแผนการักษา" <?=$eva9;?>><label for="eva9">ทานยาและหยอดยาตามแผนการักษา</label></td>
 									</tr>
 									<tr>
+										<td><input type="checkbox" name="eva11" id="eva11" value="ประเมิน PS" <?=$eva11;?> > <label for="eva11">ประเมิน PS</label><input type="text" name="eva11_txt" id="eva11_txt" value="<?=$eye['eva11_txt'];?>"></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva12" id="eva12" value="ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำนแะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค" <?=$eva12;?> > <label for="eva12">ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำนแะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva13" id="eva13" value="ไม่เกิดภาวะแทรกซ้อนหลัง laser" <?=$eva13;?> > <label for="eva13">ไม่เกิดภาวะแทรกซ้อนหลัง laser</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva14" id="eva14" value="ไม่เกิดภาวะแทรกซ้อนหลังหยอดยาขยายม่านตา" <?=$eva14;?> > <label for="eva14">ไม่เกิดภาวะแทรกซ้อนหลังหยอดยาขยายม่านตา</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva15" id="eva15" value="ผป./ญาติ ทราบวิธีการพักสายตาที่ถูกต้อง ใช้แว่นกรองแสงเมื่อออกที่แจ้ง" <?=$eva15;?> > <label for="eva15">ผป./ญาติ ทราบวิธีการพักสายตาที่ถูกต้อง ใช้แว่นกรองแสงเมื่อออกที่แจ้ง</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva16" id="eva16" value="ผป./ญาติ ทราบวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$eva16;?> > <label for="eva16">ผป./ญาติ ทราบวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva17" id="eva17" value="ผป./ญาติ ทราบวิธีการปฏิบัติหลังผ่าตัด" <?=$eva17;?> > <label for="eva17">ผป./ญาติ ทราบวิธีการปฏิบัติหลังผ่าตัด</label></td>
+									</tr>
+									<tr>
 										<td><input type="checkbox" name="eva10" id="eva10" value="อื่นๆ" <?=$eva10;?>> <label for="eva10">อื่นๆ</label> <input type="text" name="eva10_txt" id="eva10_txt" value="<?=$eye['eva10_txt'];?>"></td>
+									</tr>
+									<tr>
+										<td>
+											<input type="checkbox" name="eva18" id="eva18" value="ผู้ป่วย/ญาติ รับรทราบและปฏิบัติได้"><label for="eva18">ผู้ป่วย/ญาติ รับรทราบและปฏิบัติได้</label>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ
+										</td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 						<script type="text/javascript">
 							document.getElementById('eva10').onclick = function(){
-								if(this.checked==true)
-								{
+								if(this.checked==true){
 									document.getElementById('eva10_txt').focus();
-								}
-								else
-								{
+								}else{
 									document.getElementById('eva10_txt').value = '';
+								}
+							};
+							document.getElementById('eva11').onclick = function(){
+								if(this.checked==true){
+									document.getElementById('eva11_txt').focus();
+								}else{
+									document.getElementById('eva11_txt').value = '';
 								}
 							};
 						</script>
