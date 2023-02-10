@@ -392,7 +392,7 @@ if($_POST["cigarette"]=="1"){
 		$eva16 = $_POST['eva16'];
 		$eva17 = $_POST['eva17'];
 		$eva18 = $_POST['eva18'];
-
+		$officer = $_SESSION["sOfficer"];
 
 		// ถ้ายังไม่มีใน pt_opd_eye และอยู่ในกลุ่มของห้องตา
 		$sql_find_opd_eye = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$thidatehn' ";
@@ -407,7 +407,7 @@ if($_POST["cigarette"]=="1"){
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
 				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
 				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`, 
-				`eva11`,`eva11_txt`,`eva12`,`eva13`,`eva14`,`eva15`,`eva16`,`eva17`,`eva18` 
+				`eva11`,`eva11_txt`,`eva12`,`eva13`,`eva14`,`eva15`,`eva16`,`eva17`,`eva18`,`officer`
 			) VALUES (
 				NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
 				'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
@@ -416,7 +416,7 @@ if($_POST["cigarette"]=="1"){
 				'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
 				'$imp7','$imp8','$imp9','$imp10','$imp11','$imp12','$imp13_txt', 
 				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt', 
-				'$eva11','$eva11_txt','$eva12','$eva13','$eva14','$eva15','$eva16','$eva17','$eva18' 
+				'$eva11','$eva11_txt','$eva12','$eva13','$eva14','$eva15','$eva16','$eva17','$eva18','$officer'
 			);";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
 		}
@@ -433,7 +433,7 @@ if($_POST["cigarette"]=="1"){
 			`imp1`='$imp1', `imp2`='$imp2', `imp2_txt`='$imp2_txt', `imp3`='$imp3', `imp4`='$imp4', `imp5`='$imp5', `imp6`='$imp6', `imp6_txt`='$imp6_txt', 
 			`imp7`='$imp7',`imp8`='$imp8',`imp9`='$imp9',`imp10`='$imp10',`imp11`='$imp11',`imp12`='$imp12',`imp13_txt`='$imp13_txt', 
 			`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt', 
-			`eva11`='$eva11',`eva11_txt`='$eva11_txt',`eva12`='$eva12',`eva13`='$eva13',`eva14`='$eva14',`eva15`='$eva15',`eva16`='$eva16',`eva17`='$eva17',`eva18`='$eva18' 
+			`eva11`='$eva11',`eva11_txt`='$eva11_txt',`eva12`='$eva12',`eva13`='$eva13',`eva14`='$eva14',`eva15`='$eva15',`eva16`='$eva16',`eva17`='$eva17',`eva18`='$eva18', `officer`='$officer'
 			WHERE `id` = '$id' ;";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
 
