@@ -330,64 +330,93 @@ if($_POST["cigarette"]=="1"){
 
 	if($_SESSION['smenucode'] == 'ADMEYE')
 	{
+
+		$hn = $_REQUEST['hn'];
+		$ptname = $_POST["ptname"];
+
+		$antiplatelet = $_POST['antiplatelet'];
+		$antiplatelet_txt = $_POST['antiplatelet_txt'];
+		$esr = $_POST['esr'];
+		$esr_ph = $_POST['esr_ph'];
+		$esr_glass = $_POST['esr_glass'];
+		$esr_not = $_POST['esr_not'];
+		$esl = $_POST['esl'];
+		$esl_ph = $_POST['esl_ph'];
+		$esl_glass = $_POST['esl_glass'];
+		$esl_not = $_POST['esl_not'];
+		$nurse_dx1 = $_POST['nurse_dx1'];
+		$nurse_dx1_txt = $_POST['nurse_dx1_txt'];
+		$nurse_dx2 = $_POST['nurse_dx2'];
+		$nurse_dx2_txt = $_POST['nurse_dx2_txt'];
+		$nurse_dx3 = $_POST['nurse_dx3'];
+		$nurse_dx3_txt = $_POST['nurse_dx3_txt'];
+		$nurse_dx4 = $_POST['nurse_dx4'];
+		$nurse_dx5 = $_POST['nurse_dx5'];
+		$nurse_dx6 = $_POST['nurse_dx6'];
+		$nurse_dx7 = $_POST['nurse_dx7'];
+		$nurse_dx8 = $_POST['nurse_dx8'];
+		$nurse_dx9_txt = $_POST['nurse_dx9_txt'];
+		$imp1 = $_POST['imp1'];
+		$imp2 = $_POST['imp2'];
+		$imp2_txt = $_POST['imp2_txt'];
+		$imp3 = $_POST['imp3'];
+		$imp4 = $_POST['imp4'];
+		$imp5 = $_POST['imp5'];
+		$imp6 = $_POST['imp6'];
+		$imp6_txt = $_POST['imp6_txt'];
+		$imp7 = $_POST['imp7'];
+		$imp8 = $_POST['imp8'];
+		$imp9 = $_POST['imp9'];
+		$imp10 = $_POST['imp10'];
+		$imp11 = $_POST['imp11'];
+		$imp12 = $_POST['imp12'];
+		$imp13_txt = $_POST['imp13_txt'];
+
+		$eva1 = $_POST['eva1'];
+		$eva2 = $_POST['eva2'];
+		$eva3 = $_POST['eva3'];
+		$eva4 = $_POST['eva4'];
+		$eva5 = $_POST['eva5'];
+		$eva6 = $_POST['eva6'];
+		$eva7 = $_POST['eva7'];
+		$eva8 = $_POST['eva8'];
+		$eva9 = $_POST['eva9'];
+		$eva10 = $_POST['eva10'];
+		$eva10_txt = $_POST['eva10_txt'];
+		$eva11 = $_POST['eva11'];
+		$eva11_txt = $_POST['eva11_txt'];
+		$eva12 = $_POST['eva12'];
+		$eva13 = $_POST['eva13'];
+		$eva14 = $_POST['eva14'];
+		$eva15 = $_POST['eva15'];
+		$eva16 = $_POST['eva16'];
+		$eva17 = $_POST['eva17'];
+		$eva18 = $_POST['eva18'];
+
+
 		// ถ้ายังไม่มีใน pt_opd_eye และอยู่ในกลุ่มของห้องตา
 		$sql_find_opd_eye = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$thidatehn' ";
 		$q_opd_eye = $dbi->query($sql_find_opd_eye);
 		if($q_opd_eye->num_rows == 0){
 
-			$hn = $_REQUEST['hn'];
-			$ptname = $_POST["ptname"];
-
-			$antiplatelet = $_POST['antiplatelet'];
-			$antiplatelet_txt = $_POST['antiplatelet_txt'];
-			$esr = $_POST['esr'];
-			$esr_ph = $_POST['esr_ph'];
-			$esr_glass = $_POST['esr_glass'];
-			$esr_not = $_POST['esr_not'];
-			$esl = $_POST['esl'];
-			$esl_ph = $_POST['esl_ph'];
-			$esl_glass = $_POST['esl_glass'];
-			$esl_not = $_POST['esl_not'];
-			$nurse_dx1 = $_POST['nurse_dx1'];
-			$nurse_dx1_txt = $_POST['nurse_dx1_txt'];
-			$nurse_dx2 = $_POST['nurse_dx2'];
-			$nurse_dx2_txt = $_POST['nurse_dx2_txt'];
-			$nurse_dx3 = $_POST['nurse_dx3'];
-			$nurse_dx3_txt = $_POST['nurse_dx3_txt'];
-			$nurse_dx4 = $_POST['nurse_dx4'];
-			$nurse_dx5 = $_POST['nurse_dx5'];
-			$imp1 = $_POST['imp1'];
-			$imp2 = $_POST['imp2'];
-			$imp2_txt = $_POST['imp2_txt'];
-			$imp3 = $_POST['imp3'];
-			$imp4 = $_POST['imp4'];
-			$imp5 = $_POST['imp5'];
-			$imp6 = $_POST['imp6'];
-			$imp6_txt = $_POST['imp6_txt'];
-			$eva1 = $_POST['eva1'];
-			$eva2 = $_POST['eva2'];
-			$eva3 = $_POST['eva3'];
-			$eva4 = $_POST['eva4'];
-			$eva5 = $_POST['eva5'];
-			$eva6 = $_POST['eva6'];
-			$eva7 = $_POST['eva7'];
-			$eva8 = $_POST['eva8'];
-			$eva9 = $_POST['eva9'];
-			$eva10 = $_POST['eva10'];
-			$eva10_txt = $_POST['eva10_txt'];
-			
 			$opd_eye_sql = "INSERT INTO `pt_opd_eye` (
 				`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
 				`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
 				`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
+				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, 
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
-				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`
+				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
+				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`, 
+				`eva11`,`eva11_txt`,`eva12`,`eva13`,`eva14`,`eva15`,`eva16`,`eva17`,`eva18` 
 			) VALUES (
 				NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
 				'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
 				'$nurse_dx1', '$nurse_dx1_txt', '$nurse_dx2', '$nurse_dx2_txt', '$nurse_dx3', '$nurse_dx3_txt', '$nurse_dx4', '$nurse_dx5', 
+				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt', 
 				'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
-				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt' 
+				'$imp7','$imp8','$imp9','$imp10','$imp11','$imp12','$imp13_txt', 
+				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt', 
+				'$eva11','$eva11_txt','$eva12','$eva13','$eva14','$eva15','$eva16','$eva17','$eva18' 
 			);";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
 		}
@@ -400,8 +429,11 @@ if($_POST["cigarette"]=="1"){
 			`thdatehn`='$thidatehn', `opd`='$opd_id', `hn`='$hn', `ptname`='$ptname', `antiplatelet`='$antiplatelet', `antiplatelet_txt`='$antiplatelet_txt', 
 			`esr`='$esr', `esr_ph`='$esr_ph', `esr_glass`='$esr_glass', `esr_not`='$esr_not', `esl`='$esl', `esl_ph`='$esl_ph', `esl_glass`='$esl_glass', `esl_not`='$esl_not', 
 			`nurse_dx1`='$nurse_dx1', `nurse_dx1_txt`='$nurse_dx1_txt', `nurse_dx2`='$nurse_dx2', `nurse_dx2_txt`='$nurse_dx2_txt', `nurse_dx3`='$nurse_dx3', `nurse_dx3_txt`='$nurse_dx3_txt', `nurse_dx4`='$nurse_dx4', `nurse_dx5`='$nurse_dx5', 
+			`nurse_dx6`='$nurse_dx6',`nurse_dx7`='$nurse_dx7',`nurse_dx8`='$nurse_dx8',`nurse_dx9_txt`='$nurse_dx9_txt', 
 			`imp1`='$imp1', `imp2`='$imp2', `imp2_txt`='$imp2_txt', `imp3`='$imp3', `imp4`='$imp4', `imp5`='$imp5', `imp6`='$imp6', `imp6_txt`='$imp6_txt', 
-			`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt' 
+			`imp7`='$imp7',`imp8`='$imp8',`imp9`='$imp9',`imp10`='$imp10',`imp11`='$imp11',`imp12`='$imp12',`imp13_txt`='$imp13_txt', 
+			`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt', 
+			`eva11`='$eva11',`eva11_txt`='$eva11_txt',`eva12`='$eva12',`eva13`='$eva13',`eva14`='$eva14',`eva15`='$eva15',`eva16`='$eva16',`eva17`='$eva17',`eva18`='$eva18' 
 			WHERE `id` = '$id' ;";
 			$opd_eye_save = $dbi->query($opd_eye_sql);
 
@@ -1989,54 +2021,43 @@ mmHg </td>
 								$nurse_dx3 = (!empty($eye['nurse_dx3'])) ? 'checked="checked"' : '' ;
 								$nurse_dx4 = (!empty($eye['nurse_dx4'])) ? 'checked="checked"' : '' ;
 								$nurse_dx5 = (!empty($eye['nurse_dx5'])) ? 'checked="checked"' : '' ;
+								$nurse_dx6 = (!empty($eye['nurse_dx6'])) ? 'checked="checked"' : '' ;
+								$nurse_dx7 = (!empty($eye['nurse_dx7'])) ? 'checked="checked"' : '' ;
+								$nurse_dx8 = (!empty($eye['nurse_dx8'])) ? 'checked="checked"' : '' ;
+								
+								/**
+								 * 2566-02-09 หน้างานปรับฟอร์มใหม่ขอยกเลิกฟิลด์ nurse_dx3_txt, nurse_dx2_txt
+								 */
 								?>
 								<table style="min-width: 800px;">
 									<tr>
 										<td><input type="checkbox" name="nurse_dx1" id="nurse_dx1" value="มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค" <?=$nurse_dx1;?> > <label for="nurse_dx1">มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรค</label><input type="text" name="nurse_dx1_txt" id="nurse_dx1_txt" value="<?=$eye['nurse_dx1_txt'];?>" ></td>
-										<td><input type="checkbox" name="nurse_dx2" id="nurse_dx2" value="ต้องการข้อมูลเกี่ยวกับการให้บริการ" <?=$nurse_dx2;?>> <label for="nurse_dx2">ต้องการข้อมูลเกี่ยวกับการให้บริการ</label><input type="text" name="nurse_dx2_txt" id="nurse_dx2_txt" value="<?=$eye['nurse_dx2_txt'];?>" ></td>
+										<td><input type="checkbox" name="nurse_dx2" id="nurse_dx2" value="มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรควุ้นน้ำลูกตาเสื่อม" <?=$nurse_dx2;?>> <label for="nurse_dx2">มีโอกาส/เสี่ยงต่อการเกิดภาวะแทรกซ้อนของโรควุ้นน้ำลูกตาเสื่อม</label></td>
 									</tr>
 									<tr>
-										<td><input type="checkbox" name="nurse_dx3" id="nurse_dx3" value="ต้องการความรู้/การปรึกษาเรื่อง" <?=$nurse_dx3;?>> <label for="nurse_dx3">ต้องการความรู้/การปรึกษาเรื่อง</label><input type="text" name="nurse_dx3_txt" id="nurse_dx3_txt" value="<?=$eye['nurse_dx3_txt'];?>" ></td>
-										<td><input type="checkbox" name="nurse_dx4" id="nurse_dx4" value="ไม่สุขสบาย: ปวด, เคืองตา" <?=$nurse_dx4;?>> <label for="nurse_dx4">ไม่สุขสบาย: ปวด, เคืองตา</label></td>
+										<td><input type="checkbox" name="nurse_dx3" id="nurse_dx3" value="ต้องการความรู้/การปรึกษาเรื่องการปฏิบัติตัวหลังlaser / การหยอดยาหดม่านตา หรือยาขยายม่านตา" <?=$nurse_dx3;?>> <label for="nurse_dx3">ต้องการความรู้/การปรึกษาเรื่องการปฏิบัติตัวหลังlaser / การหยอดยาหดม่านตา หรือยาขยายม่านตา</label></td>
+										<td><input type="checkbox" name="nurse_dx4" id="nurse_dx4" value="ไม่สุขสบาย: ปวด, เคืองตา, แสบตา" <?=$nurse_dx4;?>> <label for="nurse_dx4">ไม่สุขสบาย: ปวด, เคืองตา, แสบตา</label></td>
 									</tr>
 									<tr>
-										<td colspan="2"><input type="checkbox" name="nurse_dx5" id="nurse_dx5" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง" <?=$nurse_dx5;?>> <label for="nurse_dx5">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง</label></td>
+										<td><input type="checkbox" name="nurse_dx5" id="nurse_dx5" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง" <?=$nurse_dx5;?>> <label for="nurse_dx5">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากการมองเห็นลดลง</label></td>
+										<td><input type="checkbox" name="nurse_dx6" id="nurse_dx6" value="เสี่ยงต่อการเกิดอุบัติเหตุ จากตาสู้แสงจ้าไม่ได้ ตาพร่ามัว" <?=$nurse_dx6;?>> <label for="nurse_dx6">เสี่ยงต่อการเกิดอุบัติเหตุ จากตาสู้แสงจ้าไม่ได้ ตาพร่ามัว</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="nurse_dx7" id="nurse_dx7" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากตาพร่ามัว จากการได้รับยาหยอดขยายม่านตา" <?=$nurse_dx7;?>> <label for="nurse_dx7">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจากตาพร่ามัว จากการได้รับยาหยอดขยายม่านตา</label></td>
+										<td><input type="checkbox" name="nurse_dx8" id="nurse_dx8" value="ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ." <?=$nurse_dx8;?>> <label for="nurse_dx8">ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ.</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="text" name="nurse_dx9_txt" id="nurse_dx9_txt" value="<?=$eye['nurse_dx9_txt'];?>" size="50"></td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 						<script type="text/javascript">
 							document.getElementById('nurse_dx1').onclick = function(){
-								
-								if(this.checked==true)
-								{
+								if(this.checked==true){
 									document.getElementById('nurse_dx1_txt').focus();
-								}
-								else
-								{
+								}else{
 									document.getElementById('nurse_dx1_txt').value = '';
-								}
-							};
-
-							document.getElementById('nurse_dx2').onclick = function(){
-								if(this.checked==true)
-								{
-									document.getElementById('nurse_dx2_txt').focus();
-								}
-								else
-								{
-									document.getElementById('nurse_dx2_txt').value = '';
-								}
-							};
-
-							document.getElementById('nurse_dx3').onclick = function(){
-								if(this.checked==true)
-								{
-									document.getElementById('nurse_dx3_txt').focus();
-								}
-								else
-								{
-									document.getElementById('nurse_dx3_txt').value = '';
 								}
 							};
 						</script>
@@ -2053,42 +2074,64 @@ mmHg </td>
 								$imp4 = (!empty($eye['imp4'])) ? 'checked="checked"' : '' ;
 								$imp5 = (!empty($eye['imp5'])) ? 'checked="checked"' : '' ;
 								$imp6 = (!empty($eye['imp6'])) ? 'checked="checked"' : '' ;
+								$imp7 = (!empty($eye['imp7'])) ? 'checked="checked"' : '' ;
+								$imp8 = (!empty($eye['imp8'])) ? 'checked="checked"' : '' ;
+								$imp9 = (!empty($eye['imp9'])) ? 'checked="checked"' : '' ;
+								$imp10 = (!empty($eye['imp10'])) ? 'checked="checked"' : '' ;
+								$imp11 = (!empty($eye['imp11'])) ? 'checked="checked"' : '' ;
+								$imp12 = (!empty($eye['imp12'])) ? 'checked="checked"' : '' ;
 								?>
 								<table>
 									<tr>
-										<td colspan="2"><input type="checkbox" name="imp1" id="imp1" value="เฝ้าระวังการเกิด fall" <?=$imp1;?> ><label for="imp1">เฝ้าระวังการเกิด fall</label></td>
+										<td colspan="2"><input type="checkbox" name="imp1" id="imp1" value="เฝ้าระวังการเกิด fall, แนะนำการระมัดระวังพลัดตกหกล้มต่อที่บ้าน" <?=$imp1;?> ><label for="imp1">เฝ้าระวังการเกิด fall, แนะนำการระมัดระวังพลัดตกหกล้มต่อที่บ้าน</label></td>
 									</tr>
 									<tr>
 										<td colspan="2"><input type="checkbox" name="imp2" id="imp2" value="ให้ความรู้/การปรึกษาเรื่อง" <?=$imp2;?>><label for="imp2">ให้ความรู้/การปรึกษาเรื่อง</label><input type="text" name="imp2_txt" id="imp2_txt" value="<?=$eye['imp2_txt'];?>"></td>
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="imp3" id="imp3" value="แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$imp3;?>><label for="imp3">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
-										<td><input type="checkbox" name="imp4" id="imp4" value="เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา" <?=$imp4;?>><label for="imp4">เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser หลังหยอดตา</label></td>
+										<td><input type="checkbox" name="imp4" id="imp4" value="เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser / หลังหยอดยาหดม่านตา หรือ ขยายม่านตา" <?=$imp4;?>><label for="imp4">เฝ้าระวังการเปลี่ยนแปลงขณะรอ Laser / หลังหยอดยาหดม่านตา หรือ ขยายม่านตา</label></td>
 									</tr>
 									<tr>
-										<td><input type="checkbox" name="imp5" id="imp5" value="ประเมินศักยภาพในการดูแลตนเอง" <?=$imp5;?>><label for="imp5">ประเมินศักยภาพในการดูแลตนเอง</label></td>
+										<td><input type="checkbox" name="imp5" id="imp5" value="ให้ความรู้/การปรึกษาเรื่องการทำความสะอาดเปลือกตา หลีกเลี่ยงการขยี้ตา Cold/Warm compression" <?=$imp5;?>><label for="imp5">ให้ความรู้/การปรึกษาเรื่องการทำความสะอาดเปลือกตา หลีกเลี่ยงการขยี้ตา Cold/Warm compression</label></td>
 										<td><input type="checkbox" name="imp6" id="imp6" value="บรรเทาอาการเจ็บปวด ดูแล" <?=$imp6;?>><label for="imp6">บรรเทาอาการเจ็บปวด ดูแล</label><input type="text" name="imp6_txt" id="imp6_txt" value="<?=$eye['imp6_txt'];?>"></td>
 									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp7" id="imp7" value="ให้ความรู้/การปรึกษาเรื่องการแยกของใช้ร่วมกับคนอื่นในบ้าน ล้างมือให้สะอาด แนะนำ Airborne-Contact Precaution" <?=$imp7;?>><label for="imp7">ให้ความรู้/การปรึกษาเรื่องการแยกของใช้ร่วมกับคนอื่นในบ้าน ล้างมือให้สะอาด แนะนำ Airborne-Contact Precaution</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp8" id="imp8" value="ให้ความรู้/การปรึกษาเรื่อง absolute bed rest, นอนศรีษะสูง HOB 30-45 องศา" <?=$imp8;?>><label for="imp8">ให้ความรู้/การปรึกษาเรื่อง absolute bed rest, นอนศรีษะสูง HOB 30-45 องศา</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp9" id="imp9" value="ให้ความรู้/การปรึกษาเรื่อง การเตรียมตัวผ่าตัดต้อกระจก" <?=$imp9;?>><label for="imp9">ให้ความรู้/การปรึกษาเรื่อง การเตรียมตัวผ่าตัดต้อกระจก</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp10" id="imp10" value="ให้ความรู้/การปรึกษาเรื่องการกระพริบตา พักสายตาเป็นระยะๆ ใช้แว่นกรองแสง" <?=$imp10;?>><label for="imp10">ให้ความรู้/การปรึกษาเรื่องการกระพริบตา พักสายตาเป็นระยะๆ ใช้แว่นกรองแสง</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp11" id="imp11" value="ให้ความรู้/การปรึกษาเรื่องตาพร่ามัว หลังหยอดยาขยายม่านตา 4-6 ชม. อาการตาพร่ามัวจะดีขึ้นเมื่อหมดฤทธิ์ยาหลีกเลี่ยงการขับรถ" <?=$imp11;?>><label for="imp11">ให้ความรู้/การปรึกษาเรื่องตาพร่ามัว หลังหยอดยาขยายม่านตา 4-6 ชม. อาการตาพร่ามัวจะดีขึ้นเมื่อหมดฤทธิ์ยาหลีกเลี่ยงการขับรถ</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="checkbox" name="imp12" id="imp12" value="หลีกเลี่ยงการขยี้ตา เลี่ยงการกลอกตา" <?=$imp12;?>><label for="imp12">หลีกเลี่ยงการขยี้ตา เลี่ยงการกลอกตา</label></td>
+									</tr>
+									<tr>
+										<td colspan="2"><input type="text" name="imp13_txt" id="imp13_txt" value="<?=$eye['imp13_txt'];?>" size="50"></td>
+									</tr>
+									
 								</table>
 								<script type="text/javascript">
 									document.getElementById('imp2').addEventListener('click', function () {
-										if(this.checked==true)
-										{
+										if(this.checked==true){
 											document.getElementById('imp2_txt').focus();
-										}
-										else
-										{
+										}else{
 											document.getElementById('imp2_txt').value = '';
 										}
 									}, false);
 
 									document.getElementById('imp6').onclick = function(){
-										if(this.checked==true)
-										{
+										if(this.checked==true){
 											document.getElementById('imp6_txt').focus();
-										}
-										else
-										{
+										}else{
 											document.getElementById('imp6_txt').value = '';
 										}
 									};
@@ -2112,16 +2155,23 @@ mmHg </td>
 								$eva8 = (!empty($eye['eva8'])) ? 'checked="checked"' : '' ;
 								$eva9 = (!empty($eye['eva9'])) ? 'checked="checked"' : '' ;
 								$eva10 = (!empty($eye['eva10'])) ? 'checked="checked"' : '' ;
+								$eva11 = (!empty($eye['eva11'])) ? 'checked="checked"' : '' ;
+								$eva12 = (!empty($eye['eva12'])) ? 'checked="checked"' : '' ;
+								$eva13 = (!empty($eye['eva13'])) ? 'checked="checked"' : '' ;
+								$eva14 = (!empty($eye['eva14'])) ? 'checked="checked"' : '' ;
+								$eva15 = (!empty($eye['eva15'])) ? 'checked="checked"' : '' ;
+								$eva16 = (!empty($eye['eva16'])) ? 'checked="checked"' : '' ;
+								$eva17 = (!empty($eye['eva17'])) ? 'checked="checked"' : '' ;
+								$eva18 = (!empty($eye['eva18'])) ? 'checked="checked"' : '' ;
 								?>
 								<table>
+									
 									<tr>
-										<td>ให้คำแนะนำตาม D METHOD</td>
+										<td><input type="checkbox" name="eva1" id="eva1" value="ผู้ป่วยมีความรู้เรื่องโรคที่เป็น ผป.คลายความวิตกกังวล" <?=$eva1;?> > <label for="eva1">ผู้ป่วยมีความรู้เรื่องโรคที่เป็น ผป.คลายความวิตกกังวล</label></td>
 									</tr>
+
 									<tr>
-										<td><input type="checkbox" name="eva1" id="eva1" value="ผู้ป่วยมีความรู้เรื่องโรคที่เป็น" <?=$eva1;?> > <label for="eva1">ผู้ป่วยมีความรู้เรื่องโรคที่เป็น</label></td>
-									</tr>
-									<tr>
-										<td><input type="checkbox" name="eva2" id="eva2" value="แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$eva2;?>> <label for="eva2">แนะนำวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
+										<td><input type="checkbox" name="eva2" id="eva2" value="ให้คำแนะนำตาม D METHOD" <?=$eva2;?>> <label for="eva2">ให้คำแนะนำตาม D METHOD</label></td>
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="eva3" id="eva3" value="แนะนำการระมัดระวังพลัดตกหกล้ม" <?=$eva3;?>> <label for="eva3">แนะนำการระมัดระวังพลัดตกหกล้ม</label></td>
@@ -2133,20 +2183,50 @@ mmHg </td>
 										<td><input type="checkbox" name="eva5" id="eva5" value="เน้นย้ำการมาตรวจตามนัด" <?=$eva5;?>> <label for="eva5">เน้นย้ำการมาตรวจตามนัด</label> <input type="checkbox" name="eva6" id="eva6" value="รักษาตามสิทธิ" <?=$eva6;?>><label for="eva6">รักษาตามสิทธิ</label> <input type="checkbox" name="eva7" id="eva7" value="ส่งตัวรักษาต่อ" <?=$eva7;?>><label for="eva7">ส่งตัวรักษาต่อ</label> <input type="checkbox" name="eva8" id="eva8" value="ไม่นัด" <?=$eva8;?>><label for="eva8">ไม่นัด</label> <input type="checkbox" name="eva9" id="eva9" value="ทานยาและหยอดยาตามแผนการักษา" <?=$eva9;?>><label for="eva9">ทานยาและหยอดยาตามแผนการักษา</label></td>
 									</tr>
 									<tr>
+										<td><input type="checkbox" name="eva11" id="eva11" value="ประเมิน PS" <?=$eva11;?> > <label for="eva11">ประเมิน PS</label><input type="text" name="eva11_txt" id="eva11_txt" value="<?=$eye['eva11_txt'];?>"></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva12" id="eva12" value="ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำนแะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค" <?=$eva12;?> > <label for="eva12">ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำนแะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva13" id="eva13" value="ไม่เกิดภาวะแทรกซ้อนหลัง laser" <?=$eva13;?> > <label for="eva13">ไม่เกิดภาวะแทรกซ้อนหลัง laser</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva14" id="eva14" value="ไม่เกิดภาวะแทรกซ้อนหลังหยอดยาขยายม่านตา" <?=$eva14;?> > <label for="eva14">ไม่เกิดภาวะแทรกซ้อนหลังหยอดยาขยายม่านตา</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva15" id="eva15" value="ผป./ญาติ ทราบวิธีการพักสายตาที่ถูกต้อง ใช้แว่นกรองแสงเมื่อออกที่แจ้ง" <?=$eva15;?> > <label for="eva15">ผป./ญาติ ทราบวิธีการพักสายตาที่ถูกต้อง ใช้แว่นกรองแสงเมื่อออกที่แจ้ง</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva16" id="eva16" value="ผป./ญาติ ทราบวิธีการใช้ยาตามแผนการรักษาของแพทย์" <?=$eva16;?> > <label for="eva16">ผป./ญาติ ทราบวิธีการใช้ยาตามแผนการรักษาของแพทย์</label></td>
+									</tr>
+									<tr>
+										<td><input type="checkbox" name="eva17" id="eva17" value="ผป./ญาติ ทราบวิธีการปฏิบัติหลังผ่าตัด" <?=$eva17;?> > <label for="eva17">ผป./ญาติ ทราบวิธีการปฏิบัติหลังผ่าตัด</label></td>
+									</tr>
+									<tr>
 										<td><input type="checkbox" name="eva10" id="eva10" value="อื่นๆ" <?=$eva10;?>> <label for="eva10">อื่นๆ</label> <input type="text" name="eva10_txt" id="eva10_txt" value="<?=$eye['eva10_txt'];?>"></td>
+									</tr>
+									<tr>
+										<td>
+											<input type="checkbox" name="eva18" id="eva18" value="ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้" <?=$eva18;?> ><label for="eva18"> ผู้ป่วย/ญาติ รับทราบและปฏิบัติได้</label>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ
+										</td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 						<script type="text/javascript">
 							document.getElementById('eva10').onclick = function(){
-								if(this.checked==true)
-								{
+								if(this.checked==true){
 									document.getElementById('eva10_txt').focus();
-								}
-								else
-								{
+								}else{
 									document.getElementById('eva10_txt').value = '';
+								}
+							};
+							document.getElementById('eva11').onclick = function(){
+								if(this.checked==true){
+									document.getElementById('eva11_txt').focus();
+								}else{
+									document.getElementById('eva11_txt').value = '';
 								}
 							};
 						</script>
