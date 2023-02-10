@@ -26,10 +26,11 @@ function checkType(){
   <p>&nbsp;&nbsp;HN&nbsp;&nbsp;<input type="text" name="hn" size="12">
   <br />
     <br />
-  <input type="radio" value="1" name="servicd" id="servicd1"  /> คิดค่าบริการ 50 บาท
+  <input type="radio" value="1" name="servicd" id="servicd1"  /> <label for="servicd1">คิดค่าบริการ 50 บาท</label>
   <br />
-  <input type="radio" value="0" name="servicd" id="servicd2" /> 
-  ไม่คิดค่าบริการ 50 บาท
+  <br />
+  <input type="radio" value="0" name="servicd" id="servicd2" checked="checked"/> 
+  <u><b><label for="servicd2" style="color:#116611;">ไม่คิดค่าบริการ 50 บาท</label></b></u>&nbsp;&lt;&lt;&nbsp;พิมพ์ใบตรวจโรคได้
   </p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="        ตกลง        " name="B1"></p>
 </form>
