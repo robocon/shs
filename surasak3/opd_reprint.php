@@ -158,11 +158,9 @@ a:hover, a:active {
 
 	if($_SESSION["smenucode"]=="ADMMAINOPD"){
 		$printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์</div></A>";
-	}else if($_SESSION["smenucode"]=="ADM"){
+	}else{
 		$printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์ ใหญ่</div></A>
 		<div style='margin-top:20px;'><A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์เล็ก</div></A></div>";
-	}else{
-		$printstk="<A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์</div></A>";
 	}	
 
 
