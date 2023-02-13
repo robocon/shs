@@ -180,10 +180,9 @@ if(isset($_POST["submit"])){
 
 		if(!empty($_POST["d"])){
 
-			$prev_en = ($_POST["yr"]-543) . "-" . $_POST["m"] . "-" . $_POST["d"];
-			$prev_date = strtotime("-1 day", strtotime($prev_en));
-			$select_day2 = (date("Y",$prev_date)+543).date("-m-d",$prev_date);
-			
+			$mkTime = mktime(0,0,0,$_POST["m"],$_POST["d"]+1,$_POST["yr"]-543);
+			$select_day2 = (date("Y",$mkTime)+543).date("-m-d",$mkTime);
+
 			$where_date = " ( 
 			(date_in = '".$select_day."' AND (time_in >= '07:31:00' AND time_in <= '23:59:59' )) 
 				OR 
@@ -229,6 +228,7 @@ if(isset($_POST["submit"])){
 		LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
 		WHERE $where 
 		ORDER BY a.`date_in` ASC , `h_date` ASC";
+		
 		$echoka = "";
 		$echoka1 = "";
 		$i=0;
