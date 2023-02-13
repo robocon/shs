@@ -102,9 +102,9 @@ if($drugreact == 0){
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood,$congenital_disease) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood) = Mysql_fetch_row($result111);
 	
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
@@ -414,6 +414,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	<!-- <div style="page-break-after: always;"></div> -->
 	<!-- <div style="line-height: 18.897637795px;">&nbsp;</div> -->
 	<div class="display-sticker">
+	<div>ยาต้านการแข็งตัวของเกล็ดเลือด: <?= $item['antiplatelet'].(!empty($item['antiplatelet_txt']) ? ' ('.$item['antiplatelet_txt'].')' : '' );?></div>
 		<div><b>EYE Screening</b></div>
 		<table>
 			<tr>
@@ -610,7 +611,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 				?><div>- <?=$item['eva10'];?> <span class="underline_notfix"><?=$item['eva10_txt'];?></span></div><?php
 			}
 			if(!empty($item['eva18'])){
-				?><div><b><?=$item['eva18'];?>, <span><?=$_SESSION['sOfficer'];?></span> /RN ผู้ให้คำแนะนำ</b></div><?php
+				?><div><b><?=$item['eva18'];?>, <span><?=$item['officer'];?></span> /RN ผู้ให้คำแนะนำ</b></div><?php
 			}
 			?>
 		</div>
