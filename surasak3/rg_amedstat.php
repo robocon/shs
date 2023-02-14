@@ -13,7 +13,7 @@ $m = $_GET['m'];
 
 $year_chk = $y + 543;
 
-$db->select("SELECT `hn`,`idcard_img`,`pic_patient`,`amed_stat` FROM `rg_soldier` WHERE `date_certificate` LIKE '$y-$m%' ");
+$db->select("SELECT `hn`,`idcard_img`,`pic_patient`,`amed_stat` FROM `rg_soldier` WHERE `date_certificate` LIKE '$y-$m%' AND `status`='1' ");
 $items = $db->get_items();
 
 $path = 'certificate/'.$year_chk;

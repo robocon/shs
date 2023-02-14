@@ -79,13 +79,13 @@ if( $action === "save" ){
         `last_update`,`yot_pt`,`ptname`,`yearchk`,`book_id`,
         `number_id`,`yot1`,`doctor1`,`code1`,`yot2`,
         `doctor2`,`code2`,`yot3`,`doctor3`,`code3`,
-        `diag`,`province`,`editor`,`date_certificate`) 
+        `diag`,`province`,`editor`,`status`,`date_certificate`) 
         VALUES 
         (NULL,NOW(),'$hn','$address','$regular_number','$regular',
         NOW(),'$yot_pt','$ptname','$yearchk','$book_id',
         '$number_id','".$dr_lists['yot1']."','".$dr_lists['doctor1']."','".$dr_lists['code1']."','".$dr_lists['yot2']."',
         '".$dr_lists['doctor2']."','".$dr_lists['code2']."','".$dr_lists['yot3']."','".$dr_lists['doctor3']."','".$dr_lists['code3']."',
-        '$diag','$province','$editor','$date_certificate');
+        '$diag','$province','$editor','1','$date_certificate');
         ";
         $save = $db->insert($sql);
         $last_id = $db->get_last_id();
@@ -189,7 +189,8 @@ if( $action === "save" ){
         exit;
     }
 
-    $sql = "DELETE FROM `rg_soldier` WHERE `id` = '$id' ";
+    // $sql = "DELETE FROM `rg_soldier` WHERE `id` = '$id' ";
+    $sql = "UPDATE `rg_soldier` SET `status` = '0' WHERE `id` = '$id'";
     $delete = $db->delete($sql);
 
     if( $delete !== false ){
@@ -455,8 +456,9 @@ if( empty($page) ){
     $sql = "SELECT a.*, b.`idcard`, b.`changwat` 
     FROM `rg_soldier` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-    WHERE `date_certificate` LIKE '$selected_y-$selected_m%' 
-    ORDER BY number_id ASC";
+    WHERE a.`date_certificate` LIKE '$selected_y-$selected_m%' 
+    AND a.`status` = '1' 
+    ORDER BY a.`number_id` ASC";
     $db->select($sql);
     $items = $db->get_items();
 
@@ -513,7 +515,7 @@ if( empty($page) ){
                             </ol>
                         </td>
                         <!-- rg_soldier.php?action=delete&id= -->
-                        <td><a href="#" onclick="return del_confirm();">ลบ</a></td>
+                        <td><a href="rg_soldier.php?id=<?=$item['id'];?>&action=delete" onclick="return del_confirm();">ลบ</a></td>
                     </tr>
                     <?php
                     $i++;
