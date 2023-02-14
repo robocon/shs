@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=tis-620" />
-<title>�ٹ�������ͧ��������</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>ศูนย์ข้อมูลองค์ความรู้</title>
 <style type="text/css">
 <!--
 a:link {
@@ -43,38 +43,38 @@ $result=mysql_fetch_array($sql);
 $counter=$result["runno"]+1;
 $add=mysql_query("update kmcounter set runno='$counter' where row_id='".$result["row_id"]."'");
 }
-$type1="ͧ��������ҧ����";
-$sql1="select * from km where type='$type1'";	
+$type1=rawurlencode("องค์ความรู้ทางทหาร");
+$sql1="select * from km where type='องค์ความรู้ทางทหาร'";	
 $query1=mysql_query($sql1) or die ("Error Query [".$sql1."]");
 $count1=mysql_num_rows($query1);
 
-$type2="ͧ���������ҹ�ԪҪվ";
-$sql2="select * from km where type='$type2'";	
+$type2=rawurlencode("องค์ความรู้ด้านวิชาชีพ");
+$sql2="select * from km where type='องค์ความรู้ด้านวิชาชีพ'";	
 $query2=mysql_query($sql2) or die ("Error Query [".$sql2."]");
 $count2=mysql_num_rows($query2);
 
-$type3="ͧ���������Ƿҧ㹡�û�ԺѵԷҧ";
-$sql3="select * from km where type='$type3'";	
+$type3=rawurlencode("องค์ความรู้แนวทางในการปฏิบัติทาง");
+$sql3="select * from km where type='องค์ความรู้แนวทางในการปฏิบัติทาง'";	
 $query3=mysql_query($sql3) or die ("Error Query [".$sql3."]");
 $count3=mysql_num_rows($query3);
 
-$type4="ͧ�������麷���¹�ҡ��û�Ժѵԧҹ/���ú";
-$sql4="select * from km where type='$type4'";	
+$type4=rawurlencode("องค์ความรู้บทเรียนจากการปฏิบัติงาน/การรบ");
+$sql4="select * from km where type='องค์ความรู้บทเรียนจากการปฏิบัติงาน/การรบ'";	
 $query4=mysql_query($sql4) or die ("Error Query [".$sql4."]");
 $count4=mysql_num_rows($query4);
 
-$type5="ͧ�����������Իѭ��";
-$sql5="select * from km where type='$type5'";	
+$type5=rawurlencode("CQI/นวัตกรรม");
+$sql5="select * from km where type='CQI/นวัตกรรม'";	
 $query5=mysql_query($sql5) or die ("Error Query [".$sql5."]");
 $count5=mysql_num_rows($query5);
 
-$type6="ͧ������������";
-$sql6="select * from km where type='$type6'";	
+$type6=rawurlencode("องค์ความรู้อื่นๆ");
+$sql6="select * from km where type='องค์ความรู้อื่นๆ'";	
 $query6=mysql_query($sql6) or die ("Error Query [".$sql6."]");
 $count6=mysql_num_rows($query6);
 ?>
-<p align="center"><span class="style1">�ٹ�������ͧ��������<br />
-�ç��Һ�Ť�������ѡ�������� �.�ӻҧ</span><br />
+<p align="center"><span class="style1">ศูนย์ข้อมูลองค์ความรู้<br />
+โรงพยาบาลค่ายสุรศักดิ์มนตรี จ.ลำปาง</span><br />
 </p>
 <table width="80%" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -82,14 +82,14 @@ $count6=mysql_num_rows($query6);
     </div>
       <table width="40%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="49%" align="right"><span class="style3">�ӹǹ</span></td>
+          <td width="49%" align="right"><span class="style3">จำนวน</span></td>
           <td width="5%" align="left"><span class="style3"></span></td>
           <td width="46%" align="left"><span class="style3">
             <?=$count1;?> 
-          ����ͧ</span></td>
+          เรื่อง</span></td>
         </tr>
         <tr>
-          <td align="right"><span class="style3">�����ҹ</span></td>
+          <td align="right"><span class="style3">ผู้อ่าน</span></td>
           <td align="left"><span class="style3"></span></td>
           <?
 		    $sql1=mysql_query("select * from kmcounter where name='read1'");
@@ -98,7 +98,7 @@ $count6=mysql_num_rows($query6);
 		  ?>
           <td align="left"><span class="style3">
             <?=$read1;?> 
-          ��</span></td>
+          คน</span></td>
         </tr>
         <tr>
           <td align="right">&nbsp;</td>
@@ -110,13 +110,13 @@ $count6=mysql_num_rows($query6);
     </div>
       <table width="40%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="49%" align="right" class="style3">�ӹǹ</td>
+          <td width="49%" align="right" class="style3">จำนวน</td>
           <td width="5%" align="left" class="style3">&nbsp;</td>
           <td width="46%" align="left" class="style3"><?=$count2;?>
-            ����ͧ</td>
+            เรื่อง</td>
         </tr>
         <tr>
-          <td align="right" class="style3">�����ҹ</td>
+          <td align="right" class="style3">ผู้อ่าน</td>
           <td align="left" class="style3">&nbsp;</td>
           <?
 		    $sql2=mysql_query("select * from kmcounter where name='read2'");
@@ -124,7 +124,7 @@ $count6=mysql_num_rows($query6);
   			$read2=$result2["runno"];
 		  ?>          
           <td align="left" class="style3"><?=$read2;?>
-            ��</td>
+            คน</td>
         </tr>
         <tr>
           <td align="right">&nbsp;</td>
@@ -138,13 +138,13 @@ $count6=mysql_num_rows($query6);
     </div>
       <table width="40%" border="0" cellspacing="0" cellpadding="0">
         <tr>
-          <td width="49%" align="right" class="style3">�ӹǹ</td>
+          <td width="49%" align="right" class="style3">จำนวน</td>
           <td width="5%" align="left" class="style3">&nbsp;</td>
           <td width="46%" align="left" class="style3"><?=$count3;?>
-            ����ͧ</td>
+            เรื่อง</td>
         </tr>
         <tr>
-          <td align="right" class="style3">�����ҹ</td>
+          <td align="right" class="style3">ผู้อ่าน</td>
           <td align="left" class="style3">&nbsp;</td>
           <?
 		    $sql3=mysql_query("select * from kmcounter where name='read3'");
@@ -152,7 +152,7 @@ $count6=mysql_num_rows($query6);
   			$read3=$result3["runno"];
 		  ?>          
           <td align="left" class="style3"><?=$read3;?>
-            ��</td>
+            คน</td>
         </tr>
         <tr>
           <td align="right">&nbsp;</td>
@@ -164,13 +164,13 @@ $count6=mysql_num_rows($query6);
     </div>
         <table width="40%" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="49%" align="right" class="style3">�ӹǹ</td>
+            <td width="49%" align="right" class="style3">จำนวน</td>
             <td width="5%" align="left" class="style3">&nbsp;</td>
             <td width="46%" align="left" class="style3"><?=$count4;?>
-              ����ͧ</td>
+              เรื่อง</td>
           </tr>
           <tr>
-            <td align="right" class="style3">�����ҹ</td>
+            <td align="right" class="style3">ผู้อ่าน</td>
             <td align="left" class="style3">&nbsp;</td>
           <?
 		    $sql4=mysql_query("select * from kmcounter where name='read4'");
@@ -178,7 +178,7 @@ $count6=mysql_num_rows($query6);
   			$read4=$result4["runno"];
 		  ?>            
             <td align="left" class="style3"><?=$read4;?>
-              ��</td>
+              คน</td>
           </tr>
           <tr>
             <td align="right">&nbsp;</td>
@@ -192,13 +192,13 @@ $count6=mysql_num_rows($query6);
     </div>
         <table width="40%" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="49%" align="right" class="style3">�ӹǹ</td>
+            <td width="49%" align="right" class="style3">จำนวน</td>
             <td width="5%" align="left" class="style3">&nbsp;</td>
             <td width="46%" align="left" class="style3"><?=$count5;?>
-              ����ͧ</td>
+              เรื่อง</td>
           </tr>
           <tr>
-            <td align="right" class="style3">�����ҹ</td>
+            <td align="right" class="style3">ผู้อ่าน</td>
             <td align="left" class="style3">&nbsp;</td>
           <?
 		    $sql5=mysql_query("select * from kmcounter where name='read5'");
@@ -206,7 +206,7 @@ $count6=mysql_num_rows($query6);
   			$read5=$result5["runno"];
 		  ?>            
             <td align="left" class="style3"><?=$read5;?>
-              ��</td>
+              คน</td>
           </tr>
           <tr>
             <td align="right">&nbsp;</td>
@@ -218,14 +218,14 @@ $count6=mysql_num_rows($query6);
     </div>
         <table width="40%" border="0" cellspacing="0" cellpadding="0">
           <tr>
-            <td width="49%" align="right" class="style3"><span class="style4">�ӹǹ</span></td>
+            <td width="49%" align="right" class="style3"><span class="style4">จำนวน</span></td>
             <td width="5%" align="left" class="style3">&nbsp;</td>
             <td width="46%" align="left" class="style3"><span class="style4">
             <?=$count6;?>
-            ����ͧ</span></td>
+            เรื่อง</span></td>
           </tr>
           <tr>
-            <td align="right" class="style3"><span class="style4">�����ҹ</span></td>
+            <td align="right" class="style3"><span class="style4">ผู้อ่าน</span></td>
             <td align="left" class="style3">&nbsp;</td>
           <?
 		    $sql6=mysql_query("select * from kmcounter where name='read6'");
@@ -234,7 +234,7 @@ $count6=mysql_num_rows($query6);
 		  ?>            
             <td align="left" class="style3"><span class="style4">
             <?=$read6;?>
-            ��</span></td>
+            คน</span></td>
           </tr>
           <tr>
             <td align="right">&nbsp;</td>
@@ -249,10 +249,10 @@ $count6=mysql_num_rows($query6);
   $result=mysql_fetch_array($sql);
   $counter=$result["runno"];
   ?>
-    <td colspan="2" align="center">�ӹǹ����������� : <span class="style2"><?=$counter;?></span> ��</td>
+    <td colspan="2" align="center">จำนวนผู้เยี่ยมชม : <span class="style2"><?=$counter;?></span> คน</td>
   </tr>
   <tr>
-    <td colspan="2" align="center"><a href="../nindex.htm" class="forntsarabun"> << ��Ѻ������ѡ >> </a></td>
+    <td colspan="2" align="center"><a href="../nindex.htm" class="forntsarabun"> << กลับเมนูหลัก >> </a></td>
   </tr>
 </table>
 </body>
