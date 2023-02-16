@@ -62,7 +62,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="40" align="center">รายการตรวจ</th>
+    <th colspan="41" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -113,6 +113,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
     <th width="7%">ความดันตา</th>
+    <th width="7%">ลานสายตา</th>
     <th width="7%">ผลการได้ยิน</th>
     <th width="7%">แมมโมแกรม</th>
     <th width="5%" align="center">พบแพทย์</th>
@@ -1030,6 +1031,14 @@ if($flag=="N"){
     // ความดันตา
     if( !empty($result2["eye_pressure"]) ){
         echo $result2["eye_pressure"].( !empty($result2["eye_pressure_detail"]) ? $result2["eye_pressure_detail"] : '' );
+    }
+    ?>
+    </td>
+    <td>
+    <?php 
+    // ลานสายตา
+    if( !empty($result2["eye_vision"]) ){
+        echo $result2["eye_vision"].( !empty($result2["eye_vision_detail"]) ? $result2["eye_vision_detail"] : '' );
     }
     ?>
     </td>
