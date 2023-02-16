@@ -16,7 +16,13 @@ if($action==='search'){
 
         $last = strtotime("-6 months");
         $date = (date('Y', $last)+543).date('-m-d', $last);
-        $q = $dbi->query("SELECT `row_id` AS `id`,`date`,`hn`,`tvn` FROM `phardep` WHERE `hn` = '$hn' AND `date` >= '$date' ");
+        $sql = "SELECT `row_id` AS `id`,`date`,`hn`,`tvn` 
+        FROM `phardep` 
+        WHERE `hn` = '$hn' 
+        AND `date` >= '$date' 
+        AND ( `price` > 0 AND `borrow` IS NULL ) 
+        AND ( `an` = '' OR `an` IS NULL) ORDER BY `date` DESC ";
+        $q = $dbi->query($sql);
         $a_rows = $q->num_rows;
         if($a_rows==0){
             $res = array('status'=>400, 'message' => 'ไม่พบรายการ 6เดือนย้อนหลัง' );

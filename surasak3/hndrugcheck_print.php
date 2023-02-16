@@ -309,6 +309,11 @@ if(!empty($drug_items)){
 
 }
 
+if( $pdf->GetY() > 240 ){
+    $pdf->AddPage();
+    $pdf->setXY(5,12);
+}
+
 /** 
  * หัวข้อส่วนที่2 
  */
@@ -476,6 +481,7 @@ for ($i=0; $i < $other; $i++) {
 // ขึ้นหน้ากระดาษใหม่ ก่อนขึ้นขณะแรกรับ
 if( $pdf->GetY() > 240 ){
     $pdf->AddPage();
+    $pdf->setXY(5,12);
 }
 
 $lastY = $pdf->GetY();
@@ -561,24 +567,25 @@ $pdf->Cell(66, 5, $pdf->conv('__________________________________________________
 $pdf->SetXY(137, $lastY+22);
 $pdf->Cell(66, 5, $pdf->conv('___________________________________________________'),0,1,'L');
 $pdf->SetXY(137, $lastY+27);
-$pdf->Cell(66, 5, $pdf->conv('พยาบาล__________________________วันที่________________'),0,1,'L');
+$pdf->Cell(66, 5, $pdf->conv('พยาบาล__________________________วันที่________________').$pdf->GetY(),0,1,'L');
 
 
-
-$pdf->setY($lastY+32.5);/* !!!! !!!! */
+// ขึ้นหน้ากระดาษใหม่ ก่อนขึ้นขณะแรกรับ
+if( $pdf->GetY() > 240 ){
+    $pdf->AddPage();
+    $pdf->setXY(5,12);
+}
 
 $lastY = $pdf->GetY();
 $pdf->SetFont('THSarabun','',12);
 $pdf->SetFillColor(0,0,0);
 $pdf->SetTextColor(255,255,255);
 $pdf->SetXY(5, $lastY);
-$pdf->Cell(66, 5.5, $pdf->conv('ขณะย้ายวอร์ด'), 1, 1, 'L',true);
+$pdf->Cell(66, 5.5, $pdf->conv('ขณะย้ายวอร์ด'.$pdf->GetY()), 1, 1, 'L',true);
 
 $pdf->SetFillColor(255,255,255);
 $pdf->SetTextColor(0,0,0);
 $pdf->SetFont('THSarabun','B',12);
-
-
 
 
 $lastY = $pdf->GetY();
@@ -661,6 +668,7 @@ $pdf->setY($lastY+32.5);/* !!!! !!!! */
 // ขึ้นหน้ากระดาษใหม่ ก่อนขึ้นขณะแรกรับ
 if( $pdf->GetY() > 240 ){
     $pdf->AddPage();
+    $pdf->setXY(5,12);
 }
 
 $lastY = $pdf->GetY();
