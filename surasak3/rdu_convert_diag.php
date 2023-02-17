@@ -1,5 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
+require_once 'config.php';
 error_reporting(E_ALL);
 set_time_limit(0);
 
@@ -24,31 +24,28 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-12-01';
-$date_end = '2565-12-30';
+$pastDay = strtotime("-1 month");
+$yearEn = date('Y', $pastDay);
+$yearTh = $yearEn +543;
 
-$date_start_en = '2022-12-01';
-$date_end_en = '2022-12-30';
+$endOfMonth = date('t', strtotime($yearEn.'-'.date('-m', $pastDay).'-01'));
 
-$quarter = 1;
-$year = '2566';
+$date_start = $yearTh.date('-m', $pastDay).'-01';
+$date_end = $yearTh.date('-m', $pastDay).'-'.$endOfMonth;
 
-$dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($dirPath)){
-    mkdir($dirPath);
+$date_start_en = $yearEn.date('-m', $pastDay).'-01';
+$date_end_en = $yearEn.date('-m', $pastDay).'-'.$endOfMonth;
+
+$pastMonth = date('n', $pastDay);
+if($pastMonth>=10 && $pastMonth<=12){
+    $quarter = 1;
+}elseif ($pastMonth>=1 && $pastMonth<=3) {
+    $quarter = 2;
+}elseif ($pastMonth>=4 && $pastMonth<=6) {
+    $quarter = 3;
+}elseif ($pastMonth>=7 && $pastMonth<=9) {
+    $quarter = 4;
 }
-
-$filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_diag_'.$quarter.'.sql';
-if(file_exists($filePath))
-{
-    unlink($filePath);
-}
-
-// $sql = "SELECT SUBSTRING(`thidate`,1,10) AS `thiDateShort`,`thdatehn`,`ptname`,`doctor`,`hn`,`vn`,SUBSTRING(toEn(`thidate`), 1, 10) AS `pre_age` 
-// FROM `opday` 
-// WHERE `thidate` >= '$date_start 00:00:00' AND `thidate` <= '$date_end 23:59:59' 
-// AND `doctor` <> '' ";
-// $q = $dbi->query($sql);
 
 $sql_diag = "SELECT a.`row_id`,a.`hn`,a.`an` AS `vn`,a.`diag`,a.`icd10`,a.`type`,a.`svdate`, 
 CONCAT(SUBSTRING(a.`svdate`,1,10),a.`hn`) AS `date_hn`, 
@@ -63,56 +60,30 @@ AND a.`status` = 'Y'
 GROUP BY `date_opday`, `icd10` ";
 $q_diag = $dbi->query($sql_diag);
 
-
 $sql_header = "INSERT INTO `rdu_diag` ( `id`, `diag_id`, `svdate`, `hn`, `ptname`,`age`,`an`, `diag`, `icd10`, `type`, `doctor`, `date_hn`, `date_generate`, `quarter` , `year`, `date_en`) VALUES ";
-$sql_data_list = array();
 
 while ( $item = $q_diag->fetch_assoc() ) {
-    // dump($item);
-    // $preAge = $item['pre_age'];
+
     $hn = $item['hn'];
-
-    // $sql_opcard = "SELECT CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `dbirth`,`hn`,TIMESTAMPDIFF(YEAR, SUBSTRING(toEn(`dbirth`), 1, 10), NOW()) AS `age` 
-    // FROM `opcard` 
-    // WHERE `hn` = '$hn' ";
-    // $qOP = $dbi->query($sql_opcard);
-    // $opc = $qOP->fetch_assoc();
     $age = $item['age'];
-    // $age = '';
-
     $ptname = $item['ptname'];
-    // $ptname = '';
     $vn = $item['vn'];
-    // $doctor = $item['doctor'];
 
-    // list($y,$m,$d)=explode('-',$item['thiDateShort']);
-    // $thidate_short = ($y-543)."-$m-$d";
-    
+    $diag_id = $item['row_id'];
+    $svdate = $item['svdate'];
+    $pre_diag = htmlspecialchars($item['diag'], ENT_QUOTES);
+    $diag_txt = trim(preg_replace('/\s+/',' ',$pre_diag));
+    $icd10 = $item['icd10'];
+    $type = $item['type'];
+    $date_hn = $item['date_hn'];
 
-    // while ($diag = $q_diag->fetch_assoc()) { 
+    $doctor = $item['office'];
 
-        // dump($diag);
-        $diag_id = $item['row_id'];
-        $svdate = $item['svdate'];
-        $pre_diag = htmlspecialchars($item['diag'], ENT_QUOTES);
-        $diag_txt = trim(preg_replace('/\s+/',' ',$pre_diag));
-        $icd10 = $item['icd10'];
-        $type = $item['type'];
-        $date_hn = $item['date_hn'];
+    $date_en = (substr($item['svdate'],0,4)-543).substr($item['svdate'],4,6);
 
-        $doctor = $item['office'];
-
-        $date_en = (substr($item['svdate'],0,4)-543).substr($item['svdate'],4,6);
-
-        $sql_value = "( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$year', '$date_en');\n";
-        
-        file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
-
-    // }
+    $sql_value = $sql_header."( NULL, '$diag_id', '$svdate', '$hn', '$ptname','$age','$vn', '$diag_txt', '$icd10', '$type', '$doctor', '$date_hn', NOW(), '$quarter', '$yearEn', '$date_en');";
+    $insert = $dbi->query($sql_value);
     
 }
-// $sql_value = implode(',', $sql_data_list);
-// $sql_header.$sql_value;
-
 
 echo "Success";
