@@ -1,5 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
+require_once 'config.php';
 error_reporting(E_ALL);
 set_time_limit(0);
 
@@ -10,21 +10,24 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-12-01';
-$date_end = '2565-12-30';
+$pastDay = strtotime("-1 month");
+$yearEn = date('Y', $pastDay);
+$yearTh = $yearEn +543;
 
-$quarter = 1;
-$year = '2566';
+$endOfMonth = date('t', strtotime($yearEn.'-'.date('-m', $pastDay).'-01'));
 
-$dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($dirPath)){
-    mkdir($dirPath);
-}
+$date_start = $yearTh.date('-m', $pastDay).'-01';
+$date_end = $yearTh.date('-m', $pastDay).'-'.$endOfMonth;
 
-$filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_drug_'.$quarter.'.sql';
-if(file_exists($filePath))
-{
-    unlink($filePath);
+$pastMonth = date('n', $pastDay);
+if($pastMonth>=10 && $pastMonth<=12){
+    $quarter = 1;
+}elseif ($pastMonth>=1 && $pastMonth<=3) {
+    $quarter = 2;
+}elseif ($pastMonth>=4 && $pastMonth<=6) {
+    $quarter = 3;
+}elseif ($pastMonth>=7 && $pastMonth<=9) {
+    $quarter = 4;
 }
 
 $sql = "SELECT `row_id`,`date`,`hn`,`drugcode`,TRIM(`part`) AS `part`,`amount`,CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn` 
@@ -36,7 +39,6 @@ AND `amount` > 0 ";
 $q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `rdu_drugrx` ( `id`,`row_id`,`date`,`hn`,`drugcode`,`part`,`amount`,`date_hn`,`date_generate`,`quarter`,`year`,`date_en`) VALUES ";
-$sql_data = array();
 
 while ( $item = $q->fetch_assoc() ) {
     $row_id = $item['row_id'];
@@ -49,11 +51,9 @@ while ( $item = $q->fetch_assoc() ) {
 
     $date_en = (substr($item['date'],0,4)-543).substr($item['date'],4,6);
 
-    $rdu_drugrx = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$year','$date_en');\n";
-    file_put_contents($filePath, $rdu_drugrx, FILE_APPEND);
+    $rdu_drugrx = $sql_header."( NULL,'$row_id','$date','$hn','$drugcode','$part','$amount','$date_hn',NOW(),'$quarter','$yearEn','$date_en');";
+    $insert = $dbi->query($rdu_drugrx);
+
 }
-// $sql_value = implode(',', $sql_data);
-// $sql_header.$sql_value;
-// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";

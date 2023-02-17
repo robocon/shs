@@ -1,5 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
+require_once 'config.php';
 error_reporting(E_ALL);
 set_time_limit(0);
 
@@ -19,29 +19,35 @@ set_time_limit(0);
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 if($dbi->connect_errno){
-    echo $dbi->connect_errno;
+    echo "Connection Error: ".$dbi->connect_errno;
     exit;
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-12-01';
-$date_end = '2565-12-30';
+$pastDay = strtotime("-1 month");
+$yearEn = date('Y', $pastDay);
+$yearTh = $yearEn +543;
 
-$quarter = 1;
-$year = '2566';
+$endOfMonth = date('t', strtotime($yearEn.'-'.date('-m', $pastDay).'-01'));
 
-$dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($dirPath)){
-    mkdir($dirPath);
+$date_start = $yearTh.date('-m', $pastDay).'-01';
+$date_end = $yearTh.date('-m', $pastDay).'-'.$endOfMonth;
+
+$pastMonth = date('n', $pastDay);
+if($pastMonth>=10 && $pastMonth<=12){
+    $quarter = 1;
+}elseif ($pastMonth>=1 && $pastMonth<=3) {
+    $quarter = 2;
+}elseif ($pastMonth>=4 && $pastMonth<=6) {
+    $quarter = 3;
+}elseif ($pastMonth>=7 && $pastMonth<=9) {
+    $quarter = 4;
 }
 
-$filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_opday_'.$quarter.'.sql';
-if(file_exists($filePath))
-{
-    unlink($filePath);
-}
-
-// unlink("rdu/rdu_opday.sql");
+// $dirPath = realpath(dirname(__FILE__))."/rdu";
+// if(!file_exists($dirPath)){
+//     mkdir($dirPath);
+// }
 
 $sql = "SELECT a.`row_id`,a.`thidate`,a.`hn`,a.`ptname`,a.`age`,a.`diag`,a.`icd10`,a.`doctor`,SUBSTRING(TRIM(a.`toborow`),1,4) AS `toborow`, 
 CONCAT(SUBSTRING(a.`thidate`,1,10),a.`hn`) AS `date_hn` 
@@ -57,7 +63,6 @@ if($q == false){
 }
 
 $sql_header = "INSERT INTO `rdu_opday` ( `id`,`row_id`,`date`,`hn`,`ptname`,`gender`,`age`,`diag`,`icd10`,`doctor`,`toborow`,`date_hn`,`date_generate`,`quarter`,`year`,`date_en`) VALUES ";
-$sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
     $row_id = $item['row_id'];
@@ -78,21 +83,8 @@ while ( $item = $q->fetch_assoc() ) {
         $gender = 'f';
     }
 
-    $sql_insert = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$toborow','$date_hn',NOW(),'$quarter','$year','$date_en');\n";
-    // $insert = $dbi->query($sql_insert);
-    // dump($sql_insert);
-    // dump($insert);
+    $sql_insert = $sql_header."( NULL,'$row_id','$thidate','$hn','$ptname','$gender','$age','$diag','$icd10','$doctor','$toborow','$date_hn',NOW(),'$quarter','$yearEn','$date_en');";
+    $insert = $dbi->query($sql_insert);
 
-    file_put_contents($filePath, $sql_insert, FILE_APPEND);
 }
-
-// $sql_value = implode(',', $sql_data_list);
-// $sql_header.$sql_value;
-// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
-
-// $command = "mysql --user=sm3db_user --password='sm3dbPassword' -h 192.168.131.240 -D sm3db-utf8 < rdu/rdu_opday.sql";
-// $output = shell_exec($command);
-
-
-
 echo "Success";

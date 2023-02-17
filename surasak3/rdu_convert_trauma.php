@@ -1,5 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
+require_once 'config.php';
 error_reporting(E_ALL);
 set_time_limit(0);
 
@@ -14,22 +14,15 @@ if($dbi->connect_errno){
 }
 $dbi->query("SET NAMES UTF8");
 
-$date_start = '2565-12-01';
-$date_end = '2565-12-30';
+$pastDay = strtotime("-1 month");
+$yearEn = date('Y', $pastDay);
+$yearTh = $yearEn +543;
 
-$quarter = 1;
-$year = '2566';
+$endOfMonth = date('t', strtotime($yearEn.'-'.date('-m', $pastDay).'-01'));
 
-$dirPath = realpath(dirname(__FILE__))."/rdu";
-if(!file_exists($dirPath)){
-    mkdir($dirPath);
-}
+$date_start = $yearTh.date('-m', $pastDay).'-01';
+$date_end = $yearTh.date('-m', $pastDay).'-'.$endOfMonth;
 
-$filePath = $dirPath.'/'.$date_start.'_'.$date_end.'_trauma_'.$quarter.'.sql';
-if(file_exists($filePath))
-{
-    unlink($filePath);
-}
 
 $sql = "SELECT *, 
 CONCAT(SUBSTRING(`date`,1,10),`hn`) AS `date_hn`
@@ -38,10 +31,9 @@ WHERE ( `date` >= '$date_start 00:00:00' AND `date` <= '$date_end 23:59:59' ) ";
 $q = $dbi->query($sql);
 
 $sql_header = "INSERT INTO `rdu_trauma` (`id`, `trauma_id`, `date`, `hn`, `ptright`, `dx`, `organ`, `maintenance`, `cure`, `doctor`, `trauma`, `type_wounded`, `type_wounded2`, `date_hn`, `quarter`, `year`,`date_en`) VALUES ";
-// $sql_data_list = array();
 
 while ( $item = $q->fetch_assoc() ) {
-    // dump($item);
+    
     $trauma_id = $item['row_id'];
     $date = $item['date'];
     $hn = $item['hn'];
@@ -65,14 +57,9 @@ while ( $item = $q->fetch_assoc() ) {
     $date_hn = $item['date_hn'];
     $date_en = (substr($item['date'],0,4)-543).substr($item['date'],4,6);
 
-    $sql_insert = $sql_header."(NULL, '$trauma_id', '$date', '$hn', '$ptright', '$dx', '$organ', '$maintenance', '$cure', '$doctor', '$trauma', '$type_wounded', '$type_wounded2', '$date_hn', '$quarter', '$year','$date_en');\n";
-    // dump($test);
-
-    file_put_contents($filePath, $sql_insert, FILE_APPEND);
+    $sql_trauma = $sql_header."(NULL, '$trauma_id', '$date', '$hn', '$ptright', '$dx', '$organ', '$maintenance', '$cure', '$doctor', '$trauma', '$type_wounded', '$type_wounded2', '$date_hn', '$quarter', '$yearEn','$date_en');\n";
+    $insert = $dbi->query($sql_trauma);
 
 }
-// $sql_value = implode(',', $sql_data_list);
-// $sql_header.$sql_value;
-// file_put_contents($filePath, $sql_header.$sql_value, FILE_APPEND);
 
 echo "Success";
