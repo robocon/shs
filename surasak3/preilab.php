@@ -97,7 +97,9 @@
         if(!($row = mysql_fetch_object($result)))
             continue;
          }
+    $bedResult = array();
    If ($result){
+    $bedResult = $row;
       //$cPtname= $row->ptname;
      // $cPtright = $row->ptright;
      $cDoctor= $row->doctor;      
@@ -213,4 +215,33 @@ if($rows_an > 0){
 		<INPUT TYPE="submit" value="ทำรายการต่อไป">
 	</FORM>
 <!--<a href="labseek.php">ทำรายการต่อไป</a>-->
-<?php }} ?>
+<?php 
+    // หัวหน้าสมยศแจ้งมาว่าอยากดูหน้าจอการสั่งแลปของผู้ป่วยใน
+    if(!empty($bedResult)){
+        $an = $bedResult['an'];
+        $cBed = $bedResult['bed'];
+        $cBedcode = $bedResult['bedcode'];
+        $cHn = $bedResult['hn'];
+        $codeb = substr($cBedcode,0,2);
+        if($codeb=="42"){
+            $cbedname = 'หอผู้ป่วยรวม';
+
+        }elseif ($codeb=="43") {
+            $cbedname = 'หอผู้ป่วยสูติ';
+
+        }elseif ($codeb=="44") {
+            $cbedname = 'หอผู้ป่วย ICU';
+
+        }elseif ($codeb=="45") {
+            $cbedname = 'หอผู้ป่วยพิเศษ';
+
+        }
+        ?>
+        <br>
+        <a href="wpreappoi.php?an=<?=$an;?>&cBed=<?=$cBed;?>&cBedcode=<?=$cBedcode;?>&cHn=<?=$cHn;?>&cbedname=<?=$cbedname;?>" target="_blank">หน้าจอสั่ง LAB ผู้ป่วยใน</a>
+        <?php
+
+    }
+}
+}
+?>
