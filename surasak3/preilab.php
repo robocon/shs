@@ -55,7 +55,7 @@
     include("connect.inc");
 //seek $an in bed
     $query = "SELECT * FROM opday WHERE an = '$an'";
-	//echo $query;
+	// echo $query;
     $result = mysql_query($query)
         or die("Query failed");
 	$rows_an = mysql_num_rows($result);
@@ -168,7 +168,7 @@
       echo "ไม่พบ AN : $an ในข้อมูลผู้ป่วยใน หรือจำหน่ายผู้ป่วยแล้ว ";
            }  
   
- include("unconnect.inc");  
+//  include("unconnect.inc");  
   $tvn=$an;
 session_register("tvn");
 ?>
@@ -218,10 +218,10 @@ if($rows_an > 0){
 <?php 
     // หัวหน้าสมยศแจ้งมาว่าอยากดูหน้าจอการสั่งแลปของผู้ป่วยใน
     if(!empty($bedResult)){
-        $an = $bedResult['an'];
-        $cBed = $bedResult['bed'];
-        $cBedcode = $bedResult['bedcode'];
-        $cHn = $bedResult['hn'];
+        $an = $bedResult->an;
+        $cBed = $bedResult->bed;
+        $cBedcode = $bedResult->bedcode;
+        $cHn = $bedResult->hn;
         $codeb = substr($cBedcode,0,2);
         if($codeb=="42"){
             $cbedname = 'หอผู้ป่วยรวม';
