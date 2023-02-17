@@ -822,7 +822,7 @@ if($rowdg1){
 <TR>
 	<TD align="right" bgcolor="#009688"><strong>AN : </strong></TD>
 	<TD bgcolor="#00CC99"><a href="med_phar.php?fill_an=<?=$arr["an"];?>" target="_blank"><?=$arr["an"];?></a></TD>
-	<TD align="right" bgcolor="009688"><strong>HN : </strong><div id="listdrugcode" style="position: absolute; text-align: left; width:600px; height:100px; overflow:auto;"></div>		
+	<TD align="right" bgcolor="009688"><strong>HN : </strong><div id="listdrugcode" style="position: absolute; text-align: left; width:600px; height:auto; overflow:auto;"></div>		
 </TD>
 	<TD bgcolor="#00CC99"><?php echo $arr["hn"];?></TD>
 	<TD align="right" bgcolor="#009688"><strong>ชื่อ-สกุล : </strong></TD>
