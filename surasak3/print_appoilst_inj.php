@@ -106,7 +106,7 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 
 // ถ้า status ไม่ใช่ y จะออกใบนัดไม่ได้
 $sql = "Select idno From drugrx where hn = '".$_POST['hn']."' AND date like '".$Thidate2."%' AND drugcode = '".$dgcode."' AND status = 'Y' limit 1";
-
+echo $sql;
 $result = mysql_query($sql);
 $rows_drugrx = mysql_num_rows($result);
 if($rows_drugrx==0){
@@ -141,7 +141,7 @@ if($rows_drugrx > 0){
 		$dgcode = "30HBV";
 	}else if($_POST["drug_inj"] == "Euvax 3"){
 		$dgcode = "0EB1.0";
-	}else if($_POST["drug_inj"] == "Hepatitis B Vaccine"){
+	}else if($_POST["drug_inj"] == "Hepatitis B Vaccin"){
 		$dgcode = "0HB1";
 	}
 

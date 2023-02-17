@@ -77,7 +77,7 @@ function checkForm(){
 <script type="text/javascript">
     document.getElementById('aLink').focus();
 </script>
-<table width="80%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
+<table width="90%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
 <tr>
         <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
       <th bgcolor=#009688 width="47"><span class="style2">ยศ</span></th>
@@ -86,7 +86,9 @@ function checkForm(){
       <th width="69" bgcolor=#009688><span class="style2">สกุล</span></th>
       <th width="174" bgcolor=#009688><span class="style2">สิทธิการรักษา</span></th>
 	  <th width="120" bgcolor="#009688">การมาโรงพยาบาล</th>
-	  <th width="120" bgcolor="#009688">สติ๊กเกอร์ QR CODE</th>
+	  <th width="130" bgcolor="#009688">พิมพ์สติ๊กเกอร์ใหญ่</th>
+	  <th width="130" bgcolor="#009688">พิมพ์สติ๊กเกอร์เล็ก</th>
+	  <th bgcolor="#009688" width="10%">แบบฟอร์มใบตรวจโรค</th>
     </tr>
 
     <?php
@@ -140,13 +142,17 @@ function checkForm(){
 			list($chkhn) = Mysql_fetch_row($result112);	
 
 			if(empty($chkhn)){
-				$link="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd2.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code</div></button>";
+				$link="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd2.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code ใหญ่<br>แบบไม่มี VN</div></button>";
 			}else{
-				$link="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd1.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code</div></button>";
+				$link="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code ใหญ่<br>แบบมี VN</div></button>";
 			}
 
-            $link .= '<div style="margin-top:20px;"><a target="_BLANK" href="sticker80.php?hn='.$hn.'&stickersize=30"><img src="images/print.png" height="20px" width="20px"><div style="margin-top:5px;">พิมพ์สติ๊กเกอร์เล็ก</div></a></div>';
-
+			if(empty($chkhn)){
+				$linksmall="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd3.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบไม่มี VN</div></button>";
+			}else{
+				$linksmall="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd1.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบมี VN</div></button>";
+			}
+			
             // opedit.php? cHn=$hn & cName=$name &cSurname=$surname
             print (" <tr style='font-size: 18px;'>\n".
             "  <td BGCOLOR=".$color."><a target= href=\"#\">$hn</a></td>\n".
@@ -158,6 +164,8 @@ function checkForm(){
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('dt_paperLess.php?hn=$hn')\"><img src='images/views.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>ประวัติการรักษา</div></button>
             </td>".
 			"<td bgcolor=\"$color\" align=\"center\">$link</td>".
+			"<td bgcolor=\"$color\" align=\"center\">$linksmall</td>".
+			"<td bgcolor=\"$color\" align='center'><A target=_BLANK HREF=\"digital_opd_form1.php?hn=".urlencode($hn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์เอกสาร</div></A></td>\n".
             " </tr>\n");
         }
         ?>

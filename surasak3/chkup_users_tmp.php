@@ -37,7 +37,7 @@ include("connect.inc");
       <td align="center">ปีงบประมาณ&nbsp;&nbsp;
     <? 
 			   $Y=date("Y")+543;
-			   $Y=$Y+1;
+			   $Y=$Y;
 			   $date=date("Y")+543;
 			  
 				$dates=range(2560,$date+1);
@@ -57,7 +57,8 @@ include("connect.inc");
         <select name="camp" id="camp" class="txtsarabun">
           <option value="all" selected>ทุกหน่วย</option>
 		 <?
-		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and thidate like '2023-01-10%'";
+		 //$sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and row_id >= '12098' and row_id <= '12102'";
+		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and (row_id >= '12106' and row_id <='12112')";
 		 $query=mysql_query($sql);
 		 while($rows=mysql_fetch_array($query)){
 		 $camp=$rows["camp"];
@@ -78,11 +79,11 @@ if($_POST["act"]=="show"){
 $nPrefix=$_POST["year1"];
 
 	if($_POST["camp"]=="all"){
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix'  and thidate like '2023-01-10%'
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix'  and (row_id >= '12106' and row_id <='12112')
 		GROUP BY hn 
 		ORDER BY row_id ASC, substring(age,1,2) DESC";
 	}else{
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and thidate like '2023-01-10%'
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12106' and row_id <='12112')
 		AND `camp`='$_POST[camp]' 
 		GROUP BY hn 
 		ORDER BY row_id ASC";	
