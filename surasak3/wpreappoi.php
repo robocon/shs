@@ -7,13 +7,13 @@
 
 </style>
 <?php
-//Update 31 æ§. 53 bbm
+//Update 31 ‡∏û‡∏Ñ. 53 bbm
 //    $cHn="";
  session_start();
 
 
  if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	header("content-type: application/x-javascript; charset=UTF-8");
 }
 include("connect.inc");   
 
@@ -22,7 +22,7 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	
 	$count = count($_SESSION["list_code"]);
 	
-	echo "<A HREF=\"javascript:show_bock();\">‡®“–‡≈◊Õ¥</A>
+	echo "<A HREF=\"javascript:show_bock();\">‡πÄ‡∏à‡∏≤‡∏∞‡πÄ‡∏•‡∏∑‡∏≠‡∏î</A>
 	<TABLE bgcolor='#FFFFD2'>
 	<TR>
 		<TD>";
@@ -35,7 +35,7 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	exit();
 }else if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 
-	//************************** · ¥ß√“¬°“√ lab  ********************************************************
+	//************************** ‡πÅ‡∏™‡∏î‡∏á‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£ lab  ********************************************************
 
 	$array_new = array($_GET["code"]);
 
@@ -84,8 +84,8 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 
 		echo "<table bgcolor=\"#FFFFCC\" width=\"700\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
-			<td width=\"368\"><font style=\"color: #FFFFFF\"><strong>√“¬≈–‡Õ’¬¥</strong></font></td>
-			<td width=\"24\"><font><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">ª‘¥</A></strong></font></td>
+			<td width=\"368\"><font style=\"color: #FFFFFF\"><strong>‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î</strong></font></td>
+			<td width=\"24\"><font><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">‡∏õ‡∏¥‡∏î</A></strong></font></td>
 		</tr>";
 
 
@@ -152,10 +152,10 @@ list ($bed,$date,$ptname,$age,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$pa
                       $bedcode,$hn,$status,$diag1) = mysql_fetch_row ($result);
 
    
-//$dbirth="$y-$m-$d"; ‡°Á∫«—π‡°‘¥„π opcard= "$y-$m-$d" ´÷Ëß=$birth in function
-// print "<p><b><font face='Angsana New' size = '3'>‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’</font></b></p>";
-print "<p><font class='forntsarabun' size = '4'>™◊ËÕ $ptname  HN: $hn AN: $an Õ“¬ÿ $age &nbsp;<B> ‘∑∏‘:$ptright</font></B><br>";
-print "<font class='forntsarabun' size = '4'>·æ∑¬Ï $doctor </font></B></p>";
+//$dbirth="$y-$m-$d"; ‡πÄ‡∏Å‡πá‡∏ö‡∏ß‡∏±‡∏ô‡πÄ‡∏Å‡∏¥‡∏î‡πÉ‡∏ô opcard= "$y-$m-$d" ‡∏ã‡∏∂‡πà‡∏á=$birth in function
+// print "<p><b><font face='Angsana New' size = '3'>‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ</font></b></p>";
+print "<p><font class='forntsarabun' size = '4'>‡∏ä‡∏∑‡πà‡∏≠ $ptname  HN: $hn AN: $an ‡∏≠‡∏≤‡∏¢‡∏∏ $age &nbsp;<B>‡∏™‡∏¥‡∏ó‡∏ò‡∏¥:$ptright</font></B><br>";
+print "<font class='forntsarabun' size = '4'>‡πÅ‡∏û‡∏ó‡∏¢‡πå $doctor </font></B></p>";
 
 $sql = "SELECT * FROM `lab_ward` WHERE `an` = '$an' GROUP BY `an`,`no` ORDER BY `no` DESC";
 $q = mysql_query($sql);
@@ -163,7 +163,7 @@ if(mysql_num_rows($q) > 0)
 {
 	?>
 	<style>
-		/* µ“√“ß */
+		/* ‡∏ï‡∏≤‡∏£‡∏≤‡∏á */
 .chk_table{
     border-collapse: collapse;
 }
@@ -174,7 +174,7 @@ if(mysql_num_rows($q) > 0)
 }
 	</style>
 	<div class="forntsarabun">
-		<div><b>√“¬°“√·≈ª∑’Ë‡§¬ —Ëß</b></div>
+		<div><b>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÅ‡∏•‡∏õ‡∏ó‡∏µ‡πà‡πÄ‡∏Ñ‡∏¢‡∏™‡∏±‡πà‡∏á</b></div>
 		<table class="chk_table forntsarabun">
 		<?php 
 		while ($lw = mysql_fetch_assoc($q)) {
@@ -182,7 +182,7 @@ if(mysql_num_rows($q) > 0)
 			$date = $lw['date'];
 			?>
 			<tr>
-				<td>§√—Èß∑’Ë <?=$no;?> (<?=$date;?>)</td>
+				<td>‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏ó‡∏µ‡πà <?=$no;?> (<?=$date;?>)</td>
 			</tr>
 			<?php 
 			$sql_lab_ward = "SELECT * FROM `lab_ward` WHERE `an` = '$an' AND `no` = '$no' ORDER BY `row_id` ASC";
@@ -234,7 +234,7 @@ function addtolist(code){
 	viewlist();
 
 	//if(checkELyte() == "4"){
-	//	alert("∑Ë“π‰¥È —Ëß√“¬°“√ Na, K, Cl, Co2 ·¬°∑—Èß 4 √“¬°“√ \n °√ÿ≥“ —Ëß‡ªÁπ E'Lyte ");
+	//	alert("‡∏ó‡πà‡∏≤‡∏ô‡πÑ‡∏î‡πâ‡∏™‡∏±‡πà‡∏á‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£ Na, K, Cl, Co2 ‡πÅ‡∏¢‡∏Å‡∏ó‡∏±‡πâ‡∏á 4 ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£ \n ‡∏Å‡∏£‡∏∏‡∏ì‡∏≤‡∏™‡∏±‡πà‡∏á‡πÄ‡∏õ‡πá‡∏ô E'Lyte ");
 	//}
 }
 
@@ -287,11 +287,11 @@ function searchSuggest(action,str,len) {
 <TABLE border="0" class="forntsarabun">
 <TR valign="top">
 	<TD>
-<form method="POST" action="wappinsert1.php?an=<?=$an;?>&cBed=<?=$bed;?>& cBedcode=<?=$bedcode;?>&cbedname=ÀÕºŸÈªË«¬À≠‘ß">
+<form method="POST" action="wappinsert1.php?an=<?=$an;?>&cBed=<?=$bed;?>& cBedcode=<?=$bedcode;?>&cbedname=‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏´‡∏ç‡∏¥‡∏á">
  
-  <div id="list_patho"><font class="forntsarabun"><A HREF="javascript:show_bock();">‡®“–‡≈◊Õ¥</A></font></div>
+  <div id="list_patho"><font class="forntsarabun"><A HREF="javascript:show_bock();">‡πÄ‡∏à‡∏≤‡∏∞‡πÄ‡∏•‡∏∑‡∏≠‡∏î</A></font></div>
   
-  &nbsp;&nbsp;<input type="submit" value="     µ°≈ß     " name="B1" class="forntsarabun">
+  &nbsp;&nbsp;<input type="submit" value="     ‡∏ï‡∏Å‡∏•‡∏á     " name="B1" class="forntsarabun">
 
   </form>
 </TD>
@@ -462,10 +462,10 @@ $list_lab_check[$i]["detail"] = "CO2";
 <TABLE id="bock_lab" width="100%" border="1" bordercolor='#000000' cellpadding="3" cellspacing="0" style="display:none;">
 <TR valign="top">
 	<TD width="500" >
-	<div align="center"><B>√“¬°“√µ√«®∑“ßæ¬“∏‘</B></div>
+	<div align="center"><B>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏ó‡∏≤‡∏á‡∏û‡∏¢‡∏≤‡∏ò‡∏¥</B></div>
 <TABLE width="100%" align="left" border="0">
 <TR  valign="top">
-	<TD  colspan="<?php echo $r*2;?>" align='left' >µ√«®LAB Õ◊ËπÊ √–∫ÿ : <INPUT TYPE="text" NAME="" size="13" onkeypress="searchSuggest('lab',this.value,2);"><Div id="list"></Div></TD>
+	<TD  colspan="<?php echo $r*2;?>" align='left' >‡∏ï‡∏£‡∏ß‡∏àLAB ‡∏≠‡∏∑‡πà‡∏ô‡πÜ ‡∏£‡∏∞‡∏ö‡∏∏ : <INPUT TYPE="text" NAME="" size="13" onkeypress="searchSuggest('lab',this.value,2);"><Div id="list"></Div></TD>
 </TR>
 <TR>
 <?php
@@ -485,7 +485,7 @@ $list_lab_check[$i]["detail"] = "CO2";
 			/*$sql = "Select code, detail From labcare where left(code,3) ='DR@' ";
 			$result = Mysql_Query($sql);
 			if(Mysql_num_rows($result) > 0){
-				echo " Ÿµ√ LAB<BR>";
+				echo "‡∏™‡∏π‡∏ï‡∏£ LAB<BR>";
 			while($arr = Mysql_fetch_assoc($result)){
 				$i=0;
 				$list = array();
