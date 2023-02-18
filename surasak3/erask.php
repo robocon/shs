@@ -387,13 +387,19 @@ $rowpt = mysql_query($sqlpt);
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=80" class="myButton" target="_blank">QR CODE ใหญ่</a>
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" class="myButton" target="_blank">QR CODE เล็ก</a>
 </div>
-<div>&nbsp;</div>
-<div>
-	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
-	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
-</div>
-<script>
-function openPage(page){
-	var myWin = window.open("http://localhost/shspdf/printPdf.php?target="+page, "MsgWindow", "width=800,height=600");
+<?php 
+if( $_SESSION['smenucode'] === 'ADMPT'){
+	?>
+	<div>&nbsp;</div>
+	<div>
+		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
+		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
+	</div>
+	<script>
+	function openPage(page){
+		var myWin = window.open("http://192.168.129.143/shspdf/printPdf.php?target="+page, "MsgWindow", "width=800,height=600");
+	}
+	</script>
+	<?php 
 }
-</script>
+?>
