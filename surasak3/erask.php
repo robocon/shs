@@ -389,13 +389,11 @@ $rowpt = mysql_query($sqlpt);
 </div>
 <div>&nbsp;</div>
 <div>
-	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
+	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
 	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
 </div>
 <script>
 function openPage(page){
-	// var win = window.open("http://192.168.129.143/shspdf/"+page);
-	var win = window.open("http://localhost/shspdf/"+page);
-	win.print();
+	var myWin = window.open("http://localhost/shspdf/printPdf.php?target="+page, "MsgWindow", "width=800,height=600");
 }
 </script>
