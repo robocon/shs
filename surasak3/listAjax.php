@@ -1,13 +1,13 @@
 <?php
 session_start();
 //print_r($_SESSION);
-header("content-type: application/x-javascript; charset=TIS-620");
+header("content-type: application/x-javascript; charset=UTF-8");
 include("connect.inc");
 ?>
 
 
 <?
-if($_GET["action"] == "drugcode"){// ™◊ËÕ¬“**********************************************************************
+if($_GET["action"] == "drugcode"){// ‡∏ä‡∏∑‡πà‡∏≠‡∏¢‡∏≤**********************************************************************
 
 
 
@@ -48,19 +48,19 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	$result = mysql_query($sql) or die( mysql_error() ) ;
 	if(mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
 		echo "
-			<TABLE width=\"100%\" border=\"1\" bordercolor=\"blue\" cellspacing=\"0\" cellpadding=\"0\"  >
+			<TABLE width=\"100%\" border=\"1\" bordercolor=\"009688\" cellspacing=\"0\" cellpadding=\"0\"  >
 		<TR>
 			<TD>
-		<TABLE width=\"100%\" bgcolor=\"#FFFFFF\">
-		<TR bgcolor=\"blue\" align=\"center\">
+		<TABLE width=\"100%\" bgcolor=\"#FFFFFF\" cellspacing=\"4\" cellpadding=\"2\">
+		<TR bgcolor=\"009688\" align=\"center\">
 			<TD>&nbsp;</TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>√À— ¬“</B></FONT></TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>™◊ËÕ°“√§È“</B></FONT>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏£‡∏´‡∏±‡∏™‡∏¢‡∏≤</B></FONT></TD>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏ä‡∏∑‡πà‡∏≠‡∏Å‡∏≤‡∏£‡∏Ñ‡πâ‡∏≤</B></FONT>
 			<span align=\"right\"><A HREF=\"#\" Onclick=\"document.getElementById('listdrugcode').innerHTML='';\">[ X ]</A>&nbsp;</span>
 			</TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>ª√–‡¿∑</B></FONT></TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>√“§“</B></FONT></TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>®”π«π§ß‡À≈◊Õ</B></FONT></TD>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó</B></FONT></TD>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏£‡∏≤‡∏Ñ‡∏≤</B></FONT></TD>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô‡∏Ñ‡∏á‡πÄ‡∏´‡∏•‡∏∑‡∏≠</B></FONT></TD>
 		</TR>
 		";
 		$i=0;
@@ -84,18 +84,18 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			}
 			
 			
-			if(($arr["lock"]=="N" && $arr["lock_ipd"]=="N") && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){  //∂È“ lock ¬“
+			if(($arr["lock_ipd"]=="N") && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R27" || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){  //‡∏ñ‡πâ‡∏≤ lock ‡∏¢‡∏≤  R27 ‡∏£‡∏±‡∏ö‡∏™‡∏±‡πà‡∏á‡∏Å‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏ó‡∏¥‡∏ß‡∏≤  22/11/2565
 			echo "
 			<TR>
-				<TD><INPUT TYPE=\"text\" ID = \"",$txt,"\" NAME=\"select_radio\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}else{alert('√À— ºË“π‰¡Ë∂Ÿ°µÈÕß')}} \">
-					<FONT style=\"font-size: 16px;\" COLOR=\"red\">µ‘¥µËÕ√—∫√À— ºË“π‰¥È∑’ËºŸÈÕ”π«¬°“√‚√ßæ¬“∫“≈‡∑Ë“π—Èπ</FONT></TD>
+				<TD><INPUT TYPE=\"text\" ID = \"",$txt,"\" NAME=\"select_radio\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}else{alert('‡∏£‡∏´‡∏±‡∏™‡∏ú‡πà‡∏≤‡∏ô‡πÑ‡∏°‡πà‡∏ñ‡∏π‡∏Å‡∏ï‡πâ‡∏≠‡∏á')}} \">
+					<FONT style=\"font-size: 16px;\" COLOR=\"red\">‡∏ï‡∏¥‡∏î‡∏ï‡πà‡∏≠‡∏£‡∏±‡∏ö‡∏£‡∏´‡∏±‡∏™‡∏ú‡πà‡∏≤‡∏ô‡πÑ‡∏î‡πâ‡∏ó‡∏µ‡πà‡∏ú‡∏π‡πâ‡∏≠‡∏≥‡∏ô‡∏ß‡∏¢‡∏Å‡∏≤‡∏£‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡πÄ‡∏ó‡πà‡∏≤‡∏ô‡∏±‡πâ‡∏ô</FONT></TD>
 				<TD>",$arr["drugcode"],"</TD>
 				<TD>",$arr["tradname"],"</TD>
 				<TD>",$arr["part"],"</TD>
 				<TD>",$arr["unitpri"],"</TD>
 				<TD>",$arr["stock"],"</TD>
 			</TR>";
-			}else{  //∂È“‰¡Ë‰¥È lock ¬“
+			}else{  //‡∏ñ‡πâ‡∏≤‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ lock ‡∏¢‡∏≤
 			echo "
 			<TR>
 				<TD><INPUT TYPE=\"radio\" ID = \"",$txt,"\" NAME=\"select_radio\" onkeypress=\"if(event.keyCode == 13){document.getElementById('drugslip').focus();document.getElementById('drugcode').value='",$arr["drugcode"],"';document.getElementById('drugname').value='",$drugcode,"';document.getElementById('unit').value='",$arr["unit"],"';document.getElementById('drugslip').value='",$arr["slcode"],"';document.getElementById('listdrugcode').innerHTML='';}\"></TD>
@@ -115,7 +115,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 
 		exit;
 	}
-}else if($_GET["action"] == "drugslip"){ //«‘∏’„™È********************************************************************
+}else if($_GET["action"] == "drugslip"){ //‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ********************************************************************
 
 	$sql = "Select slcode,  detail1, detail2, detail3  From drugslip  where (slcode Like '".$_GET["search"]."%')  Order by slcode ASC   ";
 	$result = Mysql_Query($sql);
@@ -128,8 +128,8 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 		<TABLE width=\"100%\"  bgcolor=\"#FFFFFF\">
 		<TR bgcolor=\"blue\" align=\"center\">
 			<TD>&nbsp;</TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>√À— °“√„™È</B></FONT></TD>
-			<TD><FONT  COLOR=\"#FFFFDD\"><B>√“¬≈–‡Õ’¬¥</B></FONT>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏£‡∏´‡∏±‡∏™‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ</B></FONT></TD>
+			<TD><FONT  COLOR=\"#FFFFDD\"><B>‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î</B></FONT>
 			<span align=\"right\"><A HREF=\"#\" Onclick=\"document.getElementById('listdrugcode').innerHTML='';\">[ X ]</A>&nbsp;</span>
 			</TD>
 			
@@ -164,7 +164,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 		</TABLE>";
 	}
 }else if($_GET["action"] == "add"){
-/******* ‡æ‘Ë¡¢ÈÕ¡Ÿ≈„π SESSION ********************************************************************/
+/******* ‡πÄ‡∏û‡∏¥‡πà‡∏°‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô SESSION ********************************************************************/
 	if(empty($_GET["actdrug"])){
 		$add_status = "true";
 
@@ -196,9 +196,9 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 
 		switch($add_status){
 
-			case "false1" : $txt_alert = "‡π◊ËÕß®“° √À— ¬“ ".$_GET["drugcode"]." ¡’Õ¬ŸË„π√“¬°“√·≈È«"; break;
-			case "false2" : $txt_alert = "‡π◊ËÕß®“°‰¡Ë¡’√À— ¬“ ".$_GET["drugcode"]." „π√–∫∫‚√ßæ¬“∫“≈"; break;
-			case "false3" : $txt_alert = "‡π◊ËÕß®“°‰¡Ë¡’√À— «‘∏’„™È ".$_GET["slcode"]." „π√–∫∫‚√ßæ¬“∫“≈"; break;
+			case "false1" : $txt_alert = "‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á‡∏à‡∏≤‡∏Å ‡∏£‡∏´‡∏±‡∏™‡∏¢‡∏≤ ".$_GET["drugcode"]." ‡∏°‡∏µ‡∏≠‡∏¢‡∏π‡πà‡πÉ‡∏ô‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÅ‡∏•‡πâ‡∏ß"; break;
+			case "false2" : $txt_alert = "‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á‡∏à‡∏≤‡∏Å‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏£‡∏´‡∏±‡∏™‡∏¢‡∏≤ ".$_GET["drugcode"]." ‡πÉ‡∏ô‡∏£‡∏∞‡∏ö‡∏ö‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•"; break;
+			case "false3" : $txt_alert = "‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á‡∏à‡∏≤‡∏Å‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏£‡∏´‡∏±‡∏™‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ ".$_GET["slcode"]." ‡πÉ‡∏ô‡∏£‡∏∞‡∏ö‡∏ö‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•"; break;
 
 		}
 	}else{
@@ -212,7 +212,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			}
 		}
 		switch($add_status){
-			case "false1" : $txt_alert = "‡π◊ËÕß®“° √À— ¬“ ".$_GET["drugcode"]." ¡’Õ¬ŸË„π√“¬°“√·≈È«"; break;
+			case "false1" : $txt_alert = "‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á‡∏à‡∏≤‡∏Å ‡∏£‡∏´‡∏±‡∏™‡∏¢‡∏≤ ".$_GET["drugcode"]." ‡∏°‡∏µ‡∏≠‡∏¢‡∏π‡πà‡πÉ‡∏ô‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÅ‡∏•‡πâ‡∏ß"; break;
 		}			
 	}
 
@@ -233,7 +233,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 					</TD>
 				</TR>
 				<TR>
-					<TD align=\"center\"><BR>‰¡Ë “¡“√∂∫—π∑÷°¢ÈÕ¡Ÿ≈‰¥È<BR>
+					<TD align=\"center\"><BR>‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏î‡πâ<BR>
 					",$txt_alert,"<BR><BR>
 					</TD>
 				</TR>
@@ -273,6 +273,8 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $_GET["statcon"];
 			$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $_GET["amount"];
 			$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = "";
+			$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $_GET["firstdate"];
+			$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $_GET["enddate"];
 
 			if($_GET["tradname"] == "")
 				$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $tradname;
@@ -286,7 +288,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			show_session();
 }else if($_GET["action"] == "del"){
 
-/******* ≈∫¢ÈÕ¡Ÿ≈„π SESSION ********************************************************************/
+/******* ‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô SESSION ********************************************************************/
 	if(isset($_GET["rowid"]) && $_GET["rowid"] != ""){
 		
 		$sql = "Select statcon From dgprofile where row_id = '".$_GET["rowid"]."' ";
@@ -313,6 +315,9 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			$_SESSION["list_druglst"]["statcon"][$j] = $_SESSION["list_druglst"]["statcon"][$j+1];
 			$_SESSION["list_druglst"]["amount"][$j] = $_SESSION["list_druglst"]["amount"][$j+1];
 			$_SESSION["list_druglst"]["row_id"][$j] = $_SESSION["list_druglst"]["row_id"][$j+1];
+			$_SESSION["list_druglst"]["firstdate"][$j] = $_SESSION["list_druglst"]["firstdate"][$j+1];
+			$_SESSION["list_druglst"]["enddate"][$j] = $_SESSION["list_druglst"]["enddate"][$j+1];			
+			
 
 		}
 
@@ -324,12 +329,14 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			unset($_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]]);
 			unset($_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]]);
 			unset($_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]]);
+			unset($_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]]);
+			unset($_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]]);			
 	}
 		show_session();
 
 }else if($_GET["action"] == "edit"){
 
-/******* ·°È‰¢¢ÈÕ¡Ÿ≈„π SESSION ********************************************************************/
+/******* ‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô SESSION ********************************************************************/
 
 $sql = "Select row_id From drugslip where slcode = '".$_GET["slcode"]."' limit 1";
 $result = Mysql_Query($sql);
@@ -349,8 +356,8 @@ echo "
 					</TD>
 				</TR>
 				<TR>
-					<TD align=\"center\"><BR>‰¡Ë “¡“√∂·°È‰¢¢ÈÕ¡Ÿ≈‰¥È<BR>
-					‰¡Ë¡’√À— «‘∏’„™È¬“ ".$_GET["slcode"]."<BR><BR>
+					<TD align=\"center\"><BR>‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏î‡πâ<BR>
+					‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏£‡∏´‡∏±‡∏™‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ‡∏¢‡∏≤ ".$_GET["slcode"]."<BR><BR>
 					</TD>
 				</TR>
 				</TABLE>
@@ -407,12 +414,12 @@ echo "
 echo "<TABLE  id=\"layer1\"  border = 1 bordercolor=\"#3300FF\"  cellpadding=\"0\" cellspacing=\"0\" $hdd >
 <TR>
 	<TD>
-	<CENTER>√“¬°“√¬“∑’Ë OFF</CENTER>
+	<CENTER>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡∏¢‡∏≤‡∏ó‡∏µ‡πà OFF</CENTER>
 <TABLE>
 <TR align=\"center\"  bgcolor=\"#3300FF\" class=\"font_title\">
-	<TD width=\"150\"><FONT  COLOR=\"#FFFFFF\"><B>√À— ¬“</B></FONT></TD>
-	<TD width=\"100\"><FONT COLOR=\"#FFFFFF\"><B>«‘∏’„™È</B></FONT></TD>
-	<TD width=\"50\"><FONT COLOR=\"#FFFFFF\"><B>®”π«π</B></FONT></TD>
+	<TD width=\"150\"><FONT  COLOR=\"#FFFFFF\"><B>‡∏£‡∏´‡∏±‡∏™‡∏¢‡∏≤</B></FONT></TD>
+	<TD width=\"100\"><FONT COLOR=\"#FFFFFF\"><B>‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ</B></FONT></TD>
+	<TD width=\"50\"><FONT COLOR=\"#FFFFFF\"><B>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</B></FONT></TD>
 	<TD width=\"50\"><FONT COLOR=\"#FFFFFF\"><B>ON</B></FONT></TD>
 </TR>";
 
@@ -487,20 +494,20 @@ echo "<TABLE align=\"center\"  border=\"1\" bordercolor=\"#3300FF\" cellspacing=
 	<TD>
 <TABLE width=\"100%\">
 <TR bgcolor=\"#3300FF\" class=\"font_title\" align=\"center\">
-	<TD>√À— ¬“</TD>
-	<TD>™◊ËÕ¬“</TD>
-	<TD>ª√–‡¿∑</TD>
-	<TD>«‘∏’„™È</TD>
-	<TD>®”π«π</TD>
-	<TD> ∂“π–</TD>
-	<TD>OFF / ≈∫</TD>
-	<TD>·°È‰¢</TD>
+	<TD>‡∏£‡∏´‡∏±‡∏™‡∏¢‡∏≤</TD>
+	<TD>‡∏ä‡∏∑‡πà‡∏≠‡∏¢‡∏≤</TD>
+	<TD>‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó</TD>
+	<TD>‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ</TD>
+	<TD>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</TD>
+	<TD>‡∏™‡∏ñ‡∏≤‡∏ô‡∏∞</TD>
+	<TD>OFF / ‡∏•‡∏ö</TD>
+	<TD>‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</TD>
 </TR>";
 
 $list_status_drug["STAT1"] = "Stat";
 $list_status_drug["STAT"] = "One day";
 $list_status_drug["CONT"] = "Continue";
-$list_status_drug["OLD"] = "¬“‡¥‘¡";
+$list_status_drug["OLD"] = "‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°";
 
 for($j=0;$j<$_SESSION["num_list"];$j++){
 
@@ -522,13 +529,13 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
     <option value="STAT1" <? if($_SESSION["list_druglst"]["statcon"][$j]=="STAT1"){ echo "selected";}?>>Stat</option>
     <option value="STAT" <? if($_SESSION["list_druglst"]["statcon"][$j]=="STAT"){ echo "selected";}?>>One day</option>
     <option value="CONT" <? if($_SESSION["list_druglst"]["statcon"][$j]=="CONT"){ echo "selected";}?>>Continue</option>
-    <option value="OLD" <? if($_SESSION["list_druglst"]["statcon"][$j]=="OLD"){ echo "selected";}?>>¬“‡¥‘¡</option>
+    <option value="OLD" <? if($_SESSION["list_druglst"]["statcon"][$j]=="OLD"){ echo "selected";}?>>‡∏¢‡∏≤‡πÄ‡∏î‡∏¥‡∏°</option>
     </select></TD>
     <?
 	echo "<TD align=\"center\">",(
-		$_SESSION["list_druglst"]["row_id"][$j] != "" ? "<A HREF=\"javascript: del_session('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."');\">OFF</A>" : "<A HREF=\"javascript: del_session('".$j."','');\">≈∫</A>"
+		$_SESSION["list_druglst"]["row_id"][$j] != "" ? "<A HREF=\"javascript: del_session('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."');\">OFF</A>" : "<A HREF=\"javascript: del_session('".$j."','');\">‡∏•‡∏ö</A>"
 	),"</TD>
-	<TD align=\"center\"><A HREF=\"javascript: edit_list('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."',document.getElementById('slcode",$j,"').value,document.getElementById('amount",$j,"').value,document.getElementById('statusdrug",$j,"').value);\">·°È‰¢</A></TD>
+	<TD align=\"center\"><A HREF=\"javascript: edit_list('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."',document.getElementById('slcode",$j,"').value,document.getElementById('amount",$j,"').value,document.getElementById('statusdrug",$j,"').value);\">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</A></TD>
 		</TR>
 		";
 
@@ -543,7 +550,7 @@ echo "</TABLE>
 if($_SESSION["num_list"] > 0)
 	echo "
 	<FORM METHOD=POST ACTION=\"\">
-	<CENTER><INPUT TYPE=\"submit\" Name=\"Save_dgprofile\" VALUE=\"∫—π∑÷°¢ÈÕ¡Ÿ≈„π DrugProfile\" ></CENTER>
+	<CENTER><INPUT TYPE=\"submit\" Name=\"Save_dgprofile\" VALUE=\"‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô DrugProfile\" ></CENTER>
 	</FORM>";
 
 }
