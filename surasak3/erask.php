@@ -364,14 +364,38 @@ $rowpt = mysql_query($sqlpt);
 	<input type="submit" value="   ตกลง   " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	&nbsp; <input type="reset" value=" ยกเลิก " name="B2"></font></p>
 </form>
-<p>
+<style>
+	.myButton{
+		border-radius: 4px;
+		padding: 8px 16px;
+		background-color: #4CAF50;
+		color: #ffffff;
+		font-size: 18px;
+		font-family: TH SarabunPSK;
+		font-weight: bold;
+		text-decoration: none;
+		margin-right: 4px;
+	}
+	.myButton:hover{
+		box-shadow: 2px 6px 6px #000000a6;
+	}
+</style>
+<div style="margin-bottom: 16px;">
 	<?php $dateHn = date('d-m-') . (date('Y') + 543) . $cHn;?>
-	<a href="digital_opd.php?dthn=<?=$dateHn;?>" target="_blank">พิมพ์ใบตรวจโรค (ใบต่อ)</a>
-</p>
-<p>
-	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=80" target="_blank">QR CODE ใหญ่</a><br>
-	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" target="_blank">QR CODE เล็ก</a>
-</p>
-<p>
-	<a href="digital_opd_form.php?dthn=<?=$dateHn;?>" target="_blank">พิมพ์แบบฟอร์มใบตรวจโรค (กรณีใช้ต่อด้านหลัง)</a>
-</p>
+	<a href="digital_opd.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อ &#x1F5B6;</a>
+	<a href="digital_opd_form.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อด้านหลัง &#x1F5B6;</a>
+	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=80" class="myButton" target="_blank">QR CODE ใหญ่</a>
+	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" class="myButton" target="_blank">QR CODE เล็ก</a>
+</div>
+<div>&nbsp;</div>
+<div>
+	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
+	<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
+</div>
+<script>
+function openPage(page){
+	// var win = window.open("http://192.168.129.143/shspdf/"+page);
+	var win = window.open("http://localhost/shspdf/"+page);
+	win.print();
+}
+</script>
