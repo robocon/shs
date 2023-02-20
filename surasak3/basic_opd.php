@@ -929,6 +929,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	
 	$sql = "Select drugcode, tradname From drugreact where hn = '".$_REQUEST["hn"]."' ";
 	$result = mysql_query($sql) or die(Mysql_Error());
+	$drugreact_rows = mysql_num_rows($result);
 	$i=0;
 	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ 
 		$dCodeTxt = '';
@@ -1338,8 +1339,14 @@ mmHg </td>
 		<tr>
 			<td width="200" align="right" class="data_show">แพ้ยา : </td>
 			<td colspan="5" align="left" class="data_show">
+				<?php 
+				$drug_react_select = '';
+				if($drugreact_rows>0){
+					$drug_react_select = 'checked="checked"';
+				}
+				?>
 				<label for="drugSelect1"><input name="drugreact" id="drugSelect1" type="radio" value="0" />ไม่มีประวัติการแพ้</label> 
-				<label for="drugSelect2"><input name="drugreact" id="drugSelect2" type="radio" value="1" />แพ้</label>
+				<label for="drugSelect2"><input name="drugreact" id="drugSelect2" type="radio" value="1" <?=$drug_react_select;?>/>แพ้</label>
 				<label for="drugSelect3"><input name="drugreact" id="drugSelect3" type="radio" value="2" />ไม่ทราบ</label>
 				<font class="data_drugreact"><?php echo $txt_react2;?></font>
 				

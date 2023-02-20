@@ -75,19 +75,21 @@ function calcage($birth){
 	$birthday=DateThai($dbirth);
 	
 	
-if($drugreact == 0){
-	$drugreact_disease .="ปฎิเสธการแพ้ยา";
-}else{
-	$i=0;
 	$list = array();
 	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
 	$result = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result)){
-		array_push($list ,$arr["tradname"]);
+	$drugreact_rows = mysql_num_rows($result);
+	if($drugreact_rows>0){
+		while($arr = Mysql_fetch_assoc($result)){
+			array_push($list ,$arr["tradname"]);
+		}
+		$list_drug = implode(", ",$list);
+		$drugreact_disease = $list_drug;
+
+	}else{
+		$drugreact_disease ="ปฎิเสธการแพ้ยา";
+
 	}
-	$list_drug = implode(", ",$list);
-	$drugreact_disease .= "แพ้ยา : ".$list_drug;
-}
 	
 	
 if($congenital_disease == ""){

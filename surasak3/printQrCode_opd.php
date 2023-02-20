@@ -65,6 +65,7 @@ $hn = $_GET['hn'];
 	list($y,$m,$d)=explode("-",substr($thidate,0,10));
 	$svdate="$d/$m/$y";		
 ?>
+<div style="margin-top:5px;margin-left:5px;">
 <table border="0" align="center" width="100%" cellpadding="0" cellspacing="0">
   <tr >
     <th rowspan="2" width="8%" align="center"><img src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1"></th>
@@ -83,3 +84,4 @@ $hn = $_GET['hn'];
 	<th colspan="3" align="left"><span style="margin-left: 15px;"><?php echo $ptright;?></span><span style="margin-left: 15px; font-size:16px;"><?php echo $toborow;?></span></th>
   </tr>
 </table>
+</div>

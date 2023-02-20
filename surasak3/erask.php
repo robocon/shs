@@ -384,6 +384,7 @@ $rowpt = mysql_query($sqlpt);
 	<?php $dateHn = date('d-m-') . (date('Y') + 543) . $cHn;?>
 	<a href="digital_opd.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อ &#x1F5B6;</a>
 	<a href="digital_opd_form.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อด้านหลัง &#x1F5B6;</a>
+	<div>&nbsp;</div>
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=80" class="myButton" target="_blank">QR CODE ใหญ่</a>
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" class="myButton" target="_blank">QR CODE เล็ก</a>
 </div>
@@ -392,7 +393,7 @@ if( $_SESSION['smenucode'] === 'ADMPT'){
 	?>
 	<div>&nbsp;</div>
 	<div>
-		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
+		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
 		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
 	</div>
 	<script>

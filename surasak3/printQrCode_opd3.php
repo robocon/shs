@@ -32,7 +32,7 @@ body {
 	font-size:12px;
     }
 div {
-  line-height: 13px;
+  line-height: 15px;
 }	
 </style>	
 <script language="javascript">
@@ -44,27 +44,22 @@ window.print();
 	}, 1000);
 </script>
 <?php 
+
+
+
 $hn = $_GET['hn'];
 
-	$sql111 = "Select dbirth,sex,goup From opcard where hn='".$hn."' ";
+	$sql111 = "Select yot,name,surname,ptright,dbirth,sex,goup From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$sex,$goup) = Mysql_fetch_row($result111);
-	
+	list($yot,$name,$surname,$ptright,$dbirth,$sex,$goup) = Mysql_fetch_row($result111);
+	$ptname="$yot $name&nbsp;&nbsp;$surname";
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);	
 
-	$dthn=date("d-m-").(date("Y")+543).$hn;
-	$sql112 = "Select thidate,vn,ptname,ptright,toborow From opday where thdatehn = '".$dthn."' order by row_id desc limit 1 ";
-	//echo $sql112;
-	$result112 = Mysql_Query($sql112);
-	list($thidate,$vn,$ptname,$ptright,$toborow) = Mysql_fetch_row($result112);	
-	
-	$toborow=substr($toborow,5);
 	$ptright=trim($ptright);
 	$ptright=substr($ptright,3);
 	
-	list($y,$m,$d)=explode("-",substr($thidate,0,10));
-	$svdate="$d/$m/$y";
+	$svdate="วันที่พิมพ์: ".date("d/m/").(date("Y")+543);
 	
 	if($sex=="ช"){
 		$sex="เพศ ชาย";
@@ -72,8 +67,9 @@ $hn = $_GET['hn'];
 		$sex="เพศ หญิง";
 	}else{
 		$sex="ไม่ระบุเพศ";
-	}		
+	}	
 ?>
+
 <!--stiker เล็ก 50*30 -->
 <table border="0" align="center" width="100%" cellpadding="0" cellspacing="0">
   <tr>
@@ -82,12 +78,13 @@ $hn = $_GET['hn'];
   </tr>   
   <tr>
 	<th width="95%" valign="top" align="left">
-	<div><strong style="font-size:12px;">วัน/เดือน/ปี: <?php echo $svdate;?></strong></div>
 	<div style="font-size:20px; font-weight:bold; ">HN: <?php echo $hn;?></div>
 	<div><strong style="font-size:12px;"><?php echo $ptname;?></strong></div>
-	<div><span style="font-size:12px; font-weight:bold;">VN: <?php echo $vn;?></span><span style="font-size:12px; margin-left: 10px;"><?php echo $cAge;?></span></div>
+	<div><span style="font-size:12px;"><?php echo $sex;?></span></div>
+	<div><span style="font-size:12px;">อายุ: <?php echo $cAge;?></span></div>
 	<div style="font-size:12px;"><?php echo $ptright;?></div>
 	<div style="font-size:12px;"><?php echo $toborow;?></div>
+	<div><strong style="font-size:12px;"><?php echo $svdate;?></strong></div>
 	</th>
-  </tr>  
+  </tr>
 </table>

@@ -56,11 +56,16 @@ function calcage($birth){
 }
 
 $sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' order by row_id desc limit 1 ";
-
 $result_dt_hn = Mysql_Query($sql);
 $num=mysql_num_rows($result_dt_hn);
 list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill,$cvriskscore,$cvriskscore_lab) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
+
+// ถ้าหาใน opd ไม่เจอ
+if($num==0){
+	$hn = substr($_GET["dthn"],10);
+}
+
 if($cigarette==0){$cigarette='ไม่สูบ';}
 else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';}
 else {$cigarette='เคยสูบ';};
@@ -78,20 +83,22 @@ if($alcohol==0){
 }else{
 	$alcohol='เคยดื่ม';
 }
-
-if($drugreact == 0){
-	$drugreact_disease .="ปฎิเสธการแพ้ยา";
-}else{
-	$i=0;
+	
 	$list = array();
 	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
 	$result = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result)){
-		array_push($list ,$arr["tradname"]);
+	$drugreact_rows = mysql_num_rows($result);
+	if($drugreact_rows>0){
+		while($arr = Mysql_fetch_assoc($result)){
+			array_push($list ,$arr["tradname"]);
+		}
+		$list_drug = implode(", ",$list);
+		$drugreact_disease = $list_drug;
+
+	}else{
+		$drugreact_disease ="ปฎิเสธการแพ้ยา";
+
 	}
-	$list_drug = implode(", ",$list);
-	$drugreact_disease .= "แพ้ยา : ".$list_drug;
-}
 
 
 	$ht = $height/100;
@@ -105,7 +112,6 @@ if($drugreact == 0){
 	$sql111 = "Select dbirth,idcard,phone,blood From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
 	list($dbirth,$idcard,$phone,$blood) = Mysql_fetch_row($result111);
-	
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
 	
@@ -219,7 +225,7 @@ window.print();
     <td></td>
     <td colspan="2"><div>
 	<span><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?></span>
-	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?php echo $idcard;?></span>
+	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?=$idcard;?></span>
 	
 	</div>
 	</td>
@@ -400,6 +406,7 @@ window.print();
 </table>
 
 <?php 
+$dthn = sprintf("%s", $_GET["dthn"]);
 if($_SESSION['smenucode'] == 'ADMEYE'){
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
