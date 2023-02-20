@@ -1,4 +1,4 @@
-<?php
+``<?php
 session_start();
 if(isset($_GET["action"]) && $_GET["action"] != "edit" && $_GET["action"] != "del"){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -3110,22 +3110,23 @@ if($queue_type=="R"){
 			}
 			
 			if (!empty($cpg['ivf'])) {
-				$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['hc1_time']." น.<br>";
+				$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['ivf_time']." น.<br>";
 			}
 			
 			if (!empty($cpg['atb'])) {
-				$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['hc1_time']." น.";
+				$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['atb_time']." น.";
 			}
 
-			if (!empty($cepsis)) {
+			if (!empty($cepsis)) { 
 			?>
 			<tr>
 				<td>Sepsis: </td>
 				<td>
-					<?php
-					
-					?>
-					<a href="javascript:void(0);" onmouseover="show_tooltip('<?=$cepsis;?>','left',0,0)" onmouseout="hid_tooltip();">Lactate <?=$cpg['lactate'];?> เวลา <?=$cpg['lac_time'];?></a>
+					<script tyep="text/javascript">
+						var newObj = {lactate : '<?=$cpg['lactate'];?>',lac_time : '<?=$cpg['lac_time'];?>',hc1_time : '<?=$cpg['hc1_time'];?>',hc2_time : '<?=$cpg['hc2_time'];?>',uauc_time : '<?=$cpg['uauc_time'];?>',ivf : '<?=$cpg['ivf'];?>',ivf_time : '<?=$cpg['ivf_time'];?>',atb : '<?=$cpg['atb'];?>',atb_time : '<?=$cpg['atb_time'];?>'};
+						console.log(newObj);
+					</script>
+					<a href="javascript:void(0);" onmouseover="show_tooltip('<?=$cepsis;?>','left',0,0)" onmouseout="hid_tooltip();" onclick="edit_cepsis(newObj)">Lactate <?=$cpg['lactate'];?> เวลา <?=$cpg['lac_time'];?></a>
 				</td>
 			</tr>
 			<?php
@@ -3133,7 +3134,19 @@ if($queue_type=="R"){
 		}
 		?>
 		</TABLE>
-		
+		<script type="text/javascript">
+			function edit_cepsis(dataObj){ 
+
+				// ให้ checkbox เป็น enable
+				document.getElementById("cpg_sepsis").checked = true;
+
+				// แสดงช่องในการกรอกรายละเอียด
+				document.getElementById("sepsis_contain").style.display = '';
+
+				// เหลือ fill ค่าลงไปใน form
+				console.log(dataObj.lactate);
+			}
+		</script>
 		
 		</td>
 		<td><?php echo $arr["type_wounded"],",&nbsp;&nbsp;",$arr["type_wounded2"];?></td>
@@ -3176,3 +3189,4 @@ if($queue_type=="R"){
 </body>
 </html>
 <?php include("unconnect.inc");?>
+``
