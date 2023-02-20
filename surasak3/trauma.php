@@ -1706,7 +1706,14 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			$i++;
 		}
 
+		$trauma_id = sprintf("%s", $_GET['id']);
+		$trauma_cpg_sql = "SELECT * FROM `trauma_cpg` WHERE `for_id` = '$trauma_id' AND `code_cpg` = '30' ";
+		$trauma_q = mysql_query($trauma_cpg_sql);
+		$edit_cpg = mysql_fetch_assoc($trauma_q);
+
 	}else{
+		$trauma_id = false;
+		$edit_cpg = array();
 
 		$hidden = "";
 		$button = "<CENTER><INPUT TYPE=\"submit\" name=\"submit\" value=\"เพิ่มข้อมูล\">&nbsp;&nbsp;<INPUT TYPE=\"reset\" value=\"ยกเลิก\">";
@@ -2416,13 +2423,19 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 				<TD><INPUT TYPE="checkbox" NAME="cpg[]" VALUE="50" <?php if(isset($cpg["50"])) echo "Checked"; ?> Onclick="if(this.checked == true && !confirm('คุณต้องการลงบันทึกการทำ Stroke Fast track ใช่หรือไม่?')){ return false;}" >Stroke Fast track</TD>
 			</TR>
 		</TABLE>
-		<div id="sepsis_contain" style="display:none; background: #d8d8d8; padding: 4px 4px;">
-			<p>Lactate <input type="text" name="lactate" id="lactate" size="3"> เวลา <input type="text" name="lac_time" id="lac_time" size="2" onkeyup="addTime('lac_time',this.value);"> น.</p>
-			<p>H/C ขวด 1 เวลา <input type="text" name="hc1_time" id="hc1_time" size="2" onkeyup="addTime('hc1_time',this.value);"> น.</p>
-			<p>H/C ขวด 2 เวลา <input type="text" name="hc2_time" id="hc2_time" size="2" onkeyup="addTime('hc2_time',this.value);"> น.</p>
-			<p>UA, UC เวลา <input type="text" name="uauc_time" id="uauc_time" size="2" onkeyup="addTime('uauc_time',this.value);"> น.</p>
-			<p>IVF <input type="text" name="ivf" id="ivf" size="3"> เวลา <input type="text" name="ivf_time" id="ivf_time" size="2" onkeyup="addTime('ivf_time',this.value);"> น.</p>
-			<p>ATB <input type="text" name="atb" id="atb" size="3"> เวลา <input type="text" name="atb_time" id="atb_time" size="2" onkeyup="addTime('atb_time',this.value);"> น.</p>
+		<?php 
+		$display = 'display:none;';
+		if($trauma_id!==false){
+			$display = '';
+		}
+		?>
+		<div id="sepsis_contain" style="<?=$display;?> background: #d8d8d8; padding: 4px 4px;">
+			<p>Lactate <input type="text" name="lactate" id="lactate" size="3" value="<?=$edit_cpg['lactate'];?>"> เวลา <input type="text" name="lac_time" id="lac_time" size="2" onkeyup="addTime('lac_time',this.value);" value="<?=$edit_cpg['lac_time'];?>"> น.</p>
+			<p>H/C ขวด 1 เวลา <input type="text" name="hc1_time" id="hc1_time" size="2" onkeyup="addTime('hc1_time',this.value);" value="<?=$edit_cpg['hc1_time'];?>"> น.</p>
+			<p>H/C ขวด 2 เวลา <input type="text" name="hc2_time" id="hc2_time" size="2" onkeyup="addTime('hc2_time',this.value);" value="<?=$edit_cpg['hc2_time'];?>"> น.</p>
+			<p>UA, UC เวลา <input type="text" name="uauc_time" id="uauc_time" size="2" onkeyup="addTime('uauc_time',this.value);" value="<?=$edit_cpg['uauc_time'];?>"> น.</p>
+			<p>IVF <input type="text" name="ivf" id="ivf" size="3" value="<?=$edit_cpg['ivf'];?>"> เวลา <input type="text" name="ivf_time" id="ivf_time" size="2" onkeyup="addTime('ivf_time',this.value);" value="<?=$edit_cpg['ivf_time'];?>"> น.</p>
+			<p>ATB <input type="text" name="atb" id="atb" size="3" value="<?=$edit_cpg['atb'];?>"> เวลา <input type="text" name="atb_time" id="atb_time" size="2" onkeyup="addTime('atb_time',this.value);" value="<?=$edit_cpg['atb_time'];?>"> น.</p>
 			<script type="text/javascript">
 				document.getElementById("cpg_sepsis").onclick = function(){ 
 					var sep_check = document.getElementById("cpg_sepsis").checked;
@@ -3123,10 +3136,9 @@ if($queue_type=="R"){
 				<td>Sepsis: </td>
 				<td>
 					<script tyep="text/javascript">
-						var newObj = {lactate : '<?=$cpg['lactate'];?>',lac_time : '<?=$cpg['lac_time'];?>',hc1_time : '<?=$cpg['hc1_time'];?>',hc2_time : '<?=$cpg['hc2_time'];?>',uauc_time : '<?=$cpg['uauc_time'];?>',ivf : '<?=$cpg['ivf'];?>',ivf_time : '<?=$cpg['ivf_time'];?>',atb : '<?=$cpg['atb'];?>',atb_time : '<?=$cpg['atb_time'];?>'};
-						console.log(newObj);
+						var lactateObj = {lactate : '<?=$cpg['lactate'];?>',lac_time : '<?=$cpg['lac_time'];?>',hc1_time : '<?=$cpg['hc1_time'];?>',hc2_time : '<?=$cpg['hc2_time'];?>',uauc_time : '<?=$cpg['uauc_time'];?>',ivf : '<?=$cpg['ivf'];?>',ivf_time : '<?=$cpg['ivf_time'];?>',atb : '<?=$cpg['atb'];?>',atb_time : '<?=$cpg['atb_time'];?>'};
 					</script>
-					<a href="javascript:void(0);" onmouseover="show_tooltip('<?=$cepsis;?>','left',0,0)" onmouseout="hid_tooltip();" onclick="edit_cepsis(newObj)">Lactate <?=$cpg['lactate'];?> เวลา <?=$cpg['lac_time'];?></a>
+					<a href="javascript:void(0);" onmouseover="show_tooltip('<?=$cepsis;?>','left',0,0)" onmouseout="hid_tooltip();" onclick="edit_cepsis(lactateObj)">Lactate <?=$cpg['lactate'];?> เวลา <?=$cpg['lac_time'];?></a>
 				</td>
 			</tr>
 			<?php
@@ -3144,7 +3156,19 @@ if($queue_type=="R"){
 				document.getElementById("sepsis_contain").style.display = '';
 
 				// เหลือ fill ค่าลงไปใน form
-				console.log(dataObj.lactate);
+				// console.log(dataObj.lactate);
+
+				document.getElementById('lactate').value = dataObj.lactate;
+				document.getElementById('lac_time').value = dataObj.lac_time;
+				document.getElementById('hc1_time').value = dataObj.hc1_time;
+				document.getElementById('hc2_time').value = dataObj.hc2_time;
+				document.getElementById('uauc_time').value = dataObj.uauc_time;
+				document.getElementById('ivf').value = dataObj.ivf;
+				document.getElementById('ivf_time').value = dataObj.ivf_time;
+				document.getElementById('atb').value = dataObj.atb;
+				document.getElementById('atb_time').value = dataObj.atb_time;
+
+
 			}
 		</script>
 		
