@@ -283,11 +283,11 @@ if(!empty($_SESSION['x-msg'])){
     </div>
     <div>
         <span>เริ่ม</span>
-        <input type="text" name="date" id="date" value="<?=$start;?>">
+        <input type="datetime-local" name="date" id="date" value="<?=$start;?>">
     </div>
     <div>
         <span>สิ้นสุด</span>
-        <input type="text" name="dateend" id="dateend" value="<?=$end;?>">
+        <input type="datetime-local" name="dateend" id="dateend" value="<?=$end;?>">
     </div>
     <div>
         <span>การทำเนินการ</span>
