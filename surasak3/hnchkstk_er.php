@@ -15,15 +15,17 @@ function calcage($birth){
         $ageM = 12+$ageM;
     }
     if ($ageM==0){
-        $pAge="$ageY ª’";
+        $pAge="$ageY ‡∏õ‡∏µ";
     }else{
-        $pAge="$ageY ª’ $ageM ‡¥◊Õπ";
+        $pAge="$ageY ‡∏õ‡∏µ $ageM ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô";
     }
     return $pAge;
 }
 
 include("connect.inc");
 ?>
+
+
 <html>
 <body BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>
     <style type="text/css">
@@ -33,7 +35,11 @@ include("connect.inc");
         .fc1-3 { color:000000; font-size:15pt; font-family:Cordia New; font-weight:normal;}
         .ad1-0 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
         .ad1-1 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}
-    </style>
+    
+@media print {
+  .footer {page-break-after: always;}
+}	
+	</style>
 <?php
 $Chn = $_GET['Chn'];
 $chkdate=(date("Y")+543).date("-m-d");
@@ -51,27 +57,31 @@ while($rows= mysql_fetch_array($result)){
     $cAge = calcage($rows["dbirth"]);
     $cPtname = $rows["yot"].' '.$rows["name"].' '.$rows["surname"];
     
-    $sex = ( $sex === '™' ) ? '™“¬' : 'À≠‘ß' ;
+    $sex = ( $sex === '‡∏ä' ) ? '‡∏ä‡∏≤‡∏¢' : '‡∏´‡∏ç‡∏¥‡∏á' ;
     
     $ddate = substr($rows["thidate"],8,2);
     $mdate = substr($rows["thidate"],5,2); 
     $ydate = substr($rows["thidate"],0,4); 
     $tdate = substr($rows["thidate"],11,8); 
     $adate = "$ddate-$mdate-$ydate $tdate"; 
-    //print opd card ∑’Ëπ’Ë ®“° opdcardprn.htm  by frontpage
+    //print opd card ‡∏ó‡∏µ‡πà‡∏ô‡∏µ‡πà ‡∏à‡∏≤‡∏Å opdcardprn.htm  by frontpage
     
 	
 	
     ?>
-    <div class="fc1-0">«—π∑’Ë : <?=$adate;?></div>
-    <div class="fc1-1">™◊ËÕ- °ÿ≈ : <?=$cPtname;?></div>
-    <div class="fc1-1">Õ“¬ÿ : <?=$cAge;?></div>
+	<div class="footer" style="margin-left:10px;margin-top:10px;">
+    <div class="fc1-0">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà : <?=$adate;?></div>
+    <div class="fc1-1">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• : <?=$cPtname;?></div>
+    <div class="fc1-1">‡∏≠‡∏≤‡∏¢‡∏∏ : <?=$cAge;?></div>
     <div class="fc1-1">HN:&nbsp;<?=$rows["hn"];?>&nbsp;VN:&nbsp;<?=$rows["vn"];?>    </div>
-    <div style="height: 10px; padding: 0; margin: 0;">&nbsp;</div>
-    <div class="fc1-0">«—π∑’Ë : <?=$adate;?></div>
-    <div class="fc1-1">™◊ËÕ- °ÿ≈ : <?=$cPtname;?></div>
-    <div class="fc1-1">Õ“¬ÿ : <?=$cAge;?></div>
+    </div>
+	<div class="footer" style="margin-left:10px;margin-top:5px;">
+	<div style="height: 10px; padding: 0; margin: 0;">&nbsp;</div>
+    <div class="fc1-0">‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà : <?=$adate;?></div>
+    <div class="fc1-1">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• : <?=$cPtname;?></div>
+    <div class="fc1-1">‡∏≠‡∏≤‡∏¢‡∏∏ : <?=$cAge;?></div>
     <div class="fc1-1">HN:&nbsp;<?=$rows["hn"];?>&nbsp;VN:&nbsp;<?=$rows["vn"];?>    </div>
+	</div>
 
     <?php
 }
