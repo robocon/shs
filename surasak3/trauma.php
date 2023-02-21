@@ -1,4 +1,4 @@
-``<?php
+<?php
 session_start();
 if(isset($_GET["action"]) && $_GET["action"] != "edit" && $_GET["action"] != "del"){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -1393,6 +1393,7 @@ function viewdetail(action,hn) {
 			//congenital_disease('congenital_disease',hn);
 			organ('organ',hn);
 			disease_people('disease_people',hn);
+			hn_blur();
 		}
 }
 
@@ -2097,15 +2098,15 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 	&nbsp;<INPUT TYPE="button" value="ซักประวัติ" Onclick="window.open('basic_opd.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<script type="text/javascript">
-		var input_hn = document.getElementById("hn");
-		if( input_hn.addEventListener ){
-			input_hn.addEventListener("blur", hn_blur, true);
-		} else { // สำหรับ IE
-			input_hn.attachEvent("onblur", hn_blur, true);
-		}
+		// var input_hn = document.getElementById("hn");
+		// if( input_hn.addEventListener ){
+		// 	input_hn.addEventListener("blur", hn_blur, true);
+		// } else { // สำหรับ IE
+		// 	input_hn.attachEvent("onblur", hn_blur, true);
+		// }
 	
 		function hn_blur(){
-			
+			var input_hn = document.getElementById("hn");
 			if( input_hn.value === '' ){
 				return false;
 			}
@@ -2113,15 +2114,28 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			// ส่งค่าไปตรวจสอบ AN กับ VN
 			url = 'trauma.php?action=get_hn_an&hn=' + input_hn.value;
 			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
-			txt = xmlhttp.responseText;
-			
-			var res = JSON.parse(txt);
-			if( res.status  === 200 ){
-				document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
-				document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
+			xmlhttp.open("GET", url, true);
+
+			xmlhttp.onreadystatechange = function () {
+			if (xmlhttp.readyState === 4) {
+				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+					// Success!
+					txt = xmlhttp.responseText.replace(/^\s+|\s+$/gm,'');;
+					var res = JSON.parse(txt);
+					if( res.status  === 200 ){
+						document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
+						document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
+					}
+					
+				} else {
+					// Error :(
+				}
 			}
+			};
+
+			xmlhttp.send(null);
+			request = null;
+			
 		}
 	</script>	</TD>
 </TR>
@@ -3213,4 +3227,3 @@ if($queue_type=="R"){
 </body>
 </html>
 <?php include("unconnect.inc");?>
-``
