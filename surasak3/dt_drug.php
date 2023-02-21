@@ -2059,6 +2059,43 @@ var rdu18_icd10_list = ["J00","J010","J011","J012","J013","J014","J018","J019","
 var rdu7_drug_list = ['1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' ];
 var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","A038","A039","A050","A053","A054","A059","A080","A081","A082","A083","A084","A085","A09","A090","A099","K521","K528","K529","A040","A041","A042","A043","A044","A045","A046","A047","A048","A049"]
 
+
+S00, S01, S05, S07, S08, S09, 
+S10, S11, S16, S17, S18, S19, S20, S21, 
+S28, S29, S31, S31, 
+S38, 
+S39,
+S40,
+S41,
+S46,
+S47,
+S48,
+S49,
+S50,
+S51,
+
+
+S56-S61, 
+S56,
+S56,
+S56,
+S56,
+S56,
+S56,
+
+
+S66-S71, 
+S76-S81, 
+S86-S91, 
+S96-S99,
+X00-X19, 
+X20-X29, 
+X30-X39
+
+var rdu8_drug = ['1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ];
+var rdu8_icd10 = []
+
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2645,19 +2682,10 @@ function rdu7_alert(drugcode){
 	}
 
 	if( testRdu7 === true ){
-
-		document.getElementById('rduAlertTitle').innerHTML = 'Acute Diarrhea: ท้องร่วงเฉียบพลัน';
-		var dataHtml = '<p>ผู้ป่วย <b>> หรือ = 90% หายได้เอง</b>ใน 3-4 วัน<b>โดยไม่จำเป็นต้องใช้ยาปฏิชีวนะ</b></p>';
-		dataHtml += '<p>การให้<b>สารน้ำอย่างพอเพียง</b>เป็นการรักษาที่<b>สำคัญที่สุด</b></p>';
-		dataHtml += '<p>หากต้องการบรรเทาอาการดังกล่าว ควรใช้ยาบรรเทาตามอาการที่รบกวนผู้ป่วยมาก เช่น ยาลดไข้ ยาลดการหดเกร็งของลำไส้</p>';
-		dataHtml += '<p>ผู้ป่วยส่วนมากที่ติดเชื้อแบคทีเรีย (เช่น Salmonella spp.,E.coli) หรือสารพิษของแบคทีเรีย (เช่น Bacillus sppl.) ไม่จำเป็นต้องใช้ยาปฏิชีวนะ เพราะ ไม่ช่วยลดความรุนแรงและระยะเวลาของอาการ และอาจทำให้ผู้ป่วยมีเชื้อในอุจจาระนานขึ้น</p>';
-		dataHtml += '<p></p>';
-		document.getElementById('rduContent').style.textAlign = 'left';
+		var dataHtml = '<p><img src="images/rdu7.png"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
-
 		document.getElementById('rduAlertContainer').style.display = 'block';
-		
-		// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
 	}
 	
 }
