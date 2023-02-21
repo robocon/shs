@@ -3,12 +3,18 @@ require("fpdf/fpdf.php");
 require("fpdf/pdf.php");
 
 include("connect.php");
+
+function toUTF($txt){ 
+	return iconv("UTF-8", "WINDOWS-874", $txt);
+}
+
 $datey=date("Y")+543;
 $datem=date("-m-d H:i:s");
 $date1=$datey.$datem;
 
 $sql = "SELECT hn,an,ptname,age,ptright,bedcode,doctor,bed,diagnos FROM bed WHERE an = '$an' ";
 $result_dt_hn =mysql_query($sql);
+mysql_query("SET NAMES UTF8");
 list($chn, $can, $cptname , $cage , $cptright , $cbedcode , $cdoctor , $cBed1 ,$cdiagnos ) = Mysql_fetch_row($result_dt_hn);
 
 $ll = "P";
@@ -24,10 +30,10 @@ $header=array('','','','','','','');
 
 /*$pdf->Cell(0,8,"".$cbedname."  ".$bad."  AN :".$can." HN :".$chn." ".$cptname." ".$date." ",0,0);
 $pdf->Ln();*/
-$pdf->Cell(1,8,"à¸«à¸­à¸œà¸¹à¹‰à¸›à¹ˆà¸§à¸¢à¸£à¸§à¸¡ ".$bad."  HN :".$can." ".$date1." ",0,0);
+$pdf->Cell(1,8,"ËÍ¼Ùé»èÇÂÃÇÁ ".$bad."  HN :".$can." ".$date1." ",0,0);
 $pdf->Ln();
 $pdf->SetFont('AngsanaNew','',14);
-$pdf->Cell(1,8,"AN :".$can." ".$cptname." ",0,0);
+$pdf->Cell(1,8,"AN :".$can." ".toUTF($cptname)." ",0,0);
 $pdf->Ln();
 
 /*$pdf->Cell(0,6,"LAB : ",0,0);

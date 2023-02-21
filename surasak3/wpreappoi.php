@@ -75,17 +75,17 @@ if(isset($_GET["action"])  && $_GET["action"] == "viewlist"){
 	exit();
 }else if(isset($_GET["action"]) && $_GET["action"] == "lab"){
 
-	$sql = "Select code, detail From labcare where  detail like '%".$_GET["search"]."%' AND part = 'lab' AND (left(code,1) >='0' AND left(code,1) <='9') Order by numbered ASC";
+	$sql = "Select code, detail From labcare where  detail like '%".$_GET["search"]."%' AND part = 'lab' AND `labstatus` = 'Y' AND `version` != 'OLD' AND (left(code,1) >='0' AND left(code,1) <='9') Order by numbered ASC";
 
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){
-		echo "<Div style=\"position: absolute;text-align: left; width:720px; height:430px; overflow:auto; \">";
+		echo "<Div style=\"position: absolute;text-align: left; width:720px; height:430px; overflow:auto; border: 1px solid #000000; box-shadow: 4px 4px 4px #747474;\">";
 
 		echo "<table bgcolor=\"#FFFFCC\" width=\"700\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
-			<td width=\"368\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
-			<td width=\"24\"><font><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">ปิด</A></strong></font></td>
+			<td><font style=\"color: #FFFFFF; font-size: 18px;\"><strong>รายละเอียด</strong></font></td>
+			<td width=\"24\"><font><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\" style='color: #ffffff; font-size: 18px;'>ปิด</A></strong></font></td>
 		</tr>";
 
 
@@ -286,7 +286,7 @@ function searchSuggest(action,str,len) {
 
 <TABLE border="0" class="forntsarabun">
 <TR valign="top">
-	<TD>
+	<TD width="50%">
 <form method="POST" action="wappinsert1.php?an=<?=$an;?>&cBed=<?=$bed;?>& cBedcode=<?=$bedcode;?>&cbedname=หอผู้ป่วยหญิง">
  
   <div id="list_patho"><font class="forntsarabun"><A HREF="javascript:show_bock();">เจาะเลือด</A></font></div>
