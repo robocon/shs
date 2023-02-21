@@ -15,7 +15,7 @@ list($yot, $name, $surname, $ptright) = Mysql_fetch_row($result);
 $ptname = $yot." ".$name." ".$surname;
 $hn = $_GET["hn"];
 
-$sql = "Select row_id, doctor, price , sumnprice  From depart  where hn ='".$_GET["hn"]."' AND date like '".$y."-".$m."-".$d."%' AND price > 0 Order by row_id DESC limit 1 ";
+$sql = "Select row_id, doctor, price , sumnprice,tvn  From depart  where hn ='".$_GET["hn"]."' AND date like '".$y."-".$m."-".$d."%' AND price > 0 Order by row_id DESC limit 1 ";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -24,7 +24,7 @@ if($rows <=0 ){
 	echo "<CENTER>ขออภัยผู้ป่วยไม่มีรายการตรวจ Lab วันนี้</CENTER>";
 	exit();
 }
-list($rowid, $doctor, $price , $sumnprice) = Mysql_fetch_row($result);
+list($rowid, $doctor, $price , $sumnprice,$vn) = Mysql_fetch_row($result);
 
 
 $sql = "Select code From patdata  where idno = '".$rowid."' ";
@@ -73,7 +73,7 @@ $pdf->Ln();
 $pdf->Cell(0,5,"ราคา ".$price." บาท เบิกไม่ได้ ".$sumnprice." บาท",0,0,'C');
 $pdf->Ln();
 
-$pdf->Cell(0,5,"Lab : ".$txt_list_lab,0,0,'C');
+$pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
 $pdf->Ln();
 
 }
@@ -81,42 +81,38 @@ $pdf->Ln();
 if(isset($_GET["p2"])){
 
 $pdf->AddPage();
-$pdf->SetFont('AngsanaNew', '', 12);
-
-
-$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
-$pdf->Ln();
-$pdf->Cell(20,5,"Hn: ".$hn,0); $pdf->Cell(50,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
-$pdf->Ln();
-$pdf->Cell(0,5,"Lab: ".$txt_list_lab,0);
-$pdf->Ln();
-
-$pdf->Cell(0,1,"",0);
-$pdf->Ln();
-$pdf->Cell(0,0,"",1);
-$pdf->Ln();
-$pdf->Cell(0,1,"",0);
-$pdf->Ln();
+$pdf->SetFont('AngsanaNew', '', 18);
 
 $pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
 $pdf->Ln();
-$pdf->Cell(20,5,"Hn: ".$hn,0); $pdf->Cell(50,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Cell(20,5,"HN: ".$hn,0); $pdf->Cell(100,5,"VN: ".$vn,0);
 $pdf->Ln();
-$pdf->Cell(0,5,"Lab: ".$txt_list_lab,0);
-
+$pdf->Cell(20,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
 $pdf->Ln();
-$pdf->Cell(0,1,"",0);
-$pdf->Ln();
-$pdf->Cell(0,0,"",1);
-$pdf->Ln();
-$pdf->Cell(0,1,"",0);
+$pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
 $pdf->Ln();
 
+$pdf->AddPage();
+$pdf->SetFont('AngsanaNew', '', 18);
 $pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
 $pdf->Ln();
-$pdf->Cell(20,5,"Hn: ".$hn,0); $pdf->Cell(50,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Cell(20,5,"HN: ".$hn,0); $pdf->Cell(100,5,"VN: ".$vn,0);
 $pdf->Ln();
-$pdf->Cell(0,5,"Lab: ".$txt_list_lab,0);
+$pdf->Cell(20,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Ln();
+$pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
+$pdf->Ln();
+
+$pdf->AddPage();
+$pdf->SetFont('AngsanaNew', '', 18);
+$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
+$pdf->Ln();
+$pdf->Cell(20,5,"HN: ".$hn,0); $pdf->Cell(100,5,"VN: ".$vn,0);
+$pdf->Ln();
+$pdf->Cell(20,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Ln();
+$pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
+$pdf->Ln();
 
 }
 
