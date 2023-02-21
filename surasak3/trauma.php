@@ -2115,17 +2115,17 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			url = 'trauma.php?action=get_hn_an&hn=' + input_hn.value;
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, true);
-
+			
 			xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState === 4) {
 				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
 					// Success!
 					txt = xmlhttp.responseText.replace(/^\s+|\s+$/gm,'');;
-					var res = JSON.parse(txt);
-					if( res.status  === 200 ){
-						document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
-						document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
-					}
+			var res = JSON.parse(txt);
+			if( res.status  === 200 ){
+				document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
+				document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
+			}
 					
 				} else {
 					// Error :(
