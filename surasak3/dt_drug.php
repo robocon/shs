@@ -2056,6 +2056,9 @@ var nsaids14_list = ['1CELE200*','2CLOF','2DYNA','1ARCO','4PLAI','4VOLT-C','2KET
 var rdu18_drug_list = ['1AERI*','1CLAR-C','5AERI','1RUPA','5ZYR-N','1XYZA-N','1CETI','1BILA'];
 var rdu18_icd10_list = ["J00","J010","J011","J012","J013","J014","J018","J019","J020","J029","J030","J038","J039","J040","J041","J042","J050","J051","J060","J068","J069","J101","J111","J200","J201","J202","J203","J204","J205","J206","J207","J208","J209","J210","J218","J219","H650","H651","H659","H660","H664","H669","H670","H671","H678","H720","H721","H722","H728","H729"]
 
+var rdu7_drug_list = ['1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' ];
+var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","A038","A039","A050","A053","A054","A059","A080","A081","A082","A083","A084","A085","A09","A090","A099","K521","K528","K529","A040","A041","A042","A043","A044","A045","A046","A047","A048","A049"]
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2558,6 +2561,9 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// RDUตัวชี้วัดที่18
 	rdu18_alert(drugcode.trim());
+
+
+	rdu7_alert(drugcode.trim());
 		
 }
 
@@ -2625,6 +2631,33 @@ function rdu18_alert(drugcode){
 			// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
 		}
 
+	}
+	
+}
+
+function rdu7_alert(drugcode){
+
+	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
+	var testRdu7 = false;
+
+	if( rdu7_icd10_list.indexOf(icd10_principle) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
+		testRdu7 = true;
+	}
+
+	if( testRdu7 === true ){
+
+		document.getElementById('rduAlertTitle').innerHTML = 'Acute Diarrhea: ท้องร่วงเฉียบพลัน';
+		var dataHtml = '<p>ผู้ป่วย <b>> หรือ = 90% หายได้เอง</b>ใน 3-4 วัน<b>โดยไม่จำเป็นต้องใช้ยาปฏิชีวนะ</b></p>';
+		dataHtml += '<p>การให้<b>สารน้ำอย่างพอเพียง</b>เป็นการรักษาที่<b>สำคัญที่สุด</b></p>';
+		dataHtml += '<p>หากต้องการบรรเทาอาการดังกล่าว ควรใช้ยาบรรเทาตามอาการที่รบกวนผู้ป่วยมาก เช่น ยาลดไข้ ยาลดการหดเกร็งของลำไส้</p>';
+		dataHtml += '<p>ผู้ป่วยส่วนมากที่ติดเชื้อแบคทีเรีย (เช่น Salmonella spp.,E.coli) หรือสารพิษของแบคทีเรีย (เช่น Bacillus sppl.) ไม่จำเป็นต้องใช้ยาปฏิชีวนะ เพราะ ไม่ช่วยลดความรุนแรงและระยะเวลาของอาการ และอาจทำให้ผู้ป่วยมีเชื้อในอุจจาระนานขึ้น</p>';
+		dataHtml += '<p></p>';
+		document.getElementById('rduContent').style.textAlign = 'left';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+
+		document.getElementById('rduAlertContainer').style.display = 'block';
+		
+		// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
 	}
 	
 }
