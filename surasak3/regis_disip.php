@@ -77,14 +77,17 @@ if ($action==='checkpass') {
     <div class="w3-bar w3-teal">
         <a href="../nindexhtm" class="w3-bar-item w3-button">หน้าหลัก</a>
     </div>
-    <div class="w3-container">
-        <form action="regis_disip.php" method="post">
-            <div>
-                <label for="hn">HN: </label><input type="text" name="hn" id="hn">
-            </div>
-            <div>
-                <button type="submit">ค้นหาข้อมูล</button>
-                <input type="hidden" name="page" value="search">
+    <div class="w3-container w3-margin-top">
+        <form action="regis_disip.php" method="post" class="row">
+            <div class="w3-col s8 m4">
+                <p>
+                    <label for="hn">HN </label>
+                    <input type="text" name="hn" id="hn" class="w3-input">
+                </p>
+                <p>
+                    <button type="submit" class="w3-btn w3-round w3-teal" >ค้นหาข้อมูล</button>
+                    <input type="hidden" name="page" value="search">
+                </p>
             </div>
         </form>
     </div>
@@ -112,12 +115,12 @@ if ($action==='checkpass') {
 
         $hn = sprintf("%s", $_POST['hn']);
         
-        $q = $dbi->query("SELECT * FROM `bed` WHERE `hn` = '$hn' ");
+        $q = $dbi->query("SELECT * FROM `bed` WHERE `hn` = '$hn' AND `an` != '' ");
         if($q->num_rows > 0){
             $b = $q->fetch_assoc();
             ?>
-            <div>
-                <p><b>ไม่สามารถยกเลิกได้ เนื่องจากผู้ป่วยยังอยู่ในหอผู้ป่วย <u><?=getWardName($b['bedcode']);?></u></b></p>
+            <div class="w3-container">
+                <p><b>ไม่สามารถยกเลิกได้ เนื่องจากผู้ป่วยยังอยู่ใน<u class="w3-text-red"><?=getWardName($b['bedcode']);?></u></b></p>
                 <p><b>AN: </b><?=$b['an'];?></p>
                 <p><b>ชื่อ-สกุล: </b><?=$b['ptname'];?></p>
                 <p><b>เตียง: </b><?=$b['bed'];?></p>
@@ -135,14 +138,15 @@ if ($action==='checkpass') {
             }
             if($ipRows>0){
                 ?>
-                <div>
+                <div class="w3-container">
                     <p><b>ข้อมูลผู้ป่วยในค้างในระบบ</b></p>
                     <p><b>AN: </b><?=$ipUser['an'];?></p>
                     <p><b>วันที่บันทึก: </b><?=$ipUser['date'];?></p>
                     <p>
-                        <a href="javascript:void(0);" onclick="cancelIpcard('<?=$myHn;?>', '<?=$ipUser['row_id'];?>')">คลิกที่นี่เพื่อยืนยันการยกเลิก</a>
+                        <a href="javascript:void(0);" class="w3-btn w3-red w3-round" onclick="cancelIpcard('<?=$myHn;?>', '<?=$ipUser['row_id'];?>')">คลิกที่นี่เพื่อยืนยันการยกเลิก</a>
                     </p>
                     <p><b id="response"></b></p>
+                    
                 </div>
                 <script>
                     function cancelIpcard(hn,id){
@@ -159,7 +163,7 @@ if ($action==='checkpass') {
                                     if(d.status===200){ 
                                         updateIpcard(hn,id);
                                     }else{
-                                        document.getElementById('response').innerHTML = '<span style="color:red;">รหัสผ่านของท่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>';
+                                        document.getElementById('response').innerHTML = '<span class="w3-orange">รหัสผ่านของท่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>';
                                     }
 								} else {
 									// Error :(
@@ -178,9 +182,9 @@ if ($action==='checkpass') {
 								if (request.status >= 200 && request.status < 400) { 
 									var d = JSON.parse(request.responseText);
                                     if(d.status===200){ 
-                                        var msg = '<span style="color:green;">บันทึกข้อมูลเรียบร้อย</span>';
+                                        var msg = '<span class="w3-green">บันทึกข้อมูลเรียบร้อย</span>';
                                     }else{
-                                        var msg = '<span style="color:red;">'+d.message+'</span>';
+                                        var msg = '<span class="w3-orange">'+d.message+'</span>';
                                     }
 
                                     document.getElementById('response').innerHTML = msg;
@@ -197,13 +201,13 @@ if ($action==='checkpass') {
             }elseif($ipRows==1){
                 list($dcDate, $dcTime) = explode(' ', $ipUser['dcdate']);
                 ?>
-                <div>
+                <div class="w3-container">
                     <p><b>ผู้ป่วยได้ D/C ไปแล้วเมื่อวันที่ <?=$dcDate;?> เวลา <?=$dcTime;?></b></p>
                 </div>
                 <?php
             }else{
                 ?>
-                <div><p><b>ไม่พบข้อมูล</b></p></div>
+                <div class="w3-container"><p><b>ไม่พบข้อมูล</b></p></div>
                 <?php
             }
 
