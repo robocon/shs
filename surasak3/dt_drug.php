@@ -2054,39 +2054,7 @@ if(!Array.prototype.indexOf){
 var nsaids13_list = ['1CELE200*','1ARCO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','1VOLT-C','1VOL100'];
 var nsaids14_list = ['1CELE200*','2CLOF','2DYNA','1ARCO','4PLAI','4VOLT-C','2KETO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','2DICL','1VOLT-C','1VOL100'];
 var rdu18_drug_list = ['1AERI*','1CLAR-C','5AERI','1RUPA','5ZYR-N','1XYZA-N','1CETI','1BILA'];
-var rdu18_icd10_list = []
-
-'J00', 
-'J01',
-'J02',
-'J03',
-'J04',
-'J05',
-'J06',
-'J07',
-'J08',
-'J09',
-'J000',
-'J010',
-'J011',
-'J012',
-'J013',
-'J014',
-J018-J019
-
-
-'J020', 'J029', 
-'J030', 'J038', 'J039', 
-'J040', 'J041', 'J042', 
-'J050', 'J051', 
-'J060', 'J068', 'J069', 
-'J101', 'J111', 
-'J210', 'J218', 'J219', 
-'H650', 'H651', 'H659', 
-'H660', 'H664', 'H669', 
-'H670', 'H671', 'H678', 
-'H720', 'H721', 'H722', 
-'H728', 'H729'
+var rdu18_icd10_list = ['J00','J01','J02','J03','J04','J05','J06','J07','J08','J09','J000','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729']
 
 var rdu7_drug_list = ['1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' ];
 var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","A038","A039","A050","A053","A054","A059","A080","A081","A082","A083","A084","A085","A09","A090","A099","K521","K528","K529","A040","A041","A042","A043","A044","A045","A046","A047","A048","A049"]
@@ -2660,13 +2628,10 @@ function rdu18_alert(drugcode){
 		}
 
 		if( testRdu18 === true ){
-
 			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
-			document.getElementById('rduContent').innerHTML = 'ผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine'; 
-
+			document.getElementById('rduContent').innerHTML = '<p><img src="images/rdu7.png"></p>'; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
-			
-			// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
+
 		}
 
 	}
