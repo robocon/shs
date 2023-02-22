@@ -70,10 +70,14 @@ if ($action==='checkpass') {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ยกเลิกผู้ป่วยใน</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <title>ระบบยกเลิกผู้ป่วยใน</title>
 </head>
 <body>
-    <div>
+    <div class="w3-bar w3-teal">
+        <a href="../nindexhtm" class="w3-bar-item w3-button">หน้าหลัก</a>
+    </div>
+    <div class="w3-container">
         <form action="regis_disip.php" method="post">
             <div>
                 <label for="hn">HN: </label><input type="text" name="hn" id="hn">
