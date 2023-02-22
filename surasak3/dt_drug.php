@@ -2614,7 +2614,6 @@ function kidney_egfr_alert(drugcode){
 }
 
 function rdu18_alert(drugcode){
-
 	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
 	age_test = parseInt(age_test);
 
@@ -2629,7 +2628,8 @@ function rdu18_alert(drugcode){
 
 		if( testRdu18 === true ){
 			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
-			document.getElementById('rduContent').innerHTML = '<p><img src="images/rdu7.png"></p>'; 
+			document.getElementById('rduAlertContainer').style.width = 'auto';
+			document.getElementById('rduContent').innerHTML = '<p><img src="images/rud18.png"></p>'; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
 
 		}
