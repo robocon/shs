@@ -711,6 +711,7 @@ FROM (
 		AND `profilecode` != 'XYLENE' 
 		AND `profilecode` != 'WET' 
     ) 
+	AND `testgroupcode` != 'OUT' 
 	GROUP BY `profilecode` 
 
 ) AS a 
