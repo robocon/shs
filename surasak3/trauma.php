@@ -439,17 +439,14 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj"){
 		
 		$hn = $_GET['hn'];
 		$date = ( date('Y') + 543 ).'-'.date('m-d');
-		$sql = "
-		SELECT a.`hn`,a.`vn`,b.`an`
-		FROM `opday` AS a 
+		$sql = "SELECT a.`hn`,a.`vn`,b.`an`
+		FROM ( 
+			SELECT `hn`,`an`,`vn` FROM `opday` WHERE `hn` = '$hn' AND `thidate` LIKE '$date%'
+		) AS a 
 		LEFT JOIN (
-			SELECT `hn`,`an`,`date` FROM `ipcard` WHERE `hn` = '$hn' AND `date` LIKE '$date%'
+			SELECT `hn`,`an`,`date` FROM `ipcard` WHERE `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1
 		)
-		AS b ON b.`hn` = a.`hn`
-		WHERE a.`hn` = '$hn' 
-		AND a.`thidate` LIKE '$date%' 
-		";
-		
+		AS b ON b.`hn` = a.`hn`";
 		$query = mysql_query($sql);
 		$item = mysql_fetch_assoc($query);
 		
@@ -1393,7 +1390,7 @@ function viewdetail(action,hn) {
 			//congenital_disease('congenital_disease',hn);
 			organ('organ',hn);
 			disease_people('disease_people',hn);
-			hn_blur();
+			
 		}
 }
 
@@ -2094,25 +2091,18 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 <TR>
 	<TD width="77" align="right">Hn</TD>
 	<TD colspan="7">
-	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?php echo $arr["hn"];?>" onKeyPress="check_number_hn(event);" title="สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้น">&nbsp;<INPUT TYPE="button" value="View" Onclick="if(checksom()){viewdetail('view',document.getElementById('hn').value);document.getElementById('vn').value='';}">
+	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?php echo $arr["hn"];?>" onblur="hn_blur(this.value)" onKeyPress="check_number_hn(event);" title="สามารถพิมพ์ HN เป็น ตัวเลข และเครื่องหมาย - เท่านั้น">&nbsp;<INPUT TYPE="button" value="View" Onclick="if(checksom()){viewdetail('view',document.getElementById('hn').value);document.getElementById('vn').value='';}">
 	&nbsp;<INPUT TYPE="button" value="ซักประวัติ" Onclick="window.open('basic_opd.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<script type="text/javascript">
-		// var input_hn = document.getElementById("hn");
-		// if( input_hn.addEventListener ){
-		// 	input_hn.addEventListener("blur", hn_blur, true);
-		// } else { // สำหรับ IE
-		// 	input_hn.attachEvent("onblur", hn_blur, true);
-		// }
-	
-		function hn_blur(){
-			var input_hn = document.getElementById("hn");
-			if( input_hn.value === '' ){
+		function hn_blur(input_hn){ 
+			console.log(input_hn);
+			if( input_hn === '' ){
 				return false;
 			}
 			
 			// ส่งค่าไปตรวจสอบ AN กับ VN
-			url = 'trauma.php?action=get_hn_an&hn=' + input_hn.value;
+			url = 'trauma.php?action=get_hn_an&hn=' + input_hn;
 			xmlhttp = newXmlHttp();
 			xmlhttp.open("GET", url, true);
 			

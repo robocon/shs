@@ -1,5 +1,6 @@
 <?php
     session_start();
+	include("connect.php");
     $sOfficer="";
 	$smenucode = "";
 	$sRowid="";
@@ -27,9 +28,11 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-    include("connect.inc");
-//    print "$username<br>";
-//    print "$password<br>";
+    
+
+	$sIdname = $_SESSION['sIdname'];
+	$sPword = $_SESSION['sPword'];
+
     $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
     $result = mysql_query($query) or die( mysql_error($Conn) );
         for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
