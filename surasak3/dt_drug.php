@@ -2054,7 +2054,13 @@ if(!Array.prototype.indexOf){
 var nsaids13_list = ['1CELE200*','1ARCO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','1VOLT-C','1VOL100'];
 var nsaids14_list = ['1CELE200*','2CLOF','2DYNA','1ARCO','4PLAI','4VOLT-C','2KETO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','2DICL','1VOLT-C','1VOL100'];
 var rdu18_drug_list = ['1AERI*','1CLAR-C','5AERI','1RUPA','5ZYR-N','1XYZA-N','1CETI','1BILA'];
-var rdu18_icd10_list = ["J00","J010","J011","J012","J013","J014","J018","J019","J020","J029","J030","J038","J039","J040","J041","J042","J050","J051","J060","J068","J069","J101","J111","J200","J201","J202","J203","J204","J205","J206","J207","J208","J209","J210","J218","J219","H650","H651","H659","H660","H664","H669","H670","H671","H678","H720","H721","H722","H728","H729"]
+var rdu18_icd10_list = ['J00','J01','J02','J03','J04','J05','J06','J07','J08','J09','J000','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729']
+
+var rdu7_drug_list = ['1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' ];
+var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","A038","A039","A050","A053","A054","A059","A080","A081","A082","A083","A084","A085","A09","A090","A099","K521","K528","K529","A040","A041","A042","A043","A044","A045","A046","A047","A048","A049"]
+
+var rdu8_drug = ['1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ];
+var rdu8_icd10 = ['S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11', 'S16', 'S17', 'S18', 'S19', 'S20', 'S21', 'S28', 'S29', 'S31', 'S31', 'S38', 'S39','S40','S41','S46','S47','S48','S49','S50','S51','S56','S56','S56','S56','S56','S56','S66','S67','S68','S69','S70','S71','S76','S77','S78','S79','S80','S81','S86','S87','S88','S89','S90','S91','S96','S97','S98','S99','X00','X01','X02','X03','X04','X05','X06','X07','X08','X09','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19','X20','X21','X22','X23','X24','X25','X26','X27','X28','X29','X30','X31','X32','X33','X34','X35','X36','X37','X38','X39']
 
 var drug_cc='';
 function newXmlHttp(){
@@ -2558,6 +2564,12 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// RDUตัวชี้วัดที่18
 	rdu18_alert(drugcode.trim());
+
+	// RDUตัวชี้วัดที่7
+	rdu7_alert(drugcode.trim());
+
+	// RDUตัวชี้วัดที่8
+	rdu8_alert(drugcode.trim());
 		
 }
 
@@ -2602,7 +2614,6 @@ function kidney_egfr_alert(drugcode){
 }
 
 function rdu18_alert(drugcode){
-
 	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
 	age_test = parseInt(age_test);
 
@@ -2616,15 +2627,49 @@ function rdu18_alert(drugcode){
 		}
 
 		if( testRdu18 === true ){
-
 			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
-			document.getElementById('rduContent').innerHTML = 'ผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine'; 
-
+			document.getElementById('rduAlertContainer').style.width = 'auto';
+			document.getElementById('rduContent').innerHTML = '<p><img src="images/rud18.png"></p>'; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
-			
-			// alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล\nผู้ป่วยเด็กที่อายุน้อยกว่า18ปี ที่ได้รับวินิจฉัยเป็นโรคติดเชื้อทางเดินหายใจ ควรเลี่ยงการใช้ยา non-sedating antihistamine ต่อไปนี้ Desioratadine, Cetirizine, Levocetirizine, Bilastine, Fexofenadine, rupatadine");
+
 		}
 
+	}
+	
+}
+
+function rdu7_alert(drugcode){
+
+	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
+	var testRdu7 = false;
+
+	if( rdu7_icd10_list.indexOf(icd10_principle) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
+		testRdu7 = true;
+	}
+
+	if( testRdu7 === true ){
+		var dataHtml = '<p><img src="images/rdu7.png"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+		document.getElementById('rduAlertContainer').style.display = 'block';
+	}
+	
+}
+
+function rdu8_alert(drugcode){
+
+	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
+	var testRdu8 = false;
+
+	if( rdu8_icd10.indexOf(icd10_principle) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
+		testRdu8 = true;
+	}
+
+	if( testRdu8 === true ){
+		var dataHtml = '<p><img src="images/rdu8.png"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+		document.getElementById('rduAlertContainer').style.display = 'block';
 	}
 	
 }
