@@ -75,9 +75,10 @@ if ($action==='checkpass') {
 </head>
 <body>
     <div class="w3-bar w3-teal">
-        <a href="../nindexhtm" class="w3-bar-item w3-button">หน้าหลัก</a>
+        <a href="../nindex.htm" class="w3-bar-item w3-button">หน้าหลัก</a>
     </div>
     <div class="w3-container w3-margin-top">
+        <div><h3>ยกเลิกสถานะผู้ป่วยใน</h3></div>
         <form action="regis_disip.php" method="post" class="row">
             <div class="w3-col s8 m4">
                 <p>
@@ -114,7 +115,6 @@ if ($action==='checkpass') {
     if ($page==='search') { 
 
         $hn = sprintf("%s", $_POST['hn']);
-        
         $q = $dbi->query("SELECT * FROM `bed` WHERE `hn` = '$hn' AND `an` != '' ");
         if($q->num_rows > 0){
             $b = $q->fetch_assoc();
@@ -143,7 +143,7 @@ if ($action==='checkpass') {
                     <p><b>AN: </b><?=$ipUser['an'];?></p>
                     <p><b>วันที่บันทึก: </b><?=$ipUser['date'];?></p>
                     <p>
-                        <a href="javascript:void(0);" class="w3-btn w3-red w3-round" onclick="cancelIpcard('<?=$myHn;?>', '<?=$ipUser['row_id'];?>')">คลิกที่นี่เพื่อยืนยันการยกเลิก</a>
+                        <a href="javascript:void(0);" class="w3-btn w3-red w3-round" onclick="return cancelIpcard('<?=$myHn;?>', '<?=$ipUser['row_id'];?>')">คลิกที่นี่เพื่อยืนยันการยกเลิก</a>
                     </p>
                     <p><b id="response"></b></p>
                     
@@ -151,6 +151,9 @@ if ($action==='checkpass') {
                 <script>
                     function cancelIpcard(hn,id){
                         var checkPass=prompt("กรุณาใส่รหัสผ่านของท่านเพื่อยืนยันการยกเลิก");
+                        if(checkPass===null){
+                            return false;
+                        }
 
                         document.getElementById('response').innerHTML = '';
 
@@ -172,6 +175,8 @@ if ($action==='checkpass') {
 							} 
 						};
 						request.send();
+
+                        
                     }
 
                     function updateIpcard(hn,id){
