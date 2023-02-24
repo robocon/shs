@@ -1094,6 +1094,32 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 
 		$result = Mysql_Query($sql) or Mysql_error();
 		$id= Mysql_insert_id();
+
+		$count = count($_POST["cpg"]);
+		for($i=0;$i<$count;$i++){
+
+			if ($_POST["cpg"][$i] == "30") {
+
+				$lactate = sprintf("%s", $_POST['lactate']);
+				$lac_time = sprintf("%s", $_POST['lac_time']);
+				$hc1_time = sprintf("%s", $_POST['hc1_time']);
+				$hc2_time = sprintf("%s", $_POST['hc2_time']);
+				$uauc_time = sprintf("%s", $_POST['uauc_time']);
+				$ivf = sprintf("%s", $_POST['ivf']);
+				$ivf_time = sprintf("%s", $_POST['ivf_time']);
+				$atb = sprintf("%s", $_POST['atb']);
+				$atb_time = sprintf("%s", $_POST['atb_time']);
+
+				$sql = "INSERT INTO `trauma_cpg` ( `for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`, `lactate`, `lac_time`, `hc1_time`, `hc2_time`, `uauc_time`, `ivf`, `ivf_time`, `atb`, `atb_time` 
+						) VALUES ( '$id', '$thaidate', '" . $_POST["date_in"] . "', '$time_in', '" . $_POST["cpg"][$i] . "', '$lactate', '$lac_time', '$hc1_time', '$hc2_time', '$uauc_time', '$ivf', '$ivf_time', '$atb', '$atb_time' );";
+				$result2 = mysql_query($sql);
+
+			}else{
+				$sql = "INSERT INTO `trauma_cpg` (`for_id`, `datetime`, `date_in`, `time_in`, `code_cpg`) values ('".$id."','".$thaidate."','".$_POST["date_in"]."','".$time_in."', '".$_POST["cpg"][$i]."');";
+					$result2 = Mysql_Query($sql);
+			}
+
+		}
 		
 		if($result){
 		$count = count($_POST["lst_labcare"]);
@@ -1633,6 +1659,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 </Table>
 </DIV>
 <?php
+	$cepsis_status = false;
 	if(isset($_GET["action"]) && $_GET["action"]=="edit"){
 
 		$sql = "Select * From trauma where row_id = '".$_GET["id"]."' limit 1; ";
@@ -1706,11 +1733,15 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 
 		$trauma_id = sprintf("%s", $_GET['id']);
 		$trauma_cpg_sql = "SELECT * FROM `trauma_cpg` WHERE `for_id` = '$trauma_id' AND `code_cpg` = '30' ";
+		
 		$trauma_q = mysql_query($trauma_cpg_sql);
+		if(mysql_num_rows($trauma_q)>0){
+			$cepsis_status = true;
+		}
+
 		$edit_cpg = mysql_fetch_assoc($trauma_q);
 
 	}else{
-		$trauma_id = false;
 		$edit_cpg = array();
 
 		$hidden = "";
@@ -2429,7 +2460,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 		</TABLE>
 		<?php 
 		$display = 'display:none;';
-		if($trauma_id!==false){
+		if($cepsis_status===true){
 			$display = '';
 		}
 		?>
