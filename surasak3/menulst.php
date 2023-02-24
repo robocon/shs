@@ -287,14 +287,25 @@ if($rows){///  ถ้ามี rows
 }/// ปิด if rows		  
 
 }
+	?>
+	<tr>
+		<td style="background-color: #005c5c; color: #ffffff; text-align: center;">สารบัญทั่วไป</td>
+	</tr>
+	<?php
 	//สารบัญทั่วไป ทุกคนดูได้
 	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
 	$result = mysql_query($query) or die( mysql_error($Conn) );
 
-	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+	$all_menu_i = 1;
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) { 
+
+		$bg_color = ($all_menu_i%3==0) ? '#009595' : '#008484' ;
+
 		print (" <tr>\n".
-		"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
+		"  <td BGCOLOR='$bg_color'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
 		" </tr>\n");
+
+		$all_menu_i++;
 	};
 	print (" <tr>\n".
 	"  <td BGCOLOR='#008400'><a target='_top' class='menulst-refer07' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".

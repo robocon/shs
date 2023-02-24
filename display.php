@@ -9,8 +9,6 @@
     @font-face {
         font-family: THSarabunPSK;
         src: url("surasak3/THSarabun.eot")
-        /*src: url("http://192.168.1.2/sm3/surasak3/THSarabun.eot")*/
-        /* EOT file for IE */
     }
     @font-face {
         font-family: THSarabunPSK;
@@ -22,7 +20,7 @@
 <body bgcolor="#008080"  text="#ffffff" >
     
     <center>
-        <font size="5"  face="THSarabunPSK" color="#fb042d">
+        <font size="6"  face="THSarabunPSK" color="#fb042d">
             <b>*** ข่าวสาร โรงพยาบาลค่ายสุรศักดิ์มนตรี  ***</b>
         </font>
     </center>
@@ -30,7 +28,7 @@
     <MARQUEE>
         <STRONG>
             <SPAN>
-                <font size="1"  face="THSarabunPSK" color="#ffffff">
+                <font size="4"  face="THSarabunPSK" color="#ffffff">
                     วิสัยทัศน์ :โรงพยาบาลทหารระดับทุติยะภูมิ 
                     ที่เป็นเลิศด้านการรักษาพยาบาล และส่งเสริมสุขภาพ ***** พันธกิจ : โรงพยาบาลค่ายสุรศักดิ์มนตรี 
                     มุ่งมั่นให้บริการรักษาพยาบาลที่มีคุณภาพ ตามมาตรฐานสากลด้วยความ 
@@ -63,10 +61,7 @@
     echo "</font>";
     
     $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-    // include("connect.inc");
-    
     $today=(date("Y")+543).date("-m-d");
-    
     print "<table>";
     
     $num = 'Y';
@@ -104,51 +99,39 @@
     $sql = "SELECT * FROM `news` 
     WHERE `status` = 1
     AND `date_start` > '$last_day'
-    ORDER BY `date_start` DESC;
-    ";
+    ORDER BY `date_start` DESC;";
     $q = mysql_query($sql);
     $rows = mysql_num_rows($q);
     if( $rows > 0 ){
-    ?>
-    <style type="text/css">
-    .news-header{
-        color: #00FFFF;
-    }
-    .news-contain a{
-        text-decoration: none;
-        color: #ffffff;
-    }
-    .news-contain a:hover{
-        text-decoration: underline;
-    }
-    </style>
-    <div class="news-contain">
-        <h3 class="news-header">ข่าวประชาสัมพันธ์ บก. รพ.ค่าย</h3>
-        <div>
-            <?php
-            
-            ?>
-            <ol>
-                <?php
-                while( $item = mysql_fetch_assoc($q) ){
-                    ?>
-                    <li class="news-link">
-                        <a href="surasak3/news_detail.php?id=<?=$item['id'];?>"><?=$item['title'];?></a>
-                        <?php
-                        if( $new_date < $item['date_start'] ){
-                            ?><img height="15" src="new.gif" width="30"><?php
-                        }
-                        ?>
-                    </li>
+        ?>
+        <style type="text/css">
+        .news-header{color: #00FFFF;}
+        .news-contain a{text-decoration: none;color: #ffffff;}
+        .news-contain a:hover{text-decoration: underline;}
+        </style>
+        <div class="news-contain">
+            <h3 class="news-header">ข่าวประชาสัมพันธ์ บก. รพ.ค่าย</h3>
+            <div>
+                <ol>
                     <?php
-                }
-                ?>
-            </ol>
+                    while( $item = mysql_fetch_assoc($q) ){
+                        ?>
+                        <li class="news-link">
+                            <a href="surasak3/news_detail.php?id=<?=$item['id'];?>"><?=$item['title'];?></a>
+                            <?php
+                            if( $new_date < $item['date_start'] ){
+                                ?><img height="15" src="new.gif" width="30"><?php
+                            }
+                            ?>
+                        </li>
+                        <?php
+                    }
+                    ?>
+                </ol>
+            </div>
         </div>
-    </div>
-    <?php
+        <?php
     }
-    
     include("surasak3/unconnect.inc");
 ?>
 </body>
