@@ -5,6 +5,12 @@ require_once 'includes/JSON.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$allow = array('ADM', 'ADMOPD');
+if(!in_array($_SESSION['smenucode'], $allow)){
+    echo "Invalid data";
+    exit;
+}
+
 function getWardName($bedcode){
     $lbedcode=substr($bedcode,0,2);
     if($lbedcode=='42'){
