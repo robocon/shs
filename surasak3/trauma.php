@@ -444,7 +444,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj"){
 			SELECT `hn`,`an`,`vn` FROM `opday` WHERE `hn` = '$hn' AND `thidate` LIKE '$date%'
 		) AS a 
 		LEFT JOIN (
-			SELECT `hn`,`an`,`date` FROM `ipcard` WHERE `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1
+			SELECT `hn`,`an`,`date` FROM `ipcard` WHERE `hn` = '$hn' AND `date` LIKE '$date%' ORDER BY `row_id` DESC LIMIT 1
 		)
 		AS b ON b.`hn` = a.`hn`";
 		$query = mysql_query($sql);
