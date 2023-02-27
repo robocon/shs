@@ -1,5 +1,4 @@
 <style type="text/css">
-<!--
 @media print{
 	#print-page{
 		page-break-after:always;
@@ -20,7 +19,6 @@
 	font-size: 22px;
 }
 .style1 {font-family: AngsanaUPC; font-size: 18px; font-weight: bold; }
--->
 </style>
 <div id="print-page-no">
  <form name="form1" method="post" action="auditchkhn.php">
@@ -44,7 +42,7 @@
  </form>
  </div>
  <?
-include("connect.inc");
+include("connect.php");
 if($_POST["act"]=="search"){
 ?>
 <div align="center" class="font3" style="width:100%;"><strong>เอกสารการสุ่มตรวจเวชระเบียน opd billding</strong></div>
@@ -54,8 +52,8 @@ if($_POST["act"]=="search"){
    <td width="22%" align="center" class="font1">HN</td>
    <td width="29%" align="center" class="font1">ชื่อ - สกุล</td>
    </tr>
-   <?
-	 $sql ="select * from opday where hn='".$_POST['hn']."' and thidate between '2556-10-01 00:00:00' and '2556-12-31 23:59:59' order by thidate desc ";
+   <?php
+	 $sql ="select * from opday where hn='".$_POST['hn']."' and thidate between '2565-10-01 00:00:00' and '2566-12-31 23:59:59' order by thidate desc ";
 	 //echo $sql;
 	 $rows = mysql_query($sql);
 	 $num=mysql_num_rows($rows);

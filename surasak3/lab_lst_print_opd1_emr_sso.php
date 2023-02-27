@@ -1,7 +1,7 @@
 <?PHP
 session_start();
 set_time_limit(30);
-include("connect.inc");
+include("connect.php");
 
 function getAge($birthday) {
 $then = strtotime($birthday);

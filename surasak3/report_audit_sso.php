@@ -1,6 +1,6 @@
-<?
+<?php
 session_start();
-include("connect.inc");
+include("connect.php");
 
 //$showdate1=$_POST["date1"]."/".$_POST["month1"]."/".$_POST["year1"];
 //$showdate2=$_POST["date2"]."/".$_POST["month2"]."/".$_POST["year2"];

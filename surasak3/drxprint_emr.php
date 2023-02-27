@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.inc");
+include("connect.php");
   
 Function calcage($birth){
 
@@ -96,11 +96,12 @@ if(!empty($cStkcutdate)) {
 
 	?>
 	<style type="text/css">
-<!--
+		*{
+			font-family: "TH SarabunPSK";
+		}
 body,td,th {
 	font-size: 14px;
 }
--->
 </style><body Onload="window.print();">
 	<?php
 	print "<u><br><font face='THSarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='THSarabunPSK' size= 4 ><b><b>&nbsp;HN:&nbsp;$rxHn&nbsp;&nbsp;VN:$rxvn </b>&nbsp;$rxPtright</b></font></u><br>";

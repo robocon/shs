@@ -1,9 +1,8 @@
 <?
 session_start();
-include("connect.inc");
+include("connect.php");
 ?>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 20px;
@@ -12,7 +11,6 @@ body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 20px;
 }
--->
 </style>
 <p align="center" style="margin-top: 20px;"><strong>รายงานใบสั่งยา EMR ตามห้วงเวลา</strong></p>
 <div align="center">
