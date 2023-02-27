@@ -732,6 +732,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 exit();
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
+	
+	$today = date('Y-m-d');
+	$hn = $_SESSION['hn_now'];
+	$sql = "SELECT * FROM `diag` WHERE `regisdate_en` = '$today' AND `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1";
+	$q = mysql_query($sql) or die(mysql_error());
+	$d = mysql_fetch_assoc($q);
+	echo $d['icd10'];
+	exit;
+}
+
 
 
 //********************** Form Remed ยาผู้ป่วยนอก ******************************************
@@ -2556,6 +2567,21 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
+	var icd10 = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=get_icd10';
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				icd10 = xmlhttp.responseText.trim();
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+	
 	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
@@ -2563,13 +2589,13 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	kidney_egfr_alert(drugcode.trim());
 
 	// RDUตัวชี้วัดที่18
-	rdu18_alert(drugcode.trim());
+	rdu18_alert(drugcode.trim(), icd10);
 
 	// RDUตัวชี้วัดที่7
-	rdu7_alert(drugcode.trim());
+	rdu7_alert(drugcode.trim(), icd10);
 
 	// RDUตัวชี้วัดที่8
-	rdu8_alert(drugcode.trim());
+	rdu8_alert(drugcode.trim(), icd10);
 		
 }
 
@@ -2613,16 +2639,15 @@ function kidney_egfr_alert(drugcode){
 	
 }
 
-function rdu18_alert(drugcode){
+function rdu18_alert(drugcode, icd10){
 	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
 	age_test = parseInt(age_test);
 
 	if( age_test < 18 ){
 	
-		var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
 		var testRdu18 = false;
 
-		if( rdu18_icd10_list.indexOf(icd10_principle) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
+		if( rdu18_icd10_list.indexOf(icd10) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
 			testRdu18 = true;
 		}
 
@@ -2638,12 +2663,11 @@ function rdu18_alert(drugcode){
 	
 }
 
-function rdu7_alert(drugcode){
+function rdu7_alert(drugcode, icd10){
 
-	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
 	var testRdu7 = false;
 
-	if( rdu7_icd10_list.indexOf(icd10_principle) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
+	if( rdu7_icd10_list.indexOf(icd10) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
 		testRdu7 = true;
 	}
 
@@ -2656,12 +2680,11 @@ function rdu7_alert(drugcode){
 	
 }
 
-function rdu8_alert(drugcode){
+function rdu8_alert(drugcode, icd10){
 
-	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
 	var testRdu8 = false;
 
-	if( rdu8_icd10.indexOf(icd10_principle) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
+	if( rdu8_icd10.indexOf(icd10) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
 		testRdu8 = true;
 	}
 
