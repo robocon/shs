@@ -1,3 +1,8 @@
+<?php 
+require_once 'bootstrap.php';
+
+include("connect.php");
+?>
 <style type="text/css">
 	.textcash {
 		font-family: "TH SarabunPSK";
@@ -10,139 +15,153 @@
 	}
 </style>
 <div id="print-page">
-	<table width="100%">
-		<tr>
-			<td align="center" class="textcash1"><strong>เอกสารแสดงค่าใช้จ่ายในการรักษาพยาบาลประเภทผู้ป่วยนอก</strong>
-			</td>
-		</tr>
-		<tr>
-			<td align="center" class="textcash1">โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง โทร.054-839305</td>
-		</tr>
-		<?php
-		include("connect.php");
-		$sqlopcard = "select * from opcard where hn = '$hn' limit 1";
-		$rows = mysql_query($sqlopcard);
-		$results = mysql_fetch_array($rows);
-		$yy = substr($date, 0, 4);
-		$mm = substr($date, 5, 2);
-		$dd = substr($date, 8, 2);
-		$payyes = 0;
-		$payno = 0;
-		$total = 0;
-		$thdatehn = $dd . '-' . $mm . '-' . $yy . $hn;
+<?php 
+// function dump($txt){
+// 	echo "<pre>";
+// 	var_dump($txt);
+// 	echo "</pre>";
+// }
 
-		$sql3 = "SELECT vn from opday where thdatehn = '$thdatehn'";
-		$result3 = mysql_query($sql3);
-		$row3 = mysql_fetch_array($result3);
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
-		$vn = $row3['vn'];
-		?>
+$hn = sprintf("%s", $_GET['hn']);
+$sqlopcard = "SELECT *,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '$hn' LIMIT 1";
+$rows = mysql_query($sqlopcard);
+$results = mysql_fetch_array($rows);
+$yy = substr($date, 0, 4);
+$mm = substr($date, 5, 2);
+$dd = substr($date, 8, 2);
+$payyes = 0;
+$payno = 0;
+$total = 0;
+$thdatehn = $dd . '-' . $mm . '-' . $yy . $hn;
+$ptname = $results['ptname'];
 
-		<tr>
-			<td class="textcash1"><span class="textcash"><strong>ชื่อผู้ป่วย :
-						<?= $results['yot'] . " " . $results['name'] . " " . $results['surname'] ?>
-					</strong>HN :
-					<?= $hn ?>
-					VN :
-					<?= $vn ?> บัตร ปปช. :
-					<?= $results['idcard'] ?> วันที่ :
-					<?= $dd ?>/
-					<?= $mm ?>/
-					<?= $yy ?>
-				</span></td>
-		</tr>
-	</table>
-	<table width="85%" border="1" cellpadding="0" cellspacing="0" class="textcash" style="border-collapse:collapse">
-		<tr>
-			<td width="49%" align="center" class="textcash"><strong>รายการ</strong></td>
-			<td width="8%" align="center" class="textcash"><strong>จำนวน</strong></td>
-			<td width="12%" align="center" class="textcash"><strong>ราคา/หน่วย</strong></td>
-			<td width="10%" align="center" class="textcash"><strong>เบิกได้</strong></td>
-			<td width="10%" align="center" class="textcash"><strong>เบิกไม่ได้</strong></td>
-			<td width="10%" align="center" class="textcash"><strong>สุทธิ</strong></td>
-		</tr>
-		<?php
-		$query = "CREATE TEMPORARY TABLE drugrx01 SELECT * FROM phardep WHERE date like '$date%' and price >0";
-		$result = mysql_query($query) or die("Query failed,warphar");
+?>
+<table width="100%" border="1" cellpadding="2" cellspacing="0" class="textcash" style="border-collapse:collapse">
+	<tr>
+		<td class="textcash"><b>HN</b></td>
+		<td class="textcash"><b>ชื่อ-สกุล ผู้ป่วย</b></td>
+		<td class="textcash"><b>วันที่</b></td>
+		<td class="textcash"><b>รายการค่าใช้จ่าย</b></td>
+		<td class="textcash"><b>จำนวน</b></td>
+		<td class="textcash"><b>ราคา</b></td>
+		<td class="textcash"><b>รวมเงิน</b></td>
+		<td class="textcash"><b>เบิกไม่ได้</b></td>
+	</tr>
+<?php
+$sql3 = "SELECT `vn`,`thidate`,SUBSTRING(`thidate`,1,10) AS `date`, 
+CONCAT(SUBSTRING(`thidate`,9,2),'/',SUBSTRING(`thidate`,6,2),'/',(SUBSTRING(`thidate`,1,4)-543)) AS `endate` 
+FROM `opday` 
+WHERE ( `thidate` >= '2565-10-01 00:00:00' AND `thidate` <= '2566-09-30 23:59:59' ) 
+AND `hn` = '$hn' ";
+$result3 = $dbi->query($sql3);
+while($row3 = $result3->fetch_assoc()){
 
-		$query = "CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$date%' and price >0 and status ='Y' ";
-		$result = mysql_query($query) or die("Query failed,warphar");
+	$thidate = $row3['thidate'];
+	$date = $row3['date'];
+	$vn = $row3['vn'];
+	$endate = $row3['endate'];
 
-		$query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
-		$result10 = mysql_query($query10)
-			or die("Query failed");
-		while ($fetch = mysql_fetch_array($result10)) {
-			$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '" . $fetch['row_id'] . "' and part = 'DDL'";
-			$result13 = mysql_query($query13)
-				or die("Query failed");
-			$nn = @mysql_num_rows($result13);
-			if ($nn == "0") {
-			} else {
-				?>
-				<tr bordercolor="#333333">
-					<td colspan="6"><strong>ค่ายาในบัญชียาหลักแห่งชาติ</strong></td>
-				</tr>
-			<?
+	$query13 = "SELECT b.`tradname`,b.`amount`,b.`price`,b.`part`,b.`DPY`,b.`DPN` 
+	FROM ( SELECT `row_id` FROM `phardep` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND `price` > 0 ) AS a 
+	LEFT JOIN `drugrx` AS b ON b.`idno` = a.`row_id` 
+	WHERE b.`amount` > 0";
+	$result13 = mysql_query($query13) or die("Query failed ".mysql_error());
+	if(mysql_num_rows($result13)>0){
+
+		while(list($tradname, $amount, $price, $part, $dpy, $dpn) = mysql_fetch_row($result13)){
+			$sum = (int) $price;
+			$unit = $price / $amount;
+
+			if($dpn>0){
+				$dpn = number_format($dpn, 2, ',');
+				$sum = $dpy;
+			}else{
+				$dpn = '';
 			}
 
-			//print "<font face='Angsana New'>$sPtname<br> ";
-			$ptright = substr($sPtright, 4);
-			$doctor = substr($sDoctor, 5);
-			//print "HN: $sHn, สิทธิ์:$ptright<br>";
-			//print "โรค: $sDiag, แพทย์ :$doctor<br>";
-		
-			while (list($tradname, $amount, $price, $part) = mysql_fetch_row($result13)) {
-				//        array_push($aPrice,$price);
-//        $x++;
-				$unit = number_format($price / $amount, 2);
-				$price1 = "-";
-				$sum = number_format($price, 2);
-				$price10 = number_format($price, 2);
-				if (substr($tradname, 0, 13) == "(55020/55021)") {
+			?>
+			<tr>
+				<td><?=$hn;?></td>
+				<td><?=$ptname;?></td>
+				<td><?=$endate;?></td>
+				<td><?=$tradname.'//'.$part;?></td>
+				<td align="center"><?=$amount;?></td>
+				<td align="right"><?=number_format($unit, 2);?></td>
+				<td align="right"><?=number_format($sum, 2);?></td>
+				<td align="right"><?=$dpn;?></td>
+			</tr>
+			<?php
+			if ($price == "-")
+				$price = 0;
 
-				} else {
-					print(" <tr bordercolor='#FFFFFF'>\n" .
-						"  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n" .
-						"  <td align='center'>$amount</td>\n" .
-						"  <td align='center'>$unit</td>\n" .
-						"  <td align='center'>$price10</td>\n" .
-						"  <td align='center'>$price1</td>\n" .
-						"  <td align='center'>$sum</td>\n" .
-						" </tr>\n");
-					if ($price == "-")
-						$price = 0;
-					if ($price1 == "-")
-						$price1 = 0;
-					$payyes += $price;
-					$payno += $price1;
-				}
-			}
+			if ($price1 == "-")
+				$price1 = 0;
+
+			$payyes += $price;
+			$payno += $price1;
+			
 		}
+	}
+
+
+	$sql_dep = "SELECT b.`code`,b.`detail`,b.`amount`,b.`price`,b.`yprice`,b.`nprice` 
+	FROM ( SELECT `row_id` FROM depart WHERE date like '$date%' AND `hn` = '$hn' ) AS a 
+	LEFT JOIN `patdata` AS b ON b.`idno` = a.`row_id` ";
+	$q_dep = $dbi->query($sql_dep);
+	while($dep = $q_dep->fetch_assoc()){
+
+		$code = $dep['code'];
+		$detail = $dep['detail'];
+
+		$amount = $dep['amount'];
+		$price = $dep['price'];
+		$yprice = $dep['yprice'];
+		$nprice = $dep['nprice'];
+
+		// if($nprice>0){
+		// 	$dpn = number_format($dpn, 2, ',');
+		// 	$sum = $dpy;
+		// }else{
+		// 	$nprice = '';
+		// }
+
+		?>
+		<tr>
+			<td><?=$hn;?></td>
+			<td><?=$ptname;?></td>
+			<td><?=$endate;?></td>
+			<td><?=$detail.'//'.$code;?></td>
+			<td align="center"><?=$amount;?></td>
+			<td align="right"><?=number_format($price, 2);?></td>
+			<td align="right"><?=number_format($yprice, 2);?></td>
+			<td align="right"><?=$nprice;?></td>
+		</tr>
+		<?php
+	}
+
+/*
+
 		//////////////////////////////////////////////////////////////
-		$query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
-		$result10 = mysql_query($query10)
-			or die("Query failed");
-		while ($fetch = mysql_fetch_array($result10)) {
-			$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '" . $fetch['row_id'] . "' and (part = 'DDY' or part = 'DDN')";
-			$result13 = mysql_query($query13)
-				or die("Query failed");
-			$nn = @mysql_num_rows($result13);
-			if ($nn == "0") {
-			} else {
-				?>
-				<tr bordercolor="#333333">
-					<td colspan="6"><strong>ค่ายานอกบัญชียาหลักแห่งชาติ</strong></td>
-				</tr>
-			<?
-			}
+		// $query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
+		$query10 = "";
+		$query10 = "SELECT b.`tradname`,b.`amount`,b.`price`,b.`part` 
+		FROM ( SELECT * FROM `phardep` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND price >0 ) AS a 
+		LEFT JOIN `drugrx` AS b ON b.`idno` = a.`row_id` 
+		AND ( b.`part` = 'DDY' OR b.`part`='DDN' ) ";
+		$result10 = mysql_query($query10)or die("Query failed ".mysql_error());
+		// while ($fetch = mysql_fetch_array($result10)) {
+
 
 			//print "<font face='Angsana New'>$sPtname<br> ";
-			$ptright = substr($sPtright, 4);
-			$doctor = substr($sDoctor, 5);
+			// $ptright = substr($sPtright, 4);
+			// $doctor = substr($sDoctor, 5);
 			//print "HN: $sHn, สิทธิ์:$ptright<br>";
 			//print "โรค: $sDiag, แพทย์ :$doctor<br>";
 		
-			while (list($tradname, $amount, $price, $part) = mysql_fetch_row($result13)) {
+			while (list($tradname, $amount, $price, $part) = mysql_fetch_row($result10)) {
 				//        array_push($aPrice,$price);
 //        $x++;
 				if ($part == 'DDY') {
@@ -161,12 +180,15 @@
 
 				} else {
 					print(" <tr bordercolor='#FFFFFF'>\n" .
+						"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 						"  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n" .
-						"  <td align='center'>$amount</td>\n" .
-						"  <td align='center'>$unit</td>\n" .
-						"  <td align='center'>$price</td>\n" .
-						"  <td align='center'>$price1</td>\n" .
-						"  <td align='center'>$sum</td>\n" .
+						"  <td>$amount</td>\n" .
+						"  <td>$unit</td>\n" .
+						"  <td>$price</td>\n" .
+						"  <td>$price1</td>\n" .
+						"  <td>$sum</td>\n" .
 						" </tr>\n");
 					if ($price == "-")
 						$price = 0;
@@ -176,31 +198,34 @@
 					$payno += $price1;
 				}
 			}
-		}
+		// }
 
+
+*/
+
+
+/*
 		/////////////////////////////////////////////////////////////
-		$query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
-		$result10 = mysql_query($query10)
-			or die("Query failed");
-		while ($fetch = mysql_fetch_array($result10)) {
-			$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '" . $fetch['row_id'] . "' and (part = 'DSY' or part = 'DSN')";
-			$result13 = mysql_query($query13)
-				or die("Query failed");
-			$nn = @mysql_num_rows($result13);
-			if ($nn == "0") {
-			} else {
-				?>
-				<tr bordercolor="#333333">
-					<td colspan="6"><strong>ค่าเวชภัณฑ์</strong></td>
-				</tr>
-			<?
-			}
+		$query10 = "SELECT b.`tradname`,b.`amount`,b.`price`,b.`part` 
+		FROM ( SELECT * FROM `phardep` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND price >0 ) AS a 
+		LEFT JOIN `drugrx` AS b ON b.`idno` = a.`row_id` 
+		AND ( b.`part` = 'DSY' OR b.`part`='DSN' ) ";
+		// dump($query10);
+		// $query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
+		// $result10 = mysql_query($query10) or die("Query failed");
+		// while ($fetch = mysql_fetch_array($result10)) {
+		// 	$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '" . $fetch['row_id'] . "' and (part = 'DSY' or part = 'DSN')";
+		// 	$result13 = mysql_query($query13) or die("Query failed");
+		// 	$nn = mysql_num_rows($result13);
+
+
+
 			//print "<font face='Angsana New'>$sPtname<br> ";
-			$ptright = substr($sPtright, 4);
-			$doctor = substr($sDoctor, 5);
+			// $ptright = substr($sPtright, 4);
+			// $doctor = substr($sDoctor, 5);
 			//print "HN: $sHn, สิทธิ์:$ptright<br>";
 			//print "โรค: $sDiag, แพทย์ :$doctor<br>";
-			while (list($tradname, $amount, $price, $part) = mysql_fetch_row($result13)) {
+			while (list($tradname, $amount, $price, $part) = mysql_fetch_row($query10)) {
 				//        array_push($aPrice,$price);
 //        $x++;
 				if ($part == 'DSY') {
@@ -218,12 +243,15 @@
 
 				} else {
 					print(" <tr bordercolor='#FFFFFF'>\n" .
+						"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 						"  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n" .
-						"  <td align='center'>$amount</td>\n" .
-						"  <td align='center'>$unit</td>\n" .
-						"  <td align='center'>$price</td>\n" .
-						"  <td align='center'>$price1</td>\n" .
-						"  <td align='center'>$sum</td>\n" .
+						"  <td>$amount</td>\n" .
+						"  <td>$unit</td>\n" .
+						"  <td>$price</td>\n" .
+						"  <td>$price1</td>\n" .
+						"  <td>$sum</td>\n" .
 						" </tr>\n");
 					if ($price == "-")
 						$price = 0;
@@ -233,32 +261,28 @@
 					$payno += $price1;
 				}
 			}
-		}
+
+*/
+
+		// }
 		////////////////////////////////////////////////////////
-		$query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
-		$result10 = mysql_query($query10)
-			or die("Query failed");
-		while ($fetch = mysql_fetch_array($result10)) {
-			$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '" . $fetch['row_id'] . "' and (part = 'DPY' or part = 'DPN')";
-			$result13 = mysql_query($query13)
-				or die("Query failed");
-			$nn = @mysql_num_rows($result13);
-			if ($nn == "0") {
-			} else {
-				?>
-				<tr bordercolor="#333333">
-					<td colspan="6"><strong>ค่าอุปกรณ์</strong></td>
-				</tr>
-			<?
-			}
+
+/*
+
+		$result13 = "SELECT b.`tradname`,b.`amount`,b.`price`,b.`part` 
+		FROM ( SELECT * FROM `phardep` WHERE `date` LIKE '$date%' AND `hn` = '$hn' AND price >0 ) AS a 
+		LEFT JOIN `drugrx` AS b ON b.`idno` = a.`row_id` 
+		AND ( b.`part` = 'DPY' OR b.`part`='DPN' ) ";
+		// dump($result13);
+
 			//print "<font face='Angsana New'>$sPtname<br> ";
-			$ptright = substr($sPtright, 4);
-			$doctor = substr($sDoctor, 5);
+			// $ptright = substr($sPtright, 4);
+			// $doctor = substr($sDoctor, 5);
 			//print "HN: $sHn, สิทธิ์:$ptright<br>";
 			//print "โรค: $sDiag, แพทย์ :$doctor<br>";
 			while (list($tradname, $amount, $price, $part) = mysql_fetch_row($result13)) {
 				//        array_push($aPrice,$price);
-//        $x++;
+				//        $x++;
 		
 				if ($part == 'DPY') {
 					$price = $price;
@@ -275,12 +299,15 @@
 
 				} else {
 					print(" <tr bordercolor='#FFFFFF'>\n" .
+						"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 						"  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n" .
-						"  <td align='center'>$amount</td>\n" .
-						"  <td align='center'>$unit</td>\n" .
-						"  <td align='center'>$price</td>\n" .
-						"  <td align='center'>$price1</td>\n" .
-						"  <td align='center'>$sum</td>\n" .
+						"  <td>$amount</td>\n" .
+						"  <td>$unit</td>\n" .
+						"  <td>$price</td>\n" .
+						"  <td>$price1</td>\n" .
+						"  <td>$sum</td>\n" .
 						" </tr>\n");
 					if ($price == "-")
 						$price = 0;
@@ -290,33 +317,37 @@
 					$payno += $price1;
 				}
 			}
-		}
+
+*/
+
+
+
+		// }
 		////////////////////////////////////////////////////////
 		
-		$query = "CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$date%' ";
-		$result = mysql_query($query) or die("Query failed,warphar");
+		/*
+		$sql_depart_tmp = "CREATE TEMPORARY TABLE depart01 
+		SELECT * FROM depart WHERE date like '$date%' AND `hn` = '$hn' ";
+		// dump($sql_depart_tmp);
+		$result = mysql_query($sql_depart_tmp) or die("Query failed, depart01 ".mysql_error());
+		// dump($result);
+		
+		$sql_patdata_tmp = "CREATE TEMPORARY TABLE patdata01 
+		SELECT * FROM patdata WHERE date like '$date%' AND `hn` = '$hn' ";
+		$result = mysql_query($sql_patdata_tmp) or die("Query failed, patdata01 ".mysql_error());
+		// dump($result);
 
-		$query = "CREATE TEMPORARY TABLE patdata01 SELECT * FROM patdata WHERE date like '$date%' ";
-		$result = mysql_query($query) or die("Query failed,warphar");
+		$sql_depart = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'PATHO'";
+		$result_dep = mysql_query($sql_depart) or die("Query failed1 ".mysql_error());
 
 
-		$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'PATHO'";
-		$result = mysql_query($query)
-			or die("Query failed1");
-		$nn = @mysql_num_rows($result);
-		if ($nn == "0") {
-		} else {
-			?>
-			<tr bordercolor="#333333">
-				<td colspan="6"><strong>ค่าตรวจวินิจฉัยทางเทคนิคการแพทย์</strong></td>
-			</tr>
-		<?
-		}
-		while ($rowid = mysql_fetch_array($result)) {
+		// var_dump($result_dep);
+
+		while ($rowid = mysql_fetch_array($result_dep)) {
+			// dump($rowid);
 
 			$query10 = "SELECT code,detail,amount,price,yprice,nprice FROM patdata01 WHERE idno = '" . $rowid['row_id'] . "'";
-			$result10 = mysql_query($query10)
-				or die("Query failed2");
+			$result10 = mysql_query($query10) or die("Query failed2");
 			while (list($code, $detail, $amount, $price, $yprice, $nprice) = mysql_fetch_row($result10)) {
 				$unit = number_format($price / $amount, 2);
 				$sum = number_format($yprice + $nprice, 2);
@@ -329,6 +360,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -391,6 +425,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -454,6 +491,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -517,6 +557,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -580,6 +623,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -643,6 +689,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -705,6 +754,9 @@
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -738,9 +790,8 @@
 
 		////////////////////////////////////////////////////////////
 		$query = "SELECT  * FROM depart01 WHERE depart NOT IN (  'EMER',  'HEMO',  'WARD',  'PATHO',  'XRAY',  'SURG',  'DENTA',  'PHYSI',  'NID') AND hn =  '$hn' AND date
-LIKE  '$date%'";
-		$result = mysql_query($query)
-			or die("Query failed");
+		LIKE  '$date%'";
+		$result = mysql_query($query) or die("Query failed depart01 ".mysql_error());
 		$nn = @mysql_num_rows($result);
 		if ($nn == "0") {
 		} else {
@@ -753,8 +804,7 @@ LIKE  '$date%'";
 		while ($rowid = mysql_fetch_array($result)) {
 
 			$query10 = "SELECT code,detail,amount,price,yprice,nprice FROM patdata01 WHERE idno = '" . $rowid['row_id'] . "' ";
-			$result10 = mysql_query($query10)
-				or die("Query failed");
+			$result10 = mysql_query($query10) or die("Query failed patdata01 ".mysql_error());
 
 			while (list($code, $detail, $amount, $price, $yprice, $nprice) = mysql_fetch_row($result10)) {
 				$unit = number_format($price / $amount, 2);
@@ -768,6 +818,9 @@ LIKE  '$date%'";
 				else
 					$price1 = number_format($nprice, 2);
 				print(" <tr bordercolor='#FFFFFF'>\n" .
+				"  <td>$hn</td>" .
+						"  <td>$ptname</td>" .
+						"  <td>$thidate</td>" .
 					"  <td>&nbsp;&nbsp;&nbsp;$detail</td>\n" .
 					"  <td align='center'>$amount</td>\n" .
 					"  <td align='center'>$unit</td>\n" .
@@ -798,50 +851,7 @@ LIKE  '$date%'";
 				}
 			}
 		}
-		////////////////////////////////////////////////////////////
-/*$query10 = "SELECT * FROM drugrx01 WHERE hn = '$hn'";
-    $result10 = mysql_query($query10)
-        or die("Query failed");
-$fetch = mysql_fetch_array($result10);
 		
- $query = "SELECT * FROM phardep  WHERE row_id = '".$fetch['row_id']."'  ";
-    $result = mysql_query($query)
-        or die("Query failed");
-
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
-
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
-		 $sNetprice=$row->price;
-		 $sAn=$row->an;
-      if (empty($sAn) && $sNetprice > 0){
-        print (" <tr bordercolor='#FFFFFF'>\n".
-           "  <td><strong>(55020/55021)ค่าบริการผู้ป่วยนอก</strong></td>\n".
-           "  <td align='center'>1</td>\n".
-           "  <td align='center'>50.00</td>\n".
-           "  <td align='center'>50.00</td>\n".
-		   "  <td align='center'>-</td>\n".
-		   "  <td align='center'>50.00</td>\n".
-           " </tr>\n");
-		$payyes +=50;
-                           }
-//กรณีคืนยา จะติดลบ
-    if (empty($sAn) && $sNetprice < 0){
-        print (" <tr bordercolor='#FFFFFF'>\n".
-           "  <td><strong>(55020/55021)ค่าบริการผู้ป่วยนอก</strong></td>\n".
-           "  <td align='center'>-1</td>\n".
-           "  <td align='center'>-50.00</td>\n".
-		   "  <td align='center'>-50.00</td>\n".
-           "  <td align='center'>-</td>\n".
-		   "  <td align='center'>-50.00</td>\n".
-           " </tr>\n");
-		$payyes -=50;
-                           }*/
 		include("unconnect.inc");
 		$total = $payyes + $payno;
 		?>
@@ -858,15 +868,18 @@ $fetch = mysql_fetch_array($result10);
 				</strong></td>
 		</tr>
 	</table>
-	<!--<table width="85%">
-<tr>
-  <td align="right" class="textcash">
- <strong>ลงชื่อ .............................................................................. ผู้ตรวจสอบ<br />
- </td></tr>
- </table>-->
 </div>
+
 <div id="print-page">
 	<?
+
+	*/
+	
+
+
+
+
+	/*
 	include("connect.inc");
 	$sql2 = "select distinct(doctor),hn,ptname,diag,row_id from phardep where hn = '$hn' and date like '$date%'";
 	$query2 = mysql_query($sql2);
@@ -1052,5 +1065,7 @@ $fetch = mysql_fetch_array($result10);
 		</table>
 	<?
 	}
+	*/
+}
 	?>
 </div>
