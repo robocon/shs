@@ -732,6 +732,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 exit();
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
+	
+	$today = date('Y-m-d');
+	$hn = $_SESSION['hn_now'];
+	$sql = "SELECT * FROM `diag` WHERE `regisdate_en` = '$today' AND `hn` = '$hn'";
+	$q = mysql_query($sql) or die(mysql_error());
+	$icd_lists = array();
+	while ($d = mysql_fetch_assoc($q)) {
+		$icd_lists[] = $d['icd10'];
+	}
+	$imp_icd = implode('|', $icd_lists);
+	echo $imp_icd;
+	exit;
+}
+
 
 
 //********************** Form Remed ยาผู้ป่วยนอก ******************************************
@@ -2556,6 +2571,21 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
+	var icd10 = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=get_icd10';
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				icd10 = xmlhttp.responseText.trim();
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+	
 	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
@@ -2563,13 +2593,13 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	kidney_egfr_alert(drugcode.trim());
 
 	// RDUตัวชี้วัดที่18
-	rdu18_alert(drugcode.trim());
+	rdu18_alert(drugcode.trim(), icd10);
 
 	// RDUตัวชี้วัดที่7
-	rdu7_alert(drugcode.trim());
+	rdu7_alert(drugcode.trim(), icd10);
 
 	// RDUตัวชี้วัดที่8
-	rdu8_alert(drugcode.trim());
+	rdu8_alert(drugcode.trim(), icd10);
 		
 }
 
@@ -2613,23 +2643,27 @@ function kidney_egfr_alert(drugcode){
 	
 }
 
-function rdu18_alert(drugcode){
+function rdu18_alert(drugcode, icd10){
 	var age_test = '<?=$_SESSION['age_now']?>'.substring(0,2);
 	age_test = parseInt(age_test);
 
 	if( age_test < 18 ){
 	
-		var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
 		var testRdu18 = false;
-
-		if( rdu18_icd10_list.indexOf(icd10_principle) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
-			testRdu18 = true;
+		var icdItem = icd10.split('|');
+		for (var index = 0; index < icdItem.length; index++) {
+			var icd = icdItem[index];
+			if( rdu18_icd10_list.indexOf(icd) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
+				testRdu18 = true;
+			}
 		}
-
-		if( testRdu18 === true ){
-			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
+		if( testRdu18 === true ){ 
+			
+			var dataHtml = '<p><img src="images/rud18.png"></p>';
+			dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
+		
 			document.getElementById('rduAlertContainer').style.width = 'auto';
-			document.getElementById('rduContent').innerHTML = '<p><img src="images/rud18.png"></p>'; 
+			document.getElementById('rduContent').innerHTML = v; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
 
 		}
@@ -2638,17 +2672,21 @@ function rdu18_alert(drugcode){
 	
 }
 
-function rdu7_alert(drugcode){
+function rdu7_alert(drugcode, icd10){
 
-	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
 	var testRdu7 = false;
 
-	if( rdu7_icd10_list.indexOf(icd10_principle) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
-		testRdu7 = true;
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu7_icd10_list.indexOf(icd) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
+			testRdu7 = true;
+		}
 	}
 
 	if( testRdu7 === true ){
 		var dataHtml = '<p><img src="images/rdu7.png"></p>';
+		dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
 		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
@@ -2656,17 +2694,22 @@ function rdu7_alert(drugcode){
 	
 }
 
-function rdu8_alert(drugcode){
+function rdu8_alert(drugcode, icd10){
 
-	var icd10_principle = '<?=$_SESSION['dt_icd10'];?>';
 	var testRdu8 = false;
 
-	if( rdu8_icd10.indexOf(icd10_principle) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
-		testRdu8 = true;
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu8_icd10.indexOf(icd) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
+			testRdu8 = true;
+		}
 	}
+	
 
 	if( testRdu8 === true ){
 		var dataHtml = '<p><img src="images/rdu8.png"></p>';
+		dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
 		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
