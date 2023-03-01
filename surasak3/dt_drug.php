@@ -736,10 +736,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
 	
 	$today = date('Y-m-d');
 	$hn = $_SESSION['hn_now'];
-	$sql = "SELECT * FROM `diag` WHERE `regisdate_en` = '$today' AND `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1";
+	$sql = "SELECT * FROM `diag` WHERE `regisdate_en` = '$today' AND `hn` = '$hn'";
 	$q = mysql_query($sql) or die(mysql_error());
-	$d = mysql_fetch_assoc($q);
-	echo $d['icd10'];
+	$icd_lists = array();
+	while ($d = mysql_fetch_assoc($q)) {
+		$icd_lists[] = $d['icd10'];
+	}
+	$imp_icd = implode('|', $icd_lists);
+	echo $imp_icd;
 	exit;
 }
 
@@ -2646,15 +2650,20 @@ function rdu18_alert(drugcode, icd10){
 	if( age_test < 18 ){
 	
 		var testRdu18 = false;
-
-		if( rdu18_icd10_list.indexOf(icd10) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
-			testRdu18 = true;
+		var icdItem = icd10.split('|');
+		for (var index = 0; index < icdItem.length; index++) {
+			var icd = icdItem[index];
+			if( rdu18_icd10_list.indexOf(icd) > -1 && rdu18_drug_list.indexOf(drugcode) > -1 ){
+				testRdu18 = true;
+			}
 		}
-
-		if( testRdu18 === true ){
-			document.getElementById('rduAlertTitle').innerHTML = 'การใช้ยาอย่างสมเหตุสมผล';
+		if( testRdu18 === true ){ 
+			
+			var dataHtml = '<p><img src="images/rud18.png"></p>';
+			dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
+		
 			document.getElementById('rduAlertContainer').style.width = 'auto';
-			document.getElementById('rduContent').innerHTML = '<p><img src="images/rud18.png"></p>'; 
+			document.getElementById('rduContent').innerHTML = v; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
 
 		}
@@ -2667,12 +2676,17 @@ function rdu7_alert(drugcode, icd10){
 
 	var testRdu7 = false;
 
-	if( rdu7_icd10_list.indexOf(icd10) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
-		testRdu7 = true;
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu7_icd10_list.indexOf(icd) > -1 && rdu7_drug_list.indexOf(drugcode) > -1 ){
+			testRdu7 = true;
+		}
 	}
 
 	if( testRdu7 === true ){
 		var dataHtml = '<p><img src="images/rdu7.png"></p>';
+		dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
 		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
@@ -2684,12 +2698,18 @@ function rdu8_alert(drugcode, icd10){
 
 	var testRdu8 = false;
 
-	if( rdu8_icd10.indexOf(icd10) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
-		testRdu8 = true;
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu8_icd10.indexOf(icd) > -1 && rdu8_drug.indexOf(drugcode) > -1 ){
+			testRdu8 = true;
+		}
 	}
+	
 
 	if( testRdu8 === true ){
 		var dataHtml = '<p><img src="images/rdu8.png"></p>';
+		dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
 		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
