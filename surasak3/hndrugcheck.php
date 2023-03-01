@@ -37,8 +37,7 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 
     $ids = $_POST['rows_id'];
     $hn = $_POST['hn'];
-//echo $type;
-    //$type_txt = ($type === 'admit') ? 'Admit' : 'D/C';
+
 	if($type == 'admit'){
 		$type_txt ="Admit";
 	}else if($type == 'dc'){
@@ -46,7 +45,7 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 	}else{
 		$type_txt ="MR";
 	}
-//echo $type_txt;    
+
     $sql = "SELECT *, SUBSTRING(`bedcode`, 1, 2) AS `ward_code`
     FROM `ipcard` 
     WHERE `hn` = '$hn' 
@@ -69,7 +68,7 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 
 
     $id_lists = "'".implode("','", $ids)."'";
-    $sql = "SELECT a.`tradname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
+    $sql = "SELECT a.`tradname`,a.`genname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
     FROM `drugrx` AS a 
     LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode` 
     WHERE a.`row_id` IN ($id_lists)";
@@ -110,7 +109,9 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
             ?>
              <tr>
                 <td><?=$i;?></td>
-                <td><?=$item['tradname'];?></td>
+                <td>
+                    <div><?=$item['tradname'];?></div>
+                </td>
                 <td><?=$item['detail1'].$item['detail2'].$item['detail3'];?></td>
                 <td align="right"><?=$item['amount'];?></td>
                 <td><?=$date;?></td>
@@ -514,7 +515,7 @@ if(!empty($b1)){
 
         ?>
         <div>
-            <p><b>ชื่อ-สกุล :</b> <?=$user['yot'].$user['name'].$user['surname'];?> <b>เลขบัตรประชาชน : </b><?=$user['idcard'];?> <b>เพศ : </b><?=$user['sex'];?></p>
+            <p><b>ชื่อ-สกุล :</b> <?=$user['yot'].$user['name'].'  '.$user['surname'];?> <b>เลขบัตรประชาชน : </b><?=$user['idcard'];?> <b>เพศ : </b><?=$user['sex'];?></p>
             <p><b>HN : </b><?=$user['hn'];?> <b>สิทธิการรักษา : </b><?=$user['ptright'];?></p>
             <p><b>แพ้ยา : </b><?=$react_txt;?></p>
         </div>
@@ -572,6 +573,23 @@ if(!empty($b1)){
             document.getElementById('type').value = type;
         }
     </script>
+    <style>
+        .tooltip{
+            position: relative;
+        }
+        .tooltip-text{
+            position: absolute;
+            top: -25px;
+            left: 0;
+            background-color: #000;
+            color: #fff;
+            padding: 0px 8px;
+            visibility: hidden;
+        }
+        .tooltip:hover .tooltip-text{
+            visibility: visible;
+        }
+    </style>
     <table>
         <thead>
             <tr bgcolor="CD853F">
@@ -609,6 +627,7 @@ if(!empty($b1)){
                     $num = mysql_num_rows($result1);
                     if( $num > 0 ){
                         $bg="#CC3333";
+                        
                     }else{
                         $bg="#F5DEB3";
                     }
@@ -634,6 +653,8 @@ if(!empty($b1)){
                         $vn = $pha['tvn'];
                     }
 
+                    $druglst = mysql_fetch_assoc(mysql_query("SELECT `tradname`,`genname` FROM `druglst` WHERE drugcode='$drugcode'"));
+
                     ?>
                     <tr bgcolor="<?=$bg;?>">
                         <td >
@@ -644,7 +665,9 @@ if(!empty($b1)){
                         <td><?=$vn;?></td>
                         <td><?=$date;?></a></td>
                         <td><?=$drugcode;?></td>
-                        <td><?=$tradname;?></td>
+                        <td>
+                            <div class="tooltip"><?=$druglst['genname'];?> <span class="tooltip-text" ><?=$druglst['tradname'];?></span> </div>
+                        </td>
                         <td><?=$slcode;?></td>
                         <td><?=$full_detail;?></td>
                         <td><?=$amount;?></td>
