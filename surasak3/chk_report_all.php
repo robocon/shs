@@ -285,7 +285,7 @@ $query1=mysql_query($sql1);
 list($glu,$flag)=mysql_fetch_array($query1);
 if($flag=="N" || $flag=="L"){
 	echo $glu;
-}else if($flag=="H"){
+}else if($flag=="H" OR $flag=="HH"){
 	echo "<strong style='color:#FF0000'>$glu</strong>";
 }else{
 	echo "&nbsp;";
@@ -441,7 +441,28 @@ if($lipid['10001']){
     WHERE `profilecode` = 'LDL' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
     GROUP BY a.`profilecode` ";
     $query5=mysql_query($sql5);
-    list($ldl,$flag)=mysql_fetch_array($query5);
+    if(mysql_num_rows($query5)>0){ 
+
+        list($ldl,$flag)=mysql_fetch_array($query5);
+
+    }else{
+
+        $sql5="SELECT b.result, b.flag 
+        FROM ( 
+            SELECT *, MAX(`autonumber`) AS `latest_number`
+            FROM `resulthead` 
+            WHERE `hn` = '$pt_hn' 
+            AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+            AND `profilecode` = '10001'
+            GROUP BY `profilecode` 
+        ) AS a
+        INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+        WHERE `profilecode` = '10001' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+        GROUP BY a.`profilecode` ";
+        $query5=mysql_query($sql5);
+        list($ldl,$flag)=mysql_fetch_array($query5);
+
+    }
 }
 
 if($flag=="N" || $flag=="L"){
