@@ -24,7 +24,7 @@ body,td,th {
 		$nPrefix=$row->prefix;
 		$nPrefix2="25".$nPrefix;
 ?>
-<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มป่วยเป็นโรค</strong></p>	
+<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มโรค</strong></p>	
 <form name="form1" method="post" action="report_chkuparmy_diseased.php" >
 <input name="act" type="hidden" value="show">
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -77,7 +77,7 @@ if($_POST["act"]=="show"){
 	//echo $sql;
 	$query=mysql_query($sql);	
 ?>	
-<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มป่วยเป็นโรค ปี <?=$nPrefix2;?></strong></p>
+<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มโรค ปี <?=$_POST["year1"];?></strong></p>
 <div align="center">
 <table width="95%" border="1" align="center" cellpadding="6" cellspacing="0" bordercolor="#000000">
 
@@ -91,6 +91,9 @@ if($_POST["act"]=="show"){
     <td width="5%" align="center"><strong>เบาหวาน</strong></td>
     <td width="5%" align="center"><strong>ความดันโลหิตสูง</strong></td>
     <td width="5%" align="center"><strong>ไขมันในเลือดสูง</strong></td>
+	<td width="5%" align="center"><strong>วันที่นัดพบแพทย์</strong></td>
+	<td width="5%" align="center"><strong>รายละเอียด</strong></td>
+	<td width="5%" align="center"><strong>เบอร์โทรศัพท์</strong></td>
   </tr>
   
 <?
@@ -143,24 +146,39 @@ $chol=$rows["chol"];
 $bs=$rows["bs"];
 
 				if($bs >= 126){
-					$statbs="ป่วย";
+					$statbs="<img src='images/check-mark.png' width='20' height='20'>";
 				}else{
 					$statbs="";
 				}
 
 				if($chol >= 240){
-					$statchol="ป่วย";
+					$statchol="<img src='images/check-mark.png' width='20' height='20'>";
 				}else{
 					$statchol="";
 				}
 
 				if($rows["bp1"] > 140){
-					$statbp="ป่วย";
+					$statbp="<img src='images/check-mark.png' width='20' height='20'>";
 				}else if($rows["bp2"] > 90){
-					$statbp="ป่วย";
+					$statbp="<img src='images/check-mark.png' width='20' height='20'>";
 				}else{
 					$statbp="";
-				}					
+				}
+
+	$thidate=substr($rows["thidate"],0,10);
+	list($y,$m,$d)=explode("-",$thidate);
+	$y=$y+543;
+	$chkdate="$y-$m-$d";
+	
+	$opsql="select appdate,detail2 from appoint where date LIKE '$chkdate%' and hn='$rows[hn]' and apptime !='ยกเลิกการนัด'  order by row_id desc limit 1 ";
+	//echo $opsql."<br>";
+	$opquery=mysql_query($opsql);
+	list($appdate,$detail2)=mysql_fetch_row($opquery);	
+	
+	$sql111 = "Select phone From opcard where hn='".$rows['hn']."' ";
+	$result111 = Mysql_Query($sql111);
+	list($phone) = Mysql_fetch_row($result111);	
+	
 	if($statbs !="" || $statbp !="" || $statchol !=""){
 		$i++;
 ?>  
@@ -173,7 +191,10 @@ $bs=$rows["bs"];
     <td><?=$prawat;?></td>
     <td align="center"><?=$statbs;?></td>
 	<td align="center"><?=$statbp;?></td>
-	<td align="center"><?=$statchol;?></td>	
+	<td align="center"><?=$statchol;?></td>
+	<td align="center"><?=$appdate;?></td>	
+	<td align="center"><?=$detail2;?></td>
+	<td align="center"><?=$phone;?></td>
   </tr>
   <?
 	}

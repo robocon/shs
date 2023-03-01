@@ -24,15 +24,15 @@ body,td,th {
 		$nPrefix=$row->prefix;
 		$nPrefix2="25".$nPrefix;
 ?>
-<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มที่มีความเสี่ยง</strong></p>	
-<form name="form1" method="post" action="report_chkuparmy_risk.php" >
+<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มที่มีความดันโลหิตสูงผิดปกติ</strong></p>	
+<form name="form1" method="post" action="report_chkuparmy_ht_risk.php" >
 <input name="act" type="hidden" value="show">
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
       <td align="center">ปีงบประมาณ&nbsp;&nbsp;
     <? 
 			   $Y=date("Y")+543;
-			   $Y=$Y+1;
+			   $Y=$Y;
 			   $date=date("Y")+543;
 			  
 				$dates=range(2560,$date+1);
@@ -52,7 +52,7 @@ body,td,th {
         <select name="camp" id="camp" class="txtsarabun">
           <option value="all" selected>ทุกหน่วย</option>
 		 <?
-		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2'";
+		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and camp NOT LIKE 'M07%'";
 		 $query=mysql_query($sql);
 		 while($rows=mysql_fetch_array($query)){
 		 $camp=$rows["camp"];
@@ -70,14 +70,15 @@ body,td,th {
 <?php
 if($_POST["act"]=="show"){
 	if($_POST["camp"]=="all"){
-		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and (prawat='0' || prawat='6') group by hn order by camp, age, row_id desc";
+		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and camp NOT LIKE 'M07%' group by hn order by camp, age, row_id desc";
 	}else{
-		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and (prawat='0' || prawat='6') and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
+		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and camp NOT LIKE 'M07%' and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
 	}
 	//echo $sql;
 	$query=mysql_query($sql);	
 ?>	
-<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มที่มีความเสี่ยง ปี <?=$_POST["year1"];?></strong></p>
+<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มที่มีความดันโลหิตสูงผิดปกติ ปี <?=$_POST["year1"];?></strong><br>
+<span><strong>ใช้เกณฑ์ ความดันตัวบน มากกว่า 140 หรือ ความดันตัวล่างมากกว่า 90 </strong></span></p>
 <div align="center">
 <table width="95%" border="1" align="center" cellpadding="6" cellspacing="0" bordercolor="#000000">
 
@@ -88,11 +89,9 @@ if($_POST["act"]=="show"){
     <td width="6%" align="center"><strong>สังกัด/หน่วย</strong></td>
     <td width="4%" align="center"><strong>อายุ</strong></td>
     <td width="9%" align="center"><strong>ประวัติโรคประจำตัว</strong></td>
-    <td width="5%" align="center"><strong>เบาหวาน</strong></td>
-    <td width="5%" align="center"><strong>ไขมันในเลือดสูง</strong></td>
+	<td width="9%" align="center"><strong>ความดันโลหิต</strong></td>
 	<td width="5%" align="center"><strong>วันที่นัดพบแพทย์</strong></td>
 	<td width="5%" align="center"><strong>รายละเอียด</strong></td>	
-	<td width="5%" align="center"><strong>เบอร์โทรศัพท์</strong></td>	
   </tr>
   
 <?
@@ -156,9 +155,9 @@ $bs=$rows["bs"];
 					$statchol="";
 				}
 
-				if($rows["bp1"] >= 121 && $rows["bp1"] <= 140){
+				if($rows["bp1"] > 140){
 					$statbp="<img src='images/check-mark.png' width='20' height='20'>";
-				}else if($rows["bp2"] >= 81 && $rows["bp2"] <= 90){
+				}else if($rows["bp2"] > 90){
 					$statbp="<img src='images/check-mark.png' width='20' height='20'>";
 				}else{
 					$statbp="";
@@ -174,13 +173,7 @@ $bs=$rows["bs"];
 	$opquery=mysql_query($opsql);
 	list($appdate,$detail2)=mysql_fetch_row($opquery);	
 	
-	
-	$sql111 = "Select phone From opcard where hn='".$rows['hn']."' ";
-	$result111 = Mysql_Query($sql111);
-	list($phone) = Mysql_fetch_row($result111);
-	
-	
-	if($statbs !="" || $statchol !=""){
+	if($statbp !=""){
 		$i++;
 ?>  
   <tr>
@@ -189,12 +182,10 @@ $bs=$rows["bs"];
     <td><?=$rows["ptname"];?></td>
     <td><?=$rows["camp"];?></td>
     <td><?=$rows["age"];?></td>
-    <td><?=$prawat;?></td>
-    <td align="center"><?=$statbs;?></td>
-	<td align="center"><?=$statchol;?></td>	
+	<td><?=$prawat;?></td>
+	<td><?=$bp63;?></td>
 	<td align="center"><?=$appdate;?></td>	
 	<td align="center"><?=$detail2;?></td>	
-	<td align="center"><?=$phone;?></td>	
   </tr>
   <?
 	}

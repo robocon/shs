@@ -43,7 +43,7 @@ body,td,th {
         <label><select name="camp" id="camp" class="txtsarabun">
         <option value="all">ทั้งหมดทุกหน่วย</option>
 		 <?
-		 $sql="select distinct(camp) as camp from armychkup where yearchkup='$nPrefix' and camp !='' and camp !='D34 กทพ.33'";
+		 $sql="select distinct(camp) as camp from condxofyear_so where yearcheck='$newPrefix'";
 		 $query=mysql_query($sql);
 		 while($rows=mysql_fetch_array($query)){
 		 $camp=substr($rows["camp"],4);
@@ -86,9 +86,9 @@ $chkcamp=substr($camp,0,3);
   </tr>
 <?
 if($_POST["camp"]=="all"){
-		$sql2 = "select * from armychkup where yearchkup='$nPrefix' and camp !='' AND xray !='ปกติ' order by camp asc, age desc";
+		$sql2 = "select * from condxofyear_so where yearcheck='$newPrefix' and camp !='' AND cxr !='ปกติ' order by camp asc, age desc";
 }else{
-		$sql2 = "select * from armychkup where camp='".$camp."' and yearchkup='$nPrefix' and camp !=''  AND xray !='ปกติ' order by camp asc, age desc";
+		$sql2 = "select * from condxofyear_so where camp='".$camp."' and yearcheck='$newPrefix' and camp !=''  AND cxr !='ปกติ' order by camp asc, age desc";
 }		
 		//echo $sql;
 		$query2 = mysql_query($sql2);  		
@@ -103,7 +103,7 @@ if($_POST["camp"]=="all"){
     <td><div style="margin-left: 10px;"><?=$ptname2;?></div></td>
     <td align="center"><?=$age2;?></td>
     <td align="center"><?=substr($result2['camp'],4);?></td>
-    <td align="left"><?=$result2['xray_detail'];?></td>
+    <td align="left"><?=$result2['reason_cxr'];?></td>
   </tr>
 <?
 }

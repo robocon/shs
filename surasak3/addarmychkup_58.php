@@ -17,6 +17,22 @@ body,td,th {
 </style>
 <?
 include("connect.inc");
+
+		$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+		$result = mysql_query($query) or die("Query failed");
+		
+		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+			if (!mysql_data_seek($result, $i)) {
+				echo "Cannot seek to row $i\n";
+				continue;
+			}
+				if(!($row = mysql_fetch_object($result)))
+				continue;
+		}
+		$nPrefix=$row->prefix;
+		$newPrefix="25".$nPrefix;
+		
+
 if($_POST["act"]=="add"){
 $ht = $_POST["height"]/100;
 $bmi=number_format($_POST["weight"] /($ht*$ht),2);
@@ -113,21 +129,21 @@ $thdatehn=$date.$_POST["hn"];
 														yearchk='$_POST[yearchk]'";
 		//echo $add;
 		if(mysql_query($add)){
-			echo "<script>alert('∫—π∑÷°¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«');window.location='updatearmychkup_58.php?thdatehn=$thdatehn&hn=$_POST[hn]&year=$_POST[yearchk]';</script>";
+			echo "<script>alert('‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß');window.location='updatearmychkup_58.php?thdatehn=$thdatehn&hn=$_POST[hn]&year=$_POST[yearchk]';</script>";
 		}else{
-			echo "<script>alert('!!! º‘¥æ≈“¥∫—π∑÷°¢ÈÕ¡Ÿ≈‰¡Ë ”‡√Á®');window.location='addarmychkup_58.php';</script>";
+			echo "<script>alert('!!! ‡∏ú‡∏¥‡∏î‡∏û‡∏•‡∏≤‡∏î‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏°‡πà‡∏™‡∏≥‡πÄ‡∏£‡πá‡∏à');window.location='addarmychkup_58.php';</script>";
 		}																																								
 }
 ?>
-<a href ="../nindex.htm" >&lt;&lt; °≈—∫ÀπÈ“À≈—°</a>
-<p align="center"><strong>∫—π∑÷°º≈°“√µ√«® ÿ¢¿“æ∑À“√∑’Ë‰ª√—∫°“√µ√«®®“°‚√ßæ¬“∫“≈Õ◊Ëπ</strong></p>
+<a href ="../nindex.htm" >&lt;&lt; ‡∏Å‡∏•‡∏±‡∏ö‡∏´‡∏ô‡πâ‡∏≤‡∏´‡∏•‡∏±‡∏Å</a>
+<p align="center"><strong>‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ú‡∏•‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏ó‡∏´‡∏≤‡∏£‡∏ó‡∏µ‡πà‡πÑ‡∏õ‡∏£‡∏±‡∏ö‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏à‡∏≤‡∏Å‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏≠‡∏∑‡πà‡∏ô</strong></p>
 <form action="addarmychkup_58.php" method="post" name="form1">
 <input name="act" type="hidden" value="add">
-<input name="type" type="hidden" id="type" value="‡¥‘π¡“">
-<input name="organ" type="hidden" id="organ" value="µ√«® ÿ¢¿“æª√–®”ª’">
-<input name="clinic" type="hidden" id="clinic" value="12 ‡«™ªØ‘∫—µ‘">
-<input type="hidden" name="doctor" id="doctor" value="MD022 ·æ∑¬Ï‡«™ªÆ‘∫—µ‘">
-<input name="yearchk" type="hidden" value="59">
+<input name="type" type="hidden" id="type" value="‡πÄ‡∏î‡∏¥‡∏ô‡∏°‡∏≤">
+<input name="organ" type="hidden" id="organ" value="‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏õ‡∏µ">
+<input name="clinic" type="hidden" id="clinic" value="12 ‡πÄ‡∏ß‡∏ä‡∏õ‡∏è‡∏¥‡∏ö‡∏±‡∏ï‡∏¥">
+<input type="hidden" name="doctor" id="doctor" value="MD022 ‡πÅ‡∏û‡∏ó‡∏¢‡πå‡πÄ‡∏ß‡∏ä‡∏õ‡∏é‡∏¥‡∏ö‡∏±‡∏ï‡∏¥">
+<input name="yearchk" type="hidden" value="<?=$nPrefix;?>">
 <input name="wbcrange" type="hidden" value="5.0 - 10.0">
 <input name="hctrange" type="hidden" value="37 - 49">
 <input name="pltcrange" type="hidden" value="140 - 400">
@@ -144,58 +160,58 @@ $thdatehn=$date.$_POST["hn"];
   <tr>
     <td width="25%" align="right" bgcolor="#CCFFCC"><strong>HN : </strong></td>
     <td width="23%" bgcolor="#CCFFCC"><input name="hn" type="text" class="forminput" id="hn">    </td>
-    <td width="11%" align="right" bgcolor="#CCFFCC"><strong>™◊ËÕ - π“¡ °ÿ≈ : </strong></td>
+    <td width="11%" align="right" bgcolor="#CCFFCC"><strong>‡∏ä‡∏∑‡πà‡∏≠ - ‡∏ô‡∏≤‡∏°‡∏™‡∏Å‡∏∏‡∏• : </strong></td>
     <td width="41%" bgcolor="#CCFFCC"><input name="ptname" type="text" class="forminput" id="ptname"></td>
   </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong> —ß°—¥ : </strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏™‡∏±‡∏á‡∏Å‡∏±‡∏î : </strong></td>
     <td bgcolor="#CCFFCC"><select name="camp" class="forminput" id="camp">
-        <option value="D01 √æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’">√æ.§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’</option>
-        <option value="D02 »“≈ ·≈– Õ°.»“≈ ¡∑∫.32">»“≈ ·≈– Õ°.»“≈ ¡∑∫.32</option>
-        <option value="D03 ºª∫.¡∑∫.32">ºª∫.¡∑∫.32</option>
-        <option value="D04  ß. ¥.®«.≈.ª."> ß. ¥.®«.≈.ª.</option>
-        <option value="D05 °°∫.¡∑∫.32">°°∫.¡∑∫.32</option>
-        <option value="D06 °¬°.¡∑∫.32">°¬°.¡∑∫.32</option>
-        <option value="D07 °¢«.¡∑∫.32">°¢«.¡∑∫.32</option>
-        <option value="D08 °°√.¡∑∫.32">°°√.¡∑∫.32</option>
-        <option value="D09 Ω°ß.¡∑∫.32">Ω°ß.¡∑∫.32</option>
-        <option value="D10 Ω °.¡∑∫.32">Ω °.¡∑∫.32</option>
-        <option value="D11 Ω∏π.¡∑∫.32">Ω∏π.¡∑∫.32</option>
-        <option value="D12 Ω « .¡∑∫.32">Ω « .¡∑∫.32</option>
-        <option value="D13 ∫°.¡∑∫.32">∫°.¡∑∫.32</option>
-        <option value="D14 °°æ.¡∑∫.32">°°æ.¡∑∫.32</option>
-        <option value="D15 Ω§ß.¡∑∫.32">Ω§ß.¡∑∫.32</option>
-        <option value="D16 ΩÕ»®.¡∑∫.32">ΩÕ»®.¡∑∫.32</option>
-        <option value="D17 ºæ∏.¡∑∫.32">ºæ∏.¡∑∫.32</option>
-        <option value="D18 Ω  .¡∑∫.32">Ω  .¡∑∫.32</option>
-        <option value="D19 ¡«. .¡∑∫.32">¡«. .¡∑∫.32</option>
-        <option value="D20 º¬¬.¡∑∫.32">º¬¬.¡∑∫.32</option>
-        <option value="D21 °Õß √®.¡∑∫.32">°Õß √®.¡∑∫.32</option>
-        <option value="D22 √ÈÕ¬. À.¡∑∫.32">√ÈÕ¬. À.¡∑∫.32</option>
-        <option value="D23 Ω À.¡∑∫.32">Ω À.¡∑∫.32</option>
-        <option value="D24  ¢ .¡∑∫.32"> ¢ .¡∑∫.32</option>
-        <option value="D25  √√æ°”≈—ß ¡∑∫.32"> √√æ°”≈—ß ¡∑∫.32</option>
-        <option value="D26 √ÈÕ¬.¡∑∫.32">√ÈÕ¬.¡∑∫.32</option>
-        <option value="D27 º æ.¡∑∫.32">º æ.¡∑∫.32</option>
-        <option value="D28 ¡«.¥¬.¡∑∫.32">¡«.¥¬.¡∑∫.32</option>
-        <option value="D29 »Ω.π»∑.¡∑∫.32">»Ω.π»∑.¡∑∫.32</option>
-        <option value="D30 √.17 æ—π.2">√.17 æ—π.2</option>
-        <option value="D31 ™.æ—π.4 √ÈÕ¬4">™.æ—π.4 √ÈÕ¬4</option>
-        <option value="D32 √ÈÕ¬.Ω√æ.3">√ÈÕ¬.Ω√æ.3</option>
-        <option value="D33 ÀπË«¬∑À“√Õ◊ËπÊ">ÀπË«¬∑À“√Õ◊ËπÊ</option>
-         <option value="D34 °∑æ.33" selected>°∑æ.33</option>
+        <option value="D01 ‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ">‡∏£‡∏û.‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ</option>
+        <option value="D02 ‡∏®‡∏≤‡∏• ‡πÅ‡∏•‡∏∞ ‡∏≠‡∏Å.‡∏®‡∏≤‡∏• ‡∏°‡∏ó‡∏ö.32">‡∏®‡∏≤‡∏• ‡πÅ‡∏•‡∏∞ ‡∏≠‡∏Å.‡∏®‡∏≤‡∏• ‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D03 ‡∏ú‡∏õ‡∏ö.‡∏°‡∏ó‡∏ö.32">‡∏ú‡∏õ‡∏ö.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D04 ‡∏™‡∏á.‡∏™‡∏î.‡∏à‡∏ß.‡∏•.‡∏õ.">‡∏™‡∏á.‡∏™‡∏î.‡∏à‡∏ß.‡∏•.‡∏õ.</option>
+        <option value="D05 ‡∏Å‡∏Å‡∏ö.‡∏°‡∏ó‡∏ö.32">‡∏Å‡∏Å‡∏ö.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D06 ‡∏Å‡∏¢‡∏Å.‡∏°‡∏ó‡∏ö.32">‡∏Å‡∏¢‡∏Å.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D07 ‡∏Å‡∏Ç‡∏ß.‡∏°‡∏ó‡∏ö.32">‡∏Å‡∏Ç‡∏ß.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D08 ‡∏Å‡∏Å‡∏£.‡∏°‡∏ó‡∏ö.32">‡∏Å‡∏Å‡∏£.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D09 ‡∏ù‡∏Å‡∏á.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏Å‡∏á.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D10 ‡∏ù‡∏™‡∏Å.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏™‡∏Å.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D11 ‡∏ù‡∏ò‡∏ô.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏ò‡∏ô.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D12 ‡∏ù‡∏™‡∏ß‡∏™.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏™‡∏ß‡∏™.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D13 ‡∏ö‡∏Å.‡∏°‡∏ó‡∏ö.32">‡∏ö‡∏Å.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D14 ‡∏Å‡∏Å‡∏û.‡∏°‡∏ó‡∏ö.32">‡∏Å‡∏Å‡∏û.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D15 ‡∏ù‡∏Ñ‡∏á.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏Ñ‡∏á.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D16 ‡∏ù‡∏≠‡∏®‡∏à.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏≠‡∏®‡∏à.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D17 ‡∏ú‡∏û‡∏ò.‡∏°‡∏ó‡∏ö.32">‡∏ú‡∏û‡∏ò.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D18 ‡∏ù‡∏™‡∏™.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏™‡∏™.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D19 ‡∏°‡∏ß.‡∏™.‡∏°‡∏ó‡∏ö.32">‡∏°‡∏ß.‡∏™.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D20 ‡∏ú‡∏¢‡∏¢.‡∏°‡∏ó‡∏ö.32">‡∏ú‡∏¢‡∏¢.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D21 ‡∏Å‡∏≠‡∏á ‡∏£‡∏à.‡∏°‡∏ó‡∏ö.32">‡∏Å‡∏≠‡∏á ‡∏£‡∏à.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D22 ‡∏£‡πâ‡∏≠‡∏¢.‡∏™‡∏´.‡∏°‡∏ó‡∏ö.32">‡∏£‡πâ‡∏≠‡∏¢.‡∏™‡∏´.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D23 ‡∏ù‡∏™‡∏´.‡∏°‡∏ó‡∏ö.32">‡∏ù‡∏™‡∏´.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D24 ‡∏™‡∏Ç‡∏™.‡∏°‡∏ó‡∏ö.32">‡∏™‡∏Ç‡∏™.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D25 ‡∏™‡∏£‡∏£‡∏û‡∏Å‡∏≥‡∏•‡∏±‡∏á ‡∏°‡∏ó‡∏ö.32">‡∏™‡∏£‡∏£‡∏û‡∏Å‡∏≥‡∏•‡∏±‡∏á ‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D26 ‡∏£‡πâ‡∏≠‡∏¢.‡∏°‡∏ó‡∏ö.32">‡∏£‡πâ‡∏≠‡∏¢.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D27 ‡∏ú‡∏™‡∏û.‡∏°‡∏ó‡∏ö.32">‡∏ú‡∏™‡∏û.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D28 ‡∏°‡∏ß.‡∏î‡∏¢.‡∏°‡∏ó‡∏ö.32">‡∏°‡∏ß.‡∏î‡∏¢.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D29 ‡∏®‡∏ù.‡∏ô‡∏®‡∏ó.‡∏°‡∏ó‡∏ö.32">‡∏®‡∏ù.‡∏ô‡∏®‡∏ó.‡∏°‡∏ó‡∏ö.32</option>
+        <option value="D30 ‡∏£.17 ‡∏û‡∏±‡∏ô.2">‡∏£.17 ‡∏û‡∏±‡∏ô.2</option>
+        <option value="D31 ‡∏ä.‡∏û‡∏±‡∏ô.4 ‡∏£‡πâ‡∏≠‡∏¢4">‡∏ä.‡∏û‡∏±‡∏ô.4 ‡∏£‡πâ‡∏≠‡∏¢4</option>
+        <option value="D32 ‡∏£‡πâ‡∏≠‡∏¢.‡∏ù‡∏£‡∏û.3">‡∏£‡πâ‡∏≠‡∏¢.‡∏ù‡∏£‡∏û.3</option>
+        <option value="D33 ‡∏´‡∏ô‡πà‡∏ß‡∏¢‡∏ó‡∏´‡∏≤‡∏£‡∏≠‡∏∑‡πà‡∏ô‡πÜ">‡∏´‡∏ô‡πà‡∏ß‡∏¢‡∏ó‡∏´‡∏≤‡∏£‡∏≠‡∏∑‡πà‡∏ô‡πÜ</option>
+         <option value="D34 ‡∏Å‡∏ó‡∏û.33" selected>‡∏Å‡∏ó‡∏û.33</option>
     </select></td>
-    <td align="right" bgcolor="#CCFFCC"><strong>Õ“¬ÿ :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏≠‡∏≤‡∏¢‡∏∏ :</strong></td>
     <td bgcolor="#CCFFCC"><input name="age" type="text" class="forminput" id="age" size="10"></td>
   </tr>
   <tr>
-    <td width="25%" align="right" bgcolor="#CCFFCC"><strong> Ë«π Ÿß :</strong></td>
+    <td width="25%" align="right" bgcolor="#CCFFCC"><strong>‡∏™‡πà‡∏ß‡∏ô‡∏™‡∏π‡∏á :</strong></td>
     <td bgcolor="#CCFFCC"><input name="height" type="text" class="forminput" id="height" size="10" value="170"></td>
-    <td align="right" bgcolor="#CCFFCC"><strong>πÈ”Àπ—° : </strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏ô‡πâ‡∏≥‡∏´‡∏ô‡∏±‡∏Å : </strong></td>
     <td bgcolor="#CCFFCC"><input name="weight" type="text" class="forminput" id="weight" size="10" value="65"></td>
   </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong>√Õ∫‡Õ« :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏£‡∏≠‡∏ö‡πÄ‡∏≠‡∏ß :</strong></td>
     <td bgcolor="#CCFFCC"><input name="round_" type="text" class="forminput" id="age6" size="10"></td>
     <td align="right" bgcolor="#CCFFCC"><strong>T :</strong></td>
     <td bgcolor="#CCFFCC"><input name="temperature" type="text" class="forminput" id="age5" size="10" value="36"></td>
@@ -208,7 +224,7 @@ $thdatehn=$date.$_POST["hn"];
   </tr>
   
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong>§«“¡¥—π‚≈À‘µ :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï :</strong></td>
     <td bgcolor="#CCFFCC"><input name="bp1" type="text" class="forminput" id="age11" size="10" value="120">
       / 
       <input name="bp2" type="text" class="forminput" id="bp2" size="10" value="80"></td>
@@ -216,64 +232,64 @@ $thdatehn=$date.$_POST["hn"];
     <td bgcolor="#CCFFCC">&nbsp;</td>
   </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong>·æÈ¬“ :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡πÅ‡∏û‡πâ‡∏¢‡∏≤ :</strong></td>
     <td colspan="3" bgcolor="#CCFFCC"><input name="drugreact" type="radio" id="drugreact1" value="0" checked />
-‰¡Ë·æÈ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+‡πÑ‡∏°‡πà‡πÅ‡∏û‡πâ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input name="drugreact" type="radio" id="drugreact2" value="1"/>
-·æÈ</td>
+‡πÅ‡∏û‡πâ</td>
   </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong>∫ÿÀ√’Ë :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà :</strong></td>
     <td colspan="3" bgcolor="#CCFFCC"><input name="cigarette" type="radio" value="0" checked/>
-‰¡Ë‡§¬ Ÿ∫&nbsp;&nbsp;&nbsp;
+‡πÑ‡∏°‡πà‡πÄ‡∏Ñ‡∏¢‡∏™‡∏π‡∏ö&nbsp;&nbsp;&nbsp;
 <input type="radio" name="cigarette" value="1"/>
-‡§¬ Ÿ∫ ·µË‡≈‘°·≈È«
+‡πÄ‡∏Ñ‡∏¢‡∏™‡∏π‡∏ö ‡πÅ‡∏ï‡πà‡πÄ‡∏•‡∏¥‡∏Å‡πÅ‡∏•‡πâ‡∏ß
 &nbsp;&nbsp;&nbsp;
 <input type="radio" name="cigarette" value="2"/>
- Ÿ∫∫ÿÀ√’Ë ‡ªÁπ§√—Èß§√“«
+‡∏™‡∏π‡∏ö‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà ‡πÄ‡∏õ‡πá‡∏ô‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏Ñ‡∏£‡∏≤‡∏ß
 &nbsp;&nbsp;&nbsp;
 <input type="radio" name="cigarette" value="3"/>
- Ÿ∫∫ÿÀ√’Ë ‡ªÁπª√–®”</td>
+‡∏™‡∏π‡∏ö‡∏ö‡∏∏‡∏´‡∏£‡∏µ‡πà ‡πÄ‡∏õ‡πá‡∏ô‡∏õ‡∏£‡∏∞‡∏à‡∏≥</td>
     </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong> ÿ√“ :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏™‡∏∏‡∏£‡∏≤ :</strong></td>
     <td colspan="3" bgcolor="#CCFFCC"><input name="alcohol" type="radio" value="0" checked />
-‰¡‡§¬Ë¥◊Ë¡&nbsp;&nbsp;&nbsp;
+‡πÑ‡∏°‡πÄ‡∏Ñ‡∏¢‡πà‡∏î‡∏∑‡πà‡∏°&nbsp;&nbsp;&nbsp;
 <input type="radio" name="alcohol" value="1" />
-‡§¬¥◊Ë¡ ·µË‡≈‘°·≈È«&nbsp;&nbsp;&nbsp;
+‡πÄ‡∏Ñ‡∏¢‡∏î‡∏∑‡πà‡∏° ‡πÅ‡∏ï‡πà‡πÄ‡∏•‡∏¥‡∏Å‡πÅ‡∏•‡πâ‡∏ß&nbsp;&nbsp;&nbsp;
  &nbsp;
  <input type="radio" name="alcohol" value="2" />
-¥◊Ë¡ ‡ªÁπ§√—Èß§√“«&nbsp;&nbsp;&nbsp;
+‡∏î‡∏∑‡πà‡∏° ‡πÄ‡∏õ‡πá‡∏ô‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏Ñ‡∏£‡∏≤‡∏ß&nbsp;&nbsp;&nbsp;
  &nbsp;
  &nbsp;&nbsp;&nbsp;&nbsp;
  <input type="radio" name="alcohol" value="3"/>
-¥◊Ë¡ ‡ªÁπª√–®”</td>
+‡∏î‡∏∑‡πà‡∏° ‡πÄ‡∏õ‡πá‡∏ô‡∏õ‡∏£‡∏∞‡∏à‡∏≥</td>
     </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong>ÕÕ°°”≈—ß°“¬ :</strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ :</strong></td>
     <td colspan="3" bgcolor="#CCFFCC"><input name="exercise" type="radio" value="0"  />
-‰¡Ë‡§¬ÕÕ°°”≈—ß°“¬&nbsp;&nbsp;&nbsp;
+‡πÑ‡∏°‡πà‡πÄ‡∏Ñ‡∏¢‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢&nbsp;&nbsp;&nbsp;
 <input type="radio" name="exercise" value="1"/>
-ÕÕ°°”≈—ß°“¬ µË”°«Ë“‡°≥±Ï &nbsp;&nbsp;&nbsp;
+‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡∏ï‡πà‡∏≥‡∏Å‡∏ß‡πà‡∏≤‡πÄ‡∏Å‡∏ì‡∏ë‡πå &nbsp;&nbsp;&nbsp;
 <input type="radio" name="exercise" value="2" checked/>
-ÕÕ°°”≈—ß°“¬ µ“¡‡°≥±Ï </td>
+‡∏≠‡∏≠‡∏Å‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏Å‡∏≤‡∏¢ ‡∏ï‡∏≤‡∏°‡πÄ‡∏Å‡∏ì‡∏ë‡πå </td>
     </tr>
   <tr>
-    <td align="right" bgcolor="#CCFFCC"><strong>ª√–«—µ‘‚√§ª√–®”µ—« : </strong></td>
+    <td align="right" bgcolor="#CCFFCC"><strong>‡∏õ‡∏£‡∏∞‡∏ß‡∏±‡∏ï‡∏¥‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß : </strong></td>
     <td colspan="3" bgcolor="#CCFFCC"><select name="prawat" id="prawat">
-      <option value="0">‰¡Ë¡’‚√§ª√–®”µ—«</option>
-      <option value="1">§«“¡¥—π‚≈À‘µ Ÿß</option>
-      <option value="2">‡∫“À«“π</option>
-      <option value="3">‚√§À—«„®·≈–À≈Õ¥‡≈◊Õ¥</option>
-      <option value="4">‰¢¡—π„π‡≈◊Õ¥ Ÿß</option>
-      <option value="5">‚√§∑’Ë°”Àπ¥‰«Èµ—Èß·µË 2 ‚√§¢÷Èπ‰ª</option>
-      <option value="6">‚√§ª√–®”µ—«Õ◊ËπÊ</option>
+      <option value="0">‡πÑ‡∏°‡πà‡∏°‡∏µ‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß</option>
+      <option value="1">‡∏Ñ‡∏ß‡∏≤‡∏°‡∏î‡∏±‡∏ô‡πÇ‡∏•‡∏´‡∏¥‡∏ï‡∏™‡∏π‡∏á</option>
+      <option value="2">‡πÄ‡∏ö‡∏≤‡∏´‡∏ß‡∏≤‡∏ô</option>
+      <option value="3">‡πÇ‡∏£‡∏Ñ‡∏´‡∏±‡∏ß‡πÉ‡∏à‡πÅ‡∏•‡∏∞‡∏´‡∏•‡∏≠‡∏î‡πÄ‡∏•‡∏∑‡∏≠‡∏î</option>
+      <option value="4">‡πÑ‡∏Ç‡∏°‡∏±‡∏ô‡πÉ‡∏ô‡πÄ‡∏•‡∏∑‡∏≠‡∏î‡∏™‡∏π‡∏á</option>
+      <option value="5">‡πÇ‡∏£‡∏Ñ‡∏ó‡∏µ‡πà‡∏Å‡∏≥‡∏´‡∏ô‡∏î‡πÑ‡∏ß‡πâ‡∏ï‡∏±‡πâ‡∏á‡πÅ‡∏ï‡πà 2 ‡πÇ‡∏£‡∏Ñ‡∏Ç‡∏∂‡πâ‡∏ô‡πÑ‡∏õ</option>
+      <option value="6">‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß‡∏≠‡∏∑‡πà‡∏ô‡πÜ</option>
     </select></td>
     </tr>
   <tr>
-    <td align="right" valign="top" bgcolor="#CCFFCC"><strong>‚√§ª√–®”µ—« :</strong></td>
+    <td align="right" valign="top" bgcolor="#CCFFCC"><strong>‡πÇ‡∏£‡∏Ñ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß :</strong></td>
     <td colspan="3" bgcolor="#CCFFCC"><label>
-      <textarea name="congenital_disease" id="congenital_disease" cols="45" rows="5">ªØ‘‡ ∏</textarea>
+      <textarea name="congenital_disease" id="congenital_disease" cols="45" rows="5">‡∏õ‡∏è‡∏¥‡πÄ‡∏™‡∏ò</textarea>
     </label></td>
     </tr>
   <tr>
@@ -283,7 +299,7 @@ $thdatehn=$date.$_POST["hn"];
     <tr>
       <td colspan="10" align="center" bgcolor="#0099CC"><strong>
         <label>        </label>
-        ∫—π∑÷°º≈ UA</strong></td>
+        ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ú‡∏• UA</strong></td>
     </tr>
     <tr>
        <td align="right"><strong>PHU : </strong></td>
@@ -359,7 +375,7 @@ $thdatehn=$date.$_POST["hn"];
     <tr>
       <td colspan="12" align="center" bgcolor="#FF9999"><strong>
         <label>        </label>
-        ∫—π∑÷°º≈ CBC</strong></td>
+        ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ú‡∏• CBC</strong></td>
       </tr>
  <tr>
        <td align="right"><strong>WBC : </strong></td>
@@ -427,7 +443,7 @@ $thdatehn=$date.$_POST["hn"];
     <tr>
       <td colspan="10" align="center" bgcolor="#FF9966"><strong>
         <label>        </label>
-        ∫—π∑÷°º≈ Lab Õ◊ËπÊ</strong></td>
+        ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ú‡∏• Lab ‡∏≠‡∏∑‡πà‡∏ô‡πÜ</strong></td>
       </tr>
     <tr>
       <td align="right"><strong>GLU : </strong></td>
@@ -461,7 +477,7 @@ $thdatehn=$date.$_POST["hn"];
     </tr>
   <tr>
     <td colspan="4" align="center" valign="top">
-      <input name="button" type="submit" class="forminput" id="button" value="∫—π∑÷°º≈">
+      <input name="button" type="submit" class="forminput" id="button" value="‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏ú‡∏•">
     </td>
     </tr>
 </table>
