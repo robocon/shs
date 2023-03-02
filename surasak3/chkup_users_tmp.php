@@ -58,7 +58,7 @@ include("connect.inc");
           <option value="all" selected>ทุกหน่วย</option>
 		 <?
 		 //$sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and row_id >= '12098' and row_id <= '12102'";
-		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and (row_id >= '12106' and row_id <='12112')";
+		 $sql="select distinct(camp) as camp from condxofyear_so where `yearcheck` = '$nPrefix2' and (row_id >= '12113' and row_id <='12122')";
 		 $query=mysql_query($sql);
 		 while($rows=mysql_fetch_array($query)){
 		 $camp=$rows["camp"];
@@ -79,11 +79,11 @@ if($_POST["act"]=="show"){
 $nPrefix=$_POST["year1"];
 
 	if($_POST["camp"]=="all"){
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix'  and (row_id >= '12106' and row_id <='12112')
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12113' and row_id <='12122')
 		GROUP BY hn 
 		ORDER BY row_id ASC, substring(age,1,2) DESC";
 	}else{
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12106' and row_id <='12112')
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12113' and row_id <='12122')
 		AND `camp`='$_POST[camp]' 
 		GROUP BY hn 
 		ORDER BY row_id ASC";	
