@@ -3,7 +3,13 @@ require_once 'bootstrap.php';
 include_once 'includes/JSON.php';
 $json = new Services_JSON();
 
+$sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 $hn = sprintf("%s", $_GET['hn']);
+
+if(empty($hn) OR empty($sOfficer)){
+	echo "Invalid value";
+	exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -79,14 +85,22 @@ $hn = sprintf("%s", $_GET['hn']);
         #myresult{
             float: left;
         }
+		#printBtn{
+			background-color: #4CAF50;
+			padding: 4px 8px;
+			color: white;
+			text-decoration: none;
+			text-align: center;
+			display: inline-block;
+			font-size: 18px;
+			border-radius: 4px;
+		}
 	</style>
 	<div class="clearfix">
 		<div id="left-menu">
 			<div class="row" id="thumbList"></div>
 		</div>
 		<div id="right-menu" class="img-zoom-container clearfix">
-			<div id="fullPage"></div>
-            <div id="myresult" class="img-zoom-result" style="float:left;"></div>
 		</div>
 	</div>
 	<script type="text/javascript">
@@ -227,33 +241,86 @@ $hn = sprintf("%s", $_GET['hn']);
 			request.send();
 		}
 		
+		// ส่ง url ของรูปเข้ามา
 		function myFunction(url){ 
 
-			if(window.innerHeight!=='undefined'){
-				var scHeight = window.innerHeight;
-			}else{
-				var scHeight = window.screen.height;
-			}
-			
-			// var p = document.getElementById("fullPage");
-			// p.setAttribute("style", "max-height: "+scHeight+"px;");
-			// p.innerHTML='';
+			var data = [];
+			data.push(encodeURIComponent('file')+"="+encodeURIComponent(url));
+			data.push(encodeURIComponent('sOfficer')+"="+encodeURIComponent('<?=$sOfficer;?>'));
+			data.push(encodeURIComponent('hn')+"="+encodeURIComponent('<?=$hn;?>'));
+			data.push(encodeURIComponent('date')+"="+encodeURIComponent('<?=date('c');?>'));
+			data.push(encodeURIComponent('action')+"="+encodeURIComponent('view'));
+			var dataPost = data.join("&");
 
+			sendLog(url, dataPost);
+
+			// clear รูปเดิม
+            var rightMenu = document.getElementById("right-menu");
+            rightMenu.innerHTML = '';
+
+			// build element ขึ้นมาแล้วยัด url ลงไป พร้อมกับ style อีกนิดหน่อย
 			var img = document.createElement("img");
 			img.src = url;
 			img.setAttribute("id", "myZoomImage");
             img.setAttribute("style", "width: 400px; float: left;");
-            // img.setAttribute("style", "");
 
-            var rightMenu = document.getElementById("right-menu");
-            rightMenu.innerHTML = '';
+			// div สำหรับเก็บรูปใหญ่ที่แสดง กับ link
+			var previewImgContain = document.createElement("div");
+			previewImgContain.setAttribute("style", "float:left;");
+			previewImgContain.appendChild(img);
+			
+			// สร้างลิ้งสำหรับสั่งพิมพ์
+			var pContain = document.createElement("div");
+			var aPrint = document.createElement("a");
 
-			rightMenu.append(img);
+			aPrint.setAttribute("href", "javascript:void(0);");
+			aPrint.setAttribute("id", "printBtn");
+			aPrint.setAttribute("onclick", "actionPrint('"+url+"');");
+			aPrint.append('สั่งพิมพ์เอกสาร');
+			pContain.appendChild(aPrint);
+
+			// ใส่รุปกับลิ้ง
+			previewImgContain.appendChild(pContain);
+
+			// เพิ่มไปในเมนูขวา
+			rightMenu.appendChild(previewImgContain);
+
+			// แปะ div สำหรับซูม
             rightMenu.innerHTML += '<div id="myresult" class="img-zoom-result" style="float:left;"></div>';
-
+			
             document.getElementById("myresult").setAttribute("style", "background-image: url("+url+"); float:left; width: 63%;");
 
             imageZoom("myZoomImage", "myresult");
+		}
+
+		function actionPrint(url){ 
+
+			var data = [];
+			data.push(encodeURIComponent('file')+"="+encodeURIComponent(url));
+			data.push(encodeURIComponent('sOfficer')+"="+encodeURIComponent('<?=$sOfficer;?>'));
+			data.push(encodeURIComponent('hn')+"="+encodeURIComponent('<?=$hn;?>'));
+			data.push(encodeURIComponent('date')+"="+encodeURIComponent('<?=date('c');?>'));
+			data.push(encodeURIComponent('action')+"="+encodeURIComponent('download'));
+			var dataPost = data.join("&");
+
+			sendLog(url, dataPost);
+			
+			var target = encodeURIComponent('print_eopd.php?img='+url);
+			// var printUrl = 'http://localhost/shspdf/printPdf.php?target='+target;
+			var printUrl = 'http://192.168.129.143/shspdf/printPdf.php?target='+target;
+			window.open(printUrl,"myWindow","_blank");
+		}
+
+		async function sendLog(url, dataPost){
+
+			// http://192.168.129.143/shslog/index.php
+			await fetch('http://192.168.129.143/shslog/index.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				body: dataPost
+			});
 		}
 	</script>
 </body>
