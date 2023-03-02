@@ -1,17 +1,37 @@
+<?
+session_start();
+include("connect.inc");
+if($_GET["act"]=="close" && $_SESSION["smenucode"]=="ADMSTD"){
+?>
+<script type="text/javascript">
+window.close();
 
-
+function CloseWin()
+{
+	window.close();
+}
+</script>
+<!-- <a onclick="javascript:CloseWin()">ปิดหน้าต่างนี้</a>  -->
+<?	
+}else{	
+?>
 <form method="post" action="<?php echo $PHP_SELF ?>">
-  <p>������׹�ѵü�����  ��ä׹�ѵü����� ���׹�� �������� ������зӡ�� �׹�ѵ���������&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<�����</a></p></p>
-  <p>����� HN ��������ä�����¹͡</p>
-  <p>���Ҥ���ҡ&nbsp; HN</p>
+  <p>โปรแกรมคืนบัตรผู้ป่วย  การคืนบัตรผู้ป่วย ให้คืนแค่ ครั้งเดียว โปรแกรมจะทำการ คืนบัตรให้ทั้งหมด&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p></p>
+  <p>กดที่ HN ให้รหัสโรคผู้ป่วยนอก</p>
+  <p>ค้นหาคนไข้จาก&nbsp; HN และเลขที่บัตรประชาชน</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="text" name="hnno" size="12"  id="aLink"  ></p>
+<p>&nbsp;&nbsp; ID CARD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input name="idcard" type="text" size="20" maxlength="13" >
+</p> 
+<p>&nbsp;วัน/เดือน/ปี&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input name="chkdate" type="text" size="20" >&nbsp; Ex. 01/01/2562
+</p>  
 <script type="text/javascript">
 document.getElementById('aLink').focus();
 </script>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="  ��ŧ  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ź���  " name="B2"></p>
-
+  <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ลบทิ้ง  " name="B2"></p>
 </form>
 <?php
 
@@ -30,29 +50,29 @@ document.getElementById('aLink').focus();
 
  
  <th bgcolor=6495ED>#</th> 
-<th bgcolor=6495ED>�ѹ</th>
+<th bgcolor=6495ED>วัน</th>
 
  
- <th bgcolor=6495ED>����</th>
+ <th bgcolor=6495ED>เวลา</th>
 
   
 <th bgcolor=6495ED>HN</th>
 
 
-  <th bgcolor=6495ED>����</th>
+  <th bgcolor=6495ED>ชื่อ</th>
 
 
   <th bgcolor=6495ED>AN</th>
 
  
- <th bgcolor=6495ED>�ä</th>
-  <th bgcolor=6495ED>�͡��</th>
+ <th bgcolor=6495ED>โรค</th>
+  <th bgcolor=6495ED>ออกโดย</th>
 
   
-<th bgcolor=6495ED>ᾷ��</th>
+<th bgcolor=6495ED>แพทย์</th>
 
  
- <th bgcolor=6495ED><font face='Angsana New'>�׹OPD</th>
+ <th bgcolor=6495ED><font face='Angsana New'>คืนOPD</th>
 
   </tr>
 
@@ -64,11 +84,34 @@ document.getElementById('aLink').focus();
 
 
    
-If (!empty($hnno)){
-    include("connect.inc");
+If (!empty($hnno) || !empty($idcard)){
     global $hnno;
- $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,toborow FROM opday WHERE okopd='N'and hn ='".$_REQUEST["hnno"]."' ";
+	global $idcard;
+	
+if(!empty($idcard)){
+	$sql="select hn from opcard where idcard='$idcard'";
+	//echo $sql;
+	$query1=mysql_query($sql);
+	list($chkhn)=mysql_fetch_array($query1);
+	
+ 	if(empty($_POST["chkdate"])){
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,toborow FROM opday WHERE okopd='N' and hn ='".$chkhn."' ";
+	}else{
+		list($d,$m,$y)=explode("/",$_POST["chkdate"]);
+		$newdate="$y-$m-$d";
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,toborow FROM opday WHERE okopd='N' and hn ='".$chkhn."'  and thidate like '$newdate%' ";
+	}
+}else{	
+ 	if(empty($_POST["chkdate"])){
+	$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,toborow FROM opday WHERE okopd='N' and hn ='".$_REQUEST["hnno"]."' ";
+	}else{
+		list($d,$m,$y)=explode("/",$_POST["chkdate"]);
+		$newdate="$y-$m-$d";
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,toborow FROM opday WHERE okopd='N' and hn ='".$_REQUEST["hnno"]."'  and thidate like '$newdate%' ";
+	}
 
+}
+	//echo $query;
    
  $result = mysql_query($query)
 
@@ -98,7 +141,8 @@ $num++;
       
      "  <td BGCOLOR=66CDAA><font face='Angsana New'><a  href=\"dxopedit.php? cTdatehn=".urlencode($thdatehn)."&cPtname=".urlencode($ptname)."&cHn=".urlencode($hn)."&cGoup=".urlencode($goup)."&cDxg=".urlencode($dxgroup)."&cIcd10=".urlencode($icd10)."&cVn=".urlencode($vn)."\" >$hn</td>\n".
 
-          "  <td BGCOLOR=66CDAA>$ptname</a></td>\n".
+        
+  "  <td BGCOLOR=66CDAA>$ptname</a></td>\n".
 
 //   "  <td BGCOLOR=66CDAA><font face='Angsana New'><a   href=\"chkopd1.php? cTdatehn=".urlencode($thdatehn)."&cPtname=".urlencode($ptname)."&cHn=".urlencode($hn)."&cDoctor=".urlencode($doctor)."&cDiag=".urlencode($diag)."&cOkopd=".urlencode($okopd)."&cVn=".urlencode($vn)."\">$ptname</a></td>\n".
 
@@ -120,20 +164,18 @@ $num++;
 
        }
 
-   
-include("unconnect.inc");
-       }
+    }
 ?>
 </table>
 <BR><BR>
-<CENTER>��¡����͹��ѧ </CENTER>
+<CENTER>รายการย้อนหลัง </CENTER>
 <table>
 
  <tr>
 
  
  <th bgcolor=#FFFFFF>#</th> 
-<th bgcolor=#FFFFFF>�ѹ</th>
+<th bgcolor=#FFFFFF>วัน</th>
 
  
 
@@ -147,15 +189,15 @@ include("unconnect.inc");
   <th bgcolor=#FFFFFF>AN</th>
 
  
- <th bgcolor=#FFFFFF>�ä</th>
- <th bgcolor=#FFFFFF>�͡��</th>
+ <th bgcolor=#FFFFFF>โรค</th>
+ <th bgcolor=#FFFFFF>ออกโดย</th>
 
   
 <th bgcolor=#FFFFFF>ICD10</th>
 
  
  <th bgcolor=#FFFFFF>ICD9CM</th>
-  <th bgcolor=#FFFFFF>������ä</th>
+  <th bgcolor=#FFFFFF>กลุ่มโรค</th>
 
   </tr>
 
@@ -164,11 +206,37 @@ include("unconnect.inc");
 <?php
 
    
-If (!empty($hnno)){
+If (!empty($hnno) || !empty($idcard)){
     include("connect.inc");
     global $hnno;
+	global $idcard;
 	$num='0';
- $query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,icd9cm,icd101,toborow,dxgroup FROM opday WHERE  hn ='".$_REQUEST["hnno"]."' ORDER BY thidate DESC  limit 20";
+if(!empty($idcard)){
+	$sql="select hn from opcard where idcard='$idcard'";
+	//echo $sql;
+	$query1=mysql_query($sql);
+	list($chkhn)=mysql_fetch_array($query1);
+	
+	if(empty($_POST["chkdate"])){
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,icd9cm,icd101,toborow,dxgroup FROM opday WHERE  hn ='".$chkhn."' ORDER BY thidate DESC  limit 30";
+	}else{
+		list($d,$m,$y)=explode("/",$_POST["chkdate"]);
+		$newdate="$y-$m-$d";	
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,icd9cm,icd101,toborow,dxgroup FROM opday WHERE  hn ='".$chkhn."' and thidate like '$newdate%' ORDER BY thidate DESC  limit 30";
+	}
+}else{	
+	if(empty($_POST["chkdate"])){
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,icd9cm,icd101,toborow,dxgroup FROM opday WHERE  hn ='".$_REQUEST["hnno"]."' ORDER BY thidate DESC  limit 30";
+	}else{
+		list($d,$m,$y)=explode("/",$_POST["chkdate"]);
+		$newdate="$y-$m-$d";
+		$query = "SELECT vn,thdatehn,thidate,hn,ptname,an,diag,doctor,okopd,icd10,icd9cm,icd101,toborow,dxgroup FROM opday WHERE  hn ='".$_REQUEST["hnno"]."' and thidate like '$newdate%' ORDER BY thidate DESC  limit 30";
+	}
+}
+
+//echo $query;
+
+	
 
    
  $result = mysql_query($query)
@@ -226,10 +294,10 @@ $thidate4=$thidate1.'/'.$thidate2.'/'.$thidate3.'&nbsp;'.$time;
    
         " </tr>\n");
 
-       }
-
-   
-include("unconnect.inc");
-       }
+       }  
+    }
 ?>
 </table>
+<?
+}
+?>

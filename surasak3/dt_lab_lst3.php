@@ -12,6 +12,18 @@ include("connect.inc");
 <head>
 <title>สั่งตรวจ LAB Online</title>
 <style type="text/css">
+.button {
+  font-size: 20px;	
+  font-family: TH SarabunPSK;
+  background-color: #4CAF50; 
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
 <!--
 body,td,th {
 	font-family: Angsana New;
@@ -67,14 +79,14 @@ body,td,th {
 
 <BR>
 
-<TABLE  border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#0046D7">
+<TABLE  width="60%" border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#0046D7">
 <TR>
 	<TD>
-<TABLE width="800" border="0" align="center" cellpadding="0" cellspacing="2">
+<TABLE width="100%" border="0" align="center" cellpadding="0" cellspacing="2">
 <TR align="center" class="tb_head">
-	<TD >วันที่</TD>
+	<TD width="15%">วัน/เดือน/ปี</TD>
 	<TD>รายการ</TD>
-	<TD>ดูข้อมูล</TD>
+	<TD width="15%">ดูข้อมูล</TD>
 </TR>
 <?php
 $i=0;
@@ -99,7 +111,7 @@ $i=0;
 <TR bgcolor="<?php echo $bgcolor;?>">
 	<TD align="center" ><?php echo $arr["dateresult2"];?></TD>
 	<TD><?php echo implode(", ",$list_lab);?></TD>
-	<TD align="center"><A HREF="dt_lab_lst.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>">ดูข้อมูล</A></TD>
+	<TD align="center"><A HREF="dt_lab_lst.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>"><input type="button" name="button" id="button" value="  ดูข้อมูล " class="button"/></A></TD>
 </TR>
 <?php
 	}	

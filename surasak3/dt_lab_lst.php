@@ -16,23 +16,44 @@ if(isset($_GET["lab_date"])){
 $sql = "Select date_format(orderdate,'%Y-%m-%d') From resulthead where hn = '".$_SESSION["hn_now"]."' AND orderdate like '".$date_now."%' Order by  `autonumber` DESC limit 0,1";
 
 $result = mysql_query($sql);
-$noLab = true;
-if(mysql_num_rows($result) == 0){
+$noLab = true; // noLab=1
+if(mysql_num_rows($result) == 0){  //ถ้าไม่มีข้อมูล
 
-	$noLab = false;
+	$noLab = false;  // noLab=0
 
 }
 list($orderdate) = mysql_fetch_row($result);
 
 
 $xx = explode("-",$date_now);
-$date_now2 = "<B>ผล LAB ของวันที่ :</B> ";
+$date_now2 = "<B>เลือกวันที่เพื่อดูผล LAB และกดดูข้อมูล : </B> ";
 
 ?>
 <html>
 <head>
 <title>สั่งตรวจ LAB Online</title>
 <style type="text/css">
+.txtsarabun{
+	font-family: TH SarabunPSK;
+	font-size: 18px;
+}
+
+select, option {
+    width: 200px;
+}
+
+.button {
+  font-size: 20px;	
+  font-family: TH SarabunPSK;
+  background-color: #4CAF50; 
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+}
 <!--
 body,td,th {
 	font-family: Angsana New;
@@ -41,7 +62,7 @@ body,td,th {
 
 .tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
 .tb_head2 {background-color: #0C5A2F; color:#B9F2F7; font-weight: bold; text-align:center;  }
-.tb_head3 {background-color:#CCFFFF; color:#003300; font-size:25px; font-family:"Angsana New"; text-align:center;  }
+.tb_head3 {background-color:#AED6F1; color:#003300; font-size:25px; font-family:"Angsana New"; text-align:center;  }
 .tb_head3_2 {background-color:0000A0; color:#FFFF00; font-size:25px; font-weight: bold;font-family:"Angsana New"; text-align:center; font-weight: bold;width: 200px; }
 .tb_head3_3 {background-color:#FFFFFF; color:#0000CC; font-size:15px; font-weight: bold;font-family:"Angsana New"; text-align:right;  }
 .tb_head3_1 {color:#990000; font-size:20px; font-family:"Angsana New";  height:30px;  }
@@ -90,29 +111,29 @@ body,td,th {
 	$sql = "Select distinct date_format(orderdate,'%d-%m-') as orderdate1, date_format(orderdate,'%Y') as orderdate3, date_format(orderdate,'%Y-%m-%d') as orderdate2  From resulthead where hn='".$_SESSION["hn_now"]."' Order by orderdate DESC limit 0,10";
 	//echo $sql;
 	$result = mysql_query($sql);
-	
-	$select_date .= "<Select name=\"lab_date\"> ";
+	echo "<FORM METHOD=\"GET\" ACTION=\"".$_SERVER["PHP_SELF"]."\">";
+	$select_date .= "<Select name=\"lab_date\" class=\"txtsarabun\"> ";
 	while($arr = mysql_fetch_assoc($result)){
 		$select_date .= "<option value=\"".$arr["orderdate2"]."\"";
 			if($arr["orderdate2"] == $_GET["lab_date"])
 				$select_date .= " Selected ";
-		$select_date .= ">".$arr["orderdate1"]."".($arr["orderdate3"]+543)."</option>";
+		$select_date .= ">วันที่ ".$arr["orderdate1"]."".($arr["orderdate3"]+543)."</option>";
 	}
-	$select_date .= "</Select>&nbsp;<INPUT TYPE=\"submit\" value=\"ตกลง\">
+	$select_date .= "</Select>&nbsp;&nbsp;&nbsp;<INPUT TYPE=\"submit\" value=\" ดูข้อมูล LAB ย้อนหลัง  \"  class=\"button\">
 	</FORM>";
 
 	$select_date .= "</CENTER>";
 
-if($noLab == false){
+if($noLab == false){  //ถ้าไม่มีผลแลป
 	echo "<BR><BR><CENTER>ไม่มีผล Lab ของวันนี้";
-	echo "<BR><FORM METHOD=GET ACTION=\"".$_SERVER["PHP_SELF"]."\">ดูผล Lab ย้อนหลัง : ";
+	echo "<BR><FORM METHOD=\"GET\" ACTION=\"".$_SERVER["PHP_SELF"]."\">ดูผล Lab ย้อนหลัง : ";
 	echo $select_date ;
 	exit();
 }
 $list_code_lab = array();
 $list_group_lab = array();
 $lab_title = array();
-$sql = "Select a.profilecode, count(b.labcode), a.testgroupname From (Select * From resulthead where hn='".$_SESSION["hn_now"]."' AND orderdate like '".$date_now."%' ) as a INNER JOIN resultdetail as b ON a.autonumber = b.autonumber group by a.profilecode  Order by  a.testgroupname ASC";
+$sql = "Select a.profilecode, count(b.labcode), a.testgroupname From (Select * From resulthead where hn='".$_SESSION["hn_now"]."' AND orderdate like '".$date_now."%' ) as a INNER JOIN resultdetail as b ON a.autonumber = b.autonumber group by a.profilecode  Order by  a.testgroupname ASC, b.seq ASC";
 //echo $sql;
 
 $result = mysql_query($sql);
@@ -125,12 +146,11 @@ while(list($profilecode, $count, $testgroupname) = mysql_fetch_row($result)){
 $list_lab = implode(", ",$lab_title);
 
 ?>
-
 <TABLE align="center">
 <TR>
 	<TD>
 <?php echo $date_now2," ",$select_date;
-echo "รายการ Lab ทั้งหมด : ",$list_lab;
+echo "<br>รายการ Lab ทั้งหมด : ",$list_lab;
 ?>
 <TABLE width="800" border="0"  cellpadding="0" cellspacing="0" style="border-color: #33FF00" >
 <TR>
@@ -178,16 +198,16 @@ $j++;
 	<?php
 		$i++;
 	}
-			$sql = "Select *, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 From resultdetail where autonumber = '".$autonumber."' ";
+			$sql = "Select *, date_format(authorisedate,'%d-%m-%Y') as authorisedate2 From resultdetail where autonumber = '".$autonumber."' order by seq";
 			$result2= mysql_query($sql);
 			
 			while($arr2 = mysql_fetch_assoc($result2)){
 				
 					if($arr2["flag"] != 'N') $fontbgcolor="red"; else $fontbgcolor="#000000";
 						if($i%2==0) 
-							$bgcolor="#FFFFBB"; 
+							$bgcolor="#F9E79F"; 
 						else 
-							$bgcolor="#FFFFFF";
+							$bgcolor="#F8F9F9";
 
 						$i++;
 		?>
