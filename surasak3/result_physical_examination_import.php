@@ -79,11 +79,11 @@ if($_POST["act"]=="show"){
 $nPrefix=$_POST["year1"];
 //12088 ยอด 1041  ราย
 	if($_POST["camp"]=="all"){
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12106' and row_id <='12112')
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12113' and row_id <='12122')
 		GROUP BY hn 
 		ORDER BY row_id ASC, substring(age,1,2) DESC";
 	}else{
-		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12106' and row_id <='12112')
+		$sql1="SELECT * FROM `condxofyear_so` WHERE `yearcheck` = '$nPrefix' and (row_id >= '12113' and row_id <='12122') 
 		AND `camp`='$_POST[camp]' 
 		GROUP BY hn 
 		ORDER BY row_id ASC";		
