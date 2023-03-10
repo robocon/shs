@@ -718,7 +718,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 <div style="margin-left:10px;">
 <p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ/คัดกรอง ผู้ป่วยนอก (OPD)</strong>
 <div style="font-weight:bold;"><a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a>&nbsp;&nbsp;<a href="appoint_covid.php" target="_blank">ออกใบนัด ATK ล่วงหน้า (กลุ่มเสี่ยง)</a> &nbsp;&nbsp;<a href="Edx_ofyear_out.php" target="_blank">โปรแกรมซักประวัติตรวจสุขภาพ สำหรับใบรับรองแพทย์อิเล็กทรอนิกส์</a></p></div>
-<form id="f1" name="f1" method="post" action="">
+<form id="form1" name="form1" method="post" action="">
 <div><strong>ประเภทผู้ป่วย :</strong></div>
 <input type="radio" name="type" id="type1" value="SI" onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
 <!--
@@ -955,7 +955,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
   </tr>
 </table>
 
-<form id="f2" name="f2" method="post" action="" Onsubmit="return checkForm();">
+<form id="form2" name="form2" method="post" action="" Onsubmit="return checkForm();">
  <table width="95%" border="4" align="center" cellpadding="2" cellspacing="0" bordercolor="#339999">
   <tr valign="top">
     <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" class="data_show2">
@@ -1101,20 +1101,20 @@ function checkList(){
 
 
 function checkForm(){
-	if(document.f2.doctor.value == "" || document.f2.doctor.value == 0){
+	if(document.form2.doctor.value == "" || document.form2.doctor.value == 0){
 		alert('กรุณาเลือก แพทย์ด้วยครับ');
 		return false;
-	}else if(document.f2.clinic.value == "" || document.f2.clinic.value == 0){
+	}else if(document.form2.clinic.value == "" || document.form2.clinic.value == 0){
 		alert('กรุณาเลือก คลินิกด้วยครับ');
 		return false;
-	}else if(document.f2.cig1.checked == true&&document.f2.member2[0].checked == false&&document.f2.member2[1].checked == false){
+	}else if(document.form2.cig1.checked == true&&document.form2.member2[0].checked == false&&document.form2.member2[1].checked == false){
 		alert('กรุณาเลือกความต้องการอยากเลิกบุหรี่ไหมด้วยครับ');
 		return false;
-	}else if(document.f2.covid19_vaccine1.checked == false && document.f2.covid19_vaccine2.checked == false){
+	}else if(document.form2.covid19_vaccine1.checked == false && document.form2.covid19_vaccine2.checked == false){
 		alert('กรุณาเลือกการคัดกรองประวัติการได้รับวัคซีนโควิด19 ด้วยครับ');
 		document.getElementById("covid19_vaccine1").focus();
 		return false;			
-	}else if(document.f2.opdtype1.checked == false && document.f2.opdtype2.checked == false && document.f2.opdtype3.checked == false && document.f2.opdtype4.checked == false){
+	}else if(document.form2.opdtype1.checked == false && document.form2.opdtype2.checked == false && document.form2.opdtype3.checked == false && document.form2.opdtype4.checked == false){
 		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
 		return false;	
 	}else{
@@ -1123,7 +1123,7 @@ function checkForm(){
 }
 
 function clear_textbox(){
-	var fn = document.f2;
+	var fn = document.form2;
 	fn.weight.value = "";
 	fn.height.value = "";
 	fn.temperature.value = "";
@@ -1174,7 +1174,7 @@ function togglediv2(divid){
 		//alert(a);
 		var h=a/100;
 		var bmi=b/(h*h);
-		document.f2.bmi.value=bmi.toFixed(2);
+		document.form2.bmi.value=bmi.toFixed(2);
 	}
 	 </script>
    <? 
@@ -1197,10 +1197,10 @@ label:hover{
            <td height="28" colspan="6" align="center" class="data_show"><table width="100%" border="0">
              <tr>
                <td width="10%" height="28" align="right" class="data_show">นน.: </td>
-               <td width="14%" align="left"><input name="weight" type="text" id="weight" size="3" value="<?php echo $weight;?>"  onblur="calbmi(document.f2.height.value,this.value)"/>
+               <td width="14%" align="left"><input name="weight" type="text" id="weight" size="3" value="<?php echo $weight;?>"  onblur="calbmi(document.form2.height.value,this.value)"/>
                  กก.</td>
                <td width="16%" align="right">ส่วนสูง.:</td>
-               <td width="13%" align="left"><input name="height" type="text" id="height" size="3" value="<?php echo $height;?>"  onblur="calbmi(this.value,document.f2.weight.value)"/>
+               <td width="13%" align="left"><input name="height" type="text" id="height" size="3" value="<?php echo $height;?>"  onblur="calbmi(this.value,document.form2.weight.value)"/>
 ซม.</td>
                <td width="10%" align="right">T :</td>
                <td width="37%" align="left"><input name="temperature" type="text" id="temperature" size="3" />
@@ -1494,7 +1494,7 @@ mmHg </td>
 				</table>
 			</div> 
 			<script>
-			if(document.f2.cig1.checked == true){
+			if(document.form2.cig1.checked == true){
 				togglediv('kbk');
 			}
 			</script>
@@ -1955,7 +1955,7 @@ mmHg </td>
 					display: block;
 					background-color: inherit;
 					color: black;
-					padding: 18px 12px;
+					padding: 12px 16px;
 					width: 100%;
 					border: none;
 					outline: none;
@@ -1978,224 +1978,266 @@ mmHg </td>
 				.tabcontent { 
 					display:none;
 					float: left;
-					padding: 0px 12px;
+					padding: 0px 12px 12px;
 					border: 1px solid #ccc;
 					width: 69%;
-					border-left: none;
+					/* border-left: none; */
 					/* height: 300px; */
 					box-sizing: border-box;
 				}
+				.tabcontent h3{
+					margin-bottom: 0;
+				}
 				</style>
+				<?php 
+				/*
+				ALTER TABLE `opd_advice` 
+ADD `ba1` VARCHAR(255) DEFAULT NULL,
+ADD `ba2` VARCHAR(255) DEFAULT NULL,
+ADD `ba3` VARCHAR(255) DEFAULT NULL,
+ADD `ba4` VARCHAR(255) DEFAULT NULL,
+ADD `ba5` VARCHAR(255) DEFAULT NULL
+ADD `bb1` VARCHAR(255) DEFAULT NULL,
+ADD `bb2` VARCHAR(255) DEFAULT NULL,
+ADD `bb3` VARCHAR(255) DEFAULT NULL,
 
+ADD `ca1` VARCHAR(255) DEFAULT NULL,
+ADD `ca1_txt` VARCHAR(255) DEFAULT NULL,
+ADD `ca2` VARCHAR(255) DEFAULT NULL,
+ADD `ca3` VARCHAR(255) DEFAULT NULL,
+ADD `ca4` VARCHAR(255) DEFAULT NULL,
+ADD `ca5` VARCHAR(255) DEFAULT NULL,
+ADD `cb1` VARCHAR(255) DEFAULT NULL,
+ADD `cb1_txt` VARCHAR(255) DEFAULT NULL,
+ADD `cb2` VARCHAR(255) DEFAULT NULL,
+ADD `cb3` VARCHAR(255) DEFAULT NULL,
+ADD `cb4` VARCHAR(255) DEFAULT NULL,
+
+ADD `da1` VARCHAR(255) DEFAULT NULL,
+ADD `da1_txt` VARCHAR(255) DEFAULT NULL,
+ADD `da2` VARCHAR(255) DEFAULT NULL,
+ADD `da2_txt` VARCHAR(255) DEFAULT NULL,
+ADD `da2_txt_time` VARCHAR(255) DEFAULT NULL,
+ADD `da3` VARCHAR(255) DEFAULT NULL,
+ADD `da4` VARCHAR(255) DEFAULT NULL,
+ADD `da5` VARCHAR(255) DEFAULT NULL,
+ADD `da6` VARCHAR(255) DEFAULT NULL,
+ADD `db1` VARCHAR(255) DEFAULT NULL,
+ADD `db1_txt` VARCHAR(255) DEFAULT NULL,
+ADD `db2` VARCHAR(255) DEFAULT NULL,
+ADD `db3` VARCHAR(255) DEFAULT NULL,
+ADD `db4` VARCHAR(255) DEFAULT NULL,
+*/
+				?>
 				<div class="tab">
-					<button type="button" class="tablinks active" onclick="openCity(event, 'a-content')">เห็นควรพิจารณาให้</button>
-					<button type="button" class="tablinks" onclick="openCity(event, 'b-content')">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</button>
-					<button type="button" class="tablinks" onclick="openCity(event, 'c-content')">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</button>
-					<button type="button" class="tablinks" onclick="openCity(event, 'd-content')">คำแนะนำผู้ป่วยมีไข้</button>
-					<button type="button" class="tablinks" onclick="openCity(event, 'e-content')">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</button>
-					<button type="button" class="tablinks" onclick="openCity(event, 'f-content')">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</button>
-					<button type="button" class="tablinks" onclick="openCity(event, 'g-content')">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</button>
-
+					<button type="button" class="tablinks active" onclick="openTab(event, 'a-content')">Refer</button>
+					<button type="button" class="tablinks" onclick="openTab(event, 'b-content')">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</button>
+					<button type="button" class="tablinks" onclick="openTab(event, 'c-content')">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</button>
+					<button type="button" class="tablinks" onclick="openTab(event, 'd-content')">คำแนะนำผู้ป่วยมีไข้</button>
+					<button type="button" class="tablinks" onclick="openTab(event, 'e-content')">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</button>
+					<button type="button" class="tablinks" onclick="openTab(event, 'f-content')">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</button>
+					<button type="button" class="tablinks" onclick="openTab(event, 'g-content')">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</button>
 				</div>
 
 				<div id="a-content" class="tabcontent" style="display:block;">
 					<h3>เห็นควรพิจารณาให้</h3>
 					<p>
-						<input type="checkbox" name="a01" id="a01" value=""><label for="a01">ออกหนังสือรับรองสิทธิ์</label>
+						<input type="checkbox" name="a1" id="a1" value="ออกหนังสือรับรองสิทธิ์"><label for="a1">ออกหนังสือรับรองสิทธิ์</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี</label>
+						<input type="checkbox" name="a2" id="a2" value="ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี"><label for="a2">ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้รักษาตัว ณ รพ <input type="text" name="a00_txt" id="a00_txt"> แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
+						<input type="checkbox" name="a3" id="a3" value="ให้รักษาตัว ณ รพ.{x} แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี"><label for="a3">ให้รักษาตัว ณ รพ.<input type="text" name="a3_txt" id="a3_txt"> แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง</label>
+						<input type="checkbox" name="a4" id="a4" value="ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง"><label for="a4">ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
+						<input type="checkbox" name="a5" id="a5" value="ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี"><label for="a5">ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้</label>
+						<input type="checkbox" name="a6" id="a6" value="รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้"><label for="a6">รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้</label>
+					</p>
+					<p>
+						<input type="checkbox" name="a7" id="a7" value="อื่นๆ"><label for="a7">อื่นๆ </label> <input type="text" name="a7_txt" id="a7_txt">
 					</p>
 				</div>
 				<div id="b-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย</label>
+						<input type="checkbox" name="ba1" id="ba1" value="แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย"><label for="ba1">แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว</label>
+						<input type="checkbox" name="ba2" id="ba2" value="งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว"><label for="ba2">งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง</label>
+						<input type="checkbox" name="ba3" id="ba3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง"><label for="ba3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำรับประทานยาตามแผนการรักษาของแพทย์</label>
+						<input type="checkbox" name="ba4" id="ba4" value="แนะนำรับประทานยาตามแผนการรักษาของแพทย์"><label for="ba4">แนะนำรับประทานยาตามแผนการรักษาของแพทย์</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
+						<input type="checkbox" name="ba5" id="ba5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม"><label for="ba5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำการปกิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="bb1" id="bb1" value=""><label for="bb1">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่วยคลายความวิตกกังวล</label>
+						<input type="checkbox" name="bb2" id="bb2" value=""><label for="bb2">ผู้ป่วยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="bb3" id="bb3" value=""><label for="bb3">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
 
 				<div id="c-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ประเมิน Pain Score= <input type="text" name="" id=""> </label>
+						<input type="checkbox" name="ca1" id="ca1" value="ประเมิน Pain Score="><label for="ca1">ประเมิน Pain Score=<input type="text" name="ca1_txt" id="ca1_txt"> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่</label>
+						<input type="checkbox" name="ca2" id="ca2" value="แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย"><label for="ca2">แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">พักผ่อนให้เพียงพอ อย่างน้อย 6</label>
+						<input type="checkbox" name="ca3" id="ca3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม."><label for="ca3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำทานยาตามแผนการรักษาขอ</label>
+						<input type="checkbox" name="ca4" id="ca4" value="แนะนำทานยาตามแผนการรักษาขอแพทย์"><label for="ca4">แนะนำทานยาตามแผนการรักษาขอแพทย์</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
+						<input type="checkbox" name="ca5" id="ca5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม"><label for="ca5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">Pain Score ซ้ำ = <input type="text" name="" id=""> </label>
+						<input type="checkbox" name="cb1" id="cb1" value="Pain Score ซ้ำ"><label for="cb1">Pain Score ซ้ำ =<input type="text" name="cb1_txt" id="cb1_txt"> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำการปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="cb2" id="cb2" value="แนะนำการปฏิบัติตัว, เรื่องยา"><label for="cb2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่ยคลายความวิตกกังวลฃ</label>
+						<input type="checkbox" name="cb3" id="cb3" value="ผู้ป่ยคลายความวิตกกังวล"><label for="cb3">ผู้ป่ยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา</label>
+						<input type="checkbox" name="cb4" id="cb4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา"><label for="cb4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา</label>
 					</p>
 				</div>
 
 				<div id="d-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยมีไข้</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">มีไข้ BT= <input type="text" name="" id=""> C</label>
+						<input type="checkbox" name="da1" id="da1" value="มีไข้ BT="><label for="da1">มีไข้ BT=<input type="text" name="da1_txt" id="da1_txt">&#8451;</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้ยาลดไข้ <input type="text" name="" id=""> เวลาที่ให้ยา <input type="text" name="" id=""> น.</label>
+						<input type="checkbox" name="da2" id="da2" value="ให้ยาลดไข้"><label for="da2">ให้ยาลดไข้<input type="text" name="da2_txt" id="da2_txt"> เวลาที่ให้ยา <input type="text" name="da2_txt_time" id="da2_txt_time"> น.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง</label>
+						<input type="checkbox" name="da3" id="da3" value="แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง"><label for="da3">แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ</label>
+						<input type="checkbox" name="da4" id="da4" value="ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ"><label for="da4">ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย</label>
+						<input type="checkbox" name="da5" id="da5" value="พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย"><label for="da5">พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร</label>
+						<input type="checkbox" name="da6" id="da6" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร"><label for="da6">อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร</label>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">BTซ้ำ= <input type="text" name="" id=""> C</label>
+						<input type="checkbox" name="db1" id="db1" value="BTซ้ำ="><label for="db1">BTซ้ำ=<input type="text" name="db1_txt" id="db1_txt">&#8451;</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">แนะนำการปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="db2" id="db2" value="แนะนำการปฏิบัติตัว, เรื่องยา"><label for="db2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่วยคลายความวิตกกังวล</label>
+						<input type="checkbox" name="db3" id="db3" value="ผู้ป่วยคลายความวิตกกังวล"><label for="db3">ผู้ป่วยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="db4" id="db4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="db4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
 
 				<div id="e-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2 วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้</label>
+						<input type="checkbox" name="e1" id="e1" value="ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้"><label for="e1">ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่ <input type="text" name="" id=""></label>
+						<input type="checkbox" name="e2" id="e2" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่"><label for="e2">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่ <input type="text" name="e2_txt" id="e2_txt"></label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">การใช้ยา / ตรวจตรมนัด</label>
+						<input type="checkbox" name="e3" id="e3" value="การใช้ยา/ตรวจตามนัด"><label for="e3">การใช้ยา/ตรวจตามนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด</label>
+						<input type="checkbox" name="e4" id="e4" value="อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด"><label for="e4">อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
+						<input type="checkbox" name="e5" id="e5" value="ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่"><label for="e5">ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้</label>
+						<input type="checkbox" name="e6" id="e6" value="วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้"><label for="e6">วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้เอกสาร/ แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
+						<input type="checkbox" name="e7" id="e7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่"><label for="e7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
 					</p>
 				</div>
 
 				<div id="f-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดอาหาร น้ำ และยา ตั้งแต่เวลา <input type="text" name="" id=""> น.</label>
+						<input type="checkbox" name="f1" id="f1" value="งดอาหาร น้ำ และยา ตั้งแต่เวลา"><label for="f1">งดอาหาร น้ำ และยา ตั้งแต่เวลา<input type="text" name="f1_txt" id="f1_txt">น.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก</label>
+						<input type="checkbox" name="f2" id="f2" value="ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก"><label for="f2">ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่ <input type="text" name="" id=""></label>
+						<input type="checkbox" name="f3" id="f3" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่"><label for="f3">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่<input type="text" name="f3_txt" id="f3_txt"></label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดยาเคลือบกระเพาะอาหารก่อนการตรวจ <input type="text" name="" id=""> วัน</label>
+						<input type="checkbox" name="f4" id="f4" value="งดยาเคลือบกระเพาะอาหารก่อนการตรวจ"><label for="f4">งดยาเคลือบกระเพาะอาหารก่อนการตรวจ<input type="text" name="f4_txt" id="f4_txt">วัน</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">การใช้ยา/ตรวจตามนัด</label>
+						<input type="checkbox" name="f5" id="f5" value="การใช้ยา/ตรวจตามนัด"><label for="f5">การใช้ยา/ตรวจตามนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด</label>
+						<input type="checkbox" name="f6" id="f6" value="อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด"><label for="f6">อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร</label>
+						<input type="checkbox" name="f7" id="f7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร"><label for="f7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร</label>
 					</p>
 				</div>
 
 				<div id="g-content" class="tabcontent">
 					<h3>คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</h3>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดน้ำและอาหารหลัง <input type="text" name="" id=""> น.</label>
+						<input type="checkbox" name="g1" id="g1" value="งดน้ำและอาหารหลัง"><label for="g1">งดน้ำและอาหารหลัง<input type="text" name="g1_txt" id="g1_txt"> น.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ</label>
+						<input type="checkbox" name="g2" id="g2" value="งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ"><label for="g2">งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด</label>
+						<input type="checkbox" name="g3" id="g3" value="เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด"><label for="g3">เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">อาบน้ำสระผมโกนหนวดและเคราให้สะอาด</label>
+						<input type="checkbox" name="g4" id="g4" value="อาบน้ำสระผมโกนหนวดและเคราให้สะอาด"><label for="g4">อาบน้ำสระผมโกนหนวดและเคราให้สะอาด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด</label>
+						<input type="checkbox" name="g5" id="g5" value="นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด"><label for="g5">นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">งดยาละลายลิ่มเลือด ตั้งแต่ <input type="text" name="" id=""> </label>
+						<input type="checkbox" name="g6" id="g6" value="งดยาละลายลิ่มเลือด ตั้งแต่"><label for="g6">งดยาละลายลิ่มเลือด ตั้งแต่<input type="text" name="" id=""> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ห้ามโกนขนบริเวณ <input type="text" name="" id=""> </label>
+						<input type="checkbox" name="g7" id="g7" value="ห้ามโกนขนบริเวณ"><label for="g7">ห้ามโกนขนบริเวณ<input type="text" name="" id=""> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="a00" id="a00" value=""><label for="a00">ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="g8" id="g8" value="ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="g8">ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
-
-
 				<script>
-					function openCity(evt, cityName) {
+					function openTab(evt, cityName) {
 					// Declare all variables
 					var i, tabcontent, tablinks;
 
@@ -2216,7 +2258,6 @@ mmHg </td>
 					evt.currentTarget.className += " active";
 				}
 				</script>
-
 			</td>
 		</tr>
 		<?php 
@@ -2267,15 +2308,15 @@ mmHg </td>
 													document.getElementById('antiplatelet_txt').value = '';
 												}
 												function focus_antiplatelet1(){
-													document.f2.antiplatelet_txt.focus();
+													document.form2.antiplatelet_txt.focus();
 												}
 
 												function focus_antiplate_txt(){
-													document.f2.antiplatelet1.checked = true;
+													document.form2.antiplatelet1.checked = true;
 												}
 												function unfocus_antiplate_txt(){
 													if(document.getElementById('antiplatelet_txt').value==''){
-														document.f2.antiplatelet1.checked = false;
+														document.form2.antiplatelet1.checked = false;
 													}
 												}
 											</script>
