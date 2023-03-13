@@ -1991,42 +1991,7 @@ mmHg </td>
 				</style>
 				<?php 
 				/*
-				ALTER TABLE `opd_advice` 
-ADD `ba1` VARCHAR(255) DEFAULT NULL,
-ADD `ba2` VARCHAR(255) DEFAULT NULL,
-ADD `ba3` VARCHAR(255) DEFAULT NULL,
-ADD `ba4` VARCHAR(255) DEFAULT NULL,
-ADD `ba5` VARCHAR(255) DEFAULT NULL
-ADD `bb1` VARCHAR(255) DEFAULT NULL,
-ADD `bb2` VARCHAR(255) DEFAULT NULL,
-ADD `bb3` VARCHAR(255) DEFAULT NULL,
-
-ADD `ca1` VARCHAR(255) DEFAULT NULL,
-ADD `ca1_txt` VARCHAR(255) DEFAULT NULL,
-ADD `ca2` VARCHAR(255) DEFAULT NULL,
-ADD `ca3` VARCHAR(255) DEFAULT NULL,
-ADD `ca4` VARCHAR(255) DEFAULT NULL,
-ADD `ca5` VARCHAR(255) DEFAULT NULL,
-ADD `cb1` VARCHAR(255) DEFAULT NULL,
-ADD `cb1_txt` VARCHAR(255) DEFAULT NULL,
-ADD `cb2` VARCHAR(255) DEFAULT NULL,
-ADD `cb3` VARCHAR(255) DEFAULT NULL,
-ADD `cb4` VARCHAR(255) DEFAULT NULL,
-
-ADD `da1` VARCHAR(255) DEFAULT NULL,
-ADD `da1_txt` VARCHAR(255) DEFAULT NULL,
-ADD `da2` VARCHAR(255) DEFAULT NULL,
-ADD `da2_txt` VARCHAR(255) DEFAULT NULL,
-ADD `da2_txt_time` VARCHAR(255) DEFAULT NULL,
-ADD `da3` VARCHAR(255) DEFAULT NULL,
-ADD `da4` VARCHAR(255) DEFAULT NULL,
-ADD `da5` VARCHAR(255) DEFAULT NULL,
-ADD `da6` VARCHAR(255) DEFAULT NULL,
-ADD `db1` VARCHAR(255) DEFAULT NULL,
-ADD `db1_txt` VARCHAR(255) DEFAULT NULL,
-ADD `db2` VARCHAR(255) DEFAULT NULL,
-ADD `db3` VARCHAR(255) DEFAULT NULL,
-ADD `db4` VARCHAR(255) DEFAULT NULL,
+				
 */
 				?>
 				<div class="tab">
@@ -2227,10 +2192,10 @@ ADD `db4` VARCHAR(255) DEFAULT NULL,
 						<input type="checkbox" name="g5" id="g5" value="นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด"><label for="g5">นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="g6" id="g6" value="งดยาละลายลิ่มเลือด ตั้งแต่"><label for="g6">งดยาละลายลิ่มเลือด ตั้งแต่<input type="text" name="" id=""> </label>
+						<input type="checkbox" name="g6" id="g6" value="งดยาละลายลิ่มเลือด ตั้งแต่"><label for="g6">งดยาละลายลิ่มเลือด ตั้งแต่<input type="text" name="g6_txt" id="g6_txt"> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="g7" id="g7" value="ห้ามโกนขนบริเวณ"><label for="g7">ห้ามโกนขนบริเวณ<input type="text" name="" id=""> </label>
+						<input type="checkbox" name="g7" id="g7" value="ห้ามโกนขนบริเวณ"><label for="g7">ห้ามโกนขนบริเวณ<input type="text" name="g7_txt" id="g7_txt"> </label>
 					</p>
 					<p>
 						<input type="checkbox" name="g8" id="g8" value="ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="g8">ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
