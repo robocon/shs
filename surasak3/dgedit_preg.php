@@ -15,21 +15,22 @@ $byuser = sprintf("%s", $_SESSION['sIdname']);
 $q = $dbi->query("SELECT `id` FROM `drug_pregnancy` WHERE `drugcode` = '$drug_code' ");
 if($q->num_rows===0){ 
 
-    $save = $dbi->query("INSERT INTO `drug_pregnancy` (`drugcode`) VALUE ('$drug_code')");
+    $save = $dbi->query("INSERT INTO `drug_pregnancy` (`drugcode`) VALUES ('$drug_code')");
 
 }
 
 if($preg==='pregnancy'){
 
-    $sql = "UPDATE `drug_pregnancy` SET `preg_type` = '$preg_alert', `lastupdate`=NOW(), `byuser` = '$byuser' WHERE `drugcode` = '$drug_code' ";
+    $sql = "UPDATE `drug_pregnancy` SET `pregnancy` = '$preg_alert', `lastupdate`=NOW(), `byuser` = '$byuser',`status`='y' WHERE `drugcode` = '$drug_code' ";
 
 }elseif($preg==='lactation'){
 
-    $sql = "UPDATE `drug_pregnancy` SET `lac_type` = '$preg_alert', `lastupdate`=NOW(), `byuser` = '$byuser' WHERE `drugcode` = '$drug_code' ";
+    $sql = "UPDATE `drug_pregnancy` SET `lactation` = '$preg_alert', `lastupdate`=NOW(), `byuser` = '$byuser',`status`='y' WHERE `drugcode` = '$drug_code' ";
 
 }
-$dbi->query($sql);
-
+dump($sql);
+$save = $dbi->query($sql);
+dump($save);
 
 if(empty($dbi->error)){
     $res = array('status'=>200, 'message' => 'บันทึกข้อมูลเรียบร้อย');
