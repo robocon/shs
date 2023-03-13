@@ -28,9 +28,7 @@ if($preg==='pregnancy'){
     $sql = "UPDATE `drug_pregnancy` SET `lactation` = '$preg_alert', `lastupdate`=NOW(), `byuser` = '$byuser',`status`='y' WHERE `drugcode` = '$drug_code' ";
 
 }
-dump($sql);
 $save = $dbi->query($sql);
-dump($save);
 
 if(empty($dbi->error)){
     $res = array('status'=>200, 'message' => 'บันทึกข้อมูลเรียบร้อย');
