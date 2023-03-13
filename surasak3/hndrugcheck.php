@@ -650,9 +650,9 @@ if(!empty($b1)){
                         <td><?=$drugcode;?></td>
                         <td>
                             <div>
-                                <b><?=$druglst['genname'];?></b>
+                                <b><?=$druglst['tradname'];?></b>
                                 <br>
-                                <?=$druglst['tradname'];?>
+                                <?=$druglst['genname'];?>
                             </div>
                         </td>
                         <td><?=$slcode;?></td>

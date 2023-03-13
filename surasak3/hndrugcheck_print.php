@@ -321,8 +321,8 @@ if(!empty($drug_items)){
         $pdf->SetFont('THSarabun','',10);
         $lh = $muticell_h = $pdf->GetMultiCellHeight(22.5, 5, toUTF($di['detail']));
 
-        $drugHeight = toUTF("\n".$di['genname']."\n".$di['tradname']);
-
+        // ËÒ¤ÇÒÁÊÙ§â´Â»ÃĞÁÒ³¢Í§ genname tradname
+        $drugHeight = toUTF("\n".$di['tradname']."\n".$di['genname']);
         $lh2 = $pdf->GetMultiCellHeight(29.5, 5, $drugHeight);
         if($lh2 > $lh){
             $lh = $lh2;
@@ -334,11 +334,11 @@ if(!empty($drug_items)){
         $pdf->Cell(5, 5, $pdf->conv($i),1,0,'C');
         $pdf->SetXY(5, $drug_y);
         $pdf->SetFont('THSarabun','B',9);
-        $pdf->MultiCell(29.5, 5, "\n".toUTF($di['genname']),0);
+        $pdf->MultiCell(29.5, 5, "\n".toUTF($di['tradname']),0);
 
         $pdf->SetXY(5, $pdf->GetY());
         $pdf->SetFont('THSarabun','',9.5);
-        $pdf->MultiCell(29.5, 5, toUTF($di['tradname']),0);
+        $pdf->MultiCell(29.5, 5, toUTF($di['genname']),0);
 
         // ÇÔ¸Õãªé 
         $pdf->SetXY(34.5, $drug_y);
