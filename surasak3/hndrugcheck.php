@@ -573,23 +573,6 @@ if(!empty($b1)){
             document.getElementById('type').value = type;
         }
     </script>
-    <style>
-        .tooltip{
-            position: relative;
-        }
-        .tooltip-text{
-            position: absolute;
-            top: -25px;
-            left: 0;
-            background-color: #000;
-            color: #fff;
-            padding: 0px 8px;
-            visibility: hidden;
-        }
-        .tooltip:hover .tooltip-text{
-            visibility: visible;
-        }
-    </style>
     <table>
         <thead>
             <tr bgcolor="CD853F">
@@ -666,7 +649,11 @@ if(!empty($b1)){
                         <td><?=$date;?></a></td>
                         <td><?=$drugcode;?></td>
                         <td>
-                            <div class="tooltip"><?=$druglst['genname'];?> <span class="tooltip-text" ><?=$druglst['tradname'];?></span> </div>
+                            <div>
+                                <b><?=$druglst['tradname'];?></b>
+                                <br>
+                                <?=$druglst['genname'];?>
+                            </div>
                         </td>
                         <td><?=$slcode;?></td>
                         <td><?=$full_detail;?></td>
