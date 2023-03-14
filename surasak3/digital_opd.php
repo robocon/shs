@@ -84,20 +84,36 @@ if($alcohol==0){
 	$alcohol='เคยดื่ม';
 }
 	
-	$list = array();
-	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
+	//////// แพ้ยา ////////
+	$list1 = array();
+	$sql = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and advreact !=''";
 	$result = Mysql_Query($sql);
 	$drugreact_rows = mysql_num_rows($result);
 	if($drugreact_rows>0){
 		while($arr = Mysql_fetch_assoc($result)){
-			array_push($list ,$arr["tradname"]);
+			array_push($list1 ,$arr["tradname"]);
 		}
-		$list_drug = implode(", ",$list);
-		$drugreact_disease = $list_drug;
-
+		$list_drug1 = implode(", ",$list1);
+		$drugreact_disease .= $list_drug1;
 	}else{
 		$drugreact_disease ="ปฎิเสธการแพ้ยา";
+	}
 
+	//////// อาการข้างเคียง ////////
+	$list2 = array();
+	$sql2 = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and sideeffects !=''";
+	$result2 = Mysql_Query($sql2);
+	$drugreact_rows2 = mysql_num_rows($result2);
+	//echo $sql2;
+	if($drugreact_rows2>0){
+		while($arr2 = Mysql_fetch_assoc($result2)){
+			array_push($list2 ,$arr2["tradname"]);
+				
+		}
+		$list_drug2 = implode(", ",$list2);
+		$sideeffects_disease .= $list_drug2;
+	}else{
+		$sideeffects_disease ="ไม่มีประวัติผลข้างเคียงจากยา";
 	}
 
 
@@ -252,6 +268,13 @@ window.print();
     <td colspan="2"><div>
 	<span><strong>โรคประจำตัว : </strong><?php echo $congenital_disease;?></span>
 	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?php echo $drugreact_disease;?></span>
+	</div>
+	</td>
+  </tr>
+  <tr >
+    <td><div align="center">&nbsp;</div></td>
+    <td colspan="2"><div>
+	<span><strong>ผลข้างเคียงจากยา : </strong><?php echo $sideeffects_disease;?></span>
 	</div>
 	</td>
   </tr>  
