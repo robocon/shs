@@ -28,13 +28,13 @@ include("connect.php");
 			<tr>
 				<td height="44" class="font1">
 					<span class="font2">HN :
-						<input name="hn" type="text" id="hn" size="10">
+						<input name="hn" type="text" id="hn" size="10" value="<?=$_POST['hn'];?>">
 					</span>
 				</td>
 			</tr>
 			<tr>
-				<td>
-					เลือกช่วงเวลา ตั้งแต่ <input type="date" name="date_start" id="date_start"> ถึง <input type="date" name="date_end" id="date_end">
+				<td class="font1">
+					เลือกช่วงเวลา ตั้งแต่ <input type="date" name="date_start" id="date_start" value="<?=$_POST['date_start'];?>"> ถึง <input type="date" name="date_end" id="date_end" value="<?=$_POST['date_end'];?>">
 				</td>
 			</tr>
 			<tr>
@@ -61,9 +61,18 @@ include("connect.php");
 <?php
 
 if ($_POST["act"] == "search") {
+
+	list($dsY, $dsM, $dsD) = explode('-', $_POST['date_start']);
+	list($deY, $deM, $deD) = explode('-', $_POST['date_end']);
+
+	$date_start = ($dsY+543)."-$dsM-$dsD";
+	$date_end = ($deY+543)."-$deM-$deD";
 	?>
+	<div align="center" class="font3" style="width:100%;">
+		<a href="http://192.168.129.143/phpspreadsheet/page2.php?hn=<?=$hn;?>&date_start=<?=$date_start;?>&date_end=<?=$date_end;?>" target="_blank">ดาวโหลดข้อมูลไฟล์ Excel</a>
+	</div>
 	<div align="center" class="font3" style="width:100%;"><strong>เอกสารการสุ่มตรวจเวชระเบียน opd billding</strong></div>
-	<div align="center" class="font3" style="width:100%;"><strong>วันที่ 1 ตุลาคม 2556- 31 ธันวาคม 2556</strong></div>
+	<div align="center" class="font3" style="width:100%;"><strong>วันที่ <?=$date_start;?> ถึง <?=$date_end;?></strong></div>
 	<table width="100%" border="1" cellpadding="0" cellspacing="0">
 		<tr>
 			<td width="6%" align="center" class="font1">#</td>
@@ -72,7 +81,7 @@ if ($_POST["act"] == "search") {
 			<td width="29%" align="center" class="font1">ชื่อ - สกุล</td>
 		</tr>
 		<?php
-		$sql = "select * from opday where hn='" . $_POST['hn'] . "' and thidate between '2565-10-01 00:00:00' and '2566-12-31 23:59:59' order by thidate desc ";
+		$sql = "select * from opday where hn='" . $_POST['hn'] . "' and thidate between '$date_start 00:00:00' and '$date_end 23:59:59' order by thidate desc ";
 		//echo $sql;
 		$rows = mysql_query($sql);
 		$num = mysql_num_rows($rows);
