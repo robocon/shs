@@ -430,6 +430,21 @@ window.print();
 
 <?php 
 $dthn = sprintf("%s", $_GET["dthn"]);
+var_dump("SELECT * FROM `opd_advice` WHERE `thdatehn` = '$dthn' ");
+$qAdvice = $dbi->query("SELECT * FROM `opd_advice` WHERE `thdatehn` = '$dthn' ");
+if($qAdvice->num_rows==0){
+?>
+<div style="page-break-after: always;"></div>
+<div>
+	<div style="float:right; text-align:center;">
+		<img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt=""><br>
+		<b><?=$hn;?></b><br>
+		<b><?=$ptname;?></b>
+	</div>
+</div>
+<?php
+}
+
 if($_SESSION['smenucode'] == 'ADMEYE'){
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
