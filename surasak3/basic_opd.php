@@ -436,8 +436,20 @@ if($qAdvice->num_rows==0){
 		'$f5', '$f6', '$f7', '$g1', '$g1_txt', '$g2', '$g3', '$g4', 
 		'$g5', '$g6', '$g6_txt', '$g7', '$g7_txt', '$g8');";
 
-}else{
-	$sql_advice_save = "UPDATE `opd_advice` SET `id`=NULL, `date`=NULL, `hn`=NULL, `opd_id`=NULL, `opday_id`=NULL, `thdatehn`=NULL, `officer`=NULL, `a1`=NULL, `a2`=NULL, `a3`=NULL, `a3_txt`=NULL, `a4`=NULL, `a5`=NULL, `a6`=NULL, `a7`=NULL, `a7_txt`=NULL, `ba1`=NULL, `ba2`=NULL, `ba3`=NULL, `ba4`=NULL, `ba5`=NULL, `bb1`=NULL, `bb2`=NULL, `bb3`=NULL, `ca1`=NULL, `ca1_txt`=NULL, `ca2`=NULL, `ca3`=NULL, `ca4`=NULL, `ca5`=NULL, `cb1`=NULL, `cb1_txt`=NULL, `cb2`=NULL, `cb3`=NULL, `cb4`=NULL, `da1`=NULL, `da1_txt`=NULL, `da2`=NULL, `da2_txt`=NULL, `da2_txt_time`=NULL, `da3`=NULL, `da4`=NULL, `da5`=NULL, `da6`=NULL, `db1`=NULL, `db1_txt`=NULL, `db2`=NULL, `db3`=NULL, `db4`=NULL, `e1`=NULL, `e2`=NULL, `e2_txt`=NULL, `e3`=NULL, `e4`=NULL, `e5`=NULL, `e6`=NULL, `e7`=NULL, `f1`=NULL, `f1_txt`=NULL, `f2`=NULL, `f3`=NULL, `f3_txt`=NULL, `f4`=NULL, `f4_txt`=NULL, `f5`=NULL, `f6`=NULL, `f7`=NULL, `g1`=NULL, `g1_txt`=NULL, `g2`=NULL, `g3`=NULL, `g4`=NULL, `g5`=NULL, `g6`=NULL, `g6_txt`=NULL, `g7`=NULL, `g7_txt`=NULL, `g8`=NULL WHERE (ISNULL(`id`));";
+}else{ 
+	$adv = $qAdvice->fetch_assoc();
+	$adv_id = $adv['id'];
+	$sql_advice_save = "UPDATE `opd_advice` SET 
+	`date`=NOW(), `hn`='$advice_hn', `opd_id`='$opd_id', `opday_id`='$opday_row_id', `thdatehn`='$thidatehn', `officer`='$advice_officer', `a1`='$a1', 
+	`a2`='$a2', `a3`='$a3', `a3_txt`='$a3_txt', `a4`='$a4', `a5`='$a5', `a6`='$a6', `a7`='$a7', `a7_txt`='$a7_txt', 
+	`ba1`='$ba1', `ba2`='$ba2', `ba3`='$ba3', `ba4`='$ba4', `ba5`='$ba5', `bb1`='$bb1', `bb2`='$bb2', `bb3`='$bb3', 
+	`ca1`='$ca1', `ca1_txt`='$ca1_txt', `ca2`='$ca2', `ca3`='$ca3', `ca4`='$ca4', `ca5`='$ca5', `cb1`='$cb1', `cb1_txt`='$cb1_txt', 
+	`cb2`='$cb2', `cb3`='$cb3', `cb4`='$cb4', `da1`='$da1', `da1_txt`='$da1_txt', `da2`='$da2', `da2_txt`='$da2_txt', `da2_txt_time`='$da2_txt_time', 
+	`da3`='$da3', `da4`='$da4', `da5`='$da5', `da6`='$da6', `db1`='$db1', `db1_txt`='$db1_txt', `db2`='$db2', `db3`='$db3', 
+	`db4`='$db4', `e1`='$e1', `e2`='$e2', `e2_txt`='$e2_txt', `e3`='$e3', `e4`='$e4', `e5`='$e5', `e6`='$e6', 
+	`e7`='$e7', `f1`='$f1', `f1_txt`='$f1_txt', `f2`='$f2', `f3`='$f3', `f3_txt`='$f3_txt', `f4`='$f4', `f4_txt`='$f4_txt', 
+	`f5`='$f5', `f6`='$f6', `f7`='$f7', `g1`='$g1', `g1_txt`='$g1_txt', `g2`='$g2', `g3`='$g3', `g4`='$g4', 
+	`g5`='$g5', `g6`='$g6', `g6_txt`='$g6_txt', `g7`='$g7', `g7_txt`='$g7_txt', `g8`='$g8' WHERE `id` = '$adv_id' ;";
 
 }
 $dbi->query($sql_advice_save);
@@ -2157,13 +2169,13 @@ mmHg </td>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="bb1" id="bb1" value=""><label for="bb1">แนะนำการปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="bb1" id="bb1" value="แนะนำการปฏิบัติตัว, เรื่องยา"><label for="bb1">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="bb2" id="bb2" value=""><label for="bb2">ผู้ป่วยคลายความวิตกกังวล</label>
+						<input type="checkbox" name="bb2" id="bb2" value="ผู้ป่วยคลายความวิตกกังวล"><label for="bb2">ผู้ป่วยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="bb3" id="bb3" value=""><label for="bb3">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="bb3" id="bb3" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="bb3">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
 
