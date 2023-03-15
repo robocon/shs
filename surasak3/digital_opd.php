@@ -84,20 +84,36 @@ if($alcohol==0){
 	$alcohol='เคยดื่ม';
 }
 	
-	$list = array();
-	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
+	//////// แพ้ยา ////////
+	$list1 = array();
+	$sql = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and advreact !=''";
 	$result = Mysql_Query($sql);
 	$drugreact_rows = mysql_num_rows($result);
 	if($drugreact_rows>0){
 		while($arr = Mysql_fetch_assoc($result)){
-			array_push($list ,$arr["tradname"]);
+			array_push($list1 ,$arr["tradname"]);
 		}
-		$list_drug = implode(", ",$list);
-		$drugreact_disease = $list_drug;
-
+		$list_drug1 = implode(", ",$list1);
+		$drugreact_disease .= $list_drug1;
 	}else{
 		$drugreact_disease ="ปฎิเสธการแพ้ยา";
+	}
 
+	//////// อาการข้างเคียง ////////
+	$list2 = array();
+	$sql2 = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and sideeffects !=''";
+	$result2 = Mysql_Query($sql2);
+	$drugreact_rows2 = mysql_num_rows($result2);
+	//echo $sql2;
+	if($drugreact_rows2>0){
+		while($arr2 = Mysql_fetch_assoc($result2)){
+			array_push($list2 ,$arr2["tradname"]);
+				
+		}
+		$list_drug2 = implode(", ",$list2);
+		$sideeffects_disease .= $list_drug2;
+	}else{
+		$sideeffects_disease ="ไม่มีประวัติผลข้างเคียงจากยา";
 	}
 
 
@@ -254,6 +270,13 @@ window.print();
 	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?php echo $drugreact_disease;?></span>
 	</div>
 	</td>
+  </tr>
+  <tr >
+    <td><div align="center">&nbsp;</div></td>
+    <td colspan="2"><div>
+	<span><strong>ผลข้างเคียงจากยา : </strong><?php echo $sideeffects_disease;?></span>
+	</div>
+	</td>
   </tr>  
 </table>
 <hr>
@@ -407,6 +430,284 @@ window.print();
 
 <?php 
 $dthn = sprintf("%s", $_GET["dthn"]);
+$qAdvice = mysql_query("SELECT * FROM `opd_advice` WHERE `thdatehn` = '$dthn' ");
+if(mysql_num_rows($qAdvice) > 0){
+	$ad = mysql_fetch_assoc($qAdvice);
+	?>
+	<div style="page-break-after: always;"></div>
+	<div>
+		<div style="float:right; text-align:center;">
+			<img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt=""><br>
+			<b><?=$hn;?></b><br>
+			<b><?=$ptname;?></b>
+		</div>
+		<?php 
+		if($ad['a1'] OR $ad['a2'] OR $ad['a3'] OR $ad['a4'] OR $ad['a5'] OR $ad['a6'] OR $ad['a7'] ){
+		?>
+		<div>
+			<div><b>เห็นสมควรให้</b></div>
+			<?php
+			if($ad['a1']){
+				?><div>- <?=$ad['a1'];?></div><?php
+			}
+			if($ad['a2']){
+				?><div>- <?=$ad['a2'];?></div><?php
+			}
+			if($ad['a3']){ 
+				$replace_a3 = '<span class="underline_notfix">'.$ad['a3_txt'].'</span>';
+				?><div>- <?=str_replace('{x}', $replace_a3, $ad['a3']);?></div><?php
+			}
+			if($ad['a4']){
+				?><div>- <?=$ad['a4'];?></div><?php
+			}
+			if($ad['a5']){
+				?><div>- <?=$ad['a5'];?></div><?php
+			}
+			if($ad['a6']){
+				?><div>- <?=$ad['a6'];?></div><?php
+			}
+			if($ad['a7']){
+				?><div>- <?=$ad['a7'];?> <span class="underline_notfix"><?=$ad['a7_txt'];?></span></div><?php
+			}
+			?>
+		</div>
+		<?php
+		}
+
+		if($ad['ba1'] OR $ad['ba2'] OR $ad['ba3'] OR $ad['ba4'] OR $ad['ba5'] OR $ad['bb1'] OR $ad['bb2'] OR $ad['bb3'] ){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</b></div>
+				<?php 
+				if($ad['ba1']){
+					?><div>- <?=$ad['ba1'];?></div><?php
+				}
+				if($ad['ba2']){
+					?><div>- <?=$ad['ba2'];?></div><?php
+				}
+				if($ad['ba3']){
+					?><div>- <?=$ad['ba3'];?></div><?php
+				}
+				if($ad['ba4']){
+					?><div>- <?=$ad['ba4'];?></div><?php
+				}
+				if($ad['ba5']){
+					?><div>- <?=$ad['ba5'];?></div><?php
+				}
+				if($ad['bb1'] OR $ad['bb2'] OR $ad['bb3']){
+					?>
+					<div><b>การประเมินผล</b></div>
+					<?php 
+					if($ad['bb1']){
+						?><div>- <?=$ad['bb1'];?></div><?php
+					}
+					if($ad['bb2']){
+						?><div>- <?=$ad['bb2'];?></div><?php
+					}
+					if($ad['bb3']){
+						?><div>- <?=$ad['bb3'];?></div><?php
+					}
+				}
+				?>
+			</div>
+			<?php
+		}
+
+		if($ad['ca1'] OR $ad['ca2'] OR $ad['ca3'] OR $ad['ca4'] OR $ad['ca5'] OR $ad['cb1'] OR $ad['cb2'] OR $ad['cb3'] OR $ad['cb4']){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</b></div>
+				<?php 
+				if($ad['ca1']){
+					?><div>- <?=$ad['ca1'];?> <span class="underline_notfix"><?=$ad['ca1_txt'];?></span></div><?php
+				}
+				if($ad['ca2']){
+					?><div>- <?=$ad['ca2'];?></div><?php
+				}
+				if($ad['ca3']){
+					?><div>- <?=$ad['ca3'];?></div><?php
+				}
+				if($ad['ca4']){
+					?><div>- <?=$ad['ca4'];?></div><?php
+				}
+				if($ad['ca5']){
+					?><div>- <?=$ad['ca5'];?></div><?php
+				}
+				if($ad['cb1'] OR $ad['cb2'] OR $ad['cb3'] OR $ad['cb4']){
+					?>
+					<div><b>การประเมินผล</b></div>
+					<?php 
+					if($ad['cb1']){
+						?><div>- <?=$ad['cb1'];?> <span class="underline_notfix"><?=$ad['cb1_txt'];?></span></div><?php
+					}
+					if($ad['cb2']){
+						?><div>- <?=$ad['cb2'];?></div><?php
+					}
+					if($ad['cb3']){
+						?><div>- <?=$ad['cb3'];?></div><?php
+					}
+					if($ad['cb4']){
+						?><div>- <?=$ad['cb4'];?></div><?php
+					}
+				}
+				?>
+			</div>
+			<?php
+		}
+
+		if($ad['da1'] OR $ad['da2'] OR $ad['da3'] OR $ad['da4'] OR $ad['da5'] OR $ad['da6'] OR $ad['db1'] OR $ad['db2'] OR $ad['db3'] OR $ad['db4']){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยมีไข้</b></div>
+				<?php 
+				if($ad['da1']){
+					?><div>- <?=$ad['da1'];?> <span class="underline_notfix"><?=$ad['da1_txt'];?></span>&#8451;</div><?php
+				}
+
+				if($ad['da2']){
+					?><div>- <?=$ad['da2'];?> <span class="underline_notfix"><?=$ad['da2_txt'];?> เวลาที่ให้ยา<?=$ad['da2_txt_time'];?>น.</span></div><?php
+				}
+				if($ad['da3']){
+					?><div>- <?=$ad['da3'];?></div><?php
+				}
+				if($ad['da4']){
+					?><div>- <?=$ad['da4'];?></div><?php
+				}
+				if($ad['da5']){
+					?><div>- <?=$ad['da5'];?></div><?php
+				}
+				if($ad['da6']){
+					?><div>- <?=$ad['da6'];?></div><?php
+				}
+
+				if($ad['db1'] OR $ad['db2'] OR $ad['db3'] OR $ad['db4'] ){
+					?>
+					<div><b>การประเมินผล</b></div>
+					<?php 
+					if($ad['db1']){
+						?><div>- <?=$ad['db1'];?> <span class="underline_notfix"><?=$ad['db1_txt'];?></span>&#8451;</div><?php
+					}
+					if($ad['db2']){
+						?><div>- <?=$ad['db2'];?></div><?php
+					}
+					if($ad['db3']){
+						?><div>- <?=$ad['db3'];?></div><?php
+					}
+					if($ad['db4']){
+						?><div>- <?=$ad['db4'];?></div><?php
+					}
+				}
+				?>
+			</div>
+			<?php
+		}
+
+		if($ad['e1'] OR $ad['e2'] OR $ad['e3'] OR $ad['e4'] OR $ad['e5'] OR $ad['e6'] OR $ad['e7'] ){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</b></div>
+				<?php 
+				if($ad['e1']){
+					?><div>- <?=$ad['e1'];?></div><?php
+				}
+				if($ad['e2']){
+					?><div>- <?=$ad['e2'];?> <span class="underline_notfix"><?=$ad['e2_txt'];?></span></div><?php
+				}
+				if($ad['e3']){
+					?><div>- <?=$ad['e3'];?></div><?php
+				}
+				if($ad['e4']){
+					?><div>- <?=$ad['e4'];?></div><?php
+				}
+				if($ad['e5']){
+					?><div>- <?=$ad['e5'];?></div><?php
+				}
+				if($ad['e6']){
+					?><div>- <?=$ad['e6'];?></div><?php
+				}
+				if($ad['e7']){
+					?><div>- <?=$ad['e7'];?></div><?php
+				}
+				?>
+			</div>
+			<?php
+		}
+
+		if($ad['f1'] OR $ad['f2'] OR $ad['f3'] OR $ad['f4'] OR $ad['f5'] OR $ad['f6'] OR $ad['f7'] ){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</b></div>
+				<?php 
+				if($ad['f1']){
+					?><div>- <?=$ad['f1'];?> <span class="underline_notfix"><?=$ad['f1_txt'];?></span>น.</div><?php
+				}
+				if($ad['f2']){
+					?><div>- <?=$ad['f2'];?></div><?php
+				}
+				if($ad['f3']){
+					?><div>- <?=$ad['f3'];?> <span class="underline_notfix"><?=$ad['f3_txt'];?></span></div><?php
+				}
+
+				if($ad['f4']){
+					?><div>- <?=$ad['f4'];?> <span class="underline_notfix"><?=$ad['f4_txt'];?></span>วัน</div><?php
+				}
+				if($ad['f5']){
+					?><div>- <?=$ad['f5'];?></div><?php
+				}
+				if($ad['f6']){
+					?><div>- <?=$ad['f6'];?></div><?php
+				}
+				if($ad['f7']){
+					?><div>- <?=$ad['f7'];?></div><?php
+				}
+				?>
+			</div>
+			<?php
+		}
+
+		if($ad['g1'] OR $ad['g2'] OR $ad['g3'] OR $ad['g4'] OR $ad['g5'] OR $ad['g6'] OR $ad['g7'] OR $ad['g8']){
+			?>
+			<div>
+				<div><b>คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</b></div>
+			</div>
+			<?php
+			if($ad['g1']){
+				?><div>- <?=$ad['g1'];?> <span class="underline_notfix"><?=$ad['g1_txt'];?></span>น.</div><?php
+			}
+			
+			if($ad['g2']){
+				?><div>- <?=$ad['g2'];?></div><?php
+			}
+			
+			if($ad['g3']){
+				?><div>- <?=$ad['g3'];?></div><?php
+			}
+			
+			if($ad['g4']){
+				?><div>- <?=$ad['g4'];?></div><?php
+			}
+			
+			if($ad['g5']){
+				?><div>- <?=$ad['g5'];?></div><?php
+			}
+			
+			if($ad['g6']){
+				?><div>- <?=$ad['g6'];?> <span class="underline_notfix"><?=$ad['g6_txt'];?></span></div><?php
+			}
+			
+			if($ad['g7']){
+				?><div>- <?=$ad['g7'];?> <span class="underline_notfix"><?=$ad['g7_txt'];?></span></div><?php
+			}
+			
+			if($ad['g8']){
+				?><div>- <?=$ad['g8'];?></div><?php
+			}
+		}
+		?>
+	</div>
+	<?php
+}
+
 if($_SESSION['smenucode'] == 'ADMEYE'){
 	$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$dthn' ";
 	$q = mysql_query($sql);
