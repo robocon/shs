@@ -1,6 +1,6 @@
 <?php 
 session_start();
-include("connect.inc");
+include("connect.php");
 if(empty($_SESSION['sIdname'])){
     echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
     exit;
@@ -100,11 +100,12 @@ background-color:#F8F9F9;
 		$ised = $row->ised;
 
         $preg_type = $lac_type = '';
-        $q2 = mysql_query("SELECT `preg_type`, `lac_type` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' ");
-        if( mysql_num_rows($q2) > 0 ){
-            $pp = mysql_fetch_assoc($q2);
-            $preg_type = $pp['preg_type'];
-            $lac_type = $pp['lac_type'];
+        $sql_preg = "SELECT `pregnancy`, `lactation` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' AND `status` = 'y' ";
+        $qPreg = mysql_query($sql_preg);
+        if( mysql_num_rows($qPreg) > 0 ){
+            $pp = mysql_fetch_assoc($qPreg);
+            $preg_type = $pp['pregnancy'];
+            $lac_type = $pp['lactation'];
         }
 
                   }  
