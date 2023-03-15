@@ -561,7 +561,7 @@ if(mysql_num_rows($qAdvice) > 0){
 				<div><b>คำแนะนำผู้ป่วยมีไข้</b></div>
 				<?php 
 				if($ad['da1']){
-					?><div>- <?=$ad['da1'];?> <span class="underline_notfix"><?=$ad['da1_txt'];?></span></div><?php
+					?><div>- <?=$ad['da1'];?> <span class="underline_notfix"><?=$ad['da1_txt'];?></span>&#8451;</div><?php
 				}
 
 				if($ad['da2']){
@@ -585,7 +585,7 @@ if(mysql_num_rows($qAdvice) > 0){
 					<div><b>การประเมินผล</b></div>
 					<?php 
 					if($ad['db1']){
-						?><div>- <?=$ad['db1'];?> <?=$ad['db1_txt'];?></div><?php
+						?><div>- <?=$ad['db1'];?> <span class="underline_notfix"><?=$ad['db1_txt'];?></span>&#8451;</div><?php
 					}
 					if($ad['db2']){
 						?><div>- <?=$ad['db2'];?></div><?php
@@ -602,7 +602,68 @@ if(mysql_num_rows($qAdvice) > 0){
 			<?php
 		}
 
+		if($ad['e1'] OR $ad['e2'] OR $ad['e3'] OR $ad['e4'] OR $ad['e5'] OR $ad['e6'] OR $ad['e7'] ){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</b></div>
+				<?php 
+				if($ad['e1']){
+					?><div>- <?=$ad['e1'];?></div><?php
+				}
+				if($ad['e2']){
+					?><div>- <?=$ad['e2'];?> <span class="underline_notfix"><?=$ad['e2_txt'];?></span></div><?php
+				}
+				if($ad['e3']){
+					?><div>- <?=$ad['e3'];?></div><?php
+				}
+				if($ad['e4']){
+					?><div>- <?=$ad['e4'];?></div><?php
+				}
+				if($ad['e5']){
+					?><div>- <?=$ad['e5'];?></div><?php
+				}
+				if($ad['e6']){
+					?><div>- <?=$ad['e6'];?></div><?php
+				}
+				if($ad['e7']){
+					?><div>- <?=$ad['e7'];?></div><?php
+				}
+				?>
+			</div>
+			<?php
+		}
 
+		if($ad['f1'] OR $ad['f2'] OR $ad['f3'] OR $ad['f4'] OR $ad['f5'] OR $ad['f6'] OR $ad['f7'] ){
+			?>
+			<div>
+				<div><b>คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</b></div>
+				<?php 
+				if($ad['f1']){
+					?><div>- <?=$ad['f1'];?> <span class="underline_notfix"><?=$ad['f1_txt'];?></span>น.</div><?php
+				}
+				if($ad['f2']){
+					?><div>- <?=$ad['f2'];?></div><?php
+				}
+				if($ad['f3']){
+					?><div>- <?=$ad['f3'];?> <span class="underline_notfix"><?=$ad['f3_txt'];?></span></div><?php
+				}
+
+				if($ad['f4']){
+					?><div>- <?=$ad['f4'];?> <span class="underline_notfix"><?=$ad['f4_txt'];?></span>วัน</div><?php
+				}
+				if($ad['f5']){
+					?><div>- <?=$ad['f5'];?></div><?php
+				}
+				if($ad['f6']){
+					?><div>- <?=$ad['f6'];?></div><?php
+				}
+				if($ad['f7']){
+					?><div>- <?=$ad['f7'];?></div><?php
+				}
+				?>
+			</div>
+			<?php
+		}
 
 		if($ad['g1'] OR $ad['g2'] OR $ad['g3'] OR $ad['g4'] OR $ad['g5'] OR $ad['g6'] OR $ad['g7'] OR $ad['g8']){
 			?>
@@ -611,7 +672,7 @@ if(mysql_num_rows($qAdvice) > 0){
 			</div>
 			<?php
 			if($ad['g1']){
-				?><div>- <?=$ad['g1'];?> <span class="underline_notfix"><?=$ad['g1_txt'];?></span></div><?php
+				?><div>- <?=$ad['g1'];?> <span class="underline_notfix"><?=$ad['g1_txt'];?></span>น.</div><?php
 			}
 			
 			if($ad['g2']){

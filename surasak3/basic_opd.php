@@ -2112,9 +2112,14 @@ mmHg </td>
 				}
 				</style>
 				<?php 
-				/*
-				
-*/
+				function pCheck($v){
+					return (empty($v) ? '' : 'checked="checked"' );
+				}
+				$ad = array();
+				$qAdvice = $dbi->query("SELECT * FROM `opd_advice` WHERE `thdatehn` = '$thidatehn' ");
+				if($qAdvice->num_rows > 0){
+					$ad = $qAdvice->fetch_assoc();
+				}
 				?>
 				<div class="tab">
 					<button type="button" class="tablinks active" onclick="openTab(event, 'a-content')">Refer</button>
@@ -2129,198 +2134,198 @@ mmHg </td>
 				<div id="a-content" class="tabcontent" style="display:block;">
 					<h3>เห็นควรพิจารณาให้</h3>
 					<p>
-						<input type="checkbox" name="a1" id="a1" value="ออกหนังสือรับรองสิทธิ์"><label for="a1">ออกหนังสือรับรองสิทธิ์</label>
+						<input type="checkbox" name="a1" id="a1" value="ออกหนังสือรับรองสิทธิ์" <?=pCheck($ad['a1']);?> ><label for="a1">ออกหนังสือรับรองสิทธิ์</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a2" id="a2" value="ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี"><label for="a2">ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี</label>
+						<input type="checkbox" name="a2" id="a2" value="ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี" <?=pCheck($ad['a2']);?>><label for="a2">ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a3" id="a3" value="ให้รักษาตัว ณ รพ.{x} แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี"><label for="a3">ให้รักษาตัว ณ รพ.<input type="text" name="a3_txt" id="a3_txt"> แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
+						<input type="checkbox" name="a3" id="a3" value="ให้รักษาตัว ณ รพ.{x} แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี" <?=pCheck($ad['a3']);?>><label for="a3">ให้รักษาตัว ณ รพ.<input type="text" name="a3_txt" id="a3_txt" value="<?=$ad['a3_txt'];?>"> แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a4" id="a4" value="ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง"><label for="a4">ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง</label>
+						<input type="checkbox" name="a4" id="a4" value="ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง" <?=pCheck($ad['a4']);?>><label for="a4">ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a5" id="a5" value="ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี"><label for="a5">ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
+						<input type="checkbox" name="a5" id="a5" value="ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี" <?=pCheck($ad['a5']);?>><label for="a5">ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a6" id="a6" value="รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้"><label for="a6">รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้</label>
+						<input type="checkbox" name="a6" id="a6" value="รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้" <?=pCheck($ad['a6']);?>><label for="a6">รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้</label>
 					</p>
 					<p>
-						<input type="checkbox" name="a7" id="a7" value="อื่นๆ"><label for="a7">อื่นๆ </label> <input type="text" name="a7_txt" id="a7_txt">
+						<input type="checkbox" name="a7" id="a7" value="อื่นๆ" <?=pCheck($ad['a7']);?>><label for="a7">อื่นๆ </label> <input type="text" name="a7_txt" id="a7_txt" value="<?=$ad['a7_txt'];?>">
 					</p>
 				</div>
 				<div id="b-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</h3>
 					<p>
-						<input type="checkbox" name="ba1" id="ba1" value="แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย"><label for="ba1">แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย</label>
+						<input type="checkbox" name="ba1" id="ba1" value="แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย" <?=pCheck($ad['ba1']);?>><label for="ba1">แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ba2" id="ba2" value="งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว"><label for="ba2">งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว</label>
+						<input type="checkbox" name="ba2" id="ba2" value="งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว" <?=pCheck($ad['ba2']);?>><label for="ba2">งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ba3" id="ba3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง"><label for="ba3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง</label>
+						<input type="checkbox" name="ba3" id="ba3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง" <?=pCheck($ad['ba3']);?>><label for="ba3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ba4" id="ba4" value="แนะนำรับประทานยาตามแผนการรักษาของแพทย์"><label for="ba4">แนะนำรับประทานยาตามแผนการรักษาของแพทย์</label>
+						<input type="checkbox" name="ba4" id="ba4" value="แนะนำรับประทานยาตามแผนการรักษาของแพทย์" <?=pCheck($ad['ba4']);?>><label for="ba4">แนะนำรับประทานยาตามแผนการรักษาของแพทย์</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ba5" id="ba5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม"><label for="ba5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
+						<input type="checkbox" name="ba5" id="ba5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม" <?=pCheck($ad['ba5']);?>><label for="ba5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="bb1" id="bb1" value="แนะนำการปฏิบัติตัว, เรื่องยา"><label for="bb1">แนะนำการปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="bb1" id="bb1" value="แนะนำการปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['bb1']);?>><label for="bb1">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="bb2" id="bb2" value="ผู้ป่วยคลายความวิตกกังวล"><label for="bb2">ผู้ป่วยคลายความวิตกกังวล</label>
+						<input type="checkbox" name="bb2" id="bb2" value="ผู้ป่วยคลายความวิตกกังวล" <?=pCheck($ad['bb2']);?>><label for="bb2">ผู้ป่วยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="bb3" id="bb3" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="bb3">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="bb3" id="bb3" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['bb3']);?>><label for="bb3">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
 
 				<div id="c-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</h3>
 					<p>
-						<input type="checkbox" name="ca1" id="ca1" value="ประเมิน Pain Score="><label for="ca1">ประเมิน Pain Score=<input type="text" name="ca1_txt" id="ca1_txt"> </label>
+						<input type="checkbox" name="ca1" id="ca1" value="ประเมิน Pain Score=" <?=pCheck($ad['ca1']);?>><label for="ca1">ประเมิน Pain Score=<input type="text" name="ca1_txt" id="ca1_txt" value="<?=$ad['ca1_txt'];?>"> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="ca2" id="ca2" value="แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย"><label for="ca2">แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย</label>
+						<input type="checkbox" name="ca2" id="ca2" value="แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย" <?=pCheck($ad['ca2']);?>><label for="ca2">แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ca3" id="ca3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม."><label for="ca3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม.</label>
+						<input type="checkbox" name="ca3" id="ca3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม." <?=pCheck($ad['ca3']);?>><label for="ca3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ca4" id="ca4" value="แนะนำทานยาตามแผนการรักษาขอแพทย์"><label for="ca4">แนะนำทานยาตามแผนการรักษาขอแพทย์</label>
+						<input type="checkbox" name="ca4" id="ca4" value="แนะนำทานยาตามแผนการรักษาขอแพทย์" <?=pCheck($ad['ca4']);?>><label for="ca4">แนะนำทานยาตามแผนการรักษาขอแพทย์</label>
 					</p>
 					<p>
-						<input type="checkbox" name="ca5" id="ca5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม"><label for="ca5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
+						<input type="checkbox" name="ca5" id="ca5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม" <?=pCheck($ad['ca5']);?>><label for="ca5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="cb1" id="cb1" value="Pain Score ซ้ำ"><label for="cb1">Pain Score ซ้ำ =<input type="text" name="cb1_txt" id="cb1_txt"> </label>
+						<input type="checkbox" name="cb1" id="cb1" value="Pain Score ซ้ำ" <?=pCheck($ad['cb1']);?>><label for="cb1">Pain Score ซ้ำ =<input type="text" name="cb1_txt" id="cb1_txt" value="<?=$ad['cb1_txt'];?>"> </label>
 					</p>
 					<p>
-						<input type="checkbox" name="cb2" id="cb2" value="แนะนำการปฏิบัติตัว, เรื่องยา"><label for="cb2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="cb2" id="cb2" value="แนะนำการปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['cb2']);?>><label for="cb2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="cb3" id="cb3" value="ผู้ป่ยคลายความวิตกกังวล"><label for="cb3">ผู้ป่ยคลายความวิตกกังวล</label>
+						<input type="checkbox" name="cb3" id="cb3" value="ผู้ป่ยคลายความวิตกกังวล" <?=pCheck($ad['cb3']);?>><label for="cb3">ผู้ป่ยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="cb4" id="cb4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา"><label for="cb4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา</label>
+						<input type="checkbox" name="cb4" id="cb4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา" <?=pCheck($ad['cb4']);?>><label for="cb4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา</label>
 					</p>
 				</div>
 
 				<div id="d-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยมีไข้</h3>
 					<p>
-						<input type="checkbox" name="da1" id="da1" value="มีไข้ BT="><label for="da1">มีไข้ BT=<input type="text" name="da1_txt" id="da1_txt">&#8451;</label>
+						<input type="checkbox" name="da1" id="da1" value="มีไข้ BT=" <?=pCheck($ad['da1']);?> ><label for="da1">มีไข้ BT=<input type="text" name="da1_txt" id="da1_txt" value="<?=$ad['da1_txt'];?>">&#8451;</label>
 					</p>
 					<p>
-						<input type="checkbox" name="da2" id="da2" value="ให้ยาลดไข้"><label for="da2">ให้ยาลดไข้<input type="text" name="da2_txt" id="da2_txt"> เวลาที่ให้ยา <input type="text" name="da2_txt_time" id="da2_txt_time"> น.</label>
+						<input type="checkbox" name="da2" id="da2" value="ให้ยาลดไข้" <?=pCheck($ad['da2']);?> ><label for="da2">ให้ยาลดไข้<input type="text" name="da2_txt" id="da2_txt" value="<?=$ad['da2_txt'];?>"> เวลาที่ให้ยา <input type="text" name="da2_txt_time" id="da2_txt_time" value="<?=$ad['da2_txt_time'];?>"> น.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="da3" id="da3" value="แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง"><label for="da3">แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง</label>
+						<input type="checkbox" name="da3" id="da3" value="แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง" <?=pCheck($ad['da3']);?> ><label for="da3">แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง</label>
 					</p>
 					<p>
-						<input type="checkbox" name="da4" id="da4" value="ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ"><label for="da4">ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ</label>
+						<input type="checkbox" name="da4" id="da4" value="ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ" <?=pCheck($ad['da4']);?> ><label for="da4">ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ</label>
 					</p>
 					<p>
-						<input type="checkbox" name="da5" id="da5" value="พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย"><label for="da5">พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย</label>
+						<input type="checkbox" name="da5" id="da5" value="พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย" <?=pCheck($ad['da5']);?> ><label for="da5">พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย</label>
 					</p>
 					<p>
-						<input type="checkbox" name="da6" id="da6" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร"><label for="da6">อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร</label>
+						<input type="checkbox" name="da6" id="da6" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร" <?=pCheck($ad['da6']);?> ><label for="da6">อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร</label>
 					</p>
 					<h3>การประเมินผล</h3>
 					<p>
-						<input type="checkbox" name="db1" id="db1" value="BTซ้ำ="><label for="db1">BTซ้ำ=<input type="text" name="db1_txt" id="db1_txt">&#8451;</label>
+						<input type="checkbox" name="db1" id="db1" value="BTซ้ำ=" <?=pCheck($ad['db1']);?> ><label for="db1">BTซ้ำ=<input type="text" name="db1_txt" id="db1_txt" value="<?=$ad['db1_txt'];?>">&#8451;</label>
 					</p>
 					<p>
-						<input type="checkbox" name="db2" id="db2" value="แนะนำการปฏิบัติตัว, เรื่องยา"><label for="db2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="db2" id="db2" value="แนะนำการปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['db2']);?> ><label for="db2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
 					</p>
 					<p>
-						<input type="checkbox" name="db3" id="db3" value="ผู้ป่วยคลายความวิตกกังวล"><label for="db3">ผู้ป่วยคลายความวิตกกังวล</label>
+						<input type="checkbox" name="db3" id="db3" value="ผู้ป่วยคลายความวิตกกังวล" <?=pCheck($ad['db3']);?> ><label for="db3">ผู้ป่วยคลายความวิตกกังวล</label>
 					</p>
 					<p>
-						<input type="checkbox" name="db4" id="db4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="db4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="db4" id="db4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['db4']);?> ><label for="db4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
 
 				<div id="e-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</h3>
 					<p>
-						<input type="checkbox" name="e1" id="e1" value="ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้"><label for="e1">ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้</label>
+						<input type="checkbox" name="e1" id="e1" value="ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้" <?=pCheck($ad['e1']);?> ><label for="e1">ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้</label>
 					</p>
 					<p>
-						<input type="checkbox" name="e2" id="e2" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่"><label for="e2">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่ <input type="text" name="e2_txt" id="e2_txt"></label>
+						<input type="checkbox" name="e2" id="e2" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่" <?=pCheck($ad['e2']);?> ><label for="e2">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่ <input type="text" name="e2_txt" id="e2_txt" value="<?=$ad['e2_txt'];?>"></label>
 					</p>
 					<p>
-						<input type="checkbox" name="e3" id="e3" value="การใช้ยา/ตรวจตามนัด"><label for="e3">การใช้ยา/ตรวจตามนัด</label>
+						<input type="checkbox" name="e3" id="e3" value="การใช้ยา/ตรวจตามนัด" <?=pCheck($ad['e3']);?> ><label for="e3">การใช้ยา/ตรวจตามนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="e4" id="e4" value="อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด"><label for="e4">อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด</label>
+						<input type="checkbox" name="e4" id="e4" value="อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด" <?=pCheck($ad['e4']);?> ><label for="e4">อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="e5" id="e5" value="ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่"><label for="e5">ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
+						<input type="checkbox" name="e5" id="e5" value="ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่" <?=pCheck($ad['e5']);?> ><label for="e5">ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
 					</p>
 					<p>
-						<input type="checkbox" name="e6" id="e6" value="วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้"><label for="e6">วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้</label>
+						<input type="checkbox" name="e6" id="e6" value="วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้" <?=pCheck($ad['e6']);?> ><label for="e6">วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้</label>
 					</p>
 					<p>
-						<input type="checkbox" name="e7" id="e7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่"><label for="e7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
+						<input type="checkbox" name="e7" id="e7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่" <?=pCheck($ad['e7']);?> ><label for="e7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
 					</p>
 				</div>
 
 				<div id="f-content" class="tabcontent">
 					<h3>คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</h3>
 					<p>
-						<input type="checkbox" name="f1" id="f1" value="งดอาหาร น้ำ และยา ตั้งแต่เวลา"><label for="f1">งดอาหาร น้ำ และยา ตั้งแต่เวลา<input type="text" name="f1_txt" id="f1_txt">น.</label>
+						<input type="checkbox" name="f1" id="f1" value="งดอาหาร น้ำ และยา ตั้งแต่เวลา" <?=pCheck($ad['f1']);?> ><label for="f1">งดอาหาร น้ำ และยา ตั้งแต่เวลา<input type="text" name="f1_txt" id="f1_txt" value="<?=$ad['f1_txt'];?>">น.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="f2" id="f2" value="ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก"><label for="f2">ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก</label>
+						<input type="checkbox" name="f2" id="f2" value="ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก" <?=pCheck($ad['f2']);?> ><label for="f2">ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก</label>
 					</p>
 					<p>
-						<input type="checkbox" name="f3" id="f3" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่"><label for="f3">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่<input type="text" name="f3_txt" id="f3_txt"></label>
+						<input type="checkbox" name="f3" id="f3" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่" <?=pCheck($ad['f3']);?> ><label for="f3">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่<input type="text" name="f3_txt" id="f3_txt" value="<?=$ad['f3_txt'];?>"></label>
 					</p>
 					<p>
-						<input type="checkbox" name="f4" id="f4" value="งดยาเคลือบกระเพาะอาหารก่อนการตรวจ"><label for="f4">งดยาเคลือบกระเพาะอาหารก่อนการตรวจ<input type="text" name="f4_txt" id="f4_txt">วัน</label>
+						<input type="checkbox" name="f4" id="f4" value="งดยาเคลือบกระเพาะอาหารก่อนการตรวจ" <?=pCheck($ad['f4']);?> ><label for="f4">งดยาเคลือบกระเพาะอาหารก่อนการตรวจ<input type="text" name="f4_txt" id="f4_txt" value="<?=$ad['f4_txt'];?>">วัน</label>
 					</p>
 					<p>
-						<input type="checkbox" name="f5" id="f5" value="การใช้ยา/ตรวจตามนัด"><label for="f5">การใช้ยา/ตรวจตามนัด</label>
+						<input type="checkbox" name="f5" id="f5" value="การใช้ยา/ตรวจตามนัด" <?=pCheck($ad['f5']);?> ><label for="f5">การใช้ยา/ตรวจตามนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="f6" id="f6" value="อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด"><label for="f6">อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด</label>
+						<input type="checkbox" name="f6" id="f6" value="อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด" <?=pCheck($ad['f6']);?> ><label for="f6">อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="f7" id="f7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร"><label for="f7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร</label>
+						<input type="checkbox" name="f7" id="f7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร" <?=pCheck($ad['f7']);?> ><label for="f7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร</label>
 					</p>
 				</div>
 
 				<div id="g-content" class="tabcontent">
 					<h3>คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</h3>
 					<p>
-						<input type="checkbox" name="g1" id="g1" value="งดน้ำและอาหารหลัง"><label for="g1">งดน้ำและอาหารหลัง<input type="text" name="g1_txt" id="g1_txt"> น.</label>
+						<input type="checkbox" name="g1" id="g1" value="งดน้ำและอาหารหลัง" <?=pCheck($ad['g1']);?> ><label for="g1">งดน้ำและอาหารหลัง<input type="text" name="g1_txt" id="g1_txt" value="<?=$ad['g1_txt'];?>" > น.</label>
 					</p>
 					<p>
-						<input type="checkbox" name="g2" id="g2" value="งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ"><label for="g2">งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ</label>
+						<input type="checkbox" name="g2" id="g2" value="งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ" <?=pCheck($ad['g2']);?> ><label for="g2">งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ</label>
 					</p>
 					<p>
-						<input type="checkbox" name="g3" id="g3" value="เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด"><label for="g3">เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด</label>
+						<input type="checkbox" name="g3" id="g3" value="เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด" <?=pCheck($ad['g3']);?> ><label for="g3">เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="g4" id="g4" value="อาบน้ำสระผมโกนหนวดและเคราให้สะอาด"><label for="g4">อาบน้ำสระผมโกนหนวดและเคราให้สะอาด</label>
+						<input type="checkbox" name="g4" id="g4" value="อาบน้ำสระผมโกนหนวดและเคราให้สะอาด" <?=pCheck($ad['g4']);?> ><label for="g4">อาบน้ำสระผมโกนหนวดและเคราให้สะอาด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="g5" id="g5" value="นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด"><label for="g5">นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด</label>
+						<input type="checkbox" name="g5" id="g5" value="นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด" <?=pCheck($ad['g5']);?> ><label for="g5">นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด</label>
 					</p>
 					<p>
-						<input type="checkbox" name="g6" id="g6" value="งดยาละลายลิ่มเลือด ตั้งแต่"><label for="g6">งดยาละลายลิ่มเลือด ตั้งแต่<input type="text" name="g6_txt" id="g6_txt"> </label>
+						<input type="checkbox" name="g6" id="g6" value="งดยาละลายลิ่มเลือด ตั้งแต่" <?=pCheck($ad['g6']);?> ><label for="g6">งดยาละลายลิ่มเลือด ตั้งแต่<input type="text" name="g6_txt" id="g6_txt" value="<?=$ad['g6_txt'];?>" > </label>
 					</p>
 					<p>
-						<input type="checkbox" name="g7" id="g7" value="ห้ามโกนขนบริเวณ"><label for="g7">ห้ามโกนขนบริเวณ<input type="text" name="g7_txt" id="g7_txt"> </label>
+						<input type="checkbox" name="g7" id="g7" value="ห้ามโกนขนบริเวณ" <?=pCheck($ad['g7']);?> ><label for="g7">ห้ามโกนขนบริเวณ<input type="text" name="g7_txt" id="g7_txt" value="<?=$ad['g7_txt'];?>" > </label>
 					</p>
 					<p>
-						<input type="checkbox" name="g8" id="g8" value="ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา"><label for="g8">ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
+						<input type="checkbox" name="g8" id="g8" value="ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['g8']);?> ><label for="g8">ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
 					</p>
 				</div>
 				<script>
