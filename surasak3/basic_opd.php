@@ -482,6 +482,7 @@ $dbi->query($sql_advice_save);
 		$nurse_dx7 = $_POST['nurse_dx7'];
 		$nurse_dx8 = $_POST['nurse_dx8'];
 		$nurse_dx9_txt = $_POST['nurse_dx9_txt'];
+		$nurse_dx10 = $_POST['nurse_dx10'];
 		$imp1 = $_POST['imp1'];
 		$imp2 = $_POST['imp2'];
 		$imp2_txt = $_POST['imp2_txt'];
@@ -529,7 +530,7 @@ $dbi->query($sql_advice_save);
 				`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
 				`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
 				`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
-				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, 
+				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, `nurse_dx10`
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
 				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
 				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`, 
@@ -538,7 +539,7 @@ $dbi->query($sql_advice_save);
 				NULL, '$thidatehn', '$opd_id', '$hn', '$ptname', '$antiplatelet', '$antiplatelet_txt', 
 				'$esr', '$esr_ph', '$esr_glass', '$esr_not', '$esl', '$esl_ph', '$esl_glass', '$esl_not', 
 				'$nurse_dx1', '$nurse_dx1_txt', '$nurse_dx2', '$nurse_dx2_txt', '$nurse_dx3', '$nurse_dx3_txt', '$nurse_dx4', '$nurse_dx5', 
-				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt', 
+				'$nurse_dx6','$nurse_dx7','$nurse_dx8','$nurse_dx9_txt', '$nurse_dx10', 
 				'$imp1', '$imp2', '$imp2_txt', '$imp3', '$imp4', '$imp5', '$imp6', '$imp6_txt', 
 				'$imp7','$imp8','$imp9','$imp10','$imp11','$imp12','$imp13_txt', 
 				'$eva1', '$eva2', '$eva3', '$eva4', '$eva5', '$eva6', '$eva7', '$eva8', '$eva9', '$eva10', '$eva10_txt', 
@@ -555,7 +556,7 @@ $dbi->query($sql_advice_save);
 			`thdatehn`='$thidatehn', `opd`='$opd_id', `hn`='$hn', `ptname`='$ptname', `antiplatelet`='$antiplatelet', `antiplatelet_txt`='$antiplatelet_txt', 
 			`esr`='$esr', `esr_ph`='$esr_ph', `esr_glass`='$esr_glass', `esr_not`='$esr_not', `esl`='$esl', `esl_ph`='$esl_ph', `esl_glass`='$esl_glass', `esl_not`='$esl_not', 
 			`nurse_dx1`='$nurse_dx1', `nurse_dx1_txt`='$nurse_dx1_txt', `nurse_dx2`='$nurse_dx2', `nurse_dx2_txt`='$nurse_dx2_txt', `nurse_dx3`='$nurse_dx3', `nurse_dx3_txt`='$nurse_dx3_txt', `nurse_dx4`='$nurse_dx4', `nurse_dx5`='$nurse_dx5', 
-			`nurse_dx6`='$nurse_dx6',`nurse_dx7`='$nurse_dx7',`nurse_dx8`='$nurse_dx8',`nurse_dx9_txt`='$nurse_dx9_txt', 
+			`nurse_dx6`='$nurse_dx6',`nurse_dx7`='$nurse_dx7',`nurse_dx8`='$nurse_dx8',`nurse_dx9_txt`='$nurse_dx9_txt', `nurse_dx10`='$nurse_dx10', 
 			`imp1`='$imp1', `imp2`='$imp2', `imp2_txt`='$imp2_txt', `imp3`='$imp3', `imp4`='$imp4', `imp5`='$imp5', `imp6`='$imp6', `imp6_txt`='$imp6_txt', 
 			`imp7`='$imp7',`imp8`='$imp8',`imp9`='$imp9',`imp10`='$imp10',`imp11`='$imp11',`imp12`='$imp12',`imp13_txt`='$imp13_txt', 
 			`eva1`='$eva1', `eva2`='$eva2', `eva3`='$eva3', `eva4`='$eva4', `eva5`='$eva5', `eva6`='$eva6', `eva7`='$eva7', `eva8`='$eva8', `eva9`='$eva9', `eva10`='$eva10', `eva10_txt`='$eva10_txt', 
@@ -2452,6 +2453,7 @@ mmHg </td>
 								$nurse_dx6 = (!empty($eye['nurse_dx6'])) ? 'checked="checked"' : '' ;
 								$nurse_dx7 = (!empty($eye['nurse_dx7'])) ? 'checked="checked"' : '' ;
 								$nurse_dx8 = (!empty($eye['nurse_dx8'])) ? 'checked="checked"' : '' ;
+								$nurse_dx10 = (!empty($eye['nurse_dx10'])) ? 'checked="checked"' : '' ;
 								
 								/**
 								 * 2566-02-09 หน้างานปรับฟอร์มใหม่ขอยกเลิกฟิลด์ nurse_dx3_txt, nurse_dx2_txt
@@ -2475,7 +2477,8 @@ mmHg </td>
 										<td><input type="checkbox" name="nurse_dx8" id="nurse_dx8" value="ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ." <?=$nurse_dx8;?>> <label for="nurse_dx8">ผป.มีความวิตกกังวลเกี่ยวกับอาการที่มารพ.</label></td>
 									</tr>
 									<tr>
-										<td colspan="2"><input type="text" name="nurse_dx9_txt" id="nurse_dx9_txt" value="<?=$eye['nurse_dx9_txt'];?>" size="50"></td>
+										<td><input type="text" name="nurse_dx9_txt" id="nurse_dx9_txt" value="<?=$eye['nurse_dx9_txt'];?>" size="50"></td>
+										<td><input type="checkbox" name="nurse_dx10" id="nurse_dx10" value="เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจาก ผป.สูงอายุ" <?=$nurse_dx10;?> ><label for="nurse_dx10">เสี่ยงต่อการเกิดอุบัติเหตุ เนื่องจาก ผป.สูงอายุ</label></td>
 									</tr>
 								</table>
 							</td>
@@ -2602,7 +2605,7 @@ mmHg </td>
 										<td><input type="checkbox" name="eva2" id="eva2" value="ให้คำแนะนำตาม D METHOD" <?=$eva2;?>> <label for="eva2">ให้คำแนะนำตาม D METHOD</label></td>
 									</tr>
 									<tr>
-										<td><input type="checkbox" name="eva3" id="eva3" value="แนะนำการระมัดระวังพลัดตกหกล้ม" <?=$eva3;?>> <label for="eva3">แนะนำการระมัดระวังพลัดตกหกล้ม</label></td>
+										<td><input type="checkbox" name="eva3" id="eva3" value="ไม่เกิดอุบัติเหตุพลัดตกหกล้มขณะรอตรวจ" <?=$eva3;?>> <label for="eva3">ไม่เกิดอุบัติเหตุพลัดตกหกล้มขณะรอตรวจ</label></td>
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="eva4" id="eva4" value="สังเกตอาการผิดปกติ ถ้าตาแดงมากขึ้น ปวดตามาก น้ำตาไหล การมองเห็นลดลงให้มาพบแพทย์" <?=$eva4;?>> <label for="eva4">สังเกตอาการผิดปกติ ถ้าตาแดงมากขึ้น ปวดตามาก น้ำตาไหล การมองเห็นลดลงให้มาพบแพทย์</label></td>
@@ -2614,7 +2617,7 @@ mmHg </td>
 										<td><input type="checkbox" name="eva11" id="eva11" value="ประเมิน PS" <?=$eva11;?> > <label for="eva11">ประเมิน PS</label><input type="text" name="eva11_txt" id="eva11_txt" value="<?=$eye['eva11_txt'];?>"></td>
 									</tr>
 									<tr>
-										<td><input type="checkbox" name="eva12" id="eva12" value="ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำนแะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค" <?=$eva12;?> > <label for="eva12">ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำนแะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค</label></td>
+										<td><input type="checkbox" name="eva12" id="eva12" value="ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำแนะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค" <?=$eva12;?> > <label for="eva12">ผป./ญาติ ทราบวิธีการปฏิบัติตัวตามคำแนะนำตามโรคที่เป็น ไม่เกิดภาวะแทรกซ้อนของโรค</label></td>
 									</tr>
 									<tr>
 										<td><input type="checkbox" name="eva13" id="eva13" value="ไม่เกิดภาวะแทรกซ้อนหลัง laser" <?=$eva13;?> > <label for="eva13">ไม่เกิดภาวะแทรกซ้อนหลัง laser</label></td>
