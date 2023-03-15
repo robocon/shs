@@ -429,51 +429,24 @@ window.print();
 </table>
 
 <?php 
-$dthn = sprintf("%s", $_GET["dthn"]);
-$qAdvice = mysql_query("SELECT * FROM `opd_advice` WHERE `thdatehn` = '$dthn' ");
-if(mysql_num_rows($qAdvice) > 0){
-	$ad = mysql_fetch_assoc($qAdvice);
-	?>
-	<div style="page-break-after: always;"></div>
-	<div>
-		<div style="float:right; text-align:center;">
-			<img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt=""><br>
-			<b><?=$hn;?></b><br>
-			<b><?=$ptname;?></b>
-		</div>
-		<?php 
-		if($ad['a1'] OR $ad['a2'] OR $ad['a3'] OR $ad['a4'] OR $ad['a5'] OR $ad['a6'] OR $ad['a7'] ){
+$show_advice = $_GET['show_advice'];
+if(!empty($show_advice)){
+	$adv_form = explode('|',$show_advice);
+	if(in_array('form_a',$adv_form)===true){
 		?>
-		<div>
-			<div><b>เห็นสมควรให้</b></div>
-			<?php
-			if($ad['a1']){
-				?><div>- <?=$ad['a1'];?></div><?php
-			}
-			if($ad['a2']){
-				?><div>- <?=$ad['a2'];?></div><?php
-			}
-			if($ad['a3']){ 
-				$replace_a3 = '<span class="underline_notfix">'.$ad['a3_txt'].'</span>';
-				?><div>- <?=str_replace('{x}', $replace_a3, $ad['a3']);?></div><?php
-			}
-			if($ad['a4']){
-				?><div>- <?=$ad['a4'];?></div><?php
-			}
-			if($ad['a5']){
-				?><div>- <?=$ad['a5'];?></div><?php
-			}
-			if($ad['a6']){
-				?><div>- <?=$ad['a6'];?></div><?php
-			}
-			if($ad['a7']){
-				?><div>- <?=$ad['a7'];?> <span class="underline_notfix"><?=$ad['a7_txt'];?></span></div><?php
-			}
-			?>
+		<div style="font-size:16px;">
+			<div><b>เห็นควรพิจารณาให้</b></div>
+			<div>&#9744; ออกหนังสือรับรองสิทธิ์</div>
+			<div>&#9744; ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี</div>
+			<div>&#9744; ให้รักษาตัว ณ รพ._________________แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</div>
+			<div>&#9744; ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง</div>
+			<div>&#9744; ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</div>
+			<div>&#9744; รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้</div>
+			<div>&#9744; อื่นๆ_____________________________</div>
 		</div>
 		<?php
-		}
-
+	}
+		
 		if($ad['ba1'] OR $ad['ba2'] OR $ad['ba3'] OR $ad['ba4'] OR $ad['ba5'] OR $ad['bb1'] OR $ad['bb2'] OR $ad['bb3'] ){
 			?>
 			<div>
@@ -704,7 +677,6 @@ if(mysql_num_rows($qAdvice) > 0){
 			}
 		}
 		?>
-	</div>
 	<?php
 }
 
