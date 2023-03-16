@@ -621,6 +621,38 @@ function addtolist_muli(){
 </TR>
 </TABLE>
 </div>
+<?php 
+$patient_hn = trim($_SESSION["hn_now"]);
+if ( $patient_hn==='55-8821' OR $patient_hn==='48-4304' OR $patient_hn==='48-4065' OR $patient_hn==='59-5224') { 
+
+	$moretxt = "";
+	if($patient_hn==='59-5224')
+	{
+		$moretxt = '\n *** แจ้งเตือน! ให้พบหมอนภสมรเท่านั้น ***';
+	}
+	?>
+	<script type="text/javascript">
+	alert('กรุณาตรวจสอบ การจ่ายยา และปริมาณยาในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ<?=$moretxt;?>');
+	</script>
+	<?php
+}
+elseif ($patient_hn==='50-4904') 
+{
+	?>
+	<script type="text/javascript">
+	alert('ระวังการจ่ายยา เนื่องจากผู้ป่วยรายนี้เบิกยาเกินความจำเป็น');
+	</script>
+	<?php
+}
+elseif ($patient_hn=='49-19589') {
+	?>
+	<script type="text/javascript">
+	alert('นางฐิติชญา ขัดชุ่มแสง เคสนี้ ขอพิจารณาการจ่ายยาเป็นกรณีพิเศษ เนื่องจากมีการใช้ยาที่ไม่สมเหตุสมผล ทั้งชนิดและปริมาณ หรือส่งผู้ป่วยพบแพทย์นภสมร');
+	</script>
+	<?php
+}
+?>
+
 <SCRIPT LANGUAGE="JavaScript">
 
 window.onload = function(){

@@ -2657,15 +2657,15 @@ function rdu18_alert(drugcode, icd10){
 				testRdu18 = true;
 			}
 		}
-		if( testRdu18 === true ){ 
-			
+		if( testRdu18 === true ){
+
 			var dataHtml = '<p><img src="images/rud18.png"></p>';
 			dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
-		
+
 			document.getElementById('rduAlertContainer').style.width = 'auto';
 			document.getElementById('rduContent').innerHTML = v; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
-
+			
 		}
 
 	}
@@ -2692,7 +2692,7 @@ function rdu7_alert(drugcode, icd10){
 		document.getElementById('rduAlertContainer').style.display = 'block';
 	}
 	
-}
+		}
 
 function rdu8_alert(drugcode, icd10){
 
@@ -4002,6 +4002,13 @@ elseif ($patient_hn==='50-4904')
 	?>
 	<script>
 	alert('ระวังการจ่ายยา เนื่องจากผู้ป่วยรายนี้เบิกยาเกินความจำเป็น');
+	</script>
+	<?php
+}
+elseif ($patient_hn=='49-19589') {
+	?>
+	<script>
+	alert('นางฐิติชญา ขัดชุ่มแสง เคสนี้ ขอพิจารณาการจ่ายยาเป็นกรณีพิเศษ เนื่องจากมีการใช้ยาที่ไม่สมเหตุสมผล ทั้งชนิดและปริมาณ หรือส่งผู้ป่วยพบแพทย์นภสมร');
 	</script>
 	<?php
 }
