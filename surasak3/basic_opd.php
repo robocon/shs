@@ -333,127 +333,6 @@ if($_POST["cigarette"]=="1"){
 	$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
 
 
-$a1 = sprintf("%s", $_POST['a1']);
-$a2 = sprintf("%s", $_POST['a2']);
-$a3 = sprintf("%s", $_POST['a3']);
-$a3_txt = sprintf("%s", $_POST['a3_txt']);
-$a4 = sprintf("%s", $_POST['a4']);
-$a5 = sprintf("%s", $_POST['a5']);
-$a6 = sprintf("%s", $_POST['a6']);
-$a7 = sprintf("%s", $_POST['a7']);
-$a7_txt = sprintf("%s", $_POST['a7_txt']);
-$ba1 = sprintf("%s", $_POST['ba1']);
-$ba2 = sprintf("%s", $_POST['ba2']);
-$ba3 = sprintf("%s", $_POST['ba3']);
-$ba4 = sprintf("%s", $_POST['ba4']);
-$ba5 = sprintf("%s", $_POST['ba5']);
-$bb1 = sprintf("%s", $_POST['bb1']);
-$bb2 = sprintf("%s", $_POST['bb2']);
-$bb3 = sprintf("%s", $_POST['bb3']);
-$ca1 = sprintf("%s", $_POST['ca1']);
-$ca1_txt = sprintf("%s", $_POST['ca1_txt']);
-$ca2 = sprintf("%s", $_POST['ca2']);
-$ca3 = sprintf("%s", $_POST['ca3']);
-$ca4 = sprintf("%s", $_POST['ca4']);
-$ca5 = sprintf("%s", $_POST['ca5']);
-$cb1 = sprintf("%s", $_POST['cb1']);
-$cb1_txt = sprintf("%s", $_POST['cb1_txt']);
-$cb2 = sprintf("%s", $_POST['cb2']);
-$cb3 = sprintf("%s", $_POST['cb3']);
-$cb4 = sprintf("%s", $_POST['cb4']);
-$da1 = sprintf("%s", $_POST['da1']);
-$da1_txt = sprintf("%s", $_POST['da1_txt']);
-$da2 = sprintf("%s", $_POST['da2']);
-$da2_txt = sprintf("%s", $_POST['da2_txt']);
-$da2_txt_time = sprintf("%s", $_POST['da2_txt_time']);
-$da3 = sprintf("%s", $_POST['da3']);
-$da4 = sprintf("%s", $_POST['da4']);
-$da5 = sprintf("%s", $_POST['da5']);
-$da6 = sprintf("%s", $_POST['da6']);
-$db1 = sprintf("%s", $_POST['db1']);
-$db1_txt = sprintf("%s", $_POST['db1_txt']);
-$db2 = sprintf("%s", $_POST['db2']);
-$db3 = sprintf("%s", $_POST['db3']);
-$db4 = sprintf("%s", $_POST['db4']);
-$e1 = sprintf("%s", $_POST['e1']);
-$e2 = sprintf("%s", $_POST['e2']);
-$e2_txt = sprintf("%s", $_POST['e2_txt']);
-$e3 = sprintf("%s", $_POST['e3']);
-$e4 = sprintf("%s", $_POST['e4']);
-$e5 = sprintf("%s", $_POST['e5']);
-$e6 = sprintf("%s", $_POST['e6']);
-$e7 = sprintf("%s", $_POST['e7']);
-$f1 = sprintf("%s", $_POST['f1']);
-$f1_txt = sprintf("%s", $_POST['f1_txt']);
-$f2 = sprintf("%s", $_POST['f2']);
-$f3 = sprintf("%s", $_POST['f3']);
-$f3_txt = sprintf("%s", $_POST['f3_txt']);
-$f4 = sprintf("%s", $_POST['f4']);
-$f4_txt = sprintf("%s", $_POST['f4_txt']);
-$f5 = sprintf("%s", $_POST['f5']);
-$f6 = sprintf("%s", $_POST['f6']);
-$f7 = sprintf("%s", $_POST['f7']);
-$g1 = sprintf("%s", $_POST['g1']);
-$g1_txt = sprintf("%s", $_POST['g1_txt']);
-$g2 = sprintf("%s", $_POST['g2']);
-$g3 = sprintf("%s", $_POST['g3']);
-$g4 = sprintf("%s", $_POST['g4']);
-$g5 = sprintf("%s", $_POST['g5']);
-$g6 = sprintf("%s", $_POST['g6']);
-$g6_txt = sprintf("%s", $_POST['g6_txt']);
-$g7 = sprintf("%s", $_POST['g7']);
-$g7_txt = sprintf("%s", $_POST['g7_txt']);
-$g8 = sprintf("%s", $_POST['g8']);
-$advice_officer = sprintf("%s", $_SESSION['sOfficer']);
-$advice_hn = sprintf("%s", $_REQUEST["hn"]);
-
-$qOpday = $dbi->query("SELECT `row_id` FROM `opday` WHERE `thdatehn` = '$thidatehn' ");
-$opdayItem = $qOpday->fetch_assoc();
-$opday_row_id = $opdayItem['row_id'];
-
-$qAdvice = $dbi->query("SELECT `id` FROM `opd_advice` WHERE `thdatehn` = '$thidatehn' ");
-if($qAdvice->num_rows==0){
-	$sql_advice_save = "INSERT INTO `opd_advice` ( 
-		`id`, `date`, `hn`, `opd_id`, `opday_id`, `thdatehn`, `officer`, `a1`, 
-		`a2`, `a3`, `a3_txt`, `a4`, `a5`, `a6`, `a7`, `a7_txt`, 
-		`ba1`, `ba2`, `ba3`, `ba4`, `ba5`, `bb1`, `bb2`, `bb3`, 
-		`ca1`, `ca1_txt`, `ca2`, `ca3`, `ca4`, `ca5`, `cb1`, `cb1_txt`, 
-		`cb2`, `cb3`, `cb4`, `da1`, `da1_txt`, `da2`, `da2_txt`, `da2_txt_time`, 
-		`da3`, `da4`, `da5`, `da6`, `db1`, `db1_txt`, `db2`, `db3`, 
-		`db4`, `e1`, `e2`, `e2_txt`, `e3`, `e4`, `e5`, `e6`, 
-		`e7`, `f1`, `f1_txt`, `f2`, `f3`, `f3_txt`, `f4`, `f4_txt`, 
-		`f5`, `f6`, `f7`, `g1`, `g1_txt`, `g2`, `g3`, `g4`, 
-		`g5`, `g6`, `g6_txt`, `g7`, `g7_txt`, `g8`
-	) VALUES (
-	'	NULL', NOW(), '$advice_hn', '$opd_id', '$opday_row_id', '$thidatehn', '$advice_officer', '$a1', 
-		'$a2', '$a3', '$a3_txt', '$a4', '$a5', '$a6', '$a7', '$a7_txt', 
-		'$ba1', '$ba2', '$ba3', '$ba4', '$ba5', '$bb1', '$bb2', '$bb3', 
-		'$ca1', '$ca1_txt', '$ca2', '$ca3', '$ca4', '$ca5', '$cb1', '$cb1_txt', 
-		'$cb2', '$cb3', '$cb4', '$da1', '$da1_txt', '$da2', '$da2_txt', '$da2_txt_time', 
-		'$da3', '$da4', '$da5', '$da6', '$db1', '$db1_txt', '$db2', '$db3', 
-		'$db4', '$e1', '$e2', '$e2_txt', '$e3', '$e4', '$e5', '$e6', 
-		'$e7', '$f1', '$f1_txt', '$f2', '$f3', '$f3_txt', '$f4', '$f4_txt', 
-		'$f5', '$f6', '$f7', '$g1', '$g1_txt', '$g2', '$g3', '$g4', 
-		'$g5', '$g6', '$g6_txt', '$g7', '$g7_txt', '$g8');";
-
-}else{ 
-	$adv = $qAdvice->fetch_assoc();
-	$adv_id = $adv['id'];
-	$sql_advice_save = "UPDATE `opd_advice` SET 
-	`date`=NOW(), `hn`='$advice_hn', `opd_id`='$opd_id', `opday_id`='$opday_row_id', `thdatehn`='$thidatehn', `officer`='$advice_officer', `a1`='$a1', 
-	`a2`='$a2', `a3`='$a3', `a3_txt`='$a3_txt', `a4`='$a4', `a5`='$a5', `a6`='$a6', `a7`='$a7', `a7_txt`='$a7_txt', 
-	`ba1`='$ba1', `ba2`='$ba2', `ba3`='$ba3', `ba4`='$ba4', `ba5`='$ba5', `bb1`='$bb1', `bb2`='$bb2', `bb3`='$bb3', 
-	`ca1`='$ca1', `ca1_txt`='$ca1_txt', `ca2`='$ca2', `ca3`='$ca3', `ca4`='$ca4', `ca5`='$ca5', `cb1`='$cb1', `cb1_txt`='$cb1_txt', 
-	`cb2`='$cb2', `cb3`='$cb3', `cb4`='$cb4', `da1`='$da1', `da1_txt`='$da1_txt', `da2`='$da2', `da2_txt`='$da2_txt', `da2_txt_time`='$da2_txt_time', 
-	`da3`='$da3', `da4`='$da4', `da5`='$da5', `da6`='$da6', `db1`='$db1', `db1_txt`='$db1_txt', `db2`='$db2', `db3`='$db3', 
-	`db4`='$db4', `e1`='$e1', `e2`='$e2', `e2_txt`='$e2_txt', `e3`='$e3', `e4`='$e4', `e5`='$e5', `e6`='$e6', 
-	`e7`='$e7', `f1`='$f1', `f1_txt`='$f1_txt', `f2`='$f2', `f3`='$f3', `f3_txt`='$f3_txt', `f4`='$f4', `f4_txt`='$f4_txt', 
-	`f5`='$f5', `f6`='$f6', `f7`='$f7', `g1`='$g1', `g1_txt`='$g1_txt', `g2`='$g2', `g3`='$g3', `g4`='$g4', 
-	`g5`='$g5', `g6`='$g6', `g6_txt`='$g6_txt', `g7`='$g7', `g7_txt`='$g7_txt', `g8`='$g8' WHERE `id` = '$adv_id' ;";
-
-}
-$dbi->query($sql_advice_save);
-
 	if($_SESSION['smenucode'] == 'ADMEYE')
 	{
 
@@ -530,7 +409,7 @@ $dbi->query($sql_advice_save);
 				`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
 				`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
 				`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
-				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, `nurse_dx10`
+				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, `nurse_dx10`,
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
 				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
 				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`, 
@@ -764,6 +643,11 @@ $dbi->query($sql_advice_save);
 		// echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"".$time.";URL=basic_opd.php\">";
 	}
 
+	$adv = '';
+	if(!empty($_POST['display_advice'])){
+		$display_advice = implode('|', $_POST['display_advice']);
+		$adv = '&show_advice='.$display_advice;
+	}
 	?>
 	<br />
 
@@ -773,7 +657,7 @@ $dbi->query($sql_advice_save);
 	</center>
 
 	<script type="text/javascript">
-		var path = '<?=$path;?>?dthn=<?=urlencode($thidatehn);?>';
+		var path = '<?=$path;?>?dthn=<?=urlencode($thidatehn).$adv;?>';
 		window.onload = function(){ 
 			window.open(path);
 			setTimeout(function(){ 
@@ -2062,295 +1946,43 @@ mmHg </td>
 
 		<tr>
 			<td colspan="6">
-
 				<style>
-				/* Style the tab */
-				.tab {
-					float: left;
-					border: 1px solid #ccc;
-					background-color: #f1f1f1;
-					width: 30%;
-					/* height: 300px; */
-				}
-
-				/* Style the buttons that are used to open the tab content */
-				.tab button {
-					display: block;
-					background-color: inherit;
-					color: black;
-					padding: 12px 16px;
-					width: 100%;
-					border: none;
-					outline: none;
-					text-align: left;
-					cursor: pointer;
-					transition: 0.3s;
-				}
-
-				/* Change background color of buttons on hover */
-				.tab button:hover {
-					background-color: #ddd;
-				}
-
-				/* Create an active/current "tab button" class */
-				.tab button.active {
-					background-color: #ccc;
-				}
-
-				/* Style the tab content */
-				.tabcontent { 
-					display:none;
-					float: left;
-					padding: 0px 12px 12px;
-					border: 1px solid #ccc;
-					width: 69%;
-					/* border-left: none; */
-					/* height: 300px; */
-					box-sizing: border-box;
-				}
-				.tabcontent h3{
-					margin-bottom: 0;
-				}
+					.mainThumb{
+						position: relative;
+					}
+					.thumbnail{
+						visibility: hidden;
+						position: absolute;
+  						z-index: 1;
+					}
+					.thumbnail img{
+						box-shadow: 2px 2px 4px #000000;
+					}
+					.mainThumb:hover .thumbnail{
+						visibility: visible;
+					}
 				</style>
-				<?php 
-				function pCheck($v){
-					return (empty($v) ? '' : 'checked="checked"' );
-				}
-				$ad = array();
-				$qAdvice = $dbi->query("SELECT * FROM `opd_advice` WHERE `thdatehn` = '$thidatehn' ");
-				if($qAdvice->num_rows > 0){
-					$ad = $qAdvice->fetch_assoc();
-				}
-				?>
-				<div class="tab">
-					<button type="button" class="tablinks active" onclick="openTab(event, 'a-content')">Refer</button>
-					<button type="button" class="tablinks" onclick="openTab(event, 'b-content')">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</button>
-					<button type="button" class="tablinks" onclick="openTab(event, 'c-content')">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</button>
-					<button type="button" class="tablinks" onclick="openTab(event, 'd-content')">คำแนะนำผู้ป่วยมีไข้</button>
-					<button type="button" class="tablinks" onclick="openTab(event, 'e-content')">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</button>
-					<button type="button" class="tablinks" onclick="openTab(event, 'f-content')">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</button>
-					<button type="button" class="tablinks" onclick="openTab(event, 'g-content')">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</button>
-				</div>
-
-				<div id="a-content" class="tabcontent" style="display:block;">
-					<h3>เห็นควรพิจารณาให้</h3>
-					<p>
-						<input type="checkbox" name="a1" id="a1" value="ออกหนังสือรับรองสิทธิ์" <?=pCheck($ad['a1']);?> ><label for="a1">ออกหนังสือรับรองสิทธิ์</label>
-					</p>
-					<p>
-						<input type="checkbox" name="a2" id="a2" value="ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี" <?=pCheck($ad['a2']);?>><label for="a2">ให้รับกลับมารักษาต่อ ที่ รพ.ค่ายสุรศักดิ์มนตรี</label>
-					</p>
-					<p>
-						<input type="checkbox" name="a3" id="a3" value="ให้รักษาตัว ณ รพ.{x} แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี" <?=pCheck($ad['a3']);?>><label for="a3">ให้รักษาตัว ณ รพ.<input type="text" name="a3_txt" id="a3_txt" value="<?=$ad['a3_txt'];?>"> แล้วเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
-					</p>
-					<p>
-						<input type="checkbox" name="a4" id="a4" value="ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง" <?=pCheck($ad['a4']);?>><label for="a4">ให้ใช้สิทธิ กรณีอุบัติเหตุ/ฉุกเฉิน ภายใน 72 ชั่วโมง</label>
-					</p>
-					<p>
-						<input type="checkbox" name="a5" id="a5" value="ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี" <?=pCheck($ad['a5']);?>><label for="a5">ให้เบิกค่ารักษาจาก พรบ. แล้วจึงเรียกเก็บจาก รพ.ค่ายสุรศักดิ์มนตรี</label>
-					</p>
-					<p>
-						<input type="checkbox" name="a6" id="a6" value="รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้" <?=pCheck($ad['a6']);?>><label for="a6">รับทราบยอดประมาณการค่าใช้จ่ายในากรรักษาครั้งนี้</label>
-					</p>
-					<p>
-						<input type="checkbox" name="a7" id="a7" value="อื่นๆ" <?=pCheck($ad['a7']);?>><label for="a7">อื่นๆ </label> <input type="text" name="a7_txt" id="a7_txt" value="<?=$ad['a7_txt'];?>">
-					</p>
-				</div>
-				<div id="b-content" class="tabcontent">
-					<h3>คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</h3>
-					<p>
-						<input type="checkbox" name="ba1" id="ba1" value="แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย" <?=pCheck($ad['ba1']);?>><label for="ba1">แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ba2" id="ba2" value="งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว" <?=pCheck($ad['ba2']);?>><label for="ba2">งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ba3" id="ba3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง" <?=pCheck($ad['ba3']);?>><label for="ba3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ba4" id="ba4" value="แนะนำรับประทานยาตามแผนการรักษาของแพทย์" <?=pCheck($ad['ba4']);?>><label for="ba4">แนะนำรับประทานยาตามแผนการรักษาของแพทย์</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ba5" id="ba5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม" <?=pCheck($ad['ba5']);?>><label for="ba5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
-					</p>
-					<h3>การประเมินผล</h3>
-					<p>
-						<input type="checkbox" name="bb1" id="bb1" value="แนะนำการปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['bb1']);?>><label for="bb1">แนะนำการปฏิบัติตัว, เรื่องยา</label>
-					</p>
-					<p>
-						<input type="checkbox" name="bb2" id="bb2" value="ผู้ป่วยคลายความวิตกกังวล" <?=pCheck($ad['bb2']);?>><label for="bb2">ผู้ป่วยคลายความวิตกกังวล</label>
-					</p>
-					<p>
-						<input type="checkbox" name="bb3" id="bb3" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['bb3']);?>><label for="bb3">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
-					</p>
-				</div>
-
-				<div id="c-content" class="tabcontent">
-					<h3>คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</h3>
-					<p>
-						<input type="checkbox" name="ca1" id="ca1" value="ประเมิน Pain Score=" <?=pCheck($ad['ca1']);?>><label for="ca1">ประเมิน Pain Score=<input type="text" name="ca1_txt" id="ca1_txt" value="<?=$ad['ca1_txt'];?>"> </label>
-					</p>
-					<p>
-						<input type="checkbox" name="ca2" id="ca2" value="แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย" <?=pCheck($ad['ca2']);?>><label for="ca2">แนะนำให้รับประทานอาหารที่มีประโยชน์ อาหารอ่อนย่อยง่าย</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ca3" id="ca3" value="พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม." <?=pCheck($ad['ca3']);?>><label for="ca3">พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชม.</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ca4" id="ca4" value="แนะนำทานยาตามแผนการรักษาขอแพทย์" <?=pCheck($ad['ca4']);?>><label for="ca4">แนะนำทานยาตามแผนการรักษาขอแพทย์</label>
-					</p>
-					<p>
-						<input type="checkbox" name="ca5" id="ca5" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม" <?=pCheck($ad['ca5']);?>><label for="ca5">อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลว ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</label>
-					</p>
-					<h3>การประเมินผล</h3>
-					<p>
-						<input type="checkbox" name="cb1" id="cb1" value="Pain Score ซ้ำ" <?=pCheck($ad['cb1']);?>><label for="cb1">Pain Score ซ้ำ =<input type="text" name="cb1_txt" id="cb1_txt" value="<?=$ad['cb1_txt'];?>"> </label>
-					</p>
-					<p>
-						<input type="checkbox" name="cb2" id="cb2" value="แนะนำการปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['cb2']);?>><label for="cb2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
-					</p>
-					<p>
-						<input type="checkbox" name="cb3" id="cb3" value="ผู้ป่ยคลายความวิตกกังวล" <?=pCheck($ad['cb3']);?>><label for="cb3">ผู้ป่ยคลายความวิตกกังวล</label>
-					</p>
-					<p>
-						<input type="checkbox" name="cb4" id="cb4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา" <?=pCheck($ad['cb4']);?>><label for="cb4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่อยา</label>
-					</p>
-				</div>
-
-				<div id="d-content" class="tabcontent">
-					<h3>คำแนะนำผู้ป่วยมีไข้</h3>
-					<p>
-						<input type="checkbox" name="da1" id="da1" value="มีไข้ BT=" <?=pCheck($ad['da1']);?> ><label for="da1">มีไข้ BT=<input type="text" name="da1_txt" id="da1_txt" value="<?=$ad['da1_txt'];?>">&#8451;</label>
-					</p>
-					<p>
-						<input type="checkbox" name="da2" id="da2" value="ให้ยาลดไข้" <?=pCheck($ad['da2']);?> ><label for="da2">ให้ยาลดไข้<input type="text" name="da2_txt" id="da2_txt" value="<?=$ad['da2_txt'];?>"> เวลาที่ให้ยา <input type="text" name="da2_txt_time" id="da2_txt_time" value="<?=$ad['da2_txt_time'];?>"> น.</label>
-					</p>
-					<p>
-						<input type="checkbox" name="da3" id="da3" value="แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง" <?=pCheck($ad['da3']);?> ><label for="da3">แนะนำให้ผู้ป่วยรับประทานยาลดไข้ซ้ำได้ทุก 4-6 ชั่วโมง</label>
-					</p>
-					<p>
-						<input type="checkbox" name="da4" id="da4" value="ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ" <?=pCheck($ad['da4']);?> ><label for="da4">ให้เช็ดตัวลดไข้ ขณะเช็ดตัวให้ดื่มน้ำมากๆ</label>
-					</p>
-					<p>
-						<input type="checkbox" name="da5" id="da5" value="พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย" <?=pCheck($ad['da5']);?> ><label for="da5">พักผ่อนให้เพียงพอ, รับประทานอาหารอ่อนย่อยง่าย</label>
-					</p>
-					<p>
-						<input type="checkbox" name="da6" id="da6" value="อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร" <?=pCheck($ad['da6']);?> ><label for="da6">อาการผิดปกติที่ต้องกลับมาพบแพทย์เช่น ไข้สูง หนาวสั่น อ่อนเพลีย เบื่ออาหาร</label>
-					</p>
-					<h3>การประเมินผล</h3>
-					<p>
-						<input type="checkbox" name="db1" id="db1" value="BTซ้ำ=" <?=pCheck($ad['db1']);?> ><label for="db1">BTซ้ำ=<input type="text" name="db1_txt" id="db1_txt" value="<?=$ad['db1_txt'];?>">&#8451;</label>
-					</p>
-					<p>
-						<input type="checkbox" name="db2" id="db2" value="แนะนำการปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['db2']);?> ><label for="db2">แนะนำการปฏิบัติตัว, เรื่องยา</label>
-					</p>
-					<p>
-						<input type="checkbox" name="db3" id="db3" value="ผู้ป่วยคลายความวิตกกังวล" <?=pCheck($ad['db3']);?> ><label for="db3">ผู้ป่วยคลายความวิตกกังวล</label>
-					</p>
-					<p>
-						<input type="checkbox" name="db4" id="db4" value="ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['db4']);?> ><label for="db4">ผู้ป่วยเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
-					</p>
-				</div>
-
-				<div id="e-content" class="tabcontent">
-					<h3>คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</h3>
-					<p>
-						<input type="checkbox" name="e1" id="e1" value="ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้" <?=pCheck($ad['e1']);?> ><label for="e1">ก่อนวันนัดส่องตรวจลำไส้ใหญ่ 2วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้มหรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ผัก ผลไม้</label>
-					</p>
-					<p>
-						<input type="checkbox" name="e2" id="e2" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่" <?=pCheck($ad['e2']);?> ><label for="e2">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่ <input type="text" name="e2_txt" id="e2_txt" value="<?=$ad['e2_txt'];?>"></label>
-					</p>
-					<p>
-						<input type="checkbox" name="e3" id="e3" value="การใช้ยา/ตรวจตามนัด" <?=pCheck($ad['e3']);?> ><label for="e3">การใช้ยา/ตรวจตามนัด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="e4" id="e4" value="อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด" <?=pCheck($ad['e4']);?> ><label for="e4">อาการผิดตกติที่ควรมาพบแพทย์ หรือ มาก่อนนัด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="e5" id="e5" value="ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่" <?=pCheck($ad['e5']);?> ><label for="e5">ให้เอกสาร/แผ่นพับ คำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
-					</p>
-					<p>
-						<input type="checkbox" name="e6" id="e6" value="วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้" <?=pCheck($ad['e6']);?> ><label for="e6">วันนัดนอนโรงพยาบาล ผู้ป่วยจะได้รับการเตรียมลำไส้ใหญ่ก่อนตรวจ โดยให้รับประทานยาระบายและสวนลำไส้ใหญ่ ซึ่งอาจจะมีอาการอ่อนเพลียได้</label>
-					</p>
-					<p>
-						<input type="checkbox" name="e7" id="e7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่" <?=pCheck($ad['e7']);?> ><label for="e7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจลำไส้ใหญ่</label>
-					</p>
-				</div>
-
-				<div id="f-content" class="tabcontent">
-					<h3>คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</h3>
-					<p>
-						<input type="checkbox" name="f1" id="f1" value="งดอาหาร น้ำ และยา ตั้งแต่เวลา" <?=pCheck($ad['f1']);?> ><label for="f1">งดอาหาร น้ำ และยา ตั้งแต่เวลา<input type="text" name="f1_txt" id="f1_txt" value="<?=$ad['f1_txt'];?>">น.</label>
-					</p>
-					<p>
-						<input type="checkbox" name="f2" id="f2" value="ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก" <?=pCheck($ad['f2']);?> ><label for="f2">ก่อนวันนัดส่องตรวจกระเพาะอาหาร 1วัน ให้รับประทานอาหารอ่อน เช่น ข้าวต้ม หรือโจ๊ก งดรับประทานอาหารย่อยยาก เช่น ข้าวเหนียว ไข่ เนื้อสัตว์ ผัก</label>
-					</p>
-					<p>
-						<input type="checkbox" name="f3" id="f3" value="งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่" <?=pCheck($ad['f3']);?> ><label for="f3">งดยาละลายลิ่มเลือด ก่อนการตรวจตั้งแต่วันที่<input type="text" name="f3_txt" id="f3_txt" value="<?=$ad['f3_txt'];?>"></label>
-					</p>
-					<p>
-						<input type="checkbox" name="f4" id="f4" value="งดยาเคลือบกระเพาะอาหารก่อนการตรวจ" <?=pCheck($ad['f4']);?> ><label for="f4">งดยาเคลือบกระเพาะอาหารก่อนการตรวจ<input type="text" name="f4_txt" id="f4_txt" value="<?=$ad['f4_txt'];?>">วัน</label>
-					</p>
-					<p>
-						<input type="checkbox" name="f5" id="f5" value="การใช้ยา/ตรวจตามนัด" <?=pCheck($ad['f5']);?> ><label for="f5">การใช้ยา/ตรวจตามนัด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="f6" id="f6" value="อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด" <?=pCheck($ad['f6']);?> ><label for="f6">อาการผิดปกติที่ควรมาพบแพทย์ หรือมาก่อนนัด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="f7" id="f7" value="ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร" <?=pCheck($ad['f7']);?> ><label for="f7">ให้เอกสาร/แผ่นพับคำแนะนำสำหรับผู้ป่วยส่งตรวจกระเพาะอาหาร</label>
-					</p>
-				</div>
-
-				<div id="g-content" class="tabcontent">
-					<h3>คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</h3>
-					<p>
-						<input type="checkbox" name="g1" id="g1" value="งดน้ำและอาหารหลัง" <?=pCheck($ad['g1']);?> ><label for="g1">งดน้ำและอาหารหลัง<input type="text" name="g1_txt" id="g1_txt" value="<?=$ad['g1_txt'];?>" > น.</label>
-					</p>
-					<p>
-						<input type="checkbox" name="g2" id="g2" value="งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ" <?=pCheck($ad['g2']);?> ><label for="g2">งดแต่งหน้าทาลิปสติกและงดทาสีเล็บ</label>
-					</p>
-					<p>
-						<input type="checkbox" name="g3" id="g3" value="เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด" <?=pCheck($ad['g3']);?> ><label for="g3">เก็บของมีค่าและเครื่องประดับห้ามนำติดตัวเข้าผ่าตัด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="g4" id="g4" value="อาบน้ำสระผมโกนหนวดและเคราให้สะอาด" <?=pCheck($ad['g4']);?> ><label for="g4">อาบน้ำสระผมโกนหนวดและเคราให้สะอาด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="g5" id="g5" value="นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด" <?=pCheck($ad['g5']);?> ><label for="g5">นอนหลับพักผ่อนให้เพียงพอ ทำจิตใจให้แจ่มในไม่เครียด</label>
-					</p>
-					<p>
-						<input type="checkbox" name="g6" id="g6" value="งดยาละลายลิ่มเลือด ตั้งแต่" <?=pCheck($ad['g6']);?> ><label for="g6">งดยาละลายลิ่มเลือด ตั้งแต่<input type="text" name="g6_txt" id="g6_txt" value="<?=$ad['g6_txt'];?>" > </label>
-					</p>
-					<p>
-						<input type="checkbox" name="g7" id="g7" value="ห้ามโกนขนบริเวณ" <?=pCheck($ad['g7']);?> ><label for="g7">ห้ามโกนขนบริเวณ<input type="text" name="g7_txt" id="g7_txt" value="<?=$ad['g7_txt'];?>" > </label>
-					</p>
-					<p>
-						<input type="checkbox" name="g8" id="g8" value="ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา" <?=pCheck($ad['g8']);?> ><label for="g8">ผู้ป่วยต้องเข้าใจคำแนะนำ, การปฏิบัติตัว, เรื่องยา</label>
-					</p>
-				</div>
-				<script>
-					function openTab(evt, cityName) {
-					// Declare all variables
-					var i, tabcontent, tablinks;
-
-					// Get all elements with class="tabcontent" and hide them
-					tabcontent = document.getElementsByClassName("tabcontent");
-					for (i = 0; i < tabcontent.length; i++) {
-						tabcontent[i].style.display = "none";
-					}
-
-					// Get all elements with class="tablinks" and remove the class "active"
-					tablinks = document.getElementsByClassName("tablinks");
-					for (i = 0; i < tablinks.length; i++) {
-						tablinks[i].className = tablinks[i].className.replace(" active", "");
-					}
-
-					// Show the current tab, and add an "active" class to the link that opened the tab
-					document.getElementById(cityName).style.display = "block";
-					evt.currentTarget.className += " active";
-				}
-				</script>
+				<fieldset>
+					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe และคำแนะนำก่อนผ่าตัด</legend>
+					<table>
+						<tr>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer<span class="thumbnail"><img src="images/form_advice/form_a.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่<span class="thumbnail"><img src="images/form_advice/form_b.png" alt=""></span></label></div></td>
+						</tr>
+						<tr>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว<span class="thumbnail"><img src="images/form_advice/form_c.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร<span class="thumbnail"><img src="images/form_advice/form_d.png" alt=""></span></label></div></td>
+						</tr>
+						<tr>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด<span class="thumbnail"><img src="images/form_advice/form_e.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด<span class="thumbnail"><img src="images/form_advice/form_f.png" alt=""></span></label></div></td>
+						</tr>
+						<tr>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้<span class="thumbnail"><img src="images/form_advice/form_g.png" alt=""></span></label></div></td>
+							<td></td>
+						</tr>
+					</table>
+				</fieldset>
 			</td>
 		</tr>
 		<?php 
