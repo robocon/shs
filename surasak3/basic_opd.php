@@ -409,7 +409,7 @@ if($_POST["cigarette"]=="1"){
 				`id`, `thdatehn`, `opd`, `hn`, `ptname`, `antiplatelet`, `antiplatelet_txt`, 
 				`esr`, `esr_ph`, `esr_glass`, `esr_not`, `esl`, `esl_ph`, `esl_glass`, `esl_not`, 
 				`nurse_dx1`, `nurse_dx1_txt`, `nurse_dx2`, `nurse_dx2_txt`, `nurse_dx3`, `nurse_dx3_txt`, `nurse_dx4`, `nurse_dx5`, 
-				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, `nurse_dx10`
+				`nurse_dx6`,`nurse_dx7`,`nurse_dx8`,`nurse_dx9_txt`, `nurse_dx10`,
 				`imp1`, `imp2`, `imp2_txt`, `imp3`, `imp4`, `imp5`, `imp6`, `imp6_txt`, 
 				`imp7`,`imp8`,`imp9`,`imp10`,`imp11`,`imp12`,`imp13_txt`, 
 				`eva1`, `eva2`, `eva3`, `eva4`, `eva5`, `eva6`, `eva7`, `eva8`, `eva9`, `eva10`, `eva10_txt`, 
