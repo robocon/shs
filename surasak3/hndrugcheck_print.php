@@ -80,7 +80,7 @@ $op = $qOp->fetch_assoc();
 $idcard = $op['idcard'];
 $age = $op['age'];
 
-$sqlIpcard ="SELECT `an`,`date`,SUBSTRING(`bedcode`,1,2) AS `bedcode` FROM `bed` WHERE `hn` = '$hn' ";
+$sqlIpcard ="SELECT `an`,`date`,SUBSTRING(`bedcode`,1,2) AS `bedcode`,`diagnos` FROM `bed` WHERE `hn` = '$hn' ";
 $ipQ = $dbi->query($sqlIpcard);
 $ip = array();
 if($ipQ->num_rows>0){
@@ -182,6 +182,9 @@ $pdf->Cell(15, 5, $timeAdmit,0,1);
 $pdf->SetXY(145, 40.5);
 $name = getWardName($ip['bedcode']);
 $pdf->Cell(55, 5, $name,0,1);
+
+$pdf->SetXY(147, 45.5);
+$pdf->Cell(55, 5, $ip['diagnos'],0,1);
 
 $pdf->SetXY(145, 50.5);
 $pdf->Cell(55, 5, $re['react_name'],0,1);
