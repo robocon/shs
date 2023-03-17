@@ -797,7 +797,7 @@ if($date_en < date('Y-m-d')){
 <br>
 
 <table border="0">
-  <tr><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
+  <tr valign="top"><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
     <td width="311"><font face="Angsana New">
       <select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
       <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
@@ -880,7 +880,7 @@ if($date_en < date('Y-m-d')){
 			// ถ้านัดจาก Ward จะแสดงข้อความให้กรอก AN
 			if( $an_check === true ){ echo "เลขที่AN/อื่นๆ : "; }
 			?>
-			<input type="text" id="detail2" name="detail2" size="20">
+			<input type="text" id="detail2" name="detail2" size="60">
 
 			<select size="1" name="detail_list" id="detail_list" style="display:none">
 				<option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
@@ -889,8 +889,25 @@ if($date_en < date('Y-m-d')){
 			</select>
 
 			<?php 
-			if($_SESSION){
-
+			if($_SESSION['smenucode']=='ADMPT' OR $_SESSION['smenucode']=='ADM'){
+				?>
+				<select name="ptHelper" id="ptHelper" onchange="addToDetail2()">
+					<option value="">---- เลือกข้อมูล ----</option>
+					<option value="กรุณา ใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้น (ที่ไม่ใช่รองเท้าคัชชู) มาด้วยทุกครั้ง">กรุณา ใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้น (ที่ไม่ใช่รองเท้าคัชชู) มาด้วยทุกครั้ง</option>
+					<option value="โครงการสูงวัยไม่ล้ม ครั้งที่">โครงการสูงวัยไม่ล้ม ครั้งที่</option>
+					<option value="นำใบนัดยื่นที่ห้องพยาธิเวลา 07.00น. เจาะเลือดแล้วรับประทานอาหารให้เรียบร้อย ก่อนพบแพทย์">นำใบนัดยื่นที่ห้องพยาธิเวลา 07.00น. เจาะเลือดแล้วรับประทานอาหารให้เรียบร้อย ก่อนพบแพทย์</option>
+					<option value="นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือดก่อนพบแพทย์">นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือดก่อนพบแพทย์</option>
+					<option value="นัดฉีดเข่า เบิกยาแล้ว">นัดฉีดเข่า เบิกยาแล้ว</option>
+				</select>
+				<script type="text/javascript">
+					function addToDetail2(){
+						var select = document.getElementById('ptHelper');
+						var option = select.options[select.selectedIndex];
+						document.getElementById('detail2').value = option.value;
+						console.log(option.value);
+					}
+				</script>
+				<?php
 			}
 			?>
 		</font>
