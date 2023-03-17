@@ -321,6 +321,13 @@ if(!empty($drug_items)){
     foreach ($drug_items as $key => $di) {
 
         $drug_y = $pdf->GetY();
+
+        if( $pdf->GetY() > 240 ){
+            $pdf->AddPage();
+            $pdf->setXY(5,12);
+            $drug_y = $pdf->GetY();
+        }
+
         $pdf->SetFont('THSarabun','',10);
         $muticell_h = $detailHeight = $pdf->GetMultiCellHeight(22.5, 5, toUTF($di['detail']));
 
