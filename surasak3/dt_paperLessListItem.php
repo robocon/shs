@@ -49,7 +49,7 @@ $items = $json->decode($result);
 if ($items->totalCount > 0) { 
     $items_reverse = array_reverse($items->list);
     foreach ($items_reverse as $key => $item) {
-        list($dateEp, $timeEp) = explode(' ', $item->date);
+        list($dateEp, $timeEp) = explode(' ', $item->actual_date);
         list($y, $m, $d) = explode('-', $dateEp);
         ?>
         <div class="column thumbContain">
