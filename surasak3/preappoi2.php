@@ -797,7 +797,7 @@ if($date_en < date('Y-m-d')){
 <br>
 
 <table border="0">
-  <tr><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
+  <tr valign="top"><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
     <td width="311"><font face="Angsana New">
       <select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
       <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
@@ -835,44 +835,9 @@ if($date_en < date('Y-m-d')){
 					$str= "  Selected  ";
 			}
 		}		
-?>
-      	<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
-        <!--<option value="FU01 ตรวจตามนัด">ตรวจตามนัด</option>
-        <option value="FU02 ตามผลตรวจ">ตามผลตรวจ</option>
-        <option value="FU03 นอนโรงพยาบาล">นอนโรงพยาบาล</option>
-        <option value="FU04 ทันตกรรม">ทันตกรรม</option>
-        <option value="FU05 ผ่าตัด">ผ่าตัด</option>
-        <option value="FU06 สูติ">สูติ</option>
-        <option value="FU07 คลีนิกฝังเข็ม">คลีนิกฝังเข็ม</option>
-        <option value="FU08 Echo">Echo</option>
-        <option value="FU09 มวลกระดูก">มวลกระดูก</option>
-        <option value="FU10 กายภาพ">กายภาพ</option>
-        <option value="FU11 ตรวจตามนัดพร้อมประวัติผู้ป่วยใน"
-
-
->ตรวจตามนัดพร้อมประวัติผู้ป่วยใน</option>-->
-       <!-- <option value="FU12 นวดแผนไทย">นวดแผนไทย</option>
-        //ไม่ได้ใช้ <option value="FU13 ส่องกระเพาะ">ส่องกระเพาะ</option>
-<option value="FU20 ส่องกระเพาะ(คลินิกพิเศษ)">ส่องกระเพาะ(คลินิกพิเศษ)</option>//ไม่ได้ใช้
-        <option value="FU13 ตรวจระบบทางเดินอาหาร">ตรวจระบบทางเดินอาหาร</option>
-        <option value="FU14 เจาะเลือดไม่พบแพทย์">เจาะเลือดไม่พบแพทย์</option>
-        <option value="FU15 OPD นอกเวลา">OPD นอกเวลาราชการ</option>
-        <option value="FU16 คลินิกพิเศษ">คลินิกศัลยกรรมนอกเวลาพิเศษ(ค่าบริการ 100 บาท)</option>
-        <option value="FU17 X-ray ไม่พบแพทย์">X-ray ไม่พบแพทย์</option>
-        <option value="FU18 ตัดไหมที่ ER ไม่พบแพทย์">ตัดไหมที่ ER ไม่พบแพทย์</option>
-        <option value="FU19 อัลตร้าซาวด์"> อัลตร้าซาวด์</option>
-        <option value="FU21 คลินิก COPD">คลินิก C OPD</option>
-        <option value="FU22 ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู">ตรวจตามนัดOPD เวชศาสตร์ฟื่นฟู</option>
-        <option value="FU23 OPD กายภาพ">OPD กายภาพ</option>
-        <option value="FU24 ตรวจตามนัด OPD จักษุ(ตา)">ตรวจตามนัด OPD จักษุ(ตา)</option>
-        <option value="FU25 CT Scan">CT Scan</option>
-        <option value="FU26 EMG">EMG</option>
-        <option value="FU27 X-ray ก่อนพบแพทย์">X-ray ก่อนพบแพทย์</option>
-        <option value="FU28 Lab ก่อนพบแพทย์">Lab ก่อนพบแพทย์</option>
-        <option value="FU29 X-ray + Lab ก่อนพบแพทย์">X-ray + Lab ก่อนพบแพทย์</option>
-        <option value="FU30 คลินิกโรคไต">คลินิกโรคไต</option>-->
-        <!-- นัดมาเพื่อ มีถึง FU30 -->
-        <?
+		?>
+		<option value="<?=$result['appvalue']?>" <?=$str;?>><?=$result['applist']?></option>
+		<?php
 	  }
 		?>
       </select>
@@ -909,20 +874,45 @@ if($date_en < date('Y-m-d')){
 	</script>
 
 </td>
-    <td width="280"><font face="Angsana New">
+    <td width="280">
+		<font face="Angsana New">
+			<?php 
+			// ถ้านัดจาก Ward จะแสดงข้อความให้กรอก AN
+			if( $an_check === true ){ echo "เลขที่AN/อื่นๆ : "; }
+			?>
+			<input type="text" id="detail2" name="detail2" size="60">
 
-	<?php 
-	// ถ้านัดจาก Ward จะแสดงข้อความให้กรอก AN
-	if( $an_check === true ){ echo "เลขที่AN/อื่นๆ : "; }
-	?>
-	<input type="text" id="detail2" name="detail2" size="20">
+			<select size="1" name="detail_list" id="detail_list" style="display:none">
+				<option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
+				<option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
+				<option value="ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่">ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่</option>
+			</select>
 
- <select size="1" name="detail_list" id="detail_list" style="display:none">
-<option value="ส่องกระเพาะอาหาร">ส่องกระเพาะอาหาร</option>
-<option value="ส่องลำไส้ใหญ่">ส่องลำไส้ใหญ่</option>
-<option value="ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่">ส่องกระเพาะอาหาร+ส่องลำไส้ใหญ่</option>
-</select></font>
-</td></tr>
+			<?php 
+			if($_SESSION['smenucode']=='ADMPT' OR $_SESSION['smenucode']=='ADM'){
+				?>
+				<select name="ptHelper" id="ptHelper" onchange="addToDetail2()">
+					<option value="">---- เลือกข้อมูล ----</option>
+					<option value="กรุณา ใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้น (ที่ไม่ใช่รองเท้าคัชชู) มาด้วยทุกครั้ง">กรุณา ใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้น (ที่ไม่ใช่รองเท้าคัชชู) มาด้วยทุกครั้ง</option>
+					<option value="โครงการสูงวัยไม่ล้ม ครั้งที่">โครงการสูงวัยไม่ล้ม ครั้งที่</option>
+					<option value="นำใบนัดยื่นที่ห้องพยาธิเวลา 07.00น. เจาะเลือดแล้วรับประทานอาหารให้เรียบร้อย ก่อนพบแพทย์">นำใบนัดยื่นที่ห้องพยาธิเวลา 07.00น. เจาะเลือดแล้วรับประทานอาหารให้เรียบร้อย ก่อนพบแพทย์</option>
+					<option value="นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือดก่อนพบแพทย์">นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือดก่อนพบแพทย์</option>
+					<option value="นัดฉีดเข่า เบิกยาแล้ว">นัดฉีดเข่า เบิกยาแล้ว</option>
+				</select>
+				<script type="text/javascript">
+					function addToDetail2(){
+						var select = document.getElementById('ptHelper');
+						var option = select.options[select.selectedIndex];
+						document.getElementById('detail2').value = option.value;
+						console.log(option.value);
+					}
+				</script>
+				<?php
+			}
+			?>
+		</font>
+	</td>
+</tr>
 <tr>
 	<td id="echoResponse" style="color:red; display:none;" colspan="3"></td>
 </tr>
