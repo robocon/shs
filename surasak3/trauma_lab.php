@@ -530,11 +530,11 @@ $i++;
 $i++;
 
 	$list_lab_check[$i]["code"] = "CS";
-	$list_lab_check[$i]["detail"] = "Urine culture";
+	$list_lab_check[$i]["detail"] = "Culture";
 $i++;
 
-	$list_lab_check[$i]["code"] = "10203";
-	$list_lab_check[$i]["detail"] = "Serum ketone";
+	$list_lab_check[$i]["code"] = "serum ketone";
+	$list_lab_check[$i]["detail"] = "Ketones, Serum";
 $i++;
 
 	$list_lab_check[$i]["code"] = "Dengue Ag";
@@ -543,6 +543,9 @@ $i++;
 
 	$list_lab_check[$i]["code"] = "DengueAb";
 	$list_lab_check[$i]["detail"] = "Dengue Ab(IgG,IgM)";
+$i++;
+	$list_lab_check[$i]["code"] = "H-C";
+	$list_lab_check[$i]["detail"] = "Hemo c/s";
 //----------- จบเพิ่มใหม่ 16/07/65---------------//
 	
 	$r=4;
