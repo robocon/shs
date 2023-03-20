@@ -69,14 +69,6 @@ if($page==='load25page'){
     while ($item = $q->fetch_assoc()) {
         $id = $item['row_id'];
 
-        $item['depart'] = $item['depart'];
-        $item['head'] = $item['head'];
-        $item['detail'] = $item['detail'];
-        $item['user'] = $item['user'];
-        $item['programmer'] = $item['programmer'];
-        $item['user1'] = $item['user1'];
-        $item['p_edit'] = $item['p_edit'];
-
         $items[] = $item;
 
     }
