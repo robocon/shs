@@ -39,16 +39,36 @@ if ($action === 'search_user') {
     $dateend = $_POST['dateend'];
     $p_edit = $_POST['p_edit'];
     $ignore = $_POST['ignore'];
+    $row = $_POST['row'];
 
-    $sql = "INSERT INTO `com_support` (
-        `row`, `depart`, `head`, `detail`, `datetime`, `status`, 
-        `user`, `date`, `programmer`, `phone`, `user1`, `p_edit`, 
-        `dateend`, `hold`, `jobtype`,`ignore`
-    ) VALUES ( 
-        NULL, '$depart', '$head', '$detail', '', 'n', 
-        '$user', '$date', '$programmer', '$phone', '$user', '$p_edit', 
-        '$dateend', '0', 'software', '$ignore' 
-    );";
+    if(empty($row)){
+        $sql = "INSERT INTO `com_support` (
+            `row`, `depart`, `head`, `detail`, `datetime`, `status`, 
+            `user`, `date`, `programmer`, `phone`, `user1`, `p_edit`, 
+            `dateend`, `hold`, `jobtype`,`ignore`
+        ) VALUES ( 
+            NULL, '$depart', '$head', '$detail', '', 'n', 
+            '$user', '$date', '$programmer', '$phone', '$user', '$p_edit', 
+            '$dateend', '0', 'software', '$ignore' 
+        );";
+    }else {
+        // update
+        $sql = "UPDATE `com_support` SET 
+        `depart`='$depart', 
+        `head`='$head', 
+        `detail`='$detail', 
+        `datetime`='', 
+        `status`='n', 
+        `user`='$user', 
+        `date`='$date', 
+        `programmer`='$programmer', 
+        `phone`='$phone', 
+        `user1`='$user', 
+        `p_edit`='$p_edit', 
+        `dateend`='$dateend'
+        WHERE (`row`='$row');";
+    }
+    
     $save = $dbi->query($sql);
     $msg = "บันทึกข้อมูลเรียบร้อย";
     if($save===false)
@@ -98,6 +118,18 @@ if($page==='load25page'){
 
     echo $json->encode($items);
     exit;
+}elseif ($page==='loadOrderPage') {
+
+    $thYear = date('Y')+543;
+    $q = $dbi->query("SELECT * FROM `com_support` where `programmer` IS NULL AND `date` LIKE '$thYear%';");
+    $items = array();
+    if($q->num_rows > 0){
+        while ($a = $q->fetch_assoc()) {
+            $items[] = $a;
+        }
+    }
+    echo $json->encode($items);
+    exit;
 }
 
 ?>
@@ -131,7 +163,7 @@ if($page==='load25page'){
         background:#bbb;
     }
     textarea{
-        width: 400px;
+        width: 600px;
         height: 100px;
     }
     button[type=submit]{
@@ -193,12 +225,25 @@ if($page==='load25page'){
         <li>
             <a href="javascript:void(0)" onclick="get25Page()">50 รายการล่าสุด</a>
         </li>
+        <li>
+            <a href="javascript:void(0)" onclick="getOrderPage()">ORDER</a>
+        </li>
     </ul>
 </div>
 <?php 
 if(!empty($_SESSION['x-msg'])){
     ?><p class="notify"><?=$_SESSION['x-msg'];?></p><?php
     $_SESSION['x-msg'] = null;
+}
+
+$form_action = sprintf("%s", $_GET['form_action']);
+$s = array();
+if($form_action==='edit'){
+
+    $id = sprintf("%s", $_GET['id']);
+    $qs=$dbi->query("SELECT * FROM `com_support` WHERE `row` = '$id'");
+    $s = $qs->fetch_assoc();
+
 }
 ?>
 <h3>คีย์งานแบบบันทึกเอง</h3>
@@ -215,7 +260,7 @@ if(!empty($_SESSION['x-msg'])){
             'ADMMON' => 'ส่วนเก็บเงินรายได้',
             'ADMPH' => 'ห้องยา-เก่า',
             'ADMPHA' => 'ห้องยา',
-            'ADMPHARX' => 'เภสัช',
+            'ADMPHARX' => 'กองเภสัชกรรม',
             'ADMSUR' => 'ห้องผ่าตัด',
             'ADMXR' => 'แผนกรังสีกรรม',
             'ADMLAB' => 'แผนกพยาธิวิทยา',
@@ -240,10 +285,18 @@ if(!empty($_SESSION['x-msg'])){
         <span>แผนก</span>
         <select name="depart" id="depart" >
             <option value="">เลือกแผนก</option>
-        <?php
-        foreach($departs AS $key => $depart){
+        <?php 
+        $key_selected = '';
+        foreach($departs AS $key => $depart){ 
+
+            $selected = '';
+            if($depart==$s['depart']){
+                $selected = 'selected="selected"';
+                $key_selected = $key;
+            }
+
             ?>
-            <option value="<?=$depart;?>" data-key="<?=$key;?>"><?=$depart;?></option>
+            <option value="<?=$depart;?>" data-key="<?=$key;?>" <?=$selected;?>><?=$depart;?></option>
             <?php
         }
         ?>
@@ -255,19 +308,31 @@ if(!empty($_SESSION['x-msg'])){
     </div>
     <div>
         <span>หัวข้อ</span>
-        <input type="text" name="head" id="head">
+        <input type="text" name="head" id="head" value="<?=$s['head'];?>" >
     </div>
     <div>
         <span>รายละเอียด</span>
-        <textarea name="detail" id="detail"></textarea>
+        <textarea name="detail" id="detail" rows="4" cols="100"><?=$s['detail'];?></textarea>
     </div>
     <div>
         <span>ผู้แจ้ง</span>
-        <span id="input_text"></span>
+        <?php 
+        $inputHtml = '';
+        if(!empty($key_selected)){
+            $qInput = $dbi->query("SELECT * FROM `inputm` WHERE `menucode` = '$key_selected' ");
+            $inputHtml = '<select name="user" id="user">';
+            while ($a = $qInput->fetch_assoc()){ 
+                $selected = ($a['name'] == $s['user']) ? 'selected="selected"' : '';
+                $inputHtml .= '<option value="'.$a['name'].'" '.$selected.'>'.$a['name'].'</option>';
+            }
+            $inputHtml .= '</select>';
+        }
+        ?>
+        <span id="input_text"><?=$inputHtml;?></span>
     </div>
     <div>
         <span>โทรศัพท์ภายใน</span>
-        <input type="text" name="phone" id="phone">
+        <input type="text" name="phone" id="phone" value="<?=$s['head'];?>" >
     </div>
     <div>
         <span>ผู้รับผิดชอบ</span>
@@ -275,11 +340,16 @@ if(!empty($_SESSION['x-msg'])){
     </div>
     <div>
         <span>เริ่ม</span>
-        <input type="datetime-local" name="date" id="date" value="<?=$start;?>">
+        <?php 
+        if($s['date']){
+            $start = $s['date'];
+        }
+        ?>
+        <input type="text" name="date" id="date" value="<?=$start;?>">
     </div>
     <div>
         <span>สิ้นสุด</span>
-        <input type="datetime-local" name="dateend" id="dateend" value="<?=$end;?>">
+        <input type="text" name="dateend" id="dateend" value="<?=$end;?>">
     </div>
     <div>
         <span>การทำเนินการ</span>
@@ -290,7 +360,14 @@ if(!empty($_SESSION['x-msg'])){
     </div>
     <div>
         <button type="submit">บันทึก</button>
-        <input type="hidden" name="action" value="save">
+        <input type="hidden" id="formAction" name="action" value="save">
+        <?php 
+        if ($s['row']) {
+            ?>
+            <input type="hidden" name="row" id="row" vlaue="<?=$s['row'];?>">
+            <?php
+        }
+        ?>
     </div>
 </form>
 <div id="resPageContainer" style="display:none;">
@@ -469,6 +546,34 @@ if(!empty($_SESSION['x-msg'])){
         }
     }
     
+
+    function getOrderPage(){
+        loadOrderPage();
+    }
+
+    async function loadOrderPage(){
+        const response = await fetch('com_support_v2.php?page=loadOrderPage');
+        const body = await response.text();
+        var dataObj = JSON.parse(body);
+                
+        var preHtml = '<table class="chk_table">';
+        preHtml += '<tr><td>วันที่</td><td>หัวข้อ</td><td width="40%">รายละเอียด</td><td>ผู้ร้องขอ</td><td>แผนก</td><td>ผู้ปฏิบัติ</td></tr>';
+        for (var index = 0; index < dataObj.length; index++) {
+            var element = dataObj[index];
+            preHtml += '<tr>';
+            preHtml += '<td>'+element.date+'</td>';
+            preHtml += '<td>'+element.head+'</td>';
+            preHtml += '<td>'+element.detail+'</td>';
+            preHtml += '<td>'+element.user+'</td>';
+            preHtml += '<td>'+element.depart+'</td>';
+            preHtml += '<td><a href="com_support_v2.php?form_action=edit&id='+element.row+'">แก้ไข</a></td>';
+            preHtml += '</td>';
+        }
+        preHtml += '</table>';
+
+        document.getElementById('resPage').innerHTML = preHtml;
+        document.getElementById('resPageContainer').style.display = '';
+    }
 </script>
 
 </body>
