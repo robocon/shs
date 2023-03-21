@@ -1,6 +1,6 @@
 <?php
 include 'Connections/connect.inc.php';
-// include '../bootstrap.php';
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
 $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
 $dbi->query("SET NAMES UTF8");
@@ -13,7 +13,7 @@ function dump($txt){
 
 ?>
 <style type="text/css">
-	.forntsarabun {
+	*, .forntsarabun {
 		font-family: "TH SarabunPSK";
 		font-size: 20px;
 	}
@@ -27,6 +27,14 @@ function dump($txt){
 	.theBlocktoPrint {
 		background-color: #000;
 		color: #FFF;
+	}
+	.chk_table{
+    border-collapse: collapse;
+	}
+	.chk_table th,
+	.chk_table td{
+		padding: 3px;
+		border: 1px solid black;
 	}
 </style>
 <div id="no_print">
@@ -140,9 +148,11 @@ if ($_POST['submit'] == "ค้นหา") {
 	if ($_POST['d_start'] == "") {
 		$dateshow = $printmonth . " " . $_POST['y_start'];
 		$day = "เดือน";
+		$where = "AND `thidate` LIKE '".$_POST['y_start']."-".$_POST['m_start']."%'";
 	} else {
 		$dateshow = $_POST['d_start'] . ' ' . $printmonth . " " . $_POST['y_start'];
 		$day = "วันที่";
+		$where = "AND `thidate` LIKE '".$_POST['y_start']."-".$_POST['m_start']."-".$_POST['d_start']."%'";
 	}
 
 	print "<font class='forntsarabun' >แบบรายงาน 506 ประจำ$day  $dateshow </font><br />
@@ -154,10 +164,9 @@ if ($_POST['submit'] == "ค้นหา") {
 	// $strsql = "select row_id,icd10 from opday1  order by icd10";
 	// $objq = mysql_query($strsql);
 
-	$sql = "SELECT a.`row_id` AS `opday_id`,a.`thidate`,a.`thdatehn`,a.`hn`,a.`vn`,a.`ptname`,a.`ptright`,a.`goup`,a.`camp`,a.`typeservice`,a.`doctor`,a.`diag`,a.`icd10`,a.`ref_icd10`,
+	$sql = "SELECT a.`row_id` AS `opday_id`,SUBSTRING(a.`thidate`,1,10) AS `thidate`,a.`thdatehn`,a.`hn`,a.`vn`,a.`ptname`,a.`ptright`,a.`goup`,a.`camp`,a.`typeservice`,a.`doctor`,a.`diag`,a.`icd10`,a.`ref_icd10`,
 	b.`row_id` AS `id506`,b.`icd10` AS `icd10_506`,b.`depart_thai`,b.`depart_eng`,b.`code`,
 	(CASE WHEN b.`icd10` IN('A01','A03','A04','A05','A08','A09') THEN '1' 
-	-- WHEN b.`icd10` IN('A051','A052','A053','A054','A055','B058','B059') THEN '1'
 	WHEN b.`icd10` IN('A15','A16') THEN '2' 
 	WHEN b.`icd10` IN('A90','A91') THEN '3' 
 	WHEN b.`icd10` LIKE 'A92%' THEN '4' 
@@ -172,38 +181,42 @@ if ($_POST['submit'] == "ค้นหา") {
 	WHEN b.`icd10` IN('J12','J13','J14','J15','J16','J18') THEN '13' 
 	END) AS `icd10_GROUP` 
 	FROM (
-		SELECT * FROM  `opday` WHERE (`icd10` IS NOT NULL AND `icd10`!='') AND `thidate` LIKE '2566-03%'
+		SELECT * FROM  `opday` WHERE (`icd10` IS NOT NULL AND `icd10`!='') $where 
 	) AS a 
 	LEFT JOIN `icd506` AS b ON a.`icd10` LIKE CONCAT(b.`icd10`,'%') 
-	WHERE b.row_id IS NOT NULL
-	ORDER BY `icd10_506`";
-	// dump($sql);
+	WHERE b.`row_id` IS NOT NULL
+	ORDER BY a.`row_id`";
 	$q_506 = $dbi->query($sql);
-	// dump($q_506);
 	$count_dt = array();
+	$out_list = array();
+	$in_list = array();
 	while ($a = $q_506->fetch_assoc()) {
 		$icd10_GROUP = $a['icd10_GROUP'];
 		if(empty($icd10_GROUP)){ // ตัดคนที่ไม่เข้าเงื่อนไข case when ออกไป
+			$out_list[] = $a;
 			continue;
 		}
+
+		$in_list[] = $a;
+
 		list($yot,$n,$s) = explode(' ', $a['ptname']);
 
 		$test_a = false;
 
 		if( $yot=='พลฯ' ){ 
-			$count_dt[$icd10_GROUP]['pvtพลฯ'] += 1;
+			$count_dt[$icd10_GROUP]['pvt'] += 1;
 			$test_a = true;
 		}
 
 		$goup_code = trim(substr($a['goup'],0,3));
 		if($goup_code=='G31'){ 
-			$count_dt[$icd10_GROUP]['familyครอบครัว'] += 1;
+			$count_dt[$icd10_GROUP]['family'] += 1;
 			$test_a = true;
 		}
 
 		$camp_code = trim(substr($a['camp'],0,3));
-		if($goup_code=='M01'){ 
-			$count_dt[$icd10_GROUP]['otherพลเรือน'] += 1;
+		if($camp_code=='M01'){ 
+			$count_dt[$icd10_GROUP]['other'] += 1;
 			$test_a = true;
 		}
 
@@ -214,7 +227,96 @@ if ($_POST['submit'] == "ค้นหา") {
 
 
 	}
-	dump($count_dt);
+
+	$main_items = array(1=>'อาหารเป็นพิษ/โรคอุจจาระร่วง','วัณโรค','โรคไข้เลือดออกเดงกี','โรคไข้ปวดข้อยุงลาย','โรคไข้ซิก้าไวรัส','โรคอีสุกอีใส','โรคหัด','โรคหัดเยอรมัน',
+'โรคติดเชื้อเอนเทอโรไวรัส','โรคคางทูม','โรคตาแดงจากเชื้อไวรัส','โรคไข้หวัดใหญ่','โรคปอดบวม');
+
+	?>
+	<table class="chk_table">
+		<tr>
+			<td rowspan="3" align="center">โรคติดต่อสำคัญ</td>
+			<td colspan="5" align="center">ประจำ<?=$day.' '.$dateshow;?></td>
+		</tr>
+		<tr>
+			<td colspan="5" align="center">จำนวนผู้ป่วยจำแนกตามประเภท</td>
+		</tr>
+		<tr>
+			<td align="center">ก</td>
+			<td align="center">ข</td>
+			<td align="center">ค</td>
+			<td align="center">ง</td>
+			<td align="center">รวม</td>
+		</tr>
+	<?php
+	foreach ($main_items as $key => $mItem) { 
+
+		if(!$count_dt[$key]){
+			continue;
+		}
+		?>
+		<tr valign="top">
+			<td><?=$mItem;?></td>
+			<td align="right"><?=$count_dt[$key]['G1'];?></td>
+			<td align="right"><?=$count_dt[$key]['pvt'];?></td>
+			<td align="right"><?=$count_dt[$key]['family'];?></td>
+			<td align="right"><?=$count_dt[$key]['other'];?></td>
+			<td align="right"><?=($count_dt[$key]['G1']+$count_dt[$key]['pvt']+$count_dt[$key]['family']+$count_dt[$key]['other']);?></td>
+		</tr>
+		<?php
+	}
+	?>
+	</table>
+	<?php 
+	function show_details($items){ 
+		?>
+		<table class="chk_table">
+			<tr>
+				<th>#</th>
+				<th width="8%">วันที่</th>
+				<th width="5%">hn</th>
+				<th width="3%">vn</th>
+				<th width="15%">ชื่อ-สกุล</th>
+				<th width="12%">ประเภท</th>
+				<th width="8%">สังกัด</th>
+				<th width="8%">ประเภทผู้มารับบริการ</th>
+				<th width="18%">diag</th>
+				<th >icd10</th>
+				<th width="8%">depart_thai</th>
+				<th width="8%">depart_eng</th>
+			</tr>
+		<?php
+		$i = 1;
+		foreach ($items AS $key => $a) {
+			?>
+			<tr>
+				<td><?=$i;?></td>
+				<td><?=$a['thidate'];?></td>
+				<td><?=$a['hn'];?></td>
+				<td><?=$a['vn'];?></td>
+				<td><?=$a['ptname'];?></td>
+				<td><?=$a['goup'];?></td>
+				<td><?=$a['camp'];?></td>
+				<td><?=$a['typeservice'];?></td>
+				<td><?=$a['diag'];?></td>
+				<td><?=$a['icd10'];?></td>
+				<td><?=$a['depart_thai'];?></td>
+				<td><?=$a['depart_eng'];?></td>
+			</tr>
+			<?php
+			$i++;
+		}
+		?>
+		</table>
+		<?php
+	}
+	?>
+	<h3 style="font-size:24px;">รายชื่อ</h3>
+	<?php
+	show_details($in_list);
+	?>
+	<h3 style="font-size:24px;">ICD10 อื่นๆ</h3>
+	<?php
+	show_details($out_list);
 	exit;
 
 
