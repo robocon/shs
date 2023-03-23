@@ -80,6 +80,25 @@ if($congenital_disease == ""){
 		font-size: 20px;		
 	}
 </style>
+<script language="JavaScript">
+var isNS = (navigator.appName == "Netscape") ? 1 : 0;
+ 
+if(navigator.appName == "Netscape") document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
+ 
+function mischandler(){
+  return false;
+}
+ 
+function mousehandler(e){
+	var myevent = (isNS) ? e : event;
+	var eventbutton = (isNS) ? myevent.which : myevent.button;
+   if((eventbutton==2)||(eventbutton==3)) return false;
+}
+document.oncontextmenu = mischandler;
+document.onmousedown = mousehandler;
+document.onmouseup = mousehandler;
+ 
+</script>
 <h3 align="center" style="margin-top:10px; font-size:28px;">ประวัติการรักษาพยาบาลผู้ป่วยนอก (Digital OPD Card)</h3>
 <div align="center" style="font-size:24px;">
 <strong>HN : </strong><?php echo $hn;?>

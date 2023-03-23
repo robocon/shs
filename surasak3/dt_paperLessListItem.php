@@ -43,6 +43,25 @@ $items = $json->decode($result);
             color: blue;
         }
 	</style>
+<script language="JavaScript">
+var isNS = (navigator.appName == "Netscape") ? 1 : 0;
+ 
+if(navigator.appName == "Netscape") document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
+ 
+function mischandler(){
+  return false;
+}
+ 
+function mousehandler(e){
+	var myevent = (isNS) ? e : event;
+	var eventbutton = (isNS) ? myevent.which : myevent.button;
+   if((eventbutton==2)||(eventbutton==3)) return false;
+}
+document.oncontextmenu = mischandler;
+document.onmousedown = mousehandler;
+document.onmouseup = mousehandler;
+ 
+</script>	
 <div style="position: fixed;width: 100%;background-color: #ffffff;box-shadow: 0px 4px 4px #b8b8b8; text-align: center;"><h3 style="margin:8px;">ข้อมูลการมาโรงพยาบาล</h3></div>
 <div class="row" id="thumbList">
 <?php
