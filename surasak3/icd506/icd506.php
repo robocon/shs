@@ -1,5 +1,5 @@
 <?php
-include 'Connections/connect.inc.php';
+include '../connect.php';
 $def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
 $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
@@ -43,64 +43,34 @@ function dump($txt){
 			<tr class="forntsarabun">
 				<td width="111" align="right">เลือก วัน /เดือน /ปี</td>
 				<td width="270">
-					<? $d = date('d'); ?>
 					<select name="d_start" class="forntsarabun">
 						<option value="">ไม่เลือกวัน</option>
-						<? for ($i = 1; $i <= 31; $i++) {
-
-							if ($i <= 9) {
-
-								$i = "0" . $i;
-								?>
-								<option value="<?= $i; ?>" <? if ($d == $i) {
-									  echo "selected";
-								  } ?>><?= $i; ?></option>
-							<? } else { ?>
-								<option value="<?= $i; ?>" <? if ($d == $i) {
-									  echo "selected";
-								  } ?>><?= $i; ?></option>
-							<? }
-						} ?>
+						<?php 
+						$d = (!empty($_POST['d_start'])) ? $_POST['d_start'] : date('d') ;
+						$days = range(1,date('t'));
+						foreach ($days as $dKey => $vD) {
+							$day = sprintf("%02d", $vD);
+							$selected = ($d==$day) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$day;?>" <?=$selected;?>><?=$day;?></option>
+							<?php
+						}
+						?>
+						
 					</select>
-
-					<? $m = date('m'); ?>
+					<?php 
+					$m = (!empty($_POST['m_start'])) ? $_POST['m_start'] : date('m') ;
+					?>
 					<select name="m_start" class="forntsarabun">
-						<option value="01" <? if ($m == '01') {
-							echo "selected";
-						} ?>>มกราคม</option>
-						<option value="02" <? if ($m == '02') {
-							echo "selected";
-						} ?>>กุมภาพันธ์</option>
-						<option value="03" <? if ($m == '03') {
-							echo "selected";
-						} ?>>มีนาคม</option>
-						<option value="04" <? if ($m == '04') {
-							echo "selected";
-						} ?>>เมษายน</option>
-						<option value="05" <? if ($m == '05') {
-							echo "selected";
-						} ?>>พฤษภาคม</option>
-						<option value="06" <? if ($m == '06') {
-							echo "selected";
-						} ?>>มิถุนายน</option>
-						<option value="07" <? if ($m == '07') {
-							echo "selected";
-						} ?>>กรกฎาคม</option>
-						<option value="08" <? if ($m == '08') {
-							echo "selected";
-						} ?>>สิงหาคม</option>
-						<option value="09" <? if ($m == '09') {
-							echo "selected";
-						} ?>>กันยายน</option>
-						<option value="10" <? if ($m == '10') {
-							echo "selected";
-						} ?>>ตุลาคม</option>
-						<option value="11" <? if ($m == '11') {
-							echo "selected";
-						} ?>>พฤศจิกายน</option>
-						<option value="12" <? if ($m == '12') {
-							echo "selected";
-						} ?>>ธันวาคม</option>
+						<?php 
+						foreach ($def_fullm_th as $mKey => $mV) { 
+							$selected = ($m==$mKey) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$mKey;?>" <?=$selected;?> ><?=$mV;?></option>
+							<?php
+						}
+						?>
+						
 					</select>
 					<?
 					$Y = date("Y") + 543;
@@ -185,8 +155,13 @@ if ($_POST['submit'] == "ค้นหา") {
 	) AS a 
 	LEFT JOIN `icd506` AS b ON a.`icd10` LIKE CONCAT(b.`icd10`,'%') 
 	WHERE b.`row_id` IS NOT NULL
-	ORDER BY a.`row_id`";
+	ORDER BY a.`thidate`,a.`icd10` ASC";
+	
 	$q_506 = $dbi->query($sql);
+	if($q_506->num_rows==0){
+		echo "<p><b>ไม่พบข้อมูล กรุณาตรวจสอบวันที่อีกครั้ง</b></p>";
+		exit;
+	}
 	$count_dt = array();
 	$out_list = array();
 	$in_list = array();
@@ -225,46 +200,93 @@ if ($_POST['submit'] == "ค้นหา") {
 			$count_dt[$icd10_GROUP]['G1'] += 1;
 		}
 
-
 	}
 
-	$main_items = array(1=>'อาหารเป็นพิษ/โรคอุจจาระร่วง','วัณโรค','โรคไข้เลือดออกเดงกี','โรคไข้ปวดข้อยุงลาย','โรคไข้ซิก้าไวรัส','โรคอีสุกอีใส','โรคหัด','โรคหัดเยอรมัน',
-'โรคติดเชื้อเอนเทอโรไวรัส','โรคคางทูม','โรคตาแดงจากเชื้อไวรัส','โรคไข้หวัดใหญ่','โรคปอดบวม');
+
+	$sql = "SELECT * FROM  `opday` WHERE 1 $where AND `opdtype` IN ('HI','SI','FI')";
+	$q = $dbi->query($sql);
+	if($q->num_rows > 0){
+		while ($a = $q->fetch_assoc()) {
+			$in_list[] = $a;
+
+			list($yot,$n,$s) = explode(' ', $a['ptname']);
+
+			$test_a = false;
+
+			if( $yot=='พลฯ' ){ 
+				$count_dt[14]['pvt'] += 1;
+				$test_a = true;
+			}
+
+			$goup_code = trim(substr($a['goup'],0,3));
+			if($goup_code=='G31'){ 
+				$count_dt[14]['family'] += 1;
+				$test_a = true;
+			}
+
+			$camp_code = trim(substr($a['camp'],0,3));
+			if($camp_code=='M01'){ 
+				$count_dt[14]['other'] += 1;
+				$test_a = true;
+			}
+
+			// คนที่ไม่เข้าเงื่อนไขอะไรเลยให้ตีเป็น ทหาร/นายสิบ/ลูกจ้าง/กำลังพล
+			if($test_a===false){
+				$count_dt[14]['G1'] += 1;
+			}
+		}
+		
+	}
+
+	$main_items = array(1=>'อาหารเป็นพิษ/โรคอุจจาระร่วง','วัณโรค','โรคไข้เลือดออกเดงกี','โรคไข้ปวดข้อยุงลาย','โรคไข้ซิก้าไวรัส','โรคอีสุกอีใส','โรคหัด','โรคหัดเยอรมัน','โรคติดเชื้อเอนเทอโรไวรัส','โรคคางทูม','โรคตาแดงจากเชื้อไวรัส','โรคไข้หวัดใหญ่','โรคปอดบวม','โควิด');
+	$icd10_items = array(1=>'A01, A02, A03, A04, A05, A08, A09', 'A15', 'A90, A91', 'A92.0', 'A92.5', 'B01, B02', 'B05', 'B06', 'B08.4, B08.5', 'B26', 'B30', 'J10, J11', 'J12, J13, J14, J15, J16, J18','U099, U089, U072');
 
 	?>
 	<table class="chk_table">
 		<tr>
-			<td rowspan="3" align="center">โรคติดต่อสำคัญ</td>
-			<td colspan="5" align="center">ประจำ<?=$day.' '.$dateshow;?></td>
+			<th rowspan="3" align="center">โรคติดต่อสำคัญ</th>
+			<th rowspan="3" align="center">ICD10</th>
+			<th colspan="5" align="center">ประจำ<?=$day.' '.$dateshow;?></th>
 		</tr>
 		<tr>
-			<td colspan="5" align="center">จำนวนผู้ป่วยจำแนกตามประเภท</td>
+			<th colspan="5" align="center">จำนวนผู้ป่วยจำแนกตามประเภท</th>
 		</tr>
 		<tr>
-			<td align="center">ก</td>
-			<td align="center">ข</td>
-			<td align="center">ค</td>
-			<td align="center">ง</td>
-			<td align="center">รวม</td>
+			<th align="center">ก</th>
+			<th align="center">ข</th>
+			<th align="center">ค</th>
+			<th align="center">ง</th>
+			<th align="center">จำนวนผู้ป่วย<br>รวม</th>
 		</tr>
 	<?php
+	$sum_all = 0;
 	foreach ($main_items as $key => $mItem) { 
-
+		
 		if(!$count_dt[$key]){
 			continue;
 		}
+
+		$icdTxt = $icd10_items[$key];
+
+		$sum_row = (int)($count_dt[$key]['G1']+$count_dt[$key]['pvt']+$count_dt[$key]['family']+$count_dt[$key]['other']);
+		$sum_all += $sum_row;
 		?>
 		<tr valign="top">
 			<td><?=$mItem;?></td>
+			<td><?=$icdTxt;?></td>
 			<td align="right"><?=$count_dt[$key]['G1'];?></td>
 			<td align="right"><?=$count_dt[$key]['pvt'];?></td>
 			<td align="right"><?=$count_dt[$key]['family'];?></td>
 			<td align="right"><?=$count_dt[$key]['other'];?></td>
-			<td align="right"><?=($count_dt[$key]['G1']+$count_dt[$key]['pvt']+$count_dt[$key]['family']+$count_dt[$key]['other']);?></td>
+			<td align="right"><?=$sum_row;?></td>
 		</tr>
 		<?php
 	}
 	?>
+		<tr>
+			<td colspan="6" align="center">รวม</td>
+			<td align="right"><?=$sum_all;?></td>
+		</tr>
 	</table>
 	<?php 
 	function show_details($items){ 
@@ -280,7 +302,7 @@ if ($_POST['submit'] == "ค้นหา") {
 				<th width="8%">สังกัด</th>
 				<th width="8%">ประเภทผู้มารับบริการ</th>
 				<th width="18%">diag</th>
-				<th >icd10</th>
+				<th>icd10</th>
 				<th width="8%">depart_thai</th>
 				<th width="8%">depart_eng</th>
 			</tr>
@@ -313,13 +335,13 @@ if ($_POST['submit'] == "ค้นหา") {
 	<h3 style="font-size:24px;">รายชื่อ</h3>
 	<?php
 	show_details($in_list);
-	?>
-	<h3 style="font-size:24px;">ICD10 อื่นๆ</h3>
-	<?php
-	show_details($out_list);
+	if(count($out_list) > 0){
+		?>
+		<h3 style="font-size:24px;">ICD10 อื่นๆ</h3>
+		<?php
+		show_details($out_list);
+	}
 	exit;
-
-
 	// $objq = mysql_query($sql);
 	// // dump($objq);
 	// $count_dt = array();
