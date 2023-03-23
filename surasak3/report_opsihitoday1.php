@@ -300,7 +300,7 @@ $num=mysql_num_rows($query);
 if($num < 1){
 ?>  
   <tr>
-    <td colspan="10" width="97%" align="center"><strong>---------- ไม่มีข้อมูล ----------</strong></td>
+    <td colspan="21" width="97%" align="center"><strong>---------- ไม่มีข้อมูล ----------</strong></td>
   </tr>
 <?
 }else{
