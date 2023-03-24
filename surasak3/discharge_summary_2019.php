@@ -16,9 +16,9 @@ Function calcage($birth){
 		$ageM=12+$ageM;
 	}
 	if ($ageM==0){
-		$pAge="$ageY »Õ";
+		$pAge="$ageY à¸›à¸µ";
 	}else{
-		$pAge="$ageY »Õ $ageM à´×Í¹";
+		$pAge="$ageY à¸›à¸µ $ageM à¹€à¸”à¸·à¸­à¸™";
 	}
 	return $pAge;
 }
@@ -49,10 +49,10 @@ Function calcage($birth){
     $birthdate="$d-$m-$y"; //print into opdcard
     $cAge=calcage($dbirth);
     $cPtname=$yot.' '.$name.' '.$surname;
-    if($sex=='ª'){
-        $sex1='ªÒÂ';
+    if($sex=='à¸Š'){
+        $sex1='à¸Šà¸²à¸¢';
     }else {
-        $sex1='Ë­Ô§';
+        $sex1='à¸«à¸à¸´à¸‡';
     }
 
 $ddate=substr($date,8,2);
@@ -69,7 +69,7 @@ $adate="$ddate-$mdate-$ydate";
     font-family:"TH Sarabun New", "TH SarabunPSK";
     font-size:11pt;
 }
-/* ·´ÊÍº¤ÇÒÁÊÙ§ td µÒÁ¿Í¹µì */
+/* à¸—à¸”à¸ªà¸­à¸šà¸„à¸§à¸²à¸¡à¸ªà¸¹à¸‡ td à¸•à¸²à¸¡à¸Ÿà¸­à¸™à¸•à¹Œ */
 .tb_normal_line td{
     line-height: 11pt;
 }
@@ -110,40 +110,40 @@ table.dctb td{
 <!-- window.print(); -->
 <body onLoad="">
 
-<div align="right" class="head">MR – IPD - 002 (1)</div>
+<div align="right" class="head">MR  IPD - 002 (1)</div>
 <div align="center" class="head">DISCHARGE SUMMARY</div>
-<div align="center" class="head">FORT SURASAKMONTRI HOSPITAL àÃÔèÁãªé  ÇÑ¹·Õè  4 ÁÕ.¤. 62</div>
+<div align="center" class="head">FORT SURASAKMONTRI HOSPITAL à¹€à¸£à¸´à¹ˆà¸¡à¹ƒà¸Šà¹‰  à¸§à¸±à¸™à¸—à¸µà¹ˆ  4 à¸¡à¸µ.à¸„. 62</div>
 <BR />
 <table width="100%" class="tb_info" style="border-collapse: collapse; border: 1px solid black; border-bottom: none;">
     <tr>
         <td class="dbtb_bottom">ADMIT: <?=$adate;?></td>
-        <td class="dbtb_bottom">àÇÅÒ: <?=$tdate;?>¹.</td>
+        <td class="dbtb_bottom">à¹€à¸§à¸¥à¸²: <?=$tdate;?>à¸™.</td>
         <td class="dbtb_bottom">AN:  <?=$an;?></td>
         <td class="dbtb_bottom">HN: <?=$hn;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">ª×èÍ: <?=$cPtname;?></td>
-        <td class="dbtb_bottom">ÍÒÂØ: <?=$cAge?></td>
-        <td class="dbtb_bottom">à¾È: <?=$sex1;?></td>
-        <td class="dbtb_bottom">ÊÑ§¡Ñ´: <?=$camp;?></td>
+        <td class="dbtb_bottom">à¸Šà¸·à¹ˆà¸­: <?=$cPtname;?></td>
+        <td class="dbtb_bottom">à¸­à¸²à¸¢à¸¸: <?=$cAge?></td>
+        <td class="dbtb_bottom">à¹€à¸à¸¨: <?=$sex1;?></td>
+        <td class="dbtb_bottom">à¸ªà¸±à¸‡à¸à¸±à¸”: <?=$camp;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">àÅ¢ »ªª. <?=$idcard;?></td>
+        <td class="dbtb_bottom">à¹€à¸¥à¸‚ à¸›à¸Šà¸Š. <?=$idcard;?></td>
         <td class="dbtb_bottom"></td>
-        <td class="dbtb_bottom">Ç/´/».à¡Ô´: <?=$birthdate;?></td>
-        <td class="dbtb_bottom">ÊÔ·¸Ô: <?=$ptright;?></td>
+        <td class="dbtb_bottom">à¸§/à¸”/à¸›.à¹€à¸à¸´à¸”: <?=$birthdate;?></td>
+        <td class="dbtb_bottom">à¸ªà¸´à¸—à¸˜à¸´: <?=$ptright;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">ºéÒ¹àÅ¢·Õè <?=$address;?> µÓºÅ<?=$tambol;?> ÍÓàÀÍ <?=$ampur;?></td>
+        <td class="dbtb_bottom">à¸šà¹‰à¸²à¸™à¹€à¸¥à¸‚à¸—à¸µà¹ˆ <?=$address;?> à¸•à¸³à¸šà¸¥<?=$tambol;?> à¸­à¸³à¹€à¸ à¸­ <?=$ampur;?></td>
         <td class="dbtb_bottom"></td>
-        <td class="dbtb_bottom">¨Ñ§ËÇÑ´: <?=$changwat;?></td>
-        <td class="dbtb_bottom">â·Ã: <?=$phone;?></td>
+        <td class="dbtb_bottom">à¸ˆà¸±à¸‡à¸«à¸§à¸±à¸”: <?=$changwat;?></td>
+        <td class="dbtb_bottom">à¹‚à¸—à¸£: <?=$phone;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide">¼Ùé·ÕèµÔ´µèÍä´é: <?=$ptf;?></td>
-        <td class="dbtb_bottom_hide">à¡ÕèÂÇ¢éÍ§à»ç¹: <?=$ptfadd;?></td>
-        <td class="dbtb_bottom_hide">â·ÃÈÑ¾·ì: <?=$ptffone;?></td>
-        <td class="dbtb_bottom_hide">ËÍÃÑº&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ËÍ¨ÓË¹èÒÂ</td>
+        <td class="dbtb_bottom_hide">à¸œà¸¹à¹‰à¸—à¸µà¹ˆà¸•à¸´à¸”à¸•à¹ˆà¸­à¹„à¸”à¹‰: <?=$ptf;?></td>
+        <td class="dbtb_bottom_hide">à¹€à¸à¸µà¹ˆà¸¢à¸§à¸‚à¹‰à¸­à¸‡à¹€à¸›à¹‡à¸™: <?=$ptfadd;?></td>
+        <td class="dbtb_bottom_hide">à¹‚à¸—à¸£à¸¨à¸±à¸à¸—à¹Œ: <?=$ptffone;?></td>
+        <td class="dbtb_bottom_hide">à¸«à¸­à¸£à¸±à¸š&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;à¸«à¸­à¸ˆà¸³à¸«à¸™à¹ˆà¸²à¸¢</td>
     </tr>
 </table>
 <table width="100%" class="dctb">
@@ -185,7 +185,7 @@ table.dctb td{
     <tr class="tb_hide_top">
         <td rowspan="7" class="dbtb_bottom_hide" width="10%">DIAGNOSIS</td>
         <td width="45%">1 PRINCIPAL DIAGNOSIS</td>
-        <td width="45%">DIAGNOSIS   ICD  CODING<br>By CODER……………………………………………..<br>&nbsp;</td>
+        <td width="45%">DIAGNOSIS   ICD  CODING<br>By CODER..<br>&nbsp;</td>
     </tr>
     <tr>
         <td rowspan="2">
@@ -247,34 +247,34 @@ table.dctb td{
         <td style="position: relative;" class="dbtb_bottom_hide">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Arthrocentesis(8191)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Gastric lavage Irrigation(9633)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> EGD(4513)……………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Arthrocentesis(8191)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Gastric lavage Irrigation(9633)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> EGD(4513)..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Paracenthesis (5491)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Insertion of endotracheal tube(9604)…………</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Vetilation &lt;96(5671)……………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Paracenthesis (5491)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Insertion of endotracheal tube(9604)</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Vetilation &lt;96(5671)..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Thoracocenthesis (3491)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Lumbar puncture (L.P.X0331)…………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Vetilation&gt;96(9672) ………………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Thoracocenthesis (3491)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Lumbar puncture (L.P.X0331)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Vetilation&gt;96(9672) ..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Central venous catheterization(3893)…………</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Physical therapy(9339)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Transfution(9904)……………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Central venous catheterization(3893)</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Physical therapy(9339)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Transfution(9904)..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>CT scan………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Normal delivery(7359)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>CT scan..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Normal delivery(7359)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other..</td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Diagnosis ultrasound    ( specify )…………</td>
+        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Diagnosis ultrasound    ( specify )</td>
         <td class="dbtb_bottom_hide"></td>
-        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
+        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other..</td>
     </tr>
 </table>
 
@@ -327,7 +327,7 @@ table.dctb td{
                     <td></td>
                 </tr>
                 <tr>
-                    <td>ª×èÍÊ¶Ò¹¾ÂÒºÒÅ·ÕèÊè§µèÍ ..............................................................</td>
+                    <td>à¸Šà¸·à¹ˆà¸­à¸ªà¸–à¸²à¸™à¸à¸¢à¸²à¸šà¸²à¸¥à¸—à¸µà¹ˆà¸ªà¹ˆà¸‡à¸•à¹ˆà¸­ ..............................................................</td>
                     <td></td>
                 </tr>
             </table>
@@ -340,9 +340,9 @@ table.dctb td{
 
 <table width="100%" class="dctb bottom_sign" valign="top">
     <tr>
-        <td>MEDLICENSE<br>……………………………</td>
-        <td>ATTENDING<br>PHYSICIAN ………………………………………………</td>
-        <td>APPROVED<br>BY ………………………………………………………</td>
+        <td>MEDLICENSE<br></td>
+        <td>ATTENDING<br>PHYSICIAN </td>
+        <td>APPROVED<br>BY </td>
     </tr>
 </table>
 
