@@ -102,6 +102,9 @@ $list_lab["STOCC"] = "stocc";
 $list_lab["1427"] = "uric";
 $list_lab["ANTIHB"] = "ANTIHB";
 $list_lab["HBA1CC"] = "HBA1C";
+$list_lab["CEA"] = "CEA";
+$list_lab["PSA"] = "PSA";
+$list_lab["AFP"] = "AFP";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

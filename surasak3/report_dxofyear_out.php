@@ -809,11 +809,42 @@ C ํ</span></td>
 	<? 
 	}
 
+	if($result['CEA']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>CEA(สารบ่งชี้มะเร็งในลำไส้) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['CEA']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['CEArange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_cea']?></strong></td>
+		</tr>
+		<? 
+	} 
 
-	?>
-    
+	if($result['AFP']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>AFP(สารบ่งชี้มะเร็งในตับ) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['AFP']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['AFPrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_afp']?></strong></td>
+		</tr>
+		<? 
+	} 
 
-	<?php
+	if($result['PSA']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>PSA(สารบ่งชี้มะเร็งต่อมลูกหมาก) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['PSA']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['PSArange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_psa']?></strong></td>
+		</tr>
+		<? 
+	} 
+
 	if($result['pap']!="")
 	{
 		?>

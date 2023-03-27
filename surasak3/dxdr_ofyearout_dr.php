@@ -1604,7 +1604,7 @@ if(!empty($result_dx["antihb"]))
 {
 ?>
 <tr>
-	<td align="right" class="profilelab">Anti-HBs(HBsAb) :</td>
+	<td align="right" class="profilelab">Anti-HBs :</td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['antihb']?></span></td>
 	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['antihb']?></span></td>
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
@@ -1637,13 +1637,9 @@ if(!empty($result_dx["HBA1CC"]))
 	<td align="center" class="labfont">
 		<span <? if($result_dx['HBA1CCflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['HBA1CCflag']?></span>
 	</td>
-	<!-- 
-	onclick="togglediv2('hba1c_action');"
-	onclick="togglediv1('hba1c_action');"
-		-->
 	<td class="labfont">
-		<input name='stat_hba1c' type='radio' value='ปกติ'  <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
-		<input name='stat_hba1c' type='radio' value='ผิดปกติ'  <? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
+		<input name='stat_hba1c' type='radio' onclick="togglediv2('hba1c_action');" value='ปกติ'  <? if( $result_dx['HBA1CC'] > 0 && $result_dx['HBA1CC'] <= 100 ){ echo "checked";}?>/> ปกติ
+		<input name='stat_hba1c' type='radio' onclick="togglediv1('hba1c_action');" value='ผิดปกติ'  <? if( $result_dx['HBA1CC'] > 100 ){ echo "checked";}?>/> ผิดปกติ
 	</td>
 
 	<td colspan="4" style="display:none;">
@@ -1654,11 +1650,77 @@ if(!empty($result_dx["HBA1CC"]))
 			</select>
 		</div>
 	</td>
-
 </tr>
 <?php 
 }
+
+if(!empty($result_dx["CEA"])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">CEA :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['CEA']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['CEA']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['CEA'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['CEA'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['CEArange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['CEAflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['CEAflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_cea' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_cea' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
+
+if(!empty($result_dx["PSA"])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">PSA :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['PSA']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['PSA']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['PSA'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['PSA'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['PSArange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['PSAflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['PSAflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_psa' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_psa' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
+
+if(!empty($result_dx["AFP"])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">AFP :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['AFP']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['AFP']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['AFP'] > 100) ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['AFP'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['AFPrange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['AFPflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['AFPflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_afp' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_afp' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
 ?>
+
 
 
             </table>
