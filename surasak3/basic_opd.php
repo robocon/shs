@@ -1946,39 +1946,23 @@ mmHg </td>
 
 		<tr>
 			<td colspan="6">
-				<style>
-					.mainThumb{
-						position: relative;
-					}
-					.thumbnail{
-						visibility: hidden;
-						position: absolute;
-  						z-index: 1;
-					}
-					.thumbnail img{
-						box-shadow: 2px 2px 4px #000000;
-					}
-					.mainThumb:hover .thumbnail{
-						visibility: visible;
-					}
-				</style>
 				<fieldset>
 					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe และคำแนะนำก่อนผ่าตัด</legend>
 					<table>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer<span class="thumbnail"><img src="images/form_advice/form_a.png" alt=""></span></label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่<span class="thumbnail"><img src="images/form_advice/form_b.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว<span class="thumbnail"><img src="images/form_advice/form_c.png" alt=""></span></label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร<span class="thumbnail"><img src="images/form_advice/form_d.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด<span class="thumbnail"><img src="images/form_advice/form_e.png" alt=""></span></label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด<span class="thumbnail"><img src="images/form_advice/form_f.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้<span class="thumbnail"><img src="images/form_advice/form_g.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
 							<td></td>
 						</tr>
 					</table>
