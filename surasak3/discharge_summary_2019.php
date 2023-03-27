@@ -16,9 +16,9 @@ Function calcage($birth){
 		$ageM=12+$ageM;
 	}
 	if ($ageM==0){
-		$pAge="$ageY »Õ";
+		$pAge="$ageY à¸›à¸µ";
 	}else{
-		$pAge="$ageY »Õ $ageM à´×Í¹";
+		$pAge="$ageY à¸›à¸µ $ageM à¹€à¸”à¸·à¸­à¸™";
 	}
 	return $pAge;
 }
@@ -49,10 +49,10 @@ Function calcage($birth){
     $birthdate="$d-$m-$y"; //print into opdcard
     $cAge=calcage($dbirth);
     $cPtname=$yot.' '.$name.' '.$surname;
-    if($sex=='ª'){
-        $sex1='ªÒÂ';
+    if($sex=='à¸Š'){
+        $sex1='à¸Šà¸²à¸¢';
     }else {
-        $sex1='Ë­Ô§';
+        $sex1='à¸«à¸à¸´à¸‡';
     }
 
 $ddate=substr($date,8,2);
@@ -69,7 +69,7 @@ $adate="$ddate-$mdate-$ydate";
     font-family:"TH Sarabun New", "TH SarabunPSK";
     font-size:11pt;
 }
-/* ·´ÊÍº¤ÇÒÁÊÙ§ td µÒÁ¿Í¹µì */
+/* à¸—à¸”à¸ªà¸­à¸šà¸„à¸§à¸²à¸¡à¸ªà¸¹à¸‡ td à¸•à¸²à¸¡à¸Ÿà¸­à¸™à¸•à¹Œ */
 .tb_normal_line td{
     line-height: 11pt;
 }
@@ -77,10 +77,13 @@ $adate="$ddate-$mdate-$ydate";
     font-size: 14pt;
     line-height: 14pt;
 }
-.head, 
-.bottom_sign td{
+.head{
+    /* font-weight: bold; */
     font-size: 16pt;
-    line-height: 16pt;
+}
+.bottom_sign td{
+    font-size: 12pt;
+    line-height: 14pt;
 }
 
 table.dctb{
@@ -106,63 +109,65 @@ table.dctb td{
 .dctb_close td{
     border: 0px!important;
 }
+.procedure td{
+    vertical-align: middle!important;
+    line-height: 16pt;
+}
 </style>
 <!-- window.print(); -->
 <body onLoad="">
-
-<div align="right" class="head">MR – IPD - 002 (1)</div>
 <div align="center" class="head">DISCHARGE SUMMARY</div>
-<div align="center" class="head">FORT SURASAKMONTRI HOSPITAL àÃÔèÁãªé  ÇÑ¹·Õè  4 ÁÕ.¤. 62</div>
+<div align="center" class="head" style="position:relative;">
+    <div style="position:absolute;left:0;" class="head">MR  IPD - 002 (1)</div>    
+    FORT SURASAKMONTRI HOSPITAL à¹€à¸£à¸´à¹ˆà¸¡à¹ƒà¸Šà¹‰  à¸§à¸±à¸™à¸—à¸µà¹ˆ  1 à¹€à¸¡.à¸¢. 66
+</div>
 <BR />
 <table width="100%" class="tb_info" style="border-collapse: collapse; border: 1px solid black; border-bottom: none;">
     <tr>
-        <td class="dbtb_bottom">ADMIT: <?=$adate;?></td>
-        <td class="dbtb_bottom">àÇÅÒ: <?=$tdate;?>¹.</td>
-        <td class="dbtb_bottom">AN:  <?=$an;?></td>
-        <td class="dbtb_bottom">HN: <?=$hn;?></td>
+        <td class="dbtb_bottom" width="35%"><b>ADMIT:</b> <?=$adate;?></td>
+        <td class="dbtb_bottom"><b>à¹€à¸§à¸¥à¸²:</b> <?=$tdate;?>à¸™.</td>
+        <td class="dbtb_bottom"><b>AN:</b>  <?=$an;?></td>
+        <td class="dbtb_bottom"><b>HN:</b> <?=$hn;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">ª×èÍ: <?=$cPtname;?></td>
-        <td class="dbtb_bottom">ÍÒÂØ: <?=$cAge?></td>
-        <td class="dbtb_bottom">à¾È: <?=$sex1;?></td>
-        <td class="dbtb_bottom">ÊÑ§¡Ñ´: <?=$camp;?></td>
+        <td class="dbtb_bottom"><b>à¸Šà¸·à¹ˆà¸­:</b> <?=$cPtname;?></td>
+        <td class="dbtb_bottom"><b>à¸­à¸²à¸¢à¸¸:</b> <?=$cAge?></td>
+        <td class="dbtb_bottom"><b>à¹€à¸à¸¨:</b> <?=$sex1;?></td>
+        <td class="dbtb_bottom"><b>à¸ªà¸±à¸‡à¸à¸±à¸”:</b> <?=$camp;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">àÅ¢ »ªª. <?=$idcard;?></td>
+        <td class="dbtb_bottom"><b>à¹€à¸¥à¸‚ à¸›à¸Šà¸Š.</b> <?=$idcard;?></td>
         <td class="dbtb_bottom"></td>
-        <td class="dbtb_bottom">Ç/´/».à¡Ô´: <?=$birthdate;?></td>
-        <td class="dbtb_bottom">ÊÔ·¸Ô: <?=$ptright;?></td>
+        <td class="dbtb_bottom"><b>à¸§/à¸”/à¸›.à¹€à¸à¸´à¸”:</b> <?=$birthdate;?></td>
+        <td class="dbtb_bottom"><b>à¸ªà¸´à¸—à¸˜à¸´:</b> <?=$ptright;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom">ºéÒ¹àÅ¢·Õè <?=$address;?> µÓºÅ<?=$tambol;?> ÍÓàÀÍ <?=$ampur;?></td>
+        <td class="dbtb_bottom"><b>à¸šà¹‰à¸²à¸™à¹€à¸¥à¸‚à¸—à¸µà¹ˆ</b> <?=$address;?> à¸•à¸³à¸šà¸¥<?=$tambol;?> à¸­à¸³à¹€à¸ à¸­ <?=$ampur;?></td>
         <td class="dbtb_bottom"></td>
-        <td class="dbtb_bottom">¨Ñ§ËÇÑ´: <?=$changwat;?></td>
-        <td class="dbtb_bottom">â·Ã: <?=$phone;?></td>
+        <td class="dbtb_bottom"><b>à¸ˆà¸±à¸‡à¸«à¸§à¸±à¸”:</b> <?=$changwat;?></td>
+        <td class="dbtb_bottom"><b>à¹‚à¸—à¸£:</b> <?=$phone;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide">¼Ùé·ÕèµÔ´µèÍä´é: <?=$ptf;?></td>
-        <td class="dbtb_bottom_hide">à¡ÕèÂÇ¢éÍ§à»ç¹: <?=$ptfadd;?></td>
-        <td class="dbtb_bottom_hide">â·ÃÈÑ¾·ì: <?=$ptffone;?></td>
-        <td class="dbtb_bottom_hide">ËÍÃÑº&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ËÍ¨ÓË¹èÒÂ</td>
+        <td class="dbtb_bottom_hide"><b>à¸œà¸¹à¹‰à¸—à¸µà¹ˆà¸•à¸´à¸”à¸•à¹ˆà¸­à¹„à¸”à¹‰:</b> <?=$ptf;?></td>
+        <td class="dbtb_bottom_hide" colspan="3">
+            <b>à¹€à¸à¸µà¹ˆà¸¢à¸§à¸‚à¹‰à¸­à¸‡à¹€à¸›à¹‡à¸™:</b> <?=$ptfadd;?>&nbsp;&nbsp;
+            <b>à¹‚à¸—à¸£à¸¨à¸±à¸à¸—à¹Œ:</b> <?=$ptffone;?>&nbsp;&nbsp;
+            <b>à¸«à¸­à¸£à¸±à¸š</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>à¸«à¸­à¸ˆà¸³à¸«à¸™à¹ˆà¸²à¸¢</b>
+        </td>
     </tr>
 </table>
 <table width="100%" class="dctb">
   <tr>
     <td class="dbtb_bottom_hide" valign="top" width="10%">Refer from</td>
     <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">Discharge Date, Time</td>
-    <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">
+    <td class="dbtb_bottom_hide" align="center" valign="top" width="20%">
         <div>LENGTH OF STAY ( DAYS )</div>
-        <div>&nbsp;</div>
-        <div>TOTAL LEAVE DAYS</div>
-        <div>&nbsp;</div>
+        <div style="margin-top:6px;">TOTAL LEAVE DAYS</div>
     </td>
     <td class="dbtb_bottom_hide" align="center" valign="bottom" style="vertical-align: bottom;">
-        <table width="100%" class="dctb_close tb_normal_line">
+        <table width="100%" class="dctb_close tb_normal_line" style="border:0;">
             <tr>
                 <td colspan="2" style="text-align: center;">CONDITION OF INFANT AT BIRTH</td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align: center;">&nbsp;</td>
             </tr>
             <tr>
                 <td align="left" valign="top" width="50%"><img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/> LIVEBIRTH</td>
@@ -184,49 +189,38 @@ table.dctb td{
 <table width="100%" class="dctb" valign="top" style="">
     <tr class="tb_hide_top">
         <td rowspan="7" class="dbtb_bottom_hide" width="10%">DIAGNOSIS</td>
-        <td width="45%">1 PRINCIPAL DIAGNOSIS</td>
-        <td width="45%">DIAGNOSIS   ICD  CODING<br>By CODER……………………………………………..<br>&nbsp;</td>
+        <td width="65%">1 PRINCIPAL DIAGNOSIS</td>
+        <td width="25%">DIAGNOSIS   ICD  CODING<br>MAINCONDITION<br>&nbsp;</td>
     </tr>
     <tr>
-        <td rowspan="2">
-            2 COMORBIDITY<br>
-            <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/>Hypertension<br>
-            <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/>Diabetes mellitus<br>
-            <img src="dcsum_clip_image001_0000.gif" alt="" width="15" height="15" align="left"/>Dyslipidemia
-        </td>
-        <td>MAINCONDITION</td>
-    </tr>
-    <tr>
+        <td>2 COMORBIDITY<br><br><br><br></td>
         <td>COMORBIDITY (S)</td>
     </tr>
     <tr>
-        <td rowspan="2">3 COMPLICATION</td>
+        <td>3 COMPLICATION<br><br><br><br></td>
         <td>COMPLICATION (S)<br>&nbsp;</td>
     </tr>
     <tr>
-        <td>OTHER (S)<br>&nbsp;</td>
-    </tr>
-    <tr>
-        <td>4 OTHER DIAGNOSIS</td>
-        <td>EXTERNAL CAUSE (S)<br>&nbsp;<br>&nbsp;<br>&nbsp;</td>
+        <td>4 OTHER DIAGNOSIS<br><br><br></td>
+        <td>OTHER (S)</td>
     </tr>
     <tr>
         <td class="dbtb_bottom_hide">5 EXTERNAL CAUSE OF INJURY</td>
-        <td class="dbtb_bottom_hide">PROCEDURES ICD CODEING<br>By CODER....</td>
+        <td class="dbtb_bottom_hide">EXTERNAL CAUSE (S)</td>
     </tr>
 </table>
 
 <table width="100%" class="dctb" valign="top" >
     <tr>
         <td rowspan="5" class="dbtb_bottom_hide" width="10%">OPERATION</td>
-        <td>OPERATING  ROOM  PROCEDURE</td>
-        <td style="border-left: 0;">DATE</td>
-        <td>TIME STARED</td>
-        <td>TIME  END</td>
+        <td style="border-right:0; border-bottom: 0;">OPERATING  ROOM  PROCEDURE</td>
+        <td style="border-left: 0;border-right: 0;border-bottom: 0;">DATE</td>
+        <td style="border-left: 0;border-right: 0;border-bottom: 0;">TIME STARED</td>
+        <td style="border-left: 0;border-right: 0;border-bottom: 0;">TIME  END</td>
         <td rowspan="2">MAIN</td>
     </tr>
     <tr>
-        <td colspan="4">1.</td>
+        <td colspan="4" style="border-top: 0;">1.</td>
     </tr>
     <tr>
         <td colspan="4">2.</td>
@@ -240,41 +234,40 @@ table.dctb td{
     </tr>
 </table>
 
-<table width="100%" class="dctb tb_normal_line" valign="top" >
+<table width="100%" class="dctb tb_normal_line procedure" valign="middle" >
     <tr>
-        <td style="position: relative;" class="dbtb_bottom_hide">NON or<br>PROCEDURE<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
+        <td style="position: relative;" width="33%" class="dbtb_bottom_hide">NON OR PROCEDURE<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
+        <td style="position: relative;" width="33%" class="dbtb_bottom_hide">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
         <td style="position: relative;" class="dbtb_bottom_hide">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
-        <td style="position: relative;" class="dbtb_bottom_hide">&nbsp;<span style="position: absolute; top: 2px; right: 2px;">DATE</span></td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Arthrocentesis(8191)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> Gastric lavage Irrigation(9633)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/> EGD(4513)……………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Arthrocentesis(8191)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Gastric lavage Irrigation(9633)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> EGD(4513)..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Paracenthesis (5491)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Insertion of endotracheal tube(9604)…………</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Vetilation &lt;96(5671)……………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Paracenthesis (5491)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Insertion of endotracheal tube(9604)</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Vetilation &lt;96(5671)..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Thoracocenthesis (3491)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Lumbar puncture (L.P.X0331)…………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Vetilation&gt;96(9672) ………………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Thoracocenthesis (3491)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Lumbar puncture (L.P.X0331)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Vetilation&gt;96(9672) ..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Central venous catheterization(3893)…………</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Physical therapy(9339)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Transfution(9904)……………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Central venous catheterization(3893)</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Physical therapy(9339)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Transfution(9904)..</td>
     </tr>
     <tr>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>CT scan………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Normal delivery(7359)………………………..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> CT scan..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Transfusion(9904)</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Other..</td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Diagnosis ultrasound    ( specify )…………</td>
-        <td class="dbtb_bottom_hide"></td>
-        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="15" height="15" align="left"/>Other………………………..</td>
+        <td class="dbtb_bottom_hide" colspan="2"><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Diagnosis ultrasound    ( specify )</td>
+        <td class="dbtb_bottom_hide"><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Other..</td>
     </tr>
 </table>
 
@@ -311,7 +304,7 @@ table.dctb td{
         <td>
             <table class="dctb_close" width="100%">
                 <tr>
-                    <td>1&nbsp;&nbsp;WITH APPROVAL</td>
+                    <td width="50%">1&nbsp;&nbsp;WITH APPROVAL</td>
                     <td>5&nbsp;&nbsp;OTHER</td>
                 </tr>
                 <tr>
@@ -327,8 +320,7 @@ table.dctb td{
                     <td></td>
                 </tr>
                 <tr>
-                    <td>ª×èÍÊ¶Ò¹¾ÂÒºÒÅ·ÕèÊè§µèÍ ..............................................................</td>
-                    <td></td>
+                    <td colspan="2">à¸Šà¸·à¹ˆà¸­à¸ªà¸–à¸²à¸™à¸à¸¢à¸²à¸šà¸²à¸¥à¸—à¸µà¹ˆà¸ªà¹ˆà¸‡à¸•à¹ˆà¸­ .........................................................</td>
                 </tr>
             </table>
         </td>
@@ -340,9 +332,10 @@ table.dctb td{
 
 <table width="100%" class="dctb bottom_sign" valign="top">
     <tr>
-        <td>MEDLICENSE<br>……………………………</td>
-        <td>ATTENDING<br>PHYSICIAN ………………………………………………</td>
-        <td>APPROVED<br>BY ………………………………………………………</td>
+        <td width="25%">MEDLICENSE<br>...................................</td>
+        <td width="25%">ATTENDING<br>PHYSICIAN ...................................</td>
+        <td width="25%">APPROVED<br>BY ...................................</td>
+        <td width="25%">ICD CODING By CODER....</td>
     </tr>
 </table>
 
