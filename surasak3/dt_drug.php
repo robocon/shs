@@ -8,20 +8,7 @@ exit();
 }
 // ini_set('display_errors', '1');
 // error_reporting(1);
-
-function TestPikkaBalm($drugCode){ 
-	$res = false;
-	$drugCode = trim($drugCode);
-	if($drugCode=='10H014'){
-		$res = true;
-	}
-
-	if($drugCode=='4MET25'){
-		$res = true;
-	}
-
-}
-
+require_once 'includes/JSON.php';
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -486,13 +473,8 @@ for($i=0;$i<$count;$i++){
 			echo "\">แก้ไข</A></TD>
 			</TR>
 			";
-		// $curr_drug = $_SESSION['list_drugcode'][$i];
-		// if(in_array($_SESSION['other_dr_drug'], $curr_drug)==true){
-			
-		// }
+
 	}
-
-
 	if($i >0)
 /*	if(substr($_SESSION["ptright_now"],0,3) == "R36"){
 	$sql="select sum(price),hn,ptname from patdata where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
@@ -1193,13 +1175,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		$_GET["drug_inject_etc"] = "";
 
 	}*/
-
-	$curr_drug = trim($_GET['drugcode']);
-	// ถ้ายาที่คีย์เข้ามาเป็น บาร์ม หรือ เจลพิก
-	if($curr_drug=='10H014' OR $curr_drug=='4MET25'){
-		if(in_array($curr_drug,$_SESSION["list_drugcode"]))
-	}
-	
 
 	if($_GET["addoredit"] != "E"){
 		$add = false;
@@ -1980,6 +1955,56 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugslip"){
 exit();
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "search_other_doctor"){
+
+	$drugcode = sprintf("%s", $_GET['drugcode']);
+	$testdrug = sprintf("%s", $_GET['testdrug']);
+	$json = new Services_JSON();
+
+	if($testdrug=='10H014'){
+		$dName = 'Pikka gel';
+	}elseif ($testdrug=='4MET25') {
+		$dName = 'SURASAKMONTRI Balm';
+	}
+
+	$hn = sprintf("%s", $_GET['hn']);
+	$thDate = (date('Y')+543).date('-m-d');
+	$sql = " SELECT b.`doctor`,a.`tradname` 
+	FROM ( 
+		SELECT `idno`,`tradname` FROM `ddrugrx` WHERE `date` LIKE '$thDate%' AND `hn`='$hn' AND `drugcode` = '$testdrug' GROUP BY `idno` 
+	) AS a 
+	LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id` 
+	WHERE b.`whokey` = 'DR' AND b.`dr_cancle` IS NULL 
+	GROUP BY b.`doctor`";
+
+	$q = mysql_query($sql);
+	$doctor_list = array();
+	if(mysql_num_rows($q) > 0){
+		while ($a = mysql_fetch_assoc($q)) {
+			$doctor_list[] = $a['doctor'];
+		}
+	}
+	
+	$msg = '';
+	if(count($doctor_list) > 0){
+		$msg .= '!!! แจ้งเตือน !!!'."\n".'วันนี้มีแพทย์สั่งจ่าย'.$dName.'ไปแล้ว '.count($doctor_list).'ท่าน'."\n".implode(', ', $doctor_list)."\n";
+	}
+
+	foreach ($_SESSION['list_drugcode'] as $key => $ldc) {
+		if($testdrug==$ldc){
+			$msg .= "\n!!! แจ้งเตือน !!!\nห้ามให้มีการสั่งยา Pikka gel คู่กับ Surasakmontri Balm";
+		}
+	}
+
+	$res = array(
+		'status' => 200,
+		'message' => $msg
+	);
+
+	echo $json->encode($res);
+	exit();
+}
+
 
 //******************************************** ตรวจสอบการเกิด DRUG INTERACTION *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
@@ -2596,6 +2621,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
+	// กรณีที่หมอเข้า vn ซ้ำอีกรอบแล้วไม่ได้บันทึกหน้า icdมันจะมองไม่เห็นใน session 
 	var icd10 = false;
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=get_icd10';
@@ -2610,6 +2636,13 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	};
 	xmlhttp.send(null);
+
+	// 
+	if(drugcode.trim()=='10H014'){
+		TestPikka(drugcode.trim());
+	}else if(drugcode.trim()=='4MET25'){
+		TestBalm(drugcode.trim());
+	}
 	
 	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
@@ -2626,6 +2659,36 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	// RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
 		
+}
+
+// หาว่า pikka ที่กดสั่งไปมีหมอหรือในรายการเป็น บาร์มรึป่าว
+function TestPikka(drugcode){ 
+	TestPikkaAndBalm(drugcode,'4MET25');
+}
+
+function TestBalm(drugcode){
+	TestPikkaAndBalm(drugcode,'10H014');
+}
+
+function TestPikkaAndBalm(drugcode, testdrug){ 
+
+	var patient_hn = '<?=trim($_SESSION["hn_now"]);?>';
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=search_other_doctor&drugcode='+drugcode+'&testdrug='+testdrug+'&hn='+patient_hn;
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				resTxt = JSON.parse(xmlhttp.responseText.trim());
+				if(resTxt.status==200){
+					alert(resTxt.message);
+				}
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
 }
 
 function glibenclamide_alert(drugcode){
@@ -3872,11 +3935,8 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		
 		echo "<Table width=\"100%\">";
 		echo "<TR>";
-		echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
-		echo "</TR>";
-
-		$all_other_drug = array();
-		$other_i = 1;
+					echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
+				echo "</TR>";
 		while(list($row_id, $doctor) = mysql_fetch_row($result)){
 			$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 			$result2 = mysql_query($sql) or die(mysql_error());
@@ -3887,11 +3947,9 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 			<td align=\"center\" >วิธีใช้</td>
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
-			
+
 			while(list($tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
 
-				$all_other_drug[$drugcode] = $other_i;
-				
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 				echo "<TR>";
@@ -3900,27 +3958,10 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
 				echo "</TR>";
-
-				$other_i++;
-			}
-		} // end while doctor
-
-		if(count($all_other_drug) > 0){
-			
-			$_SESSION['other_dr_balm'] = null;
-			$all_other_drug = array_flip($all_other_drug);
-			if(in_array('4MET25', $all_other_drug)){
-				$_SESSION['other_dr_balm'] = true;
-			}
-
-			$_SESSION['other_dr_pikka'] = null;
-			if(in_array('10H014', $all_other_drug)){
-				$_SESSION['other_dr_pikka'] = true;
 			}
 		}
-
 		echo "</Table>";
-		} // end if have other doctor
+		}
 	
 	?>
 	&nbsp;</TD>
