@@ -258,11 +258,11 @@ table.dctb td{
     <tr>
         <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Central venous catheterization(3893)</td>
         <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Physical therapy(9339)..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Transfution(9904)..</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Normal delivery (7359)..</td>
     </tr>
     <tr>
         <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> CT scan..</td>
-        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Transfusion(9904)</td>
+        <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Transfusion(9904)..</td>
         <td><img src="dcsum_clip_image001_0000.gif" width="12" height="12" align="center" style="margin-left: 2px;"/> Other..</td>
     </tr>
     <tr>
@@ -281,11 +281,11 @@ table.dctb td{
             <table class="dctb_close" width="100%">
                 <tr>
                     <td>1&nbsp;&nbsp;COMPLETE RECOVERY</td>
-                    <td>6&nbsp;&nbsp;NORMAL CHILD DICHARGE WITH MOTHER</td>
+                    <td>6&nbsp;&nbsp;NORMAL CHILD DISCHARGED WITH MOTHER</td>
                 </tr>
                 <tr>
                     <td>2&nbsp;&nbsp;IMPROVED</td>
-                    <td>7&nbsp;&nbsp;NORMAL CHILD DICHARGE SEPARETERY</td>
+                    <td>7&nbsp;&nbsp;NORMAL CHILD DISCHARGED SEPARETERY</td>
                 </tr>
                 <tr>
                     <td>3&nbsp;&nbsp;NOT IMPROVED</td>
