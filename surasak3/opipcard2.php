@@ -32,7 +32,7 @@ print "<a target=_TOP  href=\"dcsum.php? Can=$vAN&Chn=$cHn\">พิมพ์ DIS
 
 print "<a target=_TOP  href=\"dcsum.1.php? Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY  แบบใหม่ <br><br> ";
 
-print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY (เริ่มใช้ 4 มี.ค. 62)<br> ";
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span> <br><br>";
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary (เริ่มใช้ 4 มี.ค. 62 ใช้กระดาษ A5)<br><br> ";
 
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target=_TOP  href=\"discharge_summary_2019_eye.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY ต้อกระจก (เริ่มใช้ 4 มี.ค. 62)<br>";
