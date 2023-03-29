@@ -30,7 +30,7 @@ if ($_POST["act"] == "add") {
 	}
 </style>
 
-<TABLE width="100%" align="center">
+<TABLE width="100%" align="center" style="border: 2px solid #009688;">
 	<TR bgcolor="#009688">
 		<TD align="center" colspan="6">
 			<FONT COLOR="#ffffff"><B>รายละเอียดผู้ป่วย</B></FONT>
@@ -105,12 +105,12 @@ if ($_POST["act"] == "add") {
 <p>&nbsp;</p>
 <table width="80%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#333333">
 	<tr>
-		<td width="30%" align="center" bgcolor="#66CC99"><strong>ชื่อยา</strong></td>
-		<td width="18%" align="center" bgcolor="#66CC99"><strong>ประเภท</strong></td>
-		<td width="18%" align="center" bgcolor="#66CC99"><strong>วิธีใช้</strong></td>
-		<td width="14%" align="center" bgcolor="#66CC99"><strong>สถานะ</strong></td>
-		<td width="11%" align="center" bgcolor="#66CC99"><strong>หน่วย</strong></td>
-		<td width="9%" align="center" bgcolor="#66CC99"><strong>จำนวน</strong></td>
+		<td width="30%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>ชื่อยา</strong></td>
+		<td width="18%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>ประเภท</strong></td>
+		<td width="18%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>วิธีใช้</strong></td>
+		<td width="14%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>สถานะ</strong></td>
+		<td width="11%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>หน่วย</strong></td>
+		<td width="9%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>จำนวน</strong></td>
 	</tr>
 	<?
 	$y = date("Y") + 543;
@@ -126,22 +126,22 @@ if ($_POST["act"] == "add") {
 	while ($rows = mysql_fetch_array($query)) {
 		?>
 		<tr>
-			<td bgcolor="#FFFFCC">
+			<td bgcolor="#ffffff">
 				<?= $rows["tradname"]; ?>
 			</td>
-			<td bgcolor="#FFFFCC">
+			<td bgcolor="#ffffff">
 				<?= $rows["part"]; ?>
 			</td>
-			<td bgcolor="#FFFFCC">
+			<td bgcolor="#ffffff">
 				<?= $rows["slcode"]; ?>
 			</td>
-			<td bgcolor="#FFFFCC">
+			<td bgcolor="#ffffff">
 				<?= $rows["statcon"]; ?>
 			</td>
-			<td bgcolor="#FFFFCC">
+			<td bgcolor="#ffffff">
 				<?= $rows["unit"]; ?>
 			</td>
-			<td bgcolor="#FFFFCC">
+			<td bgcolor="#ffffff">
 				<?= $rows["amount"]; ?>
 			</td>
 		</tr>
