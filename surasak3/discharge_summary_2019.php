@@ -36,11 +36,11 @@ Function calcage($birth){
     
 
 
-    $query = "SELECT ipcard.an,ipcard.hn,ipcard.date,ipcard.bedcode,opcard.yot,opcard.name,opcard.surname,opcard.idcard,opcard.ptright,opcard.dbirth,opcard.sex,opcard.address,opcard.tambol,opcard.ampur,opcard.changwat,opcard.phone,opcard.ptf,opcard.ptfadd,opcard.ptffone,opcard.camp 
+    $query = "SELECT ipcard.an,ipcard.hn,ipcard.date,ipcard.dcdate,ipcard.days,ipcard.bedcode,ipcard.weight,opcard.yot,opcard.name,opcard.surname,opcard.idcard,opcard.ptright,opcard.dbirth,opcard.sex,opcard.address,opcard.tambol,opcard.ampur,opcard.changwat,opcard.phone,opcard.ptf,opcard.ptfadd,opcard.ptffone,opcard.camp 
     FROM ipcard 
     LEFT JOIN opcard ON ipcard.hn=opcard.hn WHERE an = '$Can'";
     $result = mysql_query($query)or die("Query failed");
-    list ($an,$hn,$date,$bedcode,$yot,$name,$surname,$idcard,$ptright,$dbirth,$sex,$address,$tambol,$ampur,$changwat,$phone,$ptf,$ptfadd,$ptffone,$camp) = mysql_fetch_row ($result);
+    list ($an,$hn,$date,$dcdate,$days,$bedcode,$weight,$yot,$name,$surname,$idcard,$ptright,$dbirth,$sex,$address,$tambol,$ampur,$changwat,$phone,$ptf,$ptfadd,$ptffone,$camp) = mysql_fetch_row ($result);
 
 
     $d=substr($dbirth,8,2);
@@ -61,8 +61,75 @@ $ydate=substr($date,0,4);
 $tdate=substr($date,11,5); 
 $adate="$ddate-$mdate-$ydate"; 
 
+$ward=substr($bedcode,0,2);
+
+if($dcdate=="0000-00-00 00:00:00"){
+	$dischargedate="";
+	
+
+	if($ward=="42"){
+		$wardin="หอผู้ป่วยรวม";
+		$wardout="";
+	}else if($ward=="43"){
+		$wardin="หอผู้ป่วยสูตินรี";
+		$wardout="";
+	}else if($ward=="44"){
+		$wardin="หอผู้ป่วย ICU";	
+		$wardout="";
+	}else if($ward=="45"){
+		$wardin="หอผู้ป่วยพิเศษ";
+		$wardout="";
+	}else if($ward=="46"){
+		$wardin="Cohort Ward";
+		$wardout="";	
+	}else if($ward=="47"){
+		$wardin="Home Isolation";
+		$wardout="";
+	}else if($ward=="48"){
+		$wardin="รพ.สนาม";
+		$wardout="";
+	}	
+}else{	
+	$dcddate=substr($dcdate,8,2);
+	$dcmdate=substr($dcdate,5,2); 
+	$dcydate=substr($dcdate,0,4); 
+	$dctdate=substr($dcdate,11,8); 
+	$dischargedate="$dcddate-$dcmdate-$dcydate<br>$dctdate";
+	
+	if($ward=="42"){
+		$wardin="หอผู้ป่วยรวม";
+		$wardout="หอผู้ป่วยรวม";
+	}else if($ward=="43"){
+		$wardin="หอผู้ป่วยสูตินรี";
+		$wardout="หอผู้ป่วยสูตินรี";
+	}else if($ward=="44"){
+		$wardin="หอผู้ป่วย ICU";	
+		$wardout="หอผู้ป่วย ICU";
+	}else if($ward=="45"){
+		$wardin="หอผู้ป่วยพิเศษ";
+		$wardout="หอผู้ป่วยพิเศษ";
+	}else if($ward=="46"){
+		$wardin="Cohort Ward";
+		$wardout="Cohort Ward";	
+	}else if($ward=="47"){
+		$wardin="Home Isolation";
+		$wardout="Home Isolation";
+	}else if($ward=="48"){
+		$wardin="รพ.สนาม";
+		$wardout="รพ.สนาม";
+	}		
+}
 //end opdcard
 
+
+	
+
+$chknewborn=substr($ptright,0,3);
+if($chknewborn=="R10"){
+	$birthweight=$weight;
+}else{
+	$birthweight="<br>";
+}	
 ?>
 <style type="text/css">
 *{
@@ -148,20 +215,22 @@ table.dctb td{
         <td class="dbtb_bottom"><b>โทร:</b> <?=$phone;?></td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide"><b>ผู้ที่ติดต่อได้:</b> <?=$ptf;?></td>
-        <td class="dbtb_bottom_hide" colspan="3">
-            <b>เกี่ยวข้องเป็น:</b> <?=$ptfadd;?>&nbsp;&nbsp;
-            <b>โทรศัพท์:</b> <?=$ptffone;?>&nbsp;&nbsp;
-            <b>หอรับ</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>หอจำหน่าย</b>
+        <td class="dbtb_bottom_hide" valign="top" colspan="4"><b>ผู้ที่ติดต่อได้:</b> <?=$ptf;?>
+		<span style="margin-left: 20px;"><b>เกี่ยวข้องเป็น:</b>&nbsp;&nbsp;<?=$ptfadd;?></span>
+		<span style="margin-left: 10px;"><b>โทรศัพท์:</b>&nbsp;&nbsp;<?=$ptffone;?></span>
+		<span style="margin-left: 10px;"><b>หอรับ</b>&nbsp;&nbsp;<?php echo $wardin;?></span>
+		<span style="margin-left: 10px;"><b>หอจำหน่าย</b>&nbsp;&nbsp;<?php echo $wardout;?></span>
         </td>
     </tr>
 </table>
 <table width="100%" class="dctb">
   <tr>
     <td class="dbtb_bottom_hide" valign="top" width="10%">Refer from</td>
-    <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">Discharge Date, Time</td>
+    <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">Discharge Date, Time<br>
+	<?php echo $dischargedate;?></td>
     <td class="dbtb_bottom_hide" align="center" valign="top" width="20%">
-        <div>LENGTH OF STAY ( DAYS )</div>
+        <div>LENGTH OF STAY ( DAYS )<br>
+	<?php echo $days;?></div>
         <div style="margin-top:6px;">TOTAL LEAVE DAYS</div>
     </td>
     <td class="dbtb_bottom_hide" align="center" valign="bottom" style="vertical-align: bottom;">
@@ -180,7 +249,9 @@ table.dctb td{
         </table>
     </td>
     <td class="dbtb_bottom_hide" align="center" valign="top" width="15%">
-        <div>BIRTH WEIGHT<br><br></div>
+        <div>BIRTH WEIGHT<br>
+		<?php echo $birthweight;?>
+		</div>
         <div>GRAMS</div>
     </td>
   </tr>
@@ -190,7 +261,7 @@ table.dctb td{
     <tr class="tb_hide_top">
         <td rowspan="7" class="dbtb_bottom_hide" width="10%">DIAGNOSIS</td>
         <td width="65%">1 PRINCIPAL DIAGNOSIS</td>
-        <td width="25%">DIAGNOSIS   ICD  CODING<br>MAINCONDITION<br>&nbsp;</td>
+        <td width="25%">DIAGNOSIS   ICD  CODING<br>MAIN CONDITION<br>&nbsp;</td>
     </tr>
     <tr>
         <td>2 COMORBIDITY<br><br><br><br></td>
@@ -205,7 +276,7 @@ table.dctb td{
         <td>OTHER (S)</td>
     </tr>
     <tr>
-        <td class="dbtb_bottom_hide">5 EXTERNAL CAUSE OF INJURY</td>
+        <td class="dbtb_bottom_hide">5 EXTERNAL CAUSE OF INJURY<br><br></td>
         <td class="dbtb_bottom_hide">EXTERNAL CAUSE (S)</td>
     </tr>
 </table>
@@ -331,10 +402,10 @@ table.dctb td{
 </table>
 
 <table width="100%" class="dctb bottom_sign" valign="top">
-    <tr>
-        <td width="25%">MEDLICENSE<br>...................................</td>
+    <tr style="height:30px;" >
+        <td width="25%">MEDLICENSE<br>................................................</td>
         <td width="25%">ATTENDING<br>PHYSICIAN ...................................</td>
-        <td width="25%">APPROVED<br>BY ...................................</td>
+        <td width="25%">APPROVED<br>BY ................................................</td>
         <td width="25%">ICD CODING By CODER....</td>
     </tr>
 </table>
