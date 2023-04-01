@@ -1706,7 +1706,7 @@ mmHg </td>
 			<td align="right" class="data_show">ประเภทผู้ป่วย : </td>
 			<td align="left" colspan="5">
 				<!-- <input type="radio" name="opdtype" id="opdtype1" value="FI" <? if($opdtype=="FI"){ echo "checked='checked'";}?> onClick="window.alert('ฮั่นแน่ !!!\n อยู่ รพ.สนามจริงรึป่าว? อย่ามั่วนะครับ');"><label for="opdtype1">ผู้ป่วย รพ.สนาม</label>&nbsp; -->
-				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?> onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="opdtype2">ผู้ป่วย OP self Isolation</label>&nbsp;
+				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?> onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="opdtype2" style="color:red;">ผู้ป่วย OP self Isolation</label>&nbsp;
 				<!-- <input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp; -->
 				<input type="radio" name="opdtype" id="opdtype4" value="OP" <? if($opdtype=="OP"){ echo "checked='checked'";}?>><label for="opdtype4">ผู้ป่วยทั่วไป</label>
 				&nbsp;<? if($opdtype=="SI"){ echo "<strong style='margin-left:20px;color:blue;'>ผู้ป่วย OP Self Isolation</strong>";}else if($opdtype=="OP"){ echo "<strong style='margin-left:20px;color:green;'>ผู้ป่วยทั่วไป</strong>";}else{echo "<strong style='margin-left:20px;color:red;'>ยังไม่ได้ระบุว่าเป็นผู้ป่วยประเภทใด</strong>";}?>
