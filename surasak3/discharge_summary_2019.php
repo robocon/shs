@@ -88,7 +88,10 @@ if($dcdate=="0000-00-00 00:00:00"){
 	}else if($ward=="48"){
 		$wardin="รพ.สนาม";
 		$wardout="";
-	}	
+	}else{
+		$wardin="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		$wardout="";
+	}		
 }else{	
 	$dcddate=substr($dcdate,8,2);
 	$dcmdate=substr($dcdate,5,2); 
@@ -117,6 +120,9 @@ if($dcdate=="0000-00-00 00:00:00"){
 	}else if($ward=="48"){
 		$wardin="รพ.สนาม";
 		$wardout="รพ.สนาม";
+	}else{
+		$wardin="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		$wardout="";
 	}		
 }
 //end opdcard
