@@ -199,16 +199,17 @@ $cRead = $cRead."บาท";
 include("connect.inc");
 
 	$thidate_search = (empty($_SESSION['dDate'][0])) ? substr($Thidate,0,10) : substr($_SESSION['dDate'][0],0,10) ;
-	$sqlname = "select ptname,icd10 from opday where hn = '".$hn_now."' and thidate like '%".$thidate_search."%' ";
+	$sqlname = "select ptname,icd10,diag_thai from opday where hn = '".$hn_now."' and thidate like '%".$thidate_search."%' ";
 	$rowname = mysql_query($sqlname);
-	list($sPtname,$icd10) = mysql_fetch_array($rowname);
+	list($sPtname,$icd10,$diag_thai) = mysql_fetch_array($rowname);
 	
-	if(!empty($icd10)){
-		$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
-		//echo $query."<br>";
-		$result1 = mysql_query($query1) or die(mysql_error());
-		list($diag_thai) = mysql_fetch_array($result1);
-		
+	if(!empty($icd10)){  //ถ้ามีการลงรหัสโรค
+		if(empty($diag_thai)){  //ถ้า diag_thai เป็นค่าว่าง
+			$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
+			//echo $query."<br>";
+			$result1 = mysql_query($query1) or die(mysql_error());
+			list($diag_thai) = mysql_fetch_array($result1);
+		}
 	}	
 	
 for($r=0;$r<count($_SESSION['idnumber']);$r++){
@@ -651,49 +652,47 @@ $thidatevn=(date("Y")+543).date("-m-d").$_SESSION["sVn"];
 $sql2="select log_diag from log_editdiag where log_hn='$sHn' and log_datevn = '".$thidatevn."' order by row_id limit 1";
 $query2=mysql_query($sql2);
 $num22=mysql_num_rows($query2);
-if($num22 > 0){
-list($diag_thai)=mysql_fetch_array($query2);
-	echo $diag_thai;
-}else{
-	if(!empty($diag_thai)){ //ถ้ามีการให้รหัสโรคของแพทย์ ให้เอาชื่อภาษาไทยมาแสดงในใบเสร็จรับเงิน แก้ไขวันที่ 6/1/64
-		if($icd10=="B24"){
-			echo "เชื้อราในสมอง";
+	if($num22 > 0){  //ถ้ามีการแก้ไขชื่อโรค
+		list($diag_thai)=mysql_fetch_array($query2);
+		echo $diag_thai;
+	}else{  //ถ้าไม่มีการแก้ไขชื่อโรค
+		if(!empty($diag_thai)){ //ถ้ามีการให้รหัสโรคของแพทย์ ให้เอาชื่อภาษาไทยมาแสดงในใบเสร็จรับเงิน แก้ไขวันที่ 6/1/64
+			if($icd10=="B24"){
+				echo "เชื้อราในสมอง";
+			}else{
+				echo $diag_thai;	
+			}
 		}else{
-			echo $diag_thai;
-		}
-	}else{
-		if(count($_SESSION['tDiag'])==1){
-					$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
-					//echo $chksql;
-					$chkquery=mysql_query($chksql);
-					$chknum=mysql_num_rows($chkquery);
-				
-					if($chknum > 0){
-						echo "เชื้อราในสมอง";
-					}else{
-						echo $_SESSION['tDiag'][0];
-					}
-		}elseif(count($_SESSION['tDiag'])>1){
+			if(count($_SESSION['tDiag'])==1){
+						$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+						//echo $chksql;
+						$chkquery=mysql_query($chksql);
+						$chknum=mysql_num_rows($chkquery);
+					
+						if($chknum > 0){
+							echo "เชื้อราในสมอง";
+						}else{
+							echo $_SESSION['tDiag'][0];
+						}
+			}else if(count($_SESSION['tDiag'])>1){
 
-				for($p=0;$p<count($_SESSION['tDiag']);$p++){
-					if($p!=0){ $str .=",";}
-					$str.=$_SESSION['tDiag'][$p];
-				}
-				//$str.="</td>";
-							$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
-							//echo $chksql;
-							$chkquery=mysql_query($chksql);
-							$chknum=mysql_num_rows($chkquery);
-				
-							if($chknum > 0){
-								echo "เชื้อราในสมอง";
-							}else{
-								echo $str;
-							}
-			//}
+					for($p=0;$p<count($_SESSION['tDiag']);$p++){
+						if($p!=0){ $str .=",";}
+						$str.=$_SESSION['tDiag'][$p];
+					}
+								$chksql = "SELECT diag FROM phardep WHERE row_id = '".$sRowid."' and hn='$sHn' and tvn = '".$_SESSION["sVn"]."' and (diag like '%เอชไอวี%' or diag like '%HIV%')";
+								//echo $chksql;
+								$chkquery=mysql_query($chksql);
+								$chknum=mysql_num_rows($chkquery);
+					
+								if($chknum > 0){
+									echo "เชื้อราในสมอง";
+								}else{
+									echo $str;
+								}
+			}
 		}
 	}
-}
 
 
 
