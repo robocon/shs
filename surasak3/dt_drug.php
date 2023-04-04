@@ -64,6 +64,26 @@ if ( mysql_num_rows($q_egfr) > 0 ) {
 	$res_egfr = $fetch_egfr['result'];
 }
 
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `preg_alert` FROM `drug_pregnancy` WHERE pregnancy = 'alert';";
+$q_pa = mysql_query($sql);
+$pre_item_pa = mysql_fetch_assoc($q_pa);
+$item_pa = $pre_item_pa['preg_alert'];
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `preg_block` FROM `drug_pregnancy` WHERE pregnancy = 'block';";
+$q_pb = mysql_query($sql);
+$pre_item_pb = mysql_fetch_assoc($q_pb);
+$item_pb = $pre_item_pb['preg_block'];
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `lact_alert` FROM `drug_pregnancy` WHERE lactation = 'alert';";
+$q_la = mysql_query($sql);
+$pre_item_la = mysql_fetch_assoc($q_la);
+$item_la = $pre_item_la['lact_alert'];
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `lact_block` FROM `drug_pregnancy` WHERE lactation = 'block';";
+$q_lb = mysql_query($sql);
+$pre_item_lb = mysql_fetch_assoc($q_lb);
+$item_lb = $pre_item_lb['lact_block'];
+
 //******************************* เรียกข้อมูลจาก SESSION มาแสดงเป็น Form ********************
 if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
 
@@ -2459,13 +2479,12 @@ function testPreg(drugcode,tradname,genname){
 	// แจ้งเตือน+Block ยาในหญิงตั้งครรภ์และให้นมบุตร
 	// เดี๋ยวปรับการดึงยาจากฐานข้อมูลอีกที
 	var preg = '<?=trim($_SESSION['pregnancy']);?>';
-	var preg_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
-	var preg_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
-	// var preg_block = [];
 
-	var lac_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
-	var lac_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
-	// var lac_block = [];
+	var preg_alert = [<?=$item_pa;?>];
+	var preg_block = [<?=$item_pb;?>];
+
+	var lac_alert = [<?=$item_la;?>];
+	var lac_block = [<?=$item_lb;?>];
 
 	if(preg == 'pregnancy'){
 		for (var index = 0; index < preg_alert.length; index++) {
@@ -2478,7 +2497,6 @@ function testPreg(drugcode,tradname,genname){
 		for (var index = 0; index < preg_block.length; index++) {
 			if(preg_block[index]==drugcode){
 				pregBlock(tradname,genname);
-				// return false;
 				return true;
 			}
 		}
@@ -2494,7 +2512,6 @@ function testPreg(drugcode,tradname,genname){
 		for (var index = 0; index < lac_block.length; index++) {
 			if(lac_block[index]==drugcode){
 				lacBlock(tradname,genname);
-				// return false;
 				return true;
 			}
 		}
