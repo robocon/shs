@@ -102,10 +102,12 @@ background-color:#F8F9F9;
         $preg_type = $lac_type = '';
         $sql_preg = "SELECT `pregnancy`, `lactation` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' AND `status` = 'y' ";
         $qPreg = mysql_query($sql_preg);
+        $preg_id = false;
         if( mysql_num_rows($qPreg) > 0 ){
             $pp = mysql_fetch_assoc($qPreg);
             $preg_type = $pp['pregnancy'];
             $lac_type = $pp['lactation'];
+            $preg_id = $pp['id'];
         }
 
                   }  
@@ -422,8 +424,8 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
 <tr>
     <td ></td>
     <td colspan="2">
-        <p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
-        <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
+        <p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label> <a href="javascript:void(0);" onclick="cancel_preg('pregnancy')">[ยกเลิก]</a></p>
+        <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label> <a href="javascript:void(0);" onclick="cancel_preg('lactation')">[ยกเลิก]</a></p>
         <p id="resPreg"></p>
         <script type="text/javascript">
             function newXmlHttp(){
@@ -481,6 +483,47 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
                 xhr.open('POST', 'dgedit_preg.php', true);
                 xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 xhr.send(data);
+            }
+
+            function cancel_preg(type){
+
+                // clear ค่าใน checkbox
+                if(type=='pregnancy'){
+                    document.getElementById('preg_alert').checked = false;
+                    document.getElementById('preg_block').checked = false;
+                }else if(type=='lactation'){
+                    document.getElementById('lact_block').checked = false;
+                    document.getElementById('lact_alert').checked = false;
+                }
+
+                var preg_id = '<?=$preg_id;?>';
+                var data = 'id='+preg_id+'&type='+type+'&action=edit';
+                var xhr = new newXmlHttp();
+                xhr.onreadystatechange = function(){
+                    if( xhr.readyState == 4 && xhr.status == 200 ){
+                        if(xhr.status>=200&&xhr.status<400){
+                            var res = JSON.parse(xhr.responseText);
+                            
+                            // var html = '';
+                            // if(res.status === 200){
+                            //     html = '<span style="color:green">'+res.message+'</span>';
+                            // }else{
+                            //     html = '<span style="color:red">'+res.message+'</span>';
+                            // }
+                            // document.getElementById('resPreg').innerHTML = html;
+                        }
+                        
+                    }
+                };
+
+                /**
+                 * [] ใส่ action เพิ่มเข้าไปอีก 1 ตัว ให้หน้าของ dgedit_preg รู้ว่า action ตัวนี้เป็นการแก้ไขให้ค่า preg เป็นค่าว่าง 
+                 */
+                xhr.open('POST', 'dgedit_preg.php', true);
+                xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+                xhr.send(data);
+
+
             }
         </script>
     </td>
