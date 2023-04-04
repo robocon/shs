@@ -8,7 +8,7 @@ exit();
 }
 // ini_set('display_errors', '1');
 // error_reporting(1);
-require_once 'includes/JSON.php';
+
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -1955,56 +1955,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugslip"){
 exit();
 }
 
-if(isset($_GET["action"]) && $_GET["action"] == "search_other_doctor"){
-
-	$drugcode = sprintf("%s", $_GET['drugcode']);
-	$testdrug = sprintf("%s", $_GET['testdrug']);
-	$json = new Services_JSON();
-
-	if($testdrug=='10H014'){
-		$dName = 'Pikka gel';
-	}elseif ($testdrug=='4MET25') {
-		$dName = 'SURASAKMONTRI Balm';
-	}
-
-	$hn = sprintf("%s", $_GET['hn']);
-	$thDate = (date('Y')+543).date('-m-d');
-	$sql = " SELECT b.`doctor`,a.`tradname` 
-	FROM ( 
-		SELECT `idno`,`tradname` FROM `ddrugrx` WHERE `date` LIKE '$thDate%' AND `hn`='$hn' AND `drugcode` = '$testdrug' GROUP BY `idno` 
-	) AS a 
-	LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id` 
-	WHERE b.`whokey` = 'DR' AND b.`dr_cancle` IS NULL 
-	GROUP BY b.`doctor`";
-
-	$q = mysql_query($sql);
-	$doctor_list = array();
-	if(mysql_num_rows($q) > 0){
-		while ($a = mysql_fetch_assoc($q)) {
-			$doctor_list[] = $a['doctor'];
-		}
-	}
-	
-	$msg = '';
-	if(count($doctor_list) > 0){
-		$msg .= '!!! แจ้งเตือน !!!'."\n".'วันนี้มีแพทย์สั่งจ่าย'.$dName.'ไปแล้ว '.count($doctor_list).'ท่าน'."\n".implode(', ', $doctor_list)."\n";
-	}
-
-	foreach ($_SESSION['list_drugcode'] as $key => $ldc) {
-		if($testdrug==$ldc){
-			$msg .= "\n!!! แจ้งเตือน !!!\nห้ามให้มีการสั่งยา Pikka gel คู่กับ Surasakmontri Balm";
-		}
-	}
-
-	$res = array(
-		'status' => 200,
-		'message' => $msg
-	);
-
-	echo $json->encode($res);
-	exit();
-}
-
 
 //******************************************** ตรวจสอบการเกิด DRUG INTERACTION *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
@@ -2621,7 +2571,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
-	// กรณีที่หมอเข้า vn ซ้ำอีกรอบแล้วไม่ได้บันทึกหน้า icdมันจะมองไม่เห็นใน session 
 	var icd10 = false;
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=get_icd10';
@@ -2636,13 +2585,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	};
 	xmlhttp.send(null);
-
-	// 
-	if(drugcode.trim()=='10H014'){
-		TestPikka(drugcode.trim());
-	}else if(drugcode.trim()=='4MET25'){
-		TestBalm(drugcode.trim());
-	}
 	
 	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
@@ -2659,36 +2601,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	// RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
 		
-}
-
-// หาว่า pikka ที่กดสั่งไปมีหมอหรือในรายการเป็น บาร์มรึป่าว
-function TestPikka(drugcode){ 
-	TestPikkaAndBalm(drugcode,'4MET25');
-}
-
-function TestBalm(drugcode){
-	TestPikkaAndBalm(drugcode,'10H014');
-}
-
-function TestPikkaAndBalm(drugcode, testdrug){ 
-
-	var patient_hn = '<?=trim($_SESSION["hn_now"]);?>';
-	xmlhttp = newXmlHttp();
-	url = 'dt_drug.php?action=search_other_doctor&drugcode='+drugcode+'&testdrug='+testdrug+'&hn='+patient_hn;
-	xmlhttp.open("GET", url, false);
-	xmlhttp.onreadystatechange = function () {
-		if (xmlhttp.readyState === 4) {
-			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-				resTxt = JSON.parse(xmlhttp.responseText.trim());
-				if(resTxt.status==200){
-					alert(resTxt.message);
-				}
-			} else {
-				// Error :(
-			}
-		}
-	};
-	xmlhttp.send(null);
 }
 
 function glibenclamide_alert(drugcode){
