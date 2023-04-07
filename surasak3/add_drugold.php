@@ -1,4 +1,4 @@
-<?
+<?php
 session_start();
 include("connect.inc");
 if (!empty($_GET["an"])) {
@@ -51,7 +51,7 @@ if ($_POST["act"] == "add") {
 		</TD>
 	</TR>
 	<TR>
-		<TD align="right" bgcolor="#009688" style="color: #ffffff; font-weight: bold;">หอผู้ป่วย : </TD>
+	<TD align="right" bgcolor="#009688" style="color: #ffffff; font-weight: bold;">หอผู้ป่วย : </TD>
 		<TD bgcolor="#00CC99">
 			<?php echo $build[substr($arr["bedcode"], 0, 2)]; ?>
 		</TD>
@@ -85,7 +85,7 @@ if ($_POST["act"] == "add") {
 			</TD>
 		</TR>
 		<TR>
-			<TD align="right">หน่วย : </TD>
+		<TD align="right">หน่วย : </TD>
 			<TD><INPUT NAME="unit" TYPE="text" ID="unit" size="5"></TD>
 			<TD align="right">ประเภท: </TD>
 			<TD><INPUT TYPE="text" ID="part" NAME="part" size="5"></TD>
@@ -105,7 +105,7 @@ if ($_POST["act"] == "add") {
 <p>&nbsp;</p>
 <table width="80%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#333333">
 	<tr>
-		<td width="30%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>ชื่อยา</strong></td>
+	<td width="30%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>ชื่อยา</strong></td>
 		<td width="18%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>ประเภท</strong></td>
 		<td width="18%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>วิธีใช้</strong></td>
 		<td width="14%" align="center" bgcolor="#009688" style="color: #ffffff;"><strong>สถานะ</strong></td>
@@ -117,16 +117,16 @@ if ($_POST["act"] == "add") {
 	$m = date("m");
 	$d = date("d");
 	$chkdate = "$y-$m-$d";
-	$sql1 = "select * from dgprofile_out where date like '$chkdate%' and an='" . $_GET["an"] . "' and statcon='OLDEX'";
+	$sql1 = "select * from dgprofile_out where an='" . $_GET["an"] . "' and statcon='OLDEX'";
 	$query = mysql_query($sql1);
 	$num = mysql_num_rows($query);
 	if ($num < 1) {
-		echo "<tr><td align='center' colspan='6' style='color:red;'>!!!--------------------- ยังไม่ได้เพิ่มข้อมูลยาเดิมของวันนี้ --------------------!!!</td></tr>";
+		echo "<tr><td align='center' colspan='6' style='color:red;'>------ ยังไม่มีข้อมูล ------</td></tr>";
 	}
 	while ($rows = mysql_fetch_array($query)) {
 		?>
 		<tr>
-			<td bgcolor="#ffffff">
+		<td bgcolor="#ffffff">
 				<?= $rows["tradname"]; ?>
 			</td>
 			<td bgcolor="#ffffff">
