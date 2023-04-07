@@ -20,7 +20,7 @@ $_SESSION["drugbill"] = "";
 $_SESSION["drughome"] = "";
 $_SESSION["drugstk"] = "";
 
-if(isset($_POST["Save_dgprofile"]) && $_POST["Save_dgprofile"] == "   ®Ë“¬¬“   " ){
+if(isset($_POST["Save_dgprofile"]) && $_POST["Save_dgprofile"] == "   ‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤   " ){
 	include("connect.inc");
 	$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 	$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
@@ -33,15 +33,15 @@ if(isset($_POST["Save_dgprofile"]) && $_POST["Save_dgprofile"] == "   ®Ë“¬¬“   "
 		<table width='650'>
 		<tr>
 		<td>#</td>
-		<td>√À— </td>
-		<td>√“¬°“√</td>
-		<td> ∂“π–</td>
-		<td>«‘∏’„™È</td>
+		<td>‡∏£‡∏´‡∏±‡∏™</td>
+		<td>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</td>
+		<td>‡∏™‡∏ñ‡∏≤‡∏ô‡∏∞</td>
+		<td>‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ</td>
 			<td></td>
 			<td></td>
 			<td></td>
-		<td>®”π«π</td>
-		<td>√“§“</td>
+		<td>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô</td>
+		<td>‡∏£‡∏≤‡∏Ñ‡∏≤</td>
 		<td>PART</td>
 		</tr>
 	";
@@ -50,9 +50,9 @@ if(isset($_POST["Save_dgprofile"]) && $_POST["Save_dgprofile"] == "   ®Ë“¬¬“   "
 <table style='font-size: 22px;font-family: Angsana New' bordercolor='#000000'  cellpadding='2' cellspacing='0' border='1' style='BORDER-COLLAPSE: collapse'>
 		<tr align='center'>
 			<td>#</td>
-			<td>√À— </td>
-			<td>√“¬°“√</td>
-			<td>«‘∏’„™È</td>
+			<td>‡∏£‡∏´‡∏±‡∏™</td>
+			<td>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</td>
+			<td>‡∏ß‡∏¥‡∏ò‡∏µ‡πÉ‡∏ä‡πâ</td>
 		</tr>
 			";
 
@@ -61,7 +61,7 @@ for($i=0;$i<$item;$i++){
 		$_POST["Amount"][$i] = 0;
 }
 
-//*********************************** À“√“§“√«¡¢Õß¬“·µË≈–ª√–‡¿∑ (Part) ********************************** 
+//*********************************** ‡∏´‡∏≤‡∏£‡∏≤‡∏Ñ‡∏≤‡∏£‡∏ß‡∏°‡∏Ç‡∏≠‡∏á‡∏¢‡∏≤‡πÅ‡∏ï‡πà‡∏•‡∏∞‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó (Part) ********************************** 
 
 $total_item = 0;
 $item2=0;
@@ -91,7 +91,7 @@ $item2=0;
 				$total_item++;
 		}
 	}
-//*********************************** ®∫ À“√“§“√«¡¢Õß¬“·µË≈–ª√–‡¿∑ (Part) ********************************** 
+//*********************************** ‡∏à‡∏ö ‡∏´‡∏≤‡∏£‡∏≤‡∏Ñ‡∏≤‡∏£‡∏ß‡∏°‡∏Ç‡∏≠‡∏á‡∏¢‡∏≤‡πÅ‡∏ï‡πà‡∏•‡∏∞‡∏õ‡∏£‡∏∞‡πÄ‡∏†‡∏ó (Part) ********************************** 
 
 			$netfree=$pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DPY"]+$pricetype["DSY"];
 			$netpay=$pricetype["DDN"]+ $pricetype["DSN"]+$pricetype["DPN"];
@@ -100,7 +100,7 @@ $item2=0;
 	$sql = "INSERT INTO phardep(chktranx,date,ptname,hn,an,price,doctor,item, idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,accno)VALUES('".$_SESSION["nRunno"]."','".$Thidate."','".$_POST["Ptname"]."','".$_POST["Hn"]."','".$_POST["An"]."', '".$total_price."','".$_POST["Doctor"]."','".$item2."','".$_SESSION["sOfficer"]."','".$_POST["Diag"]."','".$pricetype["DDL"]."','".$pricetype["DDY"]."','".$pricetype["DDN"]."','".$pricetype["DPY"]."','".$pricetype["DPN"]."','".$pricetype["DSY"]."','".$pricetype["DSN"]."','".$_POST["Bedcode"]."','".$_POST["Ptright"]."','".$cAccno."');";
 	//echo $sql;
 
-	$result = Mysql_Query($sql) or die("‰¡Ë “¡“√∂∫—π∑÷°√“¬°“√‰¥È ∑Ë“πÕ“®‡§¬∑”°“√∫—π∑÷°‰ª·≈È«");
+	$result = Mysql_Query($sql) or die("‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÑ‡∏î‡πâ ‡∏ó‡πà‡∏≤‡∏ô‡∏≠‡∏≤‡∏à‡πÄ‡∏Ñ‡∏¢‡∏ó‡∏≥‡∏Å‡∏≤‡∏£‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡πÑ‡∏õ‡πÅ‡∏•‡πâ‡∏ß");
 	$idno=mysql_insert_id(); # ********** Cretae $idno ************
 
 	$sql = "Update bed set last_drug = '".(date("Y")+543)."".date("-m-d H:i:s")."' where an = '".$_POST["An"]."' ";
@@ -121,16 +121,16 @@ $k31=$k21+50;
 				
 				if($_POST["Statcon"][$i] == "OLD")
 					$_POST["Amount"][$i] = 0;
-			#*************************************************** µ—¥ µÁÕ°¬“ ***************************************************
+			#*************************************************** ‡∏ï‡∏±‡∏î‡∏™‡∏ï‡πá‡∏≠‡∏Å‡∏¢‡∏≤ ***************************************************
 			$sql ="UPDATE druglst SET stock = stock-".$_POST["Amount"][$i].",rxaccum = rxaccum + ".$_POST["Amount"][$i].",rx1day   = rx1day +".$_POST["Amount"][$i].",totalstk = stock + mainstk WHERE drugcode= '".$_POST["Drugcode"][$i]."' ";
 			$result = mysql_query($sql) or die("Query failed,update druglst in case of  IPD");
-			#*************************************************** ®∫µ—¥ µÁÕ°¬“ ***************************************************
+			#*************************************************** ‡∏à‡∏ö‡∏ï‡∏±‡∏î‡∏™‡∏ï‡πá‡∏≠‡∏Å‡∏¢‡∏≤ ***************************************************
 		$sql = "Select stock,mainstk From druglst where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 ";
 		 $result = Mysql_Query($sql);
 		 $arr = Mysql_fetch_assoc($result);
 		 $stock = $arr["stock"];
 		 $mainstk = $arr["mainstk"];
-			#*************************************************** ∫—π∑÷°°“√®Ë“¬¬“ ***************************************************
+			#*************************************************** ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Å‡∏≤‡∏£‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤ ***************************************************
 
 			if($_POST["Part"][$i] == "DPY"){
 				$field_val = " ,'".($_POST["Freepri"][$i] * $_POST["Amount"][$i])."','".(($_POST["Salepri"][$i] - $_POST["Freepri"][$i])*$_POST["Amount"][$i])."' ";
@@ -151,10 +151,10 @@ $k31=$k21+50;
 			$sql = "INSERT INTO drugrx(date,hn,an,drugcode,tradname,amount,price,item,slcode,part,idno,statcon,DPY, DPN,stock,mainstk )VALUES('".$Thidate."','".$_POST["Hn"]."','".$_POST["An"]."','".$_POST["Drugcode"][$i]."','".$_POST["Tradname"][$i]."','".$_POST["Amount"][$i]."','".($_POST["Salepri"][$i] * $_POST["Amount"][$i])."','".$item2."','".$_POST["Slipcode"][$i]."','".$_POST["Part"][$i]."','".$idno."','".$_POST["Statcon"][$i]."' ".$field_val.",'$stock','$mainstk');";
 			$result = mysql_query($sql) or die("Query failed,insert into drugrx");
 
-			#*************************************************** ®∫∫—π∑÷°°“√®Ë“¬¬“ ***************************************************
+			#*************************************************** ‡∏à‡∏ö‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Å‡∏≤‡∏£‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤ ***************************************************
 
 
-			#*************************************************** ∫—π∑÷°§Ë“„™È®Ë“¬§π‰¢È„π ***************************************************
+			#*************************************************** ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ñ‡πà‡∏≤‡πÉ‡∏ä‡πâ‡∏à‡πà‡∏≤‡∏¢‡∏Ñ‡∏ô‡πÑ‡∏Ç‡πâ‡πÉ‡∏ô ***************************************************
 
 			If(substr($_POST["Part"][$i],0,2) != "DP"){
                    $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,part,idname,accno,idno, status,ptright)VALUES('".$Thidate."','".$_POST["An"]."','".$_POST["Drugcode"][$i]."','".$cDepart."','".$_POST["Tradname"][$i].",".$_POST["Slipcode"][$i]."', '".$_POST["Amount"][$i]."','".($_POST["Salepri"][$i] * $_POST["Amount"][$i])."','".$_POST["Part"][$i]."','".$_SESSION["sOfficer"]."','".$cAccno."','".$idno."','".$status."','".$_POST["Ptright"]."');";
@@ -178,7 +178,7 @@ $k31=$k21+50;
 			}
 			
 
-			#*************************************************** ®∫∫—π∑÷°§Ë“„™È®Ë“¬§π‰¢È„π ***************************************************
+			#*************************************************** ‡∏à‡∏ö‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ñ‡πà‡∏≤‡πÉ‡∏ä‡πâ‡∏à‡πà‡∏≤‡∏¢‡∏Ñ‡∏ô‡πÑ‡∏Ç‡πâ‡πÉ‡∏ô ***************************************************
 				$Trade = substr($_POST["Tradname"][$i],0,20);
 
 				$_SESSION["drugbill"] .= "
@@ -244,7 +244,7 @@ $k31=$k21+50;
 					</tr>
 				";
 				
-				#******************************* Session ∑” ≈“°¬“ ***************************************
+				#******************************* Session ‡∏ó‡∏≥‡∏™‡∏•‡∏≤‡∏Å‡∏¢‡∏≤ ***************************************
 				if($_POST["Drugcode"] != "INJ"  && isset($_SESSION["druglot"])){
 
 					if($dlot == false){
@@ -282,10 +282,10 @@ $k31=$k21+50;
 					}
 					//$_SESSION["druglot"] .= "<font face='Angsana New' >".$detail4."<br><br><BR></font>";
 				}
-				#******************************* ®∫ Session ∑” ≈“°¬“ ***************************************
+				#******************************* ‡∏à‡∏ö Session ‡∏ó‡∏≥‡∏™‡∏•‡∏≤‡∏Å‡∏¢‡∏≤ ***************************************
 				
 				
-				#******************************* Session ∑” ≈“°¬“„À¡Ë ***************************************
+				#******************************* Session ‡∏ó‡∏≥‡∏™‡∏•‡∏≤‡∏Å‡∏¢‡∏≤‡πÉ‡∏´‡∏°‡πà ***************************************
 				if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_new"])){
 					
 					if($dlot_new == false){
@@ -314,23 +314,23 @@ $k31=$k21+50;
 					if($j == $total_item){
 						if($detail3 !="")
 							$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail3."</b></font><br>";
-						if($drug_properties !="")  //∂È“¡’ √√æ§ÿ≥
+						if($drug_properties !="")  //‡∏ñ‡πâ‡∏≤‡∏°‡∏µ‡∏™‡∏£‡∏£‡∏û‡∏Ñ‡∏∏‡∏ì
 							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";
 						
-						if($drugnote !="")  //∂È“¡’§”‡µ◊Õπ
+						if($drugnote !="")  //‡∏ñ‡πâ‡∏≤‡∏°‡∏µ‡∏Ñ‡∏≥‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô
 							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b>".$drugnote."</b></font>";
 						
 					}else{
 							if($detail3 !="")
-							$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail3."</b></font><br>";  //br 2 Õ—π
-						if($drug_properties !="")  //∂È“¡’ √√æ§ÿ≥
+							$_SESSION["druglot_new"] .= "<font style='line-height:16px;' face='Angsana New' size='2'><b>".$detail3."</b></font><br>";  //br 2 ‡∏≠‡∏±‡∏ô
+						if($drug_properties !="")  //‡∏ñ‡πâ‡∏≤‡∏°‡∏µ‡∏™‡∏£‡∏£‡∏û‡∏Ñ‡∏∏‡∏ì
 							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
-						if($drugnote !="")  //∂È“¡’§”‡µ◊Õπ
+						if($drugnote !="")  //‡∏ñ‡πâ‡∏≤‡∏°‡∏µ‡∏Ñ‡∏≥‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô
 							$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='1'><b>".$drugnote."</b></font>";  
 					}
 					//$_SESSION["druglot_new"] .= "<font face='Angsana New' >".$detail4."<br><br><BR></font>";
 				}
-				#******************************* ®∫ Session ∑” ≈“°¬“„À¡Ë ***************************************
+				#******************************* ‡∏à‡∏ö Session ‡∏ó‡∏≥‡∏™‡∏•‡∏≤‡∏Å‡∏¢‡∏≤‡πÉ‡∏´‡∏°‡πà ***************************************
 				
 			
 
@@ -350,11 +350,11 @@ for($i=0;$i<$item;$i++){
 			}else{
 				$_SESSION["druglot"] .= "<hr>";
 			}
-			$_SESSION["druglot"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." ‡µ’¬ß".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
+			$_SESSION["druglot"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." ‡πÄ‡∏ï‡∏µ‡∏¢‡∏á".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
 			$_SESSION["druglot"] .= "<br>";
 			$_SESSION["druglot"] .= '<table style="font-size: 13px;font-family:Angsana New;border-collapse: collapse;">
-			<tr><td style="line-height: 14px;">‡«≈“∑’Ë„ÀÈ....................π.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
-			<tr><td style="line-height: 14px;">ºŸÈ‡µ√’¬¡....................</td><td style="line-height: 14px;">ºŸÈ„ÀÈ....................</td></tr>
+			<tr><td style="line-height: 14px;">‡πÄ‡∏ß‡∏•‡∏≤‡∏ó‡∏µ‡πà‡πÉ‡∏´‡πâ....................‡∏ô.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
+			<tr><td style="line-height: 14px;">‡∏ú‡∏π‡πâ‡πÄ‡∏ï‡∏£‡∏µ‡∏¢‡∏°....................</td><td style="line-height: 14px;">‡∏ú‡∏π‡πâ‡πÉ‡∏´‡πâ....................</td></tr>
 			</table>';
 		}
 	}
@@ -371,11 +371,11 @@ for($i=0;$i<$item;$i++){
 			}else{
 				$_SESSION["druglot_new"] .= "<hr>";
 			}
-			$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." ‡µ’¬ß".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
+			$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." ‡πÄ‡∏ï‡∏µ‡∏¢‡∏á".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
 			$_SESSION["druglot_new"] .= "<br>";
 			$_SESSION["druglot_new"] .= '<table style="font-size: 13px;font-family:Angsana New;border-collapse: collapse;">
-			<tr><td style="line-height: 14px;">‡«≈“∑’Ë„ÀÈ....................π.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
-			<tr><td style="line-height: 14px;">ºŸÈ‡µ√’¬¡....................</td><td style="line-height: 14px;">ºŸÈ„ÀÈ....................</td></tr>
+			<tr><td style="line-height: 14px;">‡πÄ‡∏ß‡∏•‡∏≤‡∏ó‡∏µ‡πà‡πÉ‡∏´‡πâ....................‡∏ô.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
+			<tr><td style="line-height: 14px;">‡∏ú‡∏π‡πâ‡πÄ‡∏ï‡∏£‡∏µ‡∏¢‡∏°....................</td><td style="line-height: 14px;">‡∏ú‡∏π‡πâ‡πÉ‡∏´‡πâ....................</td></tr>
 			</table>';
 		}
 	}
@@ -391,14 +391,14 @@ for($i=0;$i<$item;$i++){
 							array_push($arr_drugreact,"".$arr["drugcode"]."&nbsp;,&nbsp;".$arr["tradname"].""); 
 					}
 				}else{
-					array_push($arr_drugreact,"‰¡Ë¡’√“¬°“√·æÈ¬“"); 
+					array_push($arr_drugreact,"‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÅ‡∏û‡πâ‡∏¢‡∏≤"); 
 				}
 					
 
 		$_SESSION["drughome"] .= "</table>
-		·æÈ¬“ : ".(implode(" | ",$arr_drugreact))."
-	<BR>‡Õ° “√π’È‡ªÁπ‡Õ° “√ √ÿª√“¬°“√¬“∑’ËºŸÈªË«¬„™ÈµËÕ‡π◊ËÕß
-	<BR>‡æ◊ËÕª√–‚¬™πÏ¢ÕßºŸÈªË«¬§«√π”‡Õ° “√π’È¡“¥È«¬∑ÿ°§√—Èß∑’Ë¡“„™È∫√‘°“√∑’Ë‚√ßæ¬“∫“≈À√◊Õ ∂“π∫√‘°“√ ÿ¢¿“æ∑ÿ°·ÀËß
+		‡πÅ‡∏û‡πâ‡∏¢‡∏≤ : ".(implode(" | ",$arr_drugreact))."
+	<BR>‡πÄ‡∏≠‡∏Å‡∏™‡∏≤‡∏£‡∏ô‡∏µ‡πâ‡πÄ‡∏õ‡πá‡∏ô‡πÄ‡∏≠‡∏Å‡∏™‡∏≤‡∏£‡∏™‡∏£‡∏∏‡∏õ‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡∏¢‡∏≤‡∏ó‡∏µ‡πà‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÉ‡∏ä‡πâ‡∏ï‡πà‡∏≠‡πÄ‡∏ô‡∏∑‡πà‡∏≠‡∏á
+	<BR>‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏õ‡∏£‡∏∞‡πÇ‡∏¢‡∏ä‡∏ô‡πå‡∏Ç‡∏≠‡∏á‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏Ñ‡∏ß‡∏£‡∏ô‡∏≥‡πÄ‡∏≠‡∏Å‡∏™‡∏≤‡∏£‡∏ô‡∏µ‡πâ‡∏°‡∏≤‡∏î‡πâ‡∏ß‡∏¢‡∏ó‡∏∏‡∏Å‡∏Ñ‡∏£‡∏±‡πâ‡∏á‡∏ó‡∏µ‡πà‡∏°‡∏≤‡πÉ‡∏ä‡πâ‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏ó‡∏µ‡πà‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏´‡∏£‡∏∑‡∏≠‡∏™‡∏ñ‡∏≤‡∏ô‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏ó‡∏∏‡∏Å‡πÅ‡∏´‡πà‡∏á
 	</TD>
 </TR>
 </TABLE>
@@ -410,41 +410,41 @@ for($i=0;$i<$item;$i++){
 		<TABLE width='650' style='font-size: 22px;font-family: Angsana New'>
 <TR>
 	<TD>
-<CENTER><B>√“¬°“√¬“∑’ËºŸÈªË«¬‰¥È√—∫°≈—∫∫È“π ‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’</B></CENTER><BR>
-<B>™◊ËÕ :</B> ".$_POST["Ptname"]." <B>Õ“¬ÿ :</B> ".$_POST["age"]." <B>HN : </B>".$_POST["Hn"]." <B>AN : </B>".$_POST["An"]." <B>ÀÕºŸÈªË«¬ : </B>".$_POST["Ward"]." <BR>
-<B>«—π∑’Ë :</B> ".$Thaidate." <B> ‘∑∏‘ : </B>".$_POST["Ptright"]." <B>‚√§ :</B> ".$_POST["Diag"]." <B>·æ∑¬Ï :</B> ".$_POST["Doctor"]." <BR>".$_SESSION["drughome"];
+<CENTER><B>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡∏¢‡∏≤‡∏ó‡∏µ‡πà‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏Å‡∏•‡∏±‡∏ö‡∏ö‡πâ‡∏≤‡∏ô ‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ</B></CENTER><BR>
+<B>‡∏ä‡∏∑‡πà‡∏≠ :</B> ".$_POST["Ptname"]." <B>‡∏≠‡∏≤‡∏¢‡∏∏ :</B> ".$_POST["age"]." <B>HN : </B>".$_POST["Hn"]." <B>AN : </B>".$_POST["An"]." <B>‡∏´‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢ : </B>".$_POST["Ward"]." <BR>
+<B>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà :</B> ".$Thaidate." <B>‡∏™‡∏¥‡∏ó‡∏ò‡∏¥ : </B>".$_POST["Ptright"]." <B>‡πÇ‡∏£‡∏Ñ :</B> ".$_POST["Diag"]." <B>‡πÅ‡∏û‡∏ó‡∏¢‡πå :</B> ".$_POST["Doctor"]." <BR>".$_SESSION["drughome"];
 
-		$_SESSION["drugbill"] .="√“§“√«¡  ".number_format($totalpay,strlen(strstr($totalpay,"."))-1, '.', ',')." ∫“∑(‡∫‘°‰¡Ë‰¥È ".number_format($netpay,strlen(strstr($netpay,"."))-1, '.', ',')." ∫“∑ , ‡∫‘°‰¥È ".number_format($netfree,strlen(strstr($netfree,"."))-1, '.', ',')." ∫“∑)<br><BR> ";
+		$_SESSION["drugbill"] .="‡∏£‡∏≤‡∏Ñ‡∏≤‡∏£‡∏ß‡∏°  ".number_format($totalpay,strlen(strstr($totalpay,"."))-1, '.', ',')." ‡∏ö‡∏≤‡∏ó(‡πÄ‡∏ö‡∏¥‡∏Å‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ ".number_format($netpay,strlen(strstr($netpay,"."))-1, '.', ',')." ‡∏ö‡∏≤‡∏ó , ‡πÄ‡∏ö‡∏¥‡∏Å‡πÑ‡∏î‡πâ ".number_format($netfree,strlen(strstr($netfree,"."))-1, '.', ',')." ‡∏ö‡∏≤‡∏ó)<br><BR> ";
 		
 		$sql = "Select drugcode, tradname  From drugreact where hn='".$_POST["Hn"]."' ";
 				$result = Mysql_Query($sql);
 				if(Mysql_num_rows($result) > 0){
-					$_SESSION["drugbill"] .="<Table><tr><td colspan=\"2\">√“¬°“√·æÈ¬“</td></tr>";
+					$_SESSION["drugbill"] .="<Table><tr><td colspan=\"2\">‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£‡πÅ‡∏û‡πâ‡∏¢‡∏≤</td></tr>";
 					while($arr = Mysql_fetch_assoc($result)){
 							$_SESSION["drugbill"] .="<tr><td>".$arr["drugcode"]."&nbsp;&nbsp;</td><td>&nbsp;&nbsp;".$arr["tradname"]."</td></tr>";
 					}
 					$_SESSION["drugbill"] .="</Table><BR>";
 				}
 
-		$_SESSION["drugbill"] .="ºŸÈ∫—π∑÷°¢ÈÕ¡Ÿ≈ <U>".$_SESSION["sOfficer"]."</U>&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ºŸÈ§‘¥√“§“....................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ºŸÈµ√«® Õ∫.................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ºŸÈ®—¥¬“.....................&nbsp;&nbsp;";		
-		$_SESSION["drugbill"] .="ºŸÈ®Ë“¬¬“....................&nbsp;&nbsp;";
-		$_SESSION["drugbill"] .="ºŸÈ√—∫¬“.....................";
+		$_SESSION["drugbill"] .="‡∏ú‡∏π‡πâ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• <U>".$_SESSION["sOfficer"]."</U>&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="‡∏ú‡∏π‡πâ‡∏Ñ‡∏¥‡∏î‡∏£‡∏≤‡∏Ñ‡∏≤....................&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="‡∏ú‡∏π‡πâ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö.................&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="‡∏ú‡∏π‡πâ‡∏à‡∏±‡∏î‡∏¢‡∏≤.....................&nbsp;&nbsp;";		
+		$_SESSION["drugbill"] .="‡∏ú‡∏π‡πâ‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤....................&nbsp;&nbsp;";
+		$_SESSION["drugbill"] .="‡∏ú‡∏π‡πâ‡∏£‡∏±‡∏ö‡∏¢‡∏≤.....................";
 		
-		$_SESSION["drugbill"] = "<BR>&nbsp;&nbsp;<font face='Angsana New'>$status, «—π∑’Ë ".$Thaidate."<BR>&nbsp;&nbsp;".$_POST["Ward"].", ‡µ’¬ß : ".$_POST["Bed"].", ".$_POST["Ptname"].", Õ“¬ÿ ".$_POST["age"].", HN:".$_POST["Hn"].", AN:".$_POST["An"]."<BR>&nbsp;&nbsp; ‘∑∏‘:".$_POST["Ptright"].", ·æ∑¬Ï : ".$_POST["Doctor"].", ‚√§ ".$_POST["Diag"]."<BR>".$_SESSION["drugbill"];
+		$_SESSION["drugbill"] = "<BR>&nbsp;&nbsp;<font face='Angsana New'>$status, ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà ".$Thaidate."<BR>&nbsp;&nbsp;".$_POST["Ward"].", ‡πÄ‡∏ï‡∏µ‡∏¢‡∏á : ".$_POST["Bed"].", ".$_POST["Ptname"].", ‡∏≠‡∏≤‡∏¢‡∏∏ ".$_POST["age"].", HN:".$_POST["Hn"].", AN:".$_POST["An"]."<BR>&nbsp;&nbsp;‡∏™‡∏¥‡∏ó‡∏ò‡∏¥:".$_POST["Ptright"].", ‡πÅ‡∏û‡∏ó‡∏¢‡πå : ".$_POST["Doctor"].", ‡πÇ‡∏£‡∏Ñ ".$_POST["Diag"]."<BR>".$_SESSION["drugbill"];
 		
-		$_SESSION["drugstk"] = "<font style=\"font-family:'MS Sans Serif'; font-size:10px\"  >&nbsp;&nbsp;&nbsp&nbsp;".$Thaidate.";&nbsp;&nbsp;HN:".$_POST["Hn"].", &nbsp;&nbsp;AN:".$_POST["An"]."<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_POST["Ptname"]."&nbsp;&nbsp;‚√§ ".$_POST["Diag"]."<BR>".$_SESSION["drugstk"];
+		$_SESSION["drugstk"] = "<font style=\"font-family:'MS Sans Serif'; font-size:10px\"  >&nbsp;&nbsp;&nbsp&nbsp;".$Thaidate.";&nbsp;&nbsp;HN:".$_POST["Hn"].", &nbsp;&nbsp;AN:".$_POST["An"]."<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_POST["Ptname"]."&nbsp;&nbsp;‡πÇ‡∏£‡∏Ñ ".$_POST["Diag"]."<BR>".$_SESSION["drugstk"];
 
 
 
 
-		echo "∫—π∑÷°¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«<BR>
-			<A HREF=\"drugbill.php\" target=\"_blank\">æ‘¡æÏ„∫ —Ëß¬“</A>&nbsp;&nbsp;<A HREF=\"druglot.php\" target=\"_blank\">æ‘¡æÏ ≈“°¬“</A>&nbsp;&nbsp;<A HREF=\"druglot_new.php\" target=\"_blank\">æ‘¡æÏ ≈“°¬“„À¡Ë</A>
+		echo "‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß<BR>
+			<A HREF=\"drugbill.php\" target=\"_blank\">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö‡∏™‡∏±‡πà‡∏á‡∏¢‡∏≤</A>&nbsp;&nbsp;<A HREF=\"druglot.php\" target=\"_blank\">‡∏û‡∏¥‡∏°‡∏û‡πå‡∏™‡∏•‡∏≤‡∏Å‡∏¢‡∏≤</A>&nbsp;&nbsp;<A HREF=\"druglot_new.php\" target=\"_blank\">‡∏û‡∏¥‡∏°‡∏û‡πå‡∏™‡∏•‡∏≤‡∏Å‡∏¢‡∏≤‡πÉ‡∏´‡∏°‡πà</A>
 		";
 
-		echo "<BR><A HREF=\"drughome.php\" target=\"_blank\">æ‘¡æÏ„∫°≈—∫∫È“π</A>&nbsp;&nbsp;<A HREF=\"drugstk.php\" target=\"_blank\">µ‘¥ OPD</A>";
+		echo "<BR><A HREF=\"drughome.php\" target=\"_blank\">‡∏û‡∏¥‡∏°‡∏û‡πå‡πÉ‡∏ö‡∏Å‡∏•‡∏±‡∏ö‡∏ö‡πâ‡∏≤‡∏ô</A>&nbsp;&nbsp;<A HREF=\"drugstk.php\" target=\"_blank\">‡∏ï‡∏¥‡∏î OPD</A>";
 
 
 		echo "
