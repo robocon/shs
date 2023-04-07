@@ -177,6 +177,11 @@ $Thidate = (date("Y")+543).date("-m-d H:i:s");
 			$sql = "Select salepri, freepri, part, unit, tradname   From druglst where drugcode = '".$_SESSION["list_druglst"]["drugcode"][$j]."' limit 0,1 ";
 			list($salepri, $freepri, $part, $unit, $tradname) = Mysql_fetch_row(Mysql_Query($sql));
 
+			// เฉพาะ drugcode ทีเป็น old ถ้า tradname ไม่ตรงกันให้เอาตัวที่ user เป็นคนคีย์มาใช้งาน
+			if( $_SESSION["list_druglst"]["drugcode"][$j]=="OLD" && $tradname != $_SESSION["list_druglst"]["tradname"][$j]){
+				$tradname = $_SESSION["list_druglst"]["tradname"][$j];
+			}
+
 		 $sql2 .= "
 			('".$Thidate."','".$_GET["an"]."','".$_SESSION["list_druglst"]["drugcode"][$j]."','".$tradname."','".$unit."','".$salepri."','".$freepri."', '".$_SESSION["list_druglst"]["amount"][$j]."','".($salepri * $_SESSION["list_druglst"]["amount"][$j])."','".$_SESSION["list_druglst"]["slcode"][$j]."','".$part."','".$_SESSION["list_druglst"]["statcon"][$j]."','ON','','".$_SESSION["sOfficer"]."', '".$_SESSION["list_druglst"]["firstdate"][$j]."', '".$_SESSION["list_druglst"]["enddate"][$j]."'), ";  
 			
