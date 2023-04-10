@@ -71,7 +71,7 @@ print ".........<input type=button onclick='history.back()' value=' << กลั
         cursor: pointer;
     }
     </style>
-        <h3>รายชื่อผู้ป่วยนัดในวันนี้</h3>
+        <h3>รายชื่อผู้ป่วยนัดในวันนี้ </h3>
         <div>
             <?php 
             $follow_lab_checked = $dolab_checked = '';
@@ -86,7 +86,19 @@ print ".........<input type=button onclick='history.back()' value=' << กลั
                 
             }
             
-            $date = date('Y-m-d');
+
+            $appdate = $_POST['appdate'];
+            $appmo = $_POST['appmo'];
+            $thiyr = $_POST['thiyr']-543;
+            if(!empty($appdate) && !empty($appmo) && !empty($thiyr)){ 
+
+                $keymo = array_search($appmo, $def_fullm_th);
+                $date = "$thiyr-$keymo-$appdate";
+
+            }else{
+                $date = date('Y-m-d');
+            }
+
             $dbi = new mysqli(HOST,USER,PASS,DB);
             $dbi->query("SET NAMES UTF8");
 
@@ -102,6 +114,9 @@ print ".........<input type=button onclick='history.back()' value=' << กลั
                         </td>
                         <td>
                             <label for="do_xray"><input type="checkbox" name="controls[]" id="do_xray" onclick="actionSubmit()" value="do_xray" <?=$xray_checked;?> > มี X-RAY</label>
+                            <input type="hidden" name="appdate" value="<?=$_POST['appdate'];?>">
+                            <input type="hidden" name="appmo" value="<?=$_POST['appmo'];?>">
+                            <input type="hidden" name="thiyr" value="<?=$_POST['thiyr'];?>">
                         </td>
                     </tr>
                     <tr>
@@ -187,7 +202,8 @@ print ".........<input type=button onclick='history.back()' value=' << กลั
             ?>
             <table class="chk_table">
                 <tr style="background-color: #16A085; color: white;">
-                    <th width="6%">HN</th>
+                    <th width="5%">ลำดับ</th>
+					<th width="6%">HN</th>
                     <th width="15%">ชื่อสกุล</th>
                     <th width="13%">แพทย์</th>
                     <th>ห้อง</th>
@@ -197,15 +213,16 @@ print ".........<input type=button onclick='history.back()' value=' << กลั
                     <th width="10%">พิมพ์สติกเกอร์</th>
                 </tr>
             <?php 
-            
+            $i=0;
             while ($a = $q->fetch_assoc()) {
-
+			$i++;
                 list($y, $m, $d) = explode('-', ad_to_bc($a['appdate_en']));
 
                 $thdatehn = "$d-$m-$yhn";
                 ?>
                 <tr style="background-color: #A2D9CE;">
-                    <td><?=$a['hn'];?></td>
+                    <td align="center"><?=$i;?></td>
+					<td><?=$a['hn'];?></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['doctor'];?></td>
                     <td><?=$a['room'];?></td>
