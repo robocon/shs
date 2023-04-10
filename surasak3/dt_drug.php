@@ -1412,11 +1412,18 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		$where = "drugcode = '5FLES' OR ";
 	}
 	
+	$chkptright=substr($_SESSION["ptright_now"],0,3);
+	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	
-		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
-	
+	if($chkptright=="R07" || $chkptright=="R20" || $chkptright=="R27" || $chkptright=="R28" || $chkptright=="R40" || $chkptright=="R43" || $chkptright=="R46" || $chkptright=="R50"){
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." drugcode NOT LIKE '30%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	}else if($chkptright=="R09" || $chkptright=="R10" || $chkptright=="R11" || $chkptright=="R12" || $chkptright=="R13" || $chkptright=="R14" || $chkptright=="R36" || $chkptright=="R44"){
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." drugcode NOT LIKE '20%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	}else{
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode NOT LIKE '20%' AND drugcode NOT LIKE '30%') AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	}	
 	
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
