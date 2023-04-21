@@ -9,8 +9,8 @@ exit();
 // ini_set('display_errors', '1');
 // error_reporting(1);
 
-setcookie("fresh_wound[2566-04-2151-3463]", -1,time()-89000,'/');
-setcookie("acute_diarrhea[2566-04-2151-3463]", -1,time()-89000,'/');
+// setcookie("fresh_wound[2566-04-2151-3463]", -1,time()-89000,'/');
+// setcookie("acute_diarrhea[2566-04-2151-3463]", -1,time()-89000,'/');
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -2714,12 +2714,8 @@ function getCookie(cname) {
 }
 
 function setCookie(cname, cvalue, extime) {
-	console.log(cname);
-	console.log(cvalue);
-	console.log(extime);
 	var d = new Date();
 	d.setTime(extime);
-	console.log(d.toUTCString());
 	var expires = "expires="+d.toUTCString();
 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
@@ -2737,6 +2733,8 @@ function rdu7_alert(drugcode, icd10){
 			testRdu7 = true;
 		}
 	}
+
+	console.log(testRdu7);
 
 	if( testRdu7 === true ){
 		var dataHtml = '<p><img src="images/rdu7.png"></p>';
@@ -2759,12 +2757,12 @@ function rdu7_alert(drugcode, icd10){
 	if (d<10) {
 		d = "0"+d;
 	}
-	var key = th_y+'-'+m+'-'+d+hn;
-	var my_cookie_name = "fresh_wound["+key+"]";
-	var f_cookie = getCookie(my_cookie_name);
 
-	if(f_cookie==""){
-		window.open("er_form_fresh_wound.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
+	var key = th_y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "acute_diarrhea["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+	if(f_cookie=="" && testRdu7===true){
+		window.open("er_form_acute_diarrhea.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
 	}
 	
 }
@@ -2804,12 +2802,11 @@ function rdu8_alert(drugcode, icd10){
 		d = "0"+d;
 	}
 	var key = th_y+'-'+m+'-'+d+hn;
-	var my_cookie_name = "acute_diarrhea["+key+"]";
-	console.log(my_cookie_name);
+	var my_cookie_name = "fresh_wound["+key+"]";
 	var f_cookie = getCookie(my_cookie_name);
-	console.log(f_cookie);
-	if(f_cookie==""){
-		window.open("er_form_acute_diarrhea.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
+
+	if(f_cookie=="" && testRdu8===true){
+		window.open("er_form_fresh_wound.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
 	}
 	
 }
