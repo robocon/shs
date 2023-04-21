@@ -9,6 +9,8 @@ exit();
 // ini_set('display_errors', '1');
 // error_reporting(1);
 
+setcookie("fresh_wound[2566-04-2151-3463]", -1,time()-89000,'/');
+setcookie("acute_diarrhea[2566-04-2151-3463]", -1,time()-89000,'/');
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -2696,6 +2698,34 @@ function rdu18_alert(drugcode, icd10){
 	
 }
 
+function getCookie(cname) {
+	let name = cname + "=";
+	let ca = document.cookie.split(';');
+	for(let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+function setCookie(cname, cvalue, extime) {
+	console.log(cname);
+	console.log(cvalue);
+	console.log(extime);
+	var d = new Date();
+	d.setTime(extime);
+	console.log(d.toUTCString());
+	var expires = "expires="+d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+
+
 function rdu7_alert(drugcode, icd10){
 
 	var testRdu7 = false;
@@ -2715,8 +2745,29 @@ function rdu7_alert(drugcode, icd10){
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
 	}
+
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var th_y = y+543;
+	var hn = '<?=$_SESSION['hn_now'];?>';
+
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+	var key = th_y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "fresh_wound["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+
+	if(f_cookie==""){
+		window.open("er_form_fresh_wound.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
+	}
 	
-		}
+}
 
 function rdu8_alert(drugcode, icd10){
 
@@ -2737,6 +2788,28 @@ function rdu8_alert(drugcode, icd10){
 		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
+	}
+
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var th_y = y+543;
+	var hn = '<?=$_SESSION['hn_now'];?>';
+
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+	var key = th_y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "acute_diarrhea["+key+"]";
+	console.log(my_cookie_name);
+	var f_cookie = getCookie(my_cookie_name);
+	console.log(f_cookie);
+	if(f_cookie==""){
+		window.open("er_form_acute_diarrhea.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
 	}
 	
 }

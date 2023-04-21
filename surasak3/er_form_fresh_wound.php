@@ -22,13 +22,13 @@ if ($action==='save') {
     $ftwa = $json->encode($_POST['ftwa']);
     $ftwb = $json->encode($_POST['ftwb']);
 
-    $sql = "SELECT * FROM `ftw` WHERE `datehn` = '$datehn' ";
+    $sql = "SELECT * FROM `er_ftw` WHERE `datehn` = '$datehn' ";
     $q = $dbi->query($sql);
     if($q->num_rows > 0){ 
         $a = $q->fetch_assoc();
         $ftw_id = $a['id'];
 
-        $sql = "UPDATE `ftw` SET 
+        $sql = "UPDATE `er_ftw` SET 
         `date`='$date', 
         `hn`='$hn', 
         `datehn`='$datehn', 
@@ -39,21 +39,28 @@ if ($action==='save') {
         WHERE (`id`='$ftw_id');";
 
     }else {
-        $sql = "INSERT INTO `ftw` (`id`, `date`, `hn`, `datehn`, `ftwa`, `ftwb`, `ftwn`, `owner`) 
+        $sql = "INSERT INTO `er_ftw` (`id`, `date`, `hn`, `datehn`, `ftwa`, `ftwb`, `ftwn`, `owner`) 
         VALUES 
         (NULL, '$date', '$hn', '$datehn', '$ftwa', '$ftwb', '$ftwn', '$owner');";
     }
     $save = $dbi->query($sql);
-
-    setcookie($cookie_name, 1, strtotime('today 23:59'), '/');
+    $msg = "บันทึกข้อมูลเรียบร้อย";
+    if($save==false){
+        $msg = "ไม่สามารถบันทึกข้อมูลได้ (".$dbi->error.")";
+    }else{
+        setcookie($cookie_name, 1, strtotime('today 23:59'), '/');
+    }
     ?>
     <div style="text-align: center;border: 1px solid #009688;background-color: #009688;color: #ffffff;">
-        <p><b>บันทึกข้อมูลเรียบร้อย</b></p>
+        <p><b><?=$msg;?></b></p>
     </div>
     <script>
-        window.onload = function(){
+        window.onload = function(){ 
+
+            window.opener.setCookie('<?=$cookie_name;?>','1','<?=strtotime('today 23:59:59');?>');
+
             setTimeout(function(){
-                window.close();
+                // window.close();
             }, 1000);
         }
     </script>
@@ -65,29 +72,29 @@ $view = sprintf("%s", $_GET['view']);
 $hn = sprintf("%s", $_GET['hn']);
 
 $datehn = (date('Y')+543).date('-m-d').$hn;
-$sql = "SELECT * FROM `ftw` WHERE `datehn` = '$datehn' ";
+$sql = "SELECT * FROM `er_ftw` WHERE `datehn` = '$datehn' ";
 $q = $dbi->query($sql);
 $a = array();
 if($q->num_rows > 0){
     $a = $q->fetch_assoc();
+
+    $json = new Services_JSON();
+    $ftwa = $json->decode($a['ftwa']);
+    $a1 = in_array('a1',$ftwa)===true ? 'checked="checked"' : '';
+    $a2 = in_array('a2',$ftwa)===true ? 'checked="checked"' : '';
+    $a3 = in_array('a3',$ftwa)===true ? 'checked="checked"' : '';
+    $a4 = in_array('a4',$ftwa)===true ? 'checked="checked"' : '';
+    $a5 = in_array('a5',$ftwa)===true ? 'checked="checked"' : '';
+
+    $ftwb = $json->decode($a['ftwb']);
+    $b1 = in_array('b1',$ftwb)===true ? 'checked="checked"' : '';
+    $b2 = in_array('b2',$ftwb)===true ? 'checked="checked"' : '';
+    $b3 = in_array('b3',$ftwb)===true ? 'checked="checked"' : '';
+    $b4 = in_array('b4',$ftwb)===true ? 'checked="checked"' : '';
+
+    $n = ($a['ftwn']=='n') ? 'checked="checked"' : '';
+
 }
-
-$json = new Services_JSON();
-$ftwa = $json->decode($a['ftwa']);
-$a1 = in_array('a1',$ftwa)===true ? 'checked="checked"' : '';
-$a2 = in_array('a2',$ftwa)===true ? 'checked="checked"' : '';
-$a3 = in_array('a3',$ftwa)===true ? 'checked="checked"' : '';
-$a4 = in_array('a4',$ftwa)===true ? 'checked="checked"' : '';
-$a5 = in_array('a5',$ftwa)===true ? 'checked="checked"' : '';
-
-$ftwb = $json->decode($a['ftwb']);
-$b1 = in_array('b1',$ftwb)===true ? 'checked="checked"' : '';
-$b2 = in_array('b2',$ftwb)===true ? 'checked="checked"' : '';
-$b3 = in_array('b3',$ftwb)===true ? 'checked="checked"' : '';
-$b4 = in_array('b4',$ftwb)===true ? 'checked="checked"' : '';
-
-$n = ($a['ftwn']=='n') ? 'checked="checked"' : '';
-
 ?>
 <style>
     *{
@@ -104,6 +111,15 @@ $n = ($a['ftwn']=='n') ? 'checked="checked"' : '';
     input[type=checkbox]:hover, label:hover{
         cursor: pointer;
     }
+    .chk_table{
+        border-collapse: collapse;
+    }
+
+    .chk_table th,
+    .chk_table td{
+        border: 1px solid black;
+        padding: 3px;
+    }
 </style>
 <form action="er_form_fresh_wound.php" method="post">
     <div>
@@ -111,10 +127,10 @@ $n = ($a['ftwn']=='n') ? 'checked="checked"' : '';
         <p style="text-align:center;">*FTW = บาดแผลสดจาก อุบัติเหตุที่เกิด<u>ภายใน 6 ชั่วโมง</u>ก่อนได้รับการรักษา</p>
     </div>
     <div>
-        <h3><u>กรุณาเลือกลักษณะอาการของผู้ป่วยด้านล่างนี้ โดยลักษณะอาการด้านล่างเป็นลักษณะอาการของผู้ป่วย Fresh Traumatic Wound ที่สมเหตุสมผลที่จะได้รับยาปฏิชีวนะ</u></h3>
+        <h3><u>กรุณาเลือกลักษณะอาการของผู้ป่วยด้านล่างนี้ โดยลักษณะอาการด้านล่างเป็นลักษณะอาการของผู้ป่วย <br>Fresh Traumatic Wound ที่สมเหตุสมผลที่จะได้รับยาปฏิชีวนะ</u></h3>
     </div>
     <div>
-        <table border="1">
+        <table class="chk_table">
             <tr>
                 <td align="center"><b>ลักษณะของบาดแผล</b></td>
                 <td align="center"><b>การประเมิน</b></td>

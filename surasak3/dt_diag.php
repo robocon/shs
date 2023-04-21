@@ -35,29 +35,8 @@ array_push($choose,"ปวดขา");
 array_push($choose,"ปวดน่อง");
 array_push($choose,"ปวดไหล่");
 array_push($choose,"ปวดสะโพก");
+
 sort($choose);
-
-//////  Popup แบบฟอร์มคัดกรองบาดแผลสด  //////
-$patient_hn = trim($_SESSION["hn_now"]);
-$curr_th_date = (date('Y')+543).date('-m-d');
-$cookie_key = $curr_th_date.$patient_hn;
-$cookie_name = "fresh_wound[$cookie_key]";
-
-// ถ้าพยาบาลห้องฉุกเฉินติ๊กแผลสด จะให้หมอลงแบบฟอร์ม
-$sql = "SELECT `fresh_wound` FROM `trauma` WHERE `date` LIKE '$curr_th_date%' AND `hn`= '$patient_hn' ";
-$q = mysql_query($sql);
-$a = mysql_fetch_assoc($q);
-
-// ถ้าภายในวันยังไม่มีการบันทึกฟอร์มจะเด้ง popup ให้กรอกข้อมูล
-if(empty($_COOKIE['fresh_wound'][$cookie_key]) && !empty($a['fresh_wound'])){
-	?>
-	<script>window.open("er_form_fresh_wound.php?hn=<?=$patient_hn;?>&view=saveform","myWindow","width=900,height=600");</script>
-	<?php
-	
-}
-//////  Popup แบบฟอร์มคัดกรองบาดแผลสด  //////
-
-// setcookie($cookie_name, -1, time()-86400, '/');
 
 function jschars($str)
 {
@@ -641,7 +620,7 @@ function addtolist_muli(){
 </TABLE>
 </div>
 <?php 
-
+$patient_hn = trim($_SESSION["hn_now"]);
 if ( $patient_hn==='55-8821' OR $patient_hn==='48-4304' OR $patient_hn==='48-4065' OR $patient_hn==='59-5224') { 
 
 	$moretxt = "";
