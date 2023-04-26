@@ -115,7 +115,7 @@ if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoc
         $cDoctor1 = "ธัญญาวดี มูลรัตน์";
         $doctorcode = "พท.ป. 1038";
     }else if( $subDoctor === 3 ){
-        $cDoctor1 = "หทัยรัตน์ กุลชิงชัย";
+        $cDoctor1 = "กัลย์ปภารัศมิ์ กุลชิงชัย";
         $doctorcode = "พท.ป. 2252";
     }
 
