@@ -56,7 +56,8 @@ if($action==='save'){
     if($save==false){
         $msg = "ไม่สามารถบันทึกข้อมูลได้ (".$dbi->error.")";
     }else{
-        setcookie($cookie_name, 1, strtotime('today 23:59'), '/');
+        // date_default_timezone_set('UTC');
+        setcookie($cookie_name, 1, strtotime('today UTC 23:59:59'), '/');
     }
     ?>
     <div style="text-align: center;border: 1px solid #009688;background-color: #009688;color: #ffffff;">
@@ -66,7 +67,7 @@ if($action==='save'){
 
         window.onload = function(){ 
 
-            window.opener.setCookie('<?=$cookie_name;?>','1','<?=strtotime('today 23:59:59').'000';?>');
+            window.opener.setCookie('<?=$cookie_name;?>','1','<?=strtotime('today UTC 23:59:59').'000';?>');
 
             setTimeout(function(){
                 // window.close();
