@@ -60,7 +60,7 @@ if ($action==='save') {
             window.opener.setCookie('<?=$cookie_name;?>','1','<?=strtotime('today UTC 23:59:59').'000';?>');
 
             setTimeout(function(){
-                // window.close();
+                window.close();
             }, 1000);
         }
     </script>
@@ -72,6 +72,10 @@ $view = sprintf("%s", $_GET['view']);
 $hn = sprintf("%s", $_GET['hn']);
 
 $datehn = (date('Y')+543).date('-m-d').$hn;
+if($view==='print'){
+    $datehn = sprintf("%s", $_GET['datehn']);
+}
+
 $sql = "SELECT * FROM `er_ftw` WHERE `datehn` = '$datehn' ";
 $q = $dbi->query($sql);
 $a = array();
@@ -214,6 +218,16 @@ if($q->num_rows > 0){
             <input type="hidden" name="hn" value="<?=$_GET['hn'];?>">
             <input type="hidden" name="action" value="save">
         </div>
+        <?php
+    }
+
+    if($view==='print'){
+        ?>
+        <script>
+            window.onload = function(){ 
+                window.print();
+            }  
+        </script>
         <?php
     }
     ?>
