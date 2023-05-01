@@ -47,22 +47,25 @@ if(isset($_POST['hn'])){
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
 	if($num==0){
-		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' AND (camp not like '%E_CERT%') order by thidate desc";
+// AND (camp not like '%E_CERT%')
+// AND (camp not like '%E_CERT%')
+		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}else{
 		$numn = mysql_fetch_array($row);
-		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' AND (camp not like '%E_CERT%') order by thidate desc";
+		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
 	}	
 	if($num>0){
 	?>
 <a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="485" border="1" cellpadding="0" cellspacing="0"><tr>
+<table width="50%" border="1" cellpadding="0" cellspacing="0"><tr>
     <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
     <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
     <td width="37" align="center"><span class="tet">ปี</span></td>
+	<td align="center"><span class="tet">ประเภท</span></td>
     <td width="37" align="center">&nbsp;</td>
     <td width="53" align="center">&nbsp;</td>
     <td width="46" align="center">&nbsp;</td>
@@ -88,6 +91,9 @@ if(isset($_POST['hn'])){
 		  <td align="center"><span class="tet">
 		    <?=$result["yearcheck"]?>
 		  </span></td>
+		  <td align="center">
+		  	<span class="tet"><?=$result['camp'];?></span>
+		  </td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
           <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
 		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
