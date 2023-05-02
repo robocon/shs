@@ -1,0 +1,100 @@
+<?php 
+include 'bootstrap.php';
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
+$action = sprintf("%s", $_POST['action']);
+if($action==='save'){  
+
+    $main_id = sprintf("%s", $_POST['id']);
+    $editor = sprintf("%s", $_SESSION['sIdname']);
+    foreach ($_POST['field_name'] as $key => $fname) {
+        $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`) 
+        VALUES 
+        (NULL, '$main_id', '$fname', NULL, NOW(), NOW(), '$editor', '$editor');";
+        $save = $dbi->query($sql);
+    }
+
+    redirect('ha_field.php?id='.$main_id);
+    exit;
+}
+
+$action_value = 'save';
+
+$id = sprintf("%s", $_GET['id']);
+$q = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$id' LIMIT 1");
+if($q->num_rows > 0){
+    $a = $q->fetch_assoc();
+
+    $field_html = '';
+    $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' ");
+    if($qf->num_rows>0){ 
+
+        $action_value = 'update';
+
+        while ($af = $qf->fetch_assoc()) { 
+            $fname = $af['name'];
+            $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name[]" value="'.$fname.'" /><a href="javascript:void(0);" onclick="this.parentNode.remove()">[ยกเลิก]</a></div>';
+        }
+    }
+
+}else{
+    echo "ไม่พบข้อมูล";
+    exit;
+}
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สร้าง ฟิลด์</title>
+</head>
+<body>
+    <?php 
+    include_once 'ha_menu.php';
+    ?>
+    <div>
+        <form action="ha_field.php" method="post">
+            <div>
+                ชื่อฟอร์ม: <?=$a['name'];?>
+            </div>
+            <div>
+                <div id="data-field"><?=$field_html;?></div>
+                <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มข้อมูลตัวชี้วัด]</a></div>
+            </div>
+            <div>
+                <button type="submit">บันทึกฟิลด์</button>
+                <input type="hidden" name="action" value="<?=$action_value;?>">
+                <input type="hidden" name="id" value="<?=$id;?>">
+            </div>
+        </form>
+    </div>
+    <script>
+        function add_field(){
+            var f = document.getElementById('data-field');
+
+            var d = document.createElement("div");
+            d.append("ชื่อฟิลด์: ");
+
+            var input = document.createElement("input");
+            input.setAttribute('type', "text");
+            input.setAttribute('name', "field_name[]");
+
+            var in_a = document.createElement("a");
+            in_a.setAttribute('href', "javascript:void(0);");
+            in_a.setAttribute('onclick', "this.parentNode.remove()");
+            in_a.append('[ยกเลิก]');
+
+            d.appendChild(input);
+            d.appendChild(in_a);
+
+            f.appendChild(d);
+
+        }
+    </script>
+</body>
+</html>
