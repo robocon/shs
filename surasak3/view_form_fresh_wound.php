@@ -53,7 +53,7 @@ function check_in_b($name){
     </style>
     <?php 
     $date = sprintf("%s", $_POST['date']);
-    $def_date = (empty($date)) ? date('Y-m-d') : $date ;
+    $def_date = (empty($date)) ? ad_to_bc(date('Y-m-d')) : $date ;
     ?>
     <fieldset>
         <legend>ค้นหาตามวันที่</legend>
