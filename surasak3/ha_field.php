@@ -18,6 +18,29 @@ if($action==='save'){
 
     redirect('ha_field.php?id='.$main_id);
     exit;
+}elseif ($action==='update') {
+    # code...
+    dump($_POST);
+    $main_id = sprintf("%s", $_POST['id']);
+
+    $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ";
+    $q = $dbi->query($sql);
+    $data_before = array();
+    while ($a = $q->fetch_assoc()) {
+        $data_before[] = $a['name'];
+        # code...
+    }
+    dump(count($_POST['field_name']));
+    
+    if(count($_POST['field_name']) > count($data_before) ){
+        $diff = array_diff($_POST['field_name'], $data_before);
+        dump($diff);
+    }else{
+        $diff = array_diff($data_before, $_POST['field_name']);
+        dump($diff);
+    }
+
+    exit;
 }
 
 $action_value = 'save';
@@ -34,8 +57,9 @@ if($q->num_rows > 0){
         $action_value = 'update';
 
         while ($af = $qf->fetch_assoc()) { 
+            $fid = $af['id'];
             $fname = $af['name'];
-            $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name[]" value="'.$fname.'" /><a href="javascript:void(0);" onclick="this.parentNode.remove()">[ยกเลิก]</a></div>';
+            $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /><a href="javascript:void(0);" onclick="this.parentNode.remove()">[ยกเลิก]</a></div>';
         }
     }
 
@@ -67,6 +91,7 @@ if($q->num_rows > 0){
                 <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มข้อมูลตัวชี้วัด]</a></div>
             </div>
             <div>
+                <div style="color: red;">ยังมีปัญหาตอน edit</div>
                 <button type="submit">บันทึกฟิลด์</button>
                 <input type="hidden" name="action" value="<?=$action_value;?>">
                 <input type="hidden" name="id" value="<?=$id;?>">

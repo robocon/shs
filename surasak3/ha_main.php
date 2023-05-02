@@ -94,7 +94,7 @@ if($action==='save'){
                 <th>ชื่อ</th>
                 <th>สถานะ</th>
                 <th>สร้างโดย</th>
-                <th>ฟิลด์</th>
+                <th>จำนวนฟิลด์</th>
                 <th></th>
                 <th></th>
             </tr>
