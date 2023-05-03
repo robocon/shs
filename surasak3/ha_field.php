@@ -125,7 +125,23 @@ if($q->num_rows > 0){
                 ชื่อฟอร์ม: <?=$a['name'];?>
             </div>
             <div>
-                <div id="data-field"><?=$field_html;?></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อฟิลด์</th>
+                            <th>จำนวนข้อมูล</th>
+                            <th>จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-field">
+                        <tr>
+                            <td><input type="text" name="field_name[x]" value="x" /></td>
+                            <td align="center">0</td>
+                            <td> <a href="javascript:void(0)" onclick="this.closest('tr').remove()">[ยกเลิก]</a> </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- <div id="data-field"><?=$field_html;?></div> -->
                 <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มข้อมูลตัวชี้วัด]</a></div>
             </div>
             <div>
@@ -140,22 +156,42 @@ if($q->num_rows > 0){
         function add_field(){
             var f = document.getElementById('data-field');
 
-            var d = document.createElement("div");
-            d.append("ชื่อฟิลด์: ");
+            var tr = document.createElement("tr");
 
+            var td1 = document.createElement("td");
             var input = document.createElement("input");
             input.setAttribute('type', "text");
             input.setAttribute('name', "field_name[]");
+            td1.appendChild(input);
+
+            var td2 = document.createElement("td");
+            td2.setAttribute('align', "center");
+            td2.append('0');
+
+
+            var td3 = document.createElement("td");
+
+            // var d = document.createElement("div");
+            // d.append("ชื่อฟิลด์: ");
+
+            // var input = document.createElement("input");
+            // input.setAttribute('type', "text");
+            // input.setAttribute('name', "field_name[]");
 
             var in_a = document.createElement("a");
             in_a.setAttribute('href', "javascript:void(0);");
-            in_a.setAttribute('onclick', "this.parentNode.remove()");
+            in_a.setAttribute('onclick', "this.closest('tr').remove()");
             in_a.append('[ยกเลิก]');
+            td3.appendChild(in_a);
 
-            d.appendChild(input);
-            d.appendChild(in_a);
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
 
-            f.appendChild(d);
+            // d.appendChild(input);
+            // d.appendChild(in_a);
+
+            f.appendChild(tr);
 
         }
     </script>
