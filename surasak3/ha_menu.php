@@ -38,3 +38,12 @@
         <li><a href="ha_report.php">รายงาน</a></li>
     </ul>
 </div>
+<?php 
+if($_SESSION['x-msg']){
+    ?>
+    <div>
+        <?=$_SESSION['x-msg'];?>
+    </div>
+    <?php
+    $_SESSION['x-msg'] = null;
+}

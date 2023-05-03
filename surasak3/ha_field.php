@@ -19,27 +19,53 @@ if($action==='save'){
     redirect('ha_field.php?id='.$main_id);
     exit;
 }elseif ($action==='update') {
-    # code...
-    dump($_POST);
+    
     $main_id = sprintf("%s", $_POST['id']);
+    $editor = sprintf("%s", $_SESSION['sIdname']);
 
     $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ";
     $q = $dbi->query($sql);
     $data_before = array();
     while ($a = $q->fetch_assoc()) {
-        $data_before[] = $a['name'];
-        # code...
+        $fkey = $a['id'];
+        $data_before[$fkey] = $a['name'];
+        
     }
-    dump(count($_POST['field_name']));
     
+    // เพิ่ม
     if(count($_POST['field_name']) > count($data_before) ){
         $diff = array_diff($_POST['field_name'], $data_before);
-        dump($diff);
-    }else{
+        foreach ($diff as $id => $value) {
+            
+            // INSERT INTO 
+            $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`) 
+            VALUES 
+            (NULL, '$main_id', '$value', NULL, NOW(), NOW(), '$editor', '$editor');";
+            $save = $dbi->query($sql);
+        }
+
+    }elseif (count($data_before) > count($_POST['field_name'])) { // ลด
+
         $diff = array_diff($data_before, $_POST['field_name']);
-        dump($diff);
+        foreach ($diff as $id => $value) {
+            dump($id);
+            $sql = "DELETE FROM `indicator_field` WHERE `id`='$id';";
+            $save = $dbi->query($sql);
+        }
     }
 
+    $intersect_items = array_intersect_key($_POST['field_name'], $data_before);
+    foreach ($intersect_items as $key => $value) { 
+        
+        $sql = "UPDATE `indicator_field` SET 
+        `name`='$value', 
+        `date_edit`=NOW(), 
+        `editor`='$editor' 
+        WHERE (`id`='$key');";
+        $save = $dbi->query($sql);
+    }
+
+    redirect('ha_field.php?id='.$main_id,'บันทึกข้อมูลเรียบร้อย');
     exit;
 }
 
@@ -55,11 +81,23 @@ if($q->num_rows > 0){
     if($qf->num_rows>0){ 
 
         $action_value = 'update';
+        
 
         while ($af = $qf->fetch_assoc()) { 
+
             $fid = $af['id'];
+
+            $q_data = $dbi->query("SELECT `id` FROM `indicator_data` WHERE `main_id` = '$id' AND `field_id` = '$fid' ");
+            $d_rows = $q_data->num_rows;
+
+            $remove = '[ยกเลิก]';
+            if($d_rows===0){
+                $remove = '<a href="javascript:void(0);" onclick="this.parentNode.remove()">[ยกเลิก]</a>';
+            }
+
+
             $fname = $af['name'];
-            $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /><a href="javascript:void(0);" onclick="this.parentNode.remove()">[ยกเลิก]</a></div>';
+            $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /> ('.$d_rows.') '.$remove.'</div>';
         }
     }
 

@@ -7,7 +7,6 @@ $dbi->query("SET NAMES UTF8");
 $action = sprintf("%s", $_POST['action']);
 if($action==='save'){  
 
-    // dump($_POST);
     $month = sprintf("%s", $_POST['months']);
     $year = sprintf("%s", $_POST['years']);
     $main_id = sprintf("%s", $_POST['main_id']);
@@ -21,6 +20,33 @@ if($action==='save'){
     }
 
     redirect('ha_data.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
+    exit;
+}elseif ($action==='update') {
+
+
+    dump($_POST);
+
+    $month = sprintf("%s", $_POST['months']);
+    $year = sprintf("%s", $_POST['years']);
+    $main_id = sprintf("%s", $_POST['main_id']);
+    $editor = sprintf("%s", $_SESSION['sIdname']);
+
+
+    foreach ($_POST['data'] as $field_id => $value) {
+        $sql = "UPDATE `indicator_data` SET 
+        `value`='$value', 
+        `year`='$year',
+        `month`='$month',
+        `date_edit`=NOW(), 
+        `editor`='$editor' 
+        WHERE (`main_id`='$main_id' AND `field_id` = '$field_id' );";
+        $save = $dbi->query($sql);
+        
+    }
+    
+    redirect('ha_data.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
+    exit;
+
     exit;
 }
 
@@ -57,8 +83,12 @@ if($action==='save'){
             $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' ");
             if($qf->num_rows>0){ 
 
+                $action_value = 'save';
+
                 $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' ");
                 if ($qd->num_rows>0) { 
+
+                    $action_value = 'update';
                     $item_data = array();
                     
                     while ($data = $qd->fetch_assoc()) {
@@ -107,7 +137,7 @@ if($action==='save'){
                         <td>
                             <button type="submit">บันทึกข้อมูล</button>
                             <input type="hidden" name="main_id" value="<?=$a['id'];?>">
-                            <input type="hidden" name="action" value="save">
+                            <input type="hidden" name="action" value="<?=$action_value;?>">
                         </td>
                     </tr>
                 </table>
