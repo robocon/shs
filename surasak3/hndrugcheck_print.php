@@ -524,6 +524,11 @@ if (empty($other)) {
 
 for ($i=0; $i < $other; $i++) { 
 
+    if( $pdf->GetY() > 280 ){
+        $pdf->AddPage();
+        $pdf->setXY(5,12);
+    }
+
     $drug_y = $pdf->GetY();
 
     // ชื่อยา
