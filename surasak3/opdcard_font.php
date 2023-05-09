@@ -220,7 +220,7 @@ $regisdate=DateThai($regisdate);
 
 <table border="0" align="center" width="100%" cellpadding="0">
   <tr>
-    <th width="10%" valign="top" align="center"><img src="images/LogoFSH.jpg" width="96px" height="120px"></th>
+    <th width="10%" valign="top" align="center"><img src="images/LogoFSH_mini.jpg"></th>
     <th width="70%" valign="top">
 	<div style="font-size:32px; font-weight:bold;" align="center">โรงพยาบาลค่ายสุรศักดิ์มนตรี</div>
 	<div style="font-size:28px; font-weight:bold;" align="center">มทบ.32 จ.ลำปาง โทร. 054-839305</div>
