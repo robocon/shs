@@ -16,7 +16,7 @@ if($action==='save'){
         $save = $dbi->query($sql);
     }
 
-    redirect('ha_field.php?id='.$main_id);
+    redirect('ha_field.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
     exit;
 }elseif ($action==='update') {
     
@@ -92,12 +92,17 @@ if($q->num_rows > 0){
 
             $remove = '[ยกเลิก]';
             if($d_rows===0){
-                $remove = '<a href="javascript:void(0);" onclick="this.parentNode.remove()">[ยกเลิก]</a>';
+                $remove = '<a href="javascript:void(0)" onclick="this.closest(\'tr\').remove()">[ยกเลิก]</a>';
             }
 
-
             $fname = $af['name'];
-            $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /> ('.$d_rows.') '.$remove.'</div>';
+
+            $field_html .= '<tr>';
+            $field_html .= '<td><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></td>';
+            $field_html .= '<td align="center">'.$d_rows.'</td>';
+            $field_html .= '<td>'.$remove.'</td>';
+            $field_html .= '</td>';
+            // $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /> ('.$d_rows.') '.$remove.'</div>';
         }
     }
 
@@ -134,11 +139,12 @@ if($q->num_rows > 0){
                         </tr>
                     </thead>
                     <tbody id="data-field">
-                        <tr>
+                        <?=$field_html;?>
+                        <!-- <tr>
                             <td><input type="text" name="field_name[x]" value="x" /></td>
                             <td align="center">0</td>
                             <td> <a href="javascript:void(0)" onclick="this.closest('tr').remove()">[ยกเลิก]</a> </td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
                 <!-- <div id="data-field"><?=$field_html;?></div> -->
@@ -161,6 +167,7 @@ if($q->num_rows > 0){
             var td1 = document.createElement("td");
             var input = document.createElement("input");
             input.setAttribute('type', "text");
+            input.setAttribute('size', "40");
             input.setAttribute('name', "field_name[]");
             td1.appendChild(input);
 

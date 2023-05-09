@@ -113,7 +113,7 @@ if($action==='save'){
                 <td><?=$a['status'];?></td>
                 <td><?=$a['creater'];?></td>
                 <td><?=$rows;?></td>
-                <td><a href="ha_field.php?id=<?=$a['id'];?>" target="_blank">จัดการฟิลด์</a></td>
+                <td><a href="ha_field.php?id=<?=$a['id'];?>">จัดการฟิลด์</a></td>
                 <td>
                     <a href="ha_main.php?id=<?=$a['id'];?>&page=edit" title="แก้ไข"><img src="images/icons/page_white_edit.png"></a>
                 </td>
