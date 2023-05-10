@@ -4,12 +4,17 @@ include_once 'includes/JSON.php';
 $json = new Services_JSON();
 
 $hn = sprintf("%s", $_GET['hn']);
+if(empty($hn)){
+	echo "Invalid data";
+	exit;
+}
 
 $ch = curl_init(); 
 curl_setopt($ch, CURLOPT_URL, 'http://192.168.131.240:8081/api/getopcard?opcard_id='.$hn);
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 
 $result = curl_exec( $ch );
 $items = $json->decode($result);
@@ -18,6 +23,10 @@ $items = $json->decode($result);
 <style>
 	body{
 		margin: 0;
+	}
+	body, input, button, select, option{
+		font-family: "TH SarabunPSK";
+		font-size: 18px;
 	}
 	.thumbImg{
 		max-height: 200px;
@@ -66,23 +75,52 @@ document.onmouseup = mousehandler;
 	<h3 style="margin:8px;">ข้อมูลการมาโรงพยาบาล</h3>
 
 	<div style="width:100%; text-align:left;">
-		<div style="">
-			แผนก: <select name="depart" id="depart">
+		<div style="margin-bottom:4px;">
+		<?php 
+		$sql = "SELECT b.* 
+		FROM (
+			SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn'
+		) AS a RIGHT JOIN `digital_opdcard` AS b ON a.`row_id` = b.`opdcard_id` 
+		GROUP BY `clinic`";
+		?>
+			<b>แผนก:</b> <select name="depart" id="depart">
 				<option value="">เลือกแผนก</option>
 				<option value="เวชกรรมฟื้นฟู">เวชกรรมฟื้นฟู</option>
 			</select>
 		</div>
-		<div>
-			ปี: <select name="year" id="year">
+		<div style="margin-bottom:4px;">
+			<?php 
+			$y_start = date('Y');
+			$y_end = date('Y', strtotime("-5 years"));
+			$y_range = range($y_start, $y_end);
+
+			?>
+			<b>ปี:</b> <select name="year" id="year">
 				<option value="">เลือกปี</option>
+				<?php 
+				foreach ($y_range as $key => $value) {
+					?>
+					<option value="<?=$value;?>"><?=($value+543);?></option>
+					<?php
+				}
+				?>
 				<option value="2023">2566</option>
 			</select>
-			เดือน: <select name="month" id="month" onchange="checkYear()">
+			<b>เดือน:</b> <select name="month" id="month" onchange="checkYear()">
 				<option value="">เลือกเดือน</option>
+				<?php 
+				foreach ($def_fullm_th as $key => $value) {
+					$dm = ($key==date('m')) ? 'selected="selected"' : '' ;
+					?>
+					<option value="<?=$key;?>" <?=$dm;?> ><?=$value;?></option>
+					<?php
+				}
+				
+				?>
 				<option value="05">พ.ค.</option>
 			</select>
 		</div>
-		<div>
+		<div style="margin-bottom:4px;">
 			<button type="submit" onclick="searchData()">ค้นหา</button>
 		</div>
 	</div>
@@ -106,7 +144,7 @@ if ($items->totalCount > 0) {
     }
 	
 }else{
-    ?><p style="text-align:center;">ยังไม่มีประวัติ e-OPD</p><?php
+    ?><p style="text-align:center;"><b>ยังไม่มีประวัติ e-OPD</b></p><?php
 }
 ?>
 </div>
@@ -141,12 +179,12 @@ const monthThai = ['มกราคม','กุมภาพันธ์','มี
 	}
 	function searchData(){ 
 
-		var depart = encodeURIComponent(document.getElementById('depart').value);
-		var year = document.getElementById('year').value;
-		var month = document.getElementById('month').value;
-		var hn = '<?=$hn;?>';
-		var url = 'http://192.168.131.240:8081/api/getopcard?opcard_id='+hn;
-		var date = '';
+		const depart = encodeURIComponent(document.getElementById('depart').value);
+		const year = document.getElementById('year').value;
+		const month = document.getElementById('month').value;
+		const hn = '<?=$hn;?>';
+		let url = 'http://192.168.131.240:8081/api/getopcard?opcard_id='+hn;
+		let date = '';
 		if(year!=''){
 			date = year;
 		}
@@ -171,7 +209,7 @@ const monthThai = ['มกราคม','กุมภาพันธ์','มี
 			
 			if(data.totalCount>0){
 				
-				var resHtml = '';
+				let resHtml = '';
 				data.list.forEach(el => { 
 
 					const[getDate,getTime] = el.actual_date.split(" ");
