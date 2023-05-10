@@ -19,6 +19,9 @@ curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 $result = curl_exec( $ch );
 $items = $json->decode($result);
 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
 ?>
 <style>
 	body{
@@ -38,7 +41,7 @@ $items = $json->decode($result);
 		box-shadow: 5px 5px 5px #666666;
 	}
 	#thumbList{
-		padding-top: 7em;
+		padding-top: 9em;
 	}
 	#thumbList > .column{
 		margin-bottom: 8px;
@@ -72,20 +75,31 @@ document.onmouseup = mousehandler;
  
 </script>	
 <div style="position: fixed;width: 100%;background-color: #ffffff;box-shadow: 0px 4px 4px #b8b8b8; text-align: center;">
-	<h3 style="margin:8px;">ข้อมูลการมาโรงพยาบาล</h3>
-
+	<a href="opdcard_font.php?hn=<?=$hn;?>" target="right" style="color: blue;text-decoration: none;"><h3 style="margin:8px;">ข้อมูลการมาโรงพยาบาล</h3></a>
 	<div style="width:100%; text-align:left;">
-		<div style="margin-bottom:4px;">
 		<?php 
-		$sql = "SELECT b.* 
+		$sql = "SELECT b.`clinic`  
 		FROM (
-			SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn'
-		) AS a RIGHT JOIN `digital_opdcard` AS b ON a.`row_id` = b.`opdcard_id` 
+		  SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn'
+		) AS a LEFT JOIN `digital_opcard` AS b ON a.`row_id` = b.`opcard_id` 
+		WHERE b.`opcard_id` IS NOT NULL 
+		AND ( b.`clinic` != '' AND b.`clinic` IS NOT NULL ) 
 		GROUP BY `clinic`";
+		$q = $dbi->query($sql);
+		if ($q->num_rows == 0) {
+			$q = $dbi->query("SELECT `detail` AS `clinic` FROM `clinic`");
+		}
 		?>
-			<b>แผนก:</b> <select name="depart" id="depart">
+		<div style="margin-bottom:4px;">
+			<b>แผนก:</b> <select name="depart" id="depart" style="max-width:120px;">
 				<option value="">เลือกแผนก</option>
-				<option value="เวชกรรมฟื้นฟู">เวชกรรมฟื้นฟู</option>
+				<?php 
+				while ($item = $q->fetch_assoc()) {
+					?>
+					<option value="<?=$item['clinic'];?>"><?=$item['clinic'];?></option>
+					<?php
+				}
+				?>
 			</select>
 		</div>
 		<div style="margin-bottom:4px;">
@@ -99,8 +113,9 @@ document.onmouseup = mousehandler;
 				<option value="">เลือกปี</option>
 				<?php 
 				foreach ($y_range as $key => $value) {
+					// $dy = ($value==date('Y')) ? 'selected="selected"' : '' ;
 					?>
-					<option value="<?=$value;?>"><?=($value+543);?></option>
+					<option value="<?=$value;?>" <?=$dy;?> ><?=($value+543);?></option>
 					<?php
 				}
 				?>
@@ -110,7 +125,7 @@ document.onmouseup = mousehandler;
 				<option value="">เลือกเดือน</option>
 				<?php 
 				foreach ($def_fullm_th as $key => $value) {
-					$dm = ($key==date('m')) ? 'selected="selected"' : '' ;
+					// $dm = ($key==date('m')) ? 'selected="selected"' : '' ;
 					?>
 					<option value="<?=$key;?>" <?=$dm;?> ><?=$value;?></option>
 					<?php
@@ -150,9 +165,9 @@ if ($items->totalCount > 0) {
 </div>
 
 
-<script>
+<script type="text/javascript">
 
-const monthThai = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+var monthThai = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 
 	function newXmlHttp(){
 		var xmlhttp = false;
@@ -177,6 +192,102 @@ const monthThai = ['มกราคม','กุมภาพันธ์','มี
 			alert('กรุณาเลือกปี');
 		}
 	}
+
+	function searchData(){ 
+
+		var depart = encodeURIComponent(document.getElementById('depart').value);
+		var year = document.getElementById('year').value;
+		var month = document.getElementById('month').value;
+		var hn = '<?=$hn;?>';
+		var url = 'http://192.168.131.240:8081/api/getopcard?opcard_id='+hn;
+		var date = '';
+		if(year!=''){
+			date = year;
+		}
+
+		if(month!=''){
+			date = year+'-'+month;
+			if(year==''){
+				alert('กรุณาเลือกปี');
+				return false;
+			}
+		}
+
+		if(date!=''){
+			url += '&date='+date;
+		}
+
+		if(depart!=''){
+			url += '&clinic='+depart;
+		}
+
+		console.log(url);
+
+
+		var request = new newXmlHttp();
+		request.open('GET', url, true);
+
+		request.onreadystatechange = function () {
+		if (request.status >= 200 && request.status < 400) {
+			// Success! 
+
+			// var data = JSON.parse(request.responseText);
+			alert(request.responseText)
+			var data = JSON.parse(request.responseText);
+			
+			if(data.totalCount>0){
+			
+				var resHtml = '';
+				for (var i = 0; i < data.totalCount; i++) {
+					
+					var el = data.list[i];
+
+					var ac_date = el.actual_date.split(" ");
+					var dateSplit = ac_date[0].split("-");
+
+					var getYear = dateSplit[0];
+					var getMonth = dateSplit[1];
+					var getDay = dateSplit[2];
+
+					var year = parseInt(getYear);
+					var month = parseInt(getMonth)-1;
+					var dateThai = getDay+' '+monthThai[month]+' '+(year+543);
+
+					resHtml += '<div class="column thumbContain">';
+					resHtml += '<a href="dt_paperLessFullPage.php?path='+el.original+'&hn='+el.hn+'" target="right">';
+					resHtml += '<img src="'+el.thumbnail+'" alt="Lights" class="thumbImg" onerror="this.src=\'images/medical-history.png\';">';
+					resHtml += '<p><b>'+dateThai+'</b></p>';
+					resHtml += '</a>';
+					resHtml += '</div>';
+
+				}
+
+				document.getElementById('thumbList').innerHTML = resHtml;
+
+			}else{
+				document.getElementById('thumbList').innerHTML = '<p><b>ไม่พบข้อมูล</b></p>';
+			}
+
+		} else {
+			// We reached our target server, but it returned an error
+		}
+		};
+
+
+		// request.onreadystatechange = function () {
+		// 	if (this.readyState === 4) {
+		// 	if (this.status >= 200 && this.status < 400) {
+				
+		// 	} else {
+		// 		// Error :(
+		// 	}
+		// 	}
+		// };
+		request.send();
+
+	}
+
+	/*
 	function searchData(){ 
 
 		const depart = encodeURIComponent(document.getElementById('depart').value);
@@ -235,10 +346,13 @@ const monthThai = ['มกราคม','กุมภาพันธ์','มี
 
 		});
 	}
+	
+
 
 	async function getData(url){
 		const response = await fetch(url);
 		const data = await response.json();
 		return data;
 	}
+	*/
 </script>
