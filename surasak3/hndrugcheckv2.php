@@ -144,7 +144,7 @@ if($action==='search'){
             </div>
             <table id="drugrxContainer" class="chk_table" width="80%">
                 <thead>
-                    <tr>
+                    <tr style="background-color: #04AA6D; color: white;">
                         <th></th>
                         <th>วันที่</th>
                         <th>ชื่อยา</th>
@@ -175,7 +175,7 @@ if($action==='search'){
                             <p><b>รายการยาในโรงพยาบาล</b></p>
                             <table class="chk_table" width="80%">
                                 <thead>
-                                    <tr>
+                                    <tr style="background-color: #04AA6D; color: white;">
                                         <th>รายการยา/ความแรง</th>
                                         <th>วิธีใช้</th>
                                         <th>จำนวน</th>
