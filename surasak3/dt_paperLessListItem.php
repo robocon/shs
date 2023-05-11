@@ -150,7 +150,7 @@ document.onmouseup = mousehandler;
 				$month = date('m');
 			}
 			?>
-			<b>เดือน:</b> <select name="month" id="month" onchange="checkYear()">
+			<b>เดือน:</b> <select name="month" id="month">
 				<option value="">แสดงทุกเดือน</option>
 				<?php 
 				foreach ($def_fullm_th as $key => $value) {
