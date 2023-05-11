@@ -67,7 +67,7 @@ $dbi->query("SET NAMES UTF8");
                     <?php
                     while ($item = $q->fetch_assoc()) {
                         ?>
-                        <li><a href="ha_data.php?id=<?=$item['id'];?>"><?=$item['name'];?></a></li>
+                        <li><a href="ha_data.php?id=<?=$item['id'];?>&year=<?=$curr_year;?>&month=<?=$curr_month;?>"><?=$item['name'];?></a></li>
                         <?php
                     }
                     ?>

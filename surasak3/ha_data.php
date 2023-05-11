@@ -12,6 +12,11 @@ if($action==='save'){
     $main_id = sprintf("%s", $_POST['main_id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
 
+    if(empty($year)){
+        redirect("ha_data.php?id=$main_id", 'กรุณาเลือกปีที่จะบันทึก');
+        exit;
+    }
+
     foreach ($_POST['data'] as $field_id => $value) {
         $sql = "INSERT INTO `indicator_data` (`id`, `main_id`, `field_id`, `value`, `year`, `month`, `date_create`, `date_edit`, `creater`, `editor`) 
         VALUES 
@@ -19,35 +24,29 @@ if($action==='save'){
         $save = $dbi->query($sql);
     }
 
-    redirect('ha_data.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
+    redirect("ha_data.php?id=$main_id&month=$month&year=$year", 'บันทึกข้อมูลเรียบร้อย');
     exit;
+
 }elseif ($action==='update') {
-
-
-    dump($_POST);
 
     $month = sprintf("%s", $_POST['months']);
     $year = sprintf("%s", $_POST['years']);
     $main_id = sprintf("%s", $_POST['main_id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
 
-
     foreach ($_POST['data'] as $field_id => $value) {
         $sql = "UPDATE `indicator_data` SET 
         `value`='$value', 
-        `year`='$year',
-        `month`='$month',
         `date_edit`=NOW(), 
         `editor`='$editor' 
-        WHERE (`main_id`='$main_id' AND `field_id` = '$field_id' );";
+        WHERE (`main_id`='$main_id' AND `field_id` = '$field_id' AND `year`='$year' AND `month`='$month' );";
         $save = $dbi->query($sql);
         
     }
     
-    redirect('ha_data.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
+    redirect("ha_data.php?id=$main_id&month=$month&year=$year", 'บันทึกข้อมูลเรียบร้อย');
     exit;
 
-    exit;
 }
 
 
@@ -63,16 +62,19 @@ if($action==='save'){
 <body>
     <?php 
     include_once 'ha_menu.php';
+
+    $month = $_GET['month'];
+    $year = $_GET['year'];
+
     ?>
     <div>
         <?php 
         $id = sprintf("%s", $_GET['id']);
-
         $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$id' LIMIT 1");
         $a = $q->fetch_assoc();
         ?>
         <div>
-            <h1>หัวข้อ: <?=$a['name'];?></h1>
+            <h1>ตัวชี้วัด: <?=$a['name'];?></h1>
         </div>
         <div>
             <?php 
@@ -85,7 +87,7 @@ if($action==='save'){
 
                 $action_value = 'save';
 
-                $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' ");
+                $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' AND `year`='$year' AND `month`='$month' ");
                 if ($qd->num_rows>0) { 
 
                     $action_value = 'update';
@@ -101,10 +103,10 @@ if($action==='save'){
                 }
             ?>
             <form action="ha_data.php" method="post">
-                <table>
+                <table class="chk_table">
                     <tr>
-                        <td>ตัวชี้วัด</td>
-                        <td>เป้า</td>
+                        <th>รายละเอียดตัวชี้วัด</th>
+                        <th></th>
                     </tr>
                     <?php 
                     while ($af = $qf->fetch_assoc()) { 
@@ -119,22 +121,46 @@ if($action==='save'){
                         <?php
                     }
                     ?>
+                    
+                </table>
+                <table>
                     <tr>
-                        <td>เดือนที่บันทึก</td>
-                        <td><?=getMonthList('months', $data_month);?></td>
-                    </tr>
-                    <tr>
-                        <td>ปีที่บันทึก</td>
+                        <td><b>เดือนที่บันทึก</b></td>
                         <td>
-                            <?php 
-                            $range = range('2019', date('Y'));
-                            getYearList('years', true, $data_year, $range);
-                            ?>
+                            <select name="months" id="months">
+                                <option value="">เลือกเดือน</option>
+                                <?php 
+                                foreach ($def_fullm_th as $key => $value) { 
+                                    $selected = $key == $month ? 'selected="selected"' : '' ;
+                                    ?>
+                                    <option value="<?=$key;?>" <?=$selected;?> ><?=$value;?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <td><b>ปีที่บันทึก</b></td>
                         <td>
+                            <?php 
+                            $range = range('2019', date('Y'));
+                            ?>
+                            <select name="years" id="years">
+                                <option value="">เลือกปี</option>
+                                <?php 
+                                foreach ($range as $key => $value) {
+                                    $selected = $value == $year ? 'selected="selected"' : '' ;
+                                    ?>
+                                    <option value="<?=$value;?>" <?=$selected;?> ><?=($value+543);?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
                             <button type="submit">บันทึกข้อมูล</button>
                             <input type="hidden" name="main_id" value="<?=$a['id'];?>">
                             <input type="hidden" name="action" value="<?=$action_value;?>">
