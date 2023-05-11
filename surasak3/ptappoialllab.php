@@ -70,9 +70,17 @@ print ".........<input type=button onclick='history.back()' value=' << กลั
     label:hover{
         cursor: pointer;
     }
+	.txtsarabun{ 
+	font-family: "TH SarabunPSK";
+	font-size:16px; 
+	font-weight:bold;
+	}
     </style>
-        <h3>รายชื่อผู้ป่วยนัดในวันนี้ </h3>
-        <div>
+        <h3>รายชื่อผู้ป่วยนัดในวันนี้ 
+		<span style='margin-left:20px;'><input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" /></span>
+        <span style='margin-left:20px;'><input type="button" name="button" id="button" value="เลือกวันที่ใหม่" onclick="window.location='appoichkalllab.php' " class="txtsarabun" /></span> 
+		 </h3>
+		<div>
             <?php 
             $follow_lab_checked = $dolab_checked = '';
             foreach ($_REQUEST['controls'] as $key => $c) {
