@@ -124,16 +124,17 @@ if($q->num_rows > 0){
     <?php 
     include_once 'ha_menu.php';
     ?>
+    <div>&nbsp;</div>
     <div>
         <form action="ha_field.php" method="post">
             <div>
-                ชื่อฟอร์ม: <?=$a['name'];?>
+                <h1>ชื่อตัวชี้วัด: <?=$a['name'];?></h1>
             </div>
             <div>
                 <table>
                     <thead>
                         <tr>
-                            <th>ชื่อฟิลด์</th>
+                            <th>ชื่อรายละเอียด</th>
                             <th>จำนวนข้อมูล</th>
                             <th>จัดการ</th>
                         </tr>
@@ -148,11 +149,10 @@ if($q->num_rows > 0){
                     </tbody>
                 </table>
                 <!-- <div id="data-field"><?=$field_html;?></div> -->
-                <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มข้อมูลตัวชี้วัด]</a></div>
+                <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มรายละเอียดตัวชี้วัด]</a></div>
             </div>
             <div>
-                <div style="color: red;">ยังมีปัญหาตอน edit</div>
-                <button type="submit">บันทึกฟิลด์</button>
+                <button type="submit">บันทึก</button>
                 <input type="hidden" name="action" value="<?=$action_value;?>">
                 <input type="hidden" name="id" value="<?=$id;?>">
             </div>

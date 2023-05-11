@@ -70,33 +70,35 @@ if($action==='save'){
     
     include_once 'ha_menu.php';
     ?>
-
-    <form action="ha_main.php" method="post">
-        <div>
-            <label for="name">ชื่อฟอร์มบันทึก</label>
-            <input type="text" name="name" id="name" value="<?=$item['name'];?>">
-        </div>
-        <div>
-            <button type="submit">บันทึก</button>
-            <input type="hidden" name="action" value="<?=$action;?>">
-            <input type="hidden" name="id" value="<?=$item['id'];?>">
-        </div>
-    </form>
-
+    <fieldset style="margin-top:1em;">
+        <legend><h1>สร้างหัวข้อตัวชี้วัด</h1></legend>
+        <form action="ha_main.php" method="post">
+            <div style="margin-bottom:8px;">
+                <label for="name">ชื่อหัวข้อ</label>
+                <input type="text" name="name" id="name" value="<?=$item['name'];?>">
+            </div>
+            <div>
+                <button type="submit">บันทึก</button>
+                <input type="hidden" name="action" value="<?=$action;?>">
+                <input type="hidden" name="id" value="<?=$item['id'];?>">
+            </div>
+        </form>
+    </fieldset>
+    
     <?php 
     $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `date_create` LIKE '2023-05%' ");
     if($q->num_rows>0){ 
         ?>
-        <table>
+        <div>&nbsp;</div>
+        <table class="chk_table">
             <tr>
                 <th>#</th>
                 <th>วันที่สร้าง</th>
                 <th>ชื่อ</th>
                 <th>สถานะ</th>
                 <th>สร้างโดย</th>
-                <th>จำนวนฟิลด์</th>
-                <th></th>
-                <th></th>
+                <th>จำนวนรายการ</th>
+                <th>จัดการ</th>
             </tr>
         <?php
         $i = 1;
@@ -109,14 +111,11 @@ if($action==='save'){
             <tr>
                 <td><?=$i;?></td>
                 <td><?=$a['date_create'];?></td>
-                <td><?=$a['name'];?></td>
+                <td><a href="ha_main.php?id=<?=$a['id'];?>&page=edit" title="คลิกเพื่อแก้ไข"><?=$a['name'];?></a></td>
                 <td><?=$a['status'];?></td>
                 <td><?=$a['creater'];?></td>
                 <td><?=$rows;?></td>
-                <td><a href="ha_field.php?id=<?=$a['id'];?>">จัดการฟิลด์</a></td>
-                <td>
-                    <a href="ha_main.php?id=<?=$a['id'];?>&page=edit" title="แก้ไข"><img src="images/icons/page_white_edit.png"></a>
-                </td>
+                <td><a href="ha_field.php?id=<?=$a['id'];?>">รายละเอียดตัวชี้วัด</a></td>
             </tr>
             <?php
             $i++;

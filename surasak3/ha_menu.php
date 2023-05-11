@@ -5,6 +5,7 @@
     }
     h1{
         font-size: 2em;
+        margin:0;
     }
     button[type=submit]{
         padding: 8px 16px;
