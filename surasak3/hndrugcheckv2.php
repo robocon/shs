@@ -48,6 +48,10 @@ if($action==='search'){
     if(empty($hn)){
         $res = array('status'=>400,'message' => 'ข้อมูลผิดพลาด');
     }else{
+
+        $q_pt = $dbi->query("SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`idcard`,`ptright`,`sex` FROM `opcard` WHERE `hn` = '$hn' ");
+        $pt = $q_pt->fetch_assoc();
+
         $sql = " SELECT a.*, b.`tradname`
         FROM ( 
             SELECT `row_id` AS `id`,SUBSTRING(`date`,1,10) AS `date`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$date'
@@ -61,7 +65,7 @@ if($action==='search'){
             while ($a = $q->fetch_assoc()) {
                 $items[] = $a;
             }
-            $res = array('status'=>200,'count' => $a_rows,'items' => $items);
+            $res = array('status'=>200,'count' => $a_rows,'items' => $items,'user'=>$pt);
         }else{
             $res = array('status'=>400,'message' => 'ไม่พบข้อมูล');
         }
@@ -80,6 +84,13 @@ if($action==='search'){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medication Reconciliation</title>
     <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size: 18px;
+        }
+        h1{
+            font-size:38px;
+        }
         .clearfix::after {
             content: "";
             clear: both;
@@ -88,7 +99,16 @@ if($action==='search'){
         label{
             cursor: pointer;
         }
-        #drugrxContainer tbody>tr:hover{
+        .chk_table{
+            border-collapse: collapse;
+        }
+        .chk_table th,
+        .chk_table td{
+            padding: 3px;
+            border: 1px solid black;
+        }
+        #drugrxContainer tbody>tr:hover,
+        #drugrxContainer tbody>tr>td>button:hover{
             background-color: #ffff97;
             cursor: pointer;
         }
@@ -101,10 +121,10 @@ if($action==='search'){
             <table>
                 <tr>
                     <td>
-                        <p>ตรวจสอบยาเดิมในโรงพยาบาล</p>
+                        <h1>ตรวจสอบยาเดิมในโรงพยาบาล</h1>
                         <div>
                             <form action="hndrugcheckv2.php" id="hnSearch" method="post">
-                                HN: <input type="text" name="hn" id="hn">
+                                <b>HN:</b> <input type="text" name="hn" id="hn">
                                 <button type="submit">ตรวจสอบ</button>
                             </form>
                         </div>
@@ -112,13 +132,17 @@ if($action==='search'){
                 </tr>
                 <tr>
                     <td>
-                        Visit 6 เดือนล่าสุด
+                        <b style="color: orange;">* Visit 6 เดือนล่าสุด</b>
                     </td>
                 </tr>
             </table>
         </div>
         <div id="findDate">
-            <table id="drugrxContainer">
+            <div>
+                <p><b>ชื่อ-สกุล: </b><span id="pt_name"></span> <b>เลขบัตร: </b><span id="pt_idcard"></span> <b>เพศ: </b><span id="pt_sex"></span></p>
+                <p><b>HN: </b><span id="pt_hn"></span> <b>สิทธิการรักษา: </b><span id="pt_ptright"></span> </p>
+            </div>
+            <table id="drugrxContainer" class="chk_table" width="80%">
                 <thead>
                     <tr>
                         <th></th>
@@ -133,35 +157,43 @@ if($action==='search'){
         </div>
     </div>
     
-
-    <form action="hndrugcheck_print.php" method="post" id="phardepSearch" target="_blank" style="width:50%; float:right;">
-        <table>
-            <tr>
-                <td>
-                    <p>จำนวนรายการยาจากสถานพยาบาลอื่นของผู้ป่วย</p>
-                    <input type="text" name="other" id="other"> รายการ
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>รายการยา/ความแรง</th>
-                                <th>วิธีใช้</th>
-                                <th>จำนวน</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id="showFromSelected"></tbody>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <button type="submit">พิมพ์ใบ MR</button>
-        <input type="hidden" name="phardep_id" id="phardep_id">
-    </form>
+    <div style="position:relative; width:50%; float:left;">
+        <form action="hndrugcheck_print.php" method="post" id="phardepSearch" target="_blank">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <fieldset>
+                            <legend><b>จำนวนรายการยาจากสถานพยาบาลอื่นของผู้ป่วย</b></legend>
+                            <input type="text" name="other" id="other"> รายการ
+                        </fieldset>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        
+                        <div id="itemListContain">
+                            <p><b>รายการยาในโรงพยาบาล</b></p>
+                            <table class="chk_table" width="80%">
+                                <thead>
+                                    <tr>
+                                        <th>รายการยา/ความแรง</th>
+                                        <th>วิธีใช้</th>
+                                        <th>จำนวน</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="showFromSelected"></tbody>
+                            </table>
+                            <button type="submit">พิมพ์ใบ MR</button>
+                            <input type="hidden" name="phardep_id" id="phardep_id">
+                        </div>
+                        
+                    </td>
+                </tr>
+            </table>
+            
+        </form>
+    </div>
 </div>
 <?php 
 
@@ -174,11 +206,10 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
     <?php
 }
 ?>
-<!-- <input type="checkbox" class="dItem" name="drug_id[]" id="dId{{drug_id}}" value="{{drug_id}}"> -->
+
 <script type="template/javascript" id="drug_template">
 <tr>
-    <td><input type="hidden" class="dItem" name="drug_id[]" id="dId{{drug_id}}" value="{{drug_id}}"></td>
-    <td>{{drug_tradname}}</td>
+    <td><input type="hidden" class="dItem" name="drug_id[]" id="dId{{drug_id}}" value="{{drug_id}}">{{drug_tradname}}</td>
     <td align="left">{{drug_slcode}}</td>
     <td align="right">{{drug_amount}}</td>
     <td align="right"><a href="javascript:void(0);" onclick="this.closest('tr').remove()">[ยกเลิก]</a></td>
@@ -218,18 +249,20 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
             if(data.status===400){
                 document.getElementById("showDrugrx").innerHTML = data.message;
             }else{
-                // console.log(data);
-                // var html = '';
-                // data.items.forEach(el => {
-                //     html += '<div><input type="radio" name="dateSelect" id="dateSelect'+el.id+'" onclick="findDrugrx(\''+el.id+'\')"><label for="dateSelect'+el.id+'">'+el.date+' VN: '+el.tvn+'</label></div>';
-                // });
+
+                document.getElementById('pt_name').innerHTML = data.user.ptname;
+                document.getElementById('pt_idcard').innerHTML = data.user.idcard;
+                document.getElementById('pt_sex').innerHTML = data.user.sex;
+                document.getElementById('pt_hn').innerHTML = data.user.hn;
+                document.getElementById('pt_ptright').innerHTML = data.user.ptright;
+
+                // document.getElementById('').innerHTML = xxx;
 
                 var html = '';
-            
                 var i =1;
                 data.items.forEach(el => { 
                     var tem = document.getElementById('drug_template1').innerHTML;
-                    // console.log(el);
+                    
                     tem = tem.replace(/{{item_id}}/g, i, tem);
                     tem = tem.replace(/{{drug_id}}/g, el.id, tem);
                     tem = tem.replace(/{{drug_date}}/g, el.date, tem);
@@ -284,14 +317,14 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
     /**
      * @important REMOVE
      */
-    document.getElementById("checkall").onclick = function(){
-        var myCheck = this.checked;
-        var allItem = document.getElementsByClassName("dItem");
-        for (let index = 0; index < allItem.length; index++) {
-            const element = allItem[index];
-            element.checked = myCheck;
-        }
-    }
+    // document.getElementById("checkall").onclick = function(){
+    //     var myCheck = this.checked;
+    //     var allItem = document.getElementsByClassName("dItem");
+    //     for (let index = 0; index < allItem.length; index++) {
+    //         const element = allItem[index];
+    //         element.checked = myCheck;
+    //     }
+    // }
 
     function preSendForm(drug_id,trade_name,slcode,amount){
         console.log(drug_id);
@@ -308,25 +341,11 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
     }
 
     document.getElementById("phardepSearch").onsubmit = function(e){
-        // e.preventDefault();
         var allItem = document.getElementsByClassName("dItem");
         if(allItem.length === 0){
             alert("กรุณาเลือก Visit ที่ต้องการ");
             return false;
         }
-
-        // var checkSelected = false;
-        // data = [];
-        // for (let index = 0; index < allItem.length; index++) {
-        //     if(allItem[index].checked === true){
-        //         checkSelected = true;
-        //         data.push(allItem[index].value);
-        //     }
-        // }
-        // if(checkSelected===false){
-        //     alert("กรุณาเลือกรายการยา");
-        //     return false;
-        // }
     }
 
     async function phardepPrint(){
@@ -338,6 +357,25 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
             body: JSON.stringify(data)
         });
     }
+
+    window.onscroll = function(){ 
+
+        var ilc =document.getElementById('phardepSearch');
+
+        // window.pageYOffset ค่า Y ตอน Scroll เม้าส์ลง
+        // window.innerHeight ขนาดหน้าจอ
+        if(window.pageYOffset > 127){
+
+            ilc.style.position = 'fixed';
+            ilc.style.width = '-webkit-fill-available';
+            ilc.style.top = '0';
+
+        }else{
+            ilc.style.position = 'relative';
+            ilc.style.width = 'auto';
+        }
+    };
+
     
 </script>
 </body>
