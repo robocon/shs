@@ -48,6 +48,9 @@
         background-color: #009688;
         color: #ffffff;
     }
+    .icon{
+        padding: 0 4px;
+    }
 </style>
 <div class="nav">
     <ul>

@@ -10,9 +10,9 @@ if($action==='save'){
     $main_id = sprintf("%s", $_POST['id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
     foreach ($_POST['field_name'] as $key => $fname) {
-        $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`) 
+        $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
         VALUES 
-        (NULL, '$main_id', '$fname', NULL, NOW(), NOW(), '$editor', '$editor');";
+        (NULL, '$main_id', '$fname', NULL, NOW(), NOW(), '$editor', '$editor', 'y');";
         $save = $dbi->query($sql);
     }
 
@@ -81,11 +81,11 @@ if($q->num_rows > 0){
     if($qf->num_rows>0){ 
 
         $action_value = 'update';
-        
 
         while ($af = $qf->fetch_assoc()) { 
 
             $fid = $af['id'];
+            $fstatus = $af['status'];
 
             $q_data = $dbi->query("SELECT `id` FROM `indicator_data` WHERE `main_id` = '$id' AND `field_id` = '$fid' ");
             $d_rows = $q_data->num_rows;
@@ -101,6 +101,7 @@ if($q->num_rows > 0){
             $field_html .= '<td><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></td>';
             $field_html .= '<td align="center">'.$d_rows.'</td>';
             $field_html .= '<td>'.$remove.'</td>';
+            $field_html .= '<td><input type="text" name="status['.$fid.']" value="'.$fstatus.'" size="5"></td>';
             $field_html .= '</td>';
             // $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /> ('.$d_rows.') '.$remove.'</div>';
         }
@@ -137,6 +138,7 @@ if($q->num_rows > 0){
                             <th>ชื่อรายละเอียด</th>
                             <th>จำนวนข้อมูล</th>
                             <th>จัดการ</th>
+                            <th>สถานะ</th>
                         </tr>
                     </thead>
                     <tbody id="data-field">
@@ -185,15 +187,26 @@ if($q->num_rows > 0){
             // input.setAttribute('type', "text");
             // input.setAttribute('name', "field_name[]");
 
+            var td4 = document.createElement("td");
+            var td4_a = document.createElement("input");
+            td4_a.setAttribute('type', "text");
+            td4_a.setAttribute('name', "status");
+            td4_a.setAttribute('value', "y");
+            td4_a.setAttribute('size', "5");
+            td4.appendChild(td4_a);
+
             var in_a = document.createElement("a");
             in_a.setAttribute('href', "javascript:void(0);");
             in_a.setAttribute('onclick', "this.closest('tr').remove()");
             in_a.append('[ยกเลิก]');
+
             td3.appendChild(in_a);
 
             tr.appendChild(td1);
             tr.appendChild(td2);
             tr.appendChild(td3);
+            tr.appendChild(td4);
+            
 
             // d.appendChild(input);
             // d.appendChild(in_a);

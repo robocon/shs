@@ -4,7 +4,7 @@ include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$action = sprintf("%s", $_POST['action']);
+$action = sprintf("%s", $_REQUEST['action']);
 if($action==='save'){
 
     $name = sprintf("%s", $_POST['name']);
@@ -37,6 +37,31 @@ if($action==='save'){
     
     redirect('ha_main.php', $msg);
     exit;
+}elseif ($action==='delete') { 
+
+    $id = sprintf("%s", $_GET['id']);
+    $q = $dbi->query("DELETE FROM `indicator_main` WHERE `id`='$id';");
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if($q===false){
+        $msg = 'บันทึกข้อมูลไม่สำเร็จ '.$dbi->error;
+    }
+
+    redirect('ha_main.php', $msg);
+    exit;
+}elseif ($action==='update_status') { 
+
+    $id = sprintf("%s", $_GET['id']);
+    $set_status = sprintf("%s", $_GET['set_status']);
+
+    $sql = "UPDATE `indicator_main` SET `status`='$set_status' WHERE (`id`='$id');";
+    $q = $dbi->query($sql);
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if($q===false){
+        $msg = 'บันทึกข้อมูลไม่สำเร็จ '.$dbi->error;
+    }
+
+    redirect('ha_main.php', $msg);
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -49,12 +74,6 @@ if($action==='save'){
 </head>
 <body>
     <?php 
-    if($_SESSION['x-msg']){
-        ?>
-        <div><?=$_SESSION['x-msg'];?></div>
-        <?php
-        $_SESSION['x-msg'] = null;
-    }
 
     $id = sprintf("%s", $_GET['id']);
     $page = sprintf("%s", $_GET['page']);
@@ -72,7 +91,7 @@ if($action==='save'){
     ?>
     <fieldset style="margin-top:1em;">
         <legend><h1>สร้างหัวข้อตัวชี้วัด</h1></legend>
-        <form action="ha_main.php" method="post">
+        <form action="ha_main.php" method="post" id="form_ha_main">
             <div style="margin-bottom:8px;">
                 <label for="name">ชื่อหัวข้อ</label>
                 <input type="text" name="name" id="name" value="<?=$item['name'];?>">
@@ -84,9 +103,18 @@ if($action==='save'){
             </div>
         </form>
     </fieldset>
-    
+    <script>
+        document.getElementById("form_ha_main").onsubmit = function(){
+            var name = document.getElementById("name");
+            if(name.value==''){
+                alert("กรุณาใส่ชื่อหัวข้อตัวชี้วัด");
+                event.preventDefault();
+                return false;
+            }
+        }
+    </script>
     <?php 
-    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `date_create` LIKE '2023-05%' ");
+    $q = $dbi->query("SELECT * FROM `indicator_main` ");
     if($q->num_rows>0){ 
         ?>
         <div>&nbsp;</div>
@@ -99,14 +127,26 @@ if($action==='save'){
                 <th>สร้างโดย</th>
                 <th>จำนวนรายการ</th>
                 <th>จัดการ</th>
+                <th>สถานะ</th>
             </tr>
         <?php
         $i = 1;
         while ($a = $q->fetch_assoc()) { 
 
             $main_id = $a['id'];
+            $txt_status = 'เปิด';
+            if($a['status']=='n'){
+                $txt_status = 'ปิด';
+            }
+
+            $status_revers = 'y';
+            if($a['status']=='y'){ 
+                $status_revers = 'n';
+            }
+            
+
             $qf = $dbi->query("SELECT `id` FROM `indicator_field` WHERE `main_id` = '$main_id' ");
-            $rows = $qf->num_rows;
+            $field_rows = $qf->num_rows;
             ?>
             <tr>
                 <td><?=$i;?></td>
@@ -114,8 +154,20 @@ if($action==='save'){
                 <td><a href="ha_main.php?id=<?=$a['id'];?>&page=edit" title="คลิกเพื่อแก้ไข"><?=$a['name'];?></a></td>
                 <td><?=$a['status'];?></td>
                 <td><?=$a['creater'];?></td>
-                <td><?=$rows;?></td>
-                <td><a href="ha_field.php?id=<?=$a['id'];?>">รายละเอียดตัวชี้วัด</a></td>
+                <td><?=$field_rows;?></td>
+                <td align="center">
+                    <a href="ha_field.php?id=<?=$a['id'];?>" class="icon"><img src="images/icons/Application.png" title="แก้ไขรายละเอียดตัวชี้วัด"/></a> 
+                <?php 
+                if($field_rows==0){
+                    ?>
+                    | <a href="ha_main.php?action=delete&id=<?=$a['id'];?>" class="icon" onclick="return confirm('ยืนยันที่จะลบข้อมูลนี้?');"><img src="images/icons/Trash.png" title="ลบข้อมูล"/>
+                    <?php
+                }
+                ?>
+                </td>
+                <td align="center">
+                    <a href="ha_main.php?action=update_status&id=<?=$a['id'];?>&set_status=<?=$status_revers;?>" class="icon"><?=$txt_status;?></a> 
+                </td>
             </tr>
             <?php
             $i++;
