@@ -17,7 +17,7 @@ $dbi->query("SET NAMES UTF8");
     <?php 
     include_once 'ha_menu.php';
     ?>
-    <div class="">
+    <div>
         <h1>เลือกตัวชี้วัดที่จะบันทึก</h1>
     </div>
     <div>
@@ -25,10 +25,10 @@ $dbi->query("SET NAMES UTF8");
         $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' ");
         if ($q->num_rows>0) {
             ?>
-            <table>
+            <table class="chk_table">
                 <tr>
-                    <td>#</td>
-                    <td>หัวข้อตัวชี้วัด</td>
+                    <th>#</th>
+                    <th>หัวข้อตัวชี้วัด</th>
                 </tr>
                 <?php 
                 $i = 1;
@@ -36,7 +36,7 @@ $dbi->query("SET NAMES UTF8");
                     ?>
                     <tr>
                         <td><?=$i;?></td>
-                        <td><a href="ha_data.php?id=<?=$a['id'];?>"><?=$a['name'];?></a></td>
+                        <td><a href="ha_data.php?id=<?=$a['id'];?>&page_action=save"><?=$a['name'];?></a></td>
                     </tr>
                     <?php
                     $i++;
@@ -50,7 +50,7 @@ $dbi->query("SET NAMES UTF8");
     </div>
     <div>
         <div>
-            <h1>ข้อมูลที่บันทึกไปแล้วในเดือน <?=$def_fullm_th[date('m')];?> ปี <?=(date('Y')+543);?></h1>
+            <h1>ตัวชี้วัดรายเดือน ที่บันทึกไปแล้ว <?=$def_fullm_th[date('m')];?> ปี <?=(date('Y')+543);?></h1>
         </div>
         <div>
             <?php 
@@ -67,7 +67,7 @@ $dbi->query("SET NAMES UTF8");
                     <?php
                     while ($item = $q->fetch_assoc()) {
                         ?>
-                        <li><a href="ha_data.php?id=<?=$item['id'];?>&year=<?=$curr_year;?>&month=<?=$curr_month;?>"><?=$item['name'];?></a></li>
+                        <li><a href="ha_data.php?id=<?=$item['id'];?>&year=<?=$curr_year;?>&month=<?=$curr_month;?>&page_action=update"><?=$item['name'];?></a></li>
                         <?php
                     }
                     ?>
@@ -81,5 +81,38 @@ $dbi->query("SET NAMES UTF8");
             ?>
         </div>
     </div>
+
+    <div>
+        <div>
+            <h1>ตัวชี้วัดรายปี ที่บันทึกไปแล้วของปี <?=(date('Y')+543);?></h1>
+        </div>
+        <div>
+            <?php 
+            $sql = "SELECT b.`id`, b.`name`
+            FROM ( 
+                SELECT `main_id` FROM `indicator_data` WHERE `month` = '' AND `year` = '$curr_year' GROUP BY `main_id` 
+            ) AS a LEFT JOIN `indicator_main` AS b ON a.`main_id` = b.`id` ";
+            $q = $dbi->query($sql);
+            if($q->num_rows>0){
+                ?>
+                <ol>
+                    <?php
+                    while ($item = $q->fetch_assoc()) {
+                        ?>
+                        <li><a href="ha_data.php?id=<?=$item['id'];?>&year=<?=$curr_year;?>&month=empty&page_action=update"><?=$item['name'];?></a></li>
+                        <?php
+                    }
+                    ?>
+                </ol>
+                <?php
+            }else{
+                ?>
+                <p>ไม่พบข้อมูลการบันทึก</p>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
+
 </body>
 </html>

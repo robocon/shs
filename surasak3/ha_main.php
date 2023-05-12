@@ -70,7 +70,7 @@ if($action==='save'){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Menu</title>
+    <title>สร้าง/แก้ไข หัวข้อตัวชี้วัด</title>
 </head>
 <body>
     <?php 

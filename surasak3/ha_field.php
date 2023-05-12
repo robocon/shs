@@ -26,21 +26,28 @@ if($action==='save'){
     $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ";
     $q = $dbi->query($sql);
     $data_before = array();
+    $status_before = array();
     while ($a = $q->fetch_assoc()) {
         $fkey = $a['id'];
         $data_before[$fkey] = $a['name'];
-        
+        $status_before[$fkey] = $a['status'];
     }
-    
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+
     // เพิ่ม
     if(count($_POST['field_name']) > count($data_before) ){
         $diff = array_diff($_POST['field_name'], $data_before);
+        $status_diff = array_diff($_POST['status'], $status_before);
+        
         foreach ($diff as $id => $value) {
             
+            $status = $status_diff[$id];
+
             // INSERT INTO 
-            $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`) 
+            $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
             VALUES 
-            (NULL, '$main_id', '$value', NULL, NOW(), NOW(), '$editor', '$editor');";
+            (NULL, '$main_id', '$value', NULL, NOW(), NOW(), '$editor', '$editor', '$status');";
             $save = $dbi->query($sql);
         }
 
@@ -48,24 +55,30 @@ if($action==='save'){
 
         $diff = array_diff($data_before, $_POST['field_name']);
         foreach ($diff as $id => $value) {
-            dump($id);
+            
             $sql = "DELETE FROM `indicator_field` WHERE `id`='$id';";
             $save = $dbi->query($sql);
         }
     }
 
+    
+
     $intersect_items = array_intersect_key($_POST['field_name'], $data_before);
+    $intersect_status = array_intersect_key($_POST['status'], $status_before);
     foreach ($intersect_items as $key => $value) { 
         
+        $status = $intersect_status[$key];
+
         $sql = "UPDATE `indicator_field` SET 
         `name`='$value', 
         `date_edit`=NOW(), 
-        `editor`='$editor' 
+        `editor`='$editor',
+        `status`='$status'
         WHERE (`id`='$key');";
         $save = $dbi->query($sql);
     }
 
-    redirect('ha_field.php?id='.$main_id,'บันทึกข้อมูลเรียบร้อย');
+    redirect('ha_field.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
     exit;
 }
 
@@ -143,14 +156,8 @@ if($q->num_rows > 0){
                     </thead>
                     <tbody id="data-field">
                         <?=$field_html;?>
-                        <!-- <tr>
-                            <td><input type="text" name="field_name[x]" value="x" /></td>
-                            <td align="center">0</td>
-                            <td> <a href="javascript:void(0)" onclick="this.closest('tr').remove()">[ยกเลิก]</a> </td>
-                        </tr> -->
                     </tbody>
                 </table>
-                <!-- <div id="data-field"><?=$field_html;?></div> -->
                 <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มรายละเอียดตัวชี้วัด]</a></div>
             </div>
             <div>
@@ -177,20 +184,12 @@ if($q->num_rows > 0){
             td2.setAttribute('align', "center");
             td2.append('0');
 
-
             var td3 = document.createElement("td");
-
-            // var d = document.createElement("div");
-            // d.append("ชื่อฟิลด์: ");
-
-            // var input = document.createElement("input");
-            // input.setAttribute('type', "text");
-            // input.setAttribute('name', "field_name[]");
 
             var td4 = document.createElement("td");
             var td4_a = document.createElement("input");
             td4_a.setAttribute('type', "text");
-            td4_a.setAttribute('name', "status");
+            td4_a.setAttribute('name', "status[]");
             td4_a.setAttribute('value', "y");
             td4_a.setAttribute('size', "5");
             td4.appendChild(td4_a);
@@ -206,10 +205,6 @@ if($q->num_rows > 0){
             tr.appendChild(td2);
             tr.appendChild(td3);
             tr.appendChild(td4);
-            
-
-            // d.appendChild(input);
-            // d.appendChild(in_a);
 
             f.appendChild(tr);
 
