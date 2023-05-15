@@ -8,7 +8,9 @@ exit();
 }
 // ini_set('display_errors', '1');
 // error_reporting(1);
-require_once 'includes/JSON.php';
+
+// setcookie("fresh_wound[2566-04-2151-3463]", -1,time()-89000,'/');
+// setcookie("acute_diarrhea[2566-04-2151-3463]", -1,time()-89000,'/');
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -63,6 +65,26 @@ if ( mysql_num_rows($q_egfr) > 0 ) {
 	$fetch_egfr = mysql_fetch_assoc($q_egfr);
 	$res_egfr = $fetch_egfr['result'];
 }
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `preg_alert` FROM `drug_pregnancy` WHERE pregnancy = 'alert';";
+$q_pa = mysql_query($sql);
+$pre_item_pa = mysql_fetch_assoc($q_pa);
+$item_pa = $pre_item_pa['preg_alert'];
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `preg_block` FROM `drug_pregnancy` WHERE pregnancy = 'block';";
+$q_pb = mysql_query($sql);
+$pre_item_pb = mysql_fetch_assoc($q_pb);
+$item_pb = $pre_item_pb['preg_block'];
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `lact_alert` FROM `drug_pregnancy` WHERE lactation = 'alert';";
+$q_la = mysql_query($sql);
+$pre_item_la = mysql_fetch_assoc($q_la);
+$item_la = $pre_item_la['lact_alert'];
+
+$sql = "SELECT GROUP_CONCAT(CONCAT('\'',`drugcode`,'\'')) AS `lact_block` FROM `drug_pregnancy` WHERE lactation = 'block';";
+$q_lb = mysql_query($sql);
+$pre_item_lb = mysql_fetch_assoc($q_lb);
+$item_lb = $pre_item_lb['lact_block'];
 
 //******************************* เรียกข้อมูลจาก SESSION มาแสดงเป็น Form ********************
 if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
@@ -1392,11 +1414,18 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		$where = "drugcode = '5FLES' OR ";
 	}
 	
+	$chkptright=substr($_SESSION["ptright_now"],0,3);
+	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	
-		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
-	
+	if($chkptright=="R07" || $chkptright=="R20" || $chkptright=="R27" || $chkptright=="R28" || $chkptright=="R40" || $chkptright=="R43" || $chkptright=="R46" || $chkptright=="R50"){
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." drugcode NOT LIKE '30%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	}else if($chkptright=="R09" || $chkptright=="R10" || $chkptright=="R11" || $chkptright=="R12" || $chkptright=="R13" || $chkptright=="R14" || $chkptright=="R36" || $chkptright=="R44"){
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." drugcode NOT LIKE '20%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	}else{
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode NOT LIKE '20%' AND drugcode NOT LIKE '30%') AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+	}	
 	
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
@@ -1439,7 +1468,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
 					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
-					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">กรณีผู้ป่วยยินยอมชำระเงินเอง ระบุรหัสผ่าน 999</FONT>";
+					// $alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">กรณีผู้ป่วยยินยอมชำระเงินเอง ระบุรหัสผ่าน 999</FONT>";
 				}else{
 
 					
@@ -1955,56 +1984,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugslip"){
 exit();
 }
 
-if(isset($_GET["action"]) && $_GET["action"] == "search_other_doctor"){
-
-	$drugcode = sprintf("%s", $_GET['drugcode']);
-	$testdrug = sprintf("%s", $_GET['testdrug']);
-	$json = new Services_JSON();
-
-	if($testdrug=='10H014'){
-		$dName = 'Pikka gel';
-	}elseif ($testdrug=='4MET25') {
-		$dName = 'SURASAKMONTRI Balm';
-	}
-
-	$hn = sprintf("%s", $_GET['hn']);
-	$thDate = (date('Y')+543).date('-m-d');
-	$sql = " SELECT b.`doctor`,a.`tradname` 
-	FROM ( 
-		SELECT `idno`,`tradname` FROM `ddrugrx` WHERE `date` LIKE '$thDate%' AND `hn`='$hn' AND `drugcode` = '$testdrug' GROUP BY `idno` 
-	) AS a 
-	LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id` 
-	WHERE b.`whokey` = 'DR' AND b.`dr_cancle` IS NULL 
-	GROUP BY b.`doctor`";
-
-	$q = mysql_query($sql);
-	$doctor_list = array();
-	if(mysql_num_rows($q) > 0){
-		while ($a = mysql_fetch_assoc($q)) {
-			$doctor_list[] = $a['doctor'];
-		}
-	}
-	
-	$msg = '';
-	if(count($doctor_list) > 0){
-		$msg .= '!!! แจ้งเตือน !!!'."\n".'วันนี้มีแพทย์สั่งจ่าย'.$dName.'ไปแล้ว '.count($doctor_list).'ท่าน'."\n".implode(', ', $doctor_list)."\n";
-	}
-
-	foreach ($_SESSION['list_drugcode'] as $key => $ldc) {
-		if($testdrug==$ldc){
-			$msg .= "\n!!! แจ้งเตือน !!!\nห้ามให้มีการสั่งยา Pikka gel คู่กับ Surasakmontri Balm";
-		}
-	}
-
-	$res = array(
-		'status' => 200,
-		'message' => $msg
-	);
-
-	echo $json->encode($res);
-	exit();
-}
-
 
 //******************************************** ตรวจสอบการเกิด DRUG INTERACTION *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
@@ -2509,13 +2488,12 @@ function testPreg(drugcode,tradname,genname){
 	// แจ้งเตือน+Block ยาในหญิงตั้งครรภ์และให้นมบุตร
 	// เดี๋ยวปรับการดึงยาจากฐานข้อมูลอีกที
 	var preg = '<?=trim($_SESSION['pregnancy']);?>';
-	var preg_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
-	var preg_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
-	// var preg_block = [];
 
-	var lac_alert = ['1MET500-C','1GLUX1000','1METF','1MINID-N'];
-	var lac_block = ['1DIAMR_60','1NOVO','1JANU','1TRAJ','1ZAFA','1TENE','1ZEMI','1UTMO','1FORX','1OSEN-N','1VILMET','1GLYX','1XIGDU','2SEMA','2DULA'];
-	// var lac_block = [];
+	var preg_alert = [<?=$item_pa;?>];
+	var preg_block = [<?=$item_pb;?>];
+
+	var lac_alert = [<?=$item_la;?>];
+	var lac_block = [<?=$item_lb;?>];
 
 	if(preg == 'pregnancy'){
 		for (var index = 0; index < preg_alert.length; index++) {
@@ -2528,7 +2506,6 @@ function testPreg(drugcode,tradname,genname){
 		for (var index = 0; index < preg_block.length; index++) {
 			if(preg_block[index]==drugcode){
 				pregBlock(tradname,genname);
-				// return false;
 				return true;
 			}
 		}
@@ -2544,7 +2521,6 @@ function testPreg(drugcode,tradname,genname){
 		for (var index = 0; index < lac_block.length; index++) {
 			if(lac_block[index]==drugcode){
 				lacBlock(tradname,genname);
-				// return false;
 				return true;
 			}
 		}
@@ -2621,7 +2597,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
 
-	// กรณีที่หมอเข้า vn ซ้ำอีกรอบแล้วไม่ได้บันทึกหน้า icdมันจะมองไม่เห็นใน session 
 	var icd10 = false;
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=get_icd10';
@@ -2636,13 +2611,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	};
 	xmlhttp.send(null);
-
-	// 
-	if(drugcode.trim()=='10H014'){
-		TestPikka(drugcode.trim());
-	}else if(drugcode.trim()=='4MET25'){
-		TestBalm(drugcode.trim());
-	}
 	
 	// RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
@@ -2659,36 +2627,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	// RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
 		
-}
-
-// หาว่า pikka ที่กดสั่งไปมีหมอหรือในรายการเป็น บาร์มรึป่าว
-function TestPikka(drugcode){ 
-	TestPikkaAndBalm(drugcode,'4MET25');
-}
-
-function TestBalm(drugcode){
-	TestPikkaAndBalm(drugcode,'10H014');
-}
-
-function TestPikkaAndBalm(drugcode, testdrug){ 
-
-	var patient_hn = '<?=trim($_SESSION["hn_now"]);?>';
-	xmlhttp = newXmlHttp();
-	url = 'dt_drug.php?action=search_other_doctor&drugcode='+drugcode+'&testdrug='+testdrug+'&hn='+patient_hn;
-	xmlhttp.open("GET", url, false);
-	xmlhttp.onreadystatechange = function () {
-		if (xmlhttp.readyState === 4) {
-			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-				resTxt = JSON.parse(xmlhttp.responseText.trim());
-				if(resTxt.status==200){
-					alert(resTxt.message);
-				}
-			} else {
-				// Error :(
-			}
-		}
-	};
-	xmlhttp.send(null);
 }
 
 function glibenclamide_alert(drugcode){
@@ -2760,6 +2698,30 @@ function rdu18_alert(drugcode, icd10){
 	
 }
 
+function getCookie(cname) {
+	let name = cname + "=";
+	let ca = document.cookie.split(';');
+	for(let i = 0; i < ca.length; i++) {
+		let c = ca[i];
+		while (c.charAt(0) == ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
+}
+
+function setCookie(cname, cvalue, extime) {
+	var d = new Date();
+	d.setTime(extime);
+	var expires = "expires="+d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+
+
 function rdu7_alert(drugcode, icd10){
 
 	var testRdu7 = false;
@@ -2772,6 +2734,8 @@ function rdu7_alert(drugcode, icd10){
 		}
 	}
 
+	console.log(testRdu7);
+
 	if( testRdu7 === true ){
 		var dataHtml = '<p><img src="images/rdu7.png"></p>';
 		dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
@@ -2779,8 +2743,29 @@ function rdu7_alert(drugcode, icd10){
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
 	}
+
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var th_y = y+543;
+	var hn = '<?=$_SESSION['hn_now'];?>';
+
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+
+	var key = th_y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "acute_diarrhea["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+	if(f_cookie=="" && testRdu7===true){
+		window.open("er_form_acute_diarrhea.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
+	}
 	
-		}
+}
 
 function rdu8_alert(drugcode, icd10){
 
@@ -2801,6 +2786,27 @@ function rdu8_alert(drugcode, icd10){
 		document.getElementById('rduAlertContainer').style.width = 'auto';
 		document.getElementById('rduContent').innerHTML = dataHtml; 
 		document.getElementById('rduAlertContainer').style.display = 'block';
+	}
+
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var th_y = y+543;
+	var hn = '<?=$_SESSION['hn_now'];?>';
+
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+	var key = th_y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "fresh_wound["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+
+	if(f_cookie=="" && testRdu8===true){
+		window.open("er_form_fresh_wound.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
 	}
 	
 }
