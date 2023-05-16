@@ -110,9 +110,9 @@ document.onmouseup = mousehandler;
 			$q = $dbi->query("SELECT `detail` AS `clinic` FROM `clinic`");
 		}
 		?>
-		<div style="margin-bottom:4px;">
-			<b>แผนก:</b> <select name="depart" id="depart" style="max-width:120px;">
-				<option value="">แสดงทุกแผนก</option>
+		<div style="margin-bottom:4px; margin-top:5px;" align="center">
+			<b>คลินิก:</b> <select name="depart" id="depart" style="max-width:120px;">
+				<option value="">-- ทั้งหมด --</option>
 				<?php 
 				while ($item = $q->fetch_assoc()) {
 					?>
@@ -122,7 +122,7 @@ document.onmouseup = mousehandler;
 				?>
 			</select>
 		</div>
-		<div style="margin-bottom:4px;">
+		<div style="margin-bottom:4px; margin-top:5px;" align="center">
 			<?php 
 			$y_start = date('Y');
 			$y_end = date('Y', strtotime("-5 years"));
@@ -134,7 +134,7 @@ document.onmouseup = mousehandler;
 			
 			?>
 			<b>ปี:</b> <select name="year" id="year">
-				<option value="">แสดงทุปี</option>
+				<option value="">-- ทั้งหมด --</option>
 				<?php 
 				foreach ($y_range as $key => $value) {
 					$dy = ($value==$year) ? 'selected="selected"' : '' ;
@@ -151,7 +151,7 @@ document.onmouseup = mousehandler;
 			}
 			?>
 			<b>เดือน:</b> <select name="month" id="month">
-				<option value="">แสดงทุกเดือน</option>
+				<option value="">-- ทั้งหมด --</option>
 				<?php 
 				foreach ($def_fullm_th as $key => $value) {
 					$dm = ($key==$month) ? 'selected="selected"' : '' ;
@@ -163,8 +163,8 @@ document.onmouseup = mousehandler;
 				?>
 			</select>
 		</div>
-		<div style="margin-bottom:4px;">
-			<button type="submit">ค้นหาข้อมูล</button>
+		<div style="margin-bottom:4px; margin-top:10px;" align="center">
+			<button type="submit"> ค้นหาข้อมูล </button>
 		</div>
 	</div>
 	</form>
