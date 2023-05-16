@@ -17,7 +17,18 @@ if(isset($_GET["action"]) && ($_GET["action"] == "drug_interaction" || $_GET["ac
 }
 
 
-
+if(isset($_POST["action"]) && $_POST["action"] == "changeSession"){ 
+	$i = sprintf("%s", $_POST['i']);
+	$value = sprintf("%s", $_POST['value']);
+	$sql = "UPDATE `dgprofile` SET `statcon`='$value' WHERE `row_id` = '$i' ";
+	$q = mysql_query($sql);
+	if($q===true){
+		echo $value;
+	}else{
+		echo mysql_error();
+	}
+	exit;
+}
 
 if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 	
@@ -223,12 +234,13 @@ exit();
 
 		$_SESSION["num_list"] = 0;
 
-		$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
+		$sql = "Select row_id,drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
 
 
 		$result = Mysql_Query($sql);
 		while($arr = Mysql_fetch_assoc($result)){
 			
+			$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
 			$_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]] = $arr["drugcode"];
 			$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $arr["tradname"];
 			$_SESSION["list_druglst"]["part"][$_SESSION["num_list"]] = $arr["part"];
@@ -1008,10 +1020,11 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 	$num = mysql_num_rows($result);
 	$rows=mysql_fetch_array($result);
 
+	$row_id = $_SESSION["list_druglst"]["row_id"][$j];
 
 //$list_status_drug[$_SESSION["list_druglst"]["statcon"][$j]];
 echo "
-<TR bgcolor=\"",$bgcolor,"\">
+<TR bgcolor=\"",$bgcolor,"\" id=\"trParent$j\">
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
 	<TD>",$_SESSION["list_druglst"]["tradname"][$j],"</TD>
 	<TD>",$_SESSION["list_druglst"]["part"][$j],"</TD>
@@ -1019,7 +1032,7 @@ echo "
 	<TD ><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";
 	?>
 	<TD align="center">
-    <select name="statusdrug<?=$j?>" class="txtsarabun" id="statusdrug<?=$j?>">
+    <select name="statusdrug<?=$j?>" class="txtsarabun" id="statusdrug<?=$j?>" onchange="updateStatdrugSession('<?=$j;?>','<?=$row_id;?>',this.value)">
     <option value="STAT1" <? if($_SESSION["list_druglst"]["statcon"][$j]=="STAT1"){ echo "selected";}?>>Stat</option>
     <option value="STAT" <? if($_SESSION["list_druglst"]["statcon"][$j]=="STAT"){ echo "selected";}?>>One day</option>
     <option value="CONT" <? if($_SESSION["list_druglst"]["statcon"][$j]=="CONT"){ echo "selected";}?>>Continue</option>
@@ -1045,6 +1058,43 @@ echo "
 
 ?>
 </TABLE>
+<script type="text/javascript">
+	function updateStatdrugSession(i, row_id, value){
+
+		var test_str = [];
+		test_str.push(encodeURIComponent('action')+"="+encodeURIComponent('changeSession'));
+		test_str.push(encodeURIComponent('i')+"="+encodeURIComponent(row_id));
+		test_str.push(encodeURIComponent('value')+"="+encodeURIComponent(value));
+		var data = test_str.join("&");
+
+		var request = new newXmlHttp();
+		request.open('POST', 'add_drug.php', true);
+		request.setRequestHeader(
+			'Content-Type',
+			'application/x-www-form-urlencoded; charset=UTF-8'
+		);
+		request.onreadystatechange = function () {
+			if (request.readyState === 4) {
+				if (request.status >= 200 && request.status < 400) { 
+					var res = request.responseText.replace(/^\s+|\s+$/g, '');;
+					if(res=='CONT'){
+
+						document.getElementById("trParent"+i).style.backgroundColor = '#00CC99';
+
+					}else{
+
+						document.getElementById("trParent"+i).style.backgroundColor = '#FFFFCC';
+
+					}
+				}else{
+					//error
+				}
+			}
+		}
+		request.send(data);
+		
+	}
+</script>
 </TD>
 </TR>
 </TABLE>
