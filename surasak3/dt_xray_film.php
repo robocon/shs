@@ -73,7 +73,7 @@ body,td,th {
 <BR>
 
 <div style="text-align: center;">
-	Chest X-ray <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$_SESSION["hn_now"];?>" target="_blank">ดูฟิล์ม PACS</a> &lt;&lt;&lt; คลิกตรงนี้เพื่อดูฟิล์ม
+	Chest X-ray <a href="http://localhost:9090?QueryMode=PID&Value=<?=$_SESSION["hn_now"];?>" target="_blank">ดูฟิล์ม PACS</a> &lt;&lt;&lt; คลิกตรงนี้เพื่อดูฟิล์ม
 </div>
 <br>
 
