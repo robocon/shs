@@ -18,8 +18,12 @@ $dbi->query("SET NAMES UTF8");
 include_once 'ha_menu.php';
 $page = sprintf("%s", $_REQUEST['page']);
 
-$month = sprintf("%s", $_POST['month']);
-$year = sprintf("%s", $_POST['year']);
+$month_start = sprintf("%s", empty($_POST['month_start']) ? date('m') : $_POST['month_start'] );
+$month_end = sprintf("%s", empty($_POST['month_end']) ? date('m') : $_POST['month_end'] );
+
+$year_start = sprintf("%s", empty($_POST['year_start']) ? date('Y') : $_POST['year_start'] );
+$year_end = sprintf("%s", empty($_POST['year_end']) ? date('Y') : $_POST['year_end'] );
+
 $main_id = sprintf("%s", $_POST['main_id']);
 
 ?>
@@ -53,12 +57,12 @@ $main_id = sprintf("%s", $_POST['main_id']);
             <tr>
                 <td align="right">ตั้งแต่ปี:</td>
                 <td>
-                    <select name="year" id="year">
+                    <select name="year_start" id="year_start">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                         <?php 
                         $range = array_reverse(range(2019, date('Y')));
                         foreach ($range as $key => $value) { 
-                            $selected = $value == $year ? 'selected="selected"' : '' ;
+                            $selected = $value == $year_start ? 'selected="selected"' : '' ;
                             ?>
                             <option value="<?=$value;?>" <?=$selected;?> ><?=($value+543);?></option>
                             <?php
@@ -68,12 +72,12 @@ $main_id = sprintf("%s", $_POST['main_id']);
                 </td>
                 <td align="right">ถึงปี: </td>
                 <td>
-                    <select name="year" id="year">
+                    <select name="year_end" id="year_end">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                         <?php 
                         $range = array_reverse(range(2019, date('Y')));
                         foreach ($range as $key => $value) { 
-                            $selected = $value == $year ? 'selected="selected"' : '' ;
+                            $selected = $value == $year_end ? 'selected="selected"' : '' ;
                             ?>
                             <option value="<?=$value;?>" <?=$selected;?> ><?=($value+543);?></option>
                             <?php
@@ -85,11 +89,11 @@ $main_id = sprintf("%s", $_POST['main_id']);
             <tr>
                 <td align="right">ตั้งแต่เดือน:</td>
                 <td>
-                    <select name="month" id="month">
+                    <select name="month_start" id="month_start">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                     <?php 
                     foreach ($def_fullm_th as $key => $value) {
-                        $selected = $key == $month ? 'selected="selected"' : '' ;
+                        $selected = $key == $month_start ? 'selected="selected"' : '' ;
                         ?>
                         <option value="<?=$key;?>" <?=$selected;?> ><?=$value;?></option>
                         <?php
@@ -99,11 +103,11 @@ $main_id = sprintf("%s", $_POST['main_id']);
                 </td>
                 <td align="right">ถึงเดือน:</td>
                 <td>
-                    <select name="month" id="month">
+                    <select name="month_end" id="month_end">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                     <?php 
                     foreach ($def_fullm_th as $key => $value) {
-                        $selected = $key == $month ? 'selected="selected"' : '' ;
+                        $selected = $key == $month_end ? 'selected="selected"' : '' ;
                         ?>
                         <option value="<?=$key;?>" <?=$selected;?> ><?=$value;?></option>
                         <?php
@@ -128,33 +132,43 @@ if ($page==='search') {
      * เดี๋ยวต้องปรับให้ค้นหาแค่ ปี / ปี+เดือน ได้
      */
 
-    $month = sprintf("%s", $_POST['month']);
-    $year = sprintf("%s", $_POST['year']);
-    $main_id = sprintf("%s", $_POST['main_id']);
+    
     
     $qm = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$main_id'");
     $main = $qm->fetch_assoc();
 
-    $year_txt='';
-    if(!empty($year)){
-        $year_txt='ปี'.($year+543);
+    // $year_txt='';
+    // if(!empty($year)){
+    //     $year_txt='ปี'.($year+543);
+    // }
+
+    // $month_txt='';
+    // if(!empty($month)){
+    //     $month_txt='เดือน'.$def_fullm_th[$month];
+    // }
+
+    $where_month = " AND `month` = '$month_start' ";
+    if($month_start != $month_end){
+        $where_month = " AND ( `month`>= '$month_start' AND `month`<='$month_end' ) ";
     }
 
-    $month_txt='';
-    if(!empty($month)){
-        $month_txt='เดือน'.$def_fullm_th[$month];
+    $where_year = " AND `year` = '$year_start' ";
+    if($year_start != $year_end){
+        $where_year = " AND ( `year`>= '$year_start' AND `year`<='$year_end' ) ";
     }
+
     ?>
     <div>
         <h1><?=$main['name'];?> <?=$month_txt;?> <?=$year_txt;?></h1>
         <?php 
         $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`,a.`month`, b.`name` 
         FROM ( 
-            SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' AND `year` = '$year' AND `month` = '$month'  
+            SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where_year $where_month  
         ) AS a RIGHT JOIN ( 
             SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
         ) AS b ON a.`field_id` = b.`id` 
-        WHERE b.`status` = 'y' ";
+        WHERE b.`status` = 'y' 
+        ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
 
         dump($sql);
 

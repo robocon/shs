@@ -26,8 +26,8 @@ if($action==='save'){
         $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." เดือน".$def_fullm_th[$month]." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
     }
 
-    // $sql = "SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' AND `status` = 'y' $where ";
-    $q_data = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' AND `status` = 'y' $where ");
+    // $sql = "SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ";
+    $q_data = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ");
     if($q_data->num_rows===0){
 
         foreach ($_POST['data'] as $field_id => $value) {
