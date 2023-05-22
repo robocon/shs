@@ -10,6 +10,9 @@
     button[type=submit]{
         padding: 8px 16px;
     }
+    label:hover{
+        cursor: pointer;
+    }
     .nav ul {
         list-style-type: none;
         margin: 0;

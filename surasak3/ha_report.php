@@ -26,6 +26,23 @@ $year_end = sprintf("%s", empty($_POST['year_end']) ? date('Y') : $_POST['year_e
 
 $main_id = sprintf("%s", $_POST['main_id']);
 
+
+$report_type = (empty($_POST['report_type'])) ? 'month' : $_POST['report_type'];
+
+$style_year = 'style="display:none;"';
+$style_month = '';
+
+$checked_year = '';
+$checked_month = 'checked="checked"';
+
+if($report_type==='year'){
+    $style_year = '';
+    $style_month = 'style="display:none;"';
+
+    $checked_year = 'checked="checked"';
+    $checked_month = '';
+}
+
 ?>
 <div>
     <h1>รายงานตัวชี้วัด</h1>
@@ -33,6 +50,13 @@ $main_id = sprintf("%s", $_POST['main_id']);
 <div>
     <form action="ha_report.php" method="post">
         <table>
+            <tr>
+                <td align="right">รายงาน: </td>
+                <td colspan="3">
+                    <input type="radio" name="report_type" id="report_month" value="month" onclick="active_month()" <?=$checked_month;?> > <label for="report_month">ตามเดือน</label>
+                    <input type="radio" name="report_type" id="report_year" value="year" onclick="active_year()" <?=$checked_year;?> > <label for="report_year">ตามปี</label>
+                </td>
+            </tr>
             <tr>
                 <td align="right">ตัวชี้วัด:</td>
                 <td>
@@ -70,8 +94,8 @@ $main_id = sprintf("%s", $_POST['main_id']);
                         ?>
                     </select>
                 </td>
-                <td align="right">ถึงปี: </td>
-                <td>
+                <td align="right" class="display_year" <?=$style_year;?>>ถึงปี: </td>
+                <td class="display_year" <?=$style_year;?>>
                     <select name="year_end" id="year_end">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                         <?php 
@@ -86,7 +110,7 @@ $main_id = sprintf("%s", $_POST['main_id']);
                     </select>
                 </td>
             </tr>
-            <tr>
+            <tr class="display_month" <?=$style_month;?>>
                 <td align="right">ตั้งแต่เดือน:</td>
                 <td>
                     <select name="month_start" id="month_start">
@@ -124,18 +148,74 @@ $main_id = sprintf("%s", $_POST['main_id']);
             </tr>
         </table>
     </form>
+    <script type="text/javascript">
+        function active_year(){
+            const year_items = document.getElementsByClassName('display_year');
+            for (let index = 0; index < year_items.length; index++) {
+                const element = year_items[index];
+                element.style.display = '';
+            }
+
+            const month_items = document.getElementsByClassName('display_month');
+            for (let index = 0; index < month_items.length; index++) {
+                const element = month_items[index];
+                element.style.display = 'none';
+            }
+            
+        }
+
+        function active_month(){
+            const year_items = document.getElementsByClassName('display_year');
+            for (let index = 0; index < year_items.length; index++) {
+                const element = year_items[index];
+                element.style.display = 'none';
+            }
+
+            const month_items = document.getElementsByClassName('display_month');
+            for (let index = 0; index < month_items.length; index++) {
+                const element = month_items[index];
+                element.style.display = '';
+            }
+        }
+    </script>
 
 <?php 
 if ($page==='search') {
 
-    /**
-     * เดี๋ยวต้องปรับให้ค้นหาแค่ ปี / ปี+เดือน ได้
-     */
+    $vertify = true;
+    $report_type = sprintf("%s", $_POST['report_type']);
+
+    $range_year = range($year_start, $year_end);
+    $range_month = range($month_start, $month_end);
     if(empty($main_id)){
+        $msg = 'กรุณาเลือกตัวชี้วัดที่ต้องการ';
+        $vertify = false;
+    }
+
+    if($report_type==='year'){
+        if(empty($year_start) OR empty($year_end)){
+            $msg = 'กรุณาตรวจสอบช่วงเวลาให้ถูกต้อง';
+            $vertify = false;
+        }elseif ($year_start > $year_end) {
+            $msg = 'เลือกปีผิดพลาด';
+            $vertify = false;
+        }
+    }else{
+        if(empty($month_start) OR empty($month_end)){
+            $msg = 'กรุณาเลือกเดือนให้ถูกต้อง';
+            $vertify = false;
+        }elseif ($month_start > $month_end) {
+            $msg = 'เลือกเดือนผิดพลาด';
+            $vertify = false;
+        }
+        
+    }
+
+    if($vertify===false){
         
         ?>
         <div>
-            <p><b>กรุณาเลือกตัวชี้วัดที่ต้องการ</b></p>
+            <p><b><?=$msg;?></b></p>
         </div>
         <?php
         
@@ -150,54 +230,49 @@ if ($page==='search') {
             $fid = $f['id'];
             $field_items[$fid] = $f['name'];
         }
-
-        $range_year = range($year_start, $year_end);
-        $range_month = range($month_start, $month_end);
-
-        $where = "";
-        if(count($range_year) == 1){ 
-
-            $where .= " AND `year` = '$year_start' ";
-            if($month_start != $month_end){
-                $where .= " AND ( `month`>= '$month_start' AND `month`<='$month_end' ) ";
-
-            }else{
-                $where .= " AND `month` = '$month_start' ";
-
-            }
-
-        }elseif ($range_year > 1) { 
-
-            if(empty($month_end)){
-
-                $where .= " AND `month` = '' AND ( `year` >= '$year_start' AND `year` <= '$year_end' ) ";
-
-            }else{
-                $where .= " AND ( 
-                    ( `year` >= '$year_start' AND `month` >= '$month_start' ) 
-                    AND 
-                    ( `year` <= '$year_end' AND `month` <= '$month_end' ) 
-                ) ";
-            }
-            
-        }
         
         ?>
         <div>
             <h1><?=$main['name'];?> <?=$month_txt;?> <?=$year_txt;?></h1>
             <?php 
-            $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`,a.`month`, b.`name` 
-            FROM ( 
-                SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where  
-            ) AS a RIGHT JOIN ( 
-                SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
-            ) AS b ON a.`field_id` = b.`id` 
-            WHERE b.`status` = 'y' 
-            ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
+
+            
+            if ($report_type==='year') {
+
+                $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`, b.`name` 
+                FROM ( 
+
+                    SELECT `main_id`,`year`,`field_id`,sum(`value`) AS `value` 
+                    FROM `indicator_data` 
+                    WHERE `main_id` = '$main_id'  
+                    AND ( `year` >= '$year_start' AND `year` <= '$year_end' ) 
+                    GROUP BY `field_id`,`year`
+
+                ) AS a RIGHT JOIN ( 
+
+                    SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
+
+                ) AS b ON a.`field_id` = b.`id` 
+                WHERE b.`status` = 'y' AND ( a.`value` != '' AND  a.`value` IS NOT NULL ) 
+                ORDER BY a.`year`,a.`field_id` ASC ";
+
+            }else{
+
+                $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`,a.`month`, b.`name` 
+                FROM ( 
+                    SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' AND `year` = '$year_start' AND ( `month`>= '$month_start' AND `month`<='$month_end' )   
+                ) AS a RIGHT JOIN ( 
+                    SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
+                ) AS b ON a.`field_id` = b.`id` 
+                WHERE b.`status` = 'y' 
+                ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
+
+            }
+
             $q=$dbi->query($sql);
             if ($q->num_rows>0) {
 
-                if(count($range_year) == 1){ 
+                if ($report_type==='month') {
 
                     $data_items = array();
                     while ($a=$q->fetch_assoc()) {
@@ -224,16 +299,21 @@ if ($page==='search') {
                             ?>
                         </tr>
                         <?php 
-                        foreach ($field_items as $key => $value) {
+                        foreach ($field_items as $key => $title) {
                             ?>
                             <tr>
-                                <td><?=$value;?></td>
+                                <td><?=$title;?></td>
                                 <?php 
                                 foreach ($range_month as $dkey => $dvalue) {
                                     $m = sprintf("%02d", $dvalue);
-
+                                    $value = $data_items[$key][$m]['value'];
+                                    
+                                    $data_style = '';
+                                    if(empty($value)){
+                                        $data_style = 'style="background-color: #c5c5c5;"';
+                                    }
                                     ?>
-                                    <td><?=$data_items[$key][$m]['value'];?></td>
+                                    <td <?=$data_style;?> ><?=$value;?></td>
                                     <?php
                                 }
                                 ?>
@@ -243,8 +323,7 @@ if ($page==='search') {
                         ?>
                     </table>
                     <?php
-
-                }elseif ($range_year > 1) { 
+                }elseif ($report_type==='year') {
 
                     $data_items = array();
                     while ($a=$q->fetch_assoc()) {
@@ -263,7 +342,7 @@ if ($page==='search') {
                             <?php 
                             foreach ($data_items as $key => $value) {
                                 ?>
-                                <th><?=$key;?></th>
+                                <th><?=($key+543);?></th>
                                 <?php
                             }
                             ?>
@@ -272,12 +351,18 @@ if ($page==='search') {
                         foreach ($field_items as $key => $v) {
                             ?>
                             <tr>
-                                <td><?=$v['value'];?></td>
+                                <td><?=$v;?></td>
                                 <?php 
                                 foreach ($data_items as $fkey => $fv) {
                                     $real_value = $fv[$key]['value'];
+
+                                    $data_style = '';
+                                    if(empty($real_value)){
+                                        $data_style = 'style="background-color: #c5c5c5;"';
+                                    }
+
                                     ?>
-                                    <td><?=$real_value;?></td>
+                                    <td <?=$data_style;?> ><?=$real_value;?></td>
                                     <?php
                                 }
                                 ?>
@@ -288,8 +373,6 @@ if ($page==='search') {
                     <?php 
 
                 }
-
-
 
             }else{
                 ?>
