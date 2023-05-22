@@ -1,5 +1,7 @@
 <?php 
 $dbi = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$dbi->query("SET NAMES UTF8");
+
 $date = strtotime("-1 month");
 $thdate = (date('Y',$date)+543).date('-m-d',$date);
 $sql = "SELECT * FROM `inhale_wound` WHERE `date` >= '$thdate' GROUP BY `hn`,`enddate` ORDER BY `startdate` DESC";
