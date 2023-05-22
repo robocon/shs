@@ -57,7 +57,8 @@ if($action==='search'){
             SELECT `row_id` AS `id`,SUBSTRING(`date`,1,10) AS `date`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$date'
         ) AS a 
         LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode`
-        WHERE a.`amount` > 0";
+        WHERE a.`amount` > 0 
+        ORDER BY `date` DESC";
         $q = $dbi->query($sql);
         $a_rows = $q->num_rows;
         if($a_rows>0){
