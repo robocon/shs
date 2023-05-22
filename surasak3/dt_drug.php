@@ -1768,7 +1768,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 		echo "0";  //ใส่รหัสยาใหม่
 	}
 
-exit();
+	exit();
 }
 
 //*********************************** ตรวจสอบการlockจ่ายยา *****************************
@@ -3054,9 +3054,6 @@ function checkForm1(){
 		document.form1.drug_code.focus();
 	}else if(txt11 == "Y" && alert("กรุณาออกใบรับรองการใช้อวัยวะเทียมและอุปกรณ์ในการบำบัดรักษา เพื่อแนบเป็นเอกสารเบิกกับประกันสังคม!!!")){  //ออกใบรับรอง
 		document.form1.drug_code.focus();		
-	}else if(txt == "0"){
-		alert("กรุณาลองใส่รหัสยาใหม่");
-		document.form1.drug_code.focus();
 	}else if(txt1 == "1"){
 		alert("ผิดพลาด ท่านใส่จำนวนยามากกว่าเงื่อนไขที่ LIMIT PTRIGHT ไว้");
 		document.form1.drug_amount.focus();	
@@ -3075,14 +3072,6 @@ function checkForm1(){
 	}else if(txt2 == "0"){
 		alert("กรุณาใส่วิธีใช้ยา ใหม่");
 		document.form1.drug_slip.focus();
-	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
-	document.form1.drug_code.focus();
-	//else if(txt == "3" && !confirm("ผู้ป่วยมีการแพ้ยาตัวนี้ ต้องการจ่ายยาหรือไม่?")){
-	//	document.form1.drug_code.focus();
-	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
-	document.form1.drug_code.focus();
-	}else if(txt == "66" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
-	document.form1.drug_code.focus();	
 	}else if(txt7 != "0" && !confirm(txt7)){
 		return false;
 	}else if(txt3 != "0" && !confirm(txt3)){
