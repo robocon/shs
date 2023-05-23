@@ -50,12 +50,65 @@ $dbi->query("SET NAMES UTF8");
     </div>
     <div>
         <div>
-            <h1>ตัวชี้วัดรายเดือน ที่บันทึกไปแล้ว <?=$def_fullm_th[date('m')];?> ปี <?=(date('Y')+543);?></h1>
+            <fieldset>
+                <legend><h3>ค้นหาข้อมูลตัวชี้วัดที่เคยบันทึก</h3></legend>
+                <form action="ha_index.php" method="post">
+                    <table>
+                        <tr>
+                            <td>เดือนที่บันทึก</td>
+                            <td>
+                                <select name="months" id="months">
+                                    <option value="">-- เลือกเดือน --</option>
+                                    <?php 
+                                    foreach ($def_fullm_th as $key => $value) { 
+                                        $selected = $key == $month ? 'selected="selected"' : '' ;
+                                        ?>
+                                        <option value="<?=$key;?>" <?=$selected;?> ><?=$value;?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>ปีที่บันทึก</b></td>
+                            <td>
+                                <?php 
+                                $range = array_reverse(range('2019', date('Y')));
+                                ?>
+                                <select name="years" id="years">
+                                    <option value="">-- เลือกปี --</option>
+                                    <?php 
+                                    foreach ($range as $key => $value) {
+                                        $selected = $value == $year ? 'selected="selected"' : '' ;
+                                        ?>
+                                        <option value="<?=$value;?>" <?=$selected;?> ><?=($value+543);?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <button type="submit">ค้นหาข้อมูล</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
+        </div>
+
+        <?php 
+        $curr_month = empty($_POST['months']) ? date('m') : sprintf("%s", $_POST['months']) ;
+        $curr_year = empty($_POST['years']) ? date('Y') : sprintf("%s", $_POST['years']) ;
+        ?>
+        <div>
+            <h1>ตัวชี้วัดรายเดือน ที่บันทึกไปแล้ว <?=$def_fullm_th[$curr_month];?> ปี <?=($curr_year+543);?></h1>
         </div>
         <div>
             <?php 
-            $curr_month = date('m');
-            $curr_year = date('Y');
+            
             $sql = "SELECT b.`id`, b.`name`
             FROM ( 
                 SELECT `main_id` FROM `indicator_data` WHERE `month` = '$curr_month' AND `year` = '$curr_year' GROUP BY `main_id` 

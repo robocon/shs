@@ -7,6 +7,10 @@
         font-size: 2em;
         margin-bottom:0;
     }
+    h3{
+        font-size: 1.4em;
+        margin:0;
+    }
     button[type=submit]{
         padding: 8px 16px;
     }

@@ -18,6 +18,7 @@ if($action==='save'){
 
     redirect('ha_field.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
     exit;
+
 }elseif ($action==='update') {
     
     $main_id = sprintf("%s", $_POST['id']);
@@ -34,6 +35,10 @@ if($action==='save'){
     }
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
+
+    if(count($_POST['field_name'])==0){
+        $_POST['field_name'] = array();
+    }
 
     // เพิ่ม
     if(count($_POST['field_name']) > count($data_before) ){
@@ -60,8 +65,6 @@ if($action==='save'){
             $save = $dbi->query($sql);
         }
     }
-
-    
 
     $intersect_items = array_intersect_key($_POST['field_name'], $data_before);
     $intersect_status = array_intersect_key($_POST['status'], $status_before);
