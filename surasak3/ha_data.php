@@ -159,27 +159,7 @@ if($page_action==='update'){
                 }
             ?>
             <form action="ha_data.php" method="post">
-                <table class="chk_table">
-                    <tr>
-                        <th>รายละเอียดตัวชี้วัด</th>
-                        <th></th>
-                    </tr>
-                    <?php 
-                    while ($af = $qf->fetch_assoc()) { 
-
-                        $key = $af['id'];
-                        
-                        ?>
-                        <tr>
-                            <td><?=$af['name'];?></td>
-                            <td><input type="text" name="data[<?=$af['id'];?>]" id="" value="<?=$item_data[$key];?>"></td>
-                        </tr>
-                        <?php
-                    }
-                    ?>
-                    
-                </table>
-                <table>
+            <table>
                     <?php 
                     if($per_year===false){
                     ?>
@@ -221,6 +201,29 @@ if($page_action==='update'){
                             </select>
                         </td>
                     </tr>
+                    
+                </table>
+                <table class="chk_table">
+                    <tr>
+                        <th>รายละเอียดตัวชี้วัด</th>
+                        <th></th>
+                    </tr>
+                    <?php 
+                    while ($af = $qf->fetch_assoc()) { 
+
+                        $key = $af['id'];
+                        
+                        ?>
+                        <tr>
+                            <td><?=$af['name'];?></td>
+                            <td><input type="text" name="data[<?=$af['id'];?>]" id="" value="<?=$item_data[$key];?>"></td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                    
+                </table>
+                <table>
                     <tr>
                         <td colspan="2">
                             <button type="submit">บันทึกข้อมูล</button>
