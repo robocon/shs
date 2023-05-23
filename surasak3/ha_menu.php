@@ -17,6 +17,15 @@
     label:hover{
         cursor: pointer;
     }
+    a{
+        color: blue;
+    }
+    .red{
+        color: red;
+    }
+    .green{
+        color: green;
+    }
     .nav ul {
         list-style-type: none;
         margin: 0;

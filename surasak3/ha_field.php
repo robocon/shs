@@ -42,9 +42,8 @@ if($action==='save'){
 
     // เพิ่ม
     if(count($_POST['field_name']) > count($data_before) ){
-        $diff = array_diff($_POST['field_name'], $data_before);
-        $status_diff = array_diff($_POST['status'], $status_before);
-        
+        $diff = array_diff_assoc($_POST['field_name'], $data_before);
+        $status_diff = array_diff_assoc($_POST['status'], $status_before);
         foreach ($diff as $id => $value) {
             
             $status = $status_diff[$id];
@@ -58,7 +57,7 @@ if($action==='save'){
 
     }elseif (count($data_before) > count($_POST['field_name'])) { // ลด
 
-        $diff = array_diff($data_before, $_POST['field_name']);
+        $diff = array_diff_assoc($data_before, $_POST['field_name']);
         foreach ($diff as $id => $value) {
             
             $sql = "DELETE FROM `indicator_field` WHERE `id`='$id';";
@@ -117,7 +116,19 @@ if($q->num_rows > 0){
             $field_html .= '<td><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></td>';
             $field_html .= '<td align="center">'.$d_rows.'</td>';
             $field_html .= '<td>'.$remove.'</td>';
-            $field_html .= '<td><input type="text" name="status['.$fid.']" value="'.$fstatus.'" size="5"></td>';
+
+            // $fstatus
+            $selected_y = $fstatus==='y' ? 'selected="selected"' : '';
+            $selected_n = $fstatus==='n' ? 'selected="selected"' : '';
+
+            $field_html .= '<td>';
+            $field_html .= '<select name="status['.$fid.']">';
+            $field_html .= '<option value="y" '.$selected_y.'>แสดง</option>';
+            $field_html .= '<option value="n" '.$selected_n.'>ซ่อน</option>';
+            $field_html .= '</select>';
+            $field_html .= '</td>';
+            // $field_html .= '<td><input type="text" name="status['.$fid.']" value="'.$fstatus.'" size="5"></td>';
+
             $field_html .= '</td>';
             // $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /> ('.$d_rows.') '.$remove.'</div>';
         }
@@ -190,12 +201,20 @@ if($q->num_rows > 0){
             var td3 = document.createElement("td");
 
             var td4 = document.createElement("td");
-            var td4_a = document.createElement("input");
-            td4_a.setAttribute('type', "text");
-            td4_a.setAttribute('name', "status[]");
-            td4_a.setAttribute('value', "y");
-            td4_a.setAttribute('size', "5");
-            td4.appendChild(td4_a);
+            var td4_select = document.createElement("select");
+            td4_select.setAttribute('name', "status[]");
+
+            var td4_option1 = document.createElement("option");
+            td4_option1.setAttribute('value', "y");
+            td4_option1.append("แสดง");
+
+            var td4_option2 = document.createElement("option");
+            td4_option2.setAttribute('value', "n");
+            td4_option2.append("ซ่อน");
+
+            td4_select.appendChild(td4_option1);
+            td4_select.appendChild(td4_option2);
+            td4.appendChild(td4_select);
 
             var in_a = document.createElement("a");
             in_a.setAttribute('href', "javascript:void(0);");

@@ -133,10 +133,12 @@ if($action==='save'){
         $i = 1;
         while ($a = $q->fetch_assoc()) { 
 
+            $on_off_color = 'green';
             $main_id = $a['id'];
-            $txt_status = 'เปิด';
+            $txt_status = 'แสดง';
             if($a['status']=='n'){
-                $txt_status = 'ปิด';
+                $txt_status = 'ซ่อน';
+                $on_off_color = 'red';
             }
 
             $status_revers = 'y';
@@ -166,7 +168,7 @@ if($action==='save'){
                 ?>
                 </td>
                 <td align="center">
-                    <a href="ha_main.php?action=update_status&id=<?=$a['id'];?>&set_status=<?=$status_revers;?>" class="icon"><?=$txt_status;?></a> 
+                    <a href="ha_main.php?action=update_status&id=<?=$a['id'];?>&set_status=<?=$status_revers;?>" class="icon <?=$on_off_color;?>" title="คลิกเพื่อปรับเปลี่ยนสถานะ"><?=$txt_status;?></a> 
                 </td>
             </tr>
             <?php

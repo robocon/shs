@@ -53,17 +53,30 @@ if($action==='save'){
     $main_id = sprintf("%s", $_POST['main_id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
 
-    foreach ($_POST['data'] as $field_id => $value) {
-        $sql = "UPDATE `indicator_data` SET 
-        `value`='$value', 
-        `date_edit`=NOW(), 
-        `editor`='$editor' 
-        WHERE (`main_id`='$main_id' AND `field_id` = '$field_id' AND `year`='$year' AND `month`='$month' );";
+    foreach ($_POST['data'] as $field_id => $value) { 
+
+        $f_sql = "SELECT `id` FROM `indicator_data` WHERE `field_id` = '$field_id' AND `year`='$year' AND `month`='$month'";
+        $find = $dbi->query($f_sql);
+        if ($find->num_rows > 0) {
+            
+            $sql = "UPDATE `indicator_data` SET 
+            `value`='$value', 
+            `date_edit`=NOW(), 
+            `editor`='$editor' 
+            WHERE (`main_id`='$main_id' AND `field_id` = '$field_id' AND `year`='$year' AND `month`='$month' );";
+            
+        }else{
+            
+            $sql = "INSERT INTO `indicator_data` (`id`, `main_id`, `field_id`, `value`, `year`, `month`, `date_create`, `date_edit`, `creater`, `editor`) 
+            VALUES 
+            (NULL, '$main_id', '$field_id', '$value', '$year', '$month', NOW(), NOW(), '$editor', '$editor');";
+
+        }
         $save = $dbi->query($sql);
-        
+
     }
     
-    redirect("ha_data.php?id=$main_id&month=$month&year=$year", 'บันทึกข้อมูลเรียบร้อย');
+    redirect("ha_data.php?id=$main_id&month=$month&year=$year&page_action=update", 'บันทึกข้อมูลเรียบร้อย');
     exit;
 
 }

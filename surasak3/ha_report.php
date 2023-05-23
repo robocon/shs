@@ -79,7 +79,7 @@ if($report_type==='year'){
                 <td></td>
             </tr>
             <tr>
-                <td align="right">ตั้งแต่ปี:</td>
+                <td align="right">ปี:</td>
                 <td>
                     <select name="year_start" id="year_start">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
@@ -111,7 +111,7 @@ if($report_type==='year'){
                 </td>
             </tr>
             <tr class="display_month" <?=$style_month;?>>
-                <td align="right">ตั้งแต่เดือน:</td>
+                <td align="right">เดือน:</td>
                 <td>
                     <select name="month_start" id="month_start">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
@@ -310,6 +310,7 @@ if ($page==='search') {
                                     
                                     $data_style = '';
                                     if(empty($value)){
+                                        $value = 'N/A';
                                         $data_style = 'style="background-color: #c5c5c5;"';
                                     }
                                     ?>
@@ -340,24 +341,25 @@ if ($page==='search') {
                         <tr>
                             <th>ตัวชี้วัด</th>
                             <?php 
-                            foreach ($data_items as $key => $value) {
+                            foreach ($range_year as $key => $value) {
                                 ?>
-                                <th><?=($key+543);?></th>
+                                <th><?=($value+543);?></th>
                                 <?php
                             }
                             ?>
                         </tr>
                         <?php 
-                        foreach ($field_items as $key => $v) {
+                        foreach ($field_items as $key => $v) { 
                             ?>
                             <tr>
                                 <td><?=$v;?></td>
                                 <?php 
-                                foreach ($data_items as $fkey => $fv) {
-                                    $real_value = $fv[$key]['value'];
+                                foreach ($range_year as $year_key => $year_value) {
 
+                                    $real_value = $data_items[$year_value][$key]['value'];
                                     $data_style = '';
                                     if(empty($real_value)){
+                                        $real_value = 'N/A';
                                         $data_style = 'style="background-color: #c5c5c5;"';
                                     }
 

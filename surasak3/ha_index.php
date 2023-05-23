@@ -71,7 +71,7 @@ $dbi->query("SET NAMES UTF8");
                             </td>
                         </tr>
                         <tr>
-                            <td><b>ปีที่บันทึก</b></td>
+                            <td>ปีที่บันทึก</td>
                             <td>
                                 <?php 
                                 $range = array_reverse(range('2019', date('Y')));
@@ -128,7 +128,7 @@ $dbi->query("SET NAMES UTF8");
                 <?php
             }else{
                 ?>
-                <p>ไม่พบข้อมูลการบันทึกในเดือน <?=$def_fullm_th[date('m')];?> </p>
+                <p>ไม่พบข้อมูลการบันทึกในเดือน <?=$def_fullm_th[$curr_month];?> </p>
                 <?php
             }
             ?>
@@ -137,7 +137,7 @@ $dbi->query("SET NAMES UTF8");
 
     <div>
         <div>
-            <h1>ตัวชี้วัดรายปี ที่บันทึกไปแล้วของปี <?=(date('Y')+543);?></h1>
+            <h1>ตัวชี้วัดรายปี ที่บันทึกไปแล้วของปี <?=($curr_year+543);?></h1>
         </div>
         <div>
             <?php 
