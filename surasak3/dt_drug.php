@@ -18,6 +18,24 @@ if(isset($_GET["action"])){
 include("connect.inc");
 //include("checklogin.php");
 
+// แจ้งเตือนแพ้ยา
+$sqldrugreact="SELECT * FROM `drugreact` WHERE hn = '".$_SESSION["hn_now"]."' ";
+$resultdrugreact =mysql_query($sqldrugreact) or die(mysql_error());
+$rowdg=mysql_num_rows($resultdrugreact);
+$drugreact_items = array();
+if($rowdg > 0){
+	$aai=1;
+
+	while($arrdg = mysql_fetch_assoc($resultdrugreact)){ 
+		$txtdrugreact.='( '.$aai.' ) '.$arrdg['drugcode'].': '.$arrdg['tradname'].' / '.$arrdg['genname'];
+		$txtdrugreact.='\n';
+		$aai++;
+
+		$drugreact_items[] = $arrdg['drugcode'];
+	}
+	
+}
+
 // ทดสอบ user สำหรับหมอเป้คนเดียว
 if( $_SESSION['sIdname'] == 'md19921' ){
 	include_once 'includes/connect_md013.php';
@@ -90,16 +108,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
 
 	echo $_SESSION["alert500"];
 	$_SESSION["alert500"] = 1;
-	exit();
-}
-
-if(isset($_GET["action"]) && $_GET["action"] == "check_drugreact"){
-	$hn = $_SESSION['hn_now'];
-	$drugcode = sprintf("%s", $_GET['drugcode']);
-
-
-
-	dump($_GET);
 	exit();
 }
 
@@ -1505,7 +1513,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				}
 
 				
-					$bgcolor="#FF99CC";
+				$bgcolor="#FF99CC";
+				$react_txt = '';
+				if(in_array($arr["drugcode"], $drugreact_items)===true){
+					$react_txt = '<span style="font-weight:bold;color:red;">แพ้ยา</span>';
+				}
 				
 				if($arr["part"] == "DDY"){
 					$style = " style='color:#0000FF;' ";
@@ -1521,7 +1533,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 			echo "<tr bgcolor=\"$bgcolor\" ".$style.">
 					<td rowspan=\"3\" align=\"center\">".$obj."</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["drugcode"],"</td>
-					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"]," $extra_obj</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"]," $react_txt $extra_obj</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td align=\"right\" valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\"></td>
@@ -1744,7 +1756,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 	$chkgenname1=substr($arr["genname"],0,10);
 
 	
-	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' and groupname=''";  //เช็คแพ้ยารายตัว
+	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";  //เช็คแพ้ยารายตัว
 	$result1 = Mysql_Query($sql1);
 
 	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
@@ -2602,18 +2614,16 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		
 }
 
+/**
+ * แยกมาจาก add_drug เป็นการรับค่าจาก dt_drug.php?action=addamount เพื่อเอามา fill ใน input ต่างๆในช่องซ้าย
+ * returnstr เช่น 60,1*1AC,DDL,MIRACID 20 MG.
+ */
 function do_add_drug(returnstr, drugcode){
 	var vl = returnstr.split(",");
 	document.getElementById("drug_amount").value = vl[0];
-	
-	//url = 'dt_drug.php?action=addslip&search=' + drugcode;
-	//xmlhttp.open("GET", url, false);
-	//xmlhttp.send(null);
-
 	document.getElementById("drug_slip").value = vl[1];
 	document.getElementById('list').innerHTML='';
 	document.getElementById("drug_amount").select();
-	//document.getElementById("drug_code2").value = vl[3];
 	
 	if(vl[2] == "DDY" ){
 		//|| drugcode =="1NEU300-C"|| drugcode =="1NEUT300*$" || drugcode =="1NEUT100*$"|| drugcode =="1NEU100-C"|| drugcode == "1PLAV*"
@@ -2649,6 +2659,7 @@ function do_add_drug(returnstr, drugcode){
 	}
 }
 
+// ถูกเรียกใช้จาก dt_drug_rechallenge.php
 function callback_drug_rechallenge(){ 
 
 	do_add_drug(callback_myWindow);
@@ -2656,6 +2667,8 @@ function callback_drug_rechallenge(){
 	
 }
 
+// แพ้ยา 
+// ทำงานใน add_drug() เพื่อpopupการ rechallenge
 function check_drugreact(drugcode, returnstr){
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=checkdrugcode&search='+encodeURIComponent(drugcode);
@@ -2666,9 +2679,11 @@ function check_drugreact(drugcode, returnstr){
 				var res = xmlhttp.responseText.trim();
 				var resCode = parseInt(res);
 				
-				if(resCode!=1){
+				// ถ้าแพ้ตรงตัวจะให้ทำการ rechallenge
+				if(resCode==3){
 
-					var resConfirm = confirm("ผู้ป่วยแพ้ยานี้\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
+					var resConfirm = confirm(">>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
 					if (resConfirm===true) {
 						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
 						url += '&drugcode='+encodeURIComponent(drugcode);
@@ -2800,8 +2815,6 @@ function rdu7_alert(drugcode, icd10){
 			testRdu7 = true;
 		}
 	}
-
-	console.log(testRdu7);
 
 	if( testRdu7 === true ){
 		var dataHtml = '<p><img src="images/rdu7.png"></p>';
@@ -3109,20 +3122,20 @@ function checkForm1(){
 	}
 
 	
-	// if(txt == "0"){
-	// 	alert("กรุณาลองใส่รหัสยาใหม่");
-	// 	document.form1.drug_code.focus();
+	if(txt == "0"){
+		alert("กรุณาลองใส่รหัสยาใหม่");
+		document.form1.drug_code.focus();
 
-	// }else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
-	// 	document.form1.drug_code.focus();
+	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
+		document.form1.drug_code.focus();
 
-	// }else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
-	// 	document.form1.drug_code.focus();
+	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
+		document.form1.drug_code.focus();
 
-	// }else if(txt == "66" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
-	// 	document.form1.drug_code.focus();	
+	}else if(txt == "66" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
+		document.form1.drug_code.focus();	
 
-	// }
+	}
 
 
 	if(document.form1.drug_code.value == ""){
@@ -4087,31 +4100,14 @@ window.onload = function(){
 
 </SCRIPT>
 
+<script type="text/javascript">
+	alert("ผู้ป่วยรายการแพ้ยา\n<?=$txtdrugreact?>");
+</script>
+
 <?
 
 ///*********************เตือน *****************///
 include("connect.inc");
-$sqldrugreact="SELECT * FROM `drugreact` WHERE hn = '".$_SESSION["hn_now"]."' ";
-$resultdrugreact =mysql_query($sqldrugreact) or die(mysql_error());
-
-//echo $sql;
-$rowdg=mysql_num_rows($resultdrugreact);
-if($rowdg){
-	$aai=1;
-
-	while($arrdg = mysql_fetch_assoc($resultdrugreact)){ 
-	$txtdrugreact.='( '.$aai.' )'.$arrdg['drugcode'].' '.$arrdg['tradname'].' ['.$arrdg['genname'].']';
-	$txtdrugreact.='\n';
-	$aai++;
-	 }
-	 
-	
-	?>
-<script>
-	alert("ผู้ป่วยรายการแพ้ยา\n<?=$txtdrugreact?>");
-</script>
-    <?
-}
 
 /* แจ้งเตือน Warfarin */
 if( !function_exists('ad_to_bc') ){

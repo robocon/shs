@@ -100,14 +100,7 @@ if($style_menu==2){?>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
 	<TD><FONT COLOR="#FF0000"><?php echo $ptright;?></FONT></TD>
 	<td rowspan="6">
-		<?php 
-		$imgPtPath = dirname(__FILE__).'/../image_patient/'.$_SESSION["idcard_now"].'.jpg';
-		if(is_file($imgPtPath)===false){
-			?><img src="images/patient-default.jpg" alt="" width="100" height="150"><?php
-		}else{
-			?><IMG SRC="../image_patient/<?php echo $_SESSION["idcard_now"];?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT=""><?Php
-		}
-		?>
+		<IMG SRC="../image_patient/<?php echo $_SESSION["idcard_now"];?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">
 		</td>
 </TR>
 <TR>
@@ -179,18 +172,67 @@ if($rows > 0){
 		$txt = "";
 		$i=1;
 		$txt2 = array();
+	
+	echo "<tr><td colspan='6'>";
+	?>
+	<style>
+		.patient_drugreact{
+			border-collapse: collapse;
+			color:red;
+		}
+		.patient_drugreact tr{
+			line-height: 16px;
+		}
+		.patient_drugreact td{
+			font-size: 22px;
+		}
+	</style>
+	<table width="100%">
+		<tr>
+			<td valign="top" width="5%"><b style="color:red;">แพ้ยา:</b></td>
+			<td>
+			<table width="100%" class="patient_drugreact">
+	<?php
+	$test_i = 1;
+	$item_per_line = 2;
+
 	while($arr = Mysql_fetch_assoc($result)){
-		$txt .= "&nbsp;&nbsp;".$i.". ".$arr["drugcode"]." : ".$arr["tradname"]." [".$arr["genname"]."]";
+		$txt .= "&nbsp;&nbsp;".$i.".) ".$arr["drugcode"]." : ".$arr["tradname"]." [".$arr["genname"]."]";
 		$txt2[$i-1] = $arr["tradname"]." ".$arr["genname"];
-		if($i%3==0) $txt .="<BR>"; else $txt.=",";
+		// if($i%3==0) $txt .="<BR>"; else $txt.=",";
+
+		if($test_i%$item_per_line===1){
+			echo "<tr>";
+		}
+
+		$row_span='';
+		if($test_i===$rows){
+			$row_span='colspan="2"';
+		}
+
+		echo "<td $row_span>".$i.".) ".$arr['drugcode']." : ".$arr["tradname"]." [".$arr["genname"]."]</td>";
+		if($test_i%$item_per_line===0 OR $test_i===$rows){
+			echo "</tr>";
+		}
+
 		$i++;
+		$test_i++;
 	}
+	?>
+			</table>
+			</td>
+		</tr>
+	</table>
+	<?php
+	echo "</td></tr>";
+
+
 	$_SESSION["list_drugreact"] = implode(", ",$txt2);
 }else{
 	$_SESSION["list_drugreact"] = "";
 }
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>แพ้ยา : ",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
+	// echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>แพ้ยา : ",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
 
 
 
@@ -211,13 +253,13 @@ if($rows1 > 0){
 		$i++;
 	}
 	$_SESSION["list_drugreact"] = implode(", ",$txt21);
+
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
+
 }else{
 	//echo $sql;
 	$_SESSION["list_drugreact"] = "";
 }
-
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
-
 ?>
 </TABLE>
 </TD>
