@@ -9,8 +9,7 @@ exit();
 // ini_set('display_errors', '1');
 // error_reporting(1);
 
-// setcookie("fresh_wound[2566-04-2151-3463]", -1,time()-89000,'/');
-// setcookie("acute_diarrhea[2566-04-2151-3463]", -1,time()-89000,'/');
+
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -2656,7 +2655,6 @@ function callback_drug_rechallenge(){
 	document.getElementById("drug_code").value = callback_drugcode;
 	
 }
-
 
 function check_drugreact(drugcode, returnstr){
 	xmlhttp = newXmlHttp();

@@ -152,6 +152,12 @@ function checkForm(){
 			}else{
 				$linksmall="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd1.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบมี VN</div></button>";
 			}
+
+            $allow_depart = array('ADM','ADMCOM','ADMNHSO','ADMMAINOPD');
+            if(in_array($_SESSION["smenucode"], $allow_depart)===true){
+                $more_link = '<br><a href="newPaperLess.php?hn='.$hn.'" target="_blank">พิมพ์เอกสาร</a>';
+            }
+
 			
             // opedit.php? cHn=$hn & cName=$name &cSurname=$surname
             print (" <tr style='font-size: 18px;'>\n".
@@ -162,6 +168,7 @@ function checkForm(){
             "  <td BGCOLOR=".$color.">$ptright</td>\n".
 			"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('dt_paperLess.php?hn=$hn')\"><img src='images/views.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>ประวัติการรักษา</div></button>
+            $more_link
             </td>".
 			"<td bgcolor=\"$color\" align=\"center\">$link</td>".
 			"<td bgcolor=\"$color\" align=\"center\">$linksmall</td>".

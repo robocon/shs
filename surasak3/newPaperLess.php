@@ -105,6 +105,23 @@ if(empty($hn) OR empty($sOfficer)){
 	</div>
 	<script type="text/javascript">
         
+		var isNS = (navigator.appName == "Netscape") ? 1 : 0;
+ 
+		if(navigator.appName == "Netscape") document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
+		
+		function mischandler(){
+		return false;
+		}
+		
+		function mousehandler(e){
+			var myevent = (isNS) ? e : event;
+			var eventbutton = (isNS) ? myevent.which : myevent.button;
+		if((eventbutton==2)||(eventbutton==3)) return false;
+		}
+		document.oncontextmenu = mischandler;
+		document.onmousedown = mousehandler;
+		document.onmouseup = mousehandler;
+
         function imageZoom(imgID, resultID) {
             var img, lens, result, cx, cy;
             img = document.getElementById(imgID);
@@ -119,6 +136,11 @@ if(empty($hn) OR empty($sOfficer)){
             cy = result.offsetHeight / lens.offsetHeight;
             /* Set background properties for the result DIV */
             result.style.backgroundImage = "url('" + img.src + "')";
+			
+			if(img.height==0){
+				img.height=570;
+			}
+
             result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
             /* Execute a function when someone moves the cursor over the image, or the lens: */
             lens.addEventListener("mousemove", moveLens);
@@ -289,8 +311,8 @@ if(empty($hn) OR empty($sOfficer)){
             rightMenu.innerHTML += '<div id="myresult" class="img-zoom-result" style="float:left;"></div>';
 			
             document.getElementById("myresult").setAttribute("style", "background-image: url("+url+"); float:left; width: 63%;");
-
-            imageZoom("myZoomImage", "myresult");
+            
+			imageZoom("myZoomImage", "myresult");
 		}
 
 		function actionPrint(url){ 

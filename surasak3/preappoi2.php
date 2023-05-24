@@ -845,6 +845,8 @@ if($date_en < date('Y-m-d')){
     </font>
 
 	<script>
+		/*
+		2566-03-24 พยาบาลหน้าห้องขอยกเลิก
 		document.getElementById("detail").onchange = function(){
 			var dt = this.value.split(" ");
 			var doctorName = '<?=$codedr;?>';
@@ -871,6 +873,7 @@ if($date_en < date('Y-m-d')){
 				document.getElementById("echoResponse").style.display = 'none';
 			}
 		}
+		*/
 	</script>
 
 </td>

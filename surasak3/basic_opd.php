@@ -549,10 +549,10 @@ if($_POST["cigarette"]=="1"){
 
 
 	if($_POST["phone"]==""){  //เพิ่มเงื่อนไขเมื่อ 6/4/65 รคส. พี่แอน OPD
-		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
+		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', `congenital_disease` = '$congenital_disease'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
 		$result1 = Mysql_Query($sql1) or die('update opcard -> phone'.Mysql_Error());
 	}else{
-		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', phone= '".$_POST["phone"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
+		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', phone= '".$_POST["phone"]."', `congenital_disease` = '$congenital_disease'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
 		$result1 = Mysql_Query($sql1) or die('update opcard -> phone else'.Mysql_Error());		
 	}
 	
@@ -1706,7 +1706,7 @@ mmHg </td>
 			<td align="right" class="data_show">ประเภทผู้ป่วย : </td>
 			<td align="left" colspan="5">
 				<!-- <input type="radio" name="opdtype" id="opdtype1" value="FI" <? if($opdtype=="FI"){ echo "checked='checked'";}?> onClick="window.alert('ฮั่นแน่ !!!\n อยู่ รพ.สนามจริงรึป่าว? อย่ามั่วนะครับ');"><label for="opdtype1">ผู้ป่วย รพ.สนาม</label>&nbsp; -->
-				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?> onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="opdtype2">ผู้ป่วย OP self Isolation</label>&nbsp;
+				<input type="radio" name="opdtype" id="opdtype2" value="SI" <? if($opdtype=="SI"){ echo "checked='checked'";}?> onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="opdtype2" style="color:red;">ผู้ป่วย OP self Isolation</label>&nbsp;
 				<!-- <input type="radio" name="opdtype" id="opdtype3" value="HI" <? if($opdtype=="HI"){ echo "checked='checked'";}?>><label for="opdtype3">ผู้ป่วย Home Isolation</label>&nbsp; -->
 				<input type="radio" name="opdtype" id="opdtype4" value="OP" <? if($opdtype=="OP"){ echo "checked='checked'";}?>><label for="opdtype4">ผู้ป่วยทั่วไป</label>
 				&nbsp;<? if($opdtype=="SI"){ echo "<strong style='margin-left:20px;color:blue;'>ผู้ป่วย OP Self Isolation</strong>";}else if($opdtype=="OP"){ echo "<strong style='margin-left:20px;color:green;'>ผู้ป่วยทั่วไป</strong>";}else{echo "<strong style='margin-left:20px;color:red;'>ยังไม่ได้ระบุว่าเป็นผู้ป่วยประเภทใด</strong>";}?>
@@ -1946,39 +1946,23 @@ mmHg </td>
 
 		<tr>
 			<td colspan="6">
-				<style>
-					.mainThumb{
-						position: relative;
-					}
-					.thumbnail{
-						visibility: hidden;
-						position: absolute;
-  						z-index: 1;
-					}
-					.thumbnail img{
-						box-shadow: 2px 2px 4px #000000;
-					}
-					.mainThumb:hover .thumbnail{
-						visibility: visible;
-					}
-				</style>
 				<fieldset>
 					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe และคำแนะนำก่อนผ่าตัด</legend>
 					<table>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer<span class="thumbnail"><img src="images/form_advice/form_a.png" alt=""></span></label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่<span class="thumbnail"><img src="images/form_advice/form_b.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว<span class="thumbnail"><img src="images/form_advice/form_c.png" alt=""></span></label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร<span class="thumbnail"><img src="images/form_advice/form_d.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด<span class="thumbnail"><img src="images/form_advice/form_e.png" alt=""></span></label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด<span class="thumbnail"><img src="images/form_advice/form_f.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้<span class="thumbnail"><img src="images/form_advice/form_g.png" alt=""></span></label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
 							<td></td>
 						</tr>
 					</table>

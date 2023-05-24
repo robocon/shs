@@ -288,11 +288,11 @@ while(list($row_id, $vn,$hn,$an,$dx,$organ, $maintenance, $doctor, $fullname, $a
 		}
 		
 		if (!empty($cpg['ivf'])) {
-			$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['hc1_time']." น.<br>";
+			$cepsis .= "IVF ".$cpg['ivf']." เวลา ".$cpg['ivf_time']." น.<br>";
 		}
 		
 		if (!empty($cpg['atb'])) {
-			$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['hc1_time']." น.";
+			$cepsis .= "ATB ".$cpg['atb']." เวลา ".$cpg['atb_time']." น.";
 		}
 	}
 	

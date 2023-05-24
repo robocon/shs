@@ -18,7 +18,6 @@ if($action==='save'){
         }
     </script>
     <?php
-
     exit;
 }
 
@@ -32,6 +31,16 @@ if($action==='save'){
     <title>แบบฟอร์มยินยอม Rechallenge</title>
 </head>
 <body>
+    <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size: 18px;
+        }
+        h1{
+            font-size: 32px;
+            margin:0;
+        }
+    </style>
     <div>
         <div style="text-align:center;">
             <h1>แบบฟอร์มยินยอม Rechallenge</h1>
