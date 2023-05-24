@@ -7,23 +7,85 @@ $dbi->query("SET NAMES UTF8");
 $action = sprintf("%s", $_POST['action']);
 if($action==='save'){  
 
-    // dump($_POST);
     $month = sprintf("%s", $_POST['months']);
     $year = sprintf("%s", $_POST['years']);
     $main_id = sprintf("%s", $_POST['main_id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
 
-    foreach ($_POST['data'] as $field_id => $value) {
-        $sql = "INSERT INTO `indicator_data` (`id`, `main_id`, `field_id`, `value`, `year`, `month`, `date_create`, `date_edit`, `creater`, `editor`) 
-        VALUES 
-        (NULL, '$main_id', '$field_id', '$value', '$year', '$month', NOW(), NOW(), '$editor', '$editor');";
-        $save = $dbi->query($sql);
+    if(empty($year)){
+        redirect("ha_data.php?id=$main_id", 'กรุณาเลือกปีที่จะบันทึก');
+        exit;
     }
 
-    redirect('ha_data.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
+    if(intval($year)>0 && intval($month)==0){
+        $where = " AND `year`='$year' AND `month`=''";
+        $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
+
+    }elseif (intval($year)>0 && intval($month)>0) {
+        $where = " AND `year`='$year' AND `month`='$month'";
+        $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." เดือน".$def_fullm_th[$month]." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
+    }
+
+    // $sql = "SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ";
+    $q_data = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ");
+    if($q_data->num_rows===0){
+
+        foreach ($_POST['data'] as $field_id => $value) {
+            $sql = "INSERT INTO `indicator_data` (`id`, `main_id`, `field_id`, `value`, `year`, `month`, `date_create`, `date_edit`, `creater`, `editor`) 
+            VALUES 
+            (NULL, '$main_id', '$field_id', '$value', '$year', '$month', NOW(), NOW(), '$editor', '$editor');";
+            $save = $dbi->query($sql);
+        }
+        redirect("ha_data.php?id=$main_id&month=$month&year=$year", 'บันทึกข้อมูลเรียบร้อย');
+
+    }else{ 
+
+        redirect("ha_data.php?id=$main_id", $res );
+
+    }
+    
     exit;
+
+}elseif ($action==='update') {
+
+    $month = sprintf("%s", $_POST['months']);
+    $year = sprintf("%s", $_POST['years']);
+    $main_id = sprintf("%s", $_POST['main_id']);
+    $editor = sprintf("%s", $_SESSION['sIdname']);
+
+    foreach ($_POST['data'] as $field_id => $value) { 
+
+        $f_sql = "SELECT `id` FROM `indicator_data` WHERE `field_id` = '$field_id' AND `year`='$year' AND `month`='$month'";
+        $find = $dbi->query($f_sql);
+        if ($find->num_rows > 0) {
+            
+            $sql = "UPDATE `indicator_data` SET 
+            `value`='$value', 
+            `date_edit`=NOW(), 
+            `editor`='$editor' 
+            WHERE (`main_id`='$main_id' AND `field_id` = '$field_id' AND `year`='$year' AND `month`='$month' );";
+            
+        }else{
+            
+            $sql = "INSERT INTO `indicator_data` (`id`, `main_id`, `field_id`, `value`, `year`, `month`, `date_create`, `date_edit`, `creater`, `editor`) 
+            VALUES 
+            (NULL, '$main_id', '$field_id', '$value', '$year', '$month', NOW(), NOW(), '$editor', '$editor');";
+
+        }
+        $save = $dbi->query($sql);
+
+    }
+    
+    redirect("ha_data.php?id=$main_id&month=$month&year=$year&page_action=update", 'บันทึกข้อมูลเรียบร้อย');
+    exit;
+
 }
 
+$page_action = sprintf("%s",$_GET['page_action']);
+$header_title = 'เพิ่มข้อมูลใหม่';
+if($page_action==='update'){
+    $header_title = 'แก้ไข/อัพเดท';
+}
 
 ?>
 <!DOCTYPE html>
@@ -32,21 +94,29 @@ if($action==='save'){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><?=$header_title;?></title>
 </head>
 <body>
     <?php 
     include_once 'ha_menu.php';
+
+    $month = sprintf("%02d", $_GET['month']);
+    $year = sprintf("%02d", $_GET['year']);
+
+    $extra_txt = '';
+    if($page_action==='update'){
+        $extra_txt = '<span style="display:inline-block;">(แก้ไข/อัพเดท)</span>';
+    }
+
     ?>
     <div>
         <?php 
         $id = sprintf("%s", $_GET['id']);
-
         $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$id' LIMIT 1");
         $a = $q->fetch_assoc();
         ?>
         <div>
-            <h1>หัวข้อ: <?=$a['name'];?></h1>
+            <h1 style="display:inline-block;">ตัวชี้วัด: <?=$a['name'];?></h1> <?=$extra_txt;?>
         </div>
         <div>
             <?php 
@@ -54,27 +124,89 @@ if($action==='save'){
             $data_month = 0;
             $data_year = 0;
 
-            $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' ");
+            $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' AND `status`='y' ");
             if($qf->num_rows>0){ 
 
-                $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' ");
-                if ($qd->num_rows>0) { 
-                    $item_data = array();
-                    
-                    while ($data = $qd->fetch_assoc()) {
-                        $key = $data['field_id'];
-                        $item_data[$key] = $data['value'];
+                $action_value = 'save';
+                $where = "";
+                $per_year = false;
+                if(intval($month)==0 && intval($year)>0){
+                    $where = "AND `year`='$year' AND `month`=''";
+                    $per_year = true;
 
-                        $data_month = $data['month'];
-                        $data_year = $data['year'];
+                }elseif (intval($month)>0 && intval($year)>0) {
+                    $where = "AND `year`='$year' AND `month`='$month'";
+
+                }
+
+                if($page_action==='update'){ 
+
+                    $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' $where ");
+                    if ($qd->num_rows>0) { 
+
+                        $action_value = 'update';
+                        $item_data = array();
+                        
+                        while ($data = $qd->fetch_assoc()) {
+                            $key = $data['field_id'];
+                            $item_data[$key] = $data['value'];
+
+                            $data_month = $data['month'];
+                            $data_year = $data['year'];
+                        }
                     }
+
                 }
             ?>
             <form action="ha_data.php" method="post">
-                <table>
+            <table>
+                    <?php 
+                    if($per_year===false){
+                    ?>
                     <tr>
-                        <td>ตัวชี้วัด</td>
-                        <td>เป้า</td>
+                        <td><b>เดือนที่บันทึก</b></td>
+                        <td>
+                            <select name="months" id="months">
+                                <option value="">-- เลือกเดือน --</option>
+                                <?php 
+                                foreach ($def_fullm_th as $key => $value) { 
+                                    $selected = $key == $month ? 'selected="selected"' : '' ;
+                                    ?>
+                                    <option value="<?=$key;?>" <?=$selected;?> ><?=$value;?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php 
+                    }
+                    ?>
+                    <tr>
+                        <td><b>ปีที่บันทึก</b></td>
+                        <td>
+                            <?php 
+                            $range = array_reverse(range('2019', date('Y')));
+                            ?>
+                            <select name="years" id="years">
+                                <option value="">-- เลือกปี --</option>
+                                <?php 
+                                foreach ($range as $key => $value) {
+                                    $selected = $value == $year ? 'selected="selected"' : '' ;
+                                    ?>
+                                    <option value="<?=$value;?>" <?=$selected;?> ><?=($value+543);?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    
+                </table>
+                <table class="chk_table">
+                    <tr>
+                        <th>รายละเอียดตัวชี้วัด</th>
+                        <th></th>
                     </tr>
                     <?php 
                     while ($af = $qf->fetch_assoc()) { 
@@ -89,25 +221,14 @@ if($action==='save'){
                         <?php
                     }
                     ?>
+                    
+                </table>
+                <table>
                     <tr>
-                        <td>เดือนที่บันทึก</td>
-                        <td><?=getMonthList('months', $data_month);?></td>
-                    </tr>
-                    <tr>
-                        <td>ปีที่บันทึก</td>
-                        <td>
-                            <?php 
-                            $range = range('2019', date('Y'));
-                            getYearList('years', true, $data_year, $range);
-                            ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>
+                        <td colspan="2">
                             <button type="submit">บันทึกข้อมูล</button>
                             <input type="hidden" name="main_id" value="<?=$a['id'];?>">
-                            <input type="hidden" name="action" value="save">
+                            <input type="hidden" name="action" value="<?=$action_value;?>">
                         </td>
                     </tr>
                 </table>
