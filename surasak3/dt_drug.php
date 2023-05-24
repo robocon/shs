@@ -94,6 +94,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "alert500"){
 	exit();
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "check_drugreact"){
+	$hn = $_SESSION['hn_now'];
+	$drugcode = sprintf("%s", $_GET['drugcode']);
+
+
+
+	dump($_GET);
+	exit();
+}
+
+
 if(isset($_GET["action"]) && $_GET["action"] == "drug_500"){
 	$dayToday = date("D");
 	$time = date("H");
@@ -2527,7 +2538,8 @@ function testPreg(drugcode,tradname,genname){
 	}
 }
 
-
+var callback_myWindow;
+var callback_drugcode;
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	var doctor_id = document.getElementById('doctor_id').value;
@@ -2543,6 +2555,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	}
 
 	var returnstr;
+	callback_drugcode = drugcode;
 
 	xmlhttp = newXmlHttp();
 
@@ -2551,7 +2564,46 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	
-	returnstr = xmlhttp.responseText;
+	callback_myWindow = returnstr = xmlhttp.responseText;
+
+	//
+	do_add_drug(returnstr, drugcode);
+
+	var icd10 = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=get_icd10';
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				icd10 = xmlhttp.responseText.trim();
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+
+	check_drugreact(drugcode, returnstr);
+	
+	// RDUตัวชี้วัดที่11
+	glibenclamide_alert(drugcode.trim());
+
+	// RDUตัวชี้วัดที่14
+	kidney_egfr_alert(drugcode.trim());
+
+	// RDUตัวชี้วัดที่18
+	rdu18_alert(drugcode.trim(), icd10);
+
+	// RDUตัวชี้วัดที่7
+	rdu7_alert(drugcode.trim(), icd10);
+
+	// RDUตัวชี้วัดที่8
+	rdu8_alert(drugcode.trim(), icd10);
+		
+}
+
+function do_add_drug(returnstr, drugcode){
 	var vl = returnstr.split(",");
 	document.getElementById("drug_amount").value = vl[0];
 	
@@ -2596,37 +2648,54 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById('drug_inject_type').style.display = 'none';
 			document.getElementById('drug_inject_etc').style.display = 'none';
 	}
+}
 
-	var icd10 = false;
+function callback_drug_rechallenge(){ 
+
+	do_add_drug(callback_myWindow);
+	document.getElementById("drug_code").value = callback_drugcode;
+	
+}
+
+
+function check_drugreact(drugcode, returnstr){
 	xmlhttp = newXmlHttp();
-	url = 'dt_drug.php?action=get_icd10';
+	url = 'dt_drug.php?action=checkdrugcode&search='+encodeURIComponent(drugcode);
 	xmlhttp.open("GET", url, false);
 	xmlhttp.onreadystatechange = function () {
 		if (xmlhttp.readyState === 4) {
 			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-				icd10 = xmlhttp.responseText.trim();
+				var res = xmlhttp.responseText.trim();
+				var resCode = parseInt(res);
+				
+				if(resCode!=1){
+
+					var resConfirm = confirm("ผู้ป่วยแพ้ยานี้\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					if (resConfirm===true) {
+						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+						url += '&drugcode='+encodeURIComponent(drugcode);
+						url += '&returnstr='+encodeURIComponent(returnstr);
+						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+
+						window.open(url,"myWindow","width=560,height=270,left=100,top=100");
+
+					}
+
+					// เคลียร์ค่า ออกไปก่อน จนว่าจะยืนยันฟอร์ม rechallenge
+					document.getElementById('drug_code').value='';
+					document.getElementById('drug_amount').value='';
+					document.getElementById('drug_slip').value='';
+					document.getElementById('list').value='';
+					
+				}
+
 			} else {
 				// Error :(
 			}
 		}
 	};
 	xmlhttp.send(null);
-	
-	// RDUตัวชี้วัดที่11
-	glibenclamide_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่14
-	kidney_egfr_alert(drugcode.trim());
-
-	// RDUตัวชี้วัดที่18
-	rdu18_alert(drugcode.trim(), icd10);
-
-	// RDUตัวชี้วัดที่7
-	rdu7_alert(drugcode.trim(), icd10);
-
-	// RDUตัวชี้วัดที่8
-	rdu8_alert(drugcode.trim(), icd10);
-		
 }
 
 function glibenclamide_alert(drugcode){
@@ -3040,6 +3109,23 @@ function checkForm1(){
 		alert("ขอสงวนสิทธิใช้กรณีคนไข้ โควิด-19");  
 
 	}
+
+	
+	// if(txt == "0"){
+	// 	alert("กรุณาลองใส่รหัสยาใหม่");
+	// 	document.form1.drug_code.focus();
+
+	// }else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
+	// 	document.form1.drug_code.focus();
+
+	// }else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
+	// 	document.form1.drug_code.focus();
+
+	// }else if(txt == "66" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
+	// 	document.form1.drug_code.focus();	
+
+	// }
+
 
 	if(document.form1.drug_code.value == ""){
 		alert("กรุณาใส่รหัสยา");
@@ -3762,7 +3848,7 @@ function viatch(ing,code){
 <TABLE border="0" width="100%">
 <TR>
 	<TD width="280" valign="top">
-<FORM Name="form1" METHOD="POST" ACTION="" Onsubmit=" return false;">
+<FORM Name="form1" METHOD="POST" ACTION="" id="dt_drug_form" Onsubmit=" return false;">
 <TABLE width="100%" border="1" cellpadding="5" cellspacing="5" bordercolor="#96D4D4" bgcolor="#D4EFDF">
 <TR>
 	<TD>
