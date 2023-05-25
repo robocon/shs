@@ -31,14 +31,22 @@ if($action==='save'){
     ?>
     <div style="text-align: center;border: 1px solid #009688;background-color: #009688;color: #ffffff;">
         <p><b>บันทึกข้อมูลเรียบร้อย</b></p>
+        <p><b>รอสักครู่ หน้าต่างจะปิดอัตโนมัติ</b></p>
+    </div>
+    <div>
+        <button type="button" onclick="btn_close()">ปิดหน้าต่าง</button>
     </div>
     <script type="text/javascript">
         window.onload = function(){ 
             // 
             parent.window.opener.callback_drug_rechallenge();
             setTimeout(function(){
-                // window.close();
+                window.close();
             }, 2500);
+        }
+
+        function btn_close(){
+            window.close();
         }
     </script>
     <?php
@@ -75,7 +83,7 @@ $op = $q_opday->fetch_assoc();
             <h1>แบบฟอร์มยินยอม Rechallenge</h1>
         </div>
         <div>
-            <form action="dt_drug_rechallenge.php" method="post" id="dt_form">
+            <form action="dt_drug_rechallenge.php" method="post" id="dt_form" onsubmit="return check_dt_form()">
                 <table width="100%">
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>แพทย์:</b> </td>
@@ -108,8 +116,6 @@ $op = $q_opday->fetch_assoc();
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center;">
-                            <p>Javascript แจ้งเตือน การกรอกข้อมูลลงฟอร์ม</p>
-                            <p>เช็กด้วยว่า เลข ว. ตรงหรือไม่</p>
                             <button type="submit" style="padding: 8px 16px;">บันทึกข้อมูล</button>
                             <input type="hidden" name="action" value="save">
                             <input type="hidden" name="returnstr" value="<?=$returnstr;?>">
@@ -117,6 +123,27 @@ $op = $q_opday->fetch_assoc();
                     </tr>
                 </table>
             </form>
+            <script type="text/javascript">
+                function check_dt_form(){
+                    // event.preventDefault();
+
+                    var reason = document.getElementById('reason');
+                    var dt_code = document.getElementById('dt_code');
+                    var test_return = true;
+                    if(reason.value==''){
+                        alert('กรุณาให้เหตุผลการใช้ยา');
+                        test_return = false;
+
+                    }else if(dt_code.value==''){
+                        alert('กรุณากรอกเลข ว. ของท่าน');
+                        test_return = false;
+
+                    }
+
+                    return test_return;
+                }
+                
+            </script>
         </div>
     </div>
 </body>

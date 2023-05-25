@@ -19,7 +19,7 @@ include("connect.inc");
 //include("checklogin.php");
 
 // แจ้งเตือนแพ้ยา
-$sqldrugreact="SELECT * FROM `drugreact` WHERE hn = '".$_SESSION["hn_now"]."' ";
+$sqldrugreact="SELECT * FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) GROUP BY `drugcode` ";
 $resultdrugreact =mysql_query($sqldrugreact) or die(mysql_error());
 $rowdg=mysql_num_rows($resultdrugreact);
 $drugreact_items = array();
@@ -1515,7 +1515,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				
 				$bgcolor="#FF99CC";
 				$react_txt = '';
-				if(in_array($arr["drugcode"], $drugreact_items)===true){
+				
+				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
 					$react_txt = '<span style="font-weight:bold;color:red;">แพ้ยา</span>';
 				}
 				
@@ -1750,21 +1751,49 @@ exit();
 //******************************************** ตรวจสอบรหัสยา  การแพ้ยา *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
-	$sql = "SELECT count(drugcode) as amountcode, genname FROM `druglst` where drugcode = '".$_GET["search"]."' ";
-	$result = Mysql_Query($sql);
-	$arr = Mysql_fetch_assoc($result);
-	$chkgenname1=substr($arr["genname"],0,10);
+	$search = sprintf("%s", $_GET["search"]);
 
+	// default เป็น 0 คือหาไม่เจอ
+	$return = "0";
+
+	// หายาเจอเป็น 1
+	$sql = "SELECT `row_id`, genname FROM `druglst` where drugcode = '".$search."'";
+	$result_druglst = mysql_query($sql);
+	$druglst_rows = mysql_num_rows($result_druglst);
+	if($druglst_rows > 0){
+		$return = "1";
+
+	}
+
+	// เข้าเคสแพ้ยา (เภสัชบันทึก)
+	$sql1 = "Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$search."' ";  //เช็คแพ้ยารายตัว
+	$result1 = mysql_query($sql1);
+	if(mysql_num_rows($result1) > 0){
+		$return = "3";
+
+	}else{
+
+		// ถ้าไม่แพ้ให้เช็กว่าตัวยาอยู่ในกลุ่มเดียวกันกับยาที่แพ้รึป่าว
+		$sql3="SELECT drugcode,drugreact_group FROM `drugreact_group_list` where drugcode='".$search."'";
+		$result3 = mysql_query($sql3);
+		if(mysql_num_rows($result3) > 0){
+			$return = "55";
+		}
+
+	}
+
+	echo $return;
+	exit;
 	
 	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";  //เช็คแพ้ยารายตัว
-	$result1 = Mysql_Query($sql1);
+	$result1 = mysql_query($sql1);
 
 	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
 			echo "3";	//lock ยารายตัว		
 	}else if($arr["amountcode"] > 0){  //มียานั้นๆ อยู่ในระบบ
 		$sql2 = "Select drugcode,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."'  and groupname !='' limit 0,1";  //เช็คแพ้ยาตามกลุ่ม
 		$result2 = mysql_query($sql2);
-		$arr2 = Mysql_fetch_assoc($result2);
+		$arr2 = mysql_fetch_assoc($result2);
 		if(Mysql_num_rows($result2) > 0){  //ถ้ามีแพ้ยาตามกลุ่ม
 			if(!empty($arr2["drugcode"])){  //ถ้ามียาในกลุ่มที่แพ้	
 				echo "55";
@@ -2683,14 +2712,14 @@ function check_drugreact(drugcode, returnstr){
 				if(resCode==3){
 
 					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
-					var resConfirm = confirm(">>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
 					if (resConfirm===true) {
 						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
 						url += '&drugcode='+encodeURIComponent(drugcode);
 						url += '&returnstr='+encodeURIComponent(returnstr);
 						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
 
-						window.open(url,"myWindow","width=560,height=270,left=100,top=100");
+						window.open(url,"myWindow","width=600,height=300,left=100,top=100");
 
 					}
 
@@ -3126,13 +3155,13 @@ function checkForm1(){
 		alert("กรุณาลองใส่รหัสยาใหม่");
 		document.form1.drug_code.focus();
 
-	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
+	}/*else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
 		document.form1.drug_code.focus();
 
 	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
 		document.form1.drug_code.focus();
 
-	}else if(txt == "66" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
+	}*/else if(txt == "55" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
 		document.form1.drug_code.focus();	
 
 	}
@@ -4101,7 +4130,7 @@ window.onload = function(){
 </SCRIPT>
 
 <script type="text/javascript">
-	alert("ผู้ป่วยรายการแพ้ยา\n<?=$txtdrugreact?>");
+	// alert(">>> ผู้ป่วยมีรายการแพ้ยาดังนี้ <<< \n<?=$txtdrugreact?>");
 </script>
 
 <?

@@ -164,7 +164,7 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ผู้ป่วยไม่แพ้ยา ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname =''";
+$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' GROUP BY `drugcode` ";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -210,7 +210,7 @@ if($rows > 0){
 			$row_span='colspan="2"';
 		}
 
-		echo "<td $row_span>".$i.".) ".$arr['drugcode']." : ".$arr["tradname"]." [".$arr["genname"]."]</td>";
+		echo "<td $row_span>".$i.".) <b>".$arr['drugcode']."</b> : <span style='font-size:20px;'>".$arr["tradname"]." [".$arr["genname"]."]</span></td>";
 		if($test_i%$item_per_line===0 OR $test_i===$rows){
 			echo "</tr>";
 		}
