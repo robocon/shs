@@ -61,11 +61,6 @@ list($y,$m,$d) = ad_to_bc(explode('-', $mDate));
 $th_date = $d.' '.$def_month_th[$m].' '.$y;
 
 ?>
-<div style="position:relative;">
-    <div style="position:absolute; right:0; top:0;">
-        <img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt="">
-    </div>
-</div>
 <table width="100%">
     <tr style="border-bottom: 1px solid #000000;">
         <td colspan="2">
@@ -87,6 +82,9 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
                             <tr>
                                 <td>
                                     <b>ชื่อ</b> <?=$a['ptname'];?>&nbsp;&nbsp;&nbsp;<b>อายุ</b> <?=$a['age'];?>&nbsp;&nbsp;&nbsp;<b>Echo No.</b> <?=$a['echo_no'];?>
+                                    <div style="position:absolute; right:0; top:0;">
+                                        <img src="printQrCode.php?hn=<?=$hn;?>&size=4&margin=1" alt="">
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
@@ -101,6 +99,7 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
                                 </td>
                             </tr>
                         </table>
+                        
                     </td>
                 </tr>
             </table>
@@ -371,7 +370,7 @@ $th_date = $d.' '.$def_month_th[$m].' '.$y;
     if(empty($_GET['print'])){
     ?>
     window.onload = function(){
-        window.print();
+        // window.print();
     }
     <?php
     }

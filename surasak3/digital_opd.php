@@ -55,7 +55,7 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' order by row_id desc limit 1 ";
+$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' order by row_id desc,thidate desc limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
 $num=mysql_num_rows($result_dt_hn);
 list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill,$cvriskscore,$cvriskscore_lab) = Mysql_fetch_row($result_dt_hn);
@@ -125,9 +125,9 @@ if($alcohol==0){
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood,$opcard_congenital_disease) = Mysql_fetch_row($result111);
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
 	
@@ -137,9 +137,33 @@ if($alcohol==0){
 	$dbirth="$dy-$dm-$dd";
 	//echo $dbirth;
 	$birthday=DateThai($dbirth);
+
+
+
+
 	
-if($congenital_disease == ""){
-	$congenital_disease="ปฎิเสธ";
+if($congenital_disease == ""  || $congenital_disease == "ปฎิเสธโรคประจำตัว"){
+	if($opcard_congenital_disease==""){
+		$congenital_disease="ปฎิเสธโรคประจำตัว";
+	}else{
+		if( strstr( $opcard_congenital_disease, "HIV" ) || strstr( $opcard_congenital_disease, "hiv" ) || strstr( $opcard_congenital_disease, "B24" ) || strstr( $opcard_congenital_disease, "b24" ) || strstr( $opcard_congenital_disease, "เชื้อราในสมอง" )) {
+			$sql113 = "Select napnumber From hiv where hn='".$hn."' ";
+			$result113 = Mysql_Query($sql113);
+			list($napnumber) = Mysql_fetch_row($result113);		
+			if(!empty($napnumber)){
+				$congenital_disease=$napnumber;		
+			}else{
+				$pos = strrpos($congenital_disease, "B24");
+				if ($pos === false) { 
+					$congenital_disease="ปฎิเสธ";
+				}else{
+					$congenital_disease=$congenital_disease;
+				}	
+			}	
+		}else{
+			$congenital_disease=$opcard_congenital_disease;
+		}		
+	}	
 }else{
 	if( strstr( $congenital_disease, "HIV" ) || strstr( $congenital_disease, "hiv" ) || strstr( $congenital_disease, "B24" ) || strstr( $congenital_disease, "b24" ) || strstr( $congenital_disease, "เชื้อราในสมอง" )) {
 		$sql113 = "Select napnumber From hiv where hn='".$hn."' ";
@@ -148,7 +172,12 @@ if($congenital_disease == ""){
 		if(!empty($napnumber)){
 			$congenital_disease=$napnumber;		
 		}else{
-			$congenital_disease="ปฎิเสธ";
+			$pos = strrpos($congenital_disease, "B24");
+			if ($pos === false) { 
+				$congenital_disease="ปฎิเสธ";
+			}else{
+				$congenital_disease=$congenital_disease;
+			}
 		}	
 	}else{
 		$congenital_disease=$congenital_disease;
@@ -614,7 +643,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 	<!-- <div style="line-height: 18.897637795px;">&nbsp;</div> -->
 	<div class="display-sticker">
 		<div style="float:right; text-align:center;">
-			<img src="printQrCode.php?hn=<?=$hn;?>&size=3&margin=1" alt=""><br>
+			<img src="printQrCode.php?hn=<?=$hn;?>&size=5&margin=1" alt=""><br>
 			<b><?=$hn;?></b><br>
 			<b><?=$ptname;?></b>
 		</div>
