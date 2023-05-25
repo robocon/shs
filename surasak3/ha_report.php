@@ -242,7 +242,7 @@ if ($page==='search') {
                 $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`, b.`name` 
                 FROM ( 
 
-                    SELECT `main_id`,`year`,`field_id`,sum(`value`) AS `value` 
+                    SELECT `main_id`,`year`,`field_id`,`value` 
                     FROM `indicator_data` 
                     WHERE `main_id` = '$main_id'  
                     AND ( `year` >= '$year_start' AND `year` <= '$year_end' ) 

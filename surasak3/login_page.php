@@ -75,7 +75,7 @@ include 'templates/classic/header.php';
 				<div class="col">
 					<div class="cell">
 						<div class="form-contain">
-							<h3><?=$title;?></h3>
+							<h3 style="text-align:center;"><?=$title;?></h3>
 							<?php
 							if( isset($_SESSION['x-msg']) ){
 								?><div class="notify-warning"><?=$_SESSION['x-msg'];?></div><?php
@@ -83,20 +83,23 @@ include 'templates/classic/header.php';
 							}
 							?>
 							<form action="login_page.php" method="post">
-								<div class="col">
-									<div class="cell">
-										<label for="">ชื่อผู้ใช้งาน</label>
-										<input type="text" name="username">
-									</div>
-								</div>
-								<div class="col">
-									<div class="cell">
-										<label for="">รหัสผ่าน</label>
-										<input type="password" name="password">
-									</div>
-								</div>
-								<button type="submit">เข้าสู่ระบบ</button>
-								<input type="hidden" name="action" value="login">
+								<table style="border:none;">
+									<tr>
+										<td style="border:none;" align="right">ชื่อผู้ใช้งาน</td>
+										<td style="border:none;"><input type="text" name="username"></td>
+									</tr>
+									<tr>
+										<td style="border:none;" align="right">รหัสผ่าน</td>
+										<td style="border:none;"><input type="password" name="password" autocomplete="off"></td>
+									</tr>
+									<tr>
+										<td style="border:none;"></td>
+										<td style="border:none;">
+											<button type="submit" style="padding: 8px 16px;">เข้าสู่ระบบ</button>
+											<input type="hidden" name="action" value="login">
+										</td>
+									</tr>
+								</table>
 							</form>
 						</div>
 					</div>

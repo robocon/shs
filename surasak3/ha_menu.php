@@ -1,3 +1,11 @@
+<?php 
+if(empty($_SESSION['sOfficer'])){
+    ?>
+    <p><a href="login_page.php">กรุณาเข้าสู่ระบบอีกครั้ง</a></p>
+    <?php
+    exit;
+}
+?>
 <style>
     *{
         font-family: "TH Sarabun New", "TH SarabunPSK";
@@ -71,7 +79,13 @@
 <div class="nav">
     <ul>
         <li><a href="ha_index.php">หน้าหลัก</a></li>
-        <li><a href="ha_main.php">จัดการตัวชี้วัด</a></li>
+        <?php 
+        if($_SESSION['sOfficer']==='สุมีนา โมเหล็ก' OR $_SESSION['smenucode']==='ADM'){
+            ?>
+            <li><a href="ha_main.php">จัดการตัวชี้วัด</a></li>
+            <?php 
+        }
+        ?>
         <li><a href="ha_report.php">รายงาน</a></li>
     </ul>
 </div>
