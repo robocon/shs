@@ -347,7 +347,7 @@ if(!empty($drug_items)){
         $pdf->Rect(5, $drug_y, 29.5, $muticell_h);
         $pdf->Cell(5, 5, $pdf->conv($i),1,0,'C');
         $pdf->SetXY(5, $drug_y);
-        $pdf->SetFont('THSarabun','B',9);
+        $pdf->SetFont('THSarabun','B',12);
         $pdf->MultiCell(29.5, 5, "\n".toUTF($di['tradname']),0);
 
         $pdf->SetXY(5, $pdf->GetY());
@@ -362,6 +362,7 @@ if(!empty($drug_items)){
 
         // �ӹǹ
         $pdf->SetXY(57, $drug_y);
+        $pdf->SetFont('THSarabun','',12);
         $pdf->Cell(12.5, $muticell_h, $pdf->conv($di['amount']),1,0,'C');
 
         // Last dose
