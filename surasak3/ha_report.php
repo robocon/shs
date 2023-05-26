@@ -224,11 +224,11 @@ if ($page==='search') {
         $qm = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$main_id'");
         $main = $qm->fetch_assoc();
 
-        $q_field = $dbi->query("SELECT `id`,`name` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
+        $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
         $field_items = array();
         while ($f = $q_field->fetch_assoc()) {
             $fid = $f['id'];
-            $field_items[$fid] = $f['name'];
+            $field_items[$fid] = array('name'=>$f['name'], 'target'=>$f['target']);
         }
         
         ?>
@@ -289,6 +289,7 @@ if ($page==='search') {
                     <table class="chk_table">
                         <tr>
                             <th>ตัวชี้วัด</th>
+                            <th>เป้า</th>
                             <?php 
                             foreach ($range_month as $key => $value) {
                                 $m = sprintf("%02d", $value);
@@ -302,7 +303,8 @@ if ($page==='search') {
                         foreach ($field_items as $key => $title) {
                             ?>
                             <tr>
-                                <td><?=$title;?></td>
+                                <td><?=$title['name'];?></td>
+                                <td><?=$title['target'];?></td>
                                 <?php 
                                 foreach ($range_month as $dkey => $dvalue) {
                                     $m = sprintf("%02d", $dvalue);
@@ -340,6 +342,7 @@ if ($page==='search') {
                     <table class="chk_table">
                         <tr>
                             <th>ตัวชี้วัด</th>
+                            <th>เป้า</th>
                             <?php 
                             foreach ($range_year as $key => $value) {
                                 ?>
@@ -350,9 +353,12 @@ if ($page==='search') {
                         </tr>
                         <?php 
                         foreach ($field_items as $key => $v) { 
+                            $name = $v['name'];
+                            $target = $v['target'];
                             ?>
                             <tr>
-                                <td><?=$v;?></td>
+                                <td><?=$name;?></td>
+                                <td><?=$target;?></td>
                                 <?php 
                                 foreach ($range_year as $year_key => $year_value) {
 
