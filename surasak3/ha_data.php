@@ -206,6 +206,7 @@ if($page_action==='update'){
                 <table class="chk_table">
                     <tr>
                         <th>รายละเอียดตัวชี้วัด</th>
+                        <th>เป้า</th>
                         <th></th>
                     </tr>
                     <?php 
@@ -216,6 +217,7 @@ if($page_action==='update'){
                         ?>
                         <tr>
                             <td><?=$af['name'];?></td>
+                            <td><?=$af['target'];?></td>
                             <td><input type="text" name="data[<?=$af['id'];?>]" id="" value="<?=$item_data[$key];?>"></td>
                         </tr>
                         <?php

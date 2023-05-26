@@ -9,8 +9,11 @@ if($action==='save'){
 
     $main_id = sprintf("%s", $_POST['id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
+
+    dump($_POST);
+    exit;
     foreach ($_POST['field_name'] as $key => $fname) {
-        $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
+        $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `target`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
         VALUES 
         (NULL, '$main_id', '$fname', NULL, NOW(), NOW(), '$editor', '$editor', 'y');";
         $save = $dbi->query($sql);
@@ -24,14 +27,18 @@ if($action==='save'){
     $main_id = sprintf("%s", $_POST['id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
 
+    // $target = sprintf("%s", $_POST['target']);
+
     $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ";
     $q = $dbi->query($sql);
     $data_before = array();
     $status_before = array();
+    $target_before = array();
     while ($a = $q->fetch_assoc()) {
         $fkey = $a['id'];
         $data_before[$fkey] = $a['name'];
         $status_before[$fkey] = $a['status'];
+        $target_before[$fkey] = $a['target'];
     }
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
@@ -44,14 +51,16 @@ if($action==='save'){
     if(count($_POST['field_name']) > count($data_before) ){
         $diff = array_diff_assoc($_POST['field_name'], $data_before);
         $status_diff = array_diff_assoc($_POST['status'], $status_before);
+        $target_diff = array_diff_assoc($_POST['target'], $target_before);
         foreach ($diff as $id => $value) {
             
             $status = $status_diff[$id];
+            $target = $target_diff[$id];
 
             // INSERT INTO 
             $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
             VALUES 
-            (NULL, '$main_id', '$value', NULL, NOW(), NOW(), '$editor', '$editor', '$status');";
+            (NULL, '$main_id', '$value', '$target', NULL, NOW(), NOW(), '$editor', '$editor', '$status');";
             $save = $dbi->query($sql);
         }
 
@@ -67,18 +76,25 @@ if($action==='save'){
 
     $intersect_items = array_intersect_key($_POST['field_name'], $data_before);
     $intersect_status = array_intersect_key($_POST['status'], $status_before);
+    $intersect_target = array_intersect_key($_POST['target'], $target_before);
+
     foreach ($intersect_items as $key => $value) { 
         
         $status = $intersect_status[$key];
+        $target = $intersect_target[$key];
 
         $sql = "UPDATE `indicator_field` SET 
         `name`='$value', 
+        `target`='$target',
         `date_edit`=NOW(), 
         `editor`='$editor',
         `status`='$status'
         WHERE (`id`='$key');";
+        // dump($sql);
         $save = $dbi->query($sql);
     }
+
+    // exit;
 
     redirect('ha_field.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
     exit;
@@ -111,9 +127,11 @@ if($q->num_rows > 0){
             }
 
             $fname = $af['name'];
+            $target = $af['target'];
 
             $field_html .= '<tr>';
             $field_html .= '<td><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></td>';
+            $field_html .= '<td><input type="text" name="target['.$fid.']" value="'.$target.'" size="20" /></td>';
             $field_html .= '<td align="center">'.$d_rows.'</td>';
             $field_html .= '<td>'.$remove.'</td>';
 
@@ -163,6 +181,7 @@ if($q->num_rows > 0){
                     <thead>
                         <tr>
                             <th>ชื่อรายละเอียด</th>
+                            <th>เป้าหมาย</th>
                             <th>จำนวนข้อมูล</th>
                             <th>จัดการ</th>
                             <th>สถานะ</th>
@@ -194,6 +213,13 @@ if($q->num_rows > 0){
             input.setAttribute('name', "field_name[]");
             td1.appendChild(input);
 
+            var td_target = document.createElement("td");
+            var input_target = document.createElement("input");
+            input_target.setAttribute('type', "text");
+            input_target.setAttribute('size', "20");
+            input_target.setAttribute('name', "target[]");
+            td_target.appendChild(input_target);
+
             var td2 = document.createElement("td");
             td2.setAttribute('align', "center");
             td2.append('0');
@@ -224,6 +250,7 @@ if($q->num_rows > 0){
             td3.appendChild(in_a);
 
             tr.appendChild(td1);
+            tr.appendChild(td_target);
             tr.appendChild(td2);
             tr.appendChild(td3);
             tr.appendChild(td4);
