@@ -57,7 +57,8 @@ if($action==='search'){
             SELECT `row_id` AS `id`,SUBSTRING(`date`,1,10) AS `date`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$date'
         ) AS a 
         LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode`
-        WHERE a.`amount` > 0";
+        WHERE a.`amount` > 0 
+        ORDER BY `date` DESC";
         $q = $dbi->query($sql);
         $a_rows = $q->num_rows;
         if($a_rows>0){
@@ -91,6 +92,12 @@ if($action==='search'){
         h1{
             font-size:38px;
         }
+        @media only screen and (max-device-width: 896px) {
+            #menu_left, #menu_right{
+                float:none!important;
+                width:100%!important;
+            }
+        }
         .clearfix::after {
             content: "";
             clear: both;
@@ -112,11 +119,12 @@ if($action==='search'){
             background-color: #ffff97;
             cursor: pointer;
         }
+        
     </style>
 </head>
 <body>
 <div class="clearfix">
-    <div style="width:50%; float:left;">
+    <div style="width:50%; float:left;" id="menu_left">
         <div>
             <table>
                 <tr>
@@ -142,7 +150,7 @@ if($action==='search'){
                 <p><b>ชื่อ-สกุล: </b><span id="pt_name"></span> <b>เลขบัตร: </b><span id="pt_idcard"></span> <b>เพศ: </b><span id="pt_sex"></span></p>
                 <p><b>HN: </b><span id="pt_hn"></span> <b>สิทธิการรักษา: </b><span id="pt_ptright"></span> </p>
             </div>
-            <table id="drugrxContainer" class="chk_table" width="80%">
+            <table id="drugrxContainer" class="chk_table" width="95%">
                 <thead>
                     <tr style="background-color: #04AA6D; color: white;">
                         <th></th>
@@ -157,7 +165,7 @@ if($action==='search'){
         </div>
     </div>
     
-    <div style="position:relative; width:50%; float:left;">
+    <div style="position:relative; width:50%; float:left;" id="menu_right">
         <form action="hndrugcheck_print.php" method="post" id="phardepSearch" target="_blank">
             <table width="100%">
                 <tr>
@@ -186,6 +194,8 @@ if($action==='search'){
                             </table>
                             <button type="submit">พิมพ์ใบ MR</button>
                             <input type="hidden" name="phardep_id" id="phardep_id">
+                            <input type="hidden" name="hn" id="print_hn">
+                            <input type="hidden" name="ptname" id="print_ptname">
                         </div>
                         
                     </td>
@@ -255,6 +265,9 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
                 document.getElementById('pt_sex').innerHTML = data.user.sex;
                 document.getElementById('pt_hn').innerHTML = data.user.hn;
                 document.getElementById('pt_ptright').innerHTML = data.user.ptright;
+
+                document.getElementById('print_ptname').value = data.user.ptname;
+                document.getElementById('print_hn').value = data.user.hn;
 
                 // document.getElementById('').innerHTML = xxx;
 
@@ -340,13 +353,13 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
         document.getElementById('showFromSelected').innerHTML += tem;
     }
 
-    document.getElementById("phardepSearch").onsubmit = function(e){
-        var allItem = document.getElementsByClassName("dItem");
-        if(allItem.length === 0){
-            alert("กรุณาเลือก Visit ที่ต้องการ");
-            return false;
-        }
-    }
+    // document.getElementById("phardepSearch").onsubmit = function(e){
+    //     var allItem = document.getElementsByClassName("dItem");
+    //     if(allItem.length === 0){
+    //         alert("กรุณาเลือก Visit ที่ต้องการ");
+    //         return false;
+    //     }
+    // }
 
     async function phardepPrint(){
         await fetch('hndrugcheck_print.php', {
@@ -364,16 +377,16 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
 
         // window.pageYOffset ค่า Y ตอน Scroll เม้าส์ลง
         // window.innerHeight ขนาดหน้าจอ
-        if(window.pageYOffset > 127){
+        // if(window.pageYOffset > 127){
 
-            ilc.style.position = 'fixed';
-            ilc.style.width = '-webkit-fill-available';
-            ilc.style.top = '0';
+        //     ilc.style.position = 'fixed';
+        //     ilc.style.width = '-webkit-fill-available';
+        //     ilc.style.top = '0';
 
-        }else{
-            ilc.style.position = 'relative';
-            ilc.style.width = 'auto';
-        }
+        // }else{
+        //     ilc.style.position = 'relative';
+        //     ilc.style.width = 'auto';
+        // }
     };
 
     
