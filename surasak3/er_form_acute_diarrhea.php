@@ -195,7 +195,6 @@ if($q->num_rows > 0){
         </div>
         <?php
     }
-
     if($view==='print'){
         ?>
         <script>
