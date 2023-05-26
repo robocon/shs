@@ -148,18 +148,26 @@ if($numj > 0){
 
 
 //----------------------------เช็คแพ้ยา
-$rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
+$rsql= "SELECT drugcode,tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' AND drugcode != '' GROUP BY drugcode";
 $rquery = mysql_query($rsql);
-$rnum=mysql_num_rows($rquery);		
+$rnum=mysql_num_rows($rquery);
+$drugreact_list_items = array();	
 if($rnum > 0){
-	echo "<script>alert('ผู้ป่วย HN : $sHn มีประวัติแพ้ยาดังต่อไปนี้ ";
-	while($rrows= mysql_fetch_array($rquery)){
-			$tradname=$rrows["tradname"];
-			$advreact=$rrows["advreact"];
-			$asses=$rrows["asses"];
-			echo "$tradname...$advreact($asses), ";			
+	$drugreact_txt = '';
+	while($rrows= mysql_fetch_array($rquery)){ 
+
+		$drugreact_list_items[] = $rrows['drugcode'];
+
+		$tradname=$rrows["tradname"];
+		$advreact=$rrows["advreact"];
+		$asses=$rrows["asses"];
+		$drugreact_txt .= $tradname.'...'.$advreact.'('.$asses.')\n ';			
 	}
-	echo "');</script>";	
+	?>
+	<script type="text/javascript">
+		alert("ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้\n <?=$drugreact_txt;?>");
+	</script>
+	<?php	
 }else{
 	//echo "<script>alert('ผู้ป่วย HN : $sHn ไม่มีประวัติแพ้ยา');";  
 }
@@ -208,25 +216,85 @@ if( mysql_num_rows($res) > 0 ){
 	</div>
 	<?php
 }
-?>
-<table>
- <tr >
- <th bgcolor=CD853F><font face='Angsana New'>#</th>
- <th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
-  <th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
-    <th bgcolor=CD853F><font face='Angsana New'>part</th>
-  <th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
-  <th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
-  <th bgcolor=CD853F><font face='Angsana New'>วิธีใช้</th>
-  <th bgcolor=CD853F><font face='Angsana New'>แก้ไขวิธีใช้</th>
-<!--  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>-->
-   <th bgcolor=CD853F><font face='Angsana New'>#</th>
-  <th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
-   <th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
-   <th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
-    
- </tr>
 
+$d=substr($dDate,8,2);
+$m=substr($dDate,5,2);
+$y=substr($dDate,0,4);
+
+$sdate=substr($_GET["sDate"],0,10);
+list($y1,$m1,$d1)=explode("-",$sdate);
+$chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
+
+$sqlopday = "select toborow,diag,age from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+$res= mysql_query($sqlopday) or die("Query failed");
+list($toborow,$diagnosis,$age) = mysql_fetch_row($res);
+$tob = substr($toborow,0,4);
+
+
+$sqlopday1 = "select idcard,dbirth from opcard where hn='$sHn'";
+$res1= mysql_query($sqlopday1) or die("Query failed");
+list($idcard,$dbirth) = mysql_fetch_row($res1);
+$yy = substr($dbirth,0,4);
+$mm = substr($dbirth,5,2);
+$dd = substr($dbirth,8,2);
+$birthday="$dd/$mm/$yy";
+
+print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
+print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <B>สิทธิ:$sPtright</B><br> ";
+print "<font face='Angsana New'>เลขที่บัตรประชาชน : $idcard &nbsp;&nbsp;&nbsp;&nbsp; วัน/เดือน/ปีเกิด : $birthday &nbsp;&nbsp;&nbsp;&nbsp; อายุ : $age<br> ";
+?>
+<style>
+	.clearfix::after {
+		content: "";
+		clear: both;
+		display: table;
+	}
+	.react-item{
+		float: left;
+		margin-right: 1.5em;
+		font-size: 22px;
+		line-height: 24px;
+	}
+</style>
+<?php 
+$test_i = 1;
+$item_per_line = 4;
+
+$query12 = "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' order by row_id asc ";
+$result12 = mysql_query($query12) or die("Query failed");
+$drugreact_rows = mysql_num_rows($result12);
+if ($drugreact_rows > 0) {
+	?>
+	<div style="position: relative; color:#FF0000;" class="clearfix">
+		<div class="react-item">แพ้ยา: </div>
+		<?php
+		while(list ($tradname,$advreact,$asses) = mysql_fetch_row ($result12)){ 
+			?>
+			<div class="react-item"><?="$tradname...$advreact($asses)";?></div>
+			<?php
+		}
+		?>
+		</div>
+	<?php
+}
+?>
+	
+<table>
+	<tr >
+		<th bgcolor=CD853F><font face='Angsana New'>#</th>
+		<th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
+		<th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
+		<th bgcolor=CD853F><font face='Angsana New'>part</th>
+		<th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
+		<th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
+		<th bgcolor=CD853F><font face='Angsana New'>วิธีใช้</th>
+		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขวิธีใช้</th>
+		<!--  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>-->
+		<th bgcolor=CD853F><font face='Angsana New'>#</th>
+		<th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
+		<th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
+		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
+	</tr>
 <?php
 $inject = false;
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
@@ -234,42 +302,8 @@ $inject = false;
 	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."' AND a.date = '".$_GET["sDate"]."' ";
 	//echo $query;
     $result = mysql_query($query) or die("Query failed");
-$n='0';
-    $d=substr($dDate,8,2);
-    $m=substr($dDate,5,2);
-    $y=substr($dDate,0,4);
-	
-	$sdate=substr($_GET["sDate"],0,10);
-	list($y1,$m1,$d1)=explode("-",$sdate);
-	$chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
-	
-	$sqlopday = "select toborow,diag,age from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
-	//echo $sqlopday;
-	$res= mysql_query($sqlopday) or die("Query failed");
-	list($toborow,$diagnosis,$age) = mysql_fetch_row($res);
-	$tob = substr($toborow,0,4);
-
-
-	$sqlopday1 = "select idcard,dbirth from opcard where hn='$sHn'";
-	//echo $sqlopday;
-	$res1= mysql_query($sqlopday1) or die("Query failed");
-	list($idcard,$dbirth) = mysql_fetch_row($res1);
-	$yy = substr($dbirth,0,4);
-	$mm = substr($dbirth,5,2);
-	$dd = substr($dbirth,8,2);
-	$birthday="$dd/$mm/$yy";
-	
-    print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
-    print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <B>สิทธิ:$sPtright</B><br> ";
-	print "<font face='Angsana New'>เลขที่บัตรประชาชน : $idcard &nbsp;&nbsp;&nbsp;&nbsp; วัน/เดือน/ปีเกิด : $birthday &nbsp;&nbsp;&nbsp;&nbsp; อายุ : $age<br> ";
-    // print "<font face='Angsana New'>โรค: $diagnosis<br>";
-	print "<font face='Angsana New' size=5 color=FF0000>แพ้ยา: ";
-	$query12 = "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
-    $result12 = mysql_query($query12) or die("Query failed");
-	while(list ($tradname,$advreact,$asses) = mysql_fetch_row ($result12)){
-		echo $tradname."...".$advreact."(".$asses.") ";
-	}
-	print "</font>";
+	$n='0';
+    
 //    print "แพทย์ :$sDoctor<br><br>";
 	
 	$count_row = mysql_num_rows($result);
