@@ -1516,8 +1516,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				$bgcolor="#FF99CC";
 				$react_txt = '';
 				
+				// หาในรายการแพ้ยาก่อน ถ้าไม่มีให้หาในกลุ่มที่มีโอกาสแพ้ยา(drugreact_group_list)อีกที
 				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
-					$react_txt = '<span style="font-weight:bold;color:red;">แพ้ยา</span>';
+					$react_txt = '<span style="font-weight:bold;background-color:red;">แพ้ยา</span>';
+				}else{
+					$sql_react_group = "SELECT * FROM `drugreact_group_list` WHERE `drugcode` = '".$arr["drugcode"]."' LIMIT 1";
+					if(mysql_query($sql_react_group) > 0){
+						$react_txt = '<span style="font-weight:bold;background-color:orange;">มีโอกาสแพ้ยา</span>';
+					}
 				}
 				
 				if($arr["part"] == "DDY"){
