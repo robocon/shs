@@ -263,7 +263,7 @@ $item_per_line = 4;
 $query12 = "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' order by row_id asc ";
 $result12 = mysql_query($query12) or die("Query failed");
 $drugreact_rows = mysql_num_rows($result12);
-if ($drugreact_rows > 0) {
+if ($drugreact_rows > 0) { 
 	?>
 	<div style="position: relative; color:#FF0000;" class="clearfix">
 		<div class="react-item">แพ้ยา: </div>
@@ -319,11 +319,23 @@ $inject = false;
         $_SESSION["aAmount"][$x]=$amount;
 	
 		if($_SESSION["aDgcode"][$x]=='1DILA' || $_SESSION["aDgcode"][$x]=='1GPO30*'  || $_SESSION["aDgcode"][$x]=='20SGPO30'  || $_SESSION["aDgcode"][$x]=='20SGPO30' || $_SESSION["aDgcode"][$x]=='1COTR4' || $_SESSION["aDgcode"][$x]=='1ALLO3'){
+			$color="#00CCFF";
+		}else{
+			$color="F5DEB3";
+		}
 
-$color="#00CCFF";
-}else{
-$color="F5DEB3";
-}
+		$react_txt = '';
+		$sql = "SELECT * FROM `dt_rechallenge` WHERE `hn` = '$sHn' AND `drugcode` = '$drugcode' ";
+		$q = mysql_query($sql);
+		if(mysql_num_rows($q) > 0){ 
+			$re = mysql_fetch_assoc($q);
+			$react_txt = '<a href="javascript:void(0);" onclick="popup_drugreact(\''.$re['id'].'\')"><span style="font-weight:bold;background-color:red;">แพ้ยา</span></a>';
+		}else{
+			$sql_react_group = "SELECT * FROM `drugreact_group_list` WHERE `drugcode` = '".$arr["drugcode"]."' LIMIT 1";
+			if(mysql_query($sql_react_group) > 0){
+				$react_txt = '<span style="font-weight:bold;background-color:orange;">มีโอกาสแพ้ยา</span>';
+			}
+		}
 
 $ptright=substr($sPtright,0,3);
 //echo $ptright."...<br>";
@@ -355,7 +367,7 @@ $ptright=substr($sPtright,0,3);
         print (" <tr BGCOLOR=$color>\n".
 		   "  <td><font face='Angsana New'>$n</td>\n".
 		   "  <td><font face='Angsana New'>$drugcode</td>\n".
-           "  <td><font face='Angsana New'>$tradname $injectno</td>\n".
+           "  <td><font face='Angsana New'>$tradname $react_txt $injectno</td>\n".
 		   "  <td><font face='Angsana New'>$part<br>$comment</td>\n".
            "  <td><font face='Angsana New'><span id=\"amount_value".$x."\">$amount</span>
 		   <input type=\"text\" style=\"display:none\" name=\"amount".$x."\" value=\"".$amount."\" id=\"amount".$x."\" size=\"5\"></td>\n".
@@ -455,6 +467,11 @@ echo "<table><tr>";
  <div>
 	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a></p>
  </div>
+<script type="text/javascript">
+	function popup_drugreact(id){
+		window.open("dt_show_rechallenge.php?id="+id,"myWindow","width=600,height=300,left=100,top=100");
+	}
+</script>
 <?php
 	$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
 	$strresult = mysql_query($strsql);
