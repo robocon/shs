@@ -80,9 +80,11 @@ if($_GET["action"] == "drugcode" && !empty($_GET['search'])){
 		SELECT `drugcode`,`slcode`,COUNT(`slcode`) AS `sl_rows` FROM `dgprofile` WHERE `drugcode` LIKE '$search_txt%' AND `slcode` != '' GROUP BY `drugcode` ORDER BY `sl_rows` DESC
 	) AS b ON b.`drugcode` = a.`drugcode` 
 	ORDER BY a.`drugcode` ASC;";
-	
-	$result = mysql_query($sql) or die( mysql_error() ) ;
-	if(mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
+	// dump($sql);
+	$res = $dbi->query($sql);
+	// $result = mysql_query($sql) or die( mysql_error() ) ;
+	// if(mysql_num_rows($result) > 0 && $_GET["search"] != "" ){
+	if($res->num_rows > 0 && !empty($_GET["search"])){
 		?>
 		<TABLE width="100%" border="1" bordercolor="009688" cellspacing="0" cellpadding="0"  >
 			<TR>
@@ -104,7 +106,10 @@ if($_GET["action"] == "drugcode" && !empty($_GET['search'])){
 						<?php
 						$i=0;
 
-						while($arr = Mysql_fetch_assoc($result)){
+						// while($arr = Mysql_fetch_assoc($result)){
+						while($arr = $res->fetch_assoc()){
+
+						
 							$drugcode = jschars($arr["tradname"]);
 
 							$mydrugcode = $arr['drugcode'];
@@ -534,8 +539,8 @@ function searchSuggest2(action,str) {
 }
 
 var returnstr = '';
-function update_field(drugcode,tradname,unit,part,slcode,type){ 
-
+function update_field(drugcode,tradname,unit,part,slcode){ 
+	
 	var lists = [<?=implode(',', $drugreact_list_js);?>];
 	var notify = [<?=implode(',', $drugreact_groups_js);?>];
 
@@ -561,6 +566,11 @@ function update_field(drugcode,tradname,unit,part,slcode,type){
 		}
 	}
 
+	console.log(drugcode);
+	console.log(tradname);
+	console.log(unit);
+	console.log(part);
+	console.log(slcode);
 
 	document.getElementById('drugcode').focus();
 	document.getElementById('drugcode').value=drugcode;
@@ -569,6 +579,7 @@ function update_field(drugcode,tradname,unit,part,slcode,type){
 	document.getElementById('unit2').value=part;
 	document.getElementById('drugslip').value=slcode;
 	document.getElementById('listdrugcode').innerHTML='';
+
 }
 
 
@@ -947,17 +958,17 @@ echo "<TR>
 		setTimeout("window.onresize=regenerate",400)
 	}
 
-	window.onload=regenerate2
-	if (document.all){
+	// window.onload=regenerate2
+	// if (document.all){
 
-		themenu=document.all.slidemenubar2.style
-		rightboundary=0
-		leftboundary=-350
-	}else{
-		themenu=document.layers.slidemenubar
-		rightboundary=350
-		leftboundary=10
-	}
+	// 	themenu=document.all.slidemenubar2.style
+	// 	rightboundary=0
+	// 	leftboundary=-350
+	// }else{
+	// 	themenu=document.layers.slidemenubar
+	// 	rightboundary=350
+	// 	leftboundary=10
+	// }
 	
 	function pull_draw(){
 
