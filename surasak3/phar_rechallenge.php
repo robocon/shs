@@ -7,7 +7,7 @@ $dbi->query("SET NAMES UTF8");
 $hn = sprintf("%s", $_GET['hn']);
 $drugcode = sprintf("%s", $_GET['drugcode']);
 $returnstr = sprintf("%s", $_GET['returnstr']);
-// $doctor = sprintf("%s", $_GET['doctor']);
+$editor = sprintf("%s", $_SESSION['sOfficer']);
 
 $action = sprintf("%s",$_POST['action']);
 if($action==='save'){ 
@@ -22,9 +22,9 @@ if($action==='save'){
 
     $datehn = date('Y-m-d').$hn;
     $sql = "INSERT INTO `dt_rechallenge` 
-    (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`) 
+    (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`, `editor`) 
     VALUES 
-    (NULL, NOW(), '$hn', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr');";
+    (NULL, NOW(), '$hn', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr', '$editor');";
     $save = $dbi->query($sql);
     $msg = 'บันทึกข้อมูลเรียบร้อย';
 
@@ -38,8 +38,6 @@ if($action==='save'){
     </div>
     <script type="text/javascript">
         window.onload = function(){ 
-            // 
-            parent.window.opener.callback_drug_rechallenge();
             setTimeout(function(){
                 window.close();
             }, 2500);
@@ -83,13 +81,24 @@ $op = $q_opday->fetch_assoc();
             <h1>แบบฟอร์มยินยอม Rechallenge</h1>
         </div>
         <div>
-            <form action="dt_drug_rechallenge.php" method="post" id="dt_form" onsubmit="return check_dt_form()">
+            <form action="phar_rechallenge.php" method="post" id="dt_form" onsubmit="return check_dt_form()">
                 <table width="100%">
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>แพทย์:</b> </td>
                         <td>
-                            <?=$doctor;?>
-                            <input type="hidden" name="doctor" value="<?=$doctor;?>">
+                            <?php 
+                            $q = $dbi->query("SELECT * FROM `doctor` WHERE `name` LIKE 'MD%' AND `status` = 'y' AND ( `doctorcode` != '' AND `doctorcode` IS NOT NULL AND `doctorcode` NOT LIKE '000%') ORDER BY `row_id` ASC");
+                            ?>
+                            <select name="doctor" id="doctor">
+                                <option value="">กรุณาเลือกแพทย์</option>
+                                <?php 
+                                while ($a = $q->fetch_assoc()) {
+                                    ?>
+                                    <option value="<?=$a['name'];?>"><?=$a['name'];?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -111,7 +120,7 @@ $op = $q_opday->fetch_assoc();
                         <td><input type="text" name="reason" id="reason"></td>
                     </tr>
                     <tr>
-                        <td align="right" style="background-color:#D4EFDF;"><b>กรุณากรอกเลข ว. ของท่าน</b> </td>
+                        <td align="right" style="background-color:#D4EFDF;"><b>กรุณากรอกเลข ว. </b> </td>
                         <td><input type="text" name="dt_code" id="dt_code"> <b>เพื่อยืนยันการสั่งจ่ายยา</b></td>
                     </tr>
                     <tr>
@@ -126,16 +135,21 @@ $op = $q_opday->fetch_assoc();
             <script type="text/javascript">
                 function check_dt_form(){
                     // event.preventDefault();
-
+                    
+                    var doctor = document.getElementById('doctor');
                     var reason = document.getElementById('reason');
                     var dt_code = document.getElementById('dt_code');
                     var test_return = true;
-                    if(reason.value==''){
+                    if(doctor.value==''){
+                        alert('กรุณาเลือกแพทย์');
+                        test_return = false;
+
+                    }else if(reason.value==''){
                         alert('กรุณาให้เหตุผลการใช้ยา');
                         test_return = false;
 
                     }else if(dt_code.value==''){
-                        alert('กรุณากรอกเลข ว. ของท่าน');
+                        alert('กรุณากรอกเลข ว.');
                         test_return = false;
 
                     }

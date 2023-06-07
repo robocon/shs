@@ -544,28 +544,6 @@ function update_field(drugcode,tradname,unit,part,slcode){
 	var lists = [<?=implode(',', $drugreact_list_js);?>];
 	var notify = [<?=implode(',', $drugreact_groups_js);?>];
 
-	returnstr = [drugcode,tradname,unit,part,slcode].join('|');
-	if(lists.indexOf(drugcode)>-1){
-
-		var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-		if (resConfirm===true) {
-
-			var url = 'phar_rechallenge.php?hn='+encodeURIComponent('<?=$bed["hn"];?>');
-			url += '&drugcode='+encodeURIComponent(drugcode);
-			url += '&returnstr='+encodeURIComponent(returnstr);
-			// url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
-
-			window.open(url,"myWindow","width=600,height=300,left=100,top=100");
-
-		}
-		document.getElementById('listdrugcode').innerHTML = '';
-		return false;
-	}else{
-		if(notify.indexOf(drugcode)>-1){
-			alert("ยาที่สั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา");
-		}
-	}
-
 	console.log(drugcode);
 	console.log(tradname);
 	console.log(unit);
@@ -578,7 +556,39 @@ function update_field(drugcode,tradname,unit,part,slcode){
 	document.getElementById('unit').value=unit;
 	document.getElementById('unit2').value=part;
 	document.getElementById('drugslip').value=slcode;
-	document.getElementById('listdrugcode').innerHTML='';
+	
+	if(lists.indexOf(drugcode)>-1){
+
+		var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+		if (resConfirm===true) {
+
+			returnstr = [drugcode,tradname,unit,part,slcode].join('|');
+
+			var url = 'phar_rechallenge.php?hn='+encodeURIComponent('<?=$bed["hn"];?>');
+			url += '&drugcode='+encodeURIComponent(drugcode);
+			url += '&returnstr='+encodeURIComponent(returnstr);
+			// url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+
+			window.open(url,"myWindow","width=600,height=300,left=100,top=100");
+
+		}else{
+			document.getElementById('drugcode').focus();
+			document.getElementById('drugcode').value='';
+			document.getElementById('drugname').value='';
+			document.getElementById('unit').value='';
+			document.getElementById('unit2').value='';
+			document.getElementById('drugslip').value='';
+		}
+		
+	}else{
+		if(notify.indexOf(drugcode)>-1){
+			alert("ยาที่สั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา");
+		}
+	}
+
+	
+
+	document.getElementById('listdrugcode').innerHTML = '';
 
 }
 
