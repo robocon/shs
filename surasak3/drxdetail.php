@@ -331,8 +331,15 @@ $inject = false;
 			$re = mysql_fetch_assoc($q);
 			$react_txt = '<a href="javascript:void(0);" onclick="popup_drugreact(\''.$re['id'].'\')"><span style="font-weight:bold;background-color:red;">แพ้ยา</span></a>';
 		}else{
-			$sql_react_group = "SELECT * FROM `drugreact_group_list` WHERE `drugcode` = '".$arr["drugcode"]."' LIMIT 1";
-			if(mysql_query($sql_react_group) > 0){
+			
+			$sql_react_group = "SELECT c.`drugcode` FROM ( 
+			SELECT `groupname` FROM `drugreact` WHERE  `hn` = '$sHn' AND `groupname` !='' GROUP BY `groupname` 
+			) AS a 
+			LEFT JOIN `drugreact_group` AS b ON a.`groupname` = b.`name` 
+			LEFT JOIN `drugreact_group_list` AS c ON b.`id`= c.`drugreact_group` 
+			GROUP BY c.`drugcode`";
+			$q_group = mysql_query($sql_react_group);
+			if(mysql_num_rows($q_group) > 0){
 				$react_txt = '<span style="font-weight:bold;background-color:orange;">มีโอกาสแพ้ยา</span>';
 			}
 		}
