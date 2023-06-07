@@ -1515,13 +1515,22 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				
 				$bgcolor="#FF99CC";
 				$react_txt = '';
+
+				$my_hn = $_SESSION['hn_now'];
 				
 				// หาในรายการแพ้ยาก่อน ถ้าไม่มีให้หาในกลุ่มที่มีโอกาสแพ้ยา(drugreact_group_list)อีกที
 				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
 					$react_txt = '<span style="font-weight:bold;background-color:red;">แพ้ยา</span>';
 				}else{
-					$sql_react_group = "SELECT * FROM `drugreact_group_list` WHERE `drugcode` = '".$arr["drugcode"]."' LIMIT 1";
-					if(mysql_query($sql_react_group) > 0){
+					// $sql_react_group = "SELECT * FROM `drugreact_group_list` WHERE `drugcode` = '".$arr["drugcode"]."' LIMIT 1";
+					$sql_react_group = "SELECT c.`drugcode` FROM ( 
+					SELECT `groupname` FROM `drugreact` WHERE  `hn` = '$my_hn' AND `groupname` !='' GROUP BY `groupname` 
+					) AS a 
+					LEFT JOIN `drugreact_group` AS b ON a.`groupname` = b.`name` 
+					LEFT JOIN `drugreact_group_list` AS c ON b.`id`= c.`drugreact_group` 
+					GROUP BY c.`drugcode`";
+					$q_group = mysql_query($sql_react_group);
+					if(mysql_num_rows($q_group) > 0){
 						$react_txt = '<span style="font-weight:bold;background-color:orange;">มีโอกาสแพ้ยา</span>';
 					}
 				}

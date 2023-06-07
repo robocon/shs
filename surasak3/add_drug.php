@@ -544,12 +544,6 @@ function update_field(drugcode,tradname,unit,part,slcode){
 	var lists = [<?=implode(',', $drugreact_list_js);?>];
 	var notify = [<?=implode(',', $drugreact_groups_js);?>];
 
-	console.log(drugcode);
-	console.log(tradname);
-	console.log(unit);
-	console.log(part);
-	console.log(slcode);
-
 	document.getElementById('drugcode').focus();
 	document.getElementById('drugcode').value=drugcode;
 	document.getElementById('drugname').value=tradname;
