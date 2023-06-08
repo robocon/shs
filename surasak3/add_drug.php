@@ -1105,7 +1105,9 @@ echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมี�
 					?>
 					<tr>
 						<td><?=$a['date'];?></td>
-						<td>[<b><?=$a['drugcode'];?></b>] : <?=$a['tradname'];?></td>
+						<td>
+							<a href="javascript:void(0);" onclick="show_rechallenge('<?=$a['id'];?>')">[<b><?=$a['drugcode'];?></b>] : <?=$a['tradname'];?></a>
+						</td>
 						<td><?=$a['doctor'];?></td>
 						<td><?=$a['reason'];?></td>
 					</tr>
@@ -1113,6 +1115,11 @@ echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมี�
 				}
 				?>
 			</table>
+			<script>
+				function show_rechallenge(id){
+					window.open("dt_show_rechallenge.php?id="+id, "WinRechallenge","width=600,height=300,left=100,top=100");
+				}
+			</script>
 			<?php
 		}
 		?>
