@@ -5,6 +5,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $hn = sprintf("%s", $_GET['hn']);
+$an = sprintf("%s", $_GET['an']);
 $drugcode = sprintf("%s", $_GET['drugcode']);
 $returnstr = sprintf("%s", $_GET['returnstr']);
 $editor = sprintf("%s", $_SESSION['sOfficer']);
@@ -13,6 +14,7 @@ $action = sprintf("%s",$_POST['action']);
 if($action==='save'){ 
 
     $hn = sprintf("%s", $_POST['hn']);
+    $an = sprintf("%s", $_POST['an']);
     $drugcode = sprintf("%s", $_POST['drugcode']);
     $returnstr = sprintf("%s", $_POST['returnstr']);
     $reason = sprintf("%s", $_POST['reason']);
@@ -22,9 +24,9 @@ if($action==='save'){
 
     $datehn = date('Y-m-d').$hn;
     $sql = "INSERT INTO `dt_rechallenge` 
-    (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`, `editor`) 
+    (`id`, `date`, `hn`, `an`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`, `editor`) 
     VALUES 
-    (NULL, NOW(), '$hn', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr', '$editor');";
+    (NULL, NOW(), '$hn', '$an', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr', '$editor');";
     $save = $dbi->query($sql);
     $msg = 'บันทึกข้อมูลเรียบร้อย';
 
@@ -128,6 +130,7 @@ $op = $q_opday->fetch_assoc();
                             <button type="submit" style="padding: 8px 16px;">บันทึกข้อมูล</button>
                             <input type="hidden" name="action" value="save">
                             <input type="hidden" name="returnstr" value="<?=$returnstr;?>">
+                            <input type="hidden" name="an" value="<?=$an;?>">
                         </td>
                     </tr>
                 </table>

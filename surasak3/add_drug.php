@@ -6,16 +6,16 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$my_an = sprintf("%s", $_GET["an"]);
+
+$_SESSION["an_now"] = $my_an = sprintf("%s", $_REQUEST["an"]);
 
 $sql = "SELECT an,drugcode,tradname,firstdate,enddate  FROM `dgprofile`  where an='$my_an' and statcon = 'CONT' and onoff='ON' and enddate='".date("Y-m-d")."'";
-//echo $sql;
 $result = mysql_query($sql);
 $num = mysql_num_rows($result);
-$rows=mysql_fetch_array($result);
-$show_an=$rows["an"];
 if($num > 0){
-		echo "<script>alert('ผู้ป่วย AN : $show_an มียาที่ครบกำหนด Cont ยาในวันนี้จำนวน $num รายการ');</script>";
+	$rows=mysql_fetch_array($result);
+	$show_an=$rows["an"];
+	echo "<script>alert('ผู้ป่วย AN : $show_an มียาที่ครบกำหนด Cont ยาในวันนี้จำนวน $num รายการ');</script>";
 }
 
 /**
@@ -24,11 +24,11 @@ if($num > 0){
 $sql = "Select an, hn, ptname, bedcode, ptright, doctor From bed where an = '$my_an' limit 0,1 ";
 $result = Mysql_Query($sql);
 $bed = Mysql_fetch_assoc($result);
-Mysql_free_result($result);
+// Mysql_free_result($result);
 
-session_register("hn_now");
+// session_register("hn_now");
 $my_hn = $_SESSION["hn_now"] = $bed["hn"];
-session_register("an_now");
+// session_register("an_now");
 $_SESSION["an_now"] = $bed["an"];
 $_SESSION["ptright_now"] = $bed["ptright"];
 
@@ -228,8 +228,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 
 if(isset($_GET["action"]) && $_GET["action"] == "drug_alert"){
 	
-	$sql = "SELECT row_id, tradname FROM drugreact  where drugcode = '".$_GET["drugcode"]."' AND hn = '".$_SESSION["hn_now"]."' limit 1 ";
-
+	// dump($_SESSION["an_now"]);
+	// dump($_GET['hn']);
+	$hn = sprintf("%s", $_GET['hn']);
+	$sql = "SELECT row_id, tradname FROM drugreact  where drugcode = '".$_GET["drugcode"]."' AND hn = '$hn' limit 1 ";
+	// dump($sql);
 	
 	$result = Mysql_Query($sql);
 	$rows = Mysql_num_rows($result);
@@ -237,7 +240,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_alert"){
 		if($rows == 0){
 			
 		//แพ้ยาตามกลุ่ม
-		$sql1 = "Select drugcode,tradname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and drugcode='".$_GET["drugcode"]."' and groupname !='' limit 1";
+		$sql1 = "Select drugcode,tradname FROM drugreact WHERE  hn = '$hn' and drugcode='".$_GET["drugcode"]."' and groupname !='' limit 1";
 		//echo $sql1;
 		$result1 = mysql_query($sql1);
 		$rows1 = mysql_num_rows($result1);
@@ -265,7 +268,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_alert"){
 			}		
 		}else{			
 		//แพ้ยาตามกลุ่ม
-		$sql1 = "Select drugcode,tradname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and drugcode='".$_GET["drugcode"]."' and groupname !='' limit 1";
+		$sql1 = "Select drugcode,tradname FROM drugreact WHERE  hn = '$hn' and drugcode='".$_GET["drugcode"]."' and groupname !='' limit 1";
 		//echo $sql1;
 		$result1 = mysql_query($sql1);
 		$rows1 = mysql_num_rows($result1);
@@ -540,50 +543,13 @@ function searchSuggest2(action,str) {
 
 var returnstr = '';
 function update_field(drugcode,tradname,unit,part,slcode){ 
-	
-	var lists = [<?=implode(',', $drugreact_list_js);?>];
-	var notify = [<?=implode(',', $drugreact_groups_js);?>];
-
 	document.getElementById('drugcode').focus();
 	document.getElementById('drugcode').value=drugcode;
 	document.getElementById('drugname').value=tradname;
 	document.getElementById('unit').value=unit;
 	document.getElementById('unit2').value=part;
 	document.getElementById('drugslip').value=slcode;
-	
-	if(lists.indexOf(drugcode)>-1){
-
-		var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-		if (resConfirm===true) {
-
-			returnstr = [drugcode,tradname,unit,part,slcode].join('|');
-
-			var url = 'phar_rechallenge.php?hn='+encodeURIComponent('<?=$bed["hn"];?>');
-			url += '&drugcode='+encodeURIComponent(drugcode);
-			url += '&returnstr='+encodeURIComponent(returnstr);
-			// url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
-
-			window.open(url,"myWindow","width=600,height=300,left=100,top=100");
-
-		}else{
-			document.getElementById('drugcode').focus();
-			document.getElementById('drugcode').value='';
-			document.getElementById('drugname').value='';
-			document.getElementById('unit').value='';
-			document.getElementById('unit2').value='';
-			document.getElementById('drugslip').value='';
-		}
-		
-	}else{
-		if(notify.indexOf(drugcode)>-1){
-			alert("ยาที่สั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา");
-		}
-	}
-
-	
-
 	document.getElementById('listdrugcode').innerHTML = '';
-
 }
 
 
@@ -668,32 +634,62 @@ function add_session(){
 		var enddate;
 		an = '<?php echo $_GET["an"];?>';
 		drugcode = document.getElementById('drugcode').value;
-		drugcode = encodeURI(drugcode);
+		drugcode = encodeURIComponent(drugcode);
 		slcode = document.getElementById('drugslip').value;
-		slcode = encodeURI(slcode);
+		slcode = encodeURIComponent(slcode);
 		tradname = document.getElementById('drugname').value;
 		part = document.getElementById('unit2').value;
 		amount = document.getElementById('amount').value;
 		statcon = document.getElementById('statcon').value;
 		firstdate = document.getElementById('firstdate').value;
 		enddate = document.getElementById('enddate').value;		
+
+
+		var drug_alert = [<?=implode(',', $drugreact_list_js);?>];
+		var drug_notify = [<?=implode(',', $drugreact_groups_js);?>];
+
+		if(drug_alert.indexOf(drugcode)>-1){
+
+			var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+			if (resConfirm===true) {
+
+				returnstr = [drugcode,tradname,unit,part,slcode].join('|');
+
+				var url = 'phar_rechallenge.php?hn='+encodeURIComponent('<?=$bed["hn"];?>');
+				url += '&drugcode='+drugcode;
+				url += '&returnstr='+returnstr;
+				url += '&an='+encodeURIComponent(an);
+				// url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+
+				window.open(url,"myWindow","width=600,height=300,left=100,top=100");
+
+			}else{
+				return false;
+			}
+
+		}else{
+			if(drug_notify.indexOf(drugcode)>-1){
+				alert("ยาที่สั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา");
+			}
+		}
+
 	
-		if(drug_alert(document.getElementById('drugcode').value)){ //ตรวจสอบการแพ้ยา
-		if(drug_interaction(document.getElementById('drugcode').value)){ //ตรวจสอบ drug interaction
+		// if(drug_alert(document.getElementById('drugcode').value, '<?=$my_hn;?>')){ //ตรวจสอบการแพ้ยา
+			if(drug_interaction(document.getElementById('drugcode').value)){ //ตรวจสอบ drug interaction
 
-		action = "add";
-		url = 'listAjax.php?action='+action+'&drugcode='+drugcode+'&tradname='+tradname+'&slcode='+slcode+'&amount='+amount+'&statcon='+statcon+'&part='+part+'&an='+an+'&firstdate='+firstdate+'&enddate='+enddate;
+				action = "add";
+				url = 'listAjax.php?action='+action+'&drugcode='+drugcode+'&tradname='+tradname+'&slcode='+slcode+'&amount='+amount+'&statcon='+statcon+'&part='+part+'&an='+an+'&firstdate='+firstdate+'&enddate='+enddate;
 
-		xmlhttp = newXmlHttp();
-		xmlhttp.open("GET", url, false);
-		xmlhttp.send(null);
+				xmlhttp = newXmlHttp();
+				xmlhttp.open("GET", url, false);
+				xmlhttp.send(null);
 
-		document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
-		clearData();
-		document.getElementById('drugcode').focus();
-		list_off();
-		}
-		}
+				document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
+				clearData();
+				document.getElementById('drugcode').focus();
+				list_off();
+			}
+		// }
 
 	}
 }
@@ -773,12 +769,12 @@ function list_off(){
 
 }
 
-function drug_alert(drugcode){
+function drug_alert(drugcode,hn){
 
 	var return_drug_alert;
 
 	xmlhttp = newXmlHttp();
-	url = 'add_drug.php?action=drug_alert&drugcode='+ drugcode;
+	url = 'add_drug.php?action=drug_alert&drugcode='+ drugcode+'&hn='+hn;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	return_drug_alert = xmlhttp.responseText;
@@ -1085,6 +1081,42 @@ echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมี�
 			}
 		?>
 	</TD>
+	<td valign="top">
+		
+		<?php 
+		$sql = "SELECT a.*,b.`tradname` FROM ( SELECT `id`,`hn`,`an`,`drugcode`,`doctor`,`reason`, SUBSTRING(`date`,1,10) AS `date` FROM `dt_rechallenge` WHERE `an` = '$an' ORDER BY `id` ASC ) AS a 
+		LEFT JOIN `druglst` AS b ON a.`drugcode` = b.`drugcode` ";
+		$q = $dbi->query($sql);
+		if ($q->num_rows > 0) {
+			?>
+			<table>
+				<tr>
+					<th colspan="4"><b>บันทึก Rechallenge</b></th>
+				</tr>
+				<tr>
+					<th>วันที่บันทึก</th>
+					<th>รหัสยา</th>
+					<th>แพทย์</th>
+					<th>เหตุผล</th>
+				</tr>
+				<?php 
+				while ($a = $q->fetch_assoc()) { 
+
+					?>
+					<tr>
+						<td><?=$a['date'];?></td>
+						<td>[<b><?=$a['drugcode'];?></b>] : <?=$a['tradname'];?></td>
+						<td><?=$a['doctor'];?></td>
+						<td><?=$a['reason'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+			<?php
+		}
+		?>
+	</td>
 </TR>
 		<?php 
 		//แพ้ยาตามกลุ่ม
@@ -1104,11 +1136,14 @@ echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมี�
 				$i++;
 			}
 			$_SESSION["list_drugreact"] = implode(", ",$txt21);
+
+			echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>",$keyword," ",$txt_t," ",$txt1,"</B></FONT></TD><td></td></TR>"; 
+
 		}else{
 			//echo $sql;
 			$_SESSION["list_drugreact"] = "";
 		}
-			echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>",$keyword," ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
+			
 		?>
 </TABLE>
 
