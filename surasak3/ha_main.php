@@ -126,6 +126,7 @@ if($action==='save'){
                 <th>สถานะ</th>
                 <th>สร้างโดย</th>
                 <th>จำนวนรายการ</th>
+                <th>เรียงลำดับ</th>
                 <th>จัดการ</th>
                 <th>สถานะ</th>
             </tr>
@@ -157,6 +158,10 @@ if($action==='save'){
                 <td><?=$a['status'];?></td>
                 <td><?=$a['creater'];?></td>
                 <td><?=$field_rows;?></td>
+                <td>
+                    <img src="images/icons/iconmonstr-caret-up-filled-32.png" alt="">
+                    <img src="images/icons/iconmonstr-caret-down-filled-32.png" alt="">
+                </td>
                 <td align="center">
                     <a href="ha_field.php?id=<?=$a['id'];?>" class="icon"><img src="images/icons/Application.png" title="แก้ไขรายละเอียดตัวชี้วัด"/></a> 
                 <?php 
