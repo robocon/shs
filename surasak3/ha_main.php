@@ -114,7 +114,7 @@ if($action==='save'){
         }
     </script>
     <?php 
-    $q = $dbi->query("SELECT * FROM `indicator_main` ");
+    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `id` ASC");
     if($q->num_rows>0){ 
         ?>
         <div>&nbsp;</div>
@@ -132,10 +132,18 @@ if($action==='save'){
             </tr>
         <?php
         $i = 1;
-        while ($a = $q->fetch_assoc()) { 
+        while ($a = $q->fetch_assoc()) {  
+
+            $main_id = $a['id'];
+
+            $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id'");
+            if($q2->num_rows>0){
+                $b = $q2->fetch_all();
+                dump($b);
+            }
 
             $on_off_color = 'green';
-            $main_id = $a['id'];
+            
             $txt_status = 'แสดง';
             if($a['status']=='n'){
                 $txt_status = 'ซ่อน';
