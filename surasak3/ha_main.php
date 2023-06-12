@@ -114,8 +114,31 @@ if($action==='save'){
         }
     </script>
     <?php 
-    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `id` ASC");
-    if($q->num_rows>0){ 
+    $all_items = array();
+    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort`,`id` ASC");
+    $q_num_rows = $q->num_rows;
+    if($q_num_rows > 0){ 
+        
+        while ($a = $q->fetch_assoc()) { 
+
+            $parent_id = $a['id'];
+            $all_items[] = $a;
+
+            $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$parent_id' ORDER BY `sort` ASC");
+            $q2_num_rows = $q2->num_rows;
+            if($q2_num_rows > 0){
+
+                while ($sub = $q2->fetch_assoc()) {
+                    $all_items[] = $sub;
+                }
+            }
+
+        }
+    }
+    
+    
+    // if($q->num_rows>0){ 
+    if(count($all_items) > 0){
         ?>
         <div>&nbsp;</div>
         <table class="chk_table">
@@ -123,7 +146,6 @@ if($action==='save'){
                 <th>#</th>
                 <th>วันที่สร้าง</th>
                 <th>ชื่อ</th>
-                <th>สถานะ</th>
                 <th>สร้างโดย</th>
                 <th>จำนวนรายการ</th>
                 <th>เรียงลำดับ</th>
@@ -132,15 +154,15 @@ if($action==='save'){
             </tr>
         <?php
         $i = 1;
-        while ($a = $q->fetch_assoc()) {  
-
+        // while ($a = $q->fetch_assoc()) {  
+        foreach($all_items as $a){
             $main_id = $a['id'];
 
-            $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id'");
-            if($q2->num_rows>0){
-                $b = $q2->fetch_all();
-                dump($b);
-            }
+            // $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id'");
+            // if($q2->num_rows>0){
+            //     $b = $q2->fetch_all();
+            //     dump($b);
+            // }
 
             $on_off_color = 'green';
             
@@ -162,13 +184,28 @@ if($action==='save'){
             <tr>
                 <td><?=$i;?></td>
                 <td><?=$a['date_create'];?></td>
-                <td><a href="ha_main.php?id=<?=$a['id'];?>&page=edit" title="คลิกเพื่อแก้ไข"><?=$a['name'];?></a></td>
-                <td><?=$a['status'];?></td>
+                <td>
+                    <?php 
+                    if($a['parent']){
+                        ?>
+                        <span>|--&nbsp;</span>
+                        <?php
+                    }
+                    ?>
+                    <a href="ha_main.php?id=<?=$a['id'];?>&page=edit" title="คลิกเพื่อแก้ไข"><?=$a['name'];?></a>
+                </td>
                 <td><?=$a['creater'];?></td>
                 <td><?=$field_rows;?></td>
                 <td>
-                    <img src="images/icons/iconmonstr-caret-up-filled-32.png" alt="">
-                    <img src="images/icons/iconmonstr-caret-down-filled-32.png" alt="">
+                    <?php 
+                    if($a['sort']){
+                        ?>
+                        <span><?=$a['sort'];?></span>
+                        <a href="#"><img src="images/icons/iconmonstr-caret-up-filled-32.png" alt=""></a>
+                        <a href="#"><img src="images/icons/iconmonstr-caret-down-filled-32.png" alt=""></a>
+                        <?php
+                    }
+                    ?>
                 </td>
                 <td align="center">
                     <a href="ha_field.php?id=<?=$a['id'];?>" class="icon"><img src="images/icons/Application.png" title="แก้ไขรายละเอียดตัวชี้วัด"/></a> 
