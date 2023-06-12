@@ -115,13 +115,23 @@ if($action==='save'){
     </script>
     <?php 
     $all_items = array();
-    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort`,`id` ASC");
+    $q = $dbi->query("SELECT *,(select max(`sort`) from indicator_main where parent is null ) as max_sort FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort`,`id` ASC");
     $q_num_rows = $q->num_rows;
     if($q_num_rows > 0){ 
         
         while ($a = $q->fetch_assoc()) { 
 
             $parent_id = $a['id'];
+            $max_sort = $a['max_sort'];
+
+            if($a['sort']==1){
+                $a['position'] = 'top';
+            }
+
+            if($a['sort']==$max_sort){
+                $a['position'] = 'bottom';
+            }
+
             $all_items[] = $a;
 
             $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$parent_id' ORDER BY `sort` ASC");
@@ -129,6 +139,15 @@ if($action==='save'){
             if($q2_num_rows > 0){
 
                 while ($sub = $q2->fetch_assoc()) {
+
+                    if($sub['sort']==1){
+                        $sub['position'] = 'top';
+                    }
+        
+                    if($sub['sort']==$q2_num_rows){
+                        $sub['position'] = 'bottom';
+                    }
+
                     $all_items[] = $sub;
                 }
             }
@@ -200,12 +219,43 @@ if($action==='save'){
                     <?php 
                     if($a['sort']){
                         ?>
-                        <span><?=$a['sort'];?></span>
-                        <a href="#"><img src="images/icons/iconmonstr-caret-up-filled-32.png" alt=""></a>
-                        <a href="#"><img src="images/icons/iconmonstr-caret-down-filled-32.png" alt=""></a>
-                        <?php
+                        <table width="100%">
+                        <tr>
+                            <td width="10%"><?=$a['sort'];?></td>
+                            <td width="33%">
+                                <?php 
+
+                                $ext_url = "";
+                                if($a['parent']){
+                                    $ext_url = "&parent=".$a['parent'];
+                                }
+
+                                $url = "ha_main.php?action=move&id=".$a['id'].$ext_url;
+
+                                if ($a['position']!='top') {
+                                    
+                                    ?>
+                                    <a href="<?=$url.'&direction=up&sort='.($a['sort']-1);?>"><img src="images/icons/iconmonstr-caret-up-filled-32.png" alt="move up" title="เลื่อนขึ้น"></a>
+                                    <?php
+                                }
+                                ?>
+                            </td>
+                            <td width="33%">
+                                <?php 
+                                if ($a['position']!='bottom') {
+                                    ?>
+                                    <a href="<?=$url.'&direction=down&sort='.($a['sort']+1);?>"><img src="images/icons/iconmonstr-caret-down-filled-32.png" alt="move down" title="เลื่อนลง"></a>
+                                    <?php
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                        </table>
+                        
+                        <?php 
                     }
                     ?>
+                    
                 </td>
                 <td align="center">
                     <a href="ha_field.php?id=<?=$a['id'];?>" class="icon"><img src="images/icons/Application.png" title="แก้ไขรายละเอียดตัวชี้วัด"/></a> 
