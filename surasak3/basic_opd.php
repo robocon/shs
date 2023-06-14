@@ -758,7 +758,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" /> <br>
  
-<div style="margin-left:10px;"><input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
+<div style="margin-left:10px;"><input type="button" name="button" id="button" value="บันทึกลงทะเบียนผู้ป่วย OP SI & พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_register.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
 <input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" /></div>
 </span></p>
@@ -920,7 +920,9 @@ $sql = "Select congenital_disease, weight, height,
 (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), 
 (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), 
 (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END ),
-`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
+`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
+`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,
+`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
 From opd 
 where hn = '".$_REQUEST["hn"]."' 
 AND type <> 'ญาติ' 
@@ -954,6 +956,30 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$txt_react2 = implode(",",$txt_react);
 	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
+
+$thidate_today = (date("Y")+543).date("-m-d");
+$sqlopd="select thidate,bp1,bp2,bp3,bp4,pause,weight,height,temperature from opd where hn = '".$_REQUEST["hn"]."' and thidate like '$thidate_today%' order by row_id desc";
+//echo $sqlopd;
+$queryopd = mysql_query($sqlopd);
+$numopd=mysql_num_rows($queryopd);
+if($numopd > 0){
+list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature)=mysql_fetch_array($queryopd);
+	$showtime=substr($thidateopd,11);
+	
+	if($opdweight !=""){
+		$weight=$opdweight;
+	}else{
+		$weight=$weight;
+	}
+
+	if($opdheight !=""){
+		$height=$opdheight;
+	}else{
+		$height=$height;
+	}	
+}else{
+	$showtime="ไม่มีข้อมูล";	
+}	
 
  ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -1198,7 +1224,7 @@ label:hover{
 <tr valign="top">
        <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" >
          <tr>
-           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ </td>
+           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ <br><div style="color:blue;"> *** ผู้ป่วยซักประวัติ/คัดกรองล่าสุดเมื่อเวลา <span style="color:red;"><u><i><?=$showtime;?></i></u></span> ***</div></td>
          </tr>
          <tr>
            <td height="28" colspan="6" align="center" class="data_show"><table width="100%" border="0">
@@ -1210,25 +1236,25 @@ label:hover{
                <td width="13%" align="left"><input name="height" type="text" id="height" size="3" value="<?php echo $height;?>"  onblur="calbmi(this.value,document.form2.weight.value)"/>
 ซม.</td>
                <td width="10%" align="right">T :</td>
-               <td width="37%" align="left"><input name="temperature" type="text" id="temperature" size="3" />
+               <td width="37%" align="left"><input name="temperature" type="text" id="temperature" size="3" value="<?php echo $temperature; ?>" />
 C&deg; </td>
              </tr>
              <tr>
                <td align="right" class="data_show"> P : </td>
-               <td align="left"><input name="pause" type="text" id="pause" size="3" />
+               <td align="left"><input name="pause" type="text" id="pause" size="3" value="<?php echo $pause; ?>" />
                  ครั้ง/นาที</td>
                <td align="right">R :</td>
                <td align="left"><input name="rate" type="text" id="rate" value="20" size="3" />
 ครั้ง/นาที</td>
                <td align="right">BP :</td>
-               <td align="left"><input name="bp1" type="text" id="bp1" size="3" />
+               <td align="left"><input name="bp1" type="text" id="bp1" size="3" value="<?php echo $bp1; ?>" />
 /
-  <input name="bp2" type="text" id="bp2" size="3" />
+  <input name="bp2" type="text" id="bp2" size="3" value="<?php echo $bp2; ?>" />
 mmHg </td>
              </tr>
              <tr>
                <td align="right" class="data_show">BMI :</td>
-               <td align="left"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>"class="forntsarabun1" /></td>
+               <td align="left"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>" class="forntsarabun1" /></td>
                <td align="right"><?
 
 //if(substr($toborow,5) == "ตรวจสุขภาพประจำปี"){	
@@ -1239,7 +1265,7 @@ mmHg </td>
   <?php //} ?></td>
                <td align="right">Repeat BP :</td>
 				<td align="left">
-					<input name="bp3" type="text" id="bp3" size="3" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" />&nbsp;mmHg 
+					<input name="bp3" type="text" id="bp3" size="3" value="<?php echo $bp3; ?>" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" value="<?php echo $bp4; ?>" />&nbsp;mmHg 
 				</td>
              </tr>
 			 <tr>
