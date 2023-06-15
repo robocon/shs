@@ -1652,6 +1652,12 @@ echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"5\"  COLOR=\"#FF
 		}
 
 ?>
+<?
+if($cHn=="62-6400"){
+	echo "<p align='center' style='color:blue; font-weight:bold; font-size:24px;'>** ประเภทบุคคล :  ทหาร/ครอบครัว **</p>";
+}	
+?>
+
 <p align="center">
 <input type='submit' value='   บันทึก / ลงทะเบียน   ' name='B1' style="height:50px;">
 </p>
