@@ -304,6 +304,7 @@ if($_POST["cigarette"]=="1"){
 		`smoke_ncd`='$smoke_ncd',
 		`drink_ncd`='$drink_ncd' 
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
+		$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
 
 	}else{
 			
@@ -328,9 +329,36 @@ if($_POST["cigarette"]=="1"){
 			'$hpi', '$grade','$mind','$the_pill', '".$_POST["cvriskscore"]."' , '".$_POST["cvriskscore_lab"]."', 
 			'$preg','$smoke_ncd','$drink_ncd'
 		);";
-
+		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
+		$opd_id = mysql_insert_id($result);
 	}
-	$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
+	
+	if(!empty($_POST['display_advice'])){
+		$display_advice = implode('|', $_POST['display_advice']);
+		$my_hn = sprintf("%s", $_REQUEST['hn']);
+		$officer = $_SESSION['sOfficer'];
+		$my_date_hn = date('Y-m-d').$my_hn;
+		$my_ptname = sprintf("%s", $_POST['ptname']);
+		$q_advice = $dbi->query("SELECT `id` FROM `opd_advice` WHERE `thdatehn` = '$my_date_hn' ");
+		if($q_advice->num_rows > 0){
+			$opd_advice = $q_advice->fetch_assoc();
+			$opd_advice_id = $opd_advice['id'];
+			
+			$sql_advice = "UPDATE `opd_advice` SET 
+			`ptname`='$my_ptname',
+			`officer`='$officer', 
+			`document`='$display_advice' 
+			WHERE `id` = '$opd_advice_id' ;";
+			$save = $dbi->query($sql_advice);
+
+		}else{
+			
+			$sql_advice = "INSERT INTO `opd_advice` (`id`, `date`, `hn`, `ptname`, `opd_id`, `thdatehn`, `officer`, `document`) 
+			VALUES 
+			(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_id', '$my_date_hn', '$officer', '$display_advice');";
+			$save = $dbi->query($sql_advice);
+		}
+	}
 
 
 	if($_SESSION['smenucode'] == 'ADMEYE')
@@ -756,9 +784,10 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 &nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />
- &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" /> <br>
+ &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" />
+ &nbsp;&nbsp;<input type="button" name="button" id="button" value="ข้อมูล Refer, Observe และคำแนะนำ" onclick="window.open('opd_advice.php') " class="txtsarabun" /> <br>
  
-<div style="margin-left:10px;"><input type="button" name="button" id="button" value="พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
+<div style="margin-left:10px;"><input type="button" name="button" id="button" value="บันทึกลงทะเบียนผู้ป่วย OP SI & พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_register.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
 <input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" /></div>
 </span></p>
@@ -920,7 +949,9 @@ $sql = "Select congenital_disease, weight, height,
 (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), 
 (CASE WHEN cigok = '0' THEN 'Checked' ELSE '' END ), 
 (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END ),
-`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
+`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
+`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,
+`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
 From opd 
 where hn = '".$_REQUEST["hn"]."' 
 AND type <> 'ญาติ' 
@@ -954,6 +985,30 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$txt_react2 = implode(",",$txt_react);
 	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
+
+$thidate_today = (date("Y")+543).date("-m-d");
+$sqlopd="select thidate,bp1,bp2,bp3,bp4,pause,weight,height,temperature from opd where hn = '".$_REQUEST["hn"]."' and thidate like '$thidate_today%' order by row_id desc";
+//echo $sqlopd;
+$queryopd = mysql_query($sqlopd);
+$numopd=mysql_num_rows($queryopd);
+if($numopd > 0){
+list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature)=mysql_fetch_array($queryopd);
+	$showtime=substr($thidateopd,11);
+	
+	if($opdweight !=""){
+		$weight=$opdweight;
+	}else{
+		$weight=$weight;
+	}
+
+	if($opdheight !=""){
+		$height=$opdheight;
+	}else{
+		$height=$height;
+	}	
+}else{
+	$showtime="ไม่มีข้อมูล";	
+}	
 
  ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
@@ -1198,7 +1253,7 @@ label:hover{
 <tr valign="top">
        <td ><table width="100%" border="0" cellpadding="2" cellspacing="2" >
          <tr>
-           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ </td>
+           <td colspan="7" align="center" class="data_title">กรุณากรอกข้อมูลซักประวัติ <br><div style="color:blue;"> *** ผู้ป่วยซักประวัติ/คัดกรองล่าสุดเมื่อเวลา <span style="color:red;"><u><i><?=$showtime;?></i></u></span> ***</div></td>
          </tr>
          <tr>
            <td height="28" colspan="6" align="center" class="data_show"><table width="100%" border="0">
@@ -1210,25 +1265,25 @@ label:hover{
                <td width="13%" align="left"><input name="height" type="text" id="height" size="3" value="<?php echo $height;?>"  onblur="calbmi(this.value,document.form2.weight.value)"/>
 ซม.</td>
                <td width="10%" align="right">T :</td>
-               <td width="37%" align="left"><input name="temperature" type="text" id="temperature" size="3" />
+               <td width="37%" align="left"><input name="temperature" type="text" id="temperature" size="3" value="<?php echo $temperature; ?>" />
 C&deg; </td>
              </tr>
              <tr>
                <td align="right" class="data_show"> P : </td>
-               <td align="left"><input name="pause" type="text" id="pause" size="3" />
+               <td align="left"><input name="pause" type="text" id="pause" size="3" value="<?php echo $pause; ?>" />
                  ครั้ง/นาที</td>
                <td align="right">R :</td>
                <td align="left"><input name="rate" type="text" id="rate" value="20" size="3" />
 ครั้ง/นาที</td>
                <td align="right">BP :</td>
-               <td align="left"><input name="bp1" type="text" id="bp1" size="3" />
+               <td align="left"><input name="bp1" type="text" id="bp1" size="3" value="<?php echo $bp1; ?>" />
 /
-  <input name="bp2" type="text" id="bp2" size="3" />
+  <input name="bp2" type="text" id="bp2" size="3" value="<?php echo $bp2; ?>" />
 mmHg </td>
              </tr>
              <tr>
                <td align="right" class="data_show">BMI :</td>
-               <td align="left"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>"class="forntsarabun1" /></td>
+               <td align="left"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>" class="forntsarabun1" /></td>
                <td align="right"><?
 
 //if(substr($toborow,5) == "ตรวจสุขภาพประจำปี"){	
@@ -1239,7 +1294,7 @@ mmHg </td>
   <?php //} ?></td>
                <td align="right">Repeat BP :</td>
 				<td align="left">
-					<input name="bp3" type="text" id="bp3" size="3" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" />&nbsp;mmHg 
+					<input name="bp3" type="text" id="bp3" size="3" value="<?php echo $bp3; ?>" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" value="<?php echo $bp4; ?>" />&nbsp;mmHg 
 				</td>
              </tr>
 			 <tr>
@@ -1759,10 +1814,13 @@ mmHg </td>
 					}
 
 					function moph_check_vaccine(idcard){ 
-						document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบข้อมูล...';
-						setTimeout(function(){
-							callRequestMoph(idcard);
-						}, 1500);
+						// document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบข้อมูล...';
+						// setTimeout(function(){
+						// 	callRequestMoph(idcard);
+						// }, 1500);
+						var html = '<p>MOPH-IC มีการปรับปรุงการเข้าใช้งานใหม่ด้วยระบบ 2FA ทำให้ไม่สามารถตรวจสอบวัคซีนได้ชั่วคราว ขออภัยในความไม่สะดวก</p>';
+						html += '<p><a href="https://docs.google.com/document/d/1-u5GeKBzzAbRHLBwomXt-ObOwrmqyav2OPOk813-kbc/edit" target="_blank">อ่านคู่มือการใช้งาน MOPH-IC ด้วย 2FA</a></p>';
+						document.getElementById("resVacc").innerHTML = html;
 					}
 
 					function callRequestMoph(idcard){
@@ -1963,7 +2021,7 @@ mmHg </td>
 						</tr>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
-							<td></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_h" value="form_h"><label for="form_h">Sleep Test</label></div></td>
 						</tr>
 					</table>
 				</fieldset>
