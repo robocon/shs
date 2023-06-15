@@ -6,7 +6,7 @@ $Thaidate1=date("d-m-").(date("Y")+543);
 $time=date("H:i:s");
 global $regisdate,$an,$sex,$married,$idcard,
            $warcard,$camp,$goup,$dbirth,$race,$national,$religion,$career,$ptright,$address,
-            $tambol,$ampur,$changwat,$parent,$couple,$guardian;
+            $tambol,$ampur,$changwat,$parent,$couple,$guardian,$thdatehn,$cHn;
  include("connect.inc");
 
  $query = "SELECT title,prefix,runno FROM runno WHERE title = 'vn'";
@@ -48,13 +48,27 @@ $thdatevn=$Thaidate1.$vkew12;
 	$chkdate=(date("Y")+543).date("-m-d"); 
 	$chksql="SELECT tvn FROM depart where date like '$chkdate%' and hn='$cHn'";
 	$chkquery=mysql_query($chksql);
-	list($tvn)=mysql_fetch_array($chkquery);
-	if($tvn!=$vkew12){  // ถ้า Vn ไม่ตรงกัน
-		$edit="UPDATE depart SET tvn='$vkew12' WHERE date like '$chkdate%' and hn='$cHn'";
-		mysql_query($edit);
-	}   
+	$chknum1=mysql_num_rows($chkquery1);
+	if($chknum > 0){	
+		list($tvn)=mysql_fetch_array($chkquery);
+		if($tvn!=$vkew12){  // ถ้า Vn ไม่ตรงกัน
+			$edit="UPDATE depart SET tvn='$vkew12' WHERE date like '$chkdate%' and hn='$cHn'";
+			mysql_query($edit);
+		}   
+	}
    
-
+	//อัพเดท  VN ในตารางค่าใช้จ่าย
+	$chkdate=(date("Y")+543).date("-m-d"); 
+	$chksql1="SELECT tvn FROM dphardep where date like '$chkdate%' and hn='$cHn'";
+	$chkquery1=mysql_query($chksql1);
+	$chknum1=mysql_num_rows($chkquery1);
+	if($chknum1 > 0){
+		list($tvn1)=mysql_fetch_array($chkquery1);
+		if($tvn1!=$vkew12){  // ถ้า Vn ไม่ตรงกัน
+			$edit1="UPDATE dphardep SET tvn='$vkew12' WHERE date like '$chkdate%' and hn='$cHn'";
+			mysql_query($edi1t);
+		}    
+	}
 
 //echo mysql_errno() . ": " . mysql_error(). "\n";
 //echo "<br>";
