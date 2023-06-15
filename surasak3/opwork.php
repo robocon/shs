@@ -257,7 +257,8 @@ If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
 	if($today<>$dVndate){  
 		$nVn=1;
 		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
-		$query ="UPDATE runno SET runno = $nVn,startday=now()  WHERE title='VN'";
+		$enDate = date('Y-m-d H:i:s');
+		$query ="UPDATE runno SET runno = $nVn,startday='$enDate'  WHERE title='VN'";
 		$result = mysql_query($query) or die("Query failed");
 		//   	         echo mysql_errno() . ": " . mysql_error(). "\n";
 		//                       echo "<br>";
