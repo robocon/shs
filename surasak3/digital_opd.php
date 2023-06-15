@@ -590,6 +590,18 @@ if(!empty($show_advice)){
 		<?php
 	}
 
+	if(in_array('form_h',$adv_form)===true){ 
+		?>
+		<div style="font-size:16px;">
+			<div>&#9744; Sleep Test</div>
+			<div>&#9744; คนไข้มาถึงแล้วโทรแจ้ง แพทย์ศุภสิทธิ์</div>
+			<div>&#9744; เมื่อตรวจเสร็จจำหน่ายได้</div>
+			<div>&#9744; Record V/S เมื่อมาถึงและก่อนจำหน่าย</div>
+			<div>&#9744; นัด F/U วันพฤหัสหน้า 13.30 (OPDนอนกรน)</div>
+		</div>
+		<?php
+	}
+
 }
 
 if($_SESSION['smenucode'] == 'ADMEYE'){

@@ -304,6 +304,7 @@ if($_POST["cigarette"]=="1"){
 		`smoke_ncd`='$smoke_ncd',
 		`drink_ncd`='$drink_ncd' 
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
+		$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
 
 	}else{
 			
@@ -328,9 +329,36 @@ if($_POST["cigarette"]=="1"){
 			'$hpi', '$grade','$mind','$the_pill', '".$_POST["cvriskscore"]."' , '".$_POST["cvriskscore_lab"]."', 
 			'$preg','$smoke_ncd','$drink_ncd'
 		);";
-
+		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
+		$opd_id = mysql_insert_id($result);
 	}
-	$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
+	
+	if(!empty($_POST['display_advice'])){
+		$display_advice = implode('|', $_POST['display_advice']);
+		$my_hn = sprintf("%s", $_REQUEST['hn']);
+		$officer = $_SESSION['sOfficer'];
+		$my_date_hn = date('Y-m-d').$my_hn;
+		$my_ptname = sprintf("%s", $_POST['ptname']);
+		$q_advice = $dbi->query("SELECT `id` FROM `opd_advice` WHERE `thdatehn` = '$my_date_hn' ");
+		if($q_advice->num_rows > 0){
+			$opd_advice = $q_advice->fetch_assoc();
+			$opd_advice_id = $opd_advice['id'];
+			
+			$sql_advice = "UPDATE `opd_advice` SET 
+			`ptname`='$my_ptname',
+			`officer`='$officer', 
+			`document`='$display_advice' 
+			WHERE `id` = '$opd_advice_id' ;";
+			$save = $dbi->query($sql_advice);
+
+		}else{
+			
+			$sql_advice = "INSERT INTO `opd_advice` (`id`, `date`, `hn`, `ptname`, `opd_id`, `thdatehn`, `officer`, `document`) 
+			VALUES 
+			(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_id', '$my_date_hn', '$officer', '$display_advice');";
+			$save = $dbi->query($sql_advice);
+		}
+	}
 
 
 	if($_SESSION['smenucode'] == 'ADMEYE')
@@ -756,7 +784,8 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 &nbsp;&nbsp; <input type="button" name="button" id="button" value="แสดงข้อมูล" onclick="window.open('rp_basic_opd.php') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="ใบยินยอม" onclick="window.open('consent4.php') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="เปรียบเทียบผลย้อนหลัง" onclick="window.open('compareopd1.php?hn=<?php echo $hn;?>') " class="txtsarabun" />
- &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" /> <br>
+ &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" />
+ &nbsp;&nbsp;<input type="button" name="button" id="button" value="ข้อมูล Refer, Observe และคำแนะนำ" onclick="window.open('opd_advice.php') " class="txtsarabun" /> <br>
  
 <div style="margin-left:10px;"><input type="button" name="button" id="button" value="บันทึกลงทะเบียนผู้ป่วย OP SI & พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_register.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
@@ -1785,10 +1814,13 @@ mmHg </td>
 					}
 
 					function moph_check_vaccine(idcard){ 
-						document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบข้อมูล...';
-						setTimeout(function(){
-							callRequestMoph(idcard);
-						}, 1500);
+						// document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบข้อมูล...';
+						// setTimeout(function(){
+						// 	callRequestMoph(idcard);
+						// }, 1500);
+						var html = '<p>MOPH-IC มีการปรับปรุงการเข้าใช้งานใหม่ด้วยระบบ 2FA ทำให้ไม่สามารถตรวจสอบวัคซีนได้ชั่วคราว ขออภัยในความไม่สะดวก</p>';
+						html += '<p><a href="https://docs.google.com/document/d/1-u5GeKBzzAbRHLBwomXt-ObOwrmqyav2OPOk813-kbc/edit" target="_blank">อ่านคู่มือการใช้งาน MOPH-IC ด้วย 2FA</a></p>';
+						document.getElementById("resVacc").innerHTML = html;
 					}
 
 					function callRequestMoph(idcard){
@@ -1989,7 +2021,7 @@ mmHg </td>
 						</tr>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
-							<td></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_h" value="form_h"><label for="form_h">Sleep Test</label></div></td>
 						</tr>
 					</table>
 				</fieldset>

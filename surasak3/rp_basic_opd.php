@@ -257,8 +257,10 @@ body,td,th {
 				$final=(1-$z)*100;
 				
 				$pfullscore=number_format($final,2);
-				if($pfullscore >=30){
-					$pfullscore="$pfullscore<br> >30%";
+				if($pfullscore >=30 && $pfullscore < 40){
+					$pfullscore="$pfullscore<br><strong style='color:red;'> >30%</strong>";
+				}else if($pfullscore >=40){
+					$pfullscore="$pfullscore<br><strong style='color:red;'> >40%</strong>";
 				}else{
 					$pfullscore=$pfullscore;
 				}						
@@ -286,8 +288,10 @@ body,td,th {
 					$final_lab=(1-$zz)*100;
 					
 					$pfullscore_lab=number_format($final_lab,2);
-					if($pfullscore_lab >=30){
-						$pfullscore_lab="$pfullscore_lab<br> >30%";
+					if($pfullscore_lab >=30 && $pfullscore_lab < 40){
+						$pfullscore_lab="$pfullscore_lab<br><strong style='color:red;'> >30%</strong>";
+					}else if($pfullscore_lab >=40){
+						$pfullscore_lab="$pfullscore_lab<br><strong style='color:red;'> >40%</strong>";
 					}else{
 						$pfullscore_lab=$pfullscore_lab;
 					}		
