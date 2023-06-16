@@ -9,9 +9,22 @@ if($action==='save'){
 
     $name = sprintf("%s", $_POST['name']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
+    $parent = sprintf("%s", $_POST['parent']);
 
-    $sql = "INSERT INTO `indicator_main` (`id`, `name`, `status`, `date_create`, `date_edit`, `creater`, `editor`) VALUES (
-        NULL, '$name', 'y', NOW(), NOW(), '$editor', '$editor'
+    if (empty($parent)) {
+        $where_parent = " ( `parent` IS NULL OR `parent` = '' ) ";
+        $value_parent = NULL;
+    }else{
+        $where_parent = " `parent` = '$parent' ";
+        $value_parent = "'$parent'";
+    }
+
+    $q_max = $dbi->query("SELECT MAX(`sort`) AS `max_sort` FROM `indicator_main` WHERE $where_parent");
+    $m = $q_max->fetch_assoc();
+    $sort = $m['max_sort']+1;
+
+    $sql = "INSERT INTO `indicator_main` (`id`, `name`, `status`, `date_create`, `date_edit`, `creater`, `editor`, `parent`, `sort`) VALUES (
+        NULL, '$name', 'y', NOW(), NOW(), '$editor', '$editor', $value_parent, '$sort'
     );";
     $q = $dbi->query($sql);
     $msg = 'บันทึกข้อมูลเรียบร้อย';
@@ -24,6 +37,10 @@ if($action==='save'){
 
 }elseif ($action==='edit') {
     
+
+    /**
+     * กรณีที่แก้แล้วมีการปรับเปลี่ยน parent ต้อง sort ใหม่
+     */
     $id = sprintf("%s", $_POST['id']);
     $name = sprintf("%s", $_POST['name']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
@@ -38,6 +55,10 @@ if($action==='save'){
     redirect('ha_main.php', $msg);
     exit;
 }elseif ($action==='delete') { 
+
+    /**
+     * กรณีที่ลบ ต้อง sort ใหม่
+     */
 
     $id = sprintf("%s", $_GET['id']);
     $q = $dbi->query("DELETE FROM `indicator_main` WHERE `id`='$id';");
@@ -60,6 +81,42 @@ if($action==='save'){
         $msg = 'บันทึกข้อมูลไม่สำเร็จ '.$dbi->error;
     }
 
+    redirect('ha_main.php', $msg);
+    exit;
+}elseif ($action==='move') { 
+
+    $id = sprintf("%s", $_GET['id']);
+    $direction = sprintf("%s", $_GET['direction']);
+    $sort = sprintf("%s", $_GET['sort']);
+    $parent = sprintf("%s", $_GET['parent']);
+
+    if (empty($parent)) {
+        $where_parent = " AND ( `parent` IS NULL OR `parent` = '' ) ";
+    }else{
+        $where_parent = " AND `parent` = '$parent' ";
+    }
+
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    
+    if($direction === 'down'){
+        
+        $q_pre = $dbi->query("SELECT * FROM `indicator_main` WHERE `sort` = '$sort' $where_parent ");
+        $pre = $q_pre->fetch_assoc();
+        $pre_id = $pre['id'];
+        $new_sort = $sort - 1;
+        
+    }else if($direction === 'up'){
+
+        $q_pre = $dbi->query("SELECT * FROM `indicator_main` WHERE `sort` = '$sort' $where_parent ");
+        $pre = $q_pre->fetch_assoc();
+        $pre_id = $pre['id'];
+        $new_sort = $sort + 1;
+        
+    }
+
+    $dbi->query("UPDATE `indicator_main` SET `sort` = '$new_sort' WHERE `id` = '$pre_id' ");
+    $dbi->query("UPDATE `indicator_main` SET `sort` = '$sort' WHERE `id` = '$id' ");
+    
     redirect('ha_main.php', $msg);
     exit;
 }
@@ -93,8 +150,30 @@ if($action==='save'){
         <legend><h1>สร้างหัวข้อตัวชี้วัด</h1></legend>
         <form action="ha_main.php" method="post" id="form_ha_main">
             <div style="margin-bottom:8px;">
-                <label for="name">ชื่อหัวข้อ</label>
-                <input type="text" name="name" id="name" value="<?=$item['name'];?>">
+                <table>
+                    <tr>
+                        <td><label for="name">ชื่อหัวข้อ</label></td>
+                        <td><input type="text" name="name" id="name" value="<?=$item['name'];?>"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <select name="parent" id="parent">
+                                <option value="">&gt;&gt;&nbsp;เลือกหัวข้อหลัก&nbsp;&lt;&lt;</option>
+                                <?php 
+                                $sql = "SELECT * FROM `indicator_main` WHERE `parent` IS NULL OR `parent` = '' ";
+                                $q = $dbi->query($sql);
+                                while ($a = $q->fetch_assoc()) {
+                                    $selected = ($a['id'] == $item['parent']) ? 'selected="selected"' : '';
+                                    ?>
+                                    <option value="<?=$a['id'];?>" <?=$selected;?> ><?=$a['name'];?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div>
                 <button type="submit">บันทึก</button>
@@ -115,7 +194,7 @@ if($action==='save'){
     </script>
     <?php 
     $all_items = array();
-    $q = $dbi->query("SELECT *,(select max(`sort`) from indicator_main where parent is null ) as max_sort FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort`,`id` ASC");
+    $q = $dbi->query("SELECT *,(SELECT MAX(`sort`) FROM `indicator_main` WHERE `parent` IS NULL ) as max_sort FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort`,`id` ASC");
     $q_num_rows = $q->num_rows;
     if($q_num_rows > 0){ 
         
@@ -155,8 +234,6 @@ if($action==='save'){
         }
     }
     
-    
-    // if($q->num_rows>0){ 
     if(count($all_items) > 0){
         ?>
         <div>&nbsp;</div>
@@ -173,16 +250,8 @@ if($action==='save'){
             </tr>
         <?php
         $i = 1;
-        // while ($a = $q->fetch_assoc()) {  
         foreach($all_items as $a){
             $main_id = $a['id'];
-
-            // $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id'");
-            // if($q2->num_rows>0){
-            //     $b = $q2->fetch_all();
-            //     dump($b);
-            // }
-
             $on_off_color = 'green';
             
             $txt_status = 'แสดง';
@@ -195,7 +264,6 @@ if($action==='save'){
             if($a['status']=='y'){ 
                 $status_revers = 'n';
             }
-            
 
             $qf = $dbi->query("SELECT `id` FROM `indicator_field` WHERE `main_id` = '$main_id' ");
             $field_rows = $qf->num_rows;
