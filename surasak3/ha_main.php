@@ -4,6 +4,40 @@ include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+function new_sort($parent=null){ 
+    global $dbi;
+
+    if (empty($parent)) {
+        $where_parent = " ( `parent` IS NULL OR `parent` = '' ) ";
+        $value_parent = NULL;
+    }else{
+        $where_parent = " `parent` = '$parent' ";
+        $value_parent = "'$parent'";
+    }
+
+    $sql = "SELECT * FROM `indicator_main` WHERE $where_parent ORDER BY `sort` IS NULL, `sort` ASC";
+    $q = $dbi->query($sql);
+
+    $i = 1;
+    while ($a = $q->fetch_assoc()) {
+        $id = $a['id'];
+        $sql_update = "UPDATE `indicator_main` SET `sort` = '$i' WHERE `id` = '$id`' ";
+        $dbi->query($sql_update);
+        $i++;
+    }
+    
+}
+
+function get_parent_from_id($id){
+    global $dbi;
+
+    $q = $dbi->query("SELECT `parent` FROM `indicator_main` WHERE `id` = '$id' ");
+    $item = $q->fetch_assoc();
+    $parent = $item['parent'];
+
+    return $parent;
+}
+
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='save'){
 
@@ -13,7 +47,7 @@ if($action==='save'){
 
     if (empty($parent)) {
         $where_parent = " ( `parent` IS NULL OR `parent` = '' ) ";
-        $value_parent = NULL;
+        $value_parent = "NULL";
     }else{
         $where_parent = " `parent` = '$parent' ";
         $value_parent = "'$parent'";
@@ -44,28 +78,42 @@ if($action==='save'){
     $id = sprintf("%s", $_POST['id']);
     $name = sprintf("%s", $_POST['name']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
-    
-    $sql = "UPDATE `indicator_main` SET `name`='$name', `date_edit`=NOW(), `editor`='$editor' WHERE (`id`='$id');";
+    $parent = sprintf("%s", $_POST['parent']);
+    if (empty($parent)) {
+        $parent_data = "NULL";
+    }else{
+        $parent_data = "'$parent'";
+    }
+
+    $parent_id = get_parent_from_id($id);
+
+    $sql = "UPDATE `indicator_main` SET `name`='$name', `parent` = $parent_data, `sort` = NULL, `date_edit`=NOW(), `editor`='$editor' WHERE (`id`='$id');";
     $q = $dbi->query($sql);
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if($q===false){
         $msg = 'บันทึกข้อมูลไม่สำเร็จ '.$dbi->error;
+    }
+    new_sort($parent);
+
+    if(!empty($parent_id)){
+        new_sort($parent_id);
     }
     
     redirect('ha_main.php', $msg);
     exit;
 }elseif ($action==='delete') { 
 
-    /**
-     * กรณีที่ลบ ต้อง sort ใหม่
-     */
-
     $id = sprintf("%s", $_GET['id']);
+
+    $parent = get_parent_from_id($id);
+    
     $q = $dbi->query("DELETE FROM `indicator_main` WHERE `id`='$id';");
     $msg = 'บันทึกข้อมูลเรียบร้อย';
     if($q===false){
         $msg = 'บันทึกข้อมูลไม่สำเร็จ '.$dbi->error;
     }
+
+    new_sort($parent);
 
     redirect('ha_main.php', $msg);
     exit;
@@ -136,12 +184,14 @@ if($action==='save'){
     $page = sprintf("%s", $_GET['page']);
 
     $action = 'save';
+    $where_edit = '';
     if($page==='edit'){
         $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$id' LIMIT 1");
         if($q->num_rows > 0){
             $item = $q->fetch_assoc();
             $action = 'edit';
         }
+        $where_edit = " AND `id` != '$id'";
     }
     
     include_once 'ha_menu.php';
@@ -161,7 +211,7 @@ if($action==='save'){
                             <select name="parent" id="parent">
                                 <option value="">&gt;&gt;&nbsp;เลือกหัวข้อหลัก&nbsp;&lt;&lt;</option>
                                 <?php 
-                                $sql = "SELECT * FROM `indicator_main` WHERE `parent` IS NULL OR `parent` = '' ";
+                                $sql = "SELECT * FROM `indicator_main` WHERE ( `parent` IS NULL OR `parent` = '' ) $where_edit ";
                                 $q = $dbi->query($sql);
                                 while ($a = $q->fetch_assoc()) {
                                     $selected = ($a['id'] == $item['parent']) ? 'selected="selected"' : '';
@@ -194,7 +244,8 @@ if($action==='save'){
     </script>
     <?php 
     $all_items = array();
-    $q = $dbi->query("SELECT *,(SELECT MAX(`sort`) FROM `indicator_main` WHERE `parent` IS NULL ) as max_sort FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort`,`id` ASC");
+    // https://www.designcise.com/web/tutorial/how-to-order-null-values-first-or-last-in-mysql
+    $q = $dbi->query("SELECT *,(SELECT MAX(`sort`) FROM `indicator_main` WHERE `parent` IS NULL ) as max_sort FROM `indicator_main` WHERE `parent` IS NULL ORDER BY `sort` IS NULL, `sort`,`id` ASC");
     $q_num_rows = $q->num_rows;
     if($q_num_rows > 0){ 
         
