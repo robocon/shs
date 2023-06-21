@@ -56,7 +56,9 @@ if (mysql_num_rows($result)) {
     } else {
         $sort = "ORDER BY menu_sort ASC ,menu ASC";
     }
-
+    print(" <tr>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/index.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        " </tr>\n");
     print(" <tr>\n" .
         "  <td BGCOLOR='#009933'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n" .
         " </tr>\n");
@@ -96,6 +98,19 @@ if (mysql_num_rows($result)) {
             " </tr>\n");
     }
     ;
+
+    $ua = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
+    if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
+        // do stuff for IE
+        print(" <tr>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        " </tr>\n");
+    }else{
+        print(" <tr>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        " </tr>\n");
+    }
+    
     print(" <tr>\n" .
         "  <td BGCOLOR='#009933'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n" .
         " </tr>\n");

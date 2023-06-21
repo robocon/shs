@@ -1,6 +1,5 @@
 <?php
     session_start();
-	include("connect.php");
     $sOfficer="";
 	$smenucode = "";
 	$sRowid="";
@@ -28,11 +27,9 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-    
-
-	$sIdname = $_SESSION['sIdname'];
-	$sPword = $_SESSION['sPword'];
-
+    include("connect.inc");
+//    print "$username<br>";
+//    print "$password<br>";
     $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
     $result = mysql_query($query) or die( mysql_error($Conn) );
         for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -287,26 +284,28 @@ if($rows){///  ถ้ามี rows
 }/// ปิด if rows		  
 
 }
-	?>
-	<tr>
-		<td style="background-color: #005c5c; color: #ffffff; text-align: center;">สารบัญทั่วไป</td>
-	</tr>
-	<?php
 	//สารบัญทั่วไป ทุกคนดูได้
 	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
 	$result = mysql_query($query) or die( mysql_error($Conn) );
 
-	$all_menu_i = 1;
-	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) { 
-
-		$bg_color = ($all_menu_i%3==0) ? '#009595' : '#008484' ;
-
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 		print (" <tr>\n".
-		"  <td BGCOLOR='$bg_color'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
+		"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
 		" </tr>\n");
-
-		$all_menu_i++;
 	};
+	
+	$ua = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
+    if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
+        // do stuff for IE
+        print(" <tr>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        " </tr>\n");
+    }else{
+        print(" <tr>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        " </tr>\n");
+    }
+
 	print (" <tr>\n".
 	"  <td BGCOLOR='#008400'><a target='_top' class='menulst-refer07' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
 	" </tr>\n");
