@@ -25,7 +25,7 @@ if($action==='search'){
 		$res = array('status'=>400,'message'=>'ข้อมูลผิดพลาด');
 	}else{
 
-		$where = "`idcard` = '$idcard' ";
+		$where = "`pid` LIKE '$value%' ";
 		if($type==='date'){
 			$where = "`createdDate` LIKE '$value%' ";
 		}
@@ -81,9 +81,9 @@ if($action==='search'){
 	</style>
 </head>
 <body>
-	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 d-print-none">
+	<nav class="navbar navbar-expand-md mb-4 d-print-none" data-bs-theme="dark" style="background-color: #20c997;">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="../nindex.htm">HOME</a>
+			<a class="navbar-brand" href="../nindex.htm">หน้าหลัก</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
@@ -116,8 +116,8 @@ if($action==='search'){
 				<form id="dateForm">
 					<div class="row mb-3">
 						<label for="inputDate" class="col-sm-2 col-form-label">เลือกวันที่</label>
-						<div class="col-sm-3">
-							<input type="date" class="form-control" id="inputDate" name="inputDate" value="2023-01-01">
+						<div class="col-sm-4">
+							<input type="date" class="form-control" id="inputDate" name="inputDate" value="<?=date('Y-m-d');?>">
 						</div>
 					</div>
 					<div class="col-md-3">
