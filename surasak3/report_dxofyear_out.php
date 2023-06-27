@@ -861,6 +861,75 @@ C ํ</span></td>
 		<?php
 	}
 
+	/*
+	$q = mysql_query("SELECT * FROM `result1` WHERE `profilecode` = 'LFT' ") or die( mysql_error() );
+	if(mysql_num_rows($q)>0){ 
+		$lft_item = mysql_fetch_assoc($q);
+		$lft_autonumber = $lft_item['autonumber'];
+		$q2 = mysql_query("SELECT * FROM `resultdetail` WHERE `autonumber` = '$lft_autonumber' AND `labcode` IN ('TP','ALB','TB','DB')");
+		while ($a = mysql_fetch_assoc($q2)) {
+			?>
+			<tr>
+				<td valign="top" class="text3"><strong><?=$a['labname'];?>:</strong></td>
+				<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$a['result']?></strong></td>
+				<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+				<td valign="top" class="text">(<?=$a['normalrange']?>)</td>
+				<td valign="top" class="text"></td>
+			</tr>
+			<?php
+		}
+	}
+	*/
+
+	if($result['TP']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>Total Protien</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['TP']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['TPrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_tp']?></strong></td>
+		</tr>
+		<? 
+	}
+	
+	if($result['ALB']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>Albumin</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['ALB']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['ALBrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_alb']?></strong></td>
+		</tr>
+		<? 
+	}
+
+	if($result['TB']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>Total Billirubin</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['TB']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['TBrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_tb']?></strong></td>
+		</tr>
+		<? 
+	}
+
+	if($result['DB']!=""){
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>Direct Billirubin</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['DB']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['DBrange']?>)</td>
+			<td valign="top" class="text"><strong><?=$result['stat_db']?></strong></td>
+		</tr>
+		<? 
+	}
+
+
 	if($result['other1']!=""){?>
     <tr>
       <td colspan="5" valign="top"><strong>การตรวจพิเศษอื่น ๆ </strong></td>

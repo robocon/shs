@@ -2,6 +2,8 @@
 session_start();
 include("connect.inc");
 
+mysql_query("SET NAMES UTF8");
+
 $date_now = date("Y-m-d H:i:s");
 
 
@@ -106,6 +108,12 @@ $list_lab["CEA"] = "CEA";
 $list_lab["PSA"] = "PSA";
 $list_lab["AFP"] = "AFP";
 
+// profilecode = LFT
+$list_lab["TP"] = "TP";
+$list_lab["ALB"] = "ALB";
+$list_lab["TB"] = "TB";
+$list_lab["DB"] = "DB";
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -179,12 +187,12 @@ $date_vn = date("Y-m-d").$arr_view["vn"];
 $result = Mysql_Query($sql);
 list($weight, $height,$waist) = Mysql_fetch_row($result);*/
 
-$sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,waist From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' and thidate like '$thaidate%'";
+$sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,waist From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '$thaidate%'
 $result3 = Mysql_Query($sql3);
 $cou = mysql_num_rows($result3);
 list($temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$waist) = Mysql_fetch_row($result3);
 if($cou=="0"){
-	$sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,doctor,clinic From dxofyear_out where hn = '".$arr_view["hn"]."' and thidate like '".date("Y-m-d")."%'";
+	$sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,doctor,clinic From dxofyear_out where hn = '".$arr_view["hn"]."' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '".date("Y-m-d")."%'
 	$result3 = Mysql_Query($sql3);
 	list($temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$dr,$cli) = Mysql_fetch_row($result3);
 }
@@ -262,9 +270,10 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	) as a , 
 	resultdetail as b  
 	where a.autonumber = b.autonumber 
-	AND parentcode <> 'UA' 
-	AND parentcode <> 'CBC' 
+	AND b.parentcode <> 'UA' 
+	AND b.parentcode <> 'CBC' 
 	Order by a.autonumber ASC ";
+	
 	$result_lab = mysql_query($sql);
 //ค้นหาข้อมูลเดิม
 	

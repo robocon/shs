@@ -1719,6 +1719,96 @@ if(!empty($result_dx["AFP"])){
 	</tr>
 	<?php 
 }
+
+
+if(!empty($result_dx["TP"])){
+	
+	?>
+	<tr>
+		<td align="right" class="profilelab">Total Protien :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['TP']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['TP']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['TPflag']!="N") ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['TP'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['TPrange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['TPflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['TPflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_tp' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_tp' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
+
+if(!empty($result_dx["ALB"])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">Albumin :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['ALB']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['ALB']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['ALBflag']!="N") ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['ALB'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['ALBrange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['ALBflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['ALBflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_alb' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_alb' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
+
+if(!empty($result_dx["TB"])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">Total Billirubin :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['TB']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['TB']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['TBflag']!="N") ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['TB'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['TBrange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['TBflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['TBflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_tb' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_tb' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
+
+if(!empty($result_dx["DB"])){
+	?>
+	<tr>
+		<td align="right" class="profilelab">Direct Billirubin :</td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['DB']?></span></td>
+		<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['DB']?></span></td>
+		<td align="center" bgcolor="#FFFFFF" class="profilehead">
+			<span <?=($result_dx['DBflag']!="N") ? 'style="color:#F00"' : 'style="color:#00F"' ;?>><?=$result_dx['DB'];?></span>
+		</td>
+		<td class="labfont">(<?=$result_dx['DBrange']?>)</td>
+		<td align="center" class="labfont">
+			<span <? if($result_dx['DBflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['DBflag']?></span>
+		</td>
+		<td class="labfont">
+			<input name='stat_db' type='radio' value='ปกติ' /> ปกติ
+			<input name='stat_db' type='radio' value='ผิดปกติ' /> ผิดปกติ
+		</td>
+		<td colspan="4"></td>
+	</tr>
+	<?php 
+}
 ?>
 
 
