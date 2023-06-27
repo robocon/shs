@@ -107,7 +107,7 @@ elseif($view=='display_doctor')
                 <label for="physi_dt">เลือกแพทย์</label>
                 <select class="w3-select w3-border" name="physi_dt" id="physi_dt">
                     <option value="3023">พ.ต.สุทัศน์ เครือแก้ว</option>
-                    <option value="10399">ร.ท.หญิงปุณนาพร อินทรรักษ์</option>
+                    <option value="10399">ร.อ.หญิงปุณนาพร อินทรรักษ์</option>
                     <option value="9927">นางสาววรางคณา ธาตุรักษ์</option>
                     <option value="12560">นางสาววรดา เตจะน้อย</option>
                 </select>
