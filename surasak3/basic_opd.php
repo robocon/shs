@@ -773,7 +773,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 
 <!-------- ดูประวัติการรักษา ------------->
 <span style="margin-left: 30px;"><input type="button" name="button" id="button" value="  เรียกดูประวัติการรักษา E-OPD " onclick="window.open('dt_paperLess.php?hn=<?php echo $hn;?>') " class="button-green" /></span>
-
+<span style="margin-left: 10px;"><button type="button" name="button" id="button" onclick="window.open('digital_opd_form.php?dthn=<?php echo $thidatehn;?>') " class="button-red" /><img src="images/printer.png" height="22px" width="22px" />&nbsp;&nbsp;แบบฟอร์มใบตรวจโรค</button></span>
 
 
   <BR>
@@ -954,7 +954,7 @@ $sql = "Select congenital_disease, weight, height,
 `ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
 From opd 
 where hn = '".$_REQUEST["hn"]."' 
-AND type <> 'ญาติ' 
+AND type <> 'ญาติ'  AND toborow !='' 
 Order by row_id DESC 
 limit 1";
 
@@ -991,7 +991,7 @@ $sqlopd="select thidate,bp1,bp2,bp3,bp4,pause,weight,height,temperature from opd
 //echo $sqlopd;
 $queryopd = mysql_query($sqlopd);
 $numopd=mysql_num_rows($queryopd);
-if($numopd > 0){
+if($numopd > 0){  //ถ้ามีการซักประวัติ
 list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature)=mysql_fetch_array($queryopd);
 	$showtime=substr($thidateopd,11);
 	
@@ -2441,7 +2441,7 @@ mmHg </td>
 		   
 		   &nbsp;&nbsp;<button name="print_new_opd" type="submit" class="button-blue" id="print_new_opd" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" /><img src="images/data-storage.png" height="22px" width="22px" />&nbsp;&nbsp;บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก</button>
 		   
-		   <span style="margin-left: 10px;"><button type="button" name="button" id="button" onclick="window.open('digital_opd_form.php?dthn=<?php echo $thidatehn;?>') " class="button-red" /><img src="images/printer.png" height="22px" width="22px" />&nbsp;&nbsp;แบบฟอร์มใบตรวจโรค</button></span>
+		   
 
 		   <input type="hidden" name="age" value="<?=$age;?>">
            
