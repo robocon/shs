@@ -170,6 +170,9 @@ td p,ol,li{
 	margin: 0;
 	/* padding:0; */
 }
+.under-color{
+	text-decoration-color: red;
+}
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
@@ -974,6 +977,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$drugreact_rows = mysql_num_rows($result);
 	$i=0;
+	$txt_react = array();
 	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ 
 		$dCodeTxt = '';
 		if(!empty($drugcode)){
@@ -981,9 +985,11 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		}
 		$txt_react[$i] = "&nbsp; $dCodeTxt $tradname "; $i++; 
 	}
+	$txt_react2 = '';
+	if(count($txt_react) > 0){
+		$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".implode(",",$txt_react);
+	}
 	
-	$txt_react2 = implode(",",$txt_react);
-	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
 
 $thidate_today = (date("Y")+543).date("-m-d");
@@ -1033,9 +1039,26 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature)=
       <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><strong><?php echo $ptright;?></strong></font> &nbsp;&nbsp;&nbsp;
 				, หมายเหตุ : <?php echo $note;?>		</td>
       </tr>
+	  <?php 
+	  $dateIdcard = date('Y-m-d').$idcard;
+	  $sql = "SELECT * FROM `api_authen` WHERE `dateIdcard` = '$dateIdcard' ";
+	  $q = $dbi->query($sql);
+	  if($q->num_rows==0){
+		?>
+		<tr>
+			<td><p class="headsarabun"><b><u class="under-color"><span style="color:red;">&gt;&gt;</span> วันนี้ผู้ป่วยยังไม่ได้ขอ Authen Code <span style="color:red;">&lt;&lt;</span></u></b></p></td>
+		</tr>
+		<?php
+	  }
+
+	  if(count($txt_react) > 0){
+	  ?>
       <tr class="headsarabun">
         <td><font class="data_drugreact"><?php echo $txt_react2;?></font></td>
       </tr>
+	  <?php 
+	  }
+	  ?>
       <tr>
         <td>เวลาลงทะเบียน : <strong><?php echo $regis_time;?></strong>          , เวลาจ่ายOPD Card : <strong><?php echo $time1;?></strong> , เวลาซักประวัติ : <strong><?php echo date("H:i:s");?></strong></td>
       </tr>
