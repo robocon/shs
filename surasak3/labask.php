@@ -126,6 +126,18 @@
       <tr>
     <td><font color='#0000FF' style='font-size:18px'><?=$showptright;?></font></td>
     </tr>
+	<?php 
+	$dateIdcard = date('Y-m-d').$idcard;
+	$sql = "SELECT * FROM `api_authen` WHERE `dateIdcard` = '$dateIdcard' ";
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q)==0){
+	  ?>
+	  <tr>
+		  <td><font color='#0000FF' style='font-size:18px'><b><u style="text-decoration-color: red;"><span style="color:red;">&gt;&gt;</span> วันนี้ผู้ป่วยยังไม่ได้ขอ Authen Code <span style="color:red;">&lt;&lt;</span></u></b></font></td>
+	  </tr>
+	  <?php
+	}
+	?>
 	<?php if( $sso_alert !== false ){ ?>
 	<tr>
     	<td><?=$sso_alert;?></td>

@@ -78,6 +78,18 @@ if($row){
    	print "$yyy<br>";
 	print "อายุ : $age<br>";
    	print "สิทธิการรักษา :$zzz";
+
+	$dateIdcard = date('Y-m-d').$ccc;
+	$sql = "SELECT * FROM `api_authen` WHERE `dateIdcard` = '$dateIdcard' ";
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q)==0){
+		?>
+		<div>
+		<font color='#0000FF' style='font-size:18px'><b><u style="text-decoration-color: red;"><span style="color:red;">&gt;&gt;</span> วันนี้ผู้ป่วยยังไม่ได้ขอ Authen Code <span style="color:red;">&lt;&lt;</span></u></b></font>
+		</div>
+		<?php
+	}
+	
 	if(substr($zzz,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$ccc%' limit 1 ";
 
