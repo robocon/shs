@@ -235,16 +235,16 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 
 	$TP = $dxdr_ofyear['TP'];
 	$TPrange = $dxdr_ofyear['TPrange'];
-	$stat_tp = $dxdr_ofyear['stat_tp'];
+	$stat_tp = $_POST['stat_tp'];
 	$ALB = $dxdr_ofyear['ALB'];
 	$ALBrange = $dxdr_ofyear['ALBrange'];
-	$stat_alb = $dxdr_ofyear['stat_alb'];
+	$stat_alb = $_POST['stat_alb'];
 	$TB = $dxdr_ofyear['TB'];
 	$TBPrange = $dxdr_ofyear['TBPrange'];
-	$stat_tb = $dxdr_ofyear['stat_tb'];
+	$stat_tb = $_POST['stat_tb'];
 	$DB = $dxdr_ofyear['DB'];
 	$DBrange = $dxdr_ofyear['DBrange'];
-	$stat_db = $dxdr_ofyear['stat_db'];
+	$stat_db = $_POST['stat_db'];
 	
 	$sql ="INSERT INTO  `condxofyear_out` ( 
 		`thidate` ,  `thdatehn` ,  `thdatevn` ,  `hn` ,  `vn` , `ptname`  , 

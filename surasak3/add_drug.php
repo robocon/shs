@@ -533,7 +533,7 @@ function searchSuggest2(action,str) {
 		return false;
 	}
 
-	if(str.length >= 3){
+	if(str.length >= 2){
 		url = 'add_drug.php?action='+action+'&an=<?=$my_an;?>&search=' + str;
 
 		xmlhttp = newXmlHttp();
@@ -1172,7 +1172,7 @@ echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมี�
 	<TR>
 		<TD width="14%"><strong>รหัสยา : </strong></TD>
 	  	<TD width="17%" style="position: relative;">
-			<INPUT NAME="drugcode" TYPE="text" class="txtsarabun" ID = "drugcode" onKeyPress="searchSuggest2('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="13" autofocus>
+			<INPUT NAME="drugcode" TYPE="text" class="txtsarabun" ID="drugcode" onKeyPress="searchSuggest2('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="13" autofocus>
 			
 		</TD>
 		<TD width="14%"><strong>ชื่อยา :		</strong></TD>
