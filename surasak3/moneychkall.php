@@ -1,7 +1,7 @@
 <form method="POST" action="moneychkall1.php">
   <p><font face="Angsana New">&#3609;&#3633;&#3604;&#3617;&#3634;&#3623;&#3633;&#3609;&#3607;&#3637;&#3656;&nbsp;&nbsp;&nbsp;&nbsp;
     <select size="1" name="appdate">
-    <option selected>--�ѹ���--</option>
+    <option selected>--วันที่--</option>
     <option value="01">01</option>
 	  <option value="02">02</option>
 	    <option value="03">03</option>
@@ -39,19 +39,19 @@
   </select>&nbsp;&nbsp;&nbsp;&nbsp;
   <? $m=date('m'); ?>
   <select size="1" name="appmo">
-    <option selected>--��͹--</option>
-    <option value="01" <? if($m=='01'){ echo "selected"; }?>>���Ҥ�</option>
-    <option value="02" <? if($m=='02'){ echo "selected"; }?>>����Ҿѹ��</option>
-    <option value="03" <? if($m=='03'){ echo "selected"; }?>>�չҤ�</option>
-    <option value="04" <? if($m=='04'){ echo "selected"; }?>>����¹</option>
-    <option value="05" <? if($m=='05'){ echo "selected"; }?>>����Ҥ�</option>
-    <option value="06" <? if($m=='06'){ echo "selected"; }?>>�Զع�¹</option>
-    <option value="07" <? if($m=='07'){ echo "selected"; }?>>�á�Ҥ�</option>
-    <option value="08" <? if($m=='08'){ echo "selected"; }?>>�ԧ�Ҥ�</option>
-    <option value="09" <? if($m=='09'){ echo "selected"; }?>>�ѹ��¹</option>
-    <option value="10" <? if($m=='10'){ echo "selected"; }?>>���Ҥ�</option>
-    <option value="11" <? if($m=='11'){ echo "selected"; }?>>��Ȩԡ�¹</option>
-    <option value="12" <? if($m=='12'){ echo "selected"; }?>>�ѹ�Ҥ�</option>
+    <option selected>--เดือน--</option>
+    <option value="01" <? if($m=='01'){ echo "selected"; }?>>มกราคม</option>
+    <option value="02" <? if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
+    <option value="03" <? if($m=='03'){ echo "selected"; }?>>มีนาคม</option>
+    <option value="04" <? if($m=='04'){ echo "selected"; }?>>เมษายน</option>
+    <option value="05" <? if($m=='05'){ echo "selected"; }?>>พฤษภาคม</option>
+    <option value="06" <? if($m=='06'){ echo "selected"; }?>>มิถุนายน</option>
+    <option value="07" <? if($m=='07'){ echo "selected"; }?>>กรกฎาคม</option>
+    <option value="08" <? if($m=='08'){ echo "selected"; }?>>สิงหาคม</option>
+    <option value="09" <? if($m=='09'){ echo "selected"; }?>>กันยายน</option>
+    <option value="10" <? if($m=='10'){ echo "selected"; }?>>ตุลาคม</option>
+    <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
+    <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
   </select>&nbsp;&nbsp; &#3614;.&#3624;.<? 
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;

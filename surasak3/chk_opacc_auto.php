@@ -10,7 +10,7 @@ $db = Mysql::load();
  */
 
 
-$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)' ORDER BY `log_id` ASC ";
+$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66' ORDER BY `book`,`bill` ASC ";
 // $sql = "SELECT * FROM `log_opcardchk` WHERE `log_id` = 1675";
 $db->select($sql);
 $items = $db->get_items();
@@ -20,7 +20,7 @@ $depart = "OTHER";
 $detail = "ค่าบริการตรวจสุขภาพตำรวจ";
 $price = 880.00;
 $paid  = 880.00;
-$idname='นางพวงเพ็ชร โนใจปิง';
+$idname='นางสาว พวงเพ็ชร หอมแก่นจันทร์';
 $credit="ตรวจสุขภาพตำรวจ";
 
 foreach ($items as $key => $value) {
