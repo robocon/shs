@@ -60,15 +60,15 @@ if( $appd1 == '2566-07-10' ){
 
 }
 
-if( $appd1 == '2565-04-29' ){
+if( $appd1 == '2566-07-11' ){
 
-  $part = urlencode('ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)');
+  $part = urlencode('ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66');
   $type1 = urlencode('เงินสด');
   $appd = urlencode($appd);
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type1.'">ตรวจสุขภาพตำรวจ - เงินสด</a> จำนวน = 350 รายการ<br>';
+  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type1.'">ตรวจสุขภาพตำรวจ - เงินสด</a> จำนวน = 191 รายการ<br>';
 
   $type2 = urlencode('เงินโอน');
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type2.'">ตรวจสุขภาพตำรวจ - เงินโอน</a> จำนวน = 46 รายการ';
+  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type2.'">ตรวจสุขภาพตำรวจ - เงินโอน</a> จำนวน = 38 รายการ';
 
 }
 
