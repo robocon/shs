@@ -78,35 +78,14 @@ return $ageY;
 			}
 
 		$age = calcage($dbirth);
-		$sql = "
-		INSERT INTO `smdb`.`xray_stat` (
-			`row_id` ,
-			`date` ,
-			`hn` ,
-			`xn` ,
-			`xn_new` ,
-			`ptname` ,
-			`age` ,
-			`ptright` ,
-			`patient_from` ,
-			`detail` ,
-			`doctor` ,
-			`digital` ,
-			`10_12` ,
-			`14_14` ,
-			`NONE` ,
-			`filmbk` ,
-			`office` ,
-			`idno` ,
-			`remark` ,
-			`cancle` 
-			)
-			VALUES (
+		$sql = "INSERT INTO `xray_stat`( `row_id`, `date`, `hn`, `xn`, `xn_new`, `ptname`, `age`, `ptright`, `patient_from`, `detail`, `doctor`, `digital`, `10_12`, `14_14`, `NONE`, `filmbk`, `office`, `idno`, `remark`, `cancle` )
+		VALUES 
+		(
 			NULL , '".$_POST["start_year"]."-".$_POST["start_month"]."-".$_POST["start_day"]." 00:00:00', '".$_POST["hn"]."', '".$xn."', '".$xn_new."', '".$ptname."', '".$age."', '".$ptright."', '".$_POST["patien_from"]."', '".$_POST["detail"]."', '".$_POST["doctor"]."', '".$_POST["digital"]."', '".$_POST["add10_12"]."', '".$_POST["add14_14"]."', '".$_POST["addnone"]."', '".$_POST["filmbk"]."', '".$sOfficer."', '', '".$_POST["remark"]."', '0'
-			);";
-			mysql_query($sql) or die("<!-- ".mysql_error()." -->");
-			echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=xraylst.php\">";
-	exit();
+		);";
+		mysql_query($sql) or die("<!-- ".mysql_error()." -->");
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=xraylst.php\">";
+		exit();
 	}
 	
 ?>

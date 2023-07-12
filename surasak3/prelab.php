@@ -314,6 +314,7 @@
 	
 	$_SESSION["nPrintXray"] = "";
 
+	// until_login อยู่ใน xraymenu.php เป็นตัวกำหนดว่าเข้าใช้งานในเมนูของ xray
 	if($_SESSION["until_login"] == "xray" && (!empty($_POST["xraydetail"]) && count($_POST["xraydetail"]) > 0)){
 		
 		if(substr($_SESSION["cXraydetail"],0,17)=="1. CHEST CHECK UP"){
@@ -352,13 +353,13 @@
 		mysql_query($sql);
 		
 		
-for($i=0;$i<$count;$i++){
-		$_SESSION["cXraydetail1"]=$_POST["xraydetail"][$i];
-		
-		$sql1 = "INSERT INTO `xray_doctor_detail` (`date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`)VALUES ('".(date("Y")+543).date("-m-d H:i:s")."','".$cHn."','".$xray_no."','".$_SESSION["cXraydetail1"]."','".$_SESSION["cXraydetail"]."');";
-		$q=mysql_query($sql1);
-		
-		//echo $sql1;
+		for($i=0;$i<$count;$i++){
+			$_SESSION["cXraydetail1"]=$_POST["xraydetail"][$i];
+			
+			$sql1 = "INSERT INTO `xray_doctor_detail` (`date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`)VALUES ('".(date("Y")+543).date("-m-d H:i:s")."','".$cHn."','".$xray_no."','".$_SESSION["cXraydetail1"]."','".$_SESSION["cXraydetail"]."');";
+			$q=mysql_query($sql1);
+			
+			//echo $sql1;
 		}
 
 		$_SESSION["nPrintXray"] = "<A HREF=\"xraydoctor_print.php?vn=".urlencode($tvn)."&hn=".urlencode($cHn)."&name=".urlencode($yot." ".$name." ".$surname)."&detail_all=".urlencode($_SESSION["cXraydetail"])."&doctor=".urlencode($_POST["doctor"])."&xrayno=".urlencode($xray_no)."\" target=\"_blank\">พิมพ์ หมายเลข X-Ray</A>";

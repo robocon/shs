@@ -61,25 +61,25 @@ session_start();
 </HEAD>
 
 <BODY>
-<TABLE cellpadding="2" cellspacing="0">
-	<TR>
-		<TD bgcolor="#005500" style="color:#00FFFF;">
-			<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('1');">First Page</A>
-		</TD>
-		<TD>&nbsp;</TD>
-		<TD bgcolor="#004080" style="color:#00FFFF;">
-			<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('2');">EXTREMITIES</A>
-		</TD>
-		<TD>
-			<? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
-			Other : <INPUT id="idother" TYPE="text" NAME="" size="10" value="BMD">
-			<? }else{ ?>
-			Other : <INPUT id="idother" TYPE="text" NAME="" size="10">
-			<? } ?>
-			<INPUT TYPE="button" value="Add" Onclick="OnClick_add_xray(document.getElementById('idother').value);">
-		</TD>
-	</TR>
-</TABLE>
+	<TABLE cellpadding="2" cellspacing="0">
+		<TR>
+			<TD bgcolor="#005500" style="color:#00FFFF;">
+				<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('1');">First Page</A>
+			</TD>
+			<TD>&nbsp;</TD>
+			<TD bgcolor="#004080" style="color:#00FFFF;">
+				<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('2');">EXTREMITIES</A>
+			</TD>
+			<TD>
+				<? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
+				Other : <INPUT id="idother" TYPE="text" NAME="" size="10" value="BMD">
+				<? }else{ ?>
+				Other : <INPUT id="idother" TYPE="text" NAME="" size="10">
+				<? } ?>
+				<INPUT TYPE="button" value="Add" Onclick="OnClick_add_xray(document.getElementById('idother').value);">
+			</TD>
+		</TR>
+	</TABLE>
 
 
 	<?php

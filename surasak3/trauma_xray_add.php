@@ -67,18 +67,30 @@ if($item == 0){
 			
 		$sql = "INSERT INTO `xray_doctor` (`date` ,`hn` ,`vn` ,`yot` ,`name` ,`sname` ,`detail` ,`doctor` ,`status` ,`xrayno` ,`film` ,`type_diag`,`detail_all`,`dbirth`,`orderby`)VALUES ";
 		
+		$sql_detail = "INSERT INTO `xray_doctor_detail` ( `date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`) VALUES ";
+
 		$list = array();
+		$list_detail = array();
 		for ($n=0; $n<$item; $n++){
-         If (!empty($_SESSION["list_code"][$n])){
-                $q = "('".$Thidate."', '".$cHn."', '".$tvn."', '".$cYot."', '".$cName."', '".$cSurname."', '".$_SESSION["list_code"][$n]."', '".$cDoctor."', 'N', '".$idrun."', '".$_POST["type"]."', '".$_POST["type_diag"]."', '".$detail2."', '".$cDbirth."', '".$cLab."') ";
+			If (!empty($_SESSION["list_code"][$n])){ 
+				
+				$q = "('".$Thidate."', '".$cHn."', '".$tvn."', '".$cYot."', '".$cName."', '".$cSurname."', '".$_SESSION["list_code"][$n]."', '".$cDoctor."', 'N', '".$idrun."', '".$_POST["type"]."', '".$_POST["type_diag"]."', '".$detail2."', '".$cDbirth."', '".$cLab."') ";
 				array_push($list,$q);
-              
-		 }
+
+				$detail = $_SESSION["list_code"][$n];
+				
+				$q_detail = "('".(date("Y")+543).date("-m-d H:i:s")."','".$cHn."','$idrun','$detail','$detail2')";;
+				array_push($list_detail, $q_detail);
+
+			}
         }
 
 		if($n > 0){
 			$sql .= implode(", ",$list);
 			$result = Mysql_Query($sql) or die("Error patdata ".Mysql_Error());
+
+			$sql_detail .= implode(", ",$list_detail);
+			$q = mysql_query($sql_detail);
 		}
 
 		if($result){
