@@ -31,21 +31,46 @@ $result = Mysql_Query($sql);
 list($ptright) = Mysql_fetch_row($result);
 
 ?>
-
+<style>
+body{
+font-family:TH SarabunPSK;
+font-size:20px;	
+}
+.txt{
+font-family:TH SarabunPSK;
+font-size:20px;	
+}	
+</style>
+<div align="center" style="margin-top:50px;" >
+<h1><strong>เปลี่ยนสิทธิการรักษาผู้ป่วย</strong></h1>
+<h2>สิทธิการรักษาเดิม  : <?php echo $ptright;?></h2>
 <FORM METHOD=POST ACTION="drxaddptr.php?action=add&sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>">
-<TABLE>
+<TABLE align="center" clsss="txt">
 <TR>
-	<TD>สิทธิการรักษา</TD>
-	<TD> <select size="1" name="ptright">
-    <option selected>R18 HD โครงการเบิกจ่ายตรง (CSCD)</option>
-    <option>R18 HD โครงการรักษาโรคไต (HD)</option> value="<?php echo $ptright;?>"></TD>
-</TR>
-<TR>
-	<TD><INPUT TYPE="submit" name="submit" value="ตกลง"></TD>
+	<TD><strong class="txt">สิทธิการรักษา : </strong></TD>
+	<TD>
+	<select size="1" name="ptright" class="txt">
+	<?php
+						
+		$sql="select * from ptright where name like '%HD%' order by code asc";
+		$query=mysql_query($sql);
+		while($rows=mysql_fetch_array($query)){	
+			$ptrightname=$rows["code"]." ".$rows["name"];
+	?>
+		<option value="<?=$ptrightname;?>" <?php if($rows["code"]=="R18"){ echo "select"; }?>><?php echo $ptrightname;?></option>		
+	<?php
+		}
+	?>	
+		<!--<option>R18 HD โครงการรักษาโรคไต (HD)</option> -->
+	</select>
+	
+	</TD>
+<TD><div style="margin-left:5px;"><INPUT TYPE="submit" name="submit" value="   ตกลง   " class="txt"></div></TD>	
 </TR>
 </TABLE>
 </FORM>
-
+<div style="color:red;">*** เป็นการแก้ไขเฉพาะใบสั่งยาเท่านั้น ***</div>
+</div>
 
 
 <?php
