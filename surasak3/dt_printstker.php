@@ -7,6 +7,8 @@ if($_SESSION["sIdname"] == "md19921"){
 	$time = 230;
 }else if($_SESSION['sIdname'] == 'md38220' OR $_SESSION['sIdname'] == 'md50814'){ // พิพิธ  บุรัสการ + สาริศ เฉลิมพงศ์ชัย
 	$time = 31536000;
+}else if($_SESSION['sIdname'] == 'md29268'){ // หมอพอศาล
+	$time = 1500;
 }else{
 	$time = 300;  // Default time
 }
