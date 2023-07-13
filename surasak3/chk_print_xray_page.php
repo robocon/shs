@@ -52,7 +52,15 @@ $pdf->Cell(60, 7, 'โทร.053-839305', 0, 1, 'L');
 // if(strstr('วันที่', $date_checkup)){
 //     $datechkup = trim(str_replace('วันที่', '', $date_checkup));
 // }
-$txtNumber = sprintf('%03d', $number);
+
+$hn_match = preg_match('/-/', $a['HN'], $matchs);
+
+if($hn_match==1){
+    $txtNumber = sprintf('%03d', $number);
+}else{
+    $txtNumber = (int) substr($a['HN'], 2);
+}
+
 $pdf->SetFont('THSarabun','B',32);
 // $number = substr($a['HN'], -3);
 $pdf->SetXY(160, 4);
