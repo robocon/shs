@@ -62,12 +62,21 @@ $dbi->query("SET NAMES UTF8");
             $i = 1;
             while ($a = $q->fetch_assoc()) { 
                 $id = $a['id'];
+
+                $q_sub = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$id' AND `status` = 'y' ORDER BY `sort`");
+                $sub_rows = $q_sub->num_rows;
+
+                $url = 'ha_data.php?id='.$a['id'].'&page_action=save';
+                if($sub_rows > 0){
+                    $url = 'javascript:void(0);';
+                }
                 ?>
                 <div class="list-item">
-                    <a href="ha_data.php?id=<?=$a['id'];?>&page_action=save"><?=$a['name'];?></a>
+                    
+                    <a href="<?=$url;?>"><?=$a['name'];?></a>
                     <?php 
-                    $q_sub = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$id' AND `status` = 'y' ORDER BY `sort`");
-                    if ($q_sub->num_rows > 0) {
+                    
+                    if ($sub_rows > 0) {
                         ?>
                         <div class="sub">
                         <?php
