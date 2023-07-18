@@ -10,8 +10,8 @@ if ($mysqli->connect_errno)
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
-
-$camp = $_GET["camp"];
+var_dump($_REQUEST);
+$camp = $_REQUEST["camp"];
 // $camp = "สอบตำรวจ63_02";
 ?>
 
@@ -49,8 +49,20 @@ $camp = $_GET["camp"];
     text-align: right;
 }
 </style>
-<?php 
 
+<form action="PoliceCbcUa_Test.php" method="get">
+    <div>
+        HN: <input type="text" name="hn" id="">
+    </div>
+    <div>
+        PART: <input type="radio" name="camp" value="สอบตำรวจ 64"> สอบตำรวจ 64 <input type="radio" name="camp" value="สอบตำรวจ64_02"> สอบตำรวจ64_02
+    </div>
+    <div>
+        <button type="submit">ตกลง</button>
+    </div>
+</form>
+
+<?php 
 $sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` FROM `chk_company_list` WHERE `code` = '$camp' ";
 $q = $mysqli->query($sql);
 $company = $q->fetch_assoc();
@@ -58,7 +70,7 @@ $company_name = $company['company_name'];
 $show_date = $company['show_date'];
 
 $sql = "SELECT a.*,b.`exam_no` 
-FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b 
+FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' AND `HN` = '640462' ORDER BY `row` ASC ) AS b 
 LEFT JOIN ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a ON a.`hn` = b.`HN` 
 WHERE a.`hn` IS NOT NULL 
 ORDER BY b.`row` ASC  ";
@@ -489,13 +501,9 @@ if($q->num_rows > 0 )
                     <?php 
                     if ($etcLabItems['PARASI'])
                     {
-                        if (trim(strtolower($etcLabItems['PARASI']['result'])) == 'not found parasite') 
+                        if ($etcLabItems['PARASI']['result'] == 'Not found parasite') 
                         {
                             echo "NF";
-                        }
-                        else
-                        {
-                            echo $etcLabItems['PARASI']['result'];
                         }
                     }
                     ?>

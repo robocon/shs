@@ -1,18 +1,19 @@
 <?php 
-// include 'bootstrap.php';
 error_reporting(1);
 ini_set('display_errors', 1);
 ini_set('max_execution_time', 0);
+include '../bootstrap.php';
 
-$mysqli = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$mysqli = new mysqli(HOST,USER,PASS,DB);
+$mysqli->query("SET NAMES UTF8");
 if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
 
-$camp = $_GET["camp"];
-// $camp = "สอบตำรวจ63_02";
+$camp = "ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66";
+$camp2 = "ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66";
 ?>
 
 <!DOCTYPE html>
@@ -51,24 +52,30 @@ $camp = $_GET["camp"];
 </style>
 <?php 
 
-$sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` FROM `chk_company_list` WHERE `code` = '$camp' ";
+$sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
+FROM `chk_company_list` 
+WHERE `code` = '$camp'";
+// dump($sql);
 $q = $mysqli->query($sql);
 $company = $q->fetch_assoc();
+
 $company_name = $company['company_name'];
 $show_date = $company['show_date'];
 
 $sql = "SELECT a.*,b.`exam_no` 
-FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b 
-LEFT JOIN ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a ON a.`hn` = b.`HN` 
+FROM ( SELECT `row`,`HN`,`exam_no` FROM `opcardchk` WHERE `part` = '$camp' OR `part` = '$camp2' ORDER BY `row` ASC ) AS b 
+LEFT JOIN ( SELECT `hn`,`ptname`,`cxr` FROM `out_result_chkup` WHERE `part` = '$camp' OR `part` = '$camp2' ) AS a ON a.`hn` = b.`HN` 
 WHERE a.`hn` IS NOT NULL 
 ORDER BY b.`row` ASC  ";
+
 $q = $mysqli->query($sql);
-if($q->num_rows > 0 )
+$opcard_rows = $q->num_rows;
+if($opcard_rows > 0 )
 { 
     ?>
-    <h3 class="headerExtra">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเป็นเข้านักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2564</h3>
+    <h3 class="headerExtra">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเป็นเข้านักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2565</h3>
     <h3 class="headerExtra">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3 class="headerExtra">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
+    <h3 class="headerExtra">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 10-11 กรกฎาคม 2566</h3>
     <h3 class="headerExtra">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน.3226) ผู้รับผิดชอบผลการตรวจเอกซเรย์ทรวงอก พ.ท.วริทธิ์  พสุธาดล(ว.38228)</h3>
     <h3></h3>
     <table width="100%" class="chk_table">
@@ -181,6 +188,9 @@ if($q->num_rows > 0 )
                     b.`labcode` = 'PLTC' 
                 ) 
                 ORDER BY b.`seq` ASC";
+            // echo"<pre>";
+            // var_dump($stateCbC);
+            // echo"</pre>";
                 $qLab = $mysqli->query($stateCbC);
                 $cbcItems = array();
                 while ($lab = $qLab->fetch_assoc())

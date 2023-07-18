@@ -1,24 +1,19 @@
 <?php 
-// include 'bootstrap.php';
-error_reporting(E_ALL);
+error_reporting(1);
 ini_set('display_errors', 1);
+ini_set('max_execution_time', 0);
+include '../bootstrap.php';
 
-function dump($txt)
-{
-    echo "<pre>";
-    var_dump($txt);
-    echo "</pre>";
-}
-
-$mysqli = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$mysqli = new mysqli(HOST,USER,PASS,DB);
+$mysqli->query("SET NAMES UTF8");
 if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
 
-$camp = $_GET["camp"];
-// $camp = "สอบตำรวจ63_02";
+$camp = "ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66";
+$camp2 = "ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66";
 ?>
 
 <!DOCTYPE html>
@@ -52,17 +47,17 @@ $company_name = $company['company_name'];
 $show_date = $company['show_date'];
 
 $sql = "SELECT a.*,b.`exam_no` 
-FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a 
-LEFT JOIN ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b ON b.`HN` = a.`hn` 
+FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp'  OR `part` = '$camp2' ) AS a 
+LEFT JOIN ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' OR `part` = '$camp2' ORDER BY `row` ASC ) AS b ON b.`HN` = a.`hn` 
 ORDER BY b.`row` ASC";
 $q = $mysqli->query($sql);
 if($q->num_rows > 0 )
 {
     
     ?>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเข้าเป็นนักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2564 ( ผลการตรวจร่างกายทั่วไป )</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเข้าเป็นนักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2565 ( ผลการตรวจร่างกายทั่วไป )</h3>
     <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 10-11 พฤษภาคม 2566</h3>
     <table width="100%" class="chk_table">
         <thead>
         <tr style="text-align: center;">

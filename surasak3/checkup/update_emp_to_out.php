@@ -1,5 +1,5 @@
 <?php 
-// header('Content-Type: text/html; charset=TIS-620');
+// header('Content-Type: text/html; charset=UTF-8');
 
 
 include '../bootstrap.php';
