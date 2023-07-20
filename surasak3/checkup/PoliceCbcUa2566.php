@@ -145,7 +145,7 @@ if($opcard_rows > 0 )
                 <th>N</th>
                 <th>N</th>
                 <th>N</th>
-                <th></th>
+                <th>N</th>
                 <th>0-5</th>
                 <th>0-5</th>
                 <th>0-1</th>
@@ -416,6 +416,10 @@ if($opcard_rows > 0 )
                         {
                             echo "P";
                         }
+                        else
+                        {
+                            echo $labItems['GLUU']['result'];
+                        }
                     }
                     ?>
                 </td>
@@ -518,7 +522,7 @@ if($opcard_rows > 0 )
                         {
                             echo "NR";
                         }
-                        elseif (preg_match('/Reactive/', $labItems['VDRL']['result']) > 0) 
+                        elseif (preg_match('/(Reactive)/', $etcLabItems['VDRL']['result']) > 0) 
                         {
                             echo "R";
                         }
