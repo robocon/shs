@@ -1470,9 +1470,8 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
     </tr>
   <tr>
     <td align="right" class="fonthead">ค่าบริการนอกเวลาราชการ</td>
-    <td class="fonthead1"><input name="doctor80" type="checkbox" value="doctor80">
-ค่าบริการทางการแพทย์ 80 บาท&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="doctor50" type="checkbox" value="doctor50">
-ค่าบริการทางการแพทย์ 50 บาท</td>
+    <td class="fonthead1"><input name="doctor100" type="checkbox" value="doctor100">
+ค่าบริการทางการแพทย์ 100 บาท</td>
     <td colspan="3" class="fonthead">**มาครั้งสุดท้าย <?=$cD1;?>-<?=$cM1;?>-<?=$cY1;?> <?=$cT1;?> **</td>
     </tr>
   <tr>

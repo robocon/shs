@@ -170,9 +170,6 @@ td p,ol,li{
 	margin: 0;
 	/* padding:0; */
 }
-.under-color{
-	text-decoration-color: red;
-}
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 </head>
@@ -257,6 +254,75 @@ if($_POST["cigarette"]=="1"){
 
 		$itemOpd = mysql_fetch_assoc($res_row_opd);
 		$opd_id = $itemOpd['row_id'];
+		
+//////// เริ่มต้นการคำนวณ CV Risk Score //////// 
+
+				if($_POST["cigarette"]=="1"){
+					$smoke=1;
+				}else{
+					$smoke=0;
+				}
+							
+				if(!empty($_POST["bp3"]) && $_POST["bp3"] !="....."){
+					$sbp=$_POST["bp3"];
+				}else{
+					$sbp=$_POST["bp1"];
+				}				
+								
+				
+				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
+	    		$query1 = mysql_query($sql1) or die("Query failed");
+				$rows=mysql_fetch_array($query1);
+				
+				if($rows["sex"]=="ช"){
+					$sex=1;
+				}else{
+					$sex=0;
+				}
+							
+				
+				$waist=$_POST["waist"]*0.39370;
+				$waist=round($waist);
+				
+				$height=floor($_POST["height"]);
+				$whtr=$waist/$height;
+				$finalwhtr=$whtr*100;
+				
+				
+				$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_REQUEST["hn"]."' limit 1";	
+	    		$query2 = mysql_query($sql2) or die("Query failed");
+				$numdm=mysql_num_rows($query2);
+				if($numdm > 0){
+					$diabetes=1;
+				}else{
+					$diabetes=0;
+				}
+				
+				$sql3 = "SELECT *  FROM opday WHERE thdatehn = '".$thidatehn."' limit 1";
+				
+	    		$query3 = mysql_query($sql3) or die("Query failed");
+				$rows3=mysql_fetch_array($query3);
+				$age=substr($rows3["age"],0,2);
+				//echo $age."<br>";				
+				
+				
+				$waist=$waist*2.54;
+				
+				//--------- ไม่มีผลเลือด -----------//
+				$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
+								
+				$y=$fullscore-7.720484;	
+				$x=0.978296;
+				
+				$y=exp($y);
+				$z=pow($x,$y);
+				
+				$final=(1-$z)*100;
+				
+				$pfullscore=number_format($final,2);										
+				//---------------จบ-----------------//		
+
+//////// จบการคำนวณ CV Risk Score //////// 	
 
 		$sql = "UPDATE `opd` SET `thidate` = '".$thidate_now."', 
 		`temperature`  = '".$_POST["temperature"]."', 
@@ -301,15 +367,86 @@ if($_POST["cigarette"]=="1"){
 		`grade` = '$grade', 
 		`mind` = '$mind', 
 		`the_pill` = $the_pill,
-		`cvriskscore`= '".$_POST["cvriskscore"]."',
+		`cvriskscore`= '".$pfullscore."',
 		`cvriskscore_lab`= '".$_POST["cvriskscore_lab"]."', 
 		`pregnancy` = '$preg',
 		`smoke_ncd`='$smoke_ncd',
-		`drink_ncd`='$drink_ncd' 
+		`drink_ncd`='$drink_ncd',
+		`bmi`= '".$_POST["bmi"]."'		
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 		$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
 
 	}else{
+		
+//////// เริ่มต้นการคำนวณ CV Risk Score //////// 
+
+				if($_POST["cigarette"]=="1"){
+					$smoke=1;
+				}else{
+					$smoke=0;
+				}
+							
+				if(!empty($_POST["bp3"]) && $_POST["bp3"] !="....."){
+					$sbp=$_POST["bp3"];
+				}else{
+					$sbp=$_POST["bp1"];
+				}				
+								
+				
+				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
+	    		$query1 = mysql_query($sql1) or die("Query failed");
+				$rows=mysql_fetch_array($query1);
+				
+				if($rows["sex"]=="ช"){
+					$sex=1;
+				}else{
+					$sex=0;
+				}
+							
+				
+				$waist=$_POST["waist"]*0.39370;
+				$waist=round($waist);
+				
+				$height=floor($_POST["height"]);
+				$whtr=$waist/$height;
+				$finalwhtr=$whtr*100;
+				
+				
+				$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_REQUEST["hn"]."' limit 1";	
+	    		$query2 = mysql_query($sql2) or die("Query failed");
+				$numdm=mysql_num_rows($query2);
+				if($numdm > 0){
+					$diabetes=1;
+				}else{
+					$diabetes=0;
+				}
+				
+				$sql3 = "SELECT *  FROM opday WHERE thdatehn = '".$thidatehn."' limit 1";
+				
+	    		$query3 = mysql_query($sql3) or die("Query failed");
+				$rows3=mysql_fetch_array($query3);
+				$age=substr($rows3["age"],0,2);
+				//echo $age."<br>";				
+				
+				
+				$waist=$waist*2.54;
+				
+				//--------- ไม่มีผลเลือด -----------//
+				$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
+								
+				$y=$fullscore-7.720484;	
+				$x=0.978296;
+				
+				$y=exp($y);
+				$z=pow($x,$y);
+				
+				$final=(1-$z)*100;
+				
+				$pfullscore=number_format($final,2);										
+				//---------------จบ-----------------//		
+
+//////// จบการคำนวณ CV Risk Score //////// 			
+		
 			
 		$sql = "INSERT INTO `opd` (
 			`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
@@ -320,7 +457,7 @@ if($_POST["cigarette"]=="1"){
 			`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
 			`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`, 
 			`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab`, 
-			`pregnancy`,`smoke_ncd`,`drink_ncd`
+			`pregnancy`,`smoke_ncd`,`drink_ncd`,`bmi`
 		)VALUES (
 			NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
 			'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
@@ -329,8 +466,8 @@ if($_POST["cigarette"]=="1"){
 			'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
 			'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 			'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
-			'$hpi', '$grade','$mind','$the_pill', '".$_POST["cvriskscore"]."' , '".$_POST["cvriskscore_lab"]."', 
-			'$preg','$smoke_ncd','$drink_ncd'
+			'$hpi', '$grade','$mind','$the_pill', '".$pfullscore."' , '".$_POST["cvriskscore_lab"]."', 
+			'$preg','$smoke_ncd','$drink_ncd', '".$_POST["bmi"]."'
 		);";
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
@@ -354,12 +491,37 @@ if($_POST["cigarette"]=="1"){
 			WHERE `id` = '$opd_advice_id' ;";
 			$save = $dbi->query($sql_advice);
 
+			if($display_advice=="form_i"){
+				$sql_advice_i = "UPDATE `opd_advice_form_i` SET `advice_organ`='".$_POST['advice_organ']."',
+																`advice_painscore1`='".$_POST['advice_painscore1']."',
+																`advice_rx`='".$_POST['advice_rx']."',
+																`advice_rxtime`='".$_POST['advice_rxtime']."',
+																`advice_activetime`='".$_POST['advice_activetime']."',
+																`advice_painscore2`='".$_POST['advice_painscore2']."',
+																`edit_by`='$officer',
+																`edit_time`= '".date("Y-m-d H:i:s")."' 
+				WHERE `opd_device_id` = '$opd_advice_id' ;";													
+				$save_i = $dbi->query($sql_advice_i);				
+			}			
+			
+			
+			
+
 		}else{
 			
 			$sql_advice = "INSERT INTO `opd_advice` (`id`, `date`, `hn`, `ptname`, `opd_id`, `thdatehn`, `officer`, `document`) 
 			VALUES 
 			(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_id', '$my_date_hn', '$officer', '$display_advice');";
-			$save = $dbi->query($sql_advice);
+			$result_advice = Mysql_Query($sql_advice) or die("INSERT opd_advice ".Mysql_Error());
+			$opd_device_id = mysql_insert_id(); // คืนค่า id ที่ insert ล่าสุด
+			if($display_advice=="form_i"){
+				$sql_advice_i = "INSERT INTO `opd_advice_form_i` (`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`, `advice_organ`, `advice_painscore1`, `advice_rx`, `advice_rxtime`, `advice_activetime`, `advice_painscore2`) 
+				VALUES 
+				(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_device_id', '$my_date_hn', '$officer', '".$_POST['advice_organ']."', '".$_POST['advice_painscore1']."', '".$_POST['advice_rx']."', '".$_POST['advice_rxtime']."', '".$_POST['advice_activetime']."', '".$_POST['advice_painscore2']."');";
+				//echo $sql_advice_c;
+				$save_i = $dbi->query($sql_advice_i);				
+			}
+			
 		}
 	}
 
@@ -757,18 +919,6 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 <p class="txtsarabun"><strong style="font-size:36px;">โปรแกรมซักประวัติ/คัดกรอง ผู้ป่วยนอก (OPD)</strong>
 <div style="font-weight:bold;"><a href='dx_ofyear.php' target="_blank">ซักประวัติตรวจสุขภาพทหารประจำปี<?=$showyear;?></a> &nbsp;&nbsp;&nbsp;<a href='dx_ofyear_out.php' target="_blank">ซักประวัติตรวจสุขภาพประจำปี (Walk in) &amp;&amp; ฮักกันยามเฒ่า60</a> &nbsp;&nbsp;<a href="opd_chkcompany.php" target="_blank">จัดการชื่อหน่วยงาน</a>&nbsp;&nbsp;<a href="appoint_covid.php" target="_blank">ออกใบนัด ATK ล่วงหน้า (กลุ่มเสี่ยง)</a> &nbsp;&nbsp;<a href="Edx_ofyear_out.php" target="_blank">โปรแกรมซักประวัติตรวจสุขภาพ สำหรับใบรับรองแพทย์อิเล็กทรอนิกส์</a></p></div>
 <form id="form1" name="form1" method="post" action="">
-<div><strong>ประเภทผู้ป่วย :</strong></div>
-<input type="radio" name="type" id="type1" value="SI" onClick="window.alert('แจ้งเตือน !!!\n ผู้ป่วยรายนี้รักษาแบบ OP Self Isolation ใช่หรือไม่?');"><label for="type1">ผู้ป่วย OP self Isolation</label>&nbsp;
-<!--
-<input type="radio" name="type" id="type2" value="HI"><label for="type2">ผู้ป่วย Home Isolation</label>&nbsp;&nbsp;&nbsp;
-<input type="radio" name="type" id="type3" value="FI"><label for="type3">ผู้ป่วย รพ.สนาม</label>&nbsp;
--->
-<input type="radio" name="type" id="type4" value="OP"><label for="type4">ผู้ป่วยทั่วไป</label>&nbsp;
-<div><strong>กลุ่มอาการ :</strong></div>
-<input type="radio" name="color" id="color1" value="green"><label for="color1">ผู้ป่วยกลุ่มอาการสีเขียว</label>&nbsp;&nbsp;&nbsp;
-<input type="radio" name="color" id="color2" value="yellow"><label for="color2">ผู้ป่วยกลุ่มอาการสีเหลือง</label>&nbsp;&nbsp;&nbsp;
-<input type="radio" name="color" id="color3" value="red"><label for="color3">ผู้ป่วยกลุ่มอาการสีแดง</label>
-<div>&nbsp;</div>
     <strong>กรอก HN :</strong> 
   <input name="hn" type="text" class="txtsarabun" id="hn" size="20" maxlength="20" autofocus />&nbsp;&nbsp;
   <input name="Submit" type="submit" class="txtsarabun" value="   ตกลง   " />
@@ -790,9 +940,9 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="  ข้อมูลใบตรวจโรคผู้ป่วยนอกวันนี้  " onclick="window.open('opd_reprint.php') " class="button-green" />
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="ข้อมูล Refer, Observe และคำแนะนำ" onclick="window.open('opd_advice.php') " class="txtsarabun" /> <br>
  
-<div style="margin-left:10px;"><input type="button" name="button" id="button" value="บันทึกลงทะเบียนผู้ป่วย OP SI & พิมพ์สลากติดยา" onclick="window.open('print_slipdrug.php?hn=<?php echo $hn;?>&type=<?=$_POST["type"];?>&color=<?=$_POST["color"];?>') " class="txtsarabun" />
- &nbsp;&nbsp;<input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_register.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
-<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" /></div>
+<div style="margin-left:10px;"><input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_home.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
+</div>
 </span></p>
 </div>
 <hr>
@@ -977,7 +1127,6 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$drugreact_rows = mysql_num_rows($result);
 	$i=0;
-	$txt_react = array();
 	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ 
 		$dCodeTxt = '';
 		if(!empty($drugcode)){
@@ -985,20 +1134,18 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		}
 		$txt_react[$i] = "&nbsp; $dCodeTxt $tradname "; $i++; 
 	}
-	$txt_react2 = '';
-	if(count($txt_react) > 0){
-		$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".implode(",",$txt_react);
-	}
 	
+	$txt_react2 = implode(",",$txt_react);
+	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
 
 $thidate_today = (date("Y")+543).date("-m-d");
-$sqlopd="select thidate,bp1,bp2,bp3,bp4,pause,weight,height,temperature from opd where hn = '".$_REQUEST["hn"]."' and thidate like '$thidate_today%' order by row_id desc";
+$sqlopd="select thidate,bp1,bp2,bp3,bp4,pause,weight,height,temperature,waist from opd where hn = '".$_REQUEST["hn"]."' and thidate like '$thidate_today%' order by row_id desc";
 //echo $sqlopd;
 $queryopd = mysql_query($sqlopd);
 $numopd=mysql_num_rows($queryopd);
 if($numopd > 0){  //ถ้ามีการซักประวัติ
-list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature)=mysql_fetch_array($queryopd);
+list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$waist)=mysql_fetch_array($queryopd);
 	$showtime=substr($thidateopd,11);
 	
 	if($opdweight !=""){
@@ -1039,26 +1186,9 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature)=
       <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><strong><?php echo $ptright;?></strong></font> &nbsp;&nbsp;&nbsp;
 				, หมายเหตุ : <?php echo $note;?>		</td>
       </tr>
-	  <?php 
-	  $dateIdcard = date('Y-m-d').$idcard;
-	  $sql = "SELECT * FROM `api_authen` WHERE `dateIdcard` = '$dateIdcard' ";
-	  $q = $dbi->query($sql);
-	  if($q->num_rows==0){
-		?>
-		<tr>
-			<td><p class="headsarabun"><b><u class="under-color"><span style="color:red;">&gt;&gt;</span> วันนี้ผู้ป่วยยังไม่ได้ขอ Authen Code <span style="color:red;">&lt;&lt;</span></u></b></p></td>
-		</tr>
-		<?php
-	  }
-
-	  if(count($txt_react) > 0){
-	  ?>
       <tr class="headsarabun">
         <td><font class="data_drugreact"><?php echo $txt_react2;?></font></td>
       </tr>
-	  <?php 
-	  }
-	  ?>
       <tr>
         <td>เวลาลงทะเบียน : <strong><?php echo $regis_time;?></strong>          , เวลาจ่ายOPD Card : <strong><?php echo $time1;?></strong> , เวลาซักประวัติ : <strong><?php echo date("H:i:s");?></strong></td>
       </tr>
@@ -1255,6 +1385,7 @@ function togglediv2(divid){
 }
 
 
+
 	function calbmi(a,b){
 		//alert(a);
 		var h=a/100;
@@ -1265,7 +1396,10 @@ function togglediv2(divid){
    <? 
 		 $ht = $height/100;
 		 $bmi=number_format($weight /($ht*$ht),2);
-		 ?>
+	
+	$weight = number_format((float)$weight, 1, '.', '');  //แปลง string เป็นตัวเลขทศนิยม
+	$height = number_format((float)$height, 1, '.', '');  //แปลง string เป็นตัวเลขทศนิยม
+	?>
  </p>
 <style>
 label:hover{
@@ -1312,7 +1446,7 @@ mmHg </td>
 //if(substr($toborow,5) == "ตรวจสุขภาพประจำปี"){	
 ?>
                  รอบเอว:</td>
-               <td align="left"><input name="waist" type="text" id="waist" size="3" value="" />
+               <td align="left"><input name="waist" type="text" id="waist" size="3" value="<?php echo $waist; ?>" />
 ซม.
   <?php //} ?></td>
                <td align="right">Repeat BP :</td>
@@ -1533,7 +1667,7 @@ mmHg </td>
            <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
 			<label for="cig1">
-				<input type="radio" name="cigarette" id="cig1" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')" id="cig1"> สูบ&nbsp;&nbsp;&nbsp;
+				<input type="radio" name="cigarette" id="cig1" value="1" <?php echo $cigarette1;?> onClick="togglediv('kbk')"> สูบ&nbsp;&nbsp;&nbsp;
 			</label>
 			<label for="cig0">
 				<input type="radio" name="cigarette" id="cig0" value="0" <?php echo $cigarette0;?> onClick="togglediv1('kbk')"> ไม่เคยสูบ&nbsp;&nbsp;&nbsp;
@@ -1582,6 +1716,9 @@ mmHg </td>
 			if(document.form2.cig1.checked == true){
 				togglediv('kbk');
 			}
+			if(document.form2.form_i.checked == true){
+				togglediv('showform_i');
+			}			
 			</script>
 		</td>
 		</tr>
@@ -2031,21 +2168,60 @@ mmHg </td>
 					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe และคำแนะนำก่อนผ่าตัด</legend>
 					<table>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a" onClick="togglediv2('showform_i')"><label for="form_a">Refer</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e" onClick="togglediv2('showform_i')"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b" onClick="togglediv2('showform_i')"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f" onClick="togglediv2('showform_i')"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c" onClick="togglediv2('showform_i')"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g" onClick="togglediv2('showform_i')"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_h" value="form_h"><label for="form_h">Sleep Test</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d" onClick="togglediv2('showform_i')"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_h" value="form_h" onClick="togglediv2('showform_i')"><label for="form_h">Sleep Test</label></div></td>
 						</tr>
+						<tr>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_i" value="form_i" onClick="togglediv('showform_i')"><label for="form_i">ผู้ป่วยมีอาการปวด</label></div></td>
+							<td></td>
+						</tr>						
+						<tr>
+							<td colspan="2" align="left">
+								<div id="showform_i" style="display: none; margin-bottom: 8px;"> 
+<?
+		$my_date_hn = date('Y-m-d').$hn;
+		$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' ");
+		if($q_advice->num_rows > 0){
+			$opd_advice = $q_advice->fetch_assoc();
+			$advice_organ = $opd_advice['advice_organ'];
+			$advice_painscore1 = $opd_advice['advice_painscore1'];
+			$advice_rx = $opd_advice['advice_rx'];
+			$advice_rxtime = $opd_advice['advice_rxtime'];
+			$advice_activetime = $opd_advice['advice_activetime'];
+			$advice_painscore2 = $opd_advice['advice_painscore2'];
+			
+		}	
+?>								
+								
+								<table id="member" class="fontthai">
+								<tr>
+									<td colspan="2" align="left"><div class="mainThumb">อาการปวด : <input type="text" name="advice_organ" id="advice_organ" value="<?=$advice_organ;?>" size="90" style="height:30px;"></div></td>
+								</tr>	
+								<tr>
+									<td><div class="mainThumb">pain score : <input type="text" name="advice_painscore1" id="advice_painscore1" value="<?=$advice_painscore1;?>" size="10"></div></td>
+									<td><div class="mainThumb">ดูแลให้ยา : <input type="text" name="advice_rx" id="advice_rx" value="<?=$advice_rx;?>" size="30"><span style="margin-left:3px;">ตาม Rx เวลา :  </span><input type="text" name="advice_rxtime" id="advice_rxtime" value="<?=$advice_rxtime;?>" size="10" placeholder="08:00"> น.  <span style="margin-left:3px;color:red;">*** ระบุตามรูปแบบเวลา เช่น 08:00</span></div></td>
+								</tr>
+								<tr>
+								<tr>
+									<td><div class="mainThumb">เมื่อเวลา :  <input type="text" name="advice_activetime" id="advice_activetime" value="<?=$advice_activetime;?>" size="10" placeholder="08:00"> น.</div></td>					
+									<td><div class="mainThumb">ประเมิน pain score ซ้ำ : <input type="text" name="advice_painscore2" id="advice_painscore2" value="<?=$advice_painscore2;?>" size="10"></div></td>
+								</tr>
+								</table>
+								</div>								
+							</td>
+						</tr>	
 					</table>
 				</fieldset>
 			</td>
@@ -2447,7 +2623,7 @@ mmHg </td>
 				?>
 				<tr>
 					<td align="center" colspan="6" style="color: red;"><div style="font-size: 24px;font-weight:bold;">
-						<u>!!! ผู้ป่วยไม่ได้คิดค่าบริการ 50.- <b><a href="service50.php" target="_blank">คลิกที่นี่</a></b> เพื่อคิดค่าบริการ</u><br>
+						<u>!!! ผู้ป่วยไม่ได้คิดค่าบริการผู้ป่วยนอก 50 บาท<b><a href="service50.php" target="_blank">คลิกที่นี่</a></b> เพื่อคิดค่าบริการ</u><br>
 					</div></td>
 				</tr>
 				<?php 
