@@ -472,7 +472,7 @@ if($_POST["cigarette"]=="1"){
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
 	}
-	
+
 	if(!empty($_POST['display_advice'])){
 		$display_advice = implode('|', $_POST['display_advice']);
 		$my_hn = sprintf("%s", $_REQUEST['hn']);
@@ -523,8 +523,20 @@ if($_POST["cigarette"]=="1"){
 			}
 			
 		}
-	}
+	}else{
 
+		$my_date_hn = date('Y-m-d').sprintf("%s", $_REQUEST['hn']);
+		$q_advice = $dbi->query("SELECT `id` FROM `opd_advice` WHERE `thdatehn` = '$my_date_hn' ");
+		if($q_advice->num_rows > 0){
+			$opd_advice = $q_advice->fetch_assoc();
+			$sql_advice = "UPDATE `opd_advice` SET 
+			`officer`='".$_SESSION['sOfficer']."', 
+			`document`='' 
+			WHERE `id` = '".$opd_advice['id']."' ;";
+			$save = $dbi->query($sql_advice);
+
+		}
+	}
 
 	if($_SESSION['smenucode'] == 'ADMEYE')
 	{
@@ -884,6 +896,7 @@ array_push($choose,"ขอรับวัคซีนนัดฉีดไวร
 array_push($choose,"Self ATK Positive เมื่อวันที่ ");
 array_push($choose,"ตรวจตามนัดกลุ่มเสี่ยง ตรวจสุขภาพประจำปีกองทัพบก");
 array_push($choose,"ตรวจตามนัดกลุ่มโรค ตรวจสุขภาพประจำปีกองทัพบก");
+array_push($choose,"มารับยาฉีด");
 
 sort($choose);
 $sql = "Select distinct organ From opd where hn = '".$_REQUEST["hn"]."' AND organ <> '' Order by row_id DESC limit 10";
@@ -2132,7 +2145,8 @@ mmHg </td>
 					'ขอใบรับรองแพทย์เพื่อสมัคร_ ระบุตรวจ_', 
 					'ระบุโรค_ รักษาที่_ มี F/U ต่อเนื่อง สำเนาประวัติการรักษา/ใบรับรองแพทย์มาพบแพทย์', 
 					'ระบุโรค_ รักษาที่_ มี F/U ต่อเนื่อง/ไม่ได้นัด F/U ไปเรียน/ทำงานได้ปกติ ไม่ได้นำสำเนาประวัติการรักษา/ใบรับรองแพทย์มาพบแพทย์ แนะนำผู้ป่วยไม่เข้าเกณฑ์ประเภทที่4 แนะนำให้ขอสำเนาประวัติแล้วไปยื่นที่จุดคัดเลือกทหาร ผู้ป่วยเข้าใจ',
-					'_ วันก่อนมารพ.มีอาการไข้ ไอมีเสมหะ เจ็บคอ คัดจมูกมีน้ำมูกใส Self ATK Positive เมื่อวันที่_ ผป.ได้รับวัคซีน COVID-19 ครบ_ เข็ม'
+					'_ วันก่อนมารพ.มีอาการไข้ ไอมีเสมหะ เจ็บคอ คัดจมูกมีน้ำมูกใส Self ATK Positive เมื่อวันที่_ ผป.ได้รับวัคซีน COVID-19 ครบ_ เข็ม',
+					'Pt case ______________________มารับยาฉีด'
 				);
 				?>
 				<select style="width:600px;" name="" onchange="if(this.value != ''){ document.getElementById('hpi').value = document.getElementById('hpi').value+this.value;}" class="txtsarabun">
