@@ -55,9 +55,8 @@ $pdf->Cell(60, 7, 'โทร.053-839305', 0, 1, 'L');
 
 $hn_match = preg_match('/-/', $a['HN'], $matchs);
 
-if($hn_match==1){
-    $txtNumber = sprintf('%03d', $number);
-}else{
+$txtNumber = sprintf('%03d', $number);
+if($company==='ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66' OR $company==='ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66'){
     $txtNumber = (int) substr($a['HN'], 2);
 }
 
