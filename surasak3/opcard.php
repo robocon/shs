@@ -526,10 +526,13 @@ function searchSuggest2(str,len,getto1) {
     <td><input type="text" id="changwat" name="changwat" size="10" value="ลำปาง"></td>
   </tr>
   <tr>
-    <td align="right" class="fonthead">โทรศัพท์บ้าน:</td>
-    <td><input type="text" name="hphone" size="10" value="-" id="hphone"></td>
-    <td align="right" class="fonthead">มือถือ:</td>
-    <td><input type="text" name="phone" size="10" value="-"></td>
+    <td align="right" class="fonthead">โทรศัพท์บ้าน / เบอร์ติดต่ออื่นๆ:</td>
+    <td><input type="text" name="hphone" size="10" value="" id="hphone"></td>
+    <td align="right" class="fonthead">มือถือ(เบอร์หลัก):</td>
+    <td colspan="5">
+      <input type="text" name="phone" size="10" maxlength="10" value="<?=$cPhone;?>" class="notify43">
+      <span class="fonthead" style="color:red;">ใส่เฉพาะตัวเลขเท่านั้น ถ้าไม่ทราบข้อมูลให้เว้นว่างไว้</span>
+    </td>
     <td align="right" class="fonthead">&nbsp;</td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
