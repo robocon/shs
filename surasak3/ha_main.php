@@ -261,14 +261,25 @@ if($action==='save'){
             if($a['sort']==$max_sort){
                 $a['position'] = 'bottom';
             }
-
-            $all_items[] = $a;
-
+            $a['is_parent'] = 'y';
+            
             $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$parent_id' ORDER BY `sort` ASC");
             $q2_num_rows = $q2->num_rows;
-            if($q2_num_rows > 0){
 
-                while ($sub = $q2->fetch_assoc()) {
+            $a['has_child'] = $q2_num_rows;
+            $all_items[] = $a;
+
+            if($q2_num_rows > 0){
+                
+                while ($sub = $q2->fetch_assoc()) { 
+
+                    $sub['hidden_arrow'] = false;
+                    if($q2_num_rows==1){
+                        $sub['hidden_arrow'] = true;
+                    }
+
+                    $sub['child'] = 'y';
+                    $sub['rows'] = $q2_num_rows;
 
                     if($sub['sort']==1){
                         $sub['position'] = 'top';
@@ -279,6 +290,7 @@ if($action==='save'){
                     }
 
                     $all_items[] = $sub;
+                    
                 }
             }
 
@@ -326,7 +338,7 @@ if($action==='save'){
                     <?php 
                     if($a['parent']){
                         ?>
-                        <span>|--&nbsp;</span>
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;|--</span>
                         <?php
                     }
                     ?>
@@ -340,10 +352,18 @@ if($action==='save'){
                         ?>
                         <table width="100%">
                         <tr>
-                            <td width="10%"><?=$a['sort'];?></td>
+                            <td width="10%">
+                                <?php 
+                                $style = '';
+                                if($a['is_parent']){
+                                    $style = 'style="font-weight: bold; font-size: 22px;"';
+                                }
+                                ?>
+                                <span <?=$style;?>><?=$a['sort'];?></span>
+                            </td>
                             <td width="33%">
                                 <?php 
-
+                                
                                 $ext_url = "";
                                 if($a['parent']){
                                     $ext_url = "&parent=".$a['parent'];
@@ -351,17 +371,20 @@ if($action==='save'){
 
                                 $url = "ha_main.php?action=move&id=".$a['id'].$ext_url;
 
-                                if ($a['position']!='top') {
+                                // dump($a['hidden_arrow']);
+                                if ($a['position']!='top' && $a['hidden_arrow']==false) {
                                     
                                     ?>
                                     <a href="<?=$url.'&direction=up&sort='.($a['sort']-1);?>"><img src="images/icons/iconmonstr-caret-up-filled-32.png" alt="move up" title="เลื่อนขึ้น"></a>
                                     <?php
+                                    
                                 }
                                 ?>
                             </td>
                             <td width="33%">
                                 <?php 
-                                if ($a['position']!='bottom') {
+                                
+                                if ($a['position']!='bottom') { 
                                     ?>
                                     <a href="<?=$url.'&direction=down&sort='.($a['sort']+1);?>"><img src="images/icons/iconmonstr-caret-down-filled-32.png" alt="move down" title="เลื่อนลง"></a>
                                     <?php
@@ -377,13 +400,18 @@ if($action==='save'){
                     
                 </td>
                 <td align="center">
-                    <a href="ha_field.php?id=<?=$a['id'];?>" class="icon"><img src="images/icons/Application.png" title="แก้ไขรายละเอียดตัวชี้วัด"/></a> 
-                <?php 
-                if($field_rows==0){
-                    ?>
-                    | <a href="ha_main.php?action=delete&id=<?=$a['id'];?>" class="icon" onclick="return confirm('ยืนยันที่จะลบข้อมูลนี้?');"><img src="images/icons/Trash.png" title="ลบข้อมูล"/>
-                    <?php
-                }
+                    <?php 
+                    if ( $a['has_child'] == 0 ) {
+                        ?>
+                        <a href="ha_field.php?id=<?=$a['id'];?>" class="icon"><img src="images/icons/Application.png" title="แก้ไขรายละเอียดตัวชี้วัด"/></a> 
+                        <?php
+
+                        if($field_rows==0){
+                            ?>
+                            | <a href="ha_main.php?action=delete&id=<?=$a['id'];?>" class="icon" onclick="return confirm('ยืนยันที่จะลบข้อมูลนี้?');"><img src="images/icons/Trash.png" title="ลบข้อมูล"/>
+                            <?php
+                        }
+                    }
                 ?>
                 </td>
                 <td align="center">
