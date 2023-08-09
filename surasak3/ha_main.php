@@ -370,8 +370,7 @@ if($action==='save'){
                                 }
 
                                 $url = "ha_main.php?action=move&id=".$a['id'].$ext_url;
-
-                                // dump($a['hidden_arrow']);
+                                
                                 if ($a['position']!='top' && $a['hidden_arrow']==false) {
                                     
                                     ?>
