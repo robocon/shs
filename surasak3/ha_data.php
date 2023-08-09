@@ -17,16 +17,14 @@ if($action==='save'){
         exit;
     }
 
+    $res = 'บันทึกข้อมูลเรียบร้อย';
     if(intval($year)>0 && intval($month)==0){
         $where = " AND `year`='$year' AND `month`=''";
-        $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
 
     }elseif (intval($year)>0 && intval($month)>0) {
         $where = " AND `year`='$year' AND `month`='$month'";
-        $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." เดือน".$def_fullm_th[$month]." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
     }
 
-    // $sql = "SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ";
     $q_data = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ");
     if($q_data->num_rows===0){
 
@@ -36,13 +34,10 @@ if($action==='save'){
             (NULL, '$main_id', '$field_id', '$value', '$year', '$month', NOW(), NOW(), '$editor', '$editor');";
             $save = $dbi->query($sql);
         }
-        redirect("ha_data.php?id=$main_id&month=$month&year=$year", 'บันทึกข้อมูลเรียบร้อย');
-
-    }else{ 
-
-        redirect("ha_data.php?id=$main_id", $res );
 
     }
+    
+    redirect("ha_data.php?id=$main_id", $res );
     
     exit;
 
@@ -76,7 +71,7 @@ if($action==='save'){
 
     }
     
-    redirect("ha_data.php?id=$main_id&month=$month&year=$year&page_action=update", 'บันทึกข้อมูลเรียบร้อย');
+    redirect("ha_data.php?id=$main_id", 'บันทึกข้อมูลเรียบร้อย');
     exit;
 
 }elseif ($action==='load') { 
@@ -176,7 +171,7 @@ if($page_action==='update'){
                 }
 
                 if($page_action==='update'){ 
-
+                    
                     $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' $where ");
                     if ($qd->num_rows>0) { 
 
@@ -190,6 +185,7 @@ if($page_action==='update'){
                             $data_month = $data['month'];
                             $data_year = $data['year'];
                         }
+                        
                     }
 
                 }
@@ -285,35 +281,32 @@ if($page_action==='update'){
             const month = document.getElementById('months').value;
             const year = document.getElementById('years').value;
 
-            // if(month!=='' && year!==''){
 
-                const id = document.getElementById('main_id').value;
-                loadData(id,month,year).then((res)=>{ 
-                    if(res.ha_status==200){
-                        res.items.forEach(el => { 
-                        
-                            if(el.value!==''){ 
-                                // console.log(el.value);
-                                document.getElementById('field'+el.field_id).value = el.value;
-                            }
-
-                        });
-
-                        document.getElementById('action').value = 'update';
-                    }else{
-
-                        let field_inputs = document.getElementsByClassName('field_input');
-                        for (let index = 0; index < field_inputs.length; index++) {
-                            const element = field_inputs[index];
-                            element.value = '';
+            const id = document.getElementById('main_id').value;
+            loadData(id,month,year).then((res)=>{ 
+                if(res.ha_status==200){
+                    res.items.forEach(el => { 
+                    
+                        if(el.value!==''){ 
+                            
+                            document.getElementById('field'+el.field_id).value = el.value;
                         }
 
-                        document.getElementById('action').value = 'save';
-                    }
-                    
-                });
+                    });
 
-            // }
+                    document.getElementById('action').value = 'update';
+                }else{
+
+                    let field_inputs = document.getElementsByClassName('field_input');
+                    for (let index = 0; index < field_inputs.length; index++) {
+                        const element = field_inputs[index];
+                        element.value = '';
+                    }
+
+                    document.getElementById('action').value = 'save';
+                }
+                
+            });
 
         }
 

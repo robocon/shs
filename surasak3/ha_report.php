@@ -63,7 +63,7 @@ if($report_type==='year'){
                     <select name="main_id" id="main_id">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                     <?php 
-                    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' ");
+                    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' ORDER BY `parent`, `sort` ASC ");
                     while ($a = $q->fetch_assoc()) {
 
                         $selected = $main_id == $a['id'] ? 'selected="selected"' : '' ;
