@@ -39,10 +39,12 @@ while(list($rid,$typename,$typestatus)= mysql_fetch_array($rows)){
 
   <br />
   <br />
-  <input type="radio" value="1" name="servicd" id="servicd1"  /> คิดค่าบริการ 50 บาท
+  <input type="radio" value="1" name="servicd" id="servicd1"  />
+  <label for="servicd1">คิดค่าบริการ 50 บาท</label>
   <br />
+  
   <input type="radio" value="0" name="servicd" id="servicd2" /> 
-  ไม่คิดค่าบริการ 50 บาท
+  <label for="servicd2">ไม่คิดค่าบริการ 50 บาท</label>
   </p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="        ตกลง        " name="B1"></p>
 </form>
@@ -54,20 +56,30 @@ while(list($rid,$typename,$typestatus)= mysql_fetch_array($rows)){
 include("connect.inc");
 if(!empty($hn) && $confirm != true){
 
-$today = date("d-m-Y");   
-    $d=substr($today,0,2);
-    $m=substr($today,3,2);
-    $yr=substr($today,6,4) +543;  
+	$today = date("d-m-Y");   
+	$d=substr($today,0,2);
+	$m=substr($today,3,2);
+	$yr=substr($today,6,4) +543;  
 
-$thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT hn, concat(yot,' ',name,' ',surname) as ptname, ptright, idcard FROM opcard WHERE hn = '$hn'  limit 1 ";
+	$thdatehn=$d.'-'.$m.'-'.$yr.$hn;
+	$query = "SELECT hn, concat(yot,' ',name,' ',surname) as ptname, ptright, idcard FROM opcard WHERE hn = '$hn'  limit 1 ";
 
- $result = mysql_query($query) or die(Mysql_Error());
- list($xxx,$yyy,$zzz,$idcard) = Mysql_fetch_row($result);
+	$result = mysql_query($query) or die(Mysql_Error());
+	list($xxx,$yyy,$zzz,$idcard) = Mysql_fetch_row($result);
+
+	$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+	$t = mysql_fetch_array($qToken);
+	$person_id = preg_replace('/\D/','', $t['cid']);
+	$smctoken = $t['token'];
 	
 	print "HN :$xxx<br>";
    	print "$yyy<br>";
-   	print "สิทธิการรักษา :$zzz<br>";
+	?>
+	<span>สิทธิการรักษาในโรงพยาบาล : <b style="color: green;"><?=$zzz;?></b></span><br>
+	<div id="nhso">
+		<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+	</div>
+	<?php
 	print "$vnlab";
     print "<br><a href='hnpt.php?hn=".$xxx."&vnlab=".$vnlab."&confirm=true&service=".$servicd."'>!ชื่อถูกต้อง ทำรายการต่อไป</a><br>";
 
@@ -86,8 +98,16 @@ $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
 			echo '<span style="font-weight: bold; color: red;">สิทธิในการรักษาพยาบาลมีปัญหา <br>กรุณาติดต่อ แผนกทะเบียน เพื่อทำการตรวจสอบสิทธิ</span>';
 		}
 	}
-	
 
+	?>
+	<script type="text/javascript" src="js/nhso.js"></script>
+	<script>
+	window.onload = function(){
+		checksit('nhso','<?=$idcard;?>','<?=$person_id;?>','<?=$smctoken;?>');
+	}
+	</script>
+	<?php
+	
 }else if(!empty($hn) && !empty($confirm)){
 	//$tvn=$vn;
 	//$cHn=$hn;

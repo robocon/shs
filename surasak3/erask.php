@@ -76,6 +76,12 @@ $sqlpt = "select * from ptright where (status = 'a' || status = 'c') order by co
 $sqlpt = "select * from ptright where status = 'a' order by code asc";
 }
 $rowpt = mysql_query($sqlpt);
+
+$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+$t = mysql_fetch_array($qToken);
+$person_id = preg_replace('/\D/','', $t['cid']);
+$smctoken = $t['token'];
+
 ?>
 <form method="POST" action="prelab.php" onsubmit="return check();">
 	สิทธิการรักษา :<select name="pt">
@@ -97,6 +103,10 @@ $rowpt = mysql_query($sqlpt);
 	}
 	?>
 	</select>
+
+	<div id="nhso">
+		<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+	</div>
 	
 	<style type="text/css">
 	.nid_diag{
@@ -364,6 +374,12 @@ $rowpt = mysql_query($sqlpt);
 	<input type="submit" value="   ตกลง   " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	&nbsp; <input type="reset" value=" ยกเลิก " name="B2"></font></p>
 </form>
+<script type="text/javascript" src="js/nhso.js"></script>
+<script>
+	window.onload = function(){
+		checksit('nhso','<?=$idcard;?>','<?=$person_id;?>','<?=$smctoken;?>');
+	}
+</script>
 <style>
 	.myButton{
 		border-radius: 4px;
