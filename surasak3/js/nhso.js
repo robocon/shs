@@ -24,11 +24,17 @@ function checksit(divId,idcard,person_id,smctoken){
         if (request.readyState === 4){
             var data = JSON.parse(request.responseText);
             
-            if(typeof data.maininscl_name !== 'undefined'){
+            if(typeof data.maininscl_name !== 'undefined'){ 
+
+                var inscl_name = data.maininscl_name;
+
+                if(typeof data.hmain_name !== 'undefined'){
+                    inscl_name += ' ('+data.hmain_name+')';
+                }
+
                 var html = '<br><div style="color: blue;"><b>สิทธิจาก WebService สปสช</b></div>';
-                html += '<div>&gt;&gt;&nbsp;'+data.maininscl_name+'</div>';
-                html += '<div>&gt;&gt;&nbsp;'+data.subinscl_name+'</div>';
-                html += '<div style="color:red;"><b>สิทธิไม่ตรงกรุณาประสานทะเบียนเพื่อแก้ไขสิทธิต่อไป</b></div><br>';
+                html += '<div>สิทธิหลัก:&nbsp;<b style="color: green;">'+inscl_name+'</b></div>';
+                html += '<div style="color:red;"><b>หากไม่แน่ใจเรื่องสิทธิการรักษา<br>กรุณาติดต่อห้องทะเบียนเพื่อทบทวนสิทธิผู้ป่วย</b></div><br>';
 
                 setTimeout(function(){
                     document.getElementById(divId).innerHTML = html;
