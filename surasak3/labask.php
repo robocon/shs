@@ -307,7 +307,21 @@ if(!isset($c)){
 
 </font>
 
-
+<?php 
+$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+$t = mysql_fetch_array($qToken);
+$person_id = preg_replace('/\D/','', $t['cid']);
+$smctoken = $t['token'];
+?>
+<div id="nhso">
+	<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+</div>
+<script type="text/javascript" src="js/nhso.js"></script>
+<script>
+window.onload = function(){
+	checksit('nhso','<?=$idcard;?>','<?=$person_id;?>','<?=$smctoken;?>');
+}
+</script>
  
   <p><font face="Angsana New" >&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
  
