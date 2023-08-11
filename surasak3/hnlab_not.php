@@ -36,60 +36,66 @@ return $pAge;
 	
 ?>
 <form method="POST" action="<?php echo $PHP_SELF ?>">
-  <p>ผู้ป่วยนอก  HN (ไม่คิดค่าบริการ 50 บาท)</p>
-  <p>&nbsp;&nbsp;HN&nbsp;&nbsp;<input type="text" name="hn" size="12" id="aLink"><script type="text/javascript">
+	<p>ผู้ป่วยนอก HN (ไม่คิดค่าบริการ 50 บาท)</p>
+	<p>&nbsp;&nbsp;HN&nbsp;&nbsp;<input type="text" name="hn" size="12" id="aLink" required>
+		<script type="text/javascript">
 
-document.getElementById('aLink').focus();
+			document.getElementById('aLink').focus();
 
-</script></p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="        ตกลง        " name="B1"></p>
+		</script>
+	</p>
+	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="        ตกลง        " name="B1"></p>
 </form>
 
 <?php
 include("connect.inc");
 if(!empty($_POST['hn']) && $confirm != true){
 
-$ipsql="select * from ipcard where hn='".$_POST['hn']."' order by row_id desc limit 1";
-$ipquery=mysql_query($ipsql);
-$iprows=mysql_fetch_array($ipquery);
-$my_ward=$iprows["my_ward"];
-$dcdate=$iprows["dcdate"];
-$admitdate=$iprows["date"];
-if($admitdate>="2562-01-01 00:00:00" && $dcdate=="0000-00-00 00:00:00"){
-	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
-}else{
+	$ipsql="select * from ipcard where hn='".$_POST['hn']."' order by row_id desc limit 1";
+	$ipquery=mysql_query($ipsql);
+	$iprows=mysql_fetch_array($ipquery);
+	$my_ward=$iprows["my_ward"];
+	$dcdate=$iprows["dcdate"];
+	$admitdate=$iprows["date"];
+	if($admitdate>="2562-01-01 00:00:00" && $dcdate=="0000-00-00 00:00:00"){
+		echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
+	}else{
 
-$today = date("d-m-Y");   
-    $d=substr($today,0,2);
-    $m=substr($today,3,2);
-    $yr=substr($today,6,4) +543;  
+	$today = date("d-m-Y");
+	$d=substr($today,0,2);
+	$m=substr($today,3,2);
+	$yr=substr($today,6,4)+543;
 
-$thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
+	$thdatehn=$d.'-'.$m.'-'.$yr.$hn;
+	$query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
 
- $result = mysql_query($query) or die(Mysql_Error());
- $row=mysql_num_rows($result);
- list($ccc,$xxx,$yyy,$zzz,$dbirth) = Mysql_fetch_row($result);
-$age=calcage($dbirth);	
-if($row){	
+	$result = mysql_query($query) or die(Mysql_Error());
+	$row=mysql_num_rows($result);
+	list($ccc,$xxx,$yyy,$zzz,$dbirth) = Mysql_fetch_row($result);
+	$age=calcage($dbirth);	
+if($row){ 
 	
-
 	print "HN :$xxx<br>";
    	print "$yyy<br>";
 	print "อายุ : $age<br>";
-   	print "สิทธิการรักษา :$zzz";
+   	print "สิทธิการรักษา : <span style='color: green;'><b>$zzz</b></span>";
 
-	$dateIdcard = date('Y-m-d').$ccc;
-	$sql = "SELECT * FROM `api_authen` WHERE `dateIdcard` = '$dateIdcard' ";
-	$q = mysql_query($sql);
-	if(mysql_num_rows($q)==0){
-		?>
-		<div>
-		<font color='#0000FF' style='font-size:18px'><b><u style="text-decoration-color: red;"><span style="color:red;">&gt;&gt;</span> วันนี้ผู้ป่วยยังไม่ได้ขอ Authen Code <span style="color:red;">&lt;&lt;</span></u></b></font>
-		</div>
-		<?php
+	$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+	$t = mysql_fetch_array($qToken);
+	$person_id = preg_replace('/\D/','', $t['cid']);
+	$smctoken = $t['token'];
+	?>
+	<div id="nhso">
+		<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+	</div>
+	<script type="text/javascript" src="js/nhso.js"></script>
+	<script>
+	window.onload = function(){
+		checksit('nhso','<?=$ccc;?>','<?=$person_id;?>','<?=$smctoken;?>');
 	}
-	
+	</script>
+	<?php
+
 	if(substr($zzz,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$ccc%' limit 1 ";
 
