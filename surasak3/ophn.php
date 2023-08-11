@@ -46,7 +46,7 @@ font-size:20px;
     document.getElementById('aLink').focus();
 </script>
 
-<table width="83%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
+<table width="100%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
 <tr>
         <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
       <th bgcolor=#009688 width="47"><span class="style2">ยศ</span></th>
@@ -64,7 +64,7 @@ font-size:20px;
         <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธ.ออมสิน</span></th>
         <th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ธปท.</span></th>
 		<th bgcolor=#009688><span class="style2">เช็คสิทธิ์ ททท.</span></th>
-	  <th width="6" bgcolor="#009688">&nbsp;</th>
+	  <th width="135" bgcolor="#009688">&nbsp;</th>
     </tr>
 
     <?php
@@ -155,7 +155,8 @@ font-size:20px;
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".
 			"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('https://eservices.nhso.go.th/eServices/mobile/login.xhtml')\">ตรวจสอบสิทธิ</button><br>
-            <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
+            1.) <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br>
+            2.) <a href=\"javascript:void(0);\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</a>
             </td>".
 			/*"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
@@ -254,13 +255,13 @@ font-size:20px;
             </tr>
             <?
             while($dbarr= mysql_fetch_array($result_chkname)){
-
+				
                 print (" <tr>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\"  href=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['yot']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['name']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['surname']."</a></td>\n".
-                "  <td BGCOLOR=".$color.">".$dbarr['ptright']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">sdfsdf".$dbarr['ptright']."</a></td>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=".$dbarr['hn']."\">มา รพ.</a></td>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=".$dbarr['hn']."\">ตรวจนัด</a></td>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"opdprint2.php?cHn=".$dbarr['hn']."\">ใบต่อ</a></td>\n".
@@ -277,24 +278,35 @@ font-size:20px;
         session_unregister("name");
         session_unregister("surname");
 
-        include("unconnect.inc");
+        // include("unconnect.inc");
     } // End if not empty HN
+
+$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+$t = mysql_fetch_array($qToken);
+$person_id = preg_replace('/\D/','', $t['cid']);
+$smctoken = $t['token'];
 ?>
 
 <style>
-#ptrightNotify{top: 2%;left: 50%;width:600px;height:400px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
+#ptrightNotify{top: 2%;left: 50%;width:600px;height:250px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
 #ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
 #ptrightClose{font-size: 24px;color: #fff;text-decoration: none;}
 #ptnotifyContent{padding: 6px;}
 </style>
 <div id="ptrightNotify" style="display: none;">
     <div id="ptnotifyHeader">
-        <a href="javascript:void(0);" id="ptrightClose">Close</a>
+        <a href="javascript:void(0);" id="ptrightClose" onclick="document.getElementById('ptrightNotify').style.display = 'none';">Close</a>
     </div>
-    <div style="padding: 6px;" id="ptnotifyContent">testcontent</div>
+    <div style="padding: 6px;" id="ptnotifyContent">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</div>
 </div>
 
+<script type="text/javascript" src="js/nhso.js"></script>
 <script type="text/javascript">
+    function testCheckSit(idcard){
+        registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
+        document.getElementById('ptrightNotify').style.display = '';
+    }
+
     /* checkIpd */
     function checkIpd(link, ev, hn){
         
