@@ -786,11 +786,18 @@ echo "&nbsp;&nbsp;&nbsp;$company_payment</td>";
 		$PsSumYprice = $yy;
 		$PsSumNprice = 0;
 	}else if($sDepart<>'PATHO'){  
+
 		//begin แจงรายการ   ถ้าไม่ใช่ค่าพยาธิ  รายการยาวๆ
 		//$Items=0;
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
-			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice,a.part FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
+
+			$sql_over16 = "SELECT SUM(a.yprice) AS total_yprice, SUM(a.nprice) AS total_nprice FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
+			$res_over16 = mysql_query($sql_over16);
+			$over16 = mysql_fetch_assoc($res_over16);
+			$total_yprice = $over16['total_yprice'];
+			$total_nprice = $over16['total_nprice'];
 			
+			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice,a.part FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
 			$result = mysql_query($query) or die("patdata2 Query failed");
 			$count = mysql_num_rows($result);
 			if($count <= 16){
@@ -835,8 +842,8 @@ echo "&nbsp;&nbsp;&nbsp;$company_payment</td>";
 				print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 				print "    <tr>";
 				print "      <td width='42%'><font style='line-height:20px; size ='3'>ค่าตรวจทางห้องปฏิบัติการ(มีรายการแนบเบิก)</td>"; //เดิม 63
-				print "      <td width='10%' align='right'><font style='line-height:20px; size ='3'>$sSumYprice</td>";  //เดิม 28
-				print "      <td width='13%' align='right'><font style='line-height:20px; size ='3'>$sSumNprice</td>";  //เดิม 28
+				print "      <td width='10%' align='right'><font style='line-height:20px; size ='3'>$total_yprice</td>";  //เดิม 28
+				print "      <td width='13%' align='right'><font style='line-height:20px; size ='3'>$total_nprice</td>";  //เดิม 28
 				print "      <td width='30%'><font style='line-height:20px; size ='3'></td>";
 				print "    </tr>";
 				print "  </table>";
@@ -847,9 +854,15 @@ echo "&nbsp;&nbsp;&nbsp;$company_payment</td>";
      //begin ไม่แจงรายการกรณีค่าพยาธิ
 	 	//$Items=0;
 		for($r=0;$r<count($_SESSION['idnumber']);$r++){
+
+			$sql_over16 = "SELECT SUM(a.yprice) AS total_yprice, SUM(a.nprice) AS total_nprice FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
+			$res_over16 = mysql_query($sql_over16);
+			$over16 = mysql_fetch_assoc($res_over16);
+			$total_yprice = $over16['total_yprice'];
+			$total_nprice = $over16['total_nprice'];
+
 			//$query = "SELECT detail,amount,price,yprice,nprice FROM patdata WHERE  idno = '".$_SESSION['idnumber'][$r]."' and hn='".$hn_now."'  "; 
 			$query = "SELECT a.code,a.detail,a.amount,a.price,a.yprice,a.nprice,a.part FROM patdata as a,depart as b WHERE  a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn='".$hn_now."' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id"; 
-			
 			$result = mysql_query($query) or die("patdata2 Query failed");
 			$count = mysql_num_rows($result);
 			if($count <= 16){ //กำหนดให้ค่า LAB แสดงรายการได้ไม่เกิน 16 บรรทัด
@@ -888,8 +901,8 @@ echo "&nbsp;&nbsp;&nbsp;$company_payment</td>";
 				print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 				print "    <tr>";
 				print "      <td width='42%'><font style='line-height:20px; size ='3'>ค่าตรวจทางห้องปฏิบัติการ(มีรายการแนบเบิก)</td>"; //เดิม 63
-				print "      <td width='10%' align='right'><font style='line-height:20px; size ='3'>$sSumYprice</td>";  //เดิม 28
-				print "      <td width='13%' align='right'><font style='line-height:20px; size ='3'>$sSumNprice</td>";  //เดิม 28
+				print "      <td width='10%' align='right'><font style='line-height:20px; size ='3'>$total_yprice</td>";  //เดิม 28
+				print "      <td width='13%' align='right'><font style='line-height:20px; size ='3'>$total_nprice</td>";  //เดิม 28
 				print "      <td width='30%'><font style='line-height:20px; size ='3'></td>";
 				print "    </tr>";
 				print "  </table>";

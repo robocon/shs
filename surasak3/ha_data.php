@@ -17,16 +17,14 @@ if($action==='save'){
         exit;
     }
 
+    $res = 'บันทึกข้อมูลเรียบร้อย';
     if(intval($year)>0 && intval($month)==0){
         $where = " AND `year`='$year' AND `month`=''";
-        $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
 
     }elseif (intval($year)>0 && intval($month)>0) {
         $where = " AND `year`='$year' AND `month`='$month'";
-        $res = "ไม่สามารถบันทึกข้อมูลใหม่ได้ เนื่องจาก ปี".($year+543)." เดือน".$def_fullm_th[$month]." มีการบันทึกข้อมูลไปเรียบร้อยแล้ว";
     }
 
-    // $sql = "SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ";
     $q_data = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' $where ");
     if($q_data->num_rows===0){
 
@@ -36,13 +34,10 @@ if($action==='save'){
             (NULL, '$main_id', '$field_id', '$value', '$year', '$month', NOW(), NOW(), '$editor', '$editor');";
             $save = $dbi->query($sql);
         }
-        redirect("ha_data.php?id=$main_id&month=$month&year=$year", 'บันทึกข้อมูลเรียบร้อย');
-
-    }else{ 
-
-        redirect("ha_data.php?id=$main_id", $res );
 
     }
+    
+    redirect("ha_data.php?id=$main_id", $res );
     
     exit;
 
@@ -76,9 +71,45 @@ if($action==='save'){
 
     }
     
-    redirect("ha_data.php?id=$main_id&month=$month&year=$year&page_action=update", 'บันทึกข้อมูลเรียบร้อย');
+    redirect("ha_data.php?id=$main_id", 'บันทึกข้อมูลเรียบร้อย');
     exit;
 
+}elseif ($action==='load') { 
+    $month = sprintf("%s", $_POST['month']);
+    $year = sprintf("%s", $_POST['year']);
+    $id = sprintf("%s", $_POST['id']);
+
+    $test_month = (int) $month;
+
+    $select = " AND `year` = '$year' AND (`month` = '' OR `month` IS NULL)";
+    if($test_month > 0){
+        $select = " AND `year` = '$year' AND `month` = '$month'";
+    }
+
+    $q = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' $select ");
+
+    if($q->num_rows>0){
+
+        $item = array();
+        while ($a = $q->fetch_assoc()) {
+            $item[] = $a;
+        }
+
+        $res = array(
+            'ha_status' => 200,
+            'ha_msg' => 'พบข้อมูล',
+            'items' => $item
+        );
+
+    }else{
+        $res = array(
+            'ha_status' => 400,
+            'ha_msg' => 'ไม่พบข้อมูล'
+        );
+    }
+
+    echo json_encode($res);
+    exit;
 }
 
 $page_action = sprintf("%s",$_GET['page_action']);
@@ -140,7 +171,7 @@ if($page_action==='update'){
                 }
 
                 if($page_action==='update'){ 
-
+                    
                     $qd = $dbi->query("SELECT * FROM `indicator_data` WHERE `main_id` = '$id' $where ");
                     if ($qd->num_rows>0) { 
 
@@ -154,6 +185,7 @@ if($page_action==='update'){
                             $data_month = $data['month'];
                             $data_year = $data['year'];
                         }
+                        
                     }
 
                 }
@@ -166,7 +198,7 @@ if($page_action==='update'){
                     <tr>
                         <td><b>เดือนที่บันทึก</b></td>
                         <td>
-                            <select name="months" id="months">
+                            <select name="months" id="months" onchange="pre_load_data()">
                                 <option value="">-- เลือกเดือน --</option>
                                 <?php 
                                 foreach ($def_fullm_th as $key => $value) { 
@@ -188,7 +220,7 @@ if($page_action==='update'){
                             <?php 
                             $range = array_reverse(range('2019', date('Y')));
                             ?>
-                            <select name="years" id="years">
+                            <select name="years" id="years" onchange="pre_load_data()">
                                 <option value="">-- เลือกปี --</option>
                                 <?php 
                                 foreach ($range as $key => $value) {
@@ -218,7 +250,7 @@ if($page_action==='update'){
                         <tr>
                             <td><?=$af['name'];?></td>
                             <td><?=$af['target'];?></td>
-                            <td><input type="text" name="data[<?=$af['id'];?>]" id="" value="<?=$item_data[$key];?>"></td>
+                            <td><input type="text" name="data[<?=$af['id'];?>]" class="field_input" id="field<?=$af['id'];?>" value="<?=$item_data[$key];?>"></td>
                         </tr>
                         <?php
                     }
@@ -229,8 +261,8 @@ if($page_action==='update'){
                     <tr>
                         <td colspan="2">
                             <button type="submit">บันทึกข้อมูล</button>
-                            <input type="hidden" name="main_id" value="<?=$a['id'];?>">
-                            <input type="hidden" name="action" value="<?=$action_value;?>">
+                            <input type="hidden" name="main_id" id="main_id" value="<?=$a['id'];?>">
+                            <input type="hidden" name="action" id="action" value="<?=$action_value;?>">
                         </td>
                     </tr>
                 </table>
@@ -244,5 +276,58 @@ if($page_action==='update'){
             ?>
         </div>
     </div>
+    <script>
+        function pre_load_data(){
+            const month = document.getElementById('months').value;
+            const year = document.getElementById('years').value;
+
+
+            const id = document.getElementById('main_id').value;
+            loadData(id,month,year).then((res)=>{ 
+                if(res.ha_status==200){
+                    res.items.forEach(el => { 
+                    
+                        if(el.value!==''){ 
+                            
+                            document.getElementById('field'+el.field_id).value = el.value;
+                        }
+
+                    });
+
+                    document.getElementById('action').value = 'update';
+                }else{
+
+                    let field_inputs = document.getElementsByClassName('field_input');
+                    for (let index = 0; index < field_inputs.length; index++) {
+                        const element = field_inputs[index];
+                        element.value = '';
+                    }
+
+                    document.getElementById('action').value = 'save';
+                }
+                
+            });
+
+        }
+
+        async function loadData(id,month,year){ 
+            var data = [];
+            data.push(encodeURIComponent('action')+"="+encodeURIComponent('load'));
+            data.push(encodeURIComponent('id')+"="+encodeURIComponent(id));
+            data.push(encodeURIComponent('month')+"="+encodeURIComponent(month));
+            data.push(encodeURIComponent('year')+"="+encodeURIComponent(year));
+            var dataPost = data.join("&");
+
+            let response = await fetch('ha_data.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: dataPost
+            });
+            const body = await response.json();
+            return body;
+        }
+    </script>
 </body>
 </html>

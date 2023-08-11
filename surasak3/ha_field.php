@@ -9,13 +9,15 @@ if($action==='save'){
 
     $main_id = sprintf("%s", $_POST['id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
+    
+    foreach ($_POST['field_name'] as $key => $fname) { 
 
-    dump($_POST);
-    exit;
-    foreach ($_POST['field_name'] as $key => $fname) {
-        $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `target`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
+        $target = $_POST['target'][$key];
+
+        $sql = "INSERT INTO `indicator_field` 
+        (`id`, `main_id`, `name`, `target`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
         VALUES 
-        (NULL, '$main_id', '$fname', NULL, NOW(), NOW(), '$editor', '$editor', 'y');";
+        (NULL, '$main_id', '$fname', '$target', NULL, NOW(), NOW(), '$editor', '$editor', 'y');";
         $save = $dbi->query($sql);
     }
 

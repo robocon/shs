@@ -98,7 +98,7 @@ $select_tomorow = $td." ".$month[$tm]." ".$ty;
             SELECT MAX(`row_id`) AS `row_id`, SUBSTRING(`doctor`, 1, 5) as `doctor_code`
             FROM `appoint` 
             WHERE `hn` = '$hn' 
-            GROUP BY `appdate`,`apptime`,`doctor_code`
+            GROUP BY `appdate`,`apptime`,`doctor_code`,`detail`,`room` 
         ) AS b ON b.`row_id` = a.`row_id` 
 
         ORDER BY a.`date` DESC ";

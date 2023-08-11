@@ -62,12 +62,15 @@ if(empty($_SESSION['sOfficer'])){
     .chk_table{
         border-collapse: collapse;
     }
-    .chk_table th,
-    .chk_table td{
+    .chk_table tr th,
+    .chk_table tr td{
         padding: 3px;
         border: 1px solid black;
     }
-    .chk_table th{
+    .chk_table tr td table td{
+        border: none;
+    }
+    .chk_table tr th{
         font-size: 20px;
         background-color: #009688;
         color: #ffffff;
