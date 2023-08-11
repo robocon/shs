@@ -66,7 +66,11 @@ function registerChecksit(divId,idcard,person_id,smctoken){
                 var html = '<div style="color: blue;"><h3 style="margin:0;">ข้อมูลสิทธิจาก WebService สปสช</h3></div>';
                 html += '<div>ชื่อ-สกุล:&nbsp;<b style="color: green;">'+data.title_name+data.fname+' '+data.lname+'</b></div>';
                 html += '<div>เลขที่บัตรประชาชน:&nbsp;<b style="color: green;">'+data.person_id+'</b></div>';
-                html += '<div>จังหวัดที่สำนักงานประกันสังคมรับผิดชอบ:&nbsp;<b style="color: green;">'+data.purchaseprovince_name+'</b></div>';
+
+                if(typeof data.purchaseprovince_name !== 'undefined'){
+                    html += '<div>จังหวัดที่สำนักงานประกันสังคมรับผิดชอบ:&nbsp;<b style="color: green;">'+data.purchaseprovince_name+'</b></div>';
+                }
+                
                 html += '<div>สิทธิประกันสุขภาพทั้งหมดของท่าน:&nbsp;<b style="color: green;">'+inscl_name+'</b></div>';
                 html += '<div>สิทธิที่เข้ารับบริการ:&nbsp;<b style="color: green;">'+data.subinscl_name+'</b></div>';
                 
