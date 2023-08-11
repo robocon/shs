@@ -323,7 +323,7 @@ if (!empty($hn)) {
 
 
 	}
-/*
+
 	//runno  for chktranx
 	$query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
 	$result = mysql_query($query)
@@ -346,7 +346,7 @@ if (!empty($hn)) {
 	$result = mysql_query($query)
 		or die("Query failed");
 	//end  runno  for chktranx
-
+/*
         print "VN  :$tvn<br>";
         print "HN :$cHn<br>";
         print "$cPtname<br>";
