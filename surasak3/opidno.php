@@ -197,7 +197,8 @@ If (!empty($idcard)){
 		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".	
 		"  <td BGCOLOR=".$color.">
 		<button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
-		<a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
+		<a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br><br>
+		<a href=\"javascript:void(0);\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</a>
 		</td>\n".
 		" </tr>\n");
 	} // End while
@@ -205,6 +206,54 @@ If (!empty($idcard)){
 } // End if
 ?>
 </table>
+
+<?php 
+$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+$t = mysql_fetch_array($qToken);
+$person_id = preg_replace('/\D/','', $t['cid']);
+$smctoken = $t['token'];
+?>
+<style>
+#ptrightNotify{top: 2%;left: 50%;width:600px;height:250px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
+#ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
+#ptrightClose{font-size: 24px;color: #fff;text-decoration: none;}
+#ptnotifyContent{padding: 6px;}
+</style>
+<div id="ptrightNotify" style="display: none;">
+    <div id="ptnotifyHeader">
+        <a href="javascript:void(0);" id="ptrightClose" onclick="document.getElementById('ptrightNotify').style.display = 'none';">Close</a>
+    </div>
+    <div style="padding: 6px;" id="ptnotifyContent">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</div>
+</div>
+
+<script type="text/javascript" src="js/nhso.js"></script>
+<script type="text/javascript">
+    function testCheckSit(idcard){
+        registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
+        document.getElementById('ptrightNotify').style.display = '';
+    }
+
+    /* checkIpd */
+    function checkIpd(link, ev, hn){
+        
+        var newSm = new SmHttp();
+        newSm.ajax(
+            'templates/regis/checkIpd.php',
+            { id: hn },
+            function(res){
+                var txt = JSON.parse(res);
+                if( txt.state === 400 ){
+                    alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
+                    SmPreventDefault(ev);
+                }else{
+                    // window.open(link.href, '_blank');
+                }
+            },
+            false // true is Syncronous and false is Assyncronous (Default by true)
+        );
+        
+    }
+</script>
 <div style="margin-top: 30px; font-size:18px; font-weight:bold;">
 <FONT COLOR="#990000">***คำอธิบาย***</FONT> <BR>
     <FONT COLOR="#fdee6e">สีเหลือง คือ ยังไม่ได้ทำการตรวจสิทธิการรักษา</FONT><BR>
