@@ -302,7 +302,8 @@ $smctoken = $t['token'];
 
 <script type="text/javascript" src="js/nhso.js"></script>
 <script type="text/javascript">
-    function testCheckSit(idcard){
+    function testCheckSit(idcard){ 
+        document.getElementById('ptnotifyContent').innerHTML = 'กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่';
         registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
         document.getElementById('ptrightNotify').style.display = '';
     }
