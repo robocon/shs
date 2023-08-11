@@ -254,13 +254,13 @@ font-size:20px;
             </tr>
             <?
             while($dbarr= mysql_fetch_array($result_chkname)){
-
+				
                 print (" <tr>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\"  href=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['yot']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['name']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['surname']."</a></td>\n".
-                "  <td BGCOLOR=".$color.">".$dbarr['ptright']."</a></td>\n".
+                "  <td BGCOLOR=".$color.">sdfsdf".$dbarr['ptright']."</a></td>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=".$dbarr['hn']."\">มา รพ.</a></td>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=".$dbarr['hn']."\">ตรวจนัด</a></td>\n".
                 "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"opdprint2.php?cHn=".$dbarr['hn']."\">ใบต่อ</a></td>\n".

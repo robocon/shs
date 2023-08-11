@@ -27,6 +27,21 @@ if(PHP_VERSION_ID <= 50217){
 	unset($_SESSION['cNote']);
 }
 ?>
+<style>
+body {
+	background-color: #FFFFF0;
+    font-family: "TH SarabunPSK";
+        font-size: 18px;
+    }
+.txtsarabun {
+font-family:"TH SarabunPSK";
+font-size:20px;
+}	
+.style2 {
+	font-family:"TH SarabunPSK";
+	font-size: 18;
+	}
+</style>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
@@ -42,7 +57,7 @@ if(PHP_VERSION_ID <= 50217){
 			if(id13 != "" && id13 != "-"){
 				
 				if(id13.length != 13){
-					alert("�Ţ�ѵû�ЪҪ����١��ͧ");
+					alert("เลขบัตรประชาชนไม่ถูกต้อง");
 					stat = false;
 				}
 
@@ -56,7 +71,7 @@ if(PHP_VERSION_ID <= 50217){
 					sum = ((11 - (sum % 11)) % 10)
 					
 					if(eval(id13.charAt(12)) != sum)
-						if(confirm("�к���Ǩ�ͺ��Ҥس��͡�Ţ�ѵû�ЪҪ����١��ͧ \n �س��ͧ��á�Ѻ�����������?"))
+						if(confirm("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n คุณต้องการกลับไปแก้ไขหรือไม่?"))
 							stat = false;
 						else
 							stat = true;
@@ -67,30 +82,36 @@ if(PHP_VERSION_ID <= 50217){
 	}
 
 </SCRIPT>
-
+<div style="margin-left:50px; margin-top: 30px;">
 <form name="f1" method="post" action="<?php echo $PHP_SELF ?>" Onsubmit="return checkForm();">
-	<p>&nbsp;&nbsp;&nbsp;���Ҥ���ҡ�Ţ�ѵû�Шӵ��13��ѡ</p>
+	<p style="font-size:24px;"><b>ค้นหาคนไข้จากเลขบัตรประจำตัว13หลัก</b></p>
 	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ID&nbsp;&nbsp;&nbsp;
-	<input type="text" name="idcard" size="16" id="aLink"></p>
+	<input name="idcard" type="text" class="txtsarabun" id="aLink" size="16">
+  </p>
 	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="submit" value="     ��ŧ     " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ź���  " name="B2"></p>
+	<input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
+  &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="  ยกเลิก  ">
+  </p>
 </form>
 <script type="text/javascript">
 	document.getElementById('aLink').focus();
 </script>
 		
-<table>
-	<tr bgcolor="6495ED">
-		<th>�Ţ�ѵ� ���.</th>
-		<th>HN</th>
-		<th>��</th>
-		<th>����</th>
-		<th>ʡ��</th>
-		<th>�Է��</th>
-		<th>�� þ.</th>
-		<th>��Ǩ�Ѵ</th>
-		<th>��Ǩ�͹</th>
-		<th></th>
+<table width="85%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
+<tr bgcolor="6495ED">
+		<th bgcolor="#009688">เลขบัตร ปชช.</th>
+	  <th bgcolor="#009688">HN</th>
+	  <th bgcolor="#009688">ยศ</th>
+	  <th bgcolor="#009688">ชื่อ</th>
+	  <th bgcolor="#009688">สกุล</th>
+	  <th bgcolor="#009688">สิทธิ</th>
+	  <th bgcolor="#009688">มา รพ.</th>
+	  <th bgcolor="#009688">ตรวจนัด</th>
+	  <th bgcolor="#009688">ตรวจนอน</th>
+      <th bgcolor=#009688>เช็คสิทธิ์ ธ.ออมสิน</th>
+      <th bgcolor=#009688>เช็คสิทธิ์ ธปท.</th>
+	<th bgcolor=#009688>เช็คสิทธิ์ ททท.</th>      
+	  <th bgcolor="#009688"></th>
 	</tr>
 
 <?php
@@ -108,57 +129,75 @@ If (!empty($idcard)){
 			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				$color = "#CCFF00";
+				$color = "#208eb4";
 			}else{
-				$color = "FF8C8C";
+				$color = "#FF8C8C";
 			}
 		}else if(substr($ptright,0,3)=='R03'){
 			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				$color = "99CC00";
+				$color = "#7dcf80";
 			}else{
-				$color = "FF8C8C";
+				$color = "#FF8C8C";
 			}
 		}else{
-			$color = "66CDAA";
+			$color = "#fdee6e";
 		}
 
 		if(!empty($idcard)){
 			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				echo"���������Է�Ի�Сѹ�ѧ��";
+				echo"ผู้ป่วยมีสิทธิประกันสังคม";
 			}else{
-				echo"";
+				$sql1="Select Idcard From gsbdata where Idcard LIKE '$idcard%' limit 1 ";
+				if(Mysql_num_rows(Mysql_Query($sql1)) > 0){
+					echo"ผู้ป่วยมีสิทธิธนาคารออมสิน";
+				}else{
+						$sql2="Select emp_idcard From botdata where emp_idcard LIKE '$idcard%' limit 1 ";
+						if(Mysql_num_rows(Mysql_Query($sql2)) > 0){
+							echo"ผู้ป่วยมีสิทธิธนาคารแห่งประเทศไทย";
+						}else{
+							$sql3="Select emp_idcard From traveldata where emp_idcard LIKE '$idcard%' limit 1 ";
+							if(Mysql_num_rows(Mysql_Query($sql3)) > 0){
+								echo"ผู้ป่วยมีสิทธิการท่องเที่ยวแห่งประเทศไทย";
+							}else{							
+								echo"";
+							}
+						}
+				}
 			}
 		}else{
-			echo"������������Ţ��Шӵ�ǻ�ЪҪ�";
+			echo"ผู้ป่วยไม่มีเลขประจำตัวประชาชน";
 		}
 
 		if(!empty($hn)){
 			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";			
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				echo"���������Է�Ԩ��µç";
+				echo"ผู้ป่วยมีสิทธิจ่ายตรง";
 			}else{
 				echo"";
 			}
 		}else{
-			echo"����������� HN";
+			echo"ผู้ป่วยไม่มี HN";
 		}
 
-		print (" <tr>\n".
+		print (" <tr style='font-size: 18px;'>\n".
 		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php?cIdcard=$idcard&cHn=$hn&cName=$name&cSurname=$surname\">$idcard</a></td>\n".
 		"  <td BGCOLOR=".$color.">$hn</td>\n".
 		"  <td BGCOLOR=".$color.">$yot</td>\n".
 		"  <td BGCOLOR=".$color.">$name</td>\n".
 		"  <td BGCOLOR=".$color.">$surname</td>\n".
 		"  <td BGCOLOR=".$color.">$ptright</td>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=$hn\">�� þ.</a></td>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=$hn\">��Ǩ�Ѵ</a></td>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"ancheck.php?hn=$hn\">��Ǩ�͹</a></td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=$hn\">มา รพ.</a></td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=$hn\">ตรวจนัด</a></td>\n".
+		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"ancheck.php?hn=$hn\">ตรวจนอน</a></td>\n".
+		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"gsb_chk.php\">ตรวจสอบ</a></td>\n".	
+		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"bot_chk.php\">ตรวจสอบ</a></td>\n".
+		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".	
 		"  <td BGCOLOR=".$color.">
-		<button type=\"button\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">��Ǩ�ͺ�Է��</button><br>
-		<a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">����� QR Code</a>
+		<button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
+		<a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a>
 		</td>\n".
 		" </tr>\n");
 	} // End while
@@ -166,12 +205,13 @@ If (!empty($idcard)){
 } // End if
 ?>
 </table>
-<FONT SIZE="2" COLOR="#990000">***��͸Ժ��***</FONT> <BR>
-<FONT SIZE="" COLOR="66CDAA">������ ��� �ѧ�����ӡ�õ�Ǩ�Է�ԡ���ѡ��</FONT><BR>
-<FONT SIZE="" COLOR="#CCFF00">��������͹ ��� ��Ǩ�ͺ���� ���Է�Ի�Сѹ�ѧ��</FONT><BR>
-<FONT SIZE="" COLOR="#99CC00">��������͹ ��� ��Ǩ�ͺ���� ���Է�Ԩ��µç</FONT><BR>
-<FONT SIZE="" COLOR="#FF0033">��ᴧ ��� ������Է��</FONT><BR>
-
+<div style="margin-top: 30px; font-size:18px; font-weight:bold;">
+<FONT COLOR="#990000">***คำอธิบาย***</FONT> <BR>
+    <FONT COLOR="#fdee6e">สีเหลือง คือ ยังไม่ได้ทำการตรวจสิทธิการรักษา</FONT><BR>
+    <FONT COLOR="#208eb4">สีน้ำเงิน คือ ตรวจสอบแล้ว มีสิทธิประกันสังคม</FONT><BR>
+    <FONT COLOR="#7dcf80">สีเขียว คือ ตรวจสอบแล้ว มีสิทธิจ่ายตรง</FONT><BR>
+    <FONT COLOR="#FF0033">สีแดง คือ ไม่มีสิทธิ</FONT><BR>
+</div>
 <?php
 if($pre_hn !== null){
 	
@@ -185,7 +225,7 @@ if($pre_hn !== null){
 	if($item != false && $item['dcdate'] == '0000-00-00 00:00:00'){
 		?>
 		<script type="text/javascript">
-			alert('<?php echo '�������ѧ������ '.$item['my_ward'];?>');
+			alert('<?php echo 'ผู้ป่วยยังอยู่ที่ '.$item['my_ward'];?>');
 		</script>
 		<?php
 	}
@@ -203,7 +243,7 @@ if($pre_hn !== null){
 			function(res){
 				var txt = JSON.parse(res);
 				if( txt.state === 400 ){
-					alert('ʶҹТͧ�������ѧ���� '+txt.msg+' ��سҵԴ��ͷ�� Ward ���� Discharge');
+					alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
 					SmPreventDefault(ev);
 				}else{
 					// window.open(link.href, '_blank');
@@ -217,3 +257,4 @@ if($pre_hn !== null){
 <?php
 include("unconnect.inc");
 ?>
+</div>
