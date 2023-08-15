@@ -4,6 +4,13 @@ include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$sOfficer = $_SESSION['sOfficer'];
+$sMenucode = $_SESSION['smenucode'];
+if( ($sMenucode!='ADMOBG' && $sOfficer!='สุมีนา โมเหล็ก') && ($sMenucode!='ADM' && $sMenucode!='ADMCOM') ){
+    echo "ระงับสิทธิการใช้งาน ไม่สามารถเข้าถึงเมนูนี้ได้ กรุณาติดต่อศูนย์พัฒนาคุณภาพ";
+    exit;
+}
+
 function new_sort($parent=null){ 
     global $dbi;
 

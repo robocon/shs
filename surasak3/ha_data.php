@@ -1,5 +1,7 @@
 <?php 
 include 'bootstrap.php';
+include_once 'includes/JSON.php';
+$json = new Services_JSON();
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -108,7 +110,7 @@ if($action==='save'){
         );
     }
 
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }
 
