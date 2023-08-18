@@ -20,10 +20,8 @@ $appd=$_POST['appdate'].' '.$_POST['appmo'].' '.$_POST['thiyr'];
 $seldepart=$_POST['depart'];
 if($seldepart=="FU18 ไตเทียม"){
 	$showdepart="แผนกไตเทียม 1";
-
-}elseif ($seldepart=="FU39 ไตเทียม 2") {
+}else{
 	$showdepart="แผนกไตเทียม 2";
-	
 }
 
   $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
@@ -58,7 +56,7 @@ $newappd=$subappd[2].'-'.$printmonth.'-'.$subappd[0];
 $pre_thdatehn = $subappd[0].'-'.$printmonth.'-'.$subappd[2];
 
 
-$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  ( `detail` =  '$seldepart' AND appdate ='$appd' ) AND `apptime` != 'ยกเลิกการนัด' ";
+$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` =  '$seldepart' AND appdate ='$appd' ORDER BY row_id";
 $querytem = mysql_query($sqltem);
 
 $sqltime="SELECT COUNT( * ) AS cnum, apptime
@@ -70,7 +68,7 @@ $querytime=mysql_query($sqltime);
 <hr width="50%"  align="center"/><br />
 <table border="1" style="border-collapse:collapse" bordercolor="#666666" cellpadding="0" cellspacing="0" class="font1"> 
 <?php 
-$n=1;
+
 $i=1;
 while($arrtime=mysql_fetch_array($querytime)){
 	
@@ -88,6 +86,7 @@ while($arrtime=mysql_fetch_array($querytime)){
 	$show="SELECT * FROM  appoint1 WHERE  apptime ='".$arrtime['apptime']."'";
 	$queryshow=mysql_query($show);
 	$rows=mysql_num_rows($queryshow);
+	$n=1;
 	while($arrshow=mysql_fetch_array($queryshow)){
 		
 		$thdatehn = $pre_thdatehn.$arrshow['hn'];
@@ -96,9 +95,9 @@ while($arrtime=mysql_fetch_array($querytime)){
 
 		$querypt=mysql_query($ptright);
 		$arrpt=mysql_fetch_array($querypt);
-		if($n>$rows){
-			$n=1;
-		}
+		// if($n>$rows){
+		// 	$n=1;
+		// }
 		print " <tr>
 		<td align='center'><font face='Angsana New'>$n</td>
 		<td><font face='Angsana New'>$arrshow[ptname]</td>
