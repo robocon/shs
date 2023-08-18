@@ -141,17 +141,9 @@ function checkForm(){
 			$result112 = Mysql_Query($sql112);
 			list($chkhn) = Mysql_fetch_row($result112);	
 
-			if(empty($chkhn)){
 				$link="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd2.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code ใหญ่<br>แบบไม่มี VN</div></button>";
-			}else{
-				$link="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code ใหญ่<br>แบบมี VN</div></button>";
-			}
 
-			if(empty($chkhn)){
 				$linksmall="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd3.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบไม่มี VN</div></button>";
-			}else{
-				$linksmall="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd1.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบมี VN</div></button>";
-			}
 
             $allow_depart = array('ADM','ADMCOM','ADMNHSO','ADMMAINOPD');
             if(in_array($_SESSION["smenucode"], $allow_depart)===true){
