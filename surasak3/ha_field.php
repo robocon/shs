@@ -1,24 +1,35 @@
 <?php 
 include 'bootstrap.php';
 
+$sOfficer = $_SESSION['sOfficer'];
+$sMenucode = $_SESSION['smenucode'];
+if( ($sMenucode!='ADMOBG' && $sOfficer!='สุมีนา โมเหล็ก') && ($sMenucode!='ADM' && $sMenucode!='ADMCOM') ){
+    echo "ระงับสิทธิการใช้งาน ไม่สามารถเข้าถึงเมนูนี้ได้ กรุณาติดต่อศูนย์พัฒนาคุณภาพ";
+    exit;
+}
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $action = sprintf("%s", $_POST['action']);
+// ตอนบันทึก field ครั้งแรกเท่านั้น ครั้งต่อๆไปจะไปเข้าเงื่อนไข update
 if($action==='save'){  
 
     $main_id = sprintf("%s", $_POST['id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
     
+    $i = 1;
     foreach ($_POST['field_name'] as $key => $fname) { 
 
         $target = $_POST['target'][$key];
 
         $sql = "INSERT INTO `indicator_field` 
-        (`id`, `main_id`, `name`, `target`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
+        (`id`, `main_id`, `name`, `target`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`, `sort`) 
         VALUES 
-        (NULL, '$main_id', '$fname', '$target', NULL, NOW(), NOW(), '$editor', '$editor', 'y');";
+        (NULL, '$main_id', '$fname', '$target', NULL, NOW(), NOW(), '$editor', '$editor', 'y', '$i' );";
         $save = $dbi->query($sql);
+
+        $i++;
     }
 
     redirect('ha_field.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
@@ -29,18 +40,20 @@ if($action==='save'){
     $main_id = sprintf("%s", $_POST['id']);
     $editor = sprintf("%s", $_SESSION['sIdname']);
 
-    // $target = sprintf("%s", $_POST['target']);
-
-    $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ";
+    // เลือกข้อมูลเดิมออกมาก่อน
+    $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ORDER BY `sort` IS NULL, `sort`,`id` ASC";
     $q = $dbi->query($sql);
     $data_before = array();
     $status_before = array();
     $target_before = array();
+    
     while ($a = $q->fetch_assoc()) {
+
         $fkey = $a['id'];
         $data_before[$fkey] = $a['name'];
         $status_before[$fkey] = $a['status'];
         $target_before[$fkey] = $a['target'];
+
     }
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
@@ -49,7 +62,7 @@ if($action==='save'){
         $_POST['field_name'] = array();
     }
 
-    // เพิ่ม
+    // ถ้าจำนวน POST มีเยอะกว่า $data_before ให้ diff หาความต่างแล้วเพิ่มข้อมูล
     if(count($_POST['field_name']) > count($data_before) ){
         $diff = array_diff_assoc($_POST['field_name'], $data_before);
         $status_diff = array_diff_assoc($_POST['status'], $status_before);
@@ -58,16 +71,19 @@ if($action==='save'){
             
             $status = $status_diff[$id];
             $target = $target_diff[$id];
-
+            
             // INSERT INTO 
-            $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
+            $sql = "INSERT INTO `indicator_field` (`id`, `main_id`, `name`, `target`, `depart`, `date_create`, `date_edit`, `creater`, `editor`, `status`) 
             VALUES 
             (NULL, '$main_id', '$value', '$target', NULL, NOW(), NOW(), '$editor', '$editor', '$status');";
             $save = $dbi->query($sql);
+            if($save===false){
+                $msg = $dbi->error;
+            }
         }
 
-    }elseif (count($data_before) > count($_POST['field_name'])) { // ลด
-
+    }elseif (count($data_before) > count($_POST['field_name'])) { // เทียบข้อมูล ถ้ามีฟิลด์หายไป คือการลบ
+        
         $diff = array_diff_assoc($data_before, $_POST['field_name']);
         foreach ($diff as $id => $value) {
             
@@ -79,6 +95,7 @@ if($action==='save'){
     $intersect_items = array_intersect_key($_POST['field_name'], $data_before);
     $intersect_status = array_intersect_key($_POST['status'], $status_before);
     $intersect_target = array_intersect_key($_POST['target'], $target_before);
+
 
     foreach ($intersect_items as $key => $value) { 
         
@@ -92,13 +109,26 @@ if($action==='save'){
         `editor`='$editor',
         `status`='$status'
         WHERE (`id`='$key');";
-        // dump($sql);
         $save = $dbi->query($sql);
     }
 
-    // exit;
 
-    redirect('ha_field.php?id='.$main_id, 'บันทึกข้อมูลเรียบร้อย');
+    $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ORDER BY `sort` IS NULL, `sort`,`id` ASC";
+    $q = $dbi->query($sql);
+    if($q->num_rows > 0){
+        $sort = 1;
+        while ($a = $q->fetch_assoc()) {
+
+            $id = $a['id'];
+
+            $sqlUpdate = "UPDATE `indicator_field` SET `sort` = '$sort' WHERE `id` = '$id' ";
+            $update = $dbi->query($sqlUpdate);
+
+            $sort++;
+        }
+    }
+
+    redirect('ha_field.php?id='.$main_id, $msg);
     exit;
 }
 
