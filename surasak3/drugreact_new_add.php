@@ -9,11 +9,12 @@ if(isset($_GET["action"])){
 ///////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 	
-	$sql = "Select drugcode,tradname,genname from druglst where tradname like '%".$_GET["search"]."%' or drugcode like '%".$_GET["search"]."%' or genname like '%".$_GET["search"]."%' and drug_active='y' limit 20 ";
+	$sql = "Select drugcode,tradname,genname,code24 from druglst where ( tradname like '%".$_GET["search"]."%' or drugcode like '%".$_GET["search"]."%' or genname like '%".$_GET["search"]."%' ) and drug_active='y' limit 20 ";
+	
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){		
-		echo "<Div style=\"position: absolute;text-align: center; margin-top:400px; width:500px; height:430px; overflow:auto; \">";	
+		echo "<Div style=\"width:500px; height:430px;\">";	
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\">
 		<tr align=\"center\" bgcolor=\"#333333\">
 		<td width=\"80\"><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td>
@@ -314,7 +315,7 @@ if ( $page == 'search' ) {
     }
 	?>
 <h3 align="center">ระบบบันทึกการแพ้ยา</h3>
-<Div id="list" style="left:200PX;top:30PX;position:absolute;" class="fontsarabun"></Div>
+
 <FORM name="f1" METHOD=POST ACTION="drugreact_new_add.php" onsubmit="return checkList()">
 <input name="act" type="hidden" value="add"/>
 <input name="hn" type="hidden" value="<?php echo $result["hn"];?>" />
@@ -327,7 +328,12 @@ if ( $page == 'search' ) {
                 <th>ประเมิน</th>
             </tr>
                 <tr>
-                <td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="drugcode" size="15" id='drugcode' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');"></div></td>
+                <td align="center" valign="top">
+					<div style="margin-top:5px; position:relative;">
+						<input type="text" name="drugcode" size="15" id='drugcode' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');">
+						<Div id="list" style="position:absolute; top:0; right: -500px;" class="fontsarabun"></Div>
+					</div>
+				</td>
                 <td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="tradname" size="25" id='tradname' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');"></div></td>
 				<td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="genname" size="25" id='genname' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');"></div></td>
                 <td>
@@ -864,6 +870,8 @@ if($_POST["act"]=="add"){
 		}else{
 			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";
 		}
+
+		exit;
 }
 
 
@@ -929,6 +937,8 @@ if($_POST["act"]=="edit"){
 		}else{
 			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
 		}		
+
+		exit;
 }	
 ?>
 	

@@ -604,5 +604,6 @@ if($_POST["act"]=="add"){
 	}else{
 		echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreactgroup_new_add.php?page=show&group='$group'&hn=$hn';</script>";
 	}		
+	exit;
 }
 ?>	
