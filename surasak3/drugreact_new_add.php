@@ -1,9 +1,7 @@
 <?php 
 session_start();
 include("connect.inc");
-require_once 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -11,11 +9,12 @@ if(isset($_GET["action"])){
 ///////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 	
-	$sql = "Select drugcode,tradname,genname from druglst where tradname like '%".$_GET["search"]."%' or drugcode like '%".$_GET["search"]."%' or genname like '%".$_GET["search"]."%' and drug_active='y' limit 20 ";
+	$sql = "Select drugcode,tradname,genname,code24 from druglst where ( tradname like '%".$_GET["search"]."%' or drugcode like '%".$_GET["search"]."%' or genname like '%".$_GET["search"]."%' ) and drug_active='y' limit 20 ";
+	
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
 	if(Mysql_num_rows($result) > 0){		
-		echo "<Div style=\"position: absolute;text-align: center; margin-top:400px; width:500px; height:430px; overflow:auto; \">";	
+		echo "<Div style=\"width:500px; height:430px;\">";	
 		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\">
 		<tr align=\"center\" bgcolor=\"#333333\">
 		<td width=\"80\"><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td>
@@ -67,13 +66,6 @@ body{
     padding: 3px;
     border: 0px solid black;
     font-size: 16px;
-}
-label:hover{
-	cursor: pointer;
-}
-p{
-	margin: 0;
-	padding: 0;
 }
 </style>
 <script>
@@ -323,7 +315,7 @@ if ( $page == 'search' ) {
     }
 	?>
 <h3 align="center">ระบบบันทึกการแพ้ยา</h3>
-<Div id="list" style="left:200PX;top:30PX;position:absolute;" class="fontsarabun"></Div>
+
 <FORM name="f1" METHOD=POST ACTION="drugreact_new_add.php" onsubmit="return checkList()">
 <input name="act" type="hidden" value="add"/>
 <input name="hn" type="hidden" value="<?php echo $result["hn"];?>" />
@@ -336,7 +328,12 @@ if ( $page == 'search' ) {
                 <th>ประเมิน</th>
             </tr>
                 <tr>
-                <td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="drugcode" size="15" id='drugcode' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');"></div></td>
+                <td align="center" valign="top">
+					<div style="margin-top:5px; position:relative;">
+						<input type="text" name="drugcode" size="15" id='drugcode' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');">
+						<Div id="list" style="position:absolute; top:0; right: -500px;" class="fontsarabun"></Div>
+					</div>
+				</td>
                 <td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="tradname" size="25" id='tradname' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');"></div></td>
 				<td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="genname" size="25" id='genname' class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');"></div></td>
                 <td>
@@ -412,20 +409,6 @@ if ( $page == 'search' ) {
 				<div><input type="radio" id="asses6" name="asses" value="Hx" class="fontsarabun"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
 				</td>
             </tr>
-			<tr>
-				<td>กลุ่มยาที่มีโอกาสแพ้</td>
-				<td colspan="4">
-					<?php 
-					$qg = $dbi->query("SELECT * FROM `drugreact_group`");
-					while ($z = $qg->fetch_assoc()) { 
-						$id = $z['id'];
-						?>
-						<p><input type="radio" name="drugreact_group" id="group<?=$id;?>" value="<?=$id;?>"> <label for="group<?=$id;?>"><?=$z['name'];?></label></p>
-						<?php
-					}
-					?>
-				</td>
-			</tr>
 			<tr>
 				<td><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
 				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
@@ -772,22 +755,6 @@ if (in_array("", $variable)){
 				</td>
             </tr>
 			<tr>
-				<td>กลุ่มยาที่มีโอกาสแพ้</td>
-				<td colspan="4">
-					<?php 
-					$mygroupname = trim($dresult['groupname']);
-					$qg = $dbi->query("SELECT * FROM `drugreact_group`");
-					while ($z = $qg->fetch_assoc()) { 
-						$id = $z['id'];
-						$checked = ($z['name']===$mygroupname) ? 'checked="checked"' : '' ;
-						?>
-						<p><input type="radio" name="drugreact_group" id="group<?=$id;?>" value="<?=$id;?>" <?=$checked;?>> <label for="group<?=$id;?>"><?=$z['name'];?></label></p>
-						<?php
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
 				<td><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
 				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="<?php echo $dresult["sideeffects"];?>" /></div></td>
 			</tr>
@@ -828,15 +795,6 @@ if($_POST["act"]=="add"){
 	
 	$advreact = implode(',', $_POST["advreact"]);
 	$advreact_other=trim($_POST["advreact_other"]);
-
-	$group_id = sprintf("%s", $_POST['drugreact_group']);
-
-	$q = $dbi->query("SELECT `name` FROM `drugreact_group` WHERE `id` = '$group_id' ");
-	$groupname = '';
-	if ($q->num_rows > 0) {
-		$group = $q->fetch_assoc();
-		$groupname = $group['name'];
-	}
 	
 	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
 		$advreact=$advreact.",".$advreact_other;
@@ -851,8 +809,7 @@ if($_POST["act"]=="add"){
 		asses='$asses',
 		reporter='$reporter',
 		date='$report_date',
-		officer='".$_SESSION['sOfficer']."',
-		groupname='$groupname'";
+		officer='".$_SESSION['sOfficer']."'";
 		//echo $edit;
 		if(mysql_query($add)){
 
@@ -913,6 +870,8 @@ if($_POST["act"]=="add"){
 		}else{
 			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";
 		}
+
+		exit;
 }
 
 
@@ -926,32 +885,15 @@ if($_POST["act"]=="edit"){
 	$reporter=$_POST["reporter"];
 	$report_date=$_POST["report_date"];
 	$sideeffects=$_POST["sideeffects"];
-	$sOfficer = $_SESSION['sOfficer'];
 	
 	$advreact = implode(',', $_POST["advreact"]);
 	$advreact_other=trim($_POST["advreact_other"]);
-
-	$group_id = sprintf("%s", $_POST['drugreact_group']);
-
-	$q = $dbi->query("SELECT `name` FROM `drugreact_group` WHERE `id` = '$group_id' ");
-	$groupname = '';
-	if ($q->num_rows > 0) {
-		$group = $q->fetch_assoc();
-		$groupname = $group['name'];
-	}
-
-	// $q = $dbi->query("SELECT `id` FROM `drugreact_group_list` WHERE `drugcode` = '$drugcode' AND `drugreact_group` = '$group_id' ");
-	// if ($q->num_rows == 0) {
-	// 	$dbi->query("INSERT INTO `drugreact_group_list` (`id`,`drugcode`,`drugreact_group`,`officer`,`lastupdate`) VALUES (
-	// 		NULL, '$drugcode','$group_id','$sOfficer',NOW() 
-	// 	)");
-	// }
 	
 	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
 		$advreact=$advreact.",".$advreact_other;
 	}	
 
-		$edit="update drugreact SET advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer1='$sOfficer',groupname='$groupname' where row_id='".$row_id."'";
+		$edit="update drugreact SET advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer1='".$_SESSION['sOfficer']."' where row_id='".$row_id."'";
 		//echo $edit;
 		if(mysql_query($edit)){	
 			// เก็บข้อมูลเข้าแฟ้ม drugallergy
@@ -995,6 +937,8 @@ if($_POST["act"]=="edit"){
 		}else{
 			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
 		}		
+
+		exit;
 }	
 ?>
 	

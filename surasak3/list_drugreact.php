@@ -4,7 +4,7 @@ include("connect.inc");
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 
 <style>
@@ -53,20 +53,21 @@ color: #FFF;
 
 <body>
 
-  <h1 align="center" class="font_title">รายชื่อผู้ป่วยแพ้ยา</h1>
-<table border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"  bordercolor="#000000" class="font_title">
+  <h1 align="center" class="font_title">เธฃเธฒเธขเธเธทเนเธญเธเธนเนเธเนเธงเธขเนเธเนเธขเธฒ</h1>
+<table align="center" width="90%" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"  bordercolor="#000000" class="font_title">
 
 <tr>
 <td align="center">NO.</td>
 <td align="center">HN</td>
-<td  align="center">ชื่อ - สกุล</td>
-<td  align="center">รหัสยา</td>
-<td align="center">ชื่อยา</td>
-<td  align="center">อาการ</td>
+<td  align="center">เธเธทเนเธญ - เธชเธเธธเธฅ</td>
+<td  align="center">เธฃเธซเธฑเธชเธขเธฒ</td>
+<td align="center">เธเธทเนเธญเธขเธฒ</td>
+<td  align="center">เธเธทเนเธญเธเธฅเธธเนเธก</td>
+<td  align="center">เธญเธฒเธเธฒเธฃ</td>
 </tr>
 <?
 $n='1';
-$sqls = "select distinct(hn) from drugreact";
+$sqls = "select distinct(hn) from drugreact order by row_id ASC";
 $row =mysql_query($sqls);
 while($result = mysql_fetch_array($row)){
 	$sql2 = "select *,concat(yot,' ',name,' ',surname) as ptname from opcard where hn= '".$result['hn']."'";
@@ -86,6 +87,7 @@ while($result = mysql_fetch_array($row)){
     <td ><?=$result2['ptname']?></td>
     <td ><?=$result3['drugcode']?></td>
     <td ><?=$result3['tradname']?></td>
+    <td ><?=$result3['groupname']?></td>
     <td ><?=$result3['advreact']?></td></tr>
    
 	<?
