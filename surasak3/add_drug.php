@@ -39,8 +39,9 @@ $res_drugreact = $dbi->query("SELECT * FROM `drugreact` WHERE hn = '$my_hn' GROU
 $rowdg1 = $res_drugreact->num_rows;
 if($rowdg1 > 0){
 	while($arrdg1 = $res_drugreact->fetch_assoc()){
-		$drugreact_list[] = $arrdg1['drugcode'];
-		$drugreact_list_js[] = "'".trim($arrdg1['drugcode'])."'";
+		$drugcode = trim($arrdg1['drugcode']);
+		$drugreact_list[] = $drugcode;
+		$drugreact_list_js[] = "'$drugcode'";
 	}
 }
 
