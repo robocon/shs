@@ -29,7 +29,6 @@ if(!$bed){
 	<h1 style="color:red;">คำเตือน ไม่พบข้อมูล HN: <?=$my_an;?> กรุณาตรวจสอบ AN อีกครั้ง</h1>
 	<?php
 }
-// $bed['hn'] = '47-18782';
 
 // session_register("hn_now");
 $my_hn = $_SESSION["hn_now"] = $bed["hn"];
@@ -40,7 +39,6 @@ $_SESSION["ptright_now"] = $bed["ptright"];
 // รายการยาที่แพ้ทั้งหมดของคนไข้
 $drugreact_list = array();
 $drugreact_list_js = array();
-dump("SELECT * FROM `drugreact` WHERE hn = '$my_hn' GROUP BY drugcode");
 $res_drugreact = $dbi->query("SELECT * FROM `drugreact` WHERE hn = '$my_hn' GROUP BY drugcode");
 $rowdg1 = $res_drugreact->num_rows;
 if($rowdg1 > 0){
