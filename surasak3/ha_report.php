@@ -63,8 +63,26 @@ if($report_type==='year'){
                     <select name="main_id" id="main_id">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                     <?php 
-                    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' ORDER BY `parent`, `sort` ASC ");
+                    $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' AND `parent` IS NULL ORDER BY `sort` ASC");
+                    $allItemList = array();
                     while ($a = $q->fetch_assoc()) {
+                        
+                        $parent = $a['id'];
+                        
+                        $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' AND `parent` = '$parent' ORDER BY `sort` ASC");
+                        $child_rows = $q2->num_rows;
+
+                        if($child_rows>0){
+
+                            while ($b = $q2->fetch_assoc()) {
+                                $b['name'] = '&nbsp;&nbsp;|--&nbsp;'.$b['name'];
+                                $allItemList[] = $b;
+                                
+                            }
+                        }
+                    }
+                    
+                    foreach($allItemList AS $key => $a){
 
                         $selected = $main_id == $a['id'] ? 'selected="selected"' : '' ;
 
@@ -224,11 +242,37 @@ if ($page==='search') {
         $qm = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$main_id'");
         $main = $qm->fetch_assoc();
 
-        $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
-        $field_items = array();
-        while ($f = $q_field->fetch_assoc()) {
-            $fid = $f['id'];
-            $field_items[$fid] = array('name'=>$f['name'], 'target'=>$f['target']);
+        if($main['parent']===NULL){
+
+            $qSubParent = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id' ORDER BY `sort`");
+            $field_items = array();
+            while ($fm = $qSubParent->fetch_assoc()) {
+
+                $main_id = $fm['id'];
+                $field_items[$main_id] = array('name'=>$fm['name'], 'parent'=>true);
+
+                $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
+                $child_rows = $q_field->num_rows;
+
+
+
+                while ($f = $q_field->fetch_assoc()) {
+                    $fid = $f['id'];
+                    $field_items[$fid] = array('name'=>$f['name'], 'target'=>$f['target']);
+                }
+
+            }
+
+        }else{
+
+            // $field_items : ข้อมูลที่ต้องแสดงแต่ละบรรทัด
+            $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
+            $field_items = array();
+            while ($f = $q_field->fetch_assoc()) {
+                $fid = $f['id'];
+                $field_items[$fid] = array('name'=>$f['name'], 'target'=>$f['target']);
+            }
+
         }
         
         ?>
@@ -267,6 +311,8 @@ if ($page==='search') {
                 WHERE b.`status` = 'y' 
                 ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
 
+                dump($sql);
+
             }
 
             $q=$dbi->query($sql);
@@ -300,24 +346,42 @@ if ($page==='search') {
                             ?>
                         </tr>
                         <?php 
-                        foreach ($field_items as $key => $title) {
+                        foreach ($field_items as $key => $item) {
+
+                            $style = '';
+                            $indent = '';
+                            if($item['parent']===true){
+                                $style = 'font-weight:bold; font-size:24px;';
+                            }else{
+                                $indent = '&nbsp;&nbsp;|--&nbsp;';
+                            }
+
                             ?>
                             <tr>
-                                <td><?=$title['name'];?></td>
-                                <td><?=$title['target'];?></td>
+                                <td style="<?=$style;?>"><?=$indent.$item['name'];?></td>
                                 <?php 
-                                foreach ($range_month as $dkey => $dvalue) {
-                                    $m = sprintf("%02d", $dvalue);
-                                    $value = $data_items[$key][$m]['value'];
-                                    
-                                    $data_style = '';
-                                    if(empty($value)){
-                                        $value = 'N/A';
-                                        $data_style = 'style="background-color: #c5c5c5;"';
-                                    }
+                                if($item['parent']===true){
                                     ?>
-                                    <td <?=$data_style;?> ><?=$value;?></td>
+                                    <td colspan="<?=count($range_month)+1;?>"></td>
                                     <?php
+                                }else{
+                                    ?>
+                                    <td><?=$item['target'];?></td>
+                                    <?php 
+                                    foreach ($range_month as $dkey => $dvalue) {
+                                        $m = sprintf("%02d", $dvalue);
+                                        $value = $data_items[$key][$m]['value'];
+                                        
+                                        $data_style = '';
+                                        if(empty($value)){
+                                            $value = 'N/A';
+                                            $data_style = 'background-color: #c5c5c5;';
+                                        }
+                                        ?>
+                                        <td style="<?=$data_style;?>" ><?=$value;?></td>
+                                        <?php
+                                    }
+                                    
                                 }
                                 ?>
                             </tr>
