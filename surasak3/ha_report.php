@@ -72,12 +72,14 @@ if($report_type==='year'){
                         $q2 = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' AND `parent` = '$parent' ORDER BY `sort` ASC");
                         $child_rows = $q2->num_rows;
 
-                        if($child_rows>0){
+                        $allItemList[] = $a;
 
+                        if($child_rows>0){
+                            $field_i = 1;
                             while ($b = $q2->fetch_assoc()) {
-                                $b['name'] = '&nbsp;&nbsp;|--&nbsp;'.$b['name'];
+                                $b['name'] = '&nbsp;&nbsp;'.$field_i.'.) '.$b['name'];
                                 $allItemList[] = $b;
-                                
+                                $field_i++;
                             }
                         }
                     }
@@ -240,12 +242,16 @@ if ($page==='search') {
     }else{
 
         $qm = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$main_id'");
+        $mainRows = $qm->num_rows;
         $main = $qm->fetch_assoc();
 
-        if($main['parent']===NULL){
+        $qSubParent = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id' ORDER BY `sort`");
+        $findChildRows = $qSubParent->num_rows;
+        $field_items = array();
 
-            $qSubParent = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id' ORDER BY `sort`");
-            $field_items = array();
+        // ถ้าฟิลด์ใน parent เป็นค่าว่าง และ child มีมากกว่า 0 แสดงว่าเป็น parent
+        if($main['parent']===NULL && $findChildRows > 0){
+            
             while ($fm = $qSubParent->fetch_assoc()) {
 
                 $main_id = $fm['id'];
@@ -253,14 +259,14 @@ if ($page==='search') {
 
                 $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
                 $child_rows = $q_field->num_rows;
-
-
-
-                while ($f = $q_field->fetch_assoc()) {
-                    $fid = $f['id'];
-                    $field_items[$fid] = array('name'=>$f['name'], 'target'=>$f['target']);
+                if($child_rows > 0){
+                    $field_i = 1;
+                    while ($f = $q_field->fetch_assoc()) {
+                        $fid = $f['id'];
+                        $field_items[$fid] = array('name'=>'&nbsp;&nbsp;'.$field_i.'.) '.$f['name'], 'target'=>$f['target']);
+                        $field_i++;
+                    }
                 }
-
             }
 
         }else{
@@ -311,8 +317,6 @@ if ($page==='search') {
                 WHERE b.`status` = 'y' 
                 ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
 
-                dump($sql);
-
             }
 
             $q=$dbi->query($sql);
@@ -349,16 +353,13 @@ if ($page==='search') {
                         foreach ($field_items as $key => $item) {
 
                             $style = '';
-                            $indent = '';
                             if($item['parent']===true){
                                 $style = 'font-weight:bold; font-size:24px;';
-                            }else{
-                                $indent = '&nbsp;&nbsp;|--&nbsp;';
                             }
 
                             ?>
                             <tr>
-                                <td style="<?=$style;?>"><?=$indent.$item['name'];?></td>
+                                <td style="<?=$style;?>"><?=$item['name'];?></td>
                                 <?php 
                                 if($item['parent']===true){
                                     ?>
@@ -419,23 +420,38 @@ if ($page==='search') {
                         foreach ($field_items as $key => $v) { 
                             $name = $v['name'];
                             $target = $v['target'];
+
+                            $style = '';
+                            if($v['parent']===true){
+                                $style = 'font-weight:bold; font-size:24px;';
+                            }
+
                             ?>
                             <tr>
-                                <td><?=$name;?></td>
-                                <td><?=$target;?></td>
+                                <td style="<?=$style;?>"><?=$name;?></td>
                                 <?php 
-                                foreach ($range_year as $year_key => $year_value) {
-
-                                    $real_value = $data_items[$year_value][$key]['value'];
-                                    $data_style = '';
-                                    if(empty($real_value)){
-                                        $real_value = 'N/A';
-                                        $data_style = 'style="background-color: #c5c5c5;"';
-                                    }
-
+                                if($v['parent']===true){
                                     ?>
-                                    <td <?=$data_style;?> ><?=$real_value;?></td>
+                                    <td colspan="<?=count($range_month)+1;?>"></td>
                                     <?php
+                                }else{
+                                    ?>
+                                    <td><?=$target;?></td>
+                                    <?php 
+                                    foreach ($range_year as $year_key => $year_value) {
+
+                                        $real_value = $data_items[$year_value][$key]['value'];
+                                        $data_style = '';
+                                        if(empty($real_value)){
+                                            $real_value = 'N/A';
+                                            $data_style = 'style="background-color: #c5c5c5;"';
+                                        }
+
+                                        ?>
+                                        <td <?=$data_style;?> ><?=$real_value;?></td>
+                                        <?php
+                                    }
+                                    
                                 }
                                 ?>
                             </tr>
