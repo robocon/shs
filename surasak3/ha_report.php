@@ -63,6 +63,11 @@ if($report_type==='year'){
                     <select name="main_id" id="main_id">
                         <option value="" style="text-align: center;">---- เลือกข้อมูล ----</option>
                     <?php 
+                    // แสดงรายการใน select > option
+                    // [ PARENT ]
+                    //    1.) [CHILD 1]
+                    //    2.) [CHILD 2]
+                    //    ...
                     $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' AND `parent` IS NULL ORDER BY `sort` ASC");
                     $allItemList = array();
                     while ($a = $q->fetch_assoc()) {
@@ -241,12 +246,18 @@ if ($page==='search') {
         
     }else{
 
+        // dump("id: ".$main_id);
+
+        // :::: STATEMENT สำหรับแสดงหัวข้อหลักและหัวข้อย่อย ด้านซ้ายมือ ::::
+        // START
         $qm = $dbi->query("SELECT * FROM `indicator_main` WHERE `id` = '$main_id'");
         $mainRows = $qm->num_rows;
         $main = $qm->fetch_assoc();
+        // dump("row จาก main: ".$mainRows);
 
         $qSubParent = $dbi->query("SELECT * FROM `indicator_main` WHERE `parent` = '$main_id' ORDER BY `sort`");
         $findChildRows = $qSubParent->num_rows;
+        // dump("row จาก parent: ".$findChildRows);
         $field_items = array();
 
         // ถ้าฟิลด์ใน parent เป็นค่าว่าง และ child มีมากกว่า 0 แสดงว่าเป็น parent
@@ -254,16 +265,20 @@ if ($page==='search') {
             
             while ($fm = $qSubParent->fetch_assoc()) {
 
-                $main_id = $fm['id'];
-                $field_items[$main_id] = array('name'=>$fm['name'], 'parent'=>true);
+                $fm_main_id = $fm['id'];
+                $field_items[$fm_main_id] = array('name'=>$fm['name'], 'parent'=>true);
 
-                $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
+                $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$fm_main_id' AND `status` = 'y' ");
                 $child_rows = $q_field->num_rows;
                 if($child_rows > 0){
                     $field_i = 1;
                     while ($f = $q_field->fetch_assoc()) {
                         $fid = $f['id'];
-                        $field_items[$fid] = array('name'=>'&nbsp;&nbsp;'.$field_i.'.) '.$f['name'], 'target'=>$f['target']);
+                        $field_items[$fid] = array(
+                            'name'=>'&nbsp;&nbsp;'.$field_i.'.) '.$f['name'], 
+                            'target'=>$f['target'],
+                            'field_id' => $fid
+                        );
                         $field_i++;
                     }
                 }
@@ -276,46 +291,86 @@ if ($page==='search') {
             $field_items = array();
             while ($f = $q_field->fetch_assoc()) {
                 $fid = $f['id'];
-                $field_items[$fid] = array('name'=>$f['name'], 'target'=>$f['target']);
+                $field_items[$fid] = array(
+                    'name'=>$f['name'], 
+                    'target'=>$f['target'],
+                    'field_id' => $fid
+                );
             }
 
         }
         
+        // :::: STATEMENT สำหรับแสดงหัวข้อหลักและหัวข้อย่อย ด้านซ้ายมือ ::::
+        // END
         ?>
         <div>
             <h1><?=$main['name'];?> <?=$month_txt;?> <?=$year_txt;?></h1>
             <?php 
 
-            
-            if ($report_type==='year') {
+            /**
+             * statement จะถูกแยกออกเป็น 4แบบคือ
+             * กรณีที่ต้องแสดงหัวข้อหลัก+หัวข้อย่อย เป็นปี
+             * กรณีที่ต้องแสดงหัวข้อหลัก+หัวข้อย่อย เป็นเดือน
+             * 
+             * เฉพาะหัวข้อย่อย เป็นปี
+             * เฉพาะหัวข้อย่อย เป็นเดือน
+             */
+            // :::: STATEMENT สำหรับแสดงข้อมูล
+            if($findChildRows > 0){ 
+                
+                if ($report_type==='year') { 
 
-                $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`, b.`name` 
-                FROM ( 
+                    $sql = "SELECT a.`id` AS `main_id`,b.*,c.`name` FROM 
+                    ( SELECT `id` FROM `indicator_main` WHERE `parent` = '$main_id' ) AS a 
+                    LEFT JOIN `indicator_data` AS b ON b.`main_id` = a.`id` 
+                    LEFT JOIN `indicator_field` AS c ON b.`field_id` = c.`id` 
+                    ORDER BY b.`main_id`, b.`year`, b.`field_id`";
+                    
 
-                    SELECT `main_id`,`year`,`field_id`,`value` 
-                    FROM `indicator_data` 
-                    WHERE `main_id` = '$main_id'  
-                    AND ( `year` >= '$year_start' AND `year` <= '$year_end' ) 
-                    GROUP BY `field_id`,`year`
-
-                ) AS a RIGHT JOIN ( 
-
-                    SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
-
-                ) AS b ON a.`field_id` = b.`id` 
-                WHERE b.`status` = 'y' AND ( a.`value` != '' AND  a.`value` IS NOT NULL ) 
-                ORDER BY a.`year`,a.`field_id` ASC ";
-
+                }else{
+                    $sql = "SELECT a.`id` AS `main_id`,b.*,c.`name` FROM 
+                    ( SELECT `id` FROM `indicator_main` WHERE `parent` = '$main_id' ) AS a 
+                    LEFT JOIN ( 
+                        SELECT * FROM `indicator_data` WHERE `year` = '$year_start' AND ( `month`>= '$month_start' AND `month`<='$month_end' )
+                    ) AS b ON b.`main_id` = a.`id` 
+                    LEFT JOIN `indicator_field` AS c ON b.`field_id` = c.`id` 
+                    ORDER BY b.`main_id`, b.`year`, b.`field_id`";
+                    
+                }
             }else{
+            
+                // ถ้าเลือกรายางานเป็นปี
+                if ($report_type==='year') {
 
-                $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`,a.`month`, b.`name` 
-                FROM ( 
-                    SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' AND `year` = '$year_start' AND ( `month`>= '$month_start' AND `month`<='$month_end' )   
-                ) AS a RIGHT JOIN ( 
-                    SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
-                ) AS b ON a.`field_id` = b.`id` 
-                WHERE b.`status` = 'y' 
-                ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
+                    $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`, b.`name` 
+                    FROM ( 
+
+                        SELECT `main_id`,`year`,`field_id`,`value` 
+                        FROM `indicator_data` 
+                        WHERE `main_id` = '$main_id'
+                        AND ( `year` >= '$year_start' AND `year` <= '$year_end' ) 
+                        GROUP BY `field_id`,`year`
+
+                    ) AS a RIGHT JOIN ( 
+
+                        SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
+
+                    ) AS b ON a.`field_id` = b.`id` 
+                    WHERE b.`status` = 'y' AND ( a.`value` != '' AND  a.`value` IS NOT NULL ) 
+                    ORDER BY a.`year`,a.`field_id` ASC ";
+
+                }else{
+
+                    $sql = "SELECT a.`main_id`,a.`field_id`,a.`value`,a.`year`,a.`month`, b.`name` 
+                    FROM ( 
+                        SELECT * FROM `indicator_data` WHERE `main_id` = '$main_id' AND `year` = '$year_start' AND ( `month`>= '$month_start' AND `month`<='$month_end' )   
+                    ) AS a RIGHT JOIN ( 
+                        SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' 
+                    ) AS b ON a.`field_id` = b.`id` 
+                    WHERE b.`status` = 'y' 
+                    ORDER BY a.`year`,a.`month`,a.`field_id` ASC ";
+
+                }
 
             }
 
@@ -402,7 +457,7 @@ if ($page==='search') {
                             'title' => $a['name']
                         );
                     }
-
+                    
                     ?>
                     <table class="chk_table">
                         <tr>
@@ -418,8 +473,10 @@ if ($page==='search') {
                         </tr>
                         <?php 
                         foreach ($field_items as $key => $v) { 
+                            
                             $name = $v['name'];
                             $target = $v['target'];
+                            $field_id = $v['field_id'];
 
                             $style = '';
                             if($v['parent']===true){
@@ -432,23 +489,24 @@ if ($page==='search') {
                                 <?php 
                                 if($v['parent']===true){
                                     ?>
-                                    <td colspan="<?=count($range_month)+1;?>"></td>
+                                    <td colspan="<?=count($range_year)+1;?>"></td>
                                     <?php
                                 }else{
                                     ?>
-                                    <td><?=$target;?></td>
+                                    <td style="text-align:center;"><?=$target;?></td>
                                     <?php 
+                                    
                                     foreach ($range_year as $year_key => $year_value) {
-
-                                        $real_value = $data_items[$year_value][$key]['value'];
-                                        $data_style = '';
-                                        if(empty($real_value)){
+                                        
+                                        $real_value = $data_items[$year_value][$field_id]['value'];
+                                        $data_style = 'text-align:right;';
+                                        if($real_value==null){
                                             $real_value = 'N/A';
-                                            $data_style = 'style="background-color: #c5c5c5;"';
+                                            $data_style = 'background-color: #c5c5c5;';
                                         }
 
                                         ?>
-                                        <td <?=$data_style;?> ><?=$real_value;?></td>
+                                        <td style="<?=$data_style;?>" ><?=$real_value;?></td>
                                         <?php
                                     }
                                     
