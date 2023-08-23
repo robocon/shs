@@ -67,32 +67,39 @@ color: #FFF;
 </tr>
 <?
 $n='1';
-$sqls = "select distinct(hn) from drugreact order by row_id ASC";
+// $sqls = "select distinct(hn) from drugreact order by row_id ASC";
+$sqls = "select a.hn, a.ptname,b.* from 
+( 
+select *,concat(yot,name,' ',surname) as ptname from opcard where idcard != '' and idguard not like 'mx07%'
+) as a 
+left join drugreact as b on a.hn = b.hn 
+where b.row_id IS NOT NULL 
+order by b.hn asc";
 $row =mysql_query($sqls);
 while($result = mysql_fetch_array($row)){
-	$sql2 = "select *,concat(yot,' ',name,' ',surname) as ptname from opcard where hn= '".$result['hn']."'";
-	$row2 =mysql_query($sql2);
-	$result2 = mysql_fetch_array($row2);
+	// $sql2 = "select *,concat(yot,' ',name,' ',surname) as ptname from opcard where hn= '".$result['hn']."'";
+	// $row2 =mysql_query($sql2);
+	// $result2 = mysql_fetch_array($row2);
 	
-	$sql3 = "select * from drugreact where hn= '".$result['hn']."'";
-	$row3 =mysql_query($sql3);
-	while($result3 = mysql_fetch_array($row3)){
+	// $sql3 = "select * from drugreact where hn= '".$result['hn']."'";
+	// $row3 =mysql_query($sql3);
+	// while($result3 = mysql_fetch_array($row3)){
 		
 	?>
     
     
     <tr> 
     <td><?=$n?></td>
-    <td><?=$result2['hn']?></td>
-    <td ><?=$result2['ptname']?></td>
-    <td ><?=$result3['drugcode']?></td>
-    <td ><?=$result3['tradname']?></td>
-    <td ><?=$result3['groupname']?></td>
-    <td ><?=$result3['advreact']?></td></tr>
+    <td><?=$result['hn']?></td>
+    <td ><?=$result['ptname']?></td>
+    <td ><?=$result['drugcode']?></td>
+    <td ><?=$result['tradname']?></td>
+    <td ><?=$result['groupname']?></td>
+    <td ><?=$result['advreact']?></td></tr>
    
 	<?
 	 $n++;
-	}
+	// }
 }
 ?>
  </table>
