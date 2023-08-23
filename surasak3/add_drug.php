@@ -24,7 +24,11 @@ if($num > 0){
 $sql = "Select an, hn, ptname, bedcode, ptright, doctor From bed where an = '$my_an' limit 0,1 ";
 $result = Mysql_Query($sql);
 $bed = Mysql_fetch_assoc($result);
-// Mysql_free_result($result);
+if(!$bed){
+	?>
+	<h1 style="color:red;">คำเตือน ไม่พบข้อมูล HN: <?=$my_an;?> กรุณาตรวจสอบ AN อีกครั้ง</h1>
+	<?php
+}
 
 // session_register("hn_now");
 $my_hn = $_SESSION["hn_now"] = $bed["hn"];
