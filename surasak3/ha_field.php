@@ -256,7 +256,7 @@ if($q->num_rows > 0){
                 </style>
                 <div class="flex-container " style="width:60%;">
                     <div class="flex-row">
-                        <div class="flex-col title" style="">&nbsp;</div>
+                        <div class="flex-col title">&nbsp;</div>
                         <div class="flex-col title" style="flex-grow: 3">ชื่อรายละเอียด</div>
                         <div class="flex-col title" style="flex-grow: 2">เป้าหมาย</div>
                         <div class="flex-col title" style="flex-grow: 1">จำนวนข้อมูล</div>
@@ -292,24 +292,30 @@ if($q->num_rows > 0){
             dContain.setAttribute('class', "flex-row box");
             dContain.setAttribute('draggable', "true");
 
-            var td1 = document.createElement("td");
-            var d1 = document.createElement("div");
-            d1.setAttribute('class', "flex-row");
+            var id = Date.now();
+            dContain.setAttribute('id', id);
 
+
+            var d1 = document.createElement("div");
+            d1.setAttribute('class', "flex-col");
+            d1.append('[ :::: ]');
+
+            var td1 = document.createElement("td");
+            var d2 = document.createElement("div");
+            d2.setAttribute('class', "flex-col");
+            d2.setAttribute('style', "flex-grow: 3");
+            
             var input = document.createElement("input");
             input.setAttribute('type', "text");
             input.setAttribute('size', "40");
             input.setAttribute('name', "field_name[]");
             td1.appendChild(input);
-            d1.appendChild(input);
-
-            var d2 = document.createElement("div");
-            d2.setAttribute('class', "flex-row");
-            d2.append('[ :::: ]');
-
+            d2.appendChild(input);
+            
             var td_target = document.createElement("td");
             var d3 = document.createElement("div");
-            d3.setAttribute('class', "flex-row");
+            d3.setAttribute('class', "flex-col");
+            d3.setAttribute('style', "flex-grow: 2");
             var input_target = document.createElement("input");
             input_target.setAttribute('type', "text");
             input_target.setAttribute('size', "20");
@@ -319,7 +325,9 @@ if($q->num_rows > 0){
 
             var td2 = document.createElement("td");
             var d4 = document.createElement("div");
-            d4.setAttribute('class', "flex-row");
+            d4.setAttribute('class', "flex-col");
+            d4.setAttribute('style', "flex-grow: 1");
+            d4.append('0');
 
             td2.setAttribute('align', "center");
             td2.append('0');
@@ -342,12 +350,22 @@ if($q->num_rows > 0){
             td4_select.appendChild(td4_option2);
             td4.appendChild(td4_select);
 
+            var d6 = document.createElement("div");
+            d6.setAttribute('class', "flex-col");
+            d6.setAttribute('style', "flex-grow: 1");
+            d6.appendChild(td4_select);
+
             var in_a = document.createElement("a");
             in_a.setAttribute('href', "javascript:void(0);");
-            in_a.setAttribute('onclick', "this.closest('tr').remove()");
+            in_a.setAttribute('onclick', "document.getElementById('"+id+"').remove()");
             in_a.append('[ยกเลิก]');
 
             td3.appendChild(in_a);
+
+            var d5 = document.createElement("div");
+            d5.setAttribute('class', "flex-col");
+            d5.setAttribute('style', "flex-grow: 1");
+            d5.appendChild(in_a);
 
             tr.appendChild(td1);
             tr.appendChild(td_target);
@@ -362,6 +380,8 @@ if($q->num_rows > 0){
             dContain.appendChild(d2);
             dContain.appendChild(d3);
             dContain.appendChild(d4);
+            dContain.appendChild(d5);
+            dContain.appendChild(d6);
             newContain.appendChild(dContain);
 
             /*
