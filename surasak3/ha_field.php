@@ -140,6 +140,8 @@ if($q->num_rows > 0){
     $a = $q->fetch_assoc();
 
     $field_html = '';
+
+    $div_html = '';
     $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' ");
     if($qf->num_rows>0){ 
 
@@ -161,7 +163,7 @@ if($q->num_rows > 0){
             $fname = $af['name'];
             $target = $af['target'];
 
-            $field_html .= '<tr>';
+            $field_html .= '<tr class="box">';
             $field_html .= '<td><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></td>';
             $field_html .= '<td><input type="text" name="target['.$fid.']" value="'.$target.'" size="20" /></td>';
             $field_html .= '<td align="center">'.$d_rows.'</td>';
@@ -177,10 +179,17 @@ if($q->num_rows > 0){
             $field_html .= '<option value="n" '.$selected_n.'>ซ่อน</option>';
             $field_html .= '</select>';
             $field_html .= '</td>';
-            // $field_html .= '<td><input type="text" name="status['.$fid.']" value="'.$fstatus.'" size="5"></td>';
 
-            $field_html .= '</td>';
-            // $field_html .= '<div>ชื่อฟิลด์: <input type="text" name="field_name['.$fid.']" value="'.$fname.'" /> ('.$d_rows.') '.$remove.'</div>';
+            // $field_html .= '</td>';
+            $div_html .= '<div class="flex-row box" draggable="true">';
+            $div_html .= '<div class="flex-col drag">[ :::: ]</div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 3"><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 2"><input type="text" name="target['.$fid.']" value="'.$target.'" size="20" /></div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 1">'.$d_rows.'</div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 1">'.$remove.'</div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 1"><select name="status['.$fid.']"><option value="y" '.$selected_y.'>แสดง</option><option value="n" '.$selected_n.'>ซ่อน</option></select></div>';
+            $div_html .= '</div>';
+
         }
     }
 
@@ -219,10 +228,45 @@ if($q->num_rows > 0){
                             <th>สถานะ</th>
                         </tr>
                     </thead>
-                    <tbody id="data-field">
+                    <tbody id="data-field" class="container">
                         <?=$field_html;?>
                     </tbody>
                 </table>
+                <style>
+                    .title{
+                        text-align: center;
+                        font-weight: bold;
+                    }
+                    .flex-container .flex-row, .flex-col{
+                        display: flex;
+                    }
+                    .flex-col{
+                        flex: 1;
+                    }
+                    .flex-row{
+                        gap: 4px;
+                        border: 1px solid #ffffff;
+                    }
+                    .drag:hover{
+                        cursor: grab;
+                    }
+                    .over{
+                        border: 1px dashed #000000;
+                    }
+                </style>
+                <div class="flex-container " style="width:60%;">
+                    <div class="flex-row">
+                        <div class="flex-col title" style="">&nbsp;</div>
+                        <div class="flex-col title" style="flex-grow: 3">ชื่อรายละเอียด</div>
+                        <div class="flex-col title" style="flex-grow: 2">เป้าหมาย</div>
+                        <div class="flex-col title" style="flex-grow: 1">จำนวนข้อมูล</div>
+                        <div class="flex-col title" style="flex-grow: 1">จัดการ</div>
+                        <div class="flex-col title" style="flex-grow: 1">สถานะ</div>
+                    </div>
+                    <div class="container" id="my-list">
+                        <?=$div_html;?>
+                    </div>
+                </div>
                 <div><a href="javascript:void(0)" onclick="add_field()">[ + เพิ่มรายละเอียดตัวชี้วัด]</a></div>
             </div>
             <div>
@@ -232,27 +276,51 @@ if($q->num_rows > 0){
             </div>
         </form>
     </div>
+
+    <!-- https://sortablejs.github.io/Sortable/#grid -->
+    <script src="https://unpkg.com/sortablejs-make/Sortable.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-sortablejs@latest/jquery-sortable.js"></script>
     <script>
         function add_field(){
             var f = document.getElementById('data-field');
 
+            var newContain = document.getElementById('my-list');
+
             var tr = document.createElement("tr");
+            var dContain = document.createElement("div");
+            dContain.setAttribute('class', "flex-row box");
+            dContain.setAttribute('draggable', "true");
 
             var td1 = document.createElement("td");
+            var d1 = document.createElement("div");
+            d1.setAttribute('class', "flex-row");
+
             var input = document.createElement("input");
             input.setAttribute('type', "text");
             input.setAttribute('size', "40");
             input.setAttribute('name', "field_name[]");
             td1.appendChild(input);
+            d1.appendChild(input);
+
+            var d2 = document.createElement("div");
+            d2.setAttribute('class', "flex-row");
+            d2.append('[ :::: ]');
 
             var td_target = document.createElement("td");
+            var d3 = document.createElement("div");
+            d3.setAttribute('class', "flex-row");
             var input_target = document.createElement("input");
             input_target.setAttribute('type', "text");
             input_target.setAttribute('size', "20");
             input_target.setAttribute('name', "target[]");
             td_target.appendChild(input_target);
+            d3.appendChild(input_target);
 
             var td2 = document.createElement("td");
+            var d4 = document.createElement("div");
+            d4.setAttribute('class', "flex-row");
+
             td2.setAttribute('align', "center");
             td2.append('0');
 
@@ -289,7 +357,29 @@ if($q->num_rows > 0){
 
             f.appendChild(tr);
 
+
+            dContain.appendChild(d1);
+            dContain.appendChild(d2);
+            dContain.appendChild(d3);
+            dContain.appendChild(d4);
+            newContain.appendChild(dContain);
+
+            /*
+            x$div_html .= '<div class="flex-row box" draggable="true">';
+            x$div_html .= '<div class="flex-col drag">[ :::: ]</div>';
+            x$div_html .= '<div class="flex-col" style="flex-grow: 3"><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 2"><input type="text" name="target['.$fid.']" value="'.$target.'" size="20" /></div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 1">'.$d_rows.'</div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 1">'.$remove.'</div>';
+            $div_html .= '<div class="flex-col" style="flex-grow: 1"><select name="status['.$fid.']"><option value="y" '.$selected_y.'>แสดง</option><option value="n" '.$selected_n.'>ซ่อน</option></select></div>';
+            $div_html .= '</div>';
+            */
+
         }
+
+        $('#my-list').sortable({
+            animation: 150
+        });
     </script>
 </body>
 </html>
