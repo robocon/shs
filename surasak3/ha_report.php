@@ -268,7 +268,7 @@ if ($page==='search') {
                 $fm_main_id = $fm['id'];
                 $field_items[$fm_main_id] = array('name'=>$fm['name'], 'parent'=>true);
 
-                $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$fm_main_id' AND `status` = 'y' ");
+                $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$fm_main_id' AND `status` = 'y' ORDER BY `sort` ");
                 $child_rows = $q_field->num_rows;
                 if($child_rows > 0){
                     $field_i = 1;
@@ -287,7 +287,7 @@ if ($page==='search') {
         }else{
 
             // $field_items : ข้อมูลที่ต้องแสดงแต่ละบรรทัด
-            $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ");
+            $q_field = $dbi->query("SELECT `id`,`name`,`target` FROM `indicator_field` WHERE `main_id` = '$main_id' AND `status` = 'y' ORDER BY `sort` ");
             $field_items = array();
             while ($f = $q_field->fetch_assoc()) {
                 $fid = $f['id'];

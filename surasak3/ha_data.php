@@ -157,7 +157,7 @@ if($page_action==='update'){
             $data_month = 0;
             $data_year = 0;
 
-            $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' AND `status`='y' ");
+            $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' AND `status`='y' ORDER BY `sort`");
             if($qf->num_rows>0){ 
 
                 $action_value = 'save';
