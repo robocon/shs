@@ -112,20 +112,12 @@ if($action==='save'){
         $save = $dbi->query($sql);
     }
 
-
-    $sql = "SELECT * FROM `indicator_field` WHERE `main_id` = '$main_id' ORDER BY `sort` IS NULL, `sort`,`id` ASC";
-    $q = $dbi->query($sql);
-    if($q->num_rows > 0){
-        $sort = 1;
-        while ($a = $q->fetch_assoc()) {
-
-            $id = $a['id'];
-
-            $sqlUpdate = "UPDATE `indicator_field` SET `sort` = '$sort' WHERE `id` = '$id' ";
-            $update = $dbi->query($sqlUpdate);
-
-            $sort++;
-        }
+    $sort = 1;
+    foreach ($_POST['field_name'] as $key => $value) {
+        
+        $sqlUpdate = "UPDATE `indicator_field` SET `sort` = '$sort' WHERE `id` = '$key' ";
+        $update = $dbi->query($sqlUpdate);
+        $sort++;
     }
 
     redirect('ha_field.php?id='.$main_id, $msg);
@@ -142,7 +134,7 @@ if($q->num_rows > 0){
     $field_html = '';
 
     $div_html = '';
-    $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' ");
+    $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' ORDER BY `sort` ");
     if($qf->num_rows>0){ 
 
         $action_value = 'update';
@@ -182,7 +174,7 @@ if($q->num_rows > 0){
 
             // $field_html .= '</td>';
             $div_html .= '<div class="flex-row box" draggable="true">';
-            $div_html .= '<div class="flex-col drag">[ :::: ]</div>';
+            $div_html .= '<div class="flex-col drag my-handle">[ :::: ]</div>';
             $div_html .= '<div class="flex-col" style="flex-grow: 3"><input type="text" name="field_name['.$fid.']" value="'.$fname.'" size="40" /></div>';
             $div_html .= '<div class="flex-col" style="flex-grow: 2"><input type="text" name="target['.$fid.']" value="'.$target.'" size="20" /></div>';
             $div_html .= '<div class="flex-col" style="flex-grow: 1">'.$d_rows.'</div>';
@@ -218,20 +210,7 @@ if($q->num_rows > 0){
                 <h1>ชื่อตัวชี้วัด: <?=$a['name'];?></h1>
             </div>
             <div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ชื่อรายละเอียด</th>
-                            <th>เป้าหมาย</th>
-                            <th>จำนวนข้อมูล</th>
-                            <th>จัดการ</th>
-                            <th>สถานะ</th>
-                        </tr>
-                    </thead>
-                    <tbody id="data-field" class="container">
-                        <?=$field_html;?>
-                    </tbody>
-                </table>
+                
                 <style>
                     .title{
                         text-align: center;
@@ -256,7 +235,7 @@ if($q->num_rows > 0){
                 </style>
                 <div class="flex-container " style="width:60%;">
                     <div class="flex-row">
-                        <div class="flex-col title">&nbsp;</div>
+                        <div class="flex-col title">จัดเรียง</div>
                         <div class="flex-col title" style="flex-grow: 3">ชื่อรายละเอียด</div>
                         <div class="flex-col title" style="flex-grow: 2">เป้าหมาย</div>
                         <div class="flex-col title" style="flex-grow: 1">จำนวนข้อมูล</div>
@@ -287,7 +266,7 @@ if($q->num_rows > 0){
 
             var newContain = document.getElementById('my-list');
 
-            var tr = document.createElement("tr");
+            // var tr = document.createElement("tr");
             var dContain = document.createElement("div");
             dContain.setAttribute('class', "flex-row box");
             dContain.setAttribute('draggable', "true");
@@ -297,10 +276,10 @@ if($q->num_rows > 0){
 
 
             var d1 = document.createElement("div");
-            d1.setAttribute('class', "flex-col");
+            d1.setAttribute('class', "flex-col drag my-handle");
             d1.append('[ :::: ]');
 
-            var td1 = document.createElement("td");
+            // var td1 = document.createElement("td");
             var d2 = document.createElement("div");
             d2.setAttribute('class', "flex-col");
             d2.setAttribute('style', "flex-grow: 3");
@@ -309,10 +288,10 @@ if($q->num_rows > 0){
             input.setAttribute('type', "text");
             input.setAttribute('size', "40");
             input.setAttribute('name', "field_name[]");
-            td1.appendChild(input);
+            // td1.appendChild(input);
             d2.appendChild(input);
             
-            var td_target = document.createElement("td");
+            // var td_target = document.createElement("td");
             var d3 = document.createElement("div");
             d3.setAttribute('class', "flex-col");
             d3.setAttribute('style', "flex-grow: 2");
@@ -320,21 +299,21 @@ if($q->num_rows > 0){
             input_target.setAttribute('type', "text");
             input_target.setAttribute('size', "20");
             input_target.setAttribute('name', "target[]");
-            td_target.appendChild(input_target);
+            // td_target.appendChild(input_target);
             d3.appendChild(input_target);
 
-            var td2 = document.createElement("td");
+            // var td2 = document.createElement("td");
             var d4 = document.createElement("div");
             d4.setAttribute('class', "flex-col");
             d4.setAttribute('style', "flex-grow: 1");
             d4.append('0');
 
-            td2.setAttribute('align', "center");
-            td2.append('0');
+            // td2.setAttribute('align', "center");
+            // td2.append('0');
 
-            var td3 = document.createElement("td");
+            // var td3 = document.createElement("td");
 
-            var td4 = document.createElement("td");
+            // var td4 = document.createElement("td");
             var td4_select = document.createElement("select");
             td4_select.setAttribute('name', "status[]");
 
@@ -348,7 +327,7 @@ if($q->num_rows > 0){
 
             td4_select.appendChild(td4_option1);
             td4_select.appendChild(td4_option2);
-            td4.appendChild(td4_select);
+            // td4.appendChild(td4_select);
 
             var d6 = document.createElement("div");
             d6.setAttribute('class', "flex-col");
@@ -360,20 +339,20 @@ if($q->num_rows > 0){
             in_a.setAttribute('onclick', "document.getElementById('"+id+"').remove()");
             in_a.append('[ยกเลิก]');
 
-            td3.appendChild(in_a);
+            // td3.appendChild(in_a);
 
             var d5 = document.createElement("div");
             d5.setAttribute('class', "flex-col");
             d5.setAttribute('style', "flex-grow: 1");
             d5.appendChild(in_a);
 
-            tr.appendChild(td1);
-            tr.appendChild(td_target);
-            tr.appendChild(td2);
-            tr.appendChild(td3);
-            tr.appendChild(td4);
+            // tr.appendChild(td1);
+            // tr.appendChild(td_target);
+            // tr.appendChild(td2);
+            // tr.appendChild(td3);
+            // tr.appendChild(td4);
 
-            f.appendChild(tr);
+            // f.appendChild(tr);
 
 
             dContain.appendChild(d1);
@@ -398,7 +377,8 @@ if($q->num_rows > 0){
         }
 
         $('#my-list').sortable({
-            animation: 150
+            animation: 150,
+            handle: ".my-handle"
         });
     </script>
 </body>
