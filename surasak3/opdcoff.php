@@ -70,17 +70,17 @@ exit();
 }
 
 
-$list_paht["EX07"] = "EX07&nbsp;�ѹ�����"; 
-$list_paht["EX08"] = "EX08&nbsp;�ٵ�";
-$list_paht["EX09"] = "EX09&nbsp;��ҵѴ";
-$list_paht["EX10"] = "EX10&nbsp;�����";
-$list_paht["EX14"] = "EX14&nbsp;��ŵ��ҫ�Ǵ�";
-$list_paht["EX16"] = "EX16&nbsp;��Ǩ�آ�Ҿ";
-$list_paht["EX17"] = "EX17&nbsp;����Ҿ�ӺѴ";
-$list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
+$list_paht["EX07"] = "EX07&nbsp;ทันตกรรม"; 
+$list_paht["EX08"] = "EX08&nbsp;สูติ";
+$list_paht["EX09"] = "EX09&nbsp;ผ่าตัด";
+$list_paht["EX10"] = "EX10&nbsp;ไตเทียม";
+$list_paht["EX14"] = "EX14&nbsp;อัลตร้าซาวด์";
+$list_paht["EX16"] = "EX16&nbsp;ตรวจสุขภาพ";
+$list_paht["EX17"] = "EX17&nbsp;กายภาพบำบัด";
+$list_paht["EX20"] = "EX20&nbsp;นวดแผนไทย";
 
 ?>
-<a   href='../nindex.htm'>&lt;&lt;�����</a>
+<a   href='../nindex.htm'>&lt;&lt;ไปเมนู</a>
 
 <SCRIPT LANGUAGE="JavaScript">
 	function check_number() {
@@ -90,7 +90,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 			return true;
 		}else{
 			event.returnValue = false;
-			alert("���͹حҵ��������Ѻ");
+			alert("ไม่อนุญาตให้พิมพ์ครับ");
 			return false;
 		}
 	}
@@ -102,7 +102,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 <FORM METHOD=POST ACTION="">
 <table  border="0">
   <tr>
-    <td width="63" align="right"><font face='Angsana New'>Ἱ�&nbsp;:&nbsp;</td>
+    <td width="63" align="right"><font face='Angsana New'>แผนก&nbsp;:&nbsp;</td>
     <td >
       <select name="path" id="path">
 	  <?php
@@ -116,10 +116,10 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 		for($j=0;$j<6;$j++){
 	  ?>
   <tr>
-    <td align="right"><font face='Angsana New'>�ѹ&nbsp;:&nbsp;</td>
+    <td align="right"><font face='Angsana New'>วัน&nbsp;:&nbsp;</td>
     <td><font face='Angsana New'>
       <select name="day[]" >
-		<option value="-" selected>--�ѹ���--</option>
+		<option value="-" selected>--วันที่--</option>
 		<option value="01">01</option>
 		<option value="02">02</option>
 		<option value="03">03</option>
@@ -152,23 +152,23 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 		<option value="30">30</option>
 		<option value="31">31</option>
       </select>
-      ��͹ 
+      เดือน 
       <select name="month[]" >
-		<option value="-" selected>--��͹--</option>
-		<option value="01">���Ҥ�</option>
-		<option value="02">����Ҿѹ��</option>
-		<option value="03">�չҤ�</option>
-		<option value="04">����¹</option>
-		<option value="05">����Ҥ�</option>
-		<option value="06">�Զع�¹</option>
-		<option value="07">�á�Ҥ�</option>
-		<option value="08">�ԧ�Ҥ�</option>
-		<option value="09">�ѹ��¹</option>
-		<option value="10">���Ҥ�</option>
-		<option value="11">��Ȩԡ�¹</option>
-		<option value="12">�ѹ�Ҥ�</option>
+		<option value="-" selected>--เดือน--</option>
+		<option value="01">มกราคม</option>
+		<option value="02">กุมภาพันธ์</option>
+		<option value="03">มีนาคม</option>
+		<option value="04">เมษายน</option>
+		<option value="05">พฤษภาคม</option>
+		<option value="06">มิถุนายน</option>
+		<option value="07">กรกฏาคม</option>
+		<option value="08">สิงหาคม</option>
+		<option value="09">กันยายน</option>
+		<option value="10">ตุลาคม</option>
+		<option value="11">พฤศจิกายน</option>
+		<option value="12">ธันวาคม</option>
       </select>
-      ��
+      ปี
       <select name="year[]" >
 		<?php for($i=date("Y")+542;$i<date("Y")+545;$i++){?>
 	   <option value="<?php echo $i;?>" <?php if($i == date("Y")+543) echo "Selected"; ?> ><?php echo $i;?></option>
@@ -179,7 +179,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
     <?php }?>
   <tr>
     <td colspan="2">
-      <input type="submit" name="Submit" value="��ŧ">
+      <input type="submit" name="Submit" value="ตกลง">
     </td>
   </tr>
 </table>
@@ -189,9 +189,9 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 <br>
 <table  border="0">
   <tr align="center" bgcolor="#6495ED">
-    <td width="154"><font face='Angsana New'><strong>Ἱ�</strong></td>
-    <td width="194"><font face='Angsana New'><strong>�ѹ�������͡��Ǩ</strong></td>
-	<td width="50"><font face='Angsana New'><strong>ź</strong></td>
+    <td width="154"><font face='Angsana New'><strong>แผนก</strong></td>
+    <td width="194"><font face='Angsana New'><strong>วันที่ไม่ออกตรวจ</strong></td>
+	<td width="50"><font face='Angsana New'><strong>ลบ</strong></td>
   </tr>
 <?php
 	$sql = "Select row_id, part , date_format(date_off,'%d/%m/%Y') as date_off From doctor_off where doctor ='' Order by row_id DESC";
@@ -201,7 +201,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
   echo "<tr bgcolor='#FFCC99'>
     <td>",$list_paht[$path],"</td>
     <td align='center'>",$date_off,"</td>
-	<td align='center'><A HREF=\"?action=del&id=",$row_id,"\">ź</A></td>
+	<td align='center'><A HREF=\"?action=del&id=",$row_id,"\">ลบ</A></td>
   </tr>";
  }?>
 </table>
@@ -212,13 +212,13 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 	function checkForm2(){
 	
 		if(document.f2.doctor.value == ""){
-			alert("��س����͡ᾷ��");
+			alert("กรุณาเลือกแพทย์");
 			return false;
 		}else if(document.f2.month.value == "-"){
-			alert("��س����͡��͹");
+			alert("กรุณาเลือกเดือน");
 			return false;
 		}else if(document.f2.day.value == ""){
-			alert("��سҾ�����ѹ");
+			alert("กรุณาพิมพ์วัน");
 			return false;
 		}else{
 			return true;
@@ -230,7 +230,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 	<FORM name="f2" METHOD=POST ACTION="" Onsubmit="return checkForm2();">
 	<TABLE style='font-family: Angsana New'>
 	<TR>
-		<TD>ᾷ�� : </TD>
+		<TD>แพทย์ : </TD>
 		<TD>
 <select size="1" name="doctor">
 <option value="" selected>-----------------------</option>
@@ -249,23 +249,23 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 	</TR>
 	<TR>
 		<TD colspan='2'>
-		�ѹ��� <INPUT TYPE="text" NAME="day" size="2" Onkeypress="check_number();">
-		��͹ <select name="month" >
-		<option value="-" selected>--��͹--</option>
-		<option value="01">���Ҥ�</option>
-		<option value="02">����Ҿѹ��</option>
-		<option value="03">�չҤ�</option>
-		<option value="04">����¹</option>
-		<option value="05">����Ҥ�</option>
-		<option value="06">�Զع�¹</option>
-		<option value="07">�á�Ҥ�</option>
-		<option value="08">�ԧ�Ҥ�</option>
-		<option value="09">�ѹ��¹</option>
-		<option value="10">���Ҥ�</option>
-		<option value="11">��Ȩԡ�¹</option>
-		<option value="12">�ѹ�Ҥ�</option>
+		วันที่ <INPUT TYPE="text" NAME="day" size="2" Onkeypress="check_number();">
+		เดือน <select name="month" >
+		<option value="-" selected>--เดือน--</option>
+		<option value="01">มกราคม</option>
+		<option value="02">กุมภาพันธ์</option>
+		<option value="03">มีนาคม</option>
+		<option value="04">เมษายน</option>
+		<option value="05">พฤษภาคม</option>
+		<option value="06">มิถุนายน</option>
+		<option value="07">กรกฏาคม</option>
+		<option value="08">สิงหาคม</option>
+		<option value="09">กันยายน</option>
+		<option value="10">ตุลาคม</option>
+		<option value="11">พฤศจิกายน</option>
+		<option value="12">ธันวาคม</option>
       </select>
-		�� <select name="year" >
+		ปี <select name="year" >
 		<?php for($i=date("Y")+542;$i<date("Y")+545;$i++){?>
 	   <option value="<?php echo $i;?>" <?php if($i == date("Y")+543) echo "Selected"; ?> ><?php echo $i;?></option>
 	   <?php }?>
@@ -273,7 +273,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 		</TD>
 		<TR>
 		<TD colspan='2'>
-		<INPUT TYPE="submit" name="submit2" value="��ŧ">
+		<INPUT TYPE="submit" name="submit2" value="ตกลง">
 		</TD>
 	</TR>
 	</TABLE>
@@ -283,9 +283,9 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
 <br>
 <table  border="0">
   <tr align="center" bgcolor="#6495ED">
-    <td width="154"><font face='Angsana New'><strong>ᾷ��</strong></td>
-    <td width="194"><font face='Angsana New'><strong>�ѹ�������͡��Ǩ</strong></td>
-	<td width="50"><font face='Angsana New'><strong>ź</strong></td>
+    <td width="154"><font face='Angsana New'><strong>แพทย์</strong></td>
+    <td width="194"><font face='Angsana New'><strong>วันที่ไม่ออกตรวจ</strong></td>
+	<td width="50"><font face='Angsana New'><strong>ลบ</strong></td>
   </tr>
 <?php
 	$sql = "Select row_id, doctor , date_format(date_off,'%d/%m/%Y') as date_off From doctor_off where part ='' Order by row_id DESC";
@@ -295,7 +295,7 @@ $list_paht["EX20"] = "EX20&nbsp;�ǴἹ��";
   echo "<tr bgcolor='#FFCC99'>
     <td>",$doctor,"</td>
     <td align='center'>",$date_off,"</td>
-	<td align='center'><A HREF=\"?action=del&id=",$row_id,"\">ź</A></td>
+	<td align='center'><A HREF=\"?action=del&id=",$row_id,"\">ลบ</A></td>
   </tr>";
  }?>
 </table>
