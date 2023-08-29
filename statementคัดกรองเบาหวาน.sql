@@ -1,16 +1,22 @@
-SELECT a.*,b.hn,b.patientname AS ptname,c.`dbirth`,TIMESTAMPDIFF(YEAR, toEn(c.`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age`, 2565 AS `yearchk` 
+- หาจากคนไข้นัดก่อนว่าใครมีแลปบ้าง
+- จากนั้นเอาไป join opcard แล้วหาอายุ >= 35 
+SELECT s.*, t.dbirth,TIMESTAMPDIFF(YEAR, toEn(t.dbirth), SUBSTRING(NOW(), 1, 10)) AS `age`, 2566 AS `yearchk` 
 FROM ( 
-	SELECT autonumber,labcode,labname,result,unit,normalrange,authorisedate  FROM resultdetail WHERE ( authorisedate >= '2021-10-01' AND authorisedate <= '2022-09-30' ) 
-	AND ( labcode = 'GLU' OR labcode = 'HBA1CC' ) 
-	GROUP BY autonumber 
-	ORDER BY autonumber DESC 
-) AS a 
-LEFT JOIN resulthead AS b ON a.autonumber = b.autonumber 
-LEFT JOIN opcard AS c ON b.hn = c.hn 
-WHERE c.dbirth IS NOT NULL 
-AND TIMESTAMPDIFF(YEAR, toEn(c.`dbirth`), SUBSTRING(NOW(), 1, 10)) >= 35 
-AND ( b.hn NOT IN ( SELECT `hn` FROM diabetes_clinic ) AND b.hn NOT IN ( SELECT hn FROM hba1c_bs ) ) 
-GROUP BY b.hn 
+	SELECT y.*   
+	FROM (
+		SELECT row_id AS appoint_id, appdate,apptime,hn FROM appoint WHERE ( appdate_en >= '2021-10-01' AND appdate_en <= '2022-09-30' ) AND apptime != 'ยกเลิกการนัด' GROUP BY hn
+	) AS x 
+	LEFT JOIN 
+	( 
+		SELECT a.*,b.hn,b.patientname AS ptname FROM (
+			SELECT autonumber,labcode,labname,result,authorisedate FROM resultdetail WHERE ( authorisedate >= '2021-10-01' AND authorisedate <= '2022-09-30' ) AND ( labcode = 'GLU' OR labcode = 'HBA1CC' )
+		) AS a LEFT JOIN resulthead AS b ON a.autonumber = b.autonumber 
+		GROUP BY b.hn 
+	) AS y ON x.hn = y.hn
+	WHERE y.autonumber IS NOT NULL 
+) AS s LEFT JOIN opcard AS t ON s.hn = t.hn 
+WHERE ( t.dbirth IS NOT NULL AND TIMESTAMPDIFF(YEAR, toEn(t.dbirth), SUBSTRING(NOW(), 1, 10)) >= 35 ) 
+AND ( s.hn NOT IN ( SELECT `hn` FROM diabetes_clinic ) AND s.hn NOT IN ( SELECT hn FROM hba1c_bs ) ) 
 
 หาการตรวจ ครั้งล่าสุดของแต่ละ hn
 select * from (
