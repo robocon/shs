@@ -20,10 +20,11 @@ AND ( s.hn NOT IN ( SELECT `hn` FROM diabetes_clinic ) AND s.hn NOT IN ( SELECT 
 
 หาการตรวจ ครั้งล่าสุดของแต่ละ hn
 select * from (
-SELECT MAX(autonumber) as last_autonumber 
-FROM `hba1c_bs` 
-WHERE hn NOT IN ( SELECT hn FROM diabetes_clinic) 
-group by hn ) as a left join hba1c_bs as b on a.last_autonumber = b.autonumber 
+	SELECT MAX(autonumber) as last_autonumber 
+	FROM `hba1c_bs` 
+	WHERE hn NOT IN ( SELECT hn FROM diabetes_clinic) 
+	group by hn 
+) as a left join hba1c_bs as b on a.last_autonumber = b.autonumber 
 order by a.last_autonumber asc
 
 //ค้นหาแลปจากในใบนัด

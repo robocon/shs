@@ -156,6 +156,7 @@ label{
 					<li class="last"><a href="diabetes_list.php"><span>รายชื่อทั้งหมด</span></a></li>
 					<li class="last"><a href="diabetes_list_so.php"><span>รายชื่อ ทหาร/ครอบครัว</span></a></li>
 					<li class="last"><a href="user_checkup.php"><span>รายชื่อผู้ป่วยตามปีงบประมาณ</span></a></li>
+					<li class="last"><a href="new_diabetes.php" target="_blank"><span>รายชื่อผู้ป่วยรายใหม่</span></a></li>
 				</ul>
 			</li>
 			<li>
