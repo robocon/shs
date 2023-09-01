@@ -1,11 +1,253 @@
 <?php 
 session_start();
 include("connect.inc");
-
+include 'bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
+
+
+if($_POST["act"]=="add"){
+	$hn=$_POST["hn"];
+	$drugcode=$_POST["drugcode"];
+	$tradname=$_POST["tradname"];
+	$genname=$_POST["genname"];
+	$asses=$_POST["asses"];
+	$reporter=$_POST["reporter"];
+	$report_date=$_POST["report_date"];
+	$sideeffects=$_POST["sideeffects"];
+	$officer = $_SESSION['sOfficer'];
+	
+	$advreact = implode(',', $_POST["advreact"]);
+	$advreact_other=trim($_POST["advreact_other"]);
+	
+	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
+		$advreact=$advreact.",".$advreact_other;
+	}
+
+	$drugreact_group_id = sprintf("%s", $_POST['drugreact_group']);
+	$sql = "SELECT `name` FROM `drugreact_group` WHERE `id` = '$drugreact_group_id' LIMIT 1";
+	$q = $dbi->query($sql);
+	$drugreact_group_name = '';
+	if($q->num_rows>0){
+		$d = $q->fetch_assoc();
+		$drugreact_group_name = $d['name'];
+	}
+	$q->free_result();
+
+	$sql_drugreact_insert = "INSERT INTO `drugreact` ( 
+		`row_id`, `hn`, `drugcode`, `tradname`, `advreact`, `asses`, 
+		`reporter`, `date`, `officer`, `genname`, `groupname`, `sideeffects`, 
+		`officer1`
+	) VALUES (
+		NULL, '$hn', '$drugcode', '$tradname', '$advreact', '$asses', 
+		'$reporter', '$report_date', '$officer', '$genname', '$drugreact_group_name', '$sideeffects', 
+		''
+	);";
+
+	//echo $edit;
+	if(mysql_query($sql_drugreact_insert)){
+
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$sHn=$hn;
+		$test_drugcode = $drugcode;
+		$dname = $tradname;
+		$typedx = $asses;
+		$symptom = $advreact;
+		$provider = $_SESSION['sOfficer'];
+
+		$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
+		$item = mysql_fetch_assoc($q);
+		$drugallergy = $item['code24'];
+		$daterecord = date('Ymd');
+		$d_update = date('YmdHis');
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
+		$item = mysql_fetch_assoc($q);
+		$cid = $item['idcard'];
+
+		$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
+		$rows = mysql_num_rows($q);
+
+		if( $rows > 0 ){
+
+			// update 
+			$item = mysql_fetch_assoc($q);
+			$id = $item['id'];
+
+			$sql = "UPDATE `drugallergy` SET 
+			`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
+			`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
+			`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
+			`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
+			`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
+			mysql_query($sql);
+
+
+		}else{
+
+			$sql = "INSERT INTO `drugallergy` (
+				`id`, `HOSPCODE`, `PID`, `DATERECORD`, `DRUGALLERGY`, `DNAME`, 
+				`TYPEDX`, `ALEVEL`, `SYMPTOM`, `INFORMANT`, `INFORMHOSP`, `D_UPDATE`, 
+				`PROVIDER`, `CID`, `drugcode`
+			) VALUES (
+				NULL, '11512', '$sHn', '$daterecord', '$drugallergy', '$dname', 
+				'$typedx', NULL, '$symptom', NULL, '11512', '$d_update', 
+				'$provider', '$cid', '$test_drugcode' 
+			);";
+			mysql_query($sql);
+
+		}
+
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$msg = "บันทึกข้อมูลแพ้ยาเรียบร้อย";
+		
+	}else{
+		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง";
+		
+	}
+
+	?>
+	<p>
+		<b><?=$msg;?></b>
+		<div>ระบบจะนำท่านกลับหน้าหลักใน <span id="showTime"></span></div>
+	</p>
+	<script>
+		setTimeout(function(){
+			window.location='drugreact_new_add.php?page=show&hn=<?=$hn;?>';
+		}, 5000);
+
+		var count = 5;
+		var timerId = setInterval(function(){
+
+			document.getElementById('showTime').innerHTML = count;
+			count--;
+			
+			if (count == 0) {
+				clearInterval(timerId);
+			}
+			
+		}, 1000);
+	</script>
+	<?php
+	exit;
+}
+
+if($_POST["act"]=="edit"){
+	$row_id=$_POST["row_id"];
+	$hn=$_POST["hn"];
+	$drugcode=$_POST["drugcode"];	
+	$tradname=$_POST["tradname"];	
+	$asses=$_POST["asses"];
+	$reporter=$_POST["reporter"];
+	$report_date=$_POST["report_date"];
+	$sideeffects=$_POST["sideeffects"];
+	
+	$advreact = implode(',', $_POST["advreact"]);
+	$advreact_other=trim($_POST["advreact_other"]);
+	
+	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
+		$advreact=$advreact.",".$advreact_other;
+	}	
+
+	$drugreact_group_id = sprintf("%s", $_POST['drugreact_group']);
+	$sql = "SELECT `name` FROM `drugreact_group` WHERE `id` = '$drugreact_group_id' LIMIT 1";
+	$q = $dbi->query($sql);
+	$drugreact_group_name = '';
+	if($q->num_rows>0){
+		$d = $q->fetch_assoc();
+		$drugreact_group_name = $d['name'];
+	}
+	$q->free_result();
+
+	$edit="update drugreact SET 
+	advreact='$advreact',
+	sideeffects='$sideeffects',
+	asses='$asses',
+	reporter='$reporter',
+	date='$report_date',
+	officer1='".$_SESSION['sOfficer']."',
+	groupname='$drugreact_group_name'
+	where row_id='".$row_id."'";
+	//echo $edit;
+	if(mysql_query($edit)){	
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$sHn=$hn;
+		$test_drugcode = $drugcode;
+		$dname = $tradname;
+		$typedx = $asses;
+		$symptom = $advreact;
+		$provider = $_SESSION['sOfficer'];
+
+		$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
+		$item = mysql_fetch_assoc($q);
+		$drugallergy = $item['code24'];
+		$daterecord = date('Ymd');
+		$d_update = date('YmdHis');
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
+		$item = mysql_fetch_assoc($q);
+		$cid = $item['idcard'];
+
+		$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
+		$rows = mysql_num_rows($q);
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		if( $rows > 0 ){
+
+			// update 
+			$item = mysql_fetch_assoc($q);
+			$id = $item['id'];
+
+			$sql = "UPDATE `drugallergy` SET 
+			`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
+			`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
+			`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
+			`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
+			`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
+			mysql_query($sql);
+
+
+		}
+		// echo "<script>alert('แก้ไขข้อมูลแพ้ยาเรียบร้อย');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";			
+		$msg = "บันทึกข้อมูลแพ้ยาเรียบร้อย";
+		$url = 'drugreact_new_add.php?page=show&hn='.$hn;
+		
+	}else{
+		// echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
+		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง";
+		$url = 'drugreact_new_add.php?page=showedit&row_id='.$row_id.'&hn='.$hn;
+	}		
+
+	?>
+	<p>
+		<b><?=$msg;?></b>
+		<div>ระบบจะนำท่านกลับหน้าหลักใน <span id="showTime"></span></div>
+	</p>
+	<script>
+		setTimeout(function(){
+			window.location='<?=$$url;?>';
+		}, 5000);
+
+		var count = 5;
+		var timerId = setInterval(function(){
+
+			document.getElementById('showTime').innerHTML = count;
+			count--;
+			
+			if (count == 0) {
+				clearInterval(timerId);
+			}
+			
+		}, 1000);
+	</script>
+	<?php
+	exit;
+}	
+
+
 ///////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 	
@@ -65,6 +307,9 @@ body{
     padding: 3px;
     border: 0px solid black;
     font-size: 16px;
+}
+label:hover{
+	cursor: pointer;
 }
 </style>
 <script>
@@ -408,9 +653,22 @@ if ( $page == 'search' ) {
 				<td><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
 				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
 			</tr>
-			<tr>
-				<td>แพ้ยาตามกลุ่ม</td>
-				<td colspan="4"></td>
+			<tr valign="top">
+				<td><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
+				<td colspan="4">
+					<?php 
+					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
+					$i = 1;
+					while ($a = $q->fetch_assoc()) {
+						?>
+						<label for="<?=$a['id'];?>">
+							<input type="radio" name="drugreact_group" id="<?=$a['id'];?>" value="<?=$a['id'];?>"> <?=$i.') '.$a['name'];?><br>
+						</label>
+						<?php
+						$i++;
+					}
+					?>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="3" align="left"><div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="OPD" /></div></td>
@@ -757,6 +1015,27 @@ if (in_array("", $variable)){
 				<td><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
 				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="<?php echo $dresult["sideeffects"];?>" /></div></td>
 			</tr>
+			<tr valign="top">
+				<td><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
+				<td colspan="4">
+					<?php 
+					
+					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
+					$i = 1;
+					while ($a = $q->fetch_assoc()) { 
+						
+						$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
+
+						?>
+						<label for="<?=$a['id'];?>">
+							<input type="radio" name="drugreact_group" id="<?=$a['id'];?>" value="<?=$a['id'];?>" <?=$checked;?> > <?=$i.') '.$a['name'];?><br>
+						</label>
+						<?php
+						$i++;
+					}
+					?>
+				</td>
+			</tr>
 			<tr>
 				<td colspan="3" align="left"><div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="<?php echo $dresult["reporter"];?>" /></div></td>
 				<td colspan="2" align="left"><div style="margin-left:10px;"><strong>วันที่รายงาน : </strong> <input name="report_date" type="text" class="fontsarabun" value="<?php echo $dresult["date"];?>" />
@@ -779,161 +1058,3 @@ if (in_array("", $variable)){
 	}
 }	
 ?>
-
-	
-<?
-if($_POST["act"]=="add"){
-	$hn=$_POST["hn"];
-	$drugcode=$_POST["drugcode"];
-	$tradname=$_POST["tradname"];
-	$genname=$_POST["genname"];
-	$asses=$_POST["asses"];
-	$reporter=$_POST["reporter"];
-	$report_date=$_POST["report_date"];
-	$sideeffects=$_POST["sideeffects"];
-	
-	$advreact = implode(',', $_POST["advreact"]);
-	$advreact_other=trim($_POST["advreact_other"]);
-	
-	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
-		$advreact=$advreact.",".$advreact_other;
-	}
-	
-		$add="insert into drugreact SET hn='$hn',
-		drugcode='$drugcode',
-		tradname='$tradname',
-		genname='$genname',
-		advreact='$advreact',
-		sideeffects='$sideeffects',
-		asses='$asses',
-		reporter='$reporter',
-		date='$report_date',
-		officer='".$_SESSION['sOfficer']."'";
-		//echo $edit;
-		if(mysql_query($add)){
-
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-			$sHn=$hn;
-			$test_drugcode = $drugcode;
-			$dname = $tradname;
-			$typedx = $asses;
-			$symptom = $advreact;
-			$provider = $_SESSION['sOfficer'];
-
-			$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
-			$item = mysql_fetch_assoc($q);
-			$drugallergy = $item['code24'];
-			$daterecord = date('Ymd');
-			$d_update = date('YmdHis');
-
-			$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
-			$item = mysql_fetch_assoc($q);
-			$cid = $item['idcard'];
-
-			$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
-			$rows = mysql_num_rows($q);
-
-			if( $rows > 0 ){
-
-				// update 
-				$item = mysql_fetch_assoc($q);
-				$id = $item['id'];
-
-				$sql = "UPDATE `drugallergy` SET 
-				`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
-				`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
-				`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
-				`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
-				`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
-				mysql_query($sql);
-
-
-			}else{
-
-				$sql = "INSERT INTO `drugallergy` (
-					`id`, `HOSPCODE`, `PID`, `DATERECORD`, `DRUGALLERGY`, `DNAME`, 
-					`TYPEDX`, `ALEVEL`, `SYMPTOM`, `INFORMANT`, `INFORMHOSP`, `D_UPDATE`, 
-					`PROVIDER`, `CID`, `drugcode`
-				) VALUES (
-					NULL, '11512', '$sHn', '$daterecord', '$drugallergy', '$dname', 
-					'$typedx', NULL, '$symptom', NULL, '11512', '$d_update', 
-					'$provider', '$cid', '$test_drugcode' 
-				);";
-				mysql_query($sql);
-
-			}
-
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-	
-			echo "<script>alert('บันทึกข้อมูลแพ้ยาเรียบร้อย');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";			
-		}else{
-			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";
-		}
-}
-
-
-
-if($_POST["act"]=="edit"){
-	$row_id=$_POST["row_id"];
-	$hn=$_POST["hn"];
-	$drugcode=$_POST["drugcode"];	
-	$tradname=$_POST["tradname"];	
-	$asses=$_POST["asses"];
-	$reporter=$_POST["reporter"];
-	$report_date=$_POST["report_date"];
-	$sideeffects=$_POST["sideeffects"];
-	
-	$advreact = implode(',', $_POST["advreact"]);
-	$advreact_other=trim($_POST["advreact_other"]);
-	
-	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
-		$advreact=$advreact.",".$advreact_other;
-	}	
-
-		$edit="update drugreact SET advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer1='".$_SESSION['sOfficer']."' where row_id='".$row_id."'";
-		//echo $edit;
-		if(mysql_query($edit)){	
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-			$sHn=$hn;
-			$test_drugcode = $drugcode;
-			$dname = $tradname;
-			$typedx = $asses;
-			$symptom = $advreact;
-			$provider = $_SESSION['sOfficer'];
-
-			$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
-			$item = mysql_fetch_assoc($q);
-			$drugallergy = $item['code24'];
-			$daterecord = date('Ymd');
-			$d_update = date('YmdHis');
-
-			$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
-			$item = mysql_fetch_assoc($q);
-			$cid = $item['idcard'];
-
-			$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
-			$rows = mysql_num_rows($q);
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-			if( $rows > 0 ){
-
-				// update 
-				$item = mysql_fetch_assoc($q);
-				$id = $item['id'];
-
-				$sql = "UPDATE `drugallergy` SET 
-				`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
-				`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
-				`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
-				`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
-				`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
-				mysql_query($sql);
-
-
-			}
-			echo "<script>alert('แก้ไขข้อมูลแพ้ยาเรียบร้อย');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";			
-		}else{
-			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
-		}		
-}	
-?>
-	
