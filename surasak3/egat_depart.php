@@ -29,7 +29,7 @@ var_dump("EGAT-DEPART");
 $hn = '60-1641';
 $detail = 'test ตรวจสุขภาพประจำปี';
 $diag = 'test diag ตรวจสุขภาพ';
-$lab_items = array('ua','cbc');
+$lab_items = array('CBC-sso','UA-sso','CR','BS','LIPID');
 $officer = 'พี่พัชรี';
 $cashok = 'ผู้ปฏิบัติงาน กฟภ.';
 $depart = 'PATHO';
@@ -42,18 +42,29 @@ if($opdayToday===false){
 }
 $test = false;
 
-$depart = new Depart();
+$departObj = new ClassDepart();
 // $testItem = $depart->getDepart('2565-12-10', '54-2753');
 
-// $test = $depart->insertOnlyDepart($hn, $detail, $diag, $lab_items, $officer, $cashok, $nLab_orderhead, $patho);
-$patdata = new Patdata();
-$test = $patdata->getPatdata('4349642');
+// 
+// $departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $lab_items, $officer, $cashok, $nLab_orderhead, $patho);
+// dump($departId);
+
+// $departId = '4407111';
+$patdata = new ClassPatdata();
+// $test = $patdata->getPatdata('4407111');
+// $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
+// dump($insertPatdata);
+
 
 $xray_items = array('41001');
 $officer = 'จนท.xray';
 $depart = 'XRAY';
-// $test = $depart->insertOnlyDepart($hn, $detail, $diag, $lab_items, $officer, $cashok, $nLab_orderhead, $patho);
-dump($test);
+$departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $xray_items, $officer, $cashok, $nLab_orderhead, $patho);
+dump($departId);
+// $departId = '4407112';
+// $test = $patdata->getPatdata('4407112');
+$insertPatdata = $patdata->insertOnlyPatdata($departId, $xray_items);
+dump($insertPatdata);
 
 exit;
 ?>

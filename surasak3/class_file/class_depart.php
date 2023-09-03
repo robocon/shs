@@ -3,7 +3,7 @@
 require_once 'class_file/opcard.php';
 require_once 'class_file/opday.php';
 
-class Depart{
+class ClassDepart{
 
     public $dbi;
     public function __construct()
