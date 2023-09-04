@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 include 'bootstrap.php';
 require_once 'class_file/class_depart.php';
 require_once 'class_file/class_patdata.php';
+require_once 'class_file/class_opacc.php';
 require_once 'class_file/opday.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
@@ -34,6 +35,7 @@ $officer = 'พี่พัชรี';
 $cashok = 'ผู้ปฏิบัติงาน กฟภ.';
 $depart = 'PATHO';
 $nLab_orderhead = '9999';
+$date = '2566-12-10';
 
 $opday = new Opday();
 $opdayToday = $opday->getThisDay($hn);
@@ -59,12 +61,16 @@ $patdata = new ClassPatdata();
 $xray_items = array('41001');
 $officer = 'จนท.xray';
 $depart = 'XRAY';
-$departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $xray_items, $officer, $cashok, $nLab_orderhead, $patho);
-dump($departId);
+// $departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $xray_items, $officer, $cashok, $nLab_orderhead, $patho);
+// dump($departId);
 // $departId = '4407112';
 // $test = $patdata->getPatdata('4407112');
-$insertPatdata = $patdata->insertOnlyPatdata($departId, $xray_items);
-dump($insertPatdata);
+// $insertPatdata = $patdata->insertOnlyPatdata($departId, $xray_items);
+// dump($insertPatdata);
+
+$opacc = new ClassOpacc();
+// $test = $opacc->getOpacc($date, $hn);
+dump($test);
 
 exit;
 ?>
