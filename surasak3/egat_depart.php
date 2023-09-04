@@ -44,6 +44,8 @@ if($opdayToday===false){
 }
 $test = false;
 
+$departIdList = array();
+
 $departObj = new ClassDepart();
 // $testItem = $depart->getDepart('2565-12-10', '54-2753');
 
@@ -51,7 +53,8 @@ $departObj = new ClassDepart();
 // $departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $lab_items, $officer, $cashok, $nLab_orderhead, $patho);
 // dump($departId);
 
-// $departId = '4407111';
+$departId = '4580576';
+$departIdList[] = $departId;
 $patdata = new ClassPatdata();
 // $test = $patdata->getPatdata('4407111');
 // $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
@@ -63,13 +66,18 @@ $officer = 'จนท.xray';
 $depart = 'XRAY';
 // $departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $xray_items, $officer, $cashok, $nLab_orderhead, $patho);
 // dump($departId);
-// $departId = '4407112';
+$departId = '4580576';
+$departIdList[] = $departId;
 // $test = $patdata->getPatdata('4407112');
 // $insertPatdata = $patdata->insertOnlyPatdata($departId, $xray_items);
 // dump($insertPatdata);
 
 $opacc = new ClassOpacc();
 // $test = $opacc->getOpacc($date, $hn);
+$detail = 'ค่าตรวจวิเคราะห์โรค';
+$officer = 'นทีพร เด้อจ้า';
+$credit = 'กฟผ';
+// $test = $opacc->insertOpacc($departIdList, $detail, $officer, $credit);
 dump($test);
 
 exit;

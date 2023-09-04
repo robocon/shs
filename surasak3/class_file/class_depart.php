@@ -37,6 +37,26 @@ class ClassDepart{
         return $_SESSION['sOfficer'];
     }
 
+    public function getDepartFromId($id=null){
+        if ($id===null) {
+            return "required id";
+            exit;
+        }
+
+        $sql = sprintf("SELECT * FROM depart WHERE row_id = %s LIMIT 1", $id);
+        $q = $this->dbi->query($sql);
+        $res = array();
+        if($q->num_rows>0){
+            $res = $q->fetch_assoc();
+            $q->free_result();
+        }else{
+            return "not found data";
+            exit;
+        }
+        return $res;
+
+    }
+
     /**
      * ดึงข้อมูลจากใน depart 
      * required    date รูปแบบวันที่ของไทย
