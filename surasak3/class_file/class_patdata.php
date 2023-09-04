@@ -2,18 +2,18 @@
 require_once 'class_file/opcard.php';
 require_once 'class_file/opday.php';
 
-class ClassPatdata
+class ClassPatdata extends DbConnect
 {
-    public $dbi;
+    // public $dbi;
     public function __construct()
     {
-        $this->dbi = new mysqli(HOST,USER,PASS,DB);
-        if ($this->dbi->connect_errno) {
-            var_dump($this->dbi->error);
-            exit;
-        }
-        $this->dbi->query("SET NAMES UTF8");
-        return $this->dbi;
+        // $this->dbi = new mysqli(HOST,USER,PASS,DB);
+        // if ($this->dbi->connect_errno) {
+        //     var_dump($this->dbi->error);
+        //     exit;
+        // }
+        // $this->dbi->query("SET NAMES UTF8");
+        // return $this->dbi;
     }
 
     public function getThDateTime(){

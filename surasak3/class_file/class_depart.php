@@ -1,20 +1,20 @@
 <?php 
-
+require_once 'class_file/database.php';
 require_once 'class_file/opcard.php';
 require_once 'class_file/opday.php';
 
-class ClassDepart{
+class ClassDepart extends DbConnect{
 
-    public $dbi;
+    // public $dbi;
     public function __construct()
     {
-        $this->dbi = new mysqli(HOST,USER,PASS,DB);
-        if ($this->dbi->connect_errno) {
-            var_dump($this->dbi->error);
-            exit;
-        }
-        $this->dbi->query("SET NAMES UTF8");
-        return $this->dbi;
+        // $this->dbi = new mysqli(HOST,USER,PASS,DB);
+        // if ($this->dbi->connect_errno) {
+        //     var_dump($this->dbi->error);
+        //     exit;
+        // }
+        // $this->dbi->query("SET NAMES UTF8");
+        // return $this->dbi;
     }
 
     /**
@@ -194,21 +194,6 @@ class ClassDepart{
         $sumPrice = $labprice['sumPrice'];
         $sumYPrice = $labprice['sumYPrice'];
         $sumNPrice = $labprice['sumNPrice'];
-
-        // //////////////////////////////
-        // ////////// RUNNO DEPART
-        // //////////////////////////////
-        // $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
-        // $runno_row = $q_runno->fetch_assoc();
-		// $chktranx = $runno_row['runno'];
-		// $chktranx++;
-        // $this->dbi->query("UPDATE `runno` SET `runno` = $chktranx WHERE `title`='depart'");
-        // //////////////////////////////
-        // ////////// RUNNO DEPART
-        // //////////////////////////////
-
-
-
 
         $runnoChktranx = $this->startRunno();
         $thaiDateTime = $this->getThDateTime();

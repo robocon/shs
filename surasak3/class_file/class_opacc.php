@@ -3,7 +3,7 @@ require_once 'class_file/opcard.php';
 require_once 'class_file/opday.php';
 require_once 'class_file/class_depart.php';
 
-class ClassOpacc{
+class ClassOpacc extends ClassDepart{
     public $dbi;
     public function __construct()
     {
@@ -58,11 +58,13 @@ class ClassOpacc{
         /*
         เคส กฟภ
         */
+        $opaccItems = array();
         $thDateTime = $this->getThDateTime();
         foreach ($departItems as $key => $id) {
 
-            $depart = new ClassDepart();
-            $dep = $depart->getDepartFromId($id);
+            // $depart = new ClassDepart();
+            // $dep = $depart->getDepartFromId($id);
+            $dep = $this->getDepartFromId($id);
 
             $txdate = $dep['date'];
             $hn = $dep['hn'];
@@ -81,13 +83,18 @@ class ClassOpacc{
                 '$detail', '$price', '$paid', '$officer','$credit', 
                 '$ptright', '$vn', '$paid'
             );";
-            dump($sql);
+            // dump($sql);
             $save = $this->dbi->query($sql);
             if($save===false){
                 return $this->dbi->error;
+                exit;
+            }else{
+                $opaccItems[] = $this->dbi->insert_id;
             }
-            dump($save);
+            
+            // dump($save);
         }
+        return $opaccItems;
         
     }
 }

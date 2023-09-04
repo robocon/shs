@@ -1,5 +1,4 @@
 <?php
-require_once '../bootstrap.php';
 class DbConnect{ 
     public $dbi;
     public function __construct()
