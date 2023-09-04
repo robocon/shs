@@ -172,7 +172,8 @@ document.onmouseup = mousehandler;
 <div class="row" id="thumbList">
 <?php
 if ($items->totalCount > 0) { 
-    $items_reverse = array_reverse($items->list);
+    // $items_reverse = array_reverse($items->list);
+	$items_reverse = $items->list;
 	
     foreach ($items_reverse as $key => $item) {
         list($dateEp, $timeEp) = explode(' ', $item->actual_date);
