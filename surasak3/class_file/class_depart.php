@@ -5,20 +5,15 @@ require_once 'class_file/opday.php';
 
 class ClassDepart extends DbConnect{
 
-    // public $dbi;
     public function __construct()
     {
-        // $this->dbi = new mysqli(HOST,USER,PASS,DB);
-        // if ($this->dbi->connect_errno) {
-        //     var_dump($this->dbi->error);
-        //     exit;
-        // }
-        // $this->dbi->query("SET NAMES UTF8");
-        // return $this->dbi;
+
     }
 
     /**
      * รันเลข runno ใน depart เอาไปใช้ในฟิลด์ chktranx
+     * 
+     * @return string @chktranx คือหมายเลข ฟิลด์runno ของตารางrunno
      */
     public function startRunno(){
         $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
@@ -32,11 +27,14 @@ class ClassDepart extends DbConnect{
     public function getThDateTime(){
         return (date('Y')+543).date('-m-d H:i:s');
     }
-
-    public function getOfficer(){
-        return $_SESSION['sOfficer'];
-    }
-
+    
+    /**
+     * ค้นหา depart จาก row_id
+     * 
+     * @param string @id คือ row_id ของตาราง
+     * 
+     * @return array @res
+     */
     public function getDepartFromId($id=null){
         if ($id===null) {
             return "required id";
@@ -59,9 +57,11 @@ class ClassDepart extends DbConnect{
 
     /**
      * ดึงข้อมูลจากใน depart 
-     * required    date รูปแบบวันที่ของไทย
-     *             hn เลขที่ผู้มารับบริการ
-     * optional    depart เอาไว้แยกตามประเภท
+     * @param string @date รูปแบบวันที่ของไทย
+     * @param string @hn เลขที่ผู้มารับบริการ
+     * @param string @depart (optional) เอาไว้แยกตามประเภท
+     * 
+     * @return array @items รายการของ depart
      */
     public function getDepart($date=null, $hn=null, $depart=null){
 
@@ -84,12 +84,14 @@ class ClassDepart extends DbConnect{
     }
 
     /**
-     * เพิ่มข้อมูลค่าใช้จ่ายของแลปใน depart เท่านั้น
+     * เพิ่มข้อมูลค่าใช้จ่ายใน depart เท่านั้น
+     * 
+     * @return string $departId หมายเลขของ row_id ที่บันทึกล่าสุด
      */
     public function insertOnlyDepart(
         $hn=null, 
         $detail='',             // รายละเอียดว่าตรวจอะไร
-        $diag='', 
+        $diag='',               // ข้อวินิจฉัยของแพทย์
         $labItems=array(),      // มีรายการตรวจอะไรบ้างเอาไปคำนวณค่าใช้จ่าย
         $officer='',            // จนท.ผู้บันทึก
         $cashok='',             // สถานะการเก็บเงิน(ดีดลูกหนี้)
@@ -142,7 +144,15 @@ class ClassDepart extends DbConnect{
 
     }
 
-    // public $labList = array();
+    /**
+     * รวมค่าใช้จ่ายตามรายการที่โยนเข้ามา รวมเป็นก้อนเดียวกัน
+     * 
+     * @param array @labItems รายการแลป หรือ xray ต่างๆ ที่อยู่ใน labcare
+     * 
+     * @return array    sumPrice ค่าใช้จ่ายทั้งหมด
+     *                  sumYPrice แยกตามที่เบิกได้
+     *                  sumNPrice ที่เบิกไม่ได้
+     */
     public function getPrice($labItems){
         $sumPrice = 0;
         $sumYPrice = 0;
@@ -153,7 +163,6 @@ class ClassDepart extends DbConnect{
             $q = $this->dbi->query($sql_labcare);
             if ($q->num_rows > 0) { 
 
-                // $this->labList[] = $labcare = $q->fetch_assoc();
                 $labcare = $q->fetch_assoc();
                 $sumPrice += $labcare['price'];
                 $sumYPrice += $labcare['yprice'];
@@ -170,54 +179,5 @@ class ClassDepart extends DbConnect{
         );
     }
 
-    public function insertXrayOnlyDepart(
-        $hn=null, 
-        $detail='', 
-        $diag='', 
-        $xrayItems=array(),
-        $officer='',
-        $cashok=''
-    ){
-
-        $opday = new Opday();
-        $op = $opday->getThisDay($hn);
-        if ($op===false) {
-            return "ไม่มีข้อมูลการออก VN ในวันนี้";
-            exit;
-        }
-
-        $ptright = $op['ptright'];
-        $ptname = $op['ptname'];
-        $vn = $op['vn'];
-
-        $labprice = $this->getPrice($xrayItems);
-        $sumPrice = $labprice['sumPrice'];
-        $sumYPrice = $labprice['sumYPrice'];
-        $sumNPrice = $labprice['sumNPrice'];
-
-        $runnoChktranx = $this->startRunno();
-        $thaiDateTime = $this->getThDateTime();
-        $countItem = count($xrayItems);
-        if (empty($officer)) {
-            $officer = $this->getOfficer();
-        }
-
-        $sql_depart = "INSERT INTO `depart` ( 
-            `chktranx`, `date`, `ptname`, `hn`, `doctor`, `depart`, 
-            `item`, `detail`, `price`, `sumyprice`, `sumnprice`, 
-            `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` 
-        ) VALUES ( 
-            '$runnoChktranx', '$thaiDateTime', '$ptname', '$hn', 'MD022 (ไม่ทราบแพทย์)', 'XRAY', 
-            '$countItem', '$detail', '$sumPrice', '$sumYPrice', '$sumNPrice', 
-            '$officer', '$diag', '$vn', '$ptright', '', 'Y' 
-        )";
-        $depart_save = $this->dbi->query($sql_depart);
-        if($depart_save==false){
-            die($this->dbi->error);
-        }
-        $depart_id = $this->dbi->insert_id;
-        return $depart_id;
-    }
-    
 }
 

@@ -1,25 +1,23 @@
 <?php 
 require_once 'class_file/opcard.php';
 require_once 'class_file/opday.php';
+require_once 'class_file/class_depart.php';
 
-class ClassPatdata extends DbConnect
+class ClassPatdata extends ClassDepart
 {
-    // public $dbi;
+
     public function __construct()
     {
-        // $this->dbi = new mysqli(HOST,USER,PASS,DB);
-        // if ($this->dbi->connect_errno) {
-        //     var_dump($this->dbi->error);
-        //     exit;
-        // }
-        // $this->dbi->query("SET NAMES UTF8");
-        // return $this->dbi;
+
     }
 
-    public function getThDateTime(){
-        return (date('Y')+543).date('-m-d H:i:s');
-    }
-
+    /**
+     * ดึงค่า patdata จาก ฟิลด์ idno ซึ่ง idno มาจาก row_id ของตาราง depart
+     * 
+     * @param string @idno 
+     * 
+     * @return array @items
+     */
     public function getPatdata($idno=null){
 
         if ($idno===null) {
@@ -38,21 +36,24 @@ class ClassPatdata extends DbConnect
         return $items;
     }
 
-    public function getDepart($id=null){
-        if($id===null){
-            return "getDepart required id";
-            exit;
-        }
+    // public function getDepart($id=null){
+    //     if($id===null){
+    //         return "getDepart required id";
+    //         exit;
+    //     }
 
-        $sql = "SELECT hn,ptname,ptright FROM depart WHERE row_id = '$id'";
-        $q = $this->dbi->query($sql);
-        $res = false;
-        if($q->num_rows>0){
-            $res = $q->fetch_assoc();
-        }
-        return $res;
-    }
+    //     $sql = "SELECT hn,ptname,ptright FROM depart WHERE row_id = '$id'";
+    //     $q = $this->dbi->query($sql);
+    //     $res = false;
+    //     if($q->num_rows>0){
+    //         $res = $q->fetch_assoc();
+    //     }
+    //     return $res;
+    // }
 
+    /**
+     * เพิ่มข้อมูลใน patdata จาก depart
+     */
     public function insertOnlyPatdata(
         $departId=null, 
         $labItems=array()
@@ -75,7 +76,6 @@ class ClassPatdata extends DbConnect
         
         $thDateTime = $this->getThDateTime();
         $countItem = count($labItems);
-        dump($labItems);
 
         $patdataSaveItem = array();
         foreach ($labItems as $labCode) { 
@@ -102,19 +102,18 @@ class ClassPatdata extends DbConnect
                     '$detail', '1', '$price', '$nprice', '$yprice', '$depart', 
                     '$part', '$departId', '$ptright', 'Y' 
                 )";
-                dump($sqlPatdata);
                 $save = $this->dbi->query($sqlPatdata);
-                $patdataId = $this->dbi->insert_id;
-                $patdataSaveItem[] = $patdataId;
-        // return $departId;
-                dump($save);
-            }
+                if($save!==false){
+                    $patdataId = $this->dbi->insert_id;
+                    $patdataSaveItem[] = $patdataId;
+                }else{
+                    $patdataSaveItem[] = $this->dbi->error;
+                }
+
+            } // end if
             
-        }
+        } // end foreach
 
-        dump($patdataSaveItem);
-
-        // $test = $this->getPrice($labItems);
-        // dump($test);
+        return $patdataSaveItem;
     }
 }

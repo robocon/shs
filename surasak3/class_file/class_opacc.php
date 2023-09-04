@@ -4,22 +4,18 @@ require_once 'class_file/opday.php';
 require_once 'class_file/class_depart.php';
 
 class ClassOpacc extends ClassDepart{
-    public $dbi;
+
     public function __construct()
     {
-        $this->dbi = new mysqli(HOST,USER,PASS,DB);
-        if ($this->dbi->connect_errno) {
-            var_dump($this->dbi->error);
-            exit;
-        }
-        $this->dbi->query("SET NAMES UTF8");
-        return $this->dbi;
-    }
 
-    public function getThDateTime(){
-        return (date('Y')+543).date('-m-d H:i:s');
     }
-
+    
+    /**
+     * @param string @date รูปแบบ พ.ศ. เช่น 2565-09-25
+     * @param string @hn เช่น 99-9999
+     * 
+     * @return array ตามโครงสร้างของ opacc
+     */
     public function getOpacc($date=null,$hn=null){
         if ($date===null && $hn===null) {
             return "getOpacc required date and hn";
