@@ -172,6 +172,8 @@ td p,ol,li{
 }
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+<script src="sweetalert/jquery-3.6.0.js"></script>
+<script src="sweetalert/sweetalert2@11.js"></script>
 </head>
 
 <body >
@@ -502,6 +504,43 @@ if($_POST["cigarette"]=="1"){
 																`edit_time`= '".date("Y-m-d H:i:s")."' 
 				WHERE `opd_device_id` = '$opd_advice_id' ;";													
 				$save_i = $dbi->query($sql_advice_i);				
+			}
+
+			if($display_advice=="form_j"){
+				if(!empty($advice_inject1)){
+					$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
+					$injectunit1=$_POST['advice_inject1_unit'];
+				}else{
+					$injectname1="";
+					$injectunit1="";
+				}	
+
+				if(!empty($advice_inject2)){
+					$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
+					$injectunit2=$_POST['advice_inject1_unit'];
+				}else{
+					$injectname2="";
+					$injectunit2="";
+				}
+				
+				if(!empty($advice_inject3)){
+					$advice_inject3_name=$_POST['advice_inject3_name'];
+				}else{
+					$advice_inject3_name="";
+				}
+				
+				$sql_advice_j = "UPDATE `opd_advice_form_j` SET `advice_inject1`='".$_POST['advice_inject1']."',
+																`advice_inject1_name`='".$injectname1."',
+																`advice_inject1_unit`='".$injectunit1."',
+																`advice_inject2`='".$_POST['advice_inject2']."',
+																`advice_inject2_name`='".$injectname2."',
+																`advice_inject2_unit`='".$injectunit2."',
+																`advice_inject3`='".$_POST['advice_inject3']."',
+																`advice_inject3_name`='".$advice_inject3_name."',
+																`edit_by`='$officer',
+																`edit_time`= '".date("Y-m-d H:i:s")."' 
+				WHERE `opd_device_id` = '$opd_advice_id' ;";													
+				$save_j = $dbi->query($sql_advice_j);				
 			}			
 			
 			
@@ -521,6 +560,15 @@ if($_POST["cigarette"]=="1"){
 				//echo $sql_advice_c;
 				$save_i = $dbi->query($sql_advice_i);				
 			}
+			if($display_advice=="form_j"){
+				$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
+				$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
+				$sql_advice_j = "INSERT INTO `opd_advice_form_j` (`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`,`advice_inject1`, `advice_inject1_name`, `advice_inject1_unit`, `advice_inject2`, `advice_inject2_name`, `advice_inject2_unit`, `advice_inject3`, `advice_inject3_name`) 
+				VALUES 
+				(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_device_id', '$my_date_hn', '$officer', '".$_POST['advice_inject1']."','".$injectname1."', '".$_POST['advice_inject1_unit']."', '".$_POST['advice_inject2']."','".$injectname2."', '".$_POST['advice_inject2_unit']."', '".$_POST['advice_inject3']."','".$_POST['advice_inject3_name']."');";
+				//echo $sql_advice_j;
+				$save_j = $dbi->query($sql_advice_j);				
+			}			
 			
 		}
 	}else{
@@ -966,7 +1014,24 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
  $onfocus = "hn";
 
  	if(isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""){
-		$onfocus = "weight";
+
+// แจ้งเตือนตัดรอบบ่าย **************************************************
+if($_REQUEST["hn"]=="62-6400"){ //จันทร์เพ็ญ  วงค์เวียน
+	echo "<script> 
+	Swal.fire(
+	  'แจ้งเตือน',
+	  'ขอความกรุณาเจ้าหน้าที่ รักษาพยาบาลผู้ป่วยในรอบเช้า ?',
+	'warning'
+	)
+	</script>";
+}	
+// จบการแจ้งเตือน **************************************************
+
+
+
+
+
+	$onfocus = "weight";
 	
 	$thidate = date("d-m-").(date("Y")+543);
 	$date_app = date("d")." ".$month[date("m")]." ".(date("Y")+543);
@@ -1374,6 +1439,8 @@ function clear_textbox(){
 function togglediv(divid){ 
 	if(document.getElementById(divid).style.display == 'none'){ 
 		document.getElementById(divid).style.display = 'block'; 
+	}else if(document.getElementById(divid).style.display == 'block'){ 
+		document.getElementById(divid).style.display = 'none'; 
 	}
 } 
 function togglediv1(divid){ 
@@ -1397,8 +1464,13 @@ function togglediv2(divid){
 	}
 }
 
-
-
+function togglediv3(divid){ 
+	if(document.getElementById(divid).style.display == 'none'){ 
+		document.getElementById(divid).style.display = 'block'; 
+	}else if(document.getElementById(divid).style.display == 'block'){ 
+		document.getElementById(divid).style.display = 'none'; 
+	}
+} 
 	function calbmi(a,b){
 		//alert(a);
 		var h=a/100;
@@ -1731,6 +1803,9 @@ mmHg </td>
 			}
 			if(document.form2.form_i.checked == true){
 				togglediv('showform_i');
+			}
+			if(document.form2.form_j.checked == true){
+				togglediv('showform_j');
 			}			
 			</script>
 		</td>
@@ -2199,14 +2274,14 @@ mmHg </td>
 						</tr>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_i" value="form_i" onClick="togglediv('showform_i')"><label for="form_i">ผู้ป่วยมีอาการปวด</label></div></td>
-							<td></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_j" value="form_j" onClick="togglediv3('showform_j')"><label for="form_j">มารับยาฉีด</label></div></td>
 						</tr>						
 						<tr>
 							<td colspan="2" align="left">
 								<div id="showform_i" style="display: none; margin-bottom: 8px;"> 
 <?
 		$my_date_hn = date('Y-m-d').$hn;
-		$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' ");
+		$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
 		if($q_advice->num_rows > 0){
 			$opd_advice = $q_advice->fetch_assoc();
 			$advice_organ = $opd_advice['advice_organ'];
@@ -2233,7 +2308,47 @@ mmHg </td>
 									<td><div class="mainThumb">ประเมิน pain score ซ้ำ : <input type="text" name="advice_painscore2" id="advice_painscore2" value="<?=$advice_painscore2;?>" size="10"></div></td>
 								</tr>
 								</table>
-								</div>								
+								</div>	
+
+								<div id="showform_j" style="display: none; margin-bottom: 8px;"> 
+<?
+		$my_date_hn = date('Y-m-d').$hn;
+		$q_advice1 = $dbi->query("SELECT * FROM `opd_advice_form_j` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
+		if($q_advice1->num_rows > 0){
+			$opd_advice1 = $q_advice1->fetch_assoc();
+			$advice_inject1 = $opd_advice1['advice_inject1'];
+			$advice_inject1_name = $opd_advice1['advice_inject1_name'];
+			$advice_inject1_unit = $opd_advice1['advice_inject1_unit'];
+			$advice_inject2 = $opd_advice1['advice_inject2'];
+			$advice_inject2_name = $opd_advice1['advice_inject2_name'];
+			$advice_inject2_unit = $opd_advice1['advice_inject2_unit'];
+			$advice_inject3 = $opd_advice1['advice_inject3'];
+			$advice_inject3_name = $opd_advice1['advice_inject3_name'];
+		}	
+?>					
+									<table id="member" class="fontthai">
+									<tr>
+										<td align="left">NI :</td>
+										<td align="left">
+										<div>
+										<input type="checkbox" name="advice_inject1" id="advice_inject1" <?php if($advice_inject1=="y"){ echo "checked";} ?> value="y">
+										<span style="margin-left:10px;">Rabies vaccine 0.5 ml M NO.</span>
+										<span style="margin-left:5px;"><input type="text" name="advice_inject1_unit" id="advice_inject1_unit" value="<?=$advice_inject1_unit;?>" size="10"></span>
+										</div>
+										<div style="margin-top:10px;">
+										<input type="checkbox" name="advice_inject2" id="advice_inject2" <?php if($advice_inject2=="y"){ echo "checked";} ?> value="y">
+										<span style="margin-left:10px;">Tetanus vaccine 0.5 ml M NO.</span>
+										<span style="margin-left:5px;"><input type="text" name="advice_inject2_unit" id="advice_inject2_unit" value="<?=$advice_inject2_unit;?>" ></span>
+										</div>
+										<div style="margin-top:10px;">
+										<input type="checkbox" name="advice_inject3" id="advice_inject3" <?php if($advice_inject3=="y"){ echo "checked";} ?> value="y">
+										<span style="margin-left:10px;">ยาอื่นๆ ระบุ</span>
+										<span style="margin-left:5px;"><input type="text" name="advice_inject3_name" id="advice_inject3_name" value="<?=$advice_inject3_name;?>"></span>
+										</div>
+										</td>
+									</tr>	
+									</table>
+								</div>													
 							</td>
 						</tr>	
 					</table>
@@ -2630,7 +2745,7 @@ mmHg </td>
 		$testDate = date('N');
 		if ( $testDate >= 6 OR ( $testTime >= "16:00:00" && $testTime <= "23:59:59" ) ) {
 			
-			$sqlDepart50 = "select * from depart where hn = '$cHn' and detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
+			$sqlDepart50 = "select * from depart where hn = '$cHn' and (detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' || detail = '55020/55021 ค่าบริการผู้ป่วยนอก' ) and date like '".(date("Y")+543).date("-m-d")."%' ";
 			$resultDepart50 = mysql_query($sqlDepart50);
 			$testRows = mysql_num_rows($resultDepart50);
 			if( $testRows == 0 ){
