@@ -48,51 +48,63 @@ include("connect.inc");
 background-color: #000; 
 color: #FFF; 
 }
+table tr:hover{
+	background-color: #b8b8b8;
+}
 </style>
 </head>
 
 <body>
 
   <h1 align="center" class="font_title">รายชื่อผู้ป่วยแพ้ยา</h1>
-<table align="center" width="90%" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"  bordercolor="#000000" class="font_title">
+<table align="center" width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"  bordercolor="#000000" class="font_title">
 
 <tr>
-<td align="center">NO.</td>
-<td align="center">HN</td>
-<td  align="center">ชื่อ - สกุล</td>
-<td  align="center">รหัสยา</td>
-<td align="center">ชื่อยา</td>
-<td  align="center">ชื่อกลุ่ม</td>
-<td  align="center">อาการ</td>
+	<td align="center">NO.</td>
+	<td align="center">HN</td>
+	<td align="center">ชื่อ - สกุล</td>
+	<td align="center">รหัสยา</td>
+	<td align="center">ชื่อยา</td>
+	<td align="center" width="23%">ชื่อกลุ่ม</td>
+	<td align="center" width="15%">อาการ</td>
 </tr>
-<?
+<?php
 $n='1';
-$sqls = "select distinct(hn) from drugreact order by row_id ASC";
+$sqls = "SELECT a.hn, a.ptname,a.idguard,b.* FROM 
+( 
+SELECT *,CONCAT(`yot`,`name`,' ',`surname`) AS ptname FROM opcard WHERE idcard != '' AND idguard NOT LIKE 'mx07%'
+) AS a 
+LEFT JOIN drugreact AS b ON a.hn = b.hn 
+WHERE b.row_id IS NOT NULL 
+ORDER BY b.hn ASC";
 $row =mysql_query($sqls);
 while($result = mysql_fetch_array($row)){
-	$sql2 = "select *,concat(yot,' ',name,' ',surname) as ptname from opcard where hn= '".$result['hn']."'";
-	$row2 =mysql_query($sql2);
-	$result2 = mysql_fetch_array($row2);
-	
-	$sql3 = "select * from drugreact where hn= '".$result['hn']."'";
-	$row3 =mysql_query($sql3);
-	while($result3 = mysql_fetch_array($row3)){
-		
+
+	$id = $result['row_id'];
+	$hn = $result['hn'];
+
+	$url = "drugreact_new_add.php?page=showedit&row_id=$id&hn=$hn";
+
+	$idguard_code = substr($result['idguard'],0,4);
+	$user_alert = '';
+	if($idguard_code=='MX04'){
+		$user_alert = ' <b style="color:red;">(เสียชีวิต)</b>';
+	}
 	?>
-    
-    
     <tr> 
     <td><?=$n?></td>
-    <td><?=$result2['hn']?></td>
-    <td ><?=$result2['ptname']?></td>
-    <td ><?=$result3['drugcode']?></td>
-    <td ><?=$result3['tradname']?></td>
-    <td ><?=$result3['groupname']?></td>
-    <td ><?=$result3['advreact']?></td></tr>
-   
-	<?
-	 $n++;
-	}
+    <td>
+		<a href="<?=$url;?>" title="ึคลิกเพื่อแก้ไขข้อมูล" target="_blank"><?=$result['hn']?></a>
+	</td>
+    <td ><?=$result['ptname'].$user_alert;?></td>
+    <td>
+		<a href="<?=$url;?>" title="ึคลิกเพื่อแก้ไขข้อมูล" target="_blank"><?=$result['drugcode']?></a>
+	</td>
+    <td ><?=$result['tradname']?></td>
+    <td ><?=$result['groupname']?></td>
+    <td ><?=$result['advreact']?></td></tr>
+	<?php
+	$n++;
 }
 ?>
  </table>
