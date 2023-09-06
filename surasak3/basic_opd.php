@@ -172,6 +172,7 @@ td p,ol,li{
 }
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+<script type="text/javascript" src="epoch_classes.js"></script>
 <script src="sweetalert/jquery-3.6.0.js"></script>
 <script src="sweetalert/sweetalert2@11.js"></script>
 </head>
@@ -1801,12 +1802,12 @@ mmHg </td>
 			if(document.form2.cig1.checked == true){
 				togglediv('kbk');
 			}
-			if(document.form2.form_i.checked == true){
-				togglediv('showform_i');
-			}
-			if(document.form2.form_j.checked == true){
-				togglediv('showform_j');
-			}			
+			// if(document.form2.form_i.checked == true){
+			// 	togglediv('showform_i');
+			// }
+			// if(document.form2.form_j.checked == true){
+			// 	togglediv('showform_j');
+			// }			
 			</script>
 		</td>
 		</tr>
@@ -2813,15 +2814,12 @@ window.onload = function(){
 	document.getElementById("<?php echo $onfocus;?>").focus();
 }
 </script>
-
-<script type="text/javascript" src="epoch_classes.js"></script>
 <script type="text/javascript">
 	var popup1;
 	window.onload = function() {
 		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
 	};
 </script>
-
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
 jQuery.noConflict();

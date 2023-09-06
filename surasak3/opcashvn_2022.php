@@ -1,7 +1,15 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
     session_start();//for security
-    if (isset($sIdname)){} else {die;} //for security
+    //if (isset($sIdname)){} else {die;} //for security
+	if($sIdname == ""){
+		
+		echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+		echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+		exit();
+	}	
+	
+	
     $today="$d-$m-$yr";
 	if($today=="--"){
 		$today = $_GET['a']."-".$_GET['b']."-".$_GET['c'];
@@ -341,7 +349,7 @@ $hnid = $hn;
            "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n";
 		
 		if($topay>0&&$price!=$topay||$cunt6>15){
-		   		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"oprxitem.php? sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
+		   		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"oprxitem_2022.php? sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
 		}else{
 				print "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</td>\n";
 		}
@@ -581,6 +589,7 @@ $totaltopay1=$totalpaid1+$totalpaid2;
 
 	if($strrow1>0){
 		echo "<script>alert('ผู้ป่วยมีรายการค้างจ่ายยาวันนี้  กรุณาติดต่อห้องยา') </script>";
+		echo "<div align='center' style='font-size: 36px; color:red; font-weight:bold;'>.....ผู้ป่วยมีรายการยาที่ยังไม่ได้คิดค่าใช้จ่าย กรุณาติดต่อห้องยา !!!.....</div>";		
 	}
 
 $strsql2="select  * from  opday  where thidate like '$dateid%' and  hn='".$hnid."' and toborow='EX07 ทันตกรรม'";
