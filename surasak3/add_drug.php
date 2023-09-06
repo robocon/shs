@@ -61,12 +61,12 @@ if ($qGroup->num_rows>0) {
 
 // รายการยาที่แพ้ ตามกลุ่ม
 $sql1="SELECT b.* FROM ( 
-	SELECT `groupname` FROM `drugreact` WHERE `hn` = '47-5030' AND `groupname` != '' GROUP BY `groupname`
+	SELECT `groupname` FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname` != '' GROUP BY `groupname`
 ) AS a 
 
 LEFT JOIN `drugreact_group` AS c ON c.`name` = a.`groupname`
 LEFT JOIN `drugreact_group_list` AS b ON c.`id` = b.`drugreact_group` 
-WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '47-5030' AND drugcode != '' GROUP BY drugcode)";
+WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$my_hn' AND drugcode != '' GROUP BY drugcode)";
 
 $res = $dbi->query($sql1);
 $drugreact_groups = array();
