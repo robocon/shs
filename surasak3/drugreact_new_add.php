@@ -311,6 +311,9 @@ body{
 label:hover{
 	cursor: pointer;
 }
+input[readonly]{
+	background-color: #d8d8d8;
+}
 </style>
 <script>
 function newXmlHttp(){
@@ -392,12 +395,11 @@ $page = $_POST['page'];
 
 if ( $page == 'search' ) {
     
-    $hn = $_POST['hn'];
+    $hn = sprintf("%s", trim($_POST['hn']));
     $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
     $query=mysql_query($sql);
 	$num=mysql_num_rows($query);
 	
-
     if ( $num > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
@@ -671,7 +673,8 @@ if ( $page == 'search' ) {
 				</td>
 			</tr>
 			<tr>
-				<td colspan="3" align="left"><div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="OPD" /></div></td>
+				<td colspan="3" align="left">
+				<div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="OPD" /></div></td>
 				<td colspan="2" align="left"><div style="margin-left:10px;"><strong>วันที่รายงาน : </strong> <input name="report_date" type="text" class="fontsarabun" value="<?=date("Y-m-d H:i:s");?>" /></div></td>
 			</tr>			
 			<tr>
