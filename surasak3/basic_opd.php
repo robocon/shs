@@ -1543,7 +1543,7 @@ mmHg </td>
 			 <tr>
 				<td align="right" class="data_show">Pain Score:</td>
 				<td align="left">
-					<input name="painscore" type="text" id="painscore" size="3" value="" />
+					<input name="painscore" type="text" id="painscore" size="3" value="0" />
 				</td>
 				<td align="right" class="data_show">CV risk score (ไม่ใช้ผลเลือด):</td>
 				<td align="left">
