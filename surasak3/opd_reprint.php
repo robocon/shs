@@ -117,6 +117,7 @@ a:hover, a:active {
   <th bgcolor="#16A085" width="12%">สติ๊กเกอร์ QR CODE</th>
   <th bgcolor="#16A085" width="10%">ใบนัด</th>
   <th bgcolor="#16A085" width="10%">แบบฟอร์มใบตรวจโรค<br> (กรณีใช้ต่อด้านหลัง)</th>
+   <th bgcolor="#A569BD" width="10%">ใบตรวจโรค <br>(ทันตกรรม)</th>
  </tr>
 
 <?php
@@ -184,11 +185,13 @@ if($num%2==0){
 		   "  <td align='center'>$printstk</td>\n".
 		   "  <td align='center'>$printapp</td>\n".
 		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd_form.php?dthn=".urlencode($thdatehn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์แบบฟอร์ม</div></A></td>\n".
+		   "  <td align='center'><A target=_BLANK HREF=\"digital_dental.php?dthn=".urlencode($thdatehn)."\"><img src='images/printer.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบตรวจโรค</div></A>
+		   <div style='margin-top:20px;'><A target=_BLANK HREF=\"digital_dental_consentform.php?dthn=".urlencode($thdatehn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบยินยอม</div></A></div></td>\n".
 		   " </tr>\n");
        }
 	}else{
 		print (" <tr>\n".
-           "  <td colspan='13' BGCOLOR=#FADBD8 align='center' style='color:red; font-weight:bold; font-size:24px;'>------------------ ไม่พบข้อมูล ------------------</td>\n".
+           "  <td colspan='14' BGCOLOR=#FADBD8 align='center' style='color:red; font-weight:bold; font-size:24px;'>------------------ ไม่พบข้อมูล ------------------</td>\n".
 		   " </tr>\n");   
 	}		
     include("unconnect.inc");
