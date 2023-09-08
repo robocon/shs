@@ -185,7 +185,7 @@ if( $action == false ){
             $msg = 'บันทึกข้อมูลเรียบร้อย <a href="chk_lab_sticker.php?part='.$part.'" target="_blank">คลิกที่นี่เพื่อพิมพ์สติกเกอร์แลป</a>';
 
             if( $i > 0 && !empty($item) ){
-                
+                // dump($item);
                 list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
 
                 $dob = set_date($dob);
@@ -194,8 +194,11 @@ if( $action == false ){
                 $surname = iconv('TIS620', 'UTF8', $surname);
 
                 $ptname = $name.' '.$surname;
-                $lab_sso = strtolower(str_replace(array('"'), '', $lab_sso));
-                
+                $lab_sso = iconv("TIS-620", "UTF-8", $lab_sso);
+
+                $search = array('"',',,,');
+                $lab_sso = strtolower(str_replace($search, '', $lab_sso));
+
                 $find_bs = false;
                 
                 // ถ้ามี bs มันจะตัดออกจากรายการและเพิ่มเป็นรายการใหม่
