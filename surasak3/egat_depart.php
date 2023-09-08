@@ -14,6 +14,10 @@ $dbi->query("SET NAMES UTF8");
 
 var_dump("EGAT-DEPART");
 
+// 
+// SELECT hn, GROUP_CONCAT(item_sso) FROM `chk_lab_items` where part = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' group by hn;
+
+
 // $sql = "SELECT b.* 
 // FROM( 
 //     SELECT HN,exam_no,idcard,CONCAT(name,' ',surname) AS ptname FROM opcardchk WHERE part = 'บริษัท รักษาความปลอดภัย เอเอสเอ็ม แมเนจเมนท์ จำกัด (โรงไฟฟ้าแม่เมาะ) ส.ค.66' 
@@ -28,11 +32,11 @@ var_dump("EGAT-DEPART");
 // }
 
 $hn = '60-1641';
-$detail = 'test ตรวจสุขภาพประจำปี';
-$diag = 'test diag ตรวจสุขภาพ';
+$detail = 'ค่าตรวจวิเคราะห์โรค';
+$diag = 'ตรวจสุขภาพ';
 $lab_items = array('CBC-sso','UA-sso','CR','BS','LIPID');
-$officer = 'พี่พัชรี';
-$cashok = 'ผู้ปฏิบัติงาน กฟภ.';
+$officer = 'พัชรี คำฟู';
+$cashok = 'กฟผ';
 $depart = 'PATHO';
 $nLab_orderhead = '9999';
 $date = '2566-12-10';
@@ -62,7 +66,7 @@ $patdata = new ClassPatdata();
 
 
 $xray_items = array('41001');
-$officer = 'จนท.xray';
+$officer = 'เมธินี พลเมฆ';
 $depart = 'XRAY';
 // $departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $xray_items, $officer, $cashok, $nLab_orderhead, $patho);
 // dump($departId);
@@ -74,8 +78,8 @@ $departIdList[] = $departId;
 
 $opacc = new ClassOpacc();
 // $test = $opacc->getOpacc($date, $hn);
-$detail = 'ค่าตรวจวิเคราะห์โรค';
-$officer = 'นทีพร เด้อจ้า';
+// $detail = 'ค่าตรวจวิเคราะห์โรค';
+$officer = 'นางสาว พวงเพ็ชร หอมแก่นจันทร์';
 $credit = 'กฟผ';
 // $test = $opacc->insertOpacc($departIdList, $detail, $officer, $credit);
 dump($test);
