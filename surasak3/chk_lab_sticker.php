@@ -87,7 +87,8 @@ if ( $action == 'print' ) {
             }
         }
 
-        if( $count_ua > 0 ){ 
+
+        if( $count_ua_barcode==0 && $count_ua > 0 ){ 
             for ($i=0; $i < $count_ua; $i++) { 
                 ?>
                 <!-- UA -->
@@ -102,16 +103,13 @@ if ( $action == 'print' ) {
         }
 
         if( $count_ua_barcode > 0 ){ 
-            for ($i=0; $i < $count_ua_barcode; $i++) { 
+            for ($i=0; $i < $count_ua; $i++) { 
                 ?>
                 <!-- UA แบบไม่มี Barcode -->
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
                 <div style='text-align:center;'>
-                    <span class='fc1-0'>ปัสสาวะ</span></span>
-                </div>
-                <div style='text-align:center;'>
-                    <font size="2"><?=$ua_code;?></font>&nbsp;&nbsp;&nbsp;&nbsp;<font size='5'>03</font>
+                    <font size="5"><?=$user_number;?></font><span class="fc1-0" style="border: 1px solid #ffffff; display: inline-block; padding:0 30px;">ปัสสาวะ</span><font size='5'>03</font>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -238,7 +236,7 @@ include 'chk_menu.php';
             <td>UA</td>
             <td>
                 <input type="text" name="count_ua" size="3" value="1"><br>
-                <input type="checkbox" name="count_ua_barcode" id="count_ua_barcode" value="1"> <label for="count_ua_barcode">เพิ่มสติกเกอร์แบบไม่มีบาร์โค้ด</label>
+                <input type="checkbox" name="count_ua_barcode" id="count_ua_barcode" value="1"> <label for="count_ua_barcode">แสดงสติกเกอร์แบบไม่มีบาร์โค้ด</label>
             </td>
         </tr>
         <tr valign="top">
