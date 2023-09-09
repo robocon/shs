@@ -104,11 +104,14 @@ if ( $action == 'print' ) {
         if( $count_ua_barcode > 0 ){ 
             for ($i=0; $i < $count_ua_barcode; $i++) { 
                 ?>
-                <!-- UA แบบมี Barcode -->
-                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
+                <!-- UA แบบไม่มี Barcode -->
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
                 <div style='text-align:center;'>
-                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span></span><font size='5'>03</font>
+                    <span class='fc1-0'>ปัสสาวะ</span></span>
+                </div>
+                <div style='text-align:center;'>
+                    <font size="2"><?=$ua_code;?></font>&nbsp;&nbsp;&nbsp;&nbsp;<font size='5'>03</font>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -183,20 +186,33 @@ if ( $action == 'print' ) {
         }
 
         if( $count_stool > 0 ){ 
+
+            $stool_txt = 'STOOL';
+            $stool_thai = sprintf("%d", $_POST['stool_thai']);
+            if ($stool_thai==1) {
+                $stool_txt = 'อุจจาระ';
+            }
+
             for ($i=0; $i < $count_stool; $i++) { 
                 ?>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
-                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span>&nbsp;&nbsp;&nbsp;STOOL</b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span>&nbsp;&nbsp;&nbsp;<?=$stool_txt;?></b></center></font>
                 <div style="page-break-before: always;"></div>
                 <?php 
             }
         }
         
-    }
+    } // end foreach
 
+    ?>
+    <script>
+        window.onload = function(){
+            window.print();
+        }
+    </script>
+    <?php
     exit;
-
 }
 
 
@@ -218,16 +234,19 @@ include 'chk_menu.php';
             <td>CHEM</td>
             <td><input type="text" name="count_chem" size="3" value="1"></td>
         </tr>
-        <tr>
+        <tr valign="top">
             <td>UA</td>
             <td>
                 <input type="text" name="count_ua" size="3" value="1"><br>
-                <input type="checkbox" name="ua_check" id="ua_check" value="1"> <label for="ua_check">เพิ่มสติกเกอร์แบบไม่มีบาร์โค้ด</label>
+                <input type="checkbox" name="count_ua_barcode" id="count_ua_barcode" value="1"> <label for="count_ua_barcode">เพิ่มสติกเกอร์แบบไม่มีบาร์โค้ด</label>
             </td>
         </tr>
-        <tr>
+        <tr valign="top">
             <td>STOOL</td>
-            <td><input type="text" name="count_stool" size="3" value=""></td>
+            <td>
+                <input type="text" name="count_stool" size="3" value=""><br>
+                <input type="checkbox" name="stool_thai" id="stool_thai" value="1"> <label for="stool_thai">แสดงข้อความเป็น "อุจจาระ"</label>
+            </td>
         </tr>
         <tr>
             <td>STOOL C/S</td>
@@ -261,9 +280,9 @@ include 'chk_menu.php';
         <tr>
             <td colspan="2">
                 <br>
-                <a href="chk_sticker_police.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 28 เมษายน 65</a><img src="images/icons/new-icon.gif" alt="">
+                <a href="chk_sticker_police.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 วันที่ 10 กรกฎาคม 2566</a><img src="images/icons/new-icon.gif" alt="">
                 <br>
-                <a href="chk_sticker_police2.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 29 เมษายน 65</a><img src="images/icons/new-icon.gif" alt="">
+                <a href="chk_sticker_police2.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 วันที่ 11 กรกฎาคม 2566</a><img src="images/icons/new-icon.gif" alt="">
             </td>
         </tr>
     </table>
