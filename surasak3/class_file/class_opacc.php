@@ -7,7 +7,7 @@ class ClassOpacc extends ClassDepart{
 
     public function __construct()
     {
-
+        parent::__construct();
     }
     
     /**

@@ -5,10 +5,9 @@ require_once 'class_file/class_depart.php';
 
 class ClassPatdata extends ClassDepart
 {
-
     public function __construct()
     {
-
+        parent::__construct();
     }
 
     /**

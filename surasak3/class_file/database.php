@@ -3,7 +3,7 @@
  * @todo ในอนาคตคิดว่าจะแยก ฟังก์ชั่นออกไปต่างหาก
  */
 class DbConnect{ 
-    public $dbi;
+    public $dbi = null;
     public function __construct()
     {
         $this->dbi = new mysqli(HOST,USER,PASS,DB);
@@ -12,7 +12,6 @@ class DbConnect{
             exit;
         }
         $this->dbi->query("SET NAMES UTF8");
-        return $this->dbi;
     }
 
     /**
