@@ -109,7 +109,7 @@ if ( $action == 'print' ) {
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
                 <div style='text-align:center;'>
-                    <font size="5"><?=$user_number;?></font><span class="fc1-0" style="border: 1px solid #ffffff; display: inline-block; padding:0 30px;">ปัสสาวะ</span><font size='5'>03</font>
+                    <font size="5"><?=$user_number;?></font><span class="fc1-0" style="border: 1px solid #ffffff; display: inline-block; padding:0 27px; font-size:18px;">ปัสสาวะ</span><font size='5'>03</font>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
