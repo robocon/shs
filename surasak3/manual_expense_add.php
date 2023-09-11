@@ -32,7 +32,7 @@ $a = $q->fetch_assoc();
 $detail = 'ค่าตรวจวิเคราะห์โรค';
 $diag = 'ตรวจสุขภาพ';
 
-$lab_items = $a['lab_items'];
+$lab_items = explode(',', $a['lab_items']);
 $labOfficer = $_GET['officer'];
 $cashok = 'กฟผ';
 $nLab_orderhead = '';

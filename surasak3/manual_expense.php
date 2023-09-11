@@ -59,6 +59,8 @@ $date = (date('Y')+543).date('-m-d');
                     <?php 
                     while ($a = $q->fetch_assoc()) {
 
+                        $currHn = $a['hn'];
+
                         $patho = $dep->getDepart($date, $a['hn'], 'PATHO');
                         $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
                         $resh = $result->getResulthead($a['labnumber']);
@@ -71,7 +73,9 @@ $date = (date('Y')+543).date('-m-d');
                             <td>
                                 <?php 
                                 if (empty($a['vn'])) {
-                                    ?><p class="text-danger"><b>ไม่มี VN</b></p><?php
+                                    ?>
+                                    <a href="manual_expense_vn.php?hn=<?=$currHn;?>" target="_blank" class="text-danger"><b>ไม่มี VN</b></a>
+                                    <?php
                                 }else{
                                     echo $a['vn'];
                                 }

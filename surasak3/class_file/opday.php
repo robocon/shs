@@ -8,6 +8,7 @@ class Opday
     public $toborow = '';
     public $ptright = '';
     public $sOfficer = '';
+    public $checkdx = '';
 
     public function __construct()
     {
@@ -56,18 +57,21 @@ class Opday
         }
         
         $vn = $this->getVn();
+        $age = $this->calAge($pt['dbirth']);
         
         $thidate = (date('Y')+543).date('-m-d H:i:s');
         $thdatehn = date('d-m-').(date('Y')+543).$hn;
         $thdatevn = date('d-m-').(date('Y')+543).$vn;
 
+        $checkdx = $this->checkdx;
+
         $query = "INSERT INTO opday(
-        `thidate`,`thdatehn`,`hn`,`vn`,`thdatevn`,`ptname`,
+        `thidate`,`thdatehn`,`hn`,`vn`,`thdatevn`,`ptname`, `age`, 
         `ptright`,`goup`,`camp`,`note`,`toborow`,`idcard`,
         `officer`,`checkdx`) VALUES
-        ('$thidate','$thdatehn','$hn','$vn','$thdatevn','$cPtname',
+        ('$thidate','$thdatehn','$hn','$vn','$thdatevn','$cPtname', '$age', 
         '$cPtright','$cGoup','$cCamp','$cNote','$toborow',' $cIdcard',
-        '$this->sOfficer','sso');";
+        '$this->sOfficer','$checkdx');";
         $save = $this->dbi->query($query);
         if($save===true){
             return $this->getThisDay($hn);
@@ -119,5 +123,39 @@ class Opday
 
         return $row_id;
     }
+
+    public function setToborow($data){
+        $this->toborow = $data;
+    }
+
+    public function setCheckdx($checkdx){
+        $this->checkdx = $checkdx;
+    }
+
+    /**
+     * @param string $thDate ตัวอย่าง 2526-12-12
+     * @return string $pAge 99 ปี หรือ 99 ปี 3 เดือน
+     */
+    public function calAge($thDate){
+        $today = getdate();   
+        $nY = $today['year']; 
+        $nM = $today['mon'] ;
+        $bY = substr($thDate,0,4)-543;
+        $bM = substr($thDate,5,2);
+        $ageY = $nY-$bY;
+        $ageM = $nM-$bM;
+        if ($ageM<0) {
+            $ageY = $ageY-1;
+            $ageM = 12+$ageM;
+        }
+        if ($ageM == 0){
+            $pAge = "$ageY ปี";
+
+        }else{
+            $pAge = "$ageY ปี $ageM เดือน";
+        }
+        return $pAge;
+    }
+
 }
 ?>
