@@ -11,6 +11,7 @@ $dbi->query("SET NAMES UTF8");
 
 $dep = new ClassDepart();
 $result = new ClassResulthead();
+$opacc = new ClassOpacc();
 
 $date = (date('Y')+543).date('-m-d');
 
@@ -33,6 +34,7 @@ $date = (date('Y')+543).date('-m-d');
     LEFT JOIN (
         SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
     ) AS c ON a.`hn` = c.`hn`";
+    dump($sql);
     $q = $dbi->query($sql);
 
     ?>
@@ -64,7 +66,8 @@ $date = (date('Y')+543).date('-m-d');
                         $patho = $dep->getDepart($date, $a['hn'], 'PATHO');
                         $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
                         $resh = $result->getResulthead($a['labnumber']);
-
+ 
+                        $op = $opacc->getOpacc($date, $a['hn']);
                         ?>
                         <tr>
                             <td><?=$a['hn'];?></td>
@@ -96,25 +99,40 @@ $date = (date('Y')+543).date('-m-d');
                                     $url = "hn=".$a['hn'];
                                     $url .= "&depart=PATHO";
                                     $url .= "&officer=".rawurldecode('พัชรี คำฟู');
+                                    $url .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
+                                    $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <a href="manual_expense_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
+                                    <a href="manual_expense_lab_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
                                     <?php
                                 }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                if ($xray===false) {
+                                if ($xray===false) { 
+                                    $url = "hn=".$a['hn'];
+                                    $url .= "&depart=XRAY";
+                                    $url .= "&officer=".rawurldecode('จนท. xray');
+                                    $url .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
+                                    $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm">Cal</a>
+                                    <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
                                     <?php
                                 }
                                 ?>
                             </td>
                             <td>
-                                opacc
+                                <?php 
+                                if (!empty($op)) {
+                                    foreach ($op as $key => $opItem) {
+                                        ?>
+                                        <p><?=$opItem['depart'];?> (<?=$opItem['price'];?>)</p>
+                                        <?php 
+                                    }
+                                }
+                                ?>
                             </td>
                         </tr>
                         <?php

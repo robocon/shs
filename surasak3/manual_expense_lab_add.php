@@ -12,6 +12,9 @@ $dbi->query("SET NAMES UTF8");
 $date = (date('Y')+543).date('-m-d');
 $hn = sprintf("%s", $_GET['hn']);
 $depart = sprintf("%s", $_GET['depart']);
+$labOfficer = sprintf("%s", $_GET['officer']);
+$moneyOfficer = sprintf("%s", $_GET['moneyOfficer']);
+$credit = sprintf("%s", $_GET['credit']);
 
 $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
 c.`vn` 
@@ -34,14 +37,14 @@ $diag = 'ตรวจสุขภาพ';
 
 $lab_items = explode(',', $a['lab_items']);
 $labOfficer = $_GET['officer'];
-$cashok = 'กฟผ';
+// $cashok = 'กฟผ';
 $nLab_orderhead = '';
 
 if(empty($a['vn'])){
     echo "ทะเบียน ยังไม่ได้ออก VN";
 }else{
     $dep = new ClassDepart();
-    $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $cashok, $nLab_orderhead, $depart);
+    $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart);
     $departIdList[] = $departId;
     dump($departId);
 
@@ -50,8 +53,8 @@ if(empty($a['vn'])){
     dump($insertPatdata);
 
     $opacc = new ClassOpacc();
-    $officer = 'นางสาว พวงเพ็ชร หอมแก่นจันทร์';
-    $credit = 'กฟผ';
-    $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $officer, $credit);
+    // $officer = 'นาง นทีพร เรียงสุข';
+    // $credit = 'กฟผ';
+    $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
     dump($opaccInsert);
 }

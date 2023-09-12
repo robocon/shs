@@ -70,7 +70,7 @@ if( $page == false ){
                 <td>
                     <label for="selected_all"><input type="checkbox" name="" id="selected_all"> เลือกทั้งหมด</label>
                 </td>
-                <td colspan="8" align="center">
+                <td colspan="10" align="center">
                     <button type="submit">ลบทั้งหมดที่เลือก</button>
                     <input type="hidden" name="page" value="del_multiple">
                     <input type="hidden" name="part" value="<?=$part;?>">
