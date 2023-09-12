@@ -26,15 +26,27 @@ $date = (date('Y')+543).date('-m-d');
 </head>
 <body>
     <?php 
-    $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
-    c.`vn` 
-    FROM (
-        SELECT trim(`hn`) AS `hn`, GROUP_CONCAT(`item_sso`),labnumber FROM `chk_lab_items` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' GROUP BY `hn`
-    ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
-    LEFT JOIN (
-        SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
-    ) AS c ON a.`hn` = c.`hn`";
-    dump($sql);
+    // $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
+    // c.`vn` 
+    // FROM (
+    //     SELECT trim(`hn`) AS `hn`, GROUP_CONCAT(`item_sso`),labnumber FROM `chk_lab_items` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' GROUP BY `hn`
+    // ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+    // LEFT JOIN (
+    //     SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
+    // ) AS c ON a.`hn` = c.`hn`";
+
+$sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
+c.`vn` 
+FROM (
+    SELECT * FROM `manual_expense` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' 
+) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+LEFT JOIN (
+    SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
+) AS c ON a.`hn` = c.`hn`
+GROUP BY a.hn
+ORDER BY a.id ASC";
+
+    // dump($sql);
     $q = $dbi->query($sql);
 
     ?>
@@ -113,7 +125,7 @@ $date = (date('Y')+543).date('-m-d');
                                 if ($xray===false) { 
                                     $url = "hn=".$a['hn'];
                                     $url .= "&depart=XRAY";
-                                    $url .= "&officer=".rawurldecode('จนท. xray');
+                                    $url .= "&officer=".rawurldecode('สุทธิชัย หนูมา');
                                     $url .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
                                     $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
