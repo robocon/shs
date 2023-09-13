@@ -101,12 +101,14 @@ ORDER BY a.id ASC";
                                 <?php 
                                 if ($resh===false) {
                                     echo "รอผลแลป";
+                                }else {
+                                    dump($resh);
                                 }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                if ($patho===false) { 
+                                // if ($patho===false && !empty($a['vn'])) { 
 
                                     $url = "hn=".$a['hn'];
                                     $url .= "&depart=PATHO";
@@ -117,12 +119,12 @@ ORDER BY a.id ASC";
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
                                     <a href="manual_expense_lab_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
                                     <?php
-                                }
+                                // }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                if ($xray===false) { 
+                                // if ($xray===false && !empty($a['vn'])) { 
                                     $url = "hn=".$a['hn'];
                                     $url .= "&depart=XRAY";
                                     $url .= "&officer=".rawurldecode('สุทธิชัย หนูมา');
@@ -132,15 +134,16 @@ ORDER BY a.id ASC";
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
                                     <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
                                     <?php
-                                }
+                                // }
                                 ?>
                             </td>
                             <td>
                                 <?php 
+                                // dump($op);
                                 if (!empty($op)) {
                                     foreach ($op as $key => $opItem) {
                                         ?>
-                                        <p><?=$opItem['depart'];?> (<?=$opItem['price'];?>)</p>
+                                        <p><?=$opItem['row_id'];?> <?=$opItem['depart'];?> (<?=$opItem['price'];?>)</p>
                                         <?php 
                                     }
                                 }

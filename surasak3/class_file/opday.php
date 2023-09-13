@@ -132,6 +132,10 @@ class Opday
         $this->checkdx = $checkdx;
     }
 
+    public function setOfficer($name){
+        $this->sOfficer = $name;
+    }
+
     /**
      * @param string $thDate ตัวอย่าง 2526-12-12
      * @return string $pAge 99 ปี หรือ 99 ปี 3 เดือน
