@@ -7,7 +7,7 @@ class ClassDepart extends DbConnect{
 
     public function __construct()
     {
-
+        parent::__construct();
     }
 
     /**
@@ -76,10 +76,14 @@ class ClassDepart extends DbConnect{
         }
 
         $q = $this->dbi->query($sql);
-        $items = array();
-        while ($a = $q->fetch_assoc()) {
-            $items[] = $a;
+        $items = false;
+        if($q->num_rows>0){
+            $items = array();
+            while ($a = $q->fetch_assoc()) {
+                $items[] = $a;
+            }
         }
+        
         return $items;
     }
 

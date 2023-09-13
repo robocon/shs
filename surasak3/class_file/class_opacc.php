@@ -7,7 +7,7 @@ class ClassOpacc extends ClassDepart{
 
     public function __construct()
     {
-
+        parent::__construct();
     }
     
     /**
@@ -22,15 +22,14 @@ class ClassOpacc extends ClassDepart{
             exit;
         }
 
-        $sql = "SELECT * FROM opacc WHERE date LIKE '$date%' AND hn = '$hn%' ";
-        $q = $this->dbi->query($sql);
+        $q = $this->dbi->query("SELECT * FROM opacc WHERE date LIKE '$date%' AND hn = '$hn' ");
         $items = array();
         if ($q->num_rows>0) {
             while ($a = $q->fetch_assoc()) {
                 $items[] = $a;
             }
         }else{
-            return "Opacc is empty";
+            return false;
             exit;
         }
 
@@ -79,7 +78,7 @@ class ClassOpacc extends ClassDepart{
                 '$detail', '$price', '$paid', '$officer','$credit', 
                 '$ptright', '$vn', '$paid'
             );";
-            // dump($sql);
+            
             $save = $this->dbi->query($sql);
             if($save===false){
                 return $this->dbi->error;
@@ -88,7 +87,6 @@ class ClassOpacc extends ClassDepart{
                 $opaccItems[] = $this->dbi->insert_id;
             }
             
-            // dump($save);
         }
         return $opaccItems;
         

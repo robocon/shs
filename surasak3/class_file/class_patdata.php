@@ -5,10 +5,9 @@ require_once 'class_file/class_depart.php';
 
 class ClassPatdata extends ClassDepart
 {
-
     public function __construct()
     {
-
+        parent::__construct();
     }
 
     /**
@@ -62,8 +61,8 @@ class ClassPatdata extends ClassDepart
             return "Depart id and lab items is required";
             exit;
         }
-        
-        $dep = $this->getDepart($departId);
+
+        $dep = $this->getDepartFromId($departId);
         $hn = $ptname = $ptright = '';
         if($dep!==false){
             $hn = $dep['hn'];
@@ -78,8 +77,7 @@ class ClassPatdata extends ClassDepart
         $countItem = count($labItems);
 
         $patdataSaveItem = array();
-        foreach ($labItems as $labCode) { 
-
+        foreach ($labItems AS $key => $labCode) { 
             $sqlLabcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $labCode);
             $q = $this->dbi->query($sqlLabcare);
             if ($q->num_rows > 0) { 
