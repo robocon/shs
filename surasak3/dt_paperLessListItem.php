@@ -182,7 +182,13 @@ if ($items->totalCount > 0) {
         <div class="column thumbContain">
             <a href="dt_paperLessFullPage.php?path=<?=rawurlencode($item->original);?>&hn=<?=$hn;?>" target="right">
                 <img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" onerror="this.src='images/medical-history.png';">
-                <p><b><?=$d.' '.$def_fullm_th[$m].' '.($y+543);?></b></p>
+				<?php 
+				$summaryTxt = '';
+				if ($item->type==='summary') {
+					$summaryTxt = '<span style="color:red;">สรุปประวัติ</span><br>';
+				}
+				?>
+                <p><b><?=$summaryTxt.$d.' '.$def_fullm_th[$m].' '.($y+543);?></b></p>
             </a>
         </div>
         <?php
