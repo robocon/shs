@@ -142,7 +142,9 @@ $op = $q_opday->fetch_assoc();
 
                     return test_return;
                 }
-                
+                window.onload = function(){
+                    document.getElementById('reason').focus();
+                }
             </script>
         </div>
     </div>

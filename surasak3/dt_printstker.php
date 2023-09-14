@@ -10,7 +10,7 @@ if($_SESSION["sIdname"] == "md19921"){
 }else if($_SESSION['sIdname'] == 'md29268'){ // หมอพอศาล
 	$time = 1500;
 }else{
-	$time = 300;  // Default time
+	$time = 500;  // Default time
 }
 
 ?>

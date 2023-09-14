@@ -1538,7 +1538,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				
 				// หาในรายการแพ้ยาก่อน ถ้าไม่มีให้หาในกลุ่มที่มีโอกาสแพ้ยา(drugreact_group_list)อีกที
 				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
-					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px;">&nbsp;แพ้ยา&nbsp;</span>';
+					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px; color:#ffffff;">&nbsp;แพ้ยา&nbsp;</span>';
 				}else{
 					
 					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true){
@@ -2658,21 +2658,22 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	};
 	xmlhttp.send(null);
 
-	check_drugreact(drugcode, returnstr);
+	// popup แบบฟอร์ม rechallenge แพ้ยา
+	// check_drugreact(drugcode, returnstr);
 	
-	// RDUตัวชี้วัดที่11
+	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่14
+	// แจ้งเตือน RDUตัวชี้วัดที่14
 	kidney_egfr_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่18
+	// แจ้งเตือน RDUตัวชี้วัดที่18
 	rdu18_alert(drugcode.trim(), icd10);
 
-	// RDUตัวชี้วัดที่7
+	// แจ้งเตือน RDUตัวชี้วัดที่7
 	rdu7_alert(drugcode.trim(), icd10);
 
-	// RDUตัวชี้วัดที่8
+	// แจ้งเตือน RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
 		
 }
