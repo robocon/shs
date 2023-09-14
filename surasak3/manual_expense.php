@@ -13,8 +13,8 @@ $dep = new ClassDepart();
 $result = new ClassResulthead();
 $opacc = new ClassOpacc();
 
-$date = (date('Y')+543).date('-m-d');
-
+// $date = (date('Y')+543).date('-m-d');
+$date = '2566-09-13';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -102,7 +102,7 @@ ORDER BY a.id ASC";
                                 if ($resh===false) {
                                     echo "รอผลแลป";
                                 }else {
-                                    dump($resh);
+                                    // dump($resh);
                                 }
                                 ?>
                             </td>
@@ -110,14 +110,14 @@ ORDER BY a.id ASC";
                                 <?php 
                                 // if ($patho===false && !empty($a['vn'])) { 
 
-                                    $url = "hn=".$a['hn'];
-                                    $url .= "&depart=PATHO";
-                                    $url .= "&officer=".rawurldecode('พัชรี คำฟู');
-                                    $url .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
-                                    $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
+                                    $urlLab = "hn=".$a['hn'];
+                                    $urlLab .= "&depart=PATHO";
+                                    $urlLab .= "&officer=".rawurldecode('พัชรี คำฟู');
+                                    $urlLab .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
+                                    $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <a href="manual_expense_lab_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
+                                    <!-- <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
                                     <?php
                                 // }
                                 ?>
@@ -132,22 +132,24 @@ ORDER BY a.id ASC";
                                     $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
+                                    <!-- <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
                                     <?php
                                 // }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                // dump($op);
-                                if (!empty($op)) {
-                                    foreach ($op as $key => $opItem) {
-                                        ?>
-                                        <p><?=$opItem['row_id'];?> <?=$opItem['depart'];?> (<?=$opItem['price'];?>)</p>
-                                        <?php 
-                                    }
+                                // dump($a);
+                                foreach ($patho as $key => $pItem) {
+                                    $id = $pItem['row_id'];
+                                    ?>
+                                    <a href="manual_expense_update.php?depart_id=<?=$id;?>&new_lab=<?=rawurldecode($a['lab_items']);?>&vn=<?=$a['vn'];?>" class="btn btn-primary btn-sm" target="_blank">
+                                        <?=$pItem['row_id'];?> <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
+                                    </a>
+                                    <?php 
                                 }
                                 ?>
+                                
                             </td>
                         </tr>
                         <?php
