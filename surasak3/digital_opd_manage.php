@@ -76,14 +76,15 @@ if($action==='delete'){
                         <th>upload_date</th>
                         <th>date</th>
                         <th>clinic</th>
+                        <th>doctor</th>
                         <th>type</th>
+                        <th>officer</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php
                 foreach ($items->list as $key => $value) {
-                    // dump($value);
                     $row_id = $value->row_id;
                     ?>
                     <tr>
@@ -91,7 +92,9 @@ if($action==='delete'){
                         <td><?=$value->upload_date;?></td>
                         <td><?=$value->date;?></td>
                         <td><?=$value->clinic;?></td>
+                        <td><?=$value->doctyor;?></td>
                         <td><?=$value->type;?></td>
+                        <td><?=$value->officer;?></td>
                         <th>
                             <a href="javascript:void(0);" class="btn btn-primary" onclick="return confirmDelete('<?=$row_id;?>');">ลบ</a>
                         </th>
