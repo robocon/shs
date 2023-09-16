@@ -163,16 +163,18 @@ class ClassDepart extends DbConnect{
         $sumNPrice = 0;
         foreach ($labItems as $key => $lab_code) { 
 
-            $sql_labcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $lab_code);
-            $q = $this->dbi->query($sql_labcare);
-            if ($q->num_rows > 0) { 
+            $labcare = $this->getLabcareFromCode($lab_code, array('code','oldcode','detail','price','yprice','nprice','depart','part'));
 
-                $labcare = $q->fetch_assoc();
+            // $sql_labcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $lab_code);
+            // $q = $this->dbi->query($sql_labcare);
+            // if ($q->num_rows > 0) { 
+
+                // $labcare = $q->fetch_assoc();
                 $sumPrice += $labcare['price'];
                 $sumYPrice += $labcare['yprice'];
                 $sumNPrice += $labcare['nprice'];
 
-            }
+            // }
             
         } // End foreach รายการแลป
 
@@ -181,6 +183,123 @@ class ClassDepart extends DbConnect{
             'sumYPrice' => number_format($sumYPrice, 2),
             'sumNPrice' => number_format($sumNPrice, 2)
         );
+    }
+
+    /**
+     * @param string $code รหัสที่ต้องการใน labcare
+     * @param array $selectItem example: array('code','detail,'price','yprice','nprice'ff) 
+     */
+    public function getLabcareFromCode($code, $selectItem=array()){
+        $select = '*';
+        if(!empty($selectItem)){
+            $select = implode(',', $selectItem);
+        }
+        $sql_labcare = sprintf("SELECT $select FROM `labcare` WHERE `code` = '%s' ", $code); 
+        $q = $this->dbi->query($sql_labcare);
+        if (empty($this->dbi->error) && $q->num_rows > 0) { 
+            $res = $q->fetch_assoc();
+
+        }else{
+            $res = array('error' => true,'msg' => '');
+            
+            $res['msg'] = $this->dbi->error ? $this->dbi->error : 'can not find data from code' ;
+            
+        }
+
+        return $res;
+    }
+
+    /**
+     * map ค่า ระหว่าง key กับ value ออกมาเป็น `key`='value' ใช้สำหรับ update statement
+     * สามารถใช้ได้ดังนี้ array_map('mapUpdate', array_keys($array), array_values($array));
+     * @param string $key
+     * @param string $value
+     */
+    public function mapUpdate($key, $value){ 
+        $key = sprintf("%s", $key);
+        $value = sprintf("%s", $value);
+        return "`$key`='$value'";
+    }
+
+    /**
+     * @param array $dataList รายการที่จะอัพเดทเป็น key value
+     * @param string $id primary key ของ deaprt
+     * 
+     * @return mixed $save true ถ้าบันทึกข้อมูลได้ false หรือ mysql error ถ้าข้อมูลผิดพลาด
+     */
+    public function setDepartManual($dataList=array(), $id=null){
+
+        if(empty($id) OR empty($dataList)){
+            return false;
+        }
+
+        $updateList = array_map(array($this, 'mapUpdate'), array_keys($dataList), array_values($dataList));
+        $updateTxt = implode(', ', $updateList);
+
+        $sqlUpdateDepart = "UPDATE `depart` SET $updateTxt WHERE `row_id` = '$id' ";
+        $save = $this->dbi->query($sqlUpdateDepart);
+        if ($this->dbi->error) {
+            return $this->dbi->error.' : '.$sqlUpdateDepart;
+        }else{
+            return $save;
+        }
+    }
+
+    /**
+     * ใช้อัพเดทในกรณีที่ รายการใน depart มีเท่าเดิม แต่ค่าราคาใน price,yprice,nprice ผิดไปจากเดิมเช่น ห้องแลปไม่ได้แก้ราคาตรวจแลป
+     * 
+     * @param array $itemList รายการที่จะต้องเอามาคำนวณค่าใช้จ่าย
+     * @param string $id row_id ของ depart
+     * @param array $fieldUpdate Field ในตาราง depart ที่จะทำการอัพเดท
+     * 
+     * จะมีฟิลด์ถูกฟิกไว้อยู่แล้วที่ต้องอัพเดทตาม $itemList เช่น item, price, sumyprice, sumnprice 
+     * ใน $fieldUpdate จะต้องมี detail เป็นอย่างน้อยเพื่อบอกว่ารายการที่อัพเดทเป็น ค่าบริการทางการแพทย์ หรือ ค่าบริการทางการพยาบาล
+     * ส่วนฟิดล์อื่นๆ สามารถเอามาใส่ไว้ใน $fieldUpdate ได้เลย
+     */
+    public function updateDepartFromList($itemList=array(), $id=null, $fieldUpdate=array()){
+        if(empty($itemList) OR empty($id) OR empty($fieldUpdate)){
+            return false;
+        }
+        $amount = count($itemList);
+        $price = $sumYPrice = $sumNPrice = 0;
+        foreach ($itemList as $key => $value) {
+            $lab = $this->getLabcareFromCode($value, array('code', 'price', 'yprice', 'nprice'));
+            if($lab['error']===true){
+                return $lab['msg'];
+            }
+
+            //
+            //
+            // @todo คิดว่าจะเพิ่ม การอัพเดท patdata ในนี้ไปเลย เพราะสุดท้่ายก็ต้องสรุปตัวเลขแล้วไปอัพเดทใน depart อยู่ดี
+            //
+            //
+            
+
+            $price += $lab['price'];
+            $sumYPrice += $lab['yprice'];
+            $sumNPrice += $lab['nprice'];
+        }
+
+        $mainSQL = array(
+            'item'=>$amount, 
+            'price'=>$price,
+            'sumyprice'=>$sumYPrice,
+            'sumnprice'=>$sumNPrice
+        );
+
+        if(count($fieldUpdate)>0){ 
+            $mainSQL = array_merge($mainSQL, $fieldUpdate);
+        }
+        
+        $preSQL = array_map(array($this, 'mapUpdate'), array_keys($mainSQL), array_values($mainSQL));
+        $setSQL = implode(', ', $preSQL);
+
+        $sqlUpdateDepart = "UPDATE `depart` SET $setSQL WHERE `row_id` = '$id' LIMIT 1";
+        $res = $this->dbi->query($sqlUpdateDepart);
+        if ($this->dbi->error) {
+            $res = $this->dbi->error.' : '.$sqlUpdateDepart;
+        }
+        return $res;
     }
 
 }

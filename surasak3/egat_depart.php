@@ -48,16 +48,16 @@ if($opdayToday===false){
 }
 $test = false;
 
-$departIdList = array();
+$testDepartIdList = array();
 
 $departObj = new ClassDepart();
 // $testItem = $depart->getDepart('2565-12-10', '54-2753');
 
 // 
-// $departId = $departObj->insertOnlyDepart($hn, $detail, $diag, $lab_items, $officer, $cashok, $nLab_orderhead, $patho);
-// dump($departId);
+// $testDepartId = $departObj->insertOnlyDepart($hn, $detail, $diag, $lab_items, $officer, $cashok, $nLab_orderhead, $patho);
+// dump($testDepartId);
 
-$departId = '4580576';
+$testDepartId = '4580576';
 $departIdList[] = $departId;
 $patdata = new ClassPatdata();
 // $test = $patdata->getPatdata('4407111');
@@ -82,7 +82,58 @@ $opacc = new ClassOpacc();
 $officer = 'นางสาว พวงเพ็ชร หอมแก่นจันทร์';
 $credit = 'กฟผ';
 // $test = $opacc->insertOpacc($departIdList, $detail, $officer, $credit);
-dump($test);
+// dump($test);
+
+$data = array(
+    'price' => '199.98',
+    'sumyprice' => '99.99',
+    'sumnprice' => '99,99',
+    'paid' => '199.98',
+    'idname'=>'วนิดา v3233'
+);
+
+
+
+
+
+$testDepartId = '4657498';
+
+// $res = $departObj->setDepartManual($data, $testDepartId);
+// dump($res);
+$updateItem = array('BS','LIPID','CR','LFT',);
+// $fieldUpdate = array('detail' =>'ทดสอบค่าบริการ');
+// $testRes = $departObj->updateDepartFromList($updateItem, $testDepartId, $fieldUpdate);
+// dump($testRes);
+
+// $testRes = $departObj->getPrice($updateItem);
+// dump($testRes);
+
+
+// $itemFromPatdata = $patdata->getPatdata($testDepartId);
+// // dump($itemFromPatdata);
+foreach ($updateItem as $key => $value) { 
+
+    $pat = $patdata->getDataFromIdnoAndCode($testDepartId, $value, array('row_id'));
+    $lab = $departObj->getLabcareFromCode($value);
+    $updateData = array(
+        'price'=>$lab['price'],
+        'yprice'=>$lab['yprice'],
+        'nprice'=>$lab['nprice']
+    );
+    // $savePatdata = $patdata->updatePatdata($updateData, $pat['row_id']);
+    // dump($savePatdata);
+}
+
+$opaccId = '5752525';
+$updateData = array(
+    'price' => '99.99',
+    'paid' => '99.99'
+);
+$opUpdate = $opacc->updateOpacc($updateData, $opaccId);
+dump($opUpdate);
+
+$opItem = $opacc->findOpaccFromId($opaccId);
+dump($opItem);
 
 exit;
 ?>

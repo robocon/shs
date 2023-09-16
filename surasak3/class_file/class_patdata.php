@@ -10,6 +10,17 @@ class ClassPatdata extends ClassDepart
         parent::__construct();
     }
 
+    public function __singleQuery($sql){
+        $q = $this->dbi->query($sql);
+        if($q->num_rows>0){
+            $res = $q->fetch_assoc();
+        }else{
+            $msg = $this->dbi->error ? $this->dbi->error : 'can not find data' ;
+            $res = array('error'=>true, 'msg'=>$msg);
+        }
+        return $res;
+    }
+
     /**
      * ดึงค่า patdata จาก ฟิลด์ idno ซึ่ง idno มาจาก row_id ของตาราง depart
      * 
@@ -35,20 +46,31 @@ class ClassPatdata extends ClassDepart
         return $items;
     }
 
-    // public function getDepart($id=null){
-    //     if($id===null){
-    //         return "getDepart required id";
-    //         exit;
-    //     }
+    /**
+     * @param string $id row_id
+     * @return array $res result from patdata
+     */
+    public function getPatdataFromId($id=null){
+        if(empty($id)){
+            return array('error'=>true, 'msg'=>'Required id');
+        }
 
-    //     $sql = "SELECT hn,ptname,ptright FROM depart WHERE row_id = '$id'";
-    //     $q = $this->dbi->query($sql);
-    //     $res = false;
-    //     if($q->num_rows>0){
-    //         $res = $q->fetch_assoc();
-    //     }
-    //     return $res;
-    // }
+        return $this->__singleQuery("SELECT * FROM patdata WHERE row_id = '$id'");
+    }
+    
+
+    public function getDataFromIdnoAndCode($idno=null, $code=null, $fieldSelect=null){
+        if(empty($idno) OR empty($code)){
+            return array('error'=>true, 'msg'=>'Required idno and code');
+        }
+
+        $field = '*';
+        if (!empty($fieldSelect)) {
+            $field = implode(',', $fieldSelect);
+        }
+
+        return $this->__singleQuery("SELECT $field FROM patdata WHERE idno='$idno' AND code='$code' ");
+    }
 
     /**
      * เพิ่มข้อมูลใน patdata จาก depart
@@ -114,4 +136,24 @@ class ClassPatdata extends ClassDepart
 
         return $patdataSaveItem;
     }
+
+    /**
+     * @param array $dataList ข้อมูลที่จะอัพเดทใส่มาเป็น key => value
+     * @param string $id primary key ของ patdata
+     */
+    public function updatePatdata($dataList=array(), $id=null){
+
+        $updateList = array_map(array($this, 'mapUpdate'), array_keys($dataList), array_values($dataList));
+        $updateTxt = implode(', ', $updateList);
+
+        $sqlUpdatePatdata = "UPDATE `patdata` SET $updateTxt WHERE `row_id` = '$id' ";
+        $save = $this->dbi->query($sqlUpdatePatdata);
+        if ($this->dbi->error) {
+            return $this->dbi->error.' : '.$sqlUpdatePatdata;
+        }else{
+            return $save;
+        }
+
+    }
+
 }

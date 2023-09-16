@@ -42,23 +42,11 @@ class ClassOpacc extends ClassDepart{
             return "insertOpacc required departItems";
             exit;
         }
-
-        // dump($departItems);
-        // dump($detail);
-        // dump($officer);
-        // dump($credit);
         
-        // คำถามก็คือ
-        // จะดึงค่า price paid essd nessdy nessdn ฯลฯ จาก opacc หรือ patdata ดี?
-        /*
-        เคส กฟภ
-        */
         $opaccItems = array();
         $thDateTime = $this->getThDateTime();
         foreach ($departItems as $key => $id) {
 
-            // $depart = new ClassDepart();
-            // $dep = $depart->getDepartFromId($id);
             $dep = $this->getDepartFromId($id);
 
             $txdate = $dep['date'];
@@ -90,5 +78,46 @@ class ClassOpacc extends ClassDepart{
         }
         return $opaccItems;
         
+    }
+
+
+    /**
+     * 
+     */
+    public function findOpaccFromId($id=null, $field=null){
+        if (empty($id)) {
+            return array('error'=>true, 'msg'=>'Required id');
+        }
+
+        $field = '*';
+        if (!empty($fieldSelect)) {
+            $field = implode(',', $fieldSelect);
+        }
+        
+        $q = $this->dbi->query("SELECT $field FROM opacc WHERE row_id = '$id'");
+        if ($q->num_rows>0) {
+            $res = $q->fetch_assoc();
+        }else{
+            $res = array('error'=>true, 'msg'=>$this->dbi->error);
+        }
+        return $res;
+    }
+
+    public function findOpaccFromTxdate(){
+
+    }
+
+    public function updateOpacc($dataList=array(), $id=null){
+
+        $updateList = array_map(array($this, 'mapUpdate'), array_keys($dataList), array_values($dataList));
+        $updateTxt = implode(', ', $updateList);
+
+        $sqlUpdatePatdata = "UPDATE `opacc` SET $updateTxt WHERE `row_id` = '$id' ";
+        $save = $this->dbi->query($sqlUpdatePatdata);
+        if ($this->dbi->error) {
+            return $this->dbi->error.' : '.$sqlUpdatePatdata;
+        }else{
+            return $save;
+        }
     }
 }
