@@ -62,7 +62,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="41" align="center">รายการตรวจ</th>
+    <th colspan="43" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -93,6 +93,8 @@ $company = mysql_fetch_assoc($q);
 
     <th width="6%" align="center">FOBT</th>
     <th width="6%" align="center">AFP</th>
+    <th width="6%" align="center">CEA</th>
+    <th width="6%" align="center">PSA</th>
     <th width="6%" align="center">Anti-HAV IgG</th>
     <th width="6%" align="center">Anti HAV IgM</th>
     
@@ -833,6 +835,46 @@ GROUP BY `profilecode`
     echo $afp;
     
     ?>
+</td>
+<td>
+<?php 
+// CEA 
+$sqlCEA="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` FROM `resulthead` WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'CEA' GROUP BY `profilecode` 
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+WHERE b.labcode = 'CEA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+GROUP BY a.`profilecode` ";
+$query10=mysql_query($sqlCEA);
+list($cea,$flag)=mysql_fetch_array($query10);
+
+if($flag=="N"){
+	echo $cea;
+}else{
+	echo "<strong style='color:#FF0000'>$cea</strong>";
+}
+?>
+</td>
+<td>
+<?php 
+// CEA 
+$sqlPSA="SELECT b.result, b.flag 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number` FROM `resulthead` WHERE `hn` = '$pt_hn' AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' AND `profilecode` = 'PSA' GROUP BY `profilecode` 
+) AS a
+INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
+WHERE b.labcode = 'PSA' AND b.result !='DELETE' AND a.hn = '$pt_hn' 
+GROUP BY a.`profilecode` ";
+$query10=mysql_query($sqlPSA);
+list($psa,$flag)=mysql_fetch_array($query10);
+
+if($flag=="N"){
+	echo $psa;
+}else{
+	echo "<strong style='color:#FF0000'>$psa</strong>";
+}
+?>
 </td>
 <!-- Anti-HAV IgG -->
 <td align="center">
