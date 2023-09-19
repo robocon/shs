@@ -23,6 +23,11 @@ if ( $action == 'print' ) {
     $count_etc = input_post('count_etc');
     $row_print = input_post('row_print');
 
+    $noDisplayBs = sprintf("%d", $_POST['noDisplayBs']);
+    if(empty($noDisplayBs)){
+        $noDisplayBs = 0;
+    }
+
     if ( !empty($row_print) ) {
         list($min,$max) = explode('-', $row_print);
 
@@ -160,27 +165,33 @@ if ( $action == 'print' ) {
             }
         }
 
-        $sql = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
-        $db->select($sql);
-        $test_bs_row = $db->get_rows();
-        if( $test_bs_row > 0 ){
-            $bs = $db->get_item();
+        // ถ้ามีการติ๊ก "ไม่แสดงสติกเกอร์ BS" ค่าของ $noDisplayBs จะเป็น 1
+        if($noDisplayBs==0){
 
-            $bs_user_number = (int) substr($bs['labnumber'],6);
-            if($part==='สวนดุสิต63'){
-                $bs_user_number = $bs_user_number+147;
+            
+            $sql = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
+            $db->select($sql);
+            $test_bs_row = $db->get_rows();
+            if( $test_bs_row > 0 ){
+                $bs = $db->get_item();
+
+                $bs_user_number = (int) substr($bs['labnumber'],6);
+                if($part==='สวนดุสิต63'){
+                    $bs_user_number = $bs_user_number+147;
+                }
+
+                $bs_code = $bs['labnumber'].'02';
+                ?>
+                <!-- BS -->
+                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (BS)</b></center></font>
+                <div style='text-align:center;'>
+                    <font size='5'><?=$bs_user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
+                </div>
+                <div style="page-break-before: always;"></div>
+                <?php
             }
 
-            $bs_code = $bs['labnumber'].'02';
-            ?>
-            <!-- BS -->
-            <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-            <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (BS)</b></center></font>
-            <div style='text-align:center;'>
-                <font size='5'><?=$bs_user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
-            </div>
-            <div style="page-break-before: always;"></div>
-            <?php
         }
 
         if( $count_stool > 0 ){ 
@@ -265,6 +276,12 @@ include 'chk_menu.php';
         <tr>
             <td>ลำดับที่</td>
             <td><input type="text" name="row_print" > <span>ตัวอย่างเช่น 6-29 หรือเป็นค่าว่างเพื่อพิมพ์ทั้งหมด</span> </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <label for="noDisplayBs">ไม่แสดงสติกเกอร์ BS</label> <input type="checkbox" name="noDisplayBs" id="noDisplayBs" value="1">
+            </td>
         </tr>
         <tr>
             <td colspan="2">
