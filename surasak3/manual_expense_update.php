@@ -22,6 +22,10 @@ $dep = new ClassDepart();
 $item = $dep->getDepartFromId($depart_id);
 dump($item);
 $hn = $item['hn'];
+$depart_date = $item['date'];
+
+$sumYprice = 0;
+$sumNprice = 0;
 
 foreach ($labItems AS $key => $labCode) { 
     $sqlLabcare = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '%s' ", $labCode);
@@ -42,6 +46,9 @@ foreach ($labItems AS $key => $labCode) {
         $qPat = $dbi->query($sql_patdata);
         if($qPat->num_rows>0){
             $pat = $qPat->fetch_assoc();
+
+            $sumYprice += $yprice;
+            $sumNprice += $nprice;
             
             $patdata_id = $pat['row_id'];
             $sql_pat_update = "UPDATE patdata SET 
@@ -51,7 +58,34 @@ foreach ($labItems AS $key => $labCode) {
             paid = '$price' 
             WHERE row_id = '$patdata_id' ";
             dump($sql_pat_update);
+            $updatePatdata = $dbi->query($sql_pat_update);
+            dump($updatePatdata);
         }
         
     }
+}
+
+$sumYprice = number_format($sumYprice, 2);
+// $sumYprice = number_format($sumYprice, 2);
+
+$sql = "UPDATE depart SET 
+price = '$sumYprice', 
+sumyprice = '$sumYprice',
+sumnprice = '',
+paid = '$sumYprice' 
+WHERE row_id = '$depart_id' ";
+dump($sql);
+$updateDepart = $dbi->query($sql);
+dump($updateDepart);
+
+$sql = "SELECT row_id FROM opacc WHERE txdate = '$depart_date' AND hn = '$hn' AND depart = 'PATHO' AND vn = '$vn' ";
+$qOpacc = $dbi->query($sql);
+if ($qOpacc->num_rows>0) { 
+    $opacc = $qOpacc->fetch_assoc();
+    $opacc_id = $opacc['row_id'];
+
+    $sql_opacc_update = "UPDATE opacc SET price = '$sumYprice', paid = '$sumYprice', paidcscd = '$sumYprice' WHERE row_id = '$opacc_id' ";
+    dump($sql_opacc_update);
+    $updateOpacc = $dbi->query($sql_opacc_update);
+    dump($updateOpacc);
 }
