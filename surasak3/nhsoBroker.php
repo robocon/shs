@@ -15,6 +15,9 @@ curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 $result = curl_exec( $ch );
+if($result===false){
+    $result = 'Error: '.curl_error($ch);
+}
 // $items = $json->decode($result);
 
 echo $result;
