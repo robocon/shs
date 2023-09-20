@@ -76,6 +76,68 @@ if($action==='import'){
             <input type="hidden" name="action" value="import">
         </div>
     </form>
+    <div>
+        <table class="table table-hover">
+            <tr>
+                <td>id</td>
+                <td>LCCode</td>
+                <td>BillGroup</td>
+                <td>CsCode</td>
+                <td>TMLT</td>
+                <td>LOINC</td>
+                <td>Panel</td>
+                <td>Name</td>
+                <td>SFlag</td>
+                <td>ChargeCat</td>
+                <td>UnitPrice</td>
+                <td>BenefitPlan</td>
+                <td>ReimbPrice</td>
+                <td>UpdateFlag</td>
+                <td>UPDateBeg</td>
+                <td>UPDateEnd</td>
+                <td>RPDateBeg</td>
+                <td>RPDateEnd</td>
+                <td>DateUpd</td>
+            </tr>
+            <?php
+            $q = $dbi->query("SELECT * FROM tmtlab");
+            if($q->num_rows>0){
+                while ($a = $q->fetch_assoc()) {
+                    ?>
+                    <tr>
+                        <td><?=$a['id'];?></td>
+                        <td><?=$a['LCCode'];?></td>
+                        <td><?=$a['BillGroup'];?></td>
+                        <td><?=$a['CsCode'];?></td>
+                        <td><?=$a['TMLT'];?></td>
+                        <td><?=$a['LOINC'];?></td>
+                        <td><?=$a['Panel'];?></td>
+                        <td><?=$a['Name'];?></td>
+                        <td><?=$a['SFlag'];?></td>
+                        <td><?=$a['ChargeCat'];?></td>
+                        <td><?=$a['UnitPrice'];?></td>
+                        <td><?=$a['BenefitPlan'];?></td>
+                        <td><?=$a['ReimbPrice'];?></td>
+                        <td><?=$a['UpdateFlag'];?></td>
+                        <td><?=$a['UPDateBeg'];?></td>
+                        <td><?=$a['UPDateEnd'];?></td>
+                        <td><?=$a['RPDateBeg'];?></td>
+                        <td><?=$a['RPDateEnd'];?></td>
+                        <td><?=$a['DateUpd'];?></td>
+                    </tr>
+                    <?php
+                }
+            }else{
+                ?>
+                <tr>
+                    <td colspan="19">ไม่พบข้อมูล</td>
+                </tr>
+                <?php
+            }
+            
+            ?>
+        </table>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>

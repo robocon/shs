@@ -2,6 +2,13 @@
 require_once 'bootstrap.php';
 include_once 'includes/JSON.php';
 $json = new Services_JSON();
+
+$smenucode = $_SESSION['smenucode'];
+if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
+    echo "Permission Deny";
+    exit;
+}
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
