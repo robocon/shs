@@ -119,7 +119,7 @@ class ClassPatdata extends ClassDepart
                     `part`, `idno`, `ptright`, `status` 
                 ) VALUES ( 
                     '$thDateTime', '$hn', '$ptname', 'MD022 (ไม่ทราบแพทย์)', '$countItem', '$code', 
-                    '$detail', '1', '$price', '$nprice', '$yprice', '$depart', 
+                    '$detail', '1', '$price', '$yprice', '$nprice', '$depart', 
                     '$part', '$departId', '$ptright', 'Y' 
                 )";
                 $save = $this->dbi->query($sqlPatdata);
