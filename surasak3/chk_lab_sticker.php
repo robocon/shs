@@ -166,6 +166,7 @@ if ( $action == 'print' ) {
         }
 
         // ถ้ามีการติ๊ก "ไม่แสดงสติกเกอร์ BS" ค่าของ $noDisplayBs จะเป็น 1
+        /*
         if($noDisplayBs==0){
 
             
@@ -193,6 +194,7 @@ if ( $action == 'print' ) {
             }
 
         }
+        */
 
         if( $count_stool > 0 ){ 
 
@@ -277,12 +279,14 @@ include 'chk_menu.php';
             <td>ลำดับที่</td>
             <td><input type="text" name="row_print" > <span>ตัวอย่างเช่น 6-29 หรือเป็นค่าว่างเพื่อพิมพ์ทั้งหมด</span> </td>
         </tr>
-        <tr>
+
+        <!-- <tr>
             <td></td>
             <td>
                 <label for="noDisplayBs">ไม่แสดงสติกเกอร์ BS</label> <input type="checkbox" name="noDisplayBs" id="noDisplayBs" value="1">
             </td>
-        </tr>
+        </tr> -->
+
         <tr>
             <td colspan="2">
                 <button type="button" onclick="printNormal()">พิมพ์</button>

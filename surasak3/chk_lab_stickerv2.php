@@ -227,6 +227,7 @@ if ( $action == 'print' ) {
             }
         }
 
+        /*
         // ถ้ามีการติ๊ก "ไม่แสดงสติกเกอร์ BS" ค่าของ $noDisplayBs จะเป็น 1
         if($noDisplayBs==0){ 
             $sqlBs = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
@@ -254,6 +255,7 @@ if ( $action == 'print' ) {
 
             }
         }
+        */
         
         if( $count_stool > 0 ){ 
 

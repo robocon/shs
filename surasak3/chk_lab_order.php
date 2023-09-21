@@ -199,23 +199,23 @@ if( $action == false ){
                 $search = array('"',',,,');
                 $lab_sso = strtolower(str_replace($search, '', $lab_sso));
 
-                $find_bs = false;
+                // $find_bs = false;
                 
                 // ถ้ามี bs มันจะตัดออกจากรายการและเพิ่มเป็นรายการใหม่
-                $test_bs = preg_match('/(bs\,)|(\,bs\,)|(\,bs)/', $lab_sso);
-                if( $test_bs > 0 ){
+                // $test_bs = preg_match('/(bs\,)|(\,bs\,)|(\,bs)/', $lab_sso);
+                // if( $test_bs > 0 ){
 
-                    $find_bs = true;
+                    // $find_bs = true;
                     
-                    $lab_sso = str_replace('bs,','',$lab_sso);
-                    $lab_sso = str_replace(',bs,', ',', $lab_sso);
-                    $lab_sso = str_replace(',bs','',$lab_sso);
+                    // $lab_sso = str_replace('bs,','',$lab_sso);
+                    // $lab_sso = str_replace(',bs,', ',', $lab_sso);
+                    // $lab_sso = str_replace(',bs','',$lab_sso);
 
-                    ++$bs_number;
+                    // ++$bs_number;
 
-                    $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
+                    // $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
                     
-                }
+                // }
                 
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
@@ -228,20 +228,20 @@ if( $action == false ){
                     $msg = errorMsg(NULL, $insert['id']);
                 }
 
-                if( $find_bs === true ){
+                // if( $find_bs === true ){
 
                     
-                    $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
-                        `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
-                    ) VALUES (
-                        NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part', '$dob', '$sex'
-                    );";
-                    $insert = $db->insert($sql_chk_lab_items);
-                    if( $insert !== true ){
-                        $msg = errorMsg(NULL, $insert['id']);
-                    }
+                //     $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
+                //         `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
+                //     ) VALUES (
+                //         NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part', '$dob', '$sex'
+                //     );";
+                //     $insert = $db->insert($sql_chk_lab_items);
+                //     if( $insert !== true ){
+                //         $msg = errorMsg(NULL, $insert['id']);
+                //     }
 
-                }
+                // }
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 
             } // End ถ้าในแต่ละแถว not empty 
