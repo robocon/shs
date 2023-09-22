@@ -79,10 +79,10 @@ if($action==='delete'){
             <table class="table table-hover">
                 <thead>
                     <tr>
-                        <th>actual_date</th>
-                        <th>upload_date</th>
-                        <th>date</th>
+                        <th>วันที่เข้ารับการรักษา<br>actual_date</th>
+                        <th>วันที่บันทึก<br>upload_date</th>
                         <th>clinic</th>
+                        <th></th>
                         <th>doctor</th>
                         <th>type</th>
                         <th>officer</th>
@@ -97,8 +97,10 @@ if($action==='delete'){
                     <tr>
                         <td><?=$value->actual_date;?></td>
                         <td><?=$value->upload_date;?></td>
-                        <td><?=$value->date;?></td>
                         <td><?=$value->clinic;?></td>
+                        <th>
+                            <a href="<?=$value->original;?>" target="_blank"><img src="<?=$value->thumbnail;?>" alt="digital opd" height="120"></a>
+                        </th>
                         <td><?=$value->doctyor;?></td>
                         <td><?=$value->type;?></td>
                         <td><?=$value->officer;?></td>
