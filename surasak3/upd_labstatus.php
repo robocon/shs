@@ -84,6 +84,7 @@ elseif(isset($_GET['ids'])){
     <select  name='clinic'>
         <option value='<?=$result2['clinicalinfo']?>'><?=$result2['clinicalinfo']?></option>
         <option value='ตรวจสุขภาพประจำปี<?=$nPrefix?>'>ตรวจสุขภาพประจำปี<?=$nPrefix?></option>
+		<option value='ตรวจสุขภาพประจำปี66'>ตรวจสุขภาพประจำปี66</option>
 		<option value='ตรวจสุขภาพประจำปี65'>ตรวจสุขภาพประจำปี65</option>
 		<option value='ตรวจสุขภาพประจำปี64'>ตรวจสุขภาพประจำปี64</option>
 		<option value='ตรวจสุขภาพประจำปี63'>ตรวจสุขภาพประจำปี63</option>
