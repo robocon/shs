@@ -1540,8 +1540,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
 					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px; color:#ffffff;">&nbsp;แพ้ยา&nbsp;</span>';
 				}else{
-					
-					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true){
+					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true && count($drugreact_group_list)>0){
 						$react_txt = '<span style="font-weight:bold; background-color:orange; font-size:16px;">&nbsp;มีโอกาสแพ้ยา&nbsp;</span>';
 					}
 				}
