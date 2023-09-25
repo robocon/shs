@@ -2190,6 +2190,9 @@ var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","
 var rdu8_drug = ['1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ];
 var rdu8_icd10 = ['S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11', 'S16', 'S17', 'S18', 'S19', 'S20', 'S21', 'S28', 'S29', 'S31', 'S31', 'S38', 'S39','S40','S41','S46','S47','S48','S49','S50','S51','S56','S56','S56','S56','S56','S56','S66','S67','S68','S69','S70','S71','S76','S77','S78','S79','S80','S81','S86','S87','S88','S89','S90','S91','S96','S97','S98','S99','X00','X01','X02','X03','X04','X05','X06','X07','X08','X09','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19','X20','X21','X22','X23','X24','X25','X26','X27','X28','X29','X30','X31','X32','X33','X34','X35','X36','X37','X38','X39']
 
+var rdu6_drug = ['1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$'];
+var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J200','J201','J202','J203','J204','J205','J206','J207','J208','J209','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729'];
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2674,7 +2677,9 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// แจ้งเตือน RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
-		
+	
+	// แจ้งเตือน RDUตัวชี้วัดที่6
+	rdu6_alert(drugcode.trim(), icd10);
 }
 
 /**
@@ -2952,6 +2957,29 @@ function rdu8_alert(drugcode, icd10){
 		window.open("er_form_fresh_wound.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
 	}
 	
+}
+
+function rdu6_alert(drugcode, icd10){ 
+
+	var testRdu6 = false;
+	var getIcd10 = '';
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu6_icd10.indexOf(icd) > -1 && rdu6_drug.indexOf(drugcode) > -1 ){ 
+			getIcd10 = icd;
+			testRdu6 = true;
+		}
+	}
+
+	console.log(testRdu6);
+
+	if(testRdu6===true){
+		var url = 'hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+		url += '&icd10='+encodeURIComponent(getIcd10);
+		url += '&drugcode='+encodeURIComponent(drugcode);
+		window.open("rdu_form6.php?"+url,"myWindow","width=900,height=600");
+	}
 }
 
 function addslip(drugslip){
