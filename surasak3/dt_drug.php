@@ -2972,9 +2972,23 @@ function rdu6_alert(drugcode, icd10){
 		}
 	}
 
-	console.log(testRdu6);
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var hn = '<?=$_SESSION['hn_now'];?>';
 
-	if(testRdu6===true){
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+
+	var key = y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "rdu_form6["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+	if(f_cookie=="" && testRdu6===true){
 		var url = 'hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
 		url += '&icd10='+encodeURIComponent(getIcd10);
 		url += '&drugcode='+encodeURIComponent(drugcode);

@@ -117,7 +117,7 @@ if ($action==='save_form') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Respiratory Infection</title>
 </head>
 <body>
     <style>
@@ -157,7 +157,7 @@ if ($action==='save_form') {
     <div align="center" style="font-size: 24px;">
         <h3>กรุณาเลือกลักษณะอาการของผู้ป่วยด้านล่างนี้ โดยลักษณะอาการด้านล่างเป็นลักษณะอาการของผู้ป่วย Respiratory Infection<br>ที่สมเหตุสมผลที่จะได้รับยาปฏิชีวนะ</h3>
     </div>
-    <form action="rdu_form6.php" method="post">
+    <form action="rdu_form6.php" method="post" onsubmit="return check_rdu_form6();">
         <table class="chk_table">
             <tr class="bg_header">
                 <th>เกณฑ์การใช้ยาปฏิชีวนะ </th>
@@ -170,19 +170,19 @@ if ($action==='save_form') {
             </tr>
             <tr>
                 <td><label for="1_1">1. ไข้ (BT >38°C)</label></td>
-                <td align="center"><input type="checkbox" name="1_1" id="1_1" value="1"></td>
+                <td align="center"><input type="checkbox" name="1_1" id="1_1" value="1" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="1_2">2. Exudate/Pustule ที่คอหอย/ต่อมทอลซิล</label></td>
-                <td align="center"><input type="checkbox" name="1_2" id="1_2" value="2"></td>
+                <td align="center"><input type="checkbox" name="1_2" id="1_2" value="2" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="1_3">3. ต่อมน้ำเหลืองที่คอ (anterior cervical lymph nodes) โต/กดเจ็บ (ที่ไม่ใช่ต่อมน้ำเหลืองใต้คาง หรือ submandibular lymph nodes)</label></td>
-                <td align="center"><input type="checkbox" name="1_3" id="1_3" value="3"></td>
+                <td align="center"><input type="checkbox" name="1_3" id="1_3" value="3" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="1_4">4. ไม่มีอาการไอ</label></td>
-                <td align="center"><input type="checkbox" name="1_4" id="1_4" value="4"></td>
+                <td align="center"><input type="checkbox" name="1_4" id="1_4" value="4" onclick="count_choise(this)"></td>
             </tr>
             <tr class="bg_title">
                 <th colspan="2" align="left">
@@ -191,15 +191,15 @@ if ($action==='save_form') {
             </tr>
             <tr>
                 <td><label for="2_1">1. มีอาการของหวัด ไซนัสอักเสบตั้งแต่ 10 วัน โดยอาการไม่ดีขึ้น</label></td>
-                <td align="center"><input type="checkbox" name="2_1" id="2_1" value="1"></td>
+                <td align="center"><input type="checkbox" name="2_1" id="2_1" value="1" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="2_2">2. มีไข้สูง (BT 39°C) ตั้งแต่เริ่มป่วย ร่วมกับน้ำมูกเหลือง-เขียว หรือเจ็บที่ใบหน้าต่อเนื่องนานอย่างน้อย 3-4 วัน</label></td>
-                <td align="center"><input type="checkbox" name="2_2" id="2_2" value="2"></td>
+                <td align="center"><input type="checkbox" name="2_2" id="2_2" value="2" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="2_3">3.  Double worsening (มีอาการของหวัด ไซนัสอักเสบนาน 5-6 วันแล้วอาการดีขึ้น แต่กลับมามีอาการอีกครั้ง)</label></td>
-                <td align="center"><input type="checkbox" name="2_3" id="2_3" value="3"></td>
+                <td align="center"><input type="checkbox" name="2_3" id="2_3" value="3" onclick="count_choise(this)"></td>
             </tr>
             <tr class="bg_title">
                 <th colspan="2" align="left">
@@ -208,11 +208,11 @@ if ($action==='save_form') {
             </tr>
             <tr>
                 <td><label for="3_1">1. อาการรุนแรงมาก หรืออาการไม่ดีขึ้นเองใน 3 วัน หรือพบ tympanic membrane โป่ง หรือมี otorrhea หรือ อาการดีขึ้นแล้วกลับมีอาการเพิ่มขึ้นอีก</label></td>
-                <td align="center"><input type="checkbox" name="3_1" id="3_1" value="1"></td>
+                <td align="center"><input type="checkbox" name="3_1" id="3_1" value="1" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="3_2">2. ไม่ตอบสนองต่อการรักษาด้วย amoxicillin</label></td>
-                <td align="center"><input type="checkbox" name="3_2" id="3_2" value="2"></td>
+                <td align="center"><input type="checkbox" name="3_2" id="3_2" value="2" onclick="count_choise(this)"></td>
             </tr>
             <tr class="bg_title">
                 <th colspan="2" align="left">
@@ -221,15 +221,15 @@ if ($action==='save_form') {
             </tr>
             <tr>
                 <td><label for="4_1">1. เสมหะเขียวเหนียวจ้านวนมาก ร่วมกับมีไข</label></td>
-                <td align="center"><input type="checkbox" name="4_1" id="4_1" value="1"></td>
+                <td align="center"><input type="checkbox" name="4_1" id="4_1" value="1" onclick="count_choise(this)"></td>
             </tr>
             <tr>
                 <td><label for="4_2">2. ไม่ตอบสนองต่อ Nebulized epinephrine หรือ glucocorticoids</label></td>
-                <td align="center"><input type="checkbox" name="4_2" id="4_2" value="2"></td>
+                <td align="center"><input type="checkbox" name="4_2" id="4_2" value="2" onclick="count_choise(this)"></td>
             </tr>
         </table>
-        <div>
-            <input type="checkbox" name="noChoise" id="noChoise" value="1"><label for="noChoise"><u><b style="font-size:24px;">ไม่เข้าเกณฑ์การได้รับยาปฏิชีวนะ</b></u></label>
+        <div style="padding: 8px; 0">
+            <input type="checkbox" name="noChoise" id="noChoise" value="1" onclick="count_choise(this)"><label for="noChoise"><u><b style="font-size:24px;">ไม่เข้าเกณฑ์การได้รับยาปฏิชีวนะ</b></u></label>
         </div>
         <div align="center">
             <button type="submit" style="padding: 4px 16px; font-size: 28px;">บันทึก</button>
@@ -240,8 +240,32 @@ if ($action==='save_form') {
         </div>
     </form>
     <div>
-        <p>คณะอนุกรรมการส่งเสริมการใช้ยาอย่างสมเหตุผล</p>
+        <p><b>คณะอนุกรรมการส่งเสริมการใช้ยาอย่างสมเหตุผล</b></p>
         <p>Reference: แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล. 2554 [ออนไลน์]: http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf</p>
     </div>
+    <script>
+
+        var choise = 0;
+
+        function check_rdu_form6(){ 
+
+            var res = true;
+            if (choise==0) {
+                alert('กรุณาเลือกตัวเลือกอย่างน้อย 1 ตัว');
+                res = false;
+            }
+
+            return res;
+        }
+
+        function count_choise(item){
+            if(item.checked===true){
+                choise++;
+            }else{
+                choise--;
+            }
+        }
+        
+    </script>
 </body>
 </html>

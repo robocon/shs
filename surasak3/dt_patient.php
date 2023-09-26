@@ -247,14 +247,14 @@ if($rows1 > 0){
 		$i=1;
 		$txt21 = array();
 	while($arr1 = Mysql_fetch_assoc($result1)){
-		$txt1 .= "&nbsp;&nbsp;".$i.". ".$arr1["groupname"];
+		$txt1 .= "&nbsp;&nbsp;".$i.".) ".$arr1["groupname"];
 		$txt21[$i-1] = $arr1["groupname"];
 		if($i%3==0) $txt1 .="<BR>"; else $txt1.=",";
 		$i++;
 	}
 	$_SESSION["list_drugreact"] = implode(", ",$txt21);
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt1,"</B></FONT></TD></TR>"; 
 
 }else{
 	//echo $sql;
