@@ -83,8 +83,7 @@ if ($action==='save_form') {
 
     ?>
     <div style="padding: 4px; background-color: #198754; color: white; text-align: center;">
-        <?=$res;?>
-        หน้าต่างจะปิดใน <span id="showTime"></span>
+        <?=$res;?> <br>หน้าต่างจะปิดใน <span id="showTime"></span>
     </div>
     <script>
         window.onload = function(){ 
