@@ -11,6 +11,7 @@ if( $action == 'save' ) {
     $id = input_post('id');
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
+    $yearchk = sprintf("%s", $_POST['year_chk']);
 
     $typeReport = $_REQUEST['typeReport'];
 
@@ -23,9 +24,10 @@ if( $action == 'save' ) {
         if( $id > 0 ){
             $sql = "UPDATE `chk_company_list`
             SET
-            `name` = '$company',
-            `code` = '$company_code',
-            `date_checkup` = '$date_checkup'
+            `name` = '$company', 
+            `code` = '$company_code', 
+            `date_checkup` = '$date_checkup', 
+            `yearchk` = '$yearchk' 
             WHERE `id` = '$id';";
             $save = $db->update($sql);
 
@@ -42,12 +44,12 @@ if( $action == 'save' ) {
             // $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
             $msg = "บันทึกข้อมูลเรียบร้อย";
 
-            $year = get_year_checkup(true);
+            // $year = get_year_checkup(true);
 
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
                 VALUES (
-                    NULL,'$company','$company_code','$date_checkup','$year','1','$typeReport'
+                    NULL,'$company','$company_code','$date_checkup','$yearchk','1','$typeReport'
                 );";
                 $save = $db->insert($sql);
 
@@ -62,6 +64,7 @@ if( $action == 'save' ) {
 
     redirect('chk_company.php', $msg);
     exit;
+
 }elseif ($action == 'del') {
     
     if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
@@ -117,37 +120,69 @@ ol > li {
 <fieldset>
     <legend>เพิ่มบริษัทใหม่</legend>
     <form action="chk_company.php" method="post">
-        <div>
-            ชื่อบริษัท : <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
-        </div>
-        <div>
-            รหัสบริษัท : <input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>>
-        </div>
-        <div>
-            วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
-            <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
-        </div>
-        <div>
-            เลือกรายงาน : <select name="typeReport" id="">
-                <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
-                <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
-            </select>
-        </div>
-        <?php 
-        if( $id > 0 ){
-            ?>
-            <div>
-                <a href="<?=$del_txt;?>">ลบข้อมูลบริษัท</a>
-            </div>
+        <table>
+            <tr>
+                <td align="right">ชื่อบริษัท : </td>
+                <td><input type="text" name="company" value="<?=$name;?>" style="width: 40%; "></td>
+            </tr>
+            <tr>
+                <td align="right">รหัสบริษัท : </td>
+                <td><input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>></td>
+            </tr>
+            <tr>
+                <td align="right">วันที่ตรวจ : </td>
+                <td>
+                    <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
+                    <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">เลือกรายงาน : </td>
+                <td>
+                    <select name="typeReport" id="">
+                        <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
+                        <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">รอบปีงบประมาณ : </td>
+                <td>
+                    <?php 
+                    $year_checkup = get_year_checkup(true);
+                    $year_list = range($year_checkup, $year_checkup+1);
+                    ?>
+                    <select name="yearchk" id="yearchk">
+                        <?php 
+                        foreach ($year_list as $key => $value) {
+                            ?>
+                            <option value="<?=$value;?>"><?=$value;?></option>
+                            <?php
+                        }
+                        ?>
+                        
+                    </select>
+                </td>
+            </tr>
             <?php 
-        }
-        ?>
-        
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-            <input type="hidden" name="action" value="save">
-            <input type="hidden" name="id" value="<?=$id;?>">
-        </div>
+            if( $id > 0 ){
+                ?>
+                <tr>
+                    <td colspan="2">
+                        <a href="<?=$del_txt;?>">ลบข้อมูลบริษัท</a>
+                    </td>
+                </tr>
+                <?php 
+            }
+            ?>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">บันทึกข้อมูล</button>
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="id" value="<?=$id;?>">
+                </td>
+            </tr>
+        </table>
     </form>
 </fieldset>
 <br>
@@ -157,7 +192,7 @@ ol > li {
         <div> เลือกปี : 
             <?php 
             $year_selected = input_post('year_selected', date('Y') );
-            $year_range = range('2018',get_year_checkup(true, true));
+            $year_range = range('2018',get_year_checkup(true, true)+1);
             getYearList('year_selected', true, $year_selected, $year_range);
             ?>
         </div>
