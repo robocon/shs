@@ -3,7 +3,7 @@ require_once 'bootstrap.php';
 include_once 'includes/JSON.php';
 $json = new Services_JSON();
 
-$smenucode = $_SESSION['smenucode'];
+$smenucode = sprintf("%s", $_SESSION['smenucode']);
 if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
     echo "Permission Deny";
     exit;
@@ -26,20 +26,20 @@ function getDigitalOpcard($url){
     return $items;
 }
 
-$action = sprintf("%s", $_REQUEST['action']);
-if($action==='delete'){
-    $row_id = sprintf("%s", $_GET['row_id']);
-    if(empty($row_id)){
-        echo "Row id can not empty";
-        exit;
-    }
-    $sql = "DELETE FROM digital_opcard WHERE row_id = '$row_id' LIMIT 1 ";
-    $save = $dbi->query($sql);
-    if($save===true){
-        redirect("digital_opd_manage.php","แก้ไขข้อมูลเรียบร้อย");
-    }
-    exit;
-}
+// $action = sprintf("%s", $_REQUEST['action']);
+// if($action==='delete'){
+//     $row_id = sprintf("%s", $_GET['row_id']);
+//     if(empty($row_id)){
+//         echo "Row id can not empty";
+//         exit;
+//     }
+//     $sql = "DELETE FROM digital_opcard WHERE row_id = '$row_id' LIMIT 1 ";
+//     $save = $dbi->query($sql);
+//     if($save===true){
+//         redirect("digital_opd_manage.php","แก้ไขข้อมูลเรียบร้อย");
+//     }
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +94,7 @@ if($action==='delete'){
                 foreach ($items->list as $key => $value) {
                     $row_id = $value->row_id;
                     ?>
-                    <tr>
+                    <tr id="item-<?=$row_id;?>">
                         <td><?=$value->actual_date;?></td>
                         <td><?=$value->upload_date;?></td>
                         <td><?=$value->clinic;?></td>
@@ -122,9 +122,22 @@ if($action==='delete'){
         function confirmDelete(row_id){
             var c = confirm("ยืนยันที่จะลบข้อมูล?");
             if (c===true) {
-                window.location = 'digital_opd_manage.php?action=delete&row_id='+row_id;
+                deleteDigitalOpcard(row_id)
+                // window.location = 'digital_opd_manage.php?action=delete&row_id='+row_id;
             }
             return c;
+        }
+
+        async function deleteDigitalOpcard(id){
+            // 192.168.131.240:8081
+            const response = await fetch('http://127.0.0.1:8000/api/deleteDigitalOpcard/'+id,{method:'DELETE'});
+            const data = await response.json();
+            if(data.status===200){ 
+                alert('ลบข้อมูลเรียบร้อย');
+                document.getElementById('item-'+id).remove();
+            }else if(data.status===404){
+                alert(data.message);
+            }
         }
     </script>
 </body>
