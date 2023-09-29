@@ -36,9 +36,18 @@ $my_hn = $_SESSION["hn_now"] = $bed["hn"];
 $_SESSION["an_now"] = $bed["an"];
 $_SESSION["ptright_now"] = $bed["ptright"];
 
+// แสดงโรคประจำตัวด้านล่าง และหาว่าคนไข้มีโรคประจำตัวเป็น G6PD รึป่าว
+$qOp = $dbi->query("SELECT congenital_disease FROM opcard WHERE hn = '$my_hn' ");
+$opcard = $qOp->fetch_assoc();
+$opcard_g6pd = false;
+if(preg_match('/(G6PD)/', $opcard['congenital_disease'], $matchs)){
+	$opcard_g6pd = true;
+}
+
 // รายการยาที่แพ้ตามที่เภสัชได้บันทึกเอาไว้
 $drugreact_list = array();
 $drugreact_list_js = array();
+$drugreact_g6pd = false;
 $res_drugreact = $dbi->query("SELECT * FROM `drugreact` WHERE hn = '$my_hn' GROUP BY drugcode");
 $rowdg1 = $res_drugreact->num_rows;
 if($rowdg1 > 0){
@@ -46,6 +55,10 @@ if($rowdg1 > 0){
 		$drugcode = trim($arrdg1['drugcode']);
 		$drugreact_list[] = $drugcode;
 		$drugreact_list_js[] = "'$drugcode'";
+
+		if($arrdg1['g6pd']=="1"){
+			$drugreact_g6pd = true;
+		}
 	}
 }
 
@@ -61,12 +74,12 @@ if ($qGroup->num_rows>0) {
 
 // รายการยาที่แพ้ ตามกลุ่ม
 $sql1="SELECT b.* FROM ( 
-	SELECT `groupname` FROM `drugreact` WHERE `hn` = '47-5030' AND `groupname` != '' GROUP BY `groupname`
+	SELECT `groupname` FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname` != '' GROUP BY `groupname`
 ) AS a 
 
 LEFT JOIN `drugreact_group` AS c ON c.`name` = a.`groupname`
 LEFT JOIN `drugreact_group_list` AS b ON c.`id` = b.`drugreact_group` 
-WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '47-5030' AND drugcode != '' GROUP BY drugcode)";
+WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$my_hn' AND drugcode != '' GROUP BY drugcode)";
 
 $res = $dbi->query($sql1);
 $drugreact_groups = array();
@@ -136,6 +149,11 @@ if($_GET["action"] == "drugcode" && !empty($_GET['search'])){
 							}else{
 								if(in_array($mydrugcode, $drugreact_groups)===true){
 									$relative_react_txt = '<span style="background-color: yellow;font-weight: bold;padding: 0 8px;">แพ้ยาในกลุ่ม</span>';
+
+									if ($opcard_g6pd===true && $drugreact_g6pd===true) {
+										$relative_react_txt = '<span style="background-color: #63cdff;font-weight: bold;padding: 0 8px;">ระวังผู้ป่วย G6PD</span>';
+
+									}
 								}
 							}
 
@@ -1047,6 +1065,7 @@ $_SESSION["hn_now"] = $arr["hn"];
 session_register("an_now");
 $_SESSION["an_now"] = $arr["an"];
 $_SESSION["ptright_now"] = $arr["ptright"];
+
 ?>
 <BR>
 <TABLE align="center"  border="1" bordercolor="009688" cellspacing="0" cellpadding="0" width="80%">
@@ -1073,6 +1092,12 @@ $_SESSION["ptright_now"] = $arr["ptright"];
 	<TD align="right" bgcolor="#009688"><strong>แพทย์ : </strong></TD>
 	<TD bgcolor="#00CC99"><?php echo $arr["doctor"];?></TD>
 </TR>
+<tr>
+	<td align="right" bgcolor="#009688"><b>โรคประจำตัว</b></td>
+	<td bgcolor="#00CC99"><?=$opcard['congenital_disease'];?></td>
+	<td></td>
+	<td></td>
+</tr>
 </TABLE>
 </TD>
 </TR>
