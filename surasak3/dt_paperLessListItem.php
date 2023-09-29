@@ -181,7 +181,7 @@ if ($items->totalCount > 0) {
         ?>
         <div class="column thumbContain">
             <a href="dt_paperLessFullPage.php?path=<?=rawurlencode($item->original);?>&hn=<?=$hn;?>" target="right">
-                <img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" onerror="this.src='images/medical-history.png';">
+                <img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" loading="lazy" onerror="this.src='images/medical-history.png';">
 				<?php 
 				$summaryTxt = '';
 				if ($item->type==='summary') {

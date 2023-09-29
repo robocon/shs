@@ -240,7 +240,7 @@ if(empty($hn) OR empty($sOfficer)){
 									var month = def_fullm_th[dd[1]];
 
 									html += '<div class="column thumbContain">';
-									html += '<img src="'+element.thumbnail+'" alt="Lights" class="thumbImg" onclick="myFunction(\''+element.original+'\');">';
+									html += '<img src="'+element.thumbnail+'" alt="Lights" class="thumbImg" loading="lazy" onclick="myFunction(\''+element.original+'\');">';
 									html += '<p><b>'+dd[2]+' '+month+' '+year+'</b></p>';
 									html += '</div>';
 								}
