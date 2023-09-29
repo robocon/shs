@@ -11,8 +11,7 @@ if( $action == 'save' ) {
     $id = input_post('id');
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
-    $yearchk = sprintf("%s", $_POST['year_chk']);
-
+    $yearchk = sprintf("%d", $_POST['yearchk']);
     $typeReport = $_REQUEST['typeReport'];
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
