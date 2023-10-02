@@ -1,15 +1,12 @@
 <?php
 session_start();
 if($_SESSION["sOfficer"] == ""){
-	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
-exit();
+	exit();
 }
 // ini_set('display_errors', '1');
 // error_reporting(1);
-
-
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -17,6 +14,9 @@ if(isset($_GET["action"])){
 
 include("connect.inc");
 //include("checklogin.php");
+
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
 
 // แจ้งเตือนแพ้ยา
 $sqldrugreact="SELECT * FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) GROUP BY `drugcode` ";
@@ -34,6 +34,24 @@ if($rowdg > 0){
 		$drugreact_items[] = $arrdg['drugcode'];
 	}
 	
+}
+
+// แสดงโรคประจำตัวด้านล่าง และหาว่าคนไข้มีโรคประจำตัวเป็น G6PD รึป่าว
+$qOp = $dbi->query("SELECT congenital_disease FROM opcard WHERE hn = '".$_SESSION["hn_now"]."' ");
+$opcard = $qOp->fetch_assoc();
+$opcard_g6pd = false;
+if(preg_match('/(G6PD)/', $opcard['congenital_disease'], $matchs)){
+	$opcard_g6pd = true;
+}
+
+// ถ้าเภสัชได้ติ๊กว่าผู้ป่วยคนนี้มีประวัติการเป็น G6PD ในระบบแพ้ยาให้ทำการดึงรายการยาในกลุ่ม g6pd ออกมา
+$drugreactGroup10 = array();
+$queryG6pdInDrugreact = $dbi->query("SELECT row_id FROM drugreact WHERE hn='".$_SESSION["hn_now"]."' AND g6pd='1'");
+if($queryG6pdInDrugreact->num_rows > 0){
+	$queryGroup10 = $dbi->query("SELECT * FROM drugreact_group_list WHERE drugreact_group = '10' ");
+	while ($g10 = $queryGroup10->fetch_assoc()) {
+		$drugreactGroup10[] = trim($g10['drugcode']);
+	}
 }
 
 // ทดสอบ user สำหรับหมอเป้คนเดียว
@@ -1541,7 +1559,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px; color:#ffffff;">&nbsp;แพ้ยา&nbsp;</span>';
 				}else{
 					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true && count($drugreact_group_list)>0){
-						$react_txt = '<span style="font-weight:bold; background-color:orange; font-size:16px;">&nbsp;มีโอกาสแพ้ยา&nbsp;</span>';
+						$react_txt = '<span style="font-weight:bold; background-color:#ffeb3b; font-size:16px;">&nbsp;มีโอกาสแพ้ยา&nbsp;</span>';
+						
+						if ($opcard_g6pd===true && in_array(trim($arr['drugcode']), $drugreactGroup10)===true) {
+							$react_txt = '<span style="background-color: #63cdff; font-weight: bold;padding: 0 8px; font-size:16px;">ระวังผู้ป่วย G6PD</span>';
+
+						}
 					}
 				}
 				

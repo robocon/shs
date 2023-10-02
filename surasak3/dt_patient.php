@@ -144,7 +144,7 @@ if($style_menu==2){?>
            </tr>
 		   <? } ?>		   
            <tr>
-             <td align="left" colspan="14">Repeat BP : <?=$_SESSION['repeat_bp'];?> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
+             <td align="left" colspan="14">Repeat BP : <b><?=$_SESSION['repeat_bp'];?></b> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
 			&nbsp;&nbsp;&nbsp;&nbsp;, อาการ : <B><?php echo $_SESSION["organ"];?></B>
              </td>
            </tr>
@@ -164,7 +164,7 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ผู้ป่วยไม่แพ้ยา ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' GROUP BY `drugcode` ";
+$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' AND g6pd IS NULL GROUP BY `drugcode` ";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
