@@ -246,8 +246,17 @@ if($rows1 > 0){
 		$txt1 = "";
 		$i=1;
 		$txt21 = array();
-	while($arr1 = Mysql_fetch_assoc($result1)){
-		$txt1 .= "&nbsp;&nbsp;".$i.".) ".$arr1["groupname"];
+	while($arr1 = Mysql_fetch_assoc($result1)){ 
+		$groupName = $arr1["groupname"];
+
+		$sql = "SELECT * FROM drugreact_group WHERE name = '$groupName' ";
+		$q = mysql_query($sql);
+		if(mysql_num_rows($q)>0){
+			$group = mysql_fetch_assoc($q);
+			$id = $group['id'];
+		}
+
+		$txt1 .= '&nbsp;&nbsp;'.$i.'.) <a href="javascript:void(0);" onclick="showDrugreactGroup(\''.$id.'\')">'.$groupName.'</a>';
 		$txt21[$i-1] = $arr1["groupname"];
 		if($i%3==0) $txt1 .="<BR>"; else $txt1.=",";
 		$i++;
@@ -262,6 +271,11 @@ if($rows1 > 0){
 }
 ?>
 </TABLE>
+<script>
+	function showDrugreactGroup(id){
+		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=600,height=300,left=100,top=100');
+	}
+</script>
 </TD>
 </TR>
 </TABLE>
