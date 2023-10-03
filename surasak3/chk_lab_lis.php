@@ -33,11 +33,11 @@ if ($action == 'insert') {
             $dob = $item['dob'];
             $sex = $item['sex'];
 
-            if( $item['item_sso'] == 'bs' ){
-                $lab_sso_items = array($item['item_sso']);
-            }else{
+            // if( $item['item_sso'] == 'bs' ){
+            //     $lab_sso_items = array($item['item_sso']);
+            // }else{
                 $lab_sso_items = explode(',',  $item['item_sso']);
-            }
+            // }
 
             $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
 
@@ -316,7 +316,7 @@ if( $view == 'search' ){
             ?>
             <tr>
                 <td><?=$i;?></td>
-                <td><?=$item['name'];?></td>
+                <td><?=$item['name'];?><br><span style="font-size:10px; color: green;"><?=$item['code'];?></span></td>
                 <td align="center">
                     <?php 
                     $show_link = true;

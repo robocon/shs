@@ -117,26 +117,7 @@ if ( $action == 'print' ) {
 
         if( $count_ua > 0 ){ 
             for ($i=0; $i < $count_ua; $i++) { 
-                $pdf->AddPage();
-
-                $pdf->SetFont('AngsanaNew','',23);
-                $pdf->TextWithDirection(5,20,$user_number,'U');
-
-                $pdf->SetXY(2, 2);
-                $pdf->SetFont('AngsanaNew','',13);
-                $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
-                $pdf->SetXY(2, 7);
-                $pdf->Cell(0, 5, $hn, 0, 1, 'C');
-
-                // x=7, y=12, width=36, height=10
-                $pdf->Code128(7,12, $ua_code,36,10);
-
-                $pdf->SetXY(7, 22);
-                $pdf->Cell(36, 5, $ua_code, 0, 1, 'C');
-
-                $pdf->SetFont('AngsanaNew','',23);
-                $pdf->TextWithDirection(48,18,'03','U');
-
+                
                 if(!empty($count_ua_barcode))
                 {
                     $pdf->AddPage();
@@ -153,6 +134,26 @@ if ( $action == 'print' ) {
 
                     $pdf->SetXY(2, 12);
                     $pdf->Cell(0, 5, 'UA', 0, 1, 'C');
+
+                    $pdf->SetFont('AngsanaNew','',23);
+                    $pdf->TextWithDirection(48,18,'03','U');
+                }else{
+                    $pdf->AddPage();
+
+                    $pdf->SetFont('AngsanaNew','',23);
+                    $pdf->TextWithDirection(5,20,$user_number,'U');
+
+                    $pdf->SetXY(2, 2);
+                    $pdf->SetFont('AngsanaNew','',13);
+                    $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
+                    $pdf->SetXY(2, 7);
+                    $pdf->Cell(0, 5, $hn, 0, 1, 'C');
+
+                    // x=7, y=12, width=36, height=10
+                    $pdf->Code128(7,12, $ua_code,36,10);
+
+                    $pdf->SetXY(7, 22);
+                    $pdf->Cell(36, 5, $ua_code, 0, 1, 'C');
 
                     $pdf->SetFont('AngsanaNew','',23);
                     $pdf->TextWithDirection(48,18,'03','U');
@@ -226,6 +227,7 @@ if ( $action == 'print' ) {
             }
         }
 
+        /*
         // ถ้ามีการติ๊ก "ไม่แสดงสติกเกอร์ BS" ค่าของ $noDisplayBs จะเป็น 1
         if($noDisplayBs==0){ 
             $sqlBs = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
@@ -253,6 +255,7 @@ if ( $action == 'print' ) {
 
             }
         }
+        */
         
         if( $count_stool > 0 ){ 
 
