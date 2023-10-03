@@ -9,7 +9,11 @@ if(!empty($id) && $id>0){
     $q = $dbi->query("SELECT * FROM drugreact_group WHERE id = '$id' ");
     $g = $q->fetch_assoc();
 
-    $q = $dbi->query("SELECT * FROM drugreact_group_list WHERE drugreact_group = '$id' ");
+    $sqlDrugreactGroupList = "SELECT a.drugcode,b.tradname,b.genname,a.officer FROM ( 
+        SELECT * FROM drugreact_group_list WHERE drugreact_group = '$id' 
+    ) AS a 
+    LEFT JOIN druglst AS b ON a.drugcode = b.drugcode";
+    $q = $dbi->query($sqlDrugreactGroupList);
 
 ?>
 <!DOCTYPE html>
@@ -21,17 +25,27 @@ if(!empty($id) && $id>0){
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h3><?=$g['name'];?></h3>
-        <div class="input-group">
-            <div class="form-outline">
-                <input type="search" id="form1" class="form-control" />
-                <label class="form-label" for="form1">Search</label>
-            </div>
-            <button type="button" class="btn btn-primary">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
+    <div class="">
+        <h3>ยา<?=$g['name'];?></h3>
+        <!-- <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
+            <button class="btn btn-primary" type="button" id="button-addon2">ค้นหา</button>
+        </div> -->
+        <table class="table table-striped table-hover">
+            <?php 
+            while ($a = $q->fetch_assoc()) {
+                ?>
+                <tr>
+                    <td><small><?=$a['drugcode'];?></small></td>
+                    <td><small><?=$a['tradname'];?></small></td>
+                    <td><small><?=$a['genname'];?></small></td>
+                    <td><small><?=$a['officer'];?></small></td>
+                </tr>
+                <?php
+            }
+            ?>
+            
+        </table>
     </div>
     <script src="bootstrap/js/bootstrap.bundle.js"></script>
 </body>

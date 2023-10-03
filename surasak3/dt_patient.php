@@ -273,7 +273,7 @@ if($rows1 > 0){
 </TABLE>
 <script>
 	function showDrugreactGroup(id){
-		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=600,height=300,left=100,top=100');
+		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=700,height=300,left=100,top=100');
 	}
 </script>
 </TD>
