@@ -9,6 +9,9 @@ if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
     exit;
 }
 
+define('API_HOST', 'http://192.168.131.240:8081/api');
+// define('API_HOST', 'http://127.0.0.1:8000/api');
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -36,8 +39,12 @@ if($action==='delete'){
     $sql = "DELETE FROM digital_opcard WHERE row_id = '$row_id' LIMIT 1 ";
     $save = $dbi->query($sql);
     if($save===true){
-        redirect("digital_opd_manage.php","แก้ไขข้อมูลเรียบร้อย");
+        $res = array('status'=>200,'msg'=>'แก้ไขข้อมูลเรียบร้อย');
+    }else{
+        $res = array('status'=>404,'msg'=>'Error: '.$dbi->error);
     }
+    
+    echo $json->encode($res);
     exit;
 }
 ?>
@@ -58,12 +65,14 @@ if($action==='delete'){
         <?php
         $_SESSION['x-msg'] = null;
     }
+
+    $hn = sprintf("%s", ($_POST['hn'] ? $_POST['hn'] : ''));
     ?>
         <h3>ลบ digital opdcard</h3>
         <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
             <div class="col-auto">
                 <label for="hn" class="visually-hidden">HN</label>
-                <input type="input" class="form-control" name="hn" id="hn" placeholder="HN">
+                <input type="input" class="form-control" name="hn" id="hn" placeholder="HN" value="<?=$hn;?>">
             </div>
                 <div class="col-auto">
                 <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
@@ -74,7 +83,7 @@ if($action==='delete'){
         $page = sprintf("%s", $_POST['page']);
         if($page==='search'){
             $hn = sprintf("%s", $_POST['hn']);
-            $items = getDigitalOpcard('http://192.168.131.240:8081/api/getopcard?opcard_id='.$hn);
+            $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
             ?>
             <table class="table table-hover">
                 <thead>
@@ -119,18 +128,23 @@ if($action==='delete'){
     </div>
     <script src="bootstrap/js/bootstrap.bundle.js"></script>
     <script>
+        window.onload=function(){
+            document.getElementById('hn').focus();
+        }
+        var apiHost = '<?=API_HOST;?>';
         function confirmDelete(row_id){
             var c = confirm("ยืนยันที่จะลบข้อมูล?");
             if (c===true) {
-                // deleteDigitalOpcard(row_id)
-                window.location = 'digital_opd_manage.php?action=delete&row_id='+row_id;
+                deleteDigitalOpcard(row_id)
+                // window.location = 'digital_opd_manage.php?action=delete&row_id='+row_id;
             }
             return c;
         }
 
         async function deleteDigitalOpcard(id){
             // 192.168.131.240:8081
-            const response = await fetch('http://192.168.131.240:8081/api/deleteDigitalOpcard/'+id,{method:'DELETE'});
+            // const response = await fetch(apiHost+'/deleteDigitalOpcard/'+id,{method:'DELETE'});
+            const response = await fetch('digital_opd_manage.php?action=delete&row_id='+id);
             const data = await response.json();
             if(data.status===200){ 
                 alert('ลบข้อมูลเรียบร้อย');
