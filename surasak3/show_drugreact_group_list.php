@@ -32,6 +32,12 @@ if(!empty($id) && $id>0){
             <button class="btn btn-primary" type="button" id="button-addon2">ค้นหา</button>
         </div> -->
         <table class="table table-striped table-hover">
+            <tr>
+                <th>รหัสยา</th>
+                <th>ชื่อการค้า</th>
+                <th>ชื่อสามัญ</th>
+                <th>ผู้บันทึก</th>
+            </tr>
             <?php 
             while ($a = $q->fetch_assoc()) {
                 ?>

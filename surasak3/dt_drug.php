@@ -31,7 +31,7 @@ if($rowdg > 0){
 		$txtdrugreact.='\n';
 		$aai++;
 
-		$drugreact_items[] = $arrdg['drugcode'];
+		$drugreact_items[] = trim($arrdg['drugcode']);
 	}
 	
 }
@@ -2684,7 +2684,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	xmlhttp.send(null);
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
-	// check_drugreact(drugcode, returnstr);
+	check_drugreact(drugcode, returnstr);
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
