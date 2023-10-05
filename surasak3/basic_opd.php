@@ -514,7 +514,7 @@ if($_POST["cigarette"]=="1"){
 			}
 
 			if($display_advice=="form_j"){
-				if(!empty($advice_inject1)){
+				if(!empty($_POST['advice_inject1'])){
 					$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
 					$injectunit1=$_POST['advice_inject1_unit'];
 				}else{
@@ -522,7 +522,7 @@ if($_POST["cigarette"]=="1"){
 					$injectunit1="";
 				}	
 
-				if(!empty($advice_inject2)){
+				if(!empty($_POST['advice_inject2'])){
 					$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
 					$injectunit2=$_POST['advice_inject1_unit'];
 				}else{
@@ -530,7 +530,7 @@ if($_POST["cigarette"]=="1"){
 					$injectunit2="";
 				}
 				
-				if(!empty($advice_inject3)){
+				if(!empty($_POST['advice_inject3'])){
 					$advice_inject3_name=$_POST['advice_inject3_name'];
 				}else{
 					$advice_inject3_name="";
