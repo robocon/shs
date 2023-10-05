@@ -16,7 +16,11 @@ $q = $dbi->query("SELECT `id` FROM `drug_pregnancy` WHERE `drugcode` = '$drug_co
 if($q->num_rows===0){ 
 
     $save = $dbi->query("INSERT INTO `drug_pregnancy` (`drugcode`) VALUES ('$drug_code')");
+    $drug_pregnancy_id = $dbi->insert_id;
 
+}else{
+    $p = $q->fetch_assoc();
+    $drug_pregnancy_id = $p['id'];
 }
 
 if($preg==='pregnancy'){
@@ -28,10 +32,10 @@ if($preg==='pregnancy'){
     $sql = "UPDATE `drug_pregnancy` SET `lactation` = '$preg_alert', `lastupdate`=NOW(), `byuser` = '$byuser',`status`='y' WHERE `drugcode` = '$drug_code' ";
 
 }
-$save = $dbi->query($sql);
+$update = $dbi->query($sql);
 
 if(empty($dbi->error)){
-    $res = array('status'=>200, 'message' => 'บันทึกข้อมูลเรียบร้อย');
+    $res = array('status'=>200, 'message' => 'บันทึกข้อมูลเรียบร้อย', 'id'=>$drug_pregnancy_id);
 }else{
     $res = array('status'=>400, 'message' => 'บันทึกข้อมูลไม่สำเร็จ '.$dbi->error);
 }

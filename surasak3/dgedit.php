@@ -428,7 +428,8 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
             <legend><b>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์</b>: </legend>
             <p>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
             <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
-            <div><a href="javascript:void(0);" onclick="resetPreg('<?=$preg_id;?>')">[ Reset ]</a></div>
+            <div><a href="javascript:void(0);" onclick="resetPreg()">[ Reset ]</a></div>
+            <input type="hidden" name="drug_pregnancy_id" id="drug_pregnancy_id" value="<?=$preg_id;?>">
             <p id="resPreg"></p>
         </fieldset>
         <script type="text/javascript">
@@ -475,6 +476,7 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
                             
                             var html = '';
                             if(res.status === 200){
+                                document.getElementById('drug_pregnancy_id').value = res.id;
                                 html = '<span style="color:green">'+res.message+'</span>';
                             }else{
                                 html = '<span style="color:red">'+res.message+'</span>';
@@ -489,32 +491,36 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
                 xhr.send(data);
             }
 
-            function resetPreg(id){
-                var xhr = new newXmlHttp();
-                xhr.onreadystatechange = function(){
-                    if( xhr.readyState == 4 && xhr.status == 200 ){
-                        if(xhr.status>=200&&xhr.status<400){
-                            var res = JSON.parse(xhr.responseText);
-                            
-                            var html = '';
-                            if(res.status === 200){ 
-                                document.getElementById('preg_alert').checked = false;
-                                document.getElementById('preg_block').checked = false;
-                                document.getElementById('lact_alert').checked = false;
-                                document.getElementById('lact_block').checked = false;
+            function resetPreg(){ 
+                var id = document.getElementById('drug_pregnancy_id').value;
+                if(parseInt(id)>0){
+                    var xhr = new newXmlHttp();
+                    xhr.onreadystatechange = function(){
+                        if( xhr.readyState == 4 && xhr.status == 200 ){
+                            if(xhr.status>=200&&xhr.status<400){
+                                var res = JSON.parse(xhr.responseText);
+                                
+                                var html = '';
+                                if(res.status === 200){ 
+                                    document.getElementById('preg_alert').checked = false;
+                                    document.getElementById('preg_block').checked = false;
+                                    document.getElementById('lact_alert').checked = false;
+                                    document.getElementById('lact_block').checked = false;
 
-                                html = '<span style="color:green">'+res.message+'</span>';
-                            }else{
-                                html = '<span style="color:red">'+res.message+'</span>';
+                                    html = '<span style="color:green">'+res.message+'</span>';
+                                }else{
+                                    html = '<span style="color:red">'+res.message+'</span>';
+                                }
+                                document.getElementById('resPreg').innerHTML = html;
                             }
-                            document.getElementById('resPreg').innerHTML = html;
+                            
                         }
-                        
-                    }
-                };
-                xhr.open('POST', 'dgedit_preg_remove.php?id='+id, true);
-                // xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                xhr.send();
+                    };
+                    xhr.open('POST', 'dgedit_preg_remove.php?id='+id, true);
+                    // xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+                    xhr.send();
+                }
+                
             }
         </script>
     </td>
