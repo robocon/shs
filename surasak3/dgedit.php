@@ -100,10 +100,12 @@ background-color:#F8F9F9;
 		$ised = $row->ised;
 
         $preg_type = $lac_type = '';
-        $sql_preg = "SELECT `pregnancy`, `lactation` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' AND `status` = 'y' ";
+        $preg_id = 0;
+        $sql_preg = "SELECT id,`pregnancy`, `lactation` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' AND `status` = 'y' ";
         $qPreg = mysql_query($sql_preg);
         if( mysql_num_rows($qPreg) > 0 ){
             $pp = mysql_fetch_assoc($qPreg);
+            $preg_id = $pp['id'];
             $preg_type = $pp['pregnancy'];
             $lac_type = $pp['lactation'];
         }
@@ -422,9 +424,13 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
 <tr>
     <td ></td>
     <td colspan="2">
-        <p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
-        <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
-        <p id="resPreg"></p>
+        <fieldset style="display:inline;">
+            <legend><b>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์</b>: </legend>
+            <p>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
+            <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
+            <div><a href="javascript:void(0);" onclick="resetPreg('<?=$preg_id;?>')">[ Reset ]</a></div>
+            <p id="resPreg"></p>
+        </fieldset>
         <script type="text/javascript">
             function newXmlHttp(){
             var xmlhttp = false;
@@ -481,6 +487,34 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
                 xhr.open('POST', 'dgedit_preg.php', true);
                 xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 xhr.send(data);
+            }
+
+            function resetPreg(id){
+                var xhr = new newXmlHttp();
+                xhr.onreadystatechange = function(){
+                    if( xhr.readyState == 4 && xhr.status == 200 ){
+                        if(xhr.status>=200&&xhr.status<400){
+                            var res = JSON.parse(xhr.responseText);
+                            
+                            var html = '';
+                            if(res.status === 200){ 
+                                document.getElementById('preg_alert').checked = false;
+                                document.getElementById('preg_block').checked = false;
+                                document.getElementById('lact_alert').checked = false;
+                                document.getElementById('lact_block').checked = false;
+
+                                html = '<span style="color:green">'+res.message+'</span>';
+                            }else{
+                                html = '<span style="color:red">'+res.message+'</span>';
+                            }
+                            document.getElementById('resPreg').innerHTML = html;
+                        }
+                        
+                    }
+                };
+                xhr.open('POST', 'dgedit_preg_remove.php?id='+id, true);
+                // xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+                xhr.send();
             }
         </script>
     </td>
