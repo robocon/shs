@@ -7,6 +7,7 @@ if(empty($_SESSION['sIdname'])){
 }
 ?>
 <style type="text/css">
+<!--
 body{ font-family:"TH SarabunPSK"; 
 font-size:18px;
 background-color:#F8F9F9;
@@ -27,6 +28,7 @@ background-color:#F8F9F9;
 	font-size: 28px;
 	font-weight: bold;
 }
+-->
 </style>
 <?php
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
@@ -42,63 +44,63 @@ background-color:#F8F9F9;
 
         if(!($row = mysql_fetch_object($result)))
             continue;
-    }
+         }
 
-    If ($result){
+   If ($result){
         $cComcode=$row->comcode;
         $cDrugcode=$row->drugcode;
         $cTradname=$row->tradname;
         $cGenname=$row->genname;
-        $cDrugname=$row->drugname;
-        $cDrug_nature=$row->drug_nature;
-        $cDrug_properties=$row->drug_properties;
-        $cDrugnote=$row->drugnote;
+		$cDrugname=$row->drugname;
+		$cDrug_nature=$row->drug_nature;
+		$cDrug_properties=$row->drug_properties;
+		$cDrugnote=$row->drugnote;
         $cMinimum=$row->minimum;
         $cUnit=$row->unit;
-
-        $cDosecode=$row->dosecode;
-        $cStrength=$row->strength;
-        $cContent=$row->content;
-
-        $cUnitpri=$row->unitpri;
-        $cSalepri =$row->salepri;
-        $cPart =$row->part;
-        $cFreepri =$row->freepri;
-        $cFreelimit =$row->freelimit; 
-        $cStock =$row->stock;
-        $cMainstk=$row->mainstk;
-        $cTotalstk=$row->totalstk;
-        $cSlcode =$row->slcode;
-        $cBcode =$row->bcode;
-        $cEdpri =$row->edpri;
-        $cPack =$row->pack;
-        //$cPack=iconv("tis620","utf-8",$cPack);
-        $cPack2 =$row->packing;
-        $cPackpri =$row->packpri;
-        $cPackpri_vat =$row->packpri_vat;
-        $cContract =$row->contract;
-        $spec =$row->spec;
-        $default_order = $row->default_order;
-        $snspec =$row->snspec;
-        $cCode24 =$row->code24;
-        $cDrugtype = $row->drugtype;
-        $cdpy_code = $row->dpy_code;
-        $cmedical_sup_free = $row->medical_sup_free;
-        $status_drug = $row->status;
-        $typedrug = $row->typedrug;
-        $tmt = $row->tmt;
+		
+		$cDosecode=$row->dosecode;
+		$cStrength=$row->strength;
+		$cContent=$row->content;
+		
+       $cUnitpri=$row->unitpri;
+      $cSalepri =$row->salepri;
+      $cPart =$row->part;
+      $cFreepri =$row->freepri;
+	$cFreelimit =$row->freelimit; 
+      $cStock =$row->stock;
+      $cMainstk=$row->mainstk;
+      $cTotalstk=$row->totalstk;
+      $cSlcode =$row->slcode;
+      $cBcode =$row->bcode;
+     $cEdpri =$row->edpri;
+     $cPack =$row->pack;
+	 //$cPack=iconv("tis620","utf-8",$cPack);
+	 $cPack2 =$row->packing;
+     $cPackpri =$row->packpri;
+     $cPackpri_vat =$row->packpri_vat;
+     $cContract =$row->contract;
+	 $spec =$row->spec;
+	 $default_order = $row->default_order;
+	$snspec =$row->snspec;
+		$cCode24 =$row->code24;
+		$cDrugtype = $row->drugtype;
+		$cdpy_code = $row->dpy_code;
+		$cmedical_sup_free = $row->medical_sup_free;
+		$status_drug = $row->status;
+		$typedrug = $row->typedrug;
+		$tmt = $row->tmt;
         $procat = $row->product_category;
-        $prodrugtype = $row->product_drugtype;
-        $drug_innovation = $row->drug_innovation;
-
+		$prodrugtype = $row->product_drugtype;
+		$drug_innovation = $row->drug_innovation;
+		
         $edpri_from = $row->edpri_from;
-        $grouptype = $row->grouptype;
-        $active = $row->drug_active;
-        $had = $row->had;
-        $ised = $row->ised;
+		$grouptype = $row->grouptype;
+		$active = $row->drug_active;
+		$had = $row->had;
+		$ised = $row->ised;
 
         $preg_type = $lac_type = '';
-        $sql_preg = "SELECT `id`,`pregnancy`, `lactation` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' ";
+        $sql_preg = "SELECT `pregnancy`, `lactation` FROM `drug_pregnancy` WHERE `drugcode` = '$cDrugcode' AND `status` = 'y' ";
         $qPreg = mysql_query($sql_preg);
         if( mysql_num_rows($qPreg) > 0 ){
             $pp = mysql_fetch_assoc($qPreg);
@@ -106,9 +108,10 @@ background-color:#F8F9F9;
             $lac_type = $pp['lactation'];
         }
 
-    } else {
-        echo "ไม่พบ รหัส : $drugcode ";
-    }    
+                  }  
+   else {
+      echo "ไม่พบ รหัส : $drugcode ";
+           }    
 ?>
  <table width="95%" border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
@@ -419,8 +422,8 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
 <tr>
     <td ></td>
     <td colspan="2">
-        <p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label> <a href="javascript:void(0);" onclick="cancel_preg('pregnancy')">[ยกเลิก]</a></p>
-        <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label> <a href="javascript:void(0);" onclick="cancel_preg('lactation')">[ยกเลิก]</a></p>
+        <p>การสั่งยาของแพทย์ในผู้ป่วยตั้งครรภ์: <br>1.ตั้งครรภ์ <label for="preg_alert"><input type="radio" name="preg" id="preg_alert" onclick="save_preg('preg_alert')" <?=$p1;?>> แจ้งเตือน</label><label for="preg_block"><input type="radio" name="preg" id="preg_block" onclick="save_preg('preg_block')" <?=$p2;?>> ห้ามใช้ยา</label></p>
+        <p>2.ให้นมบุตร <label for="lact_alert"><input type="radio" name="lact" id="lact_alert" onclick="save_preg('lact_alert')" <?=$l1;?> > แจ้งเตือน</label><label for="lact_block"><input type="radio" name="lact" id="lact_block" onclick="save_preg('lact_block')" <?=$l2;?> > ห้ามใช้ยา</label></p>
         <p id="resPreg"></p>
         <script type="text/javascript">
             function newXmlHttp(){
@@ -445,16 +448,16 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
                 var drugcode = document.getElementById("drugcode").value;
                 var data = 'drugcode='+encodeURIComponent(drugcode);
                 if(part==='preg_alert'){
-                    data += '&action=add&preg=pregnancy&preg_alert=alert';
+                    data += '&preg=pregnancy&preg_alert=alert';
 
                 }else if(part==='preg_block'){
-                    data += '&action=add&preg=pregnancy&preg_alert=block';
+                    data += '&preg=pregnancy&preg_alert=block';
 
                 }else if(part==='lact_alert'){
-                    data += '&action=add&preg=lactation&preg_alert=alert';
+                    data += '&preg=lactation&preg_alert=alert';
 
                 }else if(part==='lact_block'){
-                    data += '&action=add&preg=lactation&preg_alert=block';
+                    data += '&preg=lactation&preg_alert=block';
                 }
 
                 var xhr = new newXmlHttp();
@@ -478,45 +481,6 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
                 xhr.open('POST', 'dgedit_preg.php', true);
                 xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 xhr.send(data);
-            }
-
-            function cancel_preg(type){
-
-                // clear ค่าใน checkbox
-                if(type=='pregnancy'){
-                    document.getElementById('preg_alert').checked = false;
-                    document.getElementById('preg_block').checked = false;
-                }else if(type=='lactation'){
-                    document.getElementById('lact_block').checked = false;
-                    document.getElementById('lact_alert').checked = false;
-                }
-
-                var drugcode = '<?=$cDrugcode;?>';
-
-                var data = 'drugcode='+drugcode+'&preg='+type+'&action=reset';
-                var xhr = new newXmlHttp();
-
-                xhr.onreadystatechange = function(){
-                    if( xhr.readyState == 4 && xhr.status == 200 ){
-                        if(xhr.status>=200&&xhr.status<400){
-                            var res = JSON.parse(xhr.responseText);
-                            
-                            var html = '';
-                            if(res.status === 200){
-                                html = '<span style="color:green">'+res.message+'</span>';
-                            }else{
-                                html = '<span style="color:red">'+res.message+'</span>';
-                            }
-                            document.getElementById('resPreg').innerHTML = html;
-                        }
-                        
-                    }
-                };
-
-                xhr.open('POST', 'dgedit_preg.php', true);
-                xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                xhr.send(data);
-
             }
         </script>
     </td>
