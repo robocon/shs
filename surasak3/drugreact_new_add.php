@@ -108,33 +108,11 @@ if($_POST["act"]=="add"){
 		$msg = "บันทึกข้อมูลแพ้ยาเรียบร้อย";
 		
 	}else{
-		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง";
+		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง ".mysql_error();
 		
 	}
 
-	?>
-	<p>
-		<b><?=$msg;?></b>
-		<div>ระบบจะนำท่านกลับหน้าหลักใน <span id="showTime"></span></div>
-	</p>
-	<script>
-		setTimeout(function(){
-			window.location='drugreact_new_add.php?page=show&hn=<?=$hn;?>';
-		}, 5000);
-
-		var count = 5;
-		var timerId = setInterval(function(){
-
-			document.getElementById('showTime').innerHTML = count;
-			count--;
-			
-			if (count == 0) {
-				clearInterval(timerId);
-			}
-			
-		}, 1000);
-	</script>
-	<?php
+	redirect("drugreact_new_add.php?page=show&hn=$sHn", $msg);
 	exit;
 }
 
@@ -222,35 +200,10 @@ if($_POST["act"]=="edit"){
 		
 	}else{
 		// echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
-		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง";
+		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง ".mysql_error();
 		$url = 'drugreact_new_add.php?page=showedit&row_id='.$row_id.'&hn='.$hn;
-	}		
-
-	?>
-	<p>
-		<b><?=$msg;?></b>
-		<div>ระบบจะนำท่านกลับหน้าหลักใน <span id="showTime"></span></div>
-	</p>
-	<script>
-		setTimeout(function(){
-			window.location='<?=$$url;?>';
-		}, 5000);
-
-		var count = 5;
-		var timerId = setInterval(function(){
-
-			
-			count--;
-			
-			if (count == 0) {
-				clearInterval(timerId);
-			}
-
-			document.getElementById('showTime').innerHTML = count;
-			
-		}, 1000);
-	</script>
-	<?php
+	}
+	redirect($url, $msg);
 	exit;
 }	
 
@@ -392,10 +345,20 @@ function checkList(){
 }
 </script>
 <h3 style="margin-top:20px;">ระบบบันทึกการแพ้ยา รูปแบบใหม่
-<span style="margin-left: 35px;"><input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="fontsarabun" /></span>
-<span style="margin-left: 35px;"><input type="button" name="button" id="button" value="บันทึกแพ้ยา" onclick="window.location='drugreact_new_add.php' " class="fontsarabun" /></span>
-<span style="margin-left: 50px;"><input type="button" name="button" id="button" value="รายชื่อผู้ป่วยแพ้ยา" onclick="window.open('list_drugreact.php') " class="fontsarabun" /></span>
+<span style="margin-left: 20px;"><input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="fontsarabun" /></span>
+<span style="margin-left: 20px;"><input type="button" name="button" id="button" value="บันทึกแพ้ยา" onclick="window.location='drugreact_new_add.php' " class="fontsarabun" /></span>
+<span style="margin-left: 20px;"><input type="button" name="button" id="button" value="รายชื่อผู้ป่วยแพ้ยา" onclick="window.open('list_drugreact.php') " class="fontsarabun" /></span>
 </h3>
+<?php 
+if($_SESSION['x-msg']){
+	?>
+	<div style="    border: 2px solid #004f4f; background-color: #008080; color: #ffffff; text-align: center; margin: 8px; font-size: 20px;">
+		<?=$_SESSION['x-msg'];?>
+	</div>
+	<?php 
+	$_SESSION['x-msg'] = null;
+}
+?>
 <div align="center">
 <form action="drugreact_new_add.php" method="post">
     <fieldset style="width: 300px;">
@@ -412,11 +375,11 @@ function checkList(){
 </div>
 <?php 
 
-$page = $_POST['page'];
+$page = sprintf("%s", trim($_REQUEST['page']));
+$hn = sprintf("%s", trim($_REQUEST['hn']));
 
 if ( $page == 'search' ) {
-    
-    $hn = sprintf("%s", trim($_POST['hn']));
+
     $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
     $query=mysql_query($sql);
 	$num=mysql_num_rows($query);
