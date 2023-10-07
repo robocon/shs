@@ -2,6 +2,7 @@
 session_start();
 session_unregister("druglot");
 session_unregister("druglot_new");
+session_unregister("druglot_qrcode");
 session_unregister("drugbill");
 session_unregister("drughome");
 session_unregister("drugstk");
@@ -9,6 +10,7 @@ session_unregister("total_stiker");
 
 session_register("druglot");
 session_register("druglot_new");
+session_register("druglot_qrcode");
 session_register("drugbill");
 session_register("drughome");
 session_register("drugstk");
@@ -16,6 +18,7 @@ session_register("total_stiker");
 
 $_SESSION["druglot"] = "";
 $_SESSION["druglot_new"] = "";
+$_SESSION["druglot_qrcode"] = "";
 $_SESSION["drugbill"] = "";
 $_SESSION["drughome"] = "";
 $_SESSION["drugstk"] = "";
@@ -109,6 +112,7 @@ $item2=0;
 	$j=1;
 	$dlot = true;
 	$dlot_new = true;
+	$dlot_qrcode = true;
 
 $i1=0;
 $j1=35;
@@ -332,6 +336,72 @@ $k31=$k21+50;
 				}
 				#******************************* จบ Session ทำสลากยาใหม่ ***************************************
 				
+
+				
+				#******************************* Session ทำสลากยาใหม่ มี qrcode ***************************************
+				if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_qrcode"])){
+					
+					if($dlot_qrcode == false){
+						$_SESSION["druglot_qrcode"] .= "<div style=\"page-break-before: always;\"></div>";
+					}else{
+						$dlot_qrcode = false;
+					}
+					
+				$_SESSION["druglot_qrcode"] .= "<div align='center' style='margin-top:5px;margin-left:5px;'>";
+				$_SESSION["druglot_qrcode"] .= "<table border='0' align='center' width='100%' cellpadding='0' cellspacing='0' style='font-size:10px;'>";
+				//แถวที่ 1
+				$_SESSION["druglot_qrcode"] .= "<tr>";
+				$_SESSION["druglot_qrcode"] .= "<th width='80%' valign='top' align='center'>";
+					
+					$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><center><b>AN:".$_POST["An"]."&nbsp;&nbsp;".$_POST["Ptname"]."</b><br></font>";
+
+					$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'>".$Thaidate."&nbsp;&nbsp;HN:".$_POST["Hn"].".&nbsp;&nbsp;NO.".$j."/".$total_item." <br></font>";
+					
+					$Trade = substr($_POST["Tradname"][$i],0,22);
+
+					$_SESSION["druglot_qrcode"] .= "<font  style='line-height:14px; font-size:10px;' face='Angsana New'><b>$Trade</b>&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")&nbsp;=<B>&nbsp;".$_POST["Amount"][$i]."</B><br></font>";
+
+
+						$sql = "Select drugname,drugnote,drug_nature,drug_properties From druglst  where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 " ;
+						$result = Mysql_Query($sql);
+						list($drugname,$drugnote,$drug_nature,$drug_properties) = Mysql_fetch_row($result);
+						$chkdrugname=trim($drugname);
+						$lendrugname=strlen($chkdrugname);
+						$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail1."</b></font><br>";
+						$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail2."</b></font><br>";
+						if($detail3 !=""){
+						$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><b>".$detail3."</b></font><br>";
+						}
+				$_SESSION["druglot_qrcode"] .= "</th>";
+				$_SESSION["druglot_qrcode"] .= "<th width='8%' align='center' valign='top'>";
+					$_SESSION["druglot_qrcode"] .= "<div style='margin-right:10px;'><img src='printQrCodeDrugcode.php?drugcode=".$_POST["Drugcode"][$i]."&size=3&level=2&margin=1'></div>";
+				$_SESSION["druglot_qrcode"] .= "</th>";	
+				$_SESSION["druglot_qrcode"] .= "</tr>";
+				//แถวที่ 2
+				$_SESSION["druglot_qrcode"] .= "<tr>";
+				$_SESSION["druglot_qrcode"] .= "<th colspan='2' align='center'>";
+					if($j == $total_item){
+							
+						if($drug_properties !="")  //ถ้ามีสรรพคุณ
+							$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px;font-size:10px;' face='Angsana New'><b><u>".$drug_properties."</u></b></font><br>";
+						
+						if($drugnote !="")  //ถ้ามีคำเตือน
+							$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:10px;' face='Angsana New'><b>".$drugnote."</b></font></div>";
+						
+					}else{
+						if($drug_properties !="")  //ถ้ามีสรรพคุณ
+							$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px; font-size:10px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
+						if($drugnote !="")  //ถ้ามีคำเตือน
+							$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:10px;' face='Angsana New'><b>".$drugnote."</b></font></div>";  
+					}
+				$_SESSION["druglot_qrcode"] .= "</th>";	
+				$_SESSION["druglot_qrcode"] .= "</tr>";	
+				$_SESSION["druglot_qrcode"] .= "</table>";
+				$_SESSION["druglot_qrcode"] .= "</div>";	
+				
+				}
+				#******************************* จบ Session ทำสลากยาใหม่ ***************************************				
+				
 			
 
 		$j++;
@@ -381,6 +451,30 @@ for($i=0;$i<$item;$i++){
 	}
 }
 
+
+for($i=0;$i<$item;$i++){
+	
+	$drugcode2 = $_POST["Drugcode"][$i];
+	if(($drugcode2[0] == "0" || $drugcode2[0] == "2") && !(ord($drugcode2[1])  >= 48 && ord($drugcode2[1]) <= 57 )){
+		
+		for($j=0;$j<$_POST["stiker"][$i];$j++){
+			if($j%2 == 0){
+				$_SESSION["druglot_qrcode"] .= "<div style=\"page-break-before: always;\"></div>";
+			}else{
+				$_SESSION["druglot_qrcode"] .= "<hr>";
+			}
+			$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." เตียง".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
+			$_SESSION["druglot_qrcode"] .= "<br>";
+			$_SESSION["druglot_qrcode"] .= '<table style="font-size: 13px;font-family:Angsana New;border-collapse: collapse;">
+			<tr><td style="line-height: 14px;">เวลาที่ให้....................น.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
+			<tr><td style="line-height: 14px;">ผู้เตรียม....................</td><td style="line-height: 14px;">ผู้ให้....................</td></tr>
+			</table>';
+		}
+	}
+}
+
+
+
 		$_SESSION["drugbill"] .= "</table>";
 		
 		$arr_drugreact=array();
@@ -416,14 +510,14 @@ for($i=0;$i<$item;$i++){
 
 		$_SESSION["drugbill"] .="ราคารวม  ".number_format($totalpay,strlen(strstr($totalpay,"."))-1, '.', ',')." บาท(เบิกไม่ได้ ".number_format($netpay,strlen(strstr($netpay,"."))-1, '.', ',')." บาท , เบิกได้ ".number_format($netfree,strlen(strstr($netfree,"."))-1, '.', ',')." บาท)<br><BR> ";
 		
-		$sql = "Select drugcode, tradname  From drugreact where hn='".$_POST["Hn"]."' ";
+		$sql = "Select drugcode, tradname, genname, advreact  From drugreact where hn='".$_POST["Hn"]."' ";
 				$result = Mysql_Query($sql);
 				if(Mysql_num_rows($result) > 0){
-					$_SESSION["drugbill"] .="<Table><tr><td colspan=\"2\">รายการแพ้ยา</td></tr>";
+					$_SESSION["drugbill"] .='<table><tr><td colspan="4"><b>รายการแพ้ยา</b></td></tr>';
 					while($arr = Mysql_fetch_assoc($result)){
-							$_SESSION["drugbill"] .="<tr><td>".$arr["drugcode"]."&nbsp;&nbsp;</td><td>&nbsp;&nbsp;".$arr["tradname"]."</td></tr>";
+							$_SESSION["drugbill"] .="<tr><td>".$arr["drugcode"]."&nbsp;&nbsp;</td><td>&nbsp;&nbsp;".$arr["tradname"]."</td><td>&nbsp;&nbsp;".$arr["genname"]."</td><td>&nbsp;&nbsp;".$arr["advreact"]."</td></tr>";
 					}
-					$_SESSION["drugbill"] .="</Table><BR>";
+					$_SESSION["drugbill"] .="</table><BR>";
 				}
 
 		$_SESSION["drugbill"] .="ผู้บันทึกข้อมูล <U>".$_SESSION["sOfficer"]."</U>&nbsp;&nbsp;";
@@ -441,7 +535,7 @@ for($i=0;$i<$item;$i++){
 
 
 		echo "บันทึกข้อมูลเรียบร้อยแล้ว<BR>
-			<A HREF=\"drugbill.php\" target=\"_blank\">พิมพ์ใบสั่งยา</A>&nbsp;&nbsp;<A HREF=\"druglot.php\" target=\"_blank\">พิมพ์สลากยา</A>&nbsp;&nbsp;<A HREF=\"druglot_new.php\" target=\"_blank\">พิมพ์สลากยาใหม่</A>
+			<A HREF=\"drugbill.php\" target=\"_blank\">พิมพ์ใบสั่งยา</A>&nbsp;&nbsp;<A HREF=\"druglot.php\" target=\"_blank\">พิมพ์สลากยา</A>&nbsp;&nbsp;<A HREF=\"druglot_new.php\" target=\"_blank\">พิมพ์สลากยาใหม่</A>&nbsp;&nbsp;<A HREF=\"druglot_qrcode.php\" target=\"_blank\">พิมพ์สลากยามี QR CODE</A>
 		";
 
 		echo "<BR><A HREF=\"drughome.php\" target=\"_blank\">พิมพ์ใบกลับบ้าน</A>&nbsp;&nbsp;<A HREF=\"drugstk.php\" target=\"_blank\">ติด OPD</A>";
