@@ -1258,20 +1258,25 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		}
 	}	
 	
-	$sql = "Select drugcode, tradname From drugreact where hn = '".$_REQUEST["hn"]."' ";
+	$hn = sprintf("%s", $_REQUEST["hn"]);
+	$sql = "Select drugcode, tradname, genname From drugreact where hn = '$hn' ";
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$drugreact_rows = mysql_num_rows($result);
-	$i=0;
-	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ 
-		$dCodeTxt = '';
-		if(!empty($drugcode)){
-			$dCodeTxt = "<b>[$drugcode]</b>";
+	$txt_react2 = '';
+	if ($drugreact_rows>0) {
+		$i=0;
+		while(list($drugcode, $tradname, $genname) = mysql_fetch_row($result)){ 
+			$dCodeTxt = '';
+			if(!empty($drugcode)){
+				$dCodeTxt = "<b title='$genname'>[$drugcode]</b>";
+			}
+			$txt_react[$i] = "&nbsp; $dCodeTxt $tradname "; $i++; 
 		}
-		$txt_react[$i] = "&nbsp; $dCodeTxt $tradname "; $i++; 
+		
+		$txt_react2 = implode(",",$txt_react);
+		$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 	}
 	
-	$txt_react2 = implode(",",$txt_react);
-	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
 
 $thidate_today = (date("Y")+543).date("-m-d");
@@ -1321,9 +1326,44 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
       <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><strong><?php echo $ptright;?></strong></font> &nbsp;&nbsp;&nbsp;
 				, หมายเหตุ : <?php echo $note;?>		</td>
       </tr>
-      <tr class="headsarabun">
-        <td><font class="data_drugreact"><?php echo $txt_react2;?></font></td>
+	  <?php 
+	  if ($txt_react2) {
+		?>
+		<tr class="headsarabun">
+        <td>
+			<font class="data_drugreact"><?php echo $txt_react2;?></font>
+			<br>
+			<?php 
+			$sql = "SELECT b.* FROM (
+				SELECT groupname FROM drugreact WHERE hn = '$hn' AND groupname <> '' GROUP BY groupname
+			) AS a LEFT JOIN drugreact_group AS b ON a.groupname = b.name";
+			$res = mysql_query($sql);
+			$group_row = mysql_num_rows($res);
+			if ($group_row>0) {
+				?>
+					<span class="txtsarabun"><b style="color: #000000; background-color: yellow; padding: 0 8px;">มีโอกาสแพ้ยาในกลุ่ม</b></span>
+					<?php
+					$i=1;
+					while ($a = mysql_fetch_assoc($res)) {
+						?>
+						<span class="txtsarabun"><?=$i;?>.) <a href="javascript:void(0);" onclick="show_drugreact_group_list('<?=$a['id'];?>')"><?=$a['name'];?></a></span><br>
+						<?php
+						$i++;
+					}
+					?>
+					<script>
+						function show_drugreact_group_list(id){
+							window.open('show_drugreact_group_list.php?id='+id,"openPopUp","width=800px,height=600px;");
+						}
+					</script>
+				<?php
+			}
+			?>
+		</td>
       </tr>
+		<?php
+	  }
+	  ?>
       <tr>
         <td>เวลาลงทะเบียน : <strong><?php echo $regis_time;?></strong>          , เวลาจ่ายOPD Card : <strong><?php echo $time1;?></strong> , เวลาซักประวัติ : <strong><?php echo date("H:i:s");?></strong></td>
       </tr>
