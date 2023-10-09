@@ -161,19 +161,19 @@ if(!empty($cStkcutdate)) {
 	}
 	
 	$num1='0';
-	$query = "SELECT tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and groupname='' and sideeffects=''";
+	$query = "SELECT genname,tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and groupname='' and sideeffects=''";
 	$result = mysql_query($query) or die("Query drugreact failed");
 
 	if(mysql_num_rows($result)){
 
 		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>ประวัติการแพ้ยา</b></u></font>";
-		while (list ($tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result)) {
+		while (list ($genname,$tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result)) {
 			$num1++;
 			print (" <tr>\n".
 			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b><u>$num1)</u></b></font ></td>\n".
 			" </tr>\n");
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...($genname)...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
