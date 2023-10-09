@@ -1,15 +1,12 @@
 <?php
 session_start();
 if($_SESSION["sOfficer"] == ""){
-	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
-exit();
+	exit();
 }
 // ini_set('display_errors', '1');
 // error_reporting(1);
-
-
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -17,6 +14,9 @@ if(isset($_GET["action"])){
 
 include("connect.inc");
 //include("checklogin.php");
+
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
 
 // แจ้งเตือนแพ้ยา
 $sqldrugreact="SELECT * FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) GROUP BY `drugcode` ";
@@ -31,9 +31,27 @@ if($rowdg > 0){
 		$txtdrugreact.='\n';
 		$aai++;
 
-		$drugreact_items[] = $arrdg['drugcode'];
+		$drugreact_items[] = trim($arrdg['drugcode']);
 	}
 	
+}
+
+// แสดงโรคประจำตัวด้านล่าง และหาว่าคนไข้มีโรคประจำตัวเป็น G6PD รึป่าว
+$qOp = $dbi->query("SELECT congenital_disease FROM opcard WHERE hn = '".$_SESSION["hn_now"]."' ");
+$opcard = $qOp->fetch_assoc();
+$opcard_g6pd = false;
+if(preg_match('/(G6PD)/', $opcard['congenital_disease'], $matchs)){
+	$opcard_g6pd = true;
+}
+
+// ถ้าเภสัชได้ติ๊กว่าผู้ป่วยคนนี้มีประวัติการเป็น G6PD ในระบบแพ้ยาให้ทำการดึงรายการยาในกลุ่ม g6pd ออกมา
+$drugreactGroup10 = array();
+$queryG6pdInDrugreact = $dbi->query("SELECT row_id FROM drugreact WHERE hn='".$_SESSION["hn_now"]."' AND g6pd='1'");
+if($queryG6pdInDrugreact->num_rows > 0){
+	$queryGroup10 = $dbi->query("SELECT * FROM drugreact_group_list WHERE drugreact_group = '10' ");
+	while ($g10 = $queryGroup10->fetch_assoc()) {
+		$drugreactGroup10[] = trim($g10['drugcode']);
+	}
 }
 
 // ทดสอบ user สำหรับหมอเป้คนเดียว
@@ -1538,11 +1556,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				
 				// หาในรายการแพ้ยาก่อน ถ้าไม่มีให้หาในกลุ่มที่มีโอกาสแพ้ยา(drugreact_group_list)อีกที
 				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
-					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px;">&nbsp;แพ้ยา&nbsp;</span>';
+					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px; color:#ffffff;">&nbsp;แพ้ยา&nbsp;</span>';
 				}else{
-					
-					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true){
-						$react_txt = '<span style="font-weight:bold; background-color:orange; font-size:16px;">&nbsp;มีโอกาสแพ้ยา&nbsp;</span>';
+					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true && count($drugreact_group_list)>0){
+						$react_txt = '<span style="font-weight:bold; background-color:#ffeb3b; font-size:16px;">&nbsp;มีโอกาสแพ้ยา&nbsp;</span>';
+						
+						if ($opcard_g6pd===true && in_array(trim($arr['drugcode']), $drugreactGroup10)===true) {
+							$react_txt = '<span style="background-color: #63cdff; font-weight: bold;padding: 0 8px; font-size:16px;">ระวังผู้ป่วย G6PD</span>';
+
+						}
 					}
 				}
 				
@@ -2191,6 +2213,9 @@ var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","
 var rdu8_drug = ['1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ];
 var rdu8_icd10 = ['S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11', 'S16', 'S17', 'S18', 'S19', 'S20', 'S21', 'S28', 'S29', 'S31', 'S31', 'S38', 'S39','S40','S41','S46','S47','S48','S49','S50','S51','S56','S56','S56','S56','S56','S56','S66','S67','S68','S69','S70','S71','S76','S77','S78','S79','S80','S81','S86','S87','S88','S89','S90','S91','S96','S97','S98','S99','X00','X01','X02','X03','X04','X05','X06','X07','X08','X09','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19','X20','X21','X22','X23','X24','X25','X26','X27','X28','X29','X30','X31','X32','X33','X34','X35','X36','X37','X38','X39']
 
+var rdu6_drug = ['1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$'];
+var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J200','J201','J202','J203','J204','J205','J206','J207','J208','J209','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729'];
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2658,23 +2683,26 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	};
 	xmlhttp.send(null);
 
+	// popup แบบฟอร์ม rechallenge แพ้ยา
 	check_drugreact(drugcode, returnstr);
 	
-	// RDUตัวชี้วัดที่11
+	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่14
+	// แจ้งเตือน RDUตัวชี้วัดที่14
 	kidney_egfr_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่18
+	// แจ้งเตือน RDUตัวชี้วัดที่18
 	rdu18_alert(drugcode.trim(), icd10);
 
-	// RDUตัวชี้วัดที่7
+	// แจ้งเตือน RDUตัวชี้วัดที่7
 	rdu7_alert(drugcode.trim(), icd10);
 
-	// RDUตัวชี้วัดที่8
+	// แจ้งเตือน RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
-		
+	
+	// แจ้งเตือน RDUตัวชี้วัดที่6
+	rdu6_alert(drugcode.trim(), icd10);
 }
 
 /**
@@ -2952,6 +2980,43 @@ function rdu8_alert(drugcode, icd10){
 		window.open("er_form_fresh_wound.php?hn=<?=$_SESSION['hn_now'];?>&view=saveform","myWindow","width=900,height=600");
 	}
 	
+}
+
+function rdu6_alert(drugcode, icd10){ 
+
+	var testRdu6 = false;
+	var getIcd10 = '';
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu6_icd10.indexOf(icd) > -1 && rdu6_drug.indexOf(drugcode) > -1 ){ 
+			getIcd10 = icd;
+			testRdu6 = true;
+		}
+	}
+
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var hn = '<?=$_SESSION['hn_now'];?>';
+
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+
+	var key = y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "rdu_form6["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+	if(f_cookie=="" && testRdu6===true){
+		var url = 'hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+		url += '&icd10='+encodeURIComponent(getIcd10);
+		url += '&drugcode='+encodeURIComponent(drugcode);
+		window.open("rdu_form6.php?"+url,"myWindow","width=900,height=600");
+	}
 }
 
 function addslip(drugslip){

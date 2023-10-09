@@ -148,21 +148,22 @@ if($numj > 0){
 
 
 //----------------------------เช็คแพ้ยา
-$rsql= "SELECT drugcode,tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' AND drugcode != '' GROUP BY drugcode";
+$rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
 $rquery = mysql_query($rsql);
-$rnum=mysql_num_rows($rquery);
-$drugreact_list_items = array();	
+$rnum=mysql_num_rows($rquery);		
 if($rnum > 0){
+	// echo "<script>alert('ผู้ป่วย HN : $sHn มีประวัติแพ้ยาดังต่อไปนี้ ";
 	$drugreact_txt = '';
-	while($rrows= mysql_fetch_array($rquery)){ 
-
-		$drugreact_list_items[] = $rrows['drugcode'];
-
-		$tradname=$rrows["tradname"];
-		$advreact=$rrows["advreact"];
-		$asses=$rrows["asses"];
-		$drugreact_txt .= $tradname.'...'.$advreact.'('.$asses.')\n ';			
+	$i = 1;
+	while($rrows= mysql_fetch_array($rquery)){
+			$tradname=$rrows["tradname"];
+			$advreact=$rrows["advreact"];
+			$asses=$rrows["asses"];
+			$drugreact_txt .= $i.') '.$tradname.'...'.$advreact.'('.$asses.')\n ';
+			$i++;
 	}
+	// echo $drugreact_txt;
+	// echo "');</script>";
 	?>
 	<script type="text/javascript">
 		alert("ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้\n <?=$drugreact_txt;?>");
@@ -217,21 +218,18 @@ if( mysql_num_rows($res) > 0 ){
 	<?php
 }
 
-$d=substr($dDate,8,2);
-$m=substr($dDate,5,2);
-$y=substr($dDate,0,4);
-
 $sdate=substr($_GET["sDate"],0,10);
 list($y1,$m1,$d1)=explode("-",$sdate);
 $chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
 
 $sqlopday = "select toborow,diag,age from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+//echo $sqlopday;
 $res= mysql_query($sqlopday) or die("Query failed");
 list($toborow,$diagnosis,$age) = mysql_fetch_row($res);
 $tob = substr($toborow,0,4);
 
-
 $sqlopday1 = "select idcard,dbirth from opcard where hn='$sHn'";
+//echo $sqlopday;
 $res1= mysql_query($sqlopday1) or die("Query failed");
 list($idcard,$dbirth) = mysql_fetch_row($res1);
 $yy = substr($dbirth,0,4);
@@ -239,78 +237,97 @@ $mm = substr($dbirth,5,2);
 $dd = substr($dbirth,8,2);
 $birthday="$dd/$mm/$yy";
 
+
+$d=substr($dDate,8,2);
+$m=substr($dDate,5,2);
+$y=substr($dDate,0,4);
+
 print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
 print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <B>สิทธิ:$sPtright</B><br> ";
 print "<font face='Angsana New'>เลขที่บัตรประชาชน : $idcard &nbsp;&nbsp;&nbsp;&nbsp; วัน/เดือน/ปีเกิด : $birthday &nbsp;&nbsp;&nbsp;&nbsp; อายุ : $age<br> ";
-?>
-<style>
-	.clearfix::after {
-		content: "";
-		clear: both;
-		display: table;
-	}
-	.react-item{
-		float: left;
-		margin-right: 1.5em;
-		font-size: 22px;
-		line-height: 24px;
-	}
-</style>
-<?php 
-$test_i = 1;
-$item_per_line = 4;
+// print "<font face='Angsana New'>โรค: $diagnosis<br>";
 
-$query12 = "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' order by row_id asc ";
+// print "<font face='Angsana New' size=5 color=FF0000>ประวัติการแพ้ยา: ";
+$query12 = "SELECT drugcode,tradname,genname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
 $result12 = mysql_query($query12) or die("Query failed");
-$drugreact_rows = mysql_num_rows($result12);
-if ($drugreact_rows > 0) { 
-	?>
-	<div style="position: relative; color:#FF0000;" class="clearfix">
-		<div class="react-item">แพ้ยา: </div>
-		<?php
-		while(list ($tradname,$advreact,$asses) = mysql_fetch_row ($result12)){ 
-			?>
-			<div class="react-item"><?="$tradname...$advreact($asses)";?></div>
-			<?php
+$count_drugreact = mysql_num_rows($result12);
+// var_dump();
+$i = 1;
+// while(list ($tradname,$advreact,$asses) = mysql_fetch_row ($result12)){
+// 	echo $i.') '.$tradname."...".$advreact."(".$asses.") <br>";
+// 	$i++;
+// }
+print "</font>";
+if ($count_drugreact>0) {
+	# code...
+
+?>
+<table>
+	<tr style="background-color: #EC7063;">
+		<th colspan="5" ><a href="drugreact_new_add.php?page=show&hn=<?=$sHn;?>" title="เข้าหน้าแก้ไขแพ้ยา" target="_blank">ประวัติการแพ้ยา</a></th>
+	</tr>
+	<tr style="background-color: #EC7063;">
+		<th>รหัสยา</th>
+		<th>ชื่อสามัญ</th>
+		<th>ชื่อการค้า</th>
+		<th>อาการ</th>
+		<th>ประเมินอาการ</th>
+	</tr>
+	<?php 
+	while ($a = mysql_fetch_assoc($result12)) { 
+
+		$sideeffects = '';
+		if ($a['sideeffects']) {
+			$sideeffects = ' ('.$a['sideeffects'].')';
 		}
+		
 		?>
-		</div>
-	<?php
+		<tr style="background-color: #F5B7B1;">
+			<td><?=$a['drugcode'];?></td>
+			<td><?=$a['tradname'];?></td>
+			<td><?=$a['genname'];?></td>
+			<td><?=$a['advreact'].$sideeffects;?></td>
+			<td><?=$a['asses'];?></td>
+		</tr>
+		<?php
+	}
+	?>
+</table>
+<?php 
 }
 ?>
-	
+<p style="margin-bottom:0;"><b>รายการสั่งยาจากแพทย์</b></p>
 <table>
-	<tr >
-		<th bgcolor=CD853F><font face='Angsana New'>#</th>
-		<th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
-		<th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
-		<th bgcolor=CD853F><font face='Angsana New'>part</th>
-		<th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
-		<th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
-		<th bgcolor=CD853F><font face='Angsana New'>วิธีใช้</th>
-		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขวิธีใช้</th>
-		<!--  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>-->
-		<th bgcolor=CD853F><font face='Angsana New'>#</th>
-		<th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
-		<th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
-		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
-	</tr>
+ <tr >
+ <th bgcolor=CD853F><font face='Angsana New'>#</th>
+ <th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
+    <th bgcolor=CD853F><font face='Angsana New'>part</th>
+  <th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
+  <th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
+  <th bgcolor=CD853F><font face='Angsana New'>วิธีใช้</th>
+  <th bgcolor=CD853F><font face='Angsana New'>แก้ไขวิธีใช้</th>
+<!--  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>-->
+   <th bgcolor=CD853F><font face='Angsana New'>#</th>
+  <th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
+   <th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
+   <th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
+    
+ </tr>
+
 <?php
 $inject = false;
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
 	
-	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."' AND a.date = '".$_GET["sDate"]."' ";
+	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno,a.reason FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."' AND a.date = '".$_GET["sDate"]."' ";
 	//echo $query;
     $result = mysql_query($query) or die("Query failed");
 	$n='0';
-    
-//    print "แพทย์ :$sDoctor<br><br>";
-	
+	//    print "แพทย์ :$sDoctor<br><br>";
 	$count_row = mysql_num_rows($result);
 	//echo "==>".$count_row;
-    while (list ($tradname,$drugcode,$amount,$price,$slcode,$row_id,$part,$office,$detail1,$detail2,$detail3,$detail4,$drug_inject_amount,$drug_inject_unit,$drug_inject_amount2,$drug_inject_unit2,$drug_inject_time,$drug_inject_slip,$drug_inject_etc,$injno) = mysql_fetch_row ($result)) {
+    while (list ($tradname,$drugcode,$amount,$price,$slcode,$row_id,$part,$office,$detail1,$detail2,$detail3,$detail4,$drug_inject_amount,$drug_inject_unit,$drug_inject_amount2,$drug_inject_unit2,$drug_inject_time,$drug_inject_slip,$drug_inject_etc,$injno,$reason) = mysql_fetch_row ($result)) {
 	
-
         $x++;
 		$n++;
         $_SESSION["aDgcode"][$x]=$drugcode;
@@ -319,30 +336,11 @@ $inject = false;
         $_SESSION["aAmount"][$x]=$amount;
 	
 		if($_SESSION["aDgcode"][$x]=='1DILA' || $_SESSION["aDgcode"][$x]=='1GPO30*'  || $_SESSION["aDgcode"][$x]=='20SGPO30'  || $_SESSION["aDgcode"][$x]=='20SGPO30' || $_SESSION["aDgcode"][$x]=='1COTR4' || $_SESSION["aDgcode"][$x]=='1ALLO3'){
-			$color="#00CCFF";
-		}else{
-			$color="F5DEB3";
-		}
 
-		$react_txt = '';
-		$sql = "SELECT * FROM `dt_rechallenge` WHERE `hn` = '$sHn' AND `drugcode` = '$drugcode' ";
-		$q = mysql_query($sql);
-		if(mysql_num_rows($q) > 0){ 
-			$re = mysql_fetch_assoc($q);
-			$react_txt = '<a href="javascript:void(0);" onclick="popup_drugreact(\''.$re['id'].'\')"><span style="font-weight:bold;background-color:red;">แพ้ยา</span></a>';
-		}else{
-			
-			$sql_react_group = "SELECT c.`drugcode` FROM ( 
-			SELECT `groupname` FROM `drugreact` WHERE  `hn` = '$sHn' AND `groupname` !='' GROUP BY `groupname` 
-			) AS a 
-			LEFT JOIN `drugreact_group` AS b ON a.`groupname` = b.`name` 
-			LEFT JOIN `drugreact_group_list` AS c ON b.`id`= c.`drugreact_group` 
-			GROUP BY c.`drugcode`";
-			$q_group = mysql_query($sql_react_group);
-			if(mysql_num_rows($q_group) > 0){
-				$react_txt = '<span style="font-weight:bold;background-color:orange;">มีโอกาสแพ้ยา</span>';
-			}
-		}
+$color="#00CCFF";
+}else{
+$color="F5DEB3";
+}
 
 $ptright=substr($sPtright,0,3);
 //echo $ptright."...<br>";
@@ -356,7 +354,11 @@ $ptright=substr($sPtright,0,3);
 			$comment="";
 		}
 	}else{
-		$comment="";
+		if($part=="DDY"){
+			$comment="<div style='color:#0000FF'>($reason)</div>";
+		}else{	
+			$comment="";
+		}
 	}
 /*}else{
 	$comment="";
@@ -374,7 +376,7 @@ $ptright=substr($sPtright,0,3);
         print (" <tr BGCOLOR=$color>\n".
 		   "  <td><font face='Angsana New'>$n</td>\n".
 		   "  <td><font face='Angsana New'>$drugcode</td>\n".
-           "  <td><font face='Angsana New'>$tradname $react_txt $injectno</td>\n".
+           "  <td><font face='Angsana New'>$tradname $injectno</td>\n".
 		   "  <td><font face='Angsana New'>$part<br>$comment</td>\n".
            "  <td><font face='Angsana New'><span id=\"amount_value".$x."\">$amount</span>
 		   <input type=\"text\" style=\"display:none\" name=\"amount".$x."\" value=\"".$amount."\" id=\"amount".$x."\" size=\"5\"></td>\n".
@@ -474,11 +476,6 @@ echo "<table><tr>";
  <div>
 	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a></p>
  </div>
-<script type="text/javascript">
-	function popup_drugreact(id){
-		window.open("dt_show_rechallenge.php?id="+id,"myWindow","width=600,height=300,left=100,top=100");
-	}
-</script>
 <?php
 	$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
 	$strresult = mysql_query($strsql);

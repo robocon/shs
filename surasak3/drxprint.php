@@ -119,6 +119,7 @@ if(!empty($cStkcutdate)) {
 
 
 	?>
+	<!-- window.print(); -->
 	<body Onload="window.print();">
 	<script type="text/javascript">
 		function CloseWindowsInTime(t){
@@ -161,19 +162,19 @@ if(!empty($cStkcutdate)) {
 	}
 	
 	$num1='0';
-	$query = "SELECT tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and groupname='' and sideeffects=''";
+	$query = "SELECT genname,tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn'";
 	$result = mysql_query($query) or die("Query drugreact failed");
 
 	if(mysql_num_rows($result)){
 
 		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>ประวัติการแพ้ยา</b></u></font>";
-		while (list ($tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result)) {
+		while (list ($genname,$tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result)) {
 			$num1++;
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b><u>$num1)</u></b></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$num1)</u></b></font ></td>\n".
 			" </tr>\n");
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...($genname)...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
@@ -188,7 +189,7 @@ if(!empty($cStkcutdate)) {
 
 	if(mysql_num_rows($result2)){
 
-		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>แพ้ยาเป็นกลุ่ม </b></u>";
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>แพ้ยาในกลุ่ม </b></u>";
 		while (list ($groupname,$advreact,$asses) = mysql_fetch_row ($result2)) {
 			$num2++;
 			print (" <tr>\n".

@@ -144,7 +144,7 @@ if($style_menu==2){?>
            </tr>
 		   <? } ?>		   
            <tr>
-             <td align="left" colspan="14">Repeat BP : <?=$_SESSION['repeat_bp'];?> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
+             <td align="left" colspan="14">Repeat BP : <b><?=$_SESSION['repeat_bp'];?></b> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
 			&nbsp;&nbsp;&nbsp;&nbsp;, อาการ : <B><?php echo $_SESSION["organ"];?></B>
              </td>
            </tr>
@@ -164,7 +164,7 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ผู้ป่วยไม่แพ้ยา ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' GROUP BY `drugcode` ";
+$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' AND g6pd IS NULL GROUP BY `drugcode` ";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -246,15 +246,24 @@ if($rows1 > 0){
 		$txt1 = "";
 		$i=1;
 		$txt21 = array();
-	while($arr1 = Mysql_fetch_assoc($result1)){
-		$txt1 .= "&nbsp;&nbsp;".$i.". ".$arr1["groupname"];
+	while($arr1 = Mysql_fetch_assoc($result1)){ 
+		$groupName = $arr1["groupname"];
+
+		$sql = "SELECT * FROM drugreact_group WHERE name = '$groupName' ";
+		$q = mysql_query($sql);
+		if(mysql_num_rows($q)>0){
+			$group = mysql_fetch_assoc($q);
+			$id = $group['id'];
+		}
+
+		$txt1 .= '&nbsp;&nbsp;'.$i.'.) <a href="javascript:void(0);" onclick="showDrugreactGroup(\''.$id.'\')">'.$groupName.'</a>';
 		$txt21[$i-1] = $arr1["groupname"];
 		if($i%3==0) $txt1 .="<BR>"; else $txt1.=",";
 		$i++;
 	}
 	$_SESSION["list_drugreact"] = implode(", ",$txt21);
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt1,"</B></FONT></TD></TR>"; 
 
 }else{
 	//echo $sql;
@@ -262,6 +271,11 @@ if($rows1 > 0){
 }
 ?>
 </TABLE>
+<script>
+	function showDrugreactGroup(id){
+		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=700,height=300,left=100,top=100');
+	}
+</script>
 </TD>
 </TR>
 </TABLE>
