@@ -5,15 +5,21 @@ require_once 'class_file/class_drugreact.php';
 $hn = '47-4661';
 // $hn = '47-1';
 
-$d = new Drugreact();
-// $res = $d->getDrugreactFromHn($hn);
+$drugreact = new Drugreact();
+// $res = $drugreact->getDrugreactFromHn($hn);
 
-// $res = $d->getGroupNameFromHn($hn);
+// $res = $drugreact->getGroupNameFromHn($hn);
 
 // $fields = array('groupname');
 // $where = "AND groupname <> ''";
 // $group = 'GROUP BY groupname';
-// $res = $d->getDrugreactFromHn($hn, $fields, $where, $group);
+// $res = $drugreact->getDrugreactFromHn($hn, $fields, $where, $group);
 
-$res = $d->getDrugreactInGroupRelation($hn);
+// $res = $drugreact->getDrugreactInGroupRelation($hn);
+
+$name = "กลุ่ม G6PD Deficiency";
+// $res = $drugreact->getDrugreactGroup();
+
+$id = 9;
+$res = $drugreact->getDrugreactGroupList($id);
 var_dump($res);
