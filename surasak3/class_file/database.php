@@ -16,7 +16,7 @@ class DbConnect{
     }
 
     public function dbError(){
-        return array("error"=>"400", "message"=>"Data not found ".$this->dbi->error);
+        return array("error"=>400, "message"=>"Data not found ".$this->dbi->error);
     }
 
     /**

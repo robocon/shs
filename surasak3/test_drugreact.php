@@ -8,8 +8,6 @@ $hn = '47-4661';
 $drugreact = new Drugreact();
 // $res = $drugreact->getDrugreactFromHn($hn);
 
-// $res = $drugreact->getGroupNameFromHn($hn);
-
 // $fields = array('groupname');
 // $where = "AND groupname <> ''";
 // $group = 'GROUP BY groupname';

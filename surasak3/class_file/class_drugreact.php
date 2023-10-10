@@ -1,5 +1,5 @@
 <?php 
-require_once __DIR__.'/database.php';
+require_once dirname(__FILE__).'/database.php';
 class Drugreact extends DbConnect{
     public $dbi = null;
     function __construct()
@@ -9,9 +9,9 @@ class Drugreact extends DbConnect{
 
     /**
      * @param string $hn        เลขที่ HN ของผู้มารับบริการ
-     * @param string $fields    Default เป็น * คือการเลือกทุกฟิลด์ แต่ถ้าต้องการเลือกเฉพาะฟิลด์ให้ใส่มาเป็น Array
-     * @param string $where     คำสั่ง where เงื่อนไขเพิ่มเติม
-     * @param string $group     คำสั่ง group by xxx กรณีที่ต้องการ group ตามกลุ่ม
+     * @param mixed $fields    Default เป็น * คือการเลือกทุกฟิลด์ แต่ถ้าต้องการเลือกเฉพาะฟิลด์ให้ใส่มาเป็น Array
+     * @param string $where     คำสั่ง where ใส่เป็น AND ต่อท้ายมาได้เลย Ex. AND groupname <> ''
+     * @param string $group     คำสั่ง group by xxx กรณีที่ต้องการ group ตามกลุ่ม Ex. GROUP BY groupname
      */
     public function getDrugreactFromHn($hn=null, $fields=array(), $where=null, $group=null){
         if (empty($hn)) {
