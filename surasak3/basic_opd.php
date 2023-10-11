@@ -1,9 +1,10 @@
 <?php 
-session_start();
+// session_start();
+require_once dirname(__FILE__).'/bootstrap.php';
+
 include("connect.inc");
 mysql_query("SET NAMES UTF-8");
 
-require_once 'bootstrap.php';
 require_once dirname(__FILE__).'/class_file/class_drugreact.php';
 $drugreact = new Drugreact();
 
@@ -1350,7 +1351,7 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
 			<br>
 			<?php 
 			$userGroup = $drugreact->getDrugreactGroupByHn($hn);
-			if (count($userGroup)>0) {
+			if (count($userGroup)>0 && !$userGroup['error']) {
 				?>
 					<span class="txtsarabun"><b style="color: #000000; background-color: yellow; padding: 0 8px;">มีโอกาสแพ้ยาในกลุ่ม</b></span>
 					<?php

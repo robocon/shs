@@ -15,6 +15,16 @@ if(!empty($id) && $id>0){
     LEFT JOIN druglst AS b ON a.drugcode = b.drugcode";
     $q = $dbi->query($sqlDrugreactGroupList);
 
+    $showItems = array();
+    $itemJs = array();
+    while ($a = $q->fetch_assoc()) { 
+        $showItems[] = $a;
+        
+        $itemJs[] = '{"drugcode":"'.$a['drugcode'].'", "tradname":"'.$a['tradname'].'", "genname":"'.$a['genname'].'", "officer":"'.$a['officer'].'"}';
+        
+    }
+
+    $jsObject = '['.implode(',', $itemJs).']';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,33 +37,78 @@ if(!empty($id) && $id>0){
 <body>
     <div class="">
         <h3>ยา<?=$g['name'];?></h3>
-        <!-- <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="button-addon2">
-            <button class="btn btn-primary" type="button" id="button-addon2">ค้นหา</button>
-        </div> -->
-        <table class="table table-striped table-hover">
-            <tr>
-                <th>รหัสยา</th>
-                <th>ชื่อการค้า</th>
-                <th>ชื่อสามัญ</th>
-                <th>ผู้บันทึก</th>
-            </tr>
-            <?php 
-            while ($a = $q->fetch_assoc()) {
-                ?>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="พิมพ์เพื่อค้นหาจากรหัส ชื่อการค้า ชื่อสามัญ" aria-label="Search" aria-describedby="button-addon2" id="nameSearch" onkeyup="findName(this.value)">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="cleardata()">ยกเลิก</button>
+        </div>
+        <div id="groupAllItem">
+            <table class="table table-striped table-hover">
                 <tr>
-                    <td><small><?=$a['drugcode'];?></small></td>
-                    <td><small><?=$a['tradname'];?></small></td>
-                    <td><small><?=$a['genname'];?></small></td>
-                    <td><small><?=$a['officer'];?></small></td>
+                    <th>รหัสยา</th>
+                    <th>ชื่อการค้า</th>
+                    <th>ชื่อสามัญ</th>
+                    <th>ผู้บันทึก</th>
                 </tr>
-                <?php
-            }
-            ?>
-            
-        </table>
+                <?php 
+                foreach($showItems AS $a){ 
+                    ?>
+                    <tr>
+                        <td><small><?=$a['drugcode'];?></small></td>
+                        <td><small><?=$a['tradname'];?></small></td>
+                        <td><small><?=$a['genname'];?></small></td>
+                        <td><small><?=$a['officer'];?></small></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+            </table>
+        </div>
+        
     </div>
     <script src="bootstrap/js/bootstrap.bundle.js"></script>
+    <script type="text/javascript" src="js/jql.min.js"></script>
+    <script>
+        var jsonData = JSON.parse('<?=$jsObject;?>');
+
+        function findName(v){ 
+            var j = new JQL(jsonData);
+
+            if (v.length<3) {
+                var res123 = j.select('*').fetch();
+            }else{
+                var res1 = j.select('*').where('drugcode').contains(v).fetch();
+                var res2 = j.select('*').where('tradname').contains(v).fetch();
+                var res3 = j.select('*').where('genname').contains(v).fetch();
+                var res123 = res1.concat(res2,res3);
+            }
+            
+            if(res123.length==0){
+                return false;
+            }
+
+            var htmlTxt = getTemplate(res123);
+            document.getElementById('groupAllItem').innerHTML =htmlTxt;
+        }
+
+        function cleardata(){
+            document.getElementById('nameSearch').value='';
+
+            var j = new JQL(jsonData);
+            var res123 = j.select('*').fetch();
+            var htmlTxt = getTemplate(res123);
+            document.getElementById('groupAllItem').innerHTML =htmlTxt;
+        }
+
+        function getTemplate(res123){
+            var htmlTxt = '<table class="table table-striped table-hover"><tr><th>รหัสยา</th><th>ชื่อการค้า</th><th>ชื่อสามัญ</th><th>ผู้บันทึก</th></tr>';
+            for (var index = 0; index < res123.length; index++) {
+                var element = res123[index];
+                htmlTxt += '<tr><td><small>'+element.drugcode+'</small></td><td><small>'+element.tradname+'</small></td><td><small>'+element.genname+'</small></td><td><small>'+element.officer+'</small></td></tr>';
+            }
+            htmlTxt += '</table>';
+            return htmlTxt;
+        }
+    </script>
 </body>
 </html>
 <?php 

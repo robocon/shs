@@ -117,15 +117,16 @@ class Drugreact extends DbConnect{
 
         $userGroups = $this->getDrugreactFromHn($hn, array('groupname'), "AND groupname <> ''", 'GROUP BY groupname');
         $groupLists = array();
-        foreach ($userGroups as $v) {
-            $g = $this->getDrugreactGroup($v['groupname']);
-            $groupLists[] = $g;
-        }
-
-        if(empty($groupLists)){
+        
+        if(!$userGroups['error']){
+            foreach ($userGroups as $v) {
+                $g = $this->getDrugreactGroup($v['groupname']);
+                $groupLists[] = $g;
+            }
+        }else{
             $groupLists = $this->dbError();
         }
-
+        
         return $groupLists;
 
     }
