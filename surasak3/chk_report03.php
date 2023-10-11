@@ -85,7 +85,7 @@ LEFT JOIN (
 LEFT JOIN (
 	SELECT * FROM `opcardchk` WHERE `part` = '$showpart' 
 ) AS c ON c.`HN` = a.`hn` 
-ORDER BY c.`HN` ASC";
+ORDER BY c.`exam_no` ASC";
 
 $db->select($sql1);
 $out_result_rows = $db->get_rows();
