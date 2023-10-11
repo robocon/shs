@@ -1274,7 +1274,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		}
 		
 		$txt_react2 = implode(",",$txt_react);
-		$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
+		$txt_react2 = "ประวัติแพ้ยา&nbsp;:&nbsp;".$txt_react2;
 	}
 	
 
