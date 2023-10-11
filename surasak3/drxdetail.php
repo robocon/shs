@@ -248,7 +248,7 @@ print "<font face='Angsana New'>เลขที่บัตรประชาช
 // print "<font face='Angsana New'>โรค: $diagnosis<br>";
 
 // print "<font face='Angsana New' size=5 color=FF0000>ประวัติการแพ้ยา: ";
-$query12 = "SELECT drugcode,tradname,genname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
+$query12 = "SELECT drugcode,tradname,genname,advreact,asses,groupname FROM drugreact WHERE hn = '".$sHn."' ";
 $result12 = mysql_query($query12) or die("Query failed");
 $count_drugreact = mysql_num_rows($result12);
 // var_dump();
@@ -264,13 +264,14 @@ if ($count_drugreact>0) {
 ?>
 <table>
 	<tr style="background-color: #EC7063;">
-		<th colspan="5" ><a href="drugreact_new_add.php?page=show&hn=<?=$sHn;?>" title="เข้าหน้าแก้ไขแพ้ยา" target="_blank">ประวัติการแพ้ยา</a></th>
+		<th colspan="6" ><a href="drugreact_new_add.php?page=show&hn=<?=$sHn;?>" title="เข้าหน้าแก้ไขแพ้ยา" target="_blank">ประวัติการแพ้ยา</a></th>
 	</tr>
 	<tr style="background-color: #EC7063;">
 		<th>รหัสยา</th>
 		<th>ชื่อสามัญ</th>
 		<th>ชื่อการค้า</th>
 		<th>อาการ</th>
+		<th>กลุ่ม</th>
 		<th>ประเมินอาการ</th>
 	</tr>
 	<?php 
@@ -280,6 +281,15 @@ if ($count_drugreact>0) {
 		if ($a['sideeffects']) {
 			$sideeffects = ' ('.$a['sideeffects'].')';
 		}
+
+		$group_text = '';
+		$groupRes = mysql_query("SELECT * FROM drugreact_group WHERE name = '".$a['groupname']."' ");
+		if(mysql_num_rows($groupRes)>0){ 
+			$ga = mysql_fetch_assoc($groupRes);
+			$group_id = $ga['id'];
+			$group_name = $ga['name'];
+			$group_text = '<a href="javascript:void(0);" onclick="show_drugreact_group_list(\''.$group_id.'\')">'.$group_name.'</a>';
+		}
 		
 		?>
 		<tr style="background-color: #F5B7B1;">
@@ -287,14 +297,20 @@ if ($count_drugreact>0) {
 			<td><?=$a['tradname'];?></td>
 			<td><?=$a['genname'];?></td>
 			<td><?=$a['advreact'].$sideeffects;?></td>
+			<td><?=$group_text;?></td>
 			<td><?=$a['asses'];?></td>
 		</tr>
 		<?php
 	}
 	?>
 </table>
+<script>
+	function show_drugreact_group_list(id){
+		window.open('show_drugreact_group_list.php?id='+id,"openPopUp","width=800px,height=600px;");
+	}
+</script>
 <?php 
-}
+} // end ถ้ามี drugreact
 ?>
 <p style="margin-bottom:0;"><b>รายการสั่งยาจากแพทย์</b></p>
 <table>
