@@ -8,13 +8,9 @@ class Appoint extends DbConnect{
         parent::__construct();
     }
 
-    public function toEnDate($str){
-        dump($str);
-    }
-
     /**
      * รายชื่อผู้ป่วยนัดที่ไม่มาในวันนั้นๆ
-     * @param string $date รูปแบบไทย 
+     * @param string $date รูปแบบไทย YYYY-mm-dd
      * @return mixed $res
      */
     public function getDisAppoint($date=null){
@@ -29,9 +25,9 @@ class Appoint extends DbConnect{
         $enDate = ($matchs[1]-543).'-'.$matchs[2].'-'.$matchs[3];
 
         $sql = "SELECT a.*,b.vn FROM (
-        SELECT row_id,hn,ptname,room,detail,detail2 FROM appoint WHERE appdate_en = '$enDate' AND apptime != 'ยกเลิกการนัด'
+            SELECT row_id,hn,ptname,room,detail,detail2,depcode FROM appoint WHERE appdate_en = '$enDate' AND apptime != 'ยกเลิกการนัด'
         ) AS  a LEFT JOIN (
-        SELECT row_id,hn,ptname,vn FROM opday WHERE thidate LIKE '$date%' 
+            SELECT row_id,hn,ptname,vn FROM opday WHERE thidate LIKE '$date%' 
         ) AS b ON a.hn = b.hn 
         WHERE b.row_id IS NULL 
         ORDER BY a.room ASC";
