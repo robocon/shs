@@ -2,6 +2,11 @@
 session_start();
 include("connect.inc");
 mysql_query("SET NAMES UTF-8");
+
+require_once 'bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_drugreact.php';
+$drugreact = new Drugreact();
+
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
@@ -1263,6 +1268,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$drugreact_rows = mysql_num_rows($result);
 	$txt_react2 = '';
+	$drugreact_info = '';
 	if ($drugreact_rows>0) {
 		$i=0;
 		while(list($drugcode, $tradname, $genname) = mysql_fetch_row($result)){ 
@@ -1275,6 +1281,9 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		
 		$txt_react2 = implode(",",$txt_react);
 		$txt_react2 = "ประวัติแพ้ยา&nbsp;:&nbsp;".$txt_react2;
+
+		// แยกลิ้งแสดงประวัติแพ้ยาออกมาต่างหาก
+		$drugreact_info = '<a href="javascript:void(0);" onclick="show_drugreact_hn(\''.$hn.'\')" style="color:red;" title="คลิกเพื่อดูประวัติแพ้ยาทั้งหมด"><b>ประวัติแพ้ยา</b></a>&nbsp;:&nbsp;'.$txt_react2;
 	}
 	
 
@@ -1331,20 +1340,22 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
 		?>
 		<tr class="headsarabun">
         <td>
-			<font class="data_drugreact"><?php echo $txt_react2;?></font>
+			<font class="data_drugreact"><?php echo $drugreact_info;?></font>
+			<script>
+				// เปิด popup หน้าแพ้ยา
+				function show_drugreact_hn(hn){
+					window.open('show_drugreact_hn.php?hn='+hn, "WindowShowDrugreact","width=800,height=800");
+				}
+			</script>
 			<br>
 			<?php 
-			$sql = "SELECT b.* FROM (
-				SELECT groupname FROM drugreact WHERE hn = '$hn' AND groupname <> '' GROUP BY groupname
-			) AS a LEFT JOIN drugreact_group AS b ON a.groupname = b.name";
-			$res = mysql_query($sql);
-			$group_row = mysql_num_rows($res);
-			if ($group_row>0) {
+			$userGroup = $drugreact->getDrugreactGroupByHn($hn);
+			if (count($userGroup)>0) {
 				?>
 					<span class="txtsarabun"><b style="color: #000000; background-color: yellow; padding: 0 8px;">มีโอกาสแพ้ยาในกลุ่ม</b></span>
 					<?php
 					$i=1;
-					while ($a = mysql_fetch_assoc($res)) {
+					foreach($userGroup AS $a){ 
 						?>
 						<span class="txtsarabun"><?=$i;?>.) <a href="javascript:void(0);" onclick="show_drugreact_group_list('<?=$a['id'];?>')"><?=$a['name'];?></a></span><br>
 						<?php

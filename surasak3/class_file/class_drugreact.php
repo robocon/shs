@@ -105,6 +105,32 @@ class Drugreact extends DbConnect{
     }
 
     /**
+     * ค้นหาว่า hn ที่ส่งมามีแพ้ยาตามกลุ่มรึป่าวโดยจะ return เป็น id กับชื่อกลับไป
+     * @param string $hn 
+     * @return mixed $groupLists
+     */
+    public function getDrugreactGroupByHn($hn=null){
+
+        if(empty($hn)){
+            return "HN is required";
+        }
+
+        $userGroups = $this->getDrugreactFromHn($hn, array('groupname'), "AND groupname <> ''", 'GROUP BY groupname');
+        $groupLists = array();
+        foreach ($userGroups as $v) {
+            $g = $this->getDrugreactGroup($v['groupname']);
+            $groupLists[] = $g;
+        }
+
+        if(empty($groupLists)){
+            $groupLists = $this->dbError();
+        }
+
+        return $groupLists;
+
+    }
+
+    /**
      * รายการยาตามกลุ่มที่แพ้จาก drugreact_group
      * @param string $id    เลขของฟิลด์ drugreact_group
      * @return mixed $res
