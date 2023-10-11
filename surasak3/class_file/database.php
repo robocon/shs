@@ -14,6 +14,10 @@ class DbConnect{
         $this->dbi->query("SET NAMES UTF8");
     }
 
+    public function dbError(){
+        return array("error"=>400, "message"=>"Data not found ".$this->dbi->error);
+    }
+
     /**
      * @return string รูปแบบ Date Time ในปี พ.ศ. เช่น 2565-09-25 23:02:55 เป็นต้น
      */

@@ -519,7 +519,17 @@ if ( $page == 'search' ) {
                 <th colspan="2" width="10%">ดำเนินการ</th>
             </tr>
             <?php
-            while($ditem = mysql_fetch_array($dquery)){
+            while($ditem = mysql_fetch_array($dquery)){ 
+
+				$group_text = '';
+				$groupRes = mysql_query("SELECT * FROM drugreact_group WHERE name = '".$ditem['groupname']."' ");
+				if(mysql_num_rows($groupRes)>0){ 
+					$ga = mysql_fetch_assoc($groupRes);
+					$group_id = $ga['id'];
+					$group_name = $ga['name'];
+					$group_text = '<a href="javascript:void(0);" onclick="show_drugreact_group_list(\''.$group_id.'\')">'.$group_name.'</a>';
+				}
+
                 ?>
                 <tr style="background-color:#D5F5E3;">
                     <td align="center"><?=$ditem['drugcode'];?></td>
@@ -528,7 +538,7 @@ if ( $page == 'search' ) {
                     <td><?=$ditem['advreact'];?></td>
 					<td><?=$ditem['sideeffects'];?></td>
 					<td align="center"><?=$ditem['asses'];?></td>
-					<td align="center"><?=$ditem['groupname'];?></td>
+					<td align="center"><?=$group_text;?></td>
 					<td><?=$ditem['officer'];?></td>
 					<td><?=$ditem['officer1'];?></td>
 					<td align="center"><?=($ditem['g6pd']=='1') ? "&#9989;" : '' ;?></td>
@@ -539,6 +549,11 @@ if ( $page == 'search' ) {
             }
             ?>
         </table>
+		<script>
+			function show_drugreact_group_list(id){
+				window.open('show_drugreact_group_list.php?id='+id,"openPopUp","width=800px,height=600px;");
+			}
+		</script>
         <?php
     }else{
         ?>
