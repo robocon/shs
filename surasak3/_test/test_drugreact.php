@@ -1,6 +1,6 @@
 <?php 
-require_once 'bootstrap.php';
-require_once 'class_file/class_drugreact.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_drugreact.php';
 
 $hn = '47-4661';
 // $hn = '47-1';
