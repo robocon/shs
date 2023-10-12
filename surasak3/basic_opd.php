@@ -1265,7 +1265,7 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 	}	
 	
 	$hn = sprintf("%s", $_REQUEST["hn"]);
-	$sql = "Select drugcode, tradname, genname From drugreact where hn = '$hn' ";
+	$sql = "Select drugcode, tradname, genname From drugreact where hn = '$hn' AND advreact!='' AND g6pd IS NULL ";
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$drugreact_rows = mysql_num_rows($result);
 	$txt_react2 = '';
@@ -2366,6 +2366,12 @@ mmHg </td>
 		<tr valign="top">
 			<td align="right" valign="top" >HPI : </td>
 			<td> 
+			<?php 
+			// ถ้าเป็นห้องตา จนท.จะคีย์เอง ไม่ต้องเอาข้อมูลเดิมมาแสดง
+			if($_SESSION['smenucode'] == 'ADMEYE'){
+				$hpi = '';
+			}
+			?>
 			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 
 			

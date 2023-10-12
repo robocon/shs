@@ -162,7 +162,7 @@ if(!empty($cStkcutdate)) {
 	}
 	
 	$num1='0';
-	$query = "SELECT genname,tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn'";
+	$query = "SELECT genname,tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and ( drugcode!='' and advreact!='')";
 	$result = mysql_query($query) or die("Query drugreact failed");
 
 	if(mysql_num_rows($result)){
@@ -204,7 +204,7 @@ if(!empty($cStkcutdate)) {
 	}	
 	
 	$num3='0';
-	$query3 = "SELECT tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and sideeffects !=''";
+	$query3 = "SELECT tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and sideeffects !='' ";
 	$result3 = mysql_query($query3) or die("Query drugreact failed");
 
 	if(mysql_num_rows($result3)){

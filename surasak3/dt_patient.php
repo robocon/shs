@@ -164,7 +164,12 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ผู้ป่วยไม่แพ้ยา ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' AND g6pd IS NULL GROUP BY `drugcode` ";
+$sql = "SELECT drugcode, tradname,advreact,asses,genname,sideeffects 
+FROM drugreact 
+WHERE  hn = '".$_SESSION["hn_now"]."' 
+AND advreact != '' 
+AND g6pd IS NULL 
+GROUP BY `drugcode` ";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -238,8 +243,11 @@ if($rows > 0){
 
 
 //แพ้ยาตามกลุ่ม
-$sql1 = "Select distinct(groupname) as groupname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname !=''";
-//echo $sql1;
+$sql1 = "Select distinct(groupname) as groupname,advreact,asses 
+FROM drugreact 
+WHERE  hn = '".$_SESSION["hn_now"]."' 
+and groupname !='' 
+and sideeffects=''";
 $result1 = Mysql_Query($sql1);
 $rows1 = Mysql_num_rows($result1);
 if($rows1 > 0){ 
@@ -273,7 +281,7 @@ if($rows1 > 0){
 </TABLE>
 <script>
 	function showDrugreactGroup(id){
-		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=700,height=300,left=100,top=100');
+		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=800,height=600,left=100,top=100');
 	}
 </script>
 </TD>

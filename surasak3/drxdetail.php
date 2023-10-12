@@ -248,7 +248,7 @@ print "<font face='Angsana New'>เลขที่บัตรประชาช
 // print "<font face='Angsana New'>โรค: $diagnosis<br>";
 
 // print "<font face='Angsana New' size=5 color=FF0000>ประวัติการแพ้ยา: ";
-$query12 = "SELECT drugcode,tradname,genname,advreact,asses,groupname FROM drugreact WHERE hn = '".$sHn."' ";
+$query12 = "SELECT drugcode,tradname,genname,advreact,asses,groupname,sideeffects FROM drugreact WHERE hn = '".$sHn."' ";
 $result12 = mysql_query($query12) or die("Query failed");
 $count_drugreact = mysql_num_rows($result12);
 // var_dump();
@@ -264,7 +264,7 @@ if ($count_drugreact>0) {
 ?>
 <table>
 	<tr style="background-color: #EC7063;">
-		<th colspan="6" ><a href="drugreact_new_add.php?page=show&hn=<?=$sHn;?>" title="เข้าหน้าแก้ไขแพ้ยา" target="_blank">ประวัติการแพ้ยา</a></th>
+		<th colspan="7" ><a href="drugreact_new_add.php?page=show&hn=<?=$sHn;?>" title="เข้าหน้าแก้ไขแพ้ยา" target="_blank">ประวัติการแพ้ยา</a></th>
 	</tr>
 	<tr style="background-color: #EC7063;">
 		<th>รหัสยา</th>
@@ -273,14 +273,10 @@ if ($count_drugreact>0) {
 		<th>อาการ</th>
 		<th>กลุ่ม</th>
 		<th>ประเมินอาการ</th>
+		<th>ผลข้างเคียง</th>
 	</tr>
 	<?php 
 	while ($a = mysql_fetch_assoc($result12)) { 
-
-		$sideeffects = '';
-		if ($a['sideeffects']) {
-			$sideeffects = ' ('.$a['sideeffects'].')';
-		}
 
 		$group_text = '';
 		$groupRes = mysql_query("SELECT * FROM drugreact_group WHERE name = '".$a['groupname']."' ");
@@ -296,9 +292,10 @@ if ($count_drugreact>0) {
 			<td><?=$a['drugcode'];?></td>
 			<td><?=$a['tradname'];?></td>
 			<td><?=$a['genname'];?></td>
-			<td><?=$a['advreact'].$sideeffects;?></td>
+			<td><?=$a['advreact'];?></td>
 			<td><?=$group_text;?></td>
 			<td><?=$a['asses'];?></td>
+			<td><?=$a['sideeffects'];?></td>
 		</tr>
 		<?php
 	}

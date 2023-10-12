@@ -60,7 +60,7 @@ class Drugreact extends DbConnect{
         ) AS a 
         LEFT JOIN `drugreact_group` AS c ON c.`name` = a.`groupname`
         LEFT JOIN `drugreact_group_list` AS b ON c.`id` = b.`drugreact_group` 
-        WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$hn' AND drugcode != '' GROUP BY drugcode)";
+        WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$hn' AND drugcode != '' AND advreact != '' AND g6pd IS NULL  GROUP BY drugcode)";
         $q = $this->dbi->query($sql);
         if($q->num_rows>0){ 
             $items = array();

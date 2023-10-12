@@ -22,6 +22,11 @@ if($_POST["act"]=="add"){
 	$officer = $_SESSION['sOfficer'];
 
 	$g6pd = sprintf("%d", $_POST['G6PD']);
+	if($g6pd==1){
+		$g6pdField = "'1'";
+	}else{
+		$g6pdField = 'null';
+	}
 	
 	$advreact = implode(',', $_POST["advreact"]);
 	$advreact_other=trim($_POST["advreact_other"]);
@@ -47,7 +52,7 @@ if($_POST["act"]=="add"){
 	) VALUES (
 		NULL, '$hn', '$drugcode', '$tradname', '$advreact', '$asses', 
 		'$reporter', '$report_date', '$officer', '$genname', '$drugreact_group_name', '$sideeffects', 
-		'', '$g6pd' 
+		'', $g6pdField 
 	);";
 
 	//echo $edit;
@@ -329,17 +334,18 @@ function checkList(){
 			document.getElementById("genname").focus()
 			set_return = false;
 
-		}else if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
+		}
+		/*else if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
 			alert("กรุณาเลือกการประเมิน");
 			set_return = false;
 
-		}
+		}*/
 	}else{
-		if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
+		/*if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
 			alert("กรุณาเลือกการประเมิน");
 			set_return = false;
 
-		}
+		}*/
 	}
 	return set_return;
 }
@@ -646,12 +652,23 @@ if ( $page == 'search' ) {
 					</table>
 				</td>
                 <td valign="top">
-				<div><input type="radio" id="asses1" name="asses" value="1" class="fontsarabun"> 1= ใช่แน่นอน (Certain)</div>
-				<div><input type="radio" id="asses2" name="asses" value="2" class="fontsarabun"> 2= น่าจะใช่ (Probable)</div>
-				<div><input type="radio" id="asses3" name="asses" value="3" class="fontsarabun"> 3= อาจจะใช่ (Possible)</div>
-				<div><input type="radio" id="asses4" name="asses" value="4" class="fontsarabun"> 4= ไม่น่าใช่ (Unlikely)</div>
-				<div><input type="radio" id="asses5" name="asses" value="5" class="fontsarabun"> 5= ไม่สามารถระบุระดับ (Unclassified)</div>
-				<div><input type="radio" id="asses6" name="asses" value="Hx" class="fontsarabun"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
+				<div><input type="radio" id="asses1" name="asses" value="1" class="fontsarabun assesItem"> <label for="asses1">1= ใช่แน่นอน (Certain)</label></div>
+				<div><input type="radio" id="asses2" name="asses" value="2" class="fontsarabun assesItem"> <label for="asses2">2= น่าจะใช่ (Probable)</label></div>
+				<div><input type="radio" id="asses3" name="asses" value="3" class="fontsarabun assesItem"> <label for="asses3">3= อาจจะใช่ (Possible)</label></div>
+				<div><input type="radio" id="asses4" name="asses" value="4" class="fontsarabun assesItem"> <label for="asses4">4= ไม่น่าใช่ (Unlikely)</label></div>
+				<div><input type="radio" id="asses5" name="asses" value="5" class="fontsarabun assesItem"> <label for="asses5">5= ไม่สามารถระบุระดับ (Unclassified)</label></div>
+				<div><input type="radio" id="asses6" name="asses" value="Hx" class="fontsarabun assesItem"> <label for="asses6">Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</label></div>
+				<a href="javascript:void(0)" onclick="clearAsses()">[ล้างค่าตัวเลือก]</a>
+				<script>
+					function clearAsses(){
+						var assesLists = document.getElementsByClassName('assesItem');
+						for (var index = 0; index < assesLists.length; index++) {
+							var element = assesLists[index];
+							element.checked = false;
+							
+						}
+					}
+				</script>
 				</td>
             </tr>
 			<tr>
@@ -677,12 +694,23 @@ if ( $page == 'search' ) {
 					while ($a = $q->fetch_assoc()) {
 						?>
 						<label for="<?=$a['id'];?>">
-							<input type="radio" name="drugreact_group" id="<?=$a['id'];?>" value="<?=$a['id'];?>"> <?=$i.') '.$a['name'];?><br>
+							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>"> <?=$i.') '.$a['name'];?><br>
 						</label>
 						<?php
 						$i++;
 					}
 					?>
+					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
+					<script>
+						function clearGroup(){
+							var groupLists = document.getElementsByClassName('groupItem');
+							for (var index = 0; index < groupLists.length; index++) {
+								var element = groupLists[index];
+								element.checked = false;
+								
+							}
+						}
+					</script>
 				</td>
 			</tr>
 			<tr>
@@ -1023,12 +1051,23 @@ if (in_array("", $variable)){
 					</table>
 				</td>
                 <td valign="top">
-				<div><input type="radio" id="asses1" name="asses" value="1" <? if($dresult["asses"]=='1'){ echo "checked"; } ?> class="fontsarabun"> 1= ใช่แน่นอน (Certain)</div>
-				<div><input type="radio" id="asses2" name="asses" value="2" <? if($dresult["asses"]=='2'){ echo "checked"; } ?> class="fontsarabun"> 2= น่าจะใช่ (Probable)</div>
-				<div><input type="radio" id="asses3" name="asses" value="3" <? if($dresult["asses"]=='3'){ echo "checked"; } ?> class="fontsarabun"> 3= อาจจะใช่ (Possible)</div>
-				<div><input type="radio" id="asses4" name="asses" value="4" <? if($dresult["asses"]=='4'){ echo "checked"; } ?> class="fontsarabun"> 4= ไม่น่าใช่ (Unlikely)</div>
-				<div><input type="radio" id="asses5" name="asses" value="5" <? if($dresult["asses"]=='5'){ echo "checked"; } ?> class="fontsarabun"> 5= ไม่สามารถระบุระดับ (Unclassified)</div>
-				<div><input type="radio" id="asses6" name="asses" value="Hx" <? if($dresult["asses"]=='Hx'){ echo "checked"; } ?> class="fontsarabun"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
+				<div><input type="radio" id="asses1" name="asses" value="1" <? if($dresult["asses"]=='1'){ echo "checked"; } ?> class="fontsarabun assesItem"> 1= ใช่แน่นอน (Certain)</div>
+				<div><input type="radio" id="asses2" name="asses" value="2" <? if($dresult["asses"]=='2'){ echo "checked"; } ?> class="fontsarabun assesItem"> 2= น่าจะใช่ (Probable)</div>
+				<div><input type="radio" id="asses3" name="asses" value="3" <? if($dresult["asses"]=='3'){ echo "checked"; } ?> class="fontsarabun assesItem"> 3= อาจจะใช่ (Possible)</div>
+				<div><input type="radio" id="asses4" name="asses" value="4" <? if($dresult["asses"]=='4'){ echo "checked"; } ?> class="fontsarabun assesItem"> 4= ไม่น่าใช่ (Unlikely)</div>
+				<div><input type="radio" id="asses5" name="asses" value="5" <? if($dresult["asses"]=='5'){ echo "checked"; } ?> class="fontsarabun assesItem"> 5= ไม่สามารถระบุระดับ (Unclassified)</div>
+				<div><input type="radio" id="asses6" name="asses" value="Hx" <? if($dresult["asses"]=='Hx'){ echo "checked"; } ?> class="fontsarabun assesItem"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
+				<a href="javascript:void(0)" onclick="clearAsses()">[ล้างค่าตัวเลือก]</a>
+				<script>
+					function clearAsses(){
+						var assesLists = document.getElementsByClassName('assesItem');
+						for (var index = 0; index < assesLists.length; index++) {
+							var element = assesLists[index];
+							element.checked = false;
+							
+						}
+					}
+				</script>
 				</td>
             </tr>
 			<tr>
@@ -1061,12 +1100,23 @@ if (in_array("", $variable)){
 
 						?>
 						<label for="<?=$a['id'];?>">
-							<input type="radio" name="drugreact_group" id="<?=$a['id'];?>" value="<?=$a['id'];?>" <?=$checked;?> > <?=$i.') '.$a['name'];?><br>
+							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>" <?=$checked;?> > <?=$i.') '.$a['name'];?><br>
 						</label>
 						<?php
 						$i++;
 					}
 					?>
+					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
+					<script>
+						function clearGroup(){
+							var groupLists = document.getElementsByClassName('groupItem');
+							for (var index = 0; index < groupLists.length; index++) {
+								var element = groupLists[index];
+								element.checked = false;
+								
+							}
+						}
+					</script>
 				</td>
 			</tr>
 			<tr>

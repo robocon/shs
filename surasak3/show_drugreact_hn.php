@@ -11,14 +11,14 @@ if (empty($hn)) {
 }
 
 $drugreact = new Drugreact();
-$items = $drugreact->getDrugreactFromHn($hn);
+$items = $drugreact->getDrugreactFromHn($hn,null," AND advreact != '' AND g6pd IS NULL ");
 
 $opcard = new Opcard();
 $user = $opcard->getByHn($hn,array('hn','yot','name','surname'));
 $ptname = $user['yot'].$user['name'].' '.$user['surname'];
 
 $fields = array('groupname');
-$groupFromHn = $drugreact->getDrugreactFromHn($hn, $fields, "AND groupname <> ''", 'GROUP BY groupname');
+// $groupFromHn = $drugreact->getDrugreactFromHn($hn, $fields, "AND groupname <> ''", 'GROUP BY groupname');
 
 $drug = new Drug();
 ?>
@@ -56,40 +56,46 @@ $drug = new Drug();
             }
             ?>
         </table>
-
-        <h3>กลุ่มยาที่มีโอกาสแพ้</h3>
-        <div>
-            <?php 
-            foreach ($groupFromHn as $key => $g) { 
-                $group = $drugreact->getDrugreactGroup($g['groupname']);
-                $drugInGroup = $drugreact->getDrugreactGroupList($group['id']);
-                ?>
-                <h3><?=$g['groupname'];?></h3>
-                <table class="table table-striped table-hover">
-                    <tr class="table-warning">
-                        <th>รหัสยา</th>
-                        <th>ชื่อการค้า</th>
-                        <th>ชื่อสามัญ</th>
-                    </tr>
-                <?php
-                foreach ($drugInGroup as $keyDg => $dg) { 
-                    
-                    $dd = $drug->getDruglst($dg['drugcode'], array('tradname', 'genname'));
-                    
+        <?php 
+        $userGroup = $drugreact->getDrugreactGroupByHn($hn);
+        if(!$userGroup['error']){
+            ?>
+            <h3>กลุ่มยาที่มีโอกาสแพ้</h3>
+            <div>
+                <?php 
+                foreach ($userGroup as $key => $g) { 
+                    $drugInGroup = $drugreact->getDrugreactGroupList($group['id']);
                     ?>
-                    <tr>
-                        <td><small><?=$dg['drugcode'];?></small></td>
-                        <td><small><?=$dd['tradname'];?></small></td>
-                        <td><small><?=$dd['genname'];?></small></td>
-                    </tr>
+                    <h3><?=$g['name'];?></h3>
+                    <table class="table table-striped table-hover">
+                        <tr class="table-warning">
+                            <th>รหัสยา</th>
+                            <th>ชื่อการค้า</th>
+                            <th>ชื่อสามัญ</th>
+                        </tr>
+                    <?php
+                    foreach ($drugInGroup as $keyDg => $dg) { 
+                        
+                        $dd = $drug->getDruglst($dg['drugcode'], array('tradname', 'genname'));
+                        
+                        ?>
+                        <tr>
+                            <td><small><?=$dg['drugcode'];?></small></td>
+                            <td><small><?=$dd['tradname'];?></small></td>
+                            <td><small><?=$dd['genname'];?></small></td>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                    </table>
                     <?php
                 }
                 ?>
-                </table>
-                <?php
-            }
-            ?>
-        </div>
+            </div>
+            <?php
+        }
+        ?>
+        
     </div>
     <script src="bootstrap/js/bootstrap.bundle.js"></script>
     <?php 
