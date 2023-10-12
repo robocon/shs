@@ -19,7 +19,12 @@ $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
 // แจ้งเตือนแพ้ยา
-$sqldrugreact="SELECT * FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) GROUP BY `drugcode` ";
+$sqldrugreact="SELECT * 
+FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' 
+AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) 
+AND advreact != '' 
+AND g6pd IS NULL 
+GROUP BY `drugcode` ";
 $resultdrugreact =mysql_query($sqldrugreact) or die(mysql_error());
 $rowdg=mysql_num_rows($resultdrugreact);
 $drugreact_items = array();
@@ -1458,11 +1463,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	 */
 	$my_hn = $_SESSION['hn_now'];
 	$sql_react_group="SELECT b.* FROM ( 
-		SELECT `groupname` FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname` != '' GROUP BY `groupname`
+		SELECT `groupname` FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname`!='' AND sideeffects='' GROUP BY `groupname`
 	) AS a 
 	LEFT JOIN `drugreact_group` AS c ON c.`name` = a.`groupname`
 	LEFT JOIN `drugreact_group_list` AS b ON c.`id` = b.`drugreact_group` 
-	WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$my_hn' AND drugcode != '' GROUP BY drugcode)";
+	WHERE b.drugcode NOT IN ( 
+		SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$my_hn' AND drugcode!='' AND advreact!='' AND g6pd IS NULL GROUP BY drugcode 
+	)";
 	$q_group = mysql_query($sql_react_group);
 	$group_rows = mysql_num_rows($q_group);
 	$drugreact_group_list = array();

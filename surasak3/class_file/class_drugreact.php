@@ -60,7 +60,7 @@ class Drugreact extends DbConnect{
         ) AS a 
         LEFT JOIN `drugreact_group` AS c ON c.`name` = a.`groupname`
         LEFT JOIN `drugreact_group_list` AS b ON c.`id` = b.`drugreact_group` 
-        WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$hn' AND drugcode != '' GROUP BY drugcode)";
+        WHERE b.drugcode NOT IN (SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$hn' AND drugcode != '' AND advreact != '' AND g6pd IS NULL  GROUP BY drugcode)";
         $q = $this->dbi->query($sql);
         if($q->num_rows>0){ 
             $items = array();
@@ -102,6 +102,33 @@ class Drugreact extends DbConnect{
             $res = $this->dbError();
         }
         return $res;
+    }
+
+    /**
+     * ค้นหาว่า hn ที่ส่งมามีแพ้ยาตามกลุ่มรึป่าวโดยจะ return เป็น id กับชื่อกลับไป
+     * @param string $hn 
+     * @return mixed $groupLists
+     */
+    public function getDrugreactGroupByHn($hn=null){
+
+        if(empty($hn)){
+            return "HN is required";
+        }
+
+        $userGroups = $this->getDrugreactFromHn($hn, array('groupname'), "AND groupname <> ''", 'GROUP BY groupname');
+        $groupLists = array();
+        
+        if(!$userGroups['error']){
+            foreach ($userGroups as $v) {
+                $g = $this->getDrugreactGroup($v['groupname']);
+                $groupLists[] = $g;
+            }
+        }else{
+            $groupLists = $this->dbError();
+        }
+        
+        return $groupLists;
+
     }
 
     /**
