@@ -2366,6 +2366,12 @@ mmHg </td>
 		<tr valign="top">
 			<td align="right" valign="top" >HPI : </td>
 			<td> 
+			<?php 
+			// ถ้าเป็นห้องตา จนท.จะคีย์เอง ไม่ต้องเอาข้อมูลเดิมมาแสดง
+			if($_SESSION['smenucode'] == 'ADMEYE'){
+				$hpi = '';
+			}
+			?>
 			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 
 			
