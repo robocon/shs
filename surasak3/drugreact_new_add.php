@@ -760,7 +760,6 @@ if ( $page == 'search' ) {
 	$dresult = mysql_fetch_array($dquery);
 	
 	$variable=explode(",", $dresult["advreact"]);
-	//print_r($variable);
 	
 //--------------- ผื่นแพ้ยาลักษณะต่าง ๆ ------------//
 if (in_array("MP rash (maculopapular rash)", $variable)){
@@ -954,14 +953,53 @@ if (in_array("ชัก", $variable)){
 }
 //--------------- จบอาการทางระบบอื่น ๆ ------------//
 
-if (in_array("", $variable)){
-  $checkadvreact31="";
-}else{
- foreach ($variable as $key => $value) {	
-  $checkadvreact31=$value;
- }
-}
+// if (in_array("", $variable)){
+//   $checkadvreact31="";
+// }else{
+//  foreach ($variable as $key => $value) {	
+//   $checkadvreact31=$value;
+//  }
+// }
 
+$last_array = end($variable);
+$advreact_lists = array(
+"MP rash (maculopapular rash)",
+"Urticaria",
+"Fixed drug reaction",
+"SJS (Stevens Johnson Syndrome)",
+"TEN (Toxic epidermal necrolysis)",
+"DRESS (Drug rash with eosinophilia and systemic symptoms)",
+"AGEP (Acute generalized exanthematous pustulosis)",
+"ผื่นแดงราบ",
+"ผื่นแดงนูน",
+"ผื่นมีหัวหนองคล้ายสิว",
+"จุดแดงเลือดออกใต้ผิวหนัง",
+"ผื่นลมพิษ",
+"ผิวหนังและ/หรือเยื่อบุลอก",
+"คัน",
+"หายใจลำบาก",
+"หายใจไม่ออก",
+"หอบเหนื่อย",
+"หายใจมีเสียงหวีด",
+"ทางเดินหายใจส่วนบนมีการบวม",
+"เยื่อบุจมูกอักเสบ",
+"Hypotension(ความดันต่ำ)",
+"Angioedema(หน้าบวม ปาก ลิ้นและเพดานอ่อนบวม)",
+"เวียนศีรษะและ/หรือเป็นลม",
+"คลื่นไส้",
+"อาเจียน",
+"อุจจาระร่วง",
+"ปวดท้อง",
+"ปวดศีรษะ",
+"แน่นหน้าอก",
+"ชัก"
+);
+
+$checkadvreact31="";
+// ถ้า array ตัวสุดท้ายไม่มีในรายการ($advreact_lists) แสดงว่าอยู่ในช่องอื่นๆ
+if(!in_array($last_array, $advreact_lists)){
+	$checkadvreact31 = $last_array;
+}
 
 ?>
 <h3 align="center">ระบบแก้ไขข้อมูลการแพ้ยา</h3>
