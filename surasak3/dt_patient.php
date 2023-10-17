@@ -194,7 +194,15 @@ if($rows > 0){
 	</style>
 	<table width="100%">
 		<tr>
-			<td valign="top" width="5%"><b style="color:red;">แพ้ยา:</b></td>
+			<td valign="top" width="5%">
+				<b style="color:red;"><a href="javascript:void(0);" onclick="show_drugreact_hn('<?=$_SESSION['hn_now'];?>')">แพ้ยา</a>:</b>
+				<script>
+					// เปิด popup หน้าแพ้ยา
+					function show_drugreact_hn(hn){
+						window.open('show_drugreact_hn.php?hn='+hn, "WindowShowDrugreact","width=800,height=600");
+					}
+				</script>
+			</td>
 			<td>
 			<table width="100%" class="patient_drugreact">
 	<?php
@@ -433,7 +441,7 @@ if($row_diabet > 0){
 									}
 									?>
 									</span>
-									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="คลิกเพื่อแก้ไขข้อมูล" alt="แก้ไข"></a>
 								</td>
 								<td>
 									<span id="retinal<?=$id;?>"><?=$item['retinal'];?></span>
@@ -444,7 +452,7 @@ if($row_diabet > 0){
 									}
 									?>
 									</span>
-									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="คลิกเพื่อแก้ไขข้อมูล" alt="แก้ไข"></a>
 								</td>
 								<td>
 									<span id="tooth<?=$id;?>">

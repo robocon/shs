@@ -35,7 +35,7 @@ $drug = new Drug();
     if(!$items['error']){
     ?>
     <div class="">
-        <h3>ประวัติแพ้ยา <?=$ptname;?> (HN: <?=$user['hn'];?>)</h3>
+        <h3 class="mt-2">ประวัติแพ้ยา <?=$ptname;?> (HN: <?=$user['hn'];?>)</h3>
         <table class="table table-striped table-hover">
             <tr class="table-danger">
                 <th>รหัสยา</th>
@@ -60,38 +60,46 @@ $drug = new Drug();
         $userGroup = $drugreact->getDrugreactGroupByHn($hn);
         if(!$userGroup['error']){
             ?>
-            <h3>กลุ่มยาที่มีโอกาสแพ้</h3>
-            <div>
+            <h3 class="text-center">กลุ่มยาที่มีโอกาสแพ้</h3>
+            <table>
                 <?php 
                 foreach ($userGroup as $key => $g) { 
                     $drugInGroup = $drugreact->getDrugreactGroupList($group['id']);
                     ?>
-                    <h3><?=$g['name'];?></h3>
-                    <table class="table table-striped table-hover">
-                        <tr class="table-warning">
-                            <th>รหัสยา</th>
-                            <th>ชื่อการค้า</th>
-                            <th>ชื่อสามัญ</th>
-                        </tr>
-                    <?php
-                    foreach ($drugInGroup as $keyDg => $dg) { 
-                        
-                        $dd = $drug->getDruglst($dg['drugcode'], array('tradname', 'genname'));
-                        
-                        ?>
-                        <tr>
-                            <td><small><?=$dg['drugcode'];?></small></td>
-                            <td><small><?=$dd['tradname'];?></small></td>
-                            <td><small><?=$dd['genname'];?></small></td>
-                        </tr>
-                        <?php
-                    }
-                    ?>
-                    </table>
+                    <tr>
+                        <td>
+                            <h4 class="text-left" data-bs-toggle="collapse" data-bs-target="#table<?=$g['id'];?>" title="คลิกเพื่อดูรายละเอียดยาในกลุ่ม">
+                                <a href="javascript:void(0);"><?=$g['name'];?></a>
+                            </h4>
+                            <table class="table table-striped table-hover collapse" id="table<?=$g['id'];?>">
+                                <tr class="table-warning">
+                                    <th>รหัสยา</th>
+                                    <th>ชื่อการค้า</th>
+                                    <th>ชื่อสามัญ</th>
+                                </tr>
+                            <?php
+                            foreach ($drugInGroup as $keyDg => $dg) { 
+                                $dd = $drug->getDruglst($dg['drugcode'], array('tradname', 'genname'));
+                                ?>
+                                <tr>
+                                    <td><small><?=$dg['drugcode'];?></small></td>
+                                    <td><small><?=$dd['tradname'];?></small></td>
+                                    <td><small><?=$dd['genname'];?></small></td>
+                                </tr>
+                                <?php
+                            }
+                            ?>
+                            </table>
+                        </td>
+                    </tr>
                     <?php
                 }
                 ?>
-            </div>
+
+                
+
+            </table>
+
             <?php
         }
         ?>
