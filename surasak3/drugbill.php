@@ -112,7 +112,8 @@ $chkdate=substr($Thaidate,0,10);
 
 				echo "ราคารวม  ".number_format($totalpay,strlen(strstr($totalpay,"."))-1, '.', ',')." บาท(เบิกไม่ได้ ".number_format($netpay,strlen(strstr($netpay,"."))-1, '.', ',')." บาท , เบิกได้ ".number_format($netfree,strlen(strstr($netfree,"."))-1, '.', ',')." บาท)<br> ";
 
-				$sql = "Select drugcode, tradname, genname, advreact  From drugreact where hn='".$_GET["hn"]."' ";
+				$my_hn = sprintf("%s", $_GET["hn"]);
+				$sql = "Select drugcode, tradname, genname, advreact  From drugreact where hn='$my_hn' AND advreact != '' ";
 				$result = Mysql_Query($sql);
 				if(Mysql_num_rows($result) > 0){
 					?>
@@ -133,6 +134,24 @@ $chkdate=substr($Thaidate,0,10);
 					<?php
 				}
 
+				$sql = "SELECT `groupname`,advreact,asses FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname` != '' GROUP BY `groupname`";
+				$result = mysql_query($sql);
+				if(mysql_num_rows($result)>0){
+				?>
+				<table>
+					<tr>
+						<td><b style="color:red;">แพ้ยาตามกลุ่ม</b></td>
+					</tr>
+					<?php 
+					while ($a = mysql_fetch_assoc($result)) {
+						?>
+						<tr><td><?=$a['groupname'];?>...<?=$a['advreact'].'('.$a['asses'].')';?></td></tr>
+						<?php
+					}
+					?>
+				</table>
+				<?php
+				}
 
 				echo "บันทึก <U>".$idname."</U>&nbsp;";
 				echo "คิดราคา............&nbsp;";

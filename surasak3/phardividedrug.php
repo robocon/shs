@@ -63,6 +63,10 @@ font-size: 16 px;
 	font-weight: bold;
 
 }
+p,ol{
+	margin:0;
+	padding;0;
+}
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -175,7 +179,7 @@ if($_SESSION["num_list"] > 0)
 </TR>
 <TR>
 	<TD align="right">Diag : </TD>
-	<TD bgcolor="#FFFFBC" colspan="5"><?php echo $arr["diagnos"];?></TD>
+	<TD bgcolor="#FFFFBC" colspan="5"><?php echo $arr["diagnos"];?><font color="#FF0033" size="1"><div style='margin-left:10px;'>*** ห้ามมีสัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งจ่ายยาในระบบไม่ได้ <span style='color:blue;'>แก้ไขชื่อโรคกรุณาติดต่อหอผู้ป่วย</span> ***</div></font></TD>
 </TR>
 </TABLE>
 <INPUT TYPE="hidden" name="age" value ="<?php echo $arr["age"];?>">
@@ -183,22 +187,45 @@ if($_SESSION["num_list"] > 0)
 </TR>
 </TABLE>
 <TABLE align="center"   cellspacing="4" cellpadding="0" width="80%">
-<TR>
-	<TD>
-		<?php 
-			$sql = "Select drugcode,  tradname , advreact  From drugreact where hn = '".$arr["hn"]."' ";
-			$result = Mysql_Query($sql);
-			$rows = Mysql_num_rows($result);
-			if($rows> 0){
-				echo "<FONT COLOR=\"red\">แพ้ยาทั้งหมด ".$rows." รายการ<BR>";
-				while(list($drugcode,  $tradname , $advreact) = Mysql_fetch_row($result)){
-					echo "[",$drugcode,"] : ", $tradname , " อาการ : ",$advreact,"<BR>";
+	<TR>
+		<TD>
+			<?php 
+				$sql = "Select drugcode,  tradname , advreact  From drugreact where hn = '".$arr["hn"]."' AND advreact != '' ";
+				$result = Mysql_Query($sql);
+				$rows = Mysql_num_rows($result);
+				if($rows> 0){
+					echo "<FONT COLOR=\"red\">แพ้ยาทั้งหมด ".$rows." รายการ<BR>";
+					while(list($drugcode,  $tradname , $advreact) = Mysql_fetch_row($result)){
+						echo "[",$drugcode,"] : ", $tradname , " อาการ : ",$advreact,"<BR>";
+					}
+					echo "</FONT>";
 				}
-				echo "</FONT>";
+			?>
+		</TD>
+	</TR>
+	<?php 
+	$sql = "SELECT `groupname`,advreact,asses FROM `drugreact` WHERE `hn` = '".$arr["hn"]."' AND `groupname` != '' GROUP BY `groupname`";
+	$result = mysql_query($sql);
+	if(mysql_num_rows($result)>0){
+	?>
+	<tr>
+		<td>
+			<br>
+			<p style="color:red;"><b>แพ้ยาตามกลุ่ม</b></p>
+			<ol>
+			<?php 
+			while ($a = mysql_fetch_assoc($result)) {
+				?>
+				<li><?=$a['groupname'];?>...<?=$a['advreact'].'('.$a['asses'].')';?></li>
+				<?php
 			}
-		?>
-	</TD>
-</TR>
+			?>
+			</ol>
+		</td>
+	</tr>
+	<?php
+	}
+	?>
 </TABLE>
 
 <BR>
