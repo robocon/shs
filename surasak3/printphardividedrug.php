@@ -478,7 +478,7 @@ for($i=0;$i<$item;$i++){
 		$_SESSION["drugbill"] .= "</table>";
 		
 		$arr_drugreact=array();
-		$sql = "Select drugcode, tradname  From drugreact where hn='".$_POST["Hn"]."' ";
+		$sql = "Select drugcode, tradname  From drugreact where hn='".$_POST["Hn"]."' AND advreact != '' ";
 				$result = Mysql_Query($sql);
 				if(Mysql_num_rows($result) > 0){
 					while($arr = Mysql_fetch_assoc($result)){
@@ -510,15 +510,25 @@ for($i=0;$i<$item;$i++){
 
 		$_SESSION["drugbill"] .="ราคารวม  ".number_format($totalpay,strlen(strstr($totalpay,"."))-1, '.', ',')." บาท(เบิกไม่ได้ ".number_format($netpay,strlen(strstr($netpay,"."))-1, '.', ',')." บาท , เบิกได้ ".number_format($netfree,strlen(strstr($netfree,"."))-1, '.', ',')." บาท)<br><BR> ";
 		
-		$sql = "Select drugcode, tradname, genname, advreact  From drugreact where hn='".$_POST["Hn"]."' ";
-				$result = Mysql_Query($sql);
-				if(Mysql_num_rows($result) > 0){
-					$_SESSION["drugbill"] .='<table><tr><td colspan="4"><b>รายการแพ้ยา</b></td></tr>';
-					while($arr = Mysql_fetch_assoc($result)){
-							$_SESSION["drugbill"] .="<tr><td>".$arr["drugcode"]."&nbsp;&nbsp;</td><td>&nbsp;&nbsp;".$arr["tradname"]."</td><td>&nbsp;&nbsp;".$arr["genname"]."</td><td>&nbsp;&nbsp;".$arr["advreact"]."</td></tr>";
-					}
-					$_SESSION["drugbill"] .="</table><BR>";
-				}
+		$sql = "Select drugcode, tradname, genname, advreact  From drugreact where hn='".$_POST["Hn"]."' AND advreact != '' ";
+		$result = Mysql_Query($sql);
+		if(Mysql_num_rows($result) > 0){
+			$_SESSION["drugbill"] .='<table><tr><td colspan="4"><b><u>รายการแพ้ยา</u></b></td></tr>';
+			while($arr = Mysql_fetch_assoc($result)){
+					$_SESSION["drugbill"] .="<tr><td>".$arr["drugcode"]."&nbsp;&nbsp;</td><td>&nbsp;&nbsp;".$arr["tradname"]."</td><td>&nbsp;&nbsp;".$arr["genname"]."</td><td>&nbsp;&nbsp;".$arr["advreact"]."</td></tr>";
+			}
+			$_SESSION["drugbill"] .="</table><BR>";
+		}
+		$my_hn = sprintf("%s", $_POST["Hn"]);
+		$sql = "SELECT `groupname`,advreact,asses FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname` != '' GROUP BY `groupname`";
+		$result = mysql_query($sql);
+		if(mysql_num_rows($result)>0){ 
+			$_SESSION["drugbill"] .='<table><tr><td><b><u>แพ้ยาตามกลุ่ม</u></b></td></tr>'; 
+			while ($a = mysql_fetch_assoc($result)) {
+				$_SESSION["drugbill"] .='<tr><td>'.$a['groupname'].'...'.$a['advreact'].' ('.$a['asses'].')</td></tr>';
+			}
+			$_SESSION["drugbill"] .='</table>'; 
+		}
 
 		$_SESSION["drugbill"] .="ผู้บันทึกข้อมูล <U>".$_SESSION["sOfficer"]."</U>&nbsp;&nbsp;";
 		$_SESSION["drugbill"] .="ผู้คิดราคา....................&nbsp;&nbsp;";
