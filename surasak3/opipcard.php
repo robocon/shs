@@ -40,8 +40,14 @@ $aRunno_an=$row->runno;
 $aRunno_an++;
 $vAN=$vPrefix.$aRunno_an;
 
+
+$sql112 = "Select thidate From opday where thdatehn = '$thdatehn' order by row_id desc limit 1 ";
+$result112 = Mysql_Query($sql112);
+list($admit_date) = Mysql_fetch_row($result112);	
+
+
 $sql = "INSERT INTO ipcard (date,an,hn)
-              VALUES('$thidate','$vAN','$cHn');";
+              VALUES('$admit_date','$vAN','$cHn');";
 
 $result = mysql_query($sql) or die("หมายเลข AN $vAN ซ้ำ    ไม่สามารถบันทึกได้    โปรดทำรับป่วยใหม่ !");
 
@@ -63,7 +69,6 @@ print "  $cPtname<br>";
 print "สิทธิการรักษา : $cPtright<br>";
 // print "<a target=_TOP  href=\"dcsum.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY<br> ";
 // print "<a target=_TOP  href=\"dcsum.1.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARYแบบใหม่<br><br>";
-print "<br>";
 
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank'  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span><br>";
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank'  href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span><br><br>";
