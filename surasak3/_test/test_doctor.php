@@ -6,8 +6,8 @@ $dt = new Doctor();
 // $id = 1;
 // $res = $dt->getExamTable($id);
 
-$doctorcode = '';
-$res = $dt->getAllDoctor($doctorcode);
+// $doctorcode = '';
+// $res = $dt->getAllDoctor($doctorcode);
 
 // $dataPost = array(
 //     'name' => 'AAA',
@@ -19,4 +19,8 @@ $res = $dt->getAllDoctor($doctorcode);
 //     'type' => 'สูติ',
 // );
 // $res = $dt->saveExamTable($dataPost);
+
+
+$res = $dt->saveExamTable();
+
 dump($res);

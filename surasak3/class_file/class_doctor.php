@@ -18,7 +18,7 @@ class Doctor extends DbConnect{
         if($doctor_id != null){
             $where = "AND doctorcode = '$doctor_id'";
         }
-        $q = $this->dbi->query("SELECT * FROM doctor WHERE status = 'y' $where ");
+        $q = $this->dbi->query("SELECT * FROM doctor WHERE status = 'y' AND doctorcode IS NOT NULL AND name NOT LIKE 'HD%' $where ORDER BY row_id ASC");
         $rows = $q->num_rows;
         if($rows==1){
             $res = $q->fetch_assoc();
@@ -36,7 +36,25 @@ class Doctor extends DbConnect{
     }
 
     /**
-     * 
+     * แสดงคลินิกจาก f43_clinic
+     */
+    public function getAllClinic(){
+        $q = $this->dbi->query("SELECT * FROM f43_clinic ORDER BY id ASC");
+        if( $q->num_rows > 0){
+            $items = array();
+            while ($a = $q->fetch_assoc()) {
+                $items[] = $a;
+            }
+            $res = $items;
+        }else{
+            $res = $this->dbError();
+        }
+        return $res;
+    }
+
+    /**
+     * ดึงข้อมูลใน exam_doctor
+     * @param string $id    OPTIONAL DATA
      */
     public function getExamTable($id=null){
 
@@ -47,7 +65,7 @@ class Doctor extends DbConnect{
 
         $q = $this->dbi->query("SELECT * FROM exam_doctor $where");
         $rows = $q->num_rows;
-        if($rows > 1){
+        if($rows > 0 && $id===null){
             $items = array();
             while ($a = $q->fetch_assoc()) {
                 $items[] = $a;
@@ -64,8 +82,67 @@ class Doctor extends DbConnect{
 
     }
 
-    public function saveExamTable($data=null){
-        return $data;
+    /**
+     * บันทึกข้อมูล(insert/update)ในตาราง exam_table
+     * name ชื่อหมอ
+     * doctor_id เลขที่ ว.
+     * day วันที่เป็น array ให้ดูจาก date('w')
+     * detail รายละเอียด
+     * time_start เวลาที่เริ่ม
+     * time_end เวลาที่ตรวจเสร็จ
+     * clinic คลินิก
+     * @param mixed $a 
+     */
+    public function saveExamTable($a=null){ 
+
+        $dt = $this->getAllDoctor($a['doctor']);
+        $name = $dt['name'];
+        $doctor_id = $dt['doctorcode'];
+
+        $day = implode(',', $a['dataDays']);
+        $time_start = $a['start_hour'].':'.$a['end_hour'];
+        $time_end = $a['start_min'].':'.$a['end_min'];
+        
+        if($a['formStatus']==='save'){
+            $sql = "INSERT INTO `exam_doctor` (
+                `id`, `name`, `doctor_id`, `day`, `detail`, `time_start`, `time_end`, `clinic`
+            ) VALUES ( 
+                NULL, '$name', '$doctor_id', '$day', '".$a['detail']."', '$time_start', '$time_end', '".$a['clinic']."' 
+            );";
+
+        }else if($a['formStatus']==='update'){ 
+
+            $id = $a['id'];
+
+            $sql = "UPDATE`exam_doctor` SET 
+            `name`='$name', 
+            `doctor_id`='$doctor_id', 
+            `day`='$day', 
+            `detail`='".$a['detail']."', 
+            `time_start`='$time_start', 
+            `time_end`='$time_end', 
+            `clinic`='".$a['clinic']."' 
+            WHERE (`id`='$id');";
+        }
+
+        $save = $this->dbi->query($sql);
+        return $save;
+    }
+
+    /**
+     * ลบข้อมูลใน exam_doctor
+     * @param string $id
+     */
+    public function removeExamtaTable($id=null){
+        $res = $this->getExamTable($id);
+        if(!$res['error']){
+            $q = $this->dbi->query("DELETE FROM exam_doctor WHERE id = '$id' ");
+            $res = array('status'=>200, 'message'=>'ลบข้อมูลเรียบร้อย');
+            if($q==false){
+                $res = array('error'=>400,'message'=> $this->dbi->error);
+            }
+        }
+        return $res;
     }
 
 }
