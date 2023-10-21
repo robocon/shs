@@ -101,10 +101,12 @@ $sql = "Select name,position,doctorcode From doctor where name like '".$dt_docto
 list($appoint_doctor,$dr_position,$doctorcode) = Mysql_fetch_row(Mysql_Query($sql));
 
 // 
-$sql = "SELECT day FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
+$sql = "SELECT day,time_start,time_end,clinic FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
 $q = $dbi->query($sql);
 $all_days_exam = array();
+$days_exam = array();
 while ($a = $q->fetch_assoc()) {
+	$days_exam[] = $a;
 	$day_explode = explode(',', $a['day']);
 	foreach ($day_explode as $b) {
 		$all_days_exam[$b] = $b;
@@ -349,7 +351,7 @@ if(!checkdate  ( $month + 1, $today  , $year  )){
 
 	$dt_encode = rawurlencode($dt_doctor);
 
-echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
+echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\" style=\"float:left;\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
 <a href=\"javascript:void(0);\" Onclick=\"show_carlendar('$dt_encode&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."');\">&lt;</a>
 </td>
@@ -449,7 +451,7 @@ for ($i=0; $i<=6; $i++) {
 
          echo "<td width=\"50\" align=\"center\" class=\"".$class."\">$displayExam<A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\"  ".$holiday_detail.">$iday</A>";
 		  if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
-			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
+			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		  else
 			 echo "<BR>&nbsp;";
 
@@ -558,7 +560,45 @@ for ($j=0; $j<=4; $j++) {
    }
 }
 
-echo "</table></TD>
+echo "</table>";
+?>
+<div style="float:left; margin-left:8px;">
+<p style="margin:0;padding:0;"><b>วัน เวลาออกตรวจ</b></p>
+<table border="1">
+	<tr>
+		<th>#</th>
+		<th>วัน</th>
+		<th>เวลา</th>
+	</tr>
+	<?php 
+	$th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
+	$ex_i = 1;
+	foreach ($days_exam as $d) { 
+
+		$dList = explode(',', $d['day']);
+		
+		?>
+		<tr valign="top">
+			<td><?=$ex_i;?></td>
+			<td>
+				<?php 
+				$dlItem = array(); 
+				foreach ($dList as $dl) {
+					$dlItem[] = $th_days[$dl];
+				}
+				echo implode(', ', $dlItem);
+				?>
+			</td>
+			<td><?=$d['time_start'];?>-<?=$d['time_end'];?></td>
+		</tr>
+		<?php
+		$ex_i++;
+	}
+	?>
+</table>
+</div>
+<?php
+echo "</TD>
 </TR>";
 
 if( $dr_position == '99 เวชปฏิบัติ' ){
