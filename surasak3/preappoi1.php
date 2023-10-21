@@ -563,39 +563,45 @@ for ($j=0; $j<=4; $j++) {
 echo "</table>";
 ?>
 <div style="float:left; margin-left:8px;">
-<p style="margin:0;padding:0;"><b>วัน เวลาออกตรวจ</b></p>
-<table border="1">
-	<tr>
-		<th>#</th>
-		<th>วัน</th>
-		<th>เวลา</th>
-	</tr>
-	<?php 
-	$th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
-	$ex_i = 1;
-	foreach ($days_exam as $d) { 
-
-		$dList = explode(',', $d['day']);
-		
-		?>
-		<tr valign="top">
-			<td><?=$ex_i;?></td>
-			<td>
-				<?php 
-				$dlItem = array(); 
-				foreach ($dList as $dl) {
-					$dlItem[] = $th_days[$dl];
-				}
-				echo implode(', ', $dlItem);
-				?>
-			</td>
-			<td><?=$d['time_start'];?>-<?=$d['time_end'];?></td>
-		</tr>
-		<?php
-		$ex_i++;
-	}
+<?php 
+if(count($days_exam)>0){
 	?>
-</table>
+	<p style="margin:0;padding:0;"><b>วัน-เวลาออกตรวจ</b></p>
+	<table class="chk_table">
+		<tr style="background-color: #13795b; color: #ffffff;">
+			<th>#</th>
+			<th>วัน</th>
+			<th>เวลา</th>
+		</tr>
+		<?php 
+		$th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
+		$ex_i = 1;
+		foreach ($days_exam as $d) { 
+
+			$dList = explode(',', $d['day']);
+			
+			?>
+			<tr valign="top">
+				<td><?=$ex_i;?></td>
+				<td>
+					<?php 
+					$dlItem = array(); 
+					foreach ($dList as $dl) {
+						$dlItem[] = $th_days[$dl];
+					}
+					echo implode(', ', $dlItem);
+					?>
+				</td>
+				<td><?=$d['time_start'];?>-<?=$d['time_end'];?></td>
+			</tr>
+			<?php
+			$ex_i++;
+		}
+		?>
+	</table>
+	<?php
+}
+?>
 </div>
 <?php
 echo "</TD>
@@ -801,6 +807,15 @@ body,td,th {
 
 -->
 .examday{ position: absolute; left: 0; top: 0; width:10px; height:4px; background-color: green;}
+    .chk_table{
+        border-collapse: collapse;
+    }
+    .chk_table th,
+    .chk_table td{
+        padding: 3px;
+        border: 1px solid black;
+		font-size: 18px;
+    }
 	.today { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #C6B3FF; color: #000000;  }
 	.sunday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FF9393; color: #FFFFFF; position: relative;}
 	.saturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #000000; position: relative;}
