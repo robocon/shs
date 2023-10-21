@@ -97,9 +97,20 @@ if($_GET["action"] == "carlendar"){
 
 $dr_position = '';
 $appoint_doctor = '';
-$sql = "Select name,position From doctor where name like '".$dt_doctor."%' limit 1 ";
-list($appoint_doctor,$dr_position) = Mysql_fetch_row(Mysql_Query($sql));
+$sql = "Select name,position,doctorcode From doctor where name like '".$dt_doctor."%' limit 1 ";
+list($appoint_doctor,$dr_position,$doctorcode) = Mysql_fetch_row(Mysql_Query($sql));
 
+// 
+$sql = "SELECT day FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
+$q = $dbi->query($sql);
+$all_days_exam = array();
+while ($a = $q->fetch_assoc()) {
+	$day_explode = explode(',', $a['day']);
+	foreach ($day_explode as $b) {
+		$all_days_exam[$b] = $b;
+	}
+}
+ksort($all_days_exam);
 
 /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 และกำหนด $diffMinute เป็น 15 */
 $diffHour = 0;
@@ -397,10 +408,14 @@ for ($i=0; $i<=6; $i++) {
 		$data_count = 'data-count="'.$intern_total.'"';
 	}
 
+	$displayExam = '';
+	if (in_array($i, $all_days_exam)===true) {
+		$displayExam = '<div class="examday"></div>';
+	}
 
       if ($i == 0 ) {
       //กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
-         echo "<td width=\"50\" valign=\"top\" align=\"center\" class=\"sunday\"><A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" >$iday</A>";
+         echo "<td width=\"50\" valign=\"top\" align=\"center\" class=\"sunday\">$displayExam<A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" >$iday</A>";
 		 if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		 else
@@ -411,7 +426,7 @@ for ($i=0; $i<=6; $i++) {
 		 echo "</td>\n";
       }else  if ($i == 6 ) {
       //กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
-         echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" >$iday</A>";
+         echo "<td width=\"50\" align=\"center\" class=\"saturday\">$displayExam<A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" >$iday</A>";
 		  if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		  else
@@ -432,7 +447,7 @@ for ($i=0; $i<=6; $i++) {
 
 
 
-         echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\"  ".$holiday_detail.">$iday</A>";
+         echo "<td width=\"50\" align=\"center\" class=\"".$class."\">$displayExam<A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\"  ".$holiday_detail.">$iday</A>";
 		  if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 			 echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 		  else
@@ -481,6 +496,12 @@ for ($j=0; $j<=4; $j++) {
 
 			$holiday_detail = "";
 			if ($iday <= $Lday) {
+				
+				$displayExam = '';
+				if (in_array($i, $all_days_exam)===true) {
+					$displayExam = '<div class="examday"></div>';
+				}
+
 			if ($i == 0 ) {
 				if($holiday["A".sprintf("%02d",$iday)]["date"]){
 					$class = "sunday";
@@ -488,7 +509,7 @@ for ($j=0; $j<=4; $j++) {
 				  }else{
 					$class = "norm";
 				  }
-				echo "<td width=\"50\" align=\"center\" class=\"sunday\"><A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail.">$iday</A>";
+				echo "<td width=\"50\" align=\"center\" class=\"sunday\">$displayExam<A class=\"sunday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail.">$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 						
@@ -502,7 +523,7 @@ for ($j=0; $j<=4; $j++) {
 				  }else{
 					$class = "norm";
 				  }
-				echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail." >$iday</A>";
+				echo "<td width=\"50\" align=\"center\" class=\"saturday\">$displayExam<A class=\"saturday countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail." >$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				
@@ -516,7 +537,7 @@ for ($j=0; $j<=4; $j++) {
 				  }else{
 					$class = "norm";
 				  }
-				echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail." >$iday</A>";
+				echo "<td width=\"50\" align=\"center\" class=\"".$class."\">$displayExam</div><A class=\"".$class." countnum\" $intern_limit $data_count href=\"javascript:void(0);\" data-date=\"".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."\" ".$holiday_detail." >$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
 						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-80,-150);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				
@@ -739,11 +760,11 @@ body,td,th {
 }
 
 -->
-
+.examday{ position: absolute; left: 0; top: 0; width:10px; height:4px; background-color: green;}
 	.today { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #C6B3FF; color: #000000;  }
-	.sunday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FF9393; color: #FFFFFF; }
-	.saturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #000000; }
-	.norm     { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #000000; }
+	.sunday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FF9393; color: #FFFFFF; position: relative;}
+	.saturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #000000; position: relative;}
+	.norm     { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #000000; position: relative;}
 	.link_calendar { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #000000; }
 	.total_appointnorm { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FFFFFF; color: #FF0000; text-decoration:none;}
 	.total_appointsunday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #FF9393; color: #FF0000;
