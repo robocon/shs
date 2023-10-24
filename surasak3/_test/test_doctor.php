@@ -18,9 +18,12 @@ $dt = new Doctor();
 //     'time_end' => '12:00',
 //     'type' => 'สูติ',
 // );
-// $res = $dt->saveExamTable($dataPost);
+$dataPost = [
+    'doctor' => '00000'
+];
+$res = $dt->saveExamTable($dataPost);
 
 
-$res = $dt->saveExamTable();
+// $res = $dt->saveExamTable();
 
 dump($res);

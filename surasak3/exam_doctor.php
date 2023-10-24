@@ -1,8 +1,9 @@
 <?php 
-require_once 'bootstrap.php';
-include_once 'includes/JSON.php';
-require_once 'class_file/class_doctor.php';
-
+require_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+require_once dirname(__FILE__).'/class_file/class_doctor.php';
+// phpinfo();
+// exit;
 $dt = new Doctor();
 $json = new Services_JSON();
 

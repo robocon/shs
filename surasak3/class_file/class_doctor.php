@@ -8,6 +8,20 @@ class Doctor extends DbConnect{
         parent::__construct();
     }
 
+    public function getDoctorFromCode($doctor_code=null){
+        if(empty($doctor_code)){
+            return array('error'=>400,'msg'=> 'Doctorcode is required');
+        }
+
+        $q = $this->dbi->query("SELECT * FROM doctor WHERE doctorcode = '$doctor_code' ORDER BY row_id ASC LIMIT 1 ; ");
+        if($q->num_rows > 0){
+            $res = $q->fetch_assoc();
+        }else{
+            $res = $this->dbError();
+        }
+        return $res;
+    }
+
     /**
      * แสดงรายชื่อแพทย์ทั้งหมด
      * @param string $doctor_id เลข ว. ของหมอ
@@ -95,7 +109,7 @@ class Doctor extends DbConnect{
      */
     public function saveExamTable($a=null){ 
 
-        $dt = $this->getAllDoctor($a['doctor']);
+        $dt = $this->getDoctorFromCode($a['doctor']);
         $name = $dt['name'];
         $doctor_id = $dt['doctorcode'];
 
