@@ -96,6 +96,28 @@ class Doctor extends DbConnect{
 
     }
 
+    public function getExamTableFromDoctorId($doctorId=null){
+
+        if(empty($doctorId)){
+            return array('error'=>400, 'message'=> 'Doctor Id is required');
+        }
+
+        $sql = "SELECT * FROM exam_doctor WHERE doctor_id = '$doctorId' ";
+        
+        $q = $this->dbi->query($sql);
+        if($q->num_rows > 0){
+            $items = array();
+            while ($a = $q->fetch_assoc()) { 
+                $items[] = $a;
+            }
+            $res = $items;
+        }else{
+            $res = $this->dbError();
+        }
+        return $res;
+
+    }
+
     /**
      * บันทึกข้อมูล(insert/update)ในตาราง exam_table
      * name ชื่อหมอ

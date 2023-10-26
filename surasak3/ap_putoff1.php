@@ -1,18 +1,14 @@
 <?php
-	session_start();
-	include("connect.inc");
-
-	function dump($txt){
-		echo "<pre>";
-		var_dump($txt);
-		echo "</pre>";
-	}
+session_start();
+include("connect.inc");
+// อ้างอิงจาก: date('w')
+$th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
+<title>โปรแกรมเลื่อนนัด</title>
 <style type="text/css">
 .font3 {
 	font-family: "TH SarabunPSK";
@@ -54,13 +50,9 @@ function CheckAll() {
   <tr>
     <td>วันที่
 		<?php 
-
-		$month = array(1=>'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-		$currMonth = date('m');
-
-		$dSelect = !empty($_POST['d']) ? $_POST['d'] : sprintf('%02d', date('d')) ;
-		$mSelect = !empty($_POST['m']) ? $_POST['m'] : $month[$currMonth] ;
-		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : (date('Y')+543) ;
+		$dSelect = !empty($_POST['d']) ? $_POST['d'] : '' ;
+		$mSelect = !empty($_POST['m']) ? $_POST['m'] : '' ;
+		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : '' ;
 		?>
       <select name="d">
         <option value="0">-</option>
@@ -70,41 +62,50 @@ function CheckAll() {
 			$selected = ($a==$dSelect) ? 'selected="selected"' : '' ;
 			?>
 			<option value="<?=$a?>" <?=$selected;?>><?=$a?></option>
-			<?php
+			<?
 		}
-		?>
+	?>
         </select>
       เดือน
       <select name="m">
-        <?php
-		
-		foreach($month AS $k => $m){
-			$selected = ($m==$mSelect) ? 'selected="selected"' : '' ;
-			?><option value="<?=$m?>" <?=$selected;?>><?=$m?></option><?php
+        <?
+		$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+		for($a=1;$a<13;$a++){
+			// $b = sprintf('%02d', $a);
+			$selected = ($month[$a]===$mSelect) ? 'selected="selected"' : '' ;
+			?>
+			<option value="<?=$month[$a]?>" <?=$selected;?>><?=$month[$a]?></option>
+			<?
 		}
 		?>
         </select>
       พ.ศ.
       <select name="yr">
         <?
-		$year = date("Y")+543;
-		for($a=($year-5);$a<($year+5);$a++){
-			?>
-			<option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>><?=$a?></option>
-			<?php
-		}
-		?>
+	$year = date("Y")+543;
+	for($a=($year-5);$a<($year+5);$a++){
+	?>
+        <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>>
+          <?=$a?>
+          </option>
+        <?
+	}
+	?>
       </select></td>
     </tr>
   <tr>
     <td>แพทย์
+	<?php 
+	$post_dr = $_POST['dr'];
+	?>
       <select name="dr">
-        <?
+        <?php
 	$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-	while($objResult = mysql_fetch_array($objQuery)){
+	while($objResult = mysql_fetch_array($objQuery)){ 
+		$selected = ($post_dr==$objResult["name"]) ? 'selected="selected"' : '' ;
 	?>
-        <option value="<?=$objResult["name"];?>">
+        <option value="<?=$objResult["name"];?>" <?=$selected;?> >
           <?=$objResult["name"];?>
           </option>
         <?
@@ -123,16 +124,12 @@ function CheckAll() {
 
 $doctor111 =substr($_POST['dr'],0,5);
 
-	if(isset($_POST['okbtn'])){ 
-
-		$kMonth = array_keys($month, $_POST['m']);
-		$enDate = ($_POST['yr']-543)."-".$kMonth['0']."-".$_POST['d'];
-
-		// $sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
-		$sql = "select * from appoint where appdate_en = '$enDate' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
+	if(isset($_POST['okbtn'])){
+		$sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
 		
 		$row = mysql_query($sql);
 		$num1 = mysql_num_rows($row);
+		//echo $sql ;
 		
 		if($num1>0){
 			echo "<form action='ap_putoff1.php' method='post' class='font1' name='form12'>";
@@ -155,8 +152,42 @@ $doctor111 =substr($_POST['dr'],0,5);
 				echo "<td>".$result['apptime']."</td>";
 				echo "<td align='center'><input name='ch".$i."' id='ch".$i."' type='checkbox' value='".$result['row_id']."' ></td></tr>";
 			}?>
-			</table><br />
-			เลื่อนนัดเป็นวันที่ <input name="datenew" type="text"  size="5"/>
+			</table>
+			
+			<?php 
+			$sql = "SELECT * FROM exam_doctor WHERE name='$post_dr' ";
+			$q = mysql_query($sql);
+			if(mysql_num_rows($q)>0){ 
+				?>
+				<p style="margin-bottom:0;"><b>ตารางออกตรวจของแพทย์ <?=$post_dr;?></b></p>
+				<table border="1" style="border-collapse:collapse">
+					<tr style="background-color: green; color: white;">
+						<th>วัน</th>
+						<th>เวลา</th>
+					</tr>
+					<?php 
+					while($row = mysql_fetch_array($q)){
+					?>
+					<tr>
+						<td>
+							<?php 
+							$days = explode(',', $row['day']);
+							foreach($days as $day){
+								echo $th_days[$day].' ';
+							}
+							?>
+						</td>
+						<td><?=$row['time_start'].' - '.$row['time_end'];?></td>
+					</tr>
+					<?php 
+					}
+					?>
+				</table>
+				<?php
+			}
+			?>
+			<br />
+			เลื่อนนัดเป็นวันที่ <input name="datenew" type="text" size="5" required/>
 			 <select name="monnew">
 			  <?
 			$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
@@ -291,6 +322,9 @@ if(isset($_POST['ok2'])){
 		
 		if(isset($_POST['ch'.$a])){
 			$sql1 = "select * from appoint where row_id ='".$_POST['ch'.$a]."' ";
+			// echo "<pre>";
+			// var_dump($sql1);
+			// echo "</pre>";
 			$row1 = mysql_query($sql1);
 			$result1 = mysql_fetch_array($row1);
 

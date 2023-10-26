@@ -576,7 +576,7 @@ if(count($days_exam)>0){
 	?>
 	<p style="margin:0;padding:0;"><b>วัน-เวลาออกตรวจ</b></p>
 	<table class="chk_table">
-		<tr style="background-color: #13795b; color: #ffffff;">
+		<tr style="background-color: #13795b; color: #ffffff; line-height: 12px;">
 			<th>#</th>
 			<th>วัน</th>
 			<th>เวลา</th>
