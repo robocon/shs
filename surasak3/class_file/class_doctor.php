@@ -22,6 +22,18 @@ class Doctor extends DbConnect{
         return $res;
     }
 
+    public function getDoctorFromMdName($name){
+
+        $q = $this->dbi->query("SELECT * FROM doctor WHERE name = '$name' ORDER BY row_id ASC LIMIT 1 ; ");
+        if($q->num_rows > 0){
+            $res = $q->fetch_assoc();
+        }else{
+            $res = $this->dbError();
+        }
+        return $res;
+
+    }
+
     /**
      * แสดงรายชื่อแพทย์ทั้งหมด
      * @param string $doctor_id เลข ว. ของหมอ

@@ -1,8 +1,27 @@
 <?php
-session_start();
+// session_start();
+include_once 'bootstrap.php';
+include_once 'class_file/class_appoint.php';
+include_once 'class_file/class_doctor.php';
+
 include("connect.inc");
-// อ้างอิงจาก: date('w')
+
+$app = new Appoint();
+$doctor = new Doctor();
+
 $th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
+
+
+$page = $_REQUEST['page'];
+if($page==='loadCalendar'){ 
+	$doctorCode=$_REQUEST['id'];
+	$today=$_REQUEST['today'];
+	$dfMonth=$_REQUEST['dfMonth'];
+	$dfYear=$_REQUEST['dfYear'];
+	$app->getCalendar($doctorCode,$today,$dfMonth,$dfYear);
+	exit;
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -129,7 +148,6 @@ $doctor111 =substr($_POST['dr'],0,5);
 		
 		$row = mysql_query($sql);
 		$num1 = mysql_num_rows($row);
-		//echo $sql ;
 		
 		if($num1>0){
 			echo "<form action='ap_putoff1.php' method='post' class='font1' name='form12'>";
@@ -153,64 +171,41 @@ $doctor111 =substr($_POST['dr'],0,5);
 				echo "<td align='center'><input name='ch".$i."' id='ch".$i."' type='checkbox' value='".$result['row_id']."' ></td></tr>";
 			}?>
 			</table>
+
+			<fieldset>
+				<legend>
+					<h3 style="margin:0;">เลื่อนนัดเป็นวันที่</h3>
+				</legend>
 			
-			<?php 
-			$sql = "SELECT * FROM exam_doctor WHERE name='$post_dr' ";
-			$q = mysql_query($sql);
-			if(mysql_num_rows($q)>0){ 
+			<div id="test_calendar_main">
+				<?php 
+				$test = $doctor->getDoctorFromMdName($post_dr);
+				echo $app->getCalendar($test['doctorcode']);
 				?>
-				<p style="margin-bottom:0;"><b>ตารางออกตรวจของแพทย์ <?=$post_dr;?></b></p>
-				<table border="1" style="border-collapse:collapse">
-					<tr style="background-color: green; color: white;">
-						<th>วัน</th>
-						<th>เวลา</th>
-					</tr>
-					<?php 
-					while($row = mysql_fetch_array($q)){
-					?>
-					<tr>
-						<td>
-							<?php 
-							$days = explode(',', $row['day']);
-							foreach($days as $day){
-								echo $th_days[$day].' ';
-							}
-							?>
-						</td>
-						<td><?=$row['time_start'].' - '.$row['time_end'];?></td>
-					</tr>
-					<?php 
-					}
-					?>
-				</table>
-				<?php
-			}
-			?>
-			<br />
-			เลื่อนนัดเป็นวันที่ <input name="datenew" type="text" size="5" required/>
-			 <select name="monnew">
-			  <?
-			$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-			for($a=1;$a<13;$a++){
-			?>
-			  <option value="<?=$month[$a]?>"><?=$month[$a]?></option>
-			  <?
-			}
-			?>
-			</select>
-			<select name="yrnew">
-		  <?
-		$year = date("Y")+543;
-		for($a=($year-5);$a<($year+5);$a++){
-		?>
-		  <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>>
-		  <?=$a?>
-		  </option>
-		  <?
-		}
-		?>
-		</select>
-			<br />
+			</div>
+			<script>
+                // สร้าง ajax ไป get content กลับมาแสดงผลใน id=test_calendar_main
+                function request_calendar(selector, path) { 
+                    var request = new XMLHttpRequest();
+                    request.open('GET', path, true);
+                    request.onreadystatechange = function () {
+                        if (this.readyState === 4) {
+                            if (this.status >= 200 && this.status < 400) {
+                                document.getElementById(selector).innerHTML = request.responseText;
+                            } else {
+                                // Error :(
+                            }
+                        }
+                    };
+                    request.send();
+                }
+                // default function ที่เรียกใช้ตาราง
+                function show_carlendar(url){
+                    request_calendar('test_calendar_main','ap_putoff1.php?page=loadCalendar&'+url);
+                }
+            </script>
+
+			</fieldset>
 			<br />
 เวลา
 <?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
@@ -305,17 +300,23 @@ if(isset($_POST['ok2'])){
 	
 	$labcode= array();
 	$dateadd = (date("Y")+543).date("-m-d H:i:s");
-	$_POST['datenew']=($_POST['datenew']+0);
-	if($_POST['datenew']<10){ 
-		$_POST['datenew'] = "0".$_POST['datenew'];
-	}
+
+	$dateAppoint = sprintf("%s", $_POST['date_appoint']);
+	list($datenew,$monnew,$yrnew) = explode(' ', sprintf("%s", $_POST['date_appoint']));
+
+	// $_POST['datenew']=($_POST['datenew']+0);
+	// if($_POST['datenew']<10){ 
+	// 	$_POST['datenew'] = "0".$_POST['datenew'];
+	// }
 	
-	$newdate = $_POST['datenew']." ".$_POST['monnew']." ".$_POST['yrnew'];
+	// $newdate = $_POST['datenew']." ".$_POST['monnew']." ".$_POST['yrnew'];
+	$newdate = $dateAppoint;
 	$count = $_POST['count'];
 
 
-	$month = array_keys($def_fullm_th, $_POST['monnew']);
-	$appdate_en = ($_POST['yrnew']-543).'-'.$month['0'].'-'.sprintf('%02d', $_POST['datenew']);
+	$month = array_keys($def_fullm_th, $monnew);
+	// $appdate_en = ($_POST['yrnew']-543).'-'.$month['0'].'-'.sprintf('%02d', $_POST['datenew']);
+	$appdate_en = ($yrnew-543).'-'.$month['0'].'-'.$datenew;
 	
 
 	for($a=0; $a<=$count; $a++){

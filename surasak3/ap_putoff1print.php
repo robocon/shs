@@ -15,9 +15,8 @@ $sum = count($_SESSION['putid']);
 		$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 		$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
   
-  		$doctor=substr($doctor,5);
-
-   		$depcode=substr($depcode,4);
+		$doctor=substr($doctor,5);
+		$depcode=substr($depcode,3);
 
 		?>
 		<div style="position: absolute;top: 0;right: 0;"><img src="printQrCode.php?hn=<?=$cHn;?>&margin=1"></div>
