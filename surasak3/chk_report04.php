@@ -86,7 +86,6 @@ LEFT JOIN (
 ) AS c ON c.`HN` = a.`hn` 
 WHERE a.`part` = '$showpart' 
 ORDER BY c.`exam_no` ASC";
-var_dump($sql1);
 
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
@@ -99,6 +98,8 @@ if( $out_result_rows == 0 ){
 $extraSQL = " AND `labnumber` NOT LIKE '63%' ";
 
 while($result = mysql_fetch_assoc($row2)){
+
+	$register = $result['register'];
 
 	$age = $result["age"];
 	if(empty($age)){
@@ -292,20 +293,42 @@ while($result = mysql_fetch_assoc($row2)){
 									</span>
 
 <?php 
-$sql = "SELECT sex FROM opcard WHERE hn = '' LIMTI 1";
+$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMTI 1";
+$q = $dbi->query($sql);
+$opcard = $q->fetch_assoc();
+$sex = ($opcard['sex']==='ช') ? 1 : 0 ;
 
-$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '' LIMTI 1";
+$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '$hn' LIMTI 1";
+$q = $dbi->query($sql);
+$diabetes = 0;
+if($q->num_rows > 0){
+	$diabetes = 1;
+}
 
-$sql = "SELECT round_ FROM dxofyear_out WHERE thdatehn= '' LIMIT 1";
+$thDateHn = substr($register, 1,10).$hn;
+$sql = "SELECT round_ FROM dxofyear_out WHERE thdatehn= '$thDateHn' LIMIT 1";
+$q = $dbi->query($sql);
+$whtr = 0;
+if($q->num_rows > 0){
+	$dxOfYear = $q->fetch_assoc();
+	$whtr = $dxOfYear['round'];
+}
 
 // Test เปรียบเทียบกับ https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/
-$age = 54; // age
-$sex = 0;
-$sbp = 150; // bp1
-$diabetes = 0;
-$smoke = 0; // $result['cigga'];
-$whtr = 98; // เป็นนิ้วคูณ 0.393701 แต่ในนี้ใส่เป็น cmได้เลย
-$height = 158;
+// $age = 54; // age
+// $sex = 0;
+// $sbp = 150; // bp1
+// $diabetes = 0;
+// $smoke = 0; // $result['cigga'];
+// $whtr = 98; // เป็นนิ้วคูณ 0.393701 แต่ในนี้ใส่เป็น cmได้เลย
+// $height = 158;
+
+$height = $result['height'];
+$smoke = 0;
+if($result['cigga']!='ปฏิเสธ' && $result['cigga']!='ไม่สูบ'){
+	$smoke = 1;
+} 
+$sbp = $bp1;
 
 //HDC
 $FullScore = 0;

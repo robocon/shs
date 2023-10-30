@@ -1,6 +1,13 @@
-<?
-session_start();
-include("connect.inc");
+<?php 
+include_once dirname(__FILE__).'/bootstrap.php';
+
+$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+mysql_select_db(DB, $Conn) or die( mysql_error() );
+mysql_query("SET NAMES UTF8", $Conn);
+
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
+
 ?>
 <style type="text/css">
 hr{
@@ -41,8 +48,11 @@ hr{
 	font-size: 16px;
 }
 </style>
-<?
+<?php
 if(isset($_POST['hn'])){
+
+	$hn = sprintf("%s", $_POST['hn']);
+
 	$select = "select * from opcard where idcard = '".$_POST['hn']."'";
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
@@ -151,13 +161,16 @@ if(isset($_POST['hn'])){
 	?>
 </table>
 <?
-}elseif(isset($_GET['ids'])){
+}elseif(isset($_GET['ids'])){ 
+
 	$detail = "select * from condxofyear_out where row_id = '".$_GET['ids']."' ";
 	$result = Mysql_Query($detail);
 	$arrs = Mysql_fetch_assoc($result);
+
+	$hn = $arrs['hn'];
 	?>
 <script language="javascript">
-		window.print();
+		// window.print();
 	</script>
 	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
 	<tr>
@@ -337,12 +350,19 @@ if(isset($_POST['hn'])){
 	$select = "select * from condxofyear_out where row_id='".$_GET['id']."'";
 	$row = mysql_query($select);
 	$result = mysql_fetch_array($row);
-
+	// dump($result);
+	$hn = $result['hn'];
+	// $cigga = $result['cigga'];
+	// dump($result['cigga']);
+	list($ageInt, $etc) = explode(' ', $result['age'],2);
+	// dump($ageInt);
 	$thdatehn = $result['thdatehn'];
-	$sql_dxofyear = "SELECT `bp21`,`bp22` FROM `dxofyear_out` WHERE `thdatehn` = '$thdatehn' ";
+	$sql_dxofyear = "SELECT round_,`bp21`,`bp22`,cigarette FROM `dxofyear_out` WHERE `thdatehn` = '$thdatehn' ";
 	$q_dx = mysql_query($sql_dxofyear);
 	$dxofyear = mysql_fetch_assoc($q_dx);
-
+	$round = $dxofyear['round_'];
+	$cigga = $dxofyear['cigarette'];
+	dump($dxofyear['cigarette']);
 	
 	//ปีก่อน
 	$select5 = "select * from condxofyear_out where hn='".$result['hn']."' and yearcheck='".($nPrefix2-1)."' order by row_id desc";
@@ -351,7 +371,7 @@ if(isset($_POST['hn'])){
 	if(!isset($_GET['no'])){
 	?>
 <script language="javascript">
-		window.print();
+		// window.print();
 	</script>
     <?
 	}
@@ -460,6 +480,104 @@ C ํ</span></td>
 	<td colspan="6" valign="top" class="text3">
 		<strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?><? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?>
 		&nbsp; <strong class="text3">ค่า BMI : </strong><?=$result['stat_bmi']?><? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?>
+		<?php
+		$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMIT 1";
+		$q = $dbi->query($sql);
+		$opcard = $q->fetch_assoc();
+		$sex = ($opcard['sex']==='ช') ? 1 : 0 ;
+		
+		$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '$hn' LIMIT 1";
+		$q = $dbi->query($sql);
+		$diabetes = 0;
+		if($q->num_rows > 0){
+			$diabetes = 1;
+		}
+		
+		// $thDateHn = substr($register, 1,10).$hn;
+		// $sql = "SELECT round_ FROM dxofyear_out WHERE thdatehn= '$thDateHn' LIMIT 1";
+		// dump($sql);
+		// $q = $dbi->query($sql);
+		$waist = $round;
+		// if($q->num_rows > 0){
+		// 	$dxOfYear = $q->fetch_assoc();
+		// 	$waist = $dxOfYear['round_'];
+		// }
+
+		// Test เปรียบเทียบกับ https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/
+// $age = 54; // age
+// $sex = 0;
+// $sbp = 150; // bp1
+// $diabetes = 0;
+// $smoke = 0; // $result['cigga'];
+// $whtr = 98; // เป็นนิ้วคูณ 0.393701 แต่ในนี้ใส่เป็น cmได้เลย
+// $height = 158;
+
+$height = (int) $result['height'];
+$smoke = $cigga;
+// if($cigga!='ปฏิเสธ' && $cigga!='ไม่สูบ'){
+// 	$smoke = 1;
+// } 
+$sbp = $result['bp1'];
+$age = $ageInt;
+dump('waist: '.$waist);
+dump('age: '.$age);
+dump('sex: '.$sex);
+dump('sbp: '.$sbp);
+dump('diabetes: '.$diabetes);
+dump('height: '.$height);
+dump('smoke: '.$smoke);
+
+
+$waist=$waist*2.54;
+
+//--------- ไม่มีผลเลือด -----------//
+$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
+			
+$y=$fullscore-7.720484;	
+$x=0.978296;
+
+$y=exp($y);
+$z=pow($x,$y);
+
+$final=(1-$z)*100;
+
+$pfullscore=number_format($final,2);
+dump($pfullscore);
+
+
+//HDC
+// $FullScore = 0;
+// $FullScore += 0.079*$age;
+// $FullScore += 0.128*$sex;
+// $FullScore += 0.019350987*$sbp;
+// $FullScore += 0.58454*$diabetes;
+// $FullScore += 3.512566*($whtr/$height);
+// $FullScore += 0.459*$smoke;
+// var_dump($FullScore);
+// echo "<hr>";
+
+// $preexp = $FullScore-7.720484;
+// var_dump($preexp);
+// echo "<hr>";
+
+// $exp = exp($preexp);
+// var_dump($exp);
+// echo "<hr>";
+
+// $pow = 0.978296 ** $exp; //ใช้แทน pow ใน PHP >= 5.6.x
+// var_dump($pow);
+// echo "<hr>";
+
+// $prePersent = 1-$pow;
+// var_dump($prePersent);
+// echo "<hr>";
+
+// $PFullScore = $prePersent * 100;
+// var_dump($PFullScore);
+// echo "<hr>";
+exit;
+		?>
+		<b class="text3">CV Risk Score: </b>
 	</td>
 </tr>
   </table></td></tr></table></td>
