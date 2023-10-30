@@ -12,6 +12,22 @@ session_unregister("thdatehn");
 session_unregister("cNote");
 session_unregister("Ptright1");
 //    session_destroy();
+
+if(empty($_SESSION["sOfficer"])){
+    echo "Session หมดอายุ กรุณา Login ใหม่อีกครั้งเพื่อใช้งาน";
+    exit;
+}
+
+$disableUser = array(
+'ตรวจสุขภาพประจำปี',
+'ตรวจสุขภาพลูกจ้าง',
+'ตรวจสุขภาพทหารประจำปี',
+'ตรวจสุขภาพประกันสังคม'
+);
+if(in_array($_SESSION["sOfficer"], $disableUser)===true){
+    echo "ผู้ใช้งานถูกปิดกั้นการเข้าถึงเนื่องจากไม่สามารถระบุตัวตนได้ หากท่านยืนยันที่จะใช้ user ดังกล่าว กรุณาติดต่อผู้อำนวยการโรงพยาบาลเพื่อทำเรื่องการเข้าถึงข้อมูล";
+    exit;
+}
 ?>
 <style>
 body {
@@ -145,6 +161,7 @@ function checkForm(){
 
 				$linksmall="<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd3.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบไม่มี VN</div></button>";
 
+            // ADMNEWCHKUP
             $allow_depart = array('ADM','ADMCOM','ADMNHSO','ADMMAINOPD');
             $test_depart = in_array($_SESSION["smenucode"], $allow_depart);
 
