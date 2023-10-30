@@ -446,28 +446,36 @@ if(isset($_POST['hn']) && $_POST['action'] === "searchHn" ){
         <strong>
         <?=$hn?>
         </strong>       ชื่อ-สกุล : 
-      <strong><input name="newname" type="text" class="pdxhead" value="<?=$ptname?>" /></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>&nbsp;&nbsp; อายุ: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
+      <strong>
+		<input name="newname" type="text" class="pdxhead" value="<?=$ptname?>" /></strong>  &nbsp;&nbsp; หน่วย:    <strong><?=$part;?></strong>&nbsp;&nbsp; อายุ: <input name="age" type="text" size="5" class="pdxhead" value="<?=$age;?>" /></td>
       </tr>
     <tr>
-      <td class="pdx">น้ำหนัก  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  กก. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ส่วนสูง <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> 
-        ซม. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP  
-        <input name="bp1" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp1']?>"/> / <input name="bp2" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp2']?>"/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Repeat-BP
-<input name="bp3" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp3']?>"/>
-/
-<input name="bp4" type="text" class="pdxhead" id="bp4"  value="<?=$arrchk['bp4']?>" size="5"/></td>
+      <td class="pdx">น้ำหนัก  <input name="weight" type="text" size="5" class="pdxhead" value="<?=$arrchk['weight']?>" />  กก. 
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ส่วนสูง <input name="height" type="text" size="5" class="pdxhead"   value="<?=$arrchk['height']?>"  /> ซม. 
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BP <input name="bp1" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp1']?>"/> / <input name="bp2" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp2']?>"/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Repeat-BP<input name="bp3" type="text" size="5" class="pdxhead"  value="<?=$arrchk['bp3']?>"/>/<input name="bp4" type="text" class="pdxhead" id="bp4"  value="<?=$arrchk['bp4']?>" size="5"/></td>
     </tr>
     <tr>
       <td class="pdx"> T
         <input name="temp" type="text" size="5" class="pdxhead" id="temp" value="<?=$arrchk['temp']?>" />
-        &nbsp;&nbsp;&nbsp;&nbsp;P  
-        <input name="p" type="text" size="5" class="pdxhead" value="<?=$arrchk['p']?>" /> ครั้ง/นาที&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R <input name="rate" type="text" size="5" class="pdxhead"   value="<?=$arrchk['rate']?>"  /> 
-        ครั้ง/นาที&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;โรคประจำตัว  
-        <input name="prawat" type="text" size="22" class="pdxhead"  value="<?=$arrchk['prawat']?>"/></td>
+        &nbsp;&nbsp;&nbsp;&nbsp;P <input name="p" type="text" size="5" class="pdxhead" value="<?=$arrchk['p']?>" /> ครั้ง/นาที
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R <input name="rate" type="text" size="5" class="pdxhead"   value="<?=$arrchk['rate']?>"  /> ครั้ง/นาที
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;โรคประจำตัว  <input name="prawat" type="text" size="22" class="pdxhead"  value="<?=$arrchk['prawat']?>"/>
+	</td>
       </tr>	  
     <tr>
-      <td class="pdx">สูบบุหรี่  <input name="cigga" type="text" size="5" class="pdxhead" value="<?=$arrchk['cigga']?>" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ดื่มสุรา <input name="alcohol" type="text" size="5" class="pdxhead"   value="<?=$arrchk['alcohol']?>"  />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกกำลังกาย  <input name="exercise" type="text" size="5" class="pdxhead"  value="<?=$arrchk['exercise']?>"/>&nbsp;&nbsp;&nbsp;&nbsp;แพ้ยา  <input name="allergic" type="text" size="13" class="pdxhead"  value="<?=$arrchk['allergic']?>"/></td>
-      </tr>	    
+      <td class="pdx">
+		สูบบุหรี่  <input name="cigga" type="text" size="5" class="pdxhead" value="<?=$arrchk['cigga']?>" />
+	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ดื่มสุรา <input name="alcohol" type="text" size="5" class="pdxhead"   value="<?=$arrchk['alcohol']?>"  />
+	  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ออกกำลังกาย  <input name="exercise" type="text" size="5" class="pdxhead"  value="<?=$arrchk['exercise']?>"/>
+	  &nbsp;&nbsp;&nbsp;&nbsp;แพ้ยา  <input name="allergic" type="text" size="13" class="pdxhead"  value="<?=$arrchk['allergic']?>"/>
+	</td>
+      </tr>
+	  <tr>
+		<td>
+			รอบเอว <input type="text" name="waist" value="" >
+		</td>
+	  </tr>
 		<tr>
 			<td>
 				<table width="924" id="chk_details">

@@ -350,19 +350,16 @@ if(isset($_POST['hn'])){
 	$select = "select * from condxofyear_out where row_id='".$_GET['id']."'";
 	$row = mysql_query($select);
 	$result = mysql_fetch_array($row);
-	// dump($result);
 	$hn = $result['hn'];
-	// $cigga = $result['cigga'];
-	// dump($result['cigga']);
 	list($ageInt, $etc) = explode(' ', $result['age'],2);
-	// dump($ageInt);
 	$thdatehn = $result['thdatehn'];
+
 	$sql_dxofyear = "SELECT round_,`bp21`,`bp22`,cigarette FROM `dxofyear_out` WHERE `thdatehn` = '$thdatehn' ";
 	$q_dx = mysql_query($sql_dxofyear);
 	$dxofyear = mysql_fetch_assoc($q_dx);
 	$round = $dxofyear['round_'];
+	$waist = $round; // เอาไปใช้คำนวณ cv risk score
 	$cigga = $dxofyear['cigarette'];
-	dump($dxofyear['cigarette']);
 	
 	//ปีก่อน
 	$select5 = "select * from condxofyear_out where hn='".$result['hn']."' and yearcheck='".($nPrefix2-1)."' order by row_id desc";
@@ -370,14 +367,13 @@ if(isset($_POST['hn'])){
 	$result5 = mysql_fetch_array($row5);
 	if(!isset($_GET['no'])){
 	?>
-<script language="javascript">
+	<script language="javascript">
 		// window.print();
 	</script>
     <?
 	}
 	
-$chkyear=substr($_GET["chkyear"],2);
-//echo $chkyear;	
+$chkyear=substr($_GET["chkyear"],2);	
 $sql1="CREATE TEMPORARY TABLE  result1  
 Select * from  resulthead  
 WHERE hn='".$result['hn']."' 
@@ -430,9 +426,9 @@ $query1 = mysql_query($sql1);
   <td width="10%" valign="top"><span class="text3"><strong>BMI: </strong>
     <u><?=$result['bmi']?></u>
   </span></td>
-  <td width="14%" valign="top"><span class="text3"><strong>รอบเอว:</strong>
-    <?=$result['round_']?>
-ซม.</span></td>
+  <td width="14%" valign="top">
+	<span class="text3"><strong>รอบเอว:</strong><?=(!empty($result['round_']) ? $result['round_'].'ซม.' : '<b style="color:red;"> - </b>' );?></span>
+</td>
   <td width="19%" valign="top"><span class="text3"><strong>แพ้ยา:</strong> 
     <? if($result['drugreact']=="0" || $result['drugreact']==""){ echo "ไม่แพ้ยา"; }else{
 		$sql55 = "Select  drugreact From opcard  where hn = '".$result['hn']."' ";
@@ -451,13 +447,8 @@ $query1 = mysql_query($sql1);
   <td valign="top"><span class="text3"><strong>T:</strong>
 <u><?=$result['temperature']?></u>
 C ํ</span></td>
-  <td valign="top"><span class="text3"><strong>P:
-  </strong>
-    <?=$result['pause']?>
-ครั้ง/นาที</span></td>
-  <td valign="top"><span class="text3"><strong>R: </strong>
-    <?=$result['rate']?>
-ครั้ง/นาที</span></td>
+  <td valign="top"><span class="text3"><strong>P:</strong><?=$result['pause']?>ครั้ง/นาที</span></td>
+  <td valign="top"><span class="text3"><strong>R: </strong><?=$result['rate']?>ครั้ง/นาที</span></td>
 <td valign="top">
 	<?php 
 	if(!empty($dxofyear['bp21'])){
@@ -480,7 +471,7 @@ C ํ</span></td>
 	<td colspan="6" valign="top" class="text3">
 		<strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?><? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?>
 		&nbsp; <strong class="text3">ค่า BMI : </strong><?=$result['stat_bmi']?><? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?>
-		<?php
+		<?php 
 		$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMIT 1";
 		$q = $dbi->query($sql);
 		$opcard = $q->fetch_assoc();
@@ -492,92 +483,33 @@ C ํ</span></td>
 		if($q->num_rows > 0){
 			$diabetes = 1;
 		}
+
+		$height = (int) $result['height'];
+		$smoke = $cigga;
+		$sbp = $result['bp1'];
+		$age = $ageInt;
+
+		if(!empty($waist)){
+			//HDC
+			// https://www.rajavithi.go.th/rj/wp-content/uploads/2018/02/7score.pdf
+			$FullScore = 0;
+			$FullScore += 0.079*$age;
+			$FullScore += 0.128*$sex;
+			$FullScore += 0.019350987*$sbp;
+			$FullScore += 0.58454*$diabetes;
+			$FullScore += 3.512566*(($waist*0.393701)/$height);
+			$FullScore += 0.459*$smoke;
+			$preexp = $FullScore-7.720484;
+			$exp = exp($preexp);
+			$pow = pow(0.978296,$exp);
+			$prePersent = 1-$pow;
+			$PFullScore = number_format(($prePersent * 100), 2);
+		}else{
+			$PFullScore = '-';
+		}
 		
-		// $thDateHn = substr($register, 1,10).$hn;
-		// $sql = "SELECT round_ FROM dxofyear_out WHERE thdatehn= '$thDateHn' LIMIT 1";
-		// dump($sql);
-		// $q = $dbi->query($sql);
-		$waist = $round;
-		// if($q->num_rows > 0){
-		// 	$dxOfYear = $q->fetch_assoc();
-		// 	$waist = $dxOfYear['round_'];
-		// }
-
-		// Test เปรียบเทียบกับ https://www.rama.mahidol.ac.th/cardio_vascular_risk/thai_cv_risk_score/
-// $age = 54; // age
-// $sex = 0;
-// $sbp = 150; // bp1
-// $diabetes = 0;
-// $smoke = 0; // $result['cigga'];
-// $whtr = 98; // เป็นนิ้วคูณ 0.393701 แต่ในนี้ใส่เป็น cmได้เลย
-// $height = 158;
-
-$height = (int) $result['height'];
-$smoke = $cigga;
-// if($cigga!='ปฏิเสธ' && $cigga!='ไม่สูบ'){
-// 	$smoke = 1;
-// } 
-$sbp = $result['bp1'];
-$age = $ageInt;
-dump('waist: '.$waist);
-dump('age: '.$age);
-dump('sex: '.$sex);
-dump('sbp: '.$sbp);
-dump('diabetes: '.$diabetes);
-dump('height: '.$height);
-dump('smoke: '.$smoke);
-
-
-$waist=$waist*2.54;
-
-//--------- ไม่มีผลเลือด -----------//
-$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
-			
-$y=$fullscore-7.720484;	
-$x=0.978296;
-
-$y=exp($y);
-$z=pow($x,$y);
-
-$final=(1-$z)*100;
-
-$pfullscore=number_format($final,2);
-dump($pfullscore);
-
-
-//HDC
-// $FullScore = 0;
-// $FullScore += 0.079*$age;
-// $FullScore += 0.128*$sex;
-// $FullScore += 0.019350987*$sbp;
-// $FullScore += 0.58454*$diabetes;
-// $FullScore += 3.512566*($whtr/$height);
-// $FullScore += 0.459*$smoke;
-// var_dump($FullScore);
-// echo "<hr>";
-
-// $preexp = $FullScore-7.720484;
-// var_dump($preexp);
-// echo "<hr>";
-
-// $exp = exp($preexp);
-// var_dump($exp);
-// echo "<hr>";
-
-// $pow = 0.978296 ** $exp; //ใช้แทน pow ใน PHP >= 5.6.x
-// var_dump($pow);
-// echo "<hr>";
-
-// $prePersent = 1-$pow;
-// var_dump($prePersent);
-// echo "<hr>";
-
-// $PFullScore = $prePersent * 100;
-// var_dump($PFullScore);
-// echo "<hr>";
-exit;
 		?>
-		<b class="text3">CV Risk Score: </b>
+		&nbsp;&nbsp;<b class="text3">CV Risk Score:</b> <?=$PFullScore;?>
 	</td>
 </tr>
   </table></td></tr></table></td>
