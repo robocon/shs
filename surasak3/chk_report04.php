@@ -7,6 +7,10 @@ include 'bootstrap.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
+
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
+
 $db = Mysql::load();
 $sql = "SELECT `name`,`yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
@@ -86,6 +90,7 @@ LEFT JOIN (
 ) AS c ON c.`HN` = a.`hn` 
 WHERE a.`part` = '$showpart' 
 ORDER BY c.`exam_no` ASC";
+
 $row2 = mysql_query($sql1) or die ( mysql_error() );
 
 $out_result_rows = mysql_num_rows($row2);
@@ -98,8 +103,13 @@ $extraSQL = " AND `labnumber` NOT LIKE '63%' ";
 
 while($result = mysql_fetch_assoc($row2)){
 
+	$register = $result['register'];
+
 	$age = $result["age"];
-	$age2 = $result['age2'];
+	if(empty($age)){
+		$age = $result['age2'];
+	}
+	
 	$hn = $result["hn"];
 	$show_date = $result['show_date'];
 
@@ -212,11 +222,6 @@ while($result = mysql_fetch_assoc($row2)){
 											<strong>อายุ : </strong> 
 											<strong><?=$age;?> ปี</strong>
 										<?php 
-										}else if(!empty($age2)){
-										?>
-											<strong>อายุ : </strong> 
-											<strong><?=$age2;?> ปี</strong>
-										<?php 
 										}
 										?>
 									</span>
@@ -241,6 +246,7 @@ while($result = mysql_fetch_assoc($row2)){
 										<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
 										<strong>ส่วนสูง : </strong><?=$result['height']?>&nbsp;ซม. 
 										<strong>BMI : </strong> <u><?=$bmi?> </u>&nbsp;&nbsp;
+										<strong>รอบเอว : </strong><?=(!empty($result['waist']) ? $result['waist'] : ' - ')?>ซม. 
 										<strong>BP : <u><? echo $result['bp1']; ?> / <? echo $result['bp2']; ?>mmHg. </u></strong>&nbsp;&nbsp;
 										
 										<?php if(!empty($result["bp3"]) && !empty($result["bp4"])){ ?>
@@ -290,6 +296,48 @@ while($result = mysql_fetch_assoc($row2)){
 									}
 									?>
 									</span>
+
+									<?php 
+									$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMIT 1";
+									$q = $dbi->query($sql);
+									$opcard = $q->fetch_assoc();
+									$sex = ($opcard['sex']==='ช') ? 1 : 0 ;
+
+									$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '$hn' LIMIT 1";
+									$q = $dbi->query($sql);
+									$diabetes = 0;
+									if($q->num_rows > 0){
+										$diabetes = 1;
+									}
+
+									$height = (int) $result['height'];
+									$smoke = 0;
+									if($result['cigga']!='ไม่เคยสูบ' OR $result['cigga']=='ปฏิเสธ' OR $result['cigga']=='ไม่สูบ'){
+										$smoke = 1;
+									}
+									$sbp = $bp1;
+									$waist = $result['waist'];
+									if(!empty($waist)){
+										//HDC
+										// https://www.rajavithi.go.th/rj/wp-content/uploads/2018/02/7score.pdf
+										$FullScore = 0;
+										$FullScore += 0.079*$age;
+										$FullScore += 0.128*$sex;
+										$FullScore += 0.019350987*$sbp;
+										$FullScore += 0.58454*$diabetes;
+										$FullScore += 3.512566*(($waist*0.393701)/$height);
+										$FullScore += 0.459*$smoke;
+										$preexp = $FullScore-7.720484;
+										$exp = exp($preexp);
+										$pow = pow(0.978296,$exp);
+										$prePersent = 1-$pow;
+										$PFullScore = number_format(($prePersent * 100), 2);
+									}else{
+										$PFullScore = '-';
+									}
+
+									?>
+									&nbsp;&nbsp;<b class="text3">CV Risk Score:</b> <?=$PFullScore;?>
 								</td>
 							</tr>
 						</table>
