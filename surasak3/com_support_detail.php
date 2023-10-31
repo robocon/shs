@@ -12,10 +12,11 @@ if(empty($_SESSION['sOfficer'])){
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$action = $_POST['action'];
+$action = sprintf("%s", $_POST['action']);
 if($action==='save'){
 
-    $com_id = $_POST['com_id'];
+    $com_id = sprintf("%s", $_POST['com_id']);
+	$head = sprintf("%s", $_POST['head']);
     $detail = htmlspecialchars(trim($_POST['detail']), ENT_QUOTES);
     $user = $_SESSION['sOfficer'];
 
@@ -70,7 +71,7 @@ if($action==='save'){
     }
 
     $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-    $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nรายละเอียด: $detail\n";
+    $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nเรื่อง: $head \nรายละเอียด: $detail\n";
     $curl = curl_init(); 
 	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
 	curl_setopt( $curl, CURLOPT_POST, 1); 
@@ -95,7 +96,6 @@ if(empty($id)){
 $sql = "SELECT * FROM `com_support` WHERE `row` = '$id'";
 $q = $dbi->query($sql);
 $item = $q->fetch_assoc();
-
 ?>
 <style>
     *{
@@ -143,7 +143,8 @@ $item = $q->fetch_assoc();
         </div>
         <div>
             <button type="submit"><b>บันทึก</b></button>
-            <input type="hidden" name="com_id" value="<?=$id;?>">
+            <input type="hidden" name="head" value="<?=$item['head'];?>">
+			<input type="hidden" name="com_id" value="<?=$id;?>">
             <input type="hidden" name="action" value="save">
         </div>
     </form>
