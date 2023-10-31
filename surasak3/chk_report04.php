@@ -7,6 +7,10 @@ include 'bootstrap.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
+
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
+
 $db = Mysql::load();
 $sql = "SELECT `name`,`yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
@@ -242,6 +246,7 @@ while($result = mysql_fetch_assoc($row2)){
 										<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
 										<strong>ส่วนสูง : </strong><?=$result['height']?>&nbsp;ซม. 
 										<strong>BMI : </strong> <u><?=$bmi?> </u>&nbsp;&nbsp;
+										<strong>รอบเอว : </strong><?=(!empty($result['waist']) ? $result['waist'] : ' - ')?>ซม. 
 										<strong>BP : <u><? echo $result['bp1']; ?> / <? echo $result['bp2']; ?>mmHg. </u></strong>&nbsp;&nbsp;
 										
 										<?php if(!empty($result["bp3"]) && !empty($result["bp4"])){ ?>

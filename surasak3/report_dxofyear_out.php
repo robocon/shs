@@ -57,8 +57,8 @@ if(isset($_POST['hn'])){
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
 	if($num==0){
-// AND (camp not like '%E_CERT%')
-// AND (camp not like '%E_CERT%')
+		// AND (camp not like '%E_CERT%')
+		// AND (camp not like '%E_CERT%')
 		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
@@ -67,100 +67,90 @@ if(isset($_POST['hn'])){
 		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
-	}	
+	}
+
 	if($num>0){
 	?>
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="50%" border="1" cellpadding="0" cellspacing="0"><tr>
-    <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
-    <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
-    <td width="37" align="center"><span class="tet">ปี</span></td>
-	<td align="center"><span class="tet">ประเภท</span></td>
-    <td width="37" align="center">&nbsp;</td>
-    <td width="53" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>    
-    </tr>
-    <?
-		$i=0;
-		while($result = mysql_fetch_array($row)){
-			if($i==1){
-					$i=0;
-					$bgcolor = "#FFFFA6";
-				}else{
-					$bgcolor = "#FFFFFF";
-					$i=1;
-				}
-		?>
-		<tr bgcolor=<?=$bgcolor?>><td><span class="tet">
-		  <?=$result["thidate"]?>
-		</span></td>
-		  <td><span class="tet">
-		  <?=$result["ptname"]?>
-		  </span></td>
-		  <td align="center"><span class="tet">
-		    <?=$result["yearcheck"]?>
-		  </span></td>
-		  <td align="center">
-		  	<span class="tet"><?=$result['camp'];?></span>
-		  </td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
-          
+
+	<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" style="text-decoration:none;">[ HN ใหม่ ]</a>
+	<table border="1" cellpadding="0" cellspacing="0">
+		<tr>
+			<td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
+			<td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
+			<td width="37" align="center"><span class="tet">ปี</span></td>
+			<td align="center"><span class="tet">ประเภท</span></td>
+			<td width="37" align="center">&nbsp;</td>
+			<td width="53" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td>
 		</tr>
-		<?
+		<?php
+		$i = 0;
+		while ($result = mysql_fetch_array($row)) {
+			if ($i == 1) {
+				$i = 0;
+				$bgcolor = "#FFFFA6";
+			} else {
+				$bgcolor = "#FFFFFF";
+				$i = 1;
+			}
+			?>
+			<tr bgcolor=<?= $bgcolor ?>>
+				<td><span class="tet"><?= $result["thidate"] ?></span></td>
+				<td><span class="tet"><?= $result["ptname"] ?></span></td>
+				<td align="center"><span class="tet"><?= $result["yearcheck"] ?></span></td>
+				<td align="center"><span class="tet"><?= $result['camp']; ?></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?= $result["row_id"] ?>&chkyear=<?= $result["yearcheck"] ?>" target="_blank">พิมพ์</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?= $result["row_id"] ?>&no&chkyear=<?= $result["yearcheck"] ?>" target="_blank">ดูข้อมูล</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?= $result["row_id"] ?>" target="_blank">Stricker</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?= $result["row_id"] ?>" target="_blank">OLD</a></span></td>
+			</tr>
+			<?php
 		}
 	}else if($num==0){
 	?>
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="485" border="1" cellpadding="0" cellspacing="0"><tr>
-    <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
-    <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
-    <td width="37" align="center"><span class="tet">ปี</span></td>
-    <td width="37" align="center">&nbsp;</td>
-    <td width="53" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>
-    <td width="37" align="center">&nbsp;</td>
-</tr>    
-    <?
-  		$select = "select * from condxofyear_so where hn = '".$_POST['hn']."' and statusdata='y' order by thidate desc";
-		$row = mysql_query($select);      
+		<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
+		<table border="1" cellpadding="0" cellspacing="0"><tr>
+			<td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
+			<td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
+			<td width="37" align="center"><span class="tet">ปี</span></td>
+			<td width="37" align="center">&nbsp;</td>
+			<td width="53" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td>
+			<td width="37" align="center">&nbsp;</td>
+		</tr>
+		<?php
+		$select = "select * from condxofyear_so where hn = '".$_POST['hn']."' and statusdata='y' order by thidate desc";
+		$row = mysql_query($select);
 		$i=0;	
 		while($result = mysql_fetch_array($row)){
 			if($i==1){
-					$i=0;
-					$bgcolor = "#FFFFA6";
-				}else{
-					$bgcolor = "#FFFFFF";
-					$i=1;
-				}
-		?>
-		<tr bgcolor=<?=$bgcolor?>><td><span class="tet">
-		  <?=$result["thidate"]?>
-		</span></td>
-		  <td><span class="tet">
-		  <?=$result["ptname"]?>
-		  </span></td>
-		  <td align="center"><span class="tet">
-		    <?=$result["yearcheck"]?>
-		  </span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
-		</tr>
-		<?
-		}   
+				$i=0;
+				$bgcolor = "#FFFFA6";
+			}else{
+				$bgcolor = "#FFFFFF";
+				$i=1;
+			}
+			?>
+			<tr bgcolor=<?=$bgcolor?>>
+				<td><span class="tet"><?=$result["thidate"]?></span></td>
+				<td><span class="tet"><?=$result["ptname"]?></span></td>
+				<td align="center"><span class="tet"><?=$result["yearcheck"]?></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
+			</tr>
+		<?php
+		}
 	}else{
 		?>
         <meta content="1" http-equiv="refresh"  />
 		<?
 	}
 	?>
-</table>
-<?
+	</table>
+<?php
 }elseif(isset($_GET['ids'])){ 
 
 	$detail = "select * from condxofyear_out where row_id = '".$_GET['ids']."' ";
@@ -169,8 +159,8 @@ if(isset($_POST['hn'])){
 
 	$hn = $arrs['hn'];
 	?>
-<script language="javascript">
-		// window.print();
+	<script language="javascript">
+		window.print();
 	</script>
 	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
 	<tr>
@@ -368,7 +358,7 @@ if(isset($_POST['hn'])){
 	if(!isset($_GET['no'])){
 	?>
 	<script language="javascript">
-		// window.print();
+		window.print();
 	</script>
     <?
 	}
