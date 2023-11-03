@@ -4,8 +4,40 @@ session_start();
 // require "../includes/functions.php";
 
 include '../bootstrap.php';
+
+
+// function getCookie(cname) {
+// 	let name = cname + "=";
+// 	let ca = document.cookie.split(';');
+// 	for(let i = 0; i < ca.length; i++) {
+// 		let c = ca[i];
+// 		while (c.charAt(0) == ' ') {
+// 			c = c.substring(1);
+// 		}
+// 		if (c.indexOf(name) == 0) {
+// 			return c.substring(name.length, c.length);
+// 		}
+// 	}
+// 	return "";
+// }
+
+// function setCookie(cname, cvalue, extime) {
+// 	var d = new Date();
+// 	d.setTime(extime);
+// 	var expires = "expires="+d.toUTCString();
+// 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+// }
+
+
+
+$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+mysql_select_db(DB, $Conn) or die( mysql_error() );
+mysql_query("SET NAMES UTF8", $Conn);
+
 $db = Mysql::load();
 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 // Verify user before load content
 if( authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
@@ -136,51 +168,64 @@ AND `dateN` <= '$year_end';";
 // ;";
 // dump($sql_temp);
 
-$sql_temp = "CREATE TEMPORARY TABLE diabetes_history_temp 
-#( l_hbalc FLOAT NOT NULL, l_creatinine FLOAT NOT NULL, thidate DATE NOT NULL, dateN DATE NOT NULL, dbbirt DATE NOT NULL  ) 
-SELECT a.* 
-FROM `diabetes_clinic_history` AS a 
-RIGHT JOIN (
-	SELECT MAX(`row_id`) AS `row_id` 
-	FROM `diabetes_clinic_history` 
-	WHERE `dateN` >= '$year_start' 
-	AND `dateN` <= '$year_end' 
-	GROUP BY `dateN`,`hn`
-) AS b ON b.`row_id` = a.`row_id`";
 
-// dump($sql_temp);
-// echo "<hr>";
-
-mysql_query($sql_temp);
 
 // จำนวนผู้ป่วยทั้งหมดในปีนี้
-$query = mysql_query("SELECT COUNT(`row_id`) AS total FROM diabetes_clinic_history");
-$all_user = mysql_fetch_assoc($query);
-
+// $sql = "SELECT COUNT(`row_id`) AS total FROM diabetes_clinic_history";
+// $q = $dbi->query($sql);
+// $all_user = $q->fetch_assoc();
 if(isset($_POST['search']) && $_POST['search'] == 'search'){
 	
+	$cookie_name = 'diabetes_history_temp_'.$_SESSION['sRowid'];
+	dump($cookie_name);
+	if(!$_COOKIE[$cookie_name]){ 
+		setcookie($cookie_name, 1, strtotime('today UTC 23:59:59'), '/');
+		
+	}
+	dump($_COOKIE[$cookie_name]);
+	// setcookie($cookie_name, 1, strtotime('today UTC 23:59:59'), '/');
+
+
+
+	// $sql = "DROP TABLE if EXISTS diabetes_history_temp";
+	// $q = $dbi->query("DROP TABLE if EXISTS diabetes_history_temp");
+	// dump($q);
+	
+	// $sql_temp = "CREATE TABLE diabetes_history_temp
+	// SELECT a.* 
+	// FROM `diabetes_clinic_history` AS a 
+	// RIGHT JOIN (
+	// 	SELECT MAX(`row_id`) AS `row_id` 
+	// 	FROM `diabetes_clinic_history` 
+	// 	WHERE `dateN` >= '$year_start' 
+	// 	AND `dateN` <= '$year_end' 
+	// 	GROUP BY `dateN`,`hn`
+	// ) AS b ON b.`row_id` = a.`row_id`";
+	// $q = $dbi->query($sql_temp);
+	// dump($q);
+
 	// Total user in each month สำหรับแสดงผลรายปี
 	$sql = "SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 	FROM diabetes_history_temp
 	GROUP BY MONTH(dateN) 
 	ORDER BY dateN ASC";
-	$query = mysql_query($sql) or die( mysql_error($Conn) );
+	$q = $dbi->query($sql);
 	$user_total_items = array();
-	while($item = mysql_fetch_assoc($query)){
-		$user_total_items[$item['new_orderdate']] = $item;
+	while ($a = $q->fetch_assoc()) {
+		$user_total_items[$a['new_orderdate']] = $a;
 	}
-	
+
 	// Total user in each month สำหรับแสดงผลรายเดือน
-	$sql = "SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
-	FROM diabetes_history_temp
-	GROUP BY MONTH(dateN) 
-	ORDER BY dateN ASC ";
-	$query = mysql_query($sql) or die( mysql_error($Conn) );
-	$user_total_items2 = array();
-	while($item = mysql_fetch_assoc($query)){
-		$user_total_items2[$item['new_orderdate']] = $item;
-	}
-	// dump($user_total_items2);
+	// $sql = "SELECT COUNT(hn) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
+	// FROM diabetes_history_temp
+	// GROUP BY MONTH(dateN) 
+	// ORDER BY dateN ASC ";
+	// $query = mysql_query($sql) or die( mysql_error($Conn) );
+	// $q = $dbi->query($sql);
+	// $user_total_items2 = array();
+	// while ($a = $q->fetch_assoc() ) {
+	// 	$user_total_items2[$a['new_orderdate']] = $a;
+	// }
 	
 	// Set default variable
 	$months = array(
@@ -233,13 +278,14 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			WHERE l_hbalc != ''
 			GROUP BY MONTH(dateN) 
 			ORDER BY dateN ASC ";
-			$query = mysql_query($sql) or die( mysql_error($Conn) );
+			$q = $dbi->query($sql);
 			$hba1c_items = array();
 			$hba1c_total = 0;
-			while($item = mysql_fetch_assoc($query)){
-				$hba1c_total += $item['rows'];
-				$hba1c_items[$item['new_orderdate']] = $item;
+			while($a = $q->fetch_assoc()){
+				$hba1c_total += $a['rows'];
+				$hba1c_items[$a['new_orderdate']] = $a;
 			}
+			// $q->free_result();
 	
 			foreach($budget_range AS $key => $value){
 				$item_row = 0;
@@ -260,6 +306,8 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				</td>
 				<?php 
 			}
+
+			// exit;
 			?>
 		</tr>
 		<tr>
@@ -271,13 +319,13 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			WHERE l_ldl != ''
 			GROUP BY MONTH(dateN) 
 			ORDER BY dateN ASC ";
-
-			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$ldl_items = array();
 			$ldl_total = 0;
-			while($item = mysql_fetch_assoc($query)){
-				$ldl_total += $item['rows'];
-				$ldl_items[$item['new_orderdate']] = $item;
+
+			$q2 = $dbi->query($sql);
+			while($a = $q2->fetch_assoc()){
+				$ldl_total += $a['rows'];
+				$ldl_items[$a['new_orderdate']] = $a;
 			}
 	
 			foreach($budget_range AS $key => $value){
@@ -310,7 +358,6 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			WHERE l_microal != '' OR l_ua != '' OR l_urine != '' 
 			GROUP BY MONTH(dateN) 
 			ORDER BY dateN ASC ";
-
 			$query = mysql_query($sql) or die( mysql_error($Conn) );
 			$malb_items = array();
 			$malb_total = 0;
@@ -1257,6 +1304,20 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				<?php 
 			}
 			?>
+		</tr>
+		<tr>
+			<td class="forntsarabun">อัตราผู้ป่วย DM อายุน้อยกว่า 60 ปีมีระดับ HbA1c อยู่ในเกณฑ์เหมาะสม (HbA1c≤ 7%)</td>
+			<td align="center" class="forntsarabun"></td>
+			<td colspan="12">
+			<?php 
+
+			?>
+			</td>
+		</tr>
+		<tr>
+			<td class="forntsarabun">อัตราผู้ป่วย DM อายุมากกว่าหรือเท่ากับ 60 ปี มีระดับ HbA1c อยู่ในเกณฑ์เหมาะสม (HbA1c ≤ 8%)</td>
+			<td align="center" class="forntsarabun"></td>
+			<td colspan="12"></td>
 		</tr>
 	</table>
 
