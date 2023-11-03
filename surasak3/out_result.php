@@ -963,7 +963,7 @@ if ($_GET["act"] == "print") {
 				<td align="left" bgcolor="#FF99CC"><strong>ชื่อ-สกุล</strong></td>
 				<td align="left" bgcolor="#FF99CC"><strong>น้ำหนัก</strong></td>
 				<td align="left" bgcolor="#FF99CC"><strong>ส่วนสูง</strong></td>
-				<td align="center" bgcolor="#FF99CC"><strong>รอบเอว</strong></td>
+				<td align="left" bgcolor="#FF99CC"><strong>รอบเอว</strong></td>
 				<td align="left" bgcolor="#FF99CC"><strong>BP</strong></td>
 				<td align="left" bgcolor="#FF99CC"><strong>P</strong></td>
 				<td align="left" bgcolor="#FF99CC"><strong>Seq</strong></td>
@@ -991,7 +991,7 @@ if ($_GET["act"] == "print") {
 					<td align="left">
 						<?= $arr1['height']; ?>
 					</td>
-					<td align="right"><?=$arr1['waist']; ?></td>
+					<td align="left"><?=$arr1['waist']; ?></td>
 					<td align="left">
 						<? if (empty($arr1['bp3']) || empty($arr1['bp4'])) {
 							echo $arr1['bp1'] . '/' . $arr1['bp2'];
