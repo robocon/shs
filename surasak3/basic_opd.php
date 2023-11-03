@@ -1502,7 +1502,63 @@ function checkList(){
 }
 
 
-function checkForm(){
+function checkForm(){ 
+
+	var bpNotify = document.getElementById('bpNotify');
+	var bpNotify2 = document.getElementById('bpNotify2');
+	var bp1Input = document.getElementById('bp1');
+	var bp2Input = document.getElementById('bp2');
+	var bp3Input = document.getElementById('bp3');
+	var bp4Input = document.getElementById('bp4');
+
+	bpNotify.style.display = 'none';
+	bpNotify2.style.display = 'none';
+	bp1Input.style.border = '';
+	bp2Input.style.border = '';
+	bp3Input.style.border = '';
+	bp4Input.style.border = '';
+
+	if(bp1Input.value!=''){
+		var bp1Match = bp1Input.value.match(/\d+/);
+		if(!bp1Match){
+			bp1Input.focus();
+			bpNotify.style.display = '';
+			bp1Input.style.border = '4px solid red';
+			return false;
+		}
+	}
+
+	if(bp2Input.value!=''){
+		var bp2Match = bp2Input.value.match(/\d+/);
+		if(!bp2Match){
+			bp2Input.focus();
+			bpNotify.style.display = '';
+			bp2Input.style.border = '4px solid red';
+			return false;
+		}
+	}
+
+	if(bp3Input.value!=''){
+		var bp3Match = bp3Input.value.match(/\d+/);
+		if(!bp3Match){
+			bp3Input.focus();
+			bpNotify2.style.display = '';
+			bp3Input.style.border = '4px solid red';
+			return false;
+		}
+	}
+
+	if(bp4Input.value!=''){
+		var bp4Match = bp4Input.value.match(/\d+/);
+		if(!bp4Match){
+			bp4Input.focus();
+			bpNotify2.style.display = '';
+			bp4Input.style.border = '4px solid red';
+			return false;
+		}
+	}
+	
+
 	if(document.form2.doctor.value == "" || document.form2.doctor.value == 0){
 		alert('กรุณาเลือก แพทย์ด้วยครับ');
 		return false;
@@ -1627,10 +1683,12 @@ C&deg; </td>
                <td align="left"><input name="rate" type="text" id="rate" value="20" size="3" />
 ครั้ง/นาที</td>
                <td align="right">BP :</td>
-               <td align="left"><input name="bp1" type="text" id="bp1" size="3" value="<?php echo $bp1; ?>" />
-/
-  <input name="bp2" type="text" id="bp2" size="3" value="<?php echo $bp2; ?>" />
-mmHg </td>
+               <td align="left">
+					<input name="bp1" type="text" id="bp1" size="3" value="<?php echo $bp1; ?>" />
+					/
+					<input name="bp2" type="text" id="bp2" size="3" value="<?php echo $bp2; ?>" />mmHg
+					<div id="bpNotify" style="color:red; font-weight:bold;display:none">กรุณาใส่เฉพาะตัวเลข</div>
+				</td>
              </tr>
              <tr>
                <td align="right" class="data_show">BMI :</td>
@@ -1646,6 +1704,7 @@ mmHg </td>
                <td align="right">Repeat BP :</td>
 				<td align="left">
 					<input name="bp3" type="text" id="bp3" size="3" value="<?php echo $bp3; ?>" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" value="<?php echo $bp4; ?>" />&nbsp;mmHg 
+					<div id="bpNotify2" style="color:red; font-weight:bold;display:none">กรุณาใส่เฉพาะตัวเลข</div>
 				</td>
              </tr>
 			 <tr>
