@@ -19,18 +19,22 @@ if( authen() === false ){ die('Session หมดอายุ <a href="../login_p
 
 
 $search = sprintf("%s", $_POST['search']);
+$y_start = sprintf("%s", $_POST['y_start']);
 if($search==='search'){
 
 	// ตรวจก่อนว่ามี cookie นี้แล้วรึยัง โดยอิงจาก row_id ของผู้ใช้งานเอง การ query ข้อมูลจะได้ไม่ชนกัน
-	$tableName = $cookieName = 'diabetes_temp_'.$_SESSION['sRowid'];
-	if(!$_COOKIE[$cookieName]){ 
+	$cookie_name = 'diabetes_temp';
+	$tableName = 'diabetes_temp_'.$_SESSION['sRowid'];
+	if(!$_COOKIE['diabetes_temp']['table'] OR $_COOKIE['diabetes_temp']['y_start']!=$y_start){ 
 
 		// สร้าง cookie ขึ้นมาโดยมีอายุถึงวันปัจจุบัน(23.59น.)
-		setcookie($cookieName, $cookieName, strtotime('today UTC 23:59:59'), '/');
+		setcookie("diabetes_temp['table']", $tableName, strtotime('today UTC 23:59:59'), '/');
 		
-		$date1 = intval($_POST['y_start']) - 543;
+		
+		$date1 = intval($y_start) - 543;
 		$year_start = ($date1 - 1)."-10-01";
 		$year_end = "$date1-09-30";
+		setcookie("diabetes_temp['y_start']", $y_start, strtotime('today UTC 23:59:59'), '/');
 
 		// drop ข้อมูลเก่าทิ้งไปก่อน
 		$q = $dbi->query("DROP TABLE if EXISTS $tableName");
@@ -47,6 +51,8 @@ if($search==='search'){
 			GROUP BY `dateN`,`hn`
 		) AS b ON b.`row_id` = a.`row_id`";
 		$q = $dbi->query($sql_temp);
+		$dbi->query("CREATE INDEX dateN ON $tableName (dateN);");
+		$dbi->query("CREATE INDEX hn ON $tableName (hn);");
 	}
 
 }

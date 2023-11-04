@@ -7,16 +7,20 @@ if(!authen()) die('หมดระยะเวลาการใช้งาน 
 
 require "header.php";
 
-// drop table if EXISTS temp_stat_ht3 ;
-// INSERT INTO temp_stat_ht3 
-// select row_id,thidate,vn,hn,ptname,bp1,bp2,bp3,bp4,
-// cast(substr(age,1,2) as UNSIGNED) as age, concat(substr(thidate,1,10),hn) as thaiDateHn 
-// from opd 
-// where thidate like '2565%' 
-// and cast(substr(age,1,2) as UNSIGNED)>0
-// and ( 
-// 	cast(bp1 as UNSIGNED)!=0 and cast(bp2 as UNSIGNED)!=0 
-// )
+drop table if EXISTS temp_stat_ht3 ;
+CREATE table temp_stat_ht3 
+select row_id,thidate,vn,hn,ptname,bp1,bp2,bp3,bp4, 
+cast(substring(age,1,2) as UNSIGNED) as age, concat(substring(thidate,1,10),hn) as thaiDateHn, 
+concat((substring(thidate,1,4)-543),substring(thidate,5,6)) as enDate
+from opd 
+where (thidate >= '2565-10-01' and thidate <= '2566-09-30') 
+and cast(substring(age,1,2) as UNSIGNED)>0
+and ( 
+	cast(bp1 as UNSIGNED)!=0 and cast(bp2 as UNSIGNED)!=0 
+);
+
+create index hn on temp_stat_ht3 (hn);
+create index thaiDateHn on temp_stat_ht3 (thaiDateHn);
 
 
 ?>
