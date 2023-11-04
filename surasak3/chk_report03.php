@@ -11,6 +11,9 @@ include 'connect.php';
 
 $showpart = ( empty($_POST["camp"]) ) ? $_GET["camp"] : $_POST["camp"];
 
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
+
 $db = Mysql::load();
 $sql = "SELECT `name`,`yearchk` FROM `chk_company_list` WHERE `code` = '$showpart' ";
 $db->select($sql);
@@ -290,6 +293,48 @@ foreach($out_result_items AS $result){
 									}
 									?>
 									</span>
+
+									<?php 
+									$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMIT 1";
+									$q = $dbi->query($sql);
+									$opcard = $q->fetch_assoc();
+									$sex = ($opcard['sex']==='ช') ? 1 : 0 ;
+
+									$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '$hn' LIMIT 1";
+									$q = $dbi->query($sql);
+									$diabetes = 0;
+									if($q->num_rows > 0){
+										$diabetes = 1;
+									}
+
+									$height = (int) $result['height'];
+									$smoke = 0;
+									if($result['cigga']!='ไม่เคยสูบ' OR $result['cigga']=='ปฏิเสธ' OR $result['cigga']=='ไม่สูบ'){
+										$smoke = 1;
+									}
+									$sbp = $bp1;
+									$waist = $result['waist'];
+									if(!empty($waist)){
+										//HDC
+										// https://www.rajavithi.go.th/rj/wp-content/uploads/2018/02/7score.pdf
+										$FullScore = 0;
+										$FullScore += 0.079*$age;
+										$FullScore += 0.128*$sex;
+										$FullScore += 0.019350987*$sbp;
+										$FullScore += 0.58454*$diabetes;
+										$FullScore += 3.512566*(($waist*0.393701)/$height);
+										$FullScore += 0.459*$smoke;
+										$preexp = $FullScore-7.720484;
+										$exp = exp($preexp);
+										$pow = pow(0.978296,$exp);
+										$prePersent = 1-$pow;
+										$PFullScore = number_format(($prePersent * 100), 2);
+									}else{
+										$PFullScore = '-';
+									}
+
+									?>
+									&nbsp;&nbsp;<b class="text3">CV Risk Score : </b><span style="font-size:16px;"><?=$PFullScore;?></span>
 								</td>
 							</tr>
 						</table>

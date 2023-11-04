@@ -337,7 +337,7 @@ while($result = mysql_fetch_assoc($row2)){
 									}
 
 									?>
-									&nbsp;&nbsp;<b class="text3">CV Risk Score:</b> <?=$PFullScore;?>
+									&nbsp;&nbsp;<b class="text3">CV Risk Score : </b><span style="font-size:16px;"><?=$PFullScore;?></span>
 								</td>
 							</tr>
 						</table>
