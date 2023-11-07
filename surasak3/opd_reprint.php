@@ -1,6 +1,9 @@
 <?php
 include("connect.inc");  
 session_start();
+
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
 if($_SESSION["sOfficer"] == ""){
 	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
@@ -84,7 +87,41 @@ a:hover, a:active {
             }
             ?>
         </select>
-    </div> 	
+    </div>
+    <div>หรือ</div>
+    <div>
+        <?php 
+        $days = range(1,31);
+        ?>
+        <b>วันที่</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <select name="day" id="day" class="txtsarabun">
+            <?php 
+            foreach ($days as $day) { 
+                $day = sprintf("%02d", $day);
+                ?><option value="<?=$day;?>"><?=$day;?></option><?php
+            }
+            ?>
+        </select>
+        <b>เดือน</b>
+        <select name="month" id="month" class="txtsarabun">
+            <?php 
+            foreach ($def_fullm_th as $key => $month) {
+                ?><option value="<?=$key;?>"><?=$month;?></option><?php
+            }
+            ?>
+        </select>
+        <b>ปี</b>
+        <?php 
+        $years = range(2565,(date('Y')+543));
+        ?>
+        <select name="year" id="year" class="txtsarabun">
+            <?php 
+            foreach ($years as $year) { 
+                ?><option value="<?=$year;?>"><?=$year;?></option><?php
+            }
+            ?>
+        </select>
+    </div>
     <p style="margin-left:100px;">
     <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
     &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     " onclick="clearData()">
@@ -121,7 +158,13 @@ a:hover, a:active {
  </tr>
 
 <?php
-    $num=0;
+    $num=0; 
+    // $testFullDate = $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day'];
+    // var_dump(preg_match('/(\d{4}\-\d{2}\-\d{2})/', $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day']));
+    if(preg_match('/(\d{4}\-\d{2}\-\d{2})/', $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day']) > 0){
+        $today = $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day'];
+    }
+    var_dump($today);
 	if(!empty($_POST["hn"])){
 		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE hn='".$_POST["hn"]."' and thidate LIKE '$today%' ORDER BY row_id DESC ";
 		echo "<div style='font-size:22px;'>ข้อมูลที่ค้นหาจาก HN ผู้ป่วย</div>";
