@@ -61,6 +61,12 @@ $num=mysql_num_rows($result_dt_hn);
 list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill,$cvriskscore,$cvriskscore_lab) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
 
+$currentDay = date("d/m/").(date("Y")+543);
+if($_GET["dthn"]){
+	list($selectD, $selectM, $selectY) = explode('-', substr($_GET["dthn"],0,10));
+	$currentDay = "$selectD/$selectM/$selectY";
+}
+
 // ถ้าหาใน opd ไม่เจอ
 if($num==0){
 	$hn = substr($_GET["dthn"],10);
@@ -309,7 +315,7 @@ window.print();
   </tr>  
 </table>
 <hr>
-<div align="left" style="font-size:24px;"><strong>วัน/เดือน/ปี : <?php echo date("d/m/").(date("Y")+543);?></strong><strong style="margin-left:20px;">VN : <?php echo $vn;?></strong></div>
+<div align="left" style="font-size:24px;"><strong>วัน/เดือน/ปี : <?=$currentDay;?></strong><strong style="margin-left:20px;">VN : <?php echo $vn;?></strong></div>
 
 <?php if($num > 0){ ?>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">

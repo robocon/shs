@@ -54,79 +54,104 @@ a:hover, a:active {
 <div style="margin-left:50px; margin-top: 30px;">
 <form method="post" action="opd_reprint.php">
     <p style="font-size:24px;"><b>ค้นหาจาก</b></p>
-    <div><b>HN ผู้ป่วย</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40">
-    </div>
-	<div>หรือ</div>
-    <div><b>ประเภท</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <select name="case" id="case" class="txtsarabun">
-              <?php 
-		echo "<option value='' >------------เลือกดูข้อมูล------------</option>";
-		$sql = "select type_name from typeopcard";
-		$result = mysql_query($sql);
-		while(list($typename) = mysql_fetch_row($result)){
-		
-		echo "<option value='".$typename."' >".$typename."</option>";
-		
-		}
-		?>
-        </select>
-    </div>
-    <div>หรือ</div>
-    <div>
-        <?php
-        $post_clinic = $_POST['clinic'];
-        ?>
-        <b>คลินิก</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <select name="clinic" id="clinic" class="txtsarabun">
-            <option value="0">แสดงทั้งหมด</option>
-            <?php
-            $q = mysql_query("SELECT * FROM `clinic` ORDER BY `code`");
-            while ($a = mysql_fetch_assoc($q)) {
-                ?><option value="<?=$a['detail'];?>"><?=$a['detail'];?></option><?php
-            }
-            ?>
-        </select>
-    </div>
-    <div>หรือ</div>
-    <div>
-        <?php 
-        $days = range(1,31);
-        ?>
-        <b>วันที่</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <select name="day" id="day" class="txtsarabun">
-            <?php 
-            foreach ($days as $day) { 
-                $day = sprintf("%02d", $day);
-                ?><option value="<?=$day;?>"><?=$day;?></option><?php
-            }
-            ?>
-        </select>
-        <b>เดือน</b>
-        <select name="month" id="month" class="txtsarabun">
-            <?php 
-            foreach ($def_fullm_th as $key => $month) {
-                ?><option value="<?=$key;?>"><?=$month;?></option><?php
-            }
-            ?>
-        </select>
-        <b>ปี</b>
-        <?php 
-        $years = range(2565,(date('Y')+543));
-        ?>
-        <select name="year" id="year" class="txtsarabun">
-            <?php 
-            foreach ($years as $year) { 
-                ?><option value="<?=$year;?>"><?=$year;?></option><?php
-            }
-            ?>
-        </select>
-    </div>
-    <p style="margin-left:100px;">
-    <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     ">
-    &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     " onclick="clearData()">
-	&nbsp;&nbsp;&nbsp;&nbsp; <input type="button" name="button" id="button" value="   กลับหน้าหลัก   " onclick="window.location='../nindex.htm'" class="txtsarabun" />
-    </p>
+
+    <table style="font-size:20px;">
+        <tr>
+            <td><b>HN ผู้ป่วย</b></td>
+            <td><input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40"></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="line-height:16px;">หรือ</td>
+        </tr>
+        <tr>
+            <td><b>ประเภท</b></td>
+            <td>
+                <select name="case" id="case" class="txtsarabun">
+                    <option value="">------------เลือกดูข้อมูล------------</option>
+                    <?php 
+                    $sql = "select type_name from typeopcard";
+                    $result = mysql_query($sql);
+                    while(list($typename) = mysql_fetch_row($result)){
+                        echo "<option value='".$typename."' >".$typename."</option>";
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="line-height:16px;">หรือ</td>
+        </tr>
+        <tr>
+            <td><b>คลินิก</b></td>
+            <td>
+                <?php
+                $post_clinic = $_POST['clinic'];
+                ?>
+                <select name="clinic" id="clinic" class="txtsarabun">
+                    <option value="0">แสดงทั้งหมด</option>
+                    <?php
+                    $q = mysql_query("SELECT * FROM `clinic` ORDER BY `code`");
+                    while ($a = mysql_fetch_assoc($q)) {
+                        ?><option value="<?=$a['detail'];?>"><?=$a['detail'];?></option><?php
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="line-height:16px;">หรือ</td>
+        </tr>
+        <tr>
+            <td align="right"><b>วันที่</b></td>
+            <td>
+                <?php 
+                $days = range(1,31);
+                ?>
+                <select name="day" id="day" class="txtsarabun">
+                    <?php 
+                    $getDay = $_REQUEST['day'] ? $_REQUEST['day'] : date('d') ;
+                    foreach ($days as $day) { 
+                        $day = sprintf("%02d", $day);
+                        $selected = ($day==$getDay) ? 'selected="selected"' : '';
+                        ?><option value="<?=$day;?>" <?=$selected;?> ><?=$day;?></option><?php
+                    }
+                    ?>
+                </select>
+                <b>เดือน</b>
+                <select name="month" id="month" class="txtsarabun">
+                    <?php 
+                    $getMonth = $_REQUEST['month'] ? $_REQUEST['month'] : date('m') ;
+                    foreach ($def_fullm_th as $key => $month) { 
+                        $selected = ($key==$getMonth) ? 'selected="selected"' : '';
+                        ?><option value="<?=$key;?>" <?=$selected;?> ><?=$month;?></option><?php
+                    }
+                    ?>
+                </select>
+                <b>ปี</b>
+                <?php 
+                $years = range(2565,(date('Y')+543));
+                ?>
+                <select name="year" id="year" class="txtsarabun">
+                    <?php 
+                    $getYear = $_REQUEST['year'] ? $_REQUEST['year'] : date('Y')+543 ;
+                    foreach ($years as $year) { 
+                        $selected = ($year==$getYear) ? 'selected="selected"' : '';
+                        ?><option value="<?=$year;?>" <?=$selected;?> ><?=$year;?></option><?php
+                    }
+                    ?>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="padding-top:20px;">
+                <input name="B1" type="submit" class="txtsarabun" value="     ค้นหา     " style="margin-right:18px;">
+                <input name="B2" type="reset" class="txtsarabun" value="     ยกเลิก     " onclick="clearData()" style="margin-right:18px;">
+                <input type="button" name="button" id="button" value="   กลับหน้าหลัก   " onclick="window.location='../nindex.htm'" class="txtsarabun" />
+            </td>
+        </tr>
+    </table>
+
 </form>
 <script type="text/javascript">
     document.getElementById('aLink').focus();
@@ -159,12 +184,10 @@ a:hover, a:active {
 
 <?php
     $num=0; 
-    // $testFullDate = $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day'];
-    // var_dump(preg_match('/(\d{4}\-\d{2}\-\d{2})/', $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day']));
     if(preg_match('/(\d{4}\-\d{2}\-\d{2})/', $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day']) > 0){
         $today = $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day'];
     }
-    var_dump($today);
+    
 	if(!empty($_POST["hn"])){
 		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE hn='".$_POST["hn"]."' and thidate LIKE '$today%' ORDER BY row_id DESC ";
 		echo "<div style='font-size:22px;'>ข้อมูลที่ค้นหาจาก HN ผู้ป่วย</div>";
