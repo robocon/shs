@@ -810,6 +810,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
 	exit;
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "get_all_icd10"){
+	
+	$today = date('Y-m-d');
+	$hn = $_SESSION['hn_now'];
+	$sql = "SELECT icd10 FROM `diag` WHERE `hn` = '$hn' GROUP BY icd10";
+	$q = mysql_query($sql) or die(mysql_error());
+	$icd_lists = array();
+	while ($d = mysql_fetch_assoc($q)) {
+		$icd_lists[] = '"'.$d['icd10'].'"';
+	}
+	$imp_icd = implode(',', $icd_lists);
+	echo "[$imp_icd]";
+	exit;
+}
+
 
 
 //********************** Form Remed ยาผู้ป่วยนอก ******************************************
@@ -2223,6 +2238,9 @@ var rdu8_icd10 = ['S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11', 'S16',
 var rdu6_drug = ['1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$'];
 var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J200','J201','J202','J203','J204','J205','J206','J207','J208','J209','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729'];
 
+// Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+var febuxo_icd10 = ['I513','I514','I515','I517','I518','I5181','I5189','I519'];
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2671,6 +2689,39 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	xmlhttp.send(null);
 	
 	callback_myWindow = returnstr = xmlhttp.responseText;
+
+	// Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+	if(drugcode.trim()=='1FEBU'){ 
+
+		var allIcd10List = false;
+		xmlhttp = newXmlHttp();
+		url = 'dt_drug.php?action=get_all_icd10';
+		xmlhttp.open("GET", url, false);
+		xmlhttp.onreadystatechange = function () {
+			if (xmlhttp.readyState === 4) {
+				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+					var resIcd10 = xmlhttp.responseText.trim();
+					allIcd10List = JSON.parse(resIcd10);
+				} else {
+					// Error :(
+				}
+			}
+		};
+		xmlhttp.send(null);
+
+		var icd10Check = false;
+		for (var index = 0; index < allIcd10List.length; index++) {
+			var element = allIcd10List[index];
+			if(febuxo_icd10.indexOf(element)>0){
+				icd10Check = true;
+			}
+		}
+
+		if(icd10Check==true){
+			alert('>>> ไม่สามารถจ่ายยาได้ <<<'+"\n"+'เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด'+"\n\n"+'กรุณาติดต่อ พ.ท.เชาวรินทร์ อุ่นเครือ ');
+			return false;
+		}
+	}
 
 	//
 	do_add_drug(returnstr, drugcode);
