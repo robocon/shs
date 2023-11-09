@@ -15,6 +15,9 @@ if(isset($_GET["action"])){
 include("connect.inc");
 //include("checklogin.php");
 
+include_once 'includes/JSON.php';
+$json = new Services_JSON();
+
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
@@ -239,6 +242,100 @@ if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
+
+	$hn = sprintf("%s", $_GET['hn']);
+	$drugcode = sprintf("%s", $_GET['drugcode']);
+	$thaiDate = (date('Y')+543).date('-m-d');
+	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
+	/* 
+
+	select a.*,c.doctor,c.stkcutdate,c.dr_cancle,c.tvn from ( 
+select row_id,date,hn,drugcode,tradname,idno from  ddrugrx where date like '2566-11-08%' 
+and hn = '66-5181' 
+) as a 
+left join dphardep as c on a.idno = c.row_id 
+left join ( 
+select row_id,drugcode from druglst where bcode = 'd1011' 
+) as b on a.drugcode = b.drugcode 
+where b.row_id is not null AND c. stkcutdate IS NOT NULL 
+GROUP BY a.hn,a.drugcode,c.doctor 
+order by a.hn
+
+	select ใน ddrugrx ที่ bcode เป็น d1011 แล้ว group by drugcode ถ้ามีมากกว่า 1 แสดงว่ามีการสั่งยา nsaids ซ้ำซ้อน
+
+	select อีกตัวหนึ่งแล้วเพิ่ม group by doctor code เพื่อหาว่ามีแพทย์คนอื่นสั่งยาในกลุ่มนี้หรือไม่ ถ้ามีแสดงว่าเข้าอีกเคสหนึ่งคือ แพทย์ท่านอื่น สั่งจ่ายยาซ้ำซ้อน
+	*/
+
+	// !!!!!! ถ้าหาขอคนที่คีย์ปัจจุบัน ไปหาจากใน $_SESSION["list_drugcode"] 
+
+	// รายการยาในกลุ่ม nsaids ทั้งหมด
+	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ");
+	$nsaidsList = array();
+	if($q->num_rows > 0) { 
+		while ($a = $q->fetch_assoc()) {
+			$nsaidsList[] = trim($a['drugcode']);
+		}
+	}
+	
+	// ถ้ายาทีสั่งอยู่ในกลุ่ม nsaids
+	if(in_array(trim($drugcode), $nsaidsList)==true) {
+
+		// หาใน session ก่อนว่าไปชนกับในกลุ่มที่เคยสั่งแล้วรึยัง
+		$listDrugCode = $_SESSION["list_drugcode"];
+		$nsaidsInListDrugCode = false;
+		foreach ($listDrugCode as $ldc) {
+			$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' AND drugcode = '$ldc' ");
+			if($q->num_rows == 1) { 
+				$nsaidsInListDrugCode = true;
+			}
+		}
+
+		if($nsaidsInListDrugCode == true){
+			$res = array('res'=>400,'me'=>'y', 'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อน');
+			echo $json->encode($res);
+			exit;
+		}
+
+		$thaiDate = '2566-11-08';
+		$sql = "SELECT a.*,c.doctor,c.stkcutdate,c.dr_cancle,c.tvn FROM ( 
+			SELECT row_id,`date`,hn,drugcode,tradname,idno 
+			FROM ddrugrx 
+			WHERE `date` LIKE '$thaiDate%' 
+			AND hn = '$hn' 
+			#AND doctor != '$doctor';
+		) AS a 
+		LEFT JOIN dphardep AS c on a.idno = c.row_id 
+		LEFT JOIN ( 
+			SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' 
+		) AS b on a.drugcode = b.drugcode 
+		WHERE b.row_id IS NOT NULL AND c.stkcutdate IS NOT NULL 
+		-- GROUP BY a.hn,a.drugcode,c.doctor 
+		GROUP BY a.drugcode";
+		
+		$testOtherDoctorNSAIDs = false;
+		$otherDrug = array();
+		$q = $dbi->query($sql);
+		if($q->num_rows > 0) {
+			
+			while($a = $q->fetch_assoc()) { 
+				$otherDrug[] = array('drugcode'=>$a['drugcode'],'doctor'=>$a['doctor']);
+			}
+			$testOtherDoctorNSAIDs = true;
+
+		}
+
+		if($testOtherDoctorNSAIDs == true){
+			$res = array('res'=>400,'me'=>'n', 'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อนกับแพทย์ท่านอื่น','items'=>$otherDrug);
+			echo $json->encode($res);
+			exit;
+		}
+
+	}
+	
+	exit;
+
+}
 
 
 ///////////////////////////////////////////////////////////////////
@@ -2690,7 +2787,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	
 	callback_myWindow = returnstr = xmlhttp.responseText;
 
-	// Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 	if(drugcode.trim()=='1FEBU'){ 
 
 		var allIcd10List = false;
@@ -2718,10 +2815,11 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 
 		if(icd10Check==true){
-			alert('>>> ไม่สามารถจ่ายยาได้ <<<'+"\n"+'เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด'+"\n\n"+'กรุณาติดต่อ พ.ท.เชาวรินทร์ อุ่นเครือ ');
+			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
 			return false;
 		}
 	}
+	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 
 	//
 	do_add_drug(returnstr, drugcode);
@@ -2740,6 +2838,8 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	};
 	xmlhttp.send(null);
+
+	check_nsaids(drugcode);
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
 	check_drugreact(drugcode, returnstr);
@@ -2920,7 +3020,7 @@ function rdu18_alert(drugcode, icd10){
 			dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
 
 			document.getElementById('rduAlertContainer').style.width = 'auto';
-			document.getElementById('rduContent').innerHTML = v; 
+			document.getElementById('rduContent').innerHTML = dataHtml; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
 			
 		}
@@ -2951,7 +3051,25 @@ function setCookie(cname, cvalue, extime) {
 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+function check_nsaids(drugcode){
+	var hn = '<?=$_SESSION['hn_now'];?>';
 
+	var res = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=check_nsaids&drugcode='+drugcode+'&hn='+hn;
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				res = xmlhttp.responseText.trim();
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+
+}
 
 function rdu7_alert(drugcode, icd10){
 
