@@ -37,7 +37,7 @@ if($action==='save'){
             $imageFileType = strtolower(pathinfo($files["name"][$i],PATHINFO_EXTENSION));
             $size = $files["size"][$i];
 
-            if( $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ){
+            if( $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ){
                 continue;
             }
             if($size >= $maxsize){
