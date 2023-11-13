@@ -907,18 +907,18 @@ if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
 	exit;
 }
 
+/**
+ * หา icd10 ทั้งหมดของคนคนไข้ เบื้องต้นเพื่อดูประวัติว่าเคยเป็นโรคหลอดเลือดหรือไม่
+ */
 if(isset($_GET["action"]) && $_GET["action"] == "get_all_icd10"){
-	
-	$today = date('Y-m-d');
 	$hn = $_SESSION['hn_now'];
-	$sql = "SELECT icd10 FROM `diag` WHERE `hn` = '$hn' GROUP BY icd10";
-	$q = mysql_query($sql) or die(mysql_error());
+	$sql = "SELECT icd10 FROM `diag` WHERE `hn` = '$hn' and icd10 <> '' GROUP BY icd10";
+	$q  = $dbi->query($sql);
 	$icd_lists = array();
-	while ($d = mysql_fetch_assoc($q)) {
-		$icd_lists[] = '"'.$d['icd10'].'"';
+	while ($d = $q->fetch_assoc()) {
+		$icd_lists[] = $d['icd10'];
 	}
-	$imp_icd = implode(',', $icd_lists);
-	echo "[$imp_icd]";
+	echo $json->encode($icd_lists);
 	exit;
 }
 
@@ -2759,6 +2759,34 @@ function testPreg(drugcode,tradname,genname){
 	}
 }
 
+function check_1FEBU(){
+	var allIcd10List = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=get_all_icd10';
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				var resIcd10 = xmlhttp.responseText.trim();
+				allIcd10List = JSON.parse(resIcd10);
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+
+	var icd10Check = false;
+	for (var index = 0; index < allIcd10List.length; index++) {
+		var element = allIcd10List[index];
+		if(febuxo_icd10.indexOf(element)>0){
+			icd10Check = true;
+		}
+	}
+
+	return icd10Check;
+}
+
 var callback_myWindow;
 var callback_drugcode;
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
@@ -2789,32 +2817,10 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 	if(drugcode.trim()=='1FEBU'){ 
-
-		var allIcd10List = false;
-		xmlhttp = newXmlHttp();
-		url = 'dt_drug.php?action=get_all_icd10';
-		xmlhttp.open("GET", url, false);
-		xmlhttp.onreadystatechange = function () {
-			if (xmlhttp.readyState === 4) {
-				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-					var resIcd10 = xmlhttp.responseText.trim();
-					allIcd10List = JSON.parse(resIcd10);
-				} else {
-					// Error :(
-				}
-			}
-		};
-		xmlhttp.send(null);
-
-		var icd10Check = false;
-		for (var index = 0; index < allIcd10List.length; index++) {
-			var element = allIcd10List[index];
-			if(febuxo_icd10.indexOf(element)>0){
-				icd10Check = true;
-			}
-		}
-
-		if(icd10Check==true){
+		var res_1feb = check_1FEBU();
+		if(res_1feb==true){ 
+			document.getElementById("drug_code").value = '';
+			document.getElementById('list').innerHTML='';
 			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
 			return false;
 		}
@@ -3370,6 +3376,17 @@ function checkForm1(){
 	var txt1 ;
 	var txt2 ;
 	
+	if(document.form1.drug_code.value.trim()=='1FEBU'){ 
+		var res_1feb = check_1FEBU();
+		if(res_1feb==true){ 
+			document.getElementById("drug_code").value = '';
+			document.getElementById("drug_amount").value = '';
+			document.getElementById("drug_slip").value = '';
+			document.getElementById('list').innerHTML='';
+			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
+			return false;
+		}
+	}
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);
 	txt = txt.substr(4);
