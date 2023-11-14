@@ -267,14 +267,37 @@ order by a.hn
 	select อีกตัวหนึ่งแล้วเพิ่ม group by doctor code เพื่อหาว่ามีแพทย์คนอื่นสั่งยาในกลุ่มนี้หรือไม่ ถ้ามีแสดงว่าเข้าอีกเคสหนึ่งคือ แพทย์ท่านอื่น สั่งจ่ายยาซ้ำซ้อน
 	*/
 
+	/*
+	-> คีย์รหัสยา
+	-> Double click เลือกยา 
+	
+	--เพิ่ม--> ตรวจสอบว่ายาที่กำลังกดสั่ง ซ้ำกับใน session รึป่าว ถ้าซ้ำในเงื่อนไขของ NSAIDs ให้แจ้งเตือน
+	--เงื่อนไขเพิ่มเติม--> รหัสหน้ายาต้องเป็นตัวเดียวกัน ถ้ารหัสห้ายาเป็นคนละตัวกันให้สั่งได้
+
+	-> รายการยา เด้งมาลงที่ Form
+	-> Submit Form ข้อมูลเด้งมาเข้าที่รายการยาที่สั่ง พร้อมกับ เก็บข้อมูลไว้ใน Session
+	*/
+
 	// !!!!!! ถ้าหาขอคนที่คีย์ปัจจุบัน ไปหาจากใน $_SESSION["list_drugcode"] 
+
+	$nsaids_1 = array();
+	$nsaids_2 = array();
 
 	// รายการยาในกลุ่ม nsaids ทั้งหมด
 	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ");
 	$nsaidsList = array();
 	if($q->num_rows > 0) { 
-		while ($a = $q->fetch_assoc()) {
+		while ($a = $q->fetch_assoc()) { 
+
+			$prefix = substr($a['drugcode'],1);
+			if($prefix==1){ 
+				$nsaids_1[] = trim($a['drugcode']);
+			}elseif($prefix==2){
+				$nsaids_2[] = trim($a['drugcode']);
+			}
+
 			$nsaidsList[] = trim($a['drugcode']);
+			
 		}
 	}
 	
@@ -2338,6 +2361,8 @@ var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020',
 // Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 var febuxo_icd10 = ['I513','I514','I515','I517','I518','I5181','I5189','I519'];
 
+var metformin_drug = ['1MET500-C','1METF','1GLUX1000','1VILMET','1XIGDU','1GEMET'];
+
 var drug_cc='';
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -2787,6 +2812,17 @@ function check_1FEBU(){
 	return icd10Check;
 }
 
+function check_metformin(){
+	var egfr_test = parseFloat('<?=$res_egfr;?>');
+	if (egfr_test < 30) {
+		alert("ผู้ป่วย eGFR < 30 ");
+
+	}else if(egfr_test >= 30 && egfr_test <= 60){
+		alert("เด้งตาราง metformin vs CKD")
+
+	}
+}
+
 var callback_myWindow;
 var callback_drugcode;
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
@@ -2826,6 +2862,12 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	}
 	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+
+
+	if(drugcode.trim().indexOf(metformin_drug)){
+		var res_metformin = check_metformin();
+		return res_metformin;
+	}
 
 	//
 	do_add_drug(returnstr, drugcode);
@@ -3001,7 +3043,7 @@ function kidney_egfr_alert(drugcode){
 
 	// < 60 คือไตเรื้อรังระดับ3
 	if( ( isNaN(egfr_test) === false && egfr_test < 60.00 ) && nsaids14_list.indexOf(drugcode) > -1 ){
-		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป");
+		alert(">> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล << \nเลี่ยงการใช้ยา NSAIDs ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป");
 	}
 	
 }
