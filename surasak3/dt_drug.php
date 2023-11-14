@@ -67,6 +67,18 @@ if( $_SESSION['sIdname'] == 'md19921' ){
 	include_once 'includes/connect_md013.php';
 }
 
+function getNSAIDs_List(){
+	global $dbi;
+	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ORDER BY drugcode ASC");
+	$nsaidsList = array();
+	if($q->num_rows > 0) { 
+		while ($a = $q->fetch_assoc()) { 
+			$nsaidsList[] = trim($a['drugcode']);
+		}
+	}
+	return $nsaidsList;
+}
+
 $limit30checkday = 30;
 $limit90checkday = 90;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 
@@ -280,36 +292,37 @@ order by a.hn
 
 	// !!!!!! ถ้าหาขอคนที่คีย์ปัจจุบัน ไปหาจากใน $_SESSION["list_drugcode"] 
 
-	$nsaids_1 = array();
-	$nsaids_2 = array();
 
+	// select a.*,b.drugcode from ( 
+	// Select row_id, doctor 
+	// From dphardep 
+	// where hn = '47-1344' 
+	// AND whokey = 'DR' 
+	// AND idname <> 'test' 
+	// AND date like '2566-11-14%' 
+	// AND dr_cancle is null 
+	// Order by row_id DESC
+	// ) as a left join ddrugrx as b on a.row_id = b.idno 
+	// where b.drugcode in ( SELECT drugcode FROM druglst WHERE bcode = 'd1011' ORDER BY drugcode ASC )
+	
 	// รายการยาในกลุ่ม nsaids ทั้งหมด
-	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ");
-	$nsaidsList = array();
-	if($q->num_rows > 0) { 
-		while ($a = $q->fetch_assoc()) { 
-
-			$prefix = substr($a['drugcode'],1);
-			if($prefix==1){ 
-				$nsaids_1[] = trim($a['drugcode']);
-			}elseif($prefix==2){
-				$nsaids_2[] = trim($a['drugcode']);
-			}
-
-			$nsaidsList[] = trim($a['drugcode']);
-			
-		}
-	}
+	// $q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ORDER BY drugcode ASC");
+	// $nsaidsList = array();
+	// if($q->num_rows > 0) { 
+	// 	while ($a = $q->fetch_assoc()) { 
+	// 		$nsaidsList[] = trim($a['drugcode']);
+	// 	}
+	// }
+	$nsaidsList = getNSAIDs_List();
 	
 	// ถ้ายาทีสั่งอยู่ในกลุ่ม nsaids
-	if(in_array(trim($drugcode), $nsaidsList)==true) {
+	if(in_array(trim($drugcode), $nsaidsList)==true ) {
 
 		// หาใน session ก่อนว่าไปชนกับในกลุ่มที่เคยสั่งแล้วรึยัง
 		$listDrugCode = $_SESSION["list_drugcode"];
 		$nsaidsInListDrugCode = false;
-		foreach ($listDrugCode as $ldc) {
-			$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' AND drugcode = '$ldc' ");
-			if($q->num_rows == 1) { 
+		foreach ($listDrugCode as $ldc) { 
+			if(in_array($ldc, $nsaidsList)==true) { 
 				$nsaidsInListDrugCode = true;
 			}
 		}
@@ -935,12 +948,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
  */
 if(isset($_GET["action"]) && $_GET["action"] == "get_all_icd10"){
 	$hn = $_SESSION['hn_now'];
-	$sql = "SELECT icd10 FROM `diag` WHERE `hn` = '$hn' and icd10 <> '' GROUP BY icd10";
-	$q  = $dbi->query($sql);
+	$q  = $dbi->query("SELECT icd10 FROM `diag` WHERE `hn` = '$hn' and icd10 <> '' GROUP BY icd10");
 	$icd_lists = array();
 	while ($d = $q->fetch_assoc()) {
 		$icd_lists[] = $d['icd10'];
-	}
+	} 
 	echo $json->encode($icd_lists);
 	exit;
 }
@@ -1356,7 +1368,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 	if( isset($_GET['drugcode']) && $_GET['drugcode'] === '2para' ){
 		$_GET['drugcode'] = '2PARA';
 	}
-	
+
 	$count = count($_SESSION["list_drugcode"]);
 	
 	$sql = "Select part From druglst Where drugcode = '".$_GET["drugcode"]."' limit 1";
@@ -2816,11 +2828,12 @@ function check_metformin(){
 	var egfr_test = parseFloat('<?=$res_egfr;?>');
 	if (egfr_test < 30) {
 		alert("ผู้ป่วย eGFR < 30 ");
-
+		return false;
 	}else if(egfr_test >= 30 && egfr_test <= 60){
 		alert("เด้งตาราง metformin vs CKD")
-
+		return false;
 	}
+
 }
 
 var callback_myWindow;
@@ -2856,6 +2869,8 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		var res_1feb = check_1FEBU();
 		if(res_1feb==true){ 
 			document.getElementById("drug_code").value = '';
+			document.getElementById("drug_amount").value = '';
+			document.getElementById("drug_slip").value = '';
 			document.getElementById('list').innerHTML='';
 			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
 			return false;
@@ -2866,7 +2881,9 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	if(drugcode.trim().indexOf(metformin_drug)){
 		var res_metformin = check_metformin();
-		return res_metformin;
+		if(res_metformin===false){
+			return false;
+		}
 	}
 
 	//
@@ -2887,7 +2904,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	};
 	xmlhttp.send(null);
 
-	check_nsaids(drugcode);
+	// check_nsaids(drugcode);
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
 	check_drugreact(drugcode, returnstr);
@@ -3485,20 +3502,20 @@ function checkForm1(){
 	}
 
 	
-	if(txt == "0"){
+	/*if(txt == "0"){
 		alert("กรุณาลองใส่รหัสยาใหม่");
 		document.form1.drug_code.focus();
 
-	}/*else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
+	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
 		document.form1.drug_code.focus();
 
 	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
 		document.form1.drug_code.focus();
 
-	}*/else if(txt == "55" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
+	}else if(txt == "55" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
 		document.form1.drug_code.focus();	
 
-	}
+	}*/
 
 
 	if(document.form1.drug_code.value == ""){
