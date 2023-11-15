@@ -79,6 +79,13 @@ function getNSAIDs_List(){
 	return $nsaidsList;
 }
 
+$pre_nsaids_list = getNSAIDs_List();
+$pre_nsaids_js = '';
+foreach($pre_nsaids_list as $ns){
+	$pre_nsaids_js[] = "'$ns'";
+}
+$nsaids_for_js = implode(',', $pre_nsaids_js);
+
 $limit30checkday = 30;
 $limit90checkday = 90;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 
@@ -257,120 +264,55 @@ if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 
 	$hn = sprintf("%s", $_GET['hn']);
-	$drugcode = sprintf("%s", $_GET['drugcode']);
+	$currentDrugcode = sprintf("%s", $_GET['drugcode']);
 	$thaiDate = (date('Y')+543).date('-m-d');
 	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
-	/* 
-
-	select a.*,c.doctor,c.stkcutdate,c.dr_cancle,c.tvn from ( 
-select row_id,date,hn,drugcode,tradname,idno from  ddrugrx where date like '2566-11-08%' 
-and hn = '66-5181' 
-) as a 
-left join dphardep as c on a.idno = c.row_id 
-left join ( 
-select row_id,drugcode from druglst where bcode = 'd1011' 
-) as b on a.drugcode = b.drugcode 
-where b.row_id is not null AND c. stkcutdate IS NOT NULL 
-GROUP BY a.hn,a.drugcode,c.doctor 
-order by a.hn
-
-	select ใน ddrugrx ที่ bcode เป็น d1011 แล้ว group by drugcode ถ้ามีมากกว่า 1 แสดงว่ามีการสั่งยา nsaids ซ้ำซ้อน
-
-	select อีกตัวหนึ่งแล้วเพิ่ม group by doctor code เพื่อหาว่ามีแพทย์คนอื่นสั่งยาในกลุ่มนี้หรือไม่ ถ้ามีแสดงว่าเข้าอีกเคสหนึ่งคือ แพทย์ท่านอื่น สั่งจ่ายยาซ้ำซ้อน
-	*/
-
-	/*
-	-> คีย์รหัสยา
-	-> Double click เลือกยา 
 	
-	--เพิ่ม--> ตรวจสอบว่ายาที่กำลังกดสั่ง ซ้ำกับใน session รึป่าว ถ้าซ้ำในเงื่อนไขของ NSAIDs ให้แจ้งเตือน
-	--เงื่อนไขเพิ่มเติม--> รหัสหน้ายาต้องเป็นตัวเดียวกัน ถ้ารหัสห้ายาเป็นคนละตัวกันให้สั่งได้
-
-	-> รายการยา เด้งมาลงที่ Form
-	-> Submit Form ข้อมูลเด้งมาเข้าที่รายการยาที่สั่ง พร้อมกับ เก็บข้อมูลไว้ใน Session
-	*/
-
-	// !!!!!! ถ้าหาขอคนที่คีย์ปัจจุบัน ไปหาจากใน $_SESSION["list_drugcode"] 
-
-
-	// select a.*,b.drugcode from ( 
-	// Select row_id, doctor 
-	// From dphardep 
-	// where hn = '47-1344' 
-	// AND whokey = 'DR' 
-	// AND idname <> 'test' 
-	// AND date like '2566-11-14%' 
-	// AND dr_cancle is null 
-	// Order by row_id DESC
-	// ) as a left join ddrugrx as b on a.row_id = b.idno 
-	// where b.drugcode in ( SELECT drugcode FROM druglst WHERE bcode = 'd1011' ORDER BY drugcode ASC )
-	
-	// รายการยาในกลุ่ม nsaids ทั้งหมด
-	// $q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ORDER BY drugcode ASC");
-	// $nsaidsList = array();
-	// if($q->num_rows > 0) { 
-	// 	while ($a = $q->fetch_assoc()) { 
-	// 		$nsaidsList[] = trim($a['drugcode']);
-	// 	}
-	// }
-	$nsaidsList = getNSAIDs_List();
-	
-	// ถ้ายาทีสั่งอยู่ในกลุ่ม nsaids
-	if(in_array(trim($drugcode), $nsaidsList)==true ) {
-
-		// หาใน session ก่อนว่าไปชนกับในกลุ่มที่เคยสั่งแล้วรึยัง
-		$listDrugCode = $_SESSION["list_drugcode"];
-		$nsaidsInListDrugCode = false;
-		foreach ($listDrugCode as $ldc) { 
-			if(in_array($ldc, $nsaidsList)==true) { 
-				$nsaidsInListDrugCode = true;
-			}
+	// เอารายการยาที่กดสั่งที่อยู่ใน SESSION มารวมกับยาทีแพทย์ท่านอื่นสั่ง มารวมกัน
+	$allDrugCode = $_SESSION["list_drugcode"];
+	$sessionDrug = '';
+	if(count($allDrugCode)>0){
+		foreach ($allDrugCode as $key => $dc) {
+			$sessionDrug[] = "'$dc'";
 		}
-
-		if($nsaidsInListDrugCode == true){
-			$res = array('res'=>400,'me'=>'y', 'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อน');
-			echo $json->encode($res);
-			exit;
-		}
-
-		$thaiDate = '2566-11-08';
-		$sql = "SELECT a.*,c.doctor,c.stkcutdate,c.dr_cancle,c.tvn FROM ( 
-			SELECT row_id,`date`,hn,drugcode,tradname,idno 
-			FROM ddrugrx 
-			WHERE `date` LIKE '$thaiDate%' 
-			AND hn = '$hn' 
-			#AND doctor != '$doctor';
-		) AS a 
-		LEFT JOIN dphardep AS c on a.idno = c.row_id 
-		LEFT JOIN ( 
-			SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' 
-		) AS b on a.drugcode = b.drugcode 
-		WHERE b.row_id IS NOT NULL AND c.stkcutdate IS NOT NULL 
-		-- GROUP BY a.hn,a.drugcode,c.doctor 
-		GROUP BY a.drugcode";
-		
-		$testOtherDoctorNSAIDs = false;
-		$otherDrug = array();
-		$q = $dbi->query($sql);
-		if($q->num_rows > 0) {
-			
-			while($a = $q->fetch_assoc()) { 
-				$otherDrug[] = array('drugcode'=>$a['drugcode'],'doctor'=>$a['doctor']);
-			}
-			$testOtherDoctorNSAIDs = true;
-
-		}
-
-		if($testOtherDoctorNSAIDs == true){
-			$res = array('res'=>400,'me'=>'n', 'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อนกับแพทย์ท่านอื่น','items'=>$otherDrug);
-			echo $json->encode($res);
-			exit;
-		}
-
 	}
 	
-	exit;
+	// หาใน ddrugrx ว่าแพทย์ท่านอื่นเคยสั่งยาในกลุ่ม nsaids ไว้รึป่าว
+	$sql = "SELECT a.*,b.`drugcode` FROM ( 
+		SELECT `row_id`, `doctor` 
+		FROM `dphardep` 
+		WHERE `hn` = '$hn' 
+		AND `whokey` = 'DR' 
+		AND `idname` <> '$doctor' 
+		AND `date` LIKE '$thaiDate%' 
+		AND `dr_cancle` IS NULL 
+		ORDER BY `row_id` DESC
+	) AS a LEFT JOIN `ddrugrx` AS b ON a.`row_id` = b.`idno` 
+	WHERE b.`drugcode` IN ( SELECT `drugcode` FROM `druglst` WHERE `bcode` = 'd1011' ORDER BY `drugcode` ASC )";
+	if(!empty($sessionDrug)){
+		$where = implode(",", $sessionDrug);
+		$sql = $sql." AND b.`drugcode` NOT IN ($where)";
+	}
+	$q = $dbi->query($sql);
+	if($q->num_rows > 0) { 
+		while($a = $q->fetch_assoc()) { 
+			$allDrugCode[] = $a['drugcode'];
+		}
+	}
+ 
+	$newDrugList = array();
+	foreach ($allDrugCode as $d) { 
+		$key = substr($d, 0,1);
+		$newDrugList[$key][] = $d;
+	}
 
+	$currentKey = substr($currentDrugcode,0,1);
+	$res = array('status'=>200,'message'=>'');
+	if(count($newDrugList[$currentKey])> 0) {
+		$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อน');
+	}
+	echo $json->encode($res);
+	exit;
 }
 
 
@@ -2881,12 +2823,28 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	if(drugcode.trim().indexOf(metformin_drug)){
 		var res_metformin = check_metformin();
-		if(res_metformin===false){
+		if(res_metformin===false){ 
+			document.getElementById("drug_code").value = '';
+			document.getElementById("drug_amount").value = '';
+			document.getElementById("drug_slip").value = '';
+			document.getElementById('list').innerHTML='';
 			return false;
 		}
 	}
 
-	//
+	var nsaids_list = [<?=$nsaids_for_js;?>];
+	if(nsaids_list.indexOf(drugcode.trim())>=0){ 
+		var resNsaids = check_nsaids(drugcode.trim());
+		if(resNsaids==false){ 
+			document.getElementById("drug_code").value = '';
+			document.getElementById("drug_amount").value = '';
+			document.getElementById("drug_slip").value = '';
+			document.getElementById('list').innerHTML='';
+			return false;
+		}
+	}
+
+	// เอารายการยาที่ double click มาไว้ในฟอร์มซ้ายมือ
 	do_add_drug(returnstr, drugcode);
 
 	var icd10 = false;
@@ -2903,8 +2861,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	};
 	xmlhttp.send(null);
-
-	// check_nsaids(drugcode);
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
 	check_drugreact(drugcode, returnstr);
@@ -3118,22 +3074,40 @@ function setCookie(cname, cvalue, extime) {
 
 function check_nsaids(drugcode){
 	var hn = '<?=$_SESSION['hn_now'];?>';
-
-	var res = false;
+	var resNsaids = false;
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=check_nsaids&drugcode='+drugcode+'&hn='+hn;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.onreadystatechange = function () {
 		if (xmlhttp.readyState === 4) {
 			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-				res = xmlhttp.responseText.trim();
+				var res = JSON.parse(xmlhttp.responseText.trim());
+				if(res.status==200){
+					resNsaids = true;
+				}else if(res.status==400){ 
+					alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message);
+
+
+					var resConfirm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					if (resConfirm===true) {
+						// var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+						// url += '&drugcode='+encodeURIComponent(drugcode);
+						// url += '&returnstr='+encodeURIComponent(returnstr);
+						// url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+
+						// window.open(url,"myWindow","width=600,height=300,left=100,top=100");
+
+					}
+
+
+				}
 			} else {
 				// Error :(
 			}
 		}
 	};
 	xmlhttp.send(null);
-
+	return resNsaids;
 }
 
 function rdu7_alert(drugcode, icd10){
@@ -4399,7 +4373,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	<TD valign="top"><Div id="druglist" ></Div>
 	<?php 
 		$listinteraction =array();
-		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC limit 1 ";
+		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
 		
 		$result = mysql_query($sql);
 		$rows = mysql_num_rows($result);
@@ -4407,25 +4381,24 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		
 		echo "<Table width=\"100%\">";
 		echo "<TR>";
-					echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
-				echo "</TR>";
-		while(list($row_id, $doctor) = mysql_fetch_row($result)){
-			$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-		echo "
-		<tr class='tb_head' >
+		echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
+		echo "</TR>";
+		echo "<tr class='tb_head' >
 			<td align=\"center\" >ชื่อยา</td>
 			<td align=\"center\" >จำนวน</td>
 			<td align=\"center\" >วิธีใช้</td>
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
-
+		while(list($row_id, $doctor) = mysql_fetch_row($result)){
+			$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$result2 = mysql_query($sql) or die(mysql_error());
+		
 			while(list($tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
 
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 				echo "<TR>";
-					echo "<TD>".$tradname."</TD>";
+					echo "<TD><span title='Drug code: $drugcode'>".$tradname."</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
