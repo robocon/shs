@@ -114,13 +114,17 @@ $_SESSION['nsaids13_count'] = 0;
 
 // หา eGFR
 $curr_date = date('Y-m-d');
+
 $sql_egfr = "SELECT b.`result` 
-FROM `resulthead` AS a 
+FROM ( 
+	SELECT autonumber 
+	FROM `resulthead` 
+	WHERE `hn` = '".$_SESSION['hn_now']."' 
+	AND `orderdate` LIKE '$curr_date%' 
+	AND ( `profilecode` = 'CREA' OR `profilecode` = 'CREAG' ) 
+) AS a 
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-WHERE a.`hn` = '".$_SESSION['hn_now']."' 
-AND a.`orderdate` LIKE '$curr_date%' 
-AND ( a.`profilecode` = 'CREA' OR a.`profilecode` = 'CREAG' ) 
-AND b.`labname` = 'eGFR' ";
+WHERE b.`labname` LIKE 'eGFR%' ";
 $q_egfr = mysql_query($sql_egfr);
 $res_egfr ='';
 if ( mysql_num_rows($q_egfr) > 0 ) {
@@ -2768,14 +2772,26 @@ function check_1FEBU(){
 
 function check_metformin(){
 	var egfr_test = parseFloat('<?=$res_egfr;?>');
+
 	if (egfr_test < 30) {
-		alert("ผู้ป่วย eGFR < 30 ");
+
+		var dataHtml = '<p style="margin-top: 8px;"><b>ไม่สามารถสั่งจ่ายยาMetforminได้ เนื่องจากค่าeGFR ของผู้ป่วยน้อยกว่า 30</b></p>';
+		dataHtml += '<p><img src="images/ckd_state.jpg" width="800"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+		document.getElementById('rduAlertContainer').style.display = 'block';
+
 		return false;
 	}else if(egfr_test >= 30 && egfr_test <= 60){
-		alert("เด้งตาราง metformin vs CKD")
-		return false;
-	}
 
+		var dataHtml = '<p style="margin-top: 8px;"><b>ข้อมูลประกอบการพิจารณา</b> eGFR ของผู้ป่วยคือ <b>'+egfr_test+'</b></p>';
+		dataHtml += '<p><img src="images/ckd_state.jpg" width="800"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+		document.getElementById('rduAlertContainer').style.display = 'block';
+		
+		return true;
+	}
 }
 
 var callback_myWindow;
@@ -2819,9 +2835,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	}
 	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
-
-
-	if(drugcode.trim().indexOf(metformin_drug)){
+	if(metformin_drug.indexOf(drugcode.trim())>=0){
 		var res_metformin = check_metformin();
 		if(res_metformin===false){ 
 			document.getElementById("drug_code").value = '';
@@ -2829,6 +2843,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			document.getElementById("drug_slip").value = '';
 			document.getElementById('list').innerHTML='';
 			return false;
+			
 		}
 	}
 
