@@ -288,7 +288,7 @@ $smctoken = $t['token'];
 ?>
 
 <style>
-#ptrightNotify{top: 2%;left: 50%;width:600px;height:250px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
+#ptrightNotify{top: 2%;left: 50%;width:700px;height:350px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
 #ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
 #ptrightClose{font-size: 24px;color: #fff;text-decoration: none;}
 #ptnotifyContent{padding: 6px;}
