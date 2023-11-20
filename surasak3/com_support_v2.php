@@ -83,7 +83,7 @@ if ($action === 'search_user') {
 $page = $_REQUEST['page'];
 if($page==='load25page'){ 
 
-    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 80";
+    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 100";
     $q = $dbi->query($sql);
     $items = array();
     while ($item = $q->fetch_assoc()) {
@@ -93,7 +93,7 @@ if($page==='load25page'){
 
     }
 
-    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 50 ";
+    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 100 ";
     $q_sub = $dbi->query($sql_sub);
     if($q_sub->num_rows > 0){
         while ($s = $q_sub->fetch_assoc()) { 

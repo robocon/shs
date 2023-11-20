@@ -101,18 +101,24 @@ $sql = "Select name,position,doctorcode From doctor where name like '".$dt_docto
 list($appoint_doctor,$dr_position,$doctorcode) = Mysql_fetch_row(Mysql_Query($sql));
 
 // 
-$sql = "SELECT day,time_start,time_end,clinic FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
-$q = $dbi->query($sql);
 $all_days_exam = array();
 $days_exam = array();
-while ($a = $q->fetch_assoc()) {
-	$days_exam[] = $a;
-	$day_explode = explode(',', $a['day']);
-	foreach ($day_explode as $b) {
-		$all_days_exam[$b] = $b;
+
+// แสดงตารางตรวจ ให้ใช้งานกับ er ไปก่อน ของพยาบาล opd ไปคุยมาแล้ว เค้าไม่ได้มีปัญหาอะไร
+if($_SESSION['smenucode']==='ADMER' OR $_SESSION['smenucode']==='ADM'){
+
+	$sql = "SELECT day,time_start,time_end,clinic FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
+	$q = $dbi->query($sql);
+	while ($a = $q->fetch_assoc()) {
+		$days_exam[] = $a;
+		$day_explode = explode(',', $a['day']);
+		foreach ($day_explode as $b) {
+			$all_days_exam[$b] = $b;
+		}
 	}
+	ksort($all_days_exam);
+
 }
-ksort($all_days_exam);
 
 /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 และกำหนด $diffMinute เป็น 15 */
 $diffHour = 0;
@@ -274,10 +280,10 @@ $year2 = date("Y");
 $long_time2 = $month2 + $year2;
 
 $title_time = '';
-$start = new DateTime(date('Y-m-01'));
-$test_date = new DateTime($tableDate);
+$start = strtotime(date('Y-m-01'));
+$test_date = strtotime($tableDate);
 $endOfDay = date('t');
-$monthsTxt = round(($test_date->format('U') - $start->format('U')) / (60*60*24*$endOfDay));
+$monthsTxt = round(($test_date - $start) / (60*60*24*$endOfDay));
 if($monthsTxt>0){
 	$title_time = " (นัด $monthsTxt เดือน)";
 	

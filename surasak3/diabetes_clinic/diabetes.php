@@ -759,7 +759,7 @@ C&deg;</td>
 	#and  a.labname='Blood Sugar'  
 	and  a.labcode='GLU'  
 	and b.orderdate like '$year%' 
-	Order by b.orderdate desc LIMIT 1";
+	Order by b.orderdate desc ";
 	$result_laball=mysql_query($laball);
 	$rowall=mysql_num_rows($result_laball);
 	?>
