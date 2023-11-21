@@ -67,6 +67,8 @@ function registerChecksit(divId,idcard,person_id,smctoken){
                 html += '<div>ชื่อ-สกุล:&nbsp;<b style="color: green;">'+data.title_name+data.fname+' '+data.lname+'</b></div>';
                 html += '<div>เลขที่บัตรประชาชน:&nbsp;<b style="color: green;">'+data.person_id+'</b></div>';
 
+                var birthDay = data.birthdate.substring(6, 8)+" / "+data.birthdate.substring(4, 6)+" / "+data.birthdate.substring(0, 4);
+                html += '<div>วัน/เดือน/ปี เกิด:&nbsp;<b style="color: green;">'+birthDay+'</b></div>';
                 if(typeof data.purchaseprovince_name !== 'undefined'){
                     html += '<div>จังหวัดที่สำนักงานประกันสังคมรับผิดชอบ:&nbsp;<b style="color: green;">'+data.purchaseprovince_name+'</b></div>';
                 }
