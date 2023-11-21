@@ -107,7 +107,7 @@ $days_exam = array();
 // แสดงตารางตรวจ ให้ใช้งานกับ er ไปก่อน ของพยาบาล opd ไปคุยมาแล้ว เค้าไม่ได้มีปัญหาอะไร
 if($_SESSION['smenucode']==='ADMER' OR $_SESSION['smenucode']==='ADM'){
 
-	$sql = "SELECT day,time_start,time_end,clinic FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
+	$sql = "SELECT day,detail,time_start,time_end,clinic FROM exam_doctor WHERE doctor_id = '$doctorcode' ";
 	$q = $dbi->query($sql);
 	while ($a = $q->fetch_assoc()) {
 		$days_exam[] = $a;
@@ -593,7 +593,6 @@ if(count($days_exam)>0){
 		foreach ($days_exam as $d) { 
 
 			$dList = explode(',', $d['day']);
-			
 			?>
 			<tr valign="top">
 				<td><?=$ex_i;?></td>
@@ -603,7 +602,11 @@ if(count($days_exam)>0){
 					foreach ($dList as $dl) {
 						$dlItem[] = $th_days[$dl];
 					}
-					echo implode(', ', $dlItem);
+					$detail = '';
+					if(!empty($d['detail'])){
+						$detail = " (".$d['detail'].")";
+					}
+					echo implode(', ', $dlItem).$detail;
 					?>
 				</td>
 				<td><?=$d['time_start'];?>-<?=$d['time_end'];?></td>
