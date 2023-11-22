@@ -271,18 +271,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 	$currentDrugcode = sprintf("%s", $_GET['drugcode']);
 	$thaiDate = (date('Y')+543).date('-m-d');
 	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
+	$otherDrug = '';
 	
 	// เอารายการยาที่กดสั่งที่อยู่ใน SESSION มารวมกับยาทีแพทย์ท่านอื่นสั่ง มารวมกัน
 	$allDrugCode = $_SESSION["list_drugcode"];
-	$sessionDrug = '';
+	$sessionDrug = array();
+	$drugForSql = array();
 	if(count($allDrugCode)>0){
 		foreach ($allDrugCode as $key => $dc) {
-			$sessionDrug[] = "'$dc'";
+			$sessionDrug[] = trim($dc);
+			$drugForSql[] =  "'".trim($dc)."'";
 		}
 	}
 	
+	// ถ้ายาที่แพทย์คนปัจจุบันกดสั่งมีใน nsaids ให้ดึงเอารายการนั้นออกมารวม
+	$sessionDrug = array_intersect($sessionDrug, $pre_nsaids_list);
+	
 	// หาใน ddrugrx ว่าแพทย์ท่านอื่นเคยสั่งยาในกลุ่ม nsaids ไว้รึป่าว
-	$sql = "SELECT a.*,b.`drugcode` FROM ( 
+	$sql = "SELECT a.*,b.`drugcode`,b.`tradname` FROM ( 
 		SELECT `row_id`, `doctor` 
 		FROM `dphardep` 
 		WHERE `hn` = '$hn' 
@@ -294,18 +300,22 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 	) AS a LEFT JOIN `ddrugrx` AS b ON a.`row_id` = b.`idno` 
 	WHERE b.`drugcode` IN ( SELECT `drugcode` FROM `druglst` WHERE `bcode` = 'd1011' ORDER BY `drugcode` ASC )";
 	if(!empty($sessionDrug)){
-		$where = implode(",", $sessionDrug);
+		$where = implode(",", $drugForSql);
 		$sql = $sql." AND b.`drugcode` NOT IN ($where)";
 	}
 	$q = $dbi->query($sql);
+	$otherDoctor = '';
+	
 	if($q->num_rows > 0) { 
 		while($a = $q->fetch_assoc()) { 
-			$allDrugCode[] = $a['drugcode'];
+			$sessionDrug[] = $a['drugcode'];
+			$otherDoctor = $a['doctor'];
+			$otherDrug = $a['tradname'].' ('.$a['drugcode'].')';
 		}
 	}
  
 	$newDrugList = array();
-	foreach ($allDrugCode as $d) { 
+	foreach ($sessionDrug as $d) { 
 		$key = substr($d, 0,1);
 		$newDrugList[$key][] = $d;
 	}
@@ -315,6 +325,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 	if(count($newDrugList[$currentKey])> 0) {
 		$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อน');
 	}
+
+	if(!empty($otherDoctor)){
+		$res['doctor'] = $otherDoctor;
+	}
+
+	if(!empty($otherDrug)){
+		$res['drug'] = $otherDrug;
+	}
+	
 	echo $json->encode($res);
 	exit;
 }
@@ -2794,8 +2813,23 @@ function check_metformin(){
 	}
 }
 
-var callback_myWindow;
-var callback_drugcode;
+function clear_left_form(){
+	document.getElementById("drug_code").value = '';
+	document.getElementById("drug_amount").value = '';
+	document.getElementById("drug_slip").value = '';
+	document.getElementById('list').innerHTML='';
+}
+
+var callback_myWindow; // call back ของ rechallenge แพ้ยา
+var callback_drugcode; // call back ของ rechallenge แพ้ยา
+
+var returnstr; // ตัวแปรที่เอาไว้เก็บวิธีใช้ยา
+
+var nsaids_list = [<?=$nsaids_for_js;?>];
+
+/**
+ * ฟังก์ชั่นถูกเรียกใช้ตอน Double Click เลือกยา
+ */
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	var doctor_id = document.getElementById('doctor_id').value;
@@ -2810,11 +2844,10 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		return false;
 	}
 
-	var returnstr;
 	callback_drugcode = drugcode;
 
+	// วิธีใช้ยา
 	xmlhttp = newXmlHttp();
-
 	document.getElementById("drug_code").value = drugcode;
 	url = 'dt_drug.php?action=addamount&search=' + drugcode;
 	xmlhttp.open("GET", url, false);
@@ -2826,10 +2859,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	if(drugcode.trim()=='1FEBU'){ 
 		var res_1feb = check_1FEBU();
 		if(res_1feb==true){ 
-			document.getElementById("drug_code").value = '';
-			document.getElementById("drug_amount").value = '';
-			document.getElementById("drug_slip").value = '';
-			document.getElementById('list').innerHTML='';
+			clear_left_form();
 			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
 			return false;
 		}
@@ -2838,23 +2868,17 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	if(metformin_drug.indexOf(drugcode.trim())>=0){
 		var res_metformin = check_metformin();
 		if(res_metformin===false){ 
-			document.getElementById("drug_code").value = '';
-			document.getElementById("drug_amount").value = '';
-			document.getElementById("drug_slip").value = '';
-			document.getElementById('list').innerHTML='';
+			clear_left_form();
 			return false;
 			
 		}
 	}
 
-	var nsaids_list = [<?=$nsaids_for_js;?>];
+	
 	if(nsaids_list.indexOf(drugcode.trim())>=0){ 
 		var resNsaids = check_nsaids(drugcode.trim());
 		if(resNsaids==false){ 
-			document.getElementById("drug_code").value = '';
-			document.getElementById("drug_amount").value = '';
-			document.getElementById("drug_slip").value = '';
-			document.getElementById('list').innerHTML='';
+			clear_left_form();
 			return false;
 		}
 	}
@@ -3100,20 +3124,17 @@ function check_nsaids(drugcode){
 				if(res.status==200){
 					resNsaids = true;
 				}else if(res.status==400){ 
-					alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message);
-
-
-					var resConfirm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-					if (resConfirm===true) {
-						// var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
-						// url += '&drugcode='+encodeURIComponent(drugcode);
-						// url += '&returnstr='+encodeURIComponent(returnstr);
-						// url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
-
-						// window.open(url,"myWindow","width=600,height=300,left=100,top=100");
-
+					// alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message);
+					// resNsaids = true;
+					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					console.log('confirm in check_nsaids ==> '+nForm);
+					if (nForm===true) { 
+						var url = 'dt_nsaids_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+						url += '&drugcode='+encodeURIComponent(drugcode);
+						url += '&returnstr='+encodeURIComponent(returnstr);
+						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+						window.open(url,"myWindow","width=600,height=300,left=100,top=100");
 					}
-
 
 				}
 			} else {
@@ -3122,6 +3143,7 @@ function check_nsaids(drugcode){
 		}
 	};
 	xmlhttp.send(null);
+	console.log('(JS) : check_nsaids ==> '+resNsaids);
 	return resNsaids;
 }
 
@@ -3424,14 +3446,21 @@ function checkForm1(){
 	var txt1 ;
 	var txt2 ;
 	
-	if(document.form1.drug_code.value.trim()=='1FEBU'){ 
+	var drugTrim = document.form1.drug_code.value.trim();
+
+	if(drugTrim=='1FEBU'){ 
 		var res_1feb = check_1FEBU();
 		if(res_1feb==true){ 
-			document.getElementById("drug_code").value = '';
-			document.getElementById("drug_amount").value = '';
-			document.getElementById("drug_slip").value = '';
-			document.getElementById('list').innerHTML='';
+			clear_left_form();
 			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก ผู้ป่วยรายนี้มีประวัติโรคหัวใจและหลอดเลือด การใช้ยา Febuxostat อาจเพิ่มโอการเสียชีวิตได้');
+			return false;
+		}
+	}
+
+	if(nsaids_list.indexOf(drugTrim)>=0){ 
+		var resNsaids = check_nsaids(drugTrim);
+		if(resNsaids==false){ 
+			clear_left_form();
 			return false;
 		}
 	}
