@@ -269,6 +269,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 
 	$hn = sprintf("%s", $_GET['hn']);
 	$currentDrugcode = sprintf("%s", $_GET['drugcode']);
+	$currentKey = substr($currentDrugcode,0,1);
 	$thaiDate = (date('Y')+543).date('-m-d');
 	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
 	$otherDrug = '';
@@ -277,13 +278,29 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 	$allDrugCode = $_SESSION["list_drugcode"];
 	$sessionDrug = array();
 	$drugForSql = array();
+	$dcTrimCode = '';
 	if(count($allDrugCode)>0){
-		foreach ($allDrugCode as $key => $dc) {
-			$sessionDrug[] = trim($dc);
-			$drugForSql[] =  "'".trim($dc)."'";
+		foreach ($allDrugCode as $key => $dc) { 
+
+			$dcTrim = trim($dc);
+			if(in_array($dcTrim, $pre_nsaids_list)){
+				$dcKey = substr($dc,0,1);
+				if($dcKey==$currentKey){
+					$dcTrimCode = $dc;
+				}
+
+				$sessionDrug[] = $dcTrim;
+				$drugForSql[] =  "'$dcTrim'";
+			}
 		}
 	}
-	
+
+	if(!empty($dcTrimCode)){
+		$q = $dbi->query("SELECT drugcode,tradname FROM druglst WHERE drugcode = '$dcTrimCode' ");
+		$dl = $q->fetch_assoc();
+		$otherDrug = $dl['tradname'].' ('.$dl['drugcode'].')';
+	}
+
 	// ถ้ายาที่แพทย์คนปัจจุบันกดสั่งมีใน nsaids ให้ดึงเอารายการนั้นออกมารวม
 	$sessionDrug = array_intersect($sessionDrug, $pre_nsaids_list);
 	
@@ -310,7 +327,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 		while($a = $q->fetch_assoc()) { 
 			$sessionDrug[] = $a['drugcode'];
 			$otherDoctor = $a['doctor'];
-			$otherDrug = $a['tradname'].' ('.$a['drugcode'].')';
+			$otherDrug = $a['tradname'].' ( '.trim($a['drugcode']).' )';
 		}
 	}
  
@@ -320,18 +337,18 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 		$newDrugList[$key][] = $d;
 	}
 
-	$currentKey = substr($currentDrugcode,0,1);
+	
 	$res = array('status'=>200,'message'=>'');
 	if(count($newDrugList[$currentKey])> 0) {
 		$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อน');
 	}
 
 	if(!empty($otherDoctor)){
-		$res['doctor'] = $otherDoctor;
+		$res['other_doctor'] = $otherDoctor;
 	}
 
 	if(!empty($otherDrug)){
-		$res['drug'] = $otherDrug;
+		$res['other_drug'] = $otherDrug;
 	}
 	
 	echo $json->encode($res);
@@ -2968,13 +2985,21 @@ function do_add_drug(returnstr, drugcode){
 	}
 }
 
-// ถูกเรียกใช้จาก dt_drug_rechallenge.php
+// ถูกเรียกใช้จาก dt_drug_rechallenge.php หลังจากบันทึกข้อมูล
 function callback_drug_rechallenge(){ 
 
 	do_add_drug(callback_myWindow);
 	document.getElementById("drug_code").value = callback_drugcode;
 	
 }
+
+// ถูกเรียกใช้จาก dt_nsaids_rechallenge.php หลังจากบันทึกข้อมูล
+// function callback_nsaids_rechallenge(){ 
+
+// do_add_drug(callback_myWindow);
+// document.getElementById("drug_code").value = callback_drugcode;
+
+// }
 
 // แพ้ยา 
 // ทำงานใน add_drug() เพื่อpopupการ rechallenge
@@ -2992,7 +3017,7 @@ function check_drugreact(drugcode, returnstr){
 				if(resCode==3){
 
 					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
-					var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					var resConfirm = confirm("!!! คำเตือน !!! \n\n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
 					if (resConfirm===true) {
 						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
 						url += '&drugcode='+encodeURIComponent(drugcode);
@@ -3124,15 +3149,22 @@ function check_nsaids(drugcode){
 				if(res.status==200){
 					resNsaids = true;
 				}else if(res.status==400){ 
-					// alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message);
-					// resNsaids = true;
-					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					
+					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
 					console.log('confirm in check_nsaids ==> '+nForm);
+					console.log(res.other_doctor);
+					console.log(res.other_drug);
+
+					var other_doctor = res.other_doctor ? res.other_doctor : '' ;
+					var other_drug = res.other_drug ? res.other_drug : '' ;
+
 					if (nForm===true) { 
 						var url = 'dt_nsaids_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
 						url += '&drugcode='+encodeURIComponent(drugcode);
 						url += '&returnstr='+encodeURIComponent(returnstr);
 						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+						url += '&other_doctor='+encodeURIComponent(other_doctor);
+						url += '&other_drug='+encodeURIComponent(other_drug);
 						window.open(url,"myWindow","width=600,height=300,left=100,top=100");
 					}
 
@@ -3457,13 +3489,13 @@ function checkForm1(){
 		}
 	}
 
-	if(nsaids_list.indexOf(drugTrim)>=0){ 
-		var resNsaids = check_nsaids(drugTrim);
-		if(resNsaids==false){ 
-			clear_left_form();
-			return false;
-		}
-	}
+	// if(nsaids_list.indexOf(drugTrim)>=0){ 
+	// 	var resNsaids = check_nsaids(drugTrim);
+	// 	if(resNsaids==false){ 
+	// 		clear_left_form();
+	// 		return false;
+	// 	}
+	// }
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);
 	txt = txt.substr(4);

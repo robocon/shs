@@ -6,30 +6,31 @@ $dbi->query("SET NAMES UTF8");
 
 $hn = sprintf("%s", $_GET['hn']);
 $drugcode = sprintf("%s", $_GET['drugcode']);
-$returnstr = sprintf("%s", $_GET['returnstr']);
+$returnstr = trim(sprintf("%s", $_GET['returnstr']));
 $doctor = sprintf("%s", $_GET['doctor']);
+
+$other_doctor = sprintf("%s", $_GET['other_doctor']);
+$other_drug = sprintf("%s", $_GET['other_drug']);
 
 $action = sprintf("%s",$_POST['action']);
 if($action==='save'){ 
 
-    // $hn = sprintf("%s", $_POST['hn']);
-    // $drugcode = sprintf("%s", $_POST['drugcode']);
-    // $returnstr = sprintf("%s", $_POST['returnstr']);
-    // $reason = sprintf("%s", $_POST['reason']);
-    // $dt_code = sprintf("%s", $_POST['dt_code']);
-    // $doctor = sprintf("%s", $_POST['doctor']);
+    $hn = sprintf("%s", $_POST['hn']);
+    $drugcode = sprintf("%s", $_POST['drugcode']);
+    $returnstr = sprintf("%s", $_POST['returnstr']);
+    $reason = sprintf("%s", $_POST['reason']);
+    $dt_code = sprintf("%s", $_POST['dt_code']);
+    $doctor = sprintf("%s", $_POST['doctor']);
 
 
-    // $datehn = date('Y-m-d').$hn;
-    // $sql = "INSERT INTO `dt_rechallenge` 
-    // (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`) 
-    // VALUES 
-    // (NULL, NOW(), '$hn', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr');";
-    // $save = $dbi->query($sql);
-    // $msg = 'บันทึกข้อมูลเรียบร้อย';
+    $datehn = date('Y-m-d').$hn;
+    $sql = "INSERT INTO `dt_nsaids_rechallenge` 
+    (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`) 
+    VALUES 
+    (NULL, NOW(), '$hn', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr');";
+    $save = $dbi->query($sql);
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
 
-    echo "EXIT ONLY";
-    exit;
     ?>
     <div style="text-align: center;border: 1px solid #009688;background-color: #009688;color: #ffffff;">
         <p><b>บันทึกข้อมูลเรียบร้อย</b></p>
@@ -79,6 +80,10 @@ $op = $q_opday->fetch_assoc();
             font-size: 32px;
             margin:0;
         }
+        .danger{
+            color: red;
+            font-size: 24px;
+        }
     </style>
     <div>
         <div style="text-align:center;">
@@ -92,22 +97,19 @@ $op = $q_opday->fetch_assoc();
                         <td>
                             <?=$doctor;?>
                             <input type="hidden" name="doctor" value="<?=$doctor;?>">
-
-                            <b>เลขที่ ว.</b><input type="text" name="dt_code" id="dt_code">
+                            <b>เลขที่ ว.</b> <input type="text" name="dt_code" id="dt_code"><span class="danger">*</span><span class="danger" id="dt_code_danger" style="display:none;"> กรุณากรอกเลข ว.</span>
                         </td>
                     </tr>
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>ยืนยันการสั่งใช้ยา : </b> </td>
                         <td>
-                            <?=$d['drugcode'].' - '.$d['tradname'].' / '.$d['genname'];?>
+                            <?=$d['tradname'].' / '.$d['genname'].' ( '.$d['drugcode'].' )';?>
                             <input type="hidden" name="drugcode" value="<?=$drugcode;?>">
                         </td>
                     </tr>
                     <tr>
-                        <td align="right" style="background-color:#D4EFDF;"><b>คู่กับ : </b> </td>
-                        <td>
-                            
-                        </td>
+                        <td align="right" style="background-color:#D4EFDF;"><b>คู่กับ</b> </td>
+                        <td><?=$other_drug;?></td>
                     </tr>
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>แก่ : </b> </td>
@@ -118,7 +120,9 @@ $op = $q_opday->fetch_assoc();
                     </tr>
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>เนื่องจาก : </b> </td>
-                        <td><input type="text" name="reason" id="reason"></td>
+                        <td>
+                            <input type="text" name="reason" id="reason" size="40"><span class="danger">*</span><span class="danger" id="dt_reason_danger" style="display:none;"> กรุณาให้เหตุผลการใช้ยา</span>
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2" style="text-align:center;">
@@ -131,25 +135,38 @@ $op = $q_opday->fetch_assoc();
             </form>
             <script type="text/javascript">
                 function check_dt_form(){
-                    // event.preventDefault();
-
                     var reason = document.getElementById('reason');
                     var dt_code = document.getElementById('dt_code');
                     var test_return = true;
+                    if(dt_code.value==''){ 
+                        
+                        dt_code.style.borderColor = "red";
+                        dt_code_danger.style.display = '';
+                        test_return = false;
+
+                    }else{
+
+                        dt_code.style.borderColor = "";
+                        dt_code_danger.style.display = 'none';
+                    }
+                    
                     if(reason.value==''){
-                        alert('กรุณาให้เหตุผลการใช้ยา');
+
+                        reason.style.borderColor = "red";
+                        dt_reason_danger.style.display = '';
                         test_return = false;
 
-                    }else if(dt_code.value==''){
-                        alert('กรุณากรอกเลข ว. ของท่าน');
-                        test_return = false;
-
+                    }else{
+                        reason.style.borderColor = "";
+                        dt_reason_danger.style.display = 'none';
                     }
 
                     return test_return;
                 }
+
+                // default cursor focus
                 window.onload = function(){
-                    document.getElementById('reason').focus();
+                    document.getElementById('dt_code').focus();
                 }
             </script>
         </div>
