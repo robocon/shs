@@ -277,10 +277,12 @@ class Appoint extends DbConnect{
         $long_time2 = $month2 + $year2;
         
         $title_time = '';
-        $start = new DateTime(date('Y-m-01'));
-        $test_date = new DateTime($tableDate);
+        // $start = new DateTime(date('Y-m-01'));
+        // $test_date = new DateTime($tableDate);
+        $start = strtotime(date('Y-m-01'));
+        $test_date = strtotime($tableDate);
         $endOfDay = date('t');
-        $monthsTxt = round(($test_date->format('U') - $start->format('U')) / (60*60*24*$endOfDay));
+        $monthsTxt = round(($test_date - $start) / (60*60*24*$endOfDay));
         if($monthsTxt>0){
             $title_time = " (นัด $monthsTxt เดือน)";
             
