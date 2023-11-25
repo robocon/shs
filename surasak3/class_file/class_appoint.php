@@ -116,6 +116,7 @@ class Appoint extends DbConnect{
         .total_appointsaturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #FF0000; text-decoration:none;}
         .tooltips{
             background: white;
+            color: #000000!important;
             z-index: 9; 
             position: absolute;
             top: 0;
@@ -522,7 +523,7 @@ class Appoint extends DbConnect{
                 }else {
                     if($holiday["A".sprintf("%02d",$iday)]["date"]){
                         $class = "sunday";
-                        $holiday_detail = " OnmouseOver = \"show_tooltip('วันหยุด','".$holiday["A".sprintf("%02d",$iday)]["detail"]."','left',-200,-210,'$month-$iday'));\" OnmouseOut = \"hid_tooltip('$month-$iday');\" ";
+                        $holiday_detail = " OnmouseOver = \"show_tooltip('วันหยุด','".$holiday["A".sprintf("%02d",$iday)]["detail"]."','left',-200,-210,'$month-$iday');\" OnmouseOut = \"hid_tooltip('$month-$iday');\" ";
                       }else{
                         $class = "norm";
                       }
@@ -611,10 +612,21 @@ class Appoint extends DbConnect{
         ?>
         <script>
             function show_tooltip(title,detail,al,l,r, x){ 
+                
                 var tooltip = document.createElement('div');
                 tooltip.classList.add("tooltips");
                 tooltip.id='child'+x;
-                tooltip.innerHTML=tooltip.innerHTML+"<TABLE border=\"1\" bordercolor=\"blue\"><TR bgcolor=\"blue\"><TD align=\"center\"><B><FONT COLOR=\"#FFFFFF\">"+title+"</FONT></B></TD></TR><TR><TD align=\""+al+"\">"+detail+"</TD></TR></TABLE>";
+                
+                var table = "<TABLE border=\"1\" bordercolor=\"blue\">";
+                table += "<TR bgcolor=\"blue\">";
+                table += "    <TD align=\"center\"><B><FONT COLOR=\"#FFFFFF\">"+title+"</FONT></B></TD>";
+                table += "</TR>";
+                table += "<TR>";
+                table += "    <TD align=\""+al+"\">"+detail+"</TD>";
+                table += "</TR>";
+                table += "</TABLE>";
+
+                tooltip.innerHTML=table;
                 var divParent = document.getElementById(x);
                 divParent.appendChild(tooltip);
 
