@@ -1,13 +1,12 @@
-<? 
+<?php
 session_start();
- if(!isset($sOfficer)) {
-        echo "กรุณาเข้าสู่ระบบใหม่ <br>";
-        echo "<a href='http://192.168.131.250/sm3/sm3.php'>กดที่นี่เพื่อ Login อีกครั้ง</a>";
-		exit();
- }
+if(!isset($sOfficer)) {
+	echo "กรุณาเข้าสู่ระบบใหม่ <br>";
+	echo "<a href='../sm3.php'>กดที่นี่เพื่อ Login อีกครั้ง</a>";
+	exit();
+}
 ?>
 <style type="text/css">
-<!--
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
@@ -31,7 +30,17 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
--->
+ol{
+	margin: 0;
+	padding; 0;
+}
+ol li{
+	margin-bottom: 12px;
+}
+#closeBtn:hover{
+	cursor: pointer;
+	text-decoration: underline;
+}
 </style>
 <script language="javascript">
 ////// เช็คค่าว่าง
@@ -78,6 +87,30 @@ function fncSubmit()
 </script>
 
 <body bgcolor="#FFFFFF" >
+
+<div id="notiContainer" class="" style="position:absolute; background-color:white; border:2px solid #66CCCC; padding:4px; box-shadow: 4px 4px 8px; width: 1024px;">
+<div style="position:relative;">
+    <div class="style2" style="background-color: #0099CC; padding: 2px 4px; color:white;"> <span>คำแนะนำก่อนการแจ้งซ่อม</span> <span style="float:right;" onclick="closeBtn()" id="closeBtn">[ปิด]</span></div>
+    <div class="forntsarabun">
+        <ol>
+			<li>
+				<div style="font-weight:bold;"><u style="color:red;">การแจ้งลบ</u> ใบตรวจโรคอิเล็กทรอนิกส์ </div>
+				<div>กรุณาให้เหตุผลในการลบข้อมูลด้วยทุกครั้ง</div>
+			</li>
+			<li>
+				<div style="font-weight:bold;">แผนกไตเทียม หากต้องการ<u style="color:red;">ลบ/แก้ไข</u> ค่าใช้จ่าย</div>
+				<div>กรุณาให้เหตุผลด้วยทุกครั้ง และประสานกอง/แผนกที่เกี่ยวข้องก่อนให้โปรแกรมเมอร์แก้ไขข้อมูล ขอบคุณครับ</div>
+			</li>
+		</ol>
+    </div>
+</div>
+</div>
+<script>
+	function closeBtn(){
+		document.getElementById('notiContainer').style.display = 'none';
+	}
+</script>
+
 <?php
 
 print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_support.php'><font size='4' class='forntsarabun'>ดูข้อมูลแจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
