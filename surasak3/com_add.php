@@ -88,9 +88,9 @@ function fncSubmit()
 
 <body bgcolor="#FFFFFF" >
 
-<div id="notiContainer" class="" style="position:absolute; background-color:white; border:2px solid #66CCCC; padding:4px; box-shadow: 4px 4px 8px; width: 1024px;">
+<div id="notiContainer" class="" style="position:absolute; left:0; right:0; top:0; bottom:0; margin: auto; background-color:white; border:2px solid #997404; padding:4px; box-shadow: 4px 4px 8px; width: 720px; height: 480px;">
 <div style="position:relative;">
-    <div class="style2" style="background-color: #0099CC; padding: 2px 4px; color:white;"> <span>คำแนะนำก่อนการแจ้งซ่อม</span> <span style="float:right;" onclick="closeBtn()" id="closeBtn">[ปิด]</span></div>
+    <div class="style2" style="background-color: #ffc107; padding: 2px 4px; color:#000000;"> <span>คำแนะนำก่อนการแจ้งซ่อม/ปรับปรุงโปรแกรม</span> <span style="float:right;" onclick="closeBtn()" id="closeBtn">[ ปิด ]</span></div>
     <div class="forntsarabun">
         <ol>
 			<li>
@@ -98,8 +98,12 @@ function fncSubmit()
 				<div>กรุณาให้เหตุผลในการลบข้อมูลด้วยทุกครั้ง</div>
 			</li>
 			<li>
-				<div style="font-weight:bold;">แผนกไตเทียม หากต้องการ<u style="color:red;">ลบ/แก้ไข</u> ค่าใช้จ่าย</div>
-				<div>กรุณาให้เหตุผลด้วยทุกครั้ง และประสานกอง/แผนกที่เกี่ยวข้องก่อนให้โปรแกรมเมอร์แก้ไขข้อมูล ขอบคุณครับ</div>
+				<div style="font-weight:bold;">หากต้องการ <u style="color:red;">ลบ/แก้ไข</u> ค่าใช้จ่าย</div>
+				<div>กรุณาให้ข้อมูลที่ครบถ้วนเพื่อง่ายต่อการแก้ไข เช่น HN วันที่ รหัส ราคา และเหตุผลในการแก้ไข</div>
+			</li>
+			<li>
+				<div style="font-weight:bold;">หากมีเจ้าหน้าที่มาปฏิบัติงานใหม่</div>
+				<div>ขอความกรุณาแจ้ง ชื่อ-สกุล แผนกที่ปฏิบัติงาน ก่อนวันอย่างน้อย 1วัน</div>
 			</li>
 		</ol>
     </div>
