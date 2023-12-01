@@ -55,9 +55,13 @@ $newappd=$subappd[2].'-'.$printmonth.'-'.$subappd[0];
 
 $pre_thdatehn = $subappd[0].'-'.$printmonth.'-'.$subappd[2];
 
-
-$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` =  '$seldepart' AND appdate ='$appd' ORDER BY row_id";
-$querytem = mysql_query($sqltem);
+if($seldepart=="FU18 ไตเทียม"){  //ไตเทียม 1
+	$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` =  '$seldepart' AND appdate ='$appd' ORDER BY row_id";
+	$querytem = mysql_query($sqltem);
+}else{ //ไตเทียม 2 เพิ่มเงื่อนไขไม่แสดงข้อมูลที่มีการยกเลิกนัด ตามใบงานที่  5020
+	$sqltem="CREATE TEMPORARY TABLE  appoint1  Select * from  appoint  WHERE  `detail` =  '$seldepart' AND appdate ='$appd' AND apptime !='ยกเลิกการนัด' ORDER BY row_id";
+	$querytem = mysql_query($sqltem);	
+}	
 
 $sqltime="SELECT COUNT( * ) AS cnum, apptime
 FROM  `appoint1` 
@@ -79,8 +83,8 @@ while($arrtime=mysql_fetch_array($querytime)){
 	<td align='center' width='150'>ชื่อ-สกุล</td>
 	<td align='center' width='50'>HN</td>
 	<td align='center' width='50'>VN</td>
-	<td align='center' width='180'>สิทธิ</td>
-	<td align='center' width='200'>&nbsp;</td>
+	<td align='center' width='250'>สิทธิ</td>
+	<td align='center' width='250'>&nbsp;</td>
 	</tr>";
 	
 	$show="SELECT * FROM  appoint1 WHERE  apptime ='".$arrtime['apptime']."'";
