@@ -207,7 +207,7 @@ if($page==='form'){
             </li>
             <li class="nav-item">
                 <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
-            <a class="nav-link" href="#" onclick="loadModal()">ฟอร์มบันทึก</a>
+            <a class="nav-link" href="javascript:void(0);" onclick="loadModal()">ฟอร์มบันทึก</a>
             </li>
         </ul>
         </div>
@@ -283,27 +283,30 @@ if($page==='form'){
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> ปิด</button>
         <button type="button" class="btn btn-primary" onclick="saveForm()"><i class="bi bi-floppy2"></i> บันทึก</button>
     </div>
-    <script>
-        function checkAll(f){
-            var checkDay = document.getElementsByClassName('checkDay');
-            for (var index = 0; index < checkDay.length; index++) {
-                var element = checkDay[index];
-                element.checked = f.checked;
-            }
-        }
-    </script>
 </div>
 </div>
 </div>
 
 <script src="bootstrap/js/bootstrap.bundle.js"></script>
 <script>
+
+    // เป็นฟังก์ชั่นของฟอร์มเอาไว้ติ๊กวันที่เลือกข้อมูลออกตรวจทุกวัน
+    function checkAll(f){
+        var checkDay = document.getElementsByClassName('checkDay');
+        for (var index = 0; index < checkDay.length; index++) {
+            var element = checkDay[index];
+            element.checked = f.checked;
+        }
+    }
+
+    // โหลดฟอร์มมาแสดงผลใน Model
     async function loadForm(id){
         const response = await fetch('exam_doctor.php?page=form&id='+id);
         const body = await response.text();
         document.getElementById('modelBody').innerHTML = body;
     }
 
+    // สั่งให้โหลดฟอร์มมาก่อน จากนั้นค่อยทำการแสดงผล Model
     function loadModal(id=0){ 
 
         loadForm(id);
@@ -311,7 +314,7 @@ if($page==='form'){
         const myModal = new bootstrap.Modal('#exampleModal', {
             keyboard: true
         });
-        myModal.show();
+        myModal.show(); // Show model
     }
 
     function saveForm(){

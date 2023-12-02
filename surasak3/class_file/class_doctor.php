@@ -89,15 +89,21 @@ class Doctor extends DbConnect{
     /**
      * ดึงข้อมูลใน exam_doctor
      * @param string $id    OPTIONAL DATA
+     * @param string $order MySQL Order syntax
      */
-    public function getExamTable($id=null){
+    public function getExamTable($id=null, $order=null){
 
         $where = '';
         if(!is_null($id)){
             $where = " WHERE id = '$id'";
         }
 
-        $q = $this->dbi->query("SELECT * FROM exam_doctor $where");
+        $orderSQL = 'ORDER BY id ASC';
+        if(!empty($order)){
+            $orderSQL = $order;
+        }
+
+        $q = $this->dbi->query("SELECT * FROM exam_doctor $where $orderSQL");
         $rows = $q->num_rows;
         if($rows > 0 && $id===null){
             $items = array();
