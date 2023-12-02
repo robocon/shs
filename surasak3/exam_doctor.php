@@ -286,7 +286,7 @@ if($page==='form'){
 </div>
 </div>
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="bootstrap/js/bootstrap.bundle.js"></script>
 <script>
 
@@ -386,25 +386,50 @@ if($page==='form'){
             body: JSON.stringify(postData)
         });
         const data = await response.json();
-        if(data.status===200){
-            alert(data.msg);
+        if(data.status===200){ 
+
+            Swal.fire({
+                title: data.msg,
+                icon: "success"
+            });
+
+            // alert(data.msg);
             setTimeout(() => {
                 window.location = 'exam_doctor.php';
-            }, 500);
+            }, 1500);
         }
     }
 
-    async function removeTable(id){ 
-        let c = confirm("ยืนยันการลบข้อมูลหรือไม่?");
-        if(c===true){
-            const response = await fetch('exam_doctor.php?action=delete&id='+id);
-            const data = await response.json();
-            if(data.status===200){
-                alert('ลบข้อมูลเรียบร้อย');
+    function removeTable(id){
+        Swal.fire({
+            title: "คุณมั่นใจทึ่จะลบข้อมูล?",
+            text: "ข้อมูลที่คุณลบจะไม่สามารถกู้คืนได้อีก",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "ยืนยัน",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) { 
+                sendRemove(id);
             }
+        });
+    }
+
+    async function sendRemove(id){
+        const response = await fetch('exam_doctor.php?action=delete&id='+id);
+        const data = await response.json();
+        if(data.status===200){
             document.getElementById('rowId'+id).remove();
+            Swal.fire({
+                title: "ลบข้อมูลเรียบร้อย",
+                icon: "success"
+            });
         }
     }
+
+    
 </script>
 </body>
 </html>
