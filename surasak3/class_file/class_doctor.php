@@ -44,7 +44,15 @@ class Doctor extends DbConnect{
         if($doctor_id != null){
             $where = "AND doctorcode = '$doctor_id'";
         }
-        $q = $this->dbi->query("SELECT * FROM doctor WHERE status = 'y' AND doctorcode IS NOT NULL AND name NOT LIKE 'HD%' $where ORDER BY row_id ASC");
+
+        $sql = "SELECT * 
+        FROM doctor 
+        WHERE status = 'y' 
+        AND ( doctorcode IS NOT NULL AND name NOT LIKE 'HD%' ) 
+        AND ( row_id NOT IN('41','68','167', '173') ) 
+        $where 
+        ORDER BY row_id ASC";
+        $q = $this->dbi->query($sql);
         $rows = $q->num_rows;
         if($rows==1){
             $res = $q->fetch_assoc();

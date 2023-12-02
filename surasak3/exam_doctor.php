@@ -2,8 +2,7 @@
 require_once dirname(__FILE__).'/bootstrap.php';
 include_once dirname(__FILE__).'/includes/JSON.php';
 require_once dirname(__FILE__).'/class_file/class_doctor.php';
-// phpinfo();
-// exit;
+
 $dt = new Doctor();
 $json = new Services_JSON();
 
@@ -163,16 +162,14 @@ if($page==='form'){
             <label for="clinic" class="col-form-label"><b>คลินิก</b>:</label>
             <?php 
             $clinicOption = '';
-            if(!empty($id)){
+            if(!empty($id) && $id > 0){
                 $clinicOption = 'disabled';
             }
             ?>
-            <select class="form-select" name="clinic" id="clinic">
-                <option value="" <?=$clinicOption;?> >-- ไม่เลือก --</option>
+            <select class="form-select" name="clinic" id="clinic" required>
+                <option value="" <?=$clinicOption;?>>-- ไม่เลือก --</option>
                 <?php 
-                // $clinics = $dt->getAllClinic();
-                $clinics = array( 'อายุรแพทย์', 'อายุรแพทย์โรคไต', 'อายุรแพทย์โรคหัวใจ', 'แพทย์ โสด คอ นาสิก', 'ศัลยแพทย์กระดูกและข้อ', 'กุมารแพทย์', 'จักษุแพทย์', 'สูติ-นรีแพทย์', 'ศัลยแพทย์หลอดเลือด', 'ศัลยแพทย์', 'ศัลยแพทย์ทางเดินปัสสาวะ', 'แพทย์เวชปฏิบัติ', 'เวชศาสตร์ฟื้นฟู');
-                foreach ($clinics as $clinic) { 
+                foreach ($examClinics as $clinic) { 
                     $clinicSelected = ($clinic==$a['clinic']) ? 'selected="selected"' : '' ;
                     ?><option value="<?=$clinic;?>" <?=$clinicSelected;?> ><?=$clinic;?></option><?php
                 }
@@ -191,7 +188,7 @@ if($page==='form'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตารางออกตรวจของแพทย์</title>
+    <title>ระบบบันทึกตารางออกตรวจของแพทย์</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
@@ -283,8 +280,8 @@ if($page==='form'){
         <!-- Blank content -->
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-        <button type="button" class="btn btn-primary" onclick="saveForm()">บันทึก</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> ปิด</button>
+        <button type="button" class="btn btn-primary" onclick="saveForm()"><i class="bi bi-floppy2"></i> บันทึก</button>
     </div>
     <script>
         function checkAll(f){

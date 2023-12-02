@@ -6,6 +6,7 @@ class Appoint extends DbConnect{
 
     public function __construct()
     {
+        // call db
         parent::__construct();
     }
 
@@ -45,7 +46,8 @@ class Appoint extends DbConnect{
         return $res;
     }
 
-    /*
+    /* 
+    $app = new Class_appoint.php
     // ฝั่ง php ที่รับ requrest มา generate ตารางขึ้นมาใหม่
     $page = $_REQUEST['page'];
     if($page==='loadCalendar'){ 
@@ -60,7 +62,7 @@ class Appoint extends DbConnect{
     <html>
         <body>
             <!-- โหลดครั้งแรก -->
-            <div id="test_calendar_main">
+            <div id="test_calendar_main"></div>
             <?php
             $doctorCode = '12891';
             $app->getCalendar($doctorCode);
