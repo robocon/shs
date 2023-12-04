@@ -22,22 +22,30 @@ if($action==='save'){
     $dt_code = sprintf("%s", $_POST['dt_code']);
     $doctor = sprintf("%s", $_POST['doctor']);
 
+    // $cookie_key = (date('Y')+543).date('-m-d').$hn;
+    // $cookie_name = "doubleNSAIDs[$cookie_key]";
 
     $datehn = date('Y-m-d').$hn;
-    $sql = "INSERT INTO `dt_nsaids_rechallenge` 
-    (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`) 
+    $sql = "INSERT INTO `dt_nsaids_rechallenge`
+    (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`)
     VALUES 
     (NULL, NOW(), '$hn', '$datehn', '$drugcode', '$doctor', '$dt_code', '$reason', '$returnstr');";
     $save = $dbi->query($sql);
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-
+    
+    if ($save!=false) {
+        // setcookie($cookie_name, 1, strtotime('today UTC 23:59:59'), '/');
+        $msg = 'บันทึกข้อมูลเรียบร้อย';
+    }else{
+        $msg = "ไม่สามารถบันทึกข้อมูลได้ (".$dbi->error.")";
+    }
+    
     ?>
     <div style="text-align: center;border: 1px solid #009688;background-color: #009688;color: #ffffff;">
-        <p><b>บันทึกข้อมูลเรียบร้อย</b></p>
+        <p style="font-size:24px;"><b><?=$msg;?></b></p>
         <p><b>รอสักครู่ หน้าต่างจะปิดอัตโนมัติ</b></p>
     </div>
-    <div>
-        <button type="button" onclick="btn_close()">ปิดหน้าต่าง</button>
+    <div style="text-align: center; margin-top:8px;">
+        <button type="button" onclick="btn_close()" style="padding: 8px; 16px;">ปิดหน้าต่าง</button>
     </div>
     <script type="text/javascript">
         window.onload = function(){ 
@@ -45,7 +53,7 @@ if($action==='save'){
             parent.window.opener.callback_drug_rechallenge();
             setTimeout(function(){
                 window.close();
-            }, 2500);
+            }, 2000);
         }
 
         function btn_close(){
@@ -90,7 +98,7 @@ $op = $q_opday->fetch_assoc();
             <h1>แบบฟอร์ม Rechallenge การสั่งยา NSAIDs ซ้ำซ้อน</h1>
         </div>
         <div>
-            <form action="dt_drug_rechallenge.php" method="post" id="dt_form" onsubmit="return check_dt_form()">
+            <form action="dt_nsaids_rechallenge.php" method="post" id="dt_form" onsubmit="return check_dt_form()">
                 <table width="100%">
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>ข้าพเจ้า นพ./พญ. : </b> </td>

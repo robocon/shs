@@ -239,10 +239,12 @@ $rows3 = mysql_fetch_array($result3);
 exit();
 }
 
-function dump($txt){
-	echo "<pre>";
-	var_dump($txt);
-	echo "</pre>";
+if( !function_exists('dump') ){
+	function dump($txt){
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
 }
 
 
@@ -2985,7 +2987,8 @@ function do_add_drug(returnstr, drugcode){
 	}
 }
 
-// ถูกเรียกใช้จาก dt_drug_rechallenge.php หลังจากบันทึกข้อมูล
+// ถูกเรียกใช้จาก dt_drug_rechallenge.php หลังจากบันทึกข้อมูล 
+// จะทำงานก็ต่อเมื่อมีการ insert ข้อมูลเรียบร้อยแล้ว และมีการเรียกใช้งาน parent.window.opener.callback_drug_rechallenge(); จาก window.open
 function callback_drug_rechallenge(){ 
 
 	do_add_drug(callback_myWindow);
@@ -3151,9 +3154,9 @@ function check_nsaids(drugcode){
 				}else if(res.status==400){ 
 					
 					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-					console.log('confirm in check_nsaids ==> '+nForm);
-					console.log(res.other_doctor);
-					console.log(res.other_drug);
+					// console.log('confirm in check_nsaids ==> '+nForm);
+					// console.log(res.other_doctor);
+					// console.log(res.other_drug);
 
 					var other_doctor = res.other_doctor ? res.other_doctor : '' ;
 					var other_drug = res.other_drug ? res.other_drug : '' ;
@@ -3175,7 +3178,7 @@ function check_nsaids(drugcode){
 		}
 	};
 	xmlhttp.send(null);
-	console.log('(JS) : check_nsaids ==> '+resNsaids);
+	// console.log('(JS) : check_nsaids ==> '+resNsaids);
 	return resNsaids;
 }
 
@@ -3332,6 +3335,7 @@ function ajaxcheck(action,str,drugcode){
 	return xmlhttp.responseText;
 }
 
+// แสดงรายการยาที่แพทย์กำลังสั่งจ่าย
 function viewlist(){
 
 	xmlhttp = newXmlHttp();
@@ -3340,7 +3344,20 @@ function viewlist(){
 	xmlhttp.send(null);
 	document.getElementById("druglist").innerHTML = xmlhttp.responseText;
 
-	xmlhttp2 = newXmlHttp();
+}
+
+
+// ทำการเพิ่มรายการยาที่สั่งจ่ายเข้าไปเก็บไว้ใน session
+function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
+	
+	xmlhttp = newXmlHttp();
+	
+	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2;
+	xmlhttp.open("GET", url, false);
+	xmlhttp.send(null);
+	viewlist();
+
+    xmlhttp2 = newXmlHttp();
 	url = 'dt_drug.php?action=rduin13';
 	xmlhttp2.open("GET", url, false);
 	xmlhttp2.send(null);
@@ -3350,24 +3367,6 @@ function viewlist(){
 		alert('แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน');
 	}
 
-
-}
-
-
-
-function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
-	
-	xmlhttp = newXmlHttp();
-	
-	//alert(reason2);
-
-	
-	
-	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2
-	;
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	viewlist();
 	alert500();
 
 }
