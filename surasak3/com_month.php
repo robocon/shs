@@ -1,13 +1,12 @@
-<?
+<?php
 include("connect.inc");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
+<title>รายงานประจำเดือน</title>
 <style type="text/css">
-<!--
 .font1 {	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
@@ -36,7 +35,7 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
--->
+
 </style>
 </head>
 
@@ -51,78 +50,135 @@ if(!isset($_POST['search'])){
 
 <form action="<? $_SERVER['PHP_SELF']?>" name="f1" method="post" target="_blank">
 <table width="80%">
-	<tr><td align="center" class="font1"><strong>รายงานประจำเดือน</strong></td>
+	<tr>
+		<td align="center" class="font1">
+            <strong>รายงานประจำเดือน</strong>
+        </td>
 	</tr>
     <tr>
-      <td align="center" class="style1"><strong>ประเภทงาน&nbsp;</strong>
-        <select name="jobtype" id="jobtype" class="forntsarabun">
-      <option value="0" selected>เลือกงานทั้งหมด</option>
-      <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
-      <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
-        </select><p><strong>ผู้รับผิดชอบ&nbsp;</strong><select name="programmer" class="forntsarabun">
-     <option value="0" selected>==กรุณาเลือก==</option>
-    <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
-	<option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
-    <option value="ชาญวิทย์  ตากาบุตร">ชาญวิทย์  ตากาบุตร</option>
-    <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
-	<option value="ฐานะพัฒน์  นิลคำ">ฐานพัฒน์  นิลคำ</option>    
-    </select></p>
-	<p>เดือน
-          <select name="m" class="forntsarabun">
-<?
-	$m=date("m");
-	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-	for($a=1;$a<13;$a++){
-		if($a<10) $ss = "0";
-		else $ss='';
-	?>
-            <option value="<?=$ss?><?=$a?>" <? if($m==$a) echo "selected='selected'"?>>
-              <?=$month[$a]?>
-            </option>
-            <?
-	}
-	?>
-          </select>
-      ปี
-          <select name="yr" class="forntsarabun">
-            <?
-	$year = date("Y")+543;
-	for($a=($year-5);$a<($year+5);$a++){
-	?>
-            <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'"?>>
-            <?=$a?>
-            </option>
-            <?
-	}
-	?>
-          </select></p>      </td>
-</tr>
-      <tr>
-  <td align="center" class="font1">
-    <input name="search" type="submit" class="forntsarabun" value="  ตกลง  " style="font:TH SarabunPSK"/>  </td>
-</tr> 
+        <td align="center" class="style1">
+            <table>
+                <tr>
+                    <td align="right">
+                        <strong>ประเภทงาน&nbsp;</strong>
+                    </td>
+                    <td>
+                        <select name="jobtype" id="jobtype" class="forntsarabun">
+                            <option value="0" selected>เลือกงานทั้งหมด</option>
+                            <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
+                            <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        <strong>ผู้รับผิดชอบ&nbsp;</strong>
+                    </td>
+                    <td>
+                        <select name="programmer" class="forntsarabun">
+                            <option value="0" selected>==กรุณาเลือก==</option>
+                            <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
+                            <option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
+                            <option value="ชาญวิทย์  ตากาบุตร">ชาญวิทย์  ตากาบุตร</option>
+                            <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์  รุ่งเรืองศรี</option>
+                            <option value="ฐานพัฒน์  นิลคำ">ฐานพัฒน์  นิลคำ</option>    
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right"><strong>เดือน&nbsp;</strong></td>
+                    <td>
+                        <select name="m" class="forntsarabun">
+                        <?
+                        $m=date("m");
+                        $month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+                        for($a=1;$a<13;$a++){
+                            if($a<10) $ss = "0";
+                            else $ss='';
+                            ?>
+                            <option value="<?=$ss?><?=$a?>" <? if($m==$a) echo "selected='selected'"?>><?=$month[$a]?></option>
+                            <?
+                        }
+                        ?>
+                        </select>
+
+                        <strong>ปี&nbsp;</strong>
+                        <select name="yr" class="forntsarabun">
+                        <?
+                        $year = date("Y")+543;
+                        for($a=($year-5);$a<($year+5);$a++){
+                        ?>
+                        <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'"?>>
+                        <?=$a?>
+                        </option>
+                        <?
+                        }
+                        ?>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>หรือ</td>
+                </tr>
+                <tr>
+                    <td>ค้นหาตามแผนก</td>
+                    <td>
+                        <select name="depart" id="depart" class="forntsarabun">
+                            <option value=""> == เลือกแผนก == </option>
+                            <?php
+                            $sql = "select * from departments where status='y' order by id asc";
+                            $result=mysql_query($sql);
+                            while ($a = mysql_fetch_assoc($result)) {
+                                ?>
+                                <option value="<?=$a['name'];?>"><?=$a['name'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" class="font1">
+            <input name="search" type="submit" class="forntsarabun" value="  ค้นหา  " style="font:TH SarabunPSK"/>
+        </td>
+    </tr> 
 </table>
 
 </form>
-<?
+<?php
 }
 if(isset($_POST['search'])){
 	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 	
-if($_POST['jobtype']=="0"){
-	if($_POST['programmer']=="0"){
-		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
-	}else{
-		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and programmer LIKE '".$_POST['programmer']."'";
-	}
-}else{
-	if($_POST['programmer']=="0"){
-		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."'";
-	}else{
-		$sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."' and programmer LIKE'".$_POST['programmer']."'";		
-	}
-}	
-	//echo $sql;
+    $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+
+    if($_POST['jobtype']=="0"){
+        if($_POST['programmer']=="0"){
+            // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
+        }else{
+            // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and programmer LIKE '".$_POST['programmer']."'";
+            $sql .= " and programmer LIKE '".$_POST['programmer']."'";
+        }
+    }else{
+        if($_POST['programmer']=="0"){
+            // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."'";
+            $sql .= " and jobtype='".$_POST['jobtype']."' ";
+        }else{
+            // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."' and programmer LIKE'".$_POST['programmer']."'";		
+            $sql .= " and jobtype='".$_POST['jobtype']."' and programmer LIKE'".$_POST['programmer']."'";
+        }
+        
+    }
+
+    $depart = sprintf("%s", $_POST['depart']);
+    if(!empty($depart)){
+        $sql .= " AND depart = '$depart' ";
+    }
+
 	$row = mysql_query($sql);
 	$num=mysql_num_rows($row);
 
