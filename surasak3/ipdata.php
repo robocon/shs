@@ -217,7 +217,20 @@ list($dcdate,$lockdc) = mysql_fetch_row($result2);
    print "&nbsp;&nbsp;&nbsp;<a target=_self  href=\"returndrug.php?cAn=$cAn&Bed=$cBedcode\">ใบคืนยา</a>";
    print "&nbsp;&nbsp;&nbsp;<a target=_self  href=\"rx_index.php?cAn=$cAn&Bed=$cBedcode\">เบิกเวชภัณฑ์</a>";
 
- 
+    
+    $sql = "SELECT SUM(nprice) AS nprice FROM ipacc WHERE an = '$cAn' ";
+    $q = mysql_query($sql);
+    if(mysql_num_rows($q)>0){
+        $ipacc = mysql_fetch_assoc($q);
+        $nprice = $ipacc['nprice'];
+        if($nprice>0){
+            ?>
+            <br><br>
+            <span style="color:red; font-size:20px;"><u>ผู้ป่วยมีค่าใช้จ่ายส่วนเกิน <b><?=number_format($nprice, 2);?>บาท</b></u> <br>กรุณาประสานส่วนเก็บเงิน เพื่อยืนยันค่าใช้จ่ายส่วนเกินดังกล่าว<br>และแจ้งให้ผู้ป่วยทราบก่อนทำการ Discharge ต่อไป</span>
+            <?php
+        }
+    }
+   
    if(($dcdate == '' || $dcdate =='0000-00-00 00:00:00') && $lockdc!=""){ 
    		print "<br><BR><a target=_self href='ipdc_confirm.php'>จำหน่าย(discharge)  / ยกเลิก Admit</a>";
    }else if($lockdc==""){
