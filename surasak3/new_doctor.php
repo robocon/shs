@@ -7,13 +7,14 @@ if( $_SESSION['smenucode'] !== 'ADM' AND $_SESSION['smenucode'] !== 'ADMCOM' ){
     exit;
 }
 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+$json = new Services_JSON();
+
 $page = $_GET['page'];
 if($page==='search')
 {
-    $json = new Services_JSON();
-
-    $dtId = $_GET['id'];
-    $dbi = new mysqli(HOST,USER,PASS,DB);
+    $dtId = sprintf("%s", $_GET['id']);
     $q = $dbi->query("SELECT `row_id`,`status` FROM `inputm` WHERE `codedoctor` = '$dtId' ");
     if($q->num_rows > 0)
     {
@@ -26,6 +27,14 @@ if($page==='search')
     }
     header('Content-Type: application/json; charset=utf-8');
     echo $json->encode($arr);
+    exit;
+}elseif ($page==='getMd') {
+
+    $q = $dbi->query("SELECT mdcode,name FROM inputm WHERE menucode='ADMDR1' ORDER BY row_id DESC LIMIT 1");
+    $res = $q->fetch_assoc();
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo $json->encode($res);
     exit;
 }
 
@@ -120,10 +129,24 @@ if( $action === false ){
     <form action="new_doctor.php" method="post" id="adminForm">
         <table>
             <tr>
-                <td><span>ยศ/คำนำหน้าชื่อ</span> : </td>
+                <td align="right">เลข MD</td>
+                <td>
+                    <?php 
+                    $q = $dbi->query("SELECT runno FROM runno WHERE title='doctor'");
+                    $runno = $q->fetch_assoc();
+                    $runnoNumber = $runno['runno']+1;
+                    ?>
+                    <input type="text" name="md" id="md" value="<?=$runnoNumber;?>"> <button type="button" onclick="checkMd()">ตรวจสอบ</button> <span style="color:red;">* กรุณากดตรวจสอบ</span>
+                    <div style="background-color: orange; ">ถ้าMDแพทย์ล่าสุดตรงกับแบบฟอร์ม ให้เพิ่มเลขทีละ 1หลัก</div>
+                    <div id="resMd"></div>
+                </td>
+            </tr>
+            <tr>
+                <td align="right"><span>ยศ/คำนำหน้าชื่อ</span> : </td>
                 <td>
                     <input type="text" name="pre_name" id="pre_name" >
                     ตัวช่วย : <select name="" id="helpPrefix">
+                        <option value="">== เลือกยศ ==</option>
                         <option value="นาย">นาย</option>
                         <option value="นาง">นาง</option>
                         <option value="น.ส.">น.ส.</option>
@@ -145,23 +168,23 @@ if( $action === false ){
                 </td>
             </tr>
             <tr>
-                <td><span>ชื่อ</span> : </td>
+                <td align="right"><span>ชื่อ</span> : </td>
                 <td><input type="text" name="name" id="name"><span style="color:red;">*</span></td>
             </tr>
             <tr>
-                <td><span>สกุล</span> : </td>
+                <td align="right"><span>สกุล</span> : </td>
                 <td><input type="text" name="surname" id="surname"><span style="color:red;">*</span></td>
             </tr>
             <tr>
-                <td><span>เลขที่ ว./ท./พท.ป/พจ.</span> : </td>
+                <td align="right"><span>เลขที่ ว./ท./พท.ป/พจ.</span> : </td>
                 <td>
-                    <input type="text" name="doctor_num" id="doctor_num"><span style="color:red;">* ใส่แค่ตัวเลข</span> <button type="button" onclick="searchId()">ค้นหา</button>
+                    <input type="text" name="doctor_num" id="doctor_num"><span style="color:red;">* ใส่แค่ตัวเลข</span> <button type="button" onclick="searchId()">ตรวจสอบ</button> <span style="color:red;">* กรุณากดตรวจสอบ</span>
                     <br>
                     <span id="resDt"></span>
                 </td>
             </tr>
             <tr>
-                <td><span>แผนกที่ทำงาน : </span></td>
+                <td align="right"><span>แผนกที่ทำงาน : </span></td>
                 <td>
                     <select name="doctor_type" id="">
                         <?php foreach( $section AS $key => $item ){ ?>
@@ -191,7 +214,7 @@ if( $action === false ){
                 </td>
             </tr>
             <tr>
-                <td><span>ประเภทแพทย์</span></td>
+                <td align="right"><span>ประเภทแพทย์ : </span></td>
                 <td>
                     <select name="drJobs" id="">
                         <?php foreach( $jobsList AS $jobKey => $jobItem ){ ?>
@@ -201,7 +224,7 @@ if( $action === false ){
                 </td>
             </tr>
             <tr>
-                <td><span>ห้องตรวจ : </span></td>
+                <td align="right"><span>ห้องตรวจ : </span></td>
                 <td>
                     <select name="room" id="">
                         <?php foreach( $room_list AS $key => $item ){ ?>
@@ -211,7 +234,7 @@ if( $action === false ){
                 </td>
             </tr>
             <tr>
-                <td>กลุ่มแพทย์ : <span style="color:red;">*</span></td>
+                <td align="right">กลุ่มแพทย์ : <span style="color:red;">*</span></td>
                 <td>
                     <input type="radio" name="drType" id="drType1" class="dtType" value="dr"><label for="drType1">แพทย์ประจำ</label>
                     <input type="radio" name="drType" id="drType2" class="dtType" value="intern"><label for="drType2">Intern</label>
@@ -235,8 +258,7 @@ if( $action === false ){
     
         document.getElementById("helpPrefix").addEventListener("change",function(){
             
-            var preName = document.getElementById("pre_name");
-            preName.value = preName.value+this.value;
+            document.getElementById("pre_name").value = this.value;
 
         });
 
@@ -318,6 +340,17 @@ if( $action === false ){
             }
 
         }
+
+        function checkMd(){
+            loadMd();
+        }
+
+        async function loadMd(){
+            const response = await fetch('new_doctor.php?page=getMd');
+            const body = await response.json();
+            let content = '<b>ชื่อแพทย์ล่าสุด:</b> '+body.name+' <b>MDล่าสุด:</b> '+body.mdcode;
+            document.getElementById('resMd').innerHTML = content;
+        }
         
     </script>
     <?php
@@ -360,7 +393,8 @@ if( $action === false ){
     $sql = "SELECT `prefix`,`runno` FROM `runno` WHERE `title` = 'doctor' LIMIT 1";
     $db->select($sql);
     $item = $db->get_item();
-    $drRunno = intval($item['runno']) + 1;
+    // $drRunno = intval($item['runno']) + 1;
+    $drRunno = sprintf("%s", $_POST['md']);
     $new_md = $item['prefix'].$drRunno; // Default จะเป็น MD
 
     $prefixDr = 'ว.';
