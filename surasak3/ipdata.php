@@ -226,7 +226,9 @@ list($dcdate,$lockdc) = mysql_fetch_row($result2);
         if($nprice>0){
             ?>
             <br><br>
-            <span style="color:red; font-size:20px;"><u>ผู้ป่วยมีค่าใช้จ่ายส่วนเกิน <b><?=number_format($nprice, 2);?>บาท</b></u> <br>กรุณาประสานส่วนเก็บเงิน เพื่อยืนยันค่าใช้จ่ายส่วนเกินดังกล่าว<br>และแจ้งให้ผู้ป่วยทราบก่อนทำการ Discharge ต่อไป</span>
+            <div style="background-color: #e35d6a; display: inline-block; padding: 6px;">
+                <span><u>ผู้ป่วยมีค่าใช้จ่ายส่วนเกิน <b><?=number_format($nprice, 2);?>บาท</b></u> <br>กรุณาประสานส่วนเก็บเงิน เพื่อยืนยันค่าใช้จ่ายส่วนเกินดังกล่าว<br>และแจ้งให้ผู้ป่วยทราบก่อนทำการ Discharge ต่อไป</span>
+            </div>
             <?php
         }
     }

@@ -4,13 +4,6 @@ session_start();
 $Thidate = (date("Y") + 543) . date("-m-d H:i:s");
 $th_date = (date("Y") + 543) . date("-m-d");
 include("connect.inc");
-
-function dump($t){
-    echo "<pre>";
-    var_dump($t);
-    echo "</pre>";
-    
-}
 /*
 ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา=
 ค่าไฟฟ้า
@@ -25,40 +18,40 @@ function dump($t){
 $no = 0;
 
 $aCode = array("รหัส");
-$aDetail  = array("รายการ");
-$aMCprice  = array("ราคา ");
+$aDetail = array("รายการ");
+$aMCprice = array("ราคา ");
 
 $aCode[1] = "elect";
-$aDetail[1]  = "ค่าไฟฟ้า";
-$aMCprice[1]  = $electric;
+$aDetail[1] = "ค่าไฟฟ้า";
+$aMCprice[1] = $electric;
 
 $aCode[2] = "phone";
-$aDetail[2]  = "ค่าโทรศัพท์";
-$aMCprice[2]  = $phone;
+$aDetail[2] = "ค่าโทรศัพท์";
+$aMCprice[2] = $phone;
 
 $aCode[3] = "loss";
-$aDetail[3]  = "ค่าสิ่งอุปกรณ์เสียหาย";
-$aMCprice[3]  = $loss;
+$aDetail[3] = "ค่าสิ่งอุปกรณ์เสียหาย";
+$aMCprice[3] = $loss;
 
 $aCode[4] = "ambulance";
-$aDetail[4]  = "ค่ารถพยาบาล";
-$aMCprice[4]  = $ambulance;
+$aDetail[4] = "ค่ารถพยาบาล";
+$aMCprice[4] = $ambulance;
 
 $aCode[4] = "food";
-$aDetail[4]  = "ค่าอาหารญาติผู้ป่วย";
-$aMCprice[4]  = $food;
+$aDetail[4] = "ค่าอาหารญาติผู้ป่วย";
+$aMCprice[4] = $food;
 
 $aCode[5] = "death";
-$aDetail[5]  = "ค่าบริการศพ";
-$aMCprice[5]  = $death;
+$aDetail[5] = "ค่าบริการศพ";
+$aMCprice[5] = $death;
 
 $aCode[6] = "preserve";
-$aDetail[6]  = "ค่าฉีดยาศพ";
-$aMCprice[6]  = $preserve;
+$aDetail[6] = "ค่าฉีดยาศพ";
+$aMCprice[6] = $preserve;
 
 $aCode[7] = "robe";
-$aDetail[7]  = "ค่าตราสังข์";
-$aMCprice[7]  = $robe;
+$aDetail[7] = "ค่าตราสังข์";
+$aMCprice[7] = $robe;
 
 // ตรวจสอบข้อมูลต่างๆ
 if (
