@@ -69,7 +69,7 @@ if( $_SESSION['sIdname'] == 'md19921' ){
 
 function getNSAIDs_List(){
 	global $dbi;
-	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' ORDER BY drugcode ASC");
+	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' AND drugcode != '10H014' ORDER BY drugcode ASC");
 	$nsaidsList = array();
 	if($q->num_rows > 0) { 
 		while ($a = $q->fetch_assoc()) { 
