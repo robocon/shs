@@ -35,5 +35,9 @@ elseif($type == 'xray')
 <p>บันทึกข้อมูลเรียบร้อย</p>
 <p>ปิดหน้าจอได้</p>
 <script>
-	setTimeout("window.close()",3000);
+window.onload = function(){
+    setTimeout(function(){
+        window.close();
+    }, 5000);
+}
 </script>

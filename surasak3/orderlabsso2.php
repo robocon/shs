@@ -17,7 +17,7 @@ $op = $opday->getThisDay($hn);
 if($op===false) // ยังไม่มี VN ก็ออก VN ใหม่
 {
     $opday->ptright = 'R42 ตรวจสุขภาพลูกจ้างประจำปี';
-    $opday->toborow = $toborow;
+    $opday->toborow = $toborow; //EX46 ตรวจสุขภาพประกันสังคม
     $opday->sOfficer = $_SESSION['sOfficer'];
     $op = $opday->createOpday($hn);
 }
@@ -57,6 +57,11 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 </head>
 <body>
     <style>
+        @media screen and (max-width: 800px){
+            .dataTable{
+                width: 100%!important;
+            }
+        }
         *{
             font-family: "TH Sarabun New","TH SarabunPSK";
             font-size: 20px;
@@ -82,6 +87,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
             padding: 6px 10px;
             background-color: #f1f1f1;
             text-decoration: none;
+            line-height: 40px;
         }
     </style>
     <div>
@@ -135,73 +141,166 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
         <?php 
         if($_SESSION['smenucode']=='ADMXR' OR $_SESSION['smenucode']=='ADM'){ 
         ?>
-        <fieldset>
-            <legend><h3>รายการตรวจ X-Ray</h3></legend>
-            <form action="orderlabsso3.php" method="post" target="_blank" id="formIDXray">
+        <div class="clearfix">
+            <div style="float:left; width:50%;">
+                <fieldset>
+                    <legend><h3>รายการตรวจ X-Ray</h3></legend>
+                    <form action="orderlabsso3.php" method="post" target="_blank" id="formIDXray">
 
-                <div style="width: 50%; margin-bottom: 8px;" class="clearfix">
-                    <?php 
+                        <div style="width: 100%; margin-bottom: 8px;" class="clearfix dataTable">
+                            <?php 
 
-                    if($a->findXray() !== false){
+                            if($a->findXray() !== false){
+                                ?><p style="color:red; font-weight:bold;">มีการคิดค่า XRAY ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
+                            }
+
+                            $xrayList = array('41001-CHK');
+                            ?>
+                            <table width="100%" class="chk_table">
+                                <tr>
+                                    <th>รหัส</th>
+                                    <th>รายละเอียด</th>
+                                    <th>ราคา</th>
+                                </tr>
+                                <?php 
+                                $price = 0;
+                                foreach ($xrayList as $key => $code) { 
+                                    $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
+                                    $l = $q->fetch_assoc();
+                                    ?>
+                                    <tr id="<?=$code;?>">
+                                        <td><?=$code;?></td>
+                                        <td><?=$l['detail'];?></td>
+                                        <td align="right">
+                                            <?=$l['price'];?>
+                                            <input type="hidden" name="labSelect[]" value="<?=$code;?>">
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $price += $l['price'];
+                                }
+                                ?>
+                                <tr>
+                                    <td colspan="2" align="center"><b>รวมเงิน(บาท)</b></td>
+                                    <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div>
+                            1. บันทึกค่าใช้จ่าย
+                            <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย X-Ray</button>
+                            <input type="hidden" name="hn" value="<?=$hn;?>">
+                            <input type="hidden" name="vn" value="<?=$op['vn'];?>">
+                            <input type="hidden" name="type" value="xray">
+                        </div>
+                        <div>
+                            <?php 
+                            $thaiDate = (date('Y')+543).date('-m-d');
+                            $xraystklink = "?date=$thaiDate&name=".rawurlencode($ptname)."&hn=".rawurlencode($hn)."&detail=".rawurlencode('1.CHEST CHECK UP');
+                            ?>
+                            <br>
+                            2. พิมพ์สติกเกอร์
+                            <a href="javascript:void(0);" class="aButton" onclick="onXrayPrint()">สติ๊กเกอร์ X-Ray</a>
+
+                        </div>
                         
-                        ?><p style="color:red; font-weight:bold;">มีการคิดค่า XRAY ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
+                    </form>
+                </fieldset>
+                <script>
+                    function onXrayPrint(){
+                        window.open(" xraystk.php<?=$xraystklink;?>", "popupXrayPrint","width=600,height=400");
+                    }
+                </script>
+                    
+            </div>
+            <div style="float:left; width:50%;">
+                <fieldset>
+                    <legend><h3>เพิ่มรายการแลป</h3></legend>
+                    <div>
+                        <input type="text" name="labSearch" id="labSearch" onkeyup="onSearchLabCode(this.value)" placeholder="พิมพ์โค้ดที่ต้องการค้นหา">
+                    </div>
+                    <div id="resLabSearch" style="margin-top:8px;"></div>
+                </fieldset>
+                <script>
+                    async function onSearchLabCode(v){
+                        if(v.length>=2){
+                            
+                            // labcare/getLabitem?depart=PATHO&part=LAB&code=
+                            const res = await fetch("<?=LARAVEL_API_HOST;?>labcare/getLabitem?depart=PATHO&part=LAB&code="+v);
+                            const content = await res.json();
+
+                            if(content.count>0){
+
+                                document.getElementById('resLabSearch').innerHTML = '';
+
+                                const table = document.createElement("table");
+                                table.setAttribute("class", "chk_table");
+
+                                const trTitle = document.createElement("tr");
+                                const colTitle = document.createElement("th");
+                                colTitle.append("Code");
+                                trTitle.appendChild(colTitle);
+
+                                const col2Title = document.createElement("th");
+                                col2Title.append("Detail");
+                                trTitle.appendChild(col2Title);
+
+                                const col3Title = document.createElement("th");
+                                col3Title.append("ราคา");
+                                trTitle.appendChild(col3Title);
+
+                                const col4Title = document.createElement("th");
+                                trTitle.appendChild(col4Title);
+
+                                table.appendChild(trTitle);
+                                
+                                let html = '';
+                                for (let index = 0; index < content.count; index++) {
+                                    const element = content.list[index];
+
+                                    const tr1 = document.createElement("tr");
+                                    const col1 = document.createElement("td");
+                                    col1.append(element.code);
+                                    tr1.appendChild(col1);
+
+                                    const col2 = document.createElement("td");
+                                    col2.append(element.detail);
+                                    tr1.appendChild(col2);
+
+                                    const col3 = document.createElement("td");
+                                    col3.setAttribute("align","right");
+                                    col3.append(element.price);
+                                    tr1.appendChild(col3);
+
+                                    const col4 = document.createElement("td");
+                                    const aLink = document.createElement("a");
+                                    aLink.setAttribute("href", "javascript:void(0);");
+                                    aLink.setAttribute("onclick", "addXrayItem('"+element.code+"')");
+                                    aLink.append("เพิ่ม");
+                                    col4.appendChild(aLink);
+                                    tr1.appendChild(col4);
+
+                                    table.appendChild(tr1);
+
+                                }
+                                
+                                document.getElementById('resLabSearch').appendChild(table);
+                                // 
+                            }else{
+                                document.getElementById('resLabSearch').innerHTML = '<b>ไม่พบข้อมูลที่ต้องการ</b>';
+                            }
+                        }
                         
                     }
 
-                    $xrayList = array('41001-CHK');
-                    ?>
-                    <table width="100%" class="chk_table">
-                        <tr>
-                            <th>รหัส</th>
-                            <th>รายละเอียด</th>
-                            <th>ราคา</th>
-                        </tr>
-                        <?php 
-                        $price = 0;
-                        foreach ($xrayList as $key => $code) { 
-                            $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
-                            $l = $q->fetch_assoc();
-                            ?>
-                            <tr id="<?=$code;?>">
-                                <td><?=$code;?></td>
-                                <td><?=$l['detail'];?></td>
-                                <td align="right">
-                                    <?=$l['price'];?>
-                                    <input type="hidden" name="labSelect[]" value="<?=$code;?>">
-                                </td>
-                            </tr>
-                            <?php
-                            $price += $l['price'];
-                        }
-                        ?>
-                        <tr>
-                            <td colspan="2" align="center"><b>รวมเงิน(บาท)</b></td>
-                            <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div>
-                    1. บันทึกค่าใช้จ่าย
-                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่าย X-Ray</button>
-                    <input type="hidden" name="hn" value="<?=$hn;?>">
-                    <input type="hidden" name="vn" value="<?=$op['vn'];?>">
-                    <input type="hidden" name="type" value="xray">
-                </div>
-                <div>
-                    <?php 
-                    $thaiDate = (date('Y')+543).date('-m-d');
-                    $xraystklink = "?date=$thaiDate&name=".rawurlencode($ptname)."&hn=".rawurlencode($hn)."&detail=".rawurlencode('1.CHEST CHECK UP');
-                    ?>
-                    <br>
-                    2. พิมพ์สติกเกอร์
-                    <a target="_blank" href="xraystk.php<?=$xraystklink;?>" class="aButton">สติ๊กเกอร์ X-Ray</a>
-
-                </div>
-                
-            </form>
-        </fieldset>
-        <?php
+                    function addXrayItem(code){
+                        console.log(code);
+                    }
+                </script>
+            </div>
+        </div>
+       <?php
         }
 
         if($_SESSION['smenucode']=='ADMLAB' OR $_SESSION['smenucode']=='ADM'){ 
@@ -210,8 +309,8 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
             <legend><h3>รายการตรวจ Lab</h3></legend>
 
             <form action="orderlabsso3.php" method="post" target="_blank" id="formIDLab">
-                <div style="position: relative;" class="clearfix">
-                    <div style="width: 50%; ">
+                <div style="position: relative; width:50%;" class="clearfix dataTable">
+                    <div>
                         <?php 
                         $b = new OpdReceive();
                         $b->hn = $hn;
@@ -222,15 +321,13 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                         }
 
                         $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
-                        if($_SESSION['smenucode']=='ADMXR'){
-                            $chkList = array('41001');
-                        }
                         ?>
                         <table width="100%" class="chk_table">
                             <tr>
                                 <th>รหัส</th>
                                 <th>รายละเอียด</th>
-                                <th>ราคา</th>
+                                <th>ราคา(บาท)</th>
+                                <th></th>
                             </tr>
                             <?php 
                             $price = 0;
@@ -246,14 +343,18 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                         <?=$l['price'];?>
                                         <input type="hidden" name="labSelect[]" value="<?=$code;?>">
                                     </td>
+                                    <td>
+                                        <a href="javascript:void(0);" onclick="removeLabItem('<?=$code;?>')">ลบ</a>
+                                    </td>
                                 </tr>
                                 <?php
                                 $price += $l['price'];
                             }
                             ?>
                             <tr>
-                                <td colspan="2" align="center"><b>รวมเงิน(บาท)</b></td>
+                                <td colspan="2" align="center"><b>รวมเงิน</b></td>
                                 <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
+                                <td></td>
                             </tr>
                         </table>
                         <br>
@@ -280,6 +381,11 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                 </div>
             </div>
         </fieldset>
+        <script>
+            function removeLabItem(code){
+                document.getElementById(code).remove();
+            }
+        </script>
         <?php
         }
         ?>

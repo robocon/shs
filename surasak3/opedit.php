@@ -1691,6 +1691,7 @@ function checkForm(){
 		var birth_m = document.getElementById('birth_m');
 		var birth_y = document.getElementById('birth_y');
 
+		// ตรวจเลขบัตรประชาชน
 		stat2 = checkID();
 		if(document.f1.new_vn.value == ''){
 			
@@ -1730,6 +1731,8 @@ function checkForm(){
 			document.f1.typearea.focus();
 			return false;
 		}else{	
+
+			// ถ้าค่าในการตรวจเลขบัตรประชาชนถูกต้องจะทำงานในเงื่อนไข
 			if(stat2 == true){
 				var ex = document.getElementById('case1').value;
 				ex = ex.substr(0,4);

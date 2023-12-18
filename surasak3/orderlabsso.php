@@ -21,6 +21,8 @@ $chk_year = get_year_checkup();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตรวจสุขภาพลูกจ้างประจำปี <?=$chk_year;?></title>
+    <script src="bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="sweetalert/sweetalert2@11.js"></script>
 </head>
 <body>
     <style>
@@ -65,7 +67,7 @@ $chk_year = get_year_checkup();
 
             $age = findPtAge($pt['dbirth']);
             ?>
-            <form action="orderlabsso2.php" method="post">
+            <form action="orderlabsso2.php" method="post" id="submitForm">
                 <h3>ข้อมูลเบื้องต้นผู้มารับบริการ</h3>
                 <table>
                     <tr>
@@ -82,7 +84,7 @@ $chk_year = get_year_checkup();
                     </tr>
                     <tr>
                         <td align="right"><b>สิทธิ:</b></td>
-                        <td><?=$pt['ptright'];?></td>
+                        <td><b><?=$pt['ptright'];?></b></td>
                     </tr>
                     <tr>
                         <td align="right"><b>ประเภทสิทธิ:</b></td>
@@ -90,7 +92,7 @@ $chk_year = get_year_checkup();
                     </tr>
                     <tr>
                         <td align="right"><b>รพ.ต้นสังกัด:</b></td>
-                        <td><?=$pt['hospcode'];?></td>
+                        <td><b><?=$pt['hospcode'];?></b></td>
                     </tr>
                     <tr>
                         <td align="right"><b>ออก OPD CARD:</b></td>
@@ -110,8 +112,7 @@ $chk_year = get_year_checkup();
                         </td>
                     </tr>
                     <tr>
-                        <td align="right"></td>
-                        <td>
+                        <td colspan="2">
                             <b style="color:orangered;"><u>กรณีเป็นเจ้าหน้าที่ <span style="font-size:32px;">นวดแผนไทย</span> กับ <span style="font-size:32px;">ไตเทียม</span> รบกวนเลือกข้อมูลด้านล่างให้หน่อยครับ</u></b><br>
                             <input type="radio" name="extra" id="hemo" value="hemo"> <label for="hemo" style="cursor:pointer;">จนท.ไตเทียม</label><br>
                             <input type="radio" name="extra" id="pt" value="pt"> <label for="pt" style="cursor:pointer;">จนท.นวดแผนไทย</label>
@@ -122,12 +123,40 @@ $chk_year = get_year_checkup();
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
-                            <button type="submit" style="padding:8px;">ดำเนินการออก VN ต่อไป &gt;&gt;</button>
+                            <button type="button" style="padding:8px;" onclick="confirmForm()">ดำเนินการออก VN ต่อไป &gt;&gt;</button>
                             <input type="hidden" name="hn" id="hn" value="<?=$hn;?>" >
                         </td>
                     </tr>
                 </table>
             </form>
+            <script>
+                function confirmForm(){
+                    // var c = false;
+                    Swal.fire({
+                        title: "ยืนยันว่าเป็นลูกจ้าง รพ.ค่ายสุรศักดิ์มนตรี?",
+                        // text: "You won't be able to revert this!",
+                        // icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "ใช่",
+                        cancelButtonText: "ยกเลิก",
+                    }).then((result) => { 
+                        // console.log(result.isConfirmed);
+                        if (result.isConfirmed) {
+                            document.getElementById('submitForm').submit();
+                            // c = true;
+                            // Swal.fire({
+                            //     title: "Deleted!",
+                            //     text: "Your file has been deleted.",
+                            //     icon: "success"
+                            // });
+                        }
+                    });
+
+                    // return c;
+                }
+            </script>
             <?php
             
         }else{
