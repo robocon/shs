@@ -84,7 +84,7 @@ $chk_year = get_year_checkup();
                     </tr>
                     <tr>
                         <td align="right"><b>สิทธิ:</b></td>
-                        <td><b><?=$pt['ptright'];?></b></td>
+                        <td><b style="color:red;"><?=$pt['ptright'];?></b></td>
                     </tr>
                     <tr>
                         <td align="right"><b>ประเภทสิทธิ:</b></td>
@@ -92,7 +92,7 @@ $chk_year = get_year_checkup();
                     </tr>
                     <tr>
                         <td align="right"><b>รพ.ต้นสังกัด:</b></td>
-                        <td><b><?=$pt['hospcode'];?></b></td>
+                        <td><b style="color:red;"><?=$pt['hospcode'];?></b></td>
                     </tr>
                     <tr>
                         <td align="right"><b>ออก OPD CARD:</b></td>

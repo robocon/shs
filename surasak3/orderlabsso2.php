@@ -180,11 +180,10 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                     $price += $l['price'];
                                 }
                                 ?>
-                                <tr>
-                                    <td colspan="2" align="center"><b>รวมเงิน(บาท)</b></td>
-                                    <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
-                                </tr>
                             </table>
+                            <div style="text-align:right;">
+                                <b>รวมเงิน &nbsp;&nbsp;<?=number_format($price, 2);?> บาท</b>
+                            </div>
                         </div>
 
                         <div>
@@ -214,6 +213,91 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                 </script>
                     
             </div>
+            <div style="float:left; width:50%;"></div>
+        </div>
+        <?php
+        }
+
+        if($_SESSION['smenucode']=='ADMLAB' OR $_SESSION['smenucode']=='ADM'){ 
+        ?>
+        <div class="clearfix">
+            <div style="float:left; width: 50%;">
+                <fieldset>
+                    <legend><h3>รายการตรวจ Lab</h3></legend>
+                    <form action="orderlabsso3.php" method="post" target="_blank" id="formIDLab">
+                        <div style="position: relative; width:100%;" class="clearfix dataTable">
+                            <div>
+                                <?php 
+                                $b = new OpdReceive();
+                                $b->hn = $hn;
+                                $b->vn = $vn;
+                                if($b->findOrderLab()!==false)
+                                {
+                                    ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
+                                }
+
+                                $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
+                                ?>
+                                <table width="100%" class="chk_table">
+                                    <thead>
+                                        <tr>
+                                            <th>รหัส</th>
+                                            <th>รายละเอียด</th>
+                                            <th>ราคา(บาท)</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="labMainTable">
+                                    <?php 
+                                    $price = 0;
+                                    foreach ($chkList as $key => $code) { 
+
+                                        $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
+                                        $l = $q->fetch_assoc();
+                                        ?>
+                                        <tr id="<?=$code;?>">
+                                            <td><?=$code;?></td>
+                                            <td><?=$l['detail'];?></td>
+                                            <td align="right">
+                                                <?=$l['price'];?>
+                                                <input type="hidden" name="labSelect[]" value="<?=$code;?>">
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0);" onclick="removeLabItem('<?=$code;?>','<?=$l['price'];?>')">ลบ</a>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                        $price += $l['price'];
+                                    }
+                                    ?>
+                                    </tbody>
+                                </table>
+                                <div style="text-align:right;">
+                                    <b>รวมเงิน &nbsp;&nbsp;<span id="totalLabPrice"><?=number_format($price, 2);?></span> บาท</b>
+                                </div>
+                            </div>
+                            <div style="width: 50%;" class="clearfix"></div>
+                        </div>
+                        <div>
+                            1. บันทึกค่าใช้จ่าย
+                            <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่ายแลป</button>
+                            <input type="hidden" name="hn" value="<?=$hn;?>">
+                            <input type="hidden" name="vn" value="<?=$op['vn'];?>">
+                            <input type="hidden" name="type" value="lab">
+                        </div>
+                    </form>
+                    <div>
+                        <div>
+                            <br>
+                            2. พิมพ์สติกเกอร์
+                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=all" target="_blank" class="aButton">สติกเกอร์ทั้งหมด</a>&nbsp;|&nbsp;
+                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=chem" target="_blank" class="aButton">สติกเกอร์ CHEM</a>&nbsp;|&nbsp;
+                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=cbc" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
+                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=ua" target="_blank" class="aButton">สติกเกอร์ UA</a>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
             <div style="float:left; width:50%;">
                 <fieldset>
                     <legend><h3>เพิ่มรายการแลป</h3></legend>
@@ -239,15 +323,15 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 
                                 const trTitle = document.createElement("tr");
                                 const colTitle = document.createElement("th");
-                                colTitle.append("Code");
+                                colTitle.append("รหัส");
                                 trTitle.appendChild(colTitle);
 
                                 const col2Title = document.createElement("th");
-                                col2Title.append("Detail");
+                                col2Title.append("รายละเอียด");
                                 trTitle.appendChild(col2Title);
 
                                 const col3Title = document.createElement("th");
-                                col3Title.append("ราคา");
+                                col3Title.append("ราคา(บาท)");
                                 trTitle.appendChild(col3Title);
 
                                 const col4Title = document.createElement("th");
@@ -276,7 +360,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                     const col4 = document.createElement("td");
                                     const aLink = document.createElement("a");
                                     aLink.setAttribute("href", "javascript:void(0);");
-                                    aLink.setAttribute("onclick", "addXrayItem('"+element.code+"')");
+                                    aLink.setAttribute("onclick", "addLabItem('"+element.code+"','"+element.detail+"','"+element.price+"')");
                                     aLink.append("เพิ่ม");
                                     col4.appendChild(aLink);
                                     tr1.appendChild(col4);
@@ -294,96 +378,63 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                         
                     }
 
-                    function addXrayItem(code){
-                        console.log(code);
+                    function addLabItem(code, detail, price){
+                        let newPrice = parseInt(price);
+
+                        const table = document.getElementById("labMainTable");
+
+                        const tr1 = document.createElement("tr");
+                        const col1 = document.createElement("td");
+                        tr1.setAttribute("id", code);
+                        col1.append(code);
+                        tr1.appendChild(col1);
+
+                        const col2 = document.createElement("td");
+                        col2.append(detail);
+                        tr1.appendChild(col2);
+
+                        const col3 = document.createElement("td");
+                        col3.setAttribute("align","right");
+                        col3.append(parseInt(price).toFixed(2));
+
+                        let col3Input = document.createElement("input");
+                        col3Input.setAttribute("type","hidden");
+                        col3Input.setAttribute("name","labSelect[]");
+                        col3Input.setAttribute("value",code);
+                        col3.appendChild(col3Input);
+
+                        tr1.appendChild(col3);
+
+                        const col4 = document.createElement("td");
+                        const aLink = document.createElement("a");
+                        aLink.setAttribute("href", "javascript:void(0);");
+                        aLink.setAttribute("onclick", "removeLabItem('"+code+"','"+price+"')");
+                        aLink.append("ลบ");
+                        col4.appendChild(aLink);
+                        tr1.appendChild(col4);
+
+                        table.appendChild(tr1);
+
+                        const labPrice = parseInt(document.getElementById('totalLabPrice').innerHTML);
+
+                        let totalLabPrice = (labPrice+newPrice).toFixed(2);
+                        newPrice = totalLabPrice;
+                        
+                        document.getElementById('totalLabPrice').innerHTML = totalLabPrice;
+                        // 
                     }
                 </script>
             </div>
         </div>
-       <?php
-        }
-
-        if($_SESSION['smenucode']=='ADMLAB' OR $_SESSION['smenucode']=='ADM'){ 
-        ?>
-        <fieldset>
-            <legend><h3>รายการตรวจ Lab</h3></legend>
-
-            <form action="orderlabsso3.php" method="post" target="_blank" id="formIDLab">
-                <div style="position: relative; width:50%;" class="clearfix dataTable">
-                    <div>
-                        <?php 
-                        $b = new OpdReceive();
-                        $b->hn = $hn;
-                        $b->vn = $vn;
-                        if($b->findOrderLab()!==false)
-                        {
-                            ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
-                        }
-
-                        $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
-                        ?>
-                        <table width="100%" class="chk_table">
-                            <tr>
-                                <th>รหัส</th>
-                                <th>รายละเอียด</th>
-                                <th>ราคา(บาท)</th>
-                                <th></th>
-                            </tr>
-                            <?php 
-                            $price = 0;
-                            foreach ($chkList as $key => $code) { 
-
-                                $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
-                                $l = $q->fetch_assoc();
-                                ?>
-                                <tr id="<?=$code;?>">
-                                    <td><?=$code;?></td>
-                                    <td><?=$l['detail'];?></td>
-                                    <td align="right">
-                                        <?=$l['price'];?>
-                                        <input type="hidden" name="labSelect[]" value="<?=$code;?>">
-                                    </td>
-                                    <td>
-                                        <a href="javascript:void(0);" onclick="removeLabItem('<?=$code;?>')">ลบ</a>
-                                    </td>
-                                </tr>
-                                <?php
-                                $price += $l['price'];
-                            }
-                            ?>
-                            <tr>
-                                <td colspan="2" align="center"><b>รวมเงิน</b></td>
-                                <td align="right"><span id="labprice"><?=number_format($price, 2);?></span></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                        <br>
-                        
-                    </div>
-                    <div style="width: 50%;" class="clearfix"></div>
-                </div>
-                <div>
-                    1. บันทึกค่าใช้จ่าย
-                    <button type="submit" style="padding:8px;">บันทึกค่าใช้จ่ายแลป</button>
-                    <input type="hidden" name="hn" value="<?=$hn;?>">
-                    <input type="hidden" name="vn" value="<?=$op['vn'];?>">
-                    <input type="hidden" name="type" value="lab">
-                </div>
-            </form>
-            <div>
-                <div>
-                    <br>
-                    2. พิมพ์สติกเกอร์
-                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=all" target="_blank" class="aButton">สติกเกอร์ทั้งหมด</a>&nbsp;|&nbsp;
-                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=chem" target="_blank" class="aButton">สติกเกอร์ CHEM</a>&nbsp;|&nbsp;
-                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=cbc" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
-                    <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=ua" target="_blank" class="aButton">สติกเกอร์ UA</a>
-                </div>
-            </div>
-        </fieldset>
+        
         <script>
-            function removeLabItem(code){
+            function removeLabItem(code,price){
                 document.getElementById(code).remove();
+                const totalLabPrice = document.getElementById('totalLabPrice').innerHTML;
+                const newPrice =parseInt(price);
+                const newTotalLabPrice =parseInt(totalLabPrice);
+
+                document.getElementById('totalLabPrice').innerHTML = (newTotalLabPrice-newPrice).toFixed(2);
             }
         </script>
         <?php
