@@ -16,7 +16,7 @@ curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
 $result = curl_exec( $ch );
 curl_close($ch);
 ?>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
 <style>
 	#rotateImageBtn{
 		position: absolute;
