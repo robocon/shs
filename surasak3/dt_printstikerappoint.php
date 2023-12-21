@@ -47,11 +47,24 @@ $drugstk .="<TR  style=\"line-height: 14px;\">
 			</TR>";
 }
 
+$xray = '';
 if(trim($arr["xray"]) !="" &&  trim($arr["xray"]) !="NA"){
-$drugstk .="<TR  style=\"line-height: 14px;\">
-				<TD><font face='Angsana New' size= 1 >X-Ray : ".$arr["xray"]."&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ".$arr["other"]."</TD>
-			</TR>";
+    $xray = "<b>X-Ray:</b> ".$arr["xray"];
+}
+$other = '';
+$space = '';
+if(!empty($arr['other'])){ 
+    
+    if(!empty($xray)){
+        $space = '&nbsp;&nbsp;&nbsp;&nbsp;';
+    }
+    $other = "<b>อื่นๆ</b> ".$arr["other"];
+}
 
+if(!empty($xray) OR !empty($other)){
+    $drugstk .="<TR  style=\"line-height: 14px;\">
+        <TD><font face='Angsana New' size= 1 >".$xray.$space.$other."</TD>
+    </TR>";
 }
 
 $drugstk .="<TR style=\"line-height: 14px;\">
