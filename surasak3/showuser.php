@@ -1,71 +1,100 @@
 <?
 session_start();
 include("connect.inc");
-if($_GET["act"]=="del"){
-	$del="update inputm set status='N' where row_id='".$_GET["id"]."'";
-	if(mysql_query($del)){
-		echo "<script>alert('≈∫¢ÈÕ¡Ÿ≈‡√’¬∫√ÈÕ¬·≈È«');window.location='showuser.php?menucode=$_GET[menucode]';</script>";
-	}else{
-		echo "<script>alert('!!! º‘¥æ≈“¥‰¡Ë “¡“√∂≈∫¢ÈÕ¡Ÿ≈‰¥È');window.location='showuser.php?menucode=$_GET[menucode]';</script>";
+if ($_GET["act"] == "del") {
+	$del = "update inputm set status='N' where row_id='" . $_GET["id"] . "'";
+	if (mysql_query($del)) {
+		echo "<script>alert('‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢‡πÅ‡∏•‡πâ‡∏ß');window.location='showuser.php?menucode=$_GET[menucode]';</script>";
+	} else {
+		echo "<script>alert('!!! ‡∏ú‡∏¥‡∏î‡∏û‡∏•‡∏≤‡∏î‡πÑ‡∏°‡πà‡∏™‡∏≤‡∏°‡∏≤‡∏£‡∏ñ‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÑ‡∏î‡πâ');window.location='showuser.php?menucode=$_GET[menucode]';</script>";
 	}
 }
 ?>
 <style type="text/css">
-<!--
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 20px;
-}
--->
+	body,
+	td,
+	th {
+		font-family: TH SarabunPSK;
+		font-size: 20px;
+	}
+    .addUserButton{
+        text-decoration: none;
+        border: none;
+        padding: 8px 12px;
+        background-color: #009688;
+        color: #ffffff;
+    }
+    .addUserButton:hover{
+        background-color: #01746a;
+    }
 </style>
 <div align="center">
-<p><strong>®—¥°“√¢ÈÕ¡Ÿ≈ºŸÈ„™Èß“π√–∫∫</strong><br>
-</p>
-<table width="50%" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td align="right"><a href="adduser.php?menucode=<?=$_GET["menucode"]?>">‡æ‘Ë¡¢ÈÕ¡Ÿ≈</a></td>
-  </tr>
-</table>
-<table width="80%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
-  <tr>
-    <td width="12%" align="center" bgcolor="#66CC99"><strong>≈”¥—∫</strong></td>
-    <td width="40%" align="center" bgcolor="#66CC99"><strong>™◊ËÕ - π“¡ °ÿ≈</strong></td>
-     <td width="20%" align="center" bgcolor="#66CC99"><strong>part</strong></td>
-    <td width="36%" align="center" bgcolor="#66CC99"><strong>®—¥°“√¢ÈÕ¡Ÿ≈</strong></td>
-  </tr>
-<?
-$sql="select * from inputm where menucode like '".$_GET["menucode"]."%' and status='Y' order by menucode ";
-$query=mysql_query($sql);
-$num=mysql_num_rows($query);
-if($num < 1){
-	echo "<tr><td colspan='3' align='center'>------------------------ ‰¡Ë¡’¢ÈÕ¡Ÿ≈ ------------------------</td></tr>";
-}else{
-	$i=0;
-	while($rows=mysql_fetch_array($query)){
-	$i++;
-	$chkop=mysql_query("select pword from inputm where row_id='".$rows["row_id"]."'");
-	list($pword)=mysql_fetch_array($chkop);
-	if($pword=="1234"){
-		$bg="#CC3333";
-	}else{
-		$bg="#FFFFFF";
-	}
-	
-?>
-  <tr>
-    <td align="center" bgcolor="<?=$bg;?>"><?=$i;?></td>
-    <td bgcolor="<?=$bg;?>"><?=$rows["name"];?></td>
-     <td bgcolor="<?=$bg;?>"><?=$rows["menucode"];?></td>
-    <td align="center" bgcolor="<?=$bg;?>">
-    <? if($rows["level"]=="user"){?>
-    <a href="edituser.php?menucode=<?=$_GET["menucode"];?>&id=<?=$rows["row_id"];?>">·°È‰¢</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="showuser.php?act=del&menucode=<?=$_GET["menucode"];?>&id=<?=$rows["row_id"];?>" onClick="return confirm('§ÿ≥µÈÕß°“√≈∫¢ÈÕ¡Ÿ≈π’È„™ËÀ√◊Õ‰¡Ë');">≈∫</a>
-    <? }else{ echo "µ‘¥µËÕ‚ª√·°√¡‡¡Õ√Ï"; }?>
-    </td>
-  </tr>
-<?
-	}
-}
-?>
-</table>
+	<p><strong>‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô‡∏£‡∏∞‡∏ö‡∏ö</strong></p>
+	<div>
+        <a href="adduser.php?menucode=<?= $_GET["menucode"] ?>" class="addUserButton">‡πÄ‡∏û‡∏¥‡πà‡∏°‡∏ú‡∏π‡πâ‡πÉ‡∏ä‡πâ‡πÉ‡∏ô‡πÅ‡∏ú‡∏ô‡∏Å</a>
+    </div>
+    <div>&nbsp;</div>
+	<table width="80%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000"
+		style="border-collapse:collapse;">
+		<tr>
+			<td width="12%" align="center" bgcolor="#66CC99"><strong>‡∏•‡∏≥‡∏î‡∏±‡∏ö</strong></td>
+			<td width="40%" align="center" bgcolor="#66CC99"><strong>‡∏ä‡∏∑‡πà‡∏≠ - ‡∏ô‡∏≤‡∏°‡∏™‡∏Å‡∏∏‡∏•</strong></td>
+			<td width="20%" align="center" bgcolor="#66CC99"><strong>part</strong></td>
+            <td width="20%" align="center" bgcolor="#66CC99"><strong>‡∏™‡∏ñ‡∏≤‡∏ô‡∏∞</strong></td>
+			<td width="36%" align="center" bgcolor="#66CC99"><strong>‡∏à‡∏±‡∏î‡∏Å‡∏≤‡∏£‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•</strong></td>
+		</tr>
+		<?
+		$sql = "select * from inputm where menucode like '" . $_GET["menucode"] . "%' order by menucode ";
+		$query = mysql_query($sql);
+		$num = mysql_num_rows($query);
+		if ($num < 1) {
+			echo "<tr><td colspan='3' align='center'>------------------------ ‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• ------------------------</td></tr>";
+		} else {
+			$i = 0;
+			while ($rows = mysql_fetch_array($query)) {
+				$i++;
+
+                $statusTxt = '‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô';
+                $statusColor = '';
+                $statusTextColor = '';
+                if($rows["status"]=='N'){
+                    $statusTxt = '‡∏õ‡∏¥‡∏î‡∏Å‡∏≤‡∏£‡πÉ‡∏ä‡πâ‡∏á‡∏≤‡∏ô';
+                    $statusColor = '#dc3545';
+                    $statusTextColor = 'color: #ffffff;';
+                }
+
+				?>
+				<tr bgcolor="<?=$statusColor; ?>" style="<?=$statusTextColor;?>">
+					<td align="center">
+						<?= $i; ?>
+					</td>
+					<td bgcolor="<?= $bg; ?>">
+						<?= $rows["name"]; ?>
+					</td>
+					<td bgcolor="<?= $bg; ?>">
+						<?= $rows["menucode"]; ?>
+					</td>
+                    <td align="center">
+                    <?php
+                    
+                    echo $statusTxt;
+                    ?>
+                    </td>
+					<td align="center" bgcolor="<?= $bg; ?>">
+						<? if ($rows["level"] == "user") { ?>
+							<a
+								href="edituser.php?menucode=<?= $_GET["menucode"]; ?>&id=<?= $rows["row_id"]; ?>">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
+								href="showuser.php?act=del&menucode=<?= $_GET["menucode"]; ?>&id=<?= $rows["row_id"]; ?>"
+								onClick="return confirm('‡∏Ñ‡∏∏‡∏ì‡∏ï‡πâ‡∏≠‡∏á‡∏Å‡∏≤‡∏£‡∏•‡∏ö‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ô‡∏µ‡πâ‡πÉ‡∏ä‡πà‡∏´‡∏£‡∏∑‡∏≠‡πÑ‡∏°‡πà');">‡∏•‡∏ö</a>
+						<? } else {
+							echo "‡∏ï‡∏¥‡∏î‡∏ï‡πà‡∏≠‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏°‡πÄ‡∏°‡∏≠‡∏£‡πå";
+						} ?>
+					</td>
+				</tr>
+			<?
+			}
+		}
+		?>
+	</table>
 
 </div>
