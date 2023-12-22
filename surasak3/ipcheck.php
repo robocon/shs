@@ -362,12 +362,7 @@ if ($status_log == "จำหน่าย") {
             <tr>
                 <td align="right"><b>อาหารสั่งเพิ่ม :</b></td>
                 <td>
-                    <select size="1" name="food">
-                        <option value="อาหารปกติ" selected="selected">อาหารปกติ</option>
-                        <option value="อาหารอ่อน">อาหารอ่อน</option>
-                        <option value="อาหารเหลว">อาหารเหลว</option>
-                        <option value="NPO (งดอาหาร, น้ำ)">NPO (งดอาหาร, น้ำ)</option>
-                    </select>
+                    <input type="text" name="addfood" size="70">
                 </td>
             </tr>
             
