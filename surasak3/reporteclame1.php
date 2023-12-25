@@ -2,17 +2,18 @@
 session_start();
 include("connect.inc");
 //  $yrmonth="$thiyr-$rptmo-$date";
-if($date == '���͡'){
+if($date == 'เลือก'){
 	$date = '';
 }
 $date1 ="$thiyr-$rptmo-$date";
 $date2 ="$date-$rptmo-$thiyr";
+$chkdate =($thiyr-543)."-$rptmo-$date";
 $sql = "Select a.date,a.txdate, a.hn, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.depart, sum(a.price),b.idcard,b.note,sum(a.paidcscd),b.hospcode 
 From opacc as a, 
 opcard as b 
 where a.hn=b.hn 
 AND a.date like '".$date1."%' 
-AND a.credit ='30�ҷ' 
+AND a.credit ='30บาท' 
 group by a.hn, a.depart 
 ORDER by a.date";
 //echo $sql;
@@ -54,26 +55,28 @@ while(list($date,$txdate, $hn, $full_name, $depart, $price,$idcard,$note,$paidcs
 
 $num='0';
 $i='0';
-echo "<font face='Angsana New' size ='4'><center> <b>�١˹����ѡ��Сѹ�آ�Ҿ��Ш��ѹ��� $date2 <br></b> ";
-echo "<font face='Angsana New' size ='3'> �ç��Һ�Ť�������ѡ�������� �ӻҧ </center>";
+echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้หลักประกันสุขภาพประจำวันที่ $date2 <br></b> ";
+echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง </center>";
 echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='2' style='BORDER-COLLAPSE: collapse' >";
 echo "<tr>
 <td>&nbsp;&nbsp;#&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;�ѹ���&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;���� - ʡ��&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;วันที่&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;ชื่อ - สกุล&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;�ѵû�ЪҪ�&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��¨�ҧ&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;��&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��Ҹ�&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�͡����&nbsp;&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;��Ǩ����&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;���&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;บัตรประชาชน&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;นายจ้าง&nbsp;&nbsp;</td>
+<td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ผล ATK&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='1'><center> <b>&nbsp;&nbsp;ตรวจอื่นๆ&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
 <td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10&nbsp;&nbsp;</td>
 <td><center> <b><font face='Angsana New' size ='2'><center>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10�ͧ&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ᾷ��&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;���� þ.&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;รหัส รพ.&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;สิทธิหลัก&nbsp;&nbsp;</td>
 </tr>";
 foreach ($list2 as $key => $value) {
 
@@ -108,11 +111,17 @@ $total=$list[$key]["PHAR"]+$list[$key]["PATHO"]+$list[$key]["XRAY"]+$list[$key][
 $total=number_format($total,2);
 
 
- $sql = "SELECT icd10,icd9cm,icd101,doctor FROM opday WHERE  hn = '".$key."' and  thdatehn like '".$date2."%' ";
+ $sql = "SELECT icd10,icd9cm,icd101,doctor,ptright FROM opday WHERE  hn = '".$key."' and  thdatehn like '".$date2."%' ";
 	//echo $sql;
-   list($icd10,$icd9cm,$icd101,$doctor) = mysql_fetch_row(Mysql_Query($sql));
+   list($icd10,$icd9cm,$icd101,$doctor,$ptright) = mysql_fetch_row(Mysql_Query($sql));
+   
+   
+	$sql1 = "SELECT b.result FROM resulthead as a inner join resultdetail as b ON a.autonumber=b.autonumber WHERE  a.hn = '".$key."' and  a.orderdate like '".$chkdate."%' and b.labcode='COVID' order by b.authorisedate DESC";
+	//echo $sql1."<br>";
+	list($result) = mysql_fetch_row(Mysql_Query($sql1));
+   
 
-    // ICD10 ��ѡ
+    // ICD10 หลัก
 	$sql = "SELECT `icd10` 
 	FROM `diag` 
 	WHERE `regisdate` LIKE '$date1%' 
@@ -129,7 +138,7 @@ $total=number_format($total,2);
 
 	$icd10_txt = implode(', ', $icd10_lists);
 
-	// ICD10 �ͧ
+	// ICD10 รอง
 	$sql = "SELECT `icd10` 
 	FROM `diag` 
 	WHERE `regisdate` LIKE '$date1%' 
@@ -156,6 +165,7 @@ $total=number_format($total,2);
 	<td><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$xx[3]."&nbsp;</td>
 	<td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PHAR1"]."</td>
 	<td align='right'><font face='Angsana New' size ='2'>".$list[$key]["PATHO1"]."</td>
+	<td align='center'><font face='Angsana New' size ='2'>&nbsp;&nbsp;".$result."&nbsp;</td>
 	<td align='right'><font face='Angsana New' size ='2'>".$list[$key]["XRAY1"]."</td>
 	<td align='right'><font face='Angsana New' size ='2'>".$OTHER1."</td>
 	<td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$total."&nbsp;</b></td>
@@ -164,6 +174,7 @@ $total=number_format($total,2);
 	<td align='right'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$comobid_txt."&nbsp;</td>
 	<td align='left'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$doctor."&nbsp;</td>
 	<td align='left'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$hospcode."&nbsp;</td>
+	<td align='left'><font face='Angsana New' size ='1'>&nbsp;&nbsp;".$ptright."&nbsp;</td>
 	</tr>";
 
 
@@ -172,8 +183,8 @@ $total=number_format($total,2);
 			echo "</table>";
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
 
-echo "<font face='Angsana New' size ='4'><center> <b>�١˹����ѡ��Сѹ�آ�Ҿ��Ш��ѹ��� $date2 <br></b> ";
-echo "<font face='Angsana New' size ='3'> �ç��Һ�Ť�������ѡ�������� �ӻҧ </center>";
+echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้หลักประกันสุขภาพประจำวันที่ $date2 <br></b> ";
+echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง </center>";
 
 echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='2'  style='BORDER-COLLAPSE: collapse' >";
 
@@ -181,21 +192,23 @@ echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='2' 
 
 echo "<tr>
 <td border-style:dashed>&nbsp;&nbsp;#&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�ѹ���&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;���� - ʡ��&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;วันที่&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ชื่อ - สกุล&nbsp;&nbsp;</td>
 <td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�ѵû�ЪҪ�&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��¨�ҧ&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;��&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��Ҹ�&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;�͡����&nbsp;&nbsp;&nbsp;</td>
-<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;��Ǩ����&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;���&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;ICD10��ѡ&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;บัตรประชาชน&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;นายจ้าง&nbsp;&nbsp;</td>
+<td><center> <b>&nbsp;&nbsp;ยา&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;พยาธิ&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ผล ATK&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;เอกเรย์&nbsp;&nbsp;&nbsp;</td>
+<td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ตรวจอื่นๆ&nbsp;&nbsp;</td>
+<td><center> <b>&nbsp;&nbsp;รวม&nbsp;&nbsp;</td>
+<td><center> <b>&nbsp;&nbsp;ICD10หลัก&nbsp;&nbsp;</td>
 <td><center> <b>&nbsp;&nbsp;ICD9&nbsp;&nbsp;</td>
-<td><center> <b>&nbsp;&nbsp;ICD10�ͧ&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;ᾷ��&nbsp;&nbsp;</td>
-<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;���� þ.&nbsp;&nbsp;</td>
+<td><center> <b>&nbsp;&nbsp;ICD10รอง&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;แพทย์&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;รหัส รพ.&nbsp;&nbsp;</td>
+<td><center> <b><font face='Angsana New' size ='1'><center>&nbsp;&nbsp;สิทธิหลัก&nbsp;&nbsp;</td>
 </tr>";
 $i='0';
 
@@ -232,10 +245,11 @@ echo "<tr><b>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
-<td><b><font face='Angsana New' size ='2'><center>���</td>
+<td><b><font face='Angsana New' size ='2'><center>รวม</td>
 <td>&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='2'><b>".$PHAR."</td>
 <td align='right'><font face='Angsana New' size ='2'><b>".$PATHO."</td>
+<td align='right'><font face='Angsana New' size ='2'><b>&nbsp;</td>
 <td align='right'><font face='Angsana New' size ='2'><b>".$XRAY."</td>
 <td align='right'><font face='Angsana New' size ='2'><b>".$OTHER1."</td>
 <td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</td></b>
