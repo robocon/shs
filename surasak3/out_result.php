@@ -570,46 +570,37 @@ if ($_GET["act"] == "print") {
 														id="comment" value="<?= $arrchk['comment'] ?>" /></td>
 												<td width="256">&nbsp;</td>
 											</tr>
-											<tr>
+											<tr valign="top">
 												<td class="pdx">ผลตรวจ สมรรถภาพปอด</td>
-												<td colspan="2"><select name="pt" class="pdx" id="pt"
-														onchange="showDiv()">
+												<td colspan="2">
+													<input type="text" name="pt" class="pdx" id="pt">
+													<select onchange="document.getElementById('pt').value=this.value;" class="pdx">
 														<option value="">---------- เลือก ----------</option>
-														<option value="ปกติ" <? if ($arrchk['pt'] == "ปกติ") {
-															echo "selected='selected'";
-														} ?>>ปกติ</option>
-														<option value="ปอดจำกัดการขยายตัว" <? if ($arrchk['pt'] == "ปอดจำกัดการขยายตัว") {
-															echo "selected='selected'";
-														} ?>>ปอดจำกัดการขยายตัว</option>
-														<option value="ปอดอุดกั้น" <? if ($arrchk['pt'] == "ปอดอุดกั้น") {
-															echo "selected='selected'";
-														} ?>>ปอดอุดกั้น</option>
-														<option value="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)"
-															<? if ($arrchk['pt'] == "มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)") {
-																echo "selected='selected'";
-															} ?>>
-															มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)</option>
-
+														<option value="ปกติ">ปกติ</option>
+														<option value="ปอดจำกัดการขยายตัว">ปอดจำกัดการขยายตัว</option>
+														<option value="ปอดอุดกั้น">ปอดอุดกั้น</option>
+														<option value="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)">มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)</option>
 													</select>
 													&nbsp;&nbsp;&nbsp;
 													<? if ($arrchk['pt'] == "ปอดจำกัดการขยายตัว" || $arrchk['pt'] == "ปอดอุดกั้น") {
 														echo "<span class='pdx'>" . $arrchk['pt_detail'] . "</span>";
 													} ?>
-													<div id="hidden_div" style="display: none;" class="pdx">ระบุ : <input
-															type="radio" name="pt_detail" value="ผิดปกติเล็กน้อย"
+													<div id="hidden_div" class="pdx">
+														ระบุ : <label for="pt_detail1"><input
+															type="radio" name="pt_detail" id="pt_detail1" value="ผิดปกติเล็กน้อย"
 															class="pdxhead" <? if ($arrchk['pt_detail'] == "ผิดปกติเล็กน้อย") {
 																echo "checked='checked'";
 															} ?> />
-														ผิดปกติเล็กน้อย&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-														<input type="radio" name="pt_detail" value="ผิดปกติปานกลาง"
+														ผิดปกติเล็กน้อย</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+														<label for="pt_detail2"><input type="radio" name="pt_detail" id="pt_detail2" value="ผิดปกติปานกลาง"
 															class="pdxhead" <? if ($arrchk['pt_detail'] == "ผิดปกติปานกลาง") {
 																echo "checked='checked'";
 															} ?> />
-														ผิดปกติปานกลาง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-														<input type="radio" name="pt_detail" value="ผิดปกติมาก"
+														ผิดปกติปานกลาง</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+														<label for="pt_detail3"><input type="radio" name="pt_detail" id="pt_detail3" value="ผิดปกติมาก"
 															class="pdxhead" <? if ($arrchk['pt_detail'] == "ผิดปกติมาก") {
 																echo "checked='checked'";
-															} ?> /> ผิดปกติมาก
+															} ?> /> ผิดปกติมาก</label>
 													</div>
 												</td>
 											</tr>
