@@ -246,7 +246,16 @@ if($rows > 0){
 }
 
 	// echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>แพ้ยา : ",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
-
+	$sqlAdvreact = "SELECT advreact FROM drugreact WHERE hn = '".$_SESSION["hn_now"]."' AND advreact != '' GROUP BY `advreact` ";
+	$resultAdv = Mysql_Query($sqlAdvreact);
+	if(mysql_num_rows($resultAdv)>0){
+		$adv = mysql_fetch_assoc($resultAdv);
+		?>
+		<tr>
+			<td colspan="6"><b>อาการ:</b> <?=$adv['advreact'];?></td>
+		</tr>
+		<?php
+	}
 
 
 
