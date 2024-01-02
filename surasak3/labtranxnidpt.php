@@ -117,6 +117,9 @@ if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoc
     }else if( $subDoctor === 3 ){
         $cDoctor1 = "กัลย์ปภารัศมิ์ กุลชิงชัย";
         $doctorcode = "พท.ป. 2252";
+    }else if( $subDoctor === 4 ){
+        $cDoctor1 = "ประภัสสร เครืออินทร์";
+        $doctorcode = "พท.ป. 3011";
     }
 
     $yot = "น.ส.";
@@ -153,7 +156,7 @@ $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
     };
 </script>
 <div style="text-align: center;">
-    <img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'>
+    <img  WIDTH=80 HEIGHT=100 SRC='logo.jpg'>
 </div>
 <div style="height: 24px;">
     <div style="float: left; padding-left: 2em;">
