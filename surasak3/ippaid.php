@@ -23,35 +23,35 @@ $aMCprice = array("ราคา ");
 
 $aCode[1] = "elect";
 $aDetail[1] = "ค่าไฟฟ้า";
-$aMCprice[1] = $electric;
+$aMCprice[1] = (int) $electric;
 
 $aCode[2] = "phone";
 $aDetail[2] = "ค่าโทรศัพท์";
-$aMCprice[2] = $phone;
+$aMCprice[2] = (int) $phone;
 
 $aCode[3] = "loss";
 $aDetail[3] = "ค่าสิ่งอุปกรณ์เสียหาย";
-$aMCprice[3] = $loss;
+$aMCprice[3] = (int) $loss;
 
 $aCode[4] = "ambulance";
 $aDetail[4] = "ค่ารถพยาบาล";
-$aMCprice[4] = $ambulance;
+$aMCprice[4] = (int) $ambulance;
 
 $aCode[4] = "food";
 $aDetail[4] = "ค่าอาหารญาติผู้ป่วย";
-$aMCprice[4] = $food;
+$aMCprice[4] = (int) $food;
 
 $aCode[5] = "death";
 $aDetail[5] = "ค่าบริการศพ";
-$aMCprice[5] = $death;
+$aMCprice[5] = (int) $death;
 
 $aCode[6] = "preserve";
 $aDetail[6] = "ค่าฉีดยาศพ";
-$aMCprice[6] = $preserve;
+$aMCprice[6] = (int) $preserve;
 
 $aCode[7] = "robe";
 $aDetail[7] = "ค่าตราสังข์";
-$aMCprice[7] = $robe;
+$aMCprice[7] = (int) $robe;
 
 // ตรวจสอบข้อมูลต่างๆ
 if (
@@ -69,8 +69,9 @@ if (
     exit;
 }
 
+$i_aMCprice = 0;
 foreach ($aMCprice as $a) {
-    if(is_numeric($a)===false){ 
+    if(is_numeric($a)===false && $i_aMCprice>0){ 
         echo '<b>ค่าบริการให้ใส่เป็น<u>ตัวเลขเท่านั้น</u></b><br>';
         echo '<a href="#" onclick="window.close();">คลิกที่นี่</a> เพื่อกลับไปหน้าบันทึกข้อมูล';
         exit;
@@ -101,10 +102,10 @@ for ($no = 1; $no <= 7; $no++) {
     }
 }
 
-if ($NetMcpri == 0 && $r_ipacc > 0) {
-    echo 'มีการคิดค่าไฟเมื่อ ' . $ipacc['date'] . ' ( ' . $ipacc['price'] . 'บาท ) เรียบร้อยแล้ว';
-    exit;
-}
+// if ($NetMcpri == 0 && $r_ipacc > 0) {
+//     echo 'มีการคิดค่าไฟเมื่อ ' . $ipacc['date'] . ' ( ' . $ipacc['price'] . 'บาท ) เรียบร้อยแล้ว';
+//     exit;
+// }
 
 
 //insert data into depart
@@ -116,12 +117,12 @@ $idno = mysql_insert_id();
 
 for ($no = 1; $no <= 7; $no++) {
     // if ($aMCprice[$no] > 0) {
-    if(is_numeric($aMCprice[$no])===true){
+    if(is_numeric($aMCprice[$no])===true && $aMCprice[$no]!=0){
 
-        if ($no == 1 && $r_ipacc > 0) {
-            echo "$aDetail[$no] $aMCprice[$no] บาท (เคยคิดค่าใช้จ่ายไปแล้วเมื่อวันที่ " . $ipacc['date'] . ")<br>";
-            continue;
-        }
+        // if ($no == 1 && $r_ipacc > 0) {
+        //     echo "$aDetail[$no] $aMCprice[$no] บาท (เคยคิดค่าใช้จ่ายไปแล้วเมื่อวันที่ " . $ipacc['date'] . ")<br>";
+        //     continue;
+        // }
 
         //       echo "$aCode[$no] <br>";
         echo "$aDetail[$no]  $aMCprice[$no] บาท <br>";
