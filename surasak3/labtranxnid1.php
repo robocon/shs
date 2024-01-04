@@ -141,7 +141,7 @@ if( $cDoctor2 === 'MD115' ){
     $query = mysql_query($sql);
     $rows = mysql_fetch_array($query);
     $yot = $rows["yot"];
-	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ" || $rows["name"]=="MD163 ศุภกิตติ์ มงคล"){
+	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ" || $rows["name"]=="MD163 ศุภกิตติ์ มงคล" || $rows["name"]=="MD203 พรชนก มั่งมูล"){
         
         $doctorcode = "พจ. ".$rows["doctorcode"];
         $position = "แพทย์แผนจีน";
@@ -243,7 +243,8 @@ OR $cDoctor2 == 'MD129'
 OR $cDoctor2 == 'MD116' 
 OR $cDoctor2 == 'MD130' 
 OR $cDoctor2 == 'MD151' 
-OR $cDoctor2 == 'MD163'){
+OR $cDoctor2 == 'MD163'
+OR $cDoctor2 == 'MD203'){
 
     if( $inList === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';

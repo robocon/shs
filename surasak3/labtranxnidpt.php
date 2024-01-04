@@ -207,7 +207,7 @@ if( $inBy === true ){
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทางแพทย์แผนไทยด้วยการ $nid_ext "; 
 	  
 // ถ้าเป็นแพทย์แผนไทย
-if( $cDoctor2 === "MD058"  || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157'){
+if( $cDoctor2 === "MD058"  || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
     
     // $inList = test_diag($cDiag, $diag_list);
     // if( $inList !== true ){
