@@ -1046,9 +1046,15 @@ if($flag=="N"){
 		if($result2["eye"]=="ปกติ"){ echo $result2["eye"]; }else if($result2["eye"]=="ผิดปกติ"){ echo $result2["eye"]."...".$result2["eye_detail"];}else{ echo "&nbsp;";}
 	?></td>
     <td>
-	<? 
-		if($result2["pt"]=="ปกติ"){ echo $result2["pt"]; }else if($result2["pt"]=="ปอดจำกัดการขยายตัว" || $result2["pt"]=="ปอดอุดกั้น"){ echo $result2["pt"]."...".$result2["pt_detail"];}else{ echo "&nbsp;";}
-	?></td>
+	<?php
+        $ptDetail = '';
+        if(!empty($result2['pt_detail'])){
+            $ptDetail = $result2['pt_detail'];
+        }
+        echo $result2['pt'].' '.$ptDetail;
+		// if($result2["pt"]=="ปกติ"){ echo $result2["pt"]; }else if($result2["pt"]=="ปอดจำกัดการขยายตัว" || $result2["pt"]=="ปอดอุดกั้น"){ echo $result2["pt"]."...".$result2["pt_detail"];}else{ echo "&nbsp;";}
+	?>
+    </td>
     <td>
     <?php
     //อัลตร้าซาวด์ช่องท้อง

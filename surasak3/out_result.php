@@ -573,7 +573,7 @@ if ($_GET["act"] == "print") {
 											<tr valign="top">
 												<td class="pdx">ผลตรวจ สมรรถภาพปอด</td>
 												<td colspan="2">
-													<input type="text" name="pt" class="pdx" id="pt">
+													<input type="text" name="pt" class="pdx" id="pt" value="<?=$arrchk['pt'];?>">
 													<select onchange="document.getElementById('pt').value=this.value;" class="pdx">
 														<option value="">---------- เลือก ----------</option>
 														<option value="ปกติ">ปกติ</option>
