@@ -8,7 +8,7 @@ if($_SESSION['sIdname']!=='krit')
 ?>
 <form action="editPharOpacc2.php" method="post">
     <div>
-        «—π∑’Ë: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
+        ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
     </div>
     <div>
         HN: <input type="text" name="hn" id="hn" value="<?=$_REQUEST['hn'];?>">
@@ -20,9 +20,8 @@ if($_SESSION['sIdname']!=='krit')
 <?php 
 if($_REQUEST['hn']){
     
-    $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-    // $dbi = new mysqli(HOST,USER,PASS,DB);
-
+    $dbi = new mysqli(HOST,USER,PASS,DB);
+    $dbi->query("SET NAMES UTF8");
     $date = $_REQUEST['date'];
     $hn = $_REQUEST['hn'];
 
@@ -63,7 +62,7 @@ if($_REQUEST['hn']){
                 <td><?=$a['dpn'];?></td>
                 <td><?=$a['dsy'];?></td>
                 <td><?=$a['dsn'];?></td>
-                <td><a href="javascript:void(0)">·°È‰¢</a></td>
+                <td><a href="javascript:void(0)">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a></td>
             </tr>
             <?php
         }
@@ -73,6 +72,6 @@ if($_REQUEST['hn']){
     }
     else
     {
-        echo '‰¡Ë¡’¢ÈÕ¡Ÿ≈„π OPACC <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">· ¥ß¢ÈÕ¡Ÿ≈ phardep</a>';
+        echo '‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô OPACC <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">‡πÅ‡∏™‡∏î‡∏á‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• phardep</a>';
     }
 }
