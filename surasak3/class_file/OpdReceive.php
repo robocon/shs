@@ -352,15 +352,15 @@ class OpdReceive
             die($this->dbi->error);
         }
             
-        $sql_xray_detail = "INSERT INTO `xray_doctor_detail` (
-            `date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`
-        )VALUES (
-            '$this->thaiDateFull','$this->hn','$xray_no','1. CHEST CHECK UP','1. CHEST CHECK UP'
-        );";
-        $sql_xray_detail_save = $this->dbi->query($sql_xray_detail);
-        if($sql_xray_detail_save==false){
-            die($this->dbi->error);
-        }
+        // $sql_xray_detail = "INSERT INTO `xray_doctor_detail` (
+        //     `date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`
+        // )VALUES (
+        //     '$this->thaiDateFull','$this->hn','$xray_no','1. CHEST CHECK UP','1. CHEST CHECK UP'
+        // );";
+        // $sql_xray_detail_save = $this->dbi->query($sql_xray_detail);
+        // if($sql_xray_detail_save==false){
+        //     die($this->dbi->error);
+        // }
 
         $opday = new Opday();
         $op = $opday->getThisDay($this->hn);
