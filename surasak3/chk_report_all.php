@@ -236,8 +236,10 @@ while($result = $qOutResultChkup->fetch_assoc()){
 <?php 
 
 $stat_cbc = $stat_ua = '';
-$queryStat = mysql_query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
-$dxStat = mysql_fetch_assoc($queryStat);
+// $queryStat = mysql_query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
+$qDxOfYear = $dbi->query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
+// $dxStat = mysql_fetch_assoc($queryStat);
+$dxStat = $qDxOfYear->fetch_assoc();
 $stat_cbc = $dxStat['stat_cbc'];
 $stat_ua = $dxStat['stat_ua'];
 
@@ -247,9 +249,10 @@ WHERE profilecode = 'CBC'
 AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY `profilecode` ";
-
-$query18=mysql_query($sql18);
-$numcbc=mysql_num_rows($query18);
+// $query18=mysql_query($sql18);
+// $numcbc=mysql_num_rows($query18);
+$q18 = $dbi->query($sql18);
+$numcbc = $q18->num_rows;
 if($numcbc > 0){
     echo "มี";
     if( !empty($stat_cbc) ){
@@ -260,15 +263,19 @@ if($numcbc > 0){
 }else{
 	echo "&nbsp;";
 }
-?></td>
-    <td align="center"><?php
+?>
+</td>
+<td align="center">
+<?php
 $sql19="SELECT * 
 FROM resulthead WHERE profilecode = 'UA' AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY `profilecode` ";
 //echo $sql19;
-$query19=mysql_query($sql19);
-$numua=mysql_num_rows($query19);
+// $query19=mysql_query($sql19);
+// $numua=mysql_num_rows($query19);
+$q19 = $dbi->query($sql19);
+$numua = $q19->num_rows;
 if($numua > 0){
     echo "มี";
     if( !empty($stat_ua) ){
@@ -279,24 +286,26 @@ if($numua > 0){
 }else{
 	echo "&nbsp;";
 }
-?></td>
-    <td align="center"><?php
-$sql1="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-GROUP BY a.`profilecode` ";
+?>
+</td>
+<td align="center">
+<?php
+// $sql1="SELECT b.result, b.flag 
+// FROM resulthead AS a
+// INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+// WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+// AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+// GROUP BY a.`profilecode` ";
 
 $sql1 = "SELECT b.result, b.flag 
 FROM ( 
 
-SELECT *, MAX(`autonumber`) AS `latest_number`
-FROM `resulthead` 
-WHERE `hn` = '$pt_hn' 
-AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-AND `profilecode` = 'GLU' 
-GROUP BY `profilecode` 
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' 
+    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+    AND `profilecode` = 'GLU' 
+    GROUP BY `profilecode` 
 
 ) AS a
 INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
