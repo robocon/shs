@@ -535,6 +535,26 @@ ORDER BY lab_list ASC";
 	</TR>
 	<TR>
 	";
+		if($_SESSION["sIdname"]=="md16633"){
+			$sql = "Select code, detail From labcare where code ='DR@FU1' || code='DR@FU2' ";
+			$result = Mysql_Query($sql);
+			if(Mysql_num_rows($result) > 0){
+				echo "สูตร LAB<BR>";
+			while($arr = Mysql_fetch_assoc($result)){
+				$i=0;
+				$list = array();
+				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
+				//echo $sql2;
+				$result2 = Mysql_Query($sql2);
+				while($arr2 = Mysql_fetch_assoc($result2)){
+					$list[$i] = $arr2["code"];
+					$i++;
+				}
+
+				echo "<A HREF=\"#\" Onclick=\"addsuittolist('".implode("][",$list)."');\">".$arr["detail"]."</A><BR>";
+			}		
+			}
+		}	
 
 	for($i=1;$i<=$count;$i++){
 		
@@ -915,6 +935,16 @@ function addbycheck(statuscheck, code){
 
 }
 
+function addsuittolist(suil){
+	
+	var code = suil.split('][');
+	if(code.length > 0){
+		for(i=0;i<code.length;i++)
+			addtolist(code[i]);
+	}
+
+}
+
 function del_list(code){
 
 	url = 'dt_appoint.php?action=delete&code=' + code;
@@ -1037,7 +1067,7 @@ function listb(number){
 		}
 	}
 	else if(document.getElementById("detail").value=='FU14 เจาะเลือดไม่พบแพทย์'){
-		document.getElementById("room").selectedIndex=17;  <!--ห้องเก็บเงินรายได้-->	
+		document.getElementById("room").selectedIndex=5;  <!--ห้องเก็บเงินรายได้-->	
 	}
 	else if(document.getElementById("detail").value=='FU15 OPD นอกเวลา'){
 		document.getElementById("room").selectedIndex=2;
@@ -1199,6 +1229,7 @@ include("dt_patient.php");
 		|| $_SESSION["sIdname"] == "md67054" // intern
 		|| $_SESSION["sIdname"] == "md43724" // หมอรวิดา
 		|| $_SESSION["sIdname"] == "md55807" // ปริณดา กิตติดนัยรักษ์ (ว.55807)
+		|| $_SESSION["sIdname"] == "md58058" // เมนัญชญา  พงษ์ไพรเจริญ
 		
 	){
 		$counter="2";
