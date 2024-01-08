@@ -1,5 +1,8 @@
 <?php
 include 'bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -41,13 +44,23 @@ LEFT JOIN (
 ) AS b ON b.`HN` = a.`hn` 
 ORDER BY b.`row` ASC";
 
-$out_result_sql = mysql_query($sql) or die ( mysql_error() );
-$num = mysql_num_rows($out_result_sql);
+// $out_result_sql = mysql_query($sql) or die ( mysql_error() );
+// $num = mysql_num_rows($out_result_sql);
 
-$q = mysql_query("SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
+$qOutResultChkup = $dbi->query($sql);
+$num = $qOutResultChkup->num_rows;
+
+// $q = mysql_query("SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
+// FROM `chk_company_list` 
+// WHERE `code` = '$camp' ") or die ( mysql_error() );
+// $company = mysql_fetch_assoc($q);
+
+$sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
 FROM `chk_company_list` 
-WHERE `code` = '$camp' ") or die ( mysql_error() );
-$company = mysql_fetch_assoc($q);
+WHERE `code` = '$camp' ";
+$q = $dbi->query($sql);
+$company = $q->fetch_assoc();
+
 ?>	
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['company_name'];?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
@@ -62,7 +75,7 @@ $company = mysql_fetch_assoc($q);
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
     <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="43" align="center">รายการตรวจ</th>
+    <th colspan="44" align="center">รายการตรวจ</th>
     <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
     <th colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
@@ -113,6 +126,7 @@ $company = mysql_fetch_assoc($q);
     <th width="6%" align="center">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</th>
     <th width="6%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
     <th width="6%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
+    <th align="center">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</th>
     <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
     <th width="7%">ความดันตา</th>
     <th width="7%">ลานสายตา</th>
@@ -123,7 +137,8 @@ $company = mysql_fetch_assoc($q);
   </tr>
 <?php
 $i=0;
-while($result = mysql_fetch_array($out_result_sql)){
+// while($result = mysql_fetch_array($out_result_sql)){
+while($result = $qOutResultChkup->fetch_assoc()){
 
     $yaer_chk = $result['year_chk'];
     $pt_hn = $result['hn'];
@@ -136,10 +151,10 @@ while($result = mysql_fetch_array($out_result_sql)){
         $result["HN"] = $result["hn"];
     }
 
-    $sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
-    $query2 = mysql_query($sql2);
-    $result2 = mysql_fetch_array($query2);
-
+    // $sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
+    // $query2 = mysql_query($sql2);
+    // $result2 = mysql_fetch_array($query2);
+    $result2 = $result;
     $prawat = $result2['prawat'];
     if(empty($age)){
         $age=$result2["age"];
@@ -148,11 +163,14 @@ while($result = mysql_fetch_array($out_result_sql)){
     
     // กรณีที่มี labnumber จากใน chk_lab_items
     $defLabNumber = "AND `labnumber` = '$exam_no'";
-    $sql = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$camp' AND `hn` = '$pt_hn' ";
-    $q = mysql_query($sql) or die(mysql_error());
-    if (mysql_num_rows($q) > 0) {
+    $sqlLab = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$camp' AND `hn` = '$pt_hn' ";
+    // $q = mysql_query($sqlLab) or die(mysql_error());
+    // if (mysql_num_rows($q) > 0) {
+    $qLab = $dbi->query($sqlLab);
+    if($qLab->num_rows>0){
         $labItemList = array();
-        while ($labChk = mysql_fetch_assoc($q)) { 
+        // while ($labChk = mysql_fetch_assoc($q)) { 
+        while($labChk = $qLab->fetch_assoc()){
             $testLabnumber = $labChk['labnumber'];
             $labItemList[] = " `labnumber` = '$testLabnumber' ";
         }
@@ -184,8 +202,11 @@ while($result = mysql_fetch_array($out_result_sql)){
     AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
     order by autonumber desc";  //โชว์ข้อมูล
 	
-    $objQuery11 = mysql_query($strSQL11);
-    list($orderdate)=mysql_fetch_array($objQuery11);
+    // $objQuery11 = mysql_l_query($strSQL11);
+    // list($orderdate)=mysqfetch_array($objQuery11);
+    $q11 = $dbi->query($strSQL11);
+    $itemQ11 = $q11->fetch_assoc();
+    $orderdate = $itemQ11['orderdate2'];
 	
 	list($d,$m,$y)=explode("-",$orderdate);
 	$yy=$y+543;
@@ -215,8 +236,10 @@ while($result = mysql_fetch_array($out_result_sql)){
 <?php 
 
 $stat_cbc = $stat_ua = '';
-$queryStat = mysql_query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
-$dxStat = mysql_fetch_assoc($queryStat);
+// $queryStat = mysql_query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
+$qDxOfYear = $dbi->query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
+// $dxStat = mysql_fetch_assoc($queryStat);
+$dxStat = $qDxOfYear->fetch_assoc();
 $stat_cbc = $dxStat['stat_cbc'];
 $stat_ua = $dxStat['stat_ua'];
 
@@ -226,9 +249,10 @@ WHERE profilecode = 'CBC'
 AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY `profilecode` ";
-
-$query18=mysql_query($sql18);
-$numcbc=mysql_num_rows($query18);
+// $query18=mysql_query($sql18);
+// $numcbc=mysql_num_rows($query18);
+$q18 = $dbi->query($sql18);
+$numcbc = $q18->num_rows;
 if($numcbc > 0){
     echo "มี";
     if( !empty($stat_cbc) ){
@@ -239,15 +263,19 @@ if($numcbc > 0){
 }else{
 	echo "&nbsp;";
 }
-?></td>
-    <td align="center"><?php
+?>
+</td>
+<td align="center">
+<?php
 $sql19="SELECT * 
 FROM resulthead WHERE profilecode = 'UA' AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY `profilecode` ";
 //echo $sql19;
-$query19=mysql_query($sql19);
-$numua=mysql_num_rows($query19);
+// $query19=mysql_query($sql19);
+// $numua=mysql_num_rows($query19);
+$q19 = $dbi->query($sql19);
+$numua = $q19->num_rows;
 if($numua > 0){
     echo "มี";
     if( !empty($stat_ua) ){
@@ -258,24 +286,26 @@ if($numua > 0){
 }else{
 	echo "&nbsp;";
 }
-?></td>
-    <td align="center"><?php
-$sql1="SELECT b.result, b.flag 
-FROM resulthead AS a
-INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-GROUP BY a.`profilecode` ";
+?>
+</td>
+<td align="center">
+<?php
+// $sql1="SELECT b.result, b.flag 
+// FROM resulthead AS a
+// INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
+// WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
+// AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+// GROUP BY a.`profilecode` ";
 
 $sql1 = "SELECT b.result, b.flag 
 FROM ( 
 
-SELECT *, MAX(`autonumber`) AS `latest_number`
-FROM `resulthead` 
-WHERE `hn` = '$pt_hn' 
-AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-AND `profilecode` = 'GLU' 
-GROUP BY `profilecode` 
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' 
+    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+    AND `profilecode` = 'GLU' 
+    GROUP BY `profilecode` 
 
 ) AS a
 INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
@@ -1065,7 +1095,7 @@ if($flag=="N"){
     </td>
     <td>
     <?php
-    //อัลตร้าซาวด์ช่องท้อง
+    // ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน
     if( !empty($result2['cimt']) ){
         echo $result2['cimt'];
     }
@@ -1073,7 +1103,7 @@ if($flag=="N"){
     </td>
     <td>
     <?php
-    //อัลตร้าซาวด์ช่องท้อง
+    // ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง
     if( !empty($result2['echo']) ){
         echo $result2['echo'];
     }
@@ -1081,11 +1111,15 @@ if($flag=="N"){
     </td>
     <td>
     <?php
-    //อัลตร้าซาวด์ช่องท้อง
+    // ตรวจวัดความแข็งตัวของหลอดเลือด
     if( !empty($result2['abi']) ){
         echo $result2['abi'];
     }
     ?>
+    </td>
+    <td>
+        <!-- สายตาอาชีวอนามัย + สายตาสั้น, ยาว -->
+        <?=(!empty($result2['occupa_health']) ? $result2['occupa_health'] : '' );?>
     </td>
     <td>
     <?php 
