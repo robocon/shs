@@ -231,9 +231,10 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                 $b = new OpdReceive();
                                 $b->hn = $hn;
                                 $b->vn = $vn;
-                                if($b->findOrderLab()!==false)
+                                $orderLabId = $b->findOrderLab();
+                                if($orderLabId!==false)
                                 {
-                                    ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้</p><?php
+                                    ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้ <a href="javascript:void(0);" onclick="window.open('invdetail1.php?gRow_id=<?=$orderLabId;?>','','width=800,height=800')">ดูค่าใช้จ่าย</a></p><?php
                                 }
 
                                 $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
@@ -252,10 +253,13 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                     $price = 0;
                                     foreach ($chkList as $key => $code) { 
 
+                                        $key = rand(1000,9999);
+                                        $keyCode = $key.$code;
+
                                         $q = $dbi->query("SELECT `detail`,`price` FROM `labcare` WHERE `code` = '$code'");
                                         $l = $q->fetch_assoc();
                                         ?>
-                                        <tr id="<?=$code;?>">
+                                        <tr id="<?=$keyCode;?>">
                                             <td><?=$code;?></td>
                                             <td><?=$l['detail'];?></td>
                                             <td align="right">
@@ -263,7 +267,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                                 <input type="hidden" name="labSelect[]" value="<?=$code;?>">
                                             </td>
                                             <td>
-                                                <a href="javascript:void(0);" onclick="removeLabItem('<?=$code;?>','<?=$l['price'];?>')">ลบ</a>
+                                                <a href="javascript:void(0);" onclick="removeLabItem('<?=$keyCode;?>','<?=$l['price'];?>')">ลบ</a>
                                             </td>
                                         </tr>
                                         <?php
@@ -290,10 +294,10 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                         <div>
                             <br>
                             2. พิมพ์สติกเกอร์
-                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=all" target="_blank" class="aButton">สติกเกอร์ทั้งหมด</a>&nbsp;|&nbsp;
-                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=chem" target="_blank" class="aButton">สติกเกอร์ CHEM</a>&nbsp;|&nbsp;
-                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=cbc" target="_blank" class="aButton">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
-                            <a href="orderlabsso_stk.php?hn=<?=$hn;?>&type=ua" target="_blank" class="aButton">สติกเกอร์ UA</a>
+                            <a href="javascript:void(0);" class="aButton" onclick="window.open('orderlabsso_stk.php?hn=<?=$hn;?>&type=all','allSticker','width=800,height=600')">สติกเกอร์ทั้งหมด</a>&nbsp;|&nbsp;
+                            <a href="javascript:void(0);" class="aButton" onclick="window.open('orderlabsso_stk.php?hn=<?=$hn;?>&type=chem','stkChem','width=800,height=600')">สติกเกอร์ CHEM</a>&nbsp;|&nbsp;
+                            <a href="javascript:void(0);" class="aButton" onclick="window.open('orderlabsso_stk.php?hn=<?=$hn;?>&type=cbc','stkCbc','width=800,height=600')">สติกเกอร์ CBC</a>&nbsp;|&nbsp;
+                            <a href="javascript:void(0);" class="aButton" onclick="window.open('orderlabsso_stk.php?hn=<?=$hn;?>&type=ua','stkUa','width=800,height=600')">สติกเกอร์ UA</a>
                         </div>
                     </div>
                 </fieldset>
@@ -378,14 +382,21 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                         
                     }
 
+                    function getRandomInt(max) {
+                        return Math.floor(Math.random() * max);
+                    }
+
                     function addLabItem(code, detail, price){
                         let newPrice = parseInt(price);
+
+                        var key = getRandomInt(9999);
+                        var keyCode = key.toString()+code;
 
                         const table = document.getElementById("labMainTable");
 
                         const tr1 = document.createElement("tr");
                         const col1 = document.createElement("td");
-                        tr1.setAttribute("id", code);
+                        tr1.setAttribute("id", keyCode);
                         col1.append(code);
                         tr1.appendChild(col1);
 
@@ -405,10 +416,12 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 
                         tr1.appendChild(col3);
 
+                        
+
                         const col4 = document.createElement("td");
                         const aLink = document.createElement("a");
                         aLink.setAttribute("href", "javascript:void(0);");
-                        aLink.setAttribute("onclick", "removeLabItem('"+code+"','"+price+"')");
+                        aLink.setAttribute("onclick", "removeLabItem('"+keyCode+"','"+price+"')");
                         aLink.append("ลบ");
                         col4.appendChild(aLink);
                         tr1.appendChild(col4);
