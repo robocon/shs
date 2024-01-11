@@ -334,7 +334,7 @@ foreach($out_result_items AS $result){
 									}
 
 									?>
-									&nbsp;&nbsp;<b class="text3">CV Risk Score : </b><span style="font-size:16px;"><?=$PFullScore;?></span>
+									&nbsp;&nbsp;<b class="text3">ค่าประเมินความเสี่ยงในการเกิดโรคหัวใจและหลอดเลือด (CV Risk Score) : </b><span style="font-size:16px;"><?=$PFullScore;?></span>
 								</td>
 							</tr>
 						</table>
