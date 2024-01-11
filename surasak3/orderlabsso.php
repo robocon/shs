@@ -115,7 +115,8 @@ $chk_year = get_year_checkup();
                         <td colspan="2">
                             <b style="color:orangered;"><u>กรณีเป็นเจ้าหน้าที่ <span style="font-size:32px;">นวดแผนไทย</span> กับ <span style="font-size:32px;">ไตเทียม</span> รบกวนเลือกข้อมูลด้านล่างให้หน่อยครับ</u></b><br>
                             <input type="radio" name="extra" id="hemo" value="hemo"> <label for="hemo" style="cursor:pointer;">จนท.ไตเทียม</label><br>
-                            <input type="radio" name="extra" id="pt" value="pt"> <label for="pt" style="cursor:pointer;">จนท.นวดแผนไทย</label>
+                            <input type="radio" name="extra" id="pt" value="pt"> <label for="pt" style="cursor:pointer;">จนท.นวดแผนไทย</label><br>
+                            <a href="javascript:void(0);" onclick="cancelPtHemo()">[ ยกเลิก ]</a>
                         </td>
                     </tr>
                     <tr>
@@ -130,31 +131,24 @@ $chk_year = get_year_checkup();
                 </table>
             </form>
             <script>
+                function cancelPtHemo(){
+                    document.getElementById('hemo').checked = false;
+                    document.getElementById('pt').checked = false;
+                }
+
                 function confirmForm(){
-                    // var c = false;
                     Swal.fire({
                         title: "ยืนยันว่าเป็นลูกจ้าง รพ.ค่ายสุรศักดิ์มนตรี?",
-                        // text: "You won't be able to revert this!",
-                        // icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
                         confirmButtonText: "ใช่",
                         cancelButtonText: "ยกเลิก",
                     }).then((result) => { 
-                        // console.log(result.isConfirmed);
                         if (result.isConfirmed) {
                             document.getElementById('submitForm').submit();
-                            // c = true;
-                            // Swal.fire({
-                            //     title: "Deleted!",
-                            //     text: "Your file has been deleted.",
-                            //     icon: "success"
-                            // });
                         }
                     });
-
-                    // return c;
                 }
             </script>
             <?php
