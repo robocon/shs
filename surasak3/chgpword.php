@@ -4,7 +4,7 @@ include("connect.inc");
 if ($newpw1 == $newpw2) {
 
     $password = sprintf("%s", $_POST['password']);
-    $newpw1 = sprintf("%s", $_POST['$newpw1']);
+    $newpw1 = sprintf("%s", $_POST['newpw1']);
 
     $query = "SELECT * FROM inputm WHERE idname = '$username' and pword='$password'";
     $result = mysql_query($query) or die("Query failed");
