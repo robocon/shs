@@ -9,6 +9,7 @@ class Xray extends DbConnect
     public string $doctor = 'MD022 (ไม่ทราบแพทย์)';
     public string $typeDiag = 'ตรวจสุขภาพ';
     public string $patent_from = 'OPD';
+    public int $digital = 0;
     // public $thaiDateFull = (date('Y')+543).date('-m-d H:i:s');
     function __construct()
     {
@@ -65,6 +66,7 @@ class Xray extends DbConnect
             'ptright' => $opcard['ptcard'],
             'detail' => $detailAll,
             'doctor' => $this->doctor,
+            'digital' => $this->digital,
             'xrayno' => $xray_no,
             'type_diag' => $this->typeDiag,
             'detail_all' => $detailAll,
@@ -95,6 +97,9 @@ class Xray extends DbConnect
 
     }
 
+    /**
+     * @return string xray number
+     */
     public function getXrayRunno(){
         $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'xrayno'");
         $runno_row = $q_runno->fetch_assoc();
@@ -102,6 +107,10 @@ class Xray extends DbConnect
         return $xray_no;
     }
 
+    /**
+     * @param string new xray number
+     * @return string update status
+     */
     public function updateXrayRunno($xray_no){
         $update = $this->dbi->query("UPDATE `runno` SET `runno` = '$xray_no' WHERE `title`='xrayno'");
         return $update;
@@ -133,6 +142,9 @@ class Xray extends DbConnect
         return $res;
     }
 
+    /**
+     * field digital ของ xray_stat จะนับตามจำนวนรายการค่าใช้จ่ายที่ถูกคิดเข้ามาตาม patdata
+     */
     public function insertXrayStat($data = array()){
 
         if(empty($data)){
@@ -146,7 +158,7 @@ class Xray extends DbConnect
             `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
         )VALUES ( 
             '".$data['date']."', '".$data['hn']."', '', '', '".$data['ptname']."', '".$data['age']."', 
-            '".$data['ptright']."', '{$this->patent_from}', '".$data['detail']."', '".$data['doctor']."', '1', '0', 
+            '".$data['ptright']."', '{$this->patent_from}', '".$data['detail']."', '".$data['doctor']."', '".$data['digital']."', '0', 
             '0', '0', '".$data['sOfficer']."', '', ''
         );";
         $q = $this->dbi->query($sql_xray_stat);
