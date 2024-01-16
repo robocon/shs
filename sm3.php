@@ -23,7 +23,7 @@ top.window.outerWidth = screen.availWidth;
 
 
 <frameset framespacing="0" border="0" cols="270,*" frameborder="0">
-  <frameset rows="*,72%">
+  <frameset rows="120,*">
     <frame name="contents" target="main" src="banner.htm" marginwidth="0" marginheight="0" scrolling="no" noresize>
     <frame name="contents1" src="surasak3/login.php" marginwidth="0" marginheight="0" scrolling="yes" target="_self">
   </frameset>

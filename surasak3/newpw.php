@@ -51,6 +51,7 @@ session_start();
                 <td height="33" align="right"><strong>ยืนยันรหัสใหม่ : &nbsp;</strong></td>
                 <td align="left">
                     <input name="newpw2" id="newpw2" type="password" class="forntsarabun" />
+                    <p style="margin:0;"><input type="checkbox" name="" id="showPass" onclick="showPassword(this.checked)"><label for="showPass">แสดงรหัสผ่าน</label></p>
                     <p><b>คำแนะนำในการตั้งรหัสผ่าน</b></p>
                     <ul>
                         <li>รหัสผ่านควรมีความยาว 6ตัวอักษรขึ้นไป</li>
@@ -68,6 +69,17 @@ session_start();
     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 </form>
 <script language="javascript">
+    function showPassword(checkStatus){
+        if(checkStatus===true){
+            document.getElementById('password').type='text';
+            document.getElementById('newpw1').type='text';
+            document.getElementById('newpw2').type='text';
+        }else{
+            document.getElementById('password').type='password';
+            document.getElementById('newpw1').type='password';
+            document.getElementById('newpw2').type='password';
+        }
+    }
     ////// เช็คค่าว่าง
     function fncSubmit() {
 
