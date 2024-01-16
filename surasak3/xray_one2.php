@@ -1,76 +1,29 @@
 <?php
-include_once 'bootstrap.php';
-include_once 'class_file/class_xray.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_xray.php';
 
 $action = sprintf("%s", $_POST['action']);
 if($action === 'save'){
-    dump($_POST);
-
-    /**
-     * @todo 
-     * [] 
-     * []
-     */
-
     $xray = new Xray();
-    // $xrayNumber = $xray->getXrayRunno();
-    // $newXrayNumber = $xrayNumber++;
-
-    // $xray->updateXrayRunno($newXrayNumber);
-
     $hn_list = $_POST['hn'];
-    // $i = 0;
+    $save_status = true;
     foreach ($hn_list as $hn) {
-        
-        $xray->addXrayOnlyItem($hn, $_POST['xraydetail']);
+        $save = $xray->addXrayOnlyItem($hn, $_POST['xraydetail']);
+        if($save['data']['resInsertXrayDoctor']!==true){
+            $save_status = false;
+        }
 
-        // $i++;
+        if($save['data']['resInsertXrayStat']!==true){
+            $save_status = false;
+        }
     }
-    
-    
-	// $sql = "Select xn From xrayno where hn = '".$cHn."' Order by row_id DESC limit 0,1 ";
-	// list($xn) = mysql_fetch_row(mysql_query($sql));
 
-	// $sql = "Select dbirth From opcard where hn = '".$cHn."' limit 0,1 ";
-	// list($dbirth) = mysql_fetch_row(mysql_query($sql));
-	
-	// $age = "-";
-	// 	if(!empty($dbirth))
-			// $age = calcage($dbirth);
-	// $count = array();
-	// $stat_digital = 0;
-	// $stat_10_12 = 0;
-	// $stat_14_17 = 0;
-	// $stat_none = 0;
-
-	// foreach ($aFilmsize as $key => $value){
-		
-	// 	//echo $value," ",strlen($value),"<BR>";
-	// 	switch($value){
-	// 		case 'DIGITAL': $stat_digital++; break;
-	// 		case '10*12': $stat_10_12++; break;
-	// 		case '14*17': $stat_14_17++; break;
-	// 		case 'NONE': $stat_none++; break;
-	// 	}
-
-	// }
-	//echo substr($xn,-2)," - ",substr(date("Y")+543,-2);
-	// if(substr($xn,-2) == substr(date("Y")+543,-2)){
-	// 	$xn_new = $xn;
-	// 	$xn = "";
-	// }
-
-	// $sql = "INSERT INTO `xray_stat` 
-    // (
-    // `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
-    // `ptright` ,`patient_from` ,`detail` ,`doctor` ,`digital` ,`10_12` ,
-    // `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
-    // )VALUES ( 
-    // '".$Thidate."', '".$cHn."', '".$xn."', '".$xn_new."', '".$cPtname."', '".$age."', 
-    // '".$cPtright."', '".$patient_from."', '".$_SESSION["cXraydetail"]."', '".$cDoctor."', '".$stat_digital."', '".$stat_10_12."', 
-    // '".$stat_14_17."', '".$stat_none."', '".$sOfficer."', '".$nRunno."', '".$Netprice."');";
-	// $result = mysql_query($sql);
-
+    if($save_status===true){
+        ?>
+        <p>บันทึกข้อมูลเรียบร้อย</p>
+        <p>&lt;&lt;&nbsp;&nbsp;<a href="xray_one2.php">กลับไปหน้าบันทึก</a></p>
+        <?php
+    }
 
     exit;
 }
@@ -145,7 +98,7 @@ if($action === 'save'){
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
             cell1.innerHTML = "HN : ";
-            cell2.innerHTML = '<input type="text" name="hn[]" class="hn" onblur="showHnDetail(this.value,this.parentElement)">';
+            cell2.innerHTML = '<input type="text" class="hn" onblur="showHnDetail(this.value,this.parentElement)">';
             cell3.innerHTML = "";
         }
 

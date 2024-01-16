@@ -1,16 +1,17 @@
 <?php
 require_once dirname(__FILE__).'/database.php';
-require_once dirname(__FILE__).'/class_opday.php';
-// require_once dirname(__FILE__).'/class_opcard.php';
+require_once dirname(__FILE__).'/class_opcard.php';
 
 class Xray extends DbConnect
 { 
     public $dbi = null;
-    public string $doctor = 'MD022 (ไม่ทราบแพทย์)';
-    public string $typeDiag = 'ตรวจสุขภาพ';
-    public string $patent_from = 'OPD';
-    public int $digital = 0;
-    // public $thaiDateFull = (date('Y')+543).date('-m-d H:i:s');
+    public $doctor = 'MD022 (ไม่ทราบแพทย์)';
+    public $typeDiag = 'ตรวจสุขภาพ';
+    public $patent_from = 'OPD';
+    public $vn = '';
+    public $officer = '';
+    public $digital = 0;
+    
     function __construct()
     {
         parent::__construct();
@@ -35,13 +36,6 @@ class Xray extends DbConnect
             return "HN and Xray item is required";
             exit;
         }
-        
-        $opdayClass = new Opday();
-        $opday = $opdayClass->getThisDay($hn);
-        if($opday===false){
-            return "Can not find VN";
-            exit;
-        }
 
         $opcardClass = new Opcard();
         $opcard = $opcardClass->getByHn($hn);
@@ -52,18 +46,16 @@ class Xray extends DbConnect
         $preSQL = array_map(array($this, 'mapXrayList'), array_keys($stanceList), array_values($stanceList));
         $detailAll = implode(' ', $preSQL);
 
-        $age = findPtAge($opcard['dbirth']);
-
         $data = array(
             'date' => $thaiDateFull,
             'hn' => $hn,
-            'vn' => $opday['vn'],
+            'vn' => $this->vn,
             'yot' => $opcard['yot'],
             'name' => $opcard['name'],
             'sname' => $opcard['surname'],
             'ptname' => $opcard['yot'].$opcard['name'].' '.$opcard['surname'],
-            'age' => $age,
-            'ptright' => $opcard['ptcard'],
+            'age' => $opcard['age'],
+            'ptright' => $opcard['ptright'],
             'detail' => $detailAll,
             'doctor' => $this->doctor,
             'digital' => $this->digital,
@@ -71,29 +63,25 @@ class Xray extends DbConnect
             'type_diag' => $this->typeDiag,
             'detail_all' => $detailAll,
             'dbirth' => $opcard['dbirth'],
-            'sOfficer' => sprintf("%s", $_SESSION['sOfficer'])
+            'sOfficer' => sprintf("%s", $this->officer),
+            'patent_from' => $this->patent_from
         );
+        
         $resInsertXrayDoctor = $this->insertXrayDoctor($data);
-        dump($resInsertXrayDoctor);
 
         $resInsertXrayStat = $this->insertXrayStat($data);
-        dump($resInsertXrayStat);
 
-        // $sql_xray_detail = "INSERT INTO `xray_doctor_detail` (
-        //     `date` ,`hn` ,`xrayno` ,`doctor_detail`,`detail_all`
-        // )VALUES (
-        //     '$this->thaiDateFull','$this->hn','$xray_no','1. CHEST CHECK UP','1. CHEST CHECK UP'
-        // );";
+        $this->updateXrayRunno($xray_no);
 
-        // $sql_xray_stat = "INSERT INTO `xray_stat` (
-        //     `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
-        //     `ptright` ,`patient_from` ,`detail` ,`doctor` ,`digital` ,`10_12` ,
-        //     `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
-        // )VALUES ( 
-        //     '$this->thaiDateFull', '$this->hn', '', '', '$ptname', '$age', 
-        //     '$ptright', 'OPD', '1.CHEST CHECK UP', 'MD022 (ไม่ทราบแพทย์)', '1', '0', 
-        //     '0', '0', '$this->sOfficer', '$depart_id', '$sumPrice'
-        // );";
+        $res = array(
+            'data' => array(
+                'resInsertXrayDoctor' => $resInsertXrayDoctor,
+                'resInsertXrayStat' => $resInsertXrayStat,
+                'xray_number' => $xray_no
+            )
+        );
+
+        return $res;
 
     }
 
@@ -136,7 +124,7 @@ class Xray extends DbConnect
         if($this->dbi->query($sqlXrayDoctor)===true){
             $res = true;
         }else{
-            $res = $this->dbi->error;
+            $res = array('errors'=>array('status'=>400,'detail'=>$this->dbi->error));
         }
 
         return $res;
@@ -151,17 +139,23 @@ class Xray extends DbConnect
             return "Insert xray stat can not be emtpty";
             exit;
         }
-
+        
         $sql_xray_stat = "INSERT INTO `xray_stat` (
             `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
             `ptright` ,`patient_from` ,`detail` ,`doctor` ,`digital` ,`10_12` ,
             `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
         )VALUES ( 
             '".$data['date']."', '".$data['hn']."', '', '', '".$data['ptname']."', '".$data['age']."', 
-            '".$data['ptright']."', '{$this->patent_from}', '".$data['detail']."', '".$data['doctor']."', '".$data['digital']."', '0', 
+            '".$data['ptright']."', '".$data['patent_from']."', '".$data['detail']."', '".$data['doctor']."', '".$data['digital']."', '0', 
             '0', '0', '".$data['sOfficer']."', '', ''
         );";
-        $q = $this->dbi->query($sql_xray_stat);
+        if($this->dbi->query($sql_xray_stat)===true){
+            $res = true;
+        }else{
+            $res = array('errors'=>array('status'=>400,'detail'=>$this->dbi->error));
+        }
+
+        return $res;
     }
 
     public function getXrayItem($code){

@@ -26,15 +26,16 @@ session_register("until_login");
         ?>
         &nbsp;&nbsp;<font size="2">&nbsp;&nbsp;<b>เอกซ์เรย์</b>&nbsp;(ผู้ป่วยนอก)
             &nbsp;&nbsp;&nbsp;
-            &nbsp
+            
             <a target=_top href="xraypage.php">สั่งรายการคนใหม่VN</a>
-            &nbsp;&nbsp&nbsp;
+            &nbsp;|&nbsp;
             <a target=_top href="xrayhn.php">สั่งรายการคนใหม่HN</a>
-            &nbsp;&nbsp&nbsp;
+            &nbsp;|&nbsp;
             <a target="left" href="xraydoctor.php" onClick="parent.frames[2].location='connect.php';">X-Rayจากแพทย์</a>
-            &nbsp;&nbsp&nbsp;
+            &nbsp;|&nbsp;
             <a target=_top href="xray_one.php">ตรวจสุขภาพแบบไม่คิดค่าใช้จ่าย</a>
-            &nbsp;&nbsp&nbsp;
+            &nbsp;|&nbsp;
+            <a target=_blank href="orderlabsso.php">ตรวจสุขภาพลูกจ้าง<span style="color:red;font-weight:bold;">ปี67<span></a>&nbsp;|&nbsp;
             <a target=_top href="../nindex.htm">ไปหน้าจอหลัก</a>
         </font>
 

@@ -25,6 +25,7 @@ class Opcard extends DbConnect
         $item = false;
         if($result->num_rows > 0){
             $item = $result->fetch_assoc();
+            $item['age'] = $this->getAge($item['dbirth']);
         }
         return $item;
     }
