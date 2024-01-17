@@ -74,32 +74,26 @@ $chk_year = get_year_checkup();
                     <legend><h3>ข้อมูลเบื้องต้นผู้มารับบริการ</h3></legend>
                     <table>
                         <tr>
-                            <td align="right"><b>ชื่อ-สกุล:</b></td>
-                            <td><?=$pt['yot'].$pt['name'].' '.$pt['surname'];?></td>
+                            <td align="right" width="25%"><b>ชื่อ-สกุล:</b></td>
+                            <td width="25%"><?=$pt['yot'].$pt['name'].' '.$pt['surname'];?></td>
+                            <td align="right" width="25%"><b>สิทธิ:</b></td>
+                            <td width="25%"><b style="color:red;"><?=$pt['ptright'];?></b></td>
                         </tr>
                         <tr>
                             <td align="right"><b>HN:</b></td>
                             <td><?=$pt['hn'];?></td>
-                        </tr>
-                        <tr>
-                            <td align="right"><b>อายุ:</b></td>
-                            <td><?=$age;?></td>
-                        </tr>
-                        <tr>
-                            <td align="right"><b>สิทธิ:</b></td>
-                            <td><b style="color:red;"><?=$pt['ptright'];?></b></td>
-                        </tr>
-                        <tr>
                             <td align="right"><b>ประเภทสิทธิ:</b></td>
                             <td><?=$pt['ptrightdetail'];?></td>
                         </tr>
                         <tr>
+                            <td align="right"><b>อายุ:</b></td>
+                            <td><?=$age;?></td>
                             <td align="right"><b>รพ.ต้นสังกัด:</b></td>
                             <td><b style="color:red;"><?=$pt['hospcode'];?></b></td>
                         </tr>
                         <tr>
                             <td align="right"><b>ออก OPD CARD:</b></td>
-                            <td>
+                            <td colspan="3">
                                 <?php 
                                 $toborow_list = array('EX46 ตรวจสุขภาพประกันสังคม');
                                 ?>

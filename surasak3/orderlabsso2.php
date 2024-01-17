@@ -104,36 +104,40 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
             <legend>ข้อมูลเบื้องต้นผู้มารับบริการ</legend>
             <table>
                 <tr>
-                    <td align="right"><b>ชื่อ-สกุล:</b></td>
-                    <td><?=$pt['yot'].$pt['name'].' '.$pt['surname'];?></td>
+                    <td align="right" width="25%"><b>ชื่อ-สกุล:</b></td>
+                    <td width="25%"><?=$pt['yot'].$pt['name'].' '.$pt['surname'];?></td>
+                    <td align="right" width="25%"><b>สิทธิ:</b></td>
+                    <td width="25%"><?=$pt['ptright'];?></td>
                 </tr>
                 <tr>
                     <td align="right"><b>HN:</b></td>
                     <td><?=$pt['hn'];?></td>
-                </tr>
-                <tr>
-                    <td align="right"><b>VN:</b></td>
-                    <td><?=$op['vn'];?></td>
-                </tr>
-                <tr>
-                    <td align="right"><b>อายุ:</b></td>
-                    <td><?=$age;?></td>
-                </tr>
-                <tr>
-                    <td align="right"><b>สิทธิ:</b></td>
-                    <td><?=$pt['ptright'];?></td>
-                </tr>
-                <tr>
                     <td align="right"><b>ออก OPD CARD:</b></td>
                     <td><?=$toborow;?></td>
                 </tr>
                 <tr>
+                    <td align="right"><b>VN:</b></td>
+                    <td><?=$op['vn'];?></td>
                     <td align="right"><b>ประเภทสิทธิ:</b></td>
                     <td><?=$pt['ptrightdetail'];?></td>
                 </tr>
                 <tr>
+                    <td align="right"><b>อายุ:</b></td>
+                    <td><?=$age;?></td>
                     <td align="right"><b>รพ.ต้นสังกัด:</b></td>
                     <td><?=$pt['hospcode'];?></td>
+                </tr>
+                <tr>
+                    
+                </tr>
+                <tr>
+                    
+                </tr>
+                <tr>
+                    
+                </tr>
+                <tr>
+                    
                 </tr>
             </table>
         </fieldset>
@@ -237,7 +241,9 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                     ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้ <a href="javascript:void(0);" onclick="window.open('invdetail1.php?gRow_id=<?=$orderLabId;?>','','width=800,height=800')">ดูค่าใช้จ่าย</a></p><?php
                                 }
 
-                                $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
+                                // ปี 67 ผอ.เหลือแค่นี้
+                                $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS');
+                                // $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
                                 ?>
                                 <table width="100%" class="chk_table">
                                     <thead>
@@ -266,7 +272,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                                 <?=$l['price'];?>
                                                 <input type="hidden" name="labSelect[]" value="<?=$code;?>">
                                             </td>
-                                            <td>
+                                            <td align="center">
                                                 <a href="javascript:void(0);" onclick="removeLabItem('<?=$keyCode;?>','<?=$l['price'];?>')">ลบ</a>
                                             </td>
                                         </tr>
@@ -306,78 +312,131 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                 <fieldset>
                     <legend><h3>เพิ่มรายการแลป</h3></legend>
                     <div>
+                        <table width="100%" class="chk_table">
+                            <thead>
+                                <tr>
+                                    <th>รหัส</th>
+                                    <th>รายละเอียด</th>
+                                    <th>ราคา(บาท)</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS','HDL-sso','10929','STOCB-sso');
+                                ?>
+                                <tr>
+                                    <td>HDL-sso</td>
+                                    <td>(32503)Lipid  - HDL-chol</td>
+                                    <td align="right">100.00</td>
+                                    <td align="center">
+                                        <a href="javascript:void(0);" onclick="addLabItem('HDL-sso','(32503)Lipid  - HDL-chol','100')">เพิ่ม</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>10929</td>
+                                    <td>(38598)HBsAg</td>
+                                    <td align="right">340.00</td>
+                                    <td align="center">
+                                        <a href="javascript:void(0);" onclick="addLabItem('10929','(38598)HBsAg','340')">เพิ่ม</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>STOCB-sso</td>
+                                    <td>(31203)Occult blood</td>
+                                    <td align="right">30.00</td>
+                                    <td align="center">
+                                        <a href="javascript:void(0);" onclick="addLabItem('STOCB-sso','(31203)Occult blood','30')">เพิ่ม</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>&nbsp;</div>
+                    <div>
                         <input type="text" name="labSearch" id="labSearch" onkeyup="onSearchLabCode(this.value)" placeholder="พิมพ์โค้ดที่ต้องการค้นหา">
                     </div>
                     <div id="resLabSearch" style="margin-top:8px;"></div>
+                    
                 </fieldset>
                 <script>
                     async function onSearchLabCode(v){
                         if(v.length>=2){
                             
-                            // labcare/getLabitem?depart=PATHO&part=LAB&code=
-                            const res = await fetch("<?=LARAVEL_API_HOST;?>labcare/getLabitem?depart=PATHO&part=LAB&code="+v);
-                            const content = await res.json();
+                            await fetch("<?=LARAVEL_API_HOST;?>labcare/getLabitem?depart=PATHO&part=LAB&code="+v).then((res)=>{
 
-                            if(content.count>0){
-
-                                document.getElementById('resLabSearch').innerHTML = '';
-
-                                const table = document.createElement("table");
-                                table.setAttribute("class", "chk_table");
-
-                                const trTitle = document.createElement("tr");
-                                const colTitle = document.createElement("th");
-                                colTitle.append("รหัส");
-                                trTitle.appendChild(colTitle);
-
-                                const col2Title = document.createElement("th");
-                                col2Title.append("รายละเอียด");
-                                trTitle.appendChild(col2Title);
-
-                                const col3Title = document.createElement("th");
-                                col3Title.append("ราคา(บาท)");
-                                trTitle.appendChild(col3Title);
-
-                                const col4Title = document.createElement("th");
-                                trTitle.appendChild(col4Title);
-
-                                table.appendChild(trTitle);
-                                
-                                let html = '';
-                                for (let index = 0; index < content.count; index++) {
-                                    const element = content.list[index];
-
-                                    const tr1 = document.createElement("tr");
-                                    const col1 = document.createElement("td");
-                                    col1.append(element.code);
-                                    tr1.appendChild(col1);
-
-                                    const col2 = document.createElement("td");
-                                    col2.append(element.detail);
-                                    tr1.appendChild(col2);
-
-                                    const col3 = document.createElement("td");
-                                    col3.setAttribute("align","right");
-                                    col3.append(element.price);
-                                    tr1.appendChild(col3);
-
-                                    const col4 = document.createElement("td");
-                                    const aLink = document.createElement("a");
-                                    aLink.setAttribute("href", "javascript:void(0);");
-                                    aLink.setAttribute("onclick", "addLabItem('"+element.code+"','"+element.detail+"','"+element.price+"')");
-                                    aLink.append("เพิ่ม");
-                                    col4.appendChild(aLink);
-                                    tr1.appendChild(col4);
-
-                                    table.appendChild(tr1);
-
+                                if (res.status >= 400 && res.status < 600) {
+                                    throw new Error("Bad response from server");
                                 }
-                                
-                                document.getElementById('resLabSearch').appendChild(table);
-                                // 
-                            }else{
-                                document.getElementById('resLabSearch').innerHTML = '<b>ไม่พบข้อมูลที่ต้องการ</b>';
-                            }
+
+                                const content = res.json();
+                                if(content.count>0){
+
+                                    document.getElementById('resLabSearch').innerHTML = '';
+
+                                    const table = document.createElement("table");
+                                    table.setAttribute("class", "chk_table");
+
+                                    const trTitle = document.createElement("tr");
+                                    const colTitle = document.createElement("th");
+                                    colTitle.append("รหัส");
+                                    trTitle.appendChild(colTitle);
+
+                                    const col2Title = document.createElement("th");
+                                    col2Title.append("รายละเอียด");
+                                    trTitle.appendChild(col2Title);
+
+                                    const col3Title = document.createElement("th");
+                                    col3Title.append("ราคา(บาท)");
+                                    trTitle.appendChild(col3Title);
+
+                                    const col4Title = document.createElement("th");
+                                    trTitle.appendChild(col4Title);
+
+                                    table.appendChild(trTitle);
+
+                                    let html = '';
+                                    for (let index = 0; index < content.count; index++) {
+                                        const element = content.list[index];
+
+                                        const tr1 = document.createElement("tr");
+                                        const col1 = document.createElement("td");
+                                        col1.append(element.code);
+                                        tr1.appendChild(col1);
+
+                                        const col2 = document.createElement("td");
+                                        col2.append(element.detail);
+                                        tr1.appendChild(col2);
+
+                                        const col3 = document.createElement("td");
+                                        col3.setAttribute("align","right");
+                                        col3.append(element.price);
+                                        tr1.appendChild(col3);
+
+                                        const col4 = document.createElement("td");
+                                        const aLink = document.createElement("a");
+                                        col4.setAttribute("align", "center");
+                                        aLink.setAttribute("href", "javascript:void(0);");
+                                        aLink.setAttribute("onclick", "addLabItem('"+element.code+"','"+element.detail+"','"+element.price+"')");
+                                        aLink.append("เพิ่ม");
+                                        col4.appendChild(aLink);
+                                        tr1.appendChild(col4);
+
+                                        table.appendChild(tr1);
+
+                                    }
+
+                                    document.getElementById('resLabSearch').appendChild(table);
+
+                                }else{
+                                    document.getElementById('resLabSearch').innerHTML = '<b>ไม่พบข้อมูลที่ต้องการ</b>';
+                                }
+
+                            }).catch((error) => {
+                                // Your error is here!
+                                document.getElementById('resLabSearch').innerHTML = 'ERROR 400 เซิฟเวอร์ไม่พร้อมใช้งาน';
+                            });
+
                         }
                         
                     }
@@ -415,14 +474,13 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                         col3.appendChild(col3Input);
 
                         tr1.appendChild(col3);
-
                         
-
                         const col4 = document.createElement("td");
                         const aLink = document.createElement("a");
                         aLink.setAttribute("href", "javascript:void(0);");
                         aLink.setAttribute("onclick", "removeLabItem('"+keyCode+"','"+price+"')");
                         aLink.append("ลบ");
+                        col4.setAttribute("align", "center");
                         col4.appendChild(aLink);
                         tr1.appendChild(col4);
 
