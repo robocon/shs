@@ -8,6 +8,7 @@
 *.doc
 *.log
 *.db
+*.xls
 
 connect*
 surasak3/med_scan/*
