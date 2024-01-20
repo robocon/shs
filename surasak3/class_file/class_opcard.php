@@ -25,6 +25,24 @@ class Opcard extends DbConnect
         $item = false;
         if($result->num_rows > 0){
             $item = $result->fetch_assoc();
+            $item['ptname'] = $item['yot'].$item['name'].' '.$item['surname'];
+            $item['age'] = $this->getAge($item['dbirth']);
+        }
+        return $item;
+    }
+
+    public function getByIdcard($idcard=null, $fields=null)
+    {
+        $field = '*';
+        if(!empty($fields)){
+            $field = implode(',', $fields);
+        }
+        $query = sprintf("SELECT $field FROM `opcard` WHERE `idcard`='%s'", $idcard);
+        $result = $this->dbi->query($query);
+        $item = false;
+        if($result->num_rows > 0){
+            $item = $result->fetch_assoc();
+            $item['ptname'] = $item['yot'].$item['name'].' '.$item['surname'];
             $item['age'] = $this->getAge($item['dbirth']);
         }
         return $item;
