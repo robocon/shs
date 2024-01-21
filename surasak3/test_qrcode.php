@@ -2,11 +2,27 @@
 // require_once 'bootstrap.php';
 define('LARAVEL_API_HOST', 'http://192.168.131.240:8081/api/');
 
-$action = sprintf("%s", $_POST['action']);
+$action = sprintf("%s", $_REQUEST['action']);
 if($action==='save'){
     $hn = sprintf("%s", $_POST['hn']);
     echo "Save $hn";
     exit;
+
+}elseif ($action==='getOpcardApi') {
+    $hn = sprintf("%s", $_REQUEST['hn']);
+    $url = LARAVEL_API_HOST."opcard/getOneHn?hn=$hn";
+    $ch = curl_init(); 
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_AUTOREFERER, true);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+
+    $result = curl_exec( $ch );
+    // มัน return มาเป็น json อยู่แล้ว ไม่ต้องเข้า json_encode อีก
+    echo $result;
+    exit;
+
 }
 ?>
 <!DOCTYPE html>
@@ -16,10 +32,11 @@ if($action==='save'){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 </head>
 <body>
     <div style="border: 2px solid red; padding:8px;">
-        <div id="reader" width="200px"></div>
+        <div id="reader" style="width:600px;"></div>
         <div style="text-align:center;">
             <button type="button" style="padding: 8px 16px;" onclick="checkHn()">ตรวจสอบ</button>
         </div>
@@ -54,14 +71,12 @@ if($action==='save'){
         }
 
         function checkHn(){
+            testHn = '58-2733';
             if(testHn.match(/^(\d+\-\d+)/g)){
                 findHn(testHn).then((res)=>{ 
-
                     document.getElementById('responseFailure').innerHTML = '';
-
                     let item = res.data[0];
                     document.getElementById('hn').value = item.hn;
-
                     let ptname = item.yot+item.name+' '+item.surname;
                     document.getElementById('ptname').innerHTML = ptname;
                 });
@@ -75,13 +90,13 @@ if($action==='save'){
         }
 
         async function findHn(hn){
-            const response = await fetch('<?=LARAVEL_API_HOST;?>opcard/getOneHn?hn='+hn);
+            const response = await fetch('test_qrcode.php?action=getOpcardApi&hn='+hn);
             const data = await response.json();
             return data;
         }
 
         function onScanFailure(error) { 
-            testHn = '';
+            // testHn = '';
             // handle scan failure, usually better to ignore and keep scanning.
             // for example:
             // console.warn(`Code scan error = ${error}`);
