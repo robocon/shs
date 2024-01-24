@@ -34,7 +34,7 @@ session_register("cTitle");
 ?>
 <frameset rows="13%,87%">
     <frame name="top" src="xraymenu.php" noresize scrolling="no">
-    <frameset cols="40%,60%">
+    <frameset cols="60%,40%">
         <frame name="left" src="xray_one2.php" scrolling="auto">
         <frame name="right" src="xraylst_dr.php" scrolling="auto">
     </frameset>
