@@ -46,7 +46,7 @@ while(! feof($file))
     }
     
     if($i==$limit){
-        // exit;
+        exit;
     }
     $i++;
 }
