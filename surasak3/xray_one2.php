@@ -1,13 +1,18 @@
 <?php
 require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/class_file/class_xray.php';
+require_once dirname(__FILE__).'/includes/JSON.php';
 
-$action = sprintf("%s", $_POST['action']);
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
+$action = sprintf("%s", $_REQUEST['action']);
 if($action === 'save'){
     $xray = new Xray();
     $hn_list = $_POST['hn'];
     $save_status = true;
     foreach ($hn_list as $hn) {
+        $xray->officer = $_SESSION['sOfficer'];
         $save = $xray->addXrayOnlyItem($hn, $_POST['xraydetail']);
         if($save['data']['resInsertXrayDoctor']!==true){
             $save_status = false;
@@ -26,6 +31,29 @@ if($action === 'save'){
     }
 
     exit;
+}elseif ($action==='load') { 
+
+    $company = sprintf("%s", $_GET['company']);
+    if(empty($company)){
+        $res = array('status'=>400,'detail'=>'Invalid value');
+        exit;
+    }
+
+    $json = new Services_JSON();
+    $sql = "SELECT * FROM opcardchk WHERE part = '$company' ";
+    $q = $dbi->query($sql);
+    if($q->num_rows>0){
+        $items = array();
+        while ($a = $q->fetch_assoc()) {
+            $a['ptname'] = $a['yot'].$a['name'].' '.$a['surname'];
+            $items[] = $a;
+        }
+        $res = array('status'=>200,'data'=>$items,'count'=>count($items));
+    }else{
+        $res = array('status'=>400,'detail'=>'Can not find company');
+    }
+    echo $json->encode($res);
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -37,36 +65,113 @@ if($action === 'save'){
     <script src="sweetalert/sweetalert2@11.js"></script>
 </head>
 <body>
-    <form action="xray_one2.php" method="post" id="myForm" onsubmit="return checkForm()">
-        <table id="myTable">
+    <style>
+        p{
+            margin:0;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .companyUser {
+            padding-top: 6px;
+        }
+    </style>
+<div class="clearfix">
+    <div style="float:left; width:60%;">
+        <form action="xray_one2.php" method="post" id="myForm" onsubmit="return checkForm()">
+            <table id="myTable">
+                <tr>
+                    <td colspan="3">
+                        <h3>ตรวจสุขภาพ ผู้ป่วยนอก</h3>
+                        <p><b>รายชื่อผู้เข้ารับการตรวจ</b></p>
+                    </td>
+                </tr>
+                <tr id="main_hn">
+                    <td>HN : </td>
+                    <td><input type="text" onblur="showHnDetail(this.value,this.parentElement)"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <a href="javascript:void(0);" onclick="insertRow()">+ เพิ่มแถว</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <div><h3>ท่าตรวจ</h3></div>
+                        <div id="cXraydetail"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <button type="submit" style="padding: 8px 16px;">บันทึกข้อมูล</button>
+                        <input type="hidden" name="action" value="save">
+                        <div></div>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div style="float:left;">
+        <table>
             <tr>
-                <td colspan="3"><b>ตรวจสุขภาพ ผู้ป่วยนอก</b></td>
-            </tr>
-            <tr id="main_hn">
-                <td>HN : </td>
-                <td><input type="text" onblur="showHnDetail(this.value,this.parentElement)"></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <a href="javascript:void(0);" onclick="insertRow()">+ เพิ่มแถว</a>
+                <td>
+                    <span>เลือกบริษัท</span>
+                    <?php
+                    $yearchk = get_year_checkup(true);
+                    $sql = "SELECT * FROM chk_company_list WHERE yearchk = '$yearchk' AND report != '' ORDER BY id DESC";
+                    $q = $dbi->query($sql);
+                    if($q->num_rows > 0){
+                        ?>
+                        <select name="company" id="company" style="width:200px;" onchange="showUserInCompany(this.value)">
+                            <option value=""> ==== เลือกบริษัท ==== </option>
+                            <?php 
+                            while ($a = $q->fetch_assoc()) {
+                                ?>
+                                <option value="<?=$a['code'];?>"><?=$a['name'];?></option>
+                                <?php
+                            }
+                            ?>
+                            
+                        </select>
+                        <?php
+                    }
+                    ?>
                 </td>
             </tr>
             <tr>
-                <td colspan="3">
-                    <div><h3>ท่าตรวจ</h3></div>
-                    <div id="cXraydetail"></div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <button type="submit" style="padding: 8px 16px;">บันทึกข้อมูล</button>
-                    <input type="hidden" name="action" value="save">
-                    <div></div>
+                <td>
+                    <div><b>รายชื่อผู้เข้ารับการตรวจ</b></div>
+                    <div id="responseCompany"></div>
                 </td>
             </tr>
         </table>
-    </form>
+        <script>
+            async function showUserInCompany(company){
+                const response = await fetch('xray_one2.php?action=load&company='+company);
+                const res = await response.json();
+                let html = '';
+                for (let  i= 0; i < res.count; i++) {
+                    const item = res.data[i];
+                    html += '<div class="companyUser"><a href="javascript:void(0);" onclick="toLeftSide(\''+item.HN+'\')">'+item.HN+'</a> '+item.ptname+'</div>';
+                }
+                document.getElementById('responseCompany').innerHTML = html;
+            }
+            function toLeftSide(hn){
+                var table = document.getElementById("myTable");
+                var row = table.insertRow(2);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell1.innerHTML = "HN : ";
+                cell2.innerHTML = '<input type="text" class="hn" name="hn[]" value="'+hn+'"> <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
+                cell3.innerHTML = "";
+            }
+        </script>
+    </div>
+</div>
     <script>
 
         // ตรวจสอบ hn 
@@ -98,7 +203,8 @@ if($action === 'save'){
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
             cell1.innerHTML = "HN : ";
-            cell2.innerHTML = '<input type="text" class="hn" onblur="showHnDetail(this.value,this.parentElement)">';
+            // onblur="showHnDetail(this.value,this.parentElement)"
+            cell2.innerHTML = '<input type="text" class="hn" > <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
             cell3.innerHTML = "";
         }
 
