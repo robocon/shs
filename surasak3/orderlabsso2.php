@@ -238,7 +238,8 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                 }
 
                                 // ปี 67 
-                                $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HDL-sso','10929','STOCB-sso');
+                                // 'HDL-sso','HBSAG','STOCB-sso',
+                                $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL');
                                 if($yearOnly < 35){
                                     $chkList = array('CBC-sso', 'UA-sso');
                                 }
@@ -324,7 +325,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                             </thead>
                             <tbody>
                                 <?php 
-                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'HDL-sso','10929','STOCB-sso');
+                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL','HDL-sso','HBSAG','STOCB-sso');
                                 foreach ($quickList as $key => $code) { 
 
                                     $key = rand(1000,9999);
