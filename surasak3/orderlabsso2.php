@@ -243,6 +243,14 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                 if($yearOnly < 35){
                                     $chkList = array('CBC-sso', 'UA-sso');
                                 }
+
+                                $sql = "SELECT * FROM lab67 WHERE hn = '$hn' AND lab != '' ";
+                                $q = $dbi->query($sql);
+                                if($q->num_rows>0){
+                                    $lab67 = $q->fetch_assoc();
+                                    $exlab = explode(',', $lab67['lab']);
+                                    $chkList = array_merge($chkList, $exlab);
+                                }
                                 
                                 // ปี 66 
                                 // $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
