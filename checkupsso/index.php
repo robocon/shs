@@ -16,10 +16,14 @@ $classOpcard = new Opcard();
 $limit = 10;
 $i = 0;
 $depart = '';
+?>
+<table>
+
+<?php
 while(! feof($file))
 {
-    list($number, $a, $b, $idcard, $cbc, $ua, $bs, $cr, $hdlChol, $hbsag, $fobt, $cxr) = fgetcsv($file);
-    $idcard = str_replace('-', '', trim($idcard));
+    list($number, $a, $b, $idcardExcel, $cbc, $ua, $bs, $cr, $hdlChol, $hbsag, $fobt, $cxr) = fgetcsv($file);
+    $idcardExcel = str_replace('-', '', trim($idcardExcel));
     
     $testDepart = toThai($a);
     $matchDepart = mb_ereg("^รายชื่อ|^นาย|^นาง|^น\.ส\.|^ยศ|^หน่วยงาน", $testDepart);
@@ -31,8 +35,8 @@ while(! feof($file))
 
     $verrify = false;
     $opcard = false;
-    if(strlen($idcard)===13){
-        $opcard = $classOpcard->getByIdcard($idcard);
+    if(strlen($idcardExcel)===13){
+        $opcard = $classOpcard->getByIdcard($idcardExcel);
         if(!empty($opcard['idcard'])){
             $verrify = true;
         }
@@ -40,16 +44,8 @@ while(! feof($file))
 
     $lab = array();
 
-    if($verrify===true){
-        // var_dump($depart);
-        // var_dump($opcard['ptname']);
-        // var_dump($idcard);
-        // var_dump($ua);
-        // var_dump($bs);
-        // var_dump($hdlChol);
-        // var_dump($hbsag);
-        // var_dump($fobt);
-        // var_dump($cxr);
+    // if($verrify===true){
+
         if($bs=='/'){
             $lab[] = 'BS';
         }
@@ -58,6 +54,7 @@ while(! feof($file))
         }
         if($hdlChol=='/'){
             $lab[] = 'HDL-sso';
+            $lab[] = 'CHOL-sso';
         }
         if($hbsag=='/'){
             $lab[] = 'HBSAG';
@@ -69,21 +66,39 @@ while(! feof($file))
         // if(count($lab)>0){
             $labItem = implode(',', $lab);
             $hn = $opcard['hn'];
-            $idcard = $opcard['idcard'];
+            // $idcard = $opcard['idcard'];
             
-            $sql = "INSERT INTO `lab67` (`id`, `hn`, `idcard`, `lab`) VALUES (NULL, '$hn', '$idcard', '$labItem');";
-            dump($sql);
-            $save = $dbi->query($sql);
-            dump($save);
+            // $sql = "INSERT INTO `lab67` (`id`, `hn`, `idcard`, `lab`) VALUES (NULL, '$hn', '$idcard', '$labItem');";
+            // dump($sql);
+            // $save = $dbi->query($sql);
+            // dump($save);
         // }
+        if(!empty($idcardExcel) && strlen($idcardExcel)===13){ 
 
-        echo "\n\n";
-    }
-    
-    // if($i==$limit){
-    //     exit;
-    // }
+            // $dbi->query("UPDATE lab67 SET depart = '$depart' WHERE hn='$hn'")
+            ?>
+            <tr>
+                <td><?=$depart;?></td>
+                <td><?=$idcardExcel;?></td>
+                <td><?=$hn;?></td>
+                <td>
+                    <?php 
+                    if(!empty($hn)){
+                        echo $opcard['ptname'];
+                    }else{
+                        echo '<span style="color:red;"><b>error</b></span>';
+                    }
+                    ?>
+                </td>
+                <td><?=$opcard['age'];?></td>
+                <td><?=$labItem;?></td>
+            </tr>
+            <?php
+        }
+
     $i++;
 }
 
 fclose($file);
+?>
+</table>
