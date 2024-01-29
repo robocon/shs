@@ -44,6 +44,7 @@ $enDate = bc_to_ad($thidate);
                     <th>ทะเบียน</th>
                     <th>X-ray</th>
                     <th>จุดนัด1</th>
+                    <th>แพทย์</th>
                 </tr>
             </thead>
         <?php
@@ -53,9 +54,9 @@ $enDate = bc_to_ad($thidate);
 
                 $hn = $a['hn'];
 
-                $thDateHn = date('d-m-').(date('Y')+543).$hn;
+                $thDateHn = date('Y-d-m-').$hn;
 
-                $lab = $regis = $xray = $opd = '<i class="bi bi-x-circle text-danger"></i>';
+                $lab = $regis = $xray = $opd = $doctor = '<i class="bi bi-x-circle text-danger"></i>';
 
                 $sqlLab = "SELECT row_id FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart='PATHO' AND detail='ตรวจสุขภาพประกันสังคม' ";
                 $qLab = $dbi->query($sqlLab);
@@ -75,12 +76,24 @@ $enDate = bc_to_ad($thidate);
                     $xray = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
-                $sqlOpd = "SELECT row_id FROM opd WHERE thdatehn = '$thDateHn' ";
+                $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
                 $qOpd = $dbi->query($sqlOpd);
                 if($qOpd->num_rows>0){
                     $opd = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
+                $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
+                $qOpd = $dbi->query($sqlOpd);
+                if($qOpd->num_rows>0){
+                    $opd = '<i class="bi bi-check-circle text-success"></i>';
+                }
+
+                $sqlDoctor = "SELECT row_id FROM condxofyear_out WHERE hn = '$hn' AND yearcheck = '67' ";
+                $qDoctor = $dbi->query($sqlDoctor);
+                if($qDoctor->num_rows>0){
+                    $doctor = '<i class="bi bi-check-circle text-success"></i>';
+                }
+                
                 $sqlLab67 = "SELECT depart,lab FROM lab67 WHERE hn = '$hn'";
                 $qLab67 = $dbi->query($sqlLab67);
                 $lab67 = $qLab67->fetch_assoc();
@@ -103,6 +116,7 @@ $enDate = bc_to_ad($thidate);
                     <td class="text-center"><?=$regis;?></td>
                     <td class="text-center"><?=$xray;?></td>
                     <td class="text-center"><?=$opd;?></td>
+                    <td class="text-center"><?=$doctor;?></td>
                 </tr>
                 <?php
                 $i++;
