@@ -88,6 +88,7 @@ $enDate = bc_to_ad($thidate);
                     $opd = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
+                // อีกตารางที่ดึงได้คือ chk_doctor
                 $sqlDoctor = "SELECT row_id FROM condxofyear_out WHERE hn = '$hn' AND yearcheck = '67' ";
                 $qDoctor = $dbi->query($sqlDoctor);
                 if($qDoctor->num_rows>0){
