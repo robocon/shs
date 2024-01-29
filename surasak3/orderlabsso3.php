@@ -19,10 +19,10 @@ $a->sOfficer = $_SESSION['sOfficer'];
 if($type == 'lab')
 {	
 	// เอา hn กับ vn ไปหา ว่าวันนี้ใน depart มี PATHO ที่สิทธิ์ออกเป็น R42 ตรวจสุขภาพลูกจ้างประจำปี แล้วรึยัง
-	if($a->findOrderLab()===false)
-	{
+	// if($a->findOrderLab()===false)
+	// {
 		$a->orderLab($_REQUEST['labSelect']);
-	}
+	// }
 }
 elseif($type == 'xray')
 {

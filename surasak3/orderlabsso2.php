@@ -234,7 +234,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                 $orderLabId = $b->findOrderLab();
                                 if($orderLabId!==false)
                                 {
-                                    ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้ <a href="javascript:void(0);" onclick="window.open('invdetail1.php?gRow_id=<?=$orderLabId;?>','','width=800,height=800')">ดูค่าใช้จ่าย</a></p><?php
+                                    ?><p style="color:red; font-weight:bold;">มีการคิดค่า LAB ตรวจสุขภาพลูกจ้างแล้วในวันนี้ <a href="javascript:void(0);" onclick="window.open('invdetail1.php?sDate=<?=(date('Y')+543).date('-m-d');?>&gRow_id=<?=$orderLabId;?>','','width=800,height=800')">ดูค่าใช้จ่าย</a></p><?php
                                 }
 
                                 // ปี 67 
@@ -249,7 +249,11 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                 if($q->num_rows>0){
                                     $lab67 = $q->fetch_assoc();
                                     $exlab = explode(',', $lab67['lab']);
-                                    $chkList = array_merge($chkList, $exlab);
+                                    foreach ($exlab as $key => $value) {
+                                        if(in_array($value, $chkList)===false){
+                                            $chkList[] = $value;
+                                        }
+                                    }
                                 }
                                 
                                 // ปี 66 
@@ -333,7 +337,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                             </thead>
                             <tbody>
                                 <?php 
-                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL','HDL-sso','HBSAG','STOCB-sso');
+                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL','HDL-sso','CHOL-sso','HBSAG','STOCB-sso');
                                 foreach ($quickList as $key => $code) { 
 
                                     $key = rand(1000,9999);
