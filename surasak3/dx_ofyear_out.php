@@ -4,6 +4,11 @@ include("connect.inc");
 
 mysql_query("SET NAMES UTF8");
 
+if(empty($_SESSION["sOfficer"])){
+	echo "Sessionหมดอายุ กรุณาloginใหม่อีกครั้ง <a href='../nindex.htm'>คลิกที่นี่เพื่อ Login</a>";
+	exit;
+}
+
 $date_now = date("Y-m-d H:i:s");
 
 
@@ -894,7 +899,9 @@ C&deg; </td>
 <br />
 <center>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
-<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />
+<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;
+<input name="submit2" type="submit" value="บันทึกและพิมพ์ใบตรวจโรค" />
+
 <input type="hidden" name="toborow" value="<?=$toborow;?>">
 <input type="hidden" name="ptright" value="<?=$ptright;?>">
 </center>

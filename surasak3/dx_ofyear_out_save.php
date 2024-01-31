@@ -1,6 +1,10 @@
 <?php
 session_start();
 include("connect.inc");
+if(empty($_SESSION["sOfficer"])){
+	echo "Sessionหมดอายุ กรุณาloginใหม่อีกครั้ง <a href='../nindex.htm'>คลิกที่นี่เพื่อ Login</a>";
+	exit;
+}
 
 $date_now = date("Y-m-d H:i:s");
 $date_hn = date("Y-m-d").$_POST["hn"];
@@ -28,14 +32,14 @@ $date_hn2 = $xx[2]."-".$xx[1]."-".($xx[0]+543).$_POST["hn"];
 <BODY>
 <script language="javascript">
 window.onload = function(){
-	opener.location.href = 'dx_ofyear_out.php';
+	// opener.location.href = 'dx_ofyear_out.php';
 	window.print();
 	setTimeout("window.close()",3000);
 }
 </script>
 <?php
 
-	$sql = "Select count(row_id) From opd where thdatehn = '".$date_hn."' limit 1";
+	$sql = "Select count(row_id) From opd where thdatehn = '".$date_hn2."' limit 1";
 	$result = Mysql_Query($sql);
 	list($rows) = Mysql_fetch_row($result);
 	
@@ -78,7 +82,7 @@ if($rows > 0){
 	`cigarette`= '".$_POST["cigarette"]."', 
 	`alcohol`= '".$_POST["alcohol"]."', 
 	`exercise`= '".$_POST["exercise"]."' 
-	where  `thdatehn` = '".$thidatehn."' limit 1 ";
+	where  `thdatehn` = '".$date_hn2."' limit 1 ";
 	mysql_query($sql);
 }else{
 
@@ -596,6 +600,12 @@ if($_POST["drugreact"] == 0){
 	$_POST["congenital_disease"] .= " , แพ้ยา : ".$list_drug;
 }
 
+if($_POST['submit2']==='บันทึกและพิมพ์ใบตรวจโรค'){
+
+	header('Location: digital_opd.php?dthn='.$date_hn2);
+
+}else{
+
 ?>
 
 <table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
@@ -623,6 +633,7 @@ if($_POST["drugreact"] == 0){
 </table>
 
 <?php
+}
 	}else{
 	echo "<CENTER><FONT COLOR=\"red\">ไม่สามารถบันทึกข้อมูลได้</FONT></CENTER>";
 }
