@@ -25,7 +25,7 @@ $dbi->query("SET NAMES UTF8");
     ?>
     <div class="container">
         <h1>ยอดการตรวจสุขภาพลูกจ้างประจำปี 2567</h1>
-        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 ม.ค. 67 ถึง 2 ก.พ. 67</small></h3>
+        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 22567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
         <div class="row">
             <div class="col-6">
                 <table class="table table-sm table-striped table-hover">
@@ -39,10 +39,11 @@ $dbi->query("SET NAMES UTF8");
                 if($q->num_rows>0){
                     while ($a = $q->fetch_assoc()) {
                         $thidate = $a['thidate'];
+                        list($y,$m,$d) = explode('-', $thidate);
                         ?>
                         <tr>
                             <td>
-                                <a href="report_checkup_employee_today.php?thidate=<?=$thidate;?>" target="_blank"><?=$thidate;?></a>
+                                <a href="report_checkup_employee_today.php?thidate=<?=$thidate;?>" target="_blank"><?=$d.' '.$def_fullm_th[$m].' '.$y;?></a>
                             </td>
                             <td><?=$a['emp_count'];?></td>
                         </tr>
@@ -50,6 +51,9 @@ $dbi->query("SET NAMES UTF8");
                     }
                 }
                 ?>
+                <tr>
+                    <td colspan="2"><a href="report_checkup_employee_all.php" target="_blank">ยอดรวมทั้งหมด</a></td>
+                </tr>
                 </table>
             </div>
         </div>

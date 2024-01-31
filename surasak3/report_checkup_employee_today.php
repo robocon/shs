@@ -7,6 +7,8 @@ $dbi->query("SET NAMES UTF8");
 $thidate = sprintf("%s", $_REQUEST['thidate']);
 $enDate = bc_to_ad($thidate);
 
+list($year,$month,$day) = explode('-',$enDate);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +30,7 @@ $enDate = bc_to_ad($thidate);
     ?>
     <div class="container">
         <h1>รายชื่อผู้เข้ารับการตรวจสุขภาพลูกจ้างประจำปี</h1>
-        <h3><small class="text-body-secondary">วันที่ <?=$thidate;?></small></h3>
+        <h3><small class="text-body-secondary">วันที่ <?=$day.' '.$def_fullm_th[$month].' '.($year+543);?></small></h3>
         <table class="table table-sm table-striped table-hover">
             <thead class="table-light">
                 <tr>
@@ -54,14 +56,21 @@ $enDate = bc_to_ad($thidate);
 
                 $hn = $a['hn'];
 
-                $thDateHn = date('Y-d-m-').$hn;
+                $thDateHn = $enDate.$hn;
 
                 $lab = $regis = $xray = $opd = $doctor = '<i class="bi bi-x-circle text-danger"></i>';
 
-                $sqlLab = "SELECT row_id FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart='PATHO' AND detail='ตรวจสุขภาพประกันสังคม' ";
+                $sqlLab = "SELECT row_id,depart FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart IN('PATHO','XRAY') AND detail='ตรวจสุขภาพประกันสังคม' ";
                 $qLab = $dbi->query($sqlLab);
                 if($qLab->num_rows>0){
-                    $lab = '<i class="bi bi-check-circle text-success"></i>';
+                    while ($p = $qLab->fetch_assoc()) {
+                        if($p['depart']==='PATHO'){
+                            $lab = '<i class="bi bi-check-circle text-success"></i>';
+                        }
+                        if($p['depart']==='XRAY'){
+                            $xray = '<i class="bi bi-check-circle text-success"></i>';
+                        }
+                    }
                 }
 
                 $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
@@ -70,26 +79,13 @@ $enDate = bc_to_ad($thidate);
                     $regis = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
-                $sqlXray = "SELECT row_id FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart='XRAY' AND detail='ตรวจสุขภาพประกันสังคม' ";
-                $qXray = $dbi->query($sqlXray);
-                if($qXray->num_rows>0){
-                    $xray = '<i class="bi bi-check-circle text-success"></i>';
-                }
-
                 $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
                 $qOpd = $dbi->query($sqlOpd);
                 if($qOpd->num_rows>0){
                     $opd = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
-                $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
-                $qOpd = $dbi->query($sqlOpd);
-                if($qOpd->num_rows>0){
-                    $opd = '<i class="bi bi-check-circle text-success"></i>';
-                }
-
-                // อีกตารางที่ดึงได้คือ chk_doctor
-                $sqlDoctor = "SELECT row_id FROM condxofyear_out WHERE hn = '$hn' AND yearcheck = '67' ";
+                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearcheck = '67' ";
                 $qDoctor = $dbi->query($sqlDoctor);
                 if($qDoctor->num_rows>0){
                     $doctor = '<i class="bi bi-check-circle text-success"></i>';
@@ -108,12 +104,7 @@ $enDate = bc_to_ad($thidate);
                     <td><?=$a['age'];?></td>
                     <td><?=$a['guardian'];?></td>
                     <td><?=$a['ptright'];?></td>
-                    <td class="text-center">
-                        <?=$lab;?><br>
-                        <!--
-                        <?=implode(',',$lab67['lab']);?>
-            -->
-                    </td>
+                    <td class="text-center"><?=$lab;?></td>
                     <td class="text-center"><?=$regis;?></td>
                     <td class="text-center"><?=$xray;?></td>
                     <td class="text-center"><?=$opd;?></td>
