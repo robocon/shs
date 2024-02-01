@@ -21,6 +21,8 @@ list($year,$month,$day) = explode('-',$enDate);
 </head>
 <body>
     <?php 
+    require_once 'report_checkup_employee_menu.php';
+    
     $sql = "SELECT a.thidate,b.hn,b.idcard,CONCAT(b.yot,b.name,' ',b.surname) AS ptname,b.dbirth,b.guardian,b.ptright,b.hospcode,b.employee,a.vn,a.age 
     FROM (
         SELECT * FROM opday WHERE thidate LIKE '$thidate%' AND ptright LIKE 'R42%' 
@@ -85,7 +87,7 @@ list($year,$month,$day) = explode('-',$enDate);
                     $opd = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
-                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearcheck = '67' ";
+                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
                 $qDoctor = $dbi->query($sqlDoctor);
                 if($qDoctor->num_rows>0){
                     $doctor = '<i class="bi bi-check-circle text-success"></i>';

@@ -1,20 +1,24 @@
-<?php 
+<?php
 require_once 'bootstrap.php';
 
-$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตรวจสุขภาพลูกจ้างประจำปี</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-    <?php 
+    <?php
+    require_once 'report_checkup_employee_menu.php';
+
     $yearCheckup = get_year_checkup(true);
     $sql = "SELECT SUBSTRING(thidate,1,10) thidate, COUNT(row_id) AS emp_count 
     FROM opday 
@@ -35,25 +39,26 @@ $dbi->query("SET NAMES UTF8");
                             <th>จำนวน</th>
                         </tr>
                     </thead>
-                <?php
-                if($q->num_rows>0){
-                    while ($a = $q->fetch_assoc()) {
-                        $thidate = $a['thidate'];
-                        list($y,$m,$d) = explode('-', $thidate);
-                        ?>
-                        <tr>
-                            <td>
-                                <a href="report_checkup_employee_today.php?thidate=<?=$thidate;?>" target="_blank"><?=$d.' '.$def_fullm_th[$m].' '.$y;?></a>
-                            </td>
-                            <td><?=$a['emp_count'];?></td>
-                        </tr>
-                        <?php
+                    <?php
+                    if ($q->num_rows > 0) {
+                        while ($a = $q->fetch_assoc()) {
+                            $thidate = $a['thidate'];
+                            list($y, $m, $d) = explode('-', $thidate);
+                            ?>
+                            <tr>
+                                <td>
+                                    <a href="report_checkup_employee_today.php?thidate=<?= $thidate; ?>">
+                                        <?= $d . ' ' . $def_fullm_th[$m] . ' ' . $y; ?>
+                                    </a>
+                                </td>
+                                <td>
+                                    <?= $a['emp_count']; ?>
+                                </td>
+                            </tr>
+                            <?php
+                        }
                     }
-                }
-                ?>
-                <tr>
-                    <td colspan="2"><a href="report_checkup_employee_all.php" target="_blank">ยอดรวมทั้งหมด</a></td>
-                </tr>
+                    ?>
                 </table>
             </div>
         </div>
@@ -61,4 +66,5 @@ $dbi->query("SET NAMES UTF8");
     <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>
