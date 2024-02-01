@@ -26,6 +26,9 @@ $result = mysql_query($query) or die("Query failed");
 		}else{
 			$diag1_value = $diag1;
 		}
+
+		$food = str_replace('ไม่ต้องการแยกภาชนะ','',$food);
+		$food = str_replace('ต้องการแยกภาชนะ','แยกภาชนะ',$food);
 		
 		$sql = "SELECT thidate,weight,height FROM opd WHERE  hn ='$hn' order by thidate DESC limit 1 ";
 

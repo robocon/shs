@@ -53,6 +53,10 @@ color: #FFF;
         or die("Query failed");
 
     while (list ($bed,$ptname,$diagnos,$diag1,$food,$bedcode,$age,$hn) = mysql_fetch_row ($result)) {
+
+		$food = str_replace('ไม่ต้องการแยกภาชนะ','',$food);
+		$food = str_replace('ต้องการแยกภาชนะ','แยกภาชนะ',$food);
+
 		if($diag1 == "โรคประจำตัว"){
 			$diag1_value = "";
 		}else{
