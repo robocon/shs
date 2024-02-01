@@ -27,8 +27,8 @@ $dbi->query("SET NAMES UTF8");
     $q = $dbi->query($sql);
     ?>
     <div class="container">
-        <h1>รายชื่อลูกจ้างตรวจสุขภาพปี67</h1>
-        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 ม.ค. 67 ถึง 2 ก.พ. 67</small></h3>
+        <h1>รายชื่อลูกจ้างทั้งหมดปี 67</h1>
+        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
         
         <table class="table table-sm table-striped table-hover">
             <thead class="table-light">

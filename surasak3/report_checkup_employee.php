@@ -29,7 +29,7 @@ $dbi->query("SET NAMES UTF8");
     ?>
     <div class="container">
         <h1>ยอดการตรวจสุขภาพลูกจ้างประจำปี 2567</h1>
-        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 22567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
+        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
         <div class="row">
             <div class="col-6">
                 <table class="table table-sm table-striped table-hover">
