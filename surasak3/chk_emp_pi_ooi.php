@@ -4,19 +4,40 @@ include 'bootstrap.php';
 
 $db = Mysql::load();
 
-$camp = 'ลูกจ้าง61';
+// $camp = 'ลูกจ้าง61';
 
+// $sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+// c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
+// FROM ( 
+//     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
+// ) AS a 
+// LEFT JOIN ( 
+//     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
+// ) AS b ON b.`hn` = a.`HN` 
+// LEFT JOIN ( 
+//     SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
+// ) AS c ON c.`hn` = a.`HN`
+// WHERE b.row_id IS NOT NULL 
+// ORDER BY a.`row`";
+
+/**
+ * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
+ */
 $sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
-    SELECT * FROM `opcardchk` WHERE `part` = '$camp'
+    SELECT * FROM `lab67`
 ) AS a 
 LEFT JOIN ( 
-    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '61' AND `camp` LIKE 'ตรวจสุขภาพ%'
+    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
 ) AS b ON b.`hn` = a.`HN` 
-LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN`
+LEFT JOIN ( 
+    SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
+) AS c ON c.`hn` = a.`hn`
 WHERE b.row_id IS NOT NULL 
-ORDER BY a.`row`";
+ORDER BY c.id ASC";
+// dump($sql);
+
 $db->select($sql);
 $items = $db->get_items();
 
@@ -46,7 +67,8 @@ $company = $db->get_item();
 }
 </style>
 <div style="text-align: center;">
-    <p><b><?=$company['name'];?> ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p>
+    <!-- <p><b><?=$company['name'];?> ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p> -->
+    <p><b>ตรวจสุขภาพลูกจ้างประจำปี ระหว่างวันที่ 29 มกราคม 22567 ถึง 2 กุมภาพันธ์ 2567 จำนวน <?=$user_rows;?> ราย</b></p>
 </div>
 <table class="chk_table" width="100%">
     <thead>
@@ -129,7 +151,7 @@ $company = $db->get_item();
             );
 
             $suggest = $item['normal_suggest'];
-            $suggest_date = ( $item['normal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
+            $suggest_date = ( $item['normal_suggest_date'] != '0000-00-00' && !empty($item['normal_suggest_date']) ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
             
         }else{
             $suggest_list = array(
@@ -140,13 +162,13 @@ $company = $db->get_item();
             );
 
             $suggest = $item['abnormal_suggest'];
-            $suggest_date = ( $item['abnormal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['abnormal_suggest_date'] : '' ;
+            $suggest_date = ( $item['abnormal_suggest_date'] != '0000-00-00' && !empty($item['abnormal_suggest_date']) ) ? 'ในวันที่ '.$item['abnormal_suggest_date'] : '' ;
             
         }
 
         $suggest_detail = $suggest_list[$suggest];
         $conclution_detail = $suggest_detail.$suggest_date;
-
+        
         // ผลตรวจตัวอื่นๆ
         $sql = "SELECT b.* 
         FROM ( 
@@ -208,7 +230,13 @@ $company = $db->get_item();
             <td><?=$bp1.'/'.$bp2?></td>
 
 
-            <td><?=( $item['cxr'] == '1' ? 'ปกติ' : 'ผิดปกติ' );?></td>
+            <td>
+                <?php 
+                if(!empty($item['cxr'])){
+                    echo $item['cxr'] == '1' ? 'ปกติ' : 'ผิดปกติ';
+                }
+                ?>
+            </td>
             <td>
                 <?php
                 if( $item['res_cbc'] == '1' ){
@@ -328,7 +356,11 @@ $company = $db->get_item();
             </td>
             
             <td><?=( $item['conclution'] == '1' ? 'ปกติ' : ( $item['conclution'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
-            <td><?=$conclution_detail;?></td>
+            <td><?=$conclution_detail;?>
+            <?php 
+            // var_dump($conclution_detail);
+            ?>
+            </td>
             <!-- <td>สรุปผลการตรวจ</td> -->
 
         </tr>
