@@ -1,8 +1,9 @@
 <?php
-
-include 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_opcard.php';
 
 $db = Mysql::load();
+$opcard = new Opcard();
 
 // $camp = 'ลูกจ้าง61';
 
@@ -23,18 +24,17 @@ $db = Mysql::load();
 /**
  * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
  */
-$sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+$sql = "SELECT a.hn AS main_hn,b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
     SELECT * FROM `lab67`
 ) AS a 
 LEFT JOIN ( 
     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
-) AS b ON b.`hn` = a.`HN` 
+) AS b ON b.`hn` = a.`hn` 
 LEFT JOIN ( 
     SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
 ) AS c ON c.`hn` = a.`hn`
-WHERE b.row_id IS NOT NULL 
 ORDER BY c.id ASC";
 // dump($sql);
 
@@ -43,9 +43,9 @@ $items = $db->get_items();
 
 $user_rows = $db->get_rows();
 
-$sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
-$db->select($sql);
-$company = $db->get_item();
+// $sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
+// $db->select($sql);
+// $company = $db->get_item();
 
 ?>
 <style>
@@ -201,9 +201,6 @@ $company = $db->get_item();
         ) 
         ORDER BY b.seq ASC ";
 
-        // dump($sql);
-        // exit;
-
         $db->select($sql);
         $etc_items = $db->get_items();
         
@@ -216,13 +213,22 @@ $company = $db->get_item();
                 'flag' => $lab_item['flag']
             );
         }
+
+        $main_hn = $item['main_hn'];
+
+        if(empty($item['ptname'])){ 
+            $opcardItem = $opcard->getByHn($main_hn);
+            $ptname = $opcardItem['ptname'];
+        }else{
+            $ptname = $item['ptname'];
+        }
         
         ?>
         <tr>
             
             <td align="right"><?=$i;?></td>
-            <td><?=$hn;?></td>
-            <td><?=$item['ptname'];?></td>
+            <td><?=$main_hn;?></td>
+            <td><?=$ptname;?></td>
             <td align="right"><?=$age;?></td>
             <td align="right"><?=$item['weight'];?></td>
             <td align="right"><?=$item['height'];?></td>
