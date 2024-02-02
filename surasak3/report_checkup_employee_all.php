@@ -74,7 +74,12 @@ $opcard = new Opcard();
                     $hn = $a['hn'];
                     $thDateHn = $enDate.$hn;
                     
-                    $sqlLab = "SELECT row_id,depart FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart IN('PATHO','XRAY') AND detail='ตรวจสุขภาพประกันสังคม' ";
+                    $sqlLab = "SELECT row_id,depart 
+                    FROM depart 
+                    WHERE ( date>='2567-01-29 00:00:00' AND date<='2567-02-02 23:59:59' ) 
+                    AND hn='$hn' 
+                    AND (depart = 'PATHO' OR depart = 'XRAY') 
+                    AND detail='ตรวจสุขภาพประกันสังคม' ";
                     $qLab = $dbi->query($sqlLab);
                     if($qLab->num_rows>0){
                         while ($p = $qLab->fetch_assoc()) {

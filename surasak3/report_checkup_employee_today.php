@@ -33,6 +33,7 @@ list($year,$month,$day) = explode('-',$enDate);
     <div class="container">
         <h1>รายชื่อผู้เข้ารับการตรวจสุขภาพลูกจ้างประจำปี</h1>
         <h3><small class="text-body-secondary">วันที่ <?=$day.' '.$def_fullm_th[$month].' '.($year+543);?></small></h3>
+        <div class="text-danger">* เป็นการตรวจภายในวันนั้นๆ หากมีการตรวจข้ามวัน เช่น เจาะเลือด 29 แต่ xray 30 ให้ไปดูในรายงานยอดรวมทั้งหมด</div>
         <table class="table table-sm table-striped table-hover">
             <thead class="table-light">
                 <tr>
@@ -62,7 +63,7 @@ list($year,$month,$day) = explode('-',$enDate);
 
                 $lab = $regis = $xray = $opd = $doctor = '<i class="bi bi-x-circle text-danger"></i>';
 
-                $sqlLab = "SELECT row_id,depart FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart IN('PATHO','XRAY') AND detail='ตรวจสุขภาพประกันสังคม' ";
+                $sqlLab = "SELECT row_id,depart FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND (depart = 'PATHO' OR depart = 'XRAY')  AND detail='ตรวจสุขภาพประกันสังคม' ";
                 $qLab = $dbi->query($sqlLab);
                 if($qLab->num_rows>0){
                     while ($p = $qLab->fetch_assoc()) {
