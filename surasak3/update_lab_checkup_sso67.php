@@ -4,8 +4,8 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$thidate = "2567-02-01";
-$orderdate = '2024-02-01';
+$thidate = "2567-02-02";
+$orderdate = '2024-02-02';
 
 $sql = "SELECT a.thidate,b.hn,b.idcard,CONCAT(b.yot,b.name,' ',b.surname) AS ptname,b.dbirth,b.guardian,b.ptright,b.hospcode,b.employee,a.vn 
 FROM (

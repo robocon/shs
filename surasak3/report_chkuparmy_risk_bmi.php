@@ -143,7 +143,11 @@ if($rows["exercise"]=="0"){
 }
 
 
-				
+	if($rows["prawat"]=="5" || $rows["prawat"]=="6"){
+		$prawat=$prawat." (".$rows["congenital_disease"].")";
+	}else{
+		$prawat=$prawat;
+	}				
 
 ?>  
   <tr>

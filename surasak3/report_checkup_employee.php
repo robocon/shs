@@ -23,7 +23,11 @@ $dbi->query("SET NAMES UTF8");
     $sql = "SELECT SUBSTRING(thidate,1,10) thidate, COUNT(row_id) AS emp_count 
     FROM opday 
     WHERE ptright LIKE 'R42%' 
-    AND (thidate > '2567-01-29' AND thidate <= '2567-02-02' ) 
+    AND ( thidate LIKE '2567-01-29%' 
+	OR thidate LIKE '2567-01-30%' 
+	OR thidate LIKE '2567-01-31%' 
+	OR thidate LIKE '2567-02-01%' 
+	OR thidate LIKE '2567-02-02%' )
     GROUP BY SUBSTRING(thidate,1,10) ";
     $q = $dbi->query($sql);
     ?>

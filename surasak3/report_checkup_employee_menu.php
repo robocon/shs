@@ -17,7 +17,9 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="chk_emp_pi_ooi.php" target="_blank">รายงานตาม สวป</a></li>
+                        <li><a class="dropdown-item" href="report_checkup_employee_risk.php">กลุ่มเสี่ยง</a></li>
                         <li><a class="dropdown-item" href="report_checkup_employee_all.php">ยอดรวมทั้งหมด</a></li>
+                        
                         <!-- <li>
                             <hr class="dropdown-divider">
                         </li>

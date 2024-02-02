@@ -1,9 +1,11 @@
 <?php 
-require_once 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_opcard.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$opcard = new Opcard();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,11 +21,17 @@ $dbi->query("SET NAMES UTF8");
     require_once 'report_checkup_employee_menu.php';
     
     $yearCheckup = get_year_checkup(true);
-    $sql = "SELECT *,SUBSTRING(thidate,1,10) AS thidate 
-    FROM opday 
-    WHERE ptright LIKE 'R42%' 
-    AND (thidate >= '2567-01-29' AND thidate <= '2567-02-02' ) 
-    ORDER BY thidate ASC";
+    $sql = "SELECT b.hn AS main_hn,b.depart,b.lab,a.* FROM ( 
+        SELECT row_id,hn,ptname,age,vn,thidate,SUBSTRING(thidate,1,10) AS thidate2 
+        FROM opday 
+        WHERE ptright LIKE 'R42%' 
+        AND ( thidate LIKE '2567-01-29%' 
+        OR thidate LIKE '2567-01-30%' 
+        OR thidate LIKE '2567-01-31%' 
+        OR thidate LIKE '2567-02-01%' 
+        OR thidate LIKE '2567-02-02%' )
+    ) AS a RIGHT JOIN lab67 AS b ON a.hn = b.hn
+    ORDER BY a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="container">
@@ -51,55 +59,57 @@ $dbi->query("SET NAMES UTF8");
         if($q->num_rows>0){
             $i=1;
             while ($a = $q->fetch_assoc()) {
-                $thidate = $a['thidate'];
-                $enDate = bc_to_ad($thidate);
 
-                $hn = $a['hn'];
-
-                $thDateHn = $enDate.$hn;
-
+                $thidate = $a['thidate2'];
                 $lab = $regis = $xray = $opd = $doctor = '<i class="bi bi-x-circle text-danger"></i>';
+                if(empty($thidate)){
 
-                $sqlLab = "SELECT row_id,depart FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart IN('PATHO','XRAY') AND detail='ตรวจสุขภาพประกันสังคม' ";
-                $qLab = $dbi->query($sqlLab);
-                if($qLab->num_rows>0){
-                    while ($p = $qLab->fetch_assoc()) {
-                        if($p['depart']==='PATHO'){
-                            $lab = '<i class="bi bi-check-circle text-success"></i>';
-                        }
-                        if($p['depart']==='XRAY'){
-                            $xray = '<i class="bi bi-check-circle text-success"></i>';
+                    $b = $opcard->getByHn($a['main_hn']);
+                    $a['ptname'] = $b['ptname'];
+                    $a['hn'] = $b['hn'];
+                    $thidate = '<span class="text-danger">ยังไม่ได้รับการตรวจ<span>';
+                }else{
+                
+                    $enDate = bc_to_ad($thidate);
+                    $hn = $a['hn'];
+                    $thDateHn = $enDate.$hn;
+                    
+                    $sqlLab = "SELECT row_id,depart FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart IN('PATHO','XRAY') AND detail='ตรวจสุขภาพประกันสังคม' ";
+                    $qLab = $dbi->query($sqlLab);
+                    if($qLab->num_rows>0){
+                        while ($p = $qLab->fetch_assoc()) {
+                            if($p['depart']==='PATHO'){
+                                $lab = '<i class="bi bi-check-circle text-success"></i>';
+                            }
+                            if($p['depart']==='XRAY'){
+                                $xray = '<i class="bi bi-check-circle text-success"></i>';
+                            }
                         }
                     }
-                }
 
-                $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
-                $qRegis = $dbi->query($sqlRegis);
-                if($qRegis->num_rows>0){
-                    $regis = '<i class="bi bi-check-circle text-success"></i>';
-                }
+                    $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
+                    $qRegis = $dbi->query($sqlRegis);
+                    if($qRegis->num_rows>0){
+                        $regis = '<i class="bi bi-check-circle text-success"></i>';
+                    }
 
-                $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
-                $qOpd = $dbi->query($sqlOpd);
-                if($qOpd->num_rows>0){
-                    $opd = '<i class="bi bi-check-circle text-success"></i>';
-                }
+                    $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
+                    $qOpd = $dbi->query($sqlOpd);
+                    if($qOpd->num_rows>0){
+                        $opd = '<i class="bi bi-check-circle text-success"></i>';
+                    }
 
-                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
-                $qDoctor = $dbi->query($sqlDoctor);
-                if($qDoctor->num_rows>0){
-                    $doctor = '<i class="bi bi-check-circle text-success"></i>';
+                    $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
+                    $qDoctor = $dbi->query($sqlDoctor);
+                    if($qDoctor->num_rows>0){
+                        $doctor = '<i class="bi bi-check-circle text-success"></i>';
+                    }
                 }
-
-                $sqlLab67 = "SELECT depart,lab FROM lab67 WHERE hn = '$hn'";
-                $qLab67 = $dbi->query($sqlLab67);
-                $lab67 = $qLab67->fetch_assoc();
-                
                 ?>
                 <tr>
                     <td><?=$i;?></td>
-                    <td><?=$a['thidate'];?></td>
-                    <td><?=$lab67['depart'];?></td>
+                    <td><span title="<?=$a['thidate'];?>"><?=$thidate;?></span></td>
+                    <td><?=$a['depart'];?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['age'];?></td>

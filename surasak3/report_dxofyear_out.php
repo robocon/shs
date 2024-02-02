@@ -1,6 +1,12 @@
 <?php 
 include_once dirname(__FILE__).'/bootstrap.php';
 
+if(empty($_SESSION['sOfficer'])){
+	$msg = 'Session หมดอายุ<br>กรุณาLoginใหม่อีกครั้ง';
+	require_once 'error400.php';
+	exit;
+}
+
 $Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
 mysql_select_db(DB, $Conn) or die( mysql_error() );
 mysql_query("SET NAMES UTF8", $Conn);
