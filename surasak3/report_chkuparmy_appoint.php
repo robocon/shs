@@ -92,6 +92,7 @@ if($_POST["act"]=="show"){
     <td width="5%" align="center"><strong>ความดันโลหิตสูง</strong></td>
     <td width="5%" align="center"><strong>ไขมันในเลือดสูง</strong></td>
 	<td width="5%" align="center"><strong>วันที่นัดพบแพทย์</strong></td>
+	<td width="5%" align="center"><strong>การมาโรงพยาบาล</strong></td>
 	<td width="5%" align="center"><strong>รายละเอียด</strong></td>
 	<td width="5%" align="center"><strong>เบอร์โทรศัพท์</strong></td>	
   </tr>
@@ -159,10 +160,15 @@ $bs=$rows["bs"];
 					$statchol="";
 				}
 
-				if($rows["bp1"] > 140){
+				if($rows["bp1"] >= 140){
 					$statbp="กลุ่มโรค";
-				}else if($rows["bp2"] > 90){
+				}else if($rows["bp2"] >= 90){
 					$statbp="กลุ่มโรค";
+				}else if($rows["bp1"] >= 135){
+					$statbp="กลุ่มเสี่ยง";
+				}else if($rows["bp2"] >= 85){
+					//echo "==>".$rows["hn"].$rows["bp2"]."<br>";
+					$statbp="กลุ่มเสี่ยง";		
 				}else{
 					$statbp="";
 				}	
@@ -172,10 +178,34 @@ $bs=$rows["bs"];
 	$y=$y+543;
 	$chkdate="$y-$m-$d";
 
-	$opsql="select appdate,detail2 from appoint where date LIKE '$chkdate%' and hn='$rows[hn]'  and apptime !='ยกเลิกการนัด'   order by row_id desc limit 1 ";
+	if($_POST["year1"]=="2566"){
+		$opsql="select appdate,detail2,appdate_en from appoint where date LIKE '$chkdate%' and hn='$rows[hn]' and apptime !='ยกเลิกการนัด'  order by row_id desc limit 1 ";
+	}else{
+		$opsql="select appdate,detail2,appdate_en from appoint where (date >= '2566-09-20 00:00:00') and hn='$rows[hn]' and (detail LIKE 'FU51%' || detail LIKE 'FU52%') and apptime !='ยกเลิกการนัด'  order by row_id desc limit 1 ";
+	}
 	//echo $opsql."<br>";
 	$opquery=mysql_query($opsql);
-	list($appdate,$detail2)=mysql_fetch_row($opquery);	
+	$numappoint=mysql_num_rows($opquery);	
+	list($appdate,$detail2,$appdate_en)=mysql_fetch_row($opquery);	
+	list($yy,$mm,$dd)=explode("-",$appdate_en);
+	$y=$yy+543;
+	$chkappoint="$y-$mm-$dd";
+	
+	
+	if($numappoint > 0){
+		$opdsql="select thidate from opday where thidate LIKE '$chkappoint%' and hn='$rows[hn]' order by row_id desc limit 1 ";
+		//echo $opdsql."<br>";
+		$opdquery=mysql_query($opdsql);
+		$chkdata=mysql_num_rows($opdquery);	
+		
+		if($chkdata > 0){
+			$txtappoint="มาตามนัด";	
+		}else{
+			$txtappoint="ไม่มาตามนัด";	
+		}		
+	}else{
+		$txtappoint="";
+	}
 
 			
 	$sql111 = "Select phone From opcard where hn='".$rows['hn']."' ";
@@ -184,6 +214,12 @@ $bs=$rows["bs"];
 			
 	if($statbs !="" || $statbp !="" || $statchol !=""){
 		$i++;
+		
+	if($rows["prawat"]=="5" || $rows["prawat"]=="6"){
+		$prawat=$prawat." (".$rows["congenital_disease"].")";
+	}else{
+		$prawat=$prawat;
+	}			
 ?>  
   <tr>
     <td align="center"><?=$i;?></td>
@@ -196,6 +232,7 @@ $bs=$rows["bs"];
 	<td align="center"><?=$statbp;?></td>
 	<td align="center"><?=$statchol;?></td>	
 	<td align="center"><?=$appdate;?></td>
+	<td align="center"><?=$txtappoint;?></td>
 	<td align="center"><?=$detail2;?></td>	
 	<td align="center"><?=$phone;?></td>		
   </tr>

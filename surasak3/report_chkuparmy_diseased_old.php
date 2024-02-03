@@ -24,8 +24,8 @@ body,td,th {
 		$nPrefix=$row->prefix;
 		$nPrefix2="25".$nPrefix;
 ?>
-<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกำลังพลทหาร(คัดกรอง CVDRisk Score > 30%)</strong></p>	
-<form name="form1" method="post" action="report_chkuparmy_35year_cvdrisk.php" >
+<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มโรค</strong></p>	
+<form name="form1" method="post" action="report_chkuparmy_diseased_old.php" >
 <input name="act" type="hidden" value="show">
   <table width="50%" border="0" align="center" cellpadding="0" cellspacing="0">
     <tr>
@@ -70,17 +70,17 @@ body,td,th {
 <?php
 if($_POST["act"]=="show"){
 	if($_POST["camp"]=="all"){
-		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' group by hn order by camp, age, row_id desc";
+		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and (prawat !='' and prawat!='0' and prawat!='6') group by hn order by camp, age, row_id desc";
 	}else{
-		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
+		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and (prawat !='' and prawat!='0' and prawat!='6') and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
 	}
 	//echo $sql;
-	$query=mysql_query($sql);
-	$num=mysql_num_rows($query);	
+	$query=mysql_query($sql);	
 ?>	
-<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกำลังพลทหาร(คัดกรอง CVDRisk Score > 30%) ปี <?=$nPrefix2;?></strong></p>
+<p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกองทัพบก กลุ่มโรค ปี <?=$_POST["year1"];?> (รายเก่า)</strong></p>
 <div align="center">
 <table width="95%" border="1" align="center" cellpadding="6" cellspacing="0" bordercolor="#000000">
+
   <tr>
     <td width="3%" align="center"><strong>ลำดับ</strong></td>
     <td width="3%" align="center"><strong>HN</strong></td>
@@ -88,22 +88,19 @@ if($_POST["act"]=="show"){
     <td width="6%" align="center"><strong>สังกัด/หน่วย</strong></td>
     <td width="4%" align="center"><strong>อายุ</strong></td>
     <td width="9%" align="center"><strong>ประวัติโรคประจำตัว</strong></td>
-    <td width="5%" align="center"><strong>รอบเอว</strong></td>
-    <td width="5%" align="center"><strong>น้ำหนัก</strong></td>
-    <td width="5%" align="center"><strong>ส่วนสูง</strong></td>
-    <td width="5%" align="center"><strong>BMI</strong></td>
-    <td width="7%" align="center"><strong>ความดันโลหิต</strong></td>
-    <td width="10%" align="center"><strong>ไขมันในเลือด (CHOL)</strong></td>
-    <td width="10%" align="center"><strong>CVDRISK SCORE</strong></td>
-    <td width="10%" align="center"><strong>สูบบุหรี่</strong></td>
-	<td width="5%" align="center"><strong>ดื่มแอลกอฮอล์</strong></td>
-	<td width="5%" align="center"><strong>ออกกำลังกาย</strong></td>	
+    <td width="5%" align="center"><strong>เบาหวาน</strong></td>
+    <td width="5%" align="center"><strong>ความดันโลหิตสูง</strong></td>
+    <td width="5%" align="center"><strong>ไขมันในเลือดสูง</strong></td>
+	<td width="5%" align="center"><strong>วันที่นัดพบแพทย์</strong></td>
+	<td width="5%" align="center"><strong>การมาโรงพยาบาล</strong></td>	
+	<td width="5%" align="center"><strong>รายละเอียด</strong></td>
+	<td width="5%" align="center"><strong>เบอร์โทรศัพท์</strong></td>
   </tr>
   
 <?
 $i=0;
 while($rows=mysql_fetch_array($query)){
-//$i++;
+
 
 
 if($rows["prawat"]=="0"){ $prawat="ไม่มีโรคประจำตัว";}else if($rows["prawat"]=="1"){ $prawat="ความดันโลหิตสูง";}else if($rows["prawat"]=="2"){ $prawat="เบาหวาน";}else if($rows["prawat"]=="3"){ $prawat="โรคหัวใจและหลอดเลือด";}else if($rows["prawat"]=="4"){ $prawat="ไขมันในเลือดสูง";}else if($rows["prawat"]=="5"){ $prawat="โรคที่กำหนดไว้ตั้งแต่ 2 โรคขึ้นไป";}else if($rows["prawat"]=="6"){ $prawat="โรคประจำตัวอื่นๆ";}else if($rows["prawat"]=="7"){ $prawat="โรคเก๊าท์";}else if($rows["prawat"]=="8"){ $prawat="โรคถุงลมโป่งพอง";}
@@ -147,91 +144,75 @@ if($rows["exercise"]=="0"){
 
 
 $chol=$rows["chol"];
+$bs=$rows["bs"];
 
-				if($rows["cigarette"]=="2" || $rows["cigarette"]=="3"){
-					$smoke=1;
+				if($bs >= 126){
+					$statbs="<img src='images/check-mark.png' width='20' height='20'>";
 				}else{
-					$smoke=0;
+					$statbs="";
 				}
-				
-				$sbp=$rows["bp1"];
 
+				if($chol >= 240){
+					$statchol="<img src='images/check-mark.png' width='20' height='20'>";
+				}else{
+					$statchol="";
+				}
 
-				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$rows["hn"]."' limit 1";
-	    		
-				$query1 = mysql_query($sql1) or die("Query failed");
-				$rows1=mysql_fetch_array($query1);
-				
-				if($rows1["sex"]=="ช"){
-					$sex=1;
+				if($rows["bp1"] > 140){
+					$statbp="<img src='images/check-mark.png' width='20' height='20'>";
+				}else if($rows["bp2"] > 90){
+					$statbp="<img src='images/check-mark.png' width='20' height='20'>";
 				}else{
-					$sex=0;
+					$statbp="";
 				}
-				
-							
-				
-				$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$rows["hn"]."'";	
-	    		$query2 = mysql_query($sql2) or die("Query failed");
-				$numdm=mysql_num_rows($query2);
-				if($numdm > 0){
-					$diabetes=1;
-				}else{
-					if($rows["prawat"]=="2"){  //ให้ประวัติว่าป่วยเบาหวาน
-						$diabetes=1;
-					}else if($rows["prawat"]=="5"){
-						//echo $rows["hn"]."<br>";
-						$sql21= "SELECT * FROM `condxofyear_so` WHERE `hn` = '".$rows["hn"]."' and yearcheck='".$_POST["year1"]."' and (congenital_disease like '%DM%' || congenital_disease like '%เบาหวาน%') order by row_id  desc limit 1";	
-						//echo $sql21."<br>";
-						$query21 = mysql_query($sql21) or die("Query failed");
-						$numdm21=mysql_num_rows($query21);
-						if($numdm21 > 0){
-							$diabetes=1;
-						}else{
-							$diabetes=0;
-						}		
-					}else{
-						$diabetes=0;
-					}	
-				}
-				
-				$age=substr($rows["age"],0,2);			
-				$waist=$rows["round_"];
-				$height=$rows["height"];
-				
-				if($age >=35){ //อายุมากกว่า 35 มีผลเลือด chol
-					$fullscore_lab=(0.08183*$age)+(0.39499*$sex)+(0.02084*$sbp)+(0.69974*$diabetes)+(0.00212*$chol)+(0.459*$smoke);					
-					$yy=$fullscore_lab-7.04423;	
-					$xx=0.978296;
-						
-					$yy=exp($yy);
-					$zz=pow($xx,$yy);
-						
-					$final_lab=(1-$zz)*100;
-					
-					$pfullscore=number_format($final_lab,2);
-				}else{
-					$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
-					
-					$y=$fullscore-7.720484;	
-					$x=0.978296;
-					
-					$y=exp($y);
-					$z=pow($x,$y);
-					
-					$final=(1-$z)*100;
-					
-					$pfullscore=number_format($final,2);					
-				}
-				
-	if($pfullscore >=30){
-	$i++;		
-	//echo "$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke); <br>";
+
+	$thidate=substr($rows["thidate"],0,10);
+	list($y,$m,$d)=explode("-",$thidate);
+	$y=$y+543;
+	$chkdate="$y-$m-$d";
 	
+	if($_POST["year1"]=="2566"){
+		$opsql="select appdate,detail2,appdate_en from appoint where date LIKE '$chkdate%' and hn='$rows[hn]' and apptime !='ยกเลิกการนัด'  order by row_id desc limit 1 ";
+	}else{
+		$opsql="select appdate,detail2,appdate_en from appoint where (date >= '2566-09-20 00:00:00') and hn='$rows[hn]' and (detail LIKE 'FU51%' || detail LIKE 'FU52%') and apptime !='ยกเลิกการนัด'  order by row_id desc limit 1 ";
+	}
+	//echo $opsql."<br>";
+	$opquery=mysql_query($opsql);
+	$numappoint=mysql_num_rows($opquery);	
+	list($appdate,$detail2,$appdate_en)=mysql_fetch_row($opquery);	
+	list($yy,$mm,$dd)=explode("-",$appdate_en);
+	$y=$yy+543;
+	$chkappoint="$y-$mm-$dd";
+	
+	
+	if($numappoint > 0){
+		$opdsql="select thidate from opday where thidate LIKE '$chkappoint%' and hn='$rows[hn]' order by row_id desc limit 1 ";
+		//echo $opdsql."<br>";
+		$opdquery=mysql_query($opdsql);
+		$chkdata=mysql_num_rows($opdquery);	
+		
+		if($chkdata > 0){
+			$txtappoint="มาตามนัด";	
+		}else{
+			$txtappoint="ไม่มาตามนัด";	
+		}		
+	}else{
+		$txtappoint="";
+	}	
+	
+	
+	$sql111 = "Select phone From opcard where hn='".$rows['hn']."' ";
+	$result111 = Mysql_Query($sql111);
+	list($phone) = Mysql_fetch_row($result111);	
+	
+	if($statbs !="" || $statbp !="" || $statchol !=""){
+		$i++;
+		
 	if($rows["prawat"]=="5" || $rows["prawat"]=="6"){
 		$prawat=$prawat." (".$rows["congenital_disease"].")";
 	}else{
 		$prawat=$prawat;
-	}	
+	}		
 ?>  
   <tr>
     <td align="center"><?=$i;?></td>
@@ -240,16 +221,13 @@ $chol=$rows["chol"];
     <td><?=$rows["camp"];?></td>
     <td><?=$rows["age"];?></td>
     <td><?=$prawat;?></td>
-    <td align="center"><?=$rows["round_"];?></td>
-    <td align="center"><?=$rows["weight"];?></td>
-    <td align="center"><?=$rows["height"];?></td>
-    <td align="center"><?=$rows["bmi"];?></td>
-	<td align="center"><?=$bp63;?></td>
-    <td align="center"><?=$chol;?></td>
-    <td align="center"><?=$pfullscore;?></td>
-    <td align="center"><?=$cigarette;?></td>
-	<td><?=$alcohol;?></td>
-	<td><?=$exercise;?></td>	
+    <td align="center"><?=$statbs;?></td>
+	<td align="center"><?=$statbp;?></td>
+	<td align="center"><?=$statchol;?></td>
+	<td align="center"><?=$appdate;?></td>	
+	<td align="center"><?=$txtappoint;?></td>	
+	<td align="center"><?=$detail2;?></td>
+	<td align="center"><?=$phone;?></td>
   </tr>
   <?
 	}
