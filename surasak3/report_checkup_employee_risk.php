@@ -38,7 +38,7 @@ $opcard = new Opcard();
         <h1 class="text-center">กลุ่มเสี่ยงตรวจสุขภาพลูกจ้าง 2567</h1>
         <!-- <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3> -->
         
-        <table class="table table-sm table-striped table-hover">
+        <table class="table table-sm table-striped table-hover table-striped">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
@@ -47,11 +47,14 @@ $opcard = new Opcard();
                     <th>แผนก</th>
                     <th>อายุ</th>
                     <th width="12%">โรคประจำตัว</th>
-                    <th>เบาหวาน</th>
-                    <th>ไขมันในเลือด</th>
+                    <th>BP</th>
+                    <th>BMI&gt;25</th>
+                    <th>BS&gt;=126</th>
+                    <th>CHOL&gt;=240</th>
                     <th>เบอร์โทร</th>
                 </tr>
             </thead>
+            <tbody style="height:32px!important; overflow:scroll;">
         <?php
         if($q->num_rows>0){
             $i=1;
@@ -80,7 +83,7 @@ $opcard = new Opcard();
                     $hn = $a['hn'];
                     $thDateHn = $enDate.$hn;
                     
-                    $congenital_disease = $bs = $chol = $statBs = $statChol = '';
+                    $sbp = $dbp = $statBp = $bmi = $statBmi = $congenital_disease = $bs = $chol = $statBs = $statChol = '';
                     $sqlOpd = "SELECT * FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
                     $qOpd = $dbi->query($sqlOpd);
                     if($qOpd->num_rows>0){
@@ -89,13 +92,24 @@ $opcard = new Opcard();
                         $congenital_disease = $opd['congenital_disease'];
                         $bs = $opd['bs'];
                         $chol = $opd['chol'];
+                        $bmi = $opd['bmi'];
+                        $sbp = $opd['bp1'];
+                        $dbp = $opd['bp2'];
                     }
 
-                    if($bs >= 100 && $bs <= 125){
+                    if($sbp>140 OR $dbp>90){
+                        $statBp='<i class="bi bi-check-circle text-success"></i>';
+                    }
+
+                    if($bmi > 25){
+                        $statBmi='<i class="bi bi-check-circle text-success"></i>';
+                    }
+
+                    if($bs >= 126){
                         $statBs='<i class="bi bi-check-circle text-success"></i>';
                     }
     
-                    if($chol >= 201 && $chol <= 239){
+                    if($chol >= 240){
                         $statChol='<i class="bi bi-check-circle text-success"></i>';
                     }
 
@@ -114,6 +128,8 @@ $opcard = new Opcard();
                     <td><?=$a['depart'];?></td>
                     <td><?=$a['age'];?></td>
                     <td><?=$congenital_disease;?></td>
+                    <td class="text-center"><span title="<?=$sbp.'/'.$dbp;?>"><?=$statBp;?></span></td>
+                    <td class="text-center"><span title="<?=$bmi;?>"><?=$statBmi;?></span></td>
                     <td class="text-center"><span title="<?=$bs;?>"><?=$statBs;?></span></td>
                     <td class="text-center"><span title="<?=$chol;?>"><?=$statChol;?></span></td>
                     <td><?=$phone;?></td>
@@ -123,6 +139,7 @@ $opcard = new Opcard();
             }
         }
         ?>
+            </tbody>
         </table>
             
     </div>
