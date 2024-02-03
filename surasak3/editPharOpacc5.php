@@ -1,6 +1,6 @@
 <?php 
 include_once 'bootstrap.php';
-include_once 'includes/JSON.php';
+// include_once 'includes/JSON.php';
 
 if($_SESSION['sIdname']!=='krit')
 {
@@ -8,7 +8,7 @@ if($_SESSION['sIdname']!=='krit')
     exit;
 }
 
-$json = new Services_JSON();
+// $json = new Services_JSON();
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 $part = $_REQUEST['part'];
@@ -58,16 +58,18 @@ if($action==='save' && $section==='phardep')
 elseif($action==='save' && $section==='drugrx')
 {
 
-    $price = $_POST['price'];
-    $date = $_POST['date'];
-    $datedr = $_POST['datedr'];
-    $part = $_POST['part'];
-    $row_id = $_POST['row_id'];
+    $price = sprintf("%s", $_POST['price']);
+    $date = sprintf("%s", $_POST['date']);
+    $datedr = sprintf("%s", $_POST['datedr']);
+    $part = sprintf("%s", $_POST['part']);
+    $row_id = sprintf("%s", $_POST['row_id']);
+    $amount = sprintf("%s", $_POST['amount']);
 
     $sql = "UPDATE `drugrx` SET `date`='$date', 
     `datedr`='$datedr', 
     `price`='$price', 
-    `part`='$part' 
+    `part`='$part',
+    `amount`='$amount'
     WHERE `row_id`='$row_id' ;";
     $q = $dbi->query($sql);
     if(!empty($mysqli->error))
@@ -106,14 +108,16 @@ elseif($action==='save' && $section==='dphardep')
 }
 elseif($action==='save' && $section==='ddrugrx')
 {
-    $date = $_POST['date'];
-    $price = $_POST['price'];
-    $salepri = $_POST['salepri'];
-    $row_id = $_POST['row_id'];
+    $date = sprintf("%s", $_POST['date']);
+    $price = sprintf("%s", $_POST['price']);
+    $salepri = sprintf("%s", $_POST['salepri']);
+    $row_id = sprintf("%s", $_POST['row_id']);
+    $amount = sprintf("%s", $_POST['amount']);
 
     $sql = "UPDATE `ddrugrx` SET `date`='$date', 
     `price`='$price', 
-    `salepri`='$salepri' 
+    `salepri`='$salepri',
+    `amount`='$amount'
     WHERE `row_id`='$row_id' ;";
     $q = $dbi->query($sql);
     if(!empty($mysqli->error))
@@ -140,7 +144,7 @@ elseif ($action === 'searchDrug')
     'salepri' => $item['salepri'],
     );
 
-    echo $json->encode($data);
+    echo json_encode($data);
     exit;
 }
 
@@ -196,6 +200,12 @@ if($part==='phardep' && !empty($row_id))
             <td><input type="text" name="dsn" id="dsn" value="<?=$it['dsn'];?>"></td>
             <td>tvn</td>
             <td><input type="text" name="tvn" id="tvn" value="<?=$it['tvn'];?>"></td>
+        </tr>
+        <tr>
+            <td>datedr</td>
+            <td><input type="text" name="datedr" id="datedr" value="<?=$it['datedr'];?>"></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td colspan="4" style="text-align: center;">
@@ -342,7 +352,7 @@ if($part==='phardep' && !empty($row_id))
             </tr>
             <tr>
                 <td>tvn</td>
-                <td><input type="text" name="price" id="price" value="<?=$a['price'];?>"></td>
+                <td><input type="text" name="tvn" id="tvn" value="<?=$a['tvn'];?>"></td>
                 <td></td>
                 <td></td>
             </tr>

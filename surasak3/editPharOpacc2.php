@@ -62,7 +62,7 @@ if($_REQUEST['hn']){
                 <td><?=$a['dpn'];?></td>
                 <td><?=$a['dsy'];?></td>
                 <td><?=$a['dsn'];?></td>
-                <td><a href="javascript:void(0)">แก้ไข</a></td>
+                <td><a href="edit_opacc5.php?type=opacc&id=<?=$a['row_id'];?>" target="editPage">แก้ไข</a></td>
             </tr>
             <?php
         }
