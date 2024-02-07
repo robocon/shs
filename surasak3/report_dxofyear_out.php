@@ -1,12 +1,6 @@
 <?php 
 include_once dirname(__FILE__).'/bootstrap.php';
 
-if(empty($_SESSION['sOfficer'])){
-	$msg = 'Session หมดอายุ<br>กรุณาLoginใหม่อีกครั้ง';
-	require_once 'error400.php';
-	exit;
-}
-
 $Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
 mysql_select_db(DB, $Conn) or die( mysql_error() );
 mysql_query("SET NAMES UTF8", $Conn);
@@ -1351,24 +1345,34 @@ C ํ</span></td>
 ////*runno ตรวจสุขภาพ*/////////
 ?>
 </span>
+<style>
+.button {
+	background-color: #04AA6D; /* Green */
+	border: none;
+	color: white;
+	padding: 8px 15px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	/* font-size: 16px; */
+}
+</style>
 <!--<a href="report_dxofyear_emp.php">พิมพ์ใบตรวจสุขภาพลูกจ้าง</a>-->
 <div>
-	<a href="chk_sso.php" target="_blank">พิมพ์ใบตรวจสุขภาพ สิทธิ์ประกันสังคม</a>
+<a href ="../nindex.htm" class="text1 button">&lt;&lt; ไปเมนู</a> <a href="chk_sso.php" target="_blank" class="text1 button">พิมพ์ใบตรวจสุขภาพ <b><u>สิทธิ์ประกันสังคม</u></b>/ลูกจ้างประจำปี67</a>
 </div>
-<form name="formdx" action="<? $_SERVER['PHP_SELF']?>" method="post">
-<center>
-<span class="tet1">พิมพ์ใบตรวจสุขภาพประจำปี <?=$nPrefix2;?></span> <br />
-  <br />
-  <span class="tet1">&nbsp;&nbsp;&nbsp;&nbsp;กรอก HN : </span>
-    <input name="hn" type="text" size="10" class="tet1" value="<?=$_GET["hn"];?>">
-  &nbsp;&nbsp;
-  <input name="ok" type="submit" class="texthead" value="ตกลง">
-  <br />
-  <br />
-
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> 
-</center>
-</form>
+	<div style="position: absolute;top: 50%;transform: translate(0, -50%); width: 100%;">
+		<form name="formdx" action="<? $_SERVER['PHP_SELF']?>" method="post">
+			<center>
+				<span class="tet1">พิมพ์ใบตรวจสุขภาพประจำปี <?=$nPrefix2;?></span> <br />
+				<span class="text3">สิทธิอื่นๆที่ไม่ใช่ประกันสังคมพิมพ์ผลที่นี่</span> <br /><br />
+				<span class="tet1">&nbsp;&nbsp;&nbsp;&nbsp;กรอก HN : </span>
+				<input name="hn" type="text" size="10" class="tet1" value="<?=$_GET["hn"];?>" style="border: 1px solid;">
+				&nbsp;&nbsp;
+				<input name="ok" type="submit" class="texthead" value="ตกลง">
+			</center>
+		</form>
+	</div>
 
 <table border="1" width="30%" class="text1" style="border-collapse:collapse" cellpadding="0" cellspacing="0">
 <?	
