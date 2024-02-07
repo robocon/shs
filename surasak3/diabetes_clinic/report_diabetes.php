@@ -19,22 +19,18 @@ if( authen() === false ){ die('Session หมดอายุ <a href="../login_p
 
 
 $search = sprintf("%s", $_POST['search']);
-$y_start = sprintf("%s", $_POST['y_start']);
 if($search==='search'){
 
 	// ตรวจก่อนว่ามี cookie นี้แล้วรึยัง โดยอิงจาก row_id ของผู้ใช้งานเอง การ query ข้อมูลจะได้ไม่ชนกัน
-	$cookie_name = 'diabetes_temp';
-	$tableName = 'diabetes_temp_'.$_SESSION['sRowid'];
-	if(!$_COOKIE['diabetes_temp']['table'] OR $_COOKIE['diabetes_temp']['y_start']!=$y_start){ 
+	$tableName = $cookieName = 'diabetes_temp_'.$_SESSION['sRowid'];
+	if(!$_COOKIE[$cookieName]){ 
 
 		// สร้าง cookie ขึ้นมาโดยมีอายุถึงวันปัจจุบัน(23.59น.)
-		setcookie("diabetes_temp['table']", $tableName, strtotime('today UTC 23:59:59'), '/');
+		setcookie($cookieName, $cookieName, strtotime('today UTC 23:59:59'), '/');
 		
-		
-		$date1 = intval($y_start) - 543;
+		$date1 = intval($_POST['y_start']) - 543;
 		$year_start = ($date1 - 1)."-10-01";
 		$year_end = "$date1-09-30";
-		setcookie("diabetes_temp['y_start']", $y_start, strtotime('today UTC 23:59:59'), '/');
 
 		// drop ข้อมูลเก่าทิ้งไปก่อน
 		$q = $dbi->query("DROP TABLE if EXISTS $tableName");
