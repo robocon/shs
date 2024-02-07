@@ -753,9 +753,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
 	}
 
-	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
+	$sql = "SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
 	FROM drugrx as a 
-	INNER JOIN (SELECT `drugcode`,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	INNER JOIN (SELECT `drugcode`,genname,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' 
 	AND a.an is not null 
 	AND a.date like '".$_GET["date_remed"]."%' 
@@ -810,7 +810,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"];?></td>
+            <td >&nbsp;<?php echo $arr["genname"].'/'.$arr["tradname"];?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -976,9 +976,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
+	SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
 	FROM ddrugrx as a 
-	INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
+	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
 	INNER JOIN dphardep as c ON a.date=c.date
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
@@ -1124,7 +1124,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"].$notify_lock;?></td>
+            <td >&nbsp;<?php echo $arr["genname"].'/'.$arr["tradname"].$notify_lock;?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -4466,15 +4466,15 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
 		while(list($row_id, $doctor) = mysql_fetch_row($result)){
-			$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 			$result2 = mysql_query($sql) or die(mysql_error());
 		
-			while(list($tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
+			while(list($genname,$tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
 
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 				echo "<TR>";
-					echo "<TD><span title='Drug code: $drugcode'>".$tradname."</span></TD>";
+					echo "<TD><span title='Drug code: $drugcode'>".$genname.'/'.$tradname."</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
