@@ -976,9 +976,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
+	SELECT a.date, a.drugcode, a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
 	FROM ddrugrx as a 
-	INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
+	INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
 	INNER JOIN dphardep as c ON a.date=c.date
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
@@ -1079,15 +1079,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 					}
 				}else{  //ถ้าเป็นยาที่ยังใช้อยู่
 					if((substr($_SESSION["ptright_now"],0,3) == "R07" || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10" || substr($_SESSION["ptright_now"],0,3) == "R11" || substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R14" || substr($_SESSION["ptright_now"],0,3) == "R17" || substr($_SESSION["ptright_now"],0,3) == "R35" || substr($_SESSION["ptright_now"],0,3) == "R36" || substr($_SESSION["ptright_now"],0,3) == "R40")){  //ถ้าเป็นสิทธิประกันสังคม/ประกันสุขภาพ
-					//echo "==>".$arr["lock"];
-						if($arr["lock"]=="N"){  //ถ้าเป็นยา NED ที่ต้องใส่รหัสผ่าน
+					//echo "==>".$arr["drug_lockucsso"];
+						if($arr["drug_lockucsso"]=="1"){
+							echo "<FONT COLOR=\"RED\" >ติดเงื่อนไขการสั่งจ่าย</FONT>";
+						}else if($arr["lock"]=="N"){  //ถ้าเป็นยา NED ที่ต้องใส่รหัสผ่าน
 							echo "<FONT COLOR=\"RED\" >ใส่รหัสผ่านทุกครั้ง</FONT>";
 						}else{  //ยาที่ไม่ต้องใส่รหัสผ่าน
 							if($arr["lock_dr"] == 'Y'){
 								if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
 									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
 								//}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
-									//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";	
+									//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";
 								}else{
 							
 						?>
@@ -1097,7 +1099,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			  				}else if($arr["lock_dr"] == 'N'){
 								echo "<FONT COLOR=\"RED\" >ยาตัดออก</FONT>";
 							}else{
-								echo $arr["lock_dr"];
+								echo $arr["lock_dr"];	
 							}
 						}					
 					}else{  //ถ้าเป็นสิทธิอื่นๆ
@@ -2048,15 +2050,14 @@ exit();
 ///////////////////////////////////////////////////-ตรวจสอบสิทธิการจ่ายยา-///////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "checkptright"){
 
-	$sql = "SELECT lockptright,tradname,drug_lockucsso FROM `druglst` where drugcode = '".$_GET["search"]."' ";
+	$sql = "SELECT lockptright,tradname,drug_lockucsso,lockptright_ucsso FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
 	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  || substr($_SESSION["ptright_now"],0,3) == "R02"|| substr($_SESSION["ptright_now"],0,3) == "R03"  )){
 		if($arr['lockptright']=="Y"){
 		//echo "1";
 			echo "ยา ".$arr['tradname']." นี้ไม่สามารถจ่ายยาในสิทธิ ".substr($_SESSION["ptright_now"],4)." ได้ \nถ้าผู้ป่วยแจ้งความจำนงต้องจ่ายเงินเองเท่านั้น\nต้องการใช่หรือไม่?";
-		}
-		else{
+		}else{
 			echo "0";
 		}
 	}else{
@@ -3602,7 +3603,7 @@ function checkForm1(){
 		return false;
 	}else if(txt3 != "0" && !confirm(txt3)){
 		return false;
-	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม กรุณาเปลี่ยนเป็นยา Generic")){
+	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม ไม่สามารถสั่งจ่ายยาได้กรุณาเปลี่ยนเป็นยา Generic หรือยาตัวอื่น")){
 		document.form1.drug_code.focus();
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
