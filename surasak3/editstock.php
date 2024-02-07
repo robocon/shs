@@ -8,7 +8,7 @@ if( $user_code !== 'ADM' ){
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
     $check_level = in_array($user_code, array('ADMPH', 'ADMPHA','ADMPHARX'));
     // ตัวเดิม
-    $check_user = in_array($user_id, array('วนิดาดา'));
+    $check_user = in_array($user_id, array('วนิดาดา', 'ภูมิพัฒน์'));
 
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา'));
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','ชุติกาญจน์','ชนากานต์','เพียงออ','รุ่งทิวา','อมรรัตน์','ศุภรัตน์1','ศุภรัตน์2','ชนากานต์'));
@@ -29,7 +29,8 @@ if( $user_code !== 'ADM' ){
         ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขจำนวนยาในห้องจ่าย กรุณาติดต่อ</p>
         <ol>
-            <li>พ.อ.หญิง วนิดา โลห์สุวรรณ	</li>
+            <li>พ.อ.หญิง วนิดา โลห์สุวรรณ</li>
+			<li>พ.ท.  ภูมิพัฒน์  สมิทธนโชติ</li>
         </ol>
         <p>เพื่อทำการขอใช้สิทธิ์แก้ไขข้อมูลสต๊อกยา</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
@@ -57,7 +58,7 @@ if( $user_code !== 'ADM' ){
 	if(isset($_POST["editstock"])){
 		
 
-		$sql = "Update druglst set stock = '".$_POST["stock"]."' , oldstock = '".$_POST["oldstock"]."', totalstk='".($_POST["mainstk"]+$_POST["stock"])."' , edit_user = '".$_SESSION["sOfficer"]."', edit_date = '".date("Y-m-d")."' where drugcode = '".$_POST["drugcode"]."' ";
+		$sql = "Update druglst set mainstk = '".$_POST["mainstk"]."' , stock = '".$_POST["stock"]."' , oldstock = '".$_POST["oldstock"]."', totalstk='".($_POST["mainstk"]+$_POST["stock"])."' , edit_user = '".$_SESSION["sOfficer"]."', edit_date = '".date("Y-m-d")."' where drugcode = '".$_POST["drugcode"]."' ";
 
 		$result = Mysql_Query($sql);
 
@@ -104,16 +105,17 @@ if( $user_code !== 'ADM' ){
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< ไปเมนู</a></font></p>
 </form>
 
-<table width="500">
+<table width="80%">
  <tr>
-  <th bgcolor=CC9900><font face='Angsana New'>รหัส</th>
-  <th bgcolor=CC9900><font face='Angsana New'>ชื่อยา</th>
-  <th bgcolor=CC9900><font face='Angsana New'>จำนวนในคลัง</th>
-  <th bgcolor=CC9900><font face='Angsana New'>จำนวนในห้องจ่าย</th>
-  <th bgcolor=CC9900><font face='Angsana New'>รวมสุทธิ</th>
-  <th bgcolor=CC9900><font face='Angsana New'>&nbsp;</th>
+  <th bgcolor=#16A085><font face='Angsana New'>รหัส</th>
+  <th bgcolor=#16A085><font face='Angsana New'>ชื่อยา</th>
+  <th bgcolor=#16A085><font face='Angsana New'>จำนวนในคลัง</th>
+  <th bgcolor=#16A085><font face='Angsana New'>จำนวนในห้องจ่าย</th>
+  <th bgcolor=#16A085><font face='Angsana New'>รวมสุทธิ</th>
+  <th bgcolor=#16A085><font face='Angsana New'>&nbsp;</th>
  </tr>
 <?php
+//echo "==>".$user_id;
 If (!empty($drugcode)){
     
 
@@ -122,22 +124,40 @@ If (!empty($drugcode)){
 
     while (list ($drugcode, $trandname, $stock, $oldstock,$mainstk,$totalstk) = mysql_fetch_row ($result)) {
 		if($oldstock == 0) $oldstock = $stock;
-        print (" <FORM METHOD=POST ACTION=\"$PHP_SELF\">
+    if($user_id=="วนิดาดา" || $user_id=="ภูมิพัฒน์"  || $user_id=="thaywin"){    
+		print (" <FORM METHOD=POST ACTION=\"$PHP_SELF\">
            <tr>\n".
-           "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$drugcode</td>\n".
-           "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$trandname</td>\n".
-    "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$mainstk</td>\n".
-           "  <td BGCOLOR=#FFCC99><INPUT TYPE=\"text\" NAME=\"stock\" value=\"$stock\"></td>\n".
-    "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$totalstk</td>\n".
-           "  <td BGCOLOR=#FFCC99><INPUT TYPE=\"submit\" name=\"editstock\" value=\" แก้ไข \"></td>\n".
+           "  <td BGCOLOR=#A3E4D7 width='10%'><font face='Angsana New'>$drugcode</td>\n".
+           "  <td BGCOLOR=#A3E4D7 width='25%'><font face='Angsana New'>$trandname</td>\n".
+    "  <td BGCOLOR=#A3E4D7 width='15%'><font face='Angsana New'><INPUT TYPE=\"text\" NAME=\"mainstk\" value=\"$mainstk\"></td>\n".
+           "  <td BGCOLOR=#A3E4D7 width='15%'><INPUT TYPE=\"text\" NAME=\"stock\" value=\"$stock\"></td>\n".
+    "  <td BGCOLOR=#A3E4D7 width='15%'><font face='Angsana New'>$totalstk</td>\n".
+           "  <td BGCOLOR=#A3E4D7 align='center'><INPUT TYPE=\"submit\" name=\"editstock\" value=\" แก้ไข \"></td>\n".
            " </tr>
+		   
 		   <INPUT TYPE=\"hidden\" name=\"drugcode\" value=\"".jschars($drugcode)."\">
-		   <INPUT TYPE=\"hidden\" name=\"mainstk\" value=\"".$mainstk."\">
 		   <INPUT TYPE=\"hidden\" name=\"tradname\" value=\"".jschars($trandname)."\">
 			<INPUT TYPE=\"hidden\" name=\"oldstock\" value=\"".$oldstock."\">
            </FORM>
-			
 		   \n");
+	}else{ //ถ้าเป็นคนอื่นนอกจาก 2 คนข้างต้น
+		print (" <FORM METHOD=POST ACTION=\"$PHP_SELF\">
+           <tr>\n".
+           "  <td BGCOLOR=#FDEBD0 width='10%'><font face='Angsana New'>$drugcode</td>\n".
+           "  <td BGCOLOR=#FDEBD0 width='25%'><font face='Angsana New'>$trandname</td>\n".
+    "  <td BGCOLOR=#FDEBD0 width='15%'><font face='Angsana New'>$mainstk</td>\n".
+           "  <td BGCOLOR=#FDEBD0 width='15%'><INPUT TYPE=\"text\" NAME=\"stock\" value=\"$stock\"></td>\n".
+    "  <td BGCOLOR=#FDEBD0 width='15%'><font face='Angsana New'>$totalstk</td>\n".
+           "  <td BGCOLOR=#FDEBD0 align='center'><INPUT TYPE=\"submit\" name=\"editstock\" value=\" แก้ไข \"></td>\n".
+           " </tr>
+		   
+		   <INPUT TYPE=\"hidden\" name=\"drugcode\" value=\"".jschars($drugcode)."\">
+		   <INPUT TYPE=\"hidden\" name=\"tradname\" value=\"".jschars($trandname)."\">
+		   <INPUT TYPE=\"hidden\" name=\"mainstk\" value=\"".$mainstk."\">
+			<INPUT TYPE=\"hidden\" name=\"oldstock\" value=\"".$oldstock."\">
+           </FORM>
+		   \n");
+	}	
          }
 
   
