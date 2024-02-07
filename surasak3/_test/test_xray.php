@@ -7,6 +7,8 @@ require_once dirname(__FILE__).'/../class_file/class_xray.php';
 $hn = '65-6173';
 $stanceList = array('CXR','CHEST CHECK UP');
 $xray = new Xray();
+$xray->officer = 'ทดสอบระบบ';
+$xray->digital = 1;
 $test = $xray->addXrayOnlyItem($hn, $stanceList);
 
 var_dump($test);

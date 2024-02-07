@@ -71,7 +71,6 @@ if($action==='save'){
         }
 
         function checkHn(){
-            testHn = '58-2733';
             if(testHn.match(/^(\d+\-\d+)/g)){
                 findHn(testHn).then((res)=>{ 
                     document.getElementById('responseFailure').innerHTML = '';
@@ -96,7 +95,7 @@ if($action==='save'){
         }
 
         function onScanFailure(error) { 
-            // testHn = '';
+            testHn = '';
             // handle scan failure, usually better to ignore and keep scanning.
             // for example:
             // console.warn(`Code scan error = ${error}`);
