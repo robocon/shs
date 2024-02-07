@@ -24,10 +24,10 @@ $opcard = new Opcard();
 /**
  * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
  */
-$sql = "SELECT a.hn AS main_hn,b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
-    SELECT * FROM `lab67`
+    SELECT *,id as main_id FROM `lab67` ORDER BY depart ASC,id ASC
 ) AS a 
 LEFT JOIN ( 
     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
@@ -35,7 +35,7 @@ LEFT JOIN (
 LEFT JOIN ( 
     SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
 ) AS c ON c.`hn` = a.`hn`
-ORDER BY c.id ASC";
+ORDER BY a.depart ASC,a.main_id ASC";
 // dump($sql);
 
 $db->select($sql);
@@ -74,6 +74,7 @@ $user_rows = $db->get_rows();
     <thead>
         <tr>
             <th rowspan="2" align="center">ลำดับ</th>
+            <th rowspan="2" align="center">แผนก</th>
             <th rowspan="2" align="center">HN</th>
             <th rowspan="2" align="center">ชื่อ - สกุล</th>
             <th rowspan="2" align="center">อายุ</th>
@@ -84,6 +85,7 @@ $user_rows = $db->get_rows();
             <th colspan="14" align="center">รายการตรวจ</th>
             <th width="8%" rowspan="2" align="center">สรุปผลการตรวจ</th>
             <th rowspan="2" align="center">คำแนะนำ</th>
+            <th rowspan="2" align="center">Diag</th>
         </tr>
         <tr>
 
@@ -227,6 +229,7 @@ $user_rows = $db->get_rows();
         <tr>
             
             <td align="right"><?=$i;?></td>
+            <td><?=$item['depart'];?></td>
             <td><?=$main_hn;?></td>
             <td><?=$ptname;?></td>
             <td align="right"><?=$age;?></td>
@@ -362,12 +365,8 @@ $user_rows = $db->get_rows();
             </td>
             
             <td><?=( $item['conclution'] == '1' ? 'ปกติ' : ( $item['conclution'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
-            <td><?=$conclution_detail;?>
-            <?php 
-            // var_dump($conclution_detail);
-            ?>
-            </td>
-            <!-- <td>สรุปผลการตรวจ</td> -->
+            <td><?=$conclution_detail;?></td>
+            <td><?=$item['diag'];?></td>
 
         </tr>
         <?php
