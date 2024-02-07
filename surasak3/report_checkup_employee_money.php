@@ -17,6 +17,15 @@ $opcard = new Opcard();
     <title>รายชื่อลูกจ้างตรวจสุขภาพปี67</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .custom-font{
+            font-family: "TH SarabunPSK";
+            font-size: 16px;
+        }
+        .last-row{
+            border-bottom: 1px solid;
+        }
+    </style>
 </head>
 <body>
     <?php 
@@ -36,30 +45,34 @@ $opcard = new Opcard();
     ORDER BY b.depart ASC";
     $q = $dbi->query($sql);
     ?>
-    <div class="">
-        <h1>รายชื่อลูกจ้างทั้งหมดปี 67</h1>
-        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
+    <div class="custom-font">
+        <h1 class="text-center">รายชื่อตรวจสุขภาพลูกจ้างปี 2567</h1>
+        <h3 class="text-center"><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
         
         <table class="table table-sm table-striped table-hover">
             <thead class="table-light">
-                <tr>
+                <tr class="align-middle">
                     <th>#</th>
                     <th>วันที่ตรวจ</th>
                     <th>แผนก</th>
-                    <th></th>
+                    <th>เลขที่บัตร</th>
                     <th>HN</th>
                     <th>ชื่อ-สกุล</th>
                     <th>อายุ</th>
                     <th>VN</th>
                     <th>สิทธิ</th>
-                    <th></th>
-                    <th>LAB+X-Ray<br>ปกส</th>
-                    <th>LAB<br>โรงบาลฯ</th>
-                    <th>X-Ray<br>โรงบาลฯ</th>
+                    <!-- <th></th> -->
+                    <th class="text-center">LAB+X-Ray<br>ปกส</th>
+                    <th class="text-center">LAB<br>โรงบาลฯ</th>
+                    <th class="text-center">X-Ray<br>โรงบาลฯ</th>
                 </tr>
             </thead>
         <?php
-        if($q->num_rows>0){
+        $sum_money_sso = 0;
+        $sum_money_hos = 0;
+
+        $lab67FullRows = $q->num_rows;
+        if($lab67FullRows>0){
             $i=1;
             while ($a = $q->fetch_assoc()) {
 
@@ -80,11 +93,12 @@ $opcard = new Opcard();
                 $patItems = array();
                 $sqlLab = "SELECT row_id,depart,price FROM depart WHERE date LIKE '$thidate%' AND hn='$hn' AND depart IN('PATHO','XRAY') AND detail='ตรวจสุขภาพประกันสังคม' ";
                 $qLab = $dbi->query($sqlLab);
-                if($qLab->num_rows>0){
+                $qLabRows = $qLab->num_rows;
+                if($qLabRows>0){
                     while ($p = $qLab->fetch_assoc()) {
                         if($p['depart']==='PATHO'){
                             $labPrice = $p['price'];
-                            
+                            $sum_money_hos += $labPrice;
                             
                             // $qPat = $dbi->query("SELECT code FROM `patdata` WHERE `idno` = '".$p['row_id']."' ");
                             // if ($qPat->num_rows>0) {
@@ -102,14 +116,23 @@ $opcard = new Opcard();
                                 $ssoPrice += $lc['price'];
                                 $ssoDetail[] = $sso.'('.$lc['price'].')';
                             }
+
+                            $sum_money_sso += $ssoPrice;
                             
                         }
                         if($p['depart']==='XRAY'){ 
                             $xrayPrice = $p['price'];
+                            $sum_money_hos += $xrayPrice;
                         }
                     }
                 }
 
+                $trStyle = ($a['ptright']);
+
+                $lastRows = '';
+                if($lab67FullRows == $i){
+                    $lastRows = ' last-row ';
+                }
                 ?>
                 <tr>
                     <td><?=$i;?></td>
@@ -132,22 +155,33 @@ $opcard = new Opcard();
                     <td><?=$a['age'];?></td>
                     <td><?=$a['vn'];?></td>
                     <td><?=$a['ptright'];?></td>
-                    <td><?=implode(',', $ssoDetail);?></td>
-                    <td>
+                    <!-- <td><?=implode(',', $ssoDetail);?></td> -->
+                    <td class="text-end">
+                        <div class="<?=$lastRows;?>">
                         <?php 
                         if($ssoPrice>0 && !empty($a['thidate2'])){
                             echo number_format($ssoPrice,2);
                         }
                         ?>
+                        </div>
                     </td>
-                    <td><?=$labPrice;?></td>
-                    <td><?=$xrayPrice;?></td>
+                    <td class="text-end"><div class="<?=$lastRows;?>"><?=$labPrice;?></div></td>
+                    <td class="text-end"><div class="<?=$lastRows;?>"><?=$xrayPrice;?></div></td>
                 </tr>
                 <?php
                 $i++;
             }
         }
         ?>
+        <tr>
+            <td colspan="9" class="text-end"><b>ยอดรวมตามรายการตรวจประกันสังคม</b></td>
+            <td class="text-end"><div style="border-bottom: 3px double;"><?=number_format($sum_money_sso,2);?></div></td>
+            <td colspan="2"></td>
+        </tr>
+        <tr>
+            <td colspan="10" class="text-end"><b>ยอดตรวจทั้งหมดในโรงพยาบาล</b></td>
+            <td colspan="2" class="text-end"><div  style="border-bottom: 3px double;"><?=number_format($sum_money_hos,2);?></div></td>
+        </tr>
         </table>
             
     </div>

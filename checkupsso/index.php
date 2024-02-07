@@ -5,7 +5,8 @@ require_once dirname(__FILE__).'/../surasak3/class_file/class_opcard.php';
 function toThai($t){
     return iconv('WINDOWS-874', 'UTF-8', $t);
 }
-$file_name = 'checkup-sso-user.csv';
+// $file_name = 'checkup-sso-user.csv';
+$file_name = 'hem.csv';
 $file = fopen($file_name,"r");
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
@@ -24,7 +25,7 @@ while(! feof($file))
 {
     list($number, $a, $b, $idcardExcel, $cbc, $ua, $bs, $cr, $hdlChol, $hbsag, $fobt, $cxr) = fgetcsv($file);
     $idcardExcel = str_replace('-', '', trim($idcardExcel));
-    
+    // var_dump($idcardExcel);
     $testDepart = toThai($a);
     $matchDepart = mb_ereg("^รายชื่อ|^นาย|^นาง|^น\.ส\.|^ยศ|^หน่วยงาน", $testDepart);
     if($matchDepart===false && !empty($testDepart)){
@@ -42,10 +43,18 @@ while(! feof($file))
         }
     }
 
+    // dump($opcard);
+
     $lab = array();
 
     // if($verrify===true){
 
+        if($cbc=='/'){
+            $lab[] = 'CBC-sso';
+        }
+        if($ua=='/'){
+            $lab[] = 'UA-sso';
+        }
         if($bs=='/'){
             $lab[] = 'BS';
         }
@@ -62,18 +71,24 @@ while(! feof($file))
         if($fobt=='/'){
             $lab[] = 'STOCB-sso';
         }
+        if($cxr=='/'){
+            $lab[] = '41001-CHK';
+        }
 
         // if(count($lab)>0){
             $labItem = implode(',', $lab);
             $hn = $opcard['hn'];
             // $idcard = $opcard['idcard'];
             
-            // $sql = "INSERT INTO `lab67` (`id`, `hn`, `idcard`, `lab`) VALUES (NULL, '$hn', '$idcard', '$labItem');";
-            // dump($sql);
-            // $save = $dbi->query($sql);
-            // dump($save);
+            
         // }
         if(!empty($idcardExcel) && strlen($idcardExcel)===13){ 
+
+            // lab67full
+            $sql = "INSERT INTO `lab67` (`id`, `hn`, `idcard`,depart, `lab`) VALUES (NULL, '$hn', '$idcardExcel','$depart', '$labItem');";
+            dump($sql);
+            $save = $dbi->query($sql);
+            dump($save);
 
             // $dbi->query("UPDATE lab67 SET depart = '$depart' WHERE hn='$hn'")
             ?>

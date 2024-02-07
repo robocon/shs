@@ -1,10 +1,11 @@
 <?php 
-include_once 'bootstrap.php';
-include_once 'includes/JSON.php';
-$json = new Services_JSON();
+include_once __DIR__.'/bootstrap.php';
+// include_once 'includes/JSON.php';
+// $json = new Services_JSON();
 
 $dbi=new mysqli(HOST,USER,PASS,DB);
-$dbi->set_charset('utf8');
+// $dbi->set_charset('utf8');
+$dbi->query("SET NAMES UTF8");
 
 $action = $_REQUEST['action'];
 if ($action === 'search_user') {
@@ -13,10 +14,10 @@ if ($action === 'search_user') {
     $q = $dbi->query($sql);
     $users = array();
     while ($user = $q->fetch_assoc()) {
-        $user['name'] = $user['name'];
+        // $user['name'] = $user['name'];
         $users[] = $user;
     }
-    echo $json->encode($users);
+    echo json_encode($users);
     exit;
 
 }elseif ($action === 'find_phone') {
@@ -24,7 +25,7 @@ if ($action === 'search_user') {
     $sql = "SELECT `phone` FROM `com_support` WHERE `user` = '$name'";
     $q = $dbi->query($sql);
     $user = $q->fetch_assoc();
-    echo $json->encode(array('phone'=>$user['phone']));
+    echo json_encode(array('phone'=>$user['phone']));
     exit;
 
 }elseif ($action==='save') {
@@ -93,7 +94,7 @@ if($page==='load25page'){
 
     }
 
-    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 100 ";
+    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 100 ";
     $q_sub = $dbi->query($sql_sub);
     if($q_sub->num_rows > 0){
         while ($s = $q_sub->fetch_assoc()) { 
@@ -116,7 +117,7 @@ if($page==='load25page'){
         }
     }
 
-    echo $json->encode($items);
+    echo json_encode($items);
     exit;
 }elseif ($page==='loadOrderPage') {
 
@@ -128,7 +129,7 @@ if($page==='load25page'){
             $items[] = $a;
         }
     }
-    echo $json->encode($items);
+    echo json_encode($items);
     exit;
 }
 
