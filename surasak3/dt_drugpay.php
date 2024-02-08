@@ -723,15 +723,15 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	
 ?>
 <FORM name="form_remed" METHOD=POST ACTION="">
-		<table width="722" border="0" align="center" cellpadding="0" cellspacing="0">
+		<table width="800" border="0" align="center" cellpadding="0" cellspacing="0">
           <tr>
             <td width="45" align="center"><input type="checkbox" name="checkbox2" value="" Onclick="checkall(this.checked)"/></td>
             <td align="center" >รายการยาOPD</td>
 			<td align="center" >วิธีใช้</td>
             <td align="center" >ประเภท</td>
 			<td align="center" width="70" >จำนวนยา</td>
-			<td align="center" >จำนวนที่ฉีด</td>
-			<td align="center" >วิธีฉีด</td>
+			<td align="center" width="75">จำนวนที่ฉีด</td>
+			<td align="center" width="50">วิธีฉีด</td>
 			<td align="center" >แบบ</td>
           </tr>
 
@@ -746,8 +746,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}*/
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
-	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	SELECT a.date, a.drugcode, b.genname, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
+	FROM drugrx as a INNER JOIN (Select genname,`drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
@@ -822,7 +822,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 				
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"];?></td>
+            <td >&nbsp;<?=$arr["tradname"].' ['.$arr['genname'].']';?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -3380,7 +3380,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 					echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
 				echo "</TR>";
 		while(list($row_id, $doctor) = mysql_fetch_row($result)){
-			$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$sql = " Select b.genname, b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 			$result2 = mysql_query($sql) or die(mysql_error());
 		echo "
 		<tr class='tb_head' >
@@ -3390,12 +3390,12 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
 
-			while(list($tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
+			while(list($genname, $tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
 
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 				echo "<TR>";
-					echo "<TD>".$tradname."</TD>";
+					echo "<TD><b>".$tradname."</b> [$genname]</TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";

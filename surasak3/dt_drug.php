@@ -35,7 +35,7 @@ if($rowdg > 0){
 	$aai=1;
 
 	while($arrdg = mysql_fetch_assoc($resultdrugreact)){ 
-		$txtdrugreact.='( '.$aai.' ) '.$arrdg['drugcode'].': '.$arrdg['tradname'].' / '.$arrdg['genname'];
+		$txtdrugreact.='( '.$aai.' ) '.$arrdg['drugcode'].': '.$arrdg['tradname'].' ['.$arrdg['genname'].']';
 		$txtdrugreact.='\n';
 		$aai++;
 
@@ -810,7 +810,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["genname"].'/'.$arr["tradname"];?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].' ['.$arr["genname"].']';?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -1122,9 +1122,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 				}  //close 667
 			}  //close 664
 			
+			if($arr["drug_inject_slip"]=="undefined"){
+				$arr["drug_inject_slip"]="";	
+			}
+			
+			if($arr["drug_inject_type"]=="undefined"){
+				$arr["drug_inject_type"]="";	
+			}			
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["genname"].'/'.$arr["tradname"].$notify_lock;?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].' ['.$arr["genname"].']'.$notify_lock;?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -1722,7 +1729,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 			echo "<tr bgcolor=\"$bgcolor\" ".$style.">
 					<td rowspan=\"3\" align=\"center\">".$obj."</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["drugcode"],"</td>
-					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"]," $react_txt $extra_obj</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["tradname"]," [",$arr["genname"],"] $react_txt $extra_obj</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td align=\"right\" valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\"></td>
@@ -2689,7 +2696,7 @@ function pregAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
@@ -2701,7 +2708,7 @@ function pregBlock(tradname,genname){
 	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b style="color:red;"><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
@@ -2713,7 +2720,7 @@ function lacAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
 
@@ -2726,7 +2733,7 @@ function lacBlock(tradname,genname){
 	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b style="color:red;"><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
@@ -4474,7 +4481,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 				echo "<TR>";
-					echo "<TD><span title='Drug code: $drugcode'>".$genname.'/'.$tradname."</span></TD>";
+					echo "<TD><span title='Drug code: $drugcode'>".$tradname." [".$genname."]</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
