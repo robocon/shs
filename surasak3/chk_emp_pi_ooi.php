@@ -24,7 +24,7 @@ $opcard = new Opcard();
 /**
  * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
  */
-$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
     SELECT *,id as main_id FROM `lab67` ORDER BY depart ASC,id ASC
@@ -366,7 +366,14 @@ $user_rows = $db->get_rows();
             
             <td><?=( $item['conclution'] == '1' ? 'ปกติ' : ( $item['conclution'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
             <td><?=$conclution_detail;?></td>
-            <td><?=$item['diag'];?></td>
+            <td>
+                <?=$item['diag'];?>
+                <?php 
+                if(empty($item['chk_doctor_id'])){
+                    echo '<span style="color:red;"><b>รอแพทย์สรุปผล</b></span>';
+                }
+                ?>
+            </td>
 
         </tr>
         <?php
