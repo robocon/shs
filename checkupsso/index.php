@@ -85,10 +85,10 @@ while(! feof($file))
         if(!empty($idcardExcel) && strlen($idcardExcel)===13){ 
 
             // lab67full
-            $sql = "INSERT INTO `lab67` (`id`, `hn`, `idcard`,depart, `lab`) VALUES (NULL, '$hn', '$idcardExcel','$depart', '$labItem');";
-            dump($sql);
-            $save = $dbi->query($sql);
-            dump($save);
+            $sql = "INSERT INTO `lab67full` (`id`, `hn`, `idcard`,depart, `lab`) VALUES (NULL, '$hn', '$idcardExcel','$depart', '$labItem');";
+            // dump($sql);
+            // $save = $dbi->query($sql);
+            // dump($save);
 
             // $dbi->query("UPDATE lab67 SET depart = '$depart' WHERE hn='$hn'")
             ?>
@@ -106,6 +106,7 @@ while(! feof($file))
                     ?>
                 </td>
                 <td><?=$opcard['age'];?></td>
+                <td><?=$opcard['ptright'];?></td>
                 <td><?=$labItem;?></td>
             </tr>
             <?php
