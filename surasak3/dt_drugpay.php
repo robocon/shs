@@ -563,8 +563,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 	}
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
-	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	SELECT a.date, a.drugcode, a.tradname, b.genname,a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
+	FROM drugrx as a INNER JOIN (Select `drugcode`,genname,`lock_dr` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.an is not null AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
@@ -614,7 +614,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"];?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].' ['.$arr['genname'].']';?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -1356,7 +1356,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					<td rowspan=\"3\" align=\"center\">
 					".$obj."</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">ชื่อยา : </td>
-					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"],"</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["tradname"]," [",$arr["genname"],"]</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td valign='top' colspan=\"2\" rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 				</tr>
