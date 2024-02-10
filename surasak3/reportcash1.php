@@ -21,6 +21,7 @@ print();
 </tr>
 <?
 include("connect.inc");
+$getvn=$_GET["vn"];
  $sqlopcard = "select * from opcard where hn = '$hn' limit 1";
  $rows = mysql_query($sqlopcard);
  $results = mysql_fetch_array($rows);
@@ -34,11 +35,12 @@ $thdatehn=$dd.'-'.$mm.'-'.$yy.$hn;
 
 ?>
 <?
-	  	  $sql3 = "SELECT vn from opday where thdatehn = '$thdatehn'";
+	  	  $sql3 = "SELECT vn,ptright from opday where thdatehn = '$thdatehn'";
 $result3 = mysql_query($sql3) ;
 $row3= mysql_fetch_array($result3);
 
 $vn=$row3['vn'];
+$ptright=$row3['ptright'];
 ?>
 
 <tr>
@@ -47,7 +49,7 @@ $vn=$row3['vn'];
   </strong>HN :
 <?=$hn?>
     VN :
-<?=$vn?> บัตร ปปช. : 
+<?=$vn?> สิทธิ : <?=$ptright;?> บัตร ปปช. : 
      <?=$results['idcard']?> วันที่ : <?=$dd?>/<?=$mm?>/<?=$yy?>
   </span></td>
 </tr>
@@ -62,19 +64,24 @@ $vn=$row3['vn'];
 <td width="10%" align="center" class="textcash"><strong>สุทธิ</strong></td>
 </tr>
 <?php
-$query="CREATE TEMPORARY TABLE drugrx01 SELECT * FROM phardep WHERE date like '$date%' and price >0";
-    $result = mysql_query($query) or die("Query failed,warphar");
-	
-$query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$date%' and price >0 and status ='Y' ";
+$sql="select txdate from opacc where txdate like '$date%' and hn='$hn' and depart='PHAR'";
+//echo $sql;
+$query=mysql_query($sql) or die("Query failed,opacc");
+$num=mysql_num_rows($query);
+list($txdate)=mysql_fetch_array($query);	
+if($num > 0){
+	$query="CREATE TEMPORARY TABLE drugrx01 SELECT * FROM phardep WHERE date LIKE '$txdate%' and paid >0";
     $result = mysql_query($query) or die("Query failed,warphar");
 
-  $query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
-    $result10 = mysql_query($query10)
-        or die("Query failed");
-		while($fetch = mysql_fetch_array($result10)){
+	$query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date LIKE '$txdate%' and price >0 and status ='Y' ";
+    $result = mysql_query($query) or die("Query failed,warphar");
+
+	$query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
+    $result10 = mysql_query($query10)or die("Query failed, drugrx01");
+	while($fetch = mysql_fetch_array($result10)){
     $query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and part = 'DDL'";
     $result13 = mysql_query($query13)
-        or die("Query failed");
+        or die("Query failed, drugrx02");
 	$nn = @mysql_num_rows($result13);
 	if($nn=="0"){
 	}
@@ -102,6 +109,8 @@ $query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$d
 	
 	}
 	else{
+		$price1=number_format($price1,2);	
+		$sum=number_format($sum,2);		
         print (" <tr bordercolor='#FFFFFF'>\n".
            "  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n".
            "  <td align='center'>$amount</td>\n".
@@ -117,6 +126,7 @@ $query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$d
       }
 	}
 		}
+
 	//////////////////////////////////////////////////////////////
 	$query10 = "SELECT row_id FROM drugrx01 WHERE hn = '$hn'";
     $result10 = mysql_query($query10)
@@ -161,6 +171,8 @@ $query="CREATE TEMPORARY TABLE drugrx02 SELECT * FROM drugrx WHERE date like '$d
 	
 	}
 	else{
+		$price1=number_format($price1,2);	
+		$sum=number_format($sum,2);		
         print (" <tr bordercolor='#FFFFFF'>\n".
            "  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n".
            "  <td align='center'>$amount</td>\n".
@@ -206,7 +218,15 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
 				$sql1="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst where drugcode = '$drugcode'";
 				//echo $sql."<br>";
 				$qresult = mysql_query($sql1);	
-				list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);
+				$num_drug = mysql_num_rows($qresult);
+				if($num_drug < 1){  //ถ้าหาข้อมูลยาไม่เจอ
+					$sql1="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst_pt where drugcode = '$drugcode'";
+					//echo $sql."<br>";
+					$qresult = mysql_query($sql1);
+					list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);				
+				}else{	
+					list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);
+				}
 				
 	if($part=='DSY') {
 		if($medical_sup_free==0){  //ถ้าเป็นเวชภัณฑ์ผู้ป่วยนอกเบิกไม่ได้
@@ -237,8 +257,9 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
 	}
 	if(substr($tradname,0,13)=="(55020/55021)"){
 	
-	}
-	else{
+	}else{
+		$price1=number_format($price1,2);	
+		$sum=number_format($sum,2);
         print (" <tr bordercolor='#FFFFFF'>\n".
            "  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n".
            "  <td align='center'>$amount</td>\n".
@@ -259,7 +280,7 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
     $result10 = mysql_query($query10)
         or die("Query failed");
 	while($fetch = mysql_fetch_array($result10)){
-	$query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and (part = 'DPY' or part = 'DPN')";
+	$query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and (part = 'DPY' or part = 'DPN')";
     $result13 = mysql_query($query13)
         or die("Query failed");
 	$nn = @mysql_num_rows($result13);
@@ -276,9 +297,23 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
     $doctor=substr($sDoctor,5);
     //print "HN: $sHn, สิทธิ์:$ptright<br>";
     //print "โรค: $sDiag, แพทย์ :$doctor<br>";
-    while (list ($tradname,$amount, $price,$part) = mysql_fetch_row ($result13)) {
+    while (list ($drugcode,$tradname,$amount, $price,$part) = mysql_fetch_row ($result13)) {
 //        array_push($aPrice,$price);
 //        $x++;
+
+
+				$sql1="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst where drugcode = '$drugcode'";
+				//echo $sql."<br>";
+				$qresult = mysql_query($sql1);	
+				$num_drug = mysql_num_rows($qresult);
+				if($num_drug < 1){  //ถ้าหาข้อมูลยาไม่เจอ
+					$sql1="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst_pt where drugcode = '$drugcode'";
+					//echo $sql."<br>";
+					$qresult = mysql_query($sql1);
+					list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);				
+				}else{	
+					list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);
+				}
 	
 	if($part=='DPY') {
 		$price = $price;
@@ -296,8 +331,10 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
 	
 	}
 	else{
+		$price1=number_format($price1,2);	
+		$sum=number_format($sum,2);		
         print (" <tr bordercolor='#FFFFFF'>\n".
-           "  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n".
+           "  <td>&nbsp;&nbsp;&nbsp;($drugcode)&nbsp;$tradname&nbsp;($dpy_code)</td>\n".
            "  <td align='center'>$amount</td>\n".
            "  <td align='center'>$unit</td>\n".
            "  <td align='center'>$price</td>\n".
@@ -311,16 +348,25 @@ $query13 = "SELECT drugcode,tradname,amount,price,part FROM drugrx02 WHERE idno 
       }
 	}
 	}
+	
+	
+}  //close num opacc		
+	
 	////////////////////////////////////////////////////////
-
-$query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$date%' ";
+$sql99="select * from opacc where txdate like '$date%' and hn='$hn' and depart !='PHAR'";
+//echo $sql99;
+$query99=mysql_query($sql99) or die("Query failed,opacc");
+$num99=mysql_num_rows($query99);	
+if($num99 > 0){
+	
+	$query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$date%' and paid >0";
     $result = mysql_query($query) or die("Query failed,warphar");
 
 	$query="CREATE TEMPORARY TABLE patdata01 SELECT * FROM patdata WHERE date like '$date%' ";
     $result = mysql_query($query) or die("Query failed,warphar");
 	
 
-	$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'PATHO'";
+	$query = "SELECT row_id FROM depart01 WHERE hn = '$hn' and depart = 'PATHO' AND date LIKE '$date%' and tvn='$getvn'";
 	$result = mysql_query($query)
         or die("Query failed1");
 	$nn = @mysql_num_rows($result);
@@ -364,9 +410,10 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
       }
 	}
+
 ///////////////////////////////////////////////////////////////
 
-	$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'XRAY'";
+	$query = "SELECT row_id FROM depart01 WHERE hn = '$hn' and depart = 'XRAY' AND date LIKE '$date%' and tvn='$getvn'";
 	$result = mysql_query($query)
         or die("Query failed3");
 	$nn = @mysql_num_rows($result);
@@ -412,7 +459,7 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
 /////////////////////////////////////////////////////////////
 
-	$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'SURG'";
+	$query = "SELECT row_id FROM depart01 WHERE hn = '$hn' and depart = 'SURG' AND date LIKE '$date%' and tvn='$getvn'";
 	$result = mysql_query($query)
         or die("Query failed5");
 	$nn = @mysql_num_rows($result);
@@ -459,7 +506,7 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
 ////////////////////////////////////////////////////////////
 
-	$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'DENTA'";
+	$query = "SELECT row_id FROM depart01 WHERE hn = '$hn' and depart = 'DENTA' AND date LIKE '$date%' and tvn='$getvn'";
 	$result = mysql_query($query)
         or die("Query failed");
 	$nn = @mysql_num_rows($result);
@@ -506,7 +553,7 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
 ////////////////////////////////////////////////////////////
 
-	$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'PHYSI'";
+	$query = "SELECT row_id FROM depart01 WHERE hn = '$hn' and depart = 'PHYSI' AND date LIKE '$date%' and tvn='$getvn'";
 	$result = mysql_query($query)
         or die("Query failed");
 	$nn = @mysql_num_rows($result);
@@ -553,7 +600,7 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
 ////////////////////////////////////////////////////////////
 
-	$query = "SELECT row_id FROM depart01 WHERE date LIKE '$date%' and hn = '$hn' and depart = 'NID'";
+	$query = "SELECT row_id FROM depart01 WHERE hn = '$hn' and depart = 'NID' AND date LIKE '$date%' and tvn='$getvn'";
 	$result = mysql_query($query)
         or die("Query failed");
 	$nn = @mysql_num_rows($result);
@@ -600,7 +647,7 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
 ////////////////////////////////////////////////////////////
 
-	$query = "SELECT row_id FROM depart01 WHERE (depart = 'EMER' OR depart = 'HEMO' OR depart = 'WARD' ) AND hn = '$hn' AND date LIKE '$date%'"; 
+	$query = "SELECT row_id FROM depart01 WHERE (depart = 'EMER' OR depart = 'HEMO' OR depart = 'WARD' ) AND hn = '$hn' AND date LIKE '$date%' and tvn='$getvn'"; 
 	$result = mysql_query($query)
         or die("Query failed");
 	$nn = @mysql_num_rows($result);
@@ -646,7 +693,8 @@ $query="CREATE TEMPORARY TABLE depart01 SELECT * FROM depart WHERE date like '$d
 
 ////////////////////////////////////////////////////////////
 $query = "SELECT  * FROM depart01 WHERE depart NOT IN (  'EMER',  'HEMO',  'WARD',  'PATHO',  'XRAY',  'SURG',  'DENTA',  'PHYSI',  'NID') AND hn =  '$hn' AND date
-LIKE  '$date%'";
+LIKE  '$date%' and tvn='$getvn'";
+//echo $query;
 	$result = mysql_query($query)
         or die("Query failed");
 	$nn = @mysql_num_rows($result);
@@ -690,50 +738,8 @@ LIKE  '$date%'";
 		   }
       }
 	}
+} //close opacc99	
 ////////////////////////////////////////////////////////////
-/*$query10 = "SELECT * FROM drugrx01 WHERE hn = '$hn'";
-    $result10 = mysql_query($query10)
-        or die("Query failed");
-$fetch = mysql_fetch_array($result10);
-		
- $query = "SELECT * FROM phardep  WHERE row_id = '".$fetch['row_id']."'  ";
-    $result = mysql_query($query)
-        or die("Query failed");
-
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
-
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
-		 $sNetprice=$row->price;
-		 $sAn=$row->an;
-      if (empty($sAn) && $sNetprice > 0){
-        print (" <tr bordercolor='#FFFFFF'>\n".
-           "  <td><strong>(55020/55021)ค่าบริการผู้ป่วยนอก</strong></td>\n".
-           "  <td align='center'>1</td>\n".
-           "  <td align='center'>50.00</td>\n".
-           "  <td align='center'>50.00</td>\n".
-		   "  <td align='center'>-</td>\n".
-		   "  <td align='center'>50.00</td>\n".
-           " </tr>\n");
-		$payyes +=50;
-                           }
-//กรณีคืนยา จะติดลบ
-    if (empty($sAn) && $sNetprice < 0){
-        print (" <tr bordercolor='#FFFFFF'>\n".
-           "  <td><strong>(55020/55021)ค่าบริการผู้ป่วยนอก</strong></td>\n".
-           "  <td align='center'>-1</td>\n".
-           "  <td align='center'>-50.00</td>\n".
-		   "  <td align='center'>-50.00</td>\n".
-           "  <td align='center'>-</td>\n".
-		   "  <td align='center'>-50.00</td>\n".
-           " </tr>\n");
-		$payyes -=50;
-                           }*/
 	 include("unconnect.inc");
 	 $total = $payyes+$payno;
   ?>
