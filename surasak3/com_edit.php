@@ -2,10 +2,11 @@
 session_start();
 include("connect.php");
 if ($_REQUEST['do'] == 'edit') {
-	$row = $_POST['row'];
-	$owner = $_REQUEST['programmer'];
-	$head = $_REQUEST['head'];
-	$update = "UPDATE com_support SET status='a', programmer='$owner' Where row='$row' ";
+	$row = sprintf("%s", $_POST['row']);
+	$owner = sprintf("%s", $_REQUEST['programmer']);
+	$head = sprintf("%s", $_REQUEST['head']);
+	$software_type = sprintf("%s", $_REQUEST['software_type']);
+	$update = "UPDATE com_support SET status='a', programmer='$owner', `software_type`='$software_type' Where row='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
 
@@ -73,7 +74,7 @@ if ($_REQUEST['do'] == 'edit') {
 				<td width="121" bgcolor="#66CCCC"><strong>แผนก</strong></td>
 				<td colspan="4" bgcolor="#66CCCC"><!--<input name="depart" type="text" class="forntsarabun" size="20">-->
 					<select name="depart" id="depart" class="forntsarabun">
-						<option value="0">เลือกแผนก</option>
+						<option value="0">==&gt;&nbsp;เลือกแผนก&nbsp;&lt;==</option>
 						<?
 						$sql = "select  *  from   departments where status='y' order by id asc";
 						$result = mysql_query($sql);
@@ -95,7 +96,7 @@ if ($_REQUEST['do'] == 'edit') {
 					$jobType = array('hardware'=>'งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย', 'software'=>'งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ');
 					?>
 					<select name="jobtype" id="jobtype" class="forntsarabun" onchange="jobTypeChange(this.value)">
-						<option value="0">เลือกงาน</option>
+						<option value="0">==&gt;&nbsp;เลือกงาน&nbsp;&lt;==</option>
 						<?php 
 						foreach ($jobType as $type => $typeValue) {
 							$selected = ($dbarr['jobtype'] == $type) ? 'selected="selected"' : '' ;
@@ -124,13 +125,19 @@ if ($_REQUEST['do'] == 'edit') {
 			<tr>
 				<td bgcolor="#66CCCC"><strong>ผู้รับผิดชอบ</strong></td>
 				<td colspan="3" bgcolor="#66CCCC">
+					<?php 
+					$programmerList = array('เทวิน  ศรีแก้ว','กฤษณะศักดิ์  กันธรส','ชาญวิทย์  ตากาบุตร','จักรพันธ์  รุ่งเรืองศรี','ฐานพัฒน์  นิลคำ');
+					?>
 					<select name="programmer" class="forntsarabun">
-						<option value="0" selected>==กรุณาเลือก==</option>
-						<option value="เทวิน  ศรีแก้ว">เทวิน ศรีแก้ว</option>
-						<option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์ กันธรส</option>
-						<option value="ชาญวิทย์  ตากาบุตร">ชาญวิทย์ ตากาบุตร</option>
-						<option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์ รุ่งเรืองศรี</option>
-						<option value="ฐานพัฒน์  นิลคำ">ฐานพัฒน์ นิลคำ</option>
+						<option value="0" selected>==&gt;&nbsp;กรุณาเลือก&nbsp;&lt;==</option>
+						<?php 
+						foreach ($programmerList as $pg) { 
+							$selected = $pg===$dbarr['programmer'] ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$pg;?>" <?=$selected;?> ><?=$pg;?></option>
+							<?php
+						}
+						?>
 					</select>
 				</td>
 			</tr>
@@ -139,12 +146,22 @@ if ($_REQUEST['do'] == 'edit') {
 			if($dbarr['jobtype']=='hardware'){
 				$swTypeDisplay='display:none;';
 			}
+
+			$softwareTypeList = array(
+				'software_type1' => 'แก้ไขโปรแกรม/ข้อมูล',
+				'software_type2' => 'พัฒนาโปรแกรม'
+			)
 			?>
 			<tr style="<?=$swTypeDisplay;?>" id="swTypeContain">
 				<td bgcolor="#66CCCC"><b>ประเภทงานพัฒนา</b></td>
 				<td colspan="3" bgcolor="#66CCCC">
-					<input type="radio" name="software_type" id="software_type1" value="แก้ไขโปรแกรม/ข้อมูล"><label for="software_type1">แก้ไขโปรแกรม/ข้อมูล</label>
-					<input type="radio" name="software_type" id="software_type2" value="พัฒนาโปรแกรม"><label for="software_type2">พัฒนาโปรแกรม</label>
+					<?php 
+					foreach ($softwareTypeList as $swKey => $swType) {
+						?>
+						<input type="radio" name="software_type" id="<?=$swKey;?>" value="<?=$swType;?>"><label for="<?=$swKey;?>"><?=$swType;?></label>
+						<?php
+					}
+					?>
 				</td>
 			</tr>
 			<tr>
@@ -153,6 +170,7 @@ if ($_REQUEST['do'] == 'edit') {
 					<input name="B1" type="submit" class="forntsarabun" value="ตกลง">
 					<input type="hidden" name="row" value="<?= $row; ?>">
 					<input name="B2" type="reset" class="forntsarabun" value="ลบทิ้ง">
+				</td>
 			</tr>
 		</table>
 	</form>
@@ -164,27 +182,13 @@ if ($_REQUEST['do'] == 'edit') {
 		}else{
 			document.getElementById('swTypeContain').style.display = 'none';
 		}
-		
 	}
 	function fncSubmit() {
-		
-		let radioStatus = false;
-		const radioButtons = document.querySelectorAll('input[name="software_type"]');
-		for (const radioButton of radioButtons) {
-			if (radioButton.checked) {
-				radioStatus = true;
-			}
-		}
-
 		if (document.edit.programmer.selectedIndex == 0) {
 			alert('กรุณาเลือกผู้รับผิดชอบ');
 			document.edit.programmer.focus();
 			return false;
-		}else if(radioStatus===false){
-			alert('กรุณาเลือก ประเภทงานพัฒนา')
-			return false;
 		}
-
 		document.edit.submit();
 	}
 </script>

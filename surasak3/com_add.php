@@ -45,8 +45,7 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 
 	ol {
 		margin: 0;
-		padding;
-		0;
+		padding: 0;
 	}
 
 	ol li {
@@ -156,7 +155,7 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 				<td width="146" bgcolor="#66CCCC"><strong>แผนก</strong></td>
 				<td width="160" bgcolor="#66CCCC">
 					<select name="depart" id="depart" class="forntsarabun">
-						<option value="0">เลือกแผนก</option>
+						<option value="0">==&gt;&nbsp;เลือกแผนก&nbsp;&lt;==</option>
 						<?php 
 						// เลือกแผนกให้อัตโนมัติ
 						$sql = "select * from departments where status='y' order by id asc";
@@ -172,11 +171,22 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 			</tr>
 			<tr>
 				<td bgcolor="#66CCCC"><strong>ประเภทงาน</strong></td>
-				<td colspan="3" bgcolor="#66CCCC"><select name="jobtype" id="jobtype" class="forntsarabun">
-						<option value="0" selected>เลือกงาน</option>
-						<option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
-						<option value="software">งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ</option>
-					</select></td>
+				<td colspan="3" bgcolor="#66CCCC">
+					<?php 
+					$jobType = array('hardware'=>'งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย', 'software'=>'งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ');
+					?>
+					<select name="jobtype" id="jobtype" class="forntsarabun">
+						<option value="0" selected>==&gt;&nbsp;เลือกงาน&nbsp;&lt;==</option>
+						<?php 
+						foreach ($jobType as $type => $typeValue) {
+							$selected = ($dbarr['jobtype'] == $type) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$type;?>" <?=$selected;?> ><?=$typeValue;?></option>
+							<?php
+						}
+						?>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td bgcolor="#66CCCC"><strong>เรื่องที่จะแจ้ง</strong></td>

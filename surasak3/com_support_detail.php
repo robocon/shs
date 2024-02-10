@@ -81,9 +81,27 @@ if($action==='save'){
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
 	$result = curl_exec( $curl ); 
 	curl_close($curl); 
-    
-    redirect('com_support_detail.php?id='.$com_id);
 
+    ?>
+    <script src="sweetalert/sweetalert2@11.js"></script>
+    <script>
+        window.onload = function(){
+            var obj = JSON.parse('<?=$result;?>');
+            if(obj.status===200){
+                Swal.fire({
+                    title: "บันทึกข้อมูลเรียบร้อย",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                setTimeout(function(){
+                    window.location.href = "com_support_detail.php?id=<?=$com_id;?>";
+                }, 2000);
+            }
+        }
+    </script>
+    <?php
     exit;
 }
 
@@ -97,6 +115,8 @@ $sql = "SELECT * FROM `com_support` WHERE `row` = '$id'";
 $q = $dbi->query($sql);
 $item = $q->fetch_assoc();
 ?>
+<a target="_self" href="com_support.php" class="forntsarabun" style="text-decoration:none;">&lt;&lt;&nbsp;กลับหน้าเมนูแจ้งซ่อม</a>
+<hr>
 <style>
     *{
         font-family: "TH SarabunPSK";
@@ -136,7 +156,7 @@ $item = $q->fetch_assoc();
             <div><b>แนบรูป</b></div>
             <input type="file" name="imgs[]" id="imgs" multiple>
             <ul>
-                <li>รองรับไฟล์ประเภท png, jpg, jpeg</li>
+                <li>รองรับไฟล์ประเภท png, jpg, jpeg, gif</li>
                 <li>ขนาดแต่ละไฟล์ต้องไม่เกิน 2MB</li>
                 <li>ขนาดรวมทุกไฟล์ไม่เกิน 7MB</li>
             </ul>

@@ -99,6 +99,12 @@ if ($_REQUEST['do'] == 'edit') {
 		font-size: 24px;
 		color: #FFFFFF;
 	}
+	input[readonly], textarea[readonly] {
+		background-color: #e8e8e8;
+	}
+	label:hover{
+		cursor: pointer;
+	}
 </style>
 
 <body bgcolor="#FFFFFF">
@@ -129,8 +135,9 @@ if ($_REQUEST['do'] == 'edit') {
 			</tr>
 			<tr>
 				<td bgcolor="#FF99CC"><strong>แผนก</strong></td>
-				<td colspan="3" bgcolor="#FF99CC"><select name="depart" id="depart" class="forntsarabun">
-						<option value="0">เลือกแผนก</option>
+				<td colspan="3" bgcolor="#FF99CC">
+					<select name="depart" id="depart" class="forntsarabun">
+						<option value="0">==&gt;&nbsp;เลือกแผนก&nbsp;&lt;==</option>
 						<?
 						$sql = "select * from `departments` where `status`='y' order by `id` asc";
 						$result = mysql_query($sql);
@@ -142,19 +149,27 @@ if ($_REQUEST['do'] == 'edit') {
 							}
 						}
 						?>
-					</select></td>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td bgcolor="#FF99CC"><strong>ประเภทงาน</strong></td>
-				<td colspan="3" bgcolor="#FF99CC"><select name="jobtype" id="jobtype" class="forntsarabun">
-						<option value="0">เลือกงาน</option>
-						<option value="hardware" <? if ($dbarr['jobtype'] == "hardware") {
-														echo "selected";
-													} ?>>งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
-						<option value="software" <? if ($dbarr['jobtype'] == "software") {
-														echo "selected";
-													} ?>>งานแก้ไข/พัฒนาโปรแกมโรงพยาบาล</option>
-					</select></td>
+				<td colspan="3" bgcolor="#FF99CC">
+					<?php 
+					$jobType = array('hardware'=>'งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย', 'software'=>'งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ');
+					?>
+					<select name="jobtype" id="jobtype" class="forntsarabun">
+						<option value="0">==&gt;&nbsp;เลือกงาน&nbsp;&lt;==</option>
+						<?php 
+						foreach ($jobType as $type => $typeValue) {
+							$selected = ($dbarr['jobtype'] == $type) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$type;?>" <?=$selected;?> ><?=$typeValue;?></option>
+							<?php
+						}
+						?>
+					</select>
+				</td>
 			</tr>
 			<tr>
 				<td width="112" bgcolor="#FF99CC"><strong>หัวข้อ</strong></td>
@@ -172,28 +187,24 @@ if ($_REQUEST['do'] == 'edit') {
 			</tr>
 			<tr>
 				<td bgcolor="#FF99CC"><strong>ผู้รับผิดชอบ</strong></td>
-				<td colspan="3" bgcolor="#FF99CC"><select name="programmer" class="forntsarabun">
-						<option value="0" selected>==กรุณาเลือก==</option>
-						<option value="เทวิน  ศรีแก้ว" <? if ($dbarr['programmer'] == "เทวิน  ศรีแก้ว") {
-															echo "selected";
-														} ?>>เทวิน ศรีแก้ว</option>
-						<option value="กฤษณะศักดิ์  กันธรส" <? if ($dbarr['programmer'] == "กฤษณะศักดิ์  กันธรส") {
-																echo "selected";
-															} ?>>กฤษณะศักดิ์ กันธรส</option>
-						<option value="ชาญวิทย์  ตากาบุตร" <? if ($dbarr['programmer'] == "ชาญวิทย์  ตากาบุตร") {
-																echo "selected";
-															} ?>>ชาญวิทย์ ตากาบุตร</option>
-						<option value="จักรพันธ์  รุ่งเรืองศรี" <? if ($dbarr['programmer'] == "จักรพันธ์  รุ่งเรืองศรี") {
-																	echo "selected";
-																} ?>>จักรพันธ์ รุ่งเรืองศรี</option>
-						<option value="ฐานพัฒน์  นิลคำ" <? if ($dbarr['programmer'] == "ฐานะพัฒน์  นิลคำ" || $dbarr['programmer'] == "ฐานพัฒน์  นิลคำ") {
-															echo "selected";
-														} ?>>ฐานพัฒน์ นิลคำ</option>
-					</select> </td>
+				<td colspan="3" bgcolor="#FF99CC">
+					<?php 
+					$programmerList = array('เทวิน  ศรีแก้ว','กฤษณะศักดิ์  กันธรส','ชาญวิทย์  ตากาบุตร','จักรพันธ์  รุ่งเรืองศรี','ฐานพัฒน์  นิลคำ');
+					?>
+					<select name="programmer" class="forntsarabun">
+						<option value="0" selected>==&gt;&nbsp;กรุณาเลือก&nbsp;&lt;==</option>
+						<?php 
+						foreach ($programmerList as $pg) { 
+							$selected = $pg===$dbarr['programmer'] ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$pg;?>" <?=$selected;?> ><?=$pg;?></option>
+							<?php
+						}
+						?>
+					</select>
+				</td>
 			</tr>
 			<?php
-			var_dump($dbarr['software_type']);
-
 			$swTypeDisplay='';
 			if($dbarr['jobtype']=='hardware'){
 				$swTypeDisplay='display:none;';
@@ -225,16 +236,8 @@ if ($_REQUEST['do'] == 'edit') {
 				<td colspan="3" bgcolor="#CC6699"><input name="B1" type="submit" class="forntsarabun" value="ตกลง">
 					<input type="hidden" name="row" value="<?= $row; ?>">
 					<input name="B2" type="reset" class="forntsarabun" value="ลบทิ้ง">
-					&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>
-						<<<ไปเมนู< /a>
 				</td>
 			</tr>
 		</table>
 	</form>
-
-	<?php
-
-
-	?>
-
 </body>
