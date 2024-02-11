@@ -1,14 +1,15 @@
 <?php
-    session_start();
-    $sOfficer="";
-	$smenucode = "";
-	$sRowid="";
-	$sLevel="";
-    session_register("sOfficer");
-	session_register("smenucode");
-	session_register("sRowid");
-	session_register("sLevel");
-//error_reporting (E_ALL ^ E_NOTICE);
+session_start();
+include("connect.inc");
+
+$sOfficer="";
+$smenucode = "";
+$sRowid="";
+$sLevel="";
+session_register("sOfficer");
+session_register("smenucode");
+session_register("sRowid");
+session_register("sLevel");
 
 function displaydate($x) {
 	$thai_m=array("มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฏาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม");
@@ -27,26 +28,23 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-    include("connect.inc");
-//    print "$username<br>";
-//    print "$password<br>";
-    $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
-    $result = mysql_query($query) or die( mysql_error($Conn) );
-        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
+$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+$result = mysql_query($query) or die( mysql_error($Conn) );
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
 
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
-    if(mysql_num_rows($result)){
-         $sOfficer=$row->name;
-         $menucode=$row->menucode;
-		  $_SESSION["smenucode"]=$row->menucode;
-		$sRowid=$row->row_id;
-		 $sLevel=$row->level;
+	if(!($row = mysql_fetch_object($result)))
+		continue;
+}
+if(mysql_num_rows($result)){
+$sOfficer=$row->name;
+$menucode=$row->menucode;
+$_SESSION["smenucode"]=$row->menucode;
+$sRowid=$row->row_id;
+$sLevel=$row->level;
 $where_search= "";
 //if($_SESSION["smenucode"] == "ADM"){
 ///////แบบสอบถาม//////
@@ -61,35 +59,32 @@ if($nrow3==0){
 	<?
 }*/
 ////////////////////////////////
-echo "
-<FORM METHOD=POST ACTION=\"\">
-	<INPUT TYPE=\"text\" NAME=\"search\" size=\"10\">&nbsp;<INPUT TYPE=\"submit\" value=\"ค้นหา\">
+?>
+<body bgcolor="#008080" text="#00FFFF" link="#FFFFFF" vlink="#FFFFFF" alink="#FFFFFF" onload="Realtime();">
+<style type="text/css" media="screen">
+	*{
+		font-family: "TH SarabunPSK";
+		font-size:18px;
+	}
+</style>
+<FORM METHOD=POST ACTION="menulst.php">
+	<INPUT TYPE="text" NAME="search" style="font-size:18px; padding:4px;">&nbsp;<INPUT TYPE="submit" value="ค้นหา" style="padding:4px 16px; font-size:18px;">
 </FORM>
-";
-
-	if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
-		$xxx = explode(" ",$_POST["search"]);
-		//$search_where_arr = array();
-		//foreach($){
-		//	$search_where .= " menu ";
-		//}
-
-		$yyy = implode("%' AND menu like '%",$xxx);
-		$where_search = " AND (menu like '%".$yyy."%')";
-		//echo $yyy;
-	//}
+<?php
+// ค้นหาหลายคำด้วยการเคาะ
+if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
+	$xxx = explode(" ",$_POST["search"]);
+	$yyy = implode("%' AND menu like '%",$xxx);
+	$where_search = " AND (menu like '%".$yyy."%')";
 }
 
-	/*//echo "<script>alert('ทดสอบ') </script>";*/
- //print (" <tr>\n".
- // "  <td BGCOLOR='#008400'><font face='THSarabunPSK' size='3' color='#FFFFFF' >   $sOfficer </font></td>\n".
-			//	" </tr>\n");
-         print "<body bgcolor='#008080' text='#00FFFF' link='#FFFFFF' vlink='#FFFFFF' alink='#FFFFFF' onload='Realtime();'>";
-         print "<table>";
-		
-         print "<tr>";
-         print "<th bgcolor=#005555><font face='THSarabunPSK' size='4'>เมนู</th>";
-         print "</tr>";
+?>
+<table>
+	<tr><td BGCOLOR="#CCFFCC" align="center" style="color: red;"><strong><font face="THSarabunPSK" size="4"  ><?=$showdate;?> <div id="divDetail">&nbsp;</div></font></strong></td></tr>
+	<tr>
+		<th bgcolor="#005555"><font face="THSarabunPSK" size="4">เมนู</th>
+	</tr>
+<?php
 if($menucode=='ADM' ){
 	$sort = "ORDER BY menu ASC";
 }elseif($menucode=='ADMPHA' ){
@@ -97,135 +92,103 @@ if($menucode=='ADM' ){
 }else{
 	$sort = "ORDER BY menu_sort ASC ,menu ASC";
 }
-				 		
+
+if($menucode=="ADM" OR $sLevel=="admin"){
+
+?>
+
+<tr><td BGCOLOR="#008400"><a target="_top" href="../sm3.php"><font face="THSarabunPSK" size="4"  >::ออกจากระบบ(<?=$sOfficer;?>)</font></a></td></tr>
+<tr><td BGCOLOR="#008400"><a target="_top" href="com_support.php"><font face="THSarabunPSK" size="3" >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td></tr>
+<tr><td BGCOLOR="#008400"><a target="_top" href="holiday_add.php"><font face="THSarabunPSK" size="3" >::เพิ่มข้อมูลวันหยุดประจำปี (Holiday)</font></a></td></tr>
+<?php 
 if($menucode=="ADM"){
-		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-				" </tr>\n");
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
-		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");	
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='3' >::เพิ่มข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
-				" </tr>\n");					
-				
-				
-				print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"showcomservice.php\"><font face='THSarabunPSK' size='3' >::บันทึกการปฏิบัติงาน</font></a></td>\n".
-				" </tr>\n");	
+	?>
+	<tr><td BGCOLOR="#008400"><a target="_top" href="showcomservice.php"><font face="THSarabunPSK" size="3" >::บันทึกการปฏิบัติงาน</font></a></td></tr>
+	<?php
+}
+?>
+<tr><td BGCOLOR="#008400"><a target="_blank" href="showuser.php?menucode=<?=$menucode;?>"><font face="THSarabunPSK" size="3" >::จัดการข้อมูลผู้ใช้งาน</font></a></td></tr>
+<tr><td BGCOLOR="#008484"><a target="_top" href="document_list.php"><font face="THSarabunPSK" size="3" >::Edocument- จัดเก็บเอกสาร</font></a></td></tr>
+<tr><td BGCOLOR="#008484"><a target="_top" href="km_index.php?act=view"><font face="THSarabunPSK" size="3" >::KM- Knowledge base</font></a></td></tr>
+<?php
 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_blank' href=\"showuser.php?menucode=$menucode\"><font face='THSarabunPSK' size='3' >::จัดการข้อมูลผู้ใช้งาน</font></a></td>\n".
-				" </tr>\n");									 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='3' >::Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
-}else if($sLevel=="admin"){
-		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-				" </tr>\n");
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
-		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");	
+}else if($menucode=="ADMXR"){
 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='3' >::เพิ่มข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
-				" </tr>\n");					
 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_blank' href=\"showuser.php?menucode=$menucode\"><font face='THSarabunPSK' size='3' >::จัดการข้อมูลผู้ใช้งาน</font></a></td>\n".
-				" </tr>\n");									 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='3' >::Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
-}else if($menucode=="ADMXR"){						
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
-		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");					 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='3' >::Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
+
+print (" <tr>\n".
+"  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
+" </tr>\n");
+print (" <tr>\n".
+"  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
+" </tr>\n");
+print (" <tr>\n".
+"  <td BGCOLOR='#008484'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='3' >::Edocument- จัดเก็บเอกสาร</font></a></td>\n".
+" </tr>\n");
+print (" <tr>\n".
+"  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
+" </tr>\n");
+
+
+
 }else{
-		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='4'  >$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-				" </tr>\n");
-							
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
+
+
+
+print (" <tr>\n".
+"  <td BGCOLOR='#008400'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4'  >::ออกจากระบบ($sOfficer)</font></a></td>\n".
+" </tr>\n");
 
 if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
 	print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_blank' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='3' >::เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
-				" </tr>\n");	
+	"  <td BGCOLOR='#008400'><a target='_blank' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='3' >::เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
+	" </tr>\n");	
 	print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_blank' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='3' >::ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
-				" </tr>\n");
+	"  <td BGCOLOR='#008400'><a target='_blank' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='3' >::ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
+	" </tr>\n");
 	print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_blank' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='3' >::รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
-				" </tr>\n");							
+	"  <td BGCOLOR='#008400'><a target='_blank' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='3' >::รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
+	" </tr>\n");
 }
-		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");		
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008400'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='3' >::เพิ่มข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
-				" </tr>\n");					
-							 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='3' >::Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
-}							 
+
+print (" <tr>\n".
+"  <td BGCOLOR='#008400'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='3' >::แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
+" </tr>\n");
+print (" <tr>\n".
+"  <td BGCOLOR='#008400'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='3' >::เพิ่มข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
+" </tr>\n");
+print (" <tr>\n".
+"  <td BGCOLOR='#008484'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='3' >::Edocument- จัดเก็บเอกสาร</font></a></td>\n".
+" </tr>\n");
+print (" <tr>\n".
+"  <td BGCOLOR='#008484'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='3' >::KM- Knowledge base</font></a></td>\n".
+" </tr>\n");
+
+
+
+}
 ?>
-<tr style="background-color: #16A085;">
-	<td><a href="opd_reprint.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 18px;">:: ใบตรวจโรคผู้ป่วยนอกวันนี้</a></td>
+<tr>
+	<td>
+		<hr>
+	</td>
 </tr>
 <tr style="background-color: #16A085;">
-	<td><a href="ophn_eopd.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 18px;">:: ค้นหา e-OPD จาก HN</a></td>
+	<td><a href="opd_reprint.php" target="_blank" style="font-weight: bold; font-size: 18px;">:: ใบตรวจโรคผู้ป่วยนอกวันนี้</a></td>
+</tr>
+<tr style="background-color: #16A085;">
+	<td><a href="ophn_eopd.php" target="_blank" style="font-weight: bold; font-size: 18px;">:: ค้นหา e-OPD จาก HN</a></td>
 </tr>
 <?php
 if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
- $query = "SELECT menu,script,target FROM menulst WHERE menucode LIKE '$menucode%' AND status='Y'  ".$sort;
- $result = mysql_query($query) or die( mysql_error($Conn) );
+	$query = "SELECT menu,script,target FROM menulst WHERE menucode LIKE '$menucode%' AND status='Y'  ".$sort;
+	$result = mysql_query($query) or die( mysql_error($Conn) );
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+		print (" <tr>\n".
+		"  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer01' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+		" </tr>\n");
+	};
 
- 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-               print (" <tr>\n".
-                  "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer01' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-                  " </tr>\n");
-                  };
 }elseif($sOfficer=='ภูภูมิ วุฒิธาดา (ว.33906)'){
     $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
     $result = mysql_query($query) or die( mysql_error($Conn) );
@@ -235,6 +198,7 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
         "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer02' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
         " </tr>\n");
     }
+
 }elseif($sOfficer=='วริทธิ์ พสุธาดล (ว.38228)'){
     $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADMXR' AND status='Y' ".$where_search." ".$sort;
     $result = mysql_query($query) or die( mysql_error($Conn) );
@@ -244,73 +208,99 @@ if($menucode=='ADMCT' || $menucode=='ADMFINANCE'){
         "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer03' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
         " </tr>\n");
     }
+
 }elseif($sOfficer=='ธนบดินทร์ ผลศรีนาค (ว.19921)'){
-	 $query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADM19921' AND status='Y' ".$where_search." ".$sort;
-	 $result = mysql_query($query) or die( mysql_error($Conn) );
+	$query = "SELECT menu,script,target FROM menulst WHERE menucode = 'ADMDR1' OR  menucode = 'ADM19921' AND status='Y' ".$where_search." ".$sort;
+	$result = mysql_query($query) or die( mysql_error($Conn) );
 	
-			while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-				   print (" <tr>\n".
-					  "  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer04' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-					  " </tr>\n");
-					  } 
-}else{
-
-$sql2="select * from menu_user WHERE member_code='".$sRowid."'";
-$result2= mysql_query($sql2) or die( mysql_error($Conn) );
-$rows=mysql_num_rows($result2);
-$userRowId = "&sOfficer=".$_SESSION['sOfficer']."&dt_doctor=".$_SESSION['dt_doctor'];
-if($rows){///  ถ้ามี rows
-
- $query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
- $result = mysql_query($query) or die( mysql_error($Conn) );
-
-        while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
-               print (" <tr>\n".
-                  "  <td BGCOLOR='#008484'><a target='$target' class='menulst-refer05' href=\"$link?$userRowId\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
-                  " </tr>\n");
-                  }
-				  		  
-}else{
-				  
-	$query = "SELECT menu,script,target FROM menulst WHERE menucode like '$menucode%' AND status='Y' ".$where_search." ".$sort;
-	$result = mysql_query($query) or die( mysql_error($Conn) );
-
-	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
-	print (" <tr>\n".
-	"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
-	" </tr>\n");
-	}
-				  
-}/// ปิด if rows		  
-
-}
-	//สารบัญทั่วไป ทุกคนดูได้
-	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
-	$result = mysql_query($query) or die( mysql_error($Conn) );
-
 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 		print (" <tr>\n".
-		"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='3' >$menu</font></a></td>\n".
+			"  <td BGCOLOR='#005555'><a target='$target' class='menulst-refer04' href=\"$script?\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+			" </tr>\n");
+	} 
+
+}else{
+
+	$sql2="select * from menu_user WHERE member_code='".$sRowid."'";
+	$result2= mysql_query($sql2) or die( mysql_error($Conn) );
+	$rows=mysql_num_rows($result2);
+	$userRowId = "&sOfficer=".$_SESSION['sOfficer']."&dt_doctor=".$_SESSION['dt_doctor'];
+	if($rows){///  ถ้ามี rows
+
+	$query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
+	$result = mysql_query($query) or die( mysql_error($Conn) );
+
+			while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
+			print (" <tr>\n".
+			"  <td BGCOLOR='#008484'><a target='$target' class='menulst-refer05' href=\"$link?$userRowId\"><font face='THSarabunPSK' size='4'>$menu</font></a></td>\n".
+			" </tr>\n");
+			}
+
+	}else{
+		
+		$query = "SELECT menu,script,target FROM menulst WHERE menucode like '$menucode%' AND status='Y' ".$where_search." ".$sort;
+		$result = mysql_query($query) or die( mysql_error($Conn) );
+
+		while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+		print (" <tr>\n".
+		"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='THSarabunPSK' size='4'  COLOR='#ffffff'>$menu</font></a></td>\n".
 		" </tr>\n");
+		}
+					
+	}/// ปิด if rows		  
+
+}
+	?>
+	<tr>
+		<td>
+			<hr>
+		</td>
+	</tr>
+	<tr>
+		<th bgcolor="#005555"><font face="THSarabunPSK" size="4">เมนูทั่วไป</th>
+	</tr>
+	<?php
+	//สารบัญทั่วไป ทุกคนดูได้
+	//#009e9e
+	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
+	$result = mysql_query($query) or die( mysql_error($Conn) );
+	$all_i = 1;
+	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
+
+		$tr_color = '#008484';
+		if($all_i%4==0){
+			$tr_color = '#008a8e';
+		}
+		?>
+		<tr style="background-color: <?=$tr_color;?>">
+			<td>
+				<a target="<?=$target;?>" href="<?=$script;?>?"><?=$menu;?></a>
+			</td>
+		</tr>
+		<?php
+		$all_i++;
 	};
 	
+	// ถ้าเป็น IE จะบังคับให้เปิดใน Edge
 	$ua = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
     if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
         // do stuff for IE
-        print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
-        " </tr>\n");
+		$aHref = "microsoft-edge:http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer'];
+		
     }else{
-        print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
-        " </tr>\n");
+        $aHref = "http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer'];
     }
-
-	print (" <tr>\n".
-	"  <td BGCOLOR='#008400'><a target='_top' class='menulst-refer07' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n".
-	" </tr>\n");
-
-	print "</table>";
+	?>
+	<tr>
+		<td bgcolor="#009933" style="text-align:center;"><a target="_blank" href="<?=$aHref;?>"><b>:: ขอAuthen Code ::</b></a></td>
+	</tr>
+	<tr>
+		<td BGCOLOR="#008400">
+			<a target="_top" class="menulst-refer07" href="../sm3.php"><b>::Logout- ออกจากระบบ</b></a>
+		</td>
+	</tr>
+</table>
+	<?php
 	
 	// แจ้งเตือนในครั้งแรกที่ login 
 	if( $menucode == 'ADM' && empty($_SESSION['net_alert']) ){
@@ -327,70 +317,62 @@ if($rows){///  ถ้ามี rows
 		}
 	}
 
-	print "</body>";
-	include("unconnect.inc");
-
-}
-   else {
-        print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
-        print "...<br>";
-        print "...<br>";
-        print "...<br>";
-        print "...<br>";
-        print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
-        print "</body>";
-       session_unregister("sIdname");
-       session_unregister("sPword");
-       session_unregister("sOfficer");
-	   session_unregister("sRowid");
-	   session_unregister("sLevel");
-            }
-?>
-<style type="text/css" media="screen">
-@font-face {
- font-family: THSarabunPSK;
- src: url("/sm3/surasak3/THSarabun.eot") /* EOT file for IE */
-}
-@font-face {
- font-family: THSarabunPSK;
- src: url("/sm3/surasak3/THSarabun.ttf") /* TTF file for CSS3 browsers */
-}
-</style>
-<script language="javascript" src="js/jquery-1.8.0.min.js"></script>
-<script>
-function Realtime(){
-   $.ajax({url:"ajaxtime.php",
-   	async:false,
-	cache:false,
-	global:false,
-	type:"POST",
-	data:"",
-	dataType:"html",
-	success: function(result){
-			// เอามาแปลงเป็นตัวเลขสำหรับ JS
-			var prepare_date = Date.parse(result);
-			Real(prepare_date);
-		}
-	});
-}
-
-function Real(prepare_date){ 
-	setInterval(function(){ 
-
-		// +1 วิไปเรื่อยๆ
-		prepare_date += 1000;
-		var d = new Date(prepare_date);
-		var hour = to2Digit(d.getHours());
-		var min = to2Digit(d.getMinutes());
-		var sec = to2Digit(d.getSeconds());
-		document.getElementById("divDetail").innerHTML = hour+':'+min+':'+sec+' น.';
-	}, 1000);
-}
-
-function to2Digit(i){ 
-	if(i < 10){
-		i = "0"+i;
+	?>
+	<script language="javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script>
+	function Realtime(){
+	$.ajax({url:"ajaxtime.php",
+		async:false,
+		cache:false,
+		global:false,
+		type:"POST",
+		data:"",
+		dataType:"html",
+		success: function(result){
+				// เอามาแปลงเป็นตัวเลขสำหรับ JS
+				var prepare_date = Date.parse(result);
+				Real(prepare_date);
+			}
+		});
 	}
-	return i;
+
+	function Real(prepare_date){ 
+		setInterval(function(){ 
+
+			// +1 วิไปเรื่อยๆ
+			prepare_date += 1000;
+			var d = new Date(prepare_date);
+			var hour = to2Digit(d.getHours());
+			var min = to2Digit(d.getMinutes());
+			var sec = to2Digit(d.getSeconds());
+			document.getElementById("divDetail").innerHTML = hour+':'+min+':'+sec+' น.';
+		}, 1000);
+	}
+
+	function to2Digit(i){ 
+		if(i < 10){
+			i = "0"+i;
+		}
+		return i;
+	}
+	</script>
+</body>
+<?php
+include("unconnect.inc");
 }
-</script>
+else 
+{
+	print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
+	print "...<br>";
+	print "...<br>";
+	print "...<br>";
+	print "...<br>";
+	print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
+	print "</body>";
+	session_unregister("sIdname");
+	session_unregister("sPword");
+	session_unregister("sOfficer");
+	session_unregister("sRowid");
+	session_unregister("sLevel");
+}
+?>
