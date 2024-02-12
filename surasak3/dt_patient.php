@@ -365,6 +365,9 @@ if($row_diabet > 0){
 		border: 2px solid red;
 		padding: 0.4em;
 	}
+	#btn-dialog:hover{
+		cursor: pointer;
+	}
 
 	.chk_table{
     border-collapse: collapse;
@@ -386,7 +389,7 @@ if($row_diabet > 0){
 	}
 	?>
 	<div id="btn-dialog">
-		เปิดดูข้อมูลผู้ป่วยคลินิกเบาหวาน
+		คลินิกเบาหวาน
 	</div>
 	<div id="dialog-contain" <?php echo $style;?>>
 		<div id="msg-contain">
