@@ -43,7 +43,7 @@ if ($_REQUEST['do'] == 'edit') {
 
 	$hold = DateDiff("$date1", "$date2");
 
-	$update = "UPDATE com_support SET status='n', p_edit='" . $p_edit . "' ,dateend='$thidate' , programmer='$programmer', hold='$hold' Where row='$row' ";
+	$update = "UPDATE com_support SET `status`='n', `p_edit`='$p_edit' ,`dateend`='$thidate' , `programmer`='$programmer', hold='$hold' WHERE `row`='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
 
@@ -220,8 +220,9 @@ if ($_REQUEST['do'] == 'edit') {
 				<td colspan="3" bgcolor="#FF99CC">
 					<?php 
 					foreach ($softwareTypeList as $swKey => $swType) {
+						$selected = $swType===$dbarr['software_type'] ? 'checked="checked"' : '' ;
 						?>
-						<input type="radio" name="software_type" id="<?=$swKey;?>" value="<?=$swType;?>"><label for="<?=$swKey;?>"><?=$swType;?></label>
+						<input type="radio" name="software_type" id="<?=$swKey;?>" value="<?=$swType;?>" <?=$selected;?> ><label for="<?=$swKey;?>"><?=$swType;?></label>
 						<?php
 					}
 					?>
