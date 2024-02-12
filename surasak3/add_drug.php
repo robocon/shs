@@ -131,7 +131,7 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 					<TABLE width="100%" bgcolor="#FFFFFF" cellspacing="4" cellpadding="2">
 						<tr>
 							<td colspan="6" style="text-align:center;">
-								<span align="right"><A HREF="javascript:void(0);" Onclick="document.getElementById('listdrugcode').innerHTML='';">[ ปิดหน้าต่าง ]</A>&nbsp;</span>
+								<span align="right"><A HREF="javascript:void(0);" Onclick="document.getElementById('listdrugcode').innerHTML='';"><b>[ ปิดหน้าต่าง ]</b></A>&nbsp;</span>
 							</td>
 						</tr>
 						<TR bgcolor="009688" align="center">
@@ -531,6 +531,14 @@ var bas_cal,dp_cal,ms_cal;
 window.onload = function () {
 	dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('firstdate'));
 	dp_cal  = new Epoch1('epoch_popup','popup',document.getElementById('enddate'));
+
+	// Button ESC for Close Popup
+	document.addEventListener("keydown", (event) => {
+		if (event.isComposing || event.keyCode === 27) {
+			document.getElementById('listdrugcode').innerHTML='';
+		}
+	});
+		
 };
 </script>
 <SCRIPT LANGUAGE="JavaScript">
@@ -1228,29 +1236,29 @@ echo "<p align='center' style='color:red;'><strong>ผู้ป่วยมี�
 </div>
 <TABLE width="55%" align="center" cellpadding="6" cellspacing="3">
 	<TR>
-		<TD width="14%"><strong>รหัสยา : </strong></TD>
+		<TD width="14%" align="right"><strong>รหัสยา : </strong></TD>
 	  	<TD width="17%" style="position: relative;">
 			<INPUT NAME="drugcode" TYPE="text" class="txtsarabun" ID="drugcode" onKeyPress="searchSuggest2('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="13" autofocus>
-			
 		</TD>
-		<TD width="14%"><strong>ชื่อยา :		</strong></TD>
+		<TD width="14%" align="right"><strong>ชื่อยา :</strong></TD>
 		<TD width="25%"><INPUT NAME="drugname" TYPE="text" class="txtsarabun" ID = "drugname" onKeyPress="submit_button('drugcode');"  size="25" ></TD>
-		<TD width="15%"><strong>วิธีใช้ :		</strong></TD>
+		<TD width="15%" align="right"><strong>วิธีใช้ :</strong></TD>
 		<TD width="15%"><INPUT NAME="drugslip" TYPE="text" class="txtsarabun" ID = "drugslip"
 	  onkeypress="searchSuggest('drugslip',this.value);" onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="11"
 		></TD>
 	</TR>
 	<TR>
-		<TD style="position: relative;">
+		<TD style="position: relative;" align="right">
 			<strong>จำนวน : </strong>
 			<div id="listdrugcode" style="position: absolute; top:0; left:0; width:960px; height:auto; overflow:auto; background-color:#ffffff"></div>
 		</TD>
 	  <TD><INPUT NAME="amount" TYPE="text" class="txtsarabun" ID="amount"  onkeypress="submit_button('amount');" size="4"></TD>
-		<TD><strong>หน่วย :		</strong></TD>
-		<TD><INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5" readonly> 
-		<strong>ประเภท:</strong>
-		<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"   size="5" readonly></TD>
-		<TD><strong>สถานะ :		</strong></TD>
+		<TD align="right"><strong>หน่วย :</strong></TD>
+		<TD align="left">
+			<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5" readonly> 
+			<strong>ประเภท:</strong>
+			<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"   size="5" readonly></TD>
+		<TD align="right"><strong>สถานะ :</strong></TD>
 		<TD>
 						<SELECT NAME="statcon" class="txtsarabun" ID="statcon"  onkeypress="submit_button('statcon');" >
 					    <OPTION VALUE="" SELECTED>-- สถานะ --</OPTION>
@@ -1340,7 +1348,7 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 echo "
 <TR bgcolor=\"",$bgcolor,"\" id=\"trParent$j\">
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
-	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b>",$genname,"</TD>
+	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b><br>",$genname,"</TD>
 	<TD>",$_SESSION["list_druglst"]["part"][$j],"</TD>
 	<TD><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
 	<TD ><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";

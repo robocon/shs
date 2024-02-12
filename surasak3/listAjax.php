@@ -130,7 +130,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			<TD>&nbsp;</TD>
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>รหัสการใช้</B></FONT></TD>
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>รายละเอียด</B></FONT>
-			<span align=\"right\"><A HREF=\"#\" Onclick=\"document.getElementById('listdrugcode').innerHTML='';\">[ X ]</A>&nbsp;</span>
+			<span align=\"right\"><A HREF=\"#\" Onclick=\"document.getElementById('listdrugcode').innerHTML='';\" title=\"ปิด\">[ X ]</A>&nbsp;</span>
 			</TD>
 			
 		</TR>
