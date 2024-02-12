@@ -187,9 +187,9 @@ $k31=$k21+50;
 				$Trade = substr($_POST["Tradname"][$i],0,20);
 
 				$_SESSION["drugbill"] .= "
-					<tr><td>".$j."</td>
+					<tr valign='top'><td>".$j."</td>
 						<td><font face='Angsana New'>".$_POST["Drugcode"][$i]."</td>
-						<td><font face='Angsana New'>".$Trade." [$genname]</td>
+						<td width='45%'><font face='Angsana New'><b>".$Trade."</b> <br>$genname</td>
 						<td><font face='Angsana New'>".$_POST["Statcon"][$i]."</td>
 						<td><font face='Angsana New'>".$_POST["Slipcode"][$i]."</td>";
 
