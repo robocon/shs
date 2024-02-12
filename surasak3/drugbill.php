@@ -57,15 +57,17 @@ $chkdate=substr($Thaidate,0,10);
 		<td align=\"center\">PART</td>
 		</tr>
 	";
-	$sql = "Select a.date, a.drugcode, a.tradname ,a.slcode, b.unit, b.salepri, b.part, a.amount, a.reason, b.dpy_code From drugrx as a, druglst as b where a.drugcode = b.drugcode AND a.hn= '".$_GET["hn"]."' AND a.idno = '".$_GET["row_id"]."' ";
+	$sql = "Select a.date, a.drugcode, a.tradname, b.genname, a.slcode, b.unit, b.salepri, b.part, a.amount, a.reason, b.dpy_code From drugrx as a, druglst as b where a.drugcode = b.drugcode AND a.hn= '".$_GET["hn"]."' AND a.idno = '".$_GET["row_id"]."' ";
 	$j=1;
 	$result = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
+
+		$genname = $arr['genname'];
 	
 		echo "
 					<tr><td>".$j.". </td>
 						<td><font face='Angsana New'>".$arr["drugcode"]."</td>
-						<td width='150'><font face='Angsana New'>".$arr["tradname"]."&nbsp;(".$arr["unit"].")</td>
+						<td width='150'><font face='Angsana New'><b>".$arr["tradname"]."</b>&nbsp;[$genname]&nbsp;(".$arr["unit"].")</td>
 						<td align='center'>".$arr["dpy_code"]."</td>
 						<td>".substr($arr["reason"],0,1)."</td>
 						<td><font face='Angsana New'>".$arr["slcode"]."</td>";
