@@ -129,12 +129,11 @@ $k31=$k21+50;
 			$sql ="UPDATE druglst SET stock = stock-".$_POST["Amount"][$i].",rxaccum = rxaccum + ".$_POST["Amount"][$i].",rx1day   = rx1day +".$_POST["Amount"][$i].",totalstk = stock + mainstk WHERE drugcode= '".$_POST["Drugcode"][$i]."' ";
 			$result = mysql_query($sql) or die("Query failed,update druglst in case of  IPD");
 			#*************************************************** จบตัดสต็อกยา ***************************************************
-		$sql = "Select genname,stock,mainstk From druglst where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 ";
+		$sql = "Select stock,mainstk From druglst where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 ";
 		 $result = Mysql_Query($sql);
 		 $arr = Mysql_fetch_assoc($result);
 		 $stock = $arr["stock"];
 		 $mainstk = $arr["mainstk"];
-		 $genname = $arr["genname"];
 			#*************************************************** บันทึกการจ่ายยา ***************************************************
 
 			if($_POST["Part"][$i] == "DPY"){
@@ -187,9 +186,9 @@ $k31=$k21+50;
 				$Trade = substr($_POST["Tradname"][$i],0,20);
 
 				$_SESSION["drugbill"] .= "
-					<tr valign='top'><td>".$j."</td>
+					<tr><td>".$j."</td>
 						<td><font face='Angsana New'>".$_POST["Drugcode"][$i]."</td>
-						<td width='45%'><font face='Angsana New'><b>".$Trade."</b> <br>$genname</td>
+						<td><font face='Angsana New'>".$Trade."</td>
 						<td><font face='Angsana New'>".$_POST["Statcon"][$i]."</td>
 						<td><font face='Angsana New'>".$_POST["Slipcode"][$i]."</td>";
 
@@ -219,32 +218,27 @@ $k31=$k21+50;
 					}else if($j==14){
 						$_SESSION["drugbill"] .= "<tr><td  colspan=\"11\"><div style=\"page-break-before: always;\"></div></td></tr>";
 					}
-
-				$sql = "Select detail1,  detail2,  detail3,  detail4 From drugslip where slcode = '".$_POST["Slipcode"][$i]."'  ";
-				$result = Mysql_Query($sql);
-				list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
-
-				$slipForDrugstk = "";
-				if($detail1){
-					$slipForDrugstk .= "<div><b>".$detail1."</b></div>";
-				}
-				if($detail2){
-					$slipForDrugstk .= "<div><b>".$detail2."</b></div>";
-				}
-				if($detail3){
-					$slipForDrugstk .= "<div><b>".$detail3."</b></div>";
-				}
-				if($detail4){
-					$slipForDrugstk .= "<div><b>".$detail4."</b></div>";
-				}
 				
-				$_SESSION["drugstk"] .= "<div style=\"page-break-before: always;\"></div>";
-				//".$_POST["Slipcode"][$i]."
-				$_SESSION["drugstk"] .= "<DIV style=\"text-align: center;\">".$_POST["Tradname"][$i]."&nbsp;(".$_POST["Unit"][$i].") = ".$_POST["Amount"][$i]."</DIV>
-				<DIV style=\"text-align: center;\">$slipForDrugstk</DIV>";
+				$_SESSION["drugstk"] .="
+						<DIV style='left:".$k11."PX;top:".$j1."PX;width:306PX;height:30PX; position:absolute'>
+						<font style=\"font-family:'MS Sans Serif'; font-size:12px\"> ".$_POST["Tradname"][$i]."&nbsp;(".$_POST["Unit"][$i].")
+						</DIV>
+						<DIV style='left:".$k21."px;top:".$j1."PX;width:306PX;height:30PX;position:absolute'>
+						<font style=\"font-family:'MS Sans Serif'; font-size:12px\" >&nbsp;&nbsp;&nbsp;&nbsp;".$_POST["Slipcode"][$i]."
+						</DIV>
+						<DIV style='left:".$k31."px;top:".$j1."PX;width:306PX;height:30PX;position:absolute'>
+						<font style=\"font-family:'MS Sans Serif'; font-size:12px\">&nbsp;".$_POST["Amount"][$i]."
+						</DIV>
+				
+				";
 
 				$i1++;
 				$j1 = $j1+12;
+
+				
+				$sql = "Select detail1,  detail2,  detail3,  detail4 From drugslip where slcode = '".$_POST["Slipcode"][$i]."'  ";
+				$result = Mysql_Query($sql);
+				list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
 
 				$_SESSION["drughome"] .= "
 					<tr><td>".$j."</td>
@@ -354,18 +348,18 @@ $k31=$k21+50;
 					}
 					
 				$_SESSION["druglot_qrcode"] .= "<div align='center' style='margin-top:5px;margin-left:5px;'>";
-				$_SESSION["druglot_qrcode"] .= "<table border='0' align='center' width='100%' cellpadding='0' cellspacing='0' style='font-size:16px;'>";
+				$_SESSION["druglot_qrcode"] .= "<table border='0' align='center' width='100%' cellpadding='0' cellspacing='0' style='font-size:10px;'>";
 				//แถวที่ 1
 				$_SESSION["druglot_qrcode"] .= "<tr>";
 				$_SESSION["druglot_qrcode"] .= "<th width='80%' valign='top' align='center'>";
 					
-					$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:16px;' face='Angsana New'><center><b>AN:".$_POST["An"]."&nbsp;&nbsp;".$_POST["Ptname"]."</b><br></font>";
+					$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><center><b>AN:".$_POST["An"]."&nbsp;&nbsp;".$_POST["Ptname"]."</b><br></font>";
 
-					$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:16px;' face='Angsana New'>".$Thaidate."&nbsp;&nbsp;HN:".$_POST["Hn"].".&nbsp;&nbsp;NO.".$j."/".$total_item." <br></font>";
+					$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'>".$Thaidate."&nbsp;&nbsp;HN:".$_POST["Hn"].".&nbsp;&nbsp;NO.".$j."/".$total_item." <br></font>";
 					
 					$Trade = substr($_POST["Tradname"][$i],0,22);
 
-					$_SESSION["druglot_qrcode"] .= "<font  style='line-height:14px; font-size:16px;' face='Angsana New'><b>$Trade</b>&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")&nbsp;=<B>&nbsp;".$_POST["Amount"][$i]."</B><br></font>";
+					$_SESSION["druglot_qrcode"] .= "<font  style='line-height:14px; font-size:10px;' face='Angsana New'><b>$Trade</b>&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")&nbsp;=<B>&nbsp;".$_POST["Amount"][$i]."</B><br></font>";
 
 
 						$sql = "Select drugname,drugnote,drug_nature,drug_properties From druglst  where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 " ;
@@ -373,10 +367,10 @@ $k31=$k21+50;
 						list($drugname,$drugnote,$drug_nature,$drug_properties) = Mysql_fetch_row($result);
 						$chkdrugname=trim($drugname);
 						$lendrugname=strlen($chkdrugname);
-						$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:16px;' face='Angsana New'><b>".$detail1."</b></font><br>";
-						$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:16px;' face='Angsana New'><b>".$detail2."</b></font><br>";
+						$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail1."</b></font><br>";
+						$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail2."</b></font><br>";
 						if($detail3 !=""){
-						$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:16px;' face='Angsana New'><b>".$detail3."</b></font><br>";
+						$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><b>".$detail3."</b></font><br>";
 						}
 				$_SESSION["druglot_qrcode"] .= "</th>";
 				$_SESSION["druglot_qrcode"] .= "<th width='8%' align='center' valign='top'>";
@@ -389,16 +383,16 @@ $k31=$k21+50;
 					if($j == $total_item){
 							
 						if($drug_properties !="")  //ถ้ามีสรรพคุณ
-							$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px;font-size:16px;' face='Angsana New'><b><u>".$drug_properties."</u></b></font><br>";
+							$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px;font-size:10px;' face='Angsana New'><b><u>".$drug_properties."</u></b></font><br>";
 						
 						if($drugnote !="")  //ถ้ามีคำเตือน
-							$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:16px;' face='Angsana New'><b>".$drugnote."</b></font></div>";
+							$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:10px;' face='Angsana New'><b>".$drugnote."</b></font></div>";
 						
 					}else{
 						if($drug_properties !="")  //ถ้ามีสรรพคุณ
-							$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px; font-size:16px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
+							$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px; font-size:10px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
 						if($drugnote !="")  //ถ้ามีคำเตือน
-							$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:16px;' face='Angsana New'><b>".$drugnote."</b></font></div>";  
+							$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:10px;' face='Angsana New'><b>".$drugnote."</b></font></div>";  
 					}
 				$_SESSION["druglot_qrcode"] .= "</th>";	
 				$_SESSION["druglot_qrcode"] .= "</tr>";	
@@ -545,7 +539,7 @@ for($i=0;$i<$item;$i++){
 		
 		$_SESSION["drugbill"] = "<BR>&nbsp;&nbsp;<font face='Angsana New'>$status, วันที่ ".$Thaidate."<BR>&nbsp;&nbsp;".$_POST["Ward"].", เตียง : ".$_POST["Bed"].", ".$_POST["Ptname"].", อายุ ".$_POST["age"].", HN:".$_POST["Hn"].", AN:".$_POST["An"]."<BR>&nbsp;&nbsp;สิทธิ:".$_POST["Ptright"].", แพทย์ : ".$_POST["Doctor"].", โรค ".$_POST["Diag"]."<BR>".$_SESSION["drugbill"];
 		
-		$_SESSION["drugstk"] = "<div style=\"text-align: center;\">".$Thaidate.";&nbsp;&nbsp;HN:".$_POST["Hn"].", &nbsp;&nbsp;AN:".$_POST["An"]."<br>".$_POST["Ptname"]."&nbsp;&nbsp;โรค ".$_POST["Diag"]."<div>".$_SESSION["drugstk"];
+		$_SESSION["drugstk"] = "<font style=\"font-family:'MS Sans Serif'; font-size:10px\"  >&nbsp;&nbsp;&nbsp&nbsp;".$Thaidate.";&nbsp;&nbsp;HN:".$_POST["Hn"].", &nbsp;&nbsp;AN:".$_POST["An"]."<br>&nbsp;&nbsp;&nbsp;&nbsp&nbsp;".$_POST["Ptname"]."&nbsp;&nbsp;โรค ".$_POST["Diag"]."<BR>".$_SESSION["drugstk"];
 
 
 
