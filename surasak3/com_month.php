@@ -35,7 +35,9 @@ a:hover {
 a:active {
 	text-decoration: none;
 }
-
+label:hover{
+    cursor: pointer;
+}
 </style>
 </head>
 
@@ -63,11 +65,29 @@ if(!isset($_POST['search'])){
                         <strong>ประเภทงาน&nbsp;</strong>
                     </td>
                     <td>
-                        <select name="jobtype" id="jobtype" class="forntsarabun">
+                        <select name="jobtype" id="jobtype" class="forntsarabun" onchange="jobTypeChange(this.value)">
                             <option value="0" selected>เลือกงานทั้งหมด</option>
                             <option value="hardware">งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย</option>
                             <option value="software">งานแก้ไข/พัฒนาโปรแกรมโรงพยาบาล</option>
                         </select>
+                    </td>
+                </tr>
+                <tr id="swTypeContain" style="display:none;">
+                    <td align="right">
+                        <b>ประเภทงานพัฒนา</b>
+                    </td>
+                    <td>
+                        <?php 
+                        $softwareTypeList = array(
+                            'software_type1' => 'แก้ไขโปรแกรม/ข้อมูล',
+                            'software_type2' => 'พัฒนาโปรแกรม'
+                        );
+                        foreach ($softwareTypeList as $swKey => $swType) {
+                            ?>
+                            <input type="radio" name="software_type" id="<?=$swKey;?>" value="<?=$swType;?>"><label for="<?=$swKey;?>"><?=$swType;?></label>
+                            <?php
+                        }
+                        ?>
                     </td>
                 </tr>
                 <tr>
@@ -76,7 +96,7 @@ if(!isset($_POST['search'])){
                     </td>
                     <td>
                         <select name="programmer" class="forntsarabun">
-                            <option value="0" selected>==กรุณาเลือก==</option>
+                            <option value="0" selected>== เลือกผู้รับผิดชอบ ==</option>
                             <option value="เทวิน  ศรีแก้ว">เทวิน  ศรีแก้ว</option>
                             <option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์  กันธรส</option>
                             <option value="ชาญวิทย์  ตากาบุตร">ชาญวิทย์  ตากาบุตร</option>
@@ -149,6 +169,15 @@ if(!isset($_POST['search'])){
 </table>
 
 </form>
+<script>
+    function jobTypeChange(v){
+		if(v==='software'){
+			document.getElementById('swTypeContain').style.display = '';
+		}else{
+			document.getElementById('swTypeContain').style.display = 'none';
+		}
+	}
+</script>
 <?php
 }
 if(isset($_POST['search'])){
@@ -174,11 +203,16 @@ if(isset($_POST['search'])){
         
     }
 
+    $software_type = sprintf("%s", $_POST['software_type']);
+    if(!empty($software_type) && $_POST['jobtype']==='software'){
+        $sql .= " AND software_type = '$software_type' ";
+    }
+
     $depart = sprintf("%s", $_POST['depart']);
     if(!empty($depart)){
         $sql .= " AND depart = '$depart' ";
     }
-
+    
 	$row = mysql_query($sql);
 	$num=mysql_num_rows($row);
 
@@ -215,7 +249,7 @@ if(isset($_POST['search'])){
 		  <td valign="top" class="font1">
 	      <?=$result['date']?>		  </td>
 		  <td align="center" valign="top" class="font1">
-	      <?=$result['row']?>		  </td>		  
+	        <a href="comdetail.php?row=<?=$result['row'];?>" target="_blank" title="คลิกเพื่อดูรายละเอียดงาน"><?=$result['row']?></a></td>		  
 		  <td valign="top" class="font1">
 	      <?=$result['depart']?>		  </td>
 		  <td valign="top" class="font1">
