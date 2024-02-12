@@ -43,7 +43,13 @@ if ($_REQUEST['do'] == 'edit') {
 
 	$hold = DateDiff("$date1", "$date2");
 
-	$update = "UPDATE com_support SET `status`='n', `p_edit`='$p_edit' ,`dateend`='$thidate' , `programmer`='$programmer', hold='$hold' WHERE `row`='$row' ";
+	$jobType = sprintf("%s", $_POST['jobtype']);
+	$software_type = '';
+	if($jobType==='software' && !empty($_POST['software_type'])){
+		$software_type = sprintf("%s", $_POST['software_type']);
+	}
+	
+	$update = "UPDATE com_support SET `status`='n', `p_edit`='$p_edit' ,`dateend`='$thidate' , `programmer`='$programmer', hold='$hold', `software_type`='$software_type' WHERE `row`='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
 

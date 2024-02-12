@@ -4,8 +4,15 @@ include("connect.php");
 if ($_REQUEST['do'] == 'edit') {
 	$row = sprintf("%s", $_POST['row']);
 	$owner = sprintf("%s", $_REQUEST['programmer']);
+
 	$head = sprintf("%s", $_REQUEST['head']);
-	$software_type = sprintf("%s", $_REQUEST['software_type']);
+
+	$jobType = sprintf("%s", $_POST['jobtype']);
+	$software_type = '';
+	if($jobType==='software' && !empty($_POST['software_type'])){
+		$software_type = sprintf("%s", $_POST['software_type']);
+	}
+
 	$update = "UPDATE com_support SET status='a', programmer='$owner', `software_type`='$software_type' Where row='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
