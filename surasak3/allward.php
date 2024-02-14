@@ -50,7 +50,8 @@ $sortname="รพ.สนาม";
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href='booking_system/booking_confirm.php?code=<?=$lbedcode?>'>ระบบจองเตียง</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="med_record.php?code=<?=$lbedcode;?>">Med Record</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด (เริ่ม 1 เม.ย. 65)</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="show_dataipd.php">QR ผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 <br />
 
@@ -240,7 +241,8 @@ $(document).ready(function(){
 			$ptname_encode = rawurlencode($ptname);
 			$sortname_encode = rawurlencode($sortname);
 			?>
-            <td colspan="10" valign="top" ><font class='tablefontt1'>ฉลาก : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname_encode&cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>ยา(1 ดวง)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>ยา(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>เอกสาร(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>เอกสาร(1 ดวง)</a>";?></td>
+            <td colspan="10" valign="top" ><font class='tablefontt1'>ฉลาก : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname_encode&cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>ยา(1 ดวง)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>ยา(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>เอกสาร(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>เอกสาร(1 ดวง)</a>";?>
+			&nbsp;&nbsp; <? echo "<a target=_blank  href=\"anchkstkeye.php?action=print&an=$an&hn=$hn\" class='tablefont3'>สติ๊กเกอร์ผู้ป่วยใน</a>";?></td>
 		  </tr>
 		  <tr>
 			<td colspan="10"><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a></td>
