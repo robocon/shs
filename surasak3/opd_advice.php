@@ -90,6 +90,7 @@ $dbi->query("SET NAMES UTF8");
                         <th>ชื่อ-สกุล</th>
                         <th>คำแนะนำ</th>
                         <th>เจ้าหน้าที่</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <?php 
@@ -113,6 +114,9 @@ $dbi->query("SET NAMES UTF8");
                             ?>
                         </td>
                         <td><?=$a['officer'];?></td>
+                        <td>
+                            <a href="dt_paperLess.php?hn=<?=$a['hn'];?>" class="w3-btn w3-ripple w3-teal w3-round" target="_blank">E-OPD</a>
+                        </td>
                     </tr>
                     <?php
                     $i++;
