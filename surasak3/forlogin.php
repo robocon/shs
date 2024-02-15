@@ -34,6 +34,9 @@ include("connect.inc");
 
 $sql = "SELECT * FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' AND `status` = 'y'";
 $query = sprintf($sql, $sIdname, $sPword);
+$_SESSION['sIdname'] = $sIdname;
+$_SESSION['sPword'] = $sPword;
+
 $result = mysql_query($query) or die( mysql_error($Conn) ); 
 
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -50,9 +53,6 @@ $current_date = (date("Y")+543).date('-m-d H:i:s');
 list($ymd) = explode(' ', $current_date);
 
 $sRowid = false;
-
-$_SESSION['sIdname'] = $row->idname;
-$_SESSION['sPword'] = $row->pword;
 
 // มีชื่อและรหัสผ่านอยู่ในฐานข้อมูล
 if(mysql_num_rows($result)){
@@ -80,6 +80,7 @@ if(mysql_num_rows($result)){
 			// 'code' => $user['menucode'],
 		// );
 		// setcookie("user", serialize($set_user), time()+(3600*365), "/");
+	mysql_query("UPDATE `inputm` SET `last_login`=NOW() WHERE (`row_id`='$sRowid');");
 
 }else{ //กรณีที่ login ไม่ผ่าน
 	
@@ -130,7 +131,7 @@ $nPrefix = $row->prefix;
 	$result3 = mysql_query($query3) or die( mysql_error($Conn) );
 	$nrow3 = mysql_num_rows($result3);
 	
-	print "<font face='THSarabunPSK'><a href='menulst.php?sIdname=".$sIdname."&sPword=".$sPword."' ><B>เข้าสู่<BR>โปรแกรมสุรศักดิ์มนตรี 3</B></a></font>";
+	print "<font face='THSarabunPSK'><a href='menulst.php' ><B>เข้าสู่<BR>โปรแกรมสุรศักดิ์มนตรี 3</B></a></font>";
 	print "<BR>*********";	
     print "</body>";
 	if( $sIdname == $sPword ){

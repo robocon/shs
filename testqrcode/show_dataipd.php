@@ -3,6 +3,29 @@ session_start();
 include 'config.php';
 $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
+
+if(empty($_SESSION['sRowid'])){
+	$sOfficerId = sprintf("%s", urldecode($_GET['sOfficer']));
+	$sqlInputm = "SELECT DATEDIFF(NOW(), `last_login`) AS `diff`,`row_id`,`name`,`idname`,`menucode` FROM `inputm` WHERE `row_id` = '$sOfficerId' LIMIT 1 ";
+	$qInputm = $dbi->query($sqlInputm);
+	if($qInputm->num_rows > 0){
+		$inputm = $qInputm->fetch_assoc();
+		if($inputm['diff'] > 0){
+			header('Location: login.php?id='.$sOfficerId);
+			exit;
+		}else{
+			$_SESSION['sRowid'] = $inputm['row_id'];
+			$_SESSION['sOfficer'] = $inputm['name'];
+			$_SESSION['sIdname'] = $inputm['idname'];
+			$_SESSION['smenucode'] = $inputm['menucode'];
+		}
+	}else{
+		header('Location: login.php?id='.$sOfficerId);
+		exit;
+	}
+}else{
+	// echo $_SESSION['sRowid'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
