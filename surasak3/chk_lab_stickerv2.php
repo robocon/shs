@@ -55,12 +55,28 @@ if ( $action == 'print' ) {
         $ptname = trim($a['name']).' '.trim($a['surname']);
         $ptname = iconv("UTF-8", "TIS-620", $ptname);
 
-        $code_exam = $a['exam_no'];
-        if( empty($code_exam) ){
-            $code_exam = (date('y') + 43).date('md').sprintf('%03d', $a['pid']);
-        }
 
-        $user_number = (int) substr($code_exam,6);
+        // $code_exam = $a['exam_no'];
+        // if( empty($code_exam) ){
+        //     $code_exam = (date('y') + 43).date('md').sprintf('%03d', $a['pid']);
+        // }
+        // $user_number = (int) substr($code_exam,6);
+        $user_number = $a['pid'];
+        if(empty($a['pid'])){
+            if(strlen($a['exam_no'])<5){
+                $user_number = $a['exam_no'];
+
+            }elseif (strlen($a['exam_no'])==5) {
+                $user_number = substr($a['exam_no'],2);
+
+            }elseif (strlen($a['exam_no'])==7) {
+                $user_number = substr($a['exam_no'],4);
+
+            }elseif (strlen($a['exam_no'])==9) {
+                $user_number = substr($a['exam_no'],6);
+
+            }
+        }
         $normal_code = $code_exam.'01';
         $chem_code = $code_exam.'02';
         $ua_code = $code_exam.'03';
