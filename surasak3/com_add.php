@@ -59,6 +59,22 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 	.com_menu a:hover{
 		text-decoration: underline;
 	}
+	#notiContent > ol{
+		margin: 1em;
+		padding: 1em;
+	}
+	#notiBackground{
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+		background-color: white;
+	}
+	label:hover{
+		cursor: pointer;
+	}
 </style>
 <script language="javascript">
 	////// เช็คค่าว่าง
@@ -100,14 +116,15 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 </script>
 
 <body bgcolor="#FFFFFF">
-
+	<div id="notiBackground"></div>
 	<div id="notiContainer" class=""
 		style="position:absolute; left:0; right:0; top:0; bottom:0; margin: auto; background-color:white; border:2px solid #997404; padding:4px; box-shadow: 4px 4px 8px; width: 720px; height: 480px;">
 		<div style="position:relative;">
 			<div class="style2" style="background-color: #ffc107; padding: 2px 4px; color:#000000;">
-				<span>คำแนะนำก่อนการแจ้งซ่อม/ปรับปรุงโปรแกรม</span> <span style="float:right;" onclick="closeBtn()"
-					id="closeBtn">[ กดปิด/Esc เพื่อปิด ]</span></div>
-			<div class="forntsarabun">
+				<span>คำแนะนำก่อนการแจ้งซ่อม/ปรับปรุงโปรแกรม</span>
+				<span style="float:right;" onclick="closeBtn()" id="closeBtn">[ กดปิด/Esc เพื่อปิด ]</span>
+			</div>
+			<div class="forntsarabun" id="notiContent">
 				<ol>
 					<li>
 						<div style="font-weight:bold;"><u style="color:red;">การแจ้งลบ</u> ใบตรวจโรคอิเล็กทรอนิกส์
@@ -121,11 +138,14 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 					</li>
 					<li>
 						<div style="font-weight:bold;">หากมีเจ้าหน้าที่มาปฏิบัติงานใหม่</div>
-						<div>ขอความกรุณาแจ้ง ชื่อ-สกุล แผนกที่ปฏิบัติงาน ก่อนอย่างน้อย 1วัน</div>
+						<div>ขอความกรุณาแจ้ง ชื่อ-สกุล แผนกที่ปฏิบัติงาน ก่อน<u style="color:red;">อย่างน้อย 1วัน</u></div>
 					</li>
 				</ol>
 				<p style="color:red;"><b>กรณีที่ ต้องการแจ้งแก้ไขปรับปรุงโปรแกรม<u>มากกว่า 1 เรื่อง ให้แยกใบงาน</u>
 						เนื่องจากแต่ละงานใช้ระยะเวลาดำเนินการที่แตกต่างกัน ใบงานของท่านอาจจะค้างในระบบเป็นเวลานาน</b>
+				</p>
+				<p style="text-align:center;">
+					<input type="checkbox" name="consent" id="consent"> <label for="consent">ข้าพเจ้าอ่านและรับทราบคำแนะนำทุกประการ</label>
 				</p>
 			</div>
 		</div>
@@ -230,15 +250,20 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 		window.onload = function(){
 			document.addEventListener("keydown", (event) => {
 				if (event.isComposing || event.keyCode === 27) {
-					document.getElementById('notiContainer').style.display = 'none';
-					document.getElementById('head').focus();
+					closeBtn();
 				}
 			});
 		}
 
 		function closeBtn() {
-			document.getElementById('notiContainer').style.display = 'none';
-			document.getElementById('head').focus();
+			var consent =document.getElementById('consent').checked;
+			if(consent===false){
+				alert("กรุณากดรับทราบคำแนะนำก่อนการแจ้งซ่อม");
+			}else if(consent===true){
+				document.getElementById('notiBackground').style.display = 'none';
+				document.getElementById('notiContainer').style.display = 'none';
+				document.getElementById('head').focus();
+			}
 		}
 	</script>
 </body>
