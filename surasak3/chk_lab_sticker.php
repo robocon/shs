@@ -54,10 +54,26 @@ if ( $action == 'print' ) {
             $code_exam = (date('y') + 43).date('md').sprintf('%03d', $item['pid']);
         }
 
-        $user_number = (int) substr($code_exam,6);
+        // $user_number = (int) substr($code_exam,6);
 
-        if($part==='สวนดุสิต63'){
-            $user_number = $item['pid'];
+        // if($part==='สวนดุสิต63'){
+        //     $user_number = $item['pid'];
+        // }
+        $user_number = $item['pid'];
+        if(empty($item['pid'])){
+            if(strlen($item['exam_no'])<5){
+                $user_number = $item['exam_no'];
+
+            }elseif (strlen($item['exam_no'])==5) {
+                $user_number = substr($item['exam_no'],2);
+
+            }elseif (strlen($item['exam_no'])==7) {
+                $user_number = substr($item['exam_no'],4);
+
+            }elseif (strlen($item['exam_no'])==9) {
+                $user_number = substr($item['exam_no'],6);
+
+            }
         }
 
         $normal_code = $code_exam.'01';
