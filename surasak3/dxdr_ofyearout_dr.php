@@ -207,7 +207,7 @@ function togglediv2(divid){
 		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข VN</TD>
 	</TR>
 	<TR>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></TD>
+		<TD class="tb_font"><input type="text" name="p_hn"  value="<?=$_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></TD>
 	</TR>
 	<TR>
 		<TD></TD>
@@ -390,9 +390,9 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyearout_save.php"  target="_blank">
 
-<input name="age" type="hidden" id="age"  value="<?php echo $arr_dxofyear["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<input name="vn" type="hidden" id="vn"  value="<?php echo $queryvn['vn'];?>" />
+<input name="age" type="hidden" id="age"  value="<?=$arr_dxofyear["age"];?>" />
+<input name="hn" type="hidden" id="hn"  value="<?=$arr_view["hn"];?>" />
+<input name="vn" type="hidden" id="vn"  value="<?=$queryvn['vn'];?>" />
 <br />
 <p align="center" class="head_font1"><strong>บันทึกผลการตรวจสุขภาพประจำปี</strong></p>
 <table  width="100%" border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFFFFF">
@@ -406,51 +406,51 @@ $_SESSION["hn_now"] = $arr_view["hn"];
     <tr>
       <td width="148" align="left" class="profilehead">VN</td>
       <td width="10" align="left" class="profile"> :</td>
-      <td width="197"  class="profileheadvalue">&nbsp;<?php echo $queryvn["vn"];?></td>
+      <td width="197"  class="profileheadvalue">&nbsp;<?=$queryvn["vn"];?></td>
       <td width="91" rowspan="2" align="left" valign="bottom" class="profilehead">ชื่อ-สกุล </td>
       <td width="10" rowspan="2" align="left" valign="bottom" class="profile">:</td>
-      <td width="217" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["ptname"];?></td>
+      <td width="217" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?=$arr_view["ptname"];?></td>
       <td width="145" rowspan="2" align="left" valign="bottom" class="profilehead">สังกัด </td>
       <td width="10" rowspan="2" align="left" valign="bottom" class="profile">:</td>
-      <td width="211" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["camp"];?></td>
-      <input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/>
+      <td width="211" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?=$arr_view["camp"];?></td>
+      <input name="ptname" type="hidden" id="ptname" value="<?=$arr_view["ptname"];?>"/>
       <td width="89" rowspan="2" align="left" valign="bottom" class="profilehead">อายุ</td>
       <td width="9" rowspan="2" align="left" valign="bottom" class="profile">:</td>
-      <td width="216" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["age"];?></td>
+      <td width="216" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?=$arr_view["age"];?></td>
     </tr>
     <tr>
       <td align="left" class="profilehead">HN </td>
       <td align="left" class="profile">:</td>
-      <td class="profileheadvalue">&nbsp;<?php echo $arr_view["hn"];?></td>
+      <td class="profileheadvalue">&nbsp;<?=$arr_view["hn"];?></td>
     </tr>
     <tr>
       <td align="left" class="profilehead">ส่วนสูง </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $height; ?> ซม.</td>
+      <td class="profilevalue">&nbsp;<?=$height; ?> ซม.</td>
       <td align="left" class="profilehead">น้ำหนัก</td>
       <td align="left" class="profile">:</td>
-      <td align="left" class="profilevalue">&nbsp;<?php echo $weight; ?> กก. </td>
+      <td align="left" class="profilevalue">&nbsp;<?=$weight; ?> กก. </td>
       <td align="left" class="profilehead">รอบเอว </td>
       <td align="left" class="profile">:</td>
       <?
 			$ht = $height/100;
             $bmi = number_format($weight/($ht*$ht),2);
 			?>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["round_"]; ?> ซม.</td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["round_"]; ?> ซม.</td>
       <td align="left" class="profilehead">BMI</td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue"><span style="color:#F00">&nbsp;<?php echo $bmi; ?></span></td>
+      <td class="profilevalue"><span style="color:#F00">&nbsp;<?=$bmi; ?></span></td>
     </tr>
     <tr>
       <td align="left" class="profilehead">T </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["temperature"]; ?> C&deg;</td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["temperature"]; ?> C&deg;</td>
       <td align="left" class="profilehead">P </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["pause"]; ?> ครั้ง/นาที</td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["pause"]; ?> ครั้ง/นาที</td>
       <td align="left" class="profilehead">R </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["rate"]; ?> ครั้ง/นาที</td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["rate"]; ?> ครั้ง/นาที</td>
       <td align="left" class="profilehead">BP </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<?php if(!empty($arr_dxofyear["bp21"])){ echo $arr_dxofyear["bp21"]; }else{ echo $arr_dxofyear["bp1"];} ?> / <?php if(!empty($arr_dxofyear["bp22"])){ echo $arr_dxofyear["bp22"]; }else{ echo $arr_dxofyear["bp2"];} ?> mmHg</td>
@@ -474,10 +474,10 @@ $_SESSION["hn_now"] = $arr_view["hn"];
     <tr>
       <td align="left" class="profilehead">โรคประจำตัว</td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $congenital_disease;?></td>
+      <td class="profilevalue">&nbsp;<?=$congenital_disease;?></td>
       <td align="left" class="profilehead">อาการ </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear['organ'];?></td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear['organ'];?></td>
       <td class="profilehead">กรุ๊ปเลือด</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue"><?=$arr_dxofyear['blood']?></td>
@@ -500,16 +500,18 @@ $_SESSION["hn_now"] = $arr_view["hn"];
       <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>ค่าความดัน </strong></td>
 	    <td bgcolor="#FFCC99"><span class="profile">:</span></td>
 	    <td bgcolor="#FFCC99" class="profilevalue">
-        <input name='normal55' type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp1"] > 0 && $arr_dxofyear["bp1"] < 129) && ($arr_dxofyear["bp2"] >0 && $arr_dxofyear["bp2"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
-ปกติ
-<input name='normal55' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
-	      <?  
-		  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){
-		  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
-		  }else{
-		  	echo "ผิดปกติ";
-		  }
-		  ?>
+			<input name='normal55' id="normal55_1" type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp1"] > 0 && $arr_dxofyear["bp1"] < 129) && ($arr_dxofyear["bp2"] >0 && $arr_dxofyear["bp2"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
+			<label for="normal55_1">ปกติ</label>
+
+			<input name='normal55' id="normal55_2" type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] >= 89) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
+			<?php
+			$style='';
+			if(($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] >= 89) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){
+				$style='style="color:#F00"';
+			}
+			?>
+			<label for="normal55_2"><span <?=$style;?>><strong>ผิดปกติ</strong></span></label>
+
         </td>
 	    <td colspan="9" bgcolor="#FFCC99" class="profilevalue">
          <div id="acnormal55" <? if($arr_dxofyear["bp1"] < 129 && $arr_dxofyear["bp2"] < 89){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
@@ -578,7 +580,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0"  width="100%" bgcolor="#FFFFCC">
 	<TR>
-		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?php echo $lab_date;?></span></TD>
+		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?=$lab_date;?></span></TD>
 	</TR>
 	<TR class="tb_font">
 		<TD >
@@ -595,7 +597,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 
 		if(!empty($arr_dxofyear[$list_ua[$labname]]))
 			$labresult = $arr_dxofyear[$list_ua[$labname]];
-			<!--<td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
+			<!--<td align="right" class="tb_font_2"><?=$labname;?> : </td>
           <td>&nbsp;<strong><?php  if($flag!="N")  echo "<span class='style6'>".$labresult."</span>"; else echo $labresult;?></strong></td>-->*/
 	  ?>
       <table width="100%" border="0">
@@ -2169,7 +2171,7 @@ BPH</span></td>
 		<TD>
 	 <table height="60" border="0" bordercolor="#FFFFFF" bgcolor="#FFCCCC" class="tb_font">
   <tr>
-    <td valign="top"><textarea name="dx" cols="60" rows="8" id="dx"><?php echo $arr_dxofyear["dx"]; ?></textarea>      &nbsp;&nbsp;</td>
+    <td valign="top"><textarea name="dx" cols="60" rows="8" id="dx"><?=$arr_dxofyear["dx"]; ?></textarea>      &nbsp;&nbsp;</td>
     </tr>
 </table>
 		</TD>
@@ -2182,8 +2184,8 @@ BPH</span></td>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
 <input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />
 </center>
-<INPUT TYPE="hidden" value="<?php echo $bmi;?>" name="bmi" />
-<INPUT TYPE="hidden" value="<?php echo $rowid;?>" name="row_id" />
+<INPUT TYPE="hidden" value="<?=$bmi;?>" name="bmi" />
+<INPUT TYPE="hidden" value="<?=$rowid;?>" name="row_id" />
 </FORM>
 
 <?php }?>
