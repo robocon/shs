@@ -14,11 +14,13 @@ if($action === 'save'){
     foreach ($hn_list as $hn) {
         $xray->officer = $_SESSION['sOfficer'];
         $save = $xray->addXrayOnlyItem($hn, $_POST['xraydetail']);
-        if($save['data']['resInsertXrayDoctor']!==true){
+        
+
+        if($save['data']['resInsertXrayDoctor']['errors']){
             $save_status = false;
         }
 
-        if($save['data']['resInsertXrayStat']!==true){
+        if($save['data']['resInsertXrayStat']['errors']){
             $save_status = false;
         }
     }
@@ -27,6 +29,11 @@ if($action === 'save'){
         ?>
         <p>บันทึกข้อมูลเรียบร้อย</p>
         <p>&lt;&lt;&nbsp;&nbsp;<a href="xray_one2.php">กลับไปหน้าบันทึก</a></p>
+        <?php
+    }else{
+        ?>
+        <p><?=$save['data']['resInsertXrayDoctor']['errors']['detail'];?></p>
+        <p><?=$save['data']['resInsertXrayStat']['errors']['detail'];?></p>
         <?php
     }
 
@@ -79,7 +86,7 @@ if($action === 'save'){
         }
     </style>
 <div class="clearfix">
-    <div style="float:left; width:60%;">
+    <div style="float:left; width:40%;">
         <form action="xray_one2.php" method="post" id="myForm" onsubmit="return checkForm()">
             <table id="myTable">
                 <tr>
@@ -90,7 +97,7 @@ if($action === 'save'){
                 </tr>
                 <tr id="main_hn">
                     <td>HN : </td>
-                    <td><input type="text" onblur="showHnDetail(this.value,this.parentElement)"></td>
+                    <td><input type="text" onblur="showHnDetail(this.value,this.parentElement)" style="width:120px;"></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -101,7 +108,9 @@ if($action === 'save'){
                 <tr>
                     <td colspan="3">
                         <div><h3>ท่าตรวจ</h3></div>
-                        <div id="cXraydetail"></div>
+                        <div id="cXraydetail">
+                            <div id="dv1">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('dv1').style.display='none';document.getElementById('dv1').innerHTML='';">CHEST CHECK UP </a><input type="hidden" name="xraydetail[]" value="CHEST CHECK UP "></div>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -166,7 +175,7 @@ if($action === 'save'){
                 var cell2 = row.insertCell(1);
                 var cell3 = row.insertCell(2);
                 cell1.innerHTML = "HN : ";
-                cell2.innerHTML = '<input type="text" class="hn" name="hn[]" value="'+hn+'"> <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
+                cell2.innerHTML = '<input type="text" class="hn" name="hn[]" value="'+hn+'" style="width:120px;"> <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
                 cell3.innerHTML = "";
             }
         </script>
@@ -204,7 +213,7 @@ if($action === 'save'){
             var cell3 = row.insertCell(2);
             cell1.innerHTML = "HN : ";
             // onblur="showHnDetail(this.value,this.parentElement)"
-            cell2.innerHTML = '<input type="text" class="hn" > <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
+            cell2.innerHTML = '<input type="text" class="hn" style="width:120px;" > <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
             cell3.innerHTML = "";
         }
 

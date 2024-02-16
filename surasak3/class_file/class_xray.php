@@ -34,14 +34,13 @@ class Xray extends DbConnect
 
         if(empty($hn) OR empty($stanceList)){
             return "HN and Xray item is required";
-            exit;
         }
 
         $opcardClass = new Opcard();
         $opcard = $opcardClass->getByHn($hn);
         $thaiDateFull = $this->getThaiDateFull();
         $runno = $this->getXrayRunno();
-        $xray_no = $runno++;
+        $xray_no = $runno+1;
 
         $preSQL = array_map(array($this, 'mapXrayList'), array_keys($stanceList), array_values($stanceList));
         $detailAll = implode(' ', $preSQL);
@@ -58,7 +57,7 @@ class Xray extends DbConnect
             'ptright' => $opcard['ptright'],
             'detail' => $detailAll,
             'doctor' => $this->doctor,
-            'digital' => $this->digital,
+            'digital' => 1,
             'xrayno' => $xray_no,
             'type_diag' => $this->typeDiag,
             'detail_all' => $detailAll,
@@ -68,11 +67,10 @@ class Xray extends DbConnect
         );
         
         $resInsertXrayDoctor = $this->insertXrayDoctor($data);
-
-        $resInsertXrayStat = $this->insertXrayStat($data);
-
         $this->updateXrayRunno($xray_no);
 
+        $resInsertXrayStat = $this->insertXrayStat($data, $resInsertXrayDoctor);
+        
         $res = array(
             'data' => array(
                 'resInsertXrayDoctor' => $resInsertXrayDoctor,
@@ -99,7 +97,7 @@ class Xray extends DbConnect
      * @param string new xray number
      * @return string update status
      */
-    public function updateXrayRunno($xray_no){
+    public function updateXrayRunno($xray_no){ 
         $update = $this->dbi->query("UPDATE `runno` SET `runno` = '$xray_no' WHERE `title`='xrayno'");
         return $update;
     }
@@ -108,7 +106,6 @@ class Xray extends DbConnect
         
         if(empty($data)){
             return "Insert xray doctor data can not be emtpty";
-            exit;
         }
 
         $sqlXrayDoctor = "INSERT INTO `xray_doctor` (
@@ -121,8 +118,9 @@ class Xray extends DbConnect
             '".$data['detail_all']."', '".$data['dbirth']."', 'XRAY'
         );";
 
-        if($this->dbi->query($sqlXrayDoctor)===true){
-            $res = true;
+        $save = $this->dbi->query($sqlXrayDoctor);
+        if($save===true){
+            $res = array('xrayno'=>$data['xrayno']);
         }else{
             $res = array('errors'=>array('status'=>400,'detail'=>$this->dbi->error));
         }
@@ -133,12 +131,15 @@ class Xray extends DbConnect
     /**
      * field digital ของ xray_stat จะนับตามจำนวนรายการค่าใช้จ่ายที่ถูกคิดเข้ามาตาม patdata
      */
-    public function insertXrayStat($data = array()){
+    public function insertXrayStat($data = array(), $xray_doctor=array()){
 
         if(empty($data)){
             return "Insert xray stat can not be emtpty";
-            exit;
+        }elseif (empty($xray_doctor['xrayno'])) {
+            return "Xray doctor is empty ".$xray_doctor['errors']['detail'];
         }
+
+        $xrayDoctorId = $xray_doctor['xrayno'];
         
         $sql_xray_stat = "INSERT INTO `xray_stat` (
             `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
@@ -147,10 +148,10 @@ class Xray extends DbConnect
         )VALUES ( 
             '".$data['date']."', '".$data['hn']."', '', '', '".$data['ptname']."', '".$data['age']."', 
             '".$data['ptright']."', '".$data['patent_from']."', '".$data['detail']."', '".$data['doctor']."', '".$data['digital']."', '0', 
-            '0', '0', '".$data['sOfficer']."', '', ''
+            '0', '0', '".$data['sOfficer']."', '$xrayDoctorId', ''
         );";
         if($this->dbi->query($sql_xray_stat)===true){
-            $res = true;
+            $res = array('xray_stat_id'=>$this->dbi->insert_id);
         }else{
             $res = array('errors'=>array('status'=>400,'detail'=>$this->dbi->error));
         }
