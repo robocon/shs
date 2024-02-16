@@ -1134,6 +1134,26 @@ $bsult = mysql_fetch_array($brow);
         </select>
        </div></td>
 	      </tr>
+
+		<tr>
+			<td align="right" class="profilelab">eGFR :</td>
+			<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">// result -2 year</span></td>
+			<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">// result -1 year</span></td>
+			<td align="center" bgcolor="#FFFFFF" class="profilehead">
+				// result this year
+			</td>
+			<td class="labfont">(// range)</td>
+			<td align="center" class="labfont">
+				// N, H, L
+			</td>
+			<td class="labfont">
+				// radio check ปกติ ผิดปกติ
+			</td>
+			<td class="labfont" colspan="4">
+				// dropdown เหตุผล
+			</td>
+		</tr>
+
 	    <tr>
           <td width="4%" align="right" class="profilelab"> ALP : </td>
           <td width="2%" align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">
