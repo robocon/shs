@@ -184,9 +184,12 @@ a:hover, a:active {
 
 <?php
     $num=0; 
+    $todayEn = date('Y-m-d');
     if(preg_match('/(\d{4}\-\d{2}\-\d{2})/', $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day']) > 0){
         $today = $_POST['year'].'-'.$_POST['month'].'-'.$_POST['day'];
+        $todayEn = ($_POST['year']-543).'-'.$_POST['month'].'-'.$_POST['day'];
     }
+    
     
 	if(!empty($_POST["hn"])){
 		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE hn='".$_POST["hn"]."' and thidate LIKE '$today%' ORDER BY row_id DESC ";
@@ -209,27 +212,37 @@ a:hover, a:active {
         
 	if($numrows > 0){
 
+        $sql112 = "Select row_id,hn From appoint where date LIKE '$today%';";
+        $result112 = Mysql_Query($sql112);
+        $appoint_list = array();
+        while ($a = mysql_fetch_assoc($result112)) {
+            $key = $a['hn'];
+            $appoint_list[$key] = $a['row_id'];
+        }
+
     while (list ($thidate,$thdatehn,$ptname,$hn,$ptright,$doctor,$vn,$clinic,$toborow) = mysql_fetch_row ($result)) {
         $num++;
         $time=substr($thidate,11);
 
-	$sql112 = "Select row_id From appoint where hn = '".$hn."' and apptime !='ยกเลิกการนัด'  and date LIKE '$today%' order by row_id desc limit 1 ";
-	$result112 = Mysql_Query($sql112);
-	$numapp=mysql_num_rows($result112);
-	list($row_id) = Mysql_fetch_row($result112);
-	if($numapp > 0){
-		$printapp="<A target=_BLANK HREF=\"appinsert2.php?row_id=".urlencode($row_id)."\"><img src='images/print-green.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบนัด</div></A>";	
-	}else{
-		$printapp="";
-	}
+        // $sql112 = "Select row_id From appoint where hn = '".$hn."' and apptime !='ยกเลิกการนัด'  and date LIKE '$today%' order by row_id desc limit 1 ";
+        // $result112 = Mysql_Query($sql112);
+        // $numapp=mysql_num_rows($result112);
+        // list($row_id) = Mysql_fetch_row($result112);
+        // if($numapp > 0){
+        if($appoint_list[$hn]){
+            $row_id = $appoint_list[$hn];
+            $printapp="<A target=_BLANK HREF=\"appinsert2.php?row_id=".urlencode($row_id)."\"><img src='images/print-green.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบนัด</div></A>";	
+        }else{
+            $printapp="";
+        }
 
-	if($_SESSION["smenucode"]=="ADMMAINOPD"){
-		$printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์</div></A>";
-	}else{
-		$printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์ ใหญ่</div></A>
-		<div style='margin-top:20px;'><A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์เล็ก</div></A></div>
-        <div><a href='sticker_qr_opd.php?hn=".rawurldecode($hn)."' target='_blank' style='padding:0 20px; border:0;'>สติกเกอร์เล็ก PDF</div>";
-	}	
+        if($_SESSION["smenucode"]=="ADMMAINOPD"){
+            $printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์</div></A>";
+        }else{
+            $printstk="<A target=_BLANK HREF=\"printQrCode_opd.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์ ใหญ่</div></A>
+            <div style='margin-top:20px;'><A target=_BLANK HREF=\"printQrCode_opd1.php?hn=".urlencode($hn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์สติ๊กเกอร์เล็ก</div></A></div>
+            <div><a href='sticker_qr_opd.php?hn=".rawurldecode($hn)."' target='_blank' style='padding:0 20px; border:0;'>สติกเกอร์เล็ก PDF</div>";
+        }	
 
 
 if($num%2==0){
