@@ -191,6 +191,17 @@ $cvquery=mysql_query($cvsql);
 $cvnum=mysql_num_rows($cvquery);
 list($cvdate)=mysql_fetch_array($cvquery);
 
+$htdm = '';
+$q = mysql_query("SELECT dm_no FROM diabetes_clinic WHERE hn = '$hn' LIMIT 1 ");
+if(mysql_num_rows($q)>0){
+	$a = mysql_fetch_assoc($q);
+	$htdm .= '<b style="margin-left:10px;">DM: '.$a['dm_no'].'</b>';
+}
+$q = mysql_query("SELECT ht_no FROM hypertension_clinic WHERE hn = '$hn' LIMIT 1 ");
+if(mysql_num_rows($q)>0){
+	$a = mysql_fetch_assoc($q);
+	$htdm .= '<b style="margin-left:10px;">HT: '.$a['ht_no'].'</b>';
+}
 
 
 
@@ -263,9 +274,9 @@ p.text {
 <script language="javascript">
 //window.opener.location.reload();
 //window.opener.location.reload(true);
-window.print();
+//window.print();
 	setTimeout(function(){ 
-            window.close();
+            // window.close();
 	}, 1000);
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
@@ -321,7 +332,9 @@ window.print();
   </tr>  
 </table>
 <hr>
-<div align="left" style="font-size:24px;"><strong>วัน/เดือน/ปี : <?=$currentDay;?></strong><strong style="margin-left:20px;">VN : <?php echo $vn;?></strong></div>
+<div align="left" style="font-size:24px;">
+	<strong>วัน/เดือน/ปี : <?=$currentDay;?></strong><strong style="margin-left:20px;">VN : <?php echo $vn;?></strong><?=$htdm;?>
+</div>
 
 <?php if($num > 0){ ?>
 <table cellpadding="0" cellspacing="0" border="0" style="font-size:9pt;">
