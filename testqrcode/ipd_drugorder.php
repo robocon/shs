@@ -67,14 +67,23 @@ $act = sprintf("%s", (!empty($_POST['act']) ? $_POST['act'] : '' ));
 
 <body>
 	<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+	<?php 
+	$sql = "SELECT ptname FROM bed WHERE an = '$an' ";
+	$q = $dbi->query($sql);
+	$bed = $q->fetch_assoc();
+	?>
 	<div class="container text-center">
-        <div class="mt-4">
-            <img src="images/drug.png" width="64" height="64px">
-        </div>
-		<h1 class="h1 mt-4 fw-bold">ระบบตรวจสอบการจ่ายยาผู้ป่วยใน</h1>
+		<div class="row row-cols-1 row-cols-md-2 mt-2">
+			<div class="col mb-2">
+				<img src="images/drug.png" width="64" height="64px">
+			</div>
+			<div class="col mb-2">
+				<h1 class="h1 mt-2 fw-bold">ระบบตรวจสอบการจ่ายยาผู้ป่วยใน<br>AN: <?=$an;?> <?=$bed['ptname'];?></h1></h1>
+			</div>
+		</div>
 		<form name="frm" id="frm" method="POST" action="ipd_drugorder.php?hn=<?=$hn;?>&an=<?=$an;?>">
-			<div class="row">
-				<div class="col">
+			<div class="row row-cols-1 row-cols-md-2">
+				<div class="col mb-2">
 					<div id="camera_container" style="display:none; position: relative;">
 						<div id="camera_content"></div>
 					</div>
@@ -101,7 +110,7 @@ $act = sprintf("%s", (!empty($_POST['act']) ? $_POST['act'] : '' ));
 			</div>
 		</form>
 		<div>
-			<p class="text-danger fw-bold">*** กรณีใช้เครื่องยิง Barcode แล้วพบว่าตัวอักษรเป็นภาษาไทย ให้เปลี่ยนภาษาที่แป้นพิมพ์ ตัว &#126;เป็นภาษาอังกฤษก่อน ***</p>
+			<p class="text-danger fw-bold">*** กรณีใช้เครื่องยิง Barcode แล้วพบว่าตัวอักษรเป็นภาษาไทย ***<br>*** ให้เปลี่ยนภาษาที่แป้นพิมพ์ ตัว &#126; เป็นภาษาอังกฤษก่อน ***</p>
 		</div>
 		<?php 
 		if($act==='search'){
@@ -145,7 +154,7 @@ $act = sprintf("%s", (!empty($_POST['act']) ? $_POST['act'] : '' ));
 							$drugcode = $a['drugcode'];
 
 							// <a href=\"ipd_drugorder_form.php?row_id=$row_id&an=$getan&hn=$gethn&drugcode=$drugcode&act=$getact\">จ่ายยา</a>
-							$href = SM3_HOST_URL."ipd_drugorder_form.phprow_id=$row_id&an=$an&hn=$hn&drugcode=$drugcode"
+							$href = SM3_HOST_URL."ipd_drugorder_form.php?row_id=$row_id&an=$an&hn=$hn&drugcode=$drugcode"
 							?>
 							<tr>
 								<td><?=$i;?></td>
@@ -207,9 +216,6 @@ $act = sprintf("%s", (!empty($_POST['act']) ? $_POST['act'] : '' ));
 			function onScanFailure(error) {
 				testHn = '';
 			}
-
-			
-
 		</script>
 </body>
 

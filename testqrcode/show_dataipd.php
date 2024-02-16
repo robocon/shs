@@ -26,6 +26,30 @@ if(empty($_SESSION['sRowid'])){
 }else{
 	// echo $_SESSION['sRowid'];
 }
+
+
+$action = (!empty($_GET["action"])) ? sprintf("%s", $_GET["action"]) : '';
+if($action==='search_an'){
+	$an = sprintf("%s", $_GET["an"]);
+	if(preg_match('/\d+\/\d+/', $an)>0){
+		$sqlIpcard = "SELECT `an`,`hn`,`ptname`,`ptright`,`bedcode`,`diag`,`doctor`,`my_ward`,`adm_w` FROM `ipcard` WHERE `an` = '$an' AND `dcdate` ='0000-00-00 00:00:00' LIMIT 1 ";
+	}else{
+		$sqlIpcard = "SELECT `an`,`hn`,`ptname`,`ptright`,`bedcode`,`diag`,`doctor`,`my_ward`,`adm_w` FROM `ipcard` WHERE hn = '$an' AND `dcdate` ='0000-00-00 00:00:00' ORDER BY row_id DESC LIMIT 1 ;";
+	}
+	$qIpcard = $dbi->query($sqlIpcard);
+	$num = $qIpcard->num_rows;
+	if ($num < 1) {
+		$res = ['status'=>400,'message'=>'ไม่พบ AN:'.$an.' กรุณาตรวจสอบข้อมูลใหม่อีกครั้ง'];
+	}else{
+		$ipcard = $qIpcard->fetch_assoc();
+		$res = ['status'=>200,'an'=>$ipcard['an']];
+	}
+	echo json_encode($res);
+	exit;
+}
+
+
+$anPost = sprintf("%s", (!empty($_POST['an']) ? $_POST['an'] : '' ));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +58,10 @@ if(empty($_SESSION['sRowid'])){
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <link href="bootstrap-5.3.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
 <script src="bootstrap-5.3.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style type="text/css">
 	body {
@@ -71,11 +98,10 @@ if(empty($_SESSION['sRowid'])){
 <body>
 	<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 	<div class="container text-center">
-		<h1 class="h1 p-4 fw-bold">ระบบตรวจสอบข้อมูลผู้ป่วยใน</h1>
+		<h1 class="h1 mt-2 fw-bold">ระบบตรวจสอบข้อมูลผู้ป่วยใน</h1>
 		<form name="frm" id="frm" method="POST" action="show_dataipd.php">
-
-			<div class="row">
-				<div class="col">
+			<div class="row row-cols-1 row-cols-md-2">
+				<div class="col mb-2">
 					<div id="camera_container" style="display:none; position: relative;">
 						<div id="camera_content"></div>
 					</div>
@@ -86,20 +112,64 @@ if(empty($_SESSION['sRowid'])){
 						<button type="button" onclick="checkHn()" class="sarabun btn btn-success">แสกน</button>
 						<div id="camera_response" class="text-danger fw-bold"></div>
 					</div>
-					<div class="mb-2">
-						<input type="text" name="an" id="search" size="22" id="an" class="sarabun" placeholder="กรุณาระบุ AN ผู้ป่วย" autofocus>
+					<div class="mb-2" style="margin-left:auto; margin-right:auto; display:table;">
+						<div class="input-group">
+							<input type="text" class="form-control sarabun" placeholder="ระบุ AN ผู้ป่วย" size="22" name="an" id="an" autofocus value="<?=$anPost;?>">
+							<button class="btn btn-primary" type="button" onclick="clearInput()"><i class="bi bi-x-circle"></i></button>
+						</div>
 					</div>
 					<div>
-						<button type="submit" class="sarabun btn btn-success">ค้นหา</button>
+						<button type="button" class="sarabun btn btn-success" onclick="search_an()">ค้นหา</button>
 						<input type="hidden" name="act" value="show">
 					</div>
 				</div>
 			</div>
 		</form>
 		<div>
-			<p class="text-danger fw-bold">*** กรณีใช้เครื่องยิง Barcode แล้วพบว่าตัวอักษรเป็นภาษาไทย ให้เปลี่ยนภาษาที่แป้นพิมพ์ ตัว &#126;เป็นภาษาอังกฤษก่อน ***</p>
+			<p class="text-danger fw-bold">*** กรณีใช้เครื่องยิง Barcode แล้วพบว่าตัวอักษรเป็นภาษาไทย ***<br>*** ให้เปลี่ยนภาษาที่แป้นพิมพ์ ตัว &#126; เป็นภาษาอังกฤษก่อน ***</p>
 		</div>
 		<script>
+			document.getElementById('frm').addEventListener('submit', function(event){
+				event.preventDefault();
+				const an = document.getElementById('an').value.trim();
+				before_find_an(an);
+			});
+
+			function search_an(){
+				const an = document.getElementById('an').value.trim();
+				before_find_an(an);
+			}
+
+			function before_find_an(an){
+				if(an==''){
+					Swal.fire({
+						icon: "error",
+						title: "กรุณาระบุ AN"
+					});
+				}else{
+					find_an(an).then(function(res){
+						if(res.status==400){
+							Swal.fire({
+								icon: "error",
+								title: res.message
+							});
+						}else if(res.status==200){
+							document.getElementById('frm').submit();
+						}
+					});
+				}
+			}
+
+			async function find_an(an){
+				const response = await fetch('show_dataipd.php?action=search_an&an='+an);
+				const data = await response.json();
+				return data;
+			}
+
+			function clearInput(){
+				document.getElementById('an').value = '';
+			}
+
 			function showCameraContainer() {
 				document.getElementById('camera_container').style.display = '';
 				let html5QrcodeScanner = new Html5QrcodeScanner(
@@ -119,10 +189,10 @@ if(empty($_SESSION['sRowid'])){
 			function checkHn() {
 				if (testHn === '') {
 					document.getElementById('camera_response').innerHTML = 'กรุณาตั้ง QR Code ให้อยู่ในกรอบ';
-					document.getElementById('search').value = '';
+					document.getElementById('an').value = '';
 				} else {
 					document.getElementById('camera_response').innerHTML = '';
-					document.getElementById('search').value = testHn;
+					document.getElementById('an').value = testHn;
 				}
 			}
 
@@ -134,9 +204,13 @@ if(empty($_SESSION['sRowid'])){
 		<?php
 		$act = (!empty($_POST["act"])) ? sprintf("%s", $_POST["act"]) : '';
 		if ($act == "show") {
-
+			
 			$an = sprintf("%s", $_POST["an"]);
-			$sql1 = "SELECT `an`,`hn`,`ptname`,`ptright`,`bedcode`,`diag`,`doctor`,`my_ward`,`adm_w` FROM `ipcard`  WHERE `an` = '" . $an . "' AND `dcdate` ='0000-00-00 00:00:00' LIMIT 1 ";
+			if(preg_match('/\d+\/\d+/', $an)>0){
+				$sql1 = "SELECT `an`,`hn`,`ptname`,`ptright`,`bedcode`,`diag`,`doctor`,`my_ward`,`adm_w` FROM `ipcard` WHERE `an` = '$an' AND `dcdate` ='0000-00-00 00:00:00' LIMIT 1 ";
+			}else{
+				$sql1 = "SELECT `an`,`hn`,`ptname`,`ptright`,`bedcode`,`diag`,`doctor`,`my_ward`,`adm_w` FROM `ipcard` WHERE hn = '$an' AND `dcdate` ='0000-00-00 00:00:00' ORDER BY row_id DESC LIMIT 1 ;";
+			}
 			$resxult1 = $dbi->query($sql1);
 			$num = $resxult1->num_rows;
 			if ($num < 1) {
@@ -158,7 +232,10 @@ if(empty($_SESSION['sRowid'])){
 				$my_ward = $ipcard['my_ward'];
 				$adm_w = $ipcard['adm_w'];
 
-				$query = "SELECT `idcard`,`bed`,`date`,date_format(`date`,'%d-%m-%Y'),`diagnos`,`food`,`price`,`paid`,`debt`,`caldate`,`bedname`,`chgdate`,`status`,`age`,`diag1`,`days` FROM `bed` WHERE `an` = '$an' ORDER BY `bedcode` ASC ";
+				$query = "SELECT `idcard`,`bed`,`date`,date_format(`date`,'%d-%m-%Y'),`diagnos`,`food`,`price`,`paid`,`debt`,`caldate`,`bedname`,`chgdate`,`status`,`age`,`diag1`,`days` 
+				FROM `bed` 
+				WHERE `an` = '$an' 
+				ORDER BY `bedcode` ASC ";
 				$result = $dbi->query($query);
 				list($idcard, $bed, $date1, $date, $diagnos, $food, $price, $paid, $debt, $caldate, $bedname, $chgdate, $status, $age, $diag1, $daysall) = $result->fetch_array();
 				$str = "month=" . date('m') . "&year=" . (date('Y') + 543) . "&date=" . date('dmy');
@@ -237,49 +314,49 @@ if(empty($_SESSION['sRowid'])){
 						</table>
 					</form>
 				</div>
-					<div class="row row-cols-1 row-cols-md-4 g-4">
-						<div class="col">
-							<div class="card">
-								<a href="ipd_labchk.php?an=<?=$an;?>&hn=<?=$hn;?>" target="_blank">
-									<img src="images/blood-bag.png" class="card-img-top" alt="ข้อมูลการให้เลือด">
-									<div class="card-body">
-										<h5 class="card-title fw-bold">ข้อมูลการให้เลือด</h5>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col">
-							<div class="card">
-								<a href="<?=SM3_HOST_URL;?>ipd_drugmar.php?an=<?=$an;?>&hn=<?=$hn;?>&<?=$str;?>" target="_blank">
-									<img src="images/prescription.png" class="card-img-top" alt="ใบ MAR">
-									<div class="card-body">
-										<h5 class="card-title fw-bold">ใบ MAR</h5>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col">
-							<div class="card">
-								<a href="ipd_drugorder.php?an=<?=$an;?>&hn=<?=$hn;?>" target="_blank">
-									<img src="images/nurse.png" class="card-img-top" alt="จ่ายยาผู้ป่วย">
-									<div class="card-body">
-										<h5 class="card-title fw-bold">จ่ายยาผู้ป่วย</h5>
-									</div>
-								</a>
-							</div>
-						</div>
-						<div class="col">
-							<div class="card">
-								<a href="<?=SM3_HOST_URL;?>ipd_drugchk.php?an=<?=$an;?>&hn=<?=$hn;?>&<?=$str;?>" target="_blank">
-									<img src="images/drug.png" class="card-img-top" alt="Drugprofile">
-									<div class="card-body">
-										<h5 class="card-title fw-bold">Drugprofile</h5>
-									</div>
-								</a>
-							</div>
+				<!-- row-cols-1 row-cols-md-4 g-4 -->
+				<div class="row mb-4">
+					<div class="col">
+						<div class="card h-100">
+							<a href="ipd_labchk.php?an=<?=$an;?>&hn=<?=$hn;?>" target="_blank">
+								<img src="images/blood-bag.png" class="card-img-top" alt="ข้อมูลการให้เลือด">
+								<div class="card-body">
+									<h5 class="card-title fw-bold">ข้อมูลการให้เลือด</h5>
+								</div>
+							</a>
 						</div>
 					</div>
-				
+					<div class="col">
+						<div class="card h-100">
+							<a href="<?=SM3_HOST_URL;?>ipd_drugmar.php?an=<?=$an;?>&hn=<?=$hn;?>&<?=$str;?>" target="_blank">
+								<img src="images/prescription.png" class="card-img-top" alt="ใบ MAR">
+								<div class="card-body">
+									<h5 class="card-title fw-bold">ใบ MAR</h5>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card h-100">
+							<a href="ipd_drugorder.php?an=<?=$an;?>&hn=<?=$hn;?>" target="_blank">
+								<img src="images/nurse.png" class="card-img-top" alt="จ่ายยาผู้ป่วย">
+								<div class="card-body">
+									<h5 class="card-title fw-bold">จ่ายยาผู้ป่วย</h5>
+								</div>
+							</a>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card h-100">
+							<a href="<?=SM3_HOST_URL;?>ipd_drugchk.php?an=<?=$an;?>&hn=<?=$hn;?>&<?=$str;?>" target="_blank">
+								<img src="images/drug.png" class="card-img-top" alt="Drugprofile">
+								<div class="card-body">
+									<h5 class="card-title fw-bold">Drugprofile</h5>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
 				<?php
 			}
 		} // end if ($act == "show")
