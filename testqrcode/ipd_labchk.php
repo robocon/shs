@@ -92,15 +92,23 @@ if ($act == "search") {
 
 <body>
 	<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+	<?php 
+	$sql = "SELECT ptname FROM bed WHERE an = '$an' ";
+	$q = $dbi->query($sql);
+	$bed = $q->fetch_assoc();
+	?>
 	<div class="container text-center">
-
-        <div class="mt-4">
-            <img src="images/blood-bag.png" width="64" height="64px">
-        </div>
-		<h1 class="h1 mt-4 fw-bold">ระบบตรวจสอบข้อมูลการให้เลือดผู้ป่วยใน</h1>
+		<div class="row row-cols-1 row-cols-md-2 mt-2">
+			<div class="col mb-2">
+				<img src="images/blood-bag.png" width="64" height="64px">
+			</div>
+			<div class="col mb-2">
+				<h1 class="h1 mt-2 fw-bold">ระบบตรวจสอบข้อมูลการให้เลือดผู้ป่วยใน<br>AN: <?=$an;?> <?=$bed['ptname'];?></h1>
+			</div>
+		</div>
 		<form name="frm" id="frm" method="GET" action="ipd_labchk.php">
-			<div class="row">
-				<div class="col">
+			<div class="row row-cols-1 row-cols-md-2">
+				<div class="col mb-2">
 					<div id="camera_container" style="display:none; position: relative;">
 						<div id="camera_content"></div>
 					</div>
@@ -126,7 +134,7 @@ if ($act == "search") {
 			</div>
 		</form>
 		<div>
-			<p class="text-danger fw-bold">*** กรณีใช้เครื่องยิง Barcode แล้วพบว่าตัวอักษรเป็นภาษาไทย ให้เปลี่ยนภาษาที่แป้นพิมพ์ ตัว &#126;เป็นภาษาอังกฤษก่อน ***</p>
+			<p class="text-danger fw-bold">*** กรณีใช้เครื่องยิง Barcode แล้วพบว่าตัวอักษรเป็นภาษาไทย ***<br>*** ให้เปลี่ยนภาษาที่แป้นพิมพ์ ตัว &#126; เป็นภาษาอังกฤษก่อน ***</p>
 		</div>
 		<script>
 			function clearInput(){
