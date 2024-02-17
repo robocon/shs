@@ -245,6 +245,11 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 	$DB = $dxdr_ofyear['DB'];
 	$DBrange = $dxdr_ofyear['DBrange'];
 	$stat_db = $_POST['stat_db'];
+
+	$egfr = (!empty($_POST['egfr']) ? $_POST['egfr'] : '' );
+	$egfr_state = (!empty($_POST['egfr_state']) ? $_POST['egfr_state'] : '' );
+	$egfr_status = (!empty($_POST['egfr_status']) ? $_POST['egfr_status'] : '' );
+	$egfr_reason = (!empty($_POST['egfr_reason']) ? $_POST['egfr_reason'] : '' );
 	
 	$sql ="INSERT INTO  `condxofyear_out` ( 
 		`thidate` ,  `thdatehn` ,  `thdatevn` ,  `hn` ,  `vn` , `ptname`  , 
@@ -295,7 +300,8 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		`ldl`,`ldl_range`,`stat_ldl`,`reason_ldl`,`stocc`,`stoccflag`,`stat_stocc`,
 		`hba1c`,`hba1c_range`,`stat_hba1c`,`reason_hba1c`,
 		`CEA`,`CEArange`,`stat_cea`,`PSA`,`PSArange`,`stat_psa`,`AFP`,`AFPrange`,`stat_afp`,
-		`TP`,`TPrange`,`stat_tp`,`ALB`,`ALBrange`,`stat_alb`,`TB`,`TBPrange`,`stat_tb`,`DB`,`DBrange`,`stat_db`
+		`TP`,`TPrange`,`stat_tp`,`ALB`,`ALBrange`,`stat_alb`,`TB`,`TBPrange`,`stat_tb`,`DB`,`DBrange`,`stat_db`,
+		`egfr`, `egfr_state`, `egfr_status`, `egfr_reason`
 		) 
 	
 	VALUES ( 
@@ -350,7 +356,8 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		'$ldl','$ldl_range','$stat_ldl','$reason_ldl','$stocc','$stoccflag','$stat_stocc',
 		'$hba1c','$hba1c_range','$stat_hba1c','$reason_hba1c',
 		'$CEA','$CEArange','$stat_cea','$PSA','$PSArange','$stat_psa','$AFP','$AFPrange','$stat_afp',
-		'$TP','$TPrange','$stat_tp','$ALB','$ALBrange','$stat_alb','$TB','$TBPrange','$stat_tb','$DB','$DBrange','$stat_db'
+		'$TP','$TPrange','$stat_tp','$ALB','$ALBrange','$stat_alb','$TB','$TBPrange','$stat_tb','$DB','$DBrange','$stat_db',
+		'$egfr','$egfr_state','$egfr_status','$egfr_reason'
 		) ";
 
 	/*$sql = "Update `condxofyear_out` set `thidate` = '".$date_now."' ,`thdatehn` = '".$date_hn."' ,`thdatevn` = '".$date_vn."' ,`dx` = '".$_POST["dx"]."' ,`bmi` = '".$_POST["bmi"]."' , `doctor` ='".$_POST["doctorn"]."', `stat_ua` ='".$_POST["normal"]."' , `stat_hct` ='".$_POST["normal31"]."' , `stat_wbc` ='".$_POST["normal32"]."' , `stat_pltc` ='".$_POST["normal33"]."' , `stat_alk` ='".$_POST["normal1"]."' , `stat_sgpt` ='".$_POST["normal2"]."' , `stat_sgot` ='".$_POST["normal3"]."' , `stat_bun` ='".$_POST["normal4"]."' , `stat_chol` ='".$_POST["normal5"]."' , `stat_cr` ='".$_POST["normal6"]."' , `stat_bs` ='".$_POST["normal7"]."' , `stat_tg` ='".$_POST["normal8"]."' , `stat_uric` ='".$_POST["normal9"]."' , `reason_ua` ='".$_POST["ch"]."' , `reason_hct` ='".$_POST["ch31"]."' , `reason_wbc` ='".$_POST["ch32"]."' , `reason_pltc` ='".$_POST["ch33"]."' , `reason_bs` ='".$_POST["ch7"]."' , `reason_bun` ='".$_POST["ch4"]."' , `reason_cr` ='".$_POST["ch6"]."' , `reason_uric` ='".$_POST["ch9"]."' , `reason_chol` ='".$_POST["ch5"]."' , `reason_tg` ='".$_POST["ch8"]."' , `reason_sgot` ='".$_POST["ch3"]."' , `reason_sgpt` ='".$_POST["ch2"]."' , `reason_alk` ='".$_POST["ch1"]."' , `general` ='".$_POST["normal21"]."' , `cxr` ='".$_POST["normal22"]."' , `pap` ='".$_POST["normal23"]."' , `stat_other1` ='".$_POST["normal24"]."' , `stat_other2` ='".$_POST["normal25"]."' , `reason_general` ='".$_POST["ch21"]."' , `reason_cxr` ='".$_POST["ch22"]."' , `reason_pap` ='".$_POST["ch23"]."' , `reason_other1` ='".$_POST["ch24"]."' , `reason_other2` ='".$_POST["ch25"]."' , `other1` ='".$_POST["other1"]."' , `other2` ='".$_POST["other2"]."' , `summary` ='".$_POST["normal26"]."'  where `row_id` = '".$_POST["row_id"]."' limit 1";

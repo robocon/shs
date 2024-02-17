@@ -212,9 +212,10 @@ $list_lab["URIC"] = "uric";
 
 			//ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 			$sql = "SELECT date_format(a.orderdate,'%d/%m/%Y') 
-			FROM resulthead AS a 
-			WHERE a.hn='$opdayHn' AND clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' 
-			ORDER by a.autonumber DESC LIMIT 0,1";
+			FROM resulthead
+			WHERE hn='$opdayHn' 
+			AND clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix' 
+			ORDER by autonumber DESC LIMIT 0,1";
 
 			list($lab_date) = mysql_fetch_row(mysql_query($sql));
 
@@ -1346,78 +1347,80 @@ $list_lab["URIC"] = "uric";
 								$q = $dbi->query($sqlResulthead);
 								$egfr = array();
 								if($q->num_rows>0){
+
 									while ($a = $q->fetch_assoc()) {
 										$key = $a['labcode'];
 										$egfr[$key] = $a;
 									}
-								}
 								
-								$state1 = $state2 = $state3 = $state4 = $state5 = '';
-								if($egfr['GFR']['result']<15){
-									$state5 = 'selected="selected"';
+									$state1 = $state2 = $state3 = $state4 = $state5 = '';
+									if($egfr['GFR']['result']<15){
+										$state5 = 'selected="selected"';
 
-								}elseif ($egfr['GFR']['result']>=15 && $egfr['GFR']['result']<=29) {
-									$state4 = 'selected="selected"';
+									}elseif ($egfr['GFR']['result']>=15 && $egfr['GFR']['result']<=29) {
+										$state4 = 'selected="selected"';
 
-								}elseif ($egfr['GFR']['result']>=30 && $egfr['GFR']['result']<=59) {
-									$state3 = 'selected="selected"';
+									}elseif ($egfr['GFR']['result']>=30 && $egfr['GFR']['result']<=59) {
+										$state3 = 'selected="selected"';
 
-								}elseif ($egfr['GFR']['result']>=60 && $egfr['GFR']['result']<=89) {
-									$state2 = 'selected="selected"';
+									}elseif ($egfr['GFR']['result']>=60 && $egfr['GFR']['result']<=89) {
+										$state2 = 'selected="selected"';
 
-								}elseif ($egfr['GFR']['result']<=90) {
-									$state1 = 'selected="selected"';
+									}elseif ($egfr['GFR']['result']<=90) {
+										$state1 = 'selected="selected"';
 
+									}
+									?>
+									<tr>
+										<td align="right" class="profilelab">eGFR :</td>
+										<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"></span></td>
+										<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"></span></td>
+										<td align="center" bgcolor="#FFFFFF" class="profilehead">
+											<?=$egfr['GFR']['result'];?>
+											<input type="hidden" name="egfr" value="<?=$egfr['GFR']['result'];?>">
+										</td>
+										<td class="labfont">
+											(<?=$egfr['STAGE']['result'];?>)
+											<input type="hidden" name="egfr_state" value="<?=$egfr['STAGE']['result'];?>">
+										</td>
+										<td align="center" class="labfont">
+											<?=$egfr['GFR']['flag'];?>
+										</td>
+										<td class="labfont">
+											<?php
+											$egfr1Checked = '';
+											$egfrReasonDisplay = 'style="display:none"';
+											if($egfr['GFR']['result']>90){
+												$egfr1Checked = 'checked="checked"';
+											}
+											?>
+											<input type="radio" name="egfr_status" id="resultEgfr1" <?=$egfr1Checked;?> onclick="togglediv2('egfr_reason');" value="ปกติ"> <label for="resultEgfr1">ปกติ</label>
+											
+											<?php 
+											$egfr2Checked = '';
+											$egfr2Style = '';
+											if($egfr['GFR']['result']<=90){
+												$egfr2Checked = 'checked="checked"';
+												$egfr2Style = 'style="color:red; font-weight:bold;"';
+												$egfrReasonDisplay = '';
+											}
+											?>
+											<input type="radio" name="egfr_status" id="resultEgfr2" <?=$egfr2Checked;?> onclick="togglediv1('egfr_reason');" value="ผิดปกติ"> <label for="resultEgfr2" <?=$egfr2Style;?> >ผิดปกติ</label>
+											
+										</td>
+										<td class="labfont" colspan="4">
+											<select name="egfr_reason" id="egfr_reason" <?=$egfrReasonDisplay;?> >
+												<option value="การทำงานของไตอยู่ภาวะไตวาย" <?=$state5;?>>การทำงานของไตอยู่ภาวะไตวาย</option>
+												<option value="การทำงานของไตทำงานผิดปกติมาก" <?=$state4;?>>การทำงานของไตทำงานผิดปกติมาก</option>
+												<option value="การทำงานของไตทำงานปานกลาง" <?=$state3;?>>การทำงานของไตทำงานปานกลาง</option>
+												<option value="การทำงานของไตมีผิดปกติเล็กน้อย" <?=$state2;?>>การทำงานของไตมีผิดปกติเล็กน้อย</option>
+												<option value=" การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม" <?=$state1;?>> การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม</option>
+											</select>
+										</td>
+									</tr>
+									<?php
 								}
 								?>
-								<tr>
-									<td align="right" class="profilelab">eGFR :</td>
-									<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"></span></td>
-									<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"></span></td>
-									<td align="center" bgcolor="#FFFFFF" class="profilehead">
-										<?=$egfr['GFR']['result'];?>
-										<input type="hidden" name="egfr" value="<?=$egfr['GFR']['result'];?>">
-									</td>
-									<td class="labfont">
-										(<?=$egfr['STAGE']['result'];?>)
-										<input type="hidden" name="egfr_state" value="<?=$egfr['STAGE']['result'];?>">
-									</td>
-									<td align="center" class="labfont">
-										<?=$egfr['GFR']['flag'];?>
-									</td>
-									<td class="labfont">
-										<?php
-										$egfr1Checked = '';
-										$egfrReasonDisplay = 'style="display:none"';
-										if($egfr['GFR']['result']>90){
-											$egfr1Checked = 'checked="checked"';
-										}
-										?>
-										<input type="radio" name="egfr_status" id="resultEgfr1" <?=$egfr1Checked;?> onclick="togglediv2('egfr_reason');" value="ปกติ"> <label for="resultEgfr1">ปกติ</label>
-										
-										<?php 
-										$egfr2Checked = '';
-										$egfr2Style = '';
-										if($egfr['GFR']['result']<=90){
-											$egfr2Checked = 'checked="checked"';
-											$egfr2Style = 'style="color:red; font-weight:bold;"';
-											$egfrReasonDisplay = '';
-										}
-										?>
-										<input type="radio" name="egfr_status" id="resultEgfr2" <?=$egfr2Checked;?> onclick="togglediv1('egfr_reason');" value="ผิดปกติ"> <label for="resultEgfr2" <?=$egfr2Style;?> >ผิดปกติ</label>
-										
-									</td>
-									<td class="labfont" colspan="4">
-										<select name="egfr_reason" id="egfr_reason" <?=$egfrReasonDisplay;?> >
-											<option value="การทำงานของไตอยู่ภาวะไตวาย" <?=$state5;?>>การทำงานของไตอยู่ภาวะไตวาย</option>
-											<option value="การทำงานของไตทำงานผิดปกติมาก" <?=$state4;?>>การทำงานของไตทำงานผิดปกติมาก</option>
-											<option value="การทำงานของไตทำงานปานกลาง" <?=$state3;?>>การทำงานของไตทำงานปานกลาง</option>
-											<option value="การทำงานของไตมีผิดปกติเล็กน้อย" <?=$state2;?>>การทำงานของไตมีผิดปกติเล็กน้อย</option>
-											<option value=" การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม" <?=$state1;?>> การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม</option>
-										</select>
-									</td>
-								</tr>
-
 
 								<tr>
 									<td width="4%" align="right" class="profilelab"> ALP : </td>

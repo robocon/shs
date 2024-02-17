@@ -219,10 +219,10 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 	$stat_hba1c = $_POST['stat_hba1c'];
 	$reason_hba1c = $_POST['reason_hba1c'];
 
-	$egfr = $_POST['egfr'];
-	$egfr_state = $_POST['egfr_state'];
-	$egfr_status = $_POST['egfr_status'];
-	$egfr_reason = $_POST['egfr_reason'];
+	$egfr = (!empty($_POST['egfr']) ? $_POST['egfr'] : '' );
+	$egfr_state = (!empty($_POST['egfr_state']) ? $_POST['egfr_state'] : '' );
+	$egfr_status = (!empty($_POST['egfr_status']) ? $_POST['egfr_status'] : '' );
+	$egfr_reason = (!empty($_POST['egfr_reason']) ? $_POST['egfr_reason'] : '' );
 
 	
 $sql ="INSERT INTO  `condxofyear_out` ( 
