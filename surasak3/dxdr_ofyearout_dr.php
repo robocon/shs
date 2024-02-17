@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("connect.inc");
-include("dt_menu.php");
+
 session_unregister("list_bill");
 session_register("list_bill");
 $_SESSION["list_bill"] = "";
@@ -10,7 +10,6 @@ $_POST["post_vn"] = 1;
 $_SESSION["dt_doctor"] = $_SESSION["sOfficer"];
 
 $date_now = date("Y-m-d H:i:s");
-
 
 function calcage($birth){
 
@@ -99,82 +98,30 @@ $list_lab["STOCC"] = "stocc";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>ตรวจสุขภาพ</title>
 <style>
-	.font_title{font-family:"TH Sarabun New"; font-size:32px;}
-	.tb_font{font-family:"TH Sarabun New"; font-size:24px;}
-	.tb_font_1{font-family:"TH Sarabun New"; font-size:24px; color:#FFFFFF; font-weight:bold;}
-	.tb_col{font-family:"TH Sarabun New"; font-size:24px; background-color:#9FFF9F;}
-	.head_font1{font-family:"TH Sarabun New"; font-size:24px; color:#000000; font-weight:bold;}
-.tb_font_2 {
-	font-family:"TH Sarabun New";
-	color: #333;
-	font-weight: bold;
-	font-size: 18px;
-}
-body,td,th {
-	font-family: Angsana New;
-	font-size: 18px;
-}
-
-.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
-.tb_menu {background-color: #FFFFC1;  }
-.profile {
-	font-family: "TH Sarabun New";
-	color: #00F;
-	font-size: 18px;
-	
-}
-.profilevalue {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-}
-.profilehead {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	color: #00F;
-	font-weight: bold;
-}
-.profilelab {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	color: #000;
-	font-weight: bold;
-}
-.profileheadvalue {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	
-}
-.labfont {
-	font-family:"TH Sarabun New";
-	font-size: 18px;
-}
-.labfontlab {
-	font-family:"TH Sarabun New";
-	font-size: 18px;
-	font-weight:bold;
-	color:#FFFFFF;
-}
-.sum {
-	font-family:"TH Sarabun New";
-	font-size: 18px;
-	color: #360;
-	text-align: left;
-}
-.sum2 {
-	color: #F00;
-}
-.sum1 {
-	color: #00F;
-}
-.fgn {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	color: #00F;
-	font-weight: bold;
-}
-.style1 {color: #FFFFFF}
-</style>
+		.font_title {font-family: "TH SarabunPSK";font-size: 32px;}
+		.tb_font {font-family: "TH SarabunPSK";font-size: 24px;}
+		.tb_font_1 {font-family: "TH SarabunPSK";font-size: 24px;color: #FFFFFF;font-weight: bold;}
+		.tb_col {font-family: "TH SarabunPSK";font-size: 24px;background-color: #9FFF9F;}
+		.head_font1 {font-family: "TH SarabunPSK";font-size: 24px;color: #000000;font-weight: bold;}
+		.tb_font_2 {font-family: "TH SarabunPSK";color: #333;font-weight: bold;font-size: 18px;}
+		body,td,th {font-family: "TH SarabunPSK";font-size: 18px;}
+		.tb_head {background-color: #0046D7;color: #FFFFCA;font-weight: bold;text-align: center;}
+		.tb_detail {background-color: #FFFFC1;}
+		.tb_menu {background-color: #FFFFC1;}
+		.profile {font-family: "TH SarabunPSK";color: #00F;font-size: 18px;}
+		.profilevalue {font-family: "TH SarabunPSK";font-size: 18px;}
+		.profilehead {font-family: "TH SarabunPSK";font-size: 18px;color: #00F;font-weight: bold;}
+		.profilelab {font-family: "TH SarabunPSK";font-size: 18px;color: #000;font-weight: bold;}
+		.profileheadvalue {font-size: 18px;font-family: "TH SarabunPSK";}
+		.labfont {font-family: "TH SarabunPSK";font-size: 18px;}
+		.labfontlab {font-family: "TH SarabunPSK";font-size: 18px;font-weight: bold;color: #FFFFFF;}
+		.sum {font-family: "TH SarabunPSK";font-size: 18px;color: #360;text-align: left;}
+		.sum2 {color: #F00;}
+		.sum1 {color: #00F;}
+		.fgn {font-family: "TH SarabunPSK";font-size: 18px;color: #00F;font-weight: bold;}
+		.style1 {color: #FFFFFF}
+		label:hover{cursor: pointer;}
+	</style>
 <script>
 
 function togglediv1(divid){ 
@@ -196,7 +143,9 @@ function togglediv2(divid){
 </head>
 
 <body>
-
+<?php 
+include("dt_menu.php");
+?>
 
 <!--<form action="dxdr_ofyear1.php" method="post" name="selecthn">
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939"  >

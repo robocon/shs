@@ -583,7 +583,8 @@ $result3 = mysql_query($upopday) or die(mysql_error());
 
 $query ="UPDATE chkup_solider SET opd = '$date_now' WHERE hn='".$_POST["hn"]."'";
 $result = mysql_query($query) or die("Query failed");
-//echo $upopday;
+//echo $upopday;\
+$result = true;
 if($result && isset($_POST["submit"])){
 	echo "<CENTER>บันทึกข้อมูลเรียบร้อยแล้ว</CENTER>";
 }elseif($result && isset($_POST["submit2"])){
