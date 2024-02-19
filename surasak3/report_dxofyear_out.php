@@ -743,11 +743,11 @@ C ํ</span></td>
 	{
 		?>
 		<tr>
-			<td width="60%" valign="top" class="text3"><strong>FBS(น้ำตาลในเลือด) :</strong></td>
-			<td width="10%" align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
-			<td width="5%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td width="25%" valign="top" class="text3"><strong>FBS(น้ำตาลในเลือด) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
-			<td width="20%" valign="top" class="text"><strong><?=$result['stat_bs']?></strong><? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_bs']?></strong> <? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
 		</tr>
 		<?php
 	}
@@ -760,7 +760,7 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['chol']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['cholrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_chol']?></strong><? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_chol']?></strong> <? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
 		</tr>
 		<?php
 	} 
@@ -773,7 +773,7 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['tg']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['tgrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_tg']?></strong><? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_tg']?></strong> <? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
 		</tr>
 		<?php
 	} 
@@ -786,7 +786,7 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bun']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['bunrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_bun']?></strong><? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_bun']?></strong> <? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
 		</tr>
 		<?php
 	} 
@@ -799,10 +799,24 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['cr']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['crrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_cr']?></strong><? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_cr']?></strong> <? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
 		</tr>
 		<? 
-	} 
+	}
+
+	if($result['egfr']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>eGFR(การทำงานของไต) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['egfr']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['egfr_state']?>)</td>
+			<!-- <td valign="top" class="text"><strong><?=$result['egfr_status']?></strong> <? if($result['egfr_status']=="ผิดปกติ") echo "คำแนะนำ...".$result['egfr_reason']."...";?></td> -->
+			<td></td>
+		</tr>
+		<? 
+	}
 
 
 	  if($result['alk']!=""){
@@ -812,7 +826,7 @@ C ํ</span></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['alk']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['alkrange']?>)</td>
-      <td valign="top" class="text"><strong><strong><?=$result['stat_sgot']?></strong></strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
+      <td valign="top" class="text"><strong><strong><?=$result['stat_sgot']?></strong> </strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
       </tr>
       <? } 
 

@@ -1,16 +1,23 @@
 <?php
-session_start();
-include("connect.inc");
-include("dt_menu.php");
+// session_start();
+// include("connect.inc");
+require_once 'bootstrap.php';
+
+mysql_connect(HOST,USER,PASS);
+mysql_select_db(DB);
+mysql_query("SET NAMES UTF8");
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
 session_unregister("list_bill");
 session_register("list_bill");
 $_SESSION["list_bill"] = "";
-$_POST["p_hn"] = $_SESSION["vn_now"]; //vn
+$post_vn = $_SESSION["vn_now"]; //vn
 $_POST["post_vn"] = 1;
 $_SESSION["dt_doctor"] = $_SESSION["sOfficer"];
 
 $date_now = date("Y-m-d H:i:s");
-
 
 function calcage($birth){
 
@@ -99,82 +106,30 @@ $list_lab["STOCC"] = "stocc";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>ตรวจสุขภาพ</title>
 <style>
-	.font_title{font-family:"TH Sarabun New"; font-size:32px;}
-	.tb_font{font-family:"TH Sarabun New"; font-size:24px;}
-	.tb_font_1{font-family:"TH Sarabun New"; font-size:24px; color:#FFFFFF; font-weight:bold;}
-	.tb_col{font-family:"TH Sarabun New"; font-size:24px; background-color:#9FFF9F;}
-	.head_font1{font-family:"TH Sarabun New"; font-size:24px; color:#000000; font-weight:bold;}
-.tb_font_2 {
-	font-family:"TH Sarabun New";
-	color: #333;
-	font-weight: bold;
-	font-size: 18px;
-}
-body,td,th {
-	font-family: Angsana New;
-	font-size: 18px;
-}
-
-.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
-.tb_menu {background-color: #FFFFC1;  }
-.profile {
-	font-family: "TH Sarabun New";
-	color: #00F;
-	font-size: 18px;
-	
-}
-.profilevalue {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-}
-.profilehead {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	color: #00F;
-	font-weight: bold;
-}
-.profilelab {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	color: #000;
-	font-weight: bold;
-}
-.profileheadvalue {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	
-}
-.labfont {
-	font-family:"TH Sarabun New";
-	font-size: 18px;
-}
-.labfontlab {
-	font-family:"TH Sarabun New";
-	font-size: 18px;
-	font-weight:bold;
-	color:#FFFFFF;
-}
-.sum {
-	font-family:"TH Sarabun New";
-	font-size: 18px;
-	color: #360;
-	text-align: left;
-}
-.sum2 {
-	color: #F00;
-}
-.sum1 {
-	color: #00F;
-}
-.fgn {
-	font-family: "TH Sarabun New";
-	font-size: 18px;
-	color: #00F;
-	font-weight: bold;
-}
-.style1 {color: #FFFFFF}
-</style>
+		.font_title {font-family: "TH SarabunPSK";font-size: 32px;}
+		.tb_font {font-family: "TH SarabunPSK";font-size: 24px;}
+		.tb_font_1 {font-family: "TH SarabunPSK";font-size: 24px;color: #FFFFFF;font-weight: bold;}
+		.tb_col {font-family: "TH SarabunPSK";font-size: 24px;background-color: #9FFF9F;}
+		.head_font1 {font-family: "TH SarabunPSK";font-size: 24px;color: #000000;font-weight: bold;}
+		.tb_font_2 {font-family: "TH SarabunPSK";color: #333;font-weight: bold;font-size: 18px;}
+		body,td,th {font-family: "TH SarabunPSK";font-size: 18px;}
+		.tb_head {background-color: #0046D7;color: #FFFFCA;font-weight: bold;text-align: center;}
+		.tb_detail {background-color: #FFFFC1;}
+		.tb_menu {background-color: #FFFFC1;}
+		.profile {font-family: "TH SarabunPSK";color: #00F;font-size: 18px;}
+		.profilevalue {font-family: "TH SarabunPSK";font-size: 18px;}
+		.profilehead {font-family: "TH SarabunPSK";font-size: 18px;color: #00F;font-weight: bold;}
+		.profilelab {font-family: "TH SarabunPSK";font-size: 18px;color: #000;font-weight: bold;}
+		.profileheadvalue {font-size: 18px;font-family: "TH SarabunPSK";}
+		.labfont {font-family: "TH SarabunPSK";font-size: 18px;}
+		.labfontlab {font-family: "TH SarabunPSK";font-size: 18px;font-weight: bold;color: #FFFFFF;}
+		.sum {font-family: "TH SarabunPSK";font-size: 18px;color: #360;text-align: left;}
+		.sum2 {color: #F00;}
+		.sum1 {color: #00F;}
+		.fgn {font-family: "TH SarabunPSK";font-size: 18px;color: #00F;font-weight: bold;}
+		.style1 {color: #FFFFFF}
+		label:hover{cursor: pointer;}
+	</style>
 <script>
 
 function togglediv1(divid){ 
@@ -196,30 +151,9 @@ function togglediv2(divid){
 </head>
 
 <body>
-
-
-<!--<form action="dxdr_ofyear1.php" method="post" name="selecthn">
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939"  >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข VN</TD>
-	</TR>
-	<TR>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></TD>
-	</TR>
-	<TR>
-		<TD></TD>
-	</TR>
-	</TABLE>
-	</TD>
-</TR>
-</TABLE>
-<input name="post_vn" type="hidden" value="1" />
-</form>-->
-
-<?php if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
+<?php 
+include("dt_menu.php");
+if(!empty($_POST["post_vn"]) && $post_vn != ""){
 		////*runno ตรวจสุขภาพ*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
@@ -239,69 +173,38 @@ function togglediv2(divid){
 	
 //ค้นหา hn จาก opday ****************************************************************************************
 	$date_now = (date("Y")+543).date("-m-d");
-	$sqlvn = "Select * From opday where  vn = '".$_POST["p_hn"]."' and thidate like '$date_now%' limit 0,1";
+	$thdateVn = date('d-m-').(date('Y')+543).$post_vn;
+
+	$sqlvn = "SELECT * FROM opday WHERE thdatevn = '$thdateVn' LIMIT 1";
 	$resultvn= mysql_query($sqlvn);
 	$queryvn = mysql_fetch_array($resultvn);
+	$opdayHn = $queryvn['hn'];
+	$opdayVn = $queryvn['vn'];
 	
-	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$queryvn['hn']."' limit 0,1";
-	//echo $sql;
+	$sql = "SELECT *, concat(yot,' ',name,' ',surname) AS ptname FROM opcard WHERE  hn = '$opdayHn' LIMIT 1";
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
-	$arr_view = mysql_fetch_assoc($result);
-
-//$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
-//list($arr_view["vn"]) = mysql_fetch_row(mysql_query($sql));
-
-$date_hn = date("Y-m-d").$queryvn['hn'];
-$date_vn = date("Y-m-d").$queryvn['vn'];
-$arr_view["hn"] = $queryvn['hn'];
-$sql = "Select  weight, height From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-$result = Mysql_Query($sql);
-list($weight, $height) = Mysql_fetch_row($result);
-
-
-$sqlvn = "Select vn From dxofyear_out  where  hn = '".$_POST["p_hn"]."' limit 0,1";
-list($vn) = mysql_fetch_row(mysql_query($sqlvn));
-
-//ค้นหาวันเกิดจาก opcard ****************************************************************************************
-	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
-	//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
-	$arr_view["age"] = calcage($arr_view["dbirth"]);
+	$opcard = mysql_fetch_assoc($result);
+	$opcard["age"] = calcage($opcard["dbirth"]);
 
 //ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 
-	$sql = "Select date_format(a.orderdate,'%d/%m/%Y') From resulthead as a where a.hn='".$arr_view["hn"]."'  AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  Order by a.autonumber DESC limit 0,1";
-	//echo $sql;
+	$sql = "SELECT date_format(orderdate,'%d/%m/%Y') 
+	FROM resulthead 
+	WHERE hn='$opdayHn' 
+	AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix') 
+	ORDER BY autonumber DESC LIMIT 0,1";
 	list($lab_date) = mysql_fetch_row(mysql_query($sql));
-
-	/*$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'UA' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี54' ) Order by labcode ASC ";
-	
-	$result_ua = mysql_query($sql);
-
-	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode = 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี54') Order by labcode ASC";
-	$result_cbc = mysql_query($sql);
-
-	$sql = "Select labcode, result, unit , normalrange, flag From resulthead as a , resultdetail as b  where a.hn='".$arr_view["hn"]."' AND a.autonumber = b.autonumber AND parentcode <> 'UA' AND parentcode <> 'CBC' AND (clinicalinfo = 'ตรวจสุขภาพประจำปี54') Order by a.autonumber ASC ";
-	$result_lab = mysql_query($sql);*/
-//ค้นหาข้อมูลเดิม
 	
 	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
 	$date_after= date("Y-m-d H:i:s",$times);
-	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
 
-	$sql = "Select * From  `dxofyear_out` where yearchk = '$nPrefix' AND hn='".$arr_view["hn"]."' order by row_id desc limit 0,1 ";
-	//echo $sql;
+	$sql = "SELECT * FROM  `dxofyear_out` WHERE yearchk = '$nPrefix' AND hn='$opdayHn' order by row_id desc LIMIT 0,1 ";
 	$result = mysql_query($sql);
 	$count = mysql_num_rows($result);
 	$result_dx = mysql_fetch_array($result);
 	if($count > 0){
 		$result = mysql_query($sql);
 		$arr_dxofyear = mysql_fetch_assoc($result);
-		
 		
 		$height = $arr_dxofyear["height"];
 		$weight = $arr_dxofyear["weight"];
@@ -313,13 +216,14 @@ list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 		$rowid = $arr_dxofyear['row_id'];
 		
 	}else{
-		$sql = "Select drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END )   From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
+		// ถ้าไม่มีข้อมูลใน dxofyear_out ให้ดึงข้อมูลจากใน opd
+		$sql = "SELECT drugreact,congenital_disease, weight, height, (CASE WHEN cigarette = '1' THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '1'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '0'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '0'THEN 'Checked' ELSE '' END ),(CASE WHEN cigarette = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN exercise = '2'THEN 'Checked' ELSE '' END ), (CASE WHEN cigarette = '3'THEN 'Checked' ELSE '' END ), (CASE WHEN alcohol = '3'THEN 'Checked' ELSE '' END )   FROM opd WHERE hn = '".$opcard["hn"]."' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 1";
 
 		$result = Mysql_Query($sql);
 		list($drugreact,$congenital_disease, $weight, $height, $cigarette1, $alcohol1,$exercise1, $cigarette0, $alcohol0, $exercise0, $cigarette2, $alcohol2,$exercise2, $cigarette3, $alcohol3) = Mysql_fetch_row($result);
-			if($congenital_disease == "")
-				$congenital_disease = "ปฎิเสธโรคประจำตัว";
-
+		if($congenital_disease == ""){
+			$congenital_disease = "ปฎิเสธโรคประจำตัว";
+		}
 	}
 	
 	if($arr_dxofyear["rate"] == ""){
@@ -377,117 +281,115 @@ array_push($choose,"ขอรับวัคซีนนัดฉีดบาด
 array_push($choose,"ขอรับวัคซีนนัดฉีดไวรัสตับอักเสบบี เข็มที่");
 array_push($choose,"ขอสำเนาประวัติรักษา");
 sort($choose);
-$sql = "Select distinct organ From opd where hn = '".$arr_view["hn"]."' AND organ <> '' Order by row_id DESC limit 10";
+$sql = "SELECT DISTINCT organ FROM opd WHERE hn = '".$opcard["hn"]."' AND organ <> '' ORDER BY row_id DESC LIMIT 10";
 $result = Mysql_Query($sql);
 $choose2 = array();
 while($arr = Mysql_fetch_assoc($result)){
 	array_push($choose2,$arr["organ"]);
 }
-$_SESSION["hn_now"] = $arr_view["hn"];
+$_SESSION["hn_now"] = $opcard["hn"];
 
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM name="dxdrform" METHOD="post" ACTION="dxdr_ofyearout_save.php"  target="_blank">
 
-<input name="age" type="hidden" id="age"  value="<?php echo $arr_dxofyear["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<input name="vn" type="hidden" id="vn"  value="<?php echo $queryvn['vn'];?>" />
+<input name="age" type="hidden" id="age"  value="<?=$arr_dxofyear["age"];?>" />
+<input name="hn" type="hidden" id="hn"  value="<?=$opcard["hn"];?>" />
+<input name="vn" type="hidden" id="vn"  value="<?=$queryvn['vn'];?>" />
 <br />
-<p align="center" class="head_font1"><strong>บันทึกผลการตรวจสุขภาพประจำปี</strong></p>
+<p align="center" class="head_font1"><b>บันทึกผลการตรวจสุขภาพประจำปี</b></p>
 <table  width="100%" border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFFFFF">
 <tr>
   <td><table width="100%" border="0" cellpadding="0" cellspacing="0" >
     <tr>
-      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย<span class="profileheadvalue"> [
-          <?=substr($queryvn["toborow"],4);?>
-          ]</span></td>
+      <td align="left" bgcolor="#0099CC" class="tb_font_1" colspan="12">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย<span class="profileheadvalue"> [<?=substr($queryvn["toborow"],4);?>]</span></td>
     </tr>
     <tr>
-      <td width="148" align="left" class="profilehead">VN</td>
+      <td width="148" align="right" class="profilehead">VN</td>
       <td width="10" align="left" class="profile"> :</td>
-      <td width="197"  class="profileheadvalue">&nbsp;<?php echo $queryvn["vn"];?></td>
-      <td width="91" rowspan="2" align="left" valign="bottom" class="profilehead">ชื่อ-สกุล </td>
+      <td width="197"  class="profileheadvalue">&nbsp;<?=$queryvn["vn"];?></td>
+      <td width="91" rowspan="2" align="right" valign="bottom" class="profilehead">ชื่อ-สกุล </td>
       <td width="10" rowspan="2" align="left" valign="bottom" class="profile">:</td>
-      <td width="217" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["ptname"];?></td>
-      <td width="145" rowspan="2" align="left" valign="bottom" class="profilehead">สังกัด </td>
+      <td width="217" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?=$opcard["ptname"];?></td>
+      <td width="145" rowspan="2" align="right" valign="bottom" class="profilehead">สังกัด </td>
       <td width="10" rowspan="2" align="left" valign="bottom" class="profile">:</td>
-      <td width="211" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["camp"];?></td>
-      <input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/>
-      <td width="89" rowspan="2" align="left" valign="bottom" class="profilehead">อายุ</td>
+      <td width="211" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?=$opcard["camp"];?></td>
+      <input name="ptname" type="hidden" id="ptname" value="<?=$opcard["ptname"];?>"/>
+      <td width="89" rowspan="2" align="right" valign="bottom" class="profilehead">อายุ</td>
       <td width="9" rowspan="2" align="left" valign="bottom" class="profile">:</td>
-      <td width="216" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?php echo $arr_view["age"];?></td>
+      <td width="216" rowspan="2" valign="bottom" class="profileheadvalue">&nbsp;<?=$opcard["age"];?></td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">HN </td>
+      <td align="right" class="profilehead">HN </td>
       <td align="left" class="profile">:</td>
-      <td class="profileheadvalue">&nbsp;<?php echo $arr_view["hn"];?></td>
+      <td class="profileheadvalue">&nbsp;<?=$opcard["hn"];?></td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">ส่วนสูง </td>
+      <td align="right" class="profilehead">ส่วนสูง </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $height; ?> ซม.</td>
-      <td align="left" class="profilehead">น้ำหนัก</td>
+      <td class="profilevalue">&nbsp;<?=$height; ?> ซม.</td>
+      <td align="right" class="profilehead">น้ำหนัก</td>
       <td align="left" class="profile">:</td>
-      <td align="left" class="profilevalue">&nbsp;<?php echo $weight; ?> กก. </td>
-      <td align="left" class="profilehead">รอบเอว </td>
+      <td align="left" class="profilevalue">&nbsp;<?=$weight; ?> กก. </td>
+      <td align="right" class="profilehead">รอบเอว </td>
       <td align="left" class="profile">:</td>
       <?
 			$ht = $height/100;
             $bmi = number_format($weight/($ht*$ht),2);
 			?>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["round_"]; ?> ซม.</td>
-      <td align="left" class="profilehead">BMI</td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["round_"]; ?> ซม.</td>
+      <td align="right" class="profilehead">BMI</td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue"><span style="color:#F00">&nbsp;<?php echo $bmi; ?></span></td>
+      <td class="profilevalue"><span style="color:#F00">&nbsp;<?=$bmi; ?></span></td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">T </td>
+      <td align="right" class="profilehead">T </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["temperature"]; ?> C&deg;</td>
-      <td align="left" class="profilehead">P </td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["temperature"]; ?> C&deg;</td>
+      <td align="right" class="profilehead">P </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["pause"]; ?> ครั้ง/นาที</td>
-      <td align="left" class="profilehead">R </td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["pause"]; ?> ครั้ง/นาที</td>
+      <td align="right" class="profilehead">R </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear["rate"]; ?> ครั้ง/นาที</td>
-      <td align="left" class="profilehead">BP </td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear["rate"]; ?> ครั้ง/นาที</td>
+      <td align="right" class="profilehead">BP </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<?php if(!empty($arr_dxofyear["bp21"])){ echo $arr_dxofyear["bp21"]; }else{ echo $arr_dxofyear["bp1"];} ?> / <?php if(!empty($arr_dxofyear["bp22"])){ echo $arr_dxofyear["bp22"]; }else{ echo $arr_dxofyear["bp2"];} ?> mmHg</td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">บุหรี่ </td>
+      <td align="right" class="profilehead">บุหรี่ </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<? if($arr_dxofyear['cigarette']=="0"){ echo "ไม่เคยสูบบุหรี่";}else if($arr_dxofyear['cigarette']=="1"){ echo "เคยสูบ แต่เลิกแล้ว";}else if($arr_dxofyear['cigarette']=="2"){ echo "สูบบุหรี่ เป็นครั้งคราว";}else if($arr_dxofyear['cigarette']=="3"){ echo "สูบบุหรี่ เป็นประจำ";} ?></td>
-      <td align="left" class="profilehead">สุรา</td>
+      <td align="right" class="profilehead">สุรา</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;<? if($arr_dxofyear['alcohol']=="0"){ echo "ไม่เคยดื่ม";}else if($arr_dxofyear['alcohol']=="1"){ echo "เคยดื่ม แต่เลิกแล้ว";}else if($arr_dxofyear['alcohol']=="2"){ echo "ดื่ม เป็นครั้งคราว";}else if($arr_dxofyear['alcohol']=="3"){ echo "ดื่ม เป็นประจำ";} ?></td>
-      <td align="left" class="profilehead">ออกกำลังกาย</td>
+      <td align="right" class="profilehead">ออกกำลังกาย</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;
           <? if($arr_dxofyear['exercise']=="0"){ echo "ไม่เคยออกกำลังกาย";} else if($arr_dxofyear['exercise']=="1"){ echo "ออกกำลังกาย ต่ำกว่าเกณฑ์";} else{ echo "ออกกำลังกาย ตามเกณฑ์";} ?></td>
-      <td align="left" class="profilehead">แพ้ยา</td>
+      <td align="right" class="profilehead">แพ้ยา</td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;
-          <? if($arr_dxofyear['drugreact']=="0"){ echo "ไม่แพ้ยา";}else{ echo "<span style='color:#F00'>".$arr_view['drugreact']."</span>";} ?></td>
+          <? if($arr_dxofyear['drugreact']=="0"){ echo "ไม่แพ้ยา";}else{ echo "<span style='color:#F00'>".$opcard['drugreact']."</span>";} ?></td>
     </tr>
     <tr>
-      <td align="left" class="profilehead">โรคประจำตัว</td>
+      <td align="right" class="profilehead">โรคประจำตัว</td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $congenital_disease;?></td>
-      <td align="left" class="profilehead">อาการ </td>
+      <td class="profilevalue">&nbsp;<?=$congenital_disease;?></td>
+      <td align="right" class="profilehead">อาการ </td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue">&nbsp;<?php echo $arr_dxofyear['organ'];?></td>
-      <td class="profilehead">กรุ๊ปเลือด</td>
+      <td class="profilevalue">&nbsp;<?=$arr_dxofyear['organ'];?></td>
+      <td align="right" class="profilehead">กรุ๊ปเลือด</td>
       <td align="left" class="profile">:</td>
-      <td class="profilevalue"><?=$arr_dxofyear['blood']?></td>
-      <td align="left" class="profilehead">แพทย์ </td>
+      <td class="profilevalue"><?=$opcard['blood']?></td>
+      <td align="right" class="profilehead">แพทย์ </td>
       <td align="left" class="profile">:</td>
       <td class="profilevalue">&nbsp;
         <?php 
 		$namedoc = explode(" ",$_SESSION["dt_doctor"]);
 		$doctor = $namedoc[0]." ".$namedoc[1];
-		$sql = "Select name From doctor where status = 'y' and name like '%$doctor%' ";
+		$sql = "SELECT name FROM doctor WHERE status = 'y' and name like '%$doctor%' ";
 		$result = mysql_query($sql);
 		$num = mysql_num_rows($result);
 		list($name) = mysql_fetch_row($result);
@@ -497,19 +399,21 @@ $_SESSION["hn_now"] = $arr_view["hn"];
     </tr>
 <? if(empty($arr_dxofyear["bp21"]) || empty($arr_dxofyear["bp22"])){  //ถ้าไม่ได้ Repeat BP ?>    
     <tr bgcolor="#CCCCFF">
-      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>ค่าความดัน </strong></td>
+      <td bgcolor="#FFCC99" class="profile" align="right" style="color:#000"><b>ค่าความดัน </b></td>
 	    <td bgcolor="#FFCC99"><span class="profile">:</span></td>
 	    <td bgcolor="#FFCC99" class="profilevalue">
-        <input name='normal55' type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp1"] > 0 && $arr_dxofyear["bp1"] < 129) && ($arr_dxofyear["bp2"] >0 && $arr_dxofyear["bp2"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
-ปกติ
-<input name='normal55' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
-	      <?  
-		  if(($arr_dxofyear["bp1"] >= 130 && $arr_dxofyear["bp2"] >= 90) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){
-		  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
-		  }else{
-		  	echo "ผิดปกติ";
-		  }
-		  ?>
+			<input name='normal55' id="normal55_1" type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp1"] > 0 && $arr_dxofyear["bp1"] < 129) && ($arr_dxofyear["bp2"] >0 && $arr_dxofyear["bp2"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
+			<label for="normal55_1">ปกติ</label>
+
+			<input name='normal55' id="normal55_2" type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] >= 89) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){ echo "checked";}?>/>
+			<?php
+			$style='';
+			if(($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] >= 89) || ($arr_dxofyear["bp1"] >= 129 && $arr_dxofyear["bp2"] <= 89) || ($arr_dxofyear["bp1"] <= 129 && $arr_dxofyear["bp2"] >= 89)){
+				$style='style="color:#F00"';
+			}
+			?>
+			<label for="normal55_2"><span <?=$style;?>><b>ผิดปกติ</b></span></label>
+
         </td>
 	    <td colspan="9" bgcolor="#FFCC99" class="profilevalue">
          <div id="acnormal55" <? if($arr_dxofyear["bp1"] < 129 && $arr_dxofyear["bp2"] < 89){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
@@ -521,7 +425,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	    </tr>
 <? }else{ // ถ้า Repeat BP?>  
     <tr bgcolor="#CCCCFF">
-      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><strong>Repeat ค่าความดัน </strong></td>
+      <td bgcolor="#FFCC99" class="profile"  style="color:#000"><b>Repeat ค่าความดัน </b></td>
 	    <td bgcolor="#FFCC99"><span class="profile">:</span></td>
 	    <td bgcolor="#FFCC99" class="profilevalue">
         <input name='normal55' type='radio' onclick="togglediv2('acnormal55')" value='ปกติ' <?  if(($arr_dxofyear["bp21"] > 0 && $arr_dxofyear["bp21"] < 129) && ($arr_dxofyear["bp22"] >0 && $arr_dxofyear["bp22"] < 89)){ echo "checked='checked'";}else{ echo "";}?>/>
@@ -529,7 +433,7 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 <input name='normal55' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"  <?  if(($arr_dxofyear["bp21"] >= 130 && $arr_dxofyear["bp22"] >= 90) || ($arr_dxofyear["bp21"] >= 129 && $arr_dxofyear["bp22"] <= 89) || ($arr_dxofyear["bp21"] <= 129 && $arr_dxofyear["bp22"] >= 89)){ echo "checked";}?>/>
 	      <?  
 		  if(($arr_dxofyear["bp21"] >= 130 && $arr_dxofyear["bp22"] >= 90) || ($arr_dxofyear["bp21"] >= 129 && $arr_dxofyear["bp22"] <= 89) || ($arr_dxofyear["bp21"] <= 129 && $arr_dxofyear["bp22"] >= 89)){
-		  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+		  	echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 		  }else{
 		  	echo "ผิดปกติ";
 		  }
@@ -545,18 +449,19 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	    </tr>
 <? } //จบ เช็ค Repeat BP?>      
     <tr bgcolor="#FFCC99">
-      <td class="profile"  style="color:#000"><strong>ค่า BMI</strong></td>
+      <td class="profile" align="right" style="color:#000"><b>ค่า BMI</b></td>
       <td><span class="profile">:</span></td>
-      <td class="profilevalue"><input name='normal56' type='radio' value='ปกติ' onclick="togglediv2('acnormal56')" id="normal56"  <?  if($bmi >= 18.5 && $bmi <= 22.99){ echo "checked";}?>/>
-        ปกติ
-        <input name='normal56' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal56')" id="normal56"  <?  if($bmi < 18.5 || $bmi > 22.99){ echo "checked";}?>/>
-	      <?  
-		  if($bmi < 18.5 || $bmi > 22.99){
-		  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
-		  }else{
-		  	echo "ผิดปกติ";
-		  }
-		  ?>        
+      <td class="profilevalue">
+		<input name='normal56' type='radio' value='ปกติ' onclick="togglediv2('acnormal56')" id="normal56_1"  <?  if($bmi >= 18.5 && $bmi <= 22.99){ echo "checked";}?>/>
+        <label for="normal56_1">ปกติ</label>
+        <input name='normal56' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal56')" id="normal56_2"  <?  if($bmi < 18.5 || $bmi > 22.99){ echo "checked";}?>/>
+		<?php
+		$bmiStyle = '';
+		if($bmi < 18.5 || $bmi > 22.99){
+			$bmiStyle = 'style="color:#F00; font-weight:bold;"';
+		}
+		?>
+		<label for="normal56_2"><span <?=$bmiStyle;?>>ผิดปกติ</span></label>
       </td>
       <td colspan="9" bgcolor="#FFCC99" class="profilevalue">
       <div id="acnormal56" <? if($bmi >= 18.5 && $bmi <= 22.99){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
@@ -578,116 +483,101 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	<TD>
 	<TABLE border="0" cellpadding="0" cellspacing="0"  width="100%" bgcolor="#FFFFCC">
 	<TR>
-		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?php echo $lab_date;?></span></TD>
+		<TD align="left" class="tb_font_1" bgcolor="#339999">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span style="color: #000000;"><?=$lab_date;?></span></TD>
 	</TR>
 	<TR class="tb_font">
 		<TD >
 	&nbsp;&nbsp; <span class="style5">UA :</span> 
-       
-	  <?php
-	  /*$i=1;
-	  	while(list($labname,$labresult,$unit,$normalrange,$flag) = mysql_fetch_row($result_ua)){
-		if($labname == "OTHERU"){
-			$size="13";
-		}else{
-			$size="6";
-		}
-
-		if(!empty($arr_dxofyear[$list_ua[$labname]]))
-			$labresult = $arr_dxofyear[$list_ua[$labname]];
-			<!--<td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
-          <td>&nbsp;<strong><?php  if($flag!="N")  echo "<span class='style6'>".$labresult."</span>"; else echo $labresult;?></strong></td>-->*/
-	  ?>
       <table width="100%" border="0">
           <tr>
 	    <td width="8%" align="right" class="profilelab">Color:</td>
-	    <td width="10%" class="fgn" ><strong>
+	    <td width="10%" class="fgn" ><b>
 	      <?=$result_dx['ua_color']?>
-	    </strong></td>
+	    </b></td>
 	    <td width="10%" align="right" class="profilelab">SP.Gr:</td>
-	    <td width="9%" class="fgn"><strong>
+	    <td width="9%" class="fgn"><b>
 	      <?=$result_dx['ua_spgr']?>
-	    </strong></td>
+	    </b></td>
 	    <td width="13%"  align="right" class="profilelab">PH:</td>
-	    <td width="10%" class="fgn" ><strong>
+	    <td width="10%" class="fgn" ><b>
 	      <?=$result_dx['ua_phu']?>
-	    </strong></td>
+	    </b></td>
 	    <td width="10%"  align="right" class="profilelab">Blood:</td>
-	    <td width="11%" class="fgn"  ><strong>
+	    <td width="11%" class="fgn"  ><b>
 	      <?=$result_dx['ua_bloodu']?>
-	    </strong></td>
+	    </b></td>
 	    <td width="10%" align="right" class="profilelab">Protien:</td>
-	    <td width="9%" class="fgn"><strong>
+	    <td width="9%" class="fgn"><b>
 	      <?=$result_dx['ua_prou']?>
-	    </strong></td></tr>
+	    </b></td></tr>
       <tr>
         <td align="right" class="profilelab">Sugar:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_gluu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Ketone:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_ketu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Urobillinogen:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_urobil']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Billirubin</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_bili']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Nitrite</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_nitrit']?>
-        </strong></td></tr>
+        </b></td></tr>
       <tr>
         <td align="right" class="profilelab">Crystal:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_crystu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Casts:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_castu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Epithelial:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_epiu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">WBC:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_wbcu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">RBC:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_rbcu']?>
-        </strong></td></tr>
+        </b></td></tr>
       <tr>
         <td align="right" class="profilelab">Amorphous:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_amopu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Bacteria:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_bactu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Mucus:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_mucosu']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Yeast:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_yeast']?>
-        </strong></td>
+        </b></td>
         <td align="right" class="profilelab">Appear:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['ua_appear']?>
-        </strong></td></tr>
+        </b></td></tr>
       <tr>
         <td align="right" class="profilelab">Otheru:</td>
-        <td class="fgn"><strong>
+        <td class="fgn"><b>
           <?=$result_dx['otheru']?>
-        </strong></td>
+        </b></td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 		<td align="center">&nbsp;</td>
@@ -698,11 +588,11 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 		<td align="center">&nbsp;</td>
         </tr>
       <tr bgcolor="#CCCCFF">
-        <td colspan="4" align="center" bgcolor="#FFCC99"><strong>ผลการตรวจ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+        <td colspan="4" align="center" bgcolor="#FFCC99"><b>ผลการตรวจ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
           <input name='normal' type='radio' value='ปกติ' onclick="togglediv2('acnormal')" id="normal98" />
-          ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <label for="normal98">ปกติ</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <input name='normal' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal')" id="normal99" />
-          ผิดปกติ </td>
+          <label for="normal99">ผิดปกติ</label> </td>
         <td colspan="6" bgcolor="#FFCC99">
           <div id="acnormal" style='display: none;'>
             <select name='ch'>
@@ -712,91 +602,61 @@ $_SESSION["hn_now"] = $arr_view["hn"];
               <option value='ค่ากรด - ด่าง'>ค่ากรด - ด่าง</option>
             </select></div></td>
         </tr>
-    <?
-	/*if($i%5==0) echo "<tr></tr>";
-	$i++;*/
-	
-			//}
-			?>
       </table>
 	  <hr />
 	  &nbsp;&nbsp; <span class="style5">CBC :</span> 
 	<table width="100%" border="0">
-	  
-	  <?php
-	  //$i=1;
-	  /*$lab_cbcvalue = array();
-	  $lab_cbcrange = array();
-	  $lab_cbcflag = array();
-	  if(mysql_num_rows($result_cbc)>0){
-	  	while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_cbc)){
-		array_push($lab_cbcvalue,$labresult);
-		array_push($lab_cbcrange,$normalrange);
-		array_push($lab_cbcflag,$flag);
-		/*		if($labname == "OTHER" || $labname == "PLTS"){
-			$size="13";
-		}else{
-			$size="6";
-		}
-		}*/
-
-		/*if(!empty($arr_dxofyear[$list_cbc[$labname]]))
-			$labresult = $arr_dxofyear[$list_cbc[$labname]];*/
-	  ?>
           <tr>
           <td width="10%"  align="right" class="profilelab">WBC :</td>
-          <td width="8%" class="fgn" ><strong><?=$result_dx['cbc_wbc']?></strong></td>
+          <td width="8%" class="fgn" ><b><?=$result_dx['cbc_wbc']?></b></td>
           <td width="9%"  align="right" class="profilelab">HCT : </td>
-          <td width="10%" class="fgn" ><strong><?=$result_dx['cbc_hct']?></strong></td>
+          <td width="10%" class="fgn" ><b><?=$result_dx['cbc_hct']?></b></td>
           <td width="10%"  align="right" class="profilelab">NEU :</td>
-          <td width="8%" class="fgn" ><strong><?=$result_dx['cbc_neu']?></strong></td>
+          <td width="8%" class="fgn" ><b><?=$result_dx['cbc_neu']?></b></td>
           <td width="12%"  align="right" class="profilelab">LYMP : </td>
-          <td width="10%" class="fgn" ><strong><?=$result_dx['cbc_lymp']?></strong></td>
+          <td width="10%" class="fgn" ><b><?=$result_dx['cbc_lymp']?></b></td>
           <td width="10%"  align="right" class="profilelab">MONO : </td>
-          <td width="13%" class="fgn" ><strong><?=$result_dx['cbc_mono']?></strong></td>
+          <td width="13%" class="fgn" ><b><?=$result_dx['cbc_mono']?></b></td>
 		  </tr>
           <tr>
             <td align="right" class="profilelab">EOS : </td>
-            <td class="fgn"><strong><?=$result_dx['cbc_eos']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_eos']?></b></td>
             <td align="right" class="profilelab">MCV :</td>
-            <td class="fgn"><strong><?=$result_dx['cbc_mcv']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_mcv']?></b></td>
             <td align="right" class="profilelab">MCH :</td>
-            <td class="fgn"><strong><?=$result_dx['cbc_mch']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_mch']?></b></td>
             <td align="right" class="profilelab">MCHC : </td>
-            <td class="fgn"><strong><?=$result_dx['cbc_mchc']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_mchc']?></b></td>
             <td align="right" class="profilelab">PLTS :</td>
-            <td class="fgn"><strong><?=$result_dx['cbc_plts']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_plts']?></b></td>
           </tr>
           <tr>
           <td align="right" class="profilelab">OTHER : </td>
-          <td class="fgn"><strong><?=$result_dx['cbc_other']?></strong></td>
+          <td class="fgn"><b><?=$result_dx['cbc_other']?></b></td>
           <td align="right" class="profilelab">NRBC : </td>
-          <td class="fgn"><strong><?=$result_dx['cbc_nrbc']?></strong></td>
+          <td class="fgn"><b><?=$result_dx['cbc_nrbc']?></b></td>
           <td align="right" class="profilelab">RBC :</td>
-          <td class="fgn"><strong><?=$result_dx['cbc_rbc']?></strong></td>
+          <td class="fgn"><b><?=$result_dx['cbc_rbc']?></b></td>
           <td align="right" class="profilelab">RBCMOR : </td>
-          <td class="fgn"><strong><?=$result_dx['cbc_rbcmor']?></strong></td>
+          <td class="fgn"><b><?=$result_dx['cbc_rbcmor']?></b></td>
           <td align="right" class="profilelab">HB :</td>
-          <td class="fgn"><strong><?=$result_dx['cbc_hb']?></strong></td>
+          <td class="fgn"><b><?=$result_dx['cbc_hb']?></b></td>
 		  </tr>
           <tr>
             <td align="right" class="profilelab">BASO :</td>
-            <td class="fgn"><strong><?=$result_dx['cbc_baso']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_baso']?></b></td>
             <td align="right" class="profilelab">ATYP :</td>
-            <td class="fgn"><strong><?=$result_dx['cbc_atyp']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_atyp']?></b></td>
             <td align="right" class="profilelab">BAND :</td>
-            <td class="fgn"><strong><?=$result_dx['cbc_band']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_band']?></b></td>
             <td align="right" class="profilelab">PLTC : </td>
-            <td class="fgn"><strong><?=$result_dx['cbc_pltc']?></strong></td>
+            <td class="fgn"><b><?=$result_dx['cbc_pltc']?></b></td>
             <td align="right" class="tb_font_2">&nbsp;</td>
             <td>&nbsp;</td>
           </tr>
           <tr>
           <td colspan="10">
           	</td></tr>
-          <?
-	//  }
-		  ?>
       </table>
 <table border="0" width="100%">
           <tr>
@@ -804,24 +664,26 @@ $_SESSION["hn_now"] = $arr_view["hn"];
             <td width="44" class="fgn">
             <? 
 			if($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49){
-				echo "<span style='color:#F00'><strong>$result_dx[cbc_hct]</strong></span>";
+				echo "<span style='color:#F00'><b>".$result_dx['cbc_hct']."</b></span>";
 			}else{
-				echo "<span style='color:#00F'>$result_dx[cbc_hct]</span>";
+				echo "<span style='color:#00F'>".$result_dx['cbc_hct']."</span>";
 			}
 			?>            
             </td>
             <td class="labfont"  width="101">(<?=$result_dx['hctrange']?>)</td>
             <td width="32" align="center" class="labfont" ><span <? if($result_dx['hctflag']!="N") echo " style='color:#F00'";?>><?=$result_dx['hctflag']?></span></td>
-            <td width="202" class="labfont"><input name='normal31' type='radio' value='ปกติ' onclick="togglediv2('acnormal31')" <? if($result_dx['cbc_hct'] >= 37 && $result_dx['cbc_hct'] <= 49) echo "checked";?> />
-              ปกติ 
-              <input name='normal31' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal31')" <? if(!empty($result_dx['cbc_hct']) && ($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49)) echo "checked";?>/>
-              <? 
+            <td width="202" class="labfont">
+				<input name='normal31' id="acnormal31_1" type='radio' value='ปกติ' onclick="togglediv2('acnormal31')" <? if($result_dx['cbc_hct'] >= 37 && $result_dx['cbc_hct'] <= 49) echo "checked";?> />
+              <label for="acnormal31_1">ปกติ</label> 
+
+              <input name='normal31' id="acnormal31_2" type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal31')" <? if(!empty($result_dx['cbc_hct']) && ($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49)) echo "checked";?>/>
+              <?php
+			  $normal31Style = '';
 			  if(!empty($result_dx['cbc_hct']) && ($result_dx['cbc_hct'] < 37 || $result_dx['cbc_hct'] > 49)){
-			  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
-			  }else{
-			  	echo "ผิดปกติ";
+				  $normal31Style = 'style="color:#F00; font-weight:bold;"';
 			  }
 			  ?>
+			  <label for="acnormal31_2" <?=$normal31Style;?> >ผิดปกติ</label>
               </td>
               <td width="877">
              <div id="acnormal31" <? if(empty($result_dx['cbc_hct']) || ($result_dx['cbc_hct'] >= 37 && $result_dx['cbc_hct'] <= 49)) echo "style='display: none;'"; else "style='display: block;'"; ?>>
@@ -836,24 +698,25 @@ $_SESSION["hn_now"] = $arr_view["hn"];
           <td width="44" class="fgn">
             <? 
 			if($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10){
-				echo "<span style='color:#F00'><strong>$result_dx[cbc_wbc]</strong></span>";
+				echo "<span style='color:#F00'><b>".$result_dx['cbc_wbc']."</b></span>";
 			}else{
-				echo "<span style='color:#00F'>$result_dx[cbc_wbc]</span>";
+				echo "<span style='color:#00F'>".$result_dx['cbc_wbc']."</span>";
 			}
 			?>           
           </td>
           <td class="labfont" width="101">(<?=$result_dx['wbcrange']?>)</td>
           <td align="center" class="labfont" width="32" ><span <? if($result_dx['wbcflag']!="N"){ echo " style='color:#F00'";}?>><?=$result_dx['wbcflag'];?></span></td>
-          <td width="202" class="labfont"><input name='normal32' type='radio' value='ปกติ' onclick="togglediv2('acnormal32')" <? if($result_dx['cbc_wbc'] >= 5 &&  $result_dx['cbc_wbc'] <= 10){ echo "checked";}?>/>
-          ปกติ 
-            <input name='normal32' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal32')" <? if(!empty($result_dx['cbc_wbc']) && ($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10)){ echo "checked";}?>/>
-              <? 
+          <td width="202" class="labfont">
+			<input name='normal32' id="normal32_1" type='radio' value='ปกติ' onclick="togglediv2('acnormal32')" <? if($result_dx['cbc_wbc'] >= 5 &&  $result_dx['cbc_wbc'] <= 10){ echo "checked";}?>/>
+          <label for="normal32_1">ปกติ</label> 
+            <input name='normal32' id="normal32_2" type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal32')" <? if(!empty($result_dx['cbc_wbc']) && ($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10)){ echo "checked";}?>/>
+              <?php 
+			  $normal32Style = '';
 			  if(!empty($result_dx['cbc_wbc']) && ($result_dx['cbc_wbc'] < 5 || $result_dx['cbc_wbc'] > 10)){
-			  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
-			  }else{
-			  	echo "ผิดปกติ";
+				$normal32Style = 'style="color:#F00; font-weight:bold;"';
 			  }
 			  ?>
+			  <label for="normal32_2" <?=$normal32Style;?> >ผิดปกติ</label>
             </td>
             <td><div id="acnormal32" <? if(empty($result_dx['cbc_wbc']) || ($result_dx['cbc_wbc'] >= 5 &&  $result_dx['cbc_wbc'] <= 10)){ echo "style='display: none;'";}else{ echo "style='display: block;'";} ?>>
             <select name='ch32'>
@@ -867,24 +730,25 @@ $_SESSION["hn_now"] = $arr_view["hn"];
           <td width="44" class="fgn">
             <? 
 			if($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400){
-				echo "<span style='color:#F00'><strong>$result_dx[cbc_pltc]</strong></span>";
+				echo "<span style='color:#F00'><b>".$result_dx['cbc_pltc']."</b></span>";
 			}else{
-				echo "<span style='color:#00F'>$result_dx[cbc_pltc]</span>";
+				echo "<span style='color:#00F'>".$result_dx['cbc_pltc']."</span>";
 			}
 			?>           
           </td>
           <td class="labfont" width="101">(<?=$result_dx['pltcrange']?>)</td>
           <td align="center" class="labfont" width="32"><span <? if($result_dx['pltcflag']!="N"){ echo " style='color:#F00'";}?>><?=$result_dx['pltcflag']?></span></td>
-          <td width="202" class="labfont"><input name='normal33' type='radio' value='ปกติ' onclick="togglediv2('acnormal33')" <? if($result_dx['cbc_pltc'] >= 140 &&  $result_dx['cbc_pltc'] <= 400){ echo "checked";}?>/>
-          ปกติ 
-            <input name='normal33' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal33')" <? if(!empty($result_dx['cbc_pltc']) && ($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400)){ echo "checked";}?>/>
-              <? 
+          <td width="202" class="labfont">
+			<input name='normal33' id="normal33_1" type='radio' value='ปกติ' onclick="togglediv2('acnormal33')" <? if($result_dx['cbc_pltc'] >= 140 &&  $result_dx['cbc_pltc'] <= 400){ echo "checked";}?>/>
+          <label for="normal33_1">ปกติ</label> 
+            <input name='normal33' id="normal33_2" type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal33')" <? if(!empty($result_dx['cbc_pltc']) && ($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400)){ echo "checked";}?>/>
+              <?php 
+			  $normal33Style = '';
 			   if(!empty($result_dx['cbc_pltc']) && ($result_dx['cbc_pltc'] < 140 || $result_dx['cbc_pltc'] > 400)){
-			  	echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
-			  }else{
-			  	echo "ผิดปกติ";
+				$normal33Style = 'style="color:#F00; font-weight:bold;"';
 			  }
-			  ?>            
+			  ?>
+			  <label for="normal33_2" <?=$normal33Style;?> >ผิดปกติ</label>
             </td>
             <td><div id="acnormal33" <? if(empty($result_dx['cbc_pltc']) || ($result_dx['cbc_pltc'] >= 140 &&  $result_dx['cbc_pltc'] <= 400)){ echo "style='display: none;'"; }else{ echo "style='display: block;'";} ?>>
        <select name='ch33'>
@@ -893,11 +757,11 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 	  </select></div></td>
           </tr>
           <tr bgcolor="#CCCCFF">
-            <td colspan="5" align="center" bgcolor="#FFCC99"><strong>ผลการตรวจ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>
+            <td colspan="5" align="center" bgcolor="#FFCC99"><b>ผลการตรวจ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>
               <input name='normal81' type='radio' value='ปกติ' onclick="togglediv2('acnormal81')" id="normal97" />
-              ปกติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <label for="normal97">ปกติ</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <input name='normal81' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal81')" id="normal96" />
-              ผิดปกติ </td><td bgcolor="#FFCC99"><div id="acnormal81" style='display: none;'>
+              <label for="normal96">ผิดปกติ</label> </td><td bgcolor="#FFCC99"><div id="acnormal81" style='display: none;'>
             <select name='ch81'>
               <option value='ควรพบแพทย์เพื่อหาสาเหตุ'>ควรพบแพทย์เพื่อหาสาเหตุ</option>
 			</select></div></td>
@@ -907,8 +771,8 @@ $_SESSION["hn_now"] = $arr_view["hn"];
 </TD></TR></TABLE>
 <br />
 <?
-//echo "==>".substr($arr_view["age"],0,2);
-// if(substr($arr_view["age"],0,2) >= 35){
+//echo "==>".substr($opcard["age"],0,2);
+// if(substr($opcard["age"],0,2) >= 35){
 ////ผลlab ของปีที่แล้ว
 ////*runno ตรวจสุขภาพ*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -924,14 +788,14 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	}
 	
 	$nPrefix=$row->prefix;
-	$nPrefix ="25".$nPrefix;
+	$condx_nPrefix ="25".$nPrefix;
 ////*runno ตรวจสุขภาพ*/////////
 
-$bsquery = "select * from condxofyear_out where hn ='".$_SESSION["hn_now"]."' and status_dr='Y' and yearcheck='".($nPrefix-2)."' ";
+$bsquery = "select * from condxofyear_out WHERE hn ='".$_SESSION["hn_now"]."' and status_dr='Y' and yearcheck='".($condx_nPrefix-2)."' ";
 $bsrow = mysql_query($bsquery);
 $bssult = mysql_fetch_array($bsrow);
 
-$bquery = "select * from condxofyear_out where hn ='".$_SESSION["hn_now"]."' and status_dr='Y' and yearcheck='".($nPrefix-1)."' ";
+$bquery = "select * from condxofyear_out WHERE hn ='".$_SESSION["hn_now"]."' and status_dr='Y' and yearcheck='".($condx_nPrefix-1)."' ";
 $brow = mysql_query($bquery);
 $bsult = mysql_fetch_array($brow);
 ?>
@@ -940,9 +804,9 @@ $bsult = mysql_fetch_array($brow);
 	  <table width="100%" border="0">
 	    <tr>
 	      <td align="right" class="tb_font_2" width="10%">&nbsp;</td>
-	      <td align="center" bgcolor="#339999" class="profilelab"><strong><?=($nPrefix-2)?></strong></td>
-          <td align="center" bgcolor="#339999" class="profilelab"><strong><?=($nPrefix-1)?></strong></td>
-	      <td align="center" bgcolor="#339999" class="profilelab"><strong><?=$nPrefix?></strong></td>
+	      <td align="center" bgcolor="#339999" class="profilelab"><b><?=($condx_nPrefix-2)?></b></td>
+          <td align="center" bgcolor="#339999" class="profilelab"><b><?=($condx_nPrefix-1)?></b></td>
+	      <td align="center" bgcolor="#339999" class="profilelab"><b><?=$condx_nPrefix?></b></td>
 	      <td class="labfont">&nbsp;</td>
 	      <td align="center" class="labfont">&nbsp;</td>
 	      <td class="labfont">&nbsp;</td>
@@ -959,7 +823,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['bs'] < 74 || $result_dx['bs'] > 106){
-				echo "<span style='color:#F00'><strong>$result_dx[bs]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[bs]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[bs]</span>";
 			}
@@ -972,7 +836,7 @@ $bsult = mysql_fetch_array($brow);
   		<input name='normal47' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal47');" <? if(!empty($result_dx['bs']) && $result_dx['bs'] < 74 || $result_dx['bs'] > 106){ echo "checked";}?>/>
             <? 
 			if(!empty($result_dx['bs']) && $result_dx['bs'] < 74 || $result_dx['bs'] > 106){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -996,7 +860,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['chol'] > 200){
-				echo "<span style='color:#F00'><strong>$result_dx[chol]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[chol]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[chol]</span>";
 			}
@@ -1009,7 +873,7 @@ $bsult = mysql_fetch_array($brow);
   <input name='normal46' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal46');" <? if($result_dx['chol'] > 200){ echo "checked";}?>/>
             <? 
 			if($result_dx['chol'] > 200){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1033,7 +897,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['tg'] > 150){
-				echo "<span style='color:#F00'><strong>$result_dx[tg]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[tg]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[tg]</span>";
 			}
@@ -1046,7 +910,7 @@ $bsult = mysql_fetch_array($brow);
   <input name='normal48' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal48');"  <? if($result_dx['tg'] > 150){ echo "checked";}?>/>
             <? 
 			if($result_dx['tg'] > 150){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1070,7 +934,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['bun'] < 7 || $result_dx['bun'] > 18){
-				echo "<span style='color:#F00'><strong>$result_dx[bun]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[bun]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[bun]</span>";
 			}
@@ -1083,7 +947,7 @@ $bsult = mysql_fetch_array($brow);
   <input name='normal44' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal44');" <? if(!empty($result_dx['bun']) && $result_dx['bun'] < 7 || $result_dx['bun'] > 18){ echo "checked";}?>/>
             <? 
 			if(!empty($result_dx['bun']) && $result_dx['bun'] < 7 || $result_dx['bun'] > 18){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1107,7 +971,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){
-				echo "<span style='color:#F00'><strong>$result_dx[cr]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[cr]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[cr]</span>";
 			}
@@ -1120,7 +984,7 @@ $bsult = mysql_fetch_array($brow);
   <input name='normal45' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal45');" <? if(!empty($result['cr']) && $result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){ echo "checked";}?>/>
             <? 
 			if(!empty($result_dx['cr']) && $result_dx['cr'] < 0.6 || $result_dx['cr'] > 1.3){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1134,6 +998,106 @@ $bsult = mysql_fetch_array($brow);
         </select>
        </div></td>
 	      </tr>
+
+		  <?php 
+		// eGFR
+		$sqlResulthead = "SELECT b.`labcode`,b.`labname`,b.`result`,b.`unit`,b.`normalrange`,b.`flag`,b.`parentcode` FROM 
+		( 
+			SELECT * 
+			FROM `resulthead` 
+			WHERE `hn`='$opdayHn' AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
+			AND `profilecode` = 'CREAG' 
+		) AS a LEFT JOIN `resultdetail` AS b ON a.`autonumber` = b.`autonumber` 
+		WHERE b.`labcode` IN ('GFR', 'STAGE') ";
+		$q = $dbi->query($sqlResulthead);
+		$egfr = array();
+		if($q->num_rows>0){
+			
+			while ($a = $q->fetch_assoc()) {
+				$key = $a['labcode'];
+				$egfr[$key] = $a;
+			}
+
+			// หมอยังไม่ลงผล เอาแค่การแสดงผลก่อน
+			/*
+			$state1 = $state2 = $state3 = $state4 = $state5 = '';
+			if($egfr['GFR']['result']<15){
+				$state5 = 'selected="selected"';
+
+			}elseif ($egfr['GFR']['result']>=15 && $egfr['GFR']['result']<=29) {
+				$state4 = 'selected="selected"';
+
+			}elseif ($egfr['GFR']['result']>=30 && $egfr['GFR']['result']<=59) {
+				$state3 = 'selected="selected"';
+
+			}elseif ($egfr['GFR']['result']>=60 && $egfr['GFR']['result']<=89) {
+				$state2 = 'selected="selected"';
+
+			}elseif ($egfr['GFR']['result']<=90) {
+				$state1 = 'selected="selected"';
+
+			}
+			*/
+			?>
+			<tr>
+				<td align="right" class="profilelab">eGFR :</td>
+				<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"></span></td>
+				<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"></span></td>
+				<td align="center" bgcolor="#FFFFFF" class="profilehead">
+					<?=$egfr['GFR']['result'];?>
+					<input type="hidden" name="egfr" value="<?=$egfr['GFR']['result'];?>">
+				</td>
+				<td class="labfont">
+					(<?=$egfr['STAGE']['result'];?>)
+					<input type="hidden" name="egfr_state" value="<?=$egfr['STAGE']['result'];?>">
+				</td>
+				<td align="center" class="labfont">
+					<?=$egfr['GFR']['flag'];?>
+				</td>
+				<td class="labfont">
+					<?php
+					/*
+					$egfr1Checked = '';
+					$egfrReasonDisplay = 'style="display:none"';
+					if($egfr['GFR']['result']>90){
+						$egfr1Checked = 'checked="checked"';
+					}
+					?>
+					<input type="radio" name="egfr_status" id="resultEgfr1" <?=$egfr1Checked;?> onclick="togglediv2('egfr_reason');" value="ปกติ"> <label for="resultEgfr1">ปกติ</label>
+					
+					<?php 
+					$egfr2Checked = '';
+					$egfr2Style = '';
+					if($egfr['GFR']['result']<=90){
+						$egfr2Checked = 'checked="checked"';
+						$egfr2Style = 'style="color:red; font-weight:bold;"';
+						$egfrReasonDisplay = '';
+					}
+					?>
+					<input type="radio" name="egfr_status" id="resultEgfr2" <?=$egfr2Checked;?> onclick="togglediv1('egfr_reason');" value="ผิดปกติ"> <label for="resultEgfr2" <?=$egfr2Style;?> >ผิดปกติ</label>
+					<?php
+					*/
+					?>
+				</td>
+				<td class="labfont" colspan="4">
+					<?php
+					/*
+					?>
+					<select name="egfr_reason" id="egfr_reason" <?=$egfrReasonDisplay;?> >
+						<option value="การทำงานของไตอยู่ภาวะไตวาย" <?=$state5;?>>การทำงานของไตอยู่ภาวะไตวาย</option>
+						<option value="การทำงานของไตทำงานผิดปกติมาก" <?=$state4;?>>การทำงานของไตทำงานผิดปกติมาก</option>
+						<option value="การทำงานของไตทำงานปานกลาง" <?=$state3;?>>การทำงานของไตทำงานปานกลาง</option>
+						<option value="การทำงานของไตมีผิดปกติเล็กน้อย" <?=$state2;?>>การทำงานของไตมีผิดปกติเล็กน้อย</option>
+						<option value=" การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม" <?=$state1;?>> การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม</option>
+					</select>
+					<?php
+					*/
+					?>
+				</td>
+			</tr>
+			<?php 
+		}
+		?>
 	    <tr>
           <td width="4%" align="right" class="profilelab"> ALP : </td>
           <td width="2%" align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1">
@@ -1145,7 +1109,7 @@ $bsult = mysql_fetch_array($brow);
           <td width="2%" align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['alk'] < 46 || $result_dx['alk'] > 116){
-				echo "<span style='color:#F00'><strong>$result_dx[alk]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[alk]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[alk]</span>";
 			}
@@ -1157,7 +1121,7 @@ $bsult = mysql_fetch_array($brow);
 			  <input name='normal41' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal41');" <? if(!empty($result_dx['alk']) && $result_dx['alk'] < 46 || $result_dx['alk'] > 116){ echo "checked";}?>/>
             <? 
 			if(!empty($result_dx['alk']) && $result_dx['alk'] < 46 || $result_dx['alk'] > 116){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1178,7 +1142,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['sgpt'] > 50){
-				echo "<span style='color:#F00'><strong>$result_dx[sgpt]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[sgpt]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[sgpt]</span>";
 			}
@@ -1191,7 +1155,7 @@ $bsult = mysql_fetch_array($brow);
   <input name='normal42' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal42');" <? if($result_dx['sgpt'] > 50){ echo "checked";}?>/>
             <? 
 			if($result_dx['sgpt'] > 50){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1213,7 +1177,7 @@ $bsult = mysql_fetch_array($brow);
 	    <td align="center" bgcolor="#FFFFFF" class="profilehead">
             <? 
 			if($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37){
-				echo "<span style='color:#F00'><strong>$result_dx[sgot]</strong></span>";
+				echo "<span style='color:#F00'><b>$result_dx[sgot]</b></span>";
 			}else{
 				echo "<span style='color:#00F'>$result_dx[sgot]</span>";
 			}
@@ -1226,7 +1190,7 @@ $bsult = mysql_fetch_array($brow);
   <input name='normal43' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal43');" <? if(!empty($result_dx['sgot']) && ($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37)){ echo "checked";}?>/>
             <? 
 			if(!empty($result_dx['sgot']) && ($result_dx['sgot'] < 15 || $result_dx['sgot'] > 37)){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1249,7 +1213,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
 		<?php
 		if($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2){
-			echo "<span style='color:#F00'><strong>$result_dx[uric]</strong></span>";
+			echo "<span style='color:#F00'><b>$result_dx[uric]</b></span>";
 		}else{
 			echo "<span style='color:#00F'>$result_dx[uric]</span>";
 		}
@@ -1262,7 +1226,7 @@ $bsult = mysql_fetch_array($brow);
 		<input name='normal49' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal49');"<? if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){ echo "checked";}?>/>
 		<?php
 			if(!empty($result_dx['uric']) && ($result_dx['uric'] < 2.6 || $result_dx['uric'] > 7.2)){
-				echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+				echo "<span style='color:#F00'><b>ผิดปกติ</b></span>";
 			}else{
 				echo "<span style='color:#000'>ผิดปกติ</span>";
 			}
@@ -1286,7 +1250,7 @@ $bsult = mysql_fetch_array($brow);
 	<td align="center" bgcolor="#FFFFFF" class="profilehead">
 		<?php
 		if($result_dx['hdl'] <= 40){
-			echo "<span style='color:#F00'><strong>$result_dx[hdl]</strong></span>";
+			echo "<span style='color:#F00'><b>$result_dx[hdl]</b></span>";
 		}else{
 			echo "<span style='color:#00F'>$result_dx[hdl]</span>";
 		}
@@ -1834,7 +1798,7 @@ if(!empty($result_dx["DB"])){
 	  <tr bgcolor="#CCCCFF">
 	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">
 				<!-- ตรวจเอ็กซ์เรย์ปอด : <a href="dxdr_xray_film.php" target="_blank">ดูฟิลม์</a> -->
-				ตรวจเอ็กซ์เรย์ปอด : <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$arr_view["hn"];?>" target="_blank">ดูฟิลม์</a>
+				ตรวจเอ็กซ์เรย์ปอด : <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$opcard["hn"];?>" target="_blank">ดูฟิลม์</a>
 				</td>
 	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ปกติ' onclick="togglediv2('acnormal51')" id="normal58"/>
 	      ปกติ
@@ -2149,7 +2113,7 @@ BPH</span></td>
 		<TD>
 	 <table height="60" border="0" bordercolor="#FFFFFF" bgcolor="#FFCCCC" class="tb_font">
   <tr>
-    <td valign="top"><textarea name="dx" cols="60" rows="8" id="dx"><?php echo $arr_dxofyear["dx"]; ?></textarea>      &nbsp;&nbsp;</td>
+    <td valign="top"><textarea name="dx" cols="60" rows="8" id="dx"><?=$arr_dxofyear["dx"]; ?></textarea>      &nbsp;&nbsp;</td>
     </tr>
 </table>
 		</TD>
@@ -2162,8 +2126,8 @@ BPH</span></td>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
 <input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />
 </center>
-<INPUT TYPE="hidden" value="<?php echo $bmi;?>" name="bmi" />
-<INPUT TYPE="hidden" value="<?php echo $rowid;?>" name="row_id" />
+<INPUT TYPE="hidden" value="<?=$bmi;?>" name="bmi" />
+<INPUT TYPE="hidden" value="<?=$rowid;?>" name="row_id" />
 </FORM>
 
 <?php }?>
