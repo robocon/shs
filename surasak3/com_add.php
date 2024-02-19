@@ -60,8 +60,8 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 		text-decoration: underline;
 	}
 	#notiContent > ol{
-		margin: 1em;
-		padding: 1em;
+		margin: 0 0.5em;
+    	padding: 0.5em 1em;
 	}
 	#notiBackground{
 		position: fixed;
@@ -133,8 +133,8 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 					</li>
 					<li>
 						<div style="font-weight:bold;">หากต้องการ <u style="color:red;">ลบ/แก้ไข</u> ค่าใช้จ่าย</div>
-						<div>กรุณาให้ข้อมูลที่ครบถ้วนเพื่อง่ายต่อการแก้ไข เช่น HN วันที่ รหัส ราคา และเหตุผลในการแก้ไข
-						</div>
+						<div>กรุณาให้ข้อมูลที่ครบถ้วนเพื่อง่ายต่อการแก้ไข เช่น HN วันที่ รหัส ราคา และเหตุผลในการแก้ไข</div>
+						<div style="border: 4px solid #f1aeb5;padding: 4px;text-align: center;background-color: #f8d7da;">* การแก้ไขค่ายาของ<u style="color:red;"><b>แผนกไตเทียม</b></u> ขอความกรุณา<u style="color:red;"><b>ส่งบันทึกข้อความ</b></u>ด้วยทุกครั้ง *</div>
 					</li>
 					<li>
 						<div style="font-weight:bold;">หากมีเจ้าหน้าที่มาปฏิบัติงานใหม่</div>
@@ -145,7 +145,7 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 						เนื่องจากแต่ละงานใช้ระยะเวลาดำเนินการที่แตกต่างกัน ใบงานของท่านอาจจะค้างในระบบเป็นเวลานาน</b>
 				</p>
 				<p style="text-align:center;">
-					<input type="checkbox" name="consent" id="consent"> <label for="consent">ข้าพเจ้าอ่านและรับทราบคำแนะนำทุกประการ</label>
+					<input type="checkbox" name="consent" id="consent"> <label for="consent">ข้าพเจ้าอ่านและรับทราบคำแนะนำทุกประการ<br>หากไม่ปฏิบัติตามให้ถือว่าใบงานนั้นเป็นอันโมฆะและยินยอมให้ศูนย์คอมฯ ยกเลิกใบงานโดยไม่ต้องแจ้งล่วงหน้า</label>
 				</p>
 			</div>
 		</div>
@@ -168,8 +168,9 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 		<input name="act" type="hidden" value="add">
 		<table width="1053" align="center" bgcolor="#66CCCC" class="forntsarabun">
 			<tr>
-				<td height="48" colspan="4" bgcolor="#0099CC"><span class="style2">ระบบแจ้งซ่อมระบบคอมพิวเตอร์
-						ปรับปรุงและพัฒนาโปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</span></td>
+				<td height="48" colspan="4" bgcolor="#0099CC">
+					<span class="style2">ระบบแจ้งซ่อมระบบคอมพิวเตอร์ปรับปรุงและพัฒนาโปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</span>
+				</td>
 			</tr>
 			<tr>
 				<td width="146" bgcolor="#66CCCC"><strong>แผนก</strong></td>
