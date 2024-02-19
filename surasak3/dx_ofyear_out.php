@@ -1,7 +1,6 @@
 <?php
 session_start();
-include("connect.inc");
-
+include("connect.php");
 mysql_query("SET NAMES UTF8");
 
 if(empty($_SESSION["sOfficer"])){
@@ -9,8 +8,29 @@ if(empty($_SESSION["sOfficer"])){
 	exit;
 }
 
-$date_now = date("Y-m-d H:i:s");
+$smenucode = sprintf("%s", $_SESSION['smenucode']);
 
+$action = sprintf("%s", $_GET['action']);
+if($action==='findvn'){
+	$date = sprintf("%s", $_GET['date']);
+	list($y,$m,$d) = explode('-', $date);
+	
+	$hn = sprintf("%s", $_GET['hn']);
+	$thdateHn = "$d-$m-".($y+543).$hn;
+	$sql = "SELECT vn FROM opday WHERE thdatehn = '$thdateHn' LIMIT 1 ";
+	
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q)>0){
+		$a = mysql_fetch_assoc($q);
+		$res = '{"status":200,"vn":"'.$a['vn'].'"}';
+	}else{
+		$res = '{"status":400,"message":"ไม่พบการลงทะเบียน"}';
+	}
+	echo $res;
+	exit;
+}
+
+$date_now = date("Y-m-d H:i:s");
 
 function calcage($birth){
 
@@ -130,15 +150,10 @@ $list_lab["DB"] = "DB";
 	.tb_font{font-family:"Angsana New"; font-size:20px;}
 	.tb_font_1{font-family:"Angsana New"; font-size:20px; color:#FFFFFF; font-weight:bold;}
 	.tb_col{font-family:"Angsana New"; font-size:20px; background-color:#9FFF9F}
-
-.tb_font_2 {
-	color: #B00000;
-	font-weight: bold;
-}
-.style5 {color: #000099; font-weight: bold; }
-.pdxhead {	font-family: "TH SarabunPSK";
-	font-size: 24px;
-}
+	.tb_font_2 {color: #B00000;font-weight: bold;}
+	.style5 {color: #000099; font-weight: bold; }
+	.pdxhead {	font-family: "TH SarabunPSK";font-size: 24px;}
+	label:hover{cursor: pointer;}
 </style>
 </head>
 
@@ -149,23 +164,23 @@ $list_lab["DB"] = "DB";
 </center>
 
 <form action="dx_ofyear_out.php" method="post">
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข HN</TD>
-	</TR>
-	<TR>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></TD>
-	</TR>
-	<TR>
-		<TD></TD>
-	</TR>
-	</TABLE>
-	</TD>
-</TR>
-</TABLE>
+<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
+<tr>
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข HN</td>
+	</tr>
+	<tr>
+		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></td>
+	</tr>
+	<tr>
+		<td></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
 <br />
 <input name="post_vn" type="hidden" value="1" />
 </form>
@@ -332,21 +347,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 }else{  //// ค้นหาจาก opd
 	
 		$sql = "Select congenital_disease, weight, height,cigarette,alcohol,exercise ,bp1,bp2,doctor  From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-		
-		//echo "OPD";
-
 		$result = Mysql_Query($sql);
 		list($congenital_disease, $weight, $height, $cigarette, $alcohol, $exercise,$bp1,$bp2,$doctor) = Mysql_fetch_row($result);
-			if($congenital_disease == "")
-				$congenital_disease = "ปฎิเสธโรคประจำตัว";
+		if($congenital_disease == "")
+			$congenital_disease = "ปฎิเสธโรคประจำตัว";
 
-	}
-	$ht = $height/100;
-	$bmi=number_format($weight /($ht*$ht),2);
+}
+
+$ht = $height/100;
+$bmi=number_format($weight /($ht*$ht),2);
 	
-	if($arr_dxofyear["rate"] == ""){
-		$arr_dxofyear["rate"] = 20;
-	}
+if($arr_dxofyear["rate"] == ""){
+	$arr_dxofyear["rate"] = 20;
+}
 	
 $choose = array();
 
@@ -408,81 +421,134 @@ while($arr = Mysql_fetch_assoc($result)){
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM METHOD=POST ACTION="dx_ofyear_out_save.php" target="_blank" <?php //if($arr_view["vn"] ==""){echo "Onsubmit=\"alert('ผู้ป่วยยังไม่ได้ทำการลงทะเบียน');return false;\"";}?>>
+<FORM METHOD=POST ACTION="dx_ofyear_out_save.php" target="_blank">
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
 <input name="vn" type="hidden" id="vn"  value="<?php echo $arr_view["vn"];?>" />
 
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" width="100%" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0" width="100%">
-	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</TD>
-	</TR>
-	<TR>
-		<TD>
-	<table width="528" border="0" class="tb_font">
+<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" width="100%" >
+<tr>
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr>
+		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</td>
+	</tr>
+	<tr>
+		<td>
+	<table width="1024" border="0" class="tb_font">
+		<?php 
+		// if($smenucode==='ADM' OR $smenucode==='ADMNEWCHKUP'){
+		?>
 		<tr>
-			<td width="88" align="right"><span class="tb_font_2">VN :</span></td>
-			<td width="225"><?php echo $arr_view["vn"];?></td>
+			<td align="right" class="tb_font_2">เลือกวันที่ย้อนหลัง:</td>
+			<td colspan="3">
+				<input type="date" name="datePrev" id="datePrev" onchange="beforeFindVn(this.value);"><span id="dateResponse"></span>
+				<script>
+					function beforeFindVn(v){
+						findVn(v).then(function(res){
+							console.log(res);
+							if(res.status===200){
+								document.getElementById('vn').innerHTML = res.vn;
+								document.getElementById('show_vn').innerHTML = res.vn;
+							}else if(res.status===400){
+								document.getElementById('dateResponse').innerHTML = res.message;
+							}
+						})
+					}
+					async function findVn(v){
+						const hn = encodeURIComponent('<?=$arr_view["hn"];?>');
+						const response = await fetch('dx_ofyear_out.php?action=findvn&date='+encodeURIComponent(v)+'&hn='+hn);
+						const data = await response.json();
+						return data;
+					}
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="3">
+				<input type="checkbox" name="sendto_out_result_chkup" id="sendto_out_result_chkup"><label for="sendto_out_result_chkup">บันทึกข้อมูลซักประวัติเข้าระบบตรวจสุขภาพ</label>
+			</td>
+		</tr>
+		<tr>
+			<td align="right" class="tb_font_2">เลือกบริษัท</td>
+			<td colspan="3">
+				<select name="part" id="part">
+					<option value="">เลือกบริษัท</option>
+					<option value="บริษัท AAA">บริษัท AAA</option>
+					<option value="บริษัท BBB">บริษัท BBB</option>
+				</select>
+			</td>
+		</tr>
+		<?php 
+		// }
+		?>
+		<tr>
+			<td width="110" align="right"><span class="tb_font_2">VN :</span></td>
+			<td width="225"><span id="show_vn"><?php echo $arr_view["vn"];?></span></td>
 			<td align="right"><span class="tb_font_2">HN :</span></td>
 			<td width="148"><?php echo $arr_view["hn"];?></td>
-			</tr>
+		</tr>
 		<tr>
-			<td width="88" align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
+			<td align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
 			<td><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
-			<td width="49" align="right"><span class="tb_font_2">อายุ :</span> </td>
+			<td align="right"><span class="tb_font_2">อายุ :</span> </td>
 			<td align="left"><?php echo $arr_view["age"];?></td>
-			</tr>
+		</tr>
 		<tr>
-		  <td align="right"><span class="tb_font_2">หน่วยงาน : </span></td>
-		  <td colspan="3"><span class="pdxhead">
-		    <select name='camp' id="camp">
-			<?php 
-			$ptright_key = substr($ptright,0,3);
-			$sql12 = "select * from chkcompany where status='Y' AND row_id != 77 AND row_id != 78 order by row_id asc";
-			$rows12 = mysql_query($sql12);
-			while($result12 = mysql_fetch_array($rows12)){ 
+			<td align="right"><span class="tb_font_2">หน่วยงาน : </span></td>
+			<td colspan="3"><span class="pdxhead">
+				<select name='camp' id="camp">
+				<?php 
+				$ptright_key = substr($ptright,0,3);
+				$sql12 = "select * from chkcompany where status='Y' AND row_id != 77 AND row_id != 78 order by row_id asc";
+				$rows12 = mysql_query($sql12);
+				while($result12 = mysql_fetch_array($rows12)){ 
 
-				$selected = '';
-				if( $ptright_key == 'R42' && $result12['code'] == 'ตรวจสุขภาพประจำปี' ){
-					$selected = 'selected="selected"';
+					$selected = '';
+					if( $ptright_key == 'R42' && $result12['code'] == 'ตรวจสุขภาพประจำปี' ){
+						$selected = 'selected="selected"';
+					}
+
+					if( $camp == $result12['name'] ){
+						$selected = 'selected="selected"';
+					}
+
+					?>
+					<option value='<?=$result12['name']?>' <?=$selected;?> ><?=$result12['name']?></option>
+					<?php
 				}
-
-				if( $camp == $result12['name'] ){
-					$selected = 'selected="selected"';
-				}
-
 				?>
-				<option value='<?=$result12['name']?>' <?=$selected;?> ><?=$result12['name']?></option>
-				<?php
-			}
-			?>
-            </select>
-		  </span></td>
-		  </tr>
+				</select>
+			</span>
+			</td>
+		</tr>
 	</table>
 	<hr />
-	<table width="854" border="0" class="tb_font">
-	  <tr>
-			<td width="130" align="right" class="tb_font_2">ส่วนสูง : </td>
-			<td width="79"><input id="pt_height" name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" />
-ซม.</td>
-			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
-			<td width="129"><input id="pt_weight" name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
-กก. </td>
-			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
-			<td width="132"><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" />
-			  ซม.</td>
-			<td width="70" align="left"><span class="tb_font_2">BP1 :</span></td>
-			<td width="150" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
-			  /
-			  <input name="bp2" type="text" size="1" maxlength="3" value="<?php echo $bp2; ?>" />
-			  mmHg</td>
-			</tr>
+	<table width="1024" border="0" class="tb_font">
 		<tr>
+			<td width="88" align="right" class="tb_font_2">ส่วนสูง : </td>
+			<td width="79">
+				<input id="pt_height" name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" /> ซม.
+			</td>
+			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
+			<td width="129">
+				<input id="pt_weight" name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" /> กก.
+			</td>
+			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
+			<td width="132">
+				<input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" /> ซม.
+			</td>
+			<td width="70" align="right"><span class="tb_font_2">BP1 :</span></td>
+			<td width="160" align="left">
+				<input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
+				/
+				<input name="bp2" type="text" size="1" maxlength="3" value="<?php echo $bp2; ?>" />
+				mmHg
+			</td>
+			</tr>
+		<tr valign="top">
 		  <td align="right" class="tb_font_2">T :</td>
 		  <td><input name="temperature" type="text" size="1" maxlength="5" value="<?php echo $temperature; ?>" />
 C&deg; </td>
@@ -492,10 +558,10 @@ C&deg; </td>
 		  <td align="right"><span class="tb_font_2">R :</span></td>
 		  <td align="left"><input name="rate" type="text" size="1" maxlength="3" value="<?php echo $rate;?>" />
 ครั้ง/นาที</td>
-		  <td align="left"><span class="tb_font_2">Repeat BP :</span></td>
+		  <td align="right"><span class="tb_font_2">Repeat BP :</span></td>
 		  <td align="left">
 		  	<input name="bp21" type="text" size="1" maxlength="3" value="<?php echo $bp21;?>" /> / <input name="bp22" type="text" size="1" maxlength="3" value="<?php echo $bp22; ?>" /> mmHg<br>
-			<span style="font-size: 13px; color: red;">* Repeat BP ถ้าไม่มีข้อมูลให้เว้นว่าง</span>
+			<span style="color: red;">* Repeat BP ถ้าไม่มีข้อมูลให้เว้นว่าง</span>
 		  </td>
 		  </tr>
 		<tr>
@@ -604,16 +670,18 @@ C&deg; </td>
 			</td>
 		  </tr>
 	</table>
-	<TABLE class="tb_font">
-	</TABLE>
-	<TABLE width="725" class="tb_font">
+	<table class="tb_font">
+	</table>
+	<table width="960" class="tb_font">
 	<tr>
-           <td width="101" align="right" class="tb_font_2">โรคประจำตัว :</td>
-           <td width="612" colspan="5" align="left"><span class="data_show">
+		<td width="101" align="right" class="tb_font_2">โรคประจำตัว :</td>
+		<td width="612" colspan="5" align="left">
+			<span class="data_show">
              <input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>"/>
              <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" />
-           </span></td>
-         </tr>
+           </span>
+		</td>
+	</tr>
 	<tr>
 	  <td align="right" class="tb_font_2">ลักษณะผู้ป่วย : </td>
 	  <td colspan="5" align="left"><input name="type" type="radio" value="เดินมา"  <?php if($type=="เดินมา"){ echo "checked"; } ?> />
@@ -625,37 +693,37 @@ C&deg; </td>
 <input name="type" type="radio" value="ญาติ" <?php if($type=="ญาติ"){ echo "checked"; } ?>/>
 ญาติ</td><!--onclick="clear_textbox();" -->
 	  </tr>
-	</TABLE>
-	<TABLE class="tb_font">
+	</table>
+	<table class="tb_font" width="">
 	  <tr>
-           <td align="right" valign="top" class="tb_font_2">อาการ : </td>
-           <td colspan="2" align="left" valign="top"><textarea id="organ" name="organ" cols="40" rows="6" >ตรวจสุขภาพประจำปี<?php echo $og;?></textarea> &nbsp;&nbsp;</td>
-           <td colspan="2" align="left" valign="top">
-		   <table border="0">
-               <tr>
-                 <td align="left"><select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;">
-                   <option value="">--- ตัวช่วย ---</option>
-                     <?php
-			 foreach($choose as $value){
-			 	echo "<option value='".$value."'>".$value."</option>";
-			 }
-			 ?>
-              </select></td>
-                </tr>
-				<tr>
-                 <td align="left"><br />
-<select name="select" onchange="if(this.value !=''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}" style="position: absolute;">
-                     <option value="">--- อาการเดิม ---</option>
-                     <?php
-			 foreach($choose2 as $value){
-			 	echo "<option value='".$value."'>".$value."</option>";
-			 }
-			 ?>
-                          </select></td>
-                </tr>
-             </table></td>
-         </tr>
-	</TABLE>
+			<td align="right" valign="top" class="tb_font_2" width="101">อาการ : </td>
+			<td colspan="2" align="left" valign="top">
+				<textarea id="organ" name="organ" cols="40" rows="6" >ตรวจสุขภาพประจำปี<?php echo $og;?></textarea> &nbsp;&nbsp;
+			</td>
+            <td colspan="2" align="left" valign="top">
+				<div>
+					<select name="choose_organ" onchange="if(this.value != ''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}">
+						<option value="">--- ตัวช่วย ---</option>
+						<?php
+						foreach($choose as $value){
+						echo "<option value='".$value."'>".$value."</option>";
+						}
+						?>
+					</select>
+				</div>
+				<div style="margin-top:8px;">
+					<select name="select" onchange="if(this.value !=''){document.getElementById('organ').value = document.getElementById('organ').value+' '+this.value;}">
+						<option value="">--- อาการเดิม ---</option>
+						<?php
+						foreach($choose2 as $value){
+						echo "<option value='".$value."'>".$value."</option>";
+						}
+						?>
+					</select>
+				</div>
+			</td>
+		</tr>
+	</table>
 	<table class="tb_font">
 		<tr>
 			<td align="right" valign="top" class="tb_font_2">ตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</td>
@@ -674,71 +742,71 @@ C&deg; </td>
 			<td><input type="text" name="ekg" size="50" value="<?=$arr_dxofyear['ekg'];?>"></td>
 		</tr>
 	</table>
-	<TABLE class="tb_font">
-	<tr>
-           <td align="right" class="tb_font_2">คลินิก : </td>
-           <td align="left" colspan="5">
-   	<select name="clinic" id="clinic">
-      <?php 
-	  	print "<option value='' >-- กรุณาเลือกคลินิก --</option>";
-		print " <option value='12 เวชปฏิบัติ' selected>เวชปฏิบัติ</option>";
-		print " <option value='01 อายุรกรรม'>อายุรกรรม</option>";
-		print " <option value='02 ศัลยกรรม'>ศัลยกรรม</option>";
-		print " <option value='03 สูติกรรม'>สูติกรรม</option>";
-		print " <option value='04 นารีเวชกรรม'>นารีเวชกรรม</option>";
-		print " <option value='05 กุมารเวช'>กุมารเวช</option>";
-		print " <option value='06 โสต ศอ นาสิก'>โสต สอ นาสิก</option>";
-		print " <option value='07 จักษุ'>จักษุ</option>";
-		print " <option value='08 ศัลยกรรมกระดูก'>ศัลยกรรมกระดุก</option>";
-		print " <option value='08 ศัลยกรรมทางเดินปัสสาวะ'>ศัลยกรรมทางเดินปัสสาวะ</option>";
-		print " <option value='09 จิตเวช'>จิตเวช</option>";
-		print " <option value='10 รังษีวิทยา'>รังษีวิทยา</option>";
-		print " <option value='11 ทันตกรรม'>ทันตกรรม</option>";
-		if($_SESSION["smenucode"] != "ADMMAINOPD"){
-		print " <option value='12 เวชศาสตร์ฟื้นฟู'>เวชศาสตร์ฟื้นฟู</option>";
-		}
-		print " <option value='12 อื่นๆ'>อื่นๆ</option>";
-	?>
-             </select>           </td>
+	<table class="tb_font">
+		<tr>
+			<td align="right" class="tb_font_2">คลินิก : </td>
+			<td align="left" colspan="5">
+				<select name="clinic" id="clinic">
+				<?php 
+				print "<option value='' >-- กรุณาเลือกคลินิก --</option>";
+				print " <option value='12 เวชปฏิบัติ' selected>เวชปฏิบัติ</option>";
+				print " <option value='01 อายุรกรรม'>อายุรกรรม</option>";
+				print " <option value='02 ศัลยกรรม'>ศัลยกรรม</option>";
+				print " <option value='03 สูติกรรม'>สูติกรรม</option>";
+				print " <option value='04 นารีเวชกรรม'>นารีเวชกรรม</option>";
+				print " <option value='05 กุมารเวช'>กุมารเวช</option>";
+				print " <option value='06 โสต ศอ นาสิก'>โสต สอ นาสิก</option>";
+				print " <option value='07 จักษุ'>จักษุ</option>";
+				print " <option value='08 ศัลยกรรมกระดูก'>ศัลยกรรมกระดุก</option>";
+				print " <option value='08 ศัลยกรรมทางเดินปัสสาวะ'>ศัลยกรรมทางเดินปัสสาวะ</option>";
+				print " <option value='09 จิตเวช'>จิตเวช</option>";
+				print " <option value='10 รังษีวิทยา'>รังษีวิทยา</option>";
+				print " <option value='11 ทันตกรรม'>ทันตกรรม</option>";
+				if($_SESSION["smenucode"] != "ADMMAINOPD"){
+				print " <option value='12 เวชศาสตร์ฟื้นฟู'>เวชศาสตร์ฟื้นฟู</option>";
+				}
+				print " <option value='12 อื่นๆ'>อื่นๆ</option>";
+				?>
+				</select>
+			</td>
          </tr>
          <tr>
-           <td align="right" class="tb_font_2">แพทย์ : </td>
-           <td align="left" colspan="5"><select name="doctor" id="doctor">
-               <?php 
-		echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
-		echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
-		$sql = "Select name From doctor where status = 'y' ";
-		$result = mysql_query($sql);
-		while(list($name) = mysql_fetch_row($result)){
-		if($doctor==$name){
-		echo "<option value='".$name."' selected >".$name."</option>";
-		}else{
-			
-		echo "<option value='".$name."' >".$name."</option>";	
-		}
-		
-		}
-		?>
-             </select>           </td>
+			<td align="right" class="tb_font_2">แพทย์ : </td>
+			<td align="left" colspan="5"><select name="doctor" id="doctor">
+				<?php 
+				echo "<option value='' >-- กรุณาเลือกแพทย์ --</option>";
+				echo "<option value='ห้องตรวจโรคทั่วไป' >ห้องตรวจโรคทั่วไป</option>";
+				$sql = "Select name From doctor where status = 'y' ";
+				$result = mysql_query($sql);
+				while(list($name) = mysql_fetch_row($result)){
+					if($doctor==$name){
+						echo "<option value='".$name."' selected >".$name."</option>";
+					}else{
+						echo "<option value='".$name."' >".$name."</option>";	
+					}
+				}
+				?>
+				</select>
+			</td>
          </tr>
-	</TABLE>
-		</TD>
-	</TR>
-	<TR>
-		<TD></TD>
-	</TR>
-	</TABLE>
-	</TD>
-</TR>
-</TABLE>
+	</table>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
 <BR>
 
 <!-- ผลการตรวจทางพยาธิ -->
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
+<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
+<tr>
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0">
+	<tr>
 		<TD align="left" bgcolor="#0000CC" class="tb_font_1">
 			<?php 
 			$labStyle = '';
@@ -748,10 +816,10 @@ C&deg; </td>
 			}
 			?>
 			&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <span <?=$labStyle;?>><?php echo $lab_date;?></span>
-		</TD>
-	</TR>
+		</td>
+	</tr>
 	<TR class="tb_font">
-		<TD>
+		<td>
 	&nbsp;&nbsp; <span class="style5">UA :</span> 
        <table border="0">
 	  <tr>
@@ -867,35 +935,35 @@ C&deg; </td>
 	}
 	?>
 
-		</TD>
-	</TR>
-	</TABLE>
-	</TD>
-</TR>
-</TABLE>
+		</td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
 <BR>
 <!-- บันทึกการวินิฉัยจากแพทย์ -->
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
-	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;บันทึกการวินิฉัยจากแพทย์</TD>
-	</TR>
+<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
+<tr>
+	<td>
+	<table border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;บันทึกการวินิฉัยจากแพทย์</td>
+	</tr>
 	<TR class="tb_font">
-		<TD>
+		<td>
 	 <table height="60" border="0" class="tb_font">
   <tr>
     <td valign="top">&nbsp;&nbsp;
       <textarea name="dx" cols="60" rows="8" id="dx"><?php echo $arr_dxofyear["dx"]; ?></textarea></td>
     </tr>
 </table>
-		</TD>
-	</TR>
-	</TABLE>
-	</TD>
-</TR>
-</TABLE>
+		</td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
 <br />
 <center>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->

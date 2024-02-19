@@ -1,4 +1,9 @@
 <?php
+/**
+ * ตาราง out_result_chkup		เป็นตาราง เกี่ยวกับข้อมูลซักประวัติใน รายชื่อผู้ตรวจสุขภาพ ที่ตรวจสุขภาพบันทึกเข้าระบบหลังบ้าน เป็นการตรวจแบบกลุ่ม
+ * ตาราง opd					เป็นตาราง ข้อมูลซักประวัติ ตัวหลักที่เป็น ผู้ป่วย walk-in (ไม่ได้มาตรวจสุขภาพ)
+ * ตาราง dxofyear_out			เป็นตาราง ข้อมูลซักประวัติ ของตรวจสุขภาพทั่วๆไปที่เข้ามาแบบ walk-in
+ */
 session_start();
 include("connect.inc");
 if(empty($_SESSION["sOfficer"])){
@@ -16,10 +21,8 @@ $xx = explode("-",$yy[0]);
 
 $thidate_now = ($xx[0]+543)."-".$xx[1]."-".$xx[2]." ".$yy[1];
 
-// $date_hn2 dd-mm-YYYYHN
-$date_hn2 = $xx[2]."-".$xx[1]."-".($xx[0]+543).$_POST["hn"];
-
-
+// $opdayThdatehn dd-mm-YYYYHN
+$opdayThdatehn = $xx[2]."-".$xx[1]."-".($xx[0]+543).$_POST["hn"];
 ?>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
@@ -42,7 +45,7 @@ window.onload = function(){
 </script>
 <?php
 
-	$sql = "Select count(row_id) From opd where thdatehn = '".$date_hn2."' limit 1";
+	$sql = "Select count(row_id) From opd where thdatehn = '".$opdayThdatehn."' limit 1";
 	$result = Mysql_Query($sql);
 	list($rows) = Mysql_fetch_row($result);
 	
@@ -85,11 +88,11 @@ if($rows > 0){
 	`cigarette`= '".$_POST["cigarette"]."', 
 	`alcohol`= '".$_POST["alcohol"]."', 
 	`exercise`= '".$_POST["exercise"]."' 
-	where  `thdatehn` = '".$date_hn2."' limit 1 ";
+	where  `thdatehn` = '".$opdayThdatehn."' limit 1 ";
 	mysql_query($sql);
 }else{
 
-	$sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , `toborow`, `height`, `clinic`, `cigarette`, `alcohol`, `exercise`) VALUES (NULL , '".$thidate_now."', '".$date_hn2."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$_POST["doctor"]."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["exercise"]."');";
+	$sql = "INSERT INTO `opd` (`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,`congenital_disease` ,`type` ,`organ` ,`doctor`, `officer`, `vn` , `toborow`, `height`, `clinic`, `cigarette`, `alcohol`, `exercise`) VALUES (NULL , '".$thidate_now."', '".$opdayThdatehn."', '".$_POST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', '".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', '".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".$_POST["organ"]."', '".$_POST["doctor"]."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', '".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["exercise"]."');";
 	mysql_query($sql);
 }
 
@@ -578,7 +581,7 @@ if( $toborow == 'ex46' && $ptright == 'r07' ){
 	$checkdx = "sso";
 }
 
-$upopday = "update opday set checkdx='$checkdx' where thdatehn = '".$date_hn2."'";
+$upopday = "update opday set checkdx='$checkdx' where thdatehn = '".$opdayThdatehn."'";
 $result3 = mysql_query($upopday) or die(mysql_error());
 
 $query ="UPDATE chkup_solider SET opd = '$date_now' WHERE hn='".$_POST["hn"]."'";
@@ -607,7 +610,7 @@ if($_POST["drugreact"] == 0){
 
 if($_POST['submit2']==='บันทึกและพิมพ์ใบตรวจโรค'){
 
-	header('Location: digital_opd.php?dthn='.$date_hn2);
+	header('Location: digital_opd.php?dthn='.$opdayThdatehn);
 
 }else{
 
