@@ -274,9 +274,9 @@ p.text {
 <script language="javascript">
 //window.opener.location.reload();
 //window.opener.location.reload(true);
-//window.print();
+window.print();
 	setTimeout(function(){ 
-            // window.close();
+            window.close();
 	}, 1000);
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
