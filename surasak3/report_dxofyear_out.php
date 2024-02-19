@@ -812,7 +812,8 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['egfr']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['egfr_state']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['egfr_status']?></strong> <? if($result['egfr_status']=="ผิดปกติ") echo "คำแนะนำ...".$result['egfr_reason']."...";?></td>
+			<!-- <td valign="top" class="text"><strong><?=$result['egfr_status']?></strong> <? if($result['egfr_status']=="ผิดปกติ") echo "คำแนะนำ...".$result['egfr_reason']."...";?></td> -->
+			<td></td>
 		</tr>
 		<? 
 	}

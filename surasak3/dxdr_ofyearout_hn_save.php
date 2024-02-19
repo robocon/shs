@@ -224,6 +224,8 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 	$egfr_status = (!empty($_POST['egfr_status']) ? $_POST['egfr_status'] : '' );
 	$egfr_reason = (!empty($_POST['egfr_reason']) ? $_POST['egfr_reason'] : '' );
 
+	$egfr_status = '';
+	$egfr_reason = '';
 	
 $sql ="INSERT INTO  `condxofyear_out` ( 
 	`thidate` ,  `thdatehn` ,  `thdatevn` ,  `hn` ,  `vn` , `ptname`  , 

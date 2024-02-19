@@ -1018,6 +1018,8 @@ $bsult = mysql_fetch_array($brow);
 				$egfr[$key] = $a;
 			}
 
+			// หมอยังไม่ลงผล เอาแค่การแสดงผลก่อน
+			/*
 			$state1 = $state2 = $state3 = $state4 = $state5 = '';
 			if($egfr['GFR']['result']<15){
 				$state5 = 'selected="selected"';
@@ -1035,6 +1037,7 @@ $bsult = mysql_fetch_array($brow);
 				$state1 = 'selected="selected"';
 
 			}
+			*/
 			?>
 			<tr>
 				<td align="right" class="profilelab">eGFR :</td>
@@ -1053,6 +1056,7 @@ $bsult = mysql_fetch_array($brow);
 				</td>
 				<td class="labfont">
 					<?php
+					/*
 					$egfr1Checked = '';
 					$egfrReasonDisplay = 'style="display:none"';
 					if($egfr['GFR']['result']>90){
@@ -1071,9 +1075,14 @@ $bsult = mysql_fetch_array($brow);
 					}
 					?>
 					<input type="radio" name="egfr_status" id="resultEgfr2" <?=$egfr2Checked;?> onclick="togglediv1('egfr_reason');" value="ผิดปกติ"> <label for="resultEgfr2" <?=$egfr2Style;?> >ผิดปกติ</label>
-					
+					<?php
+					*/
+					?>
 				</td>
 				<td class="labfont" colspan="4">
+					<?php
+					/*
+					?>
 					<select name="egfr_reason" id="egfr_reason" <?=$egfrReasonDisplay;?> >
 						<option value="การทำงานของไตอยู่ภาวะไตวาย" <?=$state5;?>>การทำงานของไตอยู่ภาวะไตวาย</option>
 						<option value="การทำงานของไตทำงานผิดปกติมาก" <?=$state4;?>>การทำงานของไตทำงานผิดปกติมาก</option>
@@ -1081,6 +1090,9 @@ $bsult = mysql_fetch_array($brow);
 						<option value="การทำงานของไตมีผิดปกติเล็กน้อย" <?=$state2;?>>การทำงานของไตมีผิดปกติเล็กน้อย</option>
 						<option value=" การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม" <?=$state1;?>> การทำบงานของไตทำงานปกติแต่ค้นพบสิ่งแปลกปลอมในการทำงานของไตเช่น นิ่ว กรวยไตอักเสบ และไตบวม</option>
 					</select>
+					<?php
+					*/
+					?>
 				</td>
 			</tr>
 			<?php 
