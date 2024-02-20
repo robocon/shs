@@ -1,7 +1,15 @@
 <?php
-session_start();
-include("connect.php");
+// session_start();
+// include("connect.php");
+// mysql_query("SET NAMES UTF8");
+
+require_once 'bootstrap.php';
+$Conn = mysql_connect(HOST,USER,PASS);
+mysql_select_db(DB);
 mysql_query("SET NAMES UTF8");
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 if(empty($_SESSION["sOfficer"])){
 	echo "Sessionหมดอายุ กรุณาloginใหม่อีกครั้ง <a href='../nindex.htm'>คลิกที่นี่เพื่อ Login</a>";
@@ -146,85 +154,135 @@ $list_lab["DB"] = "DB";
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>โปรแกรมซักประวัติตรวจสุขภาพ</title>
 <style>
-	.font_title{font-family:"Angsana New"; font-size:28px}
-	.tb_font{font-family:"Angsana New"; font-size:20px;}
-	.tb_font_1{font-family:"Angsana New"; font-size:20px; color:#FFFFFF; font-weight:bold;}
-	.tb_col{font-family:"Angsana New"; font-size:20px; background-color:#9FFF9F}
+	body{
+		font-family:"TH SarabunPSK";
+		font-size: 18px;
+	}
+	.font_title{font-size:28px}
+	.tb_font{font-size:20px;}
+	.tb_font_1{font-size:20px; color:#FFFFFF; font-weight:bold;}
+	.tb_col{font-size:20px; background-color:#9FFF9F}
 	.tb_font_2 {color: #B00000;font-weight: bold;}
 	.style5 {color: #000099; font-weight: bold; }
-	.pdxhead {	font-family: "TH SarabunPSK";font-size: 24px;}
+	.pdxhead {font-size: 24px;}
 	label:hover{cursor: pointer;}
+	.button {
+		background-color: #04AA6D; /* Green */
+		border: none;
+		color: white;
+		padding: 8px 15px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		border-radius: 12px;
+	}
+	.checkupField tr td{
+		padding-bottom: 4px;
+	}
+	.checkupField input[type="text"]{
+		line-height: 20px;
+	}
+	legend{
+		font-weight: bold;
+		font-size: 24px;
+		margin-left: 20px;
+	}
 </style>
 </head>
 
 <body>
-<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a> || <a href="Edx_ofyear_out.php">โปรแกรมซักประวัติตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
-<center>
-  <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า62</div>
-</center>
+<a href ="../nindex.htm" class="button">&lt;&lt; เมนู</a> <a href="upd_labstatus.php" target="_blank" class="button">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a> <a href="Edx_ofyear_out.php" class="button">โปรแกรมซักประวัติตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
+<div>
+	<h1 style="text-align:center;">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า62</h1>
+</div>
 
 <form action="dx_ofyear_out.php" method="post">
-<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
-<tr>
-	<td>
-	<table border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<TD align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข HN</td>
-	</tr>
-	<tr>
-		<TD class="tb_font"><input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;<input type="submit" name="Submit" value="ตกลง" /></td>
-	</tr>
-	<tr>
-		<td></td>
-	</tr>
+	<table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
+		<tr>
+			<td>
+				<table border="0" cellpadding="0" cellspacing="0">
+					<tr>
+						<td align="center" bgcolor="#0000CC" class="tb_font_1">กรอกหมายเลข HN</td>
+					</tr>
+					<tr>
+						<td class="tb_font">
+							<input type="text" name="p_hn"  value="<?php echo $_POST["p_hn"]?>"/>&nbsp;
+							<input type="submit" name="Submit" value="ค้นหา" />
+							<input name="post_vn" type="hidden" value="1" />
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 	</table>
-	</td>
-</tr>
-</table>
-<br />
-<input name="post_vn" type="hidden" value="1" />
 </form>
+<?php 
+if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 
-<?php if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
+	$p_hn = sprintf("%s", $_POST["p_hn"]);
+	$thdateHn = date('d-m-').(date('Y')+543).$p_hn;
 
-//ค้นหา hn จาก opday ****************************************************************************************
-	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$_POST["p_hn"]."' limit 0,1";
-	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
+	//ค้นหา hn จาก opcard, opday ****************************************************************************************
+	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '$p_hn' limit 0,1";
+	$result = mysql_query($sql) or die("<!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
+	if(mysql_num_rows($result)===0){
+		echo "ไม่พบ HN กรุณาตรวจสอบข้อมูลอีกครั้ง";
+		exit;
+	}
 	$arr_view = mysql_fetch_assoc($result);
-
-$sql = "Select vn,ptright,toborow From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
-list($arr_view["vn"],$ptright,$toborow) = mysql_fetch_row(mysql_query($sql));
-//echo "===>".$arr_view["vn"];
-
-$date_hn = date("Y-m-d").$arr_view["hn"];
-$date_vn = date("Y-m-d").$arr_view["vn"];
-
-/*$sql = "Select  weight, height,waist From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-$result = Mysql_Query($sql);
-list($weight, $height,$waist) = Mysql_fetch_row($result);*/
-
-$sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,waist From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '$thaidate%'
-$result3 = Mysql_Query($sql3);
-$cou = mysql_num_rows($result3);
-list($temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$waist) = Mysql_fetch_row($result3);
-if($cou=="0"){
-	$sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,doctor,clinic From dxofyear_out where hn = '".$arr_view["hn"]."' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '".date("Y-m-d")."%'
-	$result3 = Mysql_Query($sql3);
-	list($temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$dr,$cli) = Mysql_fetch_row($result3);
-}
-
-//ค้นหาวันเกิดจาก opcard ****************************************************************************************
-	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
-	//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
 	$arr_view["age"] = calcage($arr_view["dbirth"]);
+	
+	$sql = "Select vn,ptright,toborow From opday where thdatehn = '$thdateHn' limit 1";
+	list($arr_view["vn"],$ptright,$toborow) = mysql_fetch_row(mysql_query($sql));
 
-////*runno ตรวจสุขภาพ*/////////
-$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
+	// $date_hn = date("Y-m-d").$arr_view["hn"];
+	// $date_vn = date("Y-m-d").$arr_view["vn"];
+	
+	// ดึงข้อมูลล่าสุดมาแสดงผล
+	$sql3 = "Select * From dxofyear_out where hn = '$p_hn' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '".date("Y-m-d")."%'
+	$result3 = Mysql_Query($sql3);
+	if(mysql_num_rows($result3) > 0){
+		$arr_dxofyear = mysql_fetch_assoc($result3);
+		$congenital_disease = $arr_dxofyear["congenital_disease"];
+		$height = $arr_dxofyear["height"];
+		$weight = $arr_dxofyear["weight"];
+		$temperature = $arr_dxofyear["temperature"];
+		$pause = $arr_dxofyear["pause"];
+		$rate = $arr_dxofyear["rate"];
+		
+		$ht  =  $height/100;
+		$bmi = number_format($weight /($ht*$ht),2);
+		 
+		$bp1 = $arr_dxofyear["bp1"];
+		$bp2 = $arr_dxofyear["bp2"];
+		$bp21 = $arr_dxofyear["bp21"];
+		$bp22 = $arr_dxofyear["bp22"];
+		$cigarette = $arr_dxofyear["cigarette"];
+		$alcohol = $arr_dxofyear["alcohol"];
+		$exercise = $arr_dxofyear["exercise"];
+		$type = $arr_dxofyear["type"];
+		$doctor = $arr_dxofyear["doctor"];
+		$camp = $arr_dxofyear['camp'];
+		$dental_exam = $arr_dxofyear['dental_exam'];
+		$color_blind = $arr_dxofyear['color_blind'];
+		$audiogram = $arr_dxofyear['audiogram'];
+		$ekg = $arr_dxofyear['ekg'];
+		
+	}else{ // ถ้าไม่มีข้อมูลใน dxofyear_out ค่อยมาใช้ข้อมูลจากใน opd แทน
+
+		$sql3 = "Select  congenital_disease,temperature,pause,rate,weight,height,bp1,bp2,waist,cigarette,alcohol,exercise,doctor From opd where hn = '$p_hn' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 1 "; //and thidate like '$thaidate%'
+		$result3 = Mysql_Query($sql3);
+		$cou = mysql_num_rows($result3);
+		list($congenital_disease,$temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$waist, $cigarette, $alcohol, $exercise, $doctor) = Mysql_fetch_row($result3);
+
+	}
+
+	if($congenital_disease == ''){ 
+		$congenital_disease = "ปฎิเสธโรคประจำตัว";
+	}
+
+	////*runno ตรวจสุขภาพ*/////////
+	$query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	$result = mysql_query($query) or die("Query failed");
 	
 	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -237,13 +295,13 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	}
 	
 	$nPrefix=$row->prefix;
-////*runno ตรวจสุขภาพ*/////////
+	////*runno ตรวจสุขภาพ*/////////
 
-//ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
+	//ค้นหาผลการตรวจทางพยาธิ ****************************************************************************************
 	// หาวันที่ตรวจ
 	$sql = "Select date_format(a.orderdate,'%d/%m/%Y'),date_format(a.orderdate,'%Y-%m-%d') 
 	From resulthead as a 
-	where a.hn='".$arr_view["hn"]."'  
+	where a.hn='$p_hn'  
 	AND (clinicalinfo = 'ตรวจสุขภาพประจำปี$nPrefix')  
 	Order by a.autonumber DESC limit 0,1";
 	list($lab_date,$labin_date) = mysql_fetch_row(mysql_query($sql));
@@ -253,7 +311,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	From ( 
 		SELECT MAX(`autonumber`) AS `autonumber` 
 		FROM `resulthead` 
-		WHERE `hn` = '".$arr_view["hn"]."' 
+		WHERE `hn` = '$p_hn' 
 		AND `profilecode` = 'UA' 
 		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
 	) as a , 
@@ -268,7 +326,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	From ( 
 		SELECT MAX(`autonumber`) AS `autonumber` 
 		FROM `resulthead` 
-		WHERE `hn` = '".$arr_view["hn"]."' 
+		WHERE `hn` = '$p_hn' 
 		AND `profilecode` = 'CBC' 
 		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
 	) as a , 
@@ -283,7 +341,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	From ( 
 		SELECT MAX(`autonumber`) AS `autonumber` 
 		FROM `resulthead` 
-		WHERE `hn` = '".$arr_view["hn"]."' 
+		WHERE `hn` = '$p_hn' 
 		AND ( `profilecode` <> 'UA' AND `profilecode` <> 'CBC' )
 		AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$nPrefix' 
 		GROUP BY `profilecode`
@@ -295,71 +353,6 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 	Order by a.autonumber ASC ";
 	
 	$result_lab = mysql_query($sql);
-//ค้นหาข้อมูลเดิม
-	
-	$times = mktime(0,0,0,date("m"),date("d")-3,date("Y"));
-	$date_after= date("Y-m-d H:i:s",$times);
-	//$sql = "Select * From  `dxofyear` where `thdatehn` > '{$date_after}' AND hn='".$arr_view["hn"]."' limit 0,1 ";
-	
-	$sql = "Select * From  `dxofyear_out` where  hn='".$arr_view["hn"]."' and yearchk = '$nPrefix' ORDER BY row_id DESC limit 0,1 ";
-	$result = mysql_query($sql);
-	$count = mysql_num_rows($result);
-
-	$camp = '';
-	
-	if($count > 0){
-		$arr_dxofyear = mysql_fetch_assoc($result);
-		
-		$height = $arr_dxofyear["height"];
-
-		$weight = $arr_dxofyear["weight"];
-		$temperature=$arr_dxofyear["temperature"];
-		$pause=$arr_dxofyear["pause"];
-		$rate=$arr_dxofyear["rate"];
-		//$bmi=$arr_dxofyear["bmi"];
-		
-		 $ht = $height/100;
-		 $bmi=number_format($weight /($ht*$ht),2);
-		 
-		 $bp1=$arr_dxofyear["bp1"];
-		 $bp2=$arr_dxofyear["bp2"];
-		 $bp21=$arr_dxofyear["bp21"];
-		 $bp22=$arr_dxofyear["bp22"];
-		 $cigarette=$arr_dxofyear["cigarette"];
-		 $alcohol=$arr_dxofyear["alcohol"];
-		 $exercise=$arr_dxofyear["exercise"];
-		$type=$arr_dxofyear["type"];
-		$doctor=$arr_dxofyear["doctor"];
-
-		$camp = $arr_dxofyear['camp'];
-
-		$dental_exam = $arr_dxofyear['dental_exam'];
-		$color_blind = $arr_dxofyear['color_blind'];
-		$audiogram = $arr_dxofyear['audiogram'];
-		$ekg = $arr_dxofyear['ekg'];
-		
-		//$arr_view["vn"]=$arr_dxofyear["vn"];
-		//echo "===>".$arr_view["vn"];
-		if($arr_dxofyear["congenital_disease"] != ''){ $congenital_disease = $arr_dxofyear["congenital_disease"];}else{$congenital_disease = "ปฎิเสธโรคประจำตัว";}
-		
-		//echo "arr_dxofyear";
-		
-}else{  //// ค้นหาจาก opd
-	
-		$sql = "Select congenital_disease, weight, height,cigarette,alcohol,exercise ,bp1,bp2,doctor  From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-		$result = Mysql_Query($sql);
-		list($congenital_disease, $weight, $height, $cigarette, $alcohol, $exercise,$bp1,$bp2,$doctor) = Mysql_fetch_row($result);
-		if($congenital_disease == "")
-			$congenital_disease = "ปฎิเสธโรคประจำตัว";
-
-}
-
-$ht = $height/100;
-$bmi=number_format($weight /($ht*$ht),2);
-	
-if($arr_dxofyear["rate"] == ""){
-	$arr_dxofyear["rate"] = 20;
-}
 	
 $choose = array();
 
@@ -421,7 +414,7 @@ while($arr = Mysql_fetch_assoc($result)){
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM METHOD=POST ACTION="dx_ofyear_out_save.php" target="_blank">
+<FORM METHOD=POST ACTION="dx_ofyear_out_save.php" target="_blank" style="margin-top:8px;">
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
@@ -432,27 +425,27 @@ while($arr = Mysql_fetch_assoc($result)){
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</td>
+		<td align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</td>
 	</tr>
 	<tr>
 		<td>
 	<table width="1024" border="0" class="tb_font">
-		<?php 
-		// if($smenucode==='ADM' OR $smenucode==='ADMNEWCHKUP'){
-		?>
 		<tr>
 			<td align="right" class="tb_font_2">เลือกวันที่ย้อนหลัง:</td>
 			<td colspan="3">
-				<input type="date" name="datePrev" id="datePrev" onchange="beforeFindVn(this.value);"><span id="dateResponse"></span>
+				<input type="date" name="datePrev" id="datePrev" onchange="beforeFindVn(this.value);"> <span id="dateResponse"></span>
 				<script>
 					function beforeFindVn(v){
 						findVn(v).then(function(res){
-							console.log(res);
 							if(res.status===200){
-								document.getElementById('vn').innerHTML = res.vn;
+								document.getElementById('vn').value = res.vn;
 								document.getElementById('show_vn').innerHTML = res.vn;
+								document.getElementById('dateResponse').innerHTML = '';
 							}else if(res.status===400){
+								document.getElementById('dateResponse').style.color = 'red';
 								document.getElementById('dateResponse').innerHTML = res.message;
+								document.getElementById('vn').value = '';
+								document.getElementById('show_vn').innerHTML = '';
 							}
 						})
 					}
@@ -468,27 +461,50 @@ while($arr = Mysql_fetch_assoc($result)){
 		<tr>
 			<td></td>
 			<td colspan="3">
-				<input type="checkbox" name="sendto_out_result_chkup" id="sendto_out_result_chkup"><label for="sendto_out_result_chkup">บันทึกข้อมูลซักประวัติเข้าระบบตรวจสุขภาพ</label>
+				<input type="checkbox" name="sendto_out_result_chkup" id="sendto_out_result_chkup" value="1"  onclick="showCheckupForm(this.checked)">
+				<label for="sendto_out_result_chkup" title="กรณีต้องการบันทึกข้อมูลเข้าระบบหลังบ้านของงานตรวจสุขภาพ">บันทึกข้อมูลเข้าแผนกตรวจสุขภาพ</label>
+				<script>
+					function showCheckupForm(checked){
+						var el = document.getElementsByClassName('checkupField');
+						for (var i=0; i < el.length; i++) {
+							toggle(el[i]);
+						}
+					}
+
+					function toggle(el) {
+						if (el.style.display == 'none') {
+							el.style.display = '';
+						} else {
+							el.style.display = 'none';
+						}
+					}
+				</script>
 			</td>
 		</tr>
-		<tr>
+		<tr class="checkupField" style="display:none;">
 			<td align="right" class="tb_font_2">เลือกบริษัท</td>
 			<td colspan="3">
-				<select name="part" id="part">
-					<option value="">เลือกบริษัท</option>
-					<option value="บริษัท AAA">บริษัท AAA</option>
-					<option value="บริษัท BBB">บริษัท BBB</option>
+				<?php 
+				$sql = "SELECT `name`,`code` FROM chk_company_list WHERE yearchk='2567' ORDER BY id DESC";
+				$q = $dbi->query($sql);
+				?>
+				<select name="part" id="part" style="width:200px;">
+					<option value="">&lt;&lt;&nbsp;เลือกบริษัท&nbsp;&gt;&gt;</option>
+					<?php 
+					while ($a = $q->fetch_assoc()) {
+						?>
+						<option value="<?=$a['code'];?>"><?=$a['name'];?></option>
+						<?php
+					}
+					?>
 				</select>
 			</td>
 		</tr>
-		<?php 
-		// }
-		?>
 		<tr>
-			<td width="110" align="right"><span class="tb_font_2">VN :</span></td>
-			<td width="225"><span id="show_vn"><?php echo $arr_view["vn"];?></span></td>
-			<td align="right"><span class="tb_font_2">HN :</span></td>
-			<td width="148"><?php echo $arr_view["hn"];?></td>
+			<td width="120" align="right"><span class="tb_font_2">VN :</span></td>
+			<td width="200"><span id="show_vn"><?php echo $arr_view["vn"];?></span></td>
+			<td width="120" align="right"><span class="tb_font_2">HN :</span></td>
+			<td><?php echo $arr_view["hn"];?></td>
 		</tr>
 		<tr>
 			<td align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
@@ -499,9 +515,10 @@ while($arr = Mysql_fetch_assoc($result)){
 		<tr>
 			<td align="right"><span class="tb_font_2">หน่วยงาน : </span></td>
 			<td colspan="3"><span class="pdxhead">
-				<select name='camp' id="camp">
+				<select name="camp" id="camp" style="width:200px;">
 				<?php 
 				$ptright_key = substr($ptright,0,3);
+
 				$sql12 = "select * from chkcompany where status='Y' AND row_id != 77 AND row_id != 78 order by row_id asc";
 				$rows12 = mysql_query($sql12);
 				while($result12 = mysql_fetch_array($rows12)){ 
@@ -540,7 +557,7 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td width="132">
 				<input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" /> ซม.
 			</td>
-			<td width="70" align="right"><span class="tb_font_2">BP1 :</span></td>
+			<td width="70" align="right"><span class="tb_font_2">BP :</span></td>
 			<td width="160" align="left">
 				<input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
 				/
@@ -725,23 +742,143 @@ C&deg; </td>
 		</tr>
 	</table>
 	<table class="tb_font">
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">ตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</td>
-			<td><input type="text" name="dental_exam" size="50" value="<?=$arr_dxofyear['dental_exam'];?>"></td>
+		<tr valign="top">
+			<td width="200" align="right" class="tb_font_2">ตรวจสุขภาพช่องปากและฟัน :<br>(Dental Examination)</td>
+			<td><input type="text" name="dental_exam" value="<?=$arr_dxofyear['dental_exam'];?>"></td>
+			<td width="200" align="right" class="tb_font_2">ตรวจสายตาและตาบอดสี :<br>(Auto-R & color blindness)</td>
+			<td><input type="text" name="color_blind" value="<?=$arr_dxofyear['color_blind'];?>"></td>
 		</tr>
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">ตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</td>
-			<td><input type="text" name="color_blind" size="50" value="<?=$arr_dxofyear['color_blind'];?>"></td>
-		</tr>
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">ตรวจการได้ยิน (Audiogram) :</td>
-			<td><input type="text" name="audiogram" size="50" value="<?=$arr_dxofyear['audiogram'];?>"></td>
-		</tr>
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">ตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</td>
-			<td><input type="text" name="ekg" size="50" value="<?=$arr_dxofyear['ekg'];?>"></td>
+		<tr valign="top">
+			<td align="right" class="tb_font_2">ตรวจการได้ยิน :<br>(Audiogram)</td>
+			<td><input type="text" name="audiogram" value="<?=$arr_dxofyear['audiogram'];?>"></td>
+			<td align="right" class="tb_font_2">ตรวจคลื่นไฟฟ้าหัวใจ :<br>(EKG)</td>
+			<td><input type="text" name="ekg" value="<?=$arr_dxofyear['ekg'];?>"></td>
 		</tr>
 	</table>
+	<fieldset class="checkupField" style="display:none;">
+		<legend>แบบฟอร์มตรวจสุขภาพ</legend>
+		<table class="tb_font">
+			<tr valign="top">
+				<td width="250" align="right" class="tb_font_2">หมายเหตุ : </td>
+				<td><input type="text" name="comment" id="comment"></td>
+				<td width="250" align="right" class="tb_font_2">ผลตรวจ สมรรถภาพปอด : </td>
+				<td>
+					<input type="text" name="pt" id="pt">
+					<select onchange="document.getElementById('pt').value=this.value;" class="pdx" style="width:120px;">
+						<option value="">---------- เลือก ----------</option>
+						<option value="ปกติ">ปกติ</option>
+						<option value="ปอดจำกัดการขยายตัว">ปอดจำกัดการขยายตัว</option>
+						<option value="ปอดอุดกั้น">ปอดอุดกั้น</option>
+						<option value="มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)">มีการอุดกั้นของประสิทธิภาพปอด ระดับเล็กน้อย (เกรด B)</option>
+					</select>
+					<div>
+						<b>ระบุ : </b><input type="radio" name="pt_detail" id="pt_detail1" value="ผิดปกติเล็กน้อย" class="pdxhead">
+						<label for="pt_detail1">ผิดปกติเล็กน้อย</label>
+
+						<input type="radio" name="pt_detail" id="pt_detail2" value="ผิดปกติปานกลาง" class="pdxhead">
+						<label for="pt_detail2">ผิดปกติปานกลาง</label>
+
+						<input type="radio" name="pt_detail" id="pt_detail3" value="ผิดปกติมาก" class="pdxhead">
+						<label for="pt_detail3">ผิดปกติมาก</label>
+						
+						<a href="javascript:void(0);" onclick="cancelPtDetail()">[ยกเลิก]</a>
+						<script>
+							function cancelPtDetail(){
+								document.getElementById("pt_detail1").checked = false;2
+								document.getElementById("pt_detail2").checked = false;
+								document.getElementById("pt_detail3").checked = false;
+							}
+						</script>
+					</div>
+				</td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผล X-RAY : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">ผลตรวจตาบอดสี : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลตรวจ วัดสายตา : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">ผลตรวจ ความดันตา : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลตรวจ ลานสายตา : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">ผล EKG : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลตรวจ BMD  : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">อัลตร้าซาวด์  : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)  : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)  : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)  : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">ต่อมลูกหมาก : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">มะเร็งปากมดลูก : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">แมมโมแกรม : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลการได้ยิน : </td>
+				<td><input type="text" name="" id=""></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">สรุปผล Stool Culture(C-S) : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">ผลตรวจ Stool Culture(C-S) : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลการตรวจสารเคมีโลหะหนัก : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">สรุปผลการตรวจสารเคมีโลหะหนัก : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลการตรวจสาร Benzene : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">สรุปผลการตรวจสาร Benzene : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลตรวจความหนาแน่นของมวลกระดูก : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">สายตาอาชีวอนามัย + สายตาสั้น, ยาว : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลการตรวจ AFP : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">สรุปผลการตรวจ AFP : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+			<tr valign="top">
+				<td align="right" class="tb_font_2">ผลการตรวจ PSA : </td>
+				<td><input type="text" name="" id=""></td>
+				<td align="right" class="tb_font_2">สรุปผลการตรวจ PSA : </td>
+				<td><input type="text" name="" id=""></td>
+			</tr>
+		</table>
+	</fieldset>
+
 	<table class="tb_font">
 		<tr>
 			<td align="right" class="tb_font_2">คลินิก : </td>
@@ -807,7 +944,7 @@ C&deg; </td>
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">
+		<td align="left" bgcolor="#0000CC" class="tb_font_1">
 			<?php 
 			$labStyle = '';
 			$todayLab = date('d/m/Y');
@@ -948,7 +1085,7 @@ C&deg; </td>
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0">
 	<tr>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;บันทึกการวินิฉัยจากแพทย์</td>
+		<td align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;บันทึกการวินิฉัยจากแพทย์</td>
 	</tr>
 	<TR class="tb_font">
 		<td>
