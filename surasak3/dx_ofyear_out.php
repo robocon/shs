@@ -481,7 +481,8 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td align="right" class="tb_font_2">เลือกบริษัท</td>
 			<td colspan="3">
 				<?php 
-				$sql = "SELECT `name`,`code` FROM chk_company_list WHERE yearchk='2567' ORDER BY id DESC";
+				$chkYear = get_year_checkup(true);
+				$sql = "SELECT `name`,`code` FROM chk_company_list WHERE yearchk='$chkYear' AND report <> '' ORDER BY id DESC";
 				$q = $dbi->query($sql);
 				?>
 				<select name="part" id="part" style="width:200px;">
@@ -489,7 +490,7 @@ while($arr = Mysql_fetch_assoc($result)){
 					<?php 
 					while ($a = $q->fetch_assoc()) {
 						?>
-						<option value="<?=$a['code'];?>"><?=$a['name'];?></option>
+						<option value="<?=$a['code'];?>"><?=$a['name'].'&nbsp;&nbsp;&nbsp;&nbsp;['.$a['code'].']';?></option>
 						<?php
 					}
 					?>
@@ -706,9 +707,9 @@ C&deg; </td>
 		<legend>แบบฟอร์มตรวจสุขภาพ</legend>
 		<table class="tb_font" width="100%">
 			<tr valign="top">
-				<td width="200" align="right" class="tb_font_2">หมายเหตุ : </td>
-				<td><input type="text" name="comment" id="comment"></td>
-				<td width="200" align="right" class="tb_font_2">ผลตรวจ สมรรถภาพปอด : </td>
+				<td width="240" align="right" class="tb_font_2">หมายเหตุ : </td>
+				<td width="280"><input type="text" name="comment" id="comment"></td>
+				<td width="240" align="right" class="tb_font_2">ผลตรวจ สมรรถภาพปอด : </td>
 				<td>
 					<input type="text" name="pt" id="pt">
 					<select onchange="document.getElementById('pt').value=this.value;" class="pdx" style="width:120px;">
@@ -742,52 +743,93 @@ C&deg; </td>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผล X-RAY : </td>
 				<td><input type="text" name="cxr" id="cxr"></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจตาบอดสี : </td>
 				<td>
 					<input type="radio" name="va" id="va1" value="ไม่พบตาบอดสี"><label for="va1">ไม่พบตาบอดสี</label>
 					<input type="radio" name="va" id="va2" value="พบตาบอดสี"><label for="va2">พบตาบอดสี</label>
-					<a href="javascript:void(0);">ยกเลิก</a>
+					<a href="javascript:void(0);" onclick="clearVa();">ยกเลิก</a>
+					<script>
+						function clearVa(){
+							document.getElementById('va1').checked=false;
+							document.getElementById('va2').checked=false;
+						}
+					</script>
 				</td>
+				<td align="right" class="tb_font_2">ผลการได้ยิน : </td>
+				<td><input type="text" name="hearing" id="hearing"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ วัดสายตา : </td>
 				<td>
-					<input type="radio" name="eye" id="eye1"><label for="eye1">ปกติ</label>
-					<input type="radio" name="eye" id="eye2"><label for="eye2">ผิดปกติ</label>
-					<a href="javascript:void(0);">ยกเลิก</a>
-					<div>
+					<input type="radio" name="eye" id="eye1" onclick="eye_detail_contain('none')"><label for="eye1">ปกติ</label>
+					<input type="radio" name="eye" id="eye2" onclick="eye_detail_contain('')"><label for="eye2">ผิดปกติ</label>
+					<a href="javascript:void(0);" onclick="clearEye();">[ยกเลิก]</a>
+					<div id="eye_detail_contain" style="display:none;">
 						ระบุความผิดปกติ : <input name="eye_detail" type="text" id="eye_detail">
 					</div>
+					<script>
+						function clearEye(){
+							document.getElementById('eye1').checked=false;
+							document.getElementById('eye2').checked=false;
+							document.getElementById('eye_detail_contain').style.display='none';
+						}
+						function eye_detail_contain(css){
+							document.getElementById('eye_detail_contain').style.display=css;
+						}
+					</script>
 				</td>
+				<td align="right" class="tb_font_2">ผลตรวจ BMD  : </td>
+				<td><input type="text" name="42702" id="42702"></td>
+			</tr>
+			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ ความดันตา : </td>
 				<td>
-					<input type="radio" name="eye_pressure" id="eye_pressure1"><label for="eye_pressure1">ปกติ</label>
-					<input type="radio" name="eye_pressure" id="eye_pressure2"><label for="eye_pressure2">ผิดปกติ</label>
-					<a href="javascript:void(0);">ยกเลิก</a>
-					<div>
+					<input type="radio" name="eye_pressure" id="eye_pressure1" onclick="eyePressureDetail('none')"><label for="eye_pressure1">ปกติ</label>
+					<input type="radio" name="eye_pressure" id="eye_pressure2" onclick="eyePressureDetail('')"><label for="eye_pressure2">ผิดปกติ</label>
+					<a href="javascript:void(0);" onclick="clearEyePressure()">[ยกเลิก]</a>
+					<div id="eyePressureDetail" style="display:none;">
 						ระบุความผิดปกติ : <input name="eye_pressure_detail" type="text" id="eye_pressure_detail">
 					</div>
+					<script>
+						function clearEyePressure(){
+							document.getElementById('eye_pressure1').checked=false;
+							document.getElementById('eye_pressure2').checked=false;
+							document.getElementById('eyePressureDetail').style.display='none';
+						}
+						function eyePressureDetail(css){
+							document.getElementById('eyePressureDetail').style.display=css;
+						}
+					</script>
 				</td>
+				<td align="right" class="tb_font_2">อัลตร้าซาวด์  : </td>
+				<td><input type="text" name="altra" id="altra"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ ลานสายตา : </td>
 				<td>
-					<input type="radio" name="eye_vision" id="eye_vision1"><label for="eye_vision1">ปกติ</label>
-					<input type="radio" name="eye_vision" id="eye_vision2"><label for="eye_vision2">ผิดปกติ</label>
-					<a href="javascript:void(0);">ยกเลิก</a>
-					<div>
+					<input type="radio" name="eye_vision" id="eye_vision1" onclick="eyeVisionDetail('none')"><label for="eye_vision1">ปกติ</label>
+					<input type="radio" name="eye_vision" id="eye_vision2" onclick="eyeVisionDetail('')"><label for="eye_vision2">ผิดปกติ</label>
+					<a href="javascript:void(0);" onclick="clearEyeVision()">[ยกเลิก]</a>
+					<div id="eyeVisionDetail" style="display:none;">
 						ระบุความผิดปกติ : <input name="eye_vision_detail" type="text" id="eye_vision_detail">
 					</div>
-					
+					<script>
+						function clearEyeVision(){
+							document.getElementById('eye_vision1').checked=false;
+							document.getElementById('eye_vision2').checked=false;
+							document.getElementById('eyeVisionDetail').style.display='none';
+						}
+						function eyeVisionDetail(css){
+							document.getElementById('eyeVisionDetail').style.display=css;
+						}
+					</script>
 				</td>
 				<td align="right" class="tb_font_2">ผล EKG : </td>
 				<td><input type="text" name="ekg" id="ekg"></td>
-			</tr>
-			<tr valign="top">
-				<td align="right" class="tb_font_2">ผลตรวจ BMD  : </td>
-				<td><input type="text" name="42702" id="42702"></td>
-				<td align="right" class="tb_font_2">อัลตร้าซาวด์  : </td>
-				<td><input type="text" name="altra" id="altra"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)  : </td>
@@ -807,12 +849,7 @@ C&deg; </td>
 				<td align="right" class="tb_font_2">แมมโมแกรม : </td>
 				<td><input type="text" name="mammogram" id="mammogram"></td>
 			</tr>
-			<tr valign="top">
-				<td align="right" class="tb_font_2">ผลการได้ยิน : </td>
-				<td><input type="text" name="hearing" id="hearing"></td>
-				<td></td>
-				<td></td>
-			</tr>
+
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ Stool Culture(C-S) : </td>
 				<td><input type="text" name="result_cs" id="result_cs"></td>
@@ -941,9 +978,6 @@ C&deg; </td>
 		}else{
 			$size="6";
 		}
-
-		//if(!empty($arr_dxofyear[$list_ua[$labname]]))
-			//$labresult = $arr_dxofyear[$list_ua[$labname]];
 	  ?>
           <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
           <td>&nbsp;<input name="<?php echo  $list_ua[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
@@ -1074,9 +1108,11 @@ C&deg; </td>
 	</td>
 </tr>
 </table>
-<br />
 
-<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;<input name="submit2" type="submit" value="บันทึกและพิมพ์ใบตรวจโรค" />
+
+<div style="text-align:center;">
+	<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" style="padding: 8px 16px;"/>&nbsp;&nbsp;<input name="submit2" type="submit" value="บันทึกและพิมพ์ใบตรวจโรค" style="padding: 8px 16px;"/>
+</div>
 
 <input type="hidden" name="age" id="age"  value="<?=$arr_view["age"];?>" />
 <input type="hidden" name="hn" id="hn"  value="<?=$arr_view["hn"];?>" />
