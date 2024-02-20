@@ -270,7 +270,7 @@ if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 		
 	}else{ // ถ้าไม่มีข้อมูลใน dxofyear_out ค่อยมาใช้ข้อมูลจากใน opd แทน
 
-		$sql3 = "Select  congenital_disease,temperature,pause,rate,weight,height,bp1,bp2,waist,cigarette,alcohol,exercise,doctor From opd where hn = '$p_hn' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 1 "; //and thidate like '$thaidate%'
+		$sql3 = "Select congenital_disease,temperature,pause,rate,weight,height,bp1,bp2,waist,cigarette,alcohol,exercise,doctor From opd where hn = '$p_hn' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 1 "; //and thidate like '$thaidate%'
 		$result3 = Mysql_Query($sql3);
 		$cou = mysql_num_rows($result3);
 		list($congenital_disease,$temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$waist, $cigarette, $alcohol, $exercise, $doctor) = Mysql_fetch_row($result3);
@@ -415,10 +415,6 @@ while($arr = Mysql_fetch_assoc($result)){
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM METHOD=POST ACTION="dx_ofyear_out_save.php" target="_blank" style="margin-top:8px;">
-
-<input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<input name="vn" type="hidden" id="vn"  value="<?php echo $arr_view["vn"];?>" />
 
 <table border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" width="100%" >
 <tr>
@@ -595,95 +591,48 @@ C&deg; </td>
 		  </tr>
 		<tr>
 		  <td align="right" class="tb_font_2">แพ้ยา :</td>
-		  <td colspan="7"><span class="data_show">
-          <?
-		  $strQuery=mysql_query("select * from drugreact where hn='".$arr_view["hn"]."'");
-		  //echo $strQuery;
-		  $numreact=mysql_num_rows($strQuery);
-		  ?>
-          
-		    <input name="drugreact" type="radio" id="drugreact1" value="0" <? if(empty($numreact)){ echo "checked='checked'";}?> />
-ไม่แพ้
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<input name="drugreact" type="radio" id="drugreact2" value="1" <? if(!empty($numreact)){ echo "checked='checked'";}?> />
-แพ้ &nbsp;&nbsp;&nbsp;&nbsp;<font color="#FF0000"><?php if(!empty($arr_view["drugreact"])){ echo  $arr_view["drugreact"];} ?></font></span></td>
+		  <td colspan="7">
+			<span class="data_show">
+			<?php
+			$sql = "Select drugcode, tradname, genname From drugreact where hn = '$hn' AND advreact!='' AND g6pd IS NULL ";
+			$qReact = $dbi->query($sql);
+			$numreact = 0;
+			if($qReact->num_rows>0){
+				$drugreact = $qReact->fetch_assoc();
+				$numreact = 1;
+			}
+			?>
+			<label for="drugreact1"><input name="drugreact" id="drugreact1" type="radio" value="0" <?=(empty($numreact) ? 'checked="checked"' : '' );?>/>ไม่มีประวัติการแพ้</label> 
+			<label for="drugreact2"><input name="drugreact" id="drugreact2" type="radio" value="1" <?=(!empty($numreact) ? 'checked="checked"' : '' );?>/>แพ้</label>
+			<label for="drugreact3"><input name="drugreact" id="drugreact3" type="radio" value="2" />ไม่ทราบ</label>
+			&nbsp;<font color="#FF0000"><?php if(!empty($arr_view["drugreact"])){ echo  $arr_view["drugreact"];} ?></font>
+		</span>
+		</td>
 		  </tr>
 		<tr>
-		  <td align="right" class="tb_font_2">บุหรี่ :</td>
-		  <td colspan="7">
-          <? if($count > 0){ ?>
-		<input type="radio" name="cigarette" value="0" <?php if($cigarette==0){ echo "checked"; } ?> />
-ไม่เคยสูบ&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="cigarette" value="1" <?php if($cigarette==1){ echo "checked"; } ?> />
-เคยสูบ แต่เลิกแล้ว
-&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="cigarette" value="2" <?php if($cigarette==2){ echo "checked"; } ?> />
-สูบบุหรี่ เป็นครั้งคราว
-&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="cigarette" value="3" <?php if($cigarette==1){ echo "checked"; } ?> />
-สูบบุหรี่ เป็นประจำ
-			<? }else{?>
- 		<input type="radio" name="cigarette" value="0" <?php if($cigarette==0){ echo "checked"; } ?> />
-ไม่เคยสูบ&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="cigarette" value="1" <?php if($cigarette==2){ echo "checked"; } ?> />
-เคยสูบ แต่เลิกแล้ว
-&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="cigarette" value="2"  <?php if($cigarette==1){ echo "checked"; } ?>/>
-สูบบุหรี่ เป็นครั้งคราว
-&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="cigarette" value="3"/>
-สูบบุหรี่ เป็นประจำ           
-            <? } ?>
+			<td align="right" class="tb_font_2">บุหรี่ :</td>
+			<td colspan="7">
+				<input type="radio" id="cigarette1" name="cigarette" value="0" <?php if($cigarette==0){ echo "checked"; } ?> /><label for="cigarette1">ไม่เคยสูบ</label>
+				<input type="radio" id="cigarette2" name="cigarette" value="1" <?php if($cigarette==1){ echo "checked"; } ?> /><label for="cigarette2">เคยสูบ แต่เลิกแล้ว</label>
+				<input type="radio" id="cigarette3" name="cigarette" value="2" <?php if($cigarette==2){ echo "checked"; } ?> /><label for="cigarette3">สูบบุหรี่ เป็นครั้งคราว</label>
+				<input type="radio" id="cigarette4" name="cigarette" value="3" <?php if($cigarette==3){ echo "checked"; } ?> /><label for="cigarette4">สูบบุหรี่ เป็นประจำ</label>
 			</td>
 		  </tr>
 		<tr>
-		  <td align="right" class="tb_font_2">สุรา : </td>
-		  <td colspan="7">
-          <? if($count > 0){ ?>
-		<input type="radio" name="alcohol" value="0" <?php if($alcohol==0){ echo "checked"; } ?> />
-ไมเคย่ดื่ม&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="alcohol" value="1" <?php if($alcohol==1){ echo "checked"; } ?> />
-เคยดื่ม แต่เลิกแล้ว&nbsp;&nbsp;&nbsp;
- &nbsp;
- 		<input type="radio" name="alcohol" value="2" <?php if($alcohol==2){ echo "checked"; } ?> />
-ดื่ม เป็นครั้งคราว&nbsp;&nbsp;&nbsp;
- &nbsp;
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- 		<input type="radio" name="alcohol" value="3" <?php if($alcohol==3){ echo "checked"; } ?> />
-ดื่ม เป็นประจำ
-		<? }else{ ?>
-		<input type="radio" name="alcohol" value="0" <?php if($alcohol==0){ echo "checked"; } ?> />
-ไมเคยดื่ม&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="alcohol" value="1" <?php if($alcohol==2){ echo "checked"; } ?> />
-เคยดื่ม แต่เลิกแล้ว&nbsp;&nbsp;&nbsp;
- &nbsp;
- 		<input type="radio" name="alcohol" value="2" <?php if($alcohol==1){ echo "checked"; } ?> />
-ดื่ม เป็นครั้งคราว&nbsp;&nbsp;&nbsp;
- &nbsp;
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- 		<input type="radio" name="alcohol" value="3"/>
-ดื่ม เป็นประจำ		
-        <? } ?>
+			<td align="right" class="tb_font_2">สุรา : </td>
+			<td colspan="7">
+				<input type="radio" id="alcohol1" name="alcohol" value="0" <?php if($alcohol==0){ echo "checked"; } ?> /><label for="alcohol1">ไม่เคยดื่ม</label>
+				<input type="radio" id="alcohol2" name="alcohol" value="1" <?php if($alcohol==1){ echo "checked"; } ?> /><label for="alcohol2">เคยดื่ม แต่เลิกแล้ว</label>
+				<input type="radio" id="alcohol3" name="alcohol" value="2" <?php if($alcohol==2){ echo "checked"; } ?> /><label for="alcohol3">ดื่ม เป็นครั้งคราว</label>
+				<input type="radio" id="alcohol4" name="alcohol" value="3" <?php if($alcohol==3){ echo "checked"; } ?> /><label for="alcohol4">ดื่ม เป็นประจำ</label>
 			</td>
 		  </tr>
 		<tr>
-          <td align="right" class="tb_font_2">ออกกำลังกาย : </td>
-		  <td colspan="7">
-          <? if($count > 0){ ?>
-		<input type="radio" name="exercise" value="0" <?php if($exercise==0){ echo "checked"; } ?> />
-ไม่เคยออกกำลังกาย&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="exercise" value="1" <?php if($exercise==1){ echo "checked"; } ?> />
-ออกกำลังกาย ต่ำกว่าเกณฑ์ &nbsp;&nbsp;&nbsp;
-		<input type="radio" name="exercise" value="2" <?php if($exercise==2){ echo "checked"; } ?> />
-ออกกำลังกาย ตามเกณฑ์ 
-		<? }else{ ?>
-		<input type="radio" name="exercise" value="0"/>
-ไม่เคยออกกำลังกาย&nbsp;&nbsp;&nbsp;
-		<input type="radio" name="exercise" value="1" checked="checked"/>
-ออกกำลังกาย ต่ำกว่าเกณฑ์ &nbsp;&nbsp;&nbsp;
-		<input type="radio" name="exercise" value="2"/>
-ออกกำลังกาย ตามเกณฑ์         
-        <? } ?>
+			<td align="right" class="tb_font_2">ออกกำลังกาย : </td>
+			<td colspan="7">
+				<input type="radio" id="exercise1" name="exercise" value="0" <?php if($exercise==0){ echo "checked"; } ?> /><label for="exercise1">ไม่เคยออกกำลังกาย</label>
+				<input type="radio" id="exercise2" name="exercise" value="1" <?php if($exercise==1){ echo "checked"; } ?> /><label for="exercise2">ออกกำลังกาย ต่ำกว่าเกณฑ์</label>
+				<input type="radio" id="exercise3" name="exercise" value="2" <?php if($exercise==2){ echo "checked"; } ?> /><label for="exercise3">ออกกำลังกาย ตามเกณฑ์</label>
 			</td>
 		  </tr>
 	</table>
@@ -701,14 +650,12 @@ C&deg; </td>
 	</tr>
 	<tr>
 	  <td align="right" class="tb_font_2">ลักษณะผู้ป่วย : </td>
-	  <td colspan="5" align="left"><input name="type" type="radio" value="เดินมา"  <?php if($type=="เดินมา"){ echo "checked"; } ?> />
-เดินมา
-  <input name="type" type="radio" value="นั่งรถเข็น"  <?php if($type=="นั่งรถเข็น"){ echo "checked"; } ?> />
-นั่งรถเข็น
-<input name="type" type="radio" value="นอนเปล"  <?php if($type=="นอนเปล"){ echo "checked"; } ?>/>
-นอนเปล
-<input name="type" type="radio" value="ญาติ" <?php if($type=="ญาติ"){ echo "checked"; } ?>/>
-ญาติ</td><!--onclick="clear_textbox();" -->
+	<td colspan="5" align="left">
+		<input name="type" id="type1" type="radio" value="เดินมา" <?php if($type=="เดินมา"){ echo "checked"; } ?> /><label for="type1">เดินมา</label>
+		<input name="type" id="type2" type="radio" value="นั่งรถเข็น" <?php if($type=="นั่งรถเข็น"){ echo "checked"; } ?> /><label for="type2">นั่งรถเข็น</label>
+		<input name="type" id="type3" type="radio" value="นอนเปล" <?php if($type=="นอนเปล"){ echo "checked"; } ?>/><label for="type3">นอนเปล</label>
+		<input name="type" id="type4" type="radio" value="ญาติ" <?php if($type=="ญาติ"){ echo "checked"; } ?>/><label for="type4">ญาติ</label>
+	</td>
 	  </tr>
 	</table>
 	<table class="tb_font" width="">
@@ -757,11 +704,11 @@ C&deg; </td>
 	</table>
 	<fieldset class="checkupField" style="display:none;">
 		<legend>แบบฟอร์มตรวจสุขภาพ</legend>
-		<table class="tb_font">
+		<table class="tb_font" width="100%">
 			<tr valign="top">
-				<td width="250" align="right" class="tb_font_2">หมายเหตุ : </td>
+				<td width="200" align="right" class="tb_font_2">หมายเหตุ : </td>
 				<td><input type="text" name="comment" id="comment"></td>
-				<td width="250" align="right" class="tb_font_2">ผลตรวจ สมรรถภาพปอด : </td>
+				<td width="200" align="right" class="tb_font_2">ผลตรวจ สมรรถภาพปอด : </td>
 				<td>
 					<input type="text" name="pt" id="pt">
 					<select onchange="document.getElementById('pt').value=this.value;" class="pdx" style="width:120px;">
@@ -784,7 +731,7 @@ C&deg; </td>
 						<a href="javascript:void(0);" onclick="cancelPtDetail()">[ยกเลิก]</a>
 						<script>
 							function cancelPtDetail(){
-								document.getElementById("pt_detail1").checked = false;2
+								document.getElementById("pt_detail1").checked = false;
 								document.getElementById("pt_detail2").checked = false;
 								document.getElementById("pt_detail3").checked = false;
 							}
@@ -794,87 +741,113 @@ C&deg; </td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผล X-RAY : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="cxr" id="cxr"></td>
 				<td align="right" class="tb_font_2">ผลตรวจตาบอดสี : </td>
-				<td><input type="text" name="" id=""></td>
+				<td>
+					<input type="radio" name="va" id="va1" value="ไม่พบตาบอดสี"><label for="va1">ไม่พบตาบอดสี</label>
+					<input type="radio" name="va" id="va2" value="พบตาบอดสี"><label for="va2">พบตาบอดสี</label>
+					<a href="javascript:void(0);">ยกเลิก</a>
+				</td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ วัดสายตา : </td>
-				<td><input type="text" name="" id=""></td>
+				<td>
+					<input type="radio" name="eye" id="eye1"><label for="eye1">ปกติ</label>
+					<input type="radio" name="eye" id="eye2"><label for="eye2">ผิดปกติ</label>
+					<a href="javascript:void(0);">ยกเลิก</a>
+					<div>
+						ระบุความผิดปกติ : <input name="eye_detail" type="text" id="eye_detail">
+					</div>
+				</td>
 				<td align="right" class="tb_font_2">ผลตรวจ ความดันตา : </td>
-				<td><input type="text" name="" id=""></td>
+				<td>
+					<input type="radio" name="eye_pressure" id="eye_pressure1"><label for="eye_pressure1">ปกติ</label>
+					<input type="radio" name="eye_pressure" id="eye_pressure2"><label for="eye_pressure2">ผิดปกติ</label>
+					<a href="javascript:void(0);">ยกเลิก</a>
+					<div>
+						ระบุความผิดปกติ : <input name="eye_pressure_detail" type="text" id="eye_pressure_detail">
+					</div>
+				</td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ ลานสายตา : </td>
-				<td><input type="text" name="" id=""></td>
+				<td>
+					<input type="radio" name="eye_vision" id="eye_vision1"><label for="eye_vision1">ปกติ</label>
+					<input type="radio" name="eye_vision" id="eye_vision2"><label for="eye_vision2">ผิดปกติ</label>
+					<a href="javascript:void(0);">ยกเลิก</a>
+					<div>
+						ระบุความผิดปกติ : <input name="eye_vision_detail" type="text" id="eye_vision_detail">
+					</div>
+					
+				</td>
 				<td align="right" class="tb_font_2">ผล EKG : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="ekg" id="ekg"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ BMD  : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="42702" id="42702"></td>
 				<td align="right" class="tb_font_2">อัลตร้าซาวด์  : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="altra" id="altra"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)  : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="cimt" id="cimt"></td>
 				<td align="right" class="tb_font_2">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)  : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="echo" id="echo"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)  : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="abi" id="abi"></td>
 				<td align="right" class="tb_font_2">ต่อมลูกหมาก : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="psa" id="psa"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">มะเร็งปากมดลูก : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="hpv" id="hpv"></td>
 				<td align="right" class="tb_font_2">แมมโมแกรม : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="mammogram" id="mammogram"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการได้ยิน : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="hearing" id="hearing"></td>
 				<td></td>
 				<td></td>
 			</tr>
 			<tr valign="top">
-				<td align="right" class="tb_font_2">สรุปผล Stool Culture(C-S) : </td>
-				<td><input type="text" name="" id=""></td>
 				<td align="right" class="tb_font_2">ผลตรวจ Stool Culture(C-S) : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="result_cs" id="result_cs"></td>
+				<td align="right" class="tb_font_2">สรุปผล Stool Culture(C-S) : </td>
+				<td><input type="text" name="cs" id="cs"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจสารเคมีโลหะหนัก : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="metal" id="metal"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจสารเคมีโลหะหนัก : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="metal_result" id="metal_result"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจสาร Benzene : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="benzene" id="benzene"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจสาร Benzene : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="benzene_result" id="benzene_result"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจความหนาแน่นของมวลกระดูก : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="bone_density" id="bone_density"></td>
 				<td align="right" class="tb_font_2">สายตาอาชีวอนามัย + สายตาสั้น, ยาว : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="occupa_health" id="occupa_health"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจ AFP : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="outAfp" id="outAfp"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจ AFP : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="outAfpResult" id="outAfpResult"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจ PSA : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="outPsa" id="outPsa"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจ PSA : </td>
-				<td><input type="text" name="" id=""></td>
+				<td><input type="text" name="outPsaResult" id="outPsaResult"></td>
 			</tr>
 		</table>
 	</fieldset>
@@ -1102,15 +1075,15 @@ C&deg; </td>
 </tr>
 </table>
 <br />
-<center>
-<!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
-<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;
-<input name="submit2" type="submit" value="บันทึกและพิมพ์ใบตรวจโรค" />
 
+<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;<input name="submit2" type="submit" value="บันทึกและพิมพ์ใบตรวจโรค" />
+
+<input type="hidden" name="age" id="age"  value="<?=$arr_view["age"];?>" />
+<input type="hidden" name="hn" id="hn"  value="<?=$arr_view["hn"];?>" />
+<input type="hidden" name="vn" id="vn"  value="<?=$arr_view["vn"];?>" />
 <input type="hidden" name="toborow" value="<?=$toborow;?>">
 <input type="hidden" name="ptright" value="<?=$ptright;?>">
-</center>
-<INPUT TYPE="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
+<input type="hidden" name="row_id" value="<?=$arr_dxofyear["row_id"];?>">
 <input type="hidden" name="labin_date" value="<?=$labin_date;?>">
 </FORM>
 
