@@ -268,6 +268,7 @@ if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 		$color_blind = $arr_dxofyear['color_blind'];
 		$audiogram = $arr_dxofyear['audiogram'];
 		$ekg = $arr_dxofyear['ekg'];
+		$waist = $arr_dxofyear['round_'];
 		
 	}else{ // ถ้าไม่มีข้อมูลใน dxofyear_out ค่อยมาใช้ข้อมูลจากใน opd แทน
 
@@ -724,17 +725,27 @@ C&deg; </td>
 			<td><input type="text" name="ekg" value="<?=$arr_dxofyear['ekg'];?>"></td>
 		</tr>
 	</table>
+	<?php
+	$outResult = array();
+	$chkYear = get_year_checkup();
+	$sql = "SELECT * FROM out_result_chkup WHERE hn = '$p_hn' AND year_chk = '$chkYear' ";
+	$q = $dbi->query($sql);
+	if($q->num_rows > 0){
+		$a = $q->fetch_assoc();
+		$outResult = $a;
+	}
+	?>
 	<fieldset class="checkupField" style="display:none;">
 		<legend>แบบฟอร์มตรวจสุขภาพ</legend>
 		<table class="tb_font" width="100%">
 			<tr valign="top">
 				<td width="240" align="right" class="tb_font_2">หมายเหตุ : </td>
-				<td colspan="3"><input type="text" name="comment" id="comment"></td>
+				<td colspan="3"><input type="text" name="comment" id="comment" value="<?=$outResult['comment'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td width="240" align="right" class="tb_font_2">ผลตรวจ สมรรถภาพปอด : </td>
 				<td colspan="3">
-					<input type="text" name="pt" id="pt">
+					<input type="text" name="pt" id="pt" value="<?=$outResult['pt'];?>">
 					<select onchange="document.getElementById('pt').value=this.value;" class="pdx" style="width:120px;">
 						<option value="">---------- เลือก ----------</option>
 						<option value="ปกติ">ปกติ</option>
@@ -765,7 +776,7 @@ C&deg; </td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผล X-RAY : </td>
-				<td><input type="text" name="cxr" id="cxr"></td>
+				<td><input type="text" name="cxr" id="cxr" value="<?=$outResult['cxr'];?>"></td>
 				<td></td>
 				<td></td>
 			</tr>
@@ -783,7 +794,7 @@ C&deg; </td>
 					</script>
 				</td>
 				<td align="right" class="tb_font_2">ผลการได้ยิน : </td>
-				<td><input type="text" name="hearing" id="hearing"></td>
+				<td><input type="text" name="hearing" id="hearing" value="<?=$outResult['hearing'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ วัดสายตา : </td>
@@ -792,7 +803,7 @@ C&deg; </td>
 					<input type="radio" name="eye" id="eye2" onclick="eye_detail_contain('')" value="ผิดปกติ"><label for="eye2">ผิดปกติ</label>
 					<a href="javascript:void(0);" onclick="clearEye();">[ยกเลิก]</a>
 					<div id="eye_detail_contain" style="display:none;">
-						ระบุความผิดปกติ : <input name="eye_detail" type="text" id="eye_detail">
+						ระบุความผิดปกติ : <input name="eye_detail" type="text" id="eye_detail" value="<?=$outResult['eye_detail'];?>">
 					</div>
 					<script>
 						function clearEye(){
@@ -809,7 +820,7 @@ C&deg; </td>
 					</script>
 				</td>
 				<td align="right" class="tb_font_2">ผลตรวจ BMD  : </td>
-				<td><input type="text" name="42702" id="42702"></td>
+				<td><input type="text" name="42702" id="42702" value="<?=$outResult['42702'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ ความดันตา : </td>
@@ -818,7 +829,7 @@ C&deg; </td>
 					<input type="radio" name="eye_pressure" id="eye_pressure2" onclick="eyePressureDetail('')" value="ผิดปกติ"><label for="eye_pressure2">ผิดปกติ</label>
 					<a href="javascript:void(0);" onclick="clearEyePressure()">[ยกเลิก]</a>
 					<div id="eyePressureDetail" style="display:none;">
-						ระบุความผิดปกติ : <input name="eye_pressure_detail" type="text" id="eye_pressure_detail">
+						ระบุความผิดปกติ : <input name="eye_pressure_detail" type="text" id="eye_pressure_detail" value="<?=$outResult['eye_pressure_detail'];?>">
 					</div>
 					<script>
 						function clearEyePressure(){
@@ -835,7 +846,7 @@ C&deg; </td>
 					</script>
 				</td>
 				<td align="right" class="tb_font_2">อัลตร้าซาวด์  : </td>
-				<td><input type="text" name="altra" id="altra"></td>
+				<td><input type="text" name="altra" id="altra" value="<?=$outResult['altra'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ ลานสายตา : </td>
@@ -844,7 +855,7 @@ C&deg; </td>
 					<input type="radio" name="eye_vision" id="eye_vision2" onclick="eyeVisionDetail('')" value="ผิดปกติ"><label for="eye_vision2">ผิดปกติ</label>
 					<a href="javascript:void(0);" onclick="clearEyeVision()">[ยกเลิก]</a>
 					<div id="eyeVisionDetail" style="display:none;">
-						ระบุความผิดปกติ : <input name="eye_vision_detail" type="text" id="eye_vision_detail">
+						ระบุความผิดปกติ : <input name="eye_vision_detail" type="text" id="eye_vision_detail" value="<?=$outResult['eye_vision_detail'];?>">
 					</div>
 					<script>
 						function clearEyeVision(){
@@ -865,58 +876,58 @@ C&deg; </td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)  : </td>
-				<td><input type="text" name="cimt" id="cimt"></td>
+				<td><input type="text" name="cimt" id="cimt" value="<?=$outResult['cimt'];?>"></td>
 				<td align="right" class="tb_font_2">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)  : </td>
-				<td><input type="text" name="echo" id="echo"></td>
+				<td><input type="text" name="echo" id="echo" value="<?=$outResult['echo'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)  : </td>
-				<td><input type="text" name="abi" id="abi"></td>
+				<td><input type="text" name="abi" id="abi" value="<?=$outResult['abi'];?>"></td>
 				<td align="right" class="tb_font_2">ต่อมลูกหมาก : </td>
-				<td><input type="text" name="psa" id="psa"></td>
+				<td><input type="text" name="psa" id="psa" value="<?=$outResult['psa'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">มะเร็งปากมดลูก : </td>
-				<td><input type="text" name="hpv" id="hpv"></td>
+				<td><input type="text" name="hpv" id="hpv" value="<?=$outResult['hpv'];?>"></td>
 				<td align="right" class="tb_font_2">แมมโมแกรม : </td>
-				<td><input type="text" name="mammogram" id="mammogram"></td>
+				<td><input type="text" name="mammogram" id="mammogram" value="<?=$outResult['mammogram'];?>"></td>
 			</tr>
 
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจ Stool Culture(C-S) : </td>
-				<td><input type="text" name="result_cs" id="result_cs"></td>
+				<td><input type="text" name="result_cs" id="result_cs" value="<?=$outResult['result_cs'];?>"></td>
 				<td align="right" class="tb_font_2">สรุปผล Stool Culture(C-S) : </td>
-				<td><input type="text" name="cs" id="cs"></td>
+				<td><input type="text" name="cs" id="cs" value="<?=$outResult['cs'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจสารเคมีโลหะหนัก : </td>
-				<td><input type="text" name="metal" id="metal"></td>
+				<td><input type="text" name="metal" id="metal" value="<?=$outResult['metal'];?>"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจสารเคมีโลหะหนัก : </td>
-				<td><input type="text" name="metal_result" id="metal_result"></td>
+				<td><input type="text" name="metal_result" id="metal_result" value="<?=$outResult['metal_result'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจสาร Benzene : </td>
-				<td><input type="text" name="benzene" id="benzene"></td>
+				<td><input type="text" name="benzene" id="benzene" value="<?=$outResult['benzene'];?>"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจสาร Benzene : </td>
-				<td><input type="text" name="benzene_result" id="benzene_result"></td>
+				<td><input type="text" name="benzene_result" id="benzene_result" value="<?=$outResult['benzene_result'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลตรวจความหนาแน่นของมวลกระดูก : </td>
-				<td><input type="text" name="bone_density" id="bone_density"></td>
+				<td><input type="text" name="bone_density" id="bone_density" value="<?=$outResult['bone_density'];?>"></td>
 				<td align="right" class="tb_font_2">สายตาอาชีวอนามัย + สายตาสั้น, ยาว : </td>
-				<td><input type="text" name="occupa_health" id="occupa_health"></td>
+				<td><input type="text" name="occupa_health" id="occupa_health" value="<?=$outResult['occupa_health'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจ AFP : </td>
-				<td><input type="text" name="outAfp" id="outAfp"></td>
+				<td><input type="text" name="outAfp" id="outAfp" value="<?=$outResult['outAfp'];?>"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจ AFP : </td>
-				<td><input type="text" name="outAfpResult" id="outAfpResult"></td>
+				<td><input type="text" name="outAfpResult" id="outAfpResult" value="<?=$outResult['outAfpResult'];?>"></td>
 			</tr>
 			<tr valign="top">
 				<td align="right" class="tb_font_2">ผลการตรวจ PSA : </td>
-				<td><input type="text" name="outPsa" id="outPsa"></td>
+				<td><input type="text" name="outPsa" id="outPsa" value="<?=$outResult['outPsa'];?>"></td>
 				<td align="right" class="tb_font_2">สรุปผลการตรวจ PSA : </td>
-				<td><input type="text" name="outPsaResult" id="outPsaResult"></td>
+				<td><input type="text" name="outPsaResult" id="outPsaResult" value="<?=$outResult['outPsaResult'];?>"></td>
 			</tr>
 		</table>
 	</fieldset>
