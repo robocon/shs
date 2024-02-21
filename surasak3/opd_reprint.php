@@ -206,6 +206,11 @@ a:hover, a:active {
 		$query = "SELECT thidate,thdatehn,ptname,hn,ptright,doctor,vn,clinic,toborow FROM opday WHERE thidate LIKE '$today%' ORDER BY row_id DESC ";
 		echo "<div style='font-size:22px;'>ข้อมูลทั้งหมดที่ลงทะเบียนวันนี้</div>";
 	}	
+
+    $currentThDate = (date('Y')+543).date('-m-d');
+    if($today!=$currentThDate){
+        $extra_url = '&reprint_date='.$currentThDate;
+    }
 	
 	$result = mysql_query($query)or die("Query failed");
 	$numrows = mysql_num_rows($result);
@@ -261,7 +266,7 @@ if($num%2==0){
 		   "  <td>$toborow</td>\n".
    		   "  <td>$doctor</td>\n".
 		   "  <td>$clinic</td>\n".
-		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd.php?dthn=".urlencode($thdatehn)."\"><img src='images/printer.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์เอกสาร</div></A></td>\n".
+		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd.php?dthn=".urlencode($thdatehn)."$extra_url\"><img src='images/printer.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์เอกสาร</div></A></td>\n".
 		   "  <td align='center'>$printstk</td>\n".
 		   "  <td align='center'>$printapp</td>\n".
 		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd_form.php?dthn=".urlencode($thdatehn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์แบบฟอร์ม</div></A></td>\n".
