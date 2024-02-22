@@ -316,6 +316,7 @@ if( $action === false ){
 
 	// format yyyymmdd เช่น 20210131
 	$date_serv = ($thiyr-543).$rptmo.$rptday;
+	$enDate = ($thiyr-543).'-'.$rptmo.'-'.$rptday;
 
 	$dirPath = realpath(dirname(__FILE__))."/export/$thiyr/$rptmo$day_parth";
 	
