@@ -45,7 +45,7 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
 }
 
 .chk_menu li a:hover, .dropdown:hover .dropbtn {
-  background-color: #4ba800;
+  background-color: #04AA6D;
 }
 
 .chk_menu li.dropdown {
@@ -69,12 +69,21 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
   text-align: left;
 }
 
-.chk_menu .dropdown-content a:hover {background-color: #4ba800;}
+.chk_menu .dropdown-content a:hover {background-color: #04AA6D;}
 
 .chk_menu .dropdown:hover .dropdown-content {
   display: block;
 }
-
+.button {
+    background-color: #04AA6D; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
 
 
 </style>

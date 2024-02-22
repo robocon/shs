@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 
 $page = input('page');
-$action = input_post('action');
+$action = sprintf("%s", $_REQUEST['action']);
 $db = Mysql::load();
 
 if ( $action === 'save' ) {
@@ -48,7 +48,32 @@ if ( $action === 'save' ) {
 
     redirect('chk_lab.php?page=form&id='.$id, $msg);
     exit;
+}elseif( $action == 'findCinicalinfo' ){
+
+    $autonumber = sprintf("%s", $_GET['autonumber']);
+
+    $sql = "SELECT clinicalinfo FROM `resulthead` WHERE `autonumber` = '$autonumber' ";
+    $db->select($sql);
+    if($db->get_rows() > 0){
+        $item_result = $db->get_item();
+        $res = '{"status":200, "clinicalinfo": "'.$item_result['clinicalinfo'].'", "message":"พบข้อมูล"}';
+    }else{
+        $res = '{"status":400, "message": "ไม่พบข้อมูล"}';
+    }
+    echo $res;
+    exit;
+}elseif( $action == 'saveCinicalinfo' ){
+
+    $autonumber = sprintf("%s", $_POST['autonumber']);
+    $clinicalinfo = sprintf("%s", $_POST['clinicalinfo']);
+
+    $sqlUpdate = "UPDATE resulthead SET clinicalinfo = '$clinicalinfo' WHERE autonumber = '$autonumber' ";
+    $save = $db->update($sqlUpdate);
+    var_dump($save);
+
+    exit;
 }
+
 
 if ( $page === 'form' ) { 
 
@@ -92,27 +117,49 @@ if ( $page === 'form' ) {
         $items = $db->get_items();
 
         ?>
+        <script src="sweetalert/sweetalert2@11.js"></script>
+        <style>
+            .labTable tr:hover{
+                background-color:#c5c5c5!important;
+            }
+        </style>
         <h3>แก้ไขข้อมูลแลป</h3>
-        <p>HN : <?=$user['hn'];?></p>
-        <p>ชื่อ-สกุล : <?=$user['name'];?> <?=$user['surname'];?></p>
+        <table>
+            <tr>
+                <td align="right"><b>HN : </b></td>
+                <td><?=$user['hn'];?></td>
+            </tr>
+            <tr>
+                <td align="right"><b>ชื่อ-สกุล : </b></td>
+                <td><?=$user['name'];?> <?=$user['surname'];?></td>
+            </tr>
+            <tr>
+                <td align="right"><b>บริษัท : </b></td>
+                <td><?=$user['part'];?></td>
+            </tr>
+        </table>
+        <br>
         <table class="chk_table" width="100%">
             <tr>
-                <th>autonumber</th>
+                <th>Lab Number</th>
+                <!-- <th>autonumber</th> -->
                 <th>รายการตรวจ</th>
-                <th>keyword</th>
-                <th>labcode/labname/result/normalrange</th>
-                <th>ปรับสถานะLab</th>
+                <th>สถานะแลป</th>
+                <th></th>
+                <!-- <th>ปรับสถานะLab</th> -->
             </tr>
             <?php
             foreach ($items as $key => $item) {
                 $autonumber = $item['autonumber'];
             ?>
             <tr>
-            <td><?=$autonumber;?></td>
+                <td><?=$item['labnumber'];?></td>
+            <!-- <td><?=$autonumber;?></td> -->
                 <td><?=$item['profilecode'];?></td>
                 <td>
                     <div>
-                        <?=$item['clinicalinfo'];?>
+                    <!-- chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?> -->
+                        <a href="javascript:void(0);" title="แก้ไขสถานะ" onclick="showInput('<?=$item['autonumber'];?>')"><?=$item['clinicalinfo'];?></a>
                     </div>
                 </td>
                 <td>
@@ -121,11 +168,22 @@ if ( $page === 'form' ) {
                     $db->select($detail_sql);
                     $detail_items = $db->get_items();
                     ?>
-                    <table class="chk_table" width="100%">
-                        <?php
-                        foreach( $detail_items AS $key => $detail ){
-                        ?>
+                    <table class="chk_table labTable" width="100%">
                         <tr>
+                            <th>Lab Code</th>
+                            <th>Lab Name</th>
+                            <th>Result</th>
+                            <th>Normal Range</th>
+                        </tr>
+                        <?php
+                        $ii = 1;
+                        foreach( $detail_items AS $key => $detail ){
+                            $bgColor = '';
+                            if($ii%3==0){
+                                $bgColor = 'style="background-color: #e3e3e3;"';
+                            }
+                        ?>
+                        <tr <?=$bgColor;?> >
                             <td width="20%">
                                 <a href="chk_lab.php?page=edit_result&autonumber=<?=$autonumber;?>&labcode=<?=$detail['labcode'];?>&id=<?=$id;?>"><?=$detail['labcode'];?></a>
                             </td>
@@ -134,16 +192,69 @@ if ( $page === 'form' ) {
                             <td width="10%"><?=$detail['normalrange'];?></td>
                         </tr>
                         <?php
+                        $ii++;
                         }
                         ?>
                     </table>
                 </td>
-                <td><a href="chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?>">แก้ไขสถานะ</a></td>
+                <!-- <td><a href="chk_lab.php?page=editdetail&number=<?=$item['autonumber'];?>&id=<?=$id;?>">แก้ไขสถานะ</a></td> -->
             </tr>
             <?php
             }
             ?>
         </table>
+        <script>
+        // const inputValue = data.ip;
+        async function showInput(autonumber){ 
+
+            const response = await fetch('chk_lab.php?action=findCinicalinfo&autonumber='+autonumber);
+            const data = await response.json();
+            const inputValue = data.clinicalinfo;
+            const { value: clinicalinfoInput } = await Swal.fire({
+                title: "ปรับสถานะแลป",
+                input: "text",
+                inputLabel: "สถานะแลปปัจจุบัน",
+                inputValue,
+                showCancelButton: true,
+                inputValidator: (value) => {
+                    if (!value) {
+                        return "กรุณาใส่ข้อมูลให้ถูกต้อง";
+                    }
+                },
+                confirmButtonText: "บันทึกข้อมูล",
+                cancelButtonText: "ยกเลิก",
+            });
+            if (clinicalinfoInput) {
+                // console.log(clinicalinfoInput);
+                let data = [];
+                data.push(encodeURIComponent('action')+"="+encodeURIComponent('saveCinicalinfo'));
+                data.push(encodeURIComponent('autonumber')+"="+encodeURIComponent(autonumber));
+                data.push(encodeURIComponent('clinicalinfo')+"="+encodeURIComponent(clinicalinfoInput));
+                let dataPost = data.join("&");
+                
+                let response = await fetch('chk_lab.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    body: dataPost
+                });
+                const body = await response.json();
+                console.log(body);
+                Swal.fire({
+                    icon: "success",
+                    title: "บันทึกข้อมูลเรียบร้อย",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+
+
+            }
+            
+        }
+        
+        </script>
         <?php
     }
 }elseif ( $page === 'editdetail' ) {
@@ -162,13 +273,11 @@ if ( $page === 'form' ) {
 
     include 'chk_menu.php';
     ?>
-
+    <a href="chk_lab.php?page=form&id=<?=$id;?>" class="button">&lt;&lt;&nbsp;กลับไปหน้าปรับผล</a>
+    <br><br>
     <form action="chk_lab.php" method="post">
         <div>
-            Keyword : <input type="text" name="info" id="" value="<?=$item['clinicalinfo'];?>">
-            <br>
-            ตรวจสุขภาพราชภัฏ61
-            <br>
+            สถานะแลป : <input type="text" name="info" id="" value="<?=$item['clinicalinfo'];?>">
         </div>
         <div style="color: red;">
             คำแนะนำ : ให้เปลี่ยน keyword เช่น ตรวจสุขภาพประจำปี60 เป็น deleteตรวจสุขภาพประจำปี60
@@ -178,8 +287,7 @@ if ( $page === 'form' ) {
             <input type="hidden" name="number" value="<?=$number;?>">
             <input type="hidden" name="action" value="save">
             <input type="hidden" name="id" value="<?=$id;?>">
-
-            <a href="chk_lab.php?page=form&id=<?=$id;?>">&lt;&lt;&nbsp;กลับไปหน้าปรับผล</a>
+            
         </div>
     </form>
     <?php
