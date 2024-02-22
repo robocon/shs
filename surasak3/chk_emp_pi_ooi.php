@@ -24,7 +24,7 @@ $opcard = new Opcard();
 /**
  * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
  */
-$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,a.idcard,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
     SELECT *,id as main_id FROM `lab67` ORDER BY depart ASC,id ASC
@@ -75,6 +75,7 @@ $user_rows = $db->get_rows();
         <tr>
             <th rowspan="2" align="center">ลำดับ</th>
             <th rowspan="2" align="center">แผนก</th>
+            <th rowspan="2" align="center">บัตรประชาชน</th>
             <th rowspan="2" align="center">HN</th>
             <th rowspan="2" align="center">ชื่อ - สกุล</th>
             <th rowspan="2" align="center">อายุ</th>
@@ -193,6 +194,7 @@ $user_rows = $db->get_rows();
             OR b.`labcode` = 'HDL' 
             OR b.`labcode` = 'HBSAG' 
             OR b.`labcode` = 'OCCULT' 
+            OR b.`labcode` = 'STOCC' 
             OR b.`labcode` = '38302' 
             OR b.`labcode` = 'LDL' 
             OR b.`labcode` = 'BUN' 
@@ -230,6 +232,7 @@ $user_rows = $db->get_rows();
             
             <td align="right"><?=$i;?></td>
             <td><?=$item['depart'];?></td>
+            <td><?=$item['idcard'];?></td>
             <td><?=$main_hn;?></td>
             <td><?=$ptname;?></td>
             <td align="right"><?=$age;?></td>
@@ -311,10 +314,18 @@ $user_rows = $db->get_rows();
             </td>
             <td>
                 <?php
-                if( $etc['occult']['result'] == 'Negative' ){
-                    echo 'ไม่พบเลือด';
-                }elseif ( $etc['occult']['result'] == 'Positive' ) {
-                    echo 'พบเลือด';
+                if(!empty($etc['occult'])){
+                    if( $etc['occult']['result'] == 'Negative' ){
+                        echo 'ไม่พบเลือด';
+                    }elseif ( $etc['occult']['result'] == 'Positive' ) {
+                        echo 'พบเลือด';
+                    }
+                }else{
+                    if( $etc['stocc']['result'] == 'Negative' ){
+                        echo 'ไม่พบเลือด';
+                    }elseif ( $etc['stocc']['result'] == 'Positive' ) {
+                        echo 'พบเลือด';
+                    }
                 }
                 ?>
             </td>
