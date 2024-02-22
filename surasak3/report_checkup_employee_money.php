@@ -120,7 +120,9 @@ $opcard = new Opcard();
                             $sum_money_sso += $ssoPrice;
                             
                         }
-                        if($p['depart']==='XRAY'){ 
+
+                        // 2คนนี้จ่ายเงินสดไปเรียบร้อยแล้ว
+                        if($p['depart']==='XRAY' && !in_array($hn, array('65-3798','53-11586'))){ 
                             $xrayPrice = $p['price'];
                             $sum_money_hos += $xrayPrice;
                         }
@@ -161,6 +163,8 @@ $opcard = new Opcard();
                         <?php 
                         if($ssoPrice>0 && !empty($a['thidate2'])){
                             echo number_format($ssoPrice,2);
+                        }else{
+                            echo "0";
                         }
                         ?>
                         </div>

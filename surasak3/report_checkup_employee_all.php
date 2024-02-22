@@ -72,7 +72,8 @@ $opcard = new Opcard();
                 
                     $enDate = bc_to_ad($thidate);
                     $hn = $a['hn'];
-                    $thDateHn = $enDate.$hn;
+                    $enDateHn = $enDate.$hn;
+                    $thDateHn = $thidate.$hn;
                     
                     $sqlLab = "SELECT row_id,depart 
                     FROM depart 
@@ -98,16 +99,32 @@ $opcard = new Opcard();
                         $regis = '<i class="bi bi-check-circle text-success"></i>';
                     }
 
-                    $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
+                    $sqlOpd = "SELECT row_id,thdatehn FROM dxofyear_out WHERE thdatehn = '$enDateHn' ";
                     $qOpd = $dbi->query($sqlOpd);
-                    if($qOpd->num_rows>0){
+                    $dxofyear_out_rows = $qOpd->num_rows;
+                    $dxofyear_id = '';
+                    if($dxofyear_out_rows>0){
+
+                        $dxofyear_out = $qOpd->fetch_assoc();
+                        $dxofyear_id = $dxofyear_out['row_id'];
                         $opd = '<i class="bi bi-check-circle text-success"></i>';
                     }
 
                     $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
                     $qDoctor = $dbi->query($sqlDoctor);
-                    if($qDoctor->num_rows>0){
+                    $chk_doctor_rows = $qDoctor->num_rows;
+                    if($chk_doctor_rows>0){
                         $doctor = '<i class="bi bi-check-circle text-success"></i>';
+                    }else{
+
+                        if($dxofyear_out_rows>0){
+                            $convertToEn = ad_to_bc($dxofyear_out['thdatehn']);
+                            $sqlCondx = "SELECT row_id FROM condxofyear_out WHERE yearcheck='2567' AND camp='ตรวจสุขภาพประกันสังคม' AND hn='$hn' ";
+                            $qCondx = $dbi->query($sqlCondx);
+                            $condx = $qCondx->fetch_assoc();
+                            $condxId = $condx['row_id'];
+                        }
+                        
                     }
                 }
                 ?>
@@ -123,7 +140,18 @@ $opcard = new Opcard();
                     <td class="text-center"><?=$regis;?></td>
                     <td class="text-center"><?=$xray;?></td>
                     <td class="text-center"><?=$opd;?></td>
-                    <td class="text-center"><?=$doctor;?></td>
+                    <td class="text-center">
+                        <?=$doctor;?>
+                        <?php 
+                        // ถ้ามีข้อมูลประวัติตรวจสุขภาพ แต่ใน รายงานของแพทย์ไม่มี ให้สงสัยไว้เลยว่าแพทย์ลงผล ผิดแมนู
+                        if($dxofyear_out_rows>0 && $chk_doctor_rows==0){
+                            ?>
+                            <br>
+                            <!-- <a href="report_checkup_employee_convert.php?id=<?=$condxId;?>&dxofyear_id=<?=$dxofyear_id;?>" target="_blank">โอนข้อมูล</a> -->
+                            <?php
+                        }
+                        ?>
+                    </td>
                 </tr>
                 <?php
                 $i++;
