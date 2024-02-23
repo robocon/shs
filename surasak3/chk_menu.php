@@ -2,6 +2,10 @@
 if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบบอีกครั้ง</a>'; exit; }
 ?>
 <style type="text/css">
+    *{
+        font-family: "TH SarabunPSK";
+        font-size:20px;
+    }
 .clearfix:after{
     content: ".";
     display: block;
@@ -13,15 +17,24 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
     min-height: 1%;
 }
 
-
 /* ตาราง */
 .chk_table{
     border-collapse: collapse;
+}
+.chk_table th{
+    background-color: #e3e3e3;
 }
 .chk_table th,
 .chk_table td{
     padding: 3px;
     border: 1px solid black;
+}
+
+.chk_table a{
+    text-decoration: none;
+}
+.chk_table a:hover{
+    text-decoration: underline;
 }
 
 .chk_menu ul {
@@ -78,13 +91,19 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
     background-color: #04AA6D; /* Green */
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 8px 16px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
 }
-
+ol.itemMenu{
+    margin:0; 
+    padding:0; 
+    list-style-type:none;
+}
+ol.itemMenu li:hover{
+    background-color: #e3e3e3;
+}
 
 </style>
 <?php

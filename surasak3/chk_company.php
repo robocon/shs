@@ -225,10 +225,9 @@ if ( $views == 'search' ) {
             <th style="width: 15%;">ชื่อบริษัท</th>
             <th style="width: 20%;">รหัสเชื่อมข้อมูล</th>
             <th>ช่วงเวลาที่ตรวจ</th>
-            <th>รอบปีงบประมาณ</th>
+            <th>ปีงบ</th>
             <th>ลงผล/พิมพ์ผล</th>
             <th>พิมพ์ผล ปกส.</th>
-            <th></th>
         </tr>
         <?php
         $i = 1;
@@ -248,11 +247,11 @@ if ( $views == 'search' ) {
             <tr style="vertical-align:top;">
                 <td><?=$i;?></td>
                 <td><a href="chk_show_user.php?part=<?=$item['code'];?>"><?=$item['name'];?></a></td>
-                <td><?=$item['code'];?> (<?=$userRows;?>ราย)</td>
+                <td><?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>
                 <td style="vertical-align: top;">
-                    <ol style="margin:0;">
+                    <ol class="itemMenu">
                         <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                         <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                         <li><a href="<?=$reportAll;?>" target="_blank">สรุปผลตรวจ</a></li>
@@ -262,19 +261,18 @@ if ( $views == 'search' ) {
                         <li>
                             <a href="chk_print_xray.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ใบนำทาง X-Ray</a>
                         </li>
-                        <li>
-                            <!-- <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ผลแลป METAMP</a> -->
-                        </li>
+                        <!-- <li>
+                            <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ผลแลป METAMP</a>
+                        </li> -->
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
-                    <ol style="margin:0;">
+                    <ol class="itemMenu">
                         <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลรวม</a></li>
                         <li><a href="chk_print_all_sso.php?part=<?=rawurlencode($item['code']);?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
                         <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย</a></li>
                     </ol>
                 </td>
-                <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
             </tr>
             <?php
             $i++;
