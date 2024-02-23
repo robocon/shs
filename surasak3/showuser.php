@@ -11,11 +11,13 @@ if ($_GET["act"] == "del") {
 }
 ?>
 <style type="text/css">
-	body,
-	td,
-	th {
+	body,td,th {
 		font-family: TH SarabunPSK;
 		font-size: 20px;
+	}
+	th{
+		background-color: #009688;
+		color: #ffffff;
 	}
     .addUserButton{
         text-decoration: none;
@@ -37,11 +39,11 @@ if ($_GET["act"] == "del") {
 	<table width="80%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000"
 		style="border-collapse:collapse;">
 		<tr>
-			<td width="12%" align="center" bgcolor="#66CC99"><strong>ลำดับ</strong></td>
-			<td width="40%" align="center" bgcolor="#66CC99"><strong>ชื่อ - นามสกุล</strong></td>
-			<td width="20%" align="center" bgcolor="#66CC99"><strong>part</strong></td>
-            <td width="20%" align="center" bgcolor="#66CC99"><strong>สถานะ</strong></td>
-			<td width="36%" align="center" bgcolor="#66CC99"><strong>จัดการข้อมูล</strong></td>
+			<th width="12%" align="center" bgcolor="#66CC99"><b>ลำดับ</b></th>
+			<th width="40%" align="center" bgcolor="#66CC99"><b>ชื่อ - นามสกุล</b></th>
+			<th width="20%" align="center" bgcolor="#66CC99"><b>part</b></th>
+            <th width="20%" align="center" bgcolor="#66CC99"><b>สถานะ</b></th>
+			<th width="36%" align="center" bgcolor="#66CC99"><b>จัดการข้อมูล</b></th>
 		</tr>
 		<?
 		$sql = "select * from inputm where menucode like '" . $_GET["menucode"] . "%' order by menucode ";
