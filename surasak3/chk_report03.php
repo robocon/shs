@@ -825,7 +825,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 									$where = " AND `labcode` = 'PARASI' ";
 
 								} else if( $arrresult['profilecode'] == 'CREAG' ){
-									$where = " AND ( `labcode` = 'GFR' OR `labcode` = 'CREA' ) ";
+									$where = " AND ( `labcode` = 'GFR' OR `labcode` = 'CREA' OR labcode = 'STAGE' ) ";
 								}
 								
 								$strSQL = "SELECT * ,date_format(authorisedate,'%d-%m-%Y') as authorisedate2 
@@ -841,6 +841,12 @@ $outlab_row = mysql_num_rows($outlab_query);
 								while($objResult = mysql_fetch_array($objQuery)){
 
 									$objResult["labname"] = str_replace('*', '', $objResult["labname"]);
+
+
+									if($objResult["labname"]=="CKD Stage"){
+										$ckdStage = $objResult["result"];
+										continue;
+									}
 
 									if($objResult["labname"]=="Blood Sugar"){
 										$labmean="ระดับน้ำตาลในเลือด";
@@ -1181,6 +1187,11 @@ $outlab_row = mysql_num_rows($outlab_query);
 										// if($objResult["labname"]=="LDL-C"){
 										// 	$objResult["normalrange"] = '0-100';
 										// }
+
+										if($objResult['labcode']=='GFR'){
+											$app = $ckdStage;
+										}
+										
 
 									?>
 									<tr height="23">
