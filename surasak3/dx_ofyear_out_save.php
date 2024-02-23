@@ -495,7 +495,7 @@ if($sendto_out_result_chkup > 0){
 	
 	// Update
 	if( $out_result_chkup_row > 0 ){
-
+		
 		$out_result = mysql_fetch_assoc($q);
 		$out_result_chkup_update = "UPDATE `out_result_chkup` SET 
 		`ptname` = '".sprintf("%s", $_POST['ptname'])."',
@@ -504,6 +504,7 @@ if($sendto_out_result_chkup > 0){
 		`height` = '".sprintf("%s", $_POST['height'])."',
 		`bp1` = '".sprintf("%s", $_POST['bp1'])."',
 		`bp2` ='".sprintf("%s", $_POST['bp2'])."',
+		`waist` ='".sprintf("%s", $_POST['round_'])."',
 		`bp3` = '".sprintf("%s", $_POST['bp21'])."',
 		`bp4` ='".sprintf("%s", $_POST['bp22'])."',
 		`p` = '".sprintf("%s", $_POST['pause'])."',
@@ -571,6 +572,7 @@ if($sendto_out_result_chkup > 0){
 	
 		`bp1` = '".sprintf("%s",$_POST['bp1'])."',
 		`bp2` = '".sprintf("%s",$_POST['bp2'])."',
+		`waist` = '".sprintf("%s",$_POST['round_'])."',
 		`bp3` = '".sprintf("%s",$_POST['bp21'])."',
 		`bp4` = '".sprintf("%s",$_POST['bp22'])."',
 		`p` = '".sprintf("%s",$_POST['pause'])."',
