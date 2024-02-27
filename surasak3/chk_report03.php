@@ -755,6 +755,7 @@ FROM (
 		AND `profilecode` != 'BENZEN' 
 		AND `profilecode` != 'XYLENE' 
 		AND `profilecode` != 'WET' 
+		AND `profilecode` != '35101' 
     ) 
 	AND `testgroupcode` != 'OUT' 
 	GROUP BY `profilecode` 
@@ -784,6 +785,7 @@ FROM (
 	AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$year_checkup' 
 	AND `labnumber` = '$exam_no' 
 	AND `testgroupcode` = 'OUT' 
+	AND profilecode NOT IN('35101','CA125')
 	GROUP BY `profilecode` 
 
 ) AS b 
