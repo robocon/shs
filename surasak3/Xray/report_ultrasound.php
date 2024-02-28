@@ -33,13 +33,22 @@ $dbi->query("SET NAMES UTF8");
     <?php 
     $page = sprintf("%s", ($_POST['page'] ? $_POST['page'] : '' ));
     if($page == 'search'){
-        // dump($_POST);
+        
         $thDate = ($_POST['year']+543).'-'.$_POST['month'];
-        $sql = "SELECT * FROM `patdata` WHERE `date` LIKE '$thDate%' AND `code` IN ('42331','42333','42338','42339','43001','43002','43003','43006','43103','43911')";
-        // $sql = "SELECT * FROM `patdata` WHERE `date` LIKE '$thDate%' AND `code` ='41003'";
+
+        // labcare detail ที่ขึ้นต้นด้วย US
+        $sql = "SELECT * FROM `patdata` 
+        WHERE `date` LIKE '$thDate%' 
+        AND `code` IN ('43764','43763','43762','43760','43752','43644','43614','43611','43512','43510','43440','43423','43251','43250','43222','43212','43044','43043','43042','43041','43040','43007','43502','43004','43005')";
         $q = $dbi->query($sql);
-        dump($sql);
-        dump($q->num_rows);
+        if($q->num_rows > 0){
+
+            while ($a = $q->fetch_assoc()) {
+                # code...
+                dump($a);
+            }
+        }
+        
     }
     ?>
 </body>
