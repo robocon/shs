@@ -254,45 +254,45 @@ include 'chk_menu.php';
             </td>
         </tr>
         <tr>
-            <td>CBC</td>
+            <td class="tb_title">CBC : </td>
             <td><input type="text" name="count_cbc" size="3" value="1"></td>
         </tr>
         <tr>
-            <td>CHEM</td>
+            <td class="tb_title">CHEM : </td>
             <td><input type="text" name="count_chem" size="3" value="1"></td>
         </tr>
         <tr valign="top">
-            <td>UA</td>
+            <td class="tb_title">UA : </td>
             <td>
                 <input type="text" name="count_ua" size="3" value="1"><br>
                 <input type="checkbox" name="count_ua_barcode" id="count_ua_barcode" value="1"> <label for="count_ua_barcode">แสดงสติกเกอร์แบบไม่มีบาร์โค้ด</label>
             </td>
         </tr>
         <tr valign="top">
-            <td>STOOL</td>
+            <td class="tb_title">STOOL : </td>
             <td>
                 <input type="text" name="count_stool" size="3" value=""><br>
                 <input type="checkbox" name="stool_thai" id="stool_thai" value="1"> <label for="stool_thai">แสดงข้อความเป็น "อุจจาระ"</label>
             </td>
         </tr>
         <tr>
-            <td>STOOL C/S</td>
+            <td class="tb_title">STOOL C/S : </td>
             <td><input type="text" name="count_cs" size="3" value=""></td>
         </tr>
         <tr>
-            <td>Urine C/S</td>
+            <td class="tb_title">Urine C/S : </td>
             <td><input type="text" name="urine_cs" size="3" value=""></td>
         </tr>
         <tr>
-            <td>Outlab AFP</td>
+            <td class="tb_title">Outlab AFP : </td>
             <td><input type="text" name="afp" size="3" value=""></td>
         </tr>
         <tr>
-            <td>อื่นๆ</td>
+            <td class="tb_title">อื่นๆ : </td>
             <td><input type="text" name="count_etc" size="3" value=""></td>
         </tr>
         <tr>
-            <td>ลำดับที่</td>
+            <td class="tb_title">ลำดับที่ : </td>
             <td><input type="text" name="row_print" > <span>ตัวอย่างเช่น 6-29 หรือเป็นค่าว่างเพื่อพิมพ์ทั้งหมด</span> </td>
         </tr>
 

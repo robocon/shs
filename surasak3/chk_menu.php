@@ -104,7 +104,13 @@ ol.itemMenu{
 ol.itemMenu li:hover{
     background-color: #e3e3e3;
 }
-
+label:hover{
+    cursor: pointer;
+}
+.tb_title{
+    font-weight: bold;
+    text-align: right;
+}
 </style>
 <?php
 

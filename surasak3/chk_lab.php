@@ -6,100 +6,29 @@ $page = input('page');
 $action = sprintf("%s", $_REQUEST['action']);
 $db = Mysql::load();
 
-if ( $action === 'save' ) {
+if( $action == 'saveCinicalinfo' ){
 
-    $info = input_post('info');
-    $number = input_post('number');
-    $id = input_post('id');
+    $labnumber = sprintf("%s", $_POST['labnumber']);
+    $clinicalinfo = trim(sprintf("%s", $_POST['clinicalinfo']));
 
-    if ( empty($number) ) {
-        echo "ไม่พบข้อมูล";
-        exit;
-    }
-
-    $sql = "UPDATE `resulthead` SET 
-    `clinicalinfo` = '$info' 
-    WHERE `autonumber` = '$number' ";
-    $update = $db->update($sql);
-
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-    if( $update !== true ){
-		$msg = errorMsg('update', $update['id']);
-    }
-
-    redirect('chk_lab.php?page=form&id='.$id, $msg);
-    exit;
-} elseif ( $action == 'save_result' ){
-
-    $autonumber = input_post('autonumber');
-    $labcode = input_post('labcode');
-    $id = input_post('id');
-
-    $result = input_post('result');
-    $normalrange = input_post('normalrange');
-
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-    $sql = "UPDATE `resultdetail` SET 
-    `result` = '$result', 
-    `normalrange` = '$normalrange' 
-    WHERE `autonumber` = '$autonumber' 
-    AND `labcode` = '$labcode' ";
-    $update = $db->update($sql);
-
-    redirect('chk_lab.php?page=form&id='.$id, $msg);
-    exit;
-}elseif( $action == 'findCinicalinfo' ){
-
-    $autonumber = sprintf("%s", $_GET['autonumber']);
-
-    $sql = "SELECT clinicalinfo FROM `resulthead` WHERE `autonumber` = '$autonumber' ";
-    $db->select($sql);
-    if($db->get_rows() > 0){
-        $item_result = $db->get_item();
-        $res = '{"status":200, "clinicalinfo": "'.$item_result['clinicalinfo'].'", "message":"พบข้อมูล"}';
-    }else{
-        $res = '{"status":400, "message": "ไม่พบข้อมูล"}';
-    }
-    echo $res;
-    exit;
-
-}elseif( $action == 'saveCinicalinfo' ){
-
-    $autonumber = sprintf("%s", $_POST['autonumber']);
-    $clinicalinfo = sprintf("%s", $_POST['clinicalinfo']);
-
-    $sqlUpdate = "UPDATE resulthead SET clinicalinfo = '$clinicalinfo' WHERE autonumber = '$autonumber' ";
+    $sqlUpdate = "UPDATE resulthead SET clinicalinfo = '$clinicalinfo' WHERE labnumber = '$labnumber' ";
     $save = $db->update($sqlUpdate);
     if($save===true){
-        $res = '{"status":200, "autonumber": "'.$autonumber.'", "message":"บันทึกข้อมูลเรียบร้อย"}';
+        $res = '{"status":200, "labnumber": "'.$labnumber.'", "message":"บันทึกข้อมูลเรียบร้อย"}';
     }else{
         $res = '{"status":400, "message": " ไม่สามารถบันทึกข้อมูลได้"}';
     }
     echo $res;
     exit;
-}elseif( $action == 'findLabnumber' ){
-
-    $autonumber = sprintf("%s", $_GET['autonumber']);
-
-    $sql = "SELECT labnumber FROM `resulthead` WHERE `autonumber` = '$autonumber' ";
-    $db->select($sql);
-    if($db->get_rows() > 0){
-        $item_result = $db->get_item();
-        $res = '{"status":200, "labnumber": "'.$item_result['labnumber'].'", "message":"พบข้อมูล"}';
-    }else{
-        $res = '{"status":400, "message": "ไม่พบข้อมูล"}';
-    }
-    echo $res;
-    exit;
 }elseif( $action == 'saveLabnumber' ){
 
-    $autonumber = sprintf("%s", $_POST['autonumber']);
-    $labnumber = sprintf("%s", $_POST['labnumber']);
+    $oldLabnumber = sprintf("%s", $_POST['oldLabnumber']);
+    $newLabnumber = trim(sprintf("%s", $_POST['newLabnumber']));
 
-    $sqlUpdate = "UPDATE resulthead SET labnumber = '$labnumber' WHERE autonumber = '$autonumber' ";
+    $sqlUpdate = "UPDATE resulthead SET labnumber = '$newLabnumber' WHERE labnumber = '$oldLabnumber' ";
     $save = $db->update($sqlUpdate);
     if($save===true){
-        $res = '{"status":200, "autonumber": "'.$autonumber.'", "message":"บันทึกข้อมูลเรียบร้อย"}';
+        $res = '{"status":200, "labnumber": "'.$newLabnumber.'", "message":"บันทึกข้อมูลเรียบร้อย"}';
     }else{
         $res = '{"status":400, "message": " ไม่สามารถบันทึกข้อมูลได้"}';
     }
@@ -115,6 +44,17 @@ if ( $page === 'form' ) {
         echo "ไม่พบข้อมูล";
         exit;
     }
+
+    ?>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>แก้ไขข้อมูลแลป</title>
+    </head>
+    <body>
+    <?php
 
     $start_date = (!empty($_POST['start_date'])) ? sprintf("%s", $_POST['start_date']) : '' ;
     $end_date = (!empty($_POST['end_date'])) ? sprintf("%s", $_POST['end_date']) : date('Y-m-d') ;
@@ -133,12 +73,11 @@ if ( $page === 'form' ) {
     $db->select("SELECT SUBSTRING(`yearchk`, 3, 2) AS `yearchk` FROM `chk_company_list` WHERE `code` = '$user_part' ");
     $chk_company = $db->get_item();
 
-    $sql = "SELECT * 
+    $sql = "SELECT `labnumber`,`autonumber`,`orderdate`,`clinicalinfo`,GROUP_CONCAT(`profilecode`) `profilecode`
     FROM `resulthead` 
-    WHERE `hn` = '$user_hn'  
-    -- AND `clinicalinfo` LIKE '%ตรวจสุขภาพประจำปี%' 
-    $whereDateResultHead";
-    
+    WHERE `hn` = '$user_hn' 
+    $whereDateResultHead 
+    GROUP BY `labnumber`,`clinicalinfo`";
     $db->select($sql);
     $lab_rows = $db->get_rows();
     $items = $db->get_items();
@@ -278,16 +217,19 @@ if ( $page === 'form' ) {
                 <td><?=$item['autonumber'];?></td>
                 <td width="150"><?=$item['orderdate'];?></td>
                 <td>
-                    <a href="javascript:void(0);" onclick="editLabnumber('<?=$item['autonumber'];?>')"><?=$item['labnumber'];?></a>
+                    <a href="javascript:void(0);" onclick="editLabnumber('<?=$item['labnumber'];?>')"><?=$item['labnumber'];?></a>
                 </td>
-                <td><?=$item['profilecode'];?></td>
+                <td>
+                    <a href="chk_edit_lab_item.php?labnumber=<?=$item['labnumber'];?>" title="แก้ไขรายตัว" target="_blank"><?=$item['profilecode'];?></a>
+                </td>
                 <td>
                     <?php 
+                    $inputClinicalinfo = $item['clinicalinfo'];
                     if(empty($item['clinicalinfo'])){
                         $item['clinicalinfo'] = 'คลิกเพื่อแก้ไข';
                     }
                     ?>
-                    <a href="javascript:void(0);" title="แก้ไขสถานะ" onclick="showInput('<?=$item['autonumber'];?>')"><?=$item['clinicalinfo'];?></a>
+                    <a href="javascript:void(0);" title="แก้ไขสถานะ" onclick="showInput('<?=$item['labnumber'];?>','<?=$inputClinicalinfo;?>')"><?=$item['clinicalinfo'];?></a>
                 </td>
             </tr>
             <?php
@@ -295,11 +237,8 @@ if ( $page === 'form' ) {
             ?>
         </table>
         <script>
-            async function showInput(autonumber){ 
-
-                const response = await fetch('chk_lab.php?action=findCinicalinfo&autonumber='+autonumber);
-                const data = await response.json();
-                const inputValue = data.clinicalinfo;
+            async function showInput(labnumber,clinicalinfo){ 
+                const inputValue = clinicalinfo;
                 const { value: clinicalinfoInput } = await Swal.fire({
                     title: "ปรับสถานะแลป",
                     input: "text",
@@ -318,7 +257,7 @@ if ( $page === 'form' ) {
                     
                     let data = [];
                     data.push(encodeURIComponent('action')+"="+encodeURIComponent('saveCinicalinfo'));
-                    data.push(encodeURIComponent('autonumber')+"="+encodeURIComponent(autonumber));
+                    data.push(encodeURIComponent('labnumber')+"="+encodeURIComponent(labnumber));
                     data.push(encodeURIComponent('clinicalinfo')+"="+encodeURIComponent(clinicalinfoInput));
                     let dataPost = data.join("&");
                     
@@ -342,10 +281,8 @@ if ( $page === 'form' ) {
                 }
             }
 
-            async function editLabnumber(autonumber){
-                const response = await fetch('chk_lab.php?action=findLabnumber&autonumber='+autonumber);
-                const data = await response.json();
-                const inputValue = data.labnumber;
+            async function editLabnumber(labnumber){
+                const inputValue = labnumber;
                 const { value: labnumberInput } = await Swal.fire({
                     title: "แก้ไข Labnumber",
                     input: "text",
@@ -364,8 +301,8 @@ if ( $page === 'form' ) {
                     
                     let data = [];
                     data.push(encodeURIComponent('action')+"="+encodeURIComponent('saveLabnumber'));
-                    data.push(encodeURIComponent('autonumber')+"="+encodeURIComponent(autonumber));
-                    data.push(encodeURIComponent('labnumber')+"="+encodeURIComponent(labnumberInput));
+                    data.push(encodeURIComponent('oldLabnumber')+"="+encodeURIComponent(labnumber));
+                    data.push(encodeURIComponent('newLabnumber')+"="+encodeURIComponent(labnumberInput));
                     let dataPost = data.join("&");
                     
                     let response = await fetch('chk_lab.php', {
@@ -390,78 +327,8 @@ if ( $page === 'form' ) {
         </script>
         <?php
     }
-}elseif ( $page === 'editdetail' ) {
-
-    $number = input_get('number');
-    $id = input_get('id');
-
-    if ( empty($number) ) {
-        echo "ไม่พบข้อมูล";
-        exit;
-    }
-
-    $sql = "SELECT * FROM `resulthead` WHERE `autonumber` = '$number' ";
-    $db->select($sql);
-    $item = $db->get_item();
-
-    include 'chk_menu.php';
     ?>
-    <a href="chk_lab.php?page=form&id=<?=$id;?>" class="button">&lt;&lt;&nbsp;กลับไปหน้าปรับผล</a>
-    <br><br>
-    <form action="chk_lab.php" method="post">
-        <div>
-            สถานะแลป : <input type="text" name="info" id="" value="<?=$item['clinicalinfo'];?>">
-        </div>
-        <div style="color: red;">
-            คำแนะนำ : ให้เปลี่ยน keyword เช่น ตรวจสุขภาพประจำปี60 เป็น deleteตรวจสุขภาพประจำปี60
-        </div>
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-            <input type="hidden" name="number" value="<?=$number;?>">
-            <input type="hidden" name="action" value="save">
-            <input type="hidden" name="id" value="<?=$id;?>">
-            
-        </div>
-    </form>
+    </body>
+    </html>
     <?php
-}elseif ( $page === 'edit_result' ) {
-
-    $autonumber = input_get('autonumber');
-    $labcode = input_get('labcode');
-    $id = input_get('id');
-
-    $sql = "SELECT `result`,`normalrange` 
-    FROM `resultdetail` 
-    WHERE `autonumber` = '$autonumber' 
-    AND `labcode` = '$labcode' ";
-    $db->select($sql);
-    $item_result = $db->get_item();
-
-    include 'chk_menu.php';
-    ?>
-    <div>
-        <h3>แก้ไขผลแลป</h3>
-        <p>เลขที่ Autonumber : <?=$autonumber;?></p>
-        <p>Labcode : <?=$labcode;?></p>
-    </div>
-    <form action="chk_lab.php" method="post">
-        <div>
-            result: <input type="text" name="result" id="" value="<?=$item_result['result'];?>">
-        </div>
-        <div>
-            normalrange: <input type="text" name="normalrange" id="" value="<?=$item_result['normalrange'];?>">
-        </div>
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-            <input type="hidden" name="action" value="save_result">
-            <input type="hidden" name="autonumber" value="<?=$autonumber;?>">
-            <input type="hidden" name="labcode" value="<?=$labcode;?>">
-            <input type="hidden" name="id" value="<?=$id;?>">
-        </div>
-        <div>
-            <a href="javascript: window.history.back();">ย้อนกลับ</a>
-        </div>
-    </form>
-    <?php
-
 }
