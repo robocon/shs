@@ -55,6 +55,13 @@ function calcage($birth){
 	return $pAge;
 }
 
+$reprint_date = (!empty($_GET['reprint_date'])) ? $_GET['reprint_date'] : '' ;
+$newReprintDate = '';
+if(!empty($reprint_date)){
+	list($reY, $reM, $reD) = explode('-', $reprint_date);
+	$newReprintDate = "Reprint $reD/$reM/$reY";
+}
+
 $sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' order by row_id desc,thidate desc limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
 $num=mysql_num_rows($result_dt_hn);
@@ -963,5 +970,5 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 ?>
 </div>
 <div class="iBannerFix">
-<p align="center" >ผู้พิมพ์เอกสาร : <?php echo $_SESSION["sOfficer"];?><span style="margin-left:80px;">วัน/เดือน/ปี ที่พิมพ์ : <?=$printDate;?></span></p>
+<p align="center" >ผู้พิมพ์เอกสาร : <?php echo $_SESSION["sOfficer"];?><span style="margin-left:40px;">วัน/เดือน/ปี ที่พิมพ์ : <?=$printDate;?></span><span style="margin-left:10px;"><?=$newReprintDate;?></span></p>
 </div>
