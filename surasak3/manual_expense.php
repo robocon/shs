@@ -117,7 +117,7 @@ ORDER BY a.id ASC";
                                     $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <!-- <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
+                                    <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
                                     <?php
                                 // }
                                 ?>
@@ -132,7 +132,7 @@ ORDER BY a.id ASC";
                                     $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <!-- <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
+                                    <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
                                     <?php
                                 // }
                                 ?>

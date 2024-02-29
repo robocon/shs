@@ -39,10 +39,12 @@ if($action==='import'){
         }
 
         fclose($file);
-        
+        $msg = 'บันทึกข้อมูลเรียบร้อย';
+    }else{
+        $msg = 'Upload File Error '.$file['error'];
     }
 
-    redirect('manual_expense_insert.php', 'บันทึกข้อมูลเรียบร้อย');
+    redirect('manual_expense_insert.php', $msg);
     exit;
 }
 
