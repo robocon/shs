@@ -3121,31 +3121,22 @@ function rediv(xx){
       </tr>
 	  <?php
 		
-
 		//$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.trauma, a.type_wounded, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name From trauma as a, opcard as b where a.hn = b.hn Order by date_in DESC,  h_date desc ".$limit;
 		
-
 		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, a.date_in, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor From trauma as a ".$where."  Order by date_in DESC,  h_date desc ".$limit;
-
-
 		$result = Mysql_Query($sql) or die(Mysql_Error());
-
-$list_hn = array();
-
+		$list_hn = array();
 		while($arr = Mysql_fetch_assoc($result)){
 			array_push($list_hn,$arr["hn"]);
 		}
 
-	$sql = "Select hn, CONCAT(yot,' ',name,' ',surname) as full_name From opcard where hn in ('".implode("','",$list_hn)."') ";
-	//echo $sql;
-	$result2 = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result2)){
+		$sql = "Select hn, CONCAT(yot,' ',name,' ',surname) as full_name From opcard where hn in ('".implode("','",$list_hn)."') ";
+		$result2 = Mysql_Query($sql);
+		while($arr = Mysql_fetch_assoc($result2)){
+			$hn[$arr["hn"]] = $arr["full_name"];
+		}
 
-		$hn[$arr["hn"]] = $arr["full_name"];
-		//echo "==>".$hn[$arr["hn"]]."<br>";
-	}
-
-		mysql_data_seek  ( $result , 0);
+		mysql_data_seek( $result , 0);
 		$i=0;
 		while($arr = Mysql_fetch_assoc($result)){
 			if($i%2 == 0){
@@ -3154,12 +3145,13 @@ $list_hn = array();
 				$bgcolor = "#F8F9F9";
 			}
 			$i++;
-list($y,$m,$d)=explode("-",$arr["date_in"]);
-$chkdate=date("Y-m-d");
-$thdatehn="$d-$m-$y".$arr["hn"];
+			list($y,$m,$d)=explode("-",$arr["date_in"]);
+			$chkdate=date("Y-m-d");
+			$thdatehn="$d-$m-$y".$arr["hn"];
+
+			$newDateIn = "$d/$m/$y";
 			
 $sql1="select typecolor,chanel_status,queue_type from queue_er where register_date = '".$chkdate."' and hn='".$arr["hn"]."' order by id desc limit 1";
-//echo $sql1."<br>";
 $query1=mysql_query($sql1);
 $num=mysql_num_rows($query1);
 list($typecolor,$chanel_status,$queue_type)=mysql_fetch_array($query1);	
@@ -3181,7 +3173,7 @@ if($queue_type=="R"){
       <tr bgcolor="<?php echo $bgcolor;?>">
         <td align="center">
 		
-			<?php echo $arr["f_date"];?><BR>
+			<?php echo $newDateIn;?><BR>
 			<?php if($arr["next_ka"] == "1") echo "<FONT COLOR=\"#3300FF\">[ยกยอดเวร]</FONT>";?>
 			
 		</td>
