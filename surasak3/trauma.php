@@ -680,6 +680,11 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 
 		
 		if($result){
+			$chkdate=date("d-m-").(date("Y")+543);
+			$thdatehn = $chkdate.$hn;
+			$add="UPDATE opday SET clinic='เวชศาสตร์ฉุกเฉินและนิติเวช' WHERE thdatehn='$thdatehn'";
+			mysql_query($add) or die( mysql_error() );
+			//echo $add;
 			
 			echo "<CENTER><B>บันทึกข้อมูลเรียบร้อยแล้ว</B><BR><A HREF=\"#\" Onclick=\"window.location.href='trauma.php';\">&lt;&lt; กลับ</A></CENTER>";
 
@@ -2211,6 +2216,26 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			window.open('anchkstkeye.php?action=print&an='+an);
 		}
 	</script>
+
+	<script tyep="text/javascript">
+		function print_wristband_an_qrcode(event){
+			
+			if( event.preventDefault ){
+				event.preventDefault();
+			}else{
+				event.returnValue = false;
+			}
+			
+			var an = document.getElementById('an').value;
+			// var hn = document.getElementById('hn').value;
+			if( an === '' ){
+				alert('กรุณาใส่ AN');
+				return false;
+			}
+			
+			window.open('anchkstkeye_wristband.php?action=print&an='+an);
+		}
+	</script>
     
 	<script tyep="text/javascript">
 		function print_sticker_ipd(event){
@@ -2258,6 +2283,12 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
   <TD align="right">&nbsp;</TD>
   <TD colspan="7">
 	<div><button onClick="print_sticker_ipd_qrcode(event)">Stick ผป.นอก มี Qr Code</button></div><div style="margin-top:5px;"><button onClick="print_sticker_an_qrcode(event)">Stick ผป.ใน มี Qr Code</button>&nbsp;&nbsp;<button onClick="print_sticker_an(event)">Stick ผป.ใน</button></div>	
+  </TD>
+</TR>
+<TR>
+  <TD align="right">&nbsp;</TD>
+  <TD colspan="7">
+	<div><button onClick="print_wristband_an_qrcode(event)">Wristband ผป.ใน </button></div>	
   </TD>
 </TR>
 <TR>
