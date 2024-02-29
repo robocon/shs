@@ -3123,7 +3123,11 @@ function rediv(xx){
 		
 		//$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.trauma, a.type_wounded, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name From trauma as a, opcard as b where a.hn = b.hn Order by date_in DESC,  h_date desc ".$limit;
 		
-		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, a.date_in, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor From trauma as a ".$where."  Order by date_in DESC,  h_date desc ".$limit;
+		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, a.date_in, 
+		left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , 
+		a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor 
+		From trauma as a ".$where."  
+		Order by date DESC ".$limit;
 		$result = Mysql_Query($sql) or die(Mysql_Error());
 		$list_hn = array();
 		while($arr = Mysql_fetch_assoc($result)){
