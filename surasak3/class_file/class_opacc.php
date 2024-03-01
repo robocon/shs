@@ -16,13 +16,16 @@ class ClassOpacc extends ClassDepart{
      * 
      * @return array ตามโครงสร้างของ opacc
      */
-    public function getOpacc($date=null,$hn=null){
+    public function getOpacc($date=null,$hn=null,$depart=null){
         if ($date===null && $hn===null) {
             return "getOpacc required date and hn";
-            exit;
         }
 
-        $q = $this->dbi->query("SELECT * FROM opacc WHERE date LIKE '$date%' AND hn = '$hn' ");
+        if(!empty($depart)){
+            $whereDepart = "AND `depart` = '$depart' ";
+        }
+
+        $q = $this->dbi->query("SELECT * FROM opacc WHERE date LIKE '$date%' AND hn = '$hn' $whereDepart ");
         $items = array();
         if ($q->num_rows>0) {
             while ($a = $q->fetch_assoc()) {
@@ -30,7 +33,6 @@ class ClassOpacc extends ClassDepart{
             }
         }else{
             return false;
-            exit;
         }
 
         return $items;
@@ -70,7 +72,6 @@ class ClassOpacc extends ClassDepart{
             $save = $this->dbi->query($sql);
             if($save===false){
                 return $this->dbi->error;
-                exit;
             }else{
                 $opaccItems[] = $this->dbi->insert_id;
             }
