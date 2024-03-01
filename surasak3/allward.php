@@ -4,7 +4,7 @@
 		} else {die;}
 
 define('BASE_URL', 'https://192.168.129.143/testqrcode/');
-$sOfficer = urlencode(sprintf("%s", $_SESSION['sRowid']));
+$sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 		
 	//header("content-type: application/x-javascript; charset=UTF-8");
 ?>
@@ -54,7 +54,7 @@ $sortname="รพ.สนาม";
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="med_record.php?code=<?=$lbedcode;?>">Med Record</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=BASE_URL;?>show_dataipd.php?sOfficer=<?=$sOfficer;?>">QR ผู้ป่วยใน</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=BASE_URL;?>show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 <br />
 
