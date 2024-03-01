@@ -5,13 +5,17 @@ $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
 if(empty($_SESSION['sRowid'])){
-	$sOfficerId = sprintf("%s", urldecode($_GET['sOfficer']));
-	$sqlInputm = "SELECT DATEDIFF(NOW(), `last_login`) AS `diff`,`row_id`,`name`,`idname`,`menucode` FROM `inputm` WHERE `row_id` = '$sOfficerId' LIMIT 1 ";
+
+	// ตรวจว่า Login เกิน 24 ชั่วโมงแล้วรึยัง ถ้าเกินจะให้ไป login ใหม่
+	$sRowid = sprintf("%s", urldecode($_GET['sRowid']));
+	$sqlInputm = "SELECT DATEDIFF(NOW(), `last_login`) AS `diff`,`row_id`,`name`,`idname`,`menucode` FROM `inputm` WHERE `row_id` = '$sRowid' LIMIT 1 ";
 	$qInputm = $dbi->query($sqlInputm);
 	if($qInputm->num_rows > 0){
 		$inputm = $qInputm->fetch_assoc();
+
+		// ถ้าเวลาเกิน 1 วันให้ login ใหม่
 		if($inputm['diff'] > 0){
-			header('Location: login.php?id='.$sOfficerId);
+			header('Location: login.php?sRowid='.$sRowid);
 			exit;
 		}else{
 			$_SESSION['sRowid'] = $inputm['row_id'];
@@ -20,7 +24,7 @@ if(empty($_SESSION['sRowid'])){
 			$_SESSION['smenucode'] = $inputm['menucode'];
 		}
 	}else{
-		header('Location: login.php?id='.$sOfficerId);
+		header('Location: login.php?sRowid='.$sRowid);
 		exit;
 	}
 }else{
