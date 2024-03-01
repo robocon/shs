@@ -17,5 +17,8 @@ $test = false;
 if($opdayToday===false){
     $opday->setToborow('EX16 ตรวจสุขภาพ');
     $test = $opday->createOpday($hn);
+    dump($test);
+}else{
+    echo "<h1>มี VN แล้วจ้า</h1>";
+    dump($opdayToday);
 }
-dump($test);

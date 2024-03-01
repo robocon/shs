@@ -13,8 +13,10 @@ $dep = new ClassDepart();
 $result = new ClassResulthead();
 $opacc = new ClassOpacc();
 
-// $date = (date('Y')+543).date('-m-d');
-$date = '2566-09-13';
+$date = (date('Y')+543).date('-m-d');
+
+$startDate = '2567-03-01';
+$endDate = '2567-03-06';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,33 +24,24 @@ $date = '2566-09-13';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เทศบาลเมืองเขลางค์นคร</title>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <?php 
-    // $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
-    // c.`vn` 
-    // FROM (
-    //     SELECT trim(`hn`) AS `hn`, GROUP_CONCAT(`item_sso`),labnumber FROM `chk_lab_items` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' GROUP BY `hn`
-    // ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
-    // LEFT JOIN (
-    //     SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
-    // ) AS c ON a.`hn` = c.`hn`";
-
-$sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
-c.`vn` 
-FROM (
-    SELECT * FROM `manual_expense` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' 
-) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
-LEFT JOIN (
-    SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
-) AS c ON a.`hn` = c.`hn`
-GROUP BY a.hn
-ORDER BY a.id ASC";
-
-    // dump($sql);
+    $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
+    c.`vn` 
+    FROM (
+        SELECT * FROM `manual_expense` WHERE `part` = 'อบจลำปาง67' 
+    ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+    LEFT JOIN (
+        SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow 
+        FROM opday 
+        WHERE thidate >= '$startDate ' and thidate <= '$endDate' 
+    ) AS c ON a.`hn` = c.`hn`
+    GROUP BY a.hn
+    ORDER BY a.id ASC";
     $q = $dbi->query($sql);
-
+    require_once 'manual_expense_menu.php';
     ?>
     <div class="container">
         <h3>เทศบาลเมืองเขลางค์นคร</h3>
@@ -117,7 +110,7 @@ ORDER BY a.id ASC";
                                     $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
+                                    <!-- <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
                                     <?php
                                 // }
                                 ?>
@@ -132,7 +125,7 @@ ORDER BY a.id ASC";
                                     $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
                                     <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a>
+                                    <!-- <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
                                     <?php
                                 // }
                                 ?>
@@ -163,6 +156,6 @@ ORDER BY a.id ASC";
             
         </table>
     </div>
-    <script src="bootstrap/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

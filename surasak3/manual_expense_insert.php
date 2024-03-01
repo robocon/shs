@@ -29,22 +29,18 @@ if($action==='import'){
                     $sql = "INSERT INTO `manual_expense` (
                         `id`, `labnumber`, `hn`, `ptname`, `age`, `lab_items`, `part`
                     ) VALUES (
-                        NULL, '$labnumber', '$hn', '$newPtname', '', '$newLab', 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.'
+                        NULL, '$labnumber', '$hn', '$newPtname', '', '$newLab', 'อบจลำปาง67'
                     );";
-                    // dump($sql);
                     $save = $dbi->query($sql);
-                    // dump($save);
                 }
             }
         }
 
         fclose($file);
-        $msg = 'บันทึกข้อมูลเรียบร้อย';
-    }else{
-        $msg = 'Upload File Error '.$file['error'];
+        
     }
 
-    redirect('manual_expense_insert.php', $msg);
+    redirect('manual_expense.php', 'บันทึกข้อมูลเรียบร้อย');
     exit;
 }
 
@@ -54,13 +50,14 @@ if($action==='import'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>นำเข้าข้อมูล tmt</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    
+    <title>นำเข้าข้อมูล เทศบาลเมืองเขลางค์นคร</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<?php 
+require_once 'manual_expense_menu.php';
+?>
 <div class="container">
-    
     <div>
         <h3>นำเข้าข้อมูล ตรวจสุขภาพ แบบ text file</h3>
     </div>
@@ -74,7 +71,7 @@ if($action==='import'){
     ?>
     <form action="manual_expense_insert.php" method="post" enctype="multipart/form-data">
         <div class="mb-3">
-            <label for="formFileSm" class="form-label">เลือกไฟล์ .txt นำเข้าข้อมูล</label>
+            <label for="formFileSm" class="form-label">เลือกไฟล์ .csv นำเข้าข้อมูล</label>
             <input class="form-control form-control-sm" id="formFileSm" name="formFileSm" type="file">
         </div>
         <div class="mb-3">
@@ -82,9 +79,13 @@ if($action==='import'){
             <input type="hidden" name="action" value="import">
         </div>
     </form>
+    <div>
+        <p><b>ตัวอย่างการจัดข้อมูล</b></p>
+        <img src="images/sso-import-lab.PNG" alt="">
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
