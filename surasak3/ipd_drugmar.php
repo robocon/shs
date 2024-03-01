@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("connect.inc");
+// var_dump($_SESSION);
 
      $month_["01"] = "มกราคม";
     $month_["02"] = "กุมภาพันธ์";

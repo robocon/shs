@@ -1,6 +1,9 @@
 <?
 session_start();
 include("connect.inc");
+
+// var_dump($_SESSION);
+// exit;
 ?>
 <!DOCTYPE html>
 <html lang="en">
