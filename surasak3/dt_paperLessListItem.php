@@ -12,6 +12,7 @@ if(empty($hn)){
 $depart = sprintf("%s", $_POST['depart']);
 $year = sprintf("%s", $_POST['year']);
 $month = sprintf("%s", $_POST['month']);
+$doctor = sprintf("%s", ($_POST['doctor'] ? $_POST['doctor'] : '' ));
 
 $url = "http://192.168.131.240:8081/api/getopcard?opcard_id=$hn";
 
@@ -25,6 +26,10 @@ if(!empty($year) && empty($month)){
 
 if(!empty($year) && !empty($month)){
 	$url .= "&date=$year-$month";
+}
+
+if(!empty($doctor)){
+	$url .= "&doctor=$doctor";
 }
 
 $ch = curl_init(); 
@@ -59,7 +64,7 @@ $dbi->query("SET NAMES UTF8");
 		box-shadow: 5px 5px 5px #666666;
 	}
 	#thumbList{
-		padding-top: 9em;
+		padding-top: 12em;
 	}
 	#thumbList > .column{
 		margin-bottom: 8px;
@@ -122,6 +127,36 @@ document.onmouseup = mousehandler;
 				?>
 			</select>
 		</div>
+		<?php 
+		$sqlDoctor = "SELECT c.`row_id`,c.`name`  
+		FROM (
+			SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn'
+		) AS a LEFT JOIN `digital_opcard` AS b ON a.`row_id` = b.`opcard_id` 
+		LEFT JOIN `doctor` AS c ON c.`row_id` = b.`doctor` 
+		WHERE b.`opcard_id` IS NOT NULL 
+		AND c.`name` IS NOT NULL 
+		GROUP BY `name`";
+		$qDoctor = $dbi->query($sqlDoctor);
+		$doctorRows = $qDoctor->num_rows;
+		if($doctorRows>0){
+			?>
+			<div style="margin-bottom:4px; margin-top:5px;" align="center">
+				<label for="doctor"><b>แพทย์ : </b></label>
+				<select name="doctor" id="doctor">
+					<option value="">-- ทั้งหมด --</option>
+					<?php 
+					while ($d = $qDoctor->fetch_assoc()) { 
+						$selected = $d['row_id']===$doctor ? 'selected="selected"' : '' ;
+					?>
+					<option value="<?=$d['row_id'];?>" <?=$selected;?> ><?=$d['name'];?></option>
+					<?php 
+					}
+					?>
+				</select>
+			</div>
+			<?php
+		}
+		?>
 		<div style="margin-bottom:4px; margin-top:5px;" align="center">
 			<?php 
 			$y_start = date('Y');
