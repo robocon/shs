@@ -1,11 +1,23 @@
-<?php
+<?php 
 
-include 'bootstrap.php';
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_opcard.php';
+require_once dirname(__FILE__).'/class_file/class_orderhead.php';
+
+// require_once dirname(__FILE__).'/class_file/class_orderdetail.php';
+// phpinfo();
 $page = input('page');
-$action = sprintf("%s", $_REQUEST['action']);
+
 $db = Mysql::load();
 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
+$action = sprintf("%s", $_REQUEST['action']);
 if( $action == 'saveCinicalinfo' ){
 
     $labnumber = sprintf("%s", $_POST['labnumber']);
@@ -34,6 +46,41 @@ if( $action == 'saveCinicalinfo' ){
     }
     echo $res;
     exit;
+
+}elseif($action == 'saveLabnumberManual'){
+
+    $hn = sprintf("%s", $_POST['hn']);
+    $labnumber = sprintf("%s", $_POST['labnumber']);
+    $labcode = sprintf("%s", $_POST['labcode']);
+    $labcodeItem = explode(',', $labcode);
+    
+    $msg = 'ข้อมูลไม่ถูกต้อง';
+    if(!empty($labcode)){
+        $msg = 'บันทึกข้อมูลเรียบร้อย';
+    
+        $opc = new Opcard();
+        $user = $opc->getByHn($hn);
+        $sex = ($user=='ญ') ? 'f' : 'm' ;
+        $dob = bc_to_ad($user['dbirth']);
+
+        $oh = new Orderhead();
+        $data = array(
+            'hn' => $hn,
+            'patientname' => $user['ptname'],
+            'sex' => $sex,
+            'dob' => $dob,
+            'clinicalinfo' => 'ตรวจสุขภาพประจำปี67' 
+        );
+        $insertOrderhead = $oh->insertOrderhead($data);
+        if(!$insertOrderhead['error']){
+            $data['labnumber'] = $insertOrderhead['labnumber'];
+            $data['labitems'] = $labcodeItem;
+            $insertOrderdetail = $oh->insertOrderdetail($data);
+        }
+    }
+
+    redirect('chk_lab.php?page=form&id=44165',$msg);
+    exit;
 }
 
 
@@ -56,7 +103,7 @@ if ( $page === 'form' ) {
     <body>
     <?php
 
-    $start_date = (!empty($_POST['start_date'])) ? sprintf("%s", $_POST['start_date']) : '' ;
+    $start_date = (!empty($_POST['start_date'])) ? sprintf("%s", $_POST['start_date']) : date('Y-m-d') ;
     $end_date = (!empty($_POST['end_date'])) ? sprintf("%s", $_POST['end_date']) : date('Y-m-d') ;
 
     $whereDateResultHead = "AND orderdate >= '".date('Y-m-01')." 00:00:00'";
@@ -69,6 +116,10 @@ if ( $page === 'form' ) {
     $user = $db->get_item();
     $user_hn = $user['hn'];
     $user_part = $user['part'];
+    if(empty($user_hn)){
+        echo "ไม่พบข้อมูล HN กรุณาตรวจสอบข้อมูลอีกครั้ง";
+        exit;
+    }
 
     $db->select("SELECT SUBSTRING(`yearchk`, 3, 2) AS `yearchk` FROM `chk_company_list` WHERE `code` = '$user_part' ");
     $chk_company = $db->get_item();
@@ -88,39 +139,60 @@ if ( $page === 'form' ) {
 
     <link href="js/vanilla-calendar/vanilla-calendar.min.css" rel="stylesheet">
     <script src="js/vanilla-calendar/vanilla-calendar.min.js" defer></script>
-
-    <p><a href="chk_show_user.php?part=<?=$user['part'];?>" class="button">&lt;&lt;&nbsp;กลับไปหน้ารายชื่อ</a></p>
-    
     <script src="sweetalert/sweetalert2@11.js"></script>
+
+    <div>
+        <a href="chk_show_user.php?part=<?=$user['part'];?>" class="button">&lt;&lt;&nbsp;กลับไปหน้ารายชื่อ</a>
+        <a href="javascript:void(0);" class="button" onclick="showAddLabManual();">เพิ่ม Lab manual</a>
+    </div>
+
     <style>
         .labTable tr:hover{
             background-color:#c5c5c5!important;
         }
+        #containerAddLabManual{
+            position: absolute;
+            width: 80%;
+            height: 200px;
+            top : 5%;
+            left: 0;
+            right: 0;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 8px;
+            border: 4px solid #888888;
+        }
+        #contentAddLabManual{
+            position: relative;
+        }
     </style>
     <h3>แก้ไขข้อมูลแลป</h3>
-    <table>
-        <tr>
-            <td align="right"><b>HN : </b></td>
-            <td><?=$user['hn'];?></td>
-        </tr>
-        <tr>
-            <td align="right"><b>ชื่อ-สกุล : </b></td>
-            <td><?=$user['name'];?> <?=$user['surname'];?></td>
-        </tr>
-        <tr>
-            <td align="right"><b>บริษัท : </b></td>
-            <td><?=$user['part'];?></td>
-        </tr>
-    </table>
-    <br>
     <fieldset style="display:inline-block; margin-bottom:8px;">
-        <legend>ค้นหาตามวันที่</legend>
+        <legend>ข้อมูลเบื้องต้น</legend>
+        <table>
+            <tr>
+                <td align="right"><b>HN : </b></td>
+                <td><?=$user['hn'];?></td>
+            </tr>
+            <tr>
+                <td align="right"><b>ชื่อ-สกุล : </b></td>
+                <td><?=$user['name'];?> <?=$user['surname'];?></td>
+            </tr>
+            <tr>
+                <td align="right"><b>บริษัท : </b></td>
+                <td><?=$user['part'];?></td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset style="display:inline-block; margin-bottom:8px;">
+        <legend><b>ค้นหาตามวันที่</b></legend>
         <form action="chk_lab.php?page=form&id=<?=$id;?>" method="post">
             <table>
-                <tr>
+                <tr valign="top">
                     <td>
                         <label for="start_date">เริ่มวันที่
                             <input type="text" id="start_date" name="start_date" value="<?=$start_date;?>">
+                            <div style="background-color: #ffff90; padding: 0 8px;">ESC เพื่อยกเลิกการแสดงผลของปฏิทิน</div>
                         </label>
                         <div style="position:relative;">
                             <div style="position: absolute;">
@@ -148,12 +220,71 @@ if ( $page === 'form' ) {
             </table>
         </form>
     </fieldset>
+
+    <!-- style="display: none;" -->
+    <div id="containerAddLabManual" style="display: none;">
+        <div id="contentAddLabManual">
+            <h1>เพิ่ม Lab Manual</h1>
+            <form action="chk_lab.php" method="post">
+                <table>
+                    <tr valign="top">
+                        <td>รายการตรวจ : </td>
+                        <td>
+                            <input type="text" name="labcode" id="labcode"><br>
+                            <?php 
+                            $labItems = array('CBC','UA','ST อปท','C-ST','BS','CHOL','TRI','BUN','CR','SGOT','SGPT','ALK','URIC','HDL','LDL','CEA');
+                            foreach($labItems as $l){
+                                ?>
+                                <a href="javascript:void(0);" onclick="addLabItem('<?=$l;?>')" style="margin-right:4px;"><?=$l;?></a>
+                                <?php
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <button type="submit">บันทึก</button>
+                            <input type="hidden" name="action" value="saveLabnumberManual">
+                            <input type="hidden" name="hn" value="<?=$user_hn;?>">
+                            <!-- opcardchk->id -->
+                            <input type="hidden" name="id" value="<?=$id;?>">
+
+                            <div>
+                                <span style="background-color: #ffff90; padding: 0 8px;">ESC เพื่อปิดหน้าต่าง</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
     <script>
+
+    function showAddLabManual(){
+        document.getElementById('containerAddLabManual').style.display = '';
+    }
+
+    function updateLabnumber(v){
+        document.getElementById('labnumber').value = v;
+    }
+    function addLabItem(v){
+        let labcode = document.getElementById('labcode');
+        if(labcode.value==''){
+            labcode.value = v;
+        }else{
+            labcode.value += ','+v;
+        }
+        
+    }
+    
     document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener("keydown", (event) => {
             if (event.isComposing || event.keyCode === 27) {
                 document.getElementById('calendar_start').style.display = 'none';
                 document.getElementById('calendar_end').style.display = 'none';
+
+                document.getElementById('containerAddLabManual').style.display = 'none';
+                
             }
         });
 
