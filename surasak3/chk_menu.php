@@ -2,10 +2,14 @@
 if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบบอีกครั้ง</a>'; exit; }
 ?>
 <style type="text/css">
-    *{
-        font-family: "TH SarabunPSK";
-        font-size:20px;
-    }
+*{
+    font-family: "TH SarabunPSK";
+    font-size:20px;
+}
+h3{
+    font-size: 32px;
+    margin:8px 0;
+}
 .clearfix:after{
     content: ".";
     display: block;

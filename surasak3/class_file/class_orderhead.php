@@ -18,9 +18,18 @@ class Orderhead extends DbConnect
         parent::__construct();
     }
 
+    /**
+     * เพิ่มข้อมูลเข้า orderhead
+     * @param string $data['hn']            HN
+     * @param string $data['patientname']   ชื่อสกุล
+     * @param string $data['sex']           เพศ m, f
+     * @param string $data['dob']           วันเดือนปีเกิด แบบ ค.ศ.
+     * @param string $data['clinicalinfo']  รายละเอียดบ่งบอกว่ามีรายการแลปอะไรบ้าง หรือเป็น ตรวจสุขภาพประจำปี
+     * 
+     * @return string labnumber
+     */
     public function insertOrderhead($data){ 
 
-        // $this->labnumber = $data['labnumber'];
         $labnumber = $this->getLabnumber();
 
         $this->hn = $data['hn'];
@@ -40,21 +49,23 @@ class Orderhead extends DbConnect
         );";
         $q = $this->dbi->query($orderhead_sql);
         
-        if($q===false){
-            $res = array('error'=>true,'message'=>$this->dbi->error);
-        }else{
+        $res = array('error'=>true,'message'=>$this->dbi->error);
+        if($q===true){
             $res = array('labnumber'=>$labnumber);
         }
         
         return $res;
     }
 
+    /**
+     * เพิ่มข้อมูลเข้า orderdetail
+     */
     public function insertOrderdetail($data){
         
         $labnumber = $data['labnumber'];
         $res = true;
         foreach ($data['labitems'] as $labItem) {
-            $labinfo = $this->getLabinfo($labItem);
+            $labinfo = $this->getLabcare($labItem);
             $code = $labinfo['code'];
             $oldcode = $labinfo['oldcode'];
             $detail = $labinfo['detail'];
@@ -70,15 +81,14 @@ class Orderhead extends DbConnect
             }else{
                 $res = array('labnumber'=>$labnumber);
             }
-            // else{
-            //     $res[] = $this->dbi->insert_id;
-            // }
-
         }
         return $res;
-
     }
 
+    /**
+     * สร้าง Labnumber
+     * @return string labnumber ฟอแมต ymd+runno title=lab
+     */
     public function getLabnumber(){
 
         $q_runno = $this->dbi->query("SELECT `runno`, SUBSTRING(`startday`,1,10) AS `startday` FROM `runno` WHERE `title` = 'lab'");
@@ -95,16 +105,48 @@ class Orderhead extends DbConnect
         return $labnumber;
     }
 
-    public function getLabinfo($code=''){
+    /**
+     * ค้นหา labcare แบบตัวเดียว
+     * @param string $code 
+     */
+    public function getLabcare($code=''){
         $labcode = sprintf("%s", $code);
-        $sqlLabcare = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '$labcode' ";
-        $q = $this->dbi->query($sqlLabcare);
+        $sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '$labcode' ";
+        $q = $this->dbi->query($sql);
         if($q->num_rows>0){
             $res = $q->fetch_assoc();
         }else{
-            $res = "Not found : ".$this->dbi->error;
+            $res = array('error'=>true,'message'=>$this->dbi->error);
         }
         return $res;
     }
-    
+
+    /**
+     * ค้นหาข้อมุลจาก labcare แบบ LIKE
+     * @param string $code      ฟิลด์ code 
+     * @param string $depart    ค่า default เป็น PATHO
+     */
+    public $depart = 'PATHO';
+    public $part = 'LAB';
+    public function getLabcares($code){
+        $labcode = sprintf("%s", $code);
+        $depart = $this->depart;
+        $part = $this->part;
+        $sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` 
+        FROM `labcare` 
+        WHERE ( `depart` = '$depart' AND `part` = '$part' )
+        AND (`code` LIKE '%$labcode%' OR `codelab` LIKE '%$labcode%' )
+        AND `labstatus` = 'Y'  ";
+        $q = $this->dbi->query($sql);
+        if($q->num_rows>0){
+            $items = array();
+            while($a = $q->fetch_assoc()){
+                $items[] = $a;
+            }
+            $res = array('data'=>$items,'count'=>count($items));
+        }else{
+            $res = array('error'=>true,'message'=>$this->dbi->error);
+        }
+        return $res;
+    }
 }

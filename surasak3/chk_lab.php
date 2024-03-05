@@ -8,6 +8,9 @@ require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/class_file/class_opcard.php';
 require_once dirname(__FILE__).'/class_file/class_orderhead.php';
 
+
+require_once dirname(__FILE__).'/includes/JSON.php';
+
 // require_once dirname(__FILE__).'/class_file/class_orderdetail.php';
 // phpinfo();
 $page = input('page');
@@ -81,6 +84,25 @@ if( $action == 'saveCinicalinfo' ){
 
     redirect('chk_lab.php?page=form&id=44165',$msg);
     exit;
+}elseif($action==='findLabcare'){
+
+    $json = new Services_JSON();
+    $code = sprintf("%s", $_GET['code']);
+    $oh = new Orderhead();
+    $res = $oh->getLabcares($code, true);
+    if($res['error']===true){
+        $res = '{"status":400, "message": "ไม่พบข้อมูล"}';
+    }else{
+
+        $data = array();
+        foreach ($res['data'] as $key => $value) {
+            $data[] = $value;
+        }
+        $res = $json->encode(array('count'=>count($data), 'data'=>$data));
+        
+    }
+    echo $res;
+    exit;
 }
 
 
@@ -143,7 +165,7 @@ if ( $page === 'form' ) {
 
     <div>
         <a href="chk_show_user.php?part=<?=$user['part'];?>" class="button">&lt;&lt;&nbsp;กลับไปหน้ารายชื่อ</a>
-        <a href="javascript:void(0);" class="button" onclick="showAddLabManual();">เพิ่ม Lab manual</a>
+        <a href="javascript:void(0);" class="button" onclick="document.getElementById('containerAddLabManual').style.display = '';">เพิ่ม Lab manual</a>
     </div>
 
     <style>
@@ -153,7 +175,7 @@ if ( $page === 'form' ) {
         #containerAddLabManual{
             position: absolute;
             width: 80%;
-            height: 200px;
+            height: auto;
             top : 5%;
             left: 0;
             right: 0;
@@ -165,9 +187,18 @@ if ( $page === 'form' ) {
         #contentAddLabManual{
             position: relative;
         }
+        #htmlLabSearch{
+            margin-top:8px;
+        }
+        #htmlLabSearch a {
+            text-decoration: none;
+        }
+        #htmlLabSearch a:hover {
+            text-decoration: underline;
+        }
     </style>
     <h3>แก้ไขข้อมูลแลป</h3>
-    <fieldset style="display:inline-block; margin-bottom:8px;">
+    <fieldset style="margin-bottom:8px; width:40%;" class="clearfix">
         <legend>ข้อมูลเบื้องต้น</legend>
         <table>
             <tr>
@@ -184,7 +215,7 @@ if ( $page === 'form' ) {
             </tr>
         </table>
     </fieldset>
-    <fieldset style="display:inline-block; margin-bottom:8px;">
+    <fieldset style="width:50%; margin-bottom:8px;">
         <legend><b>ค้นหาตามวันที่</b></legend>
         <form action="chk_lab.php?page=form&id=<?=$id;?>" method="post">
             <table>
@@ -192,7 +223,6 @@ if ( $page === 'form' ) {
                     <td>
                         <label for="start_date">เริ่มวันที่
                             <input type="text" id="start_date" name="start_date" value="<?=$start_date;?>">
-                            <div style="background-color: #ffff90; padding: 0 8px;">ESC เพื่อยกเลิกการแสดงผลของปฏิทิน</div>
                         </label>
                         <div style="position:relative;">
                             <div style="position: absolute;">
@@ -211,8 +241,13 @@ if ( $page === 'form' ) {
                         </div>
                     </td>
                 </tr>
-                <tr colspan="2">
-                    <td>
+                <tr>
+                    <td colspan="2">
+                        <div style="background-color: #ffff90; padding: 0 8px;">ESC เพื่อยกเลิกการแสดงผลของปฏิทิน</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
                         <button type="submit">ค้นหา</button>
                         <input type="hidden" name="action" value="searchByDate">
                     </td>
@@ -221,7 +256,6 @@ if ( $page === 'form' ) {
         </form>
     </fieldset>
 
-    <!-- style="display: none;" -->
     <div id="containerAddLabManual" style="display: none;">
         <div id="contentAddLabManual">
             <h1>เพิ่ม Lab Manual</h1>
@@ -241,7 +275,14 @@ if ( $page === 'form' ) {
                             ?>
                         </td>
                     </tr>
-                    <tr>
+                    <tr valign="top">
+                        <td>ค้นหารายการ : </td>
+                        <td>
+                            <input type="text" name="search" id="search" onkeyup="inputSearchLab(this.value.trim())">
+                            <div id="htmlLabSearch"></div>
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <td colspan="2">
                             <button type="submit">บันทึก</button>
                             <input type="hidden" name="action" value="saveLabnumberManual">
@@ -259,6 +300,60 @@ if ( $page === 'form' ) {
         </div>
     </div>
     <script>
+
+    function inputSearchLab(v){
+        
+        if(v.length>=2){
+            searchLab(v).then((res)=>{
+                if(res.count > 0){
+
+                    document.getElementById('htmlLabSearch').innerHTML = '';
+                    let div1 = document.createElement("div");
+
+                    for (let index = 0; index < res.count; index++) {
+                        const element = res.data[index];
+                       
+                        let div2 = document.createElement("div");
+                        
+                        let a = document.createElement("a");
+                        a.href = 'javascript:void(0)';
+                        a.setAttribute("onclick", "htmlLabSearchSelected('"+element.code+"')");
+                        a.text = element.code+' [ '+element.detail+' ]';
+                        a.title = element.detail;
+
+                        div2.append(a);
+
+                        div1.append(div2);
+                    }
+                    document.getElementById('htmlLabSearch').append(div1);
+                }else{
+                    document.getElementById('htmlLabSearch').innerHTML = res.message;
+                }
+                document.getElementById('htmlLabSearch').style.display = '';
+            });
+        }else{
+            document.getElementById('htmlLabSearch').style.display = 'none';
+        }
+        
+    }
+
+    function htmlLabSearchSelected(v){
+        let labcodeLength = document.getElementById('labcode').value.length;
+        if(labcodeLength>0){
+            document.getElementById('labcode').value+=','+v;
+        }else{
+            document.getElementById('labcode').value=v;
+        }
+        
+        document.getElementById('search').value='';
+        document.getElementById('htmlLabSearch').style.display = 'none';
+    }
+
+    async function searchLab(v){
+        const response = await fetch('chk_lab.php?action=findLabcare&code='+v);
+        const data = await response.json();
+        return data;
+    }
 
     function showAddLabManual(){
         document.getElementById('containerAddLabManual').style.display = '';

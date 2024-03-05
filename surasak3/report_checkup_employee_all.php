@@ -29,7 +29,8 @@ $opcard = new Opcard();
         OR thidate LIKE '2567-01-30%' 
         OR thidate LIKE '2567-01-31%' 
         OR thidate LIKE '2567-02-01%' 
-        OR thidate LIKE '2567-02-02%' )
+        OR thidate LIKE '2567-02-02%' 
+        OR thidate LIKE '2567-02-22%' )
     ) AS a RIGHT JOIN lab67 AS b ON a.hn = b.hn
     ORDER BY a.row_id ASC";
     $q = $dbi->query($sql);
@@ -78,6 +79,7 @@ $opcard = new Opcard();
                     $sqlLab = "SELECT row_id,depart 
                     FROM depart 
                     WHERE ( date>='2567-01-29 00:00:00' AND date<='2567-02-02 23:59:59' ) 
+                    AND date LIKE '2567-02-22%' 
                     AND hn='$hn' 
                     AND (depart = 'PATHO' OR depart = 'XRAY') 
                     AND detail='ตรวจสุขภาพประกันสังคม' ";

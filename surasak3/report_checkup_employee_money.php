@@ -40,7 +40,8 @@ $opcard = new Opcard();
         OR thidate LIKE '2567-01-30%' 
         OR thidate LIKE '2567-01-31%' 
         OR thidate LIKE '2567-02-01%' 
-        OR thidate LIKE '2567-02-02%' )
+        OR thidate LIKE '2567-02-02%' 
+        OR thidate LIKE '2567-02-22%')
     ) AS a RIGHT JOIN lab67full AS b ON a.hn = b.hn
     ORDER BY b.depart ASC";
     $q = $dbi->query($sql);
@@ -61,7 +62,7 @@ $opcard = new Opcard();
                     <th>อายุ</th>
                     <th>VN</th>
                     <th>สิทธิ</th>
-                    <!-- <th></th> -->
+                    <th>รายการตรวจ<br>ตามสิทธิ ปกส.</th>
                     <th class="text-center">LAB+X-Ray<br>ปกส</th>
                     <th class="text-center">LAB<br>โรงบาลฯ</th>
                     <th class="text-center">X-Ray<br>โรงบาลฯ</th>
@@ -88,6 +89,8 @@ $opcard = new Opcard();
                     $thidate = '<span class="text-danger">ยังไม่ได้รับการตรวจ<span>';
                 }
                 
+                $ssoPrice = 0;
+
                 $labPrice = $xrayPrice = 0;
                 
                 $patItems = array();
@@ -96,6 +99,10 @@ $opcard = new Opcard();
                 $qLabRows = $qLab->num_rows;
                 if($qLabRows>0){
                     while ($p = $qLab->fetch_assoc()) {
+
+                        
+
+
                         if($p['depart']==='PATHO'){
                             $labPrice = $p['price'];
                             $sum_money_hos += $labPrice;
@@ -108,13 +115,16 @@ $opcard = new Opcard();
                             // }
 
                             $sso_items = explode(',',$a['lab']);
-                            $ssoPrice = 0;
+                            
                             $ssoDetail = array();
                             foreach ($sso_items as $sso) {
                                 $qLabcare = $dbi->query("SELECT price FROM labcare WHERE code = '$sso' ");
                                 $lc = $qLabcare->fetch_assoc();
                                 $ssoPrice += $lc['price'];
-                                $ssoDetail[] = $sso.'('.$lc['price'].')';
+                                if($lc['price']>0){
+                                    $ssoDetail[] = $sso.'('.$lc['price'].')';
+                                }
+                                
                             }
 
                             $sum_money_sso += $ssoPrice;
@@ -157,7 +167,7 @@ $opcard = new Opcard();
                     <td><?=$a['age'];?></td>
                     <td><?=$a['vn'];?></td>
                     <td><?=$a['ptright'];?></td>
-                    <!-- <td><?=implode(',', $ssoDetail);?></td> -->
+                    <td><?=implode(',', $ssoDetail);?></td>
                     <td class="text-end">
                         <div class="<?=$lastRows;?>">
                         <?php 
