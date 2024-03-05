@@ -2133,7 +2133,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<script type="text/javascript">
 		function hn_blur(input_hn){ 
-			console.log(input_hn);
+			// console.log(input_hn);
 			if( input_hn === '' ){
 				return false;
 			}
@@ -2144,20 +2144,20 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			xmlhttp.open("GET", url, true);
 			
 			xmlhttp.onreadystatechange = function () {
-			if (xmlhttp.readyState === 4) {
-				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-					// Success!
-					txt = xmlhttp.responseText.replace(/^\s+|\s+$/gm,'');;
-			var res = JSON.parse(txt);
-			if( res.status  === 200 ){
-				document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
-				document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
-			}
-					
-				} else {
-					// Error :(
+				if (xmlhttp.readyState === 4) {
+					if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+						// Success!
+						txt = xmlhttp.responseText.replace(/^\s+|\s+$/gm,'');;
+				var res = JSON.parse(txt);
+				if( res.status  === 200 ){
+					document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
+					document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
 				}
-			}
+						
+					} else {
+						// Error :(
+					}
+				}
 			};
 
 			xmlhttp.send(null);
