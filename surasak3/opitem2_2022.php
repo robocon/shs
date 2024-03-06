@@ -605,7 +605,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false && document.f2.credit[30].checked == false && document.f2.credit[31].checked == false && document.f2.credit[32].checked == false && document.f2.credit[33].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false && document.f2.credit[30].checked == false && document.f2.credit[31].checked == false && document.f2.credit[32].checked == false && document.f2.credit[33].checked == false && document.f2.credit[34].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[2].checked == true || document.f2.credit[4].checked == true) && document.f2.detail_1.value == ''){
@@ -841,8 +841,8 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 			<TD align='right'>
 				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กฟผ' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>กฟผ.</TD>			
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>					
+			<TD>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการตา 72 พรรษา' onclick=\"detailhead4.style.display='none';\"></TD>
+			<TD>โครงการตา 72 พรรษา</TD>					
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>		
 			<TD>&nbsp;</TD>
