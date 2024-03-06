@@ -88,7 +88,7 @@ if($switchData==="API"){
 		$actual_date = " WHERE `actual_date` LIKE '$year-$month%'";
 
 	}else{
-		$actual_date = " WHERE `actual_date` LIKE '".date('Y')."%'";
+		$actual_date = " WHERE 1 ";
 	}
 
 	$whereDoctor = "";
