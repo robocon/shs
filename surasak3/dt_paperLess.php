@@ -111,6 +111,6 @@ document.onmouseup = mousehandler;
 	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><strong style="color:red;"><?php echo $drugreact_disease;?></strong></span>
 	</div>
 <frameset cols="20%,80%">
-<iframe name="left" src="dt_paperLessListItem.php?hn=<?=$hn;?>" scrolling="auto" style="width: 19%;height: 80%;"></iframe>
+<iframe name="left" src="dt_paperLessListItem.php?hn=<?=$hn;?>" style="width: 19%;height: 80%; overflow-x: hidden;"></iframe>
 <iframe name="right" src="opdcard_font.php?hn=<?=$hn;?>" scrolling="auto" style="width: 79%; height: 80%;"></iframe>
 </frameset>
