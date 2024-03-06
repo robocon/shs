@@ -106,12 +106,7 @@ body,td,th {
         ?>      </td>
       <td width="62" align="right"><font face="TH SarabunPSK">สิทธิ :</font></td>
       <td width="148"><select name="credit" id="credit" class="font1">
-        <option value="000">----ทั้งหมด----</option>
-        <option value="OFC">จ่ายตรง</option>
-        <option value="SSS">ประกันสังคม</option>
-        <option value="LGO">อปท</option>
-        <option value="UCS" >UCS</option>
-		<option value="BKK" >จ่ายตรง กทม.</option>
+         <option value="UCS" selected >UCS</option>
       </select>      </td>
       <td width="95"><input name="BOK" value=" ส่งออกข้อมูล " type="submit" class="font1" /></td>
     </tr>
@@ -176,8 +171,6 @@ if($_POST['credit']=="OFC"){
 	$newcredit = "จ่ายตรง อปท.";
 }else if($_POST['credit']=="UCS"){
 	$newcredit = "30บาท";
-}else if($_POST['credit']=="BKK"){
-	$newcredit = "กทม";
 }
 
 
@@ -254,8 +247,12 @@ if($_POST['credit']	=="000"){
 			$newvn=$vn1;
 		}
 		
-		$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
-
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}
 				
 		
 		
@@ -266,17 +263,9 @@ if($_POST['credit']	=="000"){
 			if($codeptright =="R01" || $codeptright =="R04" || $codeptright =="R06" || $codeptright =="R09" || $codeptright =="R10" || $codeptright =="R11" || $codeptright =="R12" || $codeptright =="R36" || $codeptright =="R44"){
 				$newptright ="UCS";
 			}else if($codeptright =="R02"){  // จ่ายตรง
-				if($_POST['credit']=="BKK"){
-					$newptright ="BKK";
-				}else{	
-					$newptright ="OFC";
-				}
+				$newptright ="OFC";
 			}else if($codeptright =="R03"){  // จ่ายตรง
-				if($_POST['credit']=="BKK"){
-					$newptright ="BKK";
-				}else{	
-					$newptright ="OFC";
-				}
+				$newptright ="OFC";
 			}else if($codeptright =="R07"){
 				$newptright ="SSS";
 			}else if($codeptright =="R33"){  // จ่ายตรง อปท.
@@ -285,8 +274,6 @@ if($_POST['credit']	=="000"){
 				$newptright ="LGO";	
 			}else if($codeptright =="R27"){
 				$newptright ="SSI";
-			}else if($codeptright=="R53"){
-				$newptright ="BKK";
 			}else{
 				$newptright ="";
 			}			
@@ -298,17 +285,9 @@ if($_POST['credit']	=="000"){
 				if($codeptright =="R01" || $codeptright =="R04" || $codeptright =="R06" || $codeptright =="R09" || $codeptright =="R10" || $codeptright =="R11" || $codeptright =="R12" || $codeptright =="R36" || $codeptright =="R44"){
 					$newptright ="UCS";
 				}else if($codeptright =="R02"){  // จ่ายตรง
-					if($_POST['credit']=="BKK"){
-						$newptright ="BKK";
-					}else{	
-						$newptright ="OFC";
-					}
+					$newptright ="OFC";
 				}else if($codeptright =="R03"){  // จ่ายตรง
-					if($_POST['credit']=="BKK"){
-						$newptright ="BKK";
-					}else{	
-						$newptright ="OFC";
-					}
+					$newptright ="OFC";
 				}else if($codeptright =="R07"){
 					$newptright ="SSS";
 				}else if($codeptright =="R33"){  // จ่ายตรง อปท.
@@ -317,8 +296,6 @@ if($_POST['credit']	=="000"){
 					$newptright ="LGO";	
 				}else if($codeptright =="R27"){
 					$newptright ="SSI";
-				}else if($codeptright=="R53"){
-					$newptright ="BKK";				
 				}else{
 					$newptright ="UCS";
 				}
@@ -646,7 +623,14 @@ if($_POST['credit']	=="000"){
 		}else if($lenvn=="3"){
 			$newvn=$vn3;
 		}
-		$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		
+		
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}
 
 		$ucc3="1";  //  UCC ใช้ตัวแปรนี้นำเข้าข้อมูล
 
@@ -808,7 +792,14 @@ $dbname5 = "ODX".$yy.$mm.".dbf";
 			}else if($lenvn=="3"){
 				$newvn=$vn;
 			}
-			$newseq=$newdatedx.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล	
+			
+			
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}
 			
 			//DRDX
 
@@ -914,7 +905,14 @@ $dbname6 = "OOP".$yy.$mm.".dbf";
 			}else if($lenvn=="3"){
 				$newvn=$vn;
 			}
-			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล	
+			
+			
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}
 			
 				
 		$db6 = dbase_open($dbname6, 2);
@@ -1117,7 +1115,14 @@ $dbname11 = "CHT".$yy.$mm.".dbf";
 			}else if($lenvn=="3"){
 				$newvn=$vn;
 			}
-			$newseq=$newdatecht.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล	
+			
+			
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}	
 			
 			$paid11="0";
 			//$pttype11="10";
@@ -1212,7 +1217,9 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 			
 			
 			
-		}elseif($chrgitem=="PHAR"){
+		}
+			
+			elseif($chrgitem=="PHAR"){
 				
 				$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='PHAR' and  hn='$hnopacc' and an=' '";
 		$result123 = mysql_query($sql123) or die("Query failed123");
@@ -1266,8 +1273,9 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 				$chrgitem12 ="81";
 				
 				
-			}elseif( $chrgitem=="HEMO"){				
-				$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='HEMO' and  hn='$hnopacc' and an=' '";
+			}elseif( $chrgitem=="HEMO"){
+				
+					$sql123 ="select sum(paidcscd) from  opacc  where credit like '$newcredit%' and date like '".$_POST['year']."-".$_POST['mon']."-".$_POST['day']."%'  and depart='HEMO' and  hn='$hnopacc' and an=' '";
 		$result123 = mysql_query($sql123) or die("Query failed123");
 		list($amountopacc) = Mysql_fetch_row($result123);
 			//	$amountopacc=$rows12["paidcscd"];
@@ -1376,7 +1384,14 @@ $dbname12 = "CHA".$yy.$mm.".dbf";
 					}else if($lenvn=="3"){
 						$newvn=$vn;
 					}
-					$newseq=$newdatecha.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล		
+					
+					
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}		
 			
 					$db12 = dbase_open($dbname12, 2);
 						if ($db12) {
@@ -1492,7 +1507,14 @@ $dbname14 = "ADP".$yy.$mm.".dbf";
 			
 			$newvn=sprintf("%03d",$rowsop["vn"]);
 			$newdate="$yy14$mm14$dd14";
-			$newseq=$newdate.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล					
+			
+			
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}				
 			
 
 			
@@ -1816,7 +1838,13 @@ $dbname16 = "DRU".$yy.$mm.".dbf";
 			}else if($lenvn=="3"){
 				$newvn=$vn;
 			}
-			$newseq=$newdateserv.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล		
+			
+		if($_POST['credit']=="UCS"){
+			$newrowid=$newrowid+1;
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}else{
+			$newseq=$newdateopd.$newvn.$newrowid;  //  SEQ ใช้ตัวแปรนี้นำเข้าข้อมูล
+		}	
 			
 									
 			$newreason='';
