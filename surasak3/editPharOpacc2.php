@@ -30,11 +30,12 @@ if($_REQUEST['hn']){
     if($qOP->num_rows>0)
     {
         ?>
-        <table>
+        <table width="100%">
             <tr>
                 <th>row_id</th>
                 <th>date</th>
                 <th>hn</th>
+                <th>vn</th>
                 <th>credit</th>
                 <th>price</th>
                 <th>essd</th>
@@ -53,6 +54,7 @@ if($_REQUEST['hn']){
                 <td><a href="editPharOpacc3.php?txdate=<?=$a['txdate'];?>&hn=<?=$a['hn'];?>" target="phardep"><?=$a['row_id'];?></a></td>
                 <td><?=$a['date'];?></td>
                 <td><?=$a['hn'];?></td>
+                <td><?=$a['vn'];?></td>
                 <td><?=$a['credit'];?></td>
                 <td><?=$a['price'];?></td>
                 <td><?=$a['essd'];?></td>

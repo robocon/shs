@@ -32,6 +32,7 @@ if($type === 'dphardep')
                     <th>date</th>
                     <th>ptname</th>
                     <th>hn</th>
+                    <th>ptright</th>
                     <th>price</th>
                     <th></th>
                 </tr>
@@ -45,6 +46,7 @@ if($type === 'dphardep')
                         <td><?=$a['date'];?></td>
                         <td><?=$a['ptname'];?></td>
                         <td><?=$a['hn'];?></td>
+                        <td><?=$a['ptright'];?></td>
                         <td><?=$a['price'];?></td>
                         <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=dphardep" target="editPage">แก้ไข</a><td>
                     </tr>

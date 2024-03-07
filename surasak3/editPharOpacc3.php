@@ -43,6 +43,7 @@ if($q->num_rows===0)
                 <th>date</th>
                 <th>ptname</th>
                 <th>hn</th>
+                <th>ptright</th>
                 <th>price</th>
                 <th></th>
             </tr>
@@ -56,6 +57,7 @@ if($q->num_rows===0)
                     <td><?=$a['date'];?></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['hn'];?></td>
+                    <td><?=$a['ptright'];?></td>
                     <td><?=$a['price'];?></td>
                     <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=phardep" target="editPage">แก้ไข</a><td>
                 </tr>
@@ -79,6 +81,7 @@ if($q->num_rows===0)
                 <th>date</th>
                 <th>hn</th>
                 <th>drugcode</th>
+                <th>tradname</th>
                 <th>amount</th>
                 <th>price</th>
                 <th></th>
@@ -91,6 +94,7 @@ if($q->num_rows===0)
                     <td><?=$a['date'];?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['drugcode'];?></td>
+                    <td><?=$a['tradname'];?></td>
                     <td><?=$a['amount'];?></td>
                     <td><?=$a['price'];?></td>
                     <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=drugrx" target="editPage">แก้ไข</a><td>
