@@ -1,18 +1,56 @@
-<?
+<?php
 session_start();
-include("connect.inc");
+include("connect.php");
+
+/**
+ * Rule of this page
+ * [] Level is admin 
+ */
+$getMenucode = sprintf("%s", $_GET['menucode']);
+if(empty($getMenucode)){
+	echo "Invalid data";
+	exit;
+}
+$sessionMenucode = sprintf("%s", $_SESSION['smenucode']);
+if($sessionMenucode != $getMenucode){
+	echo "ไม่สามารถแก้ไขข้ามแผนกได้ กรุณาติดต่อโปรแกรมเมอร์ .... ไหว้ละจ้าาาาา ";
+	exit;
+}
+
+if($_SESSION['sLevel']!=='admin' && $_SESSION['smenucode'] !== 'ADM'){
+	echo "กรุณาติดต่อผู้ใช้งานระดับ Admin ประจำแผนกของท่าน<br>";
+	$sql = "SELECT `name` FROM `inputm` WHERE `menucode` = '".$_SESSION['smenucode']."' AND `level` = 'admin' ";
+	$q = mysql_query($sql);
+	while ($a = mysql_fetch_assoc($q)) {
+		echo '- '.$a['name'].'<br>';
+	}
+	echo '<br><a href="../sm3.php">&lt;&lt;&nbsp;กลับไปหน้า Login</a>';
+	exit;
+}
+
 if ($_GET["act"] == "del") {
 	$del = "update inputm set status='N' where row_id='" . $_GET["id"] . "'";
 	if (mysql_query($del)) {
-		echo "<script>alert('ลบข้อมูลเรียบร้อยแล้ว');window.location='showuser.php?menucode=$_GET[menucode]';</script>";
+		echo "<script>alert('ปิดการใช้งานเรียบร้อยแล้ว');window.location='showuser.php?menucode=".$_GET['menucode']."';</script>";
+		exit;
 	} else {
-		echo "<script>alert('!!! ผิดพลาดไม่สามารถลบข้อมูลได้');window.location='showuser.php?menucode=$_GET[menucode]';</script>";
+		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=".$_GET['menucode']."';</script>";
+		exit;
 	}
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>จัดการข้อมูลผู้ใช้งานระบบ</title>
+	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+</head>
+<body>
 <style type="text/css">
 	body,td,th {
-		font-family: TH SarabunPSK;
+		font-family: "TH SarabunPSK";
 		font-size: 20px;
 	}
 	th{
@@ -29,6 +67,13 @@ if ($_GET["act"] == "del") {
     .addUserButton:hover{
         background-color: #01746a;
     }
+	.disableUser, .disableUser a{
+		background-color: #dc3545;
+		color: #ffffff;
+	}
+	.disableUser:hover, .disableUser:hover a{
+		background-color: #b02a37;
+	}
 </style>
 <div align="center">
 	<p><strong>จัดการข้อมูลผู้ใช้งานระบบ</strong></p>
@@ -36,17 +81,16 @@ if ($_GET["act"] == "del") {
         <a href="adduser.php?menucode=<?= $_GET["menucode"] ?>" class="addUserButton">เพิ่มผู้ใช้ในแผนก</a>
     </div>
     <div>&nbsp;</div>
-	<table width="80%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000"
-		style="border-collapse:collapse;">
-		<tr>
-			<th width="12%" align="center" bgcolor="#66CC99"><b>ลำดับ</b></th>
-			<th width="40%" align="center" bgcolor="#66CC99"><b>ชื่อ - นามสกุล</b></th>
-			<th width="20%" align="center" bgcolor="#66CC99"><b>part</b></th>
-            <th width="20%" align="center" bgcolor="#66CC99"><b>สถานะ</b></th>
-			<th width="36%" align="center" bgcolor="#66CC99"><b>จัดการข้อมูล</b></th>
+	<table width="80%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
+		<tr style="background-color: #13795b; color:#ffffff;">
+			<th width="10%">ลำดับ</th>
+			<th width="30%">ชื่อ - นามสกุล</th>
+			<th width="15%">part</th>
+            <th width="15%">สถานะ</th>
+			<th width="30">จัดการข้อมูล</th>
 		</tr>
-		<?
-		$sql = "select * from inputm where menucode like '" . $_GET["menucode"] . "%' order by menucode ";
+		<?php
+		$sql = "select * from inputm where menucode like '$getMenucode%' order by menucode ";
 		$query = mysql_query($sql);
 		$num = mysql_num_rows($query);
 		if ($num < 1) {
@@ -57,40 +101,31 @@ if ($_GET["act"] == "del") {
 				$i++;
 
                 $statusTxt = 'ใช้งาน';
-                $statusColor = '';
-                $statusTextColor = '';
+				$statusClass='';
                 if($rows["status"]=='N'){
                     $statusTxt = 'ปิดการใช้งาน';
-                    $statusColor = '#dc3545';
-                    $statusTextColor = 'color: #ffffff;';
+					$statusClass='disableUser';
                 }
-
 				?>
-				<tr bgcolor="<?=$statusColor; ?>" style="<?=$statusTextColor;?>">
+				<tr class="<?=$statusClass;?>">
+					<td align="center"><?=$i; ?></td>
+					<td><?=$rows["name"]; ?></td>
+					<td align="center"><?=$rows["menucode"]; ?></td>
+                    <td align="center"><?=$statusTxt;?></td>
 					<td align="center">
-						<?= $i; ?>
-					</td>
-					<td bgcolor="<?= $bg; ?>">
-						<?= $rows["name"]; ?>
-					</td>
-					<td bgcolor="<?= $bg; ?>">
-						<?= $rows["menucode"]; ?>
-					</td>
-                    <td align="center">
-                    <?php
-                    
-                    echo $statusTxt;
-                    ?>
-                    </td>
-					<td align="center" bgcolor="<?= $bg; ?>">
-						<? if ($rows["level"] == "user") { ?>
-							<a
-								href="edituser.php?menucode=<?= $_GET["menucode"]; ?>&id=<?= $rows["row_id"]; ?>">แก้ไข</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
-								href="showuser.php?act=del&menucode=<?= $_GET["menucode"]; ?>&id=<?= $rows["row_id"]; ?>"
-								onClick="return confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่');">ลบ</a>
-						<? } else {
-							echo "ติดต่อโปรแกรมเมอร์";
-						} ?>
+						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>">แก้ไข</a>
+						&nbsp;|&nbsp;
+						<?php 
+						if($rows["status"]=='Y'){
+						?>
+						<a href="showuser.php?act=del&menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" onClick="return confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่');">ปิดใช้งาน</a>
+						<?php 
+						}else{
+							?>
+							<a href="javascript:void(0);">เปิดใช้งาน</a>
+							<?php
+						}
+						?>
 					</td>
 				</tr>
 			<?
@@ -100,3 +135,6 @@ if ($_GET["act"] == "del") {
 	</table>
 
 </div>
+
+</body>
+</html>
