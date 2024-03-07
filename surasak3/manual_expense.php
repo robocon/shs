@@ -14,15 +14,15 @@ $opacc = new ClassOpacc();
 
 $date = (date('Y')+543).date('-m-d');
 
-$startDate = '2567-03-01';
-$endDate = '2567-03-06';
+$startDate = '2567-03-07 00:00:00';
+$endDate = '2567-03-07 23:59:59';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เทศบาลเมืองเขลางค์นคร</title>
+    <title><?=COMPANY_PART;?></title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -36,18 +36,19 @@ $endDate = '2567-03-06';
     LEFT JOIN (
         SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow 
         FROM opday 
-        WHERE thidate >= '$startDate ' and thidate <= '$endDate' 
+        WHERE thidate >= '$startDate' and thidate <= '$endDate' 
     ) AS c ON a.`hn` = c.`hn`
     GROUP BY a.hn
     ORDER BY a.id ASC";
     $q = $dbi->query($sql);
     require_once 'manual_expense_menu.php';
     ?>
-    <div class="container">
-        <h3>เทศบาลเมืองเขลางค์นคร</h3>
+    <div class="">
+        <h3><?=COMPANY_PART;?></h3>
         <table class="table">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>HN</th>
                     <th>ชื่อ-สกุล</th>
                     <th>สิทธิ</th>
@@ -57,9 +58,11 @@ $endDate = '2567-03-06';
                     <th>LAB</th>
                     <th>XRAY</th>
                     <th>สกง</th>
+                    <th>comment</th>
                 </tr>
             </thead>
             <?php 
+            $ii = 1;
             if ($q->num_rows>0) {
                 ?>
                 <tbody>
@@ -70,11 +73,12 @@ $endDate = '2567-03-06';
 
                         $patho = $dep->getDepart($date, $a['hn'], 'PATHO');
                         $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
-                        $resh = $result->getResulthead($a['labnumber']);
+                        $resultheadItems = $result->getResulthead($a['labnumber']);
  
                         $op = $opacc->getOpacc($date, $a['hn']);
                         ?>
                         <tr>
+                            <td><?=$ii;?></td>
                             <td><?=$a['hn'];?></td>
                             <td><?=$a['ptname'];?></td>
                             <td><?=$a['ptright'];?></td>
@@ -92,10 +96,17 @@ $endDate = '2567-03-06';
                             <td><?=$a['toborow'];?></td>
                             <td>
                                 <?php 
-                                if ($resh===false) {
+                                if ($resultheadItems===false) {
                                     echo "รอผลแลป";
                                 }else {
-                                    // dump($resh);
+                                    $profileCode = array();
+                                    $labnumber = '';
+                                    foreach($resultheadItems AS $rh){
+                                        $labnumber = $rh['labnumber'];
+                                        $profileCode[] = $rh['profilecode'];
+                                    }
+                                    // echo $labnumber.'<br>'.implode(',', $profileCode);
+                                    echo $labnumber;
                                 }
                                 ?>
                             </td>
@@ -150,8 +161,12 @@ $endDate = '2567-03-06';
                                 ?>
                                 
                             </td>
+                            <td>
+                                <?=$a['comment'];?>
+                            </td>
                         </tr>
                         <?php
+                        $ii++;
                     }
                     ?>
                     

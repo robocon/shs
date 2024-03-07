@@ -40,8 +40,6 @@ if( $page == false ){
                 <th>ชื่อสกุล</th>
                 <th>เลขบัตรประชาชน</th>
                 <th>อายุ</th>
-                <th>แก้ไขข้อมูลพื้นฐาน</th>
-                <th>แก้ไขผลแลป</th>
                 <th>ลบ</th>
             </tr>
             <?php
@@ -53,13 +51,11 @@ if( $page == false ){
                         <input type="checkbox" name="ids[]" class="id" value="<?=$item['row'];?>">
                     </td>
                     <td><?=$i;?></td>
-                    <td><?=$item['exam_no'];?></td>
-                    <td><?=$item['hn'];?></td>
+                    <td><a href="chk_lab.php?page=form&id=<?=$item['row'];?>" title="แก้ไขผลแลป"><?=$item['exam_no'];?></a></td>
+                    <td><a href="chk_user.php?page=form&id=<?=$item['row'];?>" title="แก้ไขรายละเอียด"><?=$item['hn'];?></a></td>
                     <td><?=$item['name'];?> <?=$item['surname'];?></td>
                     <td><?=$item['idcard'];?></td>
                     <td><?=$item['agey'];?></td>
-                    <td align="center"><a href="chk_user.php?page=form&id=<?=$item['row'];?>">แก้ไข</a></td>
-                    <td align="center"><a href="chk_lab.php?page=form&id=<?=$item['row'];?>">ปรับผลแลป</a></td>
                     <td align="center"><a href="chk_show_user.php?page=del&id=<?=$item['row'];?>&part=<?=$item['part'];?>" onclick="return confirm_del()">ลบ</a></td>
                 </tr>
                 <?php
