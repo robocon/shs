@@ -6,15 +6,16 @@ require_once 'class_file/class_opacc.php';
 require_once 'class_file/class_resulthead.php';
 require_once 'class_file/opday.php';
 
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+require_once 'manual_expense_config.php';
 
 $dep = new ClassDepart();
 $result = new ClassResulthead();
 $opacc = new ClassOpacc();
 
-// $date = (date('Y')+543).date('-m-d');
-$date = '2566-09-13';
+$date = (date('Y')+543).date('-m-d');
+
+$startDate = '2567-03-01';
+$endDate = '2567-03-06';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,33 +23,25 @@ $date = '2566-09-13';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เทศบาลเมืองเขลางค์นคร</title>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <?php 
-    // $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
-    // c.`vn` 
-    // FROM (
-    //     SELECT trim(`hn`) AS `hn`, GROUP_CONCAT(`item_sso`),labnumber FROM `chk_lab_items` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' GROUP BY `hn`
-    // ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
-    // LEFT JOIN (
-    //     SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
-    // ) AS c ON a.`hn` = c.`hn`";
-
-$sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
-c.`vn` 
-FROM (
-    SELECT * FROM `manual_expense` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' 
-) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
-LEFT JOIN (
-    SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
-) AS c ON a.`hn` = c.`hn`
-GROUP BY a.hn
-ORDER BY a.id ASC";
-
-    // dump($sql);
+    $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
+    c.`vn` 
+    FROM (
+        SELECT * FROM `manual_expense` WHERE `part` = '".COMPANY_PART."' 
+    ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+    LEFT JOIN (
+        SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow 
+        FROM opday 
+        WHERE thidate >= '$startDate ' and thidate <= '$endDate' 
+    ) AS c ON a.`hn` = c.`hn`
+    GROUP BY a.hn
+    ORDER BY a.id ASC";
     $q = $dbi->query($sql);
-
+    require_once 'manual_expense_menu.php';
     ?>
     <div class="container">
         <h3>เทศบาลเมืองเขลางค์นคร</h3>
@@ -116,8 +109,7 @@ ORDER BY a.id ASC";
                                     $urlLab .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
                                     $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
-                                    <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <!-- <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
+                                    <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
                                 // }
                                 ?>
@@ -131,8 +123,7 @@ ORDER BY a.id ASC";
                                     $url .= "&moneyOfficer=".rawurldecode('นางสาว วัลยา คำปาเชื้อ');
                                     $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                     ?>
-                                    <!-- <button class="btn btn-primary btn-sm">Cal</button> -->
-                                    <!-- <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank">Cal</a> -->
+                                    <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
                                 // }
                                 ?>
@@ -143,10 +134,18 @@ ORDER BY a.id ASC";
                                 foreach ($patho as $key => $pItem) {
                                     $id = $pItem['row_id'];
                                     ?>
-                                    <a href="manual_expense_update.php?depart_id=<?=$id;?>&new_lab=<?=rawurldecode($a['lab_items']);?>&vn=<?=$a['vn'];?>" class="btn btn-primary btn-sm" target="_blank">
+                                    <!-- manual_expense_update.php?depart_id=<?=$id;?>&new_lab=<?=rawurldecode($a['lab_items']);?>&vn=<?=$a['vn'];?> -->
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" target="_blank">
                                         <?=$pItem['row_id'];?> <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
                                     </a>
                                     <?php 
+                                }
+
+                                // dump($xray);
+                                foreach($xray AS $x){
+                                    ?>
+                                    <a href="javascript:void(0);" class="btn btn-primary btn-sm" ><?=$x['depart'].'('.$x['price'].')';?></a>
+                                    <?php
                                 }
                                 ?>
                                 
@@ -163,6 +162,6 @@ ORDER BY a.id ASC";
             
         </table>
     </div>
-    <script src="bootstrap/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -691,6 +691,7 @@ if($flag=="N"){
 ?></td>
 
 <td align="center">
+    <!-- HBSAG -->
 <?php
 $sql12="SELECT b.result, b.flag 
 FROM ( 
@@ -712,9 +713,9 @@ $query12=mysql_query($sql12);
 list($hbsag,$flag)=mysql_fetch_array($query12);
 
 if($hbsag=="Negative"){
-	echo "ไม่พบเชื้อ";
+	echo '<span title="HBSAG">ไม่พบเชื้อ</span>';
 }else if($hbsag=="Positive"){
-	echo "<strong style='color:#FF0000'>พบเชื้อ</strong>";
+	echo '<strong style="color:#FF0000;" title="HBSAG">พบเชื้อ</strong>';
 }else{
 	echo "&nbsp;";
 }
@@ -804,13 +805,14 @@ WHERE b.labcode = 'ANTIHB' AND (b.result !='DELETE' OR b.result !='*') AND a.hn 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY a.`profilecode` ";
 $query12=mysql_query($sql12);
+$antihb = '';
 if(mysql_num_rows($query12) > 0)
 {
     list($antihb,$flag)=mysql_fetch_array($query12);
-    $antihb = 'Negative';
-    if( $flag != 'N' ){ 
-        $antihb = 'Positive';
-    }
+    // $antihb = 'Negative';
+    // if( $flag != 'N' ){ 
+    //     $antihb = 'Positive';
+    // }
     echo $antihb;
 }
 ?>
@@ -826,11 +828,11 @@ AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_
 GROUP BY a.`profilecode` ";
 //echo $sql13;
 $query13=mysql_query($sql13);
-list($hbsag,$flag)=mysql_fetch_array($query13);
+list($occultResult,$flag)=mysql_fetch_array($query13);
 
-if($hbsag=="Negative"){
+if($occultResult=="Negative"){
 	echo "ไม่พบเลือด";
-}else if($hbsag=="Positive"){
+}else if($occultResult=="Positive"){
 	echo "<strong style='color:#FF0000'>พบเลือด</strong>";
 }else{
 	echo "&nbsp;";

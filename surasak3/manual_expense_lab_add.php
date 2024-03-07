@@ -6,10 +6,10 @@ require_once 'class_file/class_opacc.php';
 require_once 'class_file/class_resulthead.php';
 require_once 'class_file/opday.php';
 
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+require_once 'manual_expense_config.php';
 
 $date = (date('Y')+543).date('-m-d');
+
 $hn = sprintf("%s", $_GET['hn']);
 $depart = sprintf("%s", $_GET['depart']);
 $labOfficer = sprintf("%s", $_GET['officer']);
@@ -32,14 +32,13 @@ $credit = sprintf("%s", $_GET['credit']);
 $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
 c.`vn` 
 FROM (
-    SELECT * FROM `manual_expense` WHERE `part` = 'เทศบาลเมืองเขลางค์นคร 66 ก.ย.' AND hn = '$hn' 
+    SELECT * FROM `manual_expense` WHERE `part` = '".COMPANY_PART."' AND hn = '$hn' 
 ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
 LEFT JOIN (
     SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
 ) AS c ON a.`hn` = c.`hn`
 GROUP BY a.hn
 ORDER BY a.id ASC";
-// dump($sql);
 
 $q = $dbi->query($sql);
 $a = $q->fetch_assoc();
@@ -55,6 +54,15 @@ $nLab_orderhead = '';
 if(empty($a['vn'])){
     echo "ทะเบียน ยังไม่ได้ออก VN";
 }else{
+
+    $opacc = new ClassOpacc();
+    $resOpacc = $opacc->getOpacc($date, $hn, 'PATHO');
+    if($resOpacc!==false){
+        echo '<h1>มีข้อมูลแล้ว</h1>';
+        dump($resOpacc);
+        exit;
+    }
+    
     $dep = new ClassDepart();
     $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart);
     $departIdList[] = $departId;
@@ -64,7 +72,6 @@ if(empty($a['vn'])){
     $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
     dump($insertPatdata);
 
-    $opacc = new ClassOpacc();
     // $officer = 'นาง นทีพร เรียงสุข';
     // $credit = 'กฟผ';
     $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
