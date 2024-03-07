@@ -12,6 +12,8 @@ class Orderhead extends DbConnect
     public $dob = null;
     public $clinicianname = 'MD022 (แพทย์เวชปฎิบัติ)';
     public $clinicalinfo = null;
+    public $sourcename = 'ตรวจสุขภาพภายนอก';
+    public $sourcecode = '101';
 
     function __construct()
     {
@@ -44,7 +46,7 @@ class Orderhead extends DbConnect
             `clinicianname`, `priority`, `clinicalinfo` 
         ) VALUES (
             NULL, NOW(), '$labnumber', '$this->hn', '$this->patienttype', '$this->patientname', 
-            '$this->sex', '$this->dob', '', '', '', '', 
+            '$this->sex', '$this->dob', '$this->sourcecode', '$this->sourcename', '', '', 
             '$this->clinicianname', 'R', '$this->clinicalinfo'
         );";
         $q = $this->dbi->query($orderhead_sql);

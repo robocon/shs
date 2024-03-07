@@ -1,6 +1,8 @@
 <?php 
 require_once 'bootstrap.php';
 
+require_once 'manual_expense_config.php';
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -18,10 +20,21 @@ if($action==='import'){
         while(! feof($file)) { 
             if(!empty($file)){
 
+                /**
+                 * $csv[0]  labnumber
+                 * $csv[1]  hn
+                 * $csv[2]  คำนำหน้า+ชื่อ
+                 * $csv[3]  นามสกุล
+                 * $csv[4]  เพศ
+                 * $csv[5]  วดป เกิด 
+                 * $csv[6]  รายการตรวจ
+                 * $csv[7]  ประเภท อบจ / ประกันสังคม
+                 */
                 $csv = fgetcsv($file);
                 $labnumber = $csv[0];
                 $hn = $csv[1];
                 $lab = $csv[6];
+                $ptright = $csv[7];
                 if(!empty($hn)){
                     $newPtname = iconv("TIS-620", "UTF-8", $csv[2].' '.$csv[3]);
                     $newLab = iconv("TIS-620", "UTF-8", $lab);
@@ -29,7 +42,7 @@ if($action==='import'){
                     $sql = "INSERT INTO `manual_expense` (
                         `id`, `labnumber`, `hn`, `ptname`, `age`, `lab_items`, `part`
                     ) VALUES (
-                        NULL, '$labnumber', '$hn', '$newPtname', '', '$newLab', 'อบจลำปาง67'
+                        NULL, '$labnumber', '$hn', '$newPtname', '', '$newLab', '".COMPANY_PART."'
                     );";
                     $save = $dbi->query($sql);
                 }

@@ -15,7 +15,8 @@ $opday = new Opday();
 $opdayToday = $opday->getThisDay($hn);
 $test = false;
 if($opdayToday===false){
-    $opday->setToborow('EX16 ตรวจสุขภาพ');
+    $opday->setToborow('EX51 ตรวจสุขภาพ อปท.');
+    $opday->sOfficer = 'ปิยะณัฐ ฐานพานิช';
     $test = $opday->createOpday($hn);
     dump($test);
 }else{

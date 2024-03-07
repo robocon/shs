@@ -56,6 +56,8 @@ if( $action == 'saveCinicalinfo' ){
     $labnumber = sprintf("%s", $_POST['labnumber']);
     $labcode = sprintf("%s", $_POST['labcode']);
     $labcodeItem = explode(',', $labcode);
+
+    $id = sprintf("%s", $_POST['id']);
     
     $msg = 'ข้อมูลไม่ถูกต้อง';
     if(!empty($labcode)){
@@ -63,7 +65,7 @@ if( $action == 'saveCinicalinfo' ){
     
         $opc = new Opcard();
         $user = $opc->getByHn($hn);
-        $sex = ($user=='ญ') ? 'f' : 'm' ;
+        $sex = ($user=='ญ') ? 'F' : 'M' ;
         $dob = bc_to_ad($user['dbirth']);
 
         $oh = new Orderhead();
@@ -79,10 +81,12 @@ if( $action == 'saveCinicalinfo' ){
             $data['labnumber'] = $insertOrderhead['labnumber'];
             $data['labitems'] = $labcodeItem;
             $insertOrderdetail = $oh->insertOrderdetail($data);
+
+            $msg .= ' Labnumber: '.$insertOrderdetail['labnumber'];
         }
     }
 
-    redirect('chk_lab.php?page=form&id=44165',$msg);
+    redirect('chk_lab.php?page=form&id='.$id, $msg);
     exit;
 }elseif($action==='findLabcare'){
 
@@ -165,7 +169,7 @@ if ( $page === 'form' ) {
 
     <div>
         <a href="chk_show_user.php?part=<?=$user['part'];?>" class="button">&lt;&lt;&nbsp;กลับไปหน้ารายชื่อ</a>
-        <a href="javascript:void(0);" class="button" onclick="document.getElementById('containerAddLabManual').style.display = '';">เพิ่ม Lab manual</a>
+        <a href="javascript:void(0);" class="button" onclick="document.getElementById('containerAddLabManual').style.display = '';document.getElementById('labcode').focus();">เพิ่ม Lab manual</a>
     </div>
 
     <style>
