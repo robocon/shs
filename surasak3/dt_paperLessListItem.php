@@ -81,13 +81,13 @@ if($switchData==="API"){
 	
 }elseif($switchData==="DB"){
 
-	if(!empty($year) && empty($month)){
+	if(!empty($year) && empty($month)){ // เลือกปีอย่างเดียว
 		$actual_date = " WHERE `actual_date` LIKE '$year%'";
 
 	}elseif(!empty($year) && !empty($month)){
 		$actual_date = " WHERE `actual_date` LIKE '$year-$month%'";
 
-	}else{
+	}else{ // ตัว default
 		$actual_date = " WHERE 1 ";
 	}
 
@@ -114,10 +114,9 @@ if($switchData==="API"){
 	if($q->num_rows>0){
 		$base_url = 'http://192.168.131.240:8081/storage/';
 		while($a = $q->fetch_assoc()){ 
-			
 			$a['original'] = $base_url.$a['file_name'];
 			$a['thumbnail'] = $base_url.'thumbnail_'.$a['file_name'];
-			$newItems[] = (object) $a;
+			$newItems[] = (object) $a; // ท่าสร้าง object to array
 		}
 	}
 	$items = new stdClass();
