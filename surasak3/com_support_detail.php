@@ -141,7 +141,7 @@ $item = $q->fetch_assoc();
         <td><?=$item['date'];?></td>
         <td><?=$item['depart'];?></td>
         <td><?=$item['head'];?></td>
-        <td><?=$item['detail'];?></td>
+        <td><?=nl2br(htmlspecialchars_decode($item['detail']));?></td>
     </tr>
 </table>
 

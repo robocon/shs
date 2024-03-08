@@ -17,7 +17,7 @@ $num = 'Y';
 $query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`detail`,`user1`,`phone` FROM com_support WHERE `row`=$row  ";
 $result = mysql_query($query) or die("Query failed111");
 if (mysql_num_rows($result)) {
-    print "<BR><BR><CENTER><table>";
+    print "<BR><BR><CENTER><table width='80%'>";
     print " <tr align='center'>";
     print "  <th bgcolor=CD853F>ลำดับ</th>";
     print "  <th bgcolor=CD853F>แผนก</th>";
@@ -32,7 +32,7 @@ if (mysql_num_rows($result)) {
             "  <td BGCOLOR=F5DEB3>$row</td>\n" .
             "  <td BGCOLOR=F5DEB3>$depart</td>\n" .
             "  <td BGCOLOR=F5DEB3>$head</a></td>\n" .
-            "  <td BGCOLOR=F5DEB3>" . nl2br($detail) . "</td>\n" .
+            "  <td BGCOLOR=F5DEB3>" . nl2br(htmlspecialchars_decode($detail)) . "</td>\n" .
             "  <td BGCOLOR=F5DEB3>$date</td>\n" .
             "  <td BGCOLOR=F5DEB3>$user1</td>\n" .
             "  <td BGCOLOR=F5DEB3>$tel</td>\n" .

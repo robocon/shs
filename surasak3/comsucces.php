@@ -183,7 +183,18 @@ if ($_REQUEST['do'] == 'edit') {
 			</tr>
 			<tr>
 				<td valign="top" bgcolor="#FF99CC"><strong>รายละเอียด</strong></td>
-				<td colspan="3" bgcolor="#FF99CC"><textarea name="detail" cols="100" rows="10" readonly class="forntsarabun"><?= $dbarr['detail']; ?></textarea></td>
+				<td colspan="3" bgcolor="#FF99CC">
+					<script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+					<script>
+						tinymce.init({
+							selector: 'textarea#detail',
+							toolbar: false, // ปิดใช้งาน toolbar
+							menubar: false, // ปิดใช้งาน menubar
+							forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+						});
+					</script>
+					<textarea id="detail" name="detail" cols="100" rows="10" readonly class="forntsarabun"><?= $dbarr['detail']; ?></textarea>
+				</td>
 			</tr>
 			<tr>
 				<td bgcolor="#FF99CC"><strong>ผู้แจ้ง</strong></td>

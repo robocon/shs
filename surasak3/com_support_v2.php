@@ -41,16 +41,23 @@ if ($action === 'search_user') {
     $p_edit = $_POST['p_edit'];
     $ignore = $_POST['ignore'];
     $row = $_POST['row'];
+    $software_type = '';
+	if($jobType==='software' && !empty($_POST['software_type'])){
+		$software_type = sprintf("%s", $_POST['software_type']);
+	}
+
+    var_dump($_POST['detail']);
+    exit;
 
     if(empty($row)){
         $sql = "INSERT INTO `com_support` (
             `row`, `depart`, `head`, `detail`, `datetime`, `status`, 
             `user`, `date`, `programmer`, `phone`, `user1`, `p_edit`, 
-            `dateend`, `hold`, `jobtype`,`ignore`
+            `dateend`, `hold`, `jobtype`,`ignore`,`software_type`
         ) VALUES ( 
             NULL, '$depart', '$head', '$detail', '', 'n', 
             '$user', '$date', '$programmer', '$phone', '$user', '$p_edit', 
-            '$dateend', '0', 'software', '$ignore' 
+            '$dateend', '0', 'software', '$ignore','$software_type'
         );";
     }else {
         // update
@@ -66,7 +73,8 @@ if ($action === 'search_user') {
         `phone`='$phone', 
         `user1`='$user', 
         `p_edit`='$p_edit', 
-        `dateend`='$dateend'
+        `dateend`='$dateend',
+        `software_type`='$software_type'
         WHERE (`row`='$row');";
     }
     
@@ -248,7 +256,7 @@ if($form_action==='edit'){
 }
 ?>
 <h3>คีย์งานแบบบันทึกเอง</h3>
-<form action="com_support_v2.php" method="post" id="adminForm">
+<form action="com_support_v2.php" method="post" id="adminForm" style="width:100%;">
     <div>
         <?php 
         $departs = array( 
@@ -309,11 +317,32 @@ if($form_action==='edit'){
         <input type="text" name="jobtype" id="jobtype" value="software" readonly>
     </div>
     <div>
+        <span>ลักษณะงาน</span>
+        <input type="radio" name="software_type" id="software_type1" value="แก้ไขโปรแกรม/ข้อมูล">
+        <label for="software_type1">แก้ไขโปรแกรม/ข้อมูล</label>
+
+        <input type="radio" name="software_type" id="software_type2" value="พัฒนาโปรแกรม">
+        <label for="software_type2">พัฒนาโปรแกรม</label>
+    </div>
+    <div>
         <span>หัวข้อ</span>
         <input type="text" name="head" id="head" value="<?=$s['head'];?>" >
     </div>
     <div>
         <span>รายละเอียด</span>
+
+        <!-- Place the first <script> tag in your HTML's <head> -->
+        <script src="https://cdn.tiny.cloud/1/tqg8zovqmyfvqalpwvd5bonykpwz9hzqvo9nrowowm38u8ba/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+        <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+        <script>
+            tinymce.init({
+                selector: 'textarea#detail',
+                toolbar: '',
+                menubar: '',
+            });
+        </script>
+
         <textarea name="detail" id="detail" rows="4" cols="100"><?=$s['detail'];?></textarea>
     </div>
     <div>
