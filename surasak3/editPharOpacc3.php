@@ -8,8 +8,44 @@ if($_SESSION['sIdname']!=='krit')
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
-$txdate = $_REQUEST['txdate'];
-$hn = $_REQUEST['hn'];
+$txdate = sprintf("%s", $_REQUEST['txdate']);
+$hn = sprintf("%s", $_REQUEST['hn']);
+
+$action = sprintf("%s", $_GET['action']);
+if($action=='search'){
+    $code = sprintf("%s", $_GET['code']);
+    $sql = "SELECT * FROM druglst WHERE drugcode = '$code' ";
+    $q = $dbi->query($sql);
+    if($q->num_rows>0){
+        $a = $q->fetch_assoc();
+        ?>
+        <table width="100%">
+            <tr>
+                <th>drugcode: </th>
+                <td><?=$a['drugcode'];?></td>
+                <th>tradname: </th>
+                <td><?=$a['tradname'];?></td>
+            </tr>
+            <tr>
+                <th>genname: </th>
+                <td><?=$a['genname'];?></td>
+                <th>unit: </th>
+                <td><?=$a['unit'];?></td>
+            </tr>
+            <tr>
+                <th>salepri: </th>
+                <td><?=$a['salepri'];?></td>
+                <th>part: </th>
+                <td><?=$a['part'];?></td>
+            </tr>
+        </table>
+        <?php
+    }else{
+        ?><p>ไม่พบข้อมูล</p><?php
+    }
+    exit;
+}
+
 
 if(empty($txdate) OR empty($hn))
 {
@@ -37,7 +73,7 @@ if($q->num_rows===0)
 <fieldset>
     <legend>phardep</legend>
     <div>
-        <table>
+        <table width="100%">
             <tr>
                 <th>row_id</th>
                 <th>date</th>
@@ -75,7 +111,7 @@ if($q->num_rows===0)
         $sql = "SELECT * FROM `drugrx` WHERE `idno` IN ($test) ";
         $q = $dbi->query($sql);
         ?>
-        <table>
+        <table width="100%">
             <tr>
                 <th>row_id</th>
                 <th>date</th>
@@ -93,7 +129,7 @@ if($q->num_rows===0)
                     <td><?=$a['row_id'];?></td>
                     <td><?=$a['date'];?></td>
                     <td><?=$a['hn'];?></td>
-                    <td><?=$a['drugcode'];?></td>
+                    <td><a href="javascript:void(0);" onclick="window.open('editPharOpacc3.php?action=search&code=<?=$a['drugcode'];?>','_newWindow','width=800,height=600')"><?=$a['drugcode'];?></a></td>
                     <td><?=$a['tradname'];?></td>
                     <td><?=$a['amount'];?></td>
                     <td><?=$a['price'];?></td>

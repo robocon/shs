@@ -233,7 +233,7 @@ if($part==='phardep' && !empty($row_id))
 
     ?>
     <form action="editPharOpacc5.php" method="post">
-    <table>
+    <table width="100%">
         <tr>
             <td>drugrx ===> hn</td>
             <td><?=$it['hn'];?></td>
@@ -329,7 +329,7 @@ if($part==='phardep' && !empty($row_id))
 
     ?>
     <form action="editPharOpacc5.php" method="post">
-        <table>
+        <table width="100%">
             <tr>
                 <td>dphardep ===> </td>
                 <td>
@@ -381,7 +381,7 @@ if($part==='phardep' && !empty($row_id))
     ?>
     <form action="editPharOpacc5.php" method="post">
         <p>ddrugrx ===> row_id: <?=$a['row_id'];?> HN: <?=$a['hn'];?></p>
-        <table>
+        <table width="100%">
             <tr>
                 <td>date</td>
                 <td><input type="text" name="date" id="date" value="<?=$a['date'];?>"></td>

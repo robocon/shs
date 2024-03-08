@@ -9,6 +9,7 @@ if($_SESSION['sIdname']!=='krit')
 <form action="editPharOpacc2.php" method="post">
     <div>
         วันที่: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
+        <span><a href="editstock.php" target="_blank">แก้ไขจำนวนยา</a></span>
     </div>
     <div>
         HN: <input type="text" name="hn" id="hn" value="<?=$_REQUEST['hn'];?>">

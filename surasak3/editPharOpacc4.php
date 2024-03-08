@@ -26,7 +26,7 @@ if($type === 'dphardep')
     <fieldset>
         <legend>dphardep</legend>
         <div>
-            <table>
+            <table width="100%">
                 <tr>
                     <th>row_id</th>
                     <th>date</th>
@@ -67,7 +67,7 @@ if($type === 'dphardep')
     <fieldset>
         <legend>ddrugrx</legend>
         <div>
-            <table>
+            <table width="100%">
                 <tr>
                     <th>row_id</th>
                     <th>date</th>
