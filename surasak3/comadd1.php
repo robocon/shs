@@ -11,6 +11,9 @@ $chkdate = (date("Y")+543).date("-m-d H:i");
 
 $depart=$_POST["depart"];
 $head=htmlspecialchars($_POST["head"], ENT_QUOTES);
+
+$detail_for_line = preg_replace('/(<img.+\/>)/', '', $_POST["detail"]);
+
 $detail=htmlspecialchars($_POST["detail"], ENT_QUOTES);
 $datetime=$_POST["datetime"];
 $phone=$_POST["phone"];
@@ -36,15 +39,15 @@ if($_POST["act"]=="add")
 	$num=mysql_num_rows($query);
 	if($num < 1)
 	{
-		$add = "INSERT INTO com_support(depart,head,detail,datetime,user,date,phone,user1,jobtype)
+		$add = "INSERT INTO `com_support`(`depart`,`head`,`detail`,`datetime`,`user`,`date`,`phone`,`user1`,`jobtype`)
 		VALUES('$depart','$head','$detail','$datetime','$sOfficer','$thidate','$phone','$user','$jobtype');";	
 		if(mysql_query($add))
 		{ 
 			$row_id = mysql_insert_id();
 
 			// Lineกลุ่มห้องคอมฯ
-			$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS";
-			$sMessage = "ใบงานใหม่\nลำดับ: $row_id\nผู้แจ้ง: $user\nแผนก: $depart\nติดต่อ: $phone\nหัวข้อ: $head\nรายละเอียด: $detail";
+			$sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
+			$sMessage = "ใบงานใหม่\nลำดับ: $row_id\nผู้แจ้ง: $user\nแผนก: $depart\nติดต่อ: $phone\nหัวข้อ: $head\nรายละเอียด: $detail_for_line";
 			send_line_noti($sMessage, $sToken);
 
 			// ติดตามงาน IT

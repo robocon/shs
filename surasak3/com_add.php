@@ -234,12 +234,12 @@ if($q->num_rows>0){
 				<!-- https://www.tiny.cloud/docs-4x/general-configuration-guide/basic-setup/#toolbarmenuconfiguration -->
 				<script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 				<script>
-					// tinymce.init({
-					// 	selector: 'textarea#detail',
-					// 	toolbar: false, // ปิดใช้งาน toolbar
-					// 	menubar: false, // ปิดใช้งาน menubar
-					// 	forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
-					// });
+					tinymce.init({
+						selector: 'textarea#detail',
+						toolbar: false, // ปิดใช้งาน toolbar
+						menubar: false, // ปิดใช้งาน menubar
+						forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+					});
 				</script>
 				<TEXTAREA NAME="detail" id="detail" COLS="100" ROWS="10" class="forntsarabun"></TEXTAREA>
 			</td>
@@ -316,16 +316,18 @@ if($q->num_rows>0){
 			document.getElementById('head').focus();
 
 			// หลังจากที่ปิดคำแนะนำให้แสดง modal
-			// let n = getCookie('com_supportPopUp');
-			// if(n===''){ 
-			// 	setCookie('com_supportPopUp', '1');
-			// 	myModal.show();
-			// }
+			let n = getCookie('com_supportPopUp');
+			if(n===''){ 
+				setCookie('com_supportPopUp', '1');
+				myModal.show();
+			}
 		}
 	}
 
 	////// เช็คค่าว่าง
 	function fncSubmit() {
+
+	var editorContent = tinyMCE.get('detail').getContent();
 
 	var fn = document.f1;
 	if (fn.depart.value == "0") {
@@ -346,10 +348,11 @@ if($q->num_rows>0){
 		return false;
 	}
 
-	if (document.all.detail.value.length < 1) {
-		// Swal.fire("กรอกรายละเอียดงาน");
+	// document.all.detail.value
+	if (editorContent.length < 1) {
+		Swal.fire("กรอกรายละเอียดงาน");
 		// document.all.detail.focus();
-		// return false;
+		return false;
 	}
 
 	if (fn.phone.value == "") {
