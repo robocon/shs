@@ -46,47 +46,60 @@ if ($_GET["act"] == "del") {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>จัดการข้อมูลผู้ใช้งานระบบ</title>
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 <style type="text/css">
-	body,td,th {
+	* {
 		font-family: "TH SarabunPSK";
 		font-size: 20px;
 	}
-	th{
-		background-color: #009688;
+	table.table th, #comNav{
+		background-color: #13795b; 
 		color: #ffffff;
-	}
-    .addUserButton{
-        text-decoration: none;
-        border: none;
-        padding: 8px 12px;
-        background-color: #009688;
-        color: #ffffff;
-    }
-    .addUserButton:hover{
-        background-color: #01746a;
-    }
-	.disableUser, .disableUser a{
-		background-color: #dc3545;
-		color: #ffffff;
-	}
-	.disableUser:hover, .disableUser:hover a{
-		background-color: #b02a37;
 	}
 </style>
-<div align="center">
-	<p><strong>จัดการข้อมูลผู้ใช้งานระบบ</strong></p>
-	<div>
-        <a href="adduser.php?menucode=<?= $_GET["menucode"] ?>" class="addUserButton">เพิ่มผู้ใช้ในแผนก</a>
+<nav class="navbar navbar-expand-lg" id="comNav" data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Home</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">รายชื่อ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="adduser.php?menucode=<?= $_GET["menucode"] ?>">เพิ่มผู้ใช้</a>
+        </li>
+        <!-- <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Dropdown
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        </li> -->
+      </ul>
     </div>
-    <div>&nbsp;</div>
-	<table width="80%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse;">
-		<tr style="background-color: #13795b; color:#ffffff;">
+  </div>
+</nav>
+<div class="container mt-2">
+	<h3>จัดการข้อมูลผู้ใช้งานระบบ</h3>
+	<table class="table table-hover">
+		<tr>
 			<th width="10%">ลำดับ</th>
 			<th width="30%">ชื่อ - นามสกุล</th>
 			<th width="15%">part</th>
-            <th width="15%">สถานะ</th>
+			<th width="15%">สถานะ</th>
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
 		<?php
@@ -102,27 +115,26 @@ if ($_GET["act"] == "del") {
 
                 $statusTxt = 'ใช้งาน';
 				$statusClass='';
-                if($rows["status"]=='N'){
+                if(strtolower($rows["status"])!='y'){
                     $statusTxt = 'ปิดการใช้งาน';
-					$statusClass='disableUser';
+					$statusClass='table-warning';
                 }
 				?>
 				<tr class="<?=$statusClass;?>">
-					<td align="center"><?=$i; ?></td>
+					<td><?=$i; ?></td>
 					<td><?=$rows["name"]; ?></td>
-					<td align="center"><?=$rows["menucode"]; ?></td>
-                    <td align="center"><?=$statusTxt;?></td>
-					<td align="center">
-						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>">แก้ไข</a>
-						&nbsp;|&nbsp;
+					<td><?=$rows["menucode"]; ?></td>
+                    <td><?=$statusTxt;?></td>
+					<td>
+						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" class="btn btn-primary btn-sm">แก้ไข</a>
 						<?php 
-						if($rows["status"]=='Y'){
+						if(strtolower($rows["status"])=='y'){
 						?>
-						<a href="showuser.php?act=del&menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" onClick="return confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่');">ปิดใช้งาน</a>
+						<a href="showuser.php?act=del&menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" onClick="return confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่');" class="btn btn-danger btn-sm">ปิดใช้งาน</a>
 						<?php 
 						}else{
 							?>
-							<a href="javascript:void(0);">เปิดใช้งาน</a>
+							<a href="javascript:void(0);" class="btn btn-success btn-sm">เปิดใช้งาน</a>
 							<?php
 						}
 						?>
