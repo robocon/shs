@@ -10,7 +10,7 @@ if(empty($hn)){
 }
 
 $depart = sprintf("%s", $_POST['depart']);
-$subclinic = sprintf("%s", $_POST['subclinic']);
+$sub_clinic = sprintf("%s", $_POST['sub_clinic']);
 $year = sprintf("%s", $_POST['year']);
 $month = sprintf("%s", $_POST['month']);
 $doctor = sprintf("%s", ($_POST['doctor'] ? $_POST['doctor'] : '' ));
@@ -33,6 +33,9 @@ if(!empty($doctor)){
 	$apiUrl .= "&doctor=$doctor";
 }
 
+if(!empty($sub_clinic)){
+	$apiUrl .= "&sub_clinic=$sub_clinic";
+}
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -67,7 +70,7 @@ if($qSubclinic->num_rows>0){
 
 // $dataType = "API";
 $switchData = "DB";
-if($switchData==="API"){
+if($switchData==="API"){ 
 
 	$ch = curl_init(); 
 	curl_setopt($ch, CURLOPT_URL, $apiUrl);
@@ -88,7 +91,7 @@ if($switchData==="API"){
 		$actual_date = " WHERE `actual_date` LIKE '$year-$month%'";
 
 	}else{ // ตัว default
-		$actual_date = " WHERE 1 ";
+		$actual_date = " WHERE b.row_id IS NOT NULL ";
 	}
 
 	$whereDoctor = "";
@@ -97,35 +100,33 @@ if($switchData==="API"){
 	}
 
 	$whereSubclinic = "";
-	if(!empty($subclinic)){
-		$whereSubclinic = " AND `sub_clinic` = '$subclinic' ";
+	if(!empty($sub_clinic)){
+		$whereSubclinic = " AND `sub_clinic` = '$sub_clinic' ";
 	}
 	
 	/**
 	 * เปลี่ยนจาก clinic เป็น sub_clinic
 	 */
-	$sql = "SELECT b.* FROM (
+	$sqlDigitalOpcard = "SELECT b.* FROM (
 	SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn' 
 	) AS a LEFT JOIN `digital_opcard` AS b ON b.`opcard_id` = a.`row_id` 
 	$actual_date $whereDoctor $whereSubclinic 
-	ORDER BY b.row_id DESC";
-	$q = $dbi->query($sql);
+	ORDER BY FIELD(upload_type, 'summary','normal','other',''),b.row_id DESC";
+	$qDitial = $dbi->query($sqlDigitalOpcard);
 	$newItems = array();
-	if($q->num_rows>0){
+	if($qDitial->num_rows>0){
 		$base_url = 'http://192.168.131.240:8081/storage/';
-		while($a = $q->fetch_assoc()){ 
+		while($a = $qDitial->fetch_assoc()){ 
 			$a['original'] = $base_url.$a['file_name'];
 			$a['thumbnail'] = $base_url.'thumbnail_'.$a['file_name'];
+			$a['type'] = $a['upload_type'];
 			$newItems[] = (object) $a; // ท่าสร้าง object to array
 		}
 	}
 	$items = new stdClass();
-	$items->totalCount = count($items);
+	$items->totalCount = count($newItems);
 	$items->list = $newItems;
 }
-
-
-
 ?>
 <style>
 	body{
@@ -187,11 +188,11 @@ document.onmouseup = mousehandler;
 	
 	<div style="width:100%; text-align:left; padding-left: 4px;">
 		<div style="margin-bottom:4px;" align="center">
-			<b>คลินิก:</b> <select name="subclinic" id="subclinic" style="max-width:120px;">
+			<b>คลินิก:</b> <select name="sub_clinic" id="sub_clinic" style="max-width:120px;">
 				<option value="">-- ทั้งหมด --</option>
 				<?php 
 				foreach($subclinicItem AS $subclinic_id => $subclinic_name){ 
-					$selected = $subclinic_id==$subclinic ? 'selected="selected"' : '' ;
+					$selected = $subclinic_id==$sub_clinic ? 'selected="selected"' : '' ;
 					?>
 					<option value="<?=$subclinic_id;?>" <?=$selected;?> ><?=$subclinic_name;?></option>
 					<?php
@@ -277,9 +278,9 @@ document.onmouseup = mousehandler;
 <?php
 if ($items->totalCount > 0) { 
     // $items_reverse = array_reverse($items->list);
-	$items_reverse = $items->list;
+	// $items_reverse = $items->list;
 	
-    foreach ($items_reverse as $key => $item) {
+    foreach ($items->list as $key => $item) {
         list($dateEp, $timeEp) = explode(' ', $item->actual_date);
         list($y, $m, $d) = explode('-', $dateEp);
         ?>
