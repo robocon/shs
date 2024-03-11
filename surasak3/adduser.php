@@ -44,10 +44,9 @@ if ($act == "add") {
             ?>
             <script>
                 window.open('printuser.php?<?="prName=$txtname&prUser=$txtuser&prPass=$txtpass";?>', '', 'nenuber=no,toorlbar=no,location=no,scrollbars=yes, status=no,resizable=no,width=400,height=400,top=220,left=650 ');
-                let timeout = setTimeout(myFuncTimeout,1500);
-                funttion myFuncTimeout(){
+                setTimeout(function(){
                     window.location='adduser.php?menucode=<?=$menucode;?>';
-                }
+                },1500);
             </script>
             <?php
         } else {
