@@ -113,16 +113,16 @@ if($row){
 
 			
 		}else if(substr($zzz,0,3)=='R03'){
-			$sql = "Select hn, status From cscddata where hn = '$xxx' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
+			// $sql = "Select hn, status From cscddata where hn = '$xxx' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
 
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"3\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
+			// if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+			// echo "<span style=\"background-color: #0033CC\"><B><FONT SIZE=\"3\"  COLOR=\"#FFFF00\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธิจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 			
 			 print "<br><a href='hnlab.php?hn=".$xxx."&confirm=true'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
-			}else{
-				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"3\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
-				echo "</br><FONT SIZE=\"3\"  COLOR=\"#0033CC\">กรุณาติดต่อแผนกทะเบียนเพื่อปรับปรุงสิทธิการรักษา</FONT>";
-			}
+			// }else{
+			// 	echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"3\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
+			// 	echo "</br><FONT SIZE=\"3\"  COLOR=\"#0033CC\">กรุณาติดต่อแผนกทะเบียนเพื่อปรับปรุงสิทธิการรักษา</FONT>";
+			// }
 		}else{
 			if(substr($zzz,0,3)=='R12' || substr($zzz,0,3)=='R13' || substr($zzz,0,3)=='R14' || substr($zzz,0,3)=='R35'){
 				echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
