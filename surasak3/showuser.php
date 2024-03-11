@@ -17,9 +17,9 @@ if($sessionMenucode != $getMenucode){
 	exit;
 }
 
-if($_SESSION['sLevel']!=='admin' && $_SESSION['smenucode'] !== 'ADM'){
+if($_SESSION['sLevel']!=='admin' && $sessionMenucode !== 'ADM'){
 	echo "กรุณาติดต่อผู้ใช้งานระดับ Admin ประจำแผนกของท่าน<br>";
-	$sql = "SELECT `name` FROM `inputm` WHERE `menucode` = '".$_SESSION['smenucode']."' AND `level` = 'admin' ";
+	$sql = "SELECT `name` FROM `inputm` WHERE `menucode` = '$sessionMenucode' AND `level` = 'admin' ";
 	$q = mysql_query($sql);
 	while ($a = mysql_fetch_assoc($q)) {
 		echo '- '.$a['name'].'<br>';
@@ -32,11 +32,10 @@ if ($_GET["act"] == "del") {
 	$del = "update inputm set status='N' where row_id='" . $_GET["id"] . "'";
 	if (mysql_query($del)) {
 		echo "<script>alert('ปิดการใช้งานเรียบร้อยแล้ว');window.location='showuser.php?menucode=".$_GET['menucode']."';</script>";
-		exit;
 	} else {
 		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=".$_GET['menucode']."';</script>";
-		exit;
 	}
+	exit;
 }
 ?>
 <!DOCTYPE html>
@@ -60,38 +59,9 @@ if ($_GET["act"] == "del") {
 		color: #ffffff;
 	}
 </style>
-<nav class="navbar navbar-expand-lg" id="comNav" data-bs-theme="dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Home</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">รายชื่อ</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="adduser.php?menucode=<?= $_GET["menucode"] ?>">เพิ่มผู้ใช้</a>
-        </li>
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li> -->
-      </ul>
-    </div>
-  </div>
-</nav>
+<?php 
+require_once 'com_user_menu.php';
+?>
 <div class="container mt-2">
 	<h3>จัดการข้อมูลผู้ใช้งานระบบ</h3>
 	<table class="table table-hover">
@@ -103,7 +73,7 @@ if ($_GET["act"] == "del") {
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
 		<?php
-		$sql = "select * from inputm where menucode like '$getMenucode%' order by menucode ";
+		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' ORDER BY `menucode` ";
 		$query = mysql_query($sql);
 		$num = mysql_num_rows($query);
 		if ($num < 1) {

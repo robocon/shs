@@ -1,9 +1,7 @@
 <?php
 session_start();
-session_unregister("prName");
-session_unregister("prUser");
-session_unregister("prPass");
-include("connect.inc");
+
+include_once 'connect.php';
 include_once 'includes/JSON.php';
 $json = new Services_JSON();
 
@@ -21,59 +19,73 @@ if($action==='checkuser'){
     exit;
 }
 
-if ($_POST["act"] == "add") {
+$act = sprintf("%s", (!empty($_POST["act"]) ? $_POST["act"] : '' ));
+if ($act == "add") {
     if (!empty($_POST["txtuser"])) {
-        // $chkop = mysql_query("select idcard from opcard where idcard='" . $_POST["txtuser"] . "'");
-        // list($idcard) = mysql_fetch_array($chkop);
-        // if (empty($idcard)) {
-        //     echo "<script>alert('คำเตือน! ID CARD นี้ยังไม่สามารถระบุตัวตนในโรงพยาบาลได้ ให้ติดต่อห้องโปรแกรมเมอร์')</script>";
-        // } else {
-            // if ($_POST["txtpass"] == $_POST["txtrepass"]) {
-            //     $sql = "select * from inputm where idname='" . $_POST["txtuser"] . "' and menucode='" . $_GET["menucode"] . "' and level='user' and status='Y'";
-            //     $query = mysql_query($sql);
-            //     $num = mysql_num_rows($query);
-            //     if ($num > 0) {
-            //         echo "<script>alert('!!! ผิดพลาดมีผู้ใช้ท่านนี้อยู่ในระบบแล้ว');window.location='adduser.php?menucode=$_POST[menucode]';</script>";
-            //     } else {
-                    $add = "insert into inputm set name='" . $_POST["txtname"] . "',
-                            idname='" . $_POST["txtuser"] . "',
-                            pword='" . $_POST["txtpass"] . "',
-                            menucode='" . $_POST["menucode"] . "',
-                            status='" . $_POST["status"] . "',
-                            date_pword='" . date("Y-m-d H:s:i") . "',
-                            level='" . $_POST["level"] . "'";
-                    if (mysql_query($add)) {
-                        $_SESSION["prName"] = $_POST["txtname"];
-                        $_SESSION["prUser"] = $_POST["txtuser"];
-                        $_SESSION["prPass"] = $_POST["txtpass"];
-                        ?>
-                        <script>
-                            window.open('printuser.php', '', 'nenuber=no,toorlbar=no,location=no,scrollbars=yes, status=no,resizable=no,width=800,height=600,top=220,left=650 ');
-                        </script>
-                        <?
-                        echo "<script>alert('เพิ่มข้อมูลคุณ $_POST[txtname] เรียบร้อยแล้ว');window.location='showuser.php?menucode=$_POST[menucode]';</script>";
-                    } else {
-                        echo "<script>alert('!!! ผิดพลาดไม่สามารถเพิ่มข้อมูลได้');window.location='adduser.php?menucode=$_POST[menucode]';</script>";
-                    }
-            //     }
-            // } else {
-            //     echo "<script>alert('!!! ผิดพลาดยืนยันรหัสไม่ตรงกัน');window.location='adduser.php?menucode=$_POST[menucode]';</script>";
-            // }
-        // }
+
+        $date_pword = date("Y-m-d H:i:s");
+        $txtname = sprintf("%s", $_POST["txtname"]);
+        $txtuser = sprintf("%s", $_POST["txtuser"]);
+        $txtpass = sprintf("%s", $_POST["txtpass"]);
+        $idcard = sprintf("%s", $_POST["idcard"]);
+        $menucode = sprintf("%s", $_POST["menucode"]);
+
+        $add = "INSERT INTO `inputm` SET `name`='$txtname',
+        `idname`='$txtuser',
+        `pword`='$txtpass',
+        `menucode`='$menucode',
+        `status`='Y',
+        `date_pword`='$date_pword',
+        `idcard`='$idcard',
+        `level`='user'";
+
+        if (mysql_query($add)) {
+            echo "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว";
+            ?>
+            <script>
+                window.open('printuser.php?<?="prName=$txtname&prUser=$txtuser&prPass=$txtpass";?>', '', 'nenuber=no,toorlbar=no,location=no,scrollbars=yes, status=no,resizable=no,width=400,height=400,top=220,left=650 ');
+                let timeout = setTimeout(myFuncTimeout,1500);
+                funttion myFuncTimeout(){
+                    window.location='adduser.php?menucode=<?=$menucode;?>';
+                }
+            </script>
+            <?php
+        } else {
+            echo "!!! ผิดพลาดไม่สามารถเพิ่มข้อมูลได้";
+            ?>
+            <script>
+                setTimeout(function(){
+                    window.location='adduser.php?menucode=<?=$menucode;?>';
+                },1500);
+            </script>
+            <?php
+        }
+        exit;
     }
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เพิ่มผู้ใช้ในระบบ</title>
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
+</head>
+<body>
 <style type="text/css">
-    body,td,th {
-        font-family: TH SarabunPSK;
-        font-size: 20px;
-    }
-
-    .forntsarabun {
+    * {
         font-family: "TH SarabunPSK";
         font-size: 20px;
     }
+    table.table th, #comNav{
+		background-color: #13795b; 
+		color: #ffffff;
+	}
 
     .style1 {
         color: #FF0000
@@ -81,103 +93,156 @@ if ($_POST["act"] == "add") {
     input[readonly]{
         background-color: #b5b5b5;
     }
+    fieldset{
+        border: 1px solid #000000;
+        padding: 4px;
+    }
+    legend{
+        width: inherit;
+        padding: 0 10px;
+        border-bottom: none;
+        float: none;
+        margin-left: 10px;
+        font-weight: bold;
+    }
 </style>
-<div align="center">
-    <p><strong>เพิ่มข้อมูลผู้ใช้งานระบบ</strong></p>
-    <form action="adduser.php" method="post" name="f1">
+<?php 
+require_once 'com_user_menu.php';
+
+$idcard = sprintf("%s", (!empty($_POST["idcard"]) ? $_POST["idcard"] : '' ));
+$menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ));
+?>
+<div class="container">
+    <h3 class="h3">เพิ่มข้อมูลผู้ใช้งานระบบ</h3>
+    <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1">
         <input name="act" type="hidden" value="show">
-        <input name="menucode" type="hidden" value="<?= $_GET["menucode"]; ?>">
-        <table width="60%" border="0" cellspacing="0" cellpadding="5">
+        <input name="menucode" type="hidden" value="<?=$menucode;?>">
+        <table>
             <tr>
-                <td width="19%" align="right" bgcolor="#99FFCC"><strong>เลขบัตรประชาชน : </strong></td>
-                <td width="81%" bgcolor="#FFFFCC">
+                <td width="19%" align="right"><b>เลขบัตรประชาชน : </b></td>
+                <td width="81%">
                     <label>
-                        <input name="idcard" type="text" class="forntsarabun" id="idcard" maxlength="13">
+                        <input name="idcard" type="text" class="form-control" id="idcard" maxlength="13" value="<?=$idcard;?>">
                     </label>
                     <span class="style1">&nbsp;(ตัวเลขเท่านั้น ไม่ต้องมีขีดกลาง)</span>
                 </td>
             </tr>
             <tr>
-                <td bgcolor="#66CC99">&nbsp;</td>
-                <td bgcolor="#66CC99">
+                <td>&nbsp;</td>
+                <td>
                     <label>
-                        <input type="submit" name="button" id="button" class="forntsarabun" value="ค้นหาข้อมูล">
+                        <input type="submit" name="button" id="button" class="btn btn-primary" value="ตรวจสอบข้อมูลจากทะเบียน">
                     </label>
                 </td>
             </tr>
         </table>
     </form>
     <?php
-    if ($_POST["act"] == "show") {
-        $chkop = mysql_query("select name, surname, idcard from opcard where idcard='" . $_POST["idcard"] . "'");
+    
+    if ( $act == "show") {
+        $chkop = mysql_query("SELECT `name`,`surname`,`idcard` FROM `opcard` WHERE `idcard`='$idcard'");
         list($name, $surname, $idcard) = mysql_fetch_array($chkop);
         if (empty($idcard)) {
             ?>
-            <p>ไม่พบข้อมูลเลขบัตรประชาชน กรุณาติดต่อแผนกทะเบียน เพื่อบันทึกประวัติ</p>
+            <p class="text-danger fw-bold">ไม่พบข้อมูลเลขบัตรประชาชน กรุณาติดต่อแผนกทะเบียน เพื่อบันทึกประวัติ</p>
             <?php
         }else{
             ?>
-            <form action="adduser.php" method="post" name="f1" onsubmit="return checkForm();">
-                <input name="act" type="hidden" value="add">
-                <input name="menucode" type="hidden" value="<?= $_POST["menucode"]; ?>">
-                <input name="status" type="hidden" value="Y">
-                <input name="level" type="hidden" value="user">
-                <!-- <input name="txtrepass" type="hidden" id="txtrepass" value="1234" /> -->
-                <table width="60%" border="0" cellspacing="0" cellpadding="5">
-                    <tr>
-                        <td width="19%" align="right" bgcolor="#99FFCC"><strong>ชื่อ-นามสกุล : </strong></td>
-                        <td width="81%" bgcolor="#FFFFCC">
-                            <label>
-                                <input name="txtname" type="text" class="forntsarabun" id="txtname" value="<?= $name . " " . $surname; ?>" readonly="readonly">
-                            </label>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <td align="right" bgcolor="#99FFCC"><strong>Username : </strong></td>
-                        <td bgcolor="#FFFFCC">
-                            <label>
-                                <input name="txtuser" type="text" class="forntsarabun" id="txtuser" maxlength="13" value="<?= $idcard;?>"> 
-                            </label>
-                            <button type="button" class="forntsarabun" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button><span id="resTestCheckUser"></span>
-                            <input type="hidden" name="testCheckUser" id="testCheckUser">
-                            <div><span class="style1">(ชื่อผู้ใช้เริ่มต้นเป็นเลขบัตรประชาชน สามารถเปลี่ยนเองได้)</span></div>
-                        </td>
-                    </tr>
-                    <tr valign="top">
-                        <td align="right" bgcolor="#99FFCC"><strong>Password :</strong></td>
-                        <td bgcolor="#FFFFCC">
-                            <label>
-                                <input name="txtpass" type="text" class="forntsarabun" id="txtpass" value="123456" size="15">
-                            </label>
-                            <div>
-                            <span class="style1">(รหัสผ่าน 123456 เป็นค่าเริ่มต้น)</span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td bgcolor="#66CC99">&nbsp;</td>
-                        <td bgcolor="#66CC99">
-                            <label>
-                                <input type="submit" name="button" id="button" class="forntsarabun" value="เพิ่มข้อมูล">
-                            </label>
-                        </td>
-                    </tr>
-                </table>
-            </form>
+            <fieldset class="mb-4">
+                <legend>ฟอร์มบันทึก</legend>
+                <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1" onsubmit="return checkForm();">
+                    <input name="act" type="hidden" value="add">
+                    <input name="menucode" type="hidden" value="<?=$menucode;?>">
+                    <input name="status" type="hidden" value="Y">
+                    <input name="level" type="hidden" value="user">
+                    <!-- <input name="txtrepass" type="hidden" id="txtrepass" value="1234" /> -->
+                    <table>
+                        <tr>
+                            <td width="19%" align="right"><b>ชื่อ-นามสกุล : </b></td>
+                            <td width="81%">
+                                <label>
+                                    <input name="txtname" type="text" class="form-control" id="txtname" value="<?= $name . " " . $surname; ?>" readonly="readonly">
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="19%" align="right"><b>เลขบัตรประชาชน : </b></td>
+                            <td width="81%">
+                                <label>
+                                    <input name="idcard" type="text" class="form-control" id="idcard" value="<?=$idcard;?>" readonly="readonly">
+                                </label>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td align="right"><b>ชื่อผู้ใช้งาน : </b></td>
+                            <td>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username" autocomplete="off">
+                                    <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button>
+                                </div>
+                                
+                                <span id="resTestCheckUser"></span>
+                                <input type="hidden" name="testCheckUser" id="testCheckUser">
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td align="right"><b>รหัสผ่าน :</b></td>
+                            <td>
+                                <label>
+                                    <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password" value="" autocomplete="off">
+                                </label>
+                                <div>
+                                    <span class="badge text-bg-warning">คำแนะนำ</span><span>การตั้งรหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และอักขระพิเศษ(!@#$%&) ผสมกัน</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td align="right"><b>ยืนยันรหัสผ่าน :</b></td>
+                            <td>
+                                <label>
+                                    <input name="txtpass2" type="password" class="form-control" id="txtpass2" autocomplete="off">
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>
+                                <label>
+                                    <input type="submit" name="button" id="button" class="btn btn-primary" value="เพิ่มผู้ใช้งาน">
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </fieldset>
             <script type="text/javascript">
-                async function onCheckUser(){
+                function onCheckUser(){
                     const username = document.getElementById('txtuser').value;
+                    if(username==''){
+                        Swal.fire("กรุณาใส่ชื่อผู้ใช้งาน");
+                        return false;
+                    }
+                    const regex = /(admin|test)/;
+                    if(username.match(regex)){
+                        Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
+                        return false;
+                    }
+
+                    checkuser(username).then(function(data){
+                        if(data.status==200){
+                            document.getElementById("testCheckUser").value = "1";
+                            Swal.fire("สามารถใช้งานได้");
+                        }else{
+                            Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
+                            return false;
+                        }
+                    });
+                }
+
+                async function checkuser(username){
                     const response = await fetch('adduser.php?action=checkuser&username='+username);
                     const data = await response.json();
-                    
-                    if(data.status==200){
-                        document.getElementById("testCheckUser").value = "1";
-                        document.getElementById("resTestCheckUser").innerHTML = "&#9989;";
-                    }else{
-                        document.getElementById("resTestCheckUser").innerHTML = "&#10060;";
-                        
-                        alert(data.msg+'กรุณาเลือกผู้ใช้งานอื่น');
-                    }
+                    return data;
                 }
             </script>
             <?php
@@ -188,32 +253,35 @@ if ($_POST["act"] == "add") {
     <script type="text/javascript">
         function checkForm() {
             var stat = true;
+
+            let pass1 = document.getElementById('txtpass');
+            let pass2 = document.getElementById('txtpass2');
+            
             if (document.getElementById('txtname').value == '') {
-                alert("กรุณากรอกชื่อ-นามสกุล");
+                Swal.fire("กรุณากรอกชื่อ-นามสกุล");
                 stat = false;
                 document.getElementById('txtname').focus();
-
             } else if (document.getElementById('txtuser').value == '') {
-                alert("กรุณากรอก Username");
+                Swal.fire("กรุณากรอก Username");
                 stat = false;
                 document.getElementById('txtuser').focus();
-
             }else if(document.getElementById('txtpass').value == ''){
-                alert("กรุณากรอก Password");
+                Swal.fire("กรุณากรอก Password");
                 stat = false;
-
             }else if(document.getElementById('txtpass').value.length < 6){
-                alert("ควรตั้ง Password มากกว่าหรือเท่ากับ 6 ตัวอักษร");
+                Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 6 ตัวอักษร");
                 stat = false;
-
+            }else if(pass1.value != pass2.value){
+                Swal.fire("รหัสผ่าน ไม่ตรงกันกรุณาตรวจสอบข้อมูลอีกครั้ง");
+                stat = false;
             }else if(document.getElementById('testCheckUser').value==""){
-                alert("กรุณากดตรวจสอบผู้ใช้งาน");
+                Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
                 stat = false;
-
             }
-
             return stat;
         }
 
     </script>
 </div>
+</body>
+</html>
