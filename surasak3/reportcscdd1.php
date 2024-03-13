@@ -5,7 +5,7 @@ include("connect.inc");
 $date1 ="$thiyr-$rptmo-$date";
 $date2 ="$date-$rptmo-$thiyr";
 
-$sql = "Select a.date,a.txdate, a.hn, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.depart, sum(a.paidcscd) From opacc as a, opcard as b where a.hn=b.hn AND a.date like '".$date1."%'  AND a.credit ='®Ë“¬µ√ß' AND a.paidcscd > 0 group by a.hn, a.depart   ORDER by a.date";
+$sql = "Select a.date,a.txdate, a.hn, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name, a.depart, sum(a.paidcscd) From opacc as a, opcard as b where a.hn=b.hn AND a.txdate like '".$date1."%'  AND a.credit ='‡∏à‡πà‡∏≤‡∏¢‡∏ï‡∏£‡∏á' AND a.paidcscd > 0 group by a.hn, a.depart   ORDER by a.date";
 
 $result = mysql_Query($sql) or die(mysql_error());
 $list = array();
@@ -41,10 +41,10 @@ $num='0';
 $i='0';
 $p='1';
 
-echo "<font face='Angsana New' size ='4'><center> <b>≈Ÿ°Àπ’È‚§√ß°“√®Ë“¬µ√ßª√–®”«—π∑’Ë $date2 <br></b> ";
-echo "<font face='Angsana New' size ='3'> ‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ ≈”ª“ß &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·ºËπ∑’Ë&nbsp;$p</center>";
+echo "<font face='Angsana New' size ='4'><center> <b>‡∏•‡∏π‡∏Å‡∏´‡∏ô‡∏µ‡πâ‡πÇ‡∏Ñ‡∏£‡∏á‡∏Å‡∏≤‡∏£‡∏à‡πà‡∏≤‡∏¢‡∏ï‡∏£‡∏á‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà $date2 <br></b> ";
+echo "<font face='Angsana New' size ='3'> ‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏•‡∏≥‡∏õ‡∏≤‡∏á &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‡πÅ‡∏ú‡πà‡∏ô‡∏ó‡∏µ‡πà&nbsp;$p</center>";
 echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";
-echo "<tr><td>&nbsp;&nbsp;#&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;«—π∑’Ë&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;™◊ËÕ -  °ÿ≈&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;¬“&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;æ¬“∏‘&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡Õ°‡√¬Ï&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;∑—πµ°√√¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;°“¬¿“æ&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;∫√‘°“√&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ºË“µ—¥&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;Ω—ß‡¢Á¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‰µ‡∑’¬¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;µ√«®Õ◊ËπÊ&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;µ“&nbsp;&nbsp;</td><td>&nbsp;&nbsp;***&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;√«¡&nbsp;&nbsp;</td></tr>";
+echo "<tr><td>&nbsp;&nbsp;#&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ä‡∏∑‡πà‡∏≠ - ‡∏™‡∏Å‡∏∏‡∏•&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;‡∏¢‡∏≤&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏û‡∏¢‡∏≤‡∏ò‡∏¥&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÄ‡∏≠‡∏Å‡πÄ‡∏£‡∏¢‡πå&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ó‡∏±‡∏ô‡∏ï‡∏Å‡∏£‡∏£‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏Å‡∏≤‡∏¢‡∏†‡∏≤‡∏û&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ú‡πà‡∏≤‡∏ï‡∏±‡∏î&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ù‡∏±‡∏á‡πÄ‡∏Ç‡πá‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;‡∏ï‡∏£‡∏ß‡∏à‡∏≠‡∏∑‡πà‡∏ô‡πÜ&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;‡∏ï‡∏≤&nbsp;&nbsp;</td><td>&nbsp;&nbsp;***&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;‡∏£‡∏ß‡∏°&nbsp;&nbsp;</td></tr>";
 foreach ($list2 as $key => $value) {
 
 	$xx = explode("/",$value);
@@ -96,18 +96,18 @@ $total=number_format($total,2);
 			echo "</table>";
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
 
-echo "<font face='Angsana New' size ='4'><center> <b>≈Ÿ°Àπ’È‚§√ß°“√®Ë“¬µ√ßª√–®”«—π∑’Ë $date2 <br></b> ";
-echo "<font face='Angsana New' size ='3'> ‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ ≈”ª“ß &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;·ºËπ∑’Ë&nbsp;$p</center>";
+echo "<font face='Angsana New' size ='4'><center> <b>‡∏•‡∏π‡∏Å‡∏´‡∏ô‡∏µ‡πâ‡πÇ‡∏Ñ‡∏£‡∏á‡∏Å‡∏≤‡∏£‡∏à‡πà‡∏≤‡∏¢‡∏ï‡∏£‡∏á‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà $date2 <br></b> ";
+echo "<font face='Angsana New' size ='3'> ‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏•‡∏≥‡∏õ‡∏≤‡∏á &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;‡πÅ‡∏ú‡πà‡∏ô‡∏ó‡∏µ‡πà&nbsp;$p</center>";
 
 echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";
 
 
 
-echo "<tr><td>&nbsp;&nbsp;#&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;«—π∑’Ë&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;™◊ËÕ -  °ÿ≈&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;¬“&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;æ¬“∏‘&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡Õ°‡√¬Ï&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;∑—πµ°√√¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;°“¬¿“æ&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;∫√‘°“√&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ºË“µ—¥&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;Ω—ß‡¢Á¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‰µ‡∑’¬¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>
-&nbsp;&nbsp;µ√«®Õ◊ËπÊ&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>
-&nbsp;&nbsp;µ“&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>
+echo "<tr><td>&nbsp;&nbsp;#&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ä‡∏∑‡πà‡∏≠ - ‡∏™‡∏Å‡∏∏‡∏•&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;hn&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;‡∏¢‡∏≤&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏û‡∏¢‡∏≤‡∏ò‡∏¥&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÄ‡∏≠‡∏Å‡πÄ‡∏£‡∏¢‡πå&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ó‡∏±‡∏ô‡∏ï‡∏Å‡∏£‡∏£‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏Å‡∏≤‡∏¢‡∏†‡∏≤‡∏û&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ú‡πà‡∏≤‡∏ï‡∏±‡∏î&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ù‡∏±‡∏á‡πÄ‡∏Ç‡πá‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>
+&nbsp;&nbsp;‡∏ï‡∏£‡∏ß‡∏à‡∏≠‡∏∑‡πà‡∏ô‡πÜ&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>
+&nbsp;&nbsp;‡∏ï‡∏≤&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>
 &nbsp;&nbsp;***&nbsp;&nbsp;</td><td><center> <b>
-&nbsp;&nbsp;√«¡&nbsp;&nbsp;</td></tr>";
+&nbsp;&nbsp;‡∏£‡∏ß‡∏°&nbsp;&nbsp;</td></tr>";
 
 $i='0';
 
@@ -146,7 +146,7 @@ $OTHER2=number_format($OTHER2,2);
 
 $sum=number_format($sum,2);
 
-echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>√«¡∑—ÈßÀ¡¥</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PHAR."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PATHO."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$XRAY."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$DENTA."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PHYSI."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$EMER."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$SURG."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$NID."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$HEMO."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$OTHER."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$EYE."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$OTHER2."&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</td></b></tr></FONT>";
+echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>‡∏£‡∏ß‡∏°‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PHAR."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PATHO."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$XRAY."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$DENTA."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$PHYSI."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$EMER."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$SURG."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$NID."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$HEMO."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$OTHER."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$EYE."&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;".$OTHER2."&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;".$sum."&nbsp;</td></b></tr></FONT>";
 
 echo "</table>";
 
