@@ -1,3 +1,6 @@
+<?php 
+require_once 'bootstrap.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,103 +9,113 @@
 	<title>รายงานส่งAudit</title>
 </head>
 <body>
+	<style>
+		*{
+			font-family: "Angsana New";
+			font-size:20px;
+		}
+		h3{
+			font-size: 32px;
+		}
+	</style>
 	<div style="margin-bottom: 1em;">
-		<a target=_self href='../nindex.htm'><< กลับไปหน้าหลัก รพ.</a>
+		<a href='../nindex.htm'><< กลับไปหน้าหลัก รพ.</a>
 	</div>
 	<div>
 		<h3>รายงานส่ง Audit</h3>
 	</div>
+	<fieldset>
+		<legend>เลือกตาม วัน / เดือน / ปี</legend>
+		<form method="POST" action="oia_audit_reportbangkok1.php" target="_blank">
+			<div>
+				<font face="Angsana New">วันที่
+					<?php 
+					$def_day = range(1, 31);
+					?>
+					<select name="date" id="date">
+						<option value="">--&nbsp;เลือก&nbsp;--</option>
+						<?php foreach($def_day as $key => $day): ?>
+						<option value="<?=sprintf('%02d',$day);?>" ><?=$day;?></option>
+						<?php endforeach; ?>
+					</select>
+				</font>
 
-	<!-- <p><a href="oia_audit_reportcscdd.php">ลูกหนี้จ่ายตรง ประจำเดือน</a> || <a href="reportlgo.php">ลูกหนี้จ่ายตรง อปท.ประจำเดือน</a> || ลูกหนี้ข้าราชการ กทม. ประจำเดือน</p> -->
+				<font face="Angsana New">&nbsp;&nbsp; เดือน-ปี
+					<select name="rptmo" id="rptmo">
+						<option value="">--&nbsp;เลือก&nbsp;--</option>
+						<?php foreach($def_fullm_th as $key => $month): ?>
+						<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
+						<?php endforeach; ?>
+					</select>
 
-	<form method="POST" action="oia_audit_reportbangkok1.php" target="_blank">
-		<div>
-			<font face="Angsana New">วันที่
-				<select size="1" name="date">
-					<option value="">--&nbsp;เลือก&nbsp;--</option>
-					<option>01</option>
-					<option>02</option>
-					<option>03</option>
-					<option>04</option>
-					<option>05</option>
-					<option>06</option>
-					<option>07</option>
-					<option>08</option>
-					<option>09</option>
-					<option>10</option>
-					<option>11</option>
-					<option>12</option>
-					<option>13</option>
-					<option>14</option>
-					<option>15</option>
-					<option>16</option>
-					<option>17</option>
-					<option>18</option>
-					<option>19</option>
-					<option>20</option>
-					<option>21</option>
-					<option>22</option>
-					<option>23</option>
-					<option>24</option>
-					<option>25</option>
-					<option>26</option>
-					<option>27</option>
-					<option>28</option>
-					<option>29</option>
-					<option>30</option>
-					<option>31</option>
-				</select>
-			</font>
-			<font face="Angsana New">&nbsp;&nbsp; เดือน-ปี
-				<select size="1"name="rptmo">
-					<option value="" selected>--&nbsp;&#3648;&#3621;&#3639;&#3629;&#3585;&nbsp;--</option>
-					<option value="01">&#3617;&#3585;&#3619;&#3634;&#3588;&#3617;</option>
-					<option value="02">&#3585;&#3640;&#3617;&#3616;&#3634;&#3614;&#3633;&#3609;&#3608;&#3660;</option>
-					<option value="03">&#3617;&#3637;&#3609;&#3634;&#3588;&#3617;</option>
-					<option value="04">&#3648;&#3617;&#3625;&#3634;&#3618;&#3609;</option>
-					<option value="05">&#3614;&#3620;&#3625;&#3616;&#3634;&#3588;&#3617;</option>
-					<option value="06">&#3617;&#3636;&#3606;&#3640;&#3609;&#3634;&#3618;&#3609;</option>
-					<option value="07">&#3585;&#3619;&#3585;&#3598;&#3634;&#3588;&#3617;</option>
-					<option value="08">&#3626;&#3636;&#3591;&#3627;&#3634;&#3588;&#3617;</option>
-					<option value="09">&#3585;&#3633;&#3609;&#3618;&#3634;&#3618;&#3609;</option>
-					<option value="10">&#3605;&#3640;&#3621;&#3634;&#3588;&#3617;</option>
-					<option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
-					<option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
-				</select>
-			</font>
-			<?php
-			$Y = date("Y") + 543;
-			$date = date("Y") + 543 + 5;
-
-			$dates = range(2547, $date);
-			echo "<select name='thiyr'>";
-			foreach ($dates as $i) {
-				?>
-				<option value='<?= $i ?>' <?php if ($Y == $i) { echo "selected"; } ?>>
-					<?= $i; ?>
-				</option>
-			<?php
-			}
-			echo "<select>";
-
-			$creditItems = array('กทม','จ่ายตรง','จ่ายตรง อปท.');
-			?>
-			&nbsp;&nbsp;<font face="Angsana New">ประเภทลูกหนี้</font>
-			<select name="credit" id="credit">
-				<option value="">--&nbsp;เลือก&nbsp;--</option>
-			<?php
-			foreach ($creditItems as $key => $value) {
-				?>
-				<option value="<?=$value;?>"><?=$value;?></option>
+				</font>
 				<?php
-			}
+				$Y = date("Y") + 543;
+				$date = date("Y") + 543 + 5;
+
+				$dates = range(2547, $date);
+				echo "<select name='thiyr'>";
+				foreach ($dates as $i) {
+					?>
+					<option value='<?= $i ?>' <?php if ($Y == $i) { echo "selected"; } ?>>
+						<?= $i; ?>
+					</option>
+				<?php
+				}
+				echo "<select>";
+
+				$creditItems = array('กทม','จ่ายตรง','จ่ายตรง อปท.');
+				?>
+				&nbsp;&nbsp;<font face="Angsana New">ประเภทลูกหนี้</font>
+				<select name="credit" id="credit">
+					<option value="">--&nbsp;เลือก&nbsp;--</option>
+				<?php
+				foreach ($creditItems as $key => $value) {
+					?>
+					<option value="<?=$value;?>"><?=$value;?></option>
+					<?php
+				}
+				?>
+				</select>
+				
+			</div>
+			<div>
+				<input type="submit" value="    &#3605;&#3585;&#3621;&#3591;    " name="B1">
+			</div>
+		</form>
+	</fieldset>
+	<fieldset>
+		<legend>ยอดรวม</legend>
+		<form action="oia_audit_month.php" method="post" target="_blank">
+			<?php 
+			$def_day = range(1, 31);
 			?>
+			<span>เดือน-ปี</span>
+			<select name="rptmo" id="rptmo">
+				<option value="">--&nbsp;เลือก&nbsp;--</option>
+				<?php foreach($def_fullm_th as $key => $month): ?>
+				<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
+				<?php endforeach; ?>
 			</select>
-			
-		</div>
-		<div>
-			<input type="submit" value="    &#3605;&#3585;&#3621;&#3591;    " name="B1">
-		</div>
-	</form>
+			<select name="thiyr" id="thiyr">
+				<option value="">--&nbsp;เลือก&nbsp;--</option>
+				<?php
+				$thisYear = date('Y');
+				$y_min = date("Y") - 5 ;
+				$y_max = date("Y") + 5 ;
+				for($a=$y_min; $a<=$y_max; $a++){
+					$selected = $thisYear==$a ? 'selected="selected"' : '' ;
+					$at = $a+543;
+					?>
+					<option value="<?=$at?>" <?=$selected;?> ><?=$at?></option>
+					<?php
+				}
+				?>
+			</select>
+			<div>
+				<button type="submit">&nbsp;&nbsp;&nbsp;ค้นหา&nbsp;&nbsp;&nbsp;</button>
+			</div>
+		</form>
+	</fieldset>
 </body>
 </html>
