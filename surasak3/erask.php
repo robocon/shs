@@ -405,16 +405,17 @@ $smctoken = $t['token'];
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" class="myButton" target="_blank">QR CODE เล็ก</a>
 </div>
 <?php 
-if( $_SESSION['smenucode'] === 'ADMPT'){
+if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADM'){
+	$sOfficerReh = $_SESSION['sOfficer'];
 	?>
 	<div>&nbsp;</div>
 	<div>
-		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
+		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>&sOfficerReh=<?=$sOfficerReh;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
 		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
 	</div>
 	<script>
 	function openPage(page){
-		var myWin = window.open("http://192.168.129.143/shspdf/printPdf.php?target="+page, "MsgWindow", "width=800,height=600");
+		var myWin = window.open("http://192.168.129.143/shspdf/printPdf.php?target="+encodeURIComponent(page), "MsgWindow", "width=800,height=600");
 	}
 	</script>
 	<?php 
