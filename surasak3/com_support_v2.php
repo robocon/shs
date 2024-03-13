@@ -1,5 +1,5 @@
 <?php 
-include_once __DIR__.'/bootstrap.php';
+include_once 'bootstrap.php';
 // include_once 'includes/JSON.php';
 // $json = new Services_JSON();
 
@@ -9,12 +9,11 @@ $dbi->query("SET NAMES UTF8");
 
 $action = $_REQUEST['action'];
 if ($action === 'search_user') {
-    $code = $_GET['code'];
+    $code = sprintf("%s", $_GET['code']);
     $sql = "SELECT `row_id`,`name`,`status` FROM `inputm` WHERE `menucode` = '$code' AND `status` = 'Y' ";
     $q = $dbi->query($sql);
     $users = array();
     while ($user = $q->fetch_assoc()) {
-        // $user['name'] = $user['name'];
         $users[] = $user;
     }
     echo json_encode($users);
@@ -42,12 +41,9 @@ if ($action === 'search_user') {
     $ignore = $_POST['ignore'];
     $row = $_POST['row'];
     $software_type = '';
-	if($jobType==='software' && !empty($_POST['software_type'])){
+	if(!empty($_POST['software_type'])){
 		$software_type = sprintf("%s", $_POST['software_type']);
 	}
-
-    var_dump($_POST['detail']);
-    exit;
 
     if(empty($row)){
         $sql = "INSERT INTO `com_support` (
@@ -331,15 +327,15 @@ if($form_action==='edit'){
     <div>
         <span>รายละเอียด</span>
 
-        <!-- Place the first <script> tag in your HTML's <head> -->
-        <script src="https://cdn.tiny.cloud/1/tqg8zovqmyfvqalpwvd5bonykpwz9hzqvo9nrowowm38u8ba/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-
-        <!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+        <!-- https://www.tiny.cloud/get-tiny/custom-builds/ -->
+        <!-- https://www.tiny.cloud/docs-4x/general-configuration-guide/basic-setup/#toolbarmenuconfiguration -->
+        <script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
         <script>
             tinymce.init({
                 selector: 'textarea#detail',
-                toolbar: '',
-                menubar: '',
+                toolbar: false, // ปิดใช้งาน toolbar
+                menubar: false, // ปิดใช้งาน menubar
+                forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
             });
         </script>
 
