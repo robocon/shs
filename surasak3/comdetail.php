@@ -17,22 +17,22 @@ $num = 'Y';
 $query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`detail`,`user1`,`phone` FROM com_support WHERE `row`=$row  ";
 $result = mysql_query($query) or die("Query failed111");
 if (mysql_num_rows($result)) {
-    print "<BR><BR><CENTER><table width='80%'>";
+    print "<BR><BR><CENTER><table width='100%' style=\"table-layout: fixed;\">";
     print " <tr align='center'>";
-    print "  <th bgcolor=CD853F>ลำดับ</th>";
-    print "  <th bgcolor=CD853F>แผนก</th>";
-    print "  <th bgcolor=CD853F>หัวข้อ</th>";
+    print "  <th bgcolor=CD853F width=\"50\">ลำดับ</th>";
+    print "  <th bgcolor=CD853F width=\"100\">แผนก</th>";
+    print "  <th bgcolor=CD853F width=\"250\">หัวข้อ</th>";
     print "  <th bgcolor=CD853F>รายละเอียด</th>";
-    print "  <th bgcolor=CD853F>วันเวลาที่ร้องขอ</th>";
-    print "  <th bgcolor=CD853F>ผู้ร้องขอ</th>";
-    print "  <th bgcolor=CD853F>เบอร์ติดต่อ</th>";
+    print "  <th bgcolor=CD853F width=\"160\">วันเวลาที่ร้องขอ</th>";
+    print "  <th bgcolor=CD853F width=\"100\">ผู้ร้องขอ</th>";
+    print "  <th bgcolor=CD853F width=\"80\">เบอร์ติดต่อ</th>";
     print " </tr>";
     while (list($row, $depart, $head, $datetime, $programmer, $date, $detail, $user1, $tel) = mysql_fetch_row($result)) {
         print(" <tr>\n" .
             "  <td BGCOLOR=F5DEB3>$row</td>\n" .
             "  <td BGCOLOR=F5DEB3>$depart</td>\n" .
             "  <td BGCOLOR=F5DEB3>$head</a></td>\n" .
-            "  <td BGCOLOR=F5DEB3>" . nl2br(htmlspecialchars_decode($detail)) . "</td>\n" .
+            "  <td BGCOLOR=F5DEB3 style=\"overflow: auto;\">" . htmlspecialchars_decode($detail) . "</td>\n" .
             "  <td BGCOLOR=F5DEB3>$date</td>\n" .
             "  <td BGCOLOR=F5DEB3>$user1</td>\n" .
             "  <td BGCOLOR=F5DEB3>$tel</td>\n" .
