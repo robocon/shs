@@ -1,6 +1,5 @@
 <?php
-	session_start();
-
+session_start();
 $user_code = $_SESSION['smenucode'];
 $user_id = $_SESSION['sIdname'];
 if( $user_code !== 'ADM' ){
@@ -8,7 +7,7 @@ if( $user_code !== 'ADM' ){
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
     $check_level = in_array($user_code, array('ADMPH', 'ADMPHA','ADMPHARX'));
     // ตัวเดิม
-    $check_user = in_array($user_id, array('วนิดาดา'));
+    $check_user = in_array($user_id, array('วนิดาดา', 'ภูมิพัฒน์'));
 
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา'));
 	//$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','ชุติกาญจน์','ชนากานต์','เพียงออ','รุ่งทิวา','อมรรัตน์','ศุภรัตน์1','ศุภรัตน์2','ชนากานต์'));
@@ -17,10 +16,10 @@ if( $user_code !== 'ADM' ){
    //$check_user = in_array($user_id, array('พรทิพา','วนิดาดา','รุ่งทิวา','อมรรัตน์','ชนากานต์','สงคราม'));
 
     $date = date('Y-m-d H:i:s');
-    if( $date >= "2023-03-31 15:00:00" && $date <= "2023-03-31 23:59:59" ){
+    if( $date >= "2023-09-29 15:00:00" && $date <= "2023-09-29 23:59:59" ){
 
         // ของวันที่ 29/03/62 ถึง 30/03/62 ~ 06.30น.
-		$check_user = in_array($user_id, array('วนิดาดา','รุ่งทิวา','อมรรัตน์','ชนากานต์'));
+		$check_user = in_array($user_id, array('วนิดาดา','รุ่งทิวา','ชนากานต์','กฤตย์ตนันต์'));
         //$check_user = in_array($user_id, array('พรทิพา','วนิดาดา','รุ่งทิวา','อมรรัตน์','ชนากานต์','กฤตย์ตนันต์'));
 		//$check_user = in_array($user_id, array('พรทิพา','วนิดาดา','ชนากานต์','รุ่งทิวา','อมรรัตน์'));
     }
@@ -29,7 +28,8 @@ if( $user_code !== 'ADM' ){
         ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขจำนวนยาในห้องจ่าย กรุณาติดต่อ</p>
         <ol>
-            <li>พ.อ.หญิง วนิดา โลห์สุวรรณ	</li>
+            <li>พ.อ.หญิง วนิดา โลห์สุวรรณ</li>
+			<li>พ.ท.ภูมิพัฒน์  สมิทธนโชติ</li>
         </ol>
         <p>เพื่อทำการขอใช้สิทธิ์แก้ไขข้อมูลสต๊อกยา</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
@@ -38,7 +38,7 @@ if( $user_code !== 'ADM' ){
     }
 }
 
-	function jschars($str)
+function jschars($str)
 {
     $str = str_replace("\\\\", "\\\\", $str);
     $str = str_replace("\"", "\\\"", $str);
@@ -52,98 +52,125 @@ if( $user_code !== 'ADM' ){
     return $str;
 }
 
-	include("connect.inc");
-
-	if(isset($_POST["editstock"])){
-		
-
-		$sql = "Update druglst set stock = '".$_POST["stock"]."' , oldstock = '".$_POST["oldstock"]."', totalstk='".($_POST["mainstk"]+$_POST["stock"])."' , edit_user = '".$_SESSION["sOfficer"]."', edit_date = '".date("Y-m-d")."' where drugcode = '".$_POST["drugcode"]."' ";
-
-		$result = Mysql_Query($sql);
-
-		if($result){
-			echo "แก้ไขข้อมูลเรียบร้อยแล้ว<BR>";
-			echo "
-				<TABLE>
-				<TR>
-					<TD align=\"right\">ชื่อยา :</TD>
-					<TD>".$_POST["tradname"]."</TD>
-				</TR>
-				<TR>
-					<TD align=\"right\">จำนวนในห้องจ่าย : </TD>
-					<TD>".number_format($_POST["stock"],0)."</TD>
-				</TR>
-				<TR>
-					<TD align=\"right\">จำนวนในคลัง :</TD>
-					<TD>".number_format($_POST["mainstk"],0)." </TD>
-				</TR>
-					<TR>
-					<TD align=\"right\">จำนวนทั้งหมด :</TD>
-					<TD>".number_format(($_POST["mainstk"]+$_POST["stock"]),0)."</TD>
-				</TR>
-				</TABLE>
-
-			";
-
-		}else{
-			echo "ไม่สามารถแก้ไขข้อมูลได้";
-		}
-
-		echo "<BR><A HREF=\"".$_SERVER['PHP_SELF']."\">&lt;&lt; กลับ</A>";
-		exit();
-
-	}
+include("connect.inc");
 
 
-    print  "แก้ไขจำนวนยาในห้องจ่าย <br> ";
+if(isset($_POST["editstock"])){
+    $sql = "Update druglst set mainstk = '".$_POST["mainstk"]."' , stock = '".$_POST["stock"]."' , oldstock = '".$_POST["oldstock"]."', totalstk='".($_POST["mainstk"]+$_POST["stock"])."' , edit_user = '".$_SESSION["sOfficer"]."', edit_date = '".date("Y-m-d")."' where drugcode = '".$_POST["drugcode"]."' ";
+    $result = Mysql_Query($sql);
+    if($result){
+        echo "แก้ไขข้อมูลเรียบร้อยแล้ว<BR>";
+        echo "<TABLE>
+            <TR>
+                <TD align=\"right\">ชื่อยา :</TD>
+                <TD>".$_POST["tradname"]."</TD>
+            </TR>
+            <TR>
+                <TD align=\"right\">จำนวนในห้องจ่าย : </TD>
+                <TD>".number_format($_POST["stock"],0)."</TD>
+            </TR>
+            <TR>
+                <TD align=\"right\">จำนวนในคลัง :</TD>
+                <TD>".number_format($_POST["mainstk"],0)." </TD>
+            </TR>
+                <TR>
+                <TD align=\"right\">จำนวนทั้งหมด :</TD>
+                <TD>".number_format(($_POST["mainstk"]+$_POST["stock"]),0)."</TD>
+            </TR>
+            </TABLE>";
+    }else{
+        echo "ไม่สามารถแก้ไขข้อมูลได้";
+    }
+    echo "<BR><A HREF=\"".$_SERVER['PHP_SELF']."\">&lt;&lt; กลับ</A>";
+    exit();
+}
 ?>
-  <form method="post" action="<?php echo $PHP_SELF ?>">
-<font face="Angsana New"><a target=_BLANK href="drugcode.php">รหัสยา : </a>
-&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="drugcode" size="10"></font>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="     ตกลง     " name="B1">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< ไปเมนู</a></font></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขจำนวนยาในห้องจ่าย</title>
+</head>
+<body>
+<style>
+    *{
+        font-family: "TH SarabunPSK";
+    }
+    h3{
+        font-size: 28px;
+    }
+    a, input, th, td, button{
+        font-size: 20px;
+    }
+</style>
+<div>
+    <a target=_top  href="../nindex.htm"><< ไปเมนู</a>
+</div>
+<div>
+    <h3>แก้ไขจำนวนยาในห้องจ่าย</h3>
+</div>
+<form method="post" action="<?php echo $PHP_SELF ?>">
+    <font face="Angsana New"><a target=_BLANK href="drugcode.php">รหัสยา</a> : 
+    &nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="drugcode" size="10" onkeyup="findDrugCode()">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="     ตกลง     " name="B1"></font>
 </form>
+<script>
 
-<table width="500">
- <tr>
-  <th bgcolor=CC9900><font face='Angsana New'>รหัส</th>
-  <th bgcolor=CC9900><font face='Angsana New'>ชื่อยา</th>
-  <th bgcolor=CC9900><font face='Angsana New'>จำนวนในคลัง</th>
-  <th bgcolor=CC9900><font face='Angsana New'>จำนวนในห้องจ่าย</th>
-  <th bgcolor=CC9900><font face='Angsana New'>รวมสุทธิ</th>
-  <th bgcolor=CC9900><font face='Angsana New'>&nbsp;</th>
- </tr>
+</script>
+<table width="80%">
+    <tr style="background-color: #16A085;">
+        <th>รหัส</th>
+        <th>ชื่อยา</th>
+        <th>จำนวนในคลัง</th>
+        <th>จำนวนในห้องจ่าย</th>
+        <th>รวมสุทธิ</th>
+        <th>&nbsp;</th>
+    </tr>
 <?php
 If (!empty($drugcode)){
-    
-
     $query = "SELECT drugcode, tradname, stock, oldstock ,mainstk,totalstk FROM druglst WHERE drugcode like '".$_POST["drugcode"]."%' ";
     $result = mysql_query($query) or die("Query failed");
-
     while (list ($drugcode, $trandname, $stock, $oldstock,$mainstk,$totalstk) = mysql_fetch_row ($result)) {
 		if($oldstock == 0) $oldstock = $stock;
-        print (" <FORM METHOD=POST ACTION=\"$PHP_SELF\">
-           <tr>\n".
-           "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$drugcode</td>\n".
-           "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$trandname</td>\n".
-    "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$mainstk</td>\n".
-           "  <td BGCOLOR=#FFCC99><INPUT TYPE=\"text\" NAME=\"stock\" value=\"$stock\"></td>\n".
-    "  <td BGCOLOR=#FFCC99><font face='Angsana New'>$totalstk</td>\n".
-           "  <td BGCOLOR=#FFCC99><INPUT TYPE=\"submit\" name=\"editstock\" value=\" แก้ไข \"></td>\n".
-           " </tr>
-		   <INPUT TYPE=\"hidden\" name=\"drugcode\" value=\"".jschars($drugcode)."\">
-		   <INPUT TYPE=\"hidden\" name=\"mainstk\" value=\"".$mainstk."\">
-		   <INPUT TYPE=\"hidden\" name=\"tradname\" value=\"".jschars($trandname)."\">
-			<INPUT TYPE=\"hidden\" name=\"oldstock\" value=\"".$oldstock."\">
-           </FORM>
-			
-		   \n");
-         }
+        if($user_id=="วนิดาดา" || $user_id=="ภูมิพัฒน์"  || $user_id=="thaywin"){
+            print (" <FORM METHOD=POST ACTION=\"$PHP_SELF\">
+            <tr>\n".
+            "  <td BGCOLOR=#A3E4D7 width='10%'>$drugcode</td>\n".
+            "  <td BGCOLOR=#A3E4D7 width='25%'>$trandname</td>\n".
+            "  <td BGCOLOR=#A3E4D7 width='15%'><INPUT TYPE=\"text\" NAME=\"mainstk\" value=\"$mainstk\"></td>\n".
+            "  <td BGCOLOR=#A3E4D7 width='15%'><INPUT TYPE=\"text\" NAME=\"stock\" value=\"$stock\"></td>\n".
+            "  <td BGCOLOR=#A3E4D7 width='15%'>$totalstk</td>\n".
+            "  <td BGCOLOR=#A3E4D7 align='center'><INPUT TYPE=\"submit\" name=\"editstock\" value=\" แก้ไข \"></td>\n".
+            " </tr>
 
-  
-          }
+            <INPUT TYPE=\"hidden\" name=\"drugcode\" value=\"".jschars($drugcode)."\">
+            <INPUT TYPE=\"hidden\" name=\"tradname\" value=\"".jschars($trandname)."\">
+            <INPUT TYPE=\"hidden\" name=\"oldstock\" value=\"".$oldstock."\">
+            </FORM>
+            \n");
+        }else{ //ถ้าเป็นคนอื่นนอกจาก 2 คนข้างต้น
+            print (" <FORM METHOD=POST ACTION=\"$PHP_SELF\">
+            <tr>\n".
+            "  <td BGCOLOR=#FDEBD0 width='10%'>$drugcode</td>\n".
+            "  <td BGCOLOR=#FDEBD0 width='25%'>$trandname</td>\n".
+            "  <td BGCOLOR=#FDEBD0 width='15%'>$mainstk</td>\n".
+            "  <td BGCOLOR=#FDEBD0 width='15%'><INPUT TYPE=\"text\" NAME=\"stock\" value=\"$stock\"></td>\n".
+            "  <td BGCOLOR=#FDEBD0 width='15%'>$totalstk</td>\n".
+            "  <td BGCOLOR=#FDEBD0 align='center'><INPUT TYPE=\"submit\" name=\"editstock\" value=\" แก้ไข \"></td>\n".
+            " </tr>
+            
+            <INPUT TYPE=\"hidden\" name=\"drugcode\" value=\"".jschars($drugcode)."\">
+            <INPUT TYPE=\"hidden\" name=\"tradname\" value=\"".jschars($trandname)."\">
+            <INPUT TYPE=\"hidden\" name=\"mainstk\" value=\"".$mainstk."\">
+                <INPUT TYPE=\"hidden\" name=\"oldstock\" value=\"".$oldstock."\">
+            </FORM>
+            \n");
+        }	
+    }
+}
  include("unconnect.inc");
 ?>
 </table>
-
-
+</body>
+</html>

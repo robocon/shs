@@ -20,7 +20,9 @@ $id = $_REQUEST['id'];
 	<script>
         window.onload = function(){ 
             window.frames["xrayPage"].focus();
-            window.frames["xrayPage"].print();
+            setTimeout(function(){
+                window.frames["xrayPage"].print();
+            }, 1000);
         }
     </script>
 </body>

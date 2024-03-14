@@ -7,7 +7,7 @@ if(isset($_GET["action"])){
 ?>
 
 <style type="text/css">
-<!--
+
 .font3 {
 	font-family: "TH SarabunPSK";
 	font-size:30px;
@@ -36,14 +36,18 @@ color: #FFF;
 	text-decoration:none;}
 	.total_appointsaturday { font-family: Angsana New; font-size: 24px; font-weight: bold; background-color: #ECC4FF; color: #FF0000;
 	text-decoration:none;}
--->
+
 </style>
 
 <script>
-function show_tooltip(title,detail,al,l,r){
+var mousePosition = {x:undefined, y:undefined};
+window.addEventListener('mousemove', (event) => { 
+	mousePosition = { x: event.clientX, y: event.clientY };
+});
 
-	tooltip.style.left=document.body.scrollLeft+event.clientX+l;
-	tooltip.style.top=document.body.scrollTop+event.clientY+r;
+function show_tooltip(title,detail,al,l,r){
+	tooltip.style.left = mousePosition.x;
+	tooltip.style.top = mousePosition.y+window.pageYOffset;
 	tooltip.innerHTML="";
 	tooltip.innerHTML = tooltip.innerHTML+"<TABLE border=\"1\" bordercolor=\"blue\"><TR bgcolor=\"blue\"><TD align=\"center\"><B><FONT COLOR=\"#FFFFFF\">"+title+"</FONT></B></TD></TR><TR><TD align=\""+al+"\">"+detail+"</TD></TR></TABLE>";
 	tooltip.style.display="";
@@ -84,6 +88,7 @@ echo $sql;*/
 $sql = "Select name From doctor where name like '".substr($_SESSION["dt_doctor"],0,5)."%' limit 1 ";
 list($appoint_doctor) = Mysql_fetch_row(Mysql_Query($sql));
 
+$doctor = sprintf("%s", $_GET['dr']);
 
 /*switch($_SESSION["dt_doctor"]){
 	case 'ปิยะบุตร บุญมี (ว.29265)': $appoint_doctor ="MD060  ปิยะบุตร บุญม"; Break;
@@ -147,6 +152,20 @@ $dfMonth และ $dfYear ผ่านมาทาง query string ด้วย
    $year = $calTime["year"];         //ปี
 }
 
+// หาข้อมูลแพทย์ไม่อยู่ เพื่อแจ้งเตือนในปฏิทิน
+$monthYear = $month.'-'.($year+543);
+$sql = "SELECT * FROM dr_offline WHERE dateoffline like '%$monthYear' AND name = '$doctor' ";
+$q = mysql_query($sql);
+$dateOffline = array();
+$dayOffline = array();
+if(mysql_num_rows($q)>0){
+	
+	while ($a = mysql_fetch_assoc($q)) { 
+		list($dO, $dM, $dY) = explode('-', $a['dateoffline']);
+		$dayOffline[] = $dO;
+		$dateOffline[] = $a['dateoffline'];
+	}
+}
 
 
 /* เรียกฟังก์ชัน LastDay() ซึ่งเป็นฟังก์ชั่นที่เราสร้างขึ้นเอง เพื่อหา"จำนวนวัน" ของเดือนและปีที่จะแสดงปฏิทิน โดยเก้บไว้ในตัวแปร $Lday */
@@ -194,6 +213,12 @@ if($year == $year2){
 		$title_time = " (นัด ".(12 - date("m") + $month )." เดือน)";
 }
 
+if(count($dayOffline)>0){
+	?>
+	<p>แจ้งแพทย์ไม่อยู่วันที่ <span style="color:red;"><b><?=implode(', ', $dayOffline);?></b></span> <?=$thmonthname[$month - 1].' '.($year+543);?> </p>
+	<?php
+}
+
 echo "<TABLE>
 <TR   valign=\"top\">
 	<TD>";
@@ -235,17 +260,37 @@ if(!checkdate  ( $month + 1, $today  , $year  )){
 	$today2 = $today;
 }
 
+$next_1month = strtotime(date('Y-m-d')." +1 month");
+$next_2month = strtotime(date('Y-m-d')." +2 months");
+$next_3month = strtotime(date('Y-m-d')." +3 months");
+
+$next_6month = strtotime(date('Y-m-d')." +6 months");
+$next_1year = strtotime(date('Y-m-d')." +1 year");
+$next_2year = strtotime(date('Y-m-d')." +2 years");
+
+list($n1mY, $n1mM, $n1mD) = explode('-', date('Y-m-d', $next_1month));
+list($n2mY, $n2mM, $n2mD) = explode('-', date('Y-m-d', $next_2month));
+list($n3mY, $n3mM, $n3mD) = explode('-', date('Y-m-d', $next_3month));
+
+list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
+list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
+list($n2yY, $n2yM, $n2yD) = explode('-', date('Y-m-d', $next_2year));
+
+echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\',\''.$doctor.'\')">&gt;&gt; วันปัจจุบัน</a>&nbsp;||&nbsp;';
+echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\',\''.$doctor.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
+echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\',\''.$doctor.'\')">&gt;&gt; นัด 3เดือน</a>';
+echo '<br>';
 
 echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
-<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."');\">&lt;</a>
+<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."','$doctor');\">&lt;</a>
 </td>
 <td width=\"250\" align=\"center\" colspan=\"5\" bgcolor=\"#F9F4DD\">
 ".$thmonthname[$month - 1]."&nbsp;
 ".($year + 543)." ".$title_time."
 </td>
 <td width=\"50\" align=\"center\">
-<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today2."&dfMonth=".($month + 1)."&dfYear=".$year."');\">&gt;</a>
+<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today2."&dfMonth=".($month + 1)."&dfYear=".$year."','$doctor');\">&gt;</a>
 </td></tr>
 
 <tr><td width=\"50\" align=\"center\" class=\"sunday\">อา</td>
@@ -271,7 +316,10 @@ for ($i=0; $i<=6; $i++) {
          echo "<td width=\"50\" align=\"center\" class=\"norm\">&nbsp;</td>\n";
       }
    }
-   else {                  //แสดงวันที่ในแถวแรกของปฏิทิน
+   else {                  //แสดงวันที่ในแถวแรกของปฏิทิน 
+
+	$checkDateDMY = sprintf("%02d",$iday).'-'.sprintf("%02d", $month).'-'.($year+543);
+
       if ($i == 0 ) {
       //กรณีที่เป็นวันอาทิตย์ และไม่ใช่วันปัจจุบัน
          echo "<td width=\"50\" valign=\"top\" align=\"center\" class=\"sunday\"><A class=\"sunday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('datenew').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\">$iday</A>";
@@ -299,6 +347,11 @@ for ($i=0; $i<=6; $i++) {
 		  }
 
 
+		//   $titleInDetail = '';
+		  if(in_array($checkDateDMY, $dateOffline)>0){
+			$class="sunday";
+			$holiday_detail = 'onmouseover="show_tooltip(\'แพทย์ไม่อยู่\',\'แจ้งเตือนแพทย์ไม่อยู่\',\'center\',\'0\',\'0\')" onmouseout="hid_tooltip();"';
+		  }
 
          echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class."\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('datenew').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\"  ".$holiday_detail.">$iday</A>";
 		  if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
@@ -321,38 +374,56 @@ for ($j=0; $j<=4; $j++) {
 		for ($i=0; $i<=6; $i++) {
 			$holiday_detail = "";
 			if ($iday <= $Lday) {
+
+				$checkDateDMY = sprintf("%02d",$iday).'-'.sprintf("%02d", $month).'-'.($year+543);
+
+				$title = "ผู้ป่วยนัด";
+				$detail = $list_app["A".sprintf("%02d",$iday)]["detail"];
+				if($holiday["A".sprintf("%02d",$iday)]["date"]){ 
+					$title = "วันหยุด";
+					$detail = $holiday["A".sprintf("%02d",$iday)]["detail"];
+				}
+
 			if ($i == 0 ) {
 				if($holiday["A".sprintf("%02d",$iday)]["date"]){
 					$class = "sunday";
-					$holiday_detail = " OnmouseOver = \"show_tooltip('วันหยุด','".$holiday["A".sprintf("%02d",$iday)]["detail"]."','left',-200,-210);\" OnmouseOut = \"hid_tooltip();\" ";
+					$holiday_detail = " OnmouseOver = \"show_tooltip('$title','".$detail."','left',-200,-210);\" OnmouseOut = \"hid_tooltip();\" ";
 				  }else{
 					$class = "norm";
 				  }
 				echo "<td width=\"50\" align=\"center\" class=\"sunday\"><A class=\"sunday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('datenew').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail.">$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
-						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
+						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$detail."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsunday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 						echo "</td>\n";
 			}else  if ($i == 6 ) {
 				if($holiday["A".sprintf("%02d",$iday)]["date"]){
 					$class = "sunday";
-					$holiday_detail = " OnmouseOver = \"show_tooltip('วันหยุด','".$holiday["A".sprintf("%02d",$iday)]["detail"]."','left',-200,-210);\" OnmouseOut = \"hid_tooltip();\" ";
+					$holiday_detail = " OnmouseOver = \"show_tooltip('$title','".$detail."','left',-200,-210);\" OnmouseOut = \"hid_tooltip();\" ";
 				  }else{
 					$class = "norm";
 				  }
 				echo "<td width=\"50\" align=\"center\" class=\"saturday\"><A class=\"saturday\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('datenew').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
 					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
-						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
+						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('$title','".$detail."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appointsaturday\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				echo "</td>\n";
 			}else {
 				if($holiday["A".sprintf("%02d",$iday)]["date"]){
 					$class = "sunday";
-					$holiday_detail = " OnmouseOver = \"show_tooltip('วันหยุด','".$holiday["A".sprintf("%02d",$iday)]["detail"]."','left',-200,-210);\" OnmouseOut = \"hid_tooltip();\" ";
-				  }else{
+					$holiday_detail = " OnmouseOver = \"show_tooltip('$title','".$detail."','left',-200,-210);\" OnmouseOut = \"hid_tooltip();\" ";
+				}else{
 					$class = "norm";
-				  }
-				echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class."\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('datenew').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail." >$iday</A>";
-					if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
-						echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('ผู้ป่วยนัด','".$list_app["A".sprintf("%02d",$iday)]["detail"]."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
+				}
+
+				$titleInDetail = '';
+				if(in_array($checkDateDMY, $dateOffline)>0){
+					$class="sunday";
+					$holiday_detail = 'onmouseover="show_tooltip(\'แพทย์ไม่อยู่\',\'แจ้งเตือนแพทย์ไม่อยู่\',\'center\',\'0\',\'0\')" onmouseout="hid_tooltip();"';
+				
+				}
+
+				echo "<td width=\"50\" align=\"center\" class=\"".$class."\"><A class=\"".$class."\" href=\"javascript:void(0);\" Onclick=\"document.getElementById('datenew').value='".sprintf("%02d",$iday)." ".$thmonthname[$month - 1]." ".($year+543)."';\" ".$holiday_detail.">$iday</A>";
+				if(!empty($list_app["A".sprintf("%02d",$iday)]["sum"]))
+					echo "<BR>(<A HREF=\"javascript:void(0);\" OnmouseOver = \"show_tooltip('$title','".$detail."','left',-250,-210);\" OnmouseOut = \"hid_tooltip();\" class=\"total_appoint".$class."\">".$list_app["A".sprintf("%02d",$iday)]["sum"]."</A>)";
 				echo "</td>\n";
 			}
 		$iday++;
@@ -396,11 +467,11 @@ function newXmlHttp(){
 	return xmlhttp;
 }
 
-function show_carlendar(xxx){
+function show_carlendar(xxx,doctor){
 
 	xmlhttp = newXmlHttp();
 	
-	url = 'ap_putoff.php?action=carlendar' + xxx;
+	url = 'ap_putoff.php?action=carlendar' + xxx + '&dr='+encodeURIComponent(doctor);
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	document.getElementById("div_right_list").innerHTML = xmlhttp.responseText;
@@ -409,7 +480,7 @@ function show_carlendar(xxx){
 
 //-->
 </script>
-<body onLoad="show_carlendar('');">
+<body onLoad="show_carlendar('','<?=$_POST['dr'];?>');">
 <div id="no_print" >
 <center><span class="font3"><strong>โปรแกรมเลื่อนนัด</strong></span></center>
 <a target=_top  href="../nindex.htm"><< ไปเมนู </a><br />

@@ -126,6 +126,10 @@ if( $cDoctor2 === 'MD115' ){
         $yot = 'นาย';
         $cDoctor1 = "ศุภกิตติ มงคล";
         $doctorcode = "พจ. 1254";
+    }else if( $subDoctor === 5 ){
+        $yot = 'น.ส.';
+        $cDoctor1 = "พรชนก มั่งมูล";
+        $doctorcode = "พจ. 1836";
     }
 
     $position = "แพทย์แผนจีน";
@@ -137,7 +141,7 @@ if( $cDoctor2 === 'MD115' ){
     $query = mysql_query($sql);
     $rows = mysql_fetch_array($query);
     $yot = $rows["yot"];
-	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ" || $rows["name"]=="MD163 ศุภกิตติ์ มงคล"){
+	if($rows["name"]=="MD128 ภาคภูมิ พิสุทธิวงษ์" || $rows["name"]=="MD129 ศศิภา ศิริรัตน์" || $rows["name"]=="MD151 กันยกร มาเกตุ" || $rows["name"]=="MD163 ศุภกิตติ์ มงคล" || $rows["name"]=="MD203 พรชนก มั่งมูล"){
         
         $doctorcode = "พจ. ".$rows["doctorcode"];
         $position = "แพทย์แผนจีน";
@@ -186,7 +190,7 @@ $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
     };
 </script>
 <div style="text-align: center;">
-    <img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'>
+    <img  WIDTH=80 HEIGHT=100 SRC='logo.jpg'>
 </div>
 <div style="height: 24px;">
     <div style="float: left; padding-left: 2em;">
@@ -239,7 +243,8 @@ OR $cDoctor2 == 'MD129'
 OR $cDoctor2 == 'MD116' 
 OR $cDoctor2 == 'MD130' 
 OR $cDoctor2 == 'MD151' 
-OR $cDoctor2 == 'MD163'){
+OR $cDoctor2 == 'MD163'
+OR $cDoctor2 == 'MD203'){
 
     if( $inList === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';

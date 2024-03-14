@@ -58,6 +58,7 @@ if($type === 'patdata' && $action === 'save'){
     $txdate = $_POST['txdate'];
     $price = $_POST['price'];
     $paid = $_POST['paid'];
+    $essd = $_POST['essd'];
     $paidcscd = $_POST['paidcscd'];
     $depart = $_POST['depart'];
     $detail = $_POST['detail'];
@@ -65,8 +66,8 @@ if($type === 'patdata' && $action === 'save'){
     $credit_detail = $_POST['credit_detail'];
     
     $sql = "UPDATE `opacc` SET 
-    `date`='$date',`txdate`='$txdate',`price`='$price', `paid`='$paid', `paidcscd`='$paidcscd' , 
-    `depart`='$depart', `detail`='$detail', `credit`='$credit', `credit_detail`='$credit_detail' 
+    `date`='$date',`txdate`='$txdate',`price`='$price', `paid`='$paid', `essd`='$essd', 
+    `paidcscd`='$paidcscd' , `depart`='$depart', `detail`='$detail', `credit`='$credit', `credit_detail`='$credit_detail' 
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
@@ -235,6 +236,9 @@ if ($type === 'patdata') {
         </div>
         <div>
             paid <input type="text" name="paid" id="paid" value="<?=$item['paid'];?>">
+        </div>
+        <div>
+            essd <input type="text" name="essd" id="essd" value="<?=$item['essd'];?>">
         </div>
         <div>
             paidcscd <input type="text" name="paidcscd" id="paidcscd" value="<?=$item['paidcscd'];?>">

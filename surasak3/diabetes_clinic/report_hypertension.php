@@ -6,6 +6,23 @@ require "../includes/functions.php";
 if(!authen()) die('หมดระยะเวลาการใช้งาน <a href="login.php">คลิกที่นี่</a> เพื่อเข้าสู่ระบบอีกครั้ง');
 
 require "header.php";
+
+drop table if EXISTS temp_stat_ht3 ;
+CREATE table temp_stat_ht3 
+select row_id,thidate,vn,hn,ptname,bp1,bp2,bp3,bp4, 
+cast(substring(age,1,2) as UNSIGNED) as age, concat(substring(thidate,1,10),hn) as thaiDateHn, 
+concat((substring(thidate,1,4)-543),substring(thidate,5,6)) as enDate
+from opd 
+where (thidate >= '2565-10-01' and thidate <= '2566-09-30') 
+and cast(substring(age,1,2) as UNSIGNED)>0
+and ( 
+	cast(bp1 as UNSIGNED)!=0 and cast(bp2 as UNSIGNED)!=0 
+);
+
+create index hn on temp_stat_ht3 (hn);
+create index thaiDateHn on temp_stat_ht3 (thaiDateHn);
+
+
 ?>
 <div><h3>สถิติ HT</h3></div>
 <div id="no_print" >
@@ -46,46 +63,27 @@ if(isset($_POST['y_start'])){
 }
 
 // temp สำหรับแสดงผลรายเดือน (ภายใน 1 ปี ผู้ป่วยมาตรวจกี่ครั้งก็จะนับไปตามจำนวนนั้น)
-$sql_temp = "
-CREATE TEMPORARY TABLE hyper_temp 
+$sql_temp = "CREATE TEMPORARY TABLE hyper_temp 
 ( thidate DATE NOT NULL ) 
 SELECT * 
 FROM hypertension_history 
-WHERE thidate LIKE '$date1%';
-";
-//echo $sql_temp;
+WHERE thidate LIKE '$date1%';";
 mysql_query($sql_temp);
 
 // จำนวนผู้ป่วย HT ทั้งหมดที่ไม่สนใจเคสต่างๆ
-$sql = "
-SELECT COUNT(`hn`) AS `rows`, DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`
+$sql = "SELECT COUNT(`hn`) AS `rows`, DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`
 FROM hyper_temp
-GROUP BY MONTH(`thidate`)
-";
+GROUP BY MONTH(`thidate`)";
 $q = mysql_query($sql);
 $all_year = array();
 while($item = mysql_fetch_assoc($q)){
 	$all_year[$item['thidate']] = $item['rows'];
 }
 
-
 if(isset($_POST['search']) && $_POST['search'] == 'search'){
     
     // Set default variable
-	$months = array(
-		'01' => 'ม.ค.', 
-		'02' => 'ก.พ.', 
-		'03' => 'มี.ค', 
-		'04' => 'เม.ษ.', 
-		'05' => 'พ.ค.', 
-		'06' => 'มิ.ย.', 
-		'07' => 'ก.ค.', 
-		'08' => 'ส.ค.', 
-		'09' => 'ก.ย.', 
-		'10' => 'ต.ค.', 
-		'11' => 'พ.ย.', 
-		'12' => 'ธ.ค.'
-	);
+	$months = $def_month_th;
 	$key_year = $date1;
     
 ?>
@@ -123,8 +121,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				OR `joint_disease_paralysis` = 'Y' 
 			) 
 			AND (`bp1` != '' OR `bp2` != '') 
-			AND bp1 < 140 
-			AND bp2 < 80 
+			AND ( bp1 < 140 AND bp2 < 80 ) 
 			GROUP BY MONTH(`thidate`);";
 			$q = mysql_query($sql);
 			$lists = array();
@@ -150,7 +147,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				<?php 
 			}
 			?>
-		<tr/>
+		</tr>
 		<tr>
 			<td>ที่มีโรคร่วมทั้งหมด</td>
 			<td></td>
@@ -191,12 +188,11 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			<td></td>
 			<?php 
 			$sql = "SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
-FROM hyper_temp
-WHERE (`bp1` != '' OR `bp2` != '') 
-AND bp1 < 140 
-AND bp2 < 90 
-AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '')
-GROUP BY MONTH( thidate );";
+			FROM hyper_temp
+			WHERE (`bp1` != '' OR `bp2` != '') 
+			AND (bp1 < 140 AND bp2 < 90) 
+			AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '')
+			GROUP BY MONTH( thidate );";
 			$q = mysql_query($sql);
 			$lists = array();
 			while($item = mysql_fetch_assoc($q)){
@@ -295,5 +291,4 @@ GROUP BY MONTH( thidate );";
 		</tr>
 	</table>
 <?php } // End if submit ?>
-<?php require "footer.php";
-?>
+<?php require "footer.php"; ?>

@@ -6,8 +6,8 @@ if($_SESSION['sIdname']!=='krit')
     exit;
 }
 
-$dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-// $dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 $date = $_REQUEST['date'];
 $hn = $_REQUEST['hn'];
 if(empty($date) OR empty($hn))
@@ -26,12 +26,13 @@ if($type === 'dphardep')
     <fieldset>
         <legend>dphardep</legend>
         <div>
-            <table>
+            <table width="100%">
                 <tr>
                     <th>row_id</th>
                     <th>date</th>
                     <th>ptname</th>
                     <th>hn</th>
+                    <th>ptright</th>
                     <th>price</th>
                     <th></th>
                 </tr>
@@ -45,8 +46,9 @@ if($type === 'dphardep')
                         <td><?=$a['date'];?></td>
                         <td><?=$a['ptname'];?></td>
                         <td><?=$a['hn'];?></td>
+                        <td><?=$a['ptright'];?></td>
                         <td><?=$a['price'];?></td>
-                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=dphardep" target="editPage">·°È‰¢</a><td>
+                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=dphardep" target="editPage">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a><td>
                     </tr>
                     <?php
 
@@ -65,7 +67,7 @@ if($type === 'dphardep')
     <fieldset>
         <legend>ddrugrx</legend>
         <div>
-            <table>
+            <table width="100%">
                 <tr>
                     <th>row_id</th>
                     <th>date</th>
@@ -87,7 +89,7 @@ if($type === 'dphardep')
                         <td><?=$a['tradname'];?></td>
                         <td><?=$a['amount'];?></td>
                         <td><?=$a['price'];?></td>
-                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=ddrugrx" target="editPage">·°È‰¢</a><td>
+                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=ddrugrx" target="editPage">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a><td>
                     </tr>
                     <?php
                 }

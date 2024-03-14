@@ -33,11 +33,11 @@ if ($action == 'insert') {
             $dob = $item['dob'];
             $sex = $item['sex'];
 
-            if( $item['item_sso'] == 'bs' ){
-                $lab_sso_items = array($item['item_sso']);
-            }else{
+            // if( $item['item_sso'] == 'bs' ){
+            //     $lab_sso_items = array($item['item_sso']);
+            // }else{
                 $lab_sso_items = explode(',',  $item['item_sso']);
-            }
+            // }
 
             $clinicalinfo = "ตรวจสุขภาพประจำปี$year";
 
@@ -109,27 +109,32 @@ if ($action == 'insert') {
 
                 }else{
 
-                    // กรณีรายการ lab ปกติ
-                    $sql_detail = "SELECT `code`,`oldcode`,`detail`, `codex` FROM `labcare` WHERE `code` = '$lab_item' LIMIT 1 ";
-                    $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
-                    $num = mysql_num_rows($q);
-                    if( $num > 0 ){
-                        list($code, $oldcode, $detail, $codex) = mysql_fetch_row($q); 
+                    if(!empty($lab_item)){
 
-                        if(empty($oldcode)){ $oldcode = $codex; }
-                        if(empty($detail)){ $detail = $codex; }
                     
-                        $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                            `labnumber` , `labcode`, `labcode1` , `labname` 
-                        ) VALUES ( 
-                            '$labnumber', '$code', '$oldcode', '$detail'
-                        );";
-                        $insert = $db->insert($orderdetail_sql);
-                        if( $insert !== true ){
-                            $msg .= errorMsg(NULL, $insert['id']);
+                        // กรณีรายการ lab ปกติ
+                        $sql_detail = "SELECT `code`,`oldcode`,`detail`, `codex` FROM `labcare` WHERE `code` = '$lab_item' LIMIT 1 ";
+                        $q = mysql_query($sql_detail) or die( " select labcare : ".mysql_error() ) ;
+                        $num = mysql_num_rows($q);
+                        if( $num > 0 ){
+                            list($code, $oldcode, $detail, $codex) = mysql_fetch_row($q); 
+
+                            if(empty($oldcode)){ $oldcode = $codex; }
+                            if(empty($detail)){ $detail = $codex; }
+                        
+                            $orderdetail_sql = "INSERT INTO `orderdetail` ( 
+                                `labnumber` , `labcode`, `labcode1` , `labname` 
+                            ) VALUES ( 
+                                '$labnumber', '$code', '$oldcode', '$detail'
+                            );";
+                            $insert = $db->insert($orderdetail_sql);
+                            if( $insert !== true ){
+                                $msg .= errorMsg(NULL, $insert['id']);
+                            }
+
                         }
 
-                    }
+                    } // if not empty lab item
 
                 }
                 
@@ -311,7 +316,7 @@ if( $view == 'search' ){
             ?>
             <tr>
                 <td><?=$i;?></td>
-                <td><?=$item['name'];?></td>
+                <td><?=$item['name'];?><br><span style="font-size:10px; color: green;"><?=$item['code'];?></span></td>
                 <td align="center">
                     <?php 
                     $show_link = true;

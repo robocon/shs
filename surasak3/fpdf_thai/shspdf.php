@@ -1,6 +1,6 @@
 <?php
 
-// include �����ѡ
+// include ตัวหลัก
 include 'fpdf_thai.php';
 
 class PDF_JavaScript extends FPDF_Thai {
@@ -66,7 +66,7 @@ class PDF_AutoPrint extends PDF_JavaScript{
 
 
 /**
- * @todo �ѧ�ջѭ������ͧ��� extends ����� class �ҡ��ͨӡѴ��ҹ Version �ͧ PHP 
+ * @todo ยังมีปัญหาเรื่องการ extends หลายๆ class จากข้อจำกัดด้าน Version ของ PHP 
  */
 class Pre_SHSPdf extends PDF_AutoPrint
 {
@@ -99,7 +99,7 @@ class Pre_SHSPdf extends PDF_AutoPrint
 	}
 	
 	function conv($string) {
-		return iconv('UTF-8', 'TIS-620', $string);
+		return $string;
 	}
 
 	function LoadData($file){
@@ -537,4 +537,7 @@ class SHSPdf extends Pre_SHSPdf {
 			}
 		}
 	}
+
+	
+
 } 

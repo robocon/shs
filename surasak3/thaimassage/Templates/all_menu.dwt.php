@@ -3,9 +3,9 @@ session_start();
 ?>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- TemplateBeginEditable name="doctitle" -->
-    <title>ระบบรายงานเหตุการณ์สำคัญ/อุบัติการณ์/ความไม่สอดคล้อง</title>
+    <title>๏ฟฝะบ๏ฟฝ๏ฟฝ๏ฟฝยงาน๏ฟฝหตุก๏ฟฝรณ๏ฟฝ๏ฟฝำคัญ/๏ฟฝุบัติก๏ฟฝรณ๏ฟฝ/๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝอด๏ฟฝ๏ฟฝ๏ฟฝอง</title>
     <!-- TemplateEndEditable -->
     <link type="text/css" href="../menu.css" rel="stylesheet" />
     <script type="text/javascript" src="../jquery.js"></script>
@@ -51,16 +51,16 @@ div#copyright a:hover { color:#fff; }*/
 <div id="no_print">
 <div id="menu">
   <ul class="menu">
-        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>โปรแกรมโรงพยาบาล</span></a></li>
-        <li><a href="report_massage_diag.php" class="parent"><span>สถิติงานนวดแผนไทย</span></a></li>
+        <li><a href="http://192.168.1.2/sm3/nindex.htm" class="parent"><span>๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝรง๏ฟฝ๏ฟฝาบ๏ฟฝ๏ฟฝ</span></a></li>
+        <li><a href="report_massage_diag.php" class="parent"><span>สถิติงาน๏ฟฝวดแผน๏ฟฝ๏ฟฝ</span></a></li>
      	
-         <li><a href="#"><span>รายงานนวดแผนไทย</span></a></li>
+         <li><a href="#"><span>๏ฟฝ๏ฟฝยงาน๏ฟฝวดแผน๏ฟฝ๏ฟฝ</span></a></li>
      
      <ul>
-	  	<li class="last"><a href="report_massage.php"><span>ทั้งหมด</span></a></li>
-	  	<li class="last"><a href="report_staf_massage.php"><span>แยกตาม ผู้นวดแต่ละคน</span></a></li>
-          	<li class="last"><a href="report_massage_emg.php"><span>เฉพาะ EMG</span></a></li>
-            <li class="last"><a href="report_massage_foot.php"><span>นวดผ่าเท้า</span></a></li>
+	  	<li class="last"><a href="report_massage.php"><span>๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
+	  	<li class="last"><a href="report_staf_massage.php"><span>๏ฟฝยก๏ฟฝ๏ฟฝ๏ฟฝ ๏ฟฝ๏ฟฝ๏ฟฝวด๏ฟฝ๏ฟฝ๏ฟฝะค๏ฟฝ</span></a></li>
+          	<li class="last"><a href="report_massage_emg.php"><span>เฉพ๏ฟฝ๏ฟฝ EMG</span></a></li>
+            <li class="last"><a href="report_massage_foot.php"><span>๏ฟฝวด๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</span></a></li>
         
        	</ul>
     </ul>

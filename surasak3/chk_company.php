@@ -11,7 +11,7 @@ if( $action == 'save' ) {
     $id = input_post('id');
     $company_code = input_post('company_code');
     $date_checkup = input_post('date_checkup');
-
+    $yearchk = sprintf("%d", $_POST['yearchk']);
     $typeReport = $_REQUEST['typeReport'];
 
     $msg = 'บันทึกข้อมูลเรียบร้อย';
@@ -23,9 +23,10 @@ if( $action == 'save' ) {
         if( $id > 0 ){
             $sql = "UPDATE `chk_company_list`
             SET
-            `name` = '$company',
-            `code` = '$company_code',
-            `date_checkup` = '$date_checkup'
+            `name` = '$company', 
+            `code` = '$company_code', 
+            `date_checkup` = '$date_checkup', 
+            `yearchk` = '$yearchk' 
             WHERE `id` = '$id';";
             $save = $db->update($sql);
 
@@ -42,12 +43,12 @@ if( $action == 'save' ) {
             // $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
             $msg = "บันทึกข้อมูลเรียบร้อย";
 
-            $year = get_year_checkup(true);
+            // $year = get_year_checkup(true);
 
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
                 VALUES (
-                    NULL,'$company','$company_code','$date_checkup','$year','1','$typeReport'
+                    NULL,'$company','$company_code','$date_checkup','$yearchk','1','$typeReport'
                 );";
                 $save = $db->insert($sql);
 
@@ -62,6 +63,7 @@ if( $action == 'save' ) {
 
     redirect('chk_company.php', $msg);
     exit;
+
 }elseif ($action == 'del') {
     
     if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
@@ -78,8 +80,12 @@ if( $action == 'save' ) {
 
 ?>
 <!DOCTYPE html>
-<html>
-<head></head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการข้อมูล ตรวจสุขภาพ</title>
+</head>
 <body>
 <?php
 
@@ -117,37 +123,69 @@ ol > li {
 <fieldset>
     <legend>เพิ่มบริษัทใหม่</legend>
     <form action="chk_company.php" method="post">
-        <div>
-            ชื่อบริษัท : <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
-        </div>
-        <div>
-            รหัสบริษัท : <input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>>
-        </div>
-        <div>
-            วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
-            <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
-        </div>
-        <div>
-            เลือกรายงาน : <select name="typeReport" id="">
-                <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
-                <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
-            </select>
-        </div>
-        <?php 
-        if( $id > 0 ){
-            ?>
-            <div>
-                <a href="<?=$del_txt;?>">ลบข้อมูลบริษัท</a>
-            </div>
+        <table>
+            <tr>
+                <td align="right">ชื่อบริษัท : </td>
+                <td><input type="text" name="company" value="<?=$name;?>" style="width: 40%; "></td>
+            </tr>
+            <tr>
+                <td align="right">รหัสบริษัท : </td>
+                <td><input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>></td>
+            </tr>
+            <tr>
+                <td align="right">วันที่ตรวจ : </td>
+                <td>
+                    <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
+                    <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">เลือกรายงาน : </td>
+                <td>
+                    <select name="typeReport" id="">
+                        <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
+                        <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">รอบปีงบประมาณ : </td>
+                <td>
+                    <?php 
+                    $year_checkup = get_year_checkup(true);
+                    $year_list = range($year_checkup, $year_checkup+1);
+                    ?>
+                    <select name="yearchk" id="yearchk">
+                        <?php 
+                        foreach ($year_list as $key => $value) {
+                            ?>
+                            <option value="<?=$value;?>"><?=$value;?></option>
+                            <?php
+                        }
+                        ?>
+                        
+                    </select>
+                </td>
+            </tr>
             <?php 
-        }
-        ?>
-        
-        <div>
-            <button type="submit">บันทึกข้อมูล</button>
-            <input type="hidden" name="action" value="save">
-            <input type="hidden" name="id" value="<?=$id;?>">
-        </div>
+            if( $id > 0 ){
+                ?>
+                <tr>
+                    <td colspan="2">
+                        <a href="<?=$del_txt;?>">ลบข้อมูลบริษัท</a>
+                    </td>
+                </tr>
+                <?php 
+            }
+            ?>
+            <tr>
+                <td colspan="2">
+                    <button type="submit">บันทึกข้อมูล</button>
+                    <input type="hidden" name="action" value="save">
+                    <input type="hidden" name="id" value="<?=$id;?>">
+                </td>
+            </tr>
+        </table>
     </form>
 </fieldset>
 <br>
@@ -157,7 +195,7 @@ ol > li {
         <div> เลือกปี : 
             <?php 
             $year_selected = input_post('year_selected', date('Y') );
-            $year_range = range('2018',get_year_checkup(true, true));
+            $year_range = range('2018',get_year_checkup(true, true)+1);
             getYearList('year_selected', true, $year_selected, $year_range);
             ?>
         </div>
@@ -191,10 +229,9 @@ if ( $views == 'search' ) {
             <th style="width: 15%;">ชื่อบริษัท</th>
             <th style="width: 20%;">รหัสเชื่อมข้อมูล</th>
             <th>ช่วงเวลาที่ตรวจ</th>
-            <th>รอบปีงบประมาณ</th>
+            <th>ปีงบ</th>
             <th>ลงผล/พิมพ์ผล</th>
             <th>พิมพ์ผล ปกส.</th>
-            <th></th>
         </tr>
         <?php
         $i = 1;
@@ -213,34 +250,33 @@ if ( $views == 'search' ) {
             ?>
             <tr style="vertical-align:top;">
                 <td><?=$i;?></td>
-                <td><a href="chk_show_user.php?part=<?=$item['code'];?>"><?=$item['name'];?></a></td>
-                <td><?=$item['code'];?> (<?=$userRows;?>ราย)</td>
+                <td><a href="chk_show_user.php?part=<?=$item['code'];?>" target="_blank" title="ดูรายชื่อทั้งหมด"><?=$item['name'];?></a></td>
+                <td><?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>
                 <td style="vertical-align: top;">
-                    <ol style="margin:0;">
+                    <ol class="itemMenu">
                         <li><a href="out_result.php?part=<?=$item['code'];?>" target="_blank">ลงข้อมูลซักประวัติ</a></li>
                         <li><a href="<?=$report;?>" target="_blank">ผลตรวจรายบุคคล</a></li>
                         <li><a href="<?=$reportAll;?>" target="_blank">สรุปผลตรวจ</a></li>
-                        <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li>
-                        <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB</a> <img src="images/icons/update-icon.gif" alt=""></li>
+                        <!-- <li><a href="chk_all_lab.php?part=<?=$item['code'];?>" target="_blank">ผล Lab ทั้งหมด</a></li> -->
+                        <li><a href="chk_lab_sticker.php?part=<?=$item['code'];?>" target="_blank">พิมพ์สติกเกอร์ LAB</a></li>
                         <!-- <li><a href="chk_report_all_money.php?camp=<?=$item['code'];?>" target="_blank">ทดสอบ ค่าใช้จ่ายจากรายการแลป (ตรวจนอกรพ.)</a></li> -->
                         <li>
                             <a href="chk_print_xray.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ใบนำทาง X-Ray</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ผลแลป METAMP</a>
-                        </li>
+                        </li> -->
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
-                    <ol style="margin:0;">
+                    <ol class="itemMenu">
                         <li><a href="chk_cross_sso.php?camp=<?=$item['code'];?>" target="_blank">สรุปผลรวม</a></li>
                         <li><a href="chk_print_all_sso.php?part=<?=rawurlencode($item['code']);?>" target="_blank">พิมพ์ผลตามแบบฟอร์มประกันสังคม</a></li>
                         <li><a href="chk_money_sso.php?part=<?=$item['code'];?>" target="_blank">พิมพ์ค่าใช้จ่าย</a></li>
                     </ol>
                 </td>
-                <td><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
             </tr>
             <?php
             $i++;

@@ -43,7 +43,7 @@ $dbi->set_charset('utf8');
         $date = $_POST['findDate'];
         $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname` 
         FROM ( 
-            SELECT `hn`, `row_id`, `date`, `depart`, `detail`, `price` 
+            SELECT `hn`, `row_id`, `date`, `depart`, `detail`, `price`, vn
             FROM `opacc` 
             WHERE `date` LIKE '$date%' 
             AND ( `depart` = '' OR `depart` IS NULL ) 
@@ -57,6 +57,7 @@ $dbi->set_charset('utf8');
                 <td>row_id</td>
                 <td>date</td>
                 <td>hn</td>
+                <td>vn</td>
                 <td>ptname</td>
                 <td>depart</td>
                 <td>detail</td>
@@ -70,6 +71,7 @@ $dbi->set_charset('utf8');
                 <td><a href="edit_opacc.php?date=<?=$shortDate;?>&hn=<?=$item['hn'];?>" target="_blank" class="opaccId"><?=$item['row_id'];?></a></td>
                 <td><?=$item['date'];?></td>
                 <td><?=$item['hn'];?></td>
+                <td><?=$item['vn'];?></td>
                 <td><?=$item['ptname'];?></td>
                 <td><?=$item['depart'];?></td>
                 <td><?=$item['detail'];?></td>

@@ -151,16 +151,18 @@ $sVn=$_POST['vnnow'];
 			array_push($sAccno,$_POST['nAccno'.$r]);
 		}	
 	}
-	$sqlname = "select ptname,icd10 from opday where hn = '$nhn' and thidate like '%".substr($_SESSION['dDate'][0],0,10)."%' ";
+	$sqlname = "select ptname,icd10,diag_thai from opday where hn = '$nhn' and thidate like '%".substr($_SESSION['dDate'][0],0,10)."%' ";
 	//echo $sqlname;
 	$rowname = mysql_query($sqlname);
-	list($sPtname,$icd10) = mysql_fetch_array($rowname);
+	list($sPtname,$icd10,$diag_thai) = mysql_fetch_array($rowname);
 	
-	if(!empty($icd10)){
-		$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
-		//echo $query."<br>";
-		$result1 = mysql_query($query1) or die(mysql_error());
-		list($diag_thai) = mysql_fetch_array($result1);
+	if(!empty($icd10)){  //ถ้ามีการลงรหัสโรค
+		if(empty($diag_thai)){  //ถ้า diag_thai เป็นค่าว่าง
+			$query1 = "SELECT diag_thai FROM icd10 WHERE code = '".$icd10."'";			
+			//echo $query."<br>";
+			$result1 = mysql_query($query1) or die(mysql_error());
+			list($diag_thai) = mysql_fetch_array($result1);
+		}
 		
 	}	
 	
@@ -320,7 +322,7 @@ $sVn=$_POST['vnnow'];
 		
 	if(!empty($diag_thai)){ //ถ้ามีการให้รหัสโรคของแพทย์ ให้เอาชื่อภาษาไทยมาแสดงในใบเสร็จรับเงิน แก้ไขวันที่ 6/1/64
 		if($icd10=="B24"){
-			echo "เชื้อราในสมอง";
+			echo "ภูมิคุ้มกันบกพร่อง";
 		}else{
 			echo $diag_thai;
 		}
@@ -460,9 +462,18 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 				//echo $sql."<br>";
 				$qresult = mysql_query($sql);
 				$numrow=mysql_num_rows($qresult);
+				if($numrow < 1){  //ถ้าหาข้อมูลยาไม่เจอ	
+					$sql="select dpy_code,salepri,freepri,freelimit,medical_sup_free from druglst_pt where drugcode = '$drugcode'";
+					//echo $sql."<br>";
+					$qresult = mysql_query($sql);
+					$numrow=mysql_num_rows($qresult);					
+					list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);				
+				}else{	
+					list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);
+				}
 				
 				
-				list ($dpy_code,$salepri,$freepri,$freelimit,$medical_sup_free) = mysql_fetch_array($qresult);
+				
 				if($numrow){
 					array_push($dpyaa,$dpy_code);	
 				}
@@ -594,7 +605,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false && document.f2.credit[30].checked == false && document.f2.credit[31].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false && document.f2.credit[30].checked == false && document.f2.credit[31].checked == false && document.f2.credit[32].checked == false && document.f2.credit[33].checked == false && document.f2.credit[34].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[2].checked == true || document.f2.credit[4].checked == true) && document.f2.detail_1.value == ''){
@@ -780,8 +791,8 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ฮักกันยามเฒ่า$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ฮักกันยามเฒ่า$yPrefix</TD>			
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เซ็นทรัล' onclick=\"detailhead4.style.display='none';\"></TD>
-		 	<TD>บริษัทเซ็นทรัล</TD>			
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคมทุพพลภาพ' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ประกันสังคมทุพพลภาพ</TD>			
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการต้อหิน' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>โครงการต้อหิน</TD>			
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='SSOCHKUP$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
@@ -821,7 +832,22 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 	<TD>จ่ายตรง กทม. <span style='color:red;'>(เริ่มใช้ 1 ก.ค. 65)</span></TD>		
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>																 
-		 </TR>		 
+		 </TR>	
+
+		 <TR>
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กสทช' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>กสทช.</TD>			
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กฟผ' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>กฟผ.</TD>			
+			<TD>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการตา 72 พรรษา' onclick=\"detailhead4.style.display='none';\"></TD>
+			<TD>โครงการตา 72 พรรษา</TD>					
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>		
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>																 
+		 </TR>			 
 		 		 
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";

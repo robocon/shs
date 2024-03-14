@@ -13,9 +13,20 @@ $thiyr = $_POST['thiyr'];
 
 $appd=$appdate.' '.$appmo.' '.$thiyr;
 $appd_encode = rawurlencode($appd);
-print "<font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br>";
-print "<b>นัดมาวันที่</b> $appd ";
-print ".........<input type=button onclick='history.back()' value=' << กลับไป '>";
+
+?>
+<div>
+&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'> &lt;&lt; ไปเมนู</a>&nbsp;&nbsp;&nbsp;&nbsp;<input type=button onclick='history.back()' value=' &lt;&lt; กลับไปหน้าเลือกวันที่ '>&nbsp;&nbsp;&nbsp;&nbsp;<a href="opd_disappoint.php?date=<?=$appd_encode;?>" target="_blank">ดูยอดผู้ป่วยไม่มาตามนัด</a>
+</div>
+<div>
+<!-- <font face='Angsana New'><b>รายชื่อคนไข้นัดตรวจ</b><br> -->
+<h3>รายชื่อคนไข้นัดตรวจ</h3>
+<b>นัดมาวันที่</b> <?=$appd;?>
+</div>
+<?php
+// print "";
+// print "<b>นัดมาวันที่</b> $appd ";
+// print ".........";
 
 include("connect.inc");
 // $query="CREATE TEMPORARY TABLE appoint1 
@@ -38,7 +49,7 @@ ORDER BY a.`date` ASC ";
 $result = mysql_query($query) or die( mysql_error() );
 
 
-print "จำนวนผู้ป่วยนัดแต่ละแพทย์ กดเลือกแพทย์ = รายชื่อผู้ป่วย<a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
+print "จำนวนผู้ป่วยนัดแต่ละแพทย์ กดเลือกแพทย์ = รายชื่อผู้ป่วย<br> ";
 $query = "SELECT  codedoctor,COUNT(*) AS duplicate,drcode,doctor AS full_name
 FROM appoint1 where codedoctor <> 'MD007' 
 GROUP BY codedoctor 
@@ -90,7 +101,7 @@ $num= $duplicate+$num;
  print "จำนวนผู้ป่วยทั้งหมด.... $num..คน</a><br> ";
    include("unconnect.inc");
 ?>
-
+<br>
 
 <?php
 include("connect.inc");

@@ -22,7 +22,12 @@ if ( $action == 'print' ) {
     $count_etc = input_post('count_etc');
     $row_print = input_post('row_print');
 
-    $ua_check = $_POST['ua_check'];
+    // $ua_check = $_POST['ua_check'];
+
+    $noDisplayBs = sprintf("%d", $_POST['noDisplayBs']);
+    if(empty($noDisplayBs)){
+        $noDisplayBs = 0;
+    }
 
     if ( !empty($row_print) ) {
         list($min,$max) = explode('-', $row_print);
@@ -50,12 +55,28 @@ if ( $action == 'print' ) {
         $ptname = trim($a['name']).' '.trim($a['surname']);
         $ptname = iconv("UTF-8", "TIS-620", $ptname);
 
-        $code_exam = $a['exam_no'];
-        if( empty($code_exam) ){
-            $code_exam = (date('y') + 43).date('md').sprintf('%03d', $a['pid']);
-        }
 
-        $user_number = (int) substr($code_exam,6);
+        // $code_exam = $a['exam_no'];
+        // if( empty($code_exam) ){
+        //     $code_exam = (date('y') + 43).date('md').sprintf('%03d', $a['pid']);
+        // }
+        // $user_number = (int) substr($code_exam,6);
+        $user_number = $a['pid'];
+        if(empty($a['pid'])){
+            if(strlen($a['exam_no'])<5){
+                $user_number = $a['exam_no'];
+
+            }elseif (strlen($a['exam_no'])==5) {
+                $user_number = substr($a['exam_no'],2);
+
+            }elseif (strlen($a['exam_no'])==7) {
+                $user_number = substr($a['exam_no'],4);
+
+            }elseif (strlen($a['exam_no'])==9) {
+                $user_number = substr($a['exam_no'],6);
+
+            }
+        }
         $normal_code = $code_exam.'01';
         $chem_code = $code_exam.'02';
         $ua_code = $code_exam.'03';
@@ -112,27 +133,8 @@ if ( $action == 'print' ) {
 
         if( $count_ua > 0 ){ 
             for ($i=0; $i < $count_ua; $i++) { 
-                $pdf->AddPage();
-
-                $pdf->SetFont('AngsanaNew','',23);
-                $pdf->TextWithDirection(5,20,$user_number,'U');
-
-                $pdf->SetXY(2, 2);
-                $pdf->SetFont('AngsanaNew','',13);
-                $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
-                $pdf->SetXY(2, 7);
-                $pdf->Cell(0, 5, $hn, 0, 1, 'C');
-
-                // x=7, y=12, width=36, height=10
-                $pdf->Code128(7,12, $ua_code,36,10);
-
-                $pdf->SetXY(7, 22);
-                $pdf->Cell(36, 5, $ua_code, 0, 1, 'C');
-
-                $pdf->SetFont('AngsanaNew','',23);
-                $pdf->TextWithDirection(48,18,'03','U');
-
-                if(!empty($ua_check))
+                
+                if(!empty($count_ua_barcode))
                 {
                     $pdf->AddPage();
                     $pdf->SetFont('AngsanaNew','',23);
@@ -148,6 +150,26 @@ if ( $action == 'print' ) {
 
                     $pdf->SetXY(2, 12);
                     $pdf->Cell(0, 5, 'UA', 0, 1, 'C');
+
+                    $pdf->SetFont('AngsanaNew','',23);
+                    $pdf->TextWithDirection(48,18,'03','U');
+                }else{
+                    $pdf->AddPage();
+
+                    $pdf->SetFont('AngsanaNew','',23);
+                    $pdf->TextWithDirection(5,20,$user_number,'U');
+
+                    $pdf->SetXY(2, 2);
+                    $pdf->SetFont('AngsanaNew','',13);
+                    $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
+                    $pdf->SetXY(2, 7);
+                    $pdf->Cell(0, 5, $hn, 0, 1, 'C');
+
+                    // x=7, y=12, width=36, height=10
+                    $pdf->Code128(7,12, $ua_code,36,10);
+
+                    $pdf->SetXY(7, 22);
+                    $pdf->Cell(36, 5, $ua_code, 0, 1, 'C');
 
                     $pdf->SetFont('AngsanaNew','',23);
                     $pdf->TextWithDirection(48,18,'03','U');
@@ -221,32 +243,44 @@ if ( $action == 'print' ) {
             }
         }
 
-        $sqlBs = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
-        $qBs = $dbi->query($sqlBs);
-        if($qBs->num_rows > 0)
-        {
-            $bs = $qBs->fetch_assoc();
-            $bs_user_number = (int) substr($bs['labnumber'],6);
-            $bs_code = $bs['labnumber'].'02';
-            
-            $pdf->AddPage();
+        /*
+        // ถ้ามีการติ๊ก "ไม่แสดงสติกเกอร์ BS" ค่าของ $noDisplayBs จะเป็น 1
+        if($noDisplayBs==0){ 
+            $sqlBs = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
+            $qBs = $dbi->query($sqlBs);
+            if($qBs->num_rows > 0)
+            {
+                $bs = $qBs->fetch_assoc();
+                $bs_user_number = (int) substr($bs['labnumber'],6);
+                $bs_code = $bs['labnumber'].'02';
+                
+                $pdf->AddPage();
 
-            $pdf->SetFont('AngsanaNew','',23);
-            $pdf->TextWithDirection(5,20,$bs_user_number,'U');
+                $pdf->SetFont('AngsanaNew','',23);
+                $pdf->TextWithDirection(5,20,$bs_user_number,'U');
 
-            $pdf->SetXY(2, 2);
-            $pdf->SetFont('AngsanaNew','B',13);
-            $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
+                $pdf->SetXY(2, 2);
+                $pdf->SetFont('AngsanaNew','B',13);
+                $pdf->Cell(0, 5, $ptname, 0, 1, 'C');
 
-            $pdf->SetXY(2, 7);
-            $pdf->SetFont('AngsanaNew','B',20);
-            $pdf->Cell(0, 5, $hn.' (BS)', 0, 1, 'C');
+                $pdf->SetXY(2, 7);
+                $pdf->SetFont('AngsanaNew','B',20);
+                $pdf->Cell(0, 5, $hn.' (BS)', 0, 1, 'C');
 
-            $pdf->Code128(7,12, $bs_code,36,10);
+                $pdf->Code128(7,12, $bs_code,36,10);
 
+            }
         }
-
+        */
+        
         if( $count_stool > 0 ){ 
+
+            $stool_txt = 'STOOL';
+            $stool_thai = sprintf("%d", $_POST['stool_thai']);
+            if ($stool_thai==1) {
+                $stool_txt = 'อุจจาระ';
+            }
+
             for ($i=0; $i < $count_stool; $i++) { 
                 
                 $pdf->AddPage();
@@ -260,7 +294,7 @@ if ( $action == 'print' ) {
 
                 $pdf->SetXY(2, 17);
                 $pdf->SetFont('AngsanaNew','B',20);
-                $pdf->Cell(0, 5, $user_number.'   STOOL', 0, 1, 'C');
+                $pdf->Cell(0, 5, $user_number.'   '.$stool_txt, 0, 1, 'C');
             }
         }
 

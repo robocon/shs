@@ -1,15 +1,12 @@
 <?php
 session_start();
 if($_SESSION["sOfficer"] == ""){
-	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
-exit();
+	exit();
 }
 // ini_set('display_errors', '1');
 // error_reporting(1);
-
-
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
@@ -18,8 +15,19 @@ if(isset($_GET["action"])){
 include("connect.inc");
 //include("checklogin.php");
 
+include_once 'includes/JSON.php';
+$json = new Services_JSON();
+
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
+
 // แจ้งเตือนแพ้ยา
-$sqldrugreact="SELECT * FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) GROUP BY `drugcode` ";
+$sqldrugreact="SELECT * 
+FROM `drugreact` WHERE `hn` = '".$_SESSION["hn_now"]."' 
+AND ( `drugcode` != '' AND `drugcode` IS NOT NULL ) 
+AND advreact != '' 
+AND g6pd IS NULL 
+GROUP BY `drugcode` ";
 $resultdrugreact =mysql_query($sqldrugreact) or die(mysql_error());
 $rowdg=mysql_num_rows($resultdrugreact);
 $drugreact_items = array();
@@ -27,19 +35,56 @@ if($rowdg > 0){
 	$aai=1;
 
 	while($arrdg = mysql_fetch_assoc($resultdrugreact)){ 
-		$txtdrugreact.='( '.$aai.' ) '.$arrdg['drugcode'].': '.$arrdg['tradname'].' / '.$arrdg['genname'];
+		$txtdrugreact.='( '.$aai.' ) '.$arrdg['drugcode'].': '.$arrdg['tradname'].' ['.$arrdg['genname'].']';
 		$txtdrugreact.='\n';
 		$aai++;
 
-		$drugreact_items[] = $arrdg['drugcode'];
+		$drugreact_items[] = trim($arrdg['drugcode']);
 	}
 	
+}
+
+// แสดงโรคประจำตัวด้านล่าง และหาว่าคนไข้มีโรคประจำตัวเป็น G6PD รึป่าว
+$qOp = $dbi->query("SELECT congenital_disease FROM opcard WHERE hn = '".$_SESSION["hn_now"]."' ");
+$opcard = $qOp->fetch_assoc();
+$opcard_g6pd = false;
+if(preg_match('/(G6PD)/', $opcard['congenital_disease'], $matchs)){
+	$opcard_g6pd = true;
+}
+
+// ถ้าเภสัชได้ติ๊กว่าผู้ป่วยคนนี้มีประวัติการเป็น G6PD ในระบบแพ้ยาให้ทำการดึงรายการยาในกลุ่ม g6pd ออกมา
+$drugreactGroup10 = array();
+$queryG6pdInDrugreact = $dbi->query("SELECT row_id FROM drugreact WHERE hn='".$_SESSION["hn_now"]."' AND g6pd='1'");
+if($queryG6pdInDrugreact->num_rows > 0){
+	$queryGroup10 = $dbi->query("SELECT * FROM drugreact_group_list WHERE drugreact_group = '10' ");
+	while ($g10 = $queryGroup10->fetch_assoc()) {
+		$drugreactGroup10[] = trim($g10['drugcode']);
+	}
 }
 
 // ทดสอบ user สำหรับหมอเป้คนเดียว
 if( $_SESSION['sIdname'] == 'md19921' ){
 	include_once 'includes/connect_md013.php';
 }
+
+function getNSAIDs_List(){
+	global $dbi;
+	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' AND drugcode != '10H014' ORDER BY drugcode ASC");
+	$nsaidsList = array();
+	if($q->num_rows > 0) { 
+		while ($a = $q->fetch_assoc()) { 
+			$nsaidsList[] = trim($a['drugcode']);
+		}
+	}
+	return $nsaidsList;
+}
+
+$pre_nsaids_list = getNSAIDs_List();
+$pre_nsaids_js = '';
+foreach($pre_nsaids_list as $ns){
+	$pre_nsaids_js[] = "'$ns'";
+}
+$nsaids_for_js = implode(',', $pre_nsaids_js);
 
 $limit30checkday = 30;
 $limit90checkday = 90;
@@ -69,13 +114,17 @@ $_SESSION['nsaids13_count'] = 0;
 
 // หา eGFR
 $curr_date = date('Y-m-d');
+
 $sql_egfr = "SELECT b.`result` 
-FROM `resulthead` AS a 
+FROM ( 
+	SELECT autonumber 
+	FROM `resulthead` 
+	WHERE `hn` = '".$_SESSION['hn_now']."' 
+	AND `orderdate` LIKE '$curr_date%' 
+	AND ( `profilecode` = 'CREA' OR `profilecode` = 'CREAG' ) 
+) AS a 
 LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`autonumber` 
-WHERE a.`hn` = '".$_SESSION['hn_now']."' 
-AND a.`orderdate` LIKE '$curr_date%' 
-AND ( a.`profilecode` = 'CREA' OR a.`profilecode` = 'CREAG' ) 
-AND b.`labname` = 'eGFR' ";
+WHERE b.`labname` LIKE 'eGFR%' ";
 $q_egfr = mysql_query($sql_egfr);
 $res_egfr ='';
 if ( mysql_num_rows($q_egfr) > 0 ) {
@@ -190,10 +239,12 @@ $rows3 = mysql_fetch_array($result3);
 exit();
 }
 
-function dump($txt){
-	echo "<pre>";
-	var_dump($txt);
-	echo "</pre>";
+if( !function_exists('dump') ){
+	function dump($txt){
+		echo "<pre>";
+		var_dump($txt);
+		echo "</pre>";
+	}
 }
 
 
@@ -216,6 +267,95 @@ if(isset($_GET["action"]) && $_GET["action"] == "rduin13"){
 
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
+
+	$hn = sprintf("%s", $_GET['hn']);
+	$currentDrugcode = sprintf("%s", $_GET['drugcode']);
+	$currentKey = substr($currentDrugcode,0,1);
+	$thaiDate = (date('Y')+543).date('-m-d');
+	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
+	$otherDrug = '';
+	
+	// เอารายการยาที่กดสั่งที่อยู่ใน SESSION มารวมกับยาทีแพทย์ท่านอื่นสั่ง มารวมกัน
+	$allDrugCode = $_SESSION["list_drugcode"];
+	$sessionDrug = array();
+	$drugForSql = array();
+	$dcTrimCode = '';
+	if(count($allDrugCode)>0){
+		foreach ($allDrugCode as $key => $dc) { 
+
+			$dcTrim = trim($dc);
+			if(in_array($dcTrim, $pre_nsaids_list)){
+				$dcKey = substr($dc,0,1);
+				if($dcKey==$currentKey){
+					$dcTrimCode = $dc;
+				}
+
+				$sessionDrug[] = $dcTrim;
+				$drugForSql[] =  "'$dcTrim'";
+			}
+		}
+	}
+
+	if(!empty($dcTrimCode)){
+		$q = $dbi->query("SELECT drugcode,tradname FROM druglst WHERE drugcode = '$dcTrimCode' ");
+		$dl = $q->fetch_assoc();
+		$otherDrug = $dl['tradname'].' ('.$dl['drugcode'].')';
+	}
+
+	// ถ้ายาที่แพทย์คนปัจจุบันกดสั่งมีใน nsaids ให้ดึงเอารายการนั้นออกมารวม
+	$sessionDrug = array_intersect($sessionDrug, $pre_nsaids_list);
+	
+	// หาใน ddrugrx ว่าแพทย์ท่านอื่นเคยสั่งยาในกลุ่ม nsaids ไว้รึป่าว
+	$sql = "SELECT a.*,b.`drugcode`,b.`tradname` FROM ( 
+		SELECT `row_id`, `doctor` 
+		FROM `dphardep` 
+		WHERE `hn` = '$hn' 
+		AND `whokey` = 'DR' 
+		AND `idname` <> '$doctor' 
+		AND `date` LIKE '$thaiDate%' 
+		AND `dr_cancle` IS NULL 
+		ORDER BY `row_id` DESC
+	) AS a LEFT JOIN `ddrugrx` AS b ON a.`row_id` = b.`idno` 
+	WHERE b.`drugcode` IN ( SELECT `drugcode` FROM `druglst` WHERE `bcode` = 'd1011' ORDER BY `drugcode` ASC )";
+	if(!empty($sessionDrug)){
+		$where = implode(",", $drugForSql);
+		$sql = $sql." AND b.`drugcode` NOT IN ($where)";
+	}
+	$q = $dbi->query($sql);
+	$otherDoctor = '';
+	
+	if($q->num_rows > 0) { 
+		while($a = $q->fetch_assoc()) { 
+			$sessionDrug[] = $a['drugcode'];
+			$otherDoctor = $a['doctor'];
+			$otherDrug = $a['tradname'].' ( '.trim($a['drugcode']).' )';
+		}
+	}
+ 
+	$newDrugList = array();
+	foreach ($sessionDrug as $d) { 
+		$key = substr($d, 0,1);
+		$newDrugList[$key][] = $d;
+	}
+
+	
+	$res = array('status'=>200,'message'=>'');
+	if(count($newDrugList[$currentKey])> 0) {
+		$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยาในกลุ่ม NSAIDs ซ้ำซ้อน');
+	}
+
+	if(!empty($otherDoctor)){
+		$res['other_doctor'] = $otherDoctor;
+	}
+
+	if(!empty($otherDrug)){
+		$res['other_drug'] = $otherDrug;
+	}
+	
+	echo $json->encode($res);
+	exit;
+}
 
 
 ///////////////////////////////////////////////////////////////////
@@ -613,9 +753,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
 	}
 
-	$sql = "SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
+	$sql = "SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock_dr 
 	FROM drugrx as a 
-	INNER JOIN (SELECT `drugcode`,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
+	INNER JOIN (SELECT `drugcode`,genname,`lock_dr` FROM druglst ".$where1.") as b ON a.drugcode = b.drugcode
 	WHERE a.hn = '".$_SESSION["hn_now"]."' 
 	AND a.an is not null 
 	AND a.date like '".$_GET["date_remed"]."%' 
@@ -670,7 +810,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
 		
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"];?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].' ['.$arr["genname"].']';?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -787,6 +927,20 @@ if(isset($_GET["action"]) && $_GET["action"] == "get_icd10"){
 	exit;
 }
 
+/**
+ * หา icd10 ทั้งหมดของคนคนไข้ เบื้องต้นเพื่อดูประวัติว่าเคยเป็นโรคหลอดเลือดหรือไม่
+ */
+if(isset($_GET["action"]) && $_GET["action"] == "get_all_icd10"){
+	$hn = $_SESSION['hn_now'];
+	$q  = $dbi->query("SELECT icd10 FROM `diag` WHERE `hn` = '$hn' and icd10 <> '' GROUP BY icd10");
+	$icd_lists = array();
+	while ($d = $q->fetch_assoc()) {
+		$icd_lists[] = $d['icd10'];
+	} 
+	echo $json->encode($icd_lists);
+	exit;
+}
+
 
 
 //********************** Form Remed ยาผู้ป่วยนอก ******************************************
@@ -822,9 +976,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	}
 
 	$sql = "
-	SELECT a.date, a.drugcode, a.tradname, a.slcode, sum( a.amount ) AS amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active   
-	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock`,`lock_dr`,`drug_lockintern`,`drug_active` From druglst ".$where1.") as b ON a.drugcode = b.drugcode
-	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
+	FROM ddrugrx as a 
+	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
+	INNER JOIN dphardep as c ON a.date=c.date
+	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	";
@@ -923,15 +1079,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 					}
 				}else{  //ถ้าเป็นยาที่ยังใช้อยู่
 					if((substr($_SESSION["ptright_now"],0,3) == "R07" || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10" || substr($_SESSION["ptright_now"],0,3) == "R11" || substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R14" || substr($_SESSION["ptright_now"],0,3) == "R17" || substr($_SESSION["ptright_now"],0,3) == "R35" || substr($_SESSION["ptright_now"],0,3) == "R36" || substr($_SESSION["ptright_now"],0,3) == "R40")){  //ถ้าเป็นสิทธิประกันสังคม/ประกันสุขภาพ
-					//echo "==>".$arr["lock"];
-						if($arr["lock"]=="N"){  //ถ้าเป็นยา NED ที่ต้องใส่รหัสผ่าน
+					//echo "==>".$arr["drug_lockucsso"];
+						if($arr["drug_lockucsso"]=="1"){
+							echo "<FONT COLOR=\"RED\" >ติดเงื่อนไขการสั่งจ่าย</FONT>";
+						}else if($arr["lock"]=="N"){  //ถ้าเป็นยา NED ที่ต้องใส่รหัสผ่าน
 							echo "<FONT COLOR=\"RED\" >ใส่รหัสผ่านทุกครั้ง</FONT>";
 						}else{  //ยาที่ไม่ต้องใส่รหัสผ่าน
 							if($arr["lock_dr"] == 'Y'){
 								if($arr["drugcode"] =="5VIAT" || $arr["drugcode"] =="5VIAT    "){
 									echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 252 capsule/คน</FONT>";								
 								//}else if($arr["drugcode"] =="5ARTR" || $arr["drugcode"] =="5ARTR  "){
-									//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";	
+									//echo "<FONT COLOR=\"BLUE\" >จำกัดการจ่าย 84 ซอง/คน</FONT>";
 								}else{
 							
 						?>
@@ -941,7 +1099,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 			  				}else if($arr["lock_dr"] == 'N'){
 								echo "<FONT COLOR=\"RED\" >ยาตัดออก</FONT>";
 							}else{
-								echo $arr["lock_dr"];
+								echo $arr["lock_dr"];	
 							}
 						}					
 					}else{  //ถ้าเป็นสิทธิอื่นๆ
@@ -964,9 +1122,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 				}  //close 667
 			}  //close 664
 			
+			if($arr["drug_inject_slip"]=="undefined"){
+				$arr["drug_inject_slip"]="";	
+			}
+			
+			if($arr["drug_inject_type"]=="undefined"){
+				$arr["drug_inject_type"]="";	
+			}			
 			?>
             </td>
-            <td >&nbsp;<?php echo $arr["tradname"].$notify_lock;?></td>
+            <td >&nbsp;<?php echo $arr["tradname"].' ['.$arr["genname"].']'.$notify_lock;?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
@@ -1196,7 +1361,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 	if( isset($_GET['drugcode']) && $_GET['drugcode'] === '2para' ){
 		$_GET['drugcode'] = '2PARA';
 	}
-	
+
 	$count = count($_SESSION["list_drugcode"]);
 	
 	$sql = "Select part From druglst Where drugcode = '".$_GET["drugcode"]."' limit 1";
@@ -1224,12 +1389,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 				$_SESSION["list_drugslip"][$_GET["addoredit"]] = $_GET["drugslip"];
 
 				$_SESSION["list_drug_inject_amount"][$_GET["addoredit"]] = $_GET["drug_inject_amount"];
-				//$_SESSION["list_drug_inject_unit"][$_GET["addoredit"]] = $_GET["drug_inject_unit"];
-				$_SESSION["list_drug_inject_unit"][$_GET["addoredit"]] = iconv('TIS620','UTF-8',$_GET["drug_inject_unit"]);
+				$_SESSION["list_drug_inject_unit"][$_GET["addoredit"]] = $_GET["drug_inject_unit"];
 				$_SESSION["list_drug_inject_amount2"][$_GET["addoredit"]] = $_GET["drug_inject_amount2"];
 				$_SESSION["list_drug_inject_unit2"][$_GET["addoredit"]] = $_GET["drug_inject_unit2"];
-				//$_SESSION["list_drug_inject_time"][$_GET["addoredit"]] = $_GET["drug_inject_time"];
-				$_SESSION["list_drug_inject_time"][$_GET["addoredit"]] = iconv('TIS620','UTF-8',$_GET["drug_inject_time"]);
+				$_SESSION["list_drug_inject_time"][$_GET["addoredit"]] = $_GET["drug_inject_time"];
 				$_SESSION["list_drug_inject_slip"][$_GET["addoredit"]] = $_GET["drug_inject_slip"];
 				$_SESSION["list_drug_inject_type"][$_GET["addoredit"]] = $_GET["drug_inject_type"];
 				$_SESSION["list_drug_inject_etc"][$_GET["addoredit"]] = $_GET["drug_inject_etc"];
@@ -1249,13 +1412,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 		array_push($_SESSION["list_drugamount"],$_GET["drugamount"]);
 		array_push($_SESSION["list_drugslip"],$_GET["drugslip"]);
 		array_push($_SESSION["list_drug_inject_amount"],$_GET["drug_inject_amount"]);
-		//array_push($_SESSION["list_drug_inject_unit"],$_GET["drug_inject_unit"]);
-		array_push($_SESSION["list_drug_inject_unit"],iconv('TIS620','UTF-8',$_GET["drug_inject_unit"]));
+		array_push($_SESSION["list_drug_inject_unit"],$_GET["drug_inject_unit"]);
 		array_push($_SESSION["list_drug_inject_amount2"],$_GET["drug_inject_amount2"]);
 		array_push($_SESSION["list_drug_inject_unit2"],$_GET["drug_inject_unit2"]);
-		//array_push($_SESSION["list_drug_inject_unit2"],iconv('TIS620','UTF-8',$_GET["drug_inject_unit2"]));
-		//array_push($_SESSION["list_drug_inject_time"],$_GET["drug_inject_time"]);
-		array_push($_SESSION["list_drug_inject_time"],iconv('TIS620','UTF-8',$_GET["drug_inject_time"]));
+		array_push($_SESSION["list_drug_inject_time"],$_GET["drug_inject_time"]);
 		array_push($_SESSION["list_drug_inject_slip"],$_GET["drug_inject_slip"]);
 		array_push($_SESSION["list_drug_inject_type"],$_GET["drug_inject_type"]);
 		array_push($_SESSION["list_drug_inject_etc"],$_GET["drug_inject_etc"]);
@@ -1433,6 +1593,31 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	}
 	
 	$chkptright=substr($_SESSION["ptright_now"],0,3);
+
+
+	/**
+	 * หาก่อนว่าใน drugreact มีกลุ่มที่แพ้
+	 * เสร็ํจแล้วเอามา join กับ drugreact_gorup เพื่อเอา id
+	 * จากนั้นเอา id ไป join กับ drugreact_group_list อีกทีเพื่อหารายการยาในกลุ่มที่แพ้
+	 * โดยมีเงื่อนไขคือต้องไม่มียาซ้ำใน drugreact
+	 */
+	$my_hn = $_SESSION['hn_now'];
+	$sql_react_group="SELECT b.* FROM ( 
+		SELECT `groupname` FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname`!='' AND sideeffects='' GROUP BY `groupname`
+	) AS a 
+	LEFT JOIN `drugreact_group` AS c ON c.`name` = a.`groupname`
+	LEFT JOIN `drugreact_group_list` AS b ON c.`id` = b.`drugreact_group` 
+	WHERE b.drugcode NOT IN ( 
+		SELECT `drugcode` FROM `drugreact` WHERE `hn` = '$my_hn' AND drugcode!='' AND advreact!='' AND g6pd IS NULL GROUP BY drugcode 
+	)";
+	$q_group = mysql_query($sql_react_group);
+	$group_rows = mysql_num_rows($q_group);
+	$drugreact_group_list = array();
+	if($group_rows>0){
+		while ($a = mysql_fetch_assoc($q_group)) {
+			$drugreact_group_list[] = trim($a['drugcode']);
+		}
+	}
 	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
@@ -1511,27 +1696,22 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 						$alert="";
 					}
 				}
-
 				
 				$bgcolor="#FF99CC";
 				$react_txt = '';
-
-				$my_hn = $_SESSION['hn_now'];
+				
 				
 				// หาในรายการแพ้ยาก่อน ถ้าไม่มีให้หาในกลุ่มที่มีโอกาสแพ้ยา(drugreact_group_list)อีกที
 				if(in_array(trim($arr["drugcode"]), $drugreact_items)===true){
-					$react_txt = '<span style="font-weight:bold;background-color:red;">แพ้ยา</span>';
+					$react_txt = '<span style="font-weight:bold; background-color:red; font-size:16px; color:#ffffff;">&nbsp;แพ้ยา&nbsp;</span>';
 				}else{
-					// $sql_react_group = "SELECT * FROM `drugreact_group_list` WHERE `drugcode` = '".$arr["drugcode"]."' LIMIT 1";
-					$sql_react_group = "SELECT c.`drugcode` FROM ( 
-					SELECT `groupname` FROM `drugreact` WHERE  `hn` = '$my_hn' AND `groupname` !='' GROUP BY `groupname` 
-					) AS a 
-					LEFT JOIN `drugreact_group` AS b ON a.`groupname` = b.`name` 
-					LEFT JOIN `drugreact_group_list` AS c ON b.`id`= c.`drugreact_group` 
-					GROUP BY c.`drugcode`";
-					$q_group = mysql_query($sql_react_group);
-					if(mysql_num_rows($q_group) > 0){
-						$react_txt = '<span style="font-weight:bold;background-color:orange;">มีโอกาสแพ้ยา</span>';
+					if(in_array(trim($arr['drugcode']), $drugreact_group_list)===true && count($drugreact_group_list)>0){
+						$react_txt = '<span style="font-weight:bold; background-color:#ffeb3b; font-size:16px;">&nbsp;มีโอกาสแพ้ยา&nbsp;</span>';
+						
+						if ($opcard_g6pd===true && in_array(trim($arr['drugcode']), $drugreactGroup10)===true) {
+							$react_txt = '<span style="background-color: #63cdff; font-weight: bold;padding: 0 8px; font-size:16px;">ระวังผู้ป่วย G6PD</span>';
+
+						}
 					}
 				}
 				
@@ -1549,7 +1729,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 			echo "<tr bgcolor=\"$bgcolor\" ".$style.">
 					<td rowspan=\"3\" align=\"center\">".$obj."</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["drugcode"],"</td>
-					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["genname"]," / ",$arr["tradname"]," $react_txt $extra_obj</td>
+					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["tradname"]," [",$arr["genname"],"] $react_txt $extra_obj</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td align=\"right\" valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\"></td>
@@ -1716,7 +1896,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			*/
 			$limit_row = 30;
 
-			$where_date = " ( `date` LIKE '2564%' || `date` LIKE '2565%' ) ";
+			$where_date = " (`date` LIKE '2565%' || `date` LIKE '2566%' ) ";
 
 			// สร้าง TEMP จาก drugrx
 			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
@@ -1729,8 +1909,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 
 			$sql = "SELECT slcode , count(slcode) FROM `drugrx2` where  amount > 0 AND slcode != 'er' AND slcode != 'hd' GROUP BY slcode Order by `count(slcode)` DESC limit 1";
 			$result = Mysql_Query($sql) or die(Mysql_ERROR());
+			$numslcode = mysql_num_rows($result);
 			$arr = Mysql_fetch_assoc($result);
-			echo $arr["slcode"]; 
+			if($numslcode > 0){
+				echo $arr["slcode"]; 
+			}else{
+			$sql = "SELECT slcode FROM `druglst` where  drugcode = '".$_GET["search"]."'";
+			$result = Mysql_Query($sql) or die(Mysql_ERROR());
+			$arr = Mysql_fetch_assoc($result);
+				echo $arr["slcode"]; 
+			}		
 			
 		}
 		
@@ -1869,15 +2057,14 @@ exit();
 ///////////////////////////////////////////////////-ตรวจสอบสิทธิการจ่ายยา-///////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "checkptright"){
 
-	$sql = "SELECT lockptright,tradname,drug_lockucsso FROM `druglst` where drugcode = '".$_GET["search"]."' ";
+	$sql = "SELECT lockptright,tradname,drug_lockucsso,lockptright_ucsso FROM `druglst` where drugcode = '".$_GET["search"]."' ";
 	$result = Mysql_Query($sql);
 	$arr = Mysql_fetch_assoc($result);
 	if((substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09"  || substr($_SESSION["ptright_now"],0,3) == "R02"|| substr($_SESSION["ptright_now"],0,3) == "R03"  )){
 		if($arr['lockptright']=="Y"){
 		//echo "1";
 			echo "ยา ".$arr['tradname']." นี้ไม่สามารถจ่ายยาในสิทธิ ".substr($_SESSION["ptright_now"],4)." ได้ \nถ้าผู้ป่วยแจ้งความจำนงต้องจ่ายเงินเองเท่านั้น\nต้องการใช่หรือไม่?";
-		}
-		else{
+		}else{
 			echo "0";
 		}
 	}else{
@@ -2171,6 +2358,14 @@ var rdu7_icd10_list = ["A000","A001","A009","A020","A030","A031","A032","A033","
 
 var rdu8_drug = ['1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ];
 var rdu8_icd10 = ['S00', 'S01', 'S05', 'S07', 'S08', 'S09', 'S10', 'S11', 'S16', 'S17', 'S18', 'S19', 'S20', 'S21', 'S28', 'S29', 'S31', 'S31', 'S38', 'S39','S40','S41','S46','S47','S48','S49','S50','S51','S56','S56','S56','S56','S56','S56','S66','S67','S68','S69','S70','S71','S76','S77','S78','S79','S80','S81','S86','S87','S88','S89','S90','S91','S96','S97','S98','S99','X00','X01','X02','X03','X04','X05','X06','X07','X08','X09','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19','X20','X21','X22','X23','X24','X25','X26','X27','X28','X29','X30','X31','X32','X33','X34','X35','X36','X37','X38','X39']
+
+var rdu6_drug = ['1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$'];
+var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J200','J201','J202','J203','J204','J205','J206','J207','J208','J209','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729'];
+
+// Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+var febuxo_icd10 = ['I513','I514','I515','I517','I518','I5181','I5189','I519'];
+
+var metformin_drug = ['1MET500-C','1METF','1GLUX1000','1VILMET','1XIGDU','1GEMET'];
 
 var drug_cc='';
 function newXmlHttp(){
@@ -2501,7 +2696,7 @@ function pregAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงตั้งครรภ์</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
@@ -2513,7 +2708,7 @@ function pregBlock(tradname,genname){
 	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">PREGNANCY WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b style="color:red;"><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงตั้งครรภ์</u></b>';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
@@ -2525,7 +2720,7 @@ function lacAlert(tradname,genname){
 	document.getElementById("pregHeader").innerHTML = "ระบบแจ้งเตือนกองเภสัชกรรม";
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลทั้งสนับสนุนและคัดค้านใน <b><u>หญิงให้นมบุตร</u></b> การใช้ยาขึ้นอยู่กับ<b><u>ดุลยพินิจของแพทย์</u></b>';
 
@@ -2538,7 +2733,7 @@ function lacBlock(tradname,genname){
 	// var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">ไม่สามารถสั่งยาได้</div>';
 	var htmlTxt = '<div style="text-align:center; font-weight:bold; color:#ff6a00;">LACTATION WARNING</div>';
 	if(tradname!=''){
-		htmlTxt += 'ยา '+genname+'('+tradname+') <br>';
+		htmlTxt += 'ยา '+tradname+' ['+genname+'] <br>';
 	}
 	htmlTxt += 'มีข้อมูลสนับสนุนไม่เพียงพอจึง<b style="color:red;"><u>ไม่แนะนำให้ใช้หรือเป็นข้อห้าม</u></b>ใน<b><u>หญิงให้นมบุตร</u></b>';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
@@ -2593,8 +2788,75 @@ function testPreg(drugcode,tradname,genname){
 	}
 }
 
-var callback_myWindow;
-var callback_drugcode;
+function check_1FEBU(){
+	var allIcd10List = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=get_all_icd10';
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				var resIcd10 = xmlhttp.responseText.trim();
+				allIcd10List = JSON.parse(resIcd10);
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+
+	var icd10Check = false;
+	for (var index = 0; index < allIcd10List.length; index++) {
+		var element = allIcd10List[index];
+		if(febuxo_icd10.indexOf(element)>0){
+			icd10Check = true;
+		}
+	}
+
+	return icd10Check;
+}
+
+function check_metformin(){
+	var egfr_test = parseFloat('<?=$res_egfr;?>');
+
+	if (egfr_test < 30) {
+
+		var dataHtml = '<p style="margin-top: 8px;"><b>ไม่สามารถสั่งจ่ายยาMetforminได้ เนื่องจากค่าeGFR ของผู้ป่วยน้อยกว่า 30</b></p>';
+		dataHtml += '<p><img src="images/ckd_state.jpg" width="800"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+		document.getElementById('rduAlertContainer').style.display = 'block';
+
+		return false;
+	}else if(egfr_test >= 30 && egfr_test <= 60){
+
+		var dataHtml = '<p style="margin-top: 8px;"><b>ข้อมูลประกอบการพิจารณา</b> eGFR ของผู้ป่วยคือ <b>'+egfr_test+'</b></p>';
+		dataHtml += '<p><img src="images/ckd_state.jpg" width="800"></p>';
+		document.getElementById('rduAlertContainer').style.width = 'auto';
+		document.getElementById('rduContent').innerHTML = dataHtml; 
+		document.getElementById('rduAlertContainer').style.display = 'block';
+		
+		return true;
+	}
+}
+
+function clear_left_form(){
+	document.getElementById("drug_code").value = '';
+	document.getElementById("drug_amount").value = '';
+	document.getElementById("drug_slip").value = '';
+	document.getElementById('list').innerHTML='';
+}
+
+var callback_myWindow; // call back ของ rechallenge แพ้ยา
+var callback_drugcode; // call back ของ rechallenge แพ้ยา
+
+var returnstr; // ตัวแปรที่เอาไว้เก็บวิธีใช้ยา
+
+var nsaids_list = [<?=$nsaids_for_js;?>];
+
+/**
+ * ฟังก์ชั่นถูกเรียกใช้ตอน Double Click เลือกยา
+ */
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	var doctor_id = document.getElementById('doctor_id').value;
@@ -2609,11 +2871,10 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		return false;
 	}
 
-	var returnstr;
 	callback_drugcode = drugcode;
 
+	// วิธีใช้ยา
 	xmlhttp = newXmlHttp();
-
 	document.getElementById("drug_code").value = drugcode;
 	url = 'dt_drug.php?action=addamount&search=' + drugcode;
 	xmlhttp.open("GET", url, false);
@@ -2621,7 +2882,35 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	
 	callback_myWindow = returnstr = xmlhttp.responseText;
 
-	//
+	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+	if(drugcode.trim()=='1FEBU'){ 
+		var res_1feb = check_1FEBU();
+		if(res_1feb==true){ 
+			clear_left_form();
+			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
+			return false;
+		}
+	}
+	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+	if(metformin_drug.indexOf(drugcode.trim())>=0){
+		var res_metformin = check_metformin();
+		if(res_metformin===false){ 
+			clear_left_form();
+			return false;
+			
+		}
+	}
+
+	
+	if(nsaids_list.indexOf(drugcode.trim())>=0){ 
+		var resNsaids = check_nsaids(drugcode.trim());
+		if(resNsaids==false){ 
+			clear_left_form();
+			return false;
+		}
+	}
+
+	// เอารายการยาที่ double click มาไว้ในฟอร์มซ้ายมือ
 	do_add_drug(returnstr, drugcode);
 
 	var icd10 = false;
@@ -2639,23 +2928,26 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	};
 	xmlhttp.send(null);
 
+	// popup แบบฟอร์ม rechallenge แพ้ยา
 	check_drugreact(drugcode, returnstr);
 	
-	// RDUตัวชี้วัดที่11
+	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่14
+	// แจ้งเตือน RDUตัวชี้วัดที่14
 	kidney_egfr_alert(drugcode.trim());
 
-	// RDUตัวชี้วัดที่18
+	// แจ้งเตือน RDUตัวชี้วัดที่18
 	rdu18_alert(drugcode.trim(), icd10);
 
-	// RDUตัวชี้วัดที่7
+	// แจ้งเตือน RDUตัวชี้วัดที่7
 	rdu7_alert(drugcode.trim(), icd10);
 
-	// RDUตัวชี้วัดที่8
+	// แจ้งเตือน RDUตัวชี้วัดที่8
 	rdu8_alert(drugcode.trim(), icd10);
-		
+	
+	// แจ้งเตือน RDUตัวชี้วัดที่6
+	rdu6_alert(drugcode.trim(), icd10);
 }
 
 /**
@@ -2703,13 +2995,22 @@ function do_add_drug(returnstr, drugcode){
 	}
 }
 
-// ถูกเรียกใช้จาก dt_drug_rechallenge.php
+// ถูกเรียกใช้จาก dt_drug_rechallenge.php หลังจากบันทึกข้อมูล 
+// จะทำงานก็ต่อเมื่อมีการ insert ข้อมูลเรียบร้อยแล้ว และมีการเรียกใช้งาน parent.window.opener.callback_drug_rechallenge(); จาก window.open
 function callback_drug_rechallenge(){ 
 
 	do_add_drug(callback_myWindow);
 	document.getElementById("drug_code").value = callback_drugcode;
 	
 }
+
+// ถูกเรียกใช้จาก dt_nsaids_rechallenge.php หลังจากบันทึกข้อมูล
+// function callback_nsaids_rechallenge(){ 
+
+// do_add_drug(callback_myWindow);
+// document.getElementById("drug_code").value = callback_drugcode;
+
+// }
 
 // แพ้ยา 
 // ทำงานใน add_drug() เพื่อpopupการ rechallenge
@@ -2727,7 +3028,7 @@ function check_drugreact(drugcode, returnstr){
 				if(resCode==3){
 
 					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
-					var resConfirm = confirm("!!! คำเตือน !!! \n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					var resConfirm = confirm("!!! คำเตือน !!! \n\n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
 					if (resConfirm===true) {
 						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
 						url += '&drugcode='+encodeURIComponent(drugcode);
@@ -2790,7 +3091,7 @@ function kidney_egfr_alert(drugcode){
 
 	// < 60 คือไตเรื้อรังระดับ3
 	if( ( isNaN(egfr_test) === false && egfr_test < 60.00 ) && nsaids14_list.indexOf(drugcode) > -1 ){
-		alert("แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยา NSAIDs ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป");
+		alert(">> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล << \nเลี่ยงการใช้ยา NSAIDs ในผู้ป่วยที่เป็นโรคไตเรื้อรังระดับ3ขึ้นไป");
 	}
 	
 }
@@ -2815,7 +3116,7 @@ function rdu18_alert(drugcode, icd10){
 			dataHtml += '<p><a href="http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf" target="_blank">แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล</a></p>';
 
 			document.getElementById('rduAlertContainer').style.width = 'auto';
-			document.getElementById('rduContent').innerHTML = v; 
+			document.getElementById('rduContent').innerHTML = dataHtml; 
 			document.getElementById('rduAlertContainer').style.display = 'block';
 			
 		}
@@ -2846,7 +3147,48 @@ function setCookie(cname, cvalue, extime) {
 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
+function check_nsaids(drugcode){
+	var hn = '<?=$_SESSION['hn_now'];?>';
+	var resNsaids = false;
+	xmlhttp = newXmlHttp();
+	url = 'dt_drug.php?action=check_nsaids&drugcode='+drugcode+'&hn='+hn;
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function () {
+		if (xmlhttp.readyState === 4) {
+			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+				var res = JSON.parse(xmlhttp.responseText.trim());
+				if(res.status==200){
+					resNsaids = true;
+				}else if(res.status==400){ 
+					
+					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					// console.log('confirm in check_nsaids ==> '+nForm);
+					// console.log(res.other_doctor);
+					// console.log(res.other_drug);
 
+					var other_doctor = res.other_doctor ? res.other_doctor : '' ;
+					var other_drug = res.other_drug ? res.other_drug : '' ;
+
+					if (nForm===true) { 
+						var url = 'dt_nsaids_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+						url += '&drugcode='+encodeURIComponent(drugcode);
+						url += '&returnstr='+encodeURIComponent(returnstr);
+						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+						url += '&other_doctor='+encodeURIComponent(other_doctor);
+						url += '&other_drug='+encodeURIComponent(other_drug);
+						window.open(url,"myWindow","width=600,height=300,left=100,top=100");
+					}
+
+				}
+			} else {
+				// Error :(
+			}
+		}
+	};
+	xmlhttp.send(null);
+	// console.log('(JS) : check_nsaids ==> '+resNsaids);
+	return resNsaids;
+}
 
 function rdu7_alert(drugcode, icd10){
 
@@ -2935,6 +3277,43 @@ function rdu8_alert(drugcode, icd10){
 	
 }
 
+function rdu6_alert(drugcode, icd10){ 
+
+	var testRdu6 = false;
+	var getIcd10 = '';
+	var icdItem = icd10.split('|');
+	for (var index = 0; index < icdItem.length; index++) {
+		var icd = icdItem[index];
+		if( rdu6_icd10.indexOf(icd) > -1 && rdu6_drug.indexOf(drugcode) > -1 ){ 
+			getIcd10 = icd;
+			testRdu6 = true;
+		}
+	}
+
+	var nd = new Date();
+	var d = nd.getDate();
+	var m = nd.getMonth()+1;
+	var y = nd.getFullYear();
+	var hn = '<?=$_SESSION['hn_now'];?>';
+
+	if (m<10) {
+		m = "0"+m;
+	}
+	if (d<10) {
+		d = "0"+d;
+	}
+
+	var key = y+'-'+m+'-'+d+hn;
+	var my_cookie_name = "rdu_form6["+key+"]";
+	var f_cookie = getCookie(my_cookie_name);
+	if(f_cookie=="" && testRdu6===true){
+		var url = 'hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+		url += '&icd10='+encodeURIComponent(getIcd10);
+		url += '&drugcode='+encodeURIComponent(drugcode);
+		window.open("rdu_form6.php?"+url,"myWindow","width=900,height=600");
+	}
+}
+
 function addslip(drugslip){
 	
 	document.getElementById("drug_slip").value = drugslip;
@@ -2964,6 +3343,7 @@ function ajaxcheck(action,str,drugcode){
 	return xmlhttp.responseText;
 }
 
+// แสดงรายการยาที่แพทย์กำลังสั่งจ่าย
 function viewlist(){
 
 	xmlhttp = newXmlHttp();
@@ -2972,7 +3352,20 @@ function viewlist(){
 	xmlhttp.send(null);
 	document.getElementById("druglist").innerHTML = xmlhttp.responseText;
 
-	xmlhttp2 = newXmlHttp();
+}
+
+
+// ทำการเพิ่มรายการยาที่สั่งจ่ายเข้าไปเก็บไว้ใน session
+function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
+	
+	xmlhttp = newXmlHttp();
+	
+	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2;
+	xmlhttp.open("GET", url, false);
+	xmlhttp.send(null);
+	viewlist();
+
+    xmlhttp2 = newXmlHttp();
 	url = 'dt_drug.php?action=rduin13';
 	xmlhttp2.open("GET", url, false);
 	xmlhttp2.send(null);
@@ -2982,24 +3375,6 @@ function viewlist(){
 		alert('แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล เลี่ยงการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน');
 	}
 
-
-}
-
-
-
-function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
-	
-	xmlhttp = newXmlHttp();
-	
-	//alert(reason2);
-
-	
-	
-	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2
-	;
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	viewlist();
 	alert500();
 
 }
@@ -3110,6 +3485,24 @@ function checkForm1(){
 	var txt1 ;
 	var txt2 ;
 	
+	var drugTrim = document.form1.drug_code.value.trim();
+
+	if(drugTrim=='1FEBU'){ 
+		var res_1feb = check_1FEBU();
+		if(res_1feb==true){ 
+			clear_left_form();
+			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก ผู้ป่วยรายนี้มีประวัติโรคหัวใจและหลอดเลือด การใช้ยา Febuxostat อาจเพิ่มโอการเสียชีวิตได้');
+			return false;
+		}
+	}
+
+	// if(nsaids_list.indexOf(drugTrim)>=0){ 
+	// 	var resNsaids = check_nsaids(drugTrim);
+	// 	if(resNsaids==false){ 
+	// 		clear_left_form();
+	// 		return false;
+	// 	}
+	// }
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);
 	txt = txt.substr(4);
@@ -3166,20 +3559,20 @@ function checkForm1(){
 	}
 
 	
-	if(txt == "0"){
+	/*if(txt == "0"){
 		alert("กรุณาลองใส่รหัสยาใหม่");
 		document.form1.drug_code.focus();
 
-	}/*else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
+	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
 		document.form1.drug_code.focus();
 
 	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
 		document.form1.drug_code.focus();
 
-	}*/else if(txt == "55" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
+	}else if(txt == "55" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
 		document.form1.drug_code.focus();	
 
-	}
+	}*/
 
 
 	if(document.form1.drug_code.value == ""){
@@ -3217,7 +3610,7 @@ function checkForm1(){
 		return false;
 	}else if(txt3 != "0" && !confirm(txt3)){
 		return false;
-	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม กรุณาเปลี่ยนเป็นยา Generic")){
+	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม ไม่สามารถสั่งจ่ายยาได้กรุณาเปลี่ยนเป็นยา Generic หรือยาตัวอื่น")){
 		document.form1.drug_code.focus();
 	}else if(document.form1.drug_code.value == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
 		alert("ยา Coversyl arginine 5 mg. บรรจุขวดขวดละ 30 เม็ด ไม่สามารถแกะได้ \n กรุณาสั่งยา ด้วยจำนวน 30, 60, 90 หรือ 120 ครับ");
@@ -3744,7 +4137,7 @@ function viatch(ing,code){
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก 
 
-	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
+	$where_date = " ( a.`date` LIKE '2565%' OR a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' ) ";
 	$pre_date_time = strtotime('-3 YEAR');
 	$pre_date = (date("Y", $pre_date_time)+543).date("-m-d", $pre_date_time);
 /*	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
@@ -3756,8 +4149,8 @@ function viatch(ing,code){
 	
 	$sql = "/* head_remed */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
-	FROM drugrx as a 
-	WHERE a.`date` >= '$pre_date 00:00:00'  AND a.hn = '".$_SESSION["hn_now"]."' AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	FROM ddrugrx as a INNER JOIN dphardep as c ON a.date=c.date 
+	WHERE a.`date` >= '$pre_date 00:00:00'  AND a.hn = '".$_SESSION["hn_now"]."' AND c.dr_cancle is null AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 100";	
@@ -3812,7 +4205,7 @@ function viatch(ing,code){
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
 
-	$where_date = " ( a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' OR a.`date` LIKE '2562%' ) ";
+	$where_date = " ( a.`date` LIKE '2565%' OR a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' ) ";
 
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
 
@@ -4063,7 +4456,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	<TD valign="top"><Div id="druglist" ></Div>
 	<?php 
 		$listinteraction =array();
-		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC limit 1 ";
+		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
 		
 		$result = mysql_query($sql);
 		$rows = mysql_num_rows($result);
@@ -4071,25 +4464,24 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		
 		echo "<Table width=\"100%\">";
 		echo "<TR>";
-					echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
-				echo "</TR>";
-		while(list($row_id, $doctor) = mysql_fetch_row($result)){
-			$sql = " Select b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-		echo "
-		<tr class='tb_head' >
+		echo "<TD colspan='4'>รายการจ่ายยาจากแพทย์ท่านอื่น</TD>";
+		echo "</TR>";
+		echo "<tr class='tb_head' >
 			<td align=\"center\" >ชื่อยา</td>
 			<td align=\"center\" >จำนวน</td>
 			<td align=\"center\" >วิธีใช้</td>
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
-
-			while(list($tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
+		while(list($row_id, $doctor) = mysql_fetch_row($result)){
+			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$result2 = mysql_query($sql) or die(mysql_error());
+		
+			while(list($genname,$tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
 
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 				echo "<TR>";
-					echo "<TD>".$tradname."</TD>";
+					echo "<TD><span title='Drug code: $drugcode'>".$tradname." [".$genname."]</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";

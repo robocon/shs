@@ -1,5 +1,7 @@
 <?php 
 include 'bootstrap.php';
+include_once 'includes/JSON.php';
+$json = new Services_JSON();
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -108,7 +110,7 @@ if($action==='save'){
         );
     }
 
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }
 
@@ -155,7 +157,7 @@ if($page_action==='update'){
             $data_month = 0;
             $data_year = 0;
 
-            $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' AND `status`='y' ");
+            $qf = $dbi->query("SELECT * FROM `indicator_field` WHERE `main_id` = '$id' AND `status`='y' ORDER BY `sort`");
             if($qf->num_rows>0){ 
 
                 $action_value = 'save';

@@ -132,7 +132,7 @@ mysql_query($sql_temp) or die( mysql_error() );
 
 
 // จำนวนผู้ป่วยทั้งหมดในปีนี้
-// $sql = "SELECT COUNT(`row_id`) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
+// $sql = "SELECT COUNT(`row_id`) AS `rows`, DATE_FORMAT( dateN, '%Y-%m' ) AS new_orderdate
 // FROM diabetes_history_temp 
 // GROUP BY DAY(dateN) 
 // ORDER BY dateN ASC;";
@@ -161,12 +161,12 @@ list($date1, $month) = explode('-', $datemonth);
 	</tr>
 	<?php 
 	if( $type == 'fbg' ){
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( `dateN`, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( `dateN`, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `l_bs` < 130 AND `l_bs` != '' AND ( `ht` = '' OR `ht` = 0 ) AND `ht_etc` = ''
 		GROUP BY DAY( `dateN` );";
 
-		// $sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
+		// $sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m' ) AS new_daten
 		// FROM `diabetes_history_temp`	
 		// WHERE 
 		// ( `l_bs` < 130 AND `l_bs` != '' AND ( `ht` = '' OR `ht` = 0 ) AND `ht_etc` = '' )
@@ -202,7 +202,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `l_bs` < 150 AND `l_bs` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' )  
 		GROUP BY DAY( dateN ) ";
@@ -232,7 +232,7 @@ list($date1, $month) = explode('-', $datemonth);
 		<?php 	
 	}else if( $type == 'hba1c' ){
 		
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `l_hbalc` < 7 AND `l_hbalc` > 0 AND ( `ht` = 0 OR `ht` = '' ) AND `ht_etc` = ''
 		GROUP BY DAY( dateN ) ";
@@ -260,7 +260,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `l_hbalc` < 8 AND `l_hbalc` > 0 AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 OR `ht_etc` != '' )
 		GROUP BY DAY( dateN ) ";
@@ -289,7 +289,7 @@ list($date1, $month) = explode('-', $datemonth);
 		<?php 
 		}else if( $type =='ldl' ){
 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `l_ldl` != '' AND `l_ldl` < 100 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
 		GROUP BY DAY( dateN ) ";
@@ -317,7 +317,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `l_ldl` != '' AND `l_ldl` < 70 AND `ht_etc` != '' AND ( `ht` = 1 OR `ht` = 2 OR `ht` = 3 )
 		GROUP BY DAY( dateN ) ";
@@ -346,7 +346,7 @@ list($date1, $month) = explode('-', $datemonth);
 		<?php 	
 		}else if( $type =='bp' ){
 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `bp1` != '' AND `bp1` < 140 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
 		GROUP BY DAY( dateN ) ";
@@ -373,7 +373,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `bp2` != '' AND `bp2` < 90 AND `ht_etc` = '' AND ( `ht` = 0 OR `ht` = '' )
 		GROUP BY DAY( dateN ) ";
@@ -400,7 +400,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `bp1` < 130 AND `bp1` != '' AND `l_creatinine` >= 1.30
 		GROUP BY DAY( dateN ) ";
@@ -427,7 +427,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `bp2` < 80 AND `bp2` != '' AND `l_creatinine` >= 1.30
 		GROUP BY DAY( dateN ) ";
@@ -458,7 +458,7 @@ list($date1, $month) = explode('-', $datemonth);
 		// GET y_start from post
 		$year_current = $th_year.date('-m-d');
 			
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `bp1` < 150 
 		AND `bp1` != '' 
@@ -489,7 +489,7 @@ list($date1, $month) = explode('-', $datemonth);
 			?>
 		</tr>
 		<?php 
-		$sql = "SELECT COUNT( `hn` ) AS rows, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
+		$sql = "SELECT COUNT( `hn` ) AS `rows`, DATE_FORMAT( dateN, '%Y-%m-%d' ) AS new_daten
 		FROM `diabetes_history_temp` 
 		WHERE `bp2` < 80 
 		AND `bp2` != '' 

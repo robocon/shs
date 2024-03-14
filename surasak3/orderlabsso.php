@@ -21,6 +21,8 @@ $chk_year = get_year_checkup();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ตรวจสุขภาพลูกจ้างประจำปี <?=$chk_year;?></title>
+    <script src="bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="sweetalert/sweetalert2@11.js"></script>
 </head>
 <body>
     <style>
@@ -65,56 +67,56 @@ $chk_year = get_year_checkup();
 
             $age = findPtAge($pt['dbirth']);
             ?>
-            <form action="orderlabsso2.php" method="post">
-                <h3>ข้อมูลเบื้องต้นผู้มารับบริการ</h3>
+            
+            
+            <form action="orderlabsso2.php" method="post" id="submitForm">
+                <fieldset>
+                    <legend><h3>ข้อมูลเบื้องต้นผู้มารับบริการ</h3></legend>
+                    <table>
+                        <tr>
+                            <td align="right" width="25%"><b>ชื่อ-สกุล:</b></td>
+                            <td width="25%"><?=$pt['yot'].$pt['name'].' '.$pt['surname'];?></td>
+                            <td align="right" width="25%"><b>สิทธิ:</b></td>
+                            <td width="25%"><b style="color:red;"><?=$pt['ptright'];?></b></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>HN:</b></td>
+                            <td><?=$pt['hn'];?></td>
+                            <td align="right"><b>ประเภทสิทธิ:</b></td>
+                            <td><?=$pt['ptrightdetail'];?></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>อายุ:</b></td>
+                            <td><?=$age;?></td>
+                            <td align="right"><b>รพ.ต้นสังกัด:</b></td>
+                            <td><b style="color:red;"><?=$pt['hospcode'];?></b></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>ออก OPD CARD:</b></td>
+                            <td colspan="3">
+                                <?php 
+                                $toborow_list = array('EX46 ตรวจสุขภาพประกันสังคม');
+                                ?>
+                                <select name="toborow" id="toborow">
+                                    <?php 
+                                    foreach ($toborow_list as $key => $value) { 
+                                        ?>
+                                        <option value="<?=$value;?>"><?=$value;?></option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
                 <table>
                     <tr>
-                        <td align="right"><b>ชื่อ-สกุล:</b></td>
-                        <td><?=$pt['yot'].$pt['name'].' '.$pt['surname'];?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><b>HN:</b></td>
-                        <td><?=$pt['hn'];?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><b>อายุ:</b></td>
-                        <td><?=$age;?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><b>สิทธิ:</b></td>
-                        <td><?=$pt['ptright'];?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><b>ประเภทสิทธิ:</b></td>
-                        <td><?=$pt['ptrightdetail'];?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><b>รพ.ต้นสังกัด:</b></td>
-                        <td><?=$pt['hospcode'];?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><b>ออก OPD CARD:</b></td>
-                        <td>
-                            <?php 
-                            $toborow_list = array('EX46 ตรวจสุขภาพประกันสังคม');
-                            ?>
-                            <select name="toborow" id="toborow">
-                                <?php 
-                                foreach ($toborow_list as $key => $value) { 
-                                    ?>
-                                    <option value="<?=$value;?>"><?=$value;?></option>
-                                    <?php
-                                }
-                                ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right"></td>
-                        <td>
+                        <td colspan="2">
                             <b style="color:orangered;"><u>กรณีเป็นเจ้าหน้าที่ <span style="font-size:32px;">นวดแผนไทย</span> กับ <span style="font-size:32px;">ไตเทียม</span> รบกวนเลือกข้อมูลด้านล่างให้หน่อยครับ</u></b><br>
                             <input type="radio" name="extra" id="hemo" value="hemo"> <label for="hemo" style="cursor:pointer;">จนท.ไตเทียม</label><br>
-                            <input type="radio" name="extra" id="pt" value="pt"> <label for="pt" style="cursor:pointer;">จนท.นวดแผนไทย</label>
+                            <input type="radio" name="extra" id="pt" value="pt"> <label for="pt" style="cursor:pointer;">จนท.นวดแผนไทย</label><br>
+                            <a href="javascript:void(0);" onclick="cancelPtHemo()">[ ยกเลิก ]</a>
                         </td>
                     </tr>
                     <tr>
@@ -122,12 +124,33 @@ $chk_year = get_year_checkup();
                     </tr>
                     <tr>
                         <td colspan="2" align="center">
-                            <button type="submit" style="padding:8px;">ดำเนินการออก VN ต่อไป &gt;&gt;</button>
+                            <button type="button" style="padding:8px;" onclick="confirmForm()">ดำเนินการออก VN ต่อไป &gt;&gt;</button>
                             <input type="hidden" name="hn" id="hn" value="<?=$hn;?>" >
                         </td>
                     </tr>
                 </table>
             </form>
+            <script>
+                function cancelPtHemo(){
+                    document.getElementById('hemo').checked = false;
+                    document.getElementById('pt').checked = false;
+                }
+
+                function confirmForm(){
+                    Swal.fire({
+                        title: "ยืนยันว่าเป็นลูกจ้าง รพ.ค่ายสุรศักดิ์มนตรี?",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "ใช่",
+                        cancelButtonText: "ยกเลิก",
+                    }).then((result) => { 
+                        if (result.isConfirmed) {
+                            document.getElementById('submitForm').submit();
+                        }
+                    });
+                }
+            </script>
             <?php
             
         }else{

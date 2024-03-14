@@ -75,7 +75,8 @@ if($_POST["act"]=="show"){
 		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
 	}
 	//echo $sql;
-	$query=mysql_query($sql);	
+	$query=mysql_query($sql);
+	$num=mysql_num_rows($query);	
 ?>	
 <p align="center" style="margin-top: 20px;"><strong>รายงานผลการตรวจสุขภาพประจำปีกำลังพลทหาร(คัดกรอง CVDRisk Score > 30%) ปี <?=$nPrefix2;?></strong></p>
 <div align="center">
@@ -177,6 +178,17 @@ $chol=$rows["chol"];
 				}else{
 					if($rows["prawat"]=="2"){  //ให้ประวัติว่าป่วยเบาหวาน
 						$diabetes=1;
+					}else if($rows["prawat"]=="5"){
+						//echo $rows["hn"]."<br>";
+						$sql21= "SELECT * FROM `condxofyear_so` WHERE `hn` = '".$rows["hn"]."' and yearcheck='".$_POST["year1"]."' and (congenital_disease like '%DM%' || congenital_disease like '%เบาหวาน%') order by row_id  desc limit 1";	
+						//echo $sql21."<br>";
+						$query21 = mysql_query($sql21) or die("Query failed");
+						$numdm21=mysql_num_rows($query21);
+						if($numdm21 > 0){
+							$diabetes=1;
+						}else{
+							$diabetes=0;
+						}		
 					}else{
 						$diabetes=0;
 					}	
@@ -214,6 +226,12 @@ $chol=$rows["chol"];
 	if($pfullscore >=30){
 	$i++;		
 	//echo "$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke); <br>";
+	
+	if($rows["prawat"]=="5" || $rows["prawat"]=="6"){
+		$prawat=$prawat." (".$rows["congenital_disease"].")";
+	}else{
+		$prawat=$prawat;
+	}	
 ?>  
   <tr>
     <td align="center"><?=$i;?></td>

@@ -219,7 +219,7 @@ if($action === 'save'){
 	
 	$name = isset($_POST['section']) ? trim($_POST['section']) : false ;
 	
-	$sql = "INSERT INTO `smdb`.`survey_oral_category` (`id` ,`name` ,`date_add` ,`date_edit` )
+	$sql = "INSERT INTO `survey_oral_category` (`id` ,`name` ,`date_add` ,`date_edit` )
 	VALUES (
 	NULL , :name, NOW(), NULL
 	);";

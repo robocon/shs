@@ -126,6 +126,19 @@ $list_lab["GFR"] = "gfr";
 	font-size: 14px;
 	color: #FF0000;
 }
+.button-blue {
+    background-color: #008CBA;
+    font-family: "TH SarabunPSK";
+    border: none;
+    border-radius: 12px;
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 22px;
+    font-weight: bold;
+}
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 function check(){
@@ -283,7 +296,7 @@ $(function() {
 </head>
 
 <body>
-<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ Lab || <a href="opday_dxofyear_so.php">ดูการมาตรวจตามวัน</a></a>
+<a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ Lab</a> || <a href="opday_dxofyear_so.php">ดูการมาตรวจตามวัน</a> || <a href="opday_dxofyear.php">รายชื่อที่คัดกรองแล้วแต่แพทย์ยังไม่ได้อ่านผล</a>
 <center>
   <div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพทหารปี <?=$showyear;?></div>
 </center>
@@ -504,9 +517,23 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 }
 
 
+				$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_POST["p_hn"]."' limit 1";	
+	    		$query2 = mysql_query($sql2) or die("Query failed");
+				$numdm=mysql_num_rows($query2);
+				if($numdm > 0){
+					$diabetes="มีประวัติเป็นผู้ป่วยโรคเบาหวาน";
+				}else{
+					$diabetes="";
+				}
 
-
-
+				$sql3= "SELECT * FROM `hypertension_clinic` WHERE `hn` = '".$_POST["p_hn"]."' limit 1";	
+	    		$query3 = mysql_query($sql3) or die("Query failed");
+				$numht=mysql_num_rows($query3);
+				if($numht > 0){
+					$hypertension="มีประวัติเป็นผู้ป่วยโรคความดันโลหิตสูง";
+				}else{
+					$hypertension="";
+				}
 
 
 
@@ -590,13 +617,14 @@ $result1 = mysql_query($query1) or die("Query failed,opday");
 list($vn,$ptright)=mysql_fetch_array($result1);	
 */
 ?>
-<div align="center" style="color:#FF0000;">ผล LAB ไม่ขึ้น กรุณาปรับสถานะ เป็น ตรวจสุขภาพประจำปี <?=$nPrefix;?></div>
+<div align="center" style="color:#FF0000;">ถ้าผล LAB ไม่ขึ้น กรุณาตรวจสอบและปรับสถานะ เป็น ตรวจสุขภาพประจำปี <?=$nPrefix;?></div>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM name="vsform" method="POST" ACTION="dx_ofyear_save.php" target="_blank" onsubmit="return check()" >
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
 <input name="vn" type="hidden" id="vn"  value="<?php echo $arr_view["vn"];?>" />
 <input name="camp" type="hidden" id="camp"  value="<?php echo $arr_view["camp"];?>" />
+<input name="idcard" type="hidden" id="idcard"  value="<?php echo $arr_view["idcard"];?>" />
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#7DCEA0" width="100%" >
 <TR>
 	<TD>
@@ -874,7 +902,7 @@ mmHg</td>
 	</TABLE>
 	<TABLE width="725" class="tb_font">
 	<tr>
-	  <td align="right" class="tb_font_2">ประวัติโรคประจำตัว : </td>
+	  <td align="right" class="tb_font_2" valign="top">ประวัติโรคประจำตัว : </td>
 	  <td colspan="5" align="left"><select name="prawat" id="prawat">
         <option value='<? echo $prawat;?>' ><? if($prawat=="0"){ echo "ไม่มีโรคประจำตัว";}else if($prawat=="1"){ echo "ความดันโลหิตสูง";}else if($prawat=="2"){ echo "เบาหวาน";}else if($prawat=="3"){ echo "โรคหัวใจและหลอดเลือด";}else if($prawat=="4"){ echo "ไขมันในเลือดสูง";}else if($prawat=="5"){ echo "โรคที่กำหนดไว้ตั้งแต่ 2 โรคขึ้นไป";}else if($prawat=="6"){ echo "โรคประจำตัวอื่นๆ";}else if($prawat==""){ echo "----------- เลือก -----------";}?></option>
         <option value="0">ไม่มีโรคประจำตัว</option>
@@ -885,14 +913,19 @@ mmHg</td>
         <option value="5">โรคที่กำหนดไว้ตั้งแต่ 2 โรคขึ้นไป</option>
         <option value="6">โรคประจำตัวอื่นๆ</option>
       </select> 
-	    &nbsp;&nbsp;<span class="style6">(กรณีเลือก โรคที่กำหนดไว้ตั้งแต่ 2 โรคขึ้นไป หรือ โรคประจำตัวอื่นๆ ให้ระบุโรคประจำตัว)</span></td>
+	    &nbsp;&nbsp;<span class="style6">(กรณีเลือก โรคที่กำหนดไว้ตั้งแต่ 2 โรคขึ้นไป หรือ โรคประจำตัวอื่นๆ ให้ระบุโรคประจำตัว)</span>
+		<div style="background-color: yellow; color:blue;"><span style="font-size:24px;"><?php echo $diabetes; ?></span>
+		<span style="margin-left:20px; font-size:24px;"><?php echo $hypertension; ?></span></div>
+		</td>
 	  </tr>
+		
 	<tr>
            <td width="131" align="right" class="tb_font_2">โรคประจำตัว :</td>
            <td width="582" colspan="5" align="left"><span class="data_show">
              <input name="congenital_disease" type="text" id="congenital_disease" size="60"  value="<?php echo $congenital_disease;?>"/>
              <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฎิเสธ';" name="Submit3" value="ปฎิเสธ" />
-           </span></td>
+		   </span>
+		   </td>
          </tr>
 	<tr>
 	  <td align="right" class="tb_font_2">ลักษณะผู้ป่วย : </td>
@@ -1111,14 +1144,11 @@ mmHg</td>
 <br />
 <center>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
-<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />
+<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;
+<input name="submit3" type="submit" class="button-blue" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" />
 </center>
 <INPUT TYPE="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
 </FORM>
-
-
-
-
 
 
 <?php }?>

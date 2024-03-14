@@ -1,18 +1,33 @@
 <?php
-	session_start();
-	include("connect.inc");
+// session_start();
+include_once 'bootstrap.php';
+include_once 'class_file/class_appoint.php';
+include_once 'class_file/class_doctor.php';
 
-	function dump($txt){
-		echo "<pre>";
-		var_dump($txt);
-		echo "</pre>";
-	}
+include("connect.inc");
+
+$app = new Appoint();
+$doctor = new Doctor();
+
+$th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
+
+
+$page = $_REQUEST['page'];
+if($page==='loadCalendar'){ 
+	$doctorCode=$_REQUEST['id'];
+	$today=$_REQUEST['today'];
+	$dfMonth=$_REQUEST['dfMonth'];
+	$dfYear=$_REQUEST['dfYear'];
+	$app->getCalendar($doctorCode,$today,$dfMonth,$dfYear);
+	exit;
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
+<title>โปรแกรมเลื่อนนัด</title>
 <style type="text/css">
 .font3 {
 	font-family: "TH SarabunPSK";
@@ -54,13 +69,9 @@ function CheckAll() {
   <tr>
     <td>วันที่
 		<?php 
-
-		$month = array(1=>'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-		$currMonth = date('m');
-
-		$dSelect = !empty($_POST['d']) ? $_POST['d'] : sprintf('%02d', date('d')) ;
-		$mSelect = !empty($_POST['m']) ? $_POST['m'] : $month[$currMonth] ;
-		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : (date('Y')+543) ;
+		$dSelect = !empty($_POST['d']) ? $_POST['d'] : '' ;
+		$mSelect = !empty($_POST['m']) ? $_POST['m'] : '' ;
+		$ySelect = !empty($_POST['yr']) ? $_POST['yr'] : '' ;
 		?>
       <select name="d">
         <option value="0">-</option>
@@ -70,41 +81,50 @@ function CheckAll() {
 			$selected = ($a==$dSelect) ? 'selected="selected"' : '' ;
 			?>
 			<option value="<?=$a?>" <?=$selected;?>><?=$a?></option>
-			<?php
+			<?
 		}
-		?>
+	?>
         </select>
       เดือน
       <select name="m">
-        <?php
-		
-		foreach($month AS $k => $m){
-			$selected = ($m==$mSelect) ? 'selected="selected"' : '' ;
-			?><option value="<?=$m?>" <?=$selected;?>><?=$m?></option><?php
+        <?
+		$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+		for($a=1;$a<13;$a++){
+			// $b = sprintf('%02d', $a);
+			$selected = ($month[$a]===$mSelect) ? 'selected="selected"' : '' ;
+			?>
+			<option value="<?=$month[$a]?>" <?=$selected;?>><?=$month[$a]?></option>
+			<?
 		}
 		?>
         </select>
       พ.ศ.
       <select name="yr">
         <?
-		$year = date("Y")+543;
-		for($a=($year-5);$a<($year+5);$a++){
-			?>
-			<option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>><?=$a?></option>
-			<?php
-		}
-		?>
+	$year = date("Y")+543;
+	for($a=($year-5);$a<($year+5);$a++){
+	?>
+        <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>>
+          <?=$a?>
+          </option>
+        <?
+	}
+	?>
       </select></td>
     </tr>
   <tr>
     <td>แพทย์
+	<?php 
+	$post_dr = $_POST['dr'];
+	?>
       <select name="dr">
-        <?
+        <?php
 	$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-	while($objResult = mysql_fetch_array($objQuery)){
+	while($objResult = mysql_fetch_array($objQuery)){ 
+		$selected = ($post_dr==$objResult["name"]) ? 'selected="selected"' : '' ;
 	?>
-        <option value="<?=$objResult["name"];?>">
+        <option value="<?=$objResult["name"];?>" <?=$selected;?> >
           <?=$objResult["name"];?>
           </option>
         <?
@@ -123,13 +143,8 @@ function CheckAll() {
 
 $doctor111 =substr($_POST['dr'],0,5);
 
-	if(isset($_POST['okbtn'])){ 
-
-		$kMonth = array_keys($month, $_POST['m']);
-		$enDate = ($_POST['yr']-543)."-".$kMonth['0']."-".$_POST['d'];
-
-		// $sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
-		$sql = "select * from appoint where appdate_en = '$enDate' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
+	if(isset($_POST['okbtn'])){
+		$sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor like '$doctor111%' and apptime !='ยกเลิกการนัด'";
 		
 		$row = mysql_query($sql);
 		$num1 = mysql_num_rows($row);
@@ -155,31 +170,42 @@ $doctor111 =substr($_POST['dr'],0,5);
 				echo "<td>".$result['apptime']."</td>";
 				echo "<td align='center'><input name='ch".$i."' id='ch".$i."' type='checkbox' value='".$result['row_id']."' ></td></tr>";
 			}?>
-			</table><br />
-			เลื่อนนัดเป็นวันที่ <input name="datenew" type="text"  size="5"/>
-			 <select name="monnew">
-			  <?
-			$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-			for($a=1;$a<13;$a++){
-			?>
-			  <option value="<?=$month[$a]?>"><?=$month[$a]?></option>
-			  <?
-			}
-			?>
-			</select>
-			<select name="yrnew">
-		  <?
-		$year = date("Y")+543;
-		for($a=($year-5);$a<($year+5);$a++){
-		?>
-		  <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>>
-		  <?=$a?>
-		  </option>
-		  <?
-		}
-		?>
-		</select>
-			<br />
+			</table>
+
+			<fieldset>
+				<legend>
+					<h3 style="margin:0;">เลื่อนนัดเป็นวันที่</h3>
+				</legend>
+			
+			<div id="test_calendar_main">
+				<?php 
+				$test = $doctor->getDoctorFromMdName($post_dr);
+				echo $app->getCalendar($test['doctorcode']);
+				?>
+			</div>
+			<script>
+                // สร้าง ajax ไป get content กลับมาแสดงผลใน id=test_calendar_main
+                function request_calendar(selector, path) { 
+                    var request = new XMLHttpRequest();
+                    request.open('GET', path, true);
+                    request.onreadystatechange = function () {
+                        if (this.readyState === 4) {
+                            if (this.status >= 200 && this.status < 400) {
+                                document.getElementById(selector).innerHTML = request.responseText;
+                            } else {
+                                // Error :(
+                            }
+                        }
+                    };
+                    request.send();
+                }
+                // default function ที่เรียกใช้ตาราง
+                function show_carlendar(url){
+                    request_calendar('test_calendar_main','ap_putoff1.php?page=loadCalendar&'+url);
+                }
+            </script>
+
+			</fieldset>
 			<br />
 เวลา
 <?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
@@ -274,23 +300,32 @@ if(isset($_POST['ok2'])){
 	
 	$labcode= array();
 	$dateadd = (date("Y")+543).date("-m-d H:i:s");
-	$_POST['datenew']=($_POST['datenew']+0);
-	if($_POST['datenew']<10){ 
-		$_POST['datenew'] = "0".$_POST['datenew'];
-	}
+
+	$dateAppoint = sprintf("%s", $_POST['date_appoint']);
+	list($datenew,$monnew,$yrnew) = explode(' ', sprintf("%s", $_POST['date_appoint']));
+
+	// $_POST['datenew']=($_POST['datenew']+0);
+	// if($_POST['datenew']<10){ 
+	// 	$_POST['datenew'] = "0".$_POST['datenew'];
+	// }
 	
-	$newdate = $_POST['datenew']." ".$_POST['monnew']." ".$_POST['yrnew'];
+	// $newdate = $_POST['datenew']." ".$_POST['monnew']." ".$_POST['yrnew'];
+	$newdate = $dateAppoint;
 	$count = $_POST['count'];
 
 
-	$month = array_keys($def_fullm_th, $_POST['monnew']);
-	$appdate_en = ($_POST['yrnew']-543).'-'.$month['0'].'-'.sprintf('%02d', $_POST['datenew']);
+	$month = array_keys($def_fullm_th, $monnew);
+	// $appdate_en = ($_POST['yrnew']-543).'-'.$month['0'].'-'.sprintf('%02d', $_POST['datenew']);
+	$appdate_en = ($yrnew-543).'-'.$month['0'].'-'.$datenew;
 	
 
 	for($a=0; $a<=$count; $a++){
 		
 		if(isset($_POST['ch'.$a])){
 			$sql1 = "select * from appoint where row_id ='".$_POST['ch'.$a]."' ";
+			// echo "<pre>";
+			// var_dump($sql1);
+			// echo "</pre>";
 			$row1 = mysql_query($sql1);
 			$result1 = mysql_fetch_array($row1);
 

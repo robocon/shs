@@ -75,7 +75,8 @@ OR $cDoctor2 == 'MD130'
 OR $cDoctor2 == 'MD116' 
 OR $cDoctor2 == 'NID ว' 
 OR $cDoctor2 == 'MD151' 
-OR $cDoctor2 == 'MD163'){
+OR $cDoctor2 == 'MD163'
+OR $cDoctor2 == 'MD203'){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
@@ -89,6 +90,8 @@ OR $cDoctor2 == 'MD163'){
     <a target="_blank" href="labtranxnid1.php?subDoctor=3">ใบรับรองแพทย์ ฝังเข็ม(กันยกร มาเกตุ)</a>
     <br><br>
     <a target="_blank" href="labtranxnid1.php?subDoctor=4">ใบรับรองแพทย์ ฝังเข็ม(ศุภกิตติ มงคล)</a>
+    <br><br>
+    <a target="_blank" href="labtranxnid1.php?subDoctor=5">ใบรับรองแพทย์ ฝังเข็ม(พรชนก มั่งมูล)</a>
 	<?php
 }
 
@@ -96,15 +99,18 @@ OR $cDoctor2 == 'MD163'){
 // MD155 หทัยรัตน์ กุลชิงชัย
 // MD156 อัจฉรา อวดห้าว
 // MD157 ธัญญาวดี มูลรัตน์
+// MD202 ประภัสสร เครืออินทร์
 // เฉพาะแพทย์แผนไทย
-if( $cDoctor2 == 'MD058' || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157'){
+if( $cDoctor2 == 'MD058' || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
     ?>
     <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - อัจฉรา อวดห้าว</a>
     <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์</a>
 	<br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - หทัยรัตน์ กุลชิงชัย</a>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - กัลย์ปภารัศมิ์ กุลชิงชัย</a>
+	<br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=4&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ประภัสสร เครืออินทร์</a>
     <!--<br><br>
     <a target="_blank" href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
 

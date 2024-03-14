@@ -248,7 +248,7 @@ if(empty($credit) ){
 	$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม" || $_POST["credit"] == "กสทช" || $_POST["credit"] == "กฟผ" )){
 
 	if($_POST["credit"] == "จ่ายตรง" ){
 		$name_f = "billcscd";
@@ -260,7 +260,13 @@ if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit
 	else if($_POST["credit"] == "กทม" ){
 		$name_f = "billcscd";
 	}	
-	else if($_POST["credit"] == "ประกันสังคม" ){
+	else if($_POST["credit"] == "กสทช" ){
+		$name_f = "billcscd";
+	}
+	else if($_POST["credit"] == "กฟผ" ){
+		$name_f = "billcscd";
+	}
+	else if($_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ"){
 		$name_f = "billcscd";
 	}
 	else if($_POST["credit"] == "ตรวจสุขภาพ" ){
@@ -483,7 +489,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			$aSumy = $aSumy+$sEssd+$sNessdy+$sDPY+$sDSY;
 			$aSumn = $aSumn+$sNessdn+$sDPN+$sDSN;
 			
-			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "กทม" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ"  || $_POST["credit"] == "จ่ายตรง อปท. (HD)")){
+			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม"  || $_POST["credit"] == "กสทช" || $_POST["credit"] == "กฟผ")){
 
 	/*	if($_POST["credit"] == "จ่ายตรง" ){
 			$name_f = "billcscd";
@@ -502,7 +508,11 @@ if($_POST["credit"] == "จ่ายตรง" ){
 	$name_f = "billcscd";
 }else if($_POST["credit"] == "กทม"){
 	$name_f = "billcscd";
-}else if($_POST["credit"] == "ประกันสังคม" ){
+}else if($_POST["credit"] == "กสทช"){
+	$name_f = "billcscd";
+}else if($_POST["credit"] == "กฟผ"){
+	$name_f = "billcscd";	
+}else if($_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ"){
 	$name_f = "billcscd";
 }else if($_POST["credit"] == "ตรวจสุขภาพ" ){
 	$name_f = "billchkup";		

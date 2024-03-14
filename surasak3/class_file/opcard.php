@@ -60,4 +60,9 @@ class Opcard
         $years = floor($diff / (365*60*60*24));
         return $years;
     }
+
+    public function dbirthThaiToEng($dbirth){
+        list($y, $m, $d) = explode('-', $dbirth);
+        return ($y-543).'-'.$m.'-'.$d;
+    }
 }

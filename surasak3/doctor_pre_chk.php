@@ -976,12 +976,22 @@ h1,h3,p{
                             $labcode = strtolower($etc['labcode']);
 
                             $etc_abnormal = '';
+                            $test = false;
                             if( $etc['flag'] == 'L' OR $etc['flag'] == 'H' ){
                                 $etc_abnormal = 'style="font-weight: bold; color: red;"';
+                                $test = true;
                             }
 
                             if( ( $labcode == 'occult' OR $labcode == 'hbsag' ) && $etc['result'] == 'Positive' ){
                                 $etc_abnormal = 'style="font-weight: bold; color: red;"';
+                                $test = true;
+                            }
+
+                            $falseChecked = $trueChecked = '';
+                            if($test===true){
+                                $falseChecked = 'checked="checked"';
+                            }else{
+                                $trueChecked = 'checked="checked"';
                             }
 
                             ?>
@@ -991,10 +1001,10 @@ h1,h3,p{
                                 <td align="center"><?=$etc['normalrange'];?></td>
                                 <td bgcolor="#abcea1" style="font-weight: bold;">
                                     <label for="res_<?=$labcode;?>">
-                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>" value="1"> ปกติ
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>" <?=$trueChecked;?> value="1"> ปกติ
                                     </label> 
                                     <label for="res_<?=$labcode;?>2">
-                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" value="2"> ผิดปกติ
+                                        <input type="radio" name="res_<?=$labcode;?>" class="res_<?=$labcode;?>" id="res_<?=$labcode;?>2" <?=$falseChecked;?> value="2"> ผิดปกติ
                                     </label>
                                 </td>
                             </tr>

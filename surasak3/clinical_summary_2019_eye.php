@@ -63,12 +63,21 @@ function create_dot($dot_num){
 ?>
 
 <div style="position: relative; padding: 10px;">
+<table border="0" align="center" width="100%" cellpadding="0">
+  <tr>
+    <th width="10%" valign="top" align="center">
+    <div style="position: absolute; top: 10px; left: 10px;">MR  IPD - 002 (4)</div>
+    <div style="position: absolute; top: 30px; left: 10px;">เริ่มใช้ วันที่ 1 เม.ย. 66</div>	
+	</th>
+    <th width="70%" valign="top">
     <div style="text-align: center; font-size: 16pt;">Clinical  Summary</div>
     <div style="text-align: center; font-size: 16pt;">โรงพยาบาลค่ายสุรศักดิ์มนตรี  จังหวัดลำปาง</div>
-
-    <div style="position: absolute; top: 10px; left: 10px;">MR  IPD - 002 (4)</div>
-    <div style="position: absolute; top: 30px; left: 10px;">เริ่มใช้ วันที่ 1 เม.ย. 66</div>
-    <div>&nbsp;</div>
+	</th>
+	<th width="20%" valign="top">
+	<img src="printQrCode.php?hn=<?php echo $item['hn'];?>&size=4&level=2&margin=1">
+	</th>
+  </tr>
+</table>
     <div>
         <table style="width: 100%;" class="tb_info">
             <tr>

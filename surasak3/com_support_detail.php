@@ -12,10 +12,11 @@ if(empty($_SESSION['sOfficer'])){
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$action = $_POST['action'];
+$action = sprintf("%s", $_POST['action']);
 if($action==='save'){
 
-    $com_id = $_POST['com_id'];
+    $com_id = sprintf("%s", $_POST['com_id']);
+	$head = sprintf("%s", $_POST['head']);
     $detail = htmlspecialchars(trim($_POST['detail']), ENT_QUOTES);
     $user = $_SESSION['sOfficer'];
 
@@ -36,7 +37,7 @@ if($action==='save'){
             $imageFileType = strtolower(pathinfo($files["name"][$i],PATHINFO_EXTENSION));
             $size = $files["size"][$i];
 
-            if( $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" ){
+            if( $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ){
                 continue;
             }
             if($size >= $maxsize){
@@ -70,7 +71,7 @@ if($action==='save'){
     }
 
     $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-    $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nรายละเอียด: $detail\n";
+    $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nเรื่อง: $head \nรายละเอียด: $detail\n";
     $curl = curl_init(); 
 	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
 	curl_setopt( $curl, CURLOPT_POST, 1); 
@@ -80,9 +81,27 @@ if($action==='save'){
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
 	$result = curl_exec( $curl ); 
 	curl_close($curl); 
-    
-    redirect('com_support_detail.php?id='.$com_id);
 
+    ?>
+    <script src="sweetalert/sweetalert2@11.js"></script>
+    <script>
+        window.onload = function(){
+            var obj = JSON.parse('<?=$result;?>');
+            if(obj.status===200){
+                Swal.fire({
+                    title: "บันทึกข้อมูลเรียบร้อย",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                setTimeout(function(){
+                    window.location.href = "com_support_detail.php?id=<?=$com_id;?>";
+                }, 2000);
+            }
+        }
+    </script>
+    <?php
     exit;
 }
 
@@ -95,8 +114,9 @@ if(empty($id)){
 $sql = "SELECT * FROM `com_support` WHERE `row` = '$id'";
 $q = $dbi->query($sql);
 $item = $q->fetch_assoc();
-
 ?>
+<a target="_self" href="com_support.php" class="forntsarabun" style="text-decoration:none;">&lt;&lt;&nbsp;กลับหน้าเมนูแจ้งซ่อม</a>
+<hr>
 <style>
     *{
         font-family: "TH SarabunPSK";
@@ -121,7 +141,7 @@ $item = $q->fetch_assoc();
         <td><?=$item['date'];?></td>
         <td><?=$item['depart'];?></td>
         <td><?=$item['head'];?></td>
-        <td><?=$item['detail'];?></td>
+        <td><?=nl2br(htmlspecialchars_decode($item['detail']));?></td>
     </tr>
 </table>
 
@@ -136,14 +156,15 @@ $item = $q->fetch_assoc();
             <div><b>แนบรูป</b></div>
             <input type="file" name="imgs[]" id="imgs" multiple>
             <ul>
-                <li>รองรับไฟล์ประเภท png, jpg, jpeg</li>
+                <li>รองรับไฟล์ประเภท png, jpg, jpeg, gif</li>
                 <li>ขนาดแต่ละไฟล์ต้องไม่เกิน 2MB</li>
                 <li>ขนาดรวมทุกไฟล์ไม่เกิน 7MB</li>
             </ul>
         </div>
         <div>
             <button type="submit"><b>บันทึก</b></button>
-            <input type="hidden" name="com_id" value="<?=$id;?>">
+            <input type="hidden" name="head" value="<?=$item['head'];?>">
+			<input type="hidden" name="com_id" value="<?=$id;?>">
             <input type="hidden" name="action" value="save">
         </div>
     </form>

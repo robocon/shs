@@ -1,11 +1,218 @@
 <?php 
 session_start();
 include("connect.inc");
-
+include 'bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
+
+
+if($_POST["act"]=="add"){
+	$hn=$_POST["hn"];
+	$drugcode=$_POST["drugcode"];
+	$tradname=$_POST["tradname"];
+	$genname=$_POST["genname"];
+	$asses=$_POST["asses"];
+	$reporter=$_POST["reporter"];
+	$report_date=$_POST["report_date"];
+	$sideeffects=$_POST["sideeffects"];
+	$officer = $_SESSION['sOfficer'];
+
+	$g6pd = sprintf("%d", $_POST['G6PD']);
+	if($g6pd==1){
+		$g6pdField = "'1'";
+	}else{
+		$g6pdField = 'null';
+	}
+	
+	$advreact = implode(',', $_POST["advreact"]);
+	$advreact_other=trim($_POST["advreact_other"]);
+	
+	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
+		$advreact=$advreact.",".$advreact_other;
+	}
+
+	$drugreact_group_id = sprintf("%s", $_POST['drugreact_group']);
+	$sql = "SELECT `name` FROM `drugreact_group` WHERE `id` = '$drugreact_group_id' LIMIT 1";
+	$q = $dbi->query($sql);
+	$drugreact_group_name = '';
+	if($q->num_rows>0){
+		$d = $q->fetch_assoc();
+		$drugreact_group_name = $d['name'];
+	}
+	$q->free_result();
+
+	$sql_drugreact_insert = "INSERT INTO `drugreact` ( 
+		`row_id`, `hn`, `drugcode`, `tradname`, `advreact`, `asses`, 
+		`reporter`, `date`, `officer`, `genname`, `groupname`, `sideeffects`, 
+		`officer1`, `g6pd`
+	) VALUES (
+		NULL, '$hn', '$drugcode', '$tradname', '$advreact', '$asses', 
+		'$reporter', '$report_date', '$officer', '$genname', '$drugreact_group_name', '$sideeffects', 
+		'', $g6pdField 
+	);";
+
+	//echo $edit;
+	if(mysql_query($sql_drugreact_insert)){
+
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$sHn=$hn;
+		$test_drugcode = $drugcode;
+		$dname = $tradname;
+		$typedx = $asses;
+		$symptom = $advreact;
+		$provider = $_SESSION['sOfficer'];
+
+		$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
+		$item = mysql_fetch_assoc($q);
+		$drugallergy = $item['code24'];
+		$daterecord = date('Ymd');
+		$d_update = date('YmdHis');
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
+		$item = mysql_fetch_assoc($q);
+		$cid = $item['idcard'];
+
+		$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
+		$rows = mysql_num_rows($q);
+
+		if( $rows > 0 ){
+
+			// update 
+			$item = mysql_fetch_assoc($q);
+			$id = $item['id'];
+
+			$sql = "UPDATE `drugallergy` SET 
+			`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
+			`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
+			`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
+			`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
+			`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
+			mysql_query($sql);
+
+
+		}else{
+
+			$sql = "INSERT INTO `drugallergy` (
+				`id`, `HOSPCODE`, `PID`, `DATERECORD`, `DRUGALLERGY`, `DNAME`, 
+				`TYPEDX`, `ALEVEL`, `SYMPTOM`, `INFORMANT`, `INFORMHOSP`, `D_UPDATE`, 
+				`PROVIDER`, `CID`, `drugcode`
+			) VALUES (
+				NULL, '11512', '$sHn', '$daterecord', '$drugallergy', '$dname', 
+				'$typedx', NULL, '$symptom', NULL, '11512', '$d_update', 
+				'$provider', '$cid', '$test_drugcode' 
+			);";
+			mysql_query($sql);
+
+		}
+
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$msg = "บันทึกข้อมูลแพ้ยาเรียบร้อย";
+		
+	}else{
+		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง ".mysql_error();
+		
+	}
+
+	redirect("drugreact_new_add.php?page=show&hn=$sHn", $msg);
+	exit;
+}
+
+if($_POST["act"]=="edit"){
+	$row_id=$_POST["row_id"];
+	$hn=$_POST["hn"];
+	$drugcode=$_POST["drugcode"];	
+	$tradname=$_POST["tradname"];	
+	$asses=$_POST["asses"];
+	$reporter=$_POST["reporter"];
+	$report_date=$_POST["report_date"];
+	$sideeffects=$_POST["sideeffects"];
+
+	$g6pd = sprintf("%d", $_POST['G6PD']);
+	
+	$advreact = implode(',', $_POST["advreact"]);
+	$advreact_other=trim($_POST["advreact_other"]);
+	
+	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
+		$advreact=$advreact.",".$advreact_other;
+	}	
+
+	$drugreact_group_id = sprintf("%s", $_POST['drugreact_group']);
+	$sql = "SELECT `name` FROM `drugreact_group` WHERE `id` = '$drugreact_group_id' LIMIT 1";
+	$q = $dbi->query($sql);
+	$drugreact_group_name = '';
+	if($q->num_rows>0){
+		$d = $q->fetch_assoc();
+		$drugreact_group_name = $d['name'];
+	}
+	$q->free_result();
+
+	$edit="update drugreact SET 
+	advreact='$advreact',
+	sideeffects='$sideeffects',
+	asses='$asses',
+	reporter='$reporter',
+	date='$report_date',
+	officer1='".$_SESSION['sOfficer']."',
+	groupname='$drugreact_group_name',
+	g6pd = '$g6pd'
+	where row_id='".$row_id."'";
+	//echo $edit;
+	if(mysql_query($edit)){	
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		$sHn=$hn;
+		$test_drugcode = $drugcode;
+		$dname = $tradname;
+		$typedx = $asses;
+		$symptom = $advreact;
+		$provider = $_SESSION['sOfficer'];
+
+		$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
+		$item = mysql_fetch_assoc($q);
+		$drugallergy = $item['code24'];
+		$daterecord = date('Ymd');
+		$d_update = date('YmdHis');
+
+		$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
+		$item = mysql_fetch_assoc($q);
+		$cid = $item['idcard'];
+
+		$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
+		$rows = mysql_num_rows($q);
+		// เก็บข้อมูลเข้าแฟ้ม drugallergy
+		if( $rows > 0 ){
+
+			// update 
+			$item = mysql_fetch_assoc($q);
+			$id = $item['id'];
+
+			$sql = "UPDATE `drugallergy` SET 
+			`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
+			`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
+			`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
+			`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
+			`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
+			mysql_query($sql);
+
+
+		}
+		// echo "<script>alert('แก้ไขข้อมูลแพ้ยาเรียบร้อย');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";			
+		$msg = "บันทึกข้อมูลแพ้ยาเรียบร้อย";
+		$url = 'drugreact_new_add.php?page=show&hn='.$hn;
+		
+	}else{
+		// echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
+		$msg = "ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง ".mysql_error();
+		$url = 'drugreact_new_add.php?page=showedit&row_id='.$row_id.'&hn='.$hn;
+	}
+	redirect($url, $msg);
+	exit;
+}	
+
+
 ///////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 	
@@ -66,6 +273,12 @@ body{
     border: 0px solid black;
     font-size: 16px;
 }
+label:hover{
+	cursor: pointer;
+}
+input[readonly]{
+	background-color: #d8d8d8;
+}
 </style>
 <script>
 function newXmlHttp(){
@@ -101,32 +314,57 @@ function searchSuggest(str,len,getto,getto2,getto3) {
 }
 
 function checkList(){
+	var check_g6pd = document.getElementById("G6PD");
+	var set_return = true;
 	
-	if(document.getElementById("drugcode").value==""){
-		alert("กรุณาระบุรหัสยา");
-		document.getElementById("drugcode").focus()
-		return false;		
-	}else if(document.getElementById("tradname").value==""){
-		alert("กรุณาระบุชื่อการค้า");
-		document.getElementById("tradname").focus()
-		return false;	
-	}else if(document.getElementById("genname").value==""){
-		alert("กรุณาระบุชื่อสามัญ");
-		document.getElementById("genname").focus()
-		return false;	
-	}else if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
-		alert("กรุณาเลือกการประเมิน");
-		return false;			
+	// ถ้าไม่มีการติ๊ก g6pd จะตรวจสอบตามเงื่อนไขปกติ
+	if (check_g6pd.checked===false) {
+		if(document.getElementById("drugcode").value==""){
+			alert("กรุณาระบุรหัสยา");
+			document.getElementById("drugcode").focus()
+			set_return = false;
+
+		}else if(document.getElementById("tradname").value==""){
+			alert("กรุณาระบุชื่อการค้า");
+			document.getElementById("tradname").focus()
+			set_return = false;
+
+		}else if(document.getElementById("genname").value==""){
+			alert("กรุณาระบุชื่อสามัญ");
+			document.getElementById("genname").focus()
+			set_return = false;
+
+		}
+		/*else if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
+			alert("กรุณาเลือกการประเมิน");
+			set_return = false;
+
+		}*/
 	}else{
-		return true;
+		/*if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
+			alert("กรุณาเลือกการประเมิน");
+			set_return = false;
+
+		}*/
 	}
+	return set_return;
 }
 </script>
 <h3 style="margin-top:20px;">ระบบบันทึกการแพ้ยา รูปแบบใหม่
-<span style="margin-left: 35px;"><input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="fontsarabun" /></span>
-<span style="margin-left: 35px;"><input type="button" name="button" id="button" value="บันทึกแพ้ยา" onclick="window.location='drugreact_new_add.php' " class="fontsarabun" /></span>
-<span style="margin-left: 50px;"><input type="button" name="button" id="button" value="รายชื่อผู้ป่วยแพ้ยา" onclick="window.open('list_drugreact.php') " class="fontsarabun" /></span>
+<span style="margin-left: 20px;"><input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="fontsarabun" /></span>
+<span style="margin-left: 20px;"><input type="button" name="button" id="button" value="บันทึกแพ้ยา" onclick="window.location='drugreact_new_add.php' " class="fontsarabun" /></span>
+<span style="margin-left: 20px;"><input type="button" name="button" id="button" value="รายชื่อผู้ป่วยแพ้ยา" onclick="window.open('list_drugreact.php') " class="fontsarabun" /></span>
 </h3>
+<?php 
+if($_SESSION['x-msg']){
+	?>
+	<div style="    border: 2px solid #004f4f; background-color: #008080; color: #ffffff; text-align: center; margin: 8px; font-size: 20px;">
+		<?=$_SESSION['x-msg'];?>
+	</div>
+	<?php 
+	$_SESSION['x-msg'] = null;
+}
+?>
 <div align="center">
 <form action="drugreact_new_add.php" method="post">
     <fieldset style="width: 300px;">
@@ -143,16 +381,15 @@ function checkList(){
 </div>
 <?php 
 
-$page = $_POST['page'];
+$page = sprintf("%s", trim($_REQUEST['page']));
+$hn = sprintf("%s", trim($_REQUEST['hn']));
 
 if ( $page == 'search' ) {
-    
-    $hn = $_POST['hn'];
+
     $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
     $query=mysql_query($sql);
 	$num=mysql_num_rows($query);
 	
-
     if ( $num > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
@@ -206,6 +443,7 @@ if ( $page == 'search' ) {
 				<th>กลุ่มที่แพ้</th>
 				<th>ผู้บันทึก</th>
 				<th>ผู้แก้ไข</th>
+				<th>G6PD</th>
             </tr>
             <?php
             while($ditem = mysql_fetch_array($dquery)){
@@ -219,7 +457,8 @@ if ( $page == 'search' ) {
 					<td align="center"><?=$ditem['asses'];?></td>
 					<td align="center"><?=$ditem['groupname'];?></td>
 					<td><?=$ditem['officer'];?></td>
-					<td><?=$ditem['officer1'];?></td>					
+					<td><?=$ditem['officer1'];?></td>
+					<td align="center"><?=($ditem['g6pd']=='1') ? "&#9989;" : '' ;?></td>
                 </tr>
                 <?php
             }
@@ -282,10 +521,21 @@ if ( $page == 'search' ) {
 				<th>กลุ่มที่แพ้</th>
 				<th>ผู้บันทึก</th>
 				<th>ผู้แก้ไข</th>
+				<th>G6PD</th>
                 <th colspan="2" width="10%">ดำเนินการ</th>
             </tr>
             <?php
-            while($ditem = mysql_fetch_array($dquery)){
+            while($ditem = mysql_fetch_array($dquery)){ 
+
+				$group_text = '';
+				$groupRes = mysql_query("SELECT * FROM drugreact_group WHERE name = '".$ditem['groupname']."' ");
+				if(mysql_num_rows($groupRes)>0){ 
+					$ga = mysql_fetch_assoc($groupRes);
+					$group_id = $ga['id'];
+					$group_name = $ga['name'];
+					$group_text = '<a href="javascript:void(0);" onclick="show_drugreact_group_list(\''.$group_id.'\')">'.$group_name.'</a>';
+				}
+
                 ?>
                 <tr style="background-color:#D5F5E3;">
                     <td align="center"><?=$ditem['drugcode'];?></td>
@@ -294,9 +544,10 @@ if ( $page == 'search' ) {
                     <td><?=$ditem['advreact'];?></td>
 					<td><?=$ditem['sideeffects'];?></td>
 					<td align="center"><?=$ditem['asses'];?></td>
-					<td align="center"><?=$ditem['groupname'];?></td>
+					<td align="center"><?=$group_text;?></td>
 					<td><?=$ditem['officer'];?></td>
 					<td><?=$ditem['officer1'];?></td>
+					<td align="center"><?=($ditem['g6pd']=='1') ? "&#9989;" : '' ;?></td>
 					<td align="center"><a href="drugreact_new_add.php?page=showedit&row_id=<?=$ditem['row_id'];?>&hn=<?=$ditem['hn'];?>">แก้ไขข้อมูล</a></td>
 					<td align="center"><a href="drugreact_new_add.php?page=del&row_id=<?=$ditem['row_id'];?>&hn=<?=$ditem['hn'];?>" onclick="return confirm('ท่านต้องการลบข้อมูลรายการนี้ใช่หรือไม่');">ลบข้อมูล</a></td>
                 </tr>
@@ -304,6 +555,11 @@ if ( $page == 'search' ) {
             }
             ?>
         </table>
+		<script>
+			function show_drugreact_group_list(id){
+				window.open('show_drugreact_group_list.php?id='+id,"openPopUp","width=800px,height=600px;");
+			}
+		</script>
         <?php
     }else{
         ?>
@@ -392,23 +648,74 @@ if ( $page == 'search' ) {
 						</TD valign="top">
 						<TD><textarea id="advreact_other" name="advreact_other" rows="4" cols="30" class="fontsarabun"></textarea></TD>	
 					</TR>
-					</table>				
+					
+					</table>
 				</td>
                 <td valign="top">
-				<div><input type="radio" id="asses1" name="asses" value="1" class="fontsarabun"> 1= ใช่แน่นอน (Certain)</div>
-				<div><input type="radio" id="asses2" name="asses" value="2" class="fontsarabun"> 2= น่าจะใช่ (Probable)</div>
-				<div><input type="radio" id="asses3" name="asses" value="3" class="fontsarabun"> 3= อาจจะใช่ (Possible)</div>
-				<div><input type="radio" id="asses4" name="asses" value="4" class="fontsarabun"> 4= ไม่น่าใช่ (Unlikely)</div>
-				<div><input type="radio" id="asses5" name="asses" value="5" class="fontsarabun"> 5= ไม่สามารถระบุระดับ (Unclassified)</div>
-				<div><input type="radio" id="asses6" name="asses" value="Hx" class="fontsarabun"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
+				<div><input type="radio" id="asses1" name="asses" value="1" class="fontsarabun assesItem"> <label for="asses1">1= ใช่แน่นอน (Certain)</label></div>
+				<div><input type="radio" id="asses2" name="asses" value="2" class="fontsarabun assesItem"> <label for="asses2">2= น่าจะใช่ (Probable)</label></div>
+				<div><input type="radio" id="asses3" name="asses" value="3" class="fontsarabun assesItem"> <label for="asses3">3= อาจจะใช่ (Possible)</label></div>
+				<div><input type="radio" id="asses4" name="asses" value="4" class="fontsarabun assesItem"> <label for="asses4">4= ไม่น่าใช่ (Unlikely)</label></div>
+				<div><input type="radio" id="asses5" name="asses" value="5" class="fontsarabun assesItem"> <label for="asses5">5= ไม่สามารถระบุระดับ (Unclassified)</label></div>
+				<div><input type="radio" id="asses6" name="asses" value="Hx" class="fontsarabun assesItem"> <label for="asses6">Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</label></div>
+				<a href="javascript:void(0)" onclick="clearAsses()">[ล้างค่าตัวเลือก]</a>
+				<script>
+					function clearAsses(){
+						var assesLists = document.getElementsByClassName('assesItem');
+						for (var index = 0; index < assesLists.length; index++) {
+							var element = assesLists[index];
+							element.checked = false;
+							
+						}
+					}
+				</script>
 				</td>
             </tr>
 			<tr>
-				<td><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
-				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
+				<td align="right" style="border-right: 1px solid #fff;">
+					<input type="checkbox" id="G6PD" name="G6PD" class="fontsarabun" value="1">
+				</td>
+				<td colspan="5">
+					<div>
+						<label for="G6PD"><b>ผู้ป่วยมีโรคประจำตัว G6PD</b></label>
+					</div>
+				</td>
 			</tr>
 			<tr>
-				<td colspan="3" align="left"><div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="OPD" /></div></td>
+				<td align="right"><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
+				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
+			</tr>
+			<tr valign="top">
+				<td align="right"><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
+				<td colspan="4">
+					<?php 
+					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
+					$i = 1;
+					while ($a = $q->fetch_assoc()) {
+						?>
+						<label for="<?=$a['id'];?>">
+							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>"> <?=$i.') '.$a['name'];?><br>
+						</label>
+						<?php
+						$i++;
+					}
+					?>
+					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
+					<script>
+						function clearGroup(){
+							var groupLists = document.getElementsByClassName('groupItem');
+							for (var index = 0; index < groupLists.length; index++) {
+								var element = groupLists[index];
+								element.checked = false;
+								
+							}
+						}
+					</script>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3" align="left">
+				<div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="OPD" /></div></td>
 				<td colspan="2" align="left"><div style="margin-left:10px;"><strong>วันที่รายงาน : </strong> <input name="report_date" type="text" class="fontsarabun" value="<?=date("Y-m-d H:i:s");?>" /></div></td>
 			</tr>			
 			<tr>
@@ -453,7 +760,6 @@ if ( $page == 'search' ) {
 	$dresult = mysql_fetch_array($dquery);
 	
 	$variable=explode(",", $dresult["advreact"]);
-	//print_r($variable);
 	
 //--------------- ผื่นแพ้ยาลักษณะต่าง ๆ ------------//
 if (in_array("MP rash (maculopapular rash)", $variable)){
@@ -647,14 +953,53 @@ if (in_array("ชัก", $variable)){
 }
 //--------------- จบอาการทางระบบอื่น ๆ ------------//
 
-if (in_array("", $variable)){
-  $checkadvreact31="";
-}else{
- foreach ($variable as $key => $value) {	
-  $checkadvreact31=$value;
- }
-}
+// if (in_array("", $variable)){
+//   $checkadvreact31="";
+// }else{
+//  foreach ($variable as $key => $value) {	
+//   $checkadvreact31=$value;
+//  }
+// }
 
+$last_array = end($variable);
+$advreact_lists = array(
+"MP rash (maculopapular rash)",
+"Urticaria",
+"Fixed drug reaction",
+"SJS (Stevens Johnson Syndrome)",
+"TEN (Toxic epidermal necrolysis)",
+"DRESS (Drug rash with eosinophilia and systemic symptoms)",
+"AGEP (Acute generalized exanthematous pustulosis)",
+"ผื่นแดงราบ",
+"ผื่นแดงนูน",
+"ผื่นมีหัวหนองคล้ายสิว",
+"จุดแดงเลือดออกใต้ผิวหนัง",
+"ผื่นลมพิษ",
+"ผิวหนังและ/หรือเยื่อบุลอก",
+"คัน",
+"หายใจลำบาก",
+"หายใจไม่ออก",
+"หอบเหนื่อย",
+"หายใจมีเสียงหวีด",
+"ทางเดินหายใจส่วนบนมีการบวม",
+"เยื่อบุจมูกอักเสบ",
+"Hypotension(ความดันต่ำ)",
+"Angioedema(หน้าบวม ปาก ลิ้นและเพดานอ่อนบวม)",
+"เวียนศีรษะและ/หรือเป็นลม",
+"คลื่นไส้",
+"อาเจียน",
+"อุจจาระร่วง",
+"ปวดท้อง",
+"ปวดศีรษะ",
+"แน่นหน้าอก",
+"ชัก"
+);
+
+$checkadvreact31="";
+// ถ้า array ตัวสุดท้ายไม่มีในรายการ($advreact_lists) แสดงว่าอยู่ในช่องอื่นๆ
+if(!in_array($last_array, $advreact_lists)){
+	$checkadvreact31 = $last_array;
+}
 
 ?>
 <h3 align="center">ระบบแก้ไขข้อมูลการแพ้ยา</h3>
@@ -673,7 +1018,11 @@ if (in_array("", $variable)){
             </tr>
                 <tr>
                 <td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="drugcode" size="15" id='drugcode' value="<?php echo $dresult["drugcode"];?>" class="fontsarabun" onKeyPress="searchSuggest(this.value,3,'drugcode','tradname','genname');" readonly></div></td>
-                <td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="tradname" size="25" id='tradname' value="<?php echo $dresult["tradname"];?>" class="fontsarabun" readonly></div></td>
+                <td align="center" valign="top">
+					<div style="margin-top:5px;">
+						<input type="text" name="tradname" size="25" id='tradname' value="<?php echo $dresult["tradname"];?>" class="fontsarabun" readonly>
+					</div>
+				</td>
 				<td align="center" valign="top"><div style="margin-top:5px;"><input type="text" name="genname" size="25" id='genname' value="<?php echo $dresult["genname"];?>" class="fontsarabun" readonly></div></td>
                 <td>
 					<TABLE width="100%" align="center" border="0"  cellpadding="5" cellspacing="0" class="chk_table1">
@@ -737,20 +1086,76 @@ if (in_array("", $variable)){
 						</TD valign="top">
 						<TD><textarea id="advreact_other" name="advreact_other" rows="4" cols="30" class="fontsarabun"><?=$checkadvreact31;?></textarea></TD>	
 					</TR>
-					</table>				
+					</table>
 				</td>
                 <td valign="top">
-				<div><input type="radio" id="asses1" name="asses" value="1" <? if($dresult["asses"]=='1'){ echo "checked"; } ?> class="fontsarabun"> 1= ใช่แน่นอน (Certain)</div>
-				<div><input type="radio" id="asses2" name="asses" value="2" <? if($dresult["asses"]=='2'){ echo "checked"; } ?> class="fontsarabun"> 2= น่าจะใช่ (Probable)</div>
-				<div><input type="radio" id="asses3" name="asses" value="3" <? if($dresult["asses"]=='3'){ echo "checked"; } ?> class="fontsarabun"> 3= อาจจะใช่ (Possible)</div>
-				<div><input type="radio" id="asses4" name="asses" value="4" <? if($dresult["asses"]=='4'){ echo "checked"; } ?> class="fontsarabun"> 4= ไม่น่าใช่ (Unlikely)</div>
-				<div><input type="radio" id="asses5" name="asses" value="5" <? if($dresult["asses"]=='5'){ echo "checked"; } ?> class="fontsarabun"> 5= ไม่สามารถระบุระดับ (Unclassified)</div>
-				<div><input type="radio" id="asses6" name="asses" value="Hx" <? if($dresult["asses"]=='Hx'){ echo "checked"; } ?> class="fontsarabun"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
+				<div><input type="radio" id="asses1" name="asses" value="1" <? if($dresult["asses"]=='1'){ echo "checked"; } ?> class="fontsarabun assesItem"> 1= ใช่แน่นอน (Certain)</div>
+				<div><input type="radio" id="asses2" name="asses" value="2" <? if($dresult["asses"]=='2'){ echo "checked"; } ?> class="fontsarabun assesItem"> 2= น่าจะใช่ (Probable)</div>
+				<div><input type="radio" id="asses3" name="asses" value="3" <? if($dresult["asses"]=='3'){ echo "checked"; } ?> class="fontsarabun assesItem"> 3= อาจจะใช่ (Possible)</div>
+				<div><input type="radio" id="asses4" name="asses" value="4" <? if($dresult["asses"]=='4'){ echo "checked"; } ?> class="fontsarabun assesItem"> 4= ไม่น่าใช่ (Unlikely)</div>
+				<div><input type="radio" id="asses5" name="asses" value="5" <? if($dresult["asses"]=='5'){ echo "checked"; } ?> class="fontsarabun assesItem"> 5= ไม่สามารถระบุระดับ (Unclassified)</div>
+				<div><input type="radio" id="asses6" name="asses" value="Hx" <? if($dresult["asses"]=='Hx'){ echo "checked"; } ?> class="fontsarabun assesItem"> Hx = มีประวัติแพ้ยาเดิมจากที่อื่น</div>
+				<a href="javascript:void(0)" onclick="clearAsses()">[ล้างค่าตัวเลือก]</a>
+				<script>
+					function clearAsses(){
+						var assesLists = document.getElementsByClassName('assesItem');
+						for (var index = 0; index < assesLists.length; index++) {
+							var element = assesLists[index];
+							element.checked = false;
+							
+						}
+					}
+				</script>
 				</td>
             </tr>
 			<tr>
-				<td><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
+				<td align="right" style="border-right: 1px solid #fff;">
+					<?php 
+					$checked = ($dresult['g6pd']=='1') ? 'checked="checked"' : '' ;
+					?>
+					<input type="checkbox" id="G6PD" name="G6PD" class="fontsarabun" <?=$checked;?> value="1">
+				</td>
+				<td colspan="5">
+					<div>
+						<label for="G6PD"><b>ผู้ป่วยมีโรคประจำตัว G6PD</b></label>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td align="right"><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
 				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="<?php echo $dresult["sideeffects"];?>" /></div></td>
+			</tr>
+			<tr valign="top">
+				<td align="right"><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
+				<td colspan="4">
+					<?php 
+					
+					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
+					$i = 1;
+					while ($a = $q->fetch_assoc()) { 
+						
+						$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
+
+						?>
+						<label for="<?=$a['id'];?>">
+							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>" <?=$checked;?> > <?=$i.') '.$a['name'];?><br>
+						</label>
+						<?php
+						$i++;
+					}
+					?>
+					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
+					<script>
+						function clearGroup(){
+							var groupLists = document.getElementsByClassName('groupItem');
+							for (var index = 0; index < groupLists.length; index++) {
+								var element = groupLists[index];
+								element.checked = false;
+								
+							}
+						}
+					</script>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="3" align="left"><div style="margin-left:10px;"><strong>ผู้รายงาน : </strong> <input name="reporter" type="text" class="fontsarabun" value="<?php echo $dresult["reporter"];?>" /></div></td>
@@ -774,161 +1179,3 @@ if (in_array("", $variable)){
 	}
 }	
 ?>
-
-	
-<?
-if($_POST["act"]=="add"){
-	$hn=$_POST["hn"];
-	$drugcode=$_POST["drugcode"];
-	$tradname=$_POST["tradname"];
-	$genname=$_POST["genname"];
-	$asses=$_POST["asses"];
-	$reporter=$_POST["reporter"];
-	$report_date=$_POST["report_date"];
-	$sideeffects=$_POST["sideeffects"];
-	
-	$advreact = implode(',', $_POST["advreact"]);
-	$advreact_other=trim($_POST["advreact_other"]);
-	
-	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
-		$advreact=$advreact.",".$advreact_other;
-	}
-	
-		$add="insert into drugreact SET hn='$hn',
-		drugcode='$drugcode',
-		tradname='$tradname',
-		genname='$genname',
-		advreact='$advreact',
-		sideeffects='$sideeffects',
-		asses='$asses',
-		reporter='$reporter',
-		date='$report_date',
-		officer='".$_SESSION['sOfficer']."'";
-		//echo $edit;
-		if(mysql_query($add)){
-
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-			$sHn=$hn;
-			$test_drugcode = $drugcode;
-			$dname = $tradname;
-			$typedx = $asses;
-			$symptom = $advreact;
-			$provider = $_SESSION['sOfficer'];
-
-			$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
-			$item = mysql_fetch_assoc($q);
-			$drugallergy = $item['code24'];
-			$daterecord = date('Ymd');
-			$d_update = date('YmdHis');
-
-			$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
-			$item = mysql_fetch_assoc($q);
-			$cid = $item['idcard'];
-
-			$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
-			$rows = mysql_num_rows($q);
-
-			if( $rows > 0 ){
-
-				// update 
-				$item = mysql_fetch_assoc($q);
-				$id = $item['id'];
-
-				$sql = "UPDATE `drugallergy` SET 
-				`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
-				`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
-				`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
-				`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
-				`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
-				mysql_query($sql);
-
-
-			}else{
-
-				$sql = "INSERT INTO `drugallergy` (
-					`id`, `HOSPCODE`, `PID`, `DATERECORD`, `DRUGALLERGY`, `DNAME`, 
-					`TYPEDX`, `ALEVEL`, `SYMPTOM`, `INFORMANT`, `INFORMHOSP`, `D_UPDATE`, 
-					`PROVIDER`, `CID`, `drugcode`
-				) VALUES (
-					NULL, '11512', '$sHn', '$daterecord', '$drugallergy', '$dname', 
-					'$typedx', NULL, '$symptom', NULL, '11512', '$d_update', 
-					'$provider', '$cid', '$test_drugcode' 
-				);";
-				mysql_query($sql);
-
-			}
-
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-	
-			echo "<script>alert('บันทึกข้อมูลแพ้ยาเรียบร้อย');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";			
-		}else{
-			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";
-		}
-}
-
-
-
-if($_POST["act"]=="edit"){
-	$row_id=$_POST["row_id"];
-	$hn=$_POST["hn"];
-	$drugcode=$_POST["drugcode"];	
-	$tradname=$_POST["tradname"];	
-	$asses=$_POST["asses"];
-	$reporter=$_POST["reporter"];
-	$report_date=$_POST["report_date"];
-	$sideeffects=$_POST["sideeffects"];
-	
-	$advreact = implode(',', $_POST["advreact"]);
-	$advreact_other=trim($_POST["advreact_other"]);
-	
-	if(!empty($advreact_other)){  //ถ้ามีอาการแพ้อื่นๆ
-		$advreact=$advreact.",".$advreact_other;
-	}	
-
-		$edit="update drugreact SET advreact='$advreact',sideeffects='$sideeffects',asses='$asses',reporter='$reporter',date='$report_date',officer1='".$_SESSION['sOfficer']."' where row_id='".$row_id."'";
-		//echo $edit;
-		if(mysql_query($edit)){	
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-			$sHn=$hn;
-			$test_drugcode = $drugcode;
-			$dname = $tradname;
-			$typedx = $asses;
-			$symptom = $advreact;
-			$provider = $_SESSION['sOfficer'];
-
-			$q = mysql_query("SELECT `code24` FROM `druglst` WHERE `drugcode` LIKE '$test_drugcode'");
-			$item = mysql_fetch_assoc($q);
-			$drugallergy = $item['code24'];
-			$daterecord = date('Ymd');
-			$d_update = date('YmdHis');
-
-			$q = mysql_query("SELECT `idcard` FROM `opcard` WHERE `hn` = '$sHn' ");
-			$item = mysql_fetch_assoc($q);
-			$cid = $item['idcard'];
-
-			$q = mysql_query("SELECT `id` FROM `drugallergy` WHERE `PID` = '$sHn' AND `drugcode` = '$test_drugcode' ");
-			$rows = mysql_num_rows($q);
-			// เก็บข้อมูลเข้าแฟ้ม drugallergy
-			if( $rows > 0 ){
-
-				// update 
-				$item = mysql_fetch_assoc($q);
-				$id = $item['id'];
-
-				$sql = "UPDATE `drugallergy` SET 
-				`HOSPCODE`='11512', `PID`='$sHn', `DATERECORD`='$daterecord', 
-				`DRUGALLERGY`='$drugallergy', `DNAME`='$dname', `TYPEDX`='$typedx', 
-				`ALEVEL`=NULL, `SYMPTOM`='$symptom', `INFORMANT`=NULL, 
-				`INFORMHOSP`='11512', `D_UPDATE`='$d_update', `PROVIDER`='$provider', 
-				`CID`='$cid', `drugcode` = '$test_drugcode' WHERE (`id`='$id');";
-				mysql_query($sql);
-
-
-			}
-			echo "<script>alert('แก้ไขข้อมูลแพ้ยาเรียบร้อย');window.location='drugreact_new_add.php?page=show&hn=$hn';</script>";			
-		}else{
-			echo "<script>alert('ไม่สามารถบันทึกข้อมูลแพ้ยาได้ กรุณาลองใหม่อีกครั้ง');window.location='drugreact_new_add.php?page=showedit&row_id=$row_id&hn=$hn';</script>";
-		}		
-}	
-?>
-	

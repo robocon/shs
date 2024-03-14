@@ -1,11 +1,11 @@
-<? 
+<?php
 session_start();
 ?>
 <html><!-- InstanceBegin template="/Templates/all_menu.dwt.php" codeOutsideHTMLIsLocked="false" -->
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!-- InstanceBeginEditable name="doctitle" -->
-    <title>�к���§ҹ�˵ء�ó��Ӥѭ/�غѵԡ�ó�/��������ʹ���ͧ</title>
+    <title>ระบบรายงานเหตุการณ์สำคัญ/อุบัติการณ์/ความไม่สอดคล้อง</title>
     <!-- InstanceEndEditable -->
     <link type="text/css" href="menu.css" rel="stylesheet" />
     <script type="text/javascript" src="jquery.js"></script>
@@ -19,7 +19,7 @@ session_start();
 * { margin:0;
     padding:0;
 }
-ody { /*background:rgb(74,81,85); */}
+
 div#menu { margin:5px auto; }
 div#copyright {
     font:11px 'Trebuchet MS';
@@ -55,7 +55,6 @@ include 'main_menu.php';
 
 <div><!-- InstanceBeginEditable name="detail" -->
 <style type="text/css">
-<!--
 .forntsarabun {
 	font-family: "TH SarabunPSK";
 	font-size: 18px;
@@ -71,21 +70,20 @@ include 'main_menu.php';
 background-color: #000; 
 color: #FFF; 
 } 
--->
 </style>
 <div id="no_print">
 <form id="form1" name="form1" method="post" action="">
   <table  border="0" align="center"  >
     <tr>
-      <td colspan="2" align="center" bgcolor="#CCCCCC">ʶԵԧҹ�ǴἹ��</td>
+      <td colspan="2" align="center" bgcolor="#CCCCCC">สถิติงานนวดแผนไทย</td>
     </tr>
     <tr>
       <td colspan="2" align="center">&nbsp;</td>
     </tr>
     <tr>
-      <td>�ѹ/��͹/��</td>
+      <td>วัน/เดือน/ปี</td>
       <td><select name='d_start' class="font1">
-        <option value="" selected="selected">--������͡---</option>
+        <option value="" selected="selected">--ไม่เลือก---</option>
         <? 
 				//$dd=date("d");
 				for($d=1;$d<=31;$d++){
@@ -108,18 +106,18 @@ color: #FFF;
       </select>
         <? $m=date('m'); ?>
         <select name="m_start" class="font1">
-          <option value="01" <? if($m=='01'){ echo "selected"; }?>>���Ҥ�</option>
-          <option value="02" <? if($m=='02'){ echo "selected"; }?>>����Ҿѹ��</option>
-          <option value="03" <? if($m=='03'){ echo "selected"; }?>>�չҤ�</option>
-          <option value="04" <? if($m=='04'){ echo "selected"; }?>>����¹</option>
-          <option value="05" <? if($m=='05'){ echo "selected"; }?>>����Ҥ�</option>
-          <option value="06" <? if($m=='06'){ echo "selected"; }?>>�Զع�¹</option>
-          <option value="07" <? if($m=='07'){ echo "selected"; }?>>�á�Ҥ�</option>
-          <option value="08" <? if($m=='08'){ echo "selected"; }?>>�ԧ�Ҥ�</option>
-          <option value="09" <? if($m=='09'){ echo "selected"; }?>>�ѹ��¹</option>
-          <option value="10" <? if($m=='10'){ echo "selected"; }?>>���Ҥ�</option>
-          <option value="11" <? if($m=='11'){ echo "selected"; }?>>��Ȩԡ�¹</option>
-          <option value="12" <? if($m=='12'){ echo "selected"; }?>>�ѹ�Ҥ�</option>
+          <option value="01" <? if($m=='01'){ echo "selected"; }?>>มกราคม</option>
+          <option value="02" <? if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
+          <option value="03" <? if($m=='03'){ echo "selected"; }?>>มีนาคม</option>
+          <option value="04" <? if($m=='04'){ echo "selected"; }?>>เมษายน</option>
+          <option value="05" <? if($m=='05'){ echo "selected"; }?>>พฤษภาคม</option>
+          <option value="06" <? if($m=='06'){ echo "selected"; }?>>มิถุนายน</option>
+          <option value="07" <? if($m=='07'){ echo "selected"; }?>>กรกฎาคม</option>
+          <option value="08" <? if($m=='08'){ echo "selected"; }?>>สิงหาคม</option>
+          <option value="09" <? if($m=='09'){ echo "selected"; }?>>กันยายน</option>
+          <option value="10" <? if($m=='10'){ echo "selected"; }?>>ตุลาคม</option>
+          <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
+          <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
         </select>
         <? 
 			   $Y=date("Y")+543;
@@ -143,7 +141,7 @@ color: #FFF;
     </tr>
     <tr>
       <td>&nbsp;</td>
-      <td><input type="submit" name="button" id="button" value="��ŧ" /></td>
+      <td><input type="submit" name="button" id="button" value="ตกลง" /></td>
     </tr>
   </table>
 </form>
@@ -155,51 +153,61 @@ color: #FFF;
 	include("../connect.inc");
 
 switch($_POST['m_start']){
-		case "01": $printmonth = "���Ҥ�"; break;
-		case "02": $printmonth = "����Ҿѹ��"; break;
-		case "03": $printmonth = "�չҤ�"; break;
-		case "04": $printmonth = "����¹"; break;
-		case "05": $printmonth = "����Ҥ�"; break;
-		case "06": $printmonth = "�Զع�¹"; break;
-		case "07": $printmonth = "�á�Ҥ�"; break;
-		case "08": $printmonth = "�ԧ�Ҥ�"; break;
-		case "09": $printmonth = "�ѹ��¹"; break;
-		case "10": $printmonth = "���Ҥ�"; break;
-		case "11": $printmonth = "��Ȩԡ�¹"; break;
-		case "12": $printmonth = "�ѹ�Ҥ�"; break;
+		case "01": $printmonth = "มกราคม"; break;
+		case "02": $printmonth = "กุมภาพันธ์"; break;
+		case "03": $printmonth = "มีนาคม"; break;
+		case "04": $printmonth = "เมษายน"; break;
+		case "05": $printmonth = "พฤษภาคม"; break;
+		case "06": $printmonth = "มิถุนายน"; break;
+		case "07": $printmonth = "กรกฏาคม"; break;
+		case "08": $printmonth = "สิงหาคม"; break;
+		case "09": $printmonth = "กันยายน"; break;
+		case "10": $printmonth = "ตุลาคม"; break;
+		case "11": $printmonth = "พฤศจิกายน"; break;
+		case "12": $printmonth = "ธันวาคม"; break;
 	}
 
 if($_POST['d_start']==''){
 	
 $today=$_POST['y_start'].'-'.$_POST['m_start'];
-$sh="��Ш���͹";
+$sh="ประจำเดือน";
 $shtodate=($_POST['y_start']-543).'-'.$_POST['m_start'];
 $dateshow=$printmonth." ".$_POST['y_start'];
 
 }else{
 	
 $today=$_POST['y_start'].'-'.$_POST['m_start'].'-'.$_POST['d_start'];
-$sh="��Ш��ѹ��� ";	
+$sh="ประจำวันที่ ";	
 $dateshow=$_POST['d_start']." ".$printmonth." ".$_POST['y_start'];
 	
 $shtodate=($_POST['y_start']-543).'-'.$_POST['m_start'].'-'.$_POST['d_start'];
 }
 	
 
-	$sql = "SELECT count(*)as count FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 ";
-	$result = Mysql_Query($sql);
-	list($sum) = Mysql_fetch_row($result);
+$sql = "SELECT count(*)as count 
+FROM `patdata` AS a, 
+depart AS b 
+WHERE b.row_id = a.idno 
+#AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) 
+AND b.date LIKE '$today%' 
+AND b.staf_massage!='' 
+AND a.`code` NOT LIKE 'clinic%' 
+AND a.status='Y' 
+AND a.price >0 ";
+
+$result = Mysql_Query($sql);
+list($sum) = Mysql_fetch_row($result);
 
 
-print "<div align=\"center\" class=\"forntsarabun\">ʶԵԧҹᾷ��Ἱ��  $sh  $dateshow</div><BR>";
+print "<div align=\"center\" class=\"forntsarabun\">สถิติงานแพทย์แผนไทย  $sh  $dateshow</div><BR>";
 ?>
 
 <TABLE class="forntsarabun">
 <TR>
-	<TD colspan="2" bgcolor="#CCCCCC">�ӹǹ�����·���ҵ�Ǩ  <?php echo $dateshow;?> ������ <?php echo $sum;?> ��</TD>
+	<TD colspan="2" bgcolor="#CCCCCC">จำนวนผู้ป่วยที่มาตรวจ  <?php echo $dateshow;?> ทั้งหมด <?php echo $sum;?> คน</TD>
 </TR>
 <TR>
-	<TD colspan="2" bgcolor="#CCCCCC">�ӹǹ�ä���������ҵ�Ǩ (����)</TD>
+	<TD colspan="2" bgcolor="#CCCCCC">จำนวนโรคที่ผู้ป่วยมาตรวจ (ครั้ง)</TD>
 </TR>
 <?php 
 $sql = "SELECT b.diag,count(b.hn) as cc FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0  Group by b.diag Order by cc DESC";
@@ -215,7 +223,7 @@ while(list($diag,$count) = Mysql_fetch_row($result)){
 <?php }?>
 
 <TR>
-	<TD bgcolor="#CCCCCC">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;���</TD>
+	<TD bgcolor="#CCCCCC">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;รวม</TD>
 	<TD bgcolor="#CCCCCC"><?php echo $sum;?></TD>
 </TR>
 
@@ -227,10 +235,21 @@ while(list($diag,$count) = Mysql_fetch_row($result)){
  <br /> <br />
  <TABLE class="forntsarabun">
 <TR>
-	<TD colspan="2" bgcolor="#CCCCCC">�Է�ԡ���ѡ��</TD>
+	<TD colspan="2" bgcolor="#CCCCCC">สิทธิการรักษา</TD>
 </TR>
 <?php 
-$sql2 = "SELECT b.ptright,count(b.hn) as cc FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0 Group by substring(b.ptright,1,3) Order by cc DESC";
+$sql2 = "SELECT b.ptright,COUNT(b.hn) AS cc, SUBSTRING(b.ptright,1,3) 
+FROM `patdata` AS a, 
+depart AS b 
+WHERE b.row_id = a.idno 
+#AND ( a.code IN ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) 
+AND b.date LIKE '$today%'  
+AND  a.status='Y' 
+AND a.price > 0 
+AND b.staf_massage!='' 
+AND a.`code` NOT LIKE 'clinic%' 
+GROUP BY SUBSTRING(b.ptright,1,3) 
+ORDER BY cc DESC";
 	
 $result2 = Mysql_Query($sql2);
 $sum2=0;
@@ -247,7 +266,7 @@ $sum2+=$count2;
 ?>
 
 <TR>
-	<TD bgcolor="#CCCCCC">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;���</TD>
+	<TD bgcolor="#CCCCCC">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;รวม</TD>
 	<TD bgcolor="#CCCCCC"><?php echo $sum2;?></TD>
 </TR>
 
@@ -256,10 +275,19 @@ $sum2+=$count2;
 <br />
 <TABLE class="forntsarabun">
 <TR>
-	<TD colspan="2" align="center" bgcolor="#CCCCCC">��</TD>
+	<TD colspan="2" align="center" bgcolor="#CCCCCC">เพศ</TD>
 </TR>
 <?php 
-$sql2 = "SELECT  distinct(b.hn) FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
+$sql2 = "SELECT  distinct(b.hn) 
+FROM `patdata` AS a, 
+depart AS b 
+WHERE b.row_id = a.idno 
+#AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) 
+AND b.date LIKE '$today%'  
+AND b.staf_massage!='' 
+AND a.`code` NOT LIKE 'clinic%' 
+AND a.status='Y' 
+AND a.price >0";
 	
 $result2 = Mysql_Query($sql2);
 $sum2=0;
@@ -269,22 +297,22 @@ while(list($hn) = Mysql_fetch_row($result2)){
 	 $querysex = mysql_query($sqlsex) or die("Query failed ".$sqlsex."");
 	 $arrsex=mysql_fetch_array($querysex);
 	 
-	 if($arrsex['sex']=='�' || $arrsex['sex']=='1'){
-		$sex= "���"; 
+	 if($arrsex['sex']=='ช' || $arrsex['sex']=='1'){
+		$sex= "ชาย"; 
 		$nsex++;
-	 }else if($arrsex['sex']=='�' || $arrsex['sex']=='2'){
-		$sex= "˭ԧ"; 
+	 }else if($arrsex['sex']=='ญ' || $arrsex['sex']=='2'){
+		$sex= "หญิง"; 
 		$nsex2++;
 	 }
 	 
 }
 ?>
 <TR>
-	<TD>�Ȫ��</TD>
+	<TD>เพศชาย</TD>
 	<TD><?php echo $nsex;?></TD>
 </TR>
 <TR>
-  <TD>��˭ԧ</TD>
+  <TD>เพศหญิง</TD>
   <TD><?php echo $nsex2;?></TD>
 </TR>
 <?php 
@@ -294,13 +322,13 @@ $sum3=$nsex+$nsex2;
 ?>
 
 <TR>
-	<TD bgcolor="#CCCCCC">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;���</TD>
+	<TD bgcolor="#CCCCCC">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;รวม</TD>
 	<TD bgcolor="#CCCCCC"><?php echo $sum3;?></TD>
 </TR>
 
 </TABLE>
 <br>
-<div class="forntsarabun">*** �ӹǹ icd10 ��� icd9cm *******</div><br>
+<div class="forntsarabun">*** จำนวน icd10 และ icd9cm *******</div><br>
 
 <table width="50%" border="0">
   <tr>
@@ -309,7 +337,16 @@ $sum3=$nsex+$nsex2;
 	<TD colspan="2" align="center" bgcolor="#CCCCCC">ICD10</TD>
 </TR>
 <?php 
-$sql2 = "SELECT  b.hn,b.date FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
+$sql2 = "SELECT  b.hn,b.date 
+FROM `patdata` AS a, 
+depart AS b 
+WHERE b.row_id = a.idno 
+#AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) 
+AND b.date LIKE '$today%' 
+AND b.staf_massage!='' 
+AND a.`code` NOT LIKE 'clinic%' 
+AND a.status='Y' 
+AND a.price >0";
 	
  // echo $sql2;
 $result2 = Mysql_Query($sql2);
@@ -345,7 +382,7 @@ while(list($x,$xvalue) = each($ans)){
 $sum33+=$xvalue;
 }?>
 <TR>
-	<TD width="33" bgcolor="#CCCCCC">���</TD>
+	<TD width="33" bgcolor="#CCCCCC">รวม</TD>
 	<TD width="50" align="right" bgcolor="#CCCCCC"><?php echo $sum33;?></TD>
 </TR>
 </TABLE></td>
@@ -354,7 +391,16 @@ $sum33+=$xvalue;
         <TD colspan="2" align="center" bgcolor="#CCCCCC">ICD9CM</TD>
       </TR>
       <?php 
-$sql2 = "SELECT  b.hn,b.date FROM `patdata` AS a, depart AS b WHERE b.row_id = a.idno AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) AND b.date LIKE '".$today."%'  and  a.status='Y' and a.price >0";
+$sql2 = "SELECT  b.hn,b.date 
+FROM `patdata` AS a, 
+depart AS b 
+WHERE b.row_id = a.idno 
+#AND ( a.code in ('58002' , '58003' ,'58004' ,'58002a','58002b','58002c','58005','58006','58007','58008','58101','58102','58130','58131','58201','58301','58301a')) 
+AND b.date LIKE '$today%' 
+AND b.staf_massage!='' 
+AND a.`code` NOT LIKE 'clinic%' 
+and a.status='Y' 
+and a.price >0";
 	
  // echo $sql2;
 $result2 = Mysql_Query($sql2);
@@ -390,11 +436,11 @@ while(list($x2,$xvalue2) = each($ans2)){
 $sum44+=$xvalue2;
 }?>
       <TR>
-        <TD width="33" bgcolor="#CCCCCC">���</TD>
+        <TD width="33" bgcolor="#CCCCCC">รวม</TD>
         <TD width="50" align="right" bgcolor="#CCCCCC"><?php echo $sum44;?></TD>
       </TR>
     </TABLE>
-    * ��ͧ��ҧ=����ա��ŧ����</td>
+    * ช่องว่าง=ไม่มีการลงรหัส</td>
   </tr>
 </table>
 

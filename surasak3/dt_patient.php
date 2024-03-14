@@ -144,7 +144,7 @@ if($style_menu==2){?>
            </tr>
 		   <? } ?>		   
            <tr>
-             <td align="left" colspan="14">Repeat BP : <?=$_SESSION['repeat_bp'];?> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
+             <td align="left" colspan="14">Repeat BP : <b><?=$_SESSION['repeat_bp'];?></b> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
 			&nbsp;&nbsp;&nbsp;&nbsp;, อาการ : <B><?php echo $_SESSION["organ"];?></B>
              </td>
            </tr>
@@ -164,7 +164,12 @@ if($_SESSION["drugreact"]=='1'){
 	$txt_t = "ผู้ป่วยไม่แพ้ยา ";
 }
 
-$sql = "Select drugcode, tradname,advreact,asses,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' GROUP BY `drugcode` ";
+$sql = "SELECT drugcode, tradname,advreact,asses,genname,sideeffects 
+FROM drugreact 
+WHERE  hn = '".$_SESSION["hn_now"]."' 
+AND advreact != '' 
+AND g6pd IS NULL 
+GROUP BY `drugcode` ";
 
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
@@ -189,7 +194,15 @@ if($rows > 0){
 	</style>
 	<table width="100%">
 		<tr>
-			<td valign="top" width="5%"><b style="color:red;">แพ้ยา:</b></td>
+			<td valign="top" width="5%">
+				<b style="color:red;"><a href="javascript:void(0);" onclick="show_drugreact_hn('<?=$_SESSION['hn_now'];?>')">แพ้ยา</a>:</b>
+				<script>
+					// เปิด popup หน้าแพ้ยา
+					function show_drugreact_hn(hn){
+						window.open('show_drugreact_hn.php?hn='+hn, "WindowShowDrugreact","width=800,height=600");
+					}
+				</script>
+			</td>
 			<td>
 			<table width="100%" class="patient_drugreact">
 	<?php
@@ -233,28 +246,49 @@ if($rows > 0){
 }
 
 	// echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>แพ้ยา : ",$txt_t," ",$txt,"</B></FONT></TD></TR>"; 
-
+	$sqlAdvreact = "SELECT advreact FROM drugreact WHERE hn = '".$_SESSION["hn_now"]."' AND advreact != '' GROUP BY `advreact` ";
+	$resultAdv = Mysql_Query($sqlAdvreact);
+	if(mysql_num_rows($resultAdv)>0){
+		$adv = mysql_fetch_assoc($resultAdv);
+		?>
+		<tr>
+			<td colspan="6"><b>อาการ:</b> <?=$adv['advreact'];?></td>
+		</tr>
+		<?php
+	}
 
 
 
 //แพ้ยาตามกลุ่ม
-$sql1 = "Select distinct(groupname) as groupname,advreact,asses FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' and groupname !=''";
-//echo $sql1;
+$sql1 = "Select distinct(groupname) as groupname,advreact,asses 
+FROM drugreact 
+WHERE  hn = '".$_SESSION["hn_now"]."' 
+and groupname !='' 
+and sideeffects=''";
 $result1 = Mysql_Query($sql1);
 $rows1 = Mysql_num_rows($result1);
 if($rows1 > 0){ 
 		$txt1 = "";
 		$i=1;
 		$txt21 = array();
-	while($arr1 = Mysql_fetch_assoc($result1)){
-		$txt1 .= "&nbsp;&nbsp;".$i.". ".$arr1["groupname"];
+	while($arr1 = Mysql_fetch_assoc($result1)){ 
+		$groupName = $arr1["groupname"];
+
+		$sql = "SELECT * FROM drugreact_group WHERE name = '$groupName' ";
+		$q = mysql_query($sql);
+		if(mysql_num_rows($q)>0){
+			$group = mysql_fetch_assoc($q);
+			$id = $group['id'];
+		}
+
+		$txt1 .= '&nbsp;&nbsp;'.$i.'.) <a href="javascript:void(0);" onclick="showDrugreactGroup(\''.$id.'\')">'.$groupName.'</a>';
 		$txt21[$i-1] = $arr1["groupname"];
 		if($i%3==0) $txt1 .="<BR>"; else $txt1.=",";
 		$i++;
 	}
 	$_SESSION["list_drugreact"] = implode(", ",$txt21);
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt_t," ",$txt1,"</B></FONT></TD></TR>"; 
+	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt1,"</B></FONT></TD></TR>"; 
 
 }else{
 	//echo $sql;
@@ -262,6 +296,11 @@ if($rows1 > 0){
 }
 ?>
 </TABLE>
+<script>
+	function showDrugreactGroup(id){
+		window.open('show_drugreact_group_list.php?id='+id,'showDrugreactGroup','width=800,height=600,left=100,top=100');
+	}
+</script>
 </TD>
 </TR>
 </TABLE>
@@ -326,6 +365,9 @@ if($row_diabet > 0){
 		border: 2px solid red;
 		padding: 0.4em;
 	}
+	#btn-dialog:hover{
+		cursor: pointer;
+	}
 
 	.chk_table{
     border-collapse: collapse;
@@ -347,7 +389,7 @@ if($row_diabet > 0){
 	}
 	?>
 	<div id="btn-dialog">
-		เปิดดูข้อมูลผู้ป่วยคลินิกเบาหวาน
+		คลินิกเบาหวาน
 	</div>
 	<div id="dialog-contain" <?php echo $style;?>>
 		<div id="msg-contain">
@@ -411,7 +453,7 @@ if($row_diabet > 0){
 									}
 									?>
 									</span>
-									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="foot" ><img src="images/icons/page_white_edit.png" title="คลิกเพื่อแก้ไขข้อมูล" alt="แก้ไข"></a>
 								</td>
 								<td>
 									<span id="retinal<?=$id;?>"><?=$item['retinal'];?></span>
@@ -422,7 +464,7 @@ if($row_diabet > 0){
 									}
 									?>
 									</span>
-									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="แก้ไข" alt="แก้ไข"></a>
+									<a href="javascript:void(0);" class="editPart" data-id="<?=$id;?>" data-part="retinal" ><img src="images/icons/page_white_edit.png" title="คลิกเพื่อแก้ไขข้อมูล" alt="แก้ไข"></a>
 								</td>
 								<td>
 									<span id="tooth<?=$id;?>">

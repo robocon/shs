@@ -10,11 +10,11 @@ include '../bootstrap.php';
  */
 
 $shs_configs = array(
-    'host' => '192.168.1.13',
+    'host' => '192.168.131.240',
     'port' => '3306',
-    'dbname' => 'smdb',
-    'user' => 'dottow',
-    'pass' => ''
+    'dbname' => 'sm3db-utf8',
+    'user' => 'sm3db_user',
+    'pass' => 'sm3dbPassword'
 );
 
 $db = Mysql::load($shs_configs);

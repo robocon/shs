@@ -130,7 +130,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			<TD>&nbsp;</TD>
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>รหัสการใช้</B></FONT></TD>
 			<TD><FONT  COLOR=\"#FFFFDD\"><B>รายละเอียด</B></FONT>
-			<span align=\"right\"><A HREF=\"#\" Onclick=\"document.getElementById('listdrugcode').innerHTML='';\">[ X ]</A>&nbsp;</span>
+			<span align=\"right\"><A HREF=\"#\" Onclick=\"document.getElementById('listdrugcode').innerHTML='';\" title=\"ปิด\">[ X ]</A>&nbsp;</span>
 			</TD>
 			
 		</TR>
@@ -516,10 +516,18 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 	else
 		$bgcolor = "#FFFFCC";
 
+		$drugCode = $_SESSION["list_druglst"]["drugcode"][$j];
+		$genname = '';
+		$qDruglst = mysql_query("SELECT genname FROM druglst WHERE drugcode = '$drugCode' ");
+		if(mysql_num_rows($qDruglst) > 0){
+			$druglst = mysql_fetch_assoc($qDruglst);
+			$genname = $druglst['genname'];
+		}
+
 		echo "
 		<TR bgcolor=\"",$bgcolor,"\">
 			<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
-			<TD>",$_SESSION["list_druglst"]["tradname"][$j],"</TD>
+			<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b> [$genname]</TD>
 			<TD>",$_SESSION["list_druglst"]["part"][$j],"</TD>
 			<TD><INPUT TYPE=\"text\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
 			<TD ><INPUT TYPE=\"text\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";

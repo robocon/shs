@@ -1,0 +1,23 @@
+#อัพเดท trigger : resultdetail > trigger > test_hba1c_bs
+BEGIN 
+	SET @yearchk = getChkYear();
+	SET @hn = '';
+	SET @ptname = '';
+	SET @id = 0;
+	SET @age = 0;
+	SET @result = CAST(NEW.result AS DECIMAL(2,1));
+
+	SELECT `hn`,`patientname` INTO @hn, @ptname FROM `resulthead` WHERE `autonumber` = NEW.autonumber LIMIT 1;
+	SELECT `id` INTO @id FROM `hba1c_bs` WHERE `hn` = @hn AND `yearchk` = @yearchk LIMIT 1;
+
+	SELECT TIMESTAMPDIFF(YEAR, thDateToEn(`dbirth`), SUBSTRING(NOW(), 1, 10)) AS `age` INTO @age FROM `opcard` WHERE `hn` = @hn LIMIT 1;
+
+	IF @id = 0 AND ( NEW.labcode='HBA1CC' OR NEW.labcode='GLU' ) AND @age >=35 THEN 
+		INSERT INTO `hba1c_bs` (`id`, `autonumber`, `labcode`, `result`,`hn`,`ptname`, `yearchk`) VALUES (NULL, NEW.autonumber, NEW.labcode, NEW.result, @hn, @ptname, @yearchk );
+	END IF;
+
+	IF NEW.labcode='HBA1CC' AND @result <= 8 THEN 
+		INSERT INTO `hba1c_bs2` (`id`,`autonumber`,`labcode`,`result`,`hn`,`ptname`,`age`,`yearchk`) VALUES (NULL, NEW.autonumber, NEW.labcode, @result, @hn, @ptname, @age, @yearchk );
+	END IF;
+
+END

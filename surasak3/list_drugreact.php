@@ -1,107 +1,121 @@
-<?
-include("connect.inc");
+<?php 
+require_once 'bootstrap.php';
+require_once 'connect.inc';
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
+<title>รายชื่อผู้ป่วยแพ้ยา</title>
 
 <style>
-	.font_title{font-family:"Angsana New"; font-size:16px}
-	.tb_font{font-family:"Angsana New"; font-size:24px;}
-	.tb_font_1{font-family:"Angsana New"; font-size:24px; color:#FFFFFF; font-weight:bold;}
-	.tb_col{font-family:"Angsana New"; font-size:24px; background-color:#9FFF9F}
-
-.tb_font_2 {
-	color: #B00000;
-	font-weight: bold;
-}
-.style5 { font-weight: bold; }
-
-.pdxhead {
-	font-family: "TH SarabunPSK";
-	font-size: 24px;
-}
-.pdxpro {
-	font-family: "TH SarabunPSK";
-	font-size: 22px;
-}
-.pdx {
-	font-family: "TH SarabunPSK";
-	font-size: 20px;
-}
-.stricker {
-	font-family: "TH SarabunPSK";
-	font-size: 16px;
-}
-.stricker1 {
-	font-family: "TH SarabunPSK";
-	font-size: 14px;
-}
+.font_title{font-family:"Angsana New"; font-size:24px}
+.tb_font{font-family:"Angsana New"; font-size:20px;}
+.tb_font_1{font-family:"Angsana New"; font-size:24px; color:#FFFFFF; font-weight:bold;}
+.tb_col{font-family:"Angsana New"; font-size:24px; background-color:#9FFF9F}
 @media print{
-#no_print{display:none;}
+	#no_print{display:none;}
 }
-
-.theBlocktoPrint 
-{ 
-background-color: #000; 
-color: #FFF; 
+table tr:hover{
+	background-color: #b8b8b8;
 }
 </style>
 </head>
-
 <body>
+<div>
+	<h1 align="center" class="font_title"><a href="list_drugreact.php">รายชื่อผู้ป่วยแพ้ยา</a></h1>
+</div>
+<div>
+	<form action="list_drugreact.php" method="get">
+		<div align="center">
+			ค้นหาตาม HN: <input type="text" name="hn" id="hn"> <button type="submit">ค้นหา</button>
+			<input type="hidden" name="page" value="search_by_hn">
+			<br>
+		</div>
+	</form>
+	<div align="center" style="margin: 8px;">
+		<a href="javascript:void(0);" onclick="window.location='list_drugreact.php?page=all';">แสดงรายชื่อทั้งหมด</a>
+	</div>
+</div>
+<?php 
 
-  <h1 align="center" class="font_title">รายชื่อผู้ป่วยแพ้ยา</h1>
-<table align="center" width="90%" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"  bordercolor="#000000" class="font_title">
+$page = sprintf("%s", trim($_GET['page']));
+$hn = sprintf("%s", trim($_GET['hn']));
+$tb_search = '';
+if($page==='all'){
+	$tb_search = 'drugreact';
+}elseif ($page==='search_by_hn') {
+	$tb_search = " ( SELECT * FROM drugreact WHERE hn = '$hn' )  ";
+}
 
-<tr>
-<td align="center">NO.</td>
-<td align="center">HN</td>
-<td  align="center">ชื่อ - สกุล</td>
-<td  align="center">รหัสยา</td>
-<td align="center">ชื่อยา</td>
-<td  align="center">ชื่อกลุ่ม</td>
-<td  align="center">อาการ</td>
-</tr>
-<?
-$n='1';
-// $sqls = "select distinct(hn) from drugreact order by row_id ASC";
-$sqls = "select a.hn, a.ptname,b.* from 
-( 
-select *,concat(yot,name,' ',surname) as ptname from opcard where idcard != '' and idguard not like 'mx07%'
-) as a 
-left join drugreact as b on a.hn = b.hn 
-where b.row_id IS NOT NULL 
-order by b.hn asc";
-$row =mysql_query($sqls);
-while($result = mysql_fetch_array($row)){
-	// $sql2 = "select *,concat(yot,' ',name,' ',surname) as ptname from opcard where hn= '".$result['hn']."'";
-	// $row2 =mysql_query($sql2);
-	// $result2 = mysql_fetch_array($row2);
+if (!empty($tb_search)) {
 	
-	// $sql3 = "select * from drugreact where hn= '".$result['hn']."'";
-	// $row3 =mysql_query($sql3);
-	// while($result3 = mysql_fetch_array($row3)){
-		
-	?>
-    
-    
-    <tr> 
-    <td><?=$n?></td>
-    <td><?=$result['hn']?></td>
-    <td ><?=$result['ptname']?></td>
-    <td ><?=$result['drugcode']?></td>
-    <td ><?=$result['tradname']?></td>
-    <td ><?=$result['groupname']?></td>
-    <td ><?=$result['advreact']?></td></tr>
-   
-	<?
-	 $n++;
-	// }
+	$n='1';
+	$sqls = "SELECT a.hn, a.idguard,CONCAT(a.`yot`,a.`name`,' ',a.`surname`) AS ptname,b.* 
+	FROM $tb_search AS b
+	LEFT JOIN opcard AS a ON a.hn = b.hn 
+	WHERE b.row_id IS NOT NULL 
+	AND a.idcard != '' 
+	AND ( a.idguard NOT LIKE 'mx07%' AND a.idguard NOT LIKE 'mx04%' )
+	ORDER BY b.hn ASC ";
+	$q = $dbi->query($sqls);
+	if($q->num_rows > 0){ 
+		?>
+		<table align="center" width="100%" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;"  bordercolor="#000000" class="">
+			<tr style="background-color: #008080; color: #ffffff;" class="tb_font_1">
+				<th align="center">NO.</th>
+				<th align="center">HN</th>
+				<th align="center">ชื่อ - สกุล</th>
+				<th align="center">รหัสยา</th>
+				<th align="center">ชื่อยา</th>
+				<th align="center">ชื่อสามัญ</th>
+				<th align="center" width="23%">ชื่อกลุ่ม</th>
+				<th align="center" width="15%">อาการ</th>
+			</tr>
+			<?php 
+			while($result = $q->fetch_assoc()){ 
+
+				$id = $result['row_id'];
+				$hn = $result['hn'];
+
+				$urlSearchHn = "drugreact_new_add.php?page=search&hn=$hn";
+				$url = "drugreact_new_add.php?page=showedit&row_id=$id&hn=$hn";
+
+				$idguard_code = substr($result['idguard'],0,4);
+				$user_alert = '';
+				if($idguard_code=='MX04'){
+					$user_alert = ' <b style="color:red;">(เสียชีวิต)</b>';
+				}
+				?>
+				<tr class="tb_font"> 
+					<td><?=$n?></td>
+					<td>
+						<a href="<?=$urlSearchHn;?>" title="คลิกเพื่อแสดงข้อมูลในหน้าแพ้ยา" target="_blank"><?=$result['hn']?></a>
+					</td>
+					<td ><?=$result['ptname'].$user_alert;?></td>
+					<td>
+						<a href="<?=$url;?>" title="ึคลิกเพื่อแก้ไขข้อมูล" target="_blank"><?=$result['drugcode']?></a>
+					</td>
+					<td ><?=$result['tradname']?></td>
+					<td ><?=$result['genname']?></td>
+					<td ><?=$result['groupname']?></td>
+					<td ><?=$result['advreact']?></td>
+				</tr>
+				<?php
+				$n++;
+			}
+			?>
+		</table>
+		<?php
+	}else{
+		?>
+		<p align="center"><b>ไม่พบข้อมูลการแพ้ยา</b></p>
+		<?php
+	}
 }
 ?>
- </table>
 </body>
 </html>

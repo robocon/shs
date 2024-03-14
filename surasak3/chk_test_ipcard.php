@@ -56,7 +56,7 @@ if( $action == false ){
             <tr>
                 <th rowspan="2">#</th>
                 <th colspan="3">ข้อมูลที่ตรวจสอบ</th>
-                <th colspan="5">ข้อมูลจากฐานข้อมูล</th>
+                <th colspan="7">ข้อมูลจากฐานข้อมูล</th>
             </tr>
             <tr>
                 <th>เลขบัตรประชาชน</th>
@@ -67,19 +67,27 @@ if( $action == false ){
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>HN</th>
+                <th>หมายเหตุ</th>
+                <th></th>
             </tr>
         <?php
 
         $i = 0;
         foreach ( $items as $key => $item ) {
 
-            list($idcard, $name, $surname) = explode(',', $item,3);
+            list($idcard, $name, $surname) = explode(',', $item);
+            // dump($idcard);
+            $name = iconv('TIS620', 'UTF8', $name);
+            $surname = iconv('TIS620', 'UTF8', $surname);
+            // dump($name);
+            // dump($surname);
+
             $idcard = trim($idcard);
             if( !empty($idcard) ){
 
                 ++$i;
             
-                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` 
+                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex`, idguard, idguard2
                 FROM `opcard` 
                 WHERE `idcard` = '$idcard' ";
                 $db->select($sql);
@@ -87,25 +95,27 @@ if( $action == false ){
                 
                 $color = '';
 
-                if( $name != $user['name'] ){
-                    $color = 'style="background-color: yellow;"';
-                }
+                // if( $name != $user['name'] ){
+                //     $color = 'style="background-color: yellow;"';
+                // }
 
-                if( $surname != $user['surname'] ){
-                    $color = 'style="background-color: yellow;"';
-                }
+                // if( $surname != $user['surname'] ){
+                //     $color = 'style="background-color: yellow;"';
+                // }
 
                 ?>
                 <tr <?=$color;?>>
                     <td><?=$i;?></td>
                     <td><?=$idcard;?></td>
-                    <td><?=iconv('TIS620', 'UTF8', $name);?></td>
-                    <td><?=iconv('TIS620', 'UTF8', $surname);?></td>
+                    <td><?=$name;?></td>
+                    <td><?=$surname;?></td>
                     <td><?=$user['idcard'];?></td>
                     <td><?=$user['yot'];?></td>
                     <td><?=$user['name'];?></td>
                     <td><?=$user['surname'];?></td>
                     <td><?=$user['hn'];?></td>
+                    <td><?=$user['idguard'];?></td>
+                    <td><?=$user['idguard2'];?></td>
                 </tr>
                 <?php
             }

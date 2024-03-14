@@ -2,6 +2,14 @@
 if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณาเข้าสู่ระบบอีกครั้ง</a>'; exit; }
 ?>
 <style type="text/css">
+*{
+    font-family: "TH SarabunPSK";
+    font-size:20px;
+}
+h3{
+    font-size: 32px;
+    margin:8px 0;
+}
 .clearfix:after{
     content: ".";
     display: block;
@@ -13,15 +21,24 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
     min-height: 1%;
 }
 
-
 /* ตาราง */
 .chk_table{
     border-collapse: collapse;
+}
+.chk_table th{
+    background-color: #e3e3e3;
 }
 .chk_table th,
 .chk_table td{
     padding: 3px;
     border: 1px solid black;
+}
+
+.chk_table a{
+    text-decoration: none;
+}
+.chk_table a:hover{
+    text-decoration: underline;
 }
 
 .chk_menu ul {
@@ -45,7 +62,7 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
 }
 
 .chk_menu li a:hover, .dropdown:hover .dropbtn {
-  background-color: #4ba800;
+  background-color: #04AA6D;
 }
 
 .chk_menu li.dropdown {
@@ -69,14 +86,35 @@ if( empty($_SESSION['sRowid']) ){ echo '<a href="login_page.php">กรุณา
   text-align: left;
 }
 
-.chk_menu .dropdown-content a:hover {background-color: #4ba800;}
+.chk_menu .dropdown-content a:hover {background-color: #04AA6D;}
 
 .chk_menu .dropdown:hover .dropdown-content {
   display: block;
 }
-
-
-
+.button {
+    background-color: #04AA6D; /* Green */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+ol.itemMenu{
+    margin:0; 
+    padding:0; 
+    list-style-type:none;
+}
+ol.itemMenu li:hover{
+    background-color: #e3e3e3;
+}
+label:hover{
+    cursor: pointer;
+}
+.tb_title{
+    font-weight: bold;
+    text-align: right;
+}
 </style>
 <?php
 

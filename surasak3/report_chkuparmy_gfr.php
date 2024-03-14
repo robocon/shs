@@ -70,9 +70,9 @@ body,td,th {
 <?php
 if($_POST["act"]=="show"){
 	if($_POST["camp"]=="all"){
-		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and age >= 35 and gfr < 60 group by hn order by camp, age, row_id desc";
+		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and age >= 35 and gfr < 60 and gfr !='' group by hn order by camp, age, row_id desc";
 	}else{
-		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and age >= 35 and gfr < 60 and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
+		$sql="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and age >= 35 and gfr < 60 and gfr !='' and camp='".$_POST["camp"]."' group by hn order by camp, age, row_id desc";
 	}
 	//echo $sql;
 	$query=mysql_query($sql);	
@@ -101,7 +101,11 @@ if($rows["prawat"]=="0"){ $prawat="ไม่มีโรคประจำตั
 
 
 
-
+	if($rows["prawat"]=="5" || $rows["prawat"]=="6"){
+		$prawat=$prawat." (".$rows["congenital_disease"].")";
+	}else{
+		$prawat=$prawat;
+	}
 		
 ?>  
   <tr>

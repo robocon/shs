@@ -1,6 +1,13 @@
-<?
-session_start();
-include("connect.inc");
+<?php 
+include_once dirname(__FILE__).'/bootstrap.php';
+
+$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+mysql_select_db(DB, $Conn) or die( mysql_error() );
+mysql_query("SET NAMES UTF8", $Conn);
+
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
+
 ?>
 <style type="text/css">
 hr{
@@ -41,14 +48,17 @@ hr{
 	font-size: 16px;
 }
 </style>
-<?
+<?php
 if(isset($_POST['hn'])){
+
+	$hn = sprintf("%s", $_POST['hn']);
+
 	$select = "select * from opcard where idcard = '".$_POST['hn']."'";
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
 	if($num==0){
-// AND (camp not like '%E_CERT%')
-// AND (camp not like '%E_CERT%')
+		// AND (camp not like '%E_CERT%')
+		// AND (camp not like '%E_CERT%')
 		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
@@ -57,106 +67,99 @@ if(isset($_POST['hn'])){
 		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
-	}	
+	}
+
 	if($num>0){
 	?>
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="50%" border="1" cellpadding="0" cellspacing="0"><tr>
-    <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
-    <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
-    <td width="37" align="center"><span class="tet">ปี</span></td>
-	<td align="center"><span class="tet">ประเภท</span></td>
-    <td width="37" align="center">&nbsp;</td>
-    <td width="53" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>    
-    </tr>
-    <?
-		$i=0;
-		while($result = mysql_fetch_array($row)){
-			if($i==1){
-					$i=0;
-					$bgcolor = "#FFFFA6";
-				}else{
-					$bgcolor = "#FFFFFF";
-					$i=1;
-				}
-		?>
-		<tr bgcolor=<?=$bgcolor?>><td><span class="tet">
-		  <?=$result["thidate"]?>
-		</span></td>
-		  <td><span class="tet">
-		  <?=$result["ptname"]?>
-		  </span></td>
-		  <td align="center"><span class="tet">
-		    <?=$result["yearcheck"]?>
-		  </span></td>
-		  <td align="center">
-		  	<span class="tet"><?=$result['camp'];?></span>
-		  </td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
-          
+
+	<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" style="text-decoration:none;">[ HN ใหม่ ]</a>
+	<table border="1" cellpadding="0" cellspacing="0">
+		<tr>
+			<td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
+			<td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
+			<td width="37" align="center"><span class="tet">ปี</span></td>
+			<td align="center"><span class="tet">ประเภท</span></td>
+			<td width="37" align="center">&nbsp;</td>
+			<td width="53" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td>
 		</tr>
-		<?
+		<?php
+		$i = 0;
+		while ($result = mysql_fetch_array($row)) {
+			if ($i == 1) {
+				$i = 0;
+				$bgcolor = "#FFFFA6";
+			} else {
+				$bgcolor = "#FFFFFF";
+				$i = 1;
+			}
+			?>
+			<tr bgcolor=<?= $bgcolor ?>>
+				<td><span class="tet"><?= $result["thidate"] ?></span></td>
+				<td><span class="tet"><?= $result["ptname"] ?></span></td>
+				<td align="center"><span class="tet"><?= $result["yearcheck"] ?></span></td>
+				<td align="center"><span class="tet"><?= $result['camp']; ?></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?= $result["row_id"] ?>&chkyear=<?= $result["yearcheck"] ?>" target="_blank">พิมพ์</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?= $result["row_id"] ?>&no&chkyear=<?= $result["yearcheck"] ?>" target="_blank">ดูข้อมูล</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?= $result["row_id"] ?>" target="_blank">Stricker</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?= $result["row_id"] ?>" target="_blank">OLD</a></span></td>
+			</tr>
+			<?php
 		}
 	}else if($num==0){
 	?>
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
-<table width="485" border="1" cellpadding="0" cellspacing="0"><tr>
-    <td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
-    <td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
-    <td width="37" align="center"><span class="tet">ปี</span></td>
-    <td width="37" align="center">&nbsp;</td>
-    <td width="53" align="center">&nbsp;</td>
-    <td width="46" align="center">&nbsp;</td>
-    <td width="37" align="center">&nbsp;</td>
-</tr>    
-    <?
-  		$select = "select * from condxofyear_so where hn = '".$_POST['hn']."' and statusdata='y' order by thidate desc";
-		$row = mysql_query($select);      
+		<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
+		<table border="1" cellpadding="0" cellspacing="0"><tr>
+			<td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
+			<td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
+			<td width="37" align="center"><span class="tet">ปี</span></td>
+			<td width="37" align="center">&nbsp;</td>
+			<td width="53" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td>
+			<td width="37" align="center">&nbsp;</td>
+		</tr>
+		<?php
+		$select = "select * from condxofyear_so where hn = '".$_POST['hn']."' and statusdata='y' order by thidate desc";
+		$row = mysql_query($select);
 		$i=0;	
 		while($result = mysql_fetch_array($row)){
 			if($i==1){
-					$i=0;
-					$bgcolor = "#FFFFA6";
-				}else{
-					$bgcolor = "#FFFFFF";
-					$i=1;
-				}
-		?>
-		<tr bgcolor=<?=$bgcolor?>><td><span class="tet">
-		  <?=$result["thidate"]?>
-		</span></td>
-		  <td><span class="tet">
-		  <?=$result["ptname"]?>
-		  </span></td>
-		  <td align="center"><span class="tet">
-		    <?=$result["yearcheck"]?>
-		  </span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-          <td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
-		  <td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
-		</tr>
-		<?
-		}   
+				$i=0;
+				$bgcolor = "#FFFFA6";
+			}else{
+				$bgcolor = "#FFFFFF";
+				$i=1;
+			}
+			?>
+			<tr bgcolor=<?=$bgcolor?>>
+				<td><span class="tet"><?=$result["thidate"]?></span></td>
+				<td><span class="tet"><?=$result["ptname"]?></span></td>
+				<td align="center"><span class="tet"><?=$result["yearcheck"]?></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
+			</tr>
+		<?php
+		}
 	}else{
 		?>
         <meta content="1" http-equiv="refresh"  />
 		<?
 	}
 	?>
-</table>
-<?
-}elseif(isset($_GET['ids'])){
+	</table>
+<?php
+}elseif(isset($_GET['ids'])){ 
+
 	$detail = "select * from condxofyear_out where row_id = '".$_GET['ids']."' ";
 	$result = Mysql_Query($detail);
 	$arrs = Mysql_fetch_assoc($result);
+
+	$hn = $arrs['hn'];
 	?>
-<script language="javascript">
+	<script language="javascript">
 		window.print();
 	</script>
 	<table cellpadding="0" cellspacing="0" border="0" style="font-family:'MS Sans Serif'; font-size:12px">
@@ -337,12 +340,16 @@ if(isset($_POST['hn'])){
 	$select = "select * from condxofyear_out where row_id='".$_GET['id']."'";
 	$row = mysql_query($select);
 	$result = mysql_fetch_array($row);
-
+	$hn = $result['hn'];
+	list($ageInt, $etc) = explode(' ', $result['age'],2);
 	$thdatehn = $result['thdatehn'];
-	$sql_dxofyear = "SELECT `bp21`,`bp22` FROM `dxofyear_out` WHERE `thdatehn` = '$thdatehn' ";
+
+	$sql_dxofyear = "SELECT round_,`bp21`,`bp22`,cigarette FROM `dxofyear_out` WHERE `thdatehn` = '$thdatehn' ";
 	$q_dx = mysql_query($sql_dxofyear);
 	$dxofyear = mysql_fetch_assoc($q_dx);
-
+	$round = $dxofyear['round_'];
+	$waist = $round; // เอาไปใช้คำนวณ cv risk score
+	$cigga = $dxofyear['cigarette'];
 	
 	//ปีก่อน
 	$select5 = "select * from condxofyear_out where hn='".$result['hn']."' and yearcheck='".($nPrefix2-1)."' order by row_id desc";
@@ -350,14 +357,13 @@ if(isset($_POST['hn'])){
 	$result5 = mysql_fetch_array($row5);
 	if(!isset($_GET['no'])){
 	?>
-<script language="javascript">
+	<script language="javascript">
 		window.print();
 	</script>
     <?
 	}
 	
-$chkyear=substr($_GET["chkyear"],2);
-//echo $chkyear;	
+$chkyear=substr($_GET["chkyear"],2);	
 $sql1="CREATE TEMPORARY TABLE  result1  
 Select * from  resulthead  
 WHERE hn='".$result['hn']."' 
@@ -410,9 +416,9 @@ $query1 = mysql_query($sql1);
   <td width="10%" valign="top"><span class="text3"><strong>BMI: </strong>
     <u><?=$result['bmi']?></u>
   </span></td>
-  <td width="14%" valign="top"><span class="text3"><strong>รอบเอว:</strong>
-    <?=$result['round_']?>
-ซม.</span></td>
+  <td width="14%" valign="top">
+	<span class="text3"><strong>รอบเอว:</strong><?=(!empty($result['round_']) ? $result['round_'].'ซม.' : '<b style="color:red;"> - </b>' );?></span>
+</td>
   <td width="19%" valign="top"><span class="text3"><strong>แพ้ยา:</strong> 
     <? if($result['drugreact']=="0" || $result['drugreact']==""){ echo "ไม่แพ้ยา"; }else{
 		$sql55 = "Select  drugreact From opcard  where hn = '".$result['hn']."' ";
@@ -431,13 +437,8 @@ $query1 = mysql_query($sql1);
   <td valign="top"><span class="text3"><strong>T:</strong>
 <u><?=$result['temperature']?></u>
 C ํ</span></td>
-  <td valign="top"><span class="text3"><strong>P:
-  </strong>
-    <?=$result['pause']?>
-ครั้ง/นาที</span></td>
-  <td valign="top"><span class="text3"><strong>R: </strong>
-    <?=$result['rate']?>
-ครั้ง/นาที</span></td>
+  <td valign="top"><span class="text3"><strong>P:</strong><?=$result['pause']?>ครั้ง/นาที</span></td>
+  <td valign="top"><span class="text3"><strong>R: </strong><?=$result['rate']?>ครั้ง/นาที</span></td>
 <td valign="top">
 	<?php 
 	if(!empty($dxofyear['bp21'])){
@@ -460,6 +461,45 @@ C ํ</span></td>
 	<td colspan="6" valign="top" class="text3">
 		<strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?><? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?>
 		&nbsp; <strong class="text3">ค่า BMI : </strong><?=$result['stat_bmi']?><? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?>
+		<?php 
+		$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMIT 1";
+		$q = $dbi->query($sql);
+		$opcard = $q->fetch_assoc();
+		$sex = ($opcard['sex']==='ช') ? 1 : 0 ;
+		
+		$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '$hn' LIMIT 1";
+		$q = $dbi->query($sql);
+		$diabetes = 0;
+		if($q->num_rows > 0){
+			$diabetes = 1;
+		}
+
+		$height = (int) $result['height'];
+		$smoke = $cigga;
+		$sbp = $result['bp1'];
+		$age = $ageInt;
+
+		if(!empty($waist)){
+			//HDC
+			// https://www.rajavithi.go.th/rj/wp-content/uploads/2018/02/7score.pdf
+			$FullScore = 0;
+			$FullScore += 0.079*$age;
+			$FullScore += 0.128*$sex;
+			$FullScore += 0.019350987*$sbp;
+			$FullScore += 0.58454*$diabetes;
+			$FullScore += 3.512566*(($waist*0.393701)/$height);
+			$FullScore += 0.459*$smoke;
+			$preexp = $FullScore-7.720484;
+			$exp = exp($preexp);
+			$pow = pow(0.978296,$exp);
+			$prePersent = 1-$pow;
+			$PFullScore = number_format(($prePersent * 100), 2);
+		}else{
+			$PFullScore = '-';
+		}
+		
+		?>
+		&nbsp;&nbsp;<b class="text3">CV Risk Score:</b> <?=$PFullScore;?>
 	</td>
 </tr>
   </table></td></tr></table></td>
@@ -703,11 +743,11 @@ C ํ</span></td>
 	{
 		?>
 		<tr>
-			<td width="60%" valign="top" class="text3"><strong>FBS(น้ำตาลในเลือด) :</strong></td>
-			<td width="10%" align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
-			<td width="5%" align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td width="25%" valign="top" class="text3"><strong>FBS(น้ำตาลในเลือด) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bs']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td width="10%" valign="top" class="text">(<?=$result['bsrange']?>)</td>
-			<td width="20%" valign="top" class="text"><strong><?=$result['stat_bs']?></strong><? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_bs']?></strong> <? if($result['stat_bs']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bs']."...";?></td>
 		</tr>
 		<?php
 	}
@@ -720,7 +760,7 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['chol']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['cholrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_chol']?></strong><? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_chol']?></strong> <? if($result['stat_chol']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_chol']."...";?></td>
 		</tr>
 		<?php
 	} 
@@ -733,7 +773,7 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['tg']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['tgrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_tg']?></strong><? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_tg']?></strong> <? if($result['stat_tg']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_tg']."...";?></td>
 		</tr>
 		<?php
 	} 
@@ -746,7 +786,7 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['bun']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['bunrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_bun']?></strong><? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_bun']?></strong> <? if($result['stat_bun']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bun']."...";?></td>
 		</tr>
 		<?php
 	} 
@@ -759,10 +799,24 @@ C ํ</span></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['cr']?></strong></td>
 			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
 			<td valign="top" class="text">(<?=$result['crrange']?>)</td>
-			<td valign="top" class="text"><strong><?=$result['stat_cr']?></strong><? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
+			<td valign="top" class="text"><strong><?=$result['stat_cr']?></strong> <? if($result['stat_cr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cr']."...";?></td>
 		</tr>
 		<? 
-	} 
+	}
+
+	if($result['egfr']!="")
+	{
+		?>
+		<tr>
+			<td valign="top" class="text3"><strong>eGFR(การทำงานของไต) :</strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['egfr']?></strong></td>
+			<td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
+			<td valign="top" class="text">(<?=$result['egfr_state']?>)</td>
+			<!-- <td valign="top" class="text"><strong><?=$result['egfr_status']?></strong> <? if($result['egfr_status']=="ผิดปกติ") echo "คำแนะนำ...".$result['egfr_reason']."...";?></td> -->
+			<td></td>
+		</tr>
+		<? 
+	}
 
 
 	  if($result['alk']!=""){
@@ -772,7 +826,7 @@ C ํ</span></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3"><strong><?=$result['alk']?></strong></td>
       <td align="right" valign="top" bordercolor="#000000" class="text3">&nbsp;</td>
       <td valign="top" class="text">(<?=$result['alkrange']?>)</td>
-      <td valign="top" class="text"><strong><strong><?=$result['stat_sgot']?></strong></strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
+      <td valign="top" class="text"><strong><strong><?=$result['stat_sgot']?></strong> </strong><? if($result['stat_sgot']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_sgot']."...";?></td>
       </tr>
       <? } 
 
@@ -1305,24 +1359,34 @@ C ํ</span></td>
 ////*runno ตรวจสุขภาพ*/////////
 ?>
 </span>
+<style>
+.button {
+	background-color: #04AA6D; /* Green */
+	border: none;
+	color: white;
+	padding: 8px 15px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	/* font-size: 16px; */
+}
+</style>
 <!--<a href="report_dxofyear_emp.php">พิมพ์ใบตรวจสุขภาพลูกจ้าง</a>-->
 <div>
-	<a href="chk_sso.php" target="_blank">พิมพ์ใบตรวจสุขภาพ สิทธิ์ประกันสังคม</a>
+<a href ="../nindex.htm" class="text1 button">&lt;&lt; ไปเมนู</a> <a href="chk_sso.php" target="_blank" class="text1 button">พิมพ์ใบตรวจสุขภาพ <b><u>สิทธิ์ประกันสังคม</u></b>/ลูกจ้างประจำปี67</a>
 </div>
-<form name="formdx" action="<? $_SERVER['PHP_SELF']?>" method="post">
-<center>
-<span class="tet1">พิมพ์ใบตรวจสุขภาพประจำปี <?=$nPrefix2;?></span> <br />
-  <br />
-  <span class="tet1">&nbsp;&nbsp;&nbsp;&nbsp;กรอก HN : </span>
-    <input name="hn" type="text" size="10" class="tet1" value="<?=$_GET["hn"];?>">
-  &nbsp;&nbsp;
-  <input name="ok" type="submit" class="texthead" value="ตกลง">
-  <br />
-  <br />
-
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> 
-</center>
-</form>
+	<div style="position: absolute;top: 50%;transform: translate(0, -50%); width: 100%;">
+		<form name="formdx" action="<? $_SERVER['PHP_SELF']?>" method="post">
+			<center>
+				<span class="tet1">พิมพ์ใบตรวจสุขภาพประจำปี <?=$nPrefix2;?></span> <br />
+				<span class="text3">สิทธิอื่นๆที่ไม่ใช่ประกันสังคมพิมพ์ผลที่นี่</span> <br /><br />
+				<span class="tet1">&nbsp;&nbsp;&nbsp;&nbsp;กรอก HN : </span>
+				<input name="hn" type="text" size="10" class="tet1" value="<?=$_GET["hn"];?>" style="border: 1px solid;">
+				&nbsp;&nbsp;
+				<input name="ok" type="submit" class="texthead" value="ตกลง">
+			</center>
+		</form>
+	</div>
 
 <table border="1" width="30%" class="text1" style="border-collapse:collapse" cellpadding="0" cellspacing="0">
 <?	

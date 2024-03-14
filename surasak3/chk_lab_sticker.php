@@ -23,6 +23,11 @@ if ( $action == 'print' ) {
     $count_etc = input_post('count_etc');
     $row_print = input_post('row_print');
 
+    $noDisplayBs = sprintf("%d", $_POST['noDisplayBs']);
+    if(empty($noDisplayBs)){
+        $noDisplayBs = 0;
+    }
+
     if ( !empty($row_print) ) {
         list($min,$max) = explode('-', $row_print);
 
@@ -49,10 +54,26 @@ if ( $action == 'print' ) {
             $code_exam = (date('y') + 43).date('md').sprintf('%03d', $item['pid']);
         }
 
-        $user_number = (int) substr($code_exam,6);
+        // $user_number = (int) substr($code_exam,6);
 
-        if($part==='สวนดุสิต63'){
-            $user_number = $item['pid'];
+        // if($part==='สวนดุสิต63'){
+        //     $user_number = $item['pid'];
+        // }
+        $user_number = $item['pid'];
+        if(empty($item['pid'])){
+            if(strlen($item['exam_no'])<5){
+                $user_number = $item['exam_no'];
+
+            }elseif (strlen($item['exam_no'])==5) {
+                $user_number = substr($item['exam_no'],2);
+
+            }elseif (strlen($item['exam_no'])==7) {
+                $user_number = substr($item['exam_no'],4);
+
+            }elseif (strlen($item['exam_no'])==9) {
+                $user_number = substr($item['exam_no'],6);
+
+            }
         }
 
         $normal_code = $code_exam.'01';
@@ -87,7 +108,8 @@ if ( $action == 'print' ) {
             }
         }
 
-        if( $count_ua > 0 ){ 
+
+        if( $count_ua_barcode==0 && $count_ua > 0 ){ 
             for ($i=0; $i < $count_ua; $i++) { 
                 ?>
                 <!-- UA -->
@@ -102,13 +124,13 @@ if ( $action == 'print' ) {
         }
 
         if( $count_ua_barcode > 0 ){ 
-            for ($i=0; $i < $count_ua_barcode; $i++) { 
+            for ($i=0; $i < $count_ua; $i++) { 
                 ?>
-                <!-- UA แบบมี Barcode -->
-                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?></b></center></font>
+                <!-- UA แบบไม่มี Barcode -->
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
                 <div style='text-align:center;'>
-                    <font size='5'><?=$user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$ua_code;?>"></span></span><font size='5'>03</font>
+                    <font size="5"><?=$user_number;?></font><span class="fc1-0" style="border: 1px solid #ffffff; display: inline-block; padding:0 27px; font-size:18px;">ปัสสาวะ</span><font size='5'>03</font>
                 </div>
                 <div style="page-break-before: always;"></div>
                 <?php 
@@ -159,44 +181,65 @@ if ( $action == 'print' ) {
             }
         }
 
-        $sql = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
-        $db->select($sql);
-        $test_bs_row = $db->get_rows();
-        if( $test_bs_row > 0 ){
-            $bs = $db->get_item();
+        // ถ้ามีการติ๊ก "ไม่แสดงสติกเกอร์ BS" ค่าของ $noDisplayBs จะเป็น 1
+        /*
+        if($noDisplayBs==0){
 
-            $bs_user_number = (int) substr($bs['labnumber'],6);
-            if($part==='สวนดุสิต63'){
-                $bs_user_number = $bs_user_number+147;
+            
+            $sql = "SELECT * FROM `chk_lab_items` WHERE `hn` = '$hn' AND `part` = '$part' AND `item_sso` = 'bs' ";
+            $db->select($sql);
+            $test_bs_row = $db->get_rows();
+            if( $test_bs_row > 0 ){
+                $bs = $db->get_item();
+
+                $bs_user_number = (int) substr($bs['labnumber'],6);
+                if($part==='สวนดุสิต63'){
+                    $bs_user_number = $bs_user_number+147;
+                }
+
+                $bs_code = $bs['labnumber'].'02';
+                ?>
+                <!-- BS -->
+                <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
+                <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (BS)</b></center></font>
+                <div style='text-align:center;'>
+                    <font size='5'><?=$bs_user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
+                </div>
+                <div style="page-break-before: always;"></div>
+                <?php
             }
 
-            $bs_code = $bs['labnumber'].'02';
-            ?>
-            <!-- BS -->
-            <font style='line-height:20px;' face='Angsana New' size='4'><center><b><?=$ptname;?></b></center></font>
-            <font  style='line-height:18px;' face='Angsana New' size='4'><center><b><?=$hn;?> (BS)</b></center></font>
-            <div style='text-align:center;'>
-                <font size='5'><?=$bs_user_number;?></font><span class='fc1-0'><img src = "barcode/labstk.php?cLabno=<?=$bs_code;?>"></span>
-            </div>
-            <div style="page-break-before: always;"></div>
-            <?php
         }
+        */
 
         if( $count_stool > 0 ){ 
+
+            $stool_txt = 'STOOL';
+            $stool_thai = sprintf("%d", $_POST['stool_thai']);
+            if ($stool_thai==1) {
+                $stool_txt = 'อุจจาระ';
+            }
+
             for ($i=0; $i < $count_stool; $i++) { 
                 ?>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$ptname;?></b></center></font>
                 <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><?=$hn;?></b></center></font>
-                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span>&nbsp;&nbsp;&nbsp;STOOL</b></center></font>
+                <font  style='line-height:23px;' face='Angsana New' size='5'><center><b><span style="font-size:28pt;"><?=$user_number;?></span>&nbsp;&nbsp;&nbsp;<?=$stool_txt;?></b></center></font>
                 <div style="page-break-before: always;"></div>
                 <?php 
             }
         }
         
-    }
+    } // end foreach
 
+    ?>
+    <script>
+        window.onload = function(){
+            window.print();
+        }
+    </script>
+    <?php
     exit;
-
 }
 
 
@@ -211,44 +254,55 @@ include 'chk_menu.php';
             </td>
         </tr>
         <tr>
-            <td>CBC</td>
+            <td class="tb_title">CBC : </td>
             <td><input type="text" name="count_cbc" size="3" value="1"></td>
         </tr>
         <tr>
-            <td>CHEM</td>
+            <td class="tb_title">CHEM : </td>
             <td><input type="text" name="count_chem" size="3" value="1"></td>
         </tr>
-        <tr>
-            <td>UA</td>
+        <tr valign="top">
+            <td class="tb_title">UA : </td>
             <td>
                 <input type="text" name="count_ua" size="3" value="1"><br>
-                <input type="checkbox" name="ua_check" id="ua_check" value="1"> <label for="ua_check">เพิ่มสติกเกอร์แบบไม่มีบาร์โค้ด</label>
+                <input type="checkbox" name="count_ua_barcode" id="count_ua_barcode" value="1"> <label for="count_ua_barcode">แสดงสติกเกอร์แบบไม่มีบาร์โค้ด</label>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td class="tb_title">STOOL : </td>
+            <td>
+                <input type="text" name="count_stool" size="3" value=""><br>
+                <input type="checkbox" name="stool_thai" id="stool_thai" value="1"> <label for="stool_thai">แสดงข้อความเป็น "อุจจาระ"</label>
             </td>
         </tr>
         <tr>
-            <td>STOOL</td>
-            <td><input type="text" name="count_stool" size="3" value=""></td>
-        </tr>
-        <tr>
-            <td>STOOL C/S</td>
+            <td class="tb_title">STOOL C/S : </td>
             <td><input type="text" name="count_cs" size="3" value=""></td>
         </tr>
         <tr>
-            <td>Urine C/S</td>
+            <td class="tb_title">Urine C/S : </td>
             <td><input type="text" name="urine_cs" size="3" value=""></td>
         </tr>
         <tr>
-            <td>Outlab AFP</td>
+            <td class="tb_title">Outlab AFP : </td>
             <td><input type="text" name="afp" size="3" value=""></td>
         </tr>
         <tr>
-            <td>อื่นๆ</td>
+            <td class="tb_title">อื่นๆ : </td>
             <td><input type="text" name="count_etc" size="3" value=""></td>
         </tr>
         <tr>
-            <td>ลำดับที่</td>
+            <td class="tb_title">ลำดับที่ : </td>
             <td><input type="text" name="row_print" > <span>ตัวอย่างเช่น 6-29 หรือเป็นค่าว่างเพื่อพิมพ์ทั้งหมด</span> </td>
         </tr>
+
+        <!-- <tr>
+            <td></td>
+            <td>
+                <label for="noDisplayBs">ไม่แสดงสติกเกอร์ BS</label> <input type="checkbox" name="noDisplayBs" id="noDisplayBs" value="1">
+            </td>
+        </tr> -->
+
         <tr>
             <td colspan="2">
                 <button type="button" onclick="printNormal()">พิมพ์</button>

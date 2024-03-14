@@ -8,7 +8,8 @@ if($_SESSION['sIdname']!=='krit')
 ?>
 <form action="editPharOpacc2.php" method="post">
     <div>
-        «—π∑’Ë: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
+        ‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà: <input type="text" name="date" id="date" value="<?=$_REQUEST['date'];?>"> * 2563-09-13
+        <span><a href="editstock.php" target="_blank">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç‡∏à‡∏≥‡∏ô‡∏ß‡∏ô‡∏¢‡∏≤</a></span>
     </div>
     <div>
         HN: <input type="text" name="hn" id="hn" value="<?=$_REQUEST['hn'];?>">
@@ -20,9 +21,8 @@ if($_SESSION['sIdname']!=='krit')
 <?php 
 if($_REQUEST['hn']){
     
-    $dbi = new mysqli('192.168.131.250','remoteuser','',DB);
-    // $dbi = new mysqli(HOST,USER,PASS,DB);
-
+    $dbi = new mysqli(HOST,USER,PASS,DB);
+    $dbi->query("SET NAMES UTF8");
     $date = $_REQUEST['date'];
     $hn = $_REQUEST['hn'];
 
@@ -31,11 +31,12 @@ if($_REQUEST['hn']){
     if($qOP->num_rows>0)
     {
         ?>
-        <table>
+        <table width="100%">
             <tr>
                 <th>row_id</th>
                 <th>date</th>
                 <th>hn</th>
+                <th>vn</th>
                 <th>credit</th>
                 <th>price</th>
                 <th>essd</th>
@@ -54,6 +55,7 @@ if($_REQUEST['hn']){
                 <td><a href="editPharOpacc3.php?txdate=<?=$a['txdate'];?>&hn=<?=$a['hn'];?>" target="phardep"><?=$a['row_id'];?></a></td>
                 <td><?=$a['date'];?></td>
                 <td><?=$a['hn'];?></td>
+                <td><?=$a['vn'];?></td>
                 <td><?=$a['credit'];?></td>
                 <td><?=$a['price'];?></td>
                 <td><?=$a['essd'];?></td>
@@ -63,7 +65,7 @@ if($_REQUEST['hn']){
                 <td><?=$a['dpn'];?></td>
                 <td><?=$a['dsy'];?></td>
                 <td><?=$a['dsn'];?></td>
-                <td><a href="javascript:void(0)">·°È‰¢</a></td>
+                <td><a href="edit_opacc5.php?type=opacc&id=<?=$a['row_id'];?>" target="editPage">‡πÅ‡∏Å‡πâ‡πÑ‡∏Ç</a></td>
             </tr>
             <?php
         }
@@ -73,6 +75,6 @@ if($_REQUEST['hn']){
     }
     else
     {
-        echo '‰¡Ë¡’¢ÈÕ¡Ÿ≈„π OPACC <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">· ¥ß¢ÈÕ¡Ÿ≈ phardep</a>';
+        echo '‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡πÉ‡∏ô OPACC <a href="editPharOpacc3.php?bypass=yes&txdate='.$date.'&hn='.$hn.'" target="phardep">‡πÅ‡∏™‡∏î‡∏á‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏• phardep</a>';
     }
 }

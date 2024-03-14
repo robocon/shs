@@ -680,6 +680,11 @@ $_SESSION["undo_maintenance"] = jschars($_POST["maintenance"]);
 
 		
 		if($result){
+			$chkdate=date("d-m-").(date("Y")+543);
+			$thdatehn = $chkdate.$hn;
+			$add="UPDATE opday SET clinic='เวชศาสตร์ฉุกเฉินและนิติเวช' WHERE thdatehn='$thdatehn'";
+			mysql_query($add) or die( mysql_error() );
+			//echo $add;
 			
 			echo "<CENTER><B>บันทึกข้อมูลเรียบร้อยแล้ว</B><BR><A HREF=\"#\" Onclick=\"window.location.href='trauma.php';\">&lt;&lt; กลับ</A></CENTER>";
 
@@ -2128,7 +2133,7 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 	<INPUT TYPE="button" value="ดูผล LAB" Onclick="window.open('report_lablst.php?close=true&hn='+document.getElementById('hn').value);"> &nbsp;
 	<script type="text/javascript">
 		function hn_blur(input_hn){ 
-			console.log(input_hn);
+			// console.log(input_hn);
 			if( input_hn === '' ){
 				return false;
 			}
@@ -2139,20 +2144,20 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			xmlhttp.open("GET", url, true);
 			
 			xmlhttp.onreadystatechange = function () {
-			if (xmlhttp.readyState === 4) {
-				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
-					// Success!
-					txt = xmlhttp.responseText.replace(/^\s+|\s+$/gm,'');;
-			var res = JSON.parse(txt);
-			if( res.status  === 200 ){
-				document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
-				document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
-			}
-					
-				} else {
-					// Error :(
+				if (xmlhttp.readyState === 4) {
+					if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+						// Success!
+						txt = xmlhttp.responseText.replace(/^\s+|\s+$/gm,'');;
+				var res = JSON.parse(txt);
+				if( res.status  === 200 ){
+					document.getElementById("vn").value = ( res.vn === null ) ? '' : res.vn ;
+					document.getElementById("an").value = ( res.an === null ) ? '' : res.an ;
 				}
-			}
+						
+					} else {
+						// Error :(
+					}
+				}
 			};
 
 			xmlhttp.send(null);
@@ -2211,6 +2216,26 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
 			window.open('anchkstkeye.php?action=print&an='+an);
 		}
 	</script>
+
+	<script tyep="text/javascript">
+		function print_wristband_an_qrcode(event){
+			
+			if( event.preventDefault ){
+				event.preventDefault();
+			}else{
+				event.returnValue = false;
+			}
+			
+			var an = document.getElementById('an').value;
+			// var hn = document.getElementById('hn').value;
+			if( an === '' ){
+				alert('กรุณาใส่ AN');
+				return false;
+			}
+			
+			window.open('anchkstkeye_wristband.php?action=print&an='+an);
+		}
+	</script>
     
 	<script tyep="text/javascript">
 		function print_sticker_ipd(event){
@@ -2258,6 +2283,12 @@ echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A>&nbsp;|&nbsp;<A HREF=\
   <TD align="right">&nbsp;</TD>
   <TD colspan="7">
 	<div><button onClick="print_sticker_ipd_qrcode(event)">Stick ผป.นอก มี Qr Code</button></div><div style="margin-top:5px;"><button onClick="print_sticker_an_qrcode(event)">Stick ผป.ใน มี Qr Code</button>&nbsp;&nbsp;<button onClick="print_sticker_an(event)">Stick ผป.ใน</button></div>	
+  </TD>
+</TR>
+<TR>
+  <TD align="right">&nbsp;</TD>
+  <TD colspan="7">
+	<div><button onClick="print_wristband_an_qrcode(event)">Wristband ผป.ใน </button></div>	
   </TD>
 </TR>
 <TR>
@@ -3090,31 +3121,26 @@ function rediv(xx){
       </tr>
 	  <?php
 		
-
 		//$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.trauma, a.type_wounded, CONCAT(b.yot,' ',b.name,' ',b.surname) as full_name From trauma as a, opcard as b where a.hn = b.hn Order by date_in DESC,  h_date desc ".$limit;
 		
-
-		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, a.date_in, left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor From trauma as a ".$where."  Order by date_in DESC,  h_date desc ".$limit;
-
-
+		$sql = "Select a.row_id, date_format(a.date_in,'%d/%m/%y') as f_date, a.date_in, 
+		left(a.time_in,5) as time_in2, CONCAT(a.time_in,' ',date_format(a.date,'%H:%i:%s')) as h_date , 
+		a.vn, a.hn, a.dx, a.organ, a.maintenance, a.trauma, a.type_wounded, a.type_wounded2,next_ka, doctor 
+		From trauma as a ".$where."  
+		Order by date DESC ".$limit;
 		$result = Mysql_Query($sql) or die(Mysql_Error());
-
-$list_hn = array();
-
+		$list_hn = array();
 		while($arr = Mysql_fetch_assoc($result)){
 			array_push($list_hn,$arr["hn"]);
 		}
 
-	$sql = "Select hn, CONCAT(yot,' ',name,' ',surname) as full_name From opcard where hn in ('".implode("','",$list_hn)."') ";
-	//echo $sql;
-	$result2 = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result2)){
+		$sql = "Select hn, CONCAT(yot,' ',name,' ',surname) as full_name From opcard where hn in ('".implode("','",$list_hn)."') ";
+		$result2 = Mysql_Query($sql);
+		while($arr = Mysql_fetch_assoc($result2)){
+			$hn[$arr["hn"]] = $arr["full_name"];
+		}
 
-		$hn[$arr["hn"]] = $arr["full_name"];
-		//echo "==>".$hn[$arr["hn"]]."<br>";
-	}
-
-		mysql_data_seek  ( $result , 0);
+		mysql_data_seek( $result , 0);
 		$i=0;
 		while($arr = Mysql_fetch_assoc($result)){
 			if($i%2 == 0){
@@ -3123,12 +3149,13 @@ $list_hn = array();
 				$bgcolor = "#F8F9F9";
 			}
 			$i++;
-list($y,$m,$d)=explode("-",$arr["date_in"]);
-$chkdate=date("Y-m-d");
-$thdatehn="$d-$m-$y".$arr["hn"];
+			list($y,$m,$d)=explode("-",$arr["date_in"]);
+			$chkdate=date("Y-m-d");
+			$thdatehn="$d-$m-$y".$arr["hn"];
+
+			$newDateIn = "$d/$m/$y";
 			
 $sql1="select typecolor,chanel_status,queue_type from queue_er where register_date = '".$chkdate."' and hn='".$arr["hn"]."' order by id desc limit 1";
-//echo $sql1."<br>";
 $query1=mysql_query($sql1);
 $num=mysql_num_rows($query1);
 list($typecolor,$chanel_status,$queue_type)=mysql_fetch_array($query1);	
@@ -3150,7 +3177,7 @@ if($queue_type=="R"){
       <tr bgcolor="<?php echo $bgcolor;?>">
         <td align="center">
 		
-			<?php echo $arr["f_date"];?><BR>
+			<?php echo $newDateIn;?><BR>
 			<?php if($arr["next_ka"] == "1") echo "<FONT COLOR=\"#3300FF\">[ยกยอดเวร]</FONT>";?>
 			
 		</td>

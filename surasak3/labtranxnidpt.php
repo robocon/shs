@@ -104,7 +104,7 @@ $cDoctor2 = substr($cDoctor,0,5);
 //
 $acu = 0;
 $licen = '';
-if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157'){
+if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
   
     // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
     $subDoctor = (int) $_GET['subDoctor'];
@@ -117,6 +117,9 @@ if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoc
     }else if( $subDoctor === 3 ){
         $cDoctor1 = "กัลย์ปภารัศมิ์ กุลชิงชัย";
         $doctorcode = "พท.ป. 2252";
+    }else if( $subDoctor === 4 ){
+        $cDoctor1 = "ประภัสสร เครืออินทร์";
+        $doctorcode = "พท.ป. 3011";
     }
 
     $yot = "น.ส.";
@@ -153,7 +156,7 @@ $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
     };
 </script>
 <div style="text-align: center;">
-    <img  WIDTH=100 HEIGHT=100 SRC='logo.jpg'>
+    <img  WIDTH=80 HEIGHT=100 SRC='logo.jpg'>
 </div>
 <div style="height: 24px;">
     <div style="float: left; padding-left: 2em;">
@@ -204,7 +207,7 @@ if( $inBy === true ){
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทางแพทย์แผนไทยด้วยการ $nid_ext "; 
 	  
 // ถ้าเป็นแพทย์แผนไทย
-if( $cDoctor2 === "MD058"  || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157'){
+if( $cDoctor2 === "MD058"  || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
     
     // $inList = test_diag($cDiag, $diag_list);
     // if( $inList !== true ){

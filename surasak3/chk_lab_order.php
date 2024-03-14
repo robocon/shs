@@ -185,7 +185,7 @@ if( $action == false ){
             $msg = 'บันทึกข้อมูลเรียบร้อย <a href="chk_lab_sticker.php?part='.$part.'" target="_blank">คลิกที่นี่เพื่อพิมพ์สติกเกอร์แลป</a>';
 
             if( $i > 0 && !empty($item) ){
-                
+                // dump($item);
                 list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
 
                 $dob = set_date($dob);
@@ -194,25 +194,28 @@ if( $action == false ){
                 $surname = iconv('TIS620', 'UTF8', $surname);
 
                 $ptname = $name.' '.$surname;
-                $lab_sso = strtolower(str_replace(array('"'), '', $lab_sso));
-                
-                $find_bs = false;
+                $lab_sso = iconv("TIS-620", "UTF-8", $lab_sso);
+
+                $search = array('"',',,,');
+                $lab_sso = strtolower(str_replace($search, '', $lab_sso));
+
+                // $find_bs = false;
                 
                 // ถ้ามี bs มันจะตัดออกจากรายการและเพิ่มเป็นรายการใหม่
-                $test_bs = preg_match('/(bs\,)|(\,bs\,)|(\,bs)/', $lab_sso);
-                if( $test_bs > 0 ){
+                // $test_bs = preg_match('/(bs\,)|(\,bs\,)|(\,bs)/', $lab_sso);
+                // if( $test_bs > 0 ){
 
-                    $find_bs = true;
+                    // $find_bs = true;
                     
-                    $lab_sso = str_replace('bs,','',$lab_sso);
-                    $lab_sso = str_replace(',bs,', ',', $lab_sso);
-                    $lab_sso = str_replace(',bs','',$lab_sso);
+                    // $lab_sso = str_replace('bs,','',$lab_sso);
+                    // $lab_sso = str_replace(',bs,', ',', $lab_sso);
+                    // $lab_sso = str_replace(',bs','',$lab_sso);
 
-                    ++$bs_number;
+                    // ++$bs_number;
 
-                    $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
+                    // $lab_bs_number = $first_lab_number.sprintf('%0'.$number_digi.'d', $bs_number);
                     
-                }
+                // }
                 
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
@@ -225,20 +228,20 @@ if( $action == false ){
                     $msg = errorMsg(NULL, $insert['id']);
                 }
 
-                if( $find_bs === true ){
+                // if( $find_bs === true ){
 
                     
-                    $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
-                        `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
-                    ) VALUES (
-                        NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part', '$dob', '$sex'
-                    );";
-                    $insert = $db->insert($sql_chk_lab_items);
-                    if( $insert !== true ){
-                        $msg = errorMsg(NULL, $insert['id']);
-                    }
+                //     $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
+                //         `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
+                //     ) VALUES (
+                //         NULL, '$hn', '$ptname', '$lab_bs_number', 'bs', '$part', '$dob', '$sex'
+                //     );";
+                //     $insert = $db->insert($sql_chk_lab_items);
+                //     if( $insert !== true ){
+                //         $msg = errorMsg(NULL, $insert['id']);
+                //     }
 
-                }
+                // }
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 
             } // End ถ้าในแต่ละแถว not empty 

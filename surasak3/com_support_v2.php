@@ -1,22 +1,22 @@
 <?php 
 include_once 'bootstrap.php';
-include_once 'includes/JSON.php';
-$json = new Services_JSON();
+// include_once 'includes/JSON.php';
+// $json = new Services_JSON();
 
 $dbi=new mysqli(HOST,USER,PASS,DB);
-$dbi->set_charset('utf8');
+// $dbi->set_charset('utf8');
+$dbi->query("SET NAMES UTF8");
 
 $action = $_REQUEST['action'];
 if ($action === 'search_user') {
-    $code = $_GET['code'];
+    $code = sprintf("%s", $_GET['code']);
     $sql = "SELECT `row_id`,`name`,`status` FROM `inputm` WHERE `menucode` = '$code' AND `status` = 'Y' ";
     $q = $dbi->query($sql);
     $users = array();
     while ($user = $q->fetch_assoc()) {
-        $user['name'] = $user['name'];
         $users[] = $user;
     }
-    echo $json->encode($users);
+    echo json_encode($users);
     exit;
 
 }elseif ($action === 'find_phone') {
@@ -24,7 +24,7 @@ if ($action === 'search_user') {
     $sql = "SELECT `phone` FROM `com_support` WHERE `user` = '$name'";
     $q = $dbi->query($sql);
     $user = $q->fetch_assoc();
-    echo $json->encode(array('phone'=>$user['phone']));
+    echo json_encode(array('phone'=>$user['phone']));
     exit;
 
 }elseif ($action==='save') {
@@ -40,16 +40,20 @@ if ($action === 'search_user') {
     $p_edit = $_POST['p_edit'];
     $ignore = $_POST['ignore'];
     $row = $_POST['row'];
+    $software_type = '';
+	if(!empty($_POST['software_type'])){
+		$software_type = sprintf("%s", $_POST['software_type']);
+	}
 
     if(empty($row)){
         $sql = "INSERT INTO `com_support` (
             `row`, `depart`, `head`, `detail`, `datetime`, `status`, 
             `user`, `date`, `programmer`, `phone`, `user1`, `p_edit`, 
-            `dateend`, `hold`, `jobtype`,`ignore`
+            `dateend`, `hold`, `jobtype`,`ignore`,`software_type`
         ) VALUES ( 
             NULL, '$depart', '$head', '$detail', '', 'n', 
             '$user', '$date', '$programmer', '$phone', '$user', '$p_edit', 
-            '$dateend', '0', 'software', '$ignore' 
+            '$dateend', '0', 'software', '$ignore','$software_type'
         );";
     }else {
         // update
@@ -65,7 +69,8 @@ if ($action === 'search_user') {
         `phone`='$phone', 
         `user1`='$user', 
         `p_edit`='$p_edit', 
-        `dateend`='$dateend'
+        `dateend`='$dateend',
+        `software_type`='$software_type'
         WHERE (`row`='$row');";
     }
     
@@ -83,7 +88,7 @@ if ($action === 'search_user') {
 $page = $_REQUEST['page'];
 if($page==='load25page'){ 
 
-    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 80";
+    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 100";
     $q = $dbi->query($sql);
     $items = array();
     while ($item = $q->fetch_assoc()) {
@@ -93,7 +98,7 @@ if($page==='load25page'){
 
     }
 
-    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 50 ";
+    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 100 ";
     $q_sub = $dbi->query($sql_sub);
     if($q_sub->num_rows > 0){
         while ($s = $q_sub->fetch_assoc()) { 
@@ -116,7 +121,7 @@ if($page==='load25page'){
         }
     }
 
-    echo $json->encode($items);
+    echo json_encode($items);
     exit;
 }elseif ($page==='loadOrderPage') {
 
@@ -128,7 +133,7 @@ if($page==='load25page'){
             $items[] = $a;
         }
     }
-    echo $json->encode($items);
+    echo json_encode($items);
     exit;
 }
 
@@ -247,7 +252,7 @@ if($form_action==='edit'){
 }
 ?>
 <h3>คีย์งานแบบบันทึกเอง</h3>
-<form action="com_support_v2.php" method="post" id="adminForm">
+<form action="com_support_v2.php" method="post" id="adminForm" style="width:100%;">
     <div>
         <?php 
         $departs = array( 
@@ -279,6 +284,7 @@ if($form_action==='edit'){
             'ADMOBG' => 'หอผู้ป่วยสูตินรีเวชกรรม',
             'ADMVIP' => 'หอผู้ป่วยพิเศษ',
             'ADMWF' => 'หอผู้ป่วยรวม',
+            'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
         );
         $start = $end = (date('Y')+543).date('-m-d H:i:s');
         ?>
@@ -307,11 +313,32 @@ if($form_action==='edit'){
         <input type="text" name="jobtype" id="jobtype" value="software" readonly>
     </div>
     <div>
+        <span>ลักษณะงาน</span>
+        <input type="radio" name="software_type" id="software_type1" value="แก้ไขโปรแกรม/ข้อมูล">
+        <label for="software_type1">แก้ไขโปรแกรม/ข้อมูล</label>
+
+        <input type="radio" name="software_type" id="software_type2" value="พัฒนาโปรแกรม">
+        <label for="software_type2">พัฒนาโปรแกรม</label>
+    </div>
+    <div>
         <span>หัวข้อ</span>
         <input type="text" name="head" id="head" value="<?=$s['head'];?>" >
     </div>
     <div>
         <span>รายละเอียด</span>
+
+        <!-- https://www.tiny.cloud/get-tiny/custom-builds/ -->
+        <!-- https://www.tiny.cloud/docs-4x/general-configuration-guide/basic-setup/#toolbarmenuconfiguration -->
+        <script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+        <script>
+            tinymce.init({
+                selector: 'textarea#detail',
+                toolbar: false, // ปิดใช้งาน toolbar
+                menubar: false, // ปิดใช้งาน menubar
+                forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+            });
+        </script>
+
         <textarea name="detail" id="detail" rows="4" cols="100"><?=$s['detail'];?></textarea>
     </div>
     <div>

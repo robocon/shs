@@ -189,12 +189,22 @@ table.dctb td{
 </style>
 <!-- window.print(); -->
 <body onLoad="">
-<div align="center" class="head">DISCHARGE SUMMARY</div>
 <div align="center" class="head" style="position:relative;">
+<table border="0" align="center" width="100%" cellpadding="0">
+  <tr>
+    <th width="10%" valign="top" align="center">
     <div style="position:absolute;left:0;" class="head">MR  IPD - 002 (1)</div>    
-    FORT SURASAKMONTRI HOSPITAL เริ่มใช้  วันที่  1 เม.ย. 66
+	</th>
+    <th width="70%" valign="top">
+	<div align="center" class="head">DISCHARGE SUMMARY</div>
+    <div align="center" class="head">FORT SURASAKMONTRI HOSPITAL เริ่มใช้  วันที่  1 เม.ย. 66</div>
+	</th>
+	<th width="20%" valign="top">
+	<img src="printQrCode.php?hn=<?php echo $hn;?>&size=4&level=2&margin=1">
+	</th>
+  </tr>
+</table>
 </div>
-<BR />
 <table width="100%" class="tb_info" style="border-collapse: collapse; border: 1px solid black; border-bottom: none;">
     <tr>
         <td class="dbtb_bottom" width="35%"><b>ADMIT:</b> <?=$adate;?></td>
@@ -225,7 +235,13 @@ table.dctb td{
 		<span style="margin-left: 20px;"><b>เกี่ยวข้องเป็น:</b>&nbsp;&nbsp;<?=$ptfadd;?></span>
 		<span style="margin-left: 10px;"><b>โทรศัพท์:</b>&nbsp;&nbsp;<?=$ptffone;?></span>
 		<span style="margin-left: 10px;"><b>หอรับ</b>&nbsp;&nbsp;<?php echo $wardin;?></span>
+		<?php
+		if(!empty($wardin)){
+		?>	
 		<span style="margin-left: 10px;"><b>หอจำหน่าย</b>&nbsp;&nbsp;<?php echo $wardout;?></span>
+		<?php }else{ ?>
+		<span style="margin-left: 100px;"><b>หอจำหน่าย</b>&nbsp;&nbsp;<?php echo $wardout;?></span>
+		<?php } ?>
         </td>
     </tr>
 </table>

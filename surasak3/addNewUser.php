@@ -1,8 +1,8 @@
 <?php 
-include_once 'bootstrap.php';
-include_once './includes/JSON.php';
+include_once __DIR__.'/bootstrap.php';
+// include_once __DIR__.'/includes/JSON.php';
 
-$json = new Services_JSON();
+// $json = new Services_JSON();
 
 if($_SESSION['sIdname']!=='krit')
 {
@@ -10,7 +10,7 @@ if($_SESSION['sIdname']!=='krit')
     exit;
 }
 
-$dbi = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 $action = $_REQUEST['action'];
 if($action==='save'){
@@ -50,7 +50,7 @@ if($action==='save'){
     }else{
         $data = array('rows' => 0);
     }
-    echo $json->encode($data);
+    echo json_encode($data);
     exit;
 }
 ?>

@@ -181,7 +181,7 @@ while($rowsop=mysql_fetch_array($queryop)){
 			$result1= mysql_query($sql1);
 			while($arr1 = mysql_fetch_assoc($result1)){
 			$autonumber = $arr1["autonumber"];
-			$sql2 = "select * from resultdetail where autonumber = '$autonumber' ";
+			$sql2 = "select * from resultdetail where autonumber = '$autonumber' order by seq ASC";
 			$result2= mysql_query($sql2);
 			$i=0;
 			while($arr2 = mysql_fetch_assoc($result2)){
@@ -215,7 +215,7 @@ while($rowsop=mysql_fetch_array($queryop)){
 		$sql3="select * from resulthead 
 		inner join resultdetail on resulthead.autonumber=resultdetail.autonumber 
 		where resulthead.hn ='$gethn' 
-		and resulthead.labnumber = '$getlabnumber'";
+		and resulthead.labnumber = '$getlabnumber' order by resulthead.testgroupname ASC, resultdetail.seq ASC";
 		$result3= mysql_query($sql3);
 		mysql_query("SET NAMES UTF8");
 		$arr3 = mysql_fetch_assoc($result3);

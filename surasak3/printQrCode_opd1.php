@@ -35,10 +35,8 @@ div {
   line-height: 13px;
 }	
 </style>	
-<script language="javascript">
-//window.opener.location.reload();
-//window.opener.location.reload(true);
-window.print();
+<script language="javascript">    
+	window.print();
 	setTimeout(function(){ 
             window.close();
 	}, 1000);
@@ -77,7 +75,10 @@ $hn = $_GET['hn'];
 <!--stiker เล็ก 50*30 -->
 <table border="0" align="center" width="100%" cellpadding="0" cellspacing="0">
   <tr>
-    <th rowspan="2" width="5%" align="center" valign="center"><img src="printQrCode.php?hn=<?php echo $hn;?>&size=4&level=2&margin=1"></th>
+    <th rowspan="2" width="5%" align="center" valign="top">
+		<img src="printQrCode.php?hn=<?php echo $hn;?>&size=3&level=2&margin=1">
+		<div><span style="font-size:20px; font-weight:bold;">VN: <?php echo $vn;?></span></div>
+	</th>
 	<th width="80%" valign="top" align="left"></th>
   </tr>   
   <tr>
@@ -85,7 +86,7 @@ $hn = $_GET['hn'];
 	<div><strong style="font-size:12px;">วัน/เดือน/ปี: <?php echo $svdate;?></strong></div>
 	<div style="font-size:20px; font-weight:bold; ">HN: <?php echo $hn;?></div>
 	<div><strong style="font-size:12px;"><?php echo $ptname;?></strong></div>
-	<div><span style="font-size:12px; font-weight:bold;">VN: <?php echo $vn;?></span><span style="font-size:12px; margin-left: 10px;"><?php echo $cAge;?></span></div>
+	<div><span style="font-size:12px;">อายุ: <?php echo $cAge;?></span></div>
 	<div style="font-size:12px;"><?php echo $ptright;?></div>
 	<div style="font-size:12px;"><?php echo $toborow;?></div>
 	</th>

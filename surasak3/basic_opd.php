@@ -1,7 +1,13 @@
 <?php 
-session_start();
+// session_start();
+require_once dirname(__FILE__).'/bootstrap.php';
+
 include("connect.inc");
 mysql_query("SET NAMES UTF-8");
+
+require_once dirname(__FILE__).'/class_file/class_drugreact.php';
+$drugreact = new Drugreact();
+
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
@@ -97,7 +103,11 @@ if($page=='showdrug')
 	font-family: "TH SarabunPSK";
 	font-size:16px; 
 	font-weight:bold;
-	}	
+	}
+.frmsarabun{ 
+	font-family: "TH SarabunPSK";
+	font-size:16px; 
+	}		
 .headsarabun{ 
 	font-family: "TH SarabunPSK";
 	font-size:22px; 
@@ -172,6 +182,9 @@ td p,ol,li{
 }
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script src="sweetalert/jquery-3.6.0.js"></script>
+<script src="sweetalert/sweetalert2@11.js"></script>
 </head>
 
 <body >
@@ -372,7 +385,8 @@ if($_POST["cigarette"]=="1"){
 		`pregnancy` = '$preg',
 		`smoke_ncd`='$smoke_ncd',
 		`drink_ncd`='$drink_ncd',
-		`bmi`= '".$_POST["bmi"]."'		
+		`bmi`= '".$_POST["bmi"]."',
+		`cvrisk_area`= '".$_POST["cvrisk_area"]."'		
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 		$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
 
@@ -442,7 +456,8 @@ if($_POST["cigarette"]=="1"){
 				
 				$final=(1-$z)*100;
 				
-				$pfullscore=number_format($final,2);										
+				$pfullscore=number_format($final,2);
+				
 				//---------------จบ-----------------//		
 
 //////// จบการคำนวณ CV Risk Score //////// 			
@@ -457,7 +472,7 @@ if($_POST["cigarette"]=="1"){
 			`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
 			`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`, 
 			`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab`, 
-			`pregnancy`,`smoke_ncd`,`drink_ncd`,`bmi`
+			`pregnancy`,`smoke_ncd`,`drink_ncd`,`bmi`,`cvrisk_area`
 		)VALUES (
 			NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
 			'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
@@ -467,7 +482,7 @@ if($_POST["cigarette"]=="1"){
 			'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 			'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
 			'$hpi', '$grade','$mind','$the_pill', '".$pfullscore."' , '".$_POST["cvriskscore_lab"]."', 
-			'$preg','$smoke_ncd','$drink_ncd', '".$_POST["bmi"]."'
+			'$preg','$smoke_ncd','$drink_ncd', '".$_POST["bmi"]."', '".$_POST["cvrisk_area"]."'
 		);";
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
@@ -502,6 +517,43 @@ if($_POST["cigarette"]=="1"){
 																`edit_time`= '".date("Y-m-d H:i:s")."' 
 				WHERE `opd_device_id` = '$opd_advice_id' ;";													
 				$save_i = $dbi->query($sql_advice_i);				
+			}
+
+			if($display_advice=="form_j"){
+				if(!empty($_POST['advice_inject1'])){
+					$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
+					$injectunit1=$_POST['advice_inject1_unit'];
+				}else{
+					$injectname1="";
+					$injectunit1="";
+				}	
+
+				if(!empty($_POST['advice_inject2'])){
+					$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
+					$injectunit2=$_POST['advice_inject1_unit'];
+				}else{
+					$injectname2="";
+					$injectunit2="";
+				}
+				
+				if(!empty($_POST['advice_inject3'])){
+					$advice_inject3_name=$_POST['advice_inject3_name'];
+				}else{
+					$advice_inject3_name="";
+				}
+				
+				$sql_advice_j = "UPDATE `opd_advice_form_j` SET `advice_inject1`='".$_POST['advice_inject1']."',
+																`advice_inject1_name`='".$injectname1."',
+																`advice_inject1_unit`='".$injectunit1."',
+																`advice_inject2`='".$_POST['advice_inject2']."',
+																`advice_inject2_name`='".$injectname2."',
+																`advice_inject2_unit`='".$injectunit2."',
+																`advice_inject3`='".$_POST['advice_inject3']."',
+																`advice_inject3_name`='".$advice_inject3_name."',
+																`edit_by`='$officer',
+																`edit_time`= '".date("Y-m-d H:i:s")."' 
+				WHERE `opd_device_id` = '$opd_advice_id' ;";													
+				$save_j = $dbi->query($sql_advice_j);				
 			}			
 			
 			
@@ -521,6 +573,15 @@ if($_POST["cigarette"]=="1"){
 				//echo $sql_advice_c;
 				$save_i = $dbi->query($sql_advice_i);				
 			}
+			if($display_advice=="form_j"){
+				$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
+				$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
+				$sql_advice_j = "INSERT INTO `opd_advice_form_j` (`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`,`advice_inject1`, `advice_inject1_name`, `advice_inject1_unit`, `advice_inject2`, `advice_inject2_name`, `advice_inject2_unit`, `advice_inject3`, `advice_inject3_name`) 
+				VALUES 
+				(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_device_id', '$my_date_hn', '$officer', '".$_POST['advice_inject1']."','".$injectname1."', '".$_POST['advice_inject1_unit']."', '".$_POST['advice_inject2']."','".$injectname2."', '".$_POST['advice_inject2_unit']."', '".$_POST['advice_inject3']."','".$_POST['advice_inject3_name']."');";
+				//echo $sql_advice_j;
+				$save_j = $dbi->query($sql_advice_j);				
+			}			
 			
 		}
 	}else{
@@ -668,14 +729,15 @@ if($_POST["cigarette"]=="1"){
 			$registerdate=date("Y-m-d");
 			$officer_date=date("Y-m-d H:i:s");
 			$sql = "Select age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
-			$arr = mysql_fetch_assoc(mysql_query($sql));
+			$query=mysql_query($sql);
+			$arr = mysql_fetch_array($query);
 			
 			$add="insert into screen_dm set date_active='$registerdate',
-			hn='".$_REQUEST["hn"]."',
-			ptname='".$_POST["ptname"]."',
-			age='".$arr["age"]."',
-			officer = '".$_SESSION["sOfficer"]."',
-			datetime='$officer_date'";
+											hn='".$_REQUEST["hn"]."',
+											ptname='".$_POST["ptname"]."',
+											age='".$cAge."',
+											officer = '".$_SESSION["sOfficer"]."',
+											datetime='$officer_date'";
 			$result = Mysql_Query($add) or die("UPDATE screen_dm ".Mysql_Error());
 		}
 	}
@@ -689,19 +751,45 @@ if($_POST["cigarette"]=="1"){
 			$registerdate=date("Y-m-d");
 			$officer_date=date("Y-m-d H:i:s");
 			$sql = "Select age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
-			$arr = mysql_fetch_assoc("select opday in screen_ht ".mysql_query($sql));
+			$query=mysql_query($sql);
+			$arr = mysql_fetch_array($query);
 			
 			
 			
 			$add="insert into screen_ht set date_active='$registerdate',
 											hn='".$_REQUEST["hn"]."',
 											ptname='".$_POST["ptname"]."',
-											age='".$arr["age"]."',
+											age='".$cAge."',
 											officer = '".$_SESSION["sOfficer"]."',
 											datetime='$officer_date'";
 			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
 		}
 	}
+	
+	if($_POST["cvriskscore"] >= 20){
+		$sql1 = "Select row_id from screen_cvdrisk where hn = '".$_REQUEST["hn"]."'";
+		$query1 = mysql_query($sql1);
+		$num1 = mysql_num_rows($query1);
+		if($num1 < 1){
+			$registerdate=date("Y-m-d");
+			$officer_date=date("Y-m-d H:i:s");
+			$sql = "Select age,ptright From opday where thdatehn = '".$thidatehn."'  limit 1";
+			$query=mysql_query($sql);
+			$arr = mysql_fetch_array($query);
+			
+			
+			
+			$add="insert into screen_cvdrisk set date_active='$registerdate',
+											hn='".$_REQUEST["hn"]."',
+											ptname='".$_POST["ptname"]."',
+											age='".$cAge."',
+											officer = '".$_SESSION["sOfficer"]."',
+											datetime='$officer_date',
+											cvrisk_score='".$_POST["cvriskscore"]."',
+											cvrisk_area='".$_POST["cvrisk_area"]."'";
+			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
+		}
+	}	
 
 
 	if($_POST["covid19_vaccine"]=="1"){  //ประวัติการได้รับวัคซีน Covid-19
@@ -754,10 +842,10 @@ if($_POST["cigarette"]=="1"){
 
 
 	if($_POST["phone"]==""){  //เพิ่มเงื่อนไขเมื่อ 6/4/65 รคส. พี่แอน OPD
-		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', `congenital_disease` = '$congenital_disease'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
+		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', `congenital_disease` = '$congenital_disease', allergy= '".$_POST["allergy"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
 		$result1 = Mysql_Query($sql1) or die('update opcard -> phone'.Mysql_Error());
 	}else{
-		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', phone= '".$_POST["phone"]."', `congenital_disease` = '$congenital_disease'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
+		$sql1 ="UPDATE opcard SET goup ='".$_POST["goup"]."', typeservice='".$_POST["typeservice"]."', subgroup= '".$_POST["subgroup"]."', phone= '".$_POST["phone"]."', `congenital_disease` = '$congenital_disease', allergy= '".$_POST["allergy"]."'  WHERE  hn = '".$_REQUEST["hn"]."' ";   // แก้ไขข้อมูลตาราง opcard ตาม hn
 		$result1 = Mysql_Query($sql1) or die('update opcard -> phone else'.Mysql_Error());		
 	}
 	
@@ -966,7 +1054,24 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
  $onfocus = "hn";
 
  	if(isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""){
-		$onfocus = "weight";
+
+// แจ้งเตือนตัดรอบบ่าย **************************************************
+if($_REQUEST["hn"]=="62-6400"){ //จันทร์เพ็ญ  วงค์เวียน
+	echo "<script> 
+	Swal.fire(
+	  'แจ้งเตือน',
+	  'ขอความกรุณาเจ้าหน้าที่ รักษาพยาบาลผู้ป่วยในรอบเช้า ?',
+	'warning'
+	)
+	</script>";
+}	
+// จบการแจ้งเตือน **************************************************
+
+
+
+
+
+	$onfocus = "weight";
 	
 	$thidate = date("d-m-").(date("Y")+543);
 	$date_app = date("d")." ".$month[date("m")]." ".(date("Y")+543);
@@ -1117,7 +1222,7 @@ $sql = "Select congenital_disease, weight, height,
 (CASE WHEN cigok = '1' THEN 'Checked' ELSE '' END ),
 `mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
 `parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,
-`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`
+`ht_amount`,`dm_amount`,`hpi`,`cvriskscore`,`cvriskscore_lab`,`smoke_ncd`,`drink_ncd`,`cvrisk_area`
 From opd 
 where hn = '".$_REQUEST["hn"]."' 
 AND type <> 'ญาติ'  AND toborow !='' 
@@ -1125,31 +1230,63 @@ Order by row_id DESC
 limit 1";
 
 $result = Mysql_Query($sql);
-list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$cvriskscore,$cvriskscore_lab,$smoke_ncd,$drink_ncd) = Mysql_fetch_row($result);
+list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0, $alcohol0,$cigok0,$cigok1,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$cvriskscore,$cvriskscore_lab,$smoke_ncd,$drink_ncd,$cvrisk_area) = Mysql_fetch_row($result);
 	if($congenital_disease == "")
 		$congenital_disease = "ปฎิเสธโรคประจำตัว";
 
 
-	$sql = "Select hn, concat(yot,' ' ,name, ' ', surname) as fullname, ptright,dbirth,idcard  From opcard where hn = '".$_REQUEST["hn"]."' limit 1";
+	$sql = "Select hn, concat(yot,' ' ,name, ' ', surname) as fullname, ptright,dbirth,idcard,ptright,ptright1  From opcard where hn = '".$_REQUEST["hn"]."' limit 1";
 	$result = Mysql_Query($sql);
-	list($hn, $fullname, $ptright, $dbirth,$idcard ) = mysql_fetch_row($result);
+	list($hn, $fullname, $ptright, $dbirth,$idcard,$chkptright,$chkptright1) = mysql_fetch_row($result);
 	
 	$age = calcage($dbirth);
 	
-	$sql = "Select drugcode, tradname From drugreact where hn = '".$_REQUEST["hn"]."' ";
+	if(substr($chkptright,0,3)!=substr($chkptright1,0,3)){
+		echo "<script> 
+		Swal.fire(
+		  'แจ้งเตือนสิทธิการรักษา',
+		  'ผู้ป่วยมีสิทธิ์หลักกับสิทธิ์รองไม่ตรงกัน <br>กรณีรักษาโรคทั่วไป กรุณาทบทวนสิทธิการรักษาของผู้ป่วยกับห้องทะเบียนก่อนครับ',
+		'error'
+		)
+		</script>";		
+	}
+
+	if(!empty($idcard) && substr($chkptright,0,3)=="R07%"){
+		$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+		if(Mysql_num_rows(Mysql_Query($sql)) < 1){
+			echo "<script> 
+			Swal.fire(
+			  'แจ้งเตือนสิทธิการรักษา',
+			  'ผู้ป่วยลงทะเบียนโดยใช้สิทธิประกันสังคม แต่ไม่พบในฐานข้อมูลสิทธิการรักษาปัจจุบัน<br>กรุณาทบทวนสิทธิการรักษาของผู้ป่วยกับห้องทะเบียนก่อนครับ',
+			'error'
+			)
+			</script>";	
+		}
+	}	
+	
+	$hn = sprintf("%s", $_REQUEST["hn"]);
+	$sql = "Select drugcode, tradname, genname From drugreact where hn = '$hn' AND advreact!='' AND g6pd IS NULL ";
 	$result = mysql_query($sql) or die(Mysql_Error());
 	$drugreact_rows = mysql_num_rows($result);
-	$i=0;
-	while(list($drugcode, $tradname) = mysql_fetch_row($result)){ 
-		$dCodeTxt = '';
-		if(!empty($drugcode)){
-			$dCodeTxt = "<b>[$drugcode]</b>";
+	$txt_react2 = '';
+	$drugreact_info = '';
+	if ($drugreact_rows>0) {
+		$i=0;
+		while(list($drugcode, $tradname, $genname) = mysql_fetch_row($result)){ 
+			$dCodeTxt = '';
+			if(!empty($drugcode)){
+				$dCodeTxt = "<b title='$genname'>[$drugcode]</b>";
+			}
+			$txt_react[$i] = "&nbsp; $dCodeTxt $tradname "; $i++; 
 		}
-		$txt_react[$i] = "&nbsp; $dCodeTxt $tradname "; $i++; 
+		
+		$txt_react2 = implode(",",$txt_react);
+		$txt_react2 = "ประวัติแพ้ยา&nbsp;:&nbsp;".$txt_react2;
+
+		// แยกลิ้งแสดงประวัติแพ้ยาออกมาต่างหาก
+		$drugreact_info = '<a href="javascript:void(0);" onclick="show_drugreact_hn(\''.$hn.'\')" style="color:red;" title="คลิกเพื่อดูประวัติแพ้ยาทั้งหมด"><b>ประวัติแพ้ยา</b></a>&nbsp;:&nbsp;'.$txt_react2;
 	}
 	
-	$txt_react2 = implode(",",$txt_react);
-	$txt_react2 = "ยาที่แพ้&nbsp;:&nbsp;".$txt_react2;
 
 
 $thidate_today = (date("Y")+543).date("-m-d");
@@ -1199,9 +1336,46 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
       <td>อายุ : <strong><?php echo $age;?></strong>&nbsp;,สิทธิการรักษา: <font color="#CE0000"><strong><?php echo $ptright;?></strong></font> &nbsp;&nbsp;&nbsp;
 				, หมายเหตุ : <?php echo $note;?>		</td>
       </tr>
-      <tr class="headsarabun">
-        <td><font class="data_drugreact"><?php echo $txt_react2;?></font></td>
+	  <?php 
+	  if ($txt_react2) {
+		?>
+		<tr class="headsarabun">
+        <td>
+			<font class="data_drugreact"><?php echo $drugreact_info;?></font>
+			<script>
+				// เปิด popup หน้าแพ้ยา
+				function show_drugreact_hn(hn){
+					window.open('show_drugreact_hn.php?hn='+hn, "WindowShowDrugreact","width=800,height=800");
+				}
+			</script>
+			<br>
+			<?php 
+			$userGroup = $drugreact->getDrugreactGroupByHn($hn);
+			if (count($userGroup)>0 && !$userGroup['error']) {
+				?>
+					<span class="txtsarabun"><b style="color: #000000; background-color: yellow; padding: 0 8px;">มีโอกาสแพ้ยาในกลุ่ม</b></span>
+					<?php
+					$i=1;
+					foreach($userGroup AS $a){ 
+						?>
+						<span class="txtsarabun"><?=$i;?>.) <a href="javascript:void(0);" onclick="show_drugreact_group_list('<?=$a['id'];?>')"><?=$a['name'];?></a></span><br>
+						<?php
+						$i++;
+					}
+					?>
+					<script>
+						function show_drugreact_group_list(id){
+							window.open('show_drugreact_group_list.php?id='+id,"openPopUp","width=800px,height=600px;");
+						}
+					</script>
+				<?php
+			}
+			?>
+		</td>
       </tr>
+		<?php
+	  }
+	  ?>
       <tr>
         <td>เวลาลงทะเบียน : <strong><?php echo $regis_time;?></strong>          , เวลาจ่ายOPD Card : <strong><?php echo $time1;?></strong> , เวลาซักประวัติ : <strong><?php echo date("H:i:s");?></strong></td>
       </tr>
@@ -1374,6 +1548,8 @@ function clear_textbox(){
 function togglediv(divid){ 
 	if(document.getElementById(divid).style.display == 'none'){ 
 		document.getElementById(divid).style.display = 'block'; 
+	}else if(document.getElementById(divid).style.display == 'block'){ 
+		document.getElementById(divid).style.display = 'none'; 
 	}
 } 
 function togglediv1(divid){ 
@@ -1397,8 +1573,13 @@ function togglediv2(divid){
 	}
 }
 
-
-
+function togglediv3(divid){ 
+	if(document.getElementById(divid).style.display == 'none'){ 
+		document.getElementById(divid).style.display = 'block'; 
+	}else if(document.getElementById(divid).style.display == 'block'){ 
+		document.getElementById(divid).style.display = 'none'; 
+	}
+} 
 	function calbmi(a,b){
 		//alert(a);
 		var h=a/100;
@@ -1470,14 +1651,53 @@ mmHg </td>
 			 <tr>
 				<td align="right" class="data_show">Pain Score:</td>
 				<td align="left">
-					<input name="painscore" type="text" id="painscore" size="3" value="" />
+					<input name="painscore" type="text" id="painscore" size="3" value="0" />
 				</td>
 				<td align="right" class="data_show">CV risk score (ไม่ใช้ผลเลือด):</td>
-				<td align="left">
+				<td align="left" valign="bottom" colspan="3">
 					<input name="cvriskscore" type="text" id="cvriskscore" size="3" value="<?php echo $cvriskscore;?>" /> %
+				<?php
+				if($cvriskscore >= 20){
+		$sql1 = "Select row_id,date_active,officer,datetime from screen_cvdrisk where hn = '".$_REQUEST["hn"]."'";
+		//echo $sql1;
+		$query1 = mysql_query($sql1);
+		$num1 = mysql_num_rows($query1);
+		if($num1 < 1){	 //ยังไม่ได้ให้คำแนะนำ	
+					echo "<script> 
+					Swal.fire(
+					  'แจ้งเตือน',
+					  'ผู้ป่วยมีค่า CVDRISK SCORE มากกว่า 20 ขึ้นไป<br>กรุณาระบุข้อมูลเพิ่มเติม',
+					'warning'
+					)
+					</script>";			
+					if( $cvrisk_area == "in" ){
+						$area1 = 'checked="checked"';
+					}else if ( $cvrisk_area == "out" ) {
+						$area2 = 'checked="checked"';
+					}
+						
+				?>
+				<span style="margin-left:10px;">
+				<label for="area1"><input type="radio" name="cvrisk_area" id="cvrisk_area1" value="in" class="lmp" <?=$area1;?> ><strong style='color:blue;'>ในเขต</strong></label>&nbsp;&nbsp;&nbsp;
+				<label for="area2"><input type="radio" name="cvrisk_area" id="cvrisk_area2" value="out" class="lmp" <?=$area2;?> ><strong style='color:red;'>นอกเขต</strong></label>
+				</span>
+				<?php
+		}else{
+				list($row_id,$date_active,$user,$datetime) = mysql_fetch_array($query1);
+					$yy = substr($date_active,0,4);
+					$yy=$yy+543;
+					$mm = substr($date_active,5,2);
+					$dd = substr($date_active,8,2);
+					$date_active="$dd/$mm/$yy";				
+			echo "<strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ $date_active โดย $user</strong>";
+		}		
+				}	
+				?>
 				</td>
+			 </tr>
+			 <tr>
 				<td align="right" class="data_show">CV risk score (ใช้ผลเลือด) :</td>
-				<td align="left">
+				<td align="left" colspan="5">
 					<input name="cvriskscore_lab" type="text" id="cvriskscore_lab" size="3" value="<?php echo $cvriskscore_lab;?>" /> %
 				</td>
 			 </tr>
@@ -1676,6 +1896,19 @@ mmHg </td>
 
 			</td>
 		</tr>
+		<tr>
+			<td align="right" class="data_show">แพ้อาหาร/สารเคมี/อื่นๆ : </td>
+			<td align="left" colspan="5">
+			<?
+				$sql1 = "Select allergy From opcard where hn = '".$hn."' limit 1";
+				//echo $sql1;
+				$query1=mysql_query($sql1);
+				list($allergy) = mysql_fetch_array($query1);
+				//echo $phone;
+			?>
+				<label for="allergy"><input type="text" name="allergy" id="allergy" class="frmsarabun" size="80" value="<?=$allergy;?>"></label>
+			</td>
+		</tr>			
 		  <tr>
            <td align="right" valign="top" class="data_show">บุหรี่ : </td>
 		   <td colspan="5">
@@ -1729,9 +1962,12 @@ mmHg </td>
 			if(document.form2.cig1.checked == true){
 				togglediv('kbk');
 			}
-			if(document.form2.form_i.checked == true){
-				togglediv('showform_i');
-			}			
+			// if(document.form2.form_i.checked == true){
+			// 	togglediv('showform_i');
+			// }
+			// if(document.form2.form_j.checked == true){
+			// 	togglediv('showform_j');
+			// }			
 			</script>
 		</td>
 		</tr>
@@ -2130,6 +2366,12 @@ mmHg </td>
 		<tr valign="top">
 			<td align="right" valign="top" >HPI : </td>
 			<td> 
+			<?php 
+			// ถ้าเป็นห้องตา จนท.จะคีย์เอง ไม่ต้องเอาข้อมูลเดิมมาแสดง
+			if($_SESSION['smenucode'] == 'ADMEYE'){
+				$hpi = '';
+			}
+			?>
 			<textarea name="hpi" cols="40" rows="6" class="hpi" id="hpi" ><?=$hpi;?></textarea>
 
 			
@@ -2199,14 +2441,14 @@ mmHg </td>
 						</tr>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_i" value="form_i" onClick="togglediv('showform_i')"><label for="form_i">ผู้ป่วยมีอาการปวด</label></div></td>
-							<td></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_j" value="form_j" onClick="togglediv3('showform_j')"><label for="form_j">มารับยาฉีด</label></div></td>
 						</tr>						
 						<tr>
 							<td colspan="2" align="left">
 								<div id="showform_i" style="display: none; margin-bottom: 8px;"> 
 <?
 		$my_date_hn = date('Y-m-d').$hn;
-		$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' ");
+		$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
 		if($q_advice->num_rows > 0){
 			$opd_advice = $q_advice->fetch_assoc();
 			$advice_organ = $opd_advice['advice_organ'];
@@ -2233,7 +2475,47 @@ mmHg </td>
 									<td><div class="mainThumb">ประเมิน pain score ซ้ำ : <input type="text" name="advice_painscore2" id="advice_painscore2" value="<?=$advice_painscore2;?>" size="10"></div></td>
 								</tr>
 								</table>
-								</div>								
+								</div>	
+
+								<div id="showform_j" style="display: none; margin-bottom: 8px;"> 
+<?
+		$my_date_hn = date('Y-m-d').$hn;
+		$q_advice1 = $dbi->query("SELECT * FROM `opd_advice_form_j` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
+		if($q_advice1->num_rows > 0){
+			$opd_advice1 = $q_advice1->fetch_assoc();
+			$advice_inject1 = $opd_advice1['advice_inject1'];
+			$advice_inject1_name = $opd_advice1['advice_inject1_name'];
+			$advice_inject1_unit = $opd_advice1['advice_inject1_unit'];
+			$advice_inject2 = $opd_advice1['advice_inject2'];
+			$advice_inject2_name = $opd_advice1['advice_inject2_name'];
+			$advice_inject2_unit = $opd_advice1['advice_inject2_unit'];
+			$advice_inject3 = $opd_advice1['advice_inject3'];
+			$advice_inject3_name = $opd_advice1['advice_inject3_name'];
+		}	
+?>					
+									<table id="member" class="fontthai">
+									<tr>
+										<td align="left">NI :</td>
+										<td align="left">
+										<div>
+										<input type="checkbox" name="advice_inject1" id="advice_inject1" <?php if($advice_inject1=="y"){ echo "checked";} ?> value="y">
+										<span style="margin-left:10px;">Rabies vaccine 0.5 ml M NO.</span>
+										<span style="margin-left:5px;"><input type="text" name="advice_inject1_unit" id="advice_inject1_unit" value="<?=$advice_inject1_unit;?>" size="10"></span>
+										</div>
+										<div style="margin-top:10px;">
+										<input type="checkbox" name="advice_inject2" id="advice_inject2" <?php if($advice_inject2=="y"){ echo "checked";} ?> value="y">
+										<span style="margin-left:10px;">Tetanus vaccine 0.5 ml M NO.</span>
+										<span style="margin-left:5px;"><input type="text" name="advice_inject2_unit" id="advice_inject2_unit" value="<?=$advice_inject2_unit;?>" ></span>
+										</div>
+										<div style="margin-top:10px;">
+										<input type="checkbox" name="advice_inject3" id="advice_inject3" <?php if($advice_inject3=="y"){ echo "checked";} ?> value="y">
+										<span style="margin-left:10px;">ยาอื่นๆ ระบุ</span>
+										<span style="margin-left:5px;"><input type="text" name="advice_inject3_name" id="advice_inject3_name" value="<?=$advice_inject3_name;?>"></span>
+										</div>
+										</td>
+									</tr>	
+									</table>
+								</div>													
 							</td>
 						</tr>	
 					</table>
@@ -2630,7 +2912,7 @@ mmHg </td>
 		$testDate = date('N');
 		if ( $testDate >= 6 OR ( $testTime >= "16:00:00" && $testTime <= "23:59:59" ) ) {
 			
-			$sqlDepart50 = "select * from depart where hn = '$cHn' and detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' and date like '".(date("Y")+543).date("-m-d")."%' ";
+			$sqlDepart50 = "select * from depart where hn = '$cHn' and (detail = '(55020/55021 ค่าบริการผู้ป่วยนอก)' || detail = '55020/55021 ค่าบริการผู้ป่วยนอก' ) and date like '".(date("Y")+543).date("-m-d")."%' ";
 			$resultDepart50 = mysql_query($sqlDepart50);
 			$testRows = mysql_num_rows($resultDepart50);
 			if( $testRows == 0 ){
@@ -2698,15 +2980,12 @@ window.onload = function(){
 	document.getElementById("<?php echo $onfocus;?>").focus();
 }
 </script>
-
-<script type="text/javascript" src="epoch_classes.js"></script>
 <script type="text/javascript">
 	var popup1;
 	window.onload = function() {
 		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
 	};
 </script>
-
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
 jQuery.noConflict();

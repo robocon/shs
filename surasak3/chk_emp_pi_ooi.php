@@ -1,30 +1,51 @@
 <?php
-
-include 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_opcard.php';
 
 $db = Mysql::load();
+$opcard = new Opcard();
 
-$camp = 'ลูกจ้าง61';
+// $camp = 'ลูกจ้าง61';
 
-$sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+// $sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+// c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
+// FROM ( 
+//     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
+// ) AS a 
+// LEFT JOIN ( 
+//     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
+// ) AS b ON b.`hn` = a.`HN` 
+// LEFT JOIN ( 
+//     SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
+// ) AS c ON c.`hn` = a.`HN`
+// WHERE b.row_id IS NOT NULL 
+// ORDER BY a.`row`";
+
+/**
+ * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
+ */
+$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,a.idcard,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
-    SELECT * FROM `opcardchk` WHERE `part` = '$camp'
+    SELECT *,id as main_id FROM `lab67` ORDER BY depart ASC,id ASC
 ) AS a 
 LEFT JOIN ( 
-    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '61' AND `camp` LIKE 'ตรวจสุขภาพ%'
-) AS b ON b.`hn` = a.`HN` 
-LEFT JOIN `chk_doctor` AS c ON c.`hn` = a.`HN`
-WHERE b.row_id IS NOT NULL 
-ORDER BY a.`row`";
+    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
+) AS b ON b.`hn` = a.`hn` 
+LEFT JOIN ( 
+    SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
+) AS c ON c.`hn` = a.`hn`
+ORDER BY a.depart ASC,a.main_id ASC";
+// dump($sql);
+
 $db->select($sql);
 $items = $db->get_items();
 
 $user_rows = $db->get_rows();
 
-$sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
-$db->select($sql);
-$company = $db->get_item();
+// $sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
+// $db->select($sql);
+// $company = $db->get_item();
 
 ?>
 <style>
@@ -46,12 +67,15 @@ $company = $db->get_item();
 }
 </style>
 <div style="text-align: center;">
-    <p><b><?=$company['name'];?> ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p>
+    <!-- <p><b><?=$company['name'];?> ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p> -->
+    <p><b>ตรวจสุขภาพลูกจ้างประจำปี ระหว่างวันที่ 29 มกราคม 22567 ถึง 2 กุมภาพันธ์ 2567 จำนวน <?=$user_rows;?> ราย</b></p>
 </div>
 <table class="chk_table" width="100%">
     <thead>
         <tr>
             <th rowspan="2" align="center">ลำดับ</th>
+            <th rowspan="2" align="center">แผนก</th>
+            <th rowspan="2" align="center">บัตรประชาชน</th>
             <th rowspan="2" align="center">HN</th>
             <th rowspan="2" align="center">ชื่อ - สกุล</th>
             <th rowspan="2" align="center">อายุ</th>
@@ -62,6 +86,7 @@ $company = $db->get_item();
             <th colspan="14" align="center">รายการตรวจ</th>
             <th width="8%" rowspan="2" align="center">สรุปผลการตรวจ</th>
             <th rowspan="2" align="center">คำแนะนำ</th>
+            <th rowspan="2" align="center">Diag</th>
         </tr>
         <tr>
 
@@ -129,7 +154,7 @@ $company = $db->get_item();
             );
 
             $suggest = $item['normal_suggest'];
-            $suggest_date = ( $item['normal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
+            $suggest_date = ( $item['normal_suggest_date'] != '0000-00-00' && !empty($item['normal_suggest_date']) ) ? 'ในวันที่ '.$item['normal_suggest_date'] : '' ;
             
         }else{
             $suggest_list = array(
@@ -140,13 +165,13 @@ $company = $db->get_item();
             );
 
             $suggest = $item['abnormal_suggest'];
-            $suggest_date = ( $item['abnormal_suggest_date'] != '0000-00-00' ) ? 'ในวันที่ '.$item['abnormal_suggest_date'] : '' ;
+            $suggest_date = ( $item['abnormal_suggest_date'] != '0000-00-00' && !empty($item['abnormal_suggest_date']) ) ? 'ในวันที่ '.$item['abnormal_suggest_date'] : '' ;
             
         }
 
         $suggest_detail = $suggest_list[$suggest];
         $conclution_detail = $suggest_detail.$suggest_date;
-
+        
         // ผลตรวจตัวอื่นๆ
         $sql = "SELECT b.* 
         FROM ( 
@@ -169,6 +194,7 @@ $company = $db->get_item();
             OR b.`labcode` = 'HDL' 
             OR b.`labcode` = 'HBSAG' 
             OR b.`labcode` = 'OCCULT' 
+            OR b.`labcode` = 'STOCC' 
             OR b.`labcode` = '38302' 
             OR b.`labcode` = 'LDL' 
             OR b.`labcode` = 'BUN' 
@@ -178,9 +204,6 @@ $company = $db->get_item();
             OR b.`labcode` = 'ALP' 
         ) 
         ORDER BY b.seq ASC ";
-
-        // dump($sql);
-        // exit;
 
         $db->select($sql);
         $etc_items = $db->get_items();
@@ -194,13 +217,24 @@ $company = $db->get_item();
                 'flag' => $lab_item['flag']
             );
         }
+
+        $main_hn = $item['main_hn'];
+
+        if(empty($item['ptname'])){ 
+            $opcardItem = $opcard->getByHn($main_hn);
+            $ptname = $opcardItem['ptname'];
+        }else{
+            $ptname = $item['ptname'];
+        }
         
         ?>
         <tr>
             
             <td align="right"><?=$i;?></td>
-            <td><?=$hn;?></td>
-            <td><?=$item['ptname'];?></td>
+            <td><?=$item['depart'];?></td>
+            <td><?=$item['idcard'];?></td>
+            <td><?=$main_hn;?></td>
+            <td><?=$ptname;?></td>
             <td align="right"><?=$age;?></td>
             <td align="right"><?=$item['weight'];?></td>
             <td align="right"><?=$item['height'];?></td>
@@ -208,7 +242,13 @@ $company = $db->get_item();
             <td><?=$bp1.'/'.$bp2?></td>
 
 
-            <td><?=( $item['cxr'] == '1' ? 'ปกติ' : 'ผิดปกติ' );?></td>
+            <td>
+                <?php 
+                if(!empty($item['cxr'])){
+                    echo $item['cxr'] == '1' ? 'ปกติ' : 'ผิดปกติ';
+                }
+                ?>
+            </td>
             <td>
                 <?php
                 if( $item['res_cbc'] == '1' ){
@@ -274,10 +314,18 @@ $company = $db->get_item();
             </td>
             <td>
                 <?php
-                if( $etc['occult']['result'] == 'Negative' ){
-                    echo 'ไม่พบเลือด';
-                }elseif ( $etc['occult']['result'] == 'Positive' ) {
-                    echo 'พบเลือด';
+                if(!empty($etc['occult'])){
+                    if( $etc['occult']['result'] == 'Negative' ){
+                        echo 'ไม่พบเลือด';
+                    }elseif ( $etc['occult']['result'] == 'Positive' ) {
+                        echo 'พบเลือด';
+                    }
+                }else{
+                    if( $etc['stocc']['result'] == 'Negative' ){
+                        echo 'ไม่พบเลือด';
+                    }elseif ( $etc['stocc']['result'] == 'Positive' ) {
+                        echo 'พบเลือด';
+                    }
                 }
                 ?>
             </td>
@@ -329,7 +377,14 @@ $company = $db->get_item();
             
             <td><?=( $item['conclution'] == '1' ? 'ปกติ' : ( $item['conclution'] == '2' ? 'ผิดปกติ' : '' ) );?></td>
             <td><?=$conclution_detail;?></td>
-            <!-- <td>สรุปผลการตรวจ</td> -->
+            <td>
+                <?=$item['diag'];?>
+                <?php 
+                if(empty($item['chk_doctor_id'])){
+                    echo '<span style="color:red;"><b>รอแพทย์สรุปผล</b></span>';
+                }
+                ?>
+            </td>
 
         </tr>
         <?php

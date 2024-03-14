@@ -82,13 +82,7 @@ if(empty($_SESSION['sOfficer'])){
 <div class="nav">
     <ul>
         <li><a href="ha_index.php">หน้าหลัก</a></li>
-        <?php 
-        if($_SESSION['sOfficer']==='สุมีนา โมเหล็ก' OR $_SESSION['smenucode']==='ADM'){
-            ?>
-            <li><a href="ha_main.php">จัดการตัวชี้วัด</a></li>
-            <?php 
-        }
-        ?>
+        <li><a href="ha_main.php">จัดการตัวชี้วัด</a></li>
         <li><a href="ha_report.php">รายงาน</a></li>
     </ul>
 </div>

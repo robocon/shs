@@ -26,13 +26,34 @@
 
 
 		$_SESSION["num_list"] = 0;
-		$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') AND ((onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')) OR (`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') ) ) Order by row_id ASC ";
+		$sql = "SELECT drugcode, tradname, amount, slcode, statcon, row_id,part 
+		FROM dgprofile 
+		WHERE an = '".$_GET["an"]."' 
+		AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') 
+		AND 
+		(
+			(
+				onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')
+			) 
+			OR 
+			(
+				`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') 
+			) 
+		) Order by row_id ASC ";
 		
 		$result = Mysql_Query($sql);
 		while($arr = Mysql_fetch_assoc($result)){
+
+			$genname = '';
+			$qDruglst = mysql_query("SELECT genname FROM druglst WHERE drugcode = '".$arr["drugcode"]."' ");
+			if(mysql_num_rows($qDruglst)>0){
+				$druglst = mysql_fetch_assoc($qDruglst);
+				$genname = $druglst['genname'];
+			}
 			
 			$_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]] = $arr["drugcode"];
 			$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $arr["tradname"];
+			$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = $genname;
 			$_SESSION["list_druglst"]["part"][$_SESSION["num_list"]] = $arr["part"];
 			$_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]] = $arr["slcode"];
 			$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
@@ -62,6 +83,10 @@ font-size: 16 px;
 	color:#FFFFFF;
 	font-weight: bold;
 
+}
+p,ol{
+	margin:0;
+	padding;0;
 }
 </style>
 
@@ -175,7 +200,7 @@ if($_SESSION["num_list"] > 0)
 </TR>
 <TR>
 	<TD align="right">Diag : </TD>
-	<TD bgcolor="#FFFFBC" colspan="5"><?php echo $arr["diagnos"];?></TD>
+	<TD bgcolor="#FFFFBC" colspan="5"><?php echo $arr["diagnos"];?><font color="#FF0033" size="1"><div style='margin-left:10px;'>*** ห้ามมีสัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งจ่ายยาในระบบไม่ได้ <span style='color:blue;'>แก้ไขชื่อโรคกรุณาติดต่อหอผู้ป่วย</span> ***</div></font></TD>
 </TR>
 </TABLE>
 <INPUT TYPE="hidden" name="age" value ="<?php echo $arr["age"];?>">
@@ -183,22 +208,45 @@ if($_SESSION["num_list"] > 0)
 </TR>
 </TABLE>
 <TABLE align="center"   cellspacing="4" cellpadding="0" width="80%">
-<TR>
-	<TD>
-		<?php 
-			$sql = "Select drugcode,  tradname , advreact  From drugreact where hn = '".$arr["hn"]."' ";
-			$result = Mysql_Query($sql);
-			$rows = Mysql_num_rows($result);
-			if($rows> 0){
-				echo "<FONT COLOR=\"red\">แพ้ยาทั้งหมด ".$rows." รายการ<BR>";
-				while(list($drugcode,  $tradname , $advreact) = Mysql_fetch_row($result)){
-					echo "[",$drugcode,"] : ", $tradname , " อาการ : ",$advreact,"<BR>";
+	<TR>
+		<TD>
+			<?php 
+				$sql = "Select drugcode,  tradname , advreact  From drugreact where hn = '".$arr["hn"]."' AND advreact != '' ";
+				$result = Mysql_Query($sql);
+				$rows = Mysql_num_rows($result);
+				if($rows> 0){
+					echo "<FONT COLOR=\"red\">แพ้ยาทั้งหมด ".$rows." รายการ<BR>";
+					while(list($drugcode,  $tradname , $advreact) = Mysql_fetch_row($result)){
+						echo "[",$drugcode,"] : ", $tradname , " อาการ : ",$advreact,"<BR>";
+					}
+					echo "</FONT>";
 				}
-				echo "</FONT>";
+			?>
+		</TD>
+	</TR>
+	<?php 
+	$sql = "SELECT `groupname`,advreact,asses FROM `drugreact` WHERE `hn` = '".$arr["hn"]."' AND `groupname` != '' GROUP BY `groupname`";
+	$result = mysql_query($sql);
+	if(mysql_num_rows($result)>0){
+	?>
+	<tr>
+		<td>
+			<br>
+			<p style="color:red;"><b>แพ้ยาตามกลุ่ม</b></p>
+			<ol>
+			<?php 
+			while ($a = mysql_fetch_assoc($result)) {
+				?>
+				<li><?=$a['groupname'];?>...<?=$a['advreact'].'('.$a['asses'].')';?></li>
+				<?php
 			}
-		?>
-	</TD>
-</TR>
+			?>
+			</ol>
+		</td>
+	</tr>
+	<?php
+	}
+	?>
 </TABLE>
 
 <BR>
@@ -262,7 +310,7 @@ if($resultsl["slcode"]=="1*1ad"){
 echo "
 <TR bgcolor=\"",$bgcolor,"\">
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
-	<TD>",$_SESSION["list_druglst"]["tradname"][$j],"</TD>
+	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b><br>",$_SESSION["list_druglst"]["genname"][$j],"<br><br></TD>
 	<TD align=\"center\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้','".$resultsl['detail1']." ".$resultsl['detail2']." ".$resultsl['detail3']."','left',-200,0);\" OnmouseOut = \"hid_tooltip();\">",$_SESSION["list_druglst"]["slcode"][$j],"</span></TD>
 	<TD align=\"center\">",$_SESSION["list_druglst"]["part"][$j],"</TD>
 	<TD align=\"center\"><INPUT TYPE=\"text\" Name=\"Amount[]\" Value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>
