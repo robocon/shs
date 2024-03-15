@@ -19,6 +19,20 @@ if($action === 'del'){
     }
     echo $res;
     exit;
+}elseif($action === 'save'){
+
+    $id = sprintf("%d", $_POST['id']);
+    $reh_number = sprintf("%s", $_POST['reh_number']);
+
+    $sql = "UPDATE `pt_reh` SET `reh_number` = '$reh_number' WHERE `id` = '$id' ";
+    $update = $dbi->query($sql);
+    if($update!==false){
+        $res = '{"status":200, "detail": "แก้ไขข้อมูลเรียบร้อย", "id": "'.$id.'", "reh_number": "'.$reh_number.'" }';
+    }else{
+        $res = '{"status":400, "detail": "ไม่สามารถแก้ไขข้อมูลได้ '.$dbi->error.'"}';
+    }
+    echo $res;
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -43,6 +57,9 @@ if($action === 'del'){
 <body>
     <?php 
     require_once 'pt_reh_menu.php';
+
+    $dateSelect = sprintf("%s", (!empty($_POST['dateSelected']) ? $_POST['dateSelected'] : '' ));
+
     ?>
     <div class="container mt-4">
         <form action="pt_reh_reprint.php" method="post" class="mb-4">
@@ -51,7 +68,7 @@ if($action === 'del'){
                     <label for="dateSelected" class="col-form-label">เลือกวันที่</label>
                 </div>
                 <div class="col-auto">
-                    <input type="text" id="dateSelected" name="dateSelected" class="form-control">
+                    <input type="text" id="dateSelected" name="dateSelected" class="form-control" value="<?=$dateSelect;?>">
                     <div style="position:relative;">
                             <div style="position: absolute;">
                                 <div id="calendar_start"></div>
@@ -121,11 +138,11 @@ if($action === 'del'){
                             <td><a href="javascript:void(0);" onclick="openReprint('<?=$a['id'];?>')" title="สั่งปริ้น"><?=$a['hn'];?></a></td>
                             <td><?=$a['ptname'];?></td>
                             <td><?=$a['vn'];?></td>
-                            <td><a href="javascript:void(0);" onclick="openReprint('<?=$a['id'];?>')" title="สั่งปริ้น"><?=$a['reh_number'];?></a></td>
+                            <td><span id="rehNumber<?=$a['id'];?>"><?=$a['reh_number'];?></span></td>
                             <td><?=$a['officer'];?></td>
                             <td>
-                                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="แก้ไข"><i class="bi bi-pencil"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="ลบ" onclick="confirmDel('<?=$a['id'];?>')"><i class="bi bi-trash3"></i></a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-primary" title="แก้ไข REH Number" onclick="editRehNumber('<?=$a['id'];?>','<?=$a['reh_number'];?>')"><i class="bi bi-pencil"></i></a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" title="ลบ" onclick="confirmDel('<?=$a['id'];?>')"><i class="bi bi-trash3"></i></a>
                             </td>
                         </tr>
                         <?php
@@ -134,6 +151,59 @@ if($action === 'del'){
                     ?>
                 </table>
                 <script>
+                    async function editRehNumber(id,rehNumber){
+                        // แทนค่าเข้าไปใน input ของ Swal
+                        const inputValue = rehNumber;
+
+                        // rehNumberInput เอาค่า Input ใน Swal มาใช้งาน
+                        const { value: rehNumberInput } = await Swal.fire({
+                            title: "แก้ไขเลขที่ REH",
+                            input: "text",
+                            inputValue,
+                            showCancelButton: true,
+                            inputValidator: (value) => {
+                                if (!value) {
+                                    return "กรุณาใส่ข้อมูลให้ถูกต้อง";
+                                }
+                            },
+                            confirmButtonText: "บันทึกข้อมูล",
+                            cancelButtonText: "ยกเลิก",
+                        });
+                        
+                        // ถ้ามีค่าจาก Input ของ Swal
+                        if (rehNumberInput) {
+                    
+                            // ส่ง post ไปบันทึกข้อมูล
+                            let data = [];
+                            data.push(encodeURIComponent('action')+"="+encodeURIComponent('save'));
+                            data.push(encodeURIComponent('reh_number')+"="+encodeURIComponent(rehNumberInput));
+                            data.push(encodeURIComponent('id')+"="+encodeURIComponent(id));
+                            let dataPost = data.join("&");
+                            
+                            let response = await fetch('pt_reh_reprint.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                                },
+                                body: dataPost
+                            });
+                            const body = await response.json();
+
+                            // แสดงข้อความ 
+                            Swal.fire({
+                                position: "bottom-end",
+                                title: body.detail,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then((result) => {
+
+                                // หลังจาก Swal ทำงานเสร็จให้รีเฟรชหน้าจอ
+                                location.reload(true);
+                            });
+                            
+                        }
+                    }
+
                     function openReprint(id){
                         let target = 'target='+encodeURIComponent('pt_firstregis_reprint.php?id='+id);
                         window.open('<?=NOTIFY_HOST;?>/shspdf/printPdf.php?'+target, "rehPopup","width=600,height=400");
@@ -148,8 +218,12 @@ if($action === 'del'){
                             cancelButtonColor: "#d33",
                             confirmButtonText: "ยืนยัน",
                             cancelButtonText: "ยกเลิก",
-                        }).then((result) => {
+                        }).then((result) => { 
+
+                            // เมื่อมีการยืนยันการลบ
                             if (result.isConfirmed) {
+
+                                // ส่งค่าไปลบ
                                 rehDelete(id).then((res)=>{
                                     Swal.fire({
                                         position: "bottom-end",
@@ -157,6 +231,8 @@ if($action === 'del'){
                                         showConfirmButton: false,
                                         timer: 1500
                                     });
+                                    
+                                    // ไม่ต้องรอการทำงานของ Swal ให้ลบแถวไปได้เลย
                                     if(res.status===200){
                                         document.getElementById("trReh"+id).remove();
                                     }
