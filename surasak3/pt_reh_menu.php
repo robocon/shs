@@ -29,3 +29,11 @@
     </div>
     </div>
 </nav>
+<?php 
+if(!empty($_SESSION['x-msg'])){
+    ?>
+    <div class="alert alert-warning" role="alert"><?=$_SESSION['x-msg'];?></div>
+    <?php
+    $_SESSION['x-msg'] = null;
+}
+?>

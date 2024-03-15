@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("connect.inc");
+require_once 'includes/config.php';
 /*  print "ผู้ป่วยนอก<br>";
 print "HN :$cHn<br>";
 print "VN:$tvn<br>";
@@ -382,8 +383,9 @@ $smctoken = $t['token'];
 </script>
 <style>
 	.myButton{
+		display: inline-block;
 		border-radius: 4px;
-		padding: 8px 16px;
+		padding: 4px 10px;
 		background-color: #4CAF50;
 		color: #ffffff;
 		font-size: 18px;
@@ -391,6 +393,7 @@ $smctoken = $t['token'];
 		font-weight: bold;
 		text-decoration: none;
 		margin-right: 4px;
+		margin-bottom: 4px;;
 	}
 	.myButton:hover{
 		box-shadow: 2px 6px 6px #000000a6;
@@ -399,8 +402,7 @@ $smctoken = $t['token'];
 <div style="margin-bottom: 16px;">
 	<?php $dateHn = date('d-m-') . (date('Y') + 543) . $cHn;?>
 	<a href="digital_opd.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อ &#x1F5B6;</a>
-	<a href="digital_opd_form.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อด้านหลัง &#x1F5B6;</a>
-	<div>&nbsp;</div>
+	<a href="digital_opd_form.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อด้านหลัง &#x1F5B6;</a><br>
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=80" class="myButton" target="_blank">QR CODE ใหญ่</a>
 	<a href="sticker80.php?hn=<?=$cHn;?>&stickersize=30" class="myButton" target="_blank">QR CODE เล็ก</a>
 </div>
@@ -412,10 +414,10 @@ if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADM'){
 	<div>
 		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>&sOfficerReh=<?=$sOfficerReh;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
 		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>
-	</div>
+		<a href="pt_reh_reprint.php" class="myButton" target="_blank">จัดการเลขที่ Reh &#128279;</a>	</div>
 	<script>
 	function openPage(page){
-		var myWin = window.open("http://192.168.129.143/shspdf/printPdf.php?target="+encodeURIComponent(page), "MsgWindow", "width=800,height=600");
+		var myWin = window.open("<?=NOTIFY_HOST;?>/shspdf/printPdf.php?target="+encodeURIComponent(page), "MsgWindow", "width=800,height=600");
 	}
 	</script>
 	<?php 

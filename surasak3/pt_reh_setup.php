@@ -3,11 +3,23 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$action = sprintf("%s", (!empty($_POST['action']) ? $_POST['action'] : '' ));
+if($action==='save'){
+    $reh_number = sprintf("%d", $_POST['reh_number']);
+    $reh_year = sprintf("%d", $_POST['reh_year']);
+    $runnoUpdate = $dbi->query("UPDATE `runno` SET `runno` = '$reh_number', `prefix` = '$reh_year' WHERE `title` = 'ptReh' ");
+    $msg = 'บันทึกข้อมูลเรียบร้อย';
+    if($runnoUpdate===false){
+        $msg = 'ไม่สามารถบันทึกข้อมูลได้';
+    }
+    redirect('pt_reh_setup.php', $msg);
+    exit;
+}
+
 $query = $dbi->query("SELECT `runno`,`prefix` FROM `runno` WHERE `title`='ptReh' ");
 $runno = $query->fetch_assoc();
 $ptReh = $runno['runno'];
 $ptPrefixReh = $runno['prefix'];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +41,7 @@ require_once 'pt_reh_menu.php';
     <h3 class="h3">ตั้งค่าเลข REH</h3>
     <div class="row">
         <div class="col-sm-6">
-            <form action="" method="post">
+            <form action="pt_reh_setup.php" method="post">
                 <div class="mb-3">
                     <label for="reh_number" class="form-label">เลขที่ REH เลขถัดไป</label>
                     <input type="text" class="form-control" id="reh_number" name="reh_number" value="<?=$ptReh;?>">
@@ -40,6 +52,7 @@ require_once 'pt_reh_menu.php';
                 </div>
                 <div class="mb-3">
                     <button type="submit" class="btn btn-primary">บันทึก</button>
+                    <input type="hidden" name="action" value="save">
                 </div>
             </form>
         </div>
