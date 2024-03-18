@@ -114,7 +114,21 @@ if(empty($id)){
 $sql = "SELECT * FROM `com_support` WHERE `row` = '$id'";
 $q = $dbi->query($sql);
 $item = $q->fetch_assoc();
+// var_dump(html_entity_decode($item['detail']));
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TITLE</title>
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+    <!-- <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script> -->
+</head>
+<body>
 <a target="_self" href="com_support.php" class="forntsarabun" style="text-decoration:none;">&lt;&lt;&nbsp;กลับหน้าเมนูแจ้งซ่อม</a>
 <hr>
 <style>
@@ -128,20 +142,20 @@ $item = $q->fetch_assoc();
         display: table;
     }
 </style>
-<table>
+<table width="100%" style="table-layout: fixed;">
     <tr bgcolor="#FFCC00">
-        <th>ลำดับ</th>
-        <th>วันที่</th>
-        <th>แผนก</th>
-        <th>หัวข้อ</th>
+        <th width="10%">ลำดับ</th>
+        <th width="10%">วันที่</th>
+        <th width="10%">แผนก</th>
+        <th width="20%">หัวข้อ</th>
         <th>รายละเอียด</th>
     </tr>
-    <tr bgcolor="#FFFF99">
+    <tr bgcolor="#FFFF99" valign="top">
         <td><?=$item['row'];?></td>
         <td><?=$item['date'];?></td>
         <td><?=$item['depart'];?></td>
         <td><?=$item['head'];?></td>
-        <td><?=nl2br(htmlspecialchars_decode($item['detail']));?></td>
+        <td style="overflow:auto;"><?=html_entity_decode($item['detail']);?></td>
     </tr>
 </table>
 
@@ -215,3 +229,5 @@ if ($q->num_rows>0) {
     <?php
 }
 ?>
+</body>
+</html>

@@ -1,6 +1,15 @@
 <?php 
 include("connect.inc");
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+    <title>รายละเอียดงาน</title>
+</head>
+<body>
 <style type="text/css">
     body,td,th {
         font-family: "TH SarabunPSK";
@@ -28,11 +37,11 @@ if (mysql_num_rows($result)) {
     print "  <th bgcolor=CD853F width=\"80\">เบอร์ติดต่อ</th>";
     print " </tr>";
     while (list($row, $depart, $head, $datetime, $programmer, $date, $detail, $user1, $tel) = mysql_fetch_row($result)) {
-        print(" <tr>\n" .
+        print(" <tr valign=\"top\">\n" .
             "  <td BGCOLOR=F5DEB3>$row</td>\n" .
             "  <td BGCOLOR=F5DEB3>$depart</td>\n" .
             "  <td BGCOLOR=F5DEB3>$head</a></td>\n" .
-            "  <td BGCOLOR=F5DEB3 style=\"overflow: auto;\">" . htmlspecialchars_decode($detail) . "</td>\n" .
+            "  <td BGCOLOR=F5DEB3 style=\"overflow: auto;\">" . html_entity_decode($detail) . "</td>\n" .
             "  <td BGCOLOR=F5DEB3>$date</td>\n" .
             "  <td BGCOLOR=F5DEB3>$user1</td>\n" .
             "  <td BGCOLOR=F5DEB3>$tel</td>\n" .
@@ -85,3 +94,5 @@ if (mysql_num_rows($q) > 0) {
 }
 include("unconnect.inc");
 ?>
+</body>
+</html>

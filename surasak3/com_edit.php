@@ -131,8 +131,7 @@ if ($_REQUEST['do'] == 'edit') {
 							forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
 						});
 					</script>
-					<textarea name="detail" id="detail" cols="100" rows="10" readonly class="forntsarabun"><?= $dbarr['detail']; ?></textarea>
-				
+					<textarea name="detail" id="detail" cols="100" rows="10" readonly class="forntsarabun"><?=htmlspecialchars_decode($dbarr['detail']);?></textarea>
 				</td>
 			</tr>
 			<tr>
