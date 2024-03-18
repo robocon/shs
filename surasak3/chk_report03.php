@@ -100,8 +100,11 @@ if( $out_result_rows == 0 ){
 $out_result_items = $db->get_items();
 foreach($out_result_items AS $result){
 
-	$age = $result["age"];
-	$age2 = $result['age2'];
+	$age = $result["age"]; // มาจาก out_result_chkup
+	if(empty($age)){
+		$age = $result['age2']; // เอามาจาก opcardchk
+	}
+	
 	$hn = $result["hn"];
 	$show_date = $result['show_date'];
 
@@ -210,16 +213,10 @@ foreach($out_result_items AS $result){
 									<span style="font-size:24px">
 										<strong><?=$ptname;?></strong>&nbsp;&nbsp;&nbsp;
 										<?php 
-										if(!empty($age)){ 
-										?>
-											<strong>อายุ : </strong> 
-											<strong><?=$age;?> ปี</strong>
-										<?php 
-										}else if(!empty($age2)){
-										?>
-											<strong>อายุ : </strong> 
-											<strong><?=$age2;?> ปี</strong>
-										<?php 
+										if(preg_match("/(ปี)/", $age) > 0){ 
+											?><strong>อายุ : <?=$age;?></strong> <?php
+										}else{
+											?><strong>อายุ : <?=$age;?> ปี</strong> <?php
 										}
 										?>
 									</span>
