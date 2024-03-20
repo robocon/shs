@@ -12,7 +12,8 @@ $chkdate = (date("Y")+543).date("-m-d H:i");
 $depart=$_POST["depart"];
 $head=htmlspecialchars($_POST["head"], ENT_QUOTES);
 
-$detail_for_line = preg_replace('/(<img.+\/>)/', '', $_POST["detail"]);
+// remove all html tags
+$detail_for_line = strip_tags(html_entity_decode($_POST["detail"]));
 
 $detail=htmlspecialchars($_POST["detail"], ENT_QUOTES);
 $datetime=$_POST["datetime"];
