@@ -443,6 +443,20 @@ for($i=0;$i<$item;$i++){
 			}
 			$_SESSION["druglot_new"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." เตียง".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
 			$_SESSION["druglot_new"] .= "<br>";
+
+			if(!empty($detail1)){
+				$_SESSION["druglot_new"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail1."</b></font><br>";
+			}
+			if(!empty($detail2)){
+				$_SESSION["druglot_new"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail2."</b></font><br>";
+			}
+			if(!empty($detail3)){
+				$_SESSION["druglot_new"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><b>".$detail3."</b></font><br>";
+			}
+			if(!empty($detail4)){
+				$_SESSION["druglot_new"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><b>".$detail4."</b></font><br>";
+			}
+			
 			$_SESSION["druglot_new"] .= '<table style="font-size: 13px;font-family:Angsana New;border-collapse: collapse;">
 			<tr><td style="line-height: 14px;">เวลาที่ให้....................น.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
 			<tr><td style="line-height: 14px;">ผู้เตรียม....................</td><td style="line-height: 14px;">ผู้ให้....................</td></tr>
@@ -465,6 +479,20 @@ for($i=0;$i<$item;$i++){
 			}
 			$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px;' face='Angsana New' size='2'><B>".$Thaidate."<BR>".$_POST["Hn"]."  ".$_POST["Ptname"]." เตียง".$_POST["Bed"]."  <br>".$_POST["Tradname"][$i]."&nbsp;&nbsp;(".$_POST["Drugcode"][$i].")</B></font>";
 			$_SESSION["druglot_qrcode"] .= "<br>";
+
+			if(!empty($detail1)){
+				$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail1."</b></font><br>";
+			}
+			if(!empty($detail2)){
+				$_SESSION["druglot_qrcode"] .= "<font style='line-height:16px; font-size:10px;' face='Angsana New'><b>".$detail2."</b></font><br>";
+			}
+			if(!empty($detail3)){
+				$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><b>".$detail3."</b></font><br>";
+			}
+			if(!empty($detail4)){
+				$_SESSION["druglot_qrcode"] .= "<font style='line-height:14px; font-size:10px;' face='Angsana New'><b>".$detail4."</b></font><br>";
+			}
+
 			$_SESSION["druglot_qrcode"] .= '<table style="font-size: 13px;font-family:Angsana New;border-collapse: collapse;">
 			<tr><td style="line-height: 14px;">เวลาที่ให้....................น.</td><td style="line-height: 14px;">rate....................ml/hr</td></tr>
 			<tr><td style="line-height: 14px;">ผู้เตรียม....................</td><td style="line-height: 14px;">ผู้ให้....................</td></tr>

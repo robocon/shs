@@ -74,12 +74,12 @@ a:visited {color:#FF0000; text-decoration:underline;}
 a:active {color:#FF0000; text-decoration:underline;}
 a:hover {color:#FF0000; text-decoration:underline;}
 body,td,th {
-font-family:  MS Sans Serif;
-font-size: 16 px;
+font-family: "TH SarabunPSK";
+font-size: 20px;
 }
 .font_title{
-	font-family:  MS Sans Serif;
-	font-size: 16 px;
+	font-family: "TH SarabunPSK";
+	font-size: 20px;
 	color:#FFFFFF;
 	font-weight: bold;
 
@@ -88,12 +88,12 @@ p,ol{
 	margin:0;
 	padding;0;
 }
+#pharDivideDrug td{
+	padding-bottom: 8px;
+}
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
-
-
-
 function newXmlHttp(){
 	var xmlhttp = false;
 
@@ -198,9 +198,9 @@ if($_SESSION["num_list"] > 0)
 	<TD align="right">แพทย์ : </TD>
 	<TD bgcolor="#FFFFBC"><?php echo $arr["doctor"],"&nbsp;<INPUT TYPE=\"hidden\" NAME=\"Doctor\" value=\"".$arr["doctor"]."\"><INPUT TYPE=\"hidden\" NAME=\"Diag\" value=\"".$arr["diagnos"]."\">";?></TD>
 </TR>
-<TR>
+<TR valign="top">
 	<TD align="right">Diag : </TD>
-	<TD bgcolor="#FFFFBC" colspan="5"><?php echo $arr["diagnos"];?><font color="#FF0033" size="1"><div style='margin-left:10px;'>*** ห้ามมีสัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งจ่ายยาในระบบไม่ได้ <span style='color:blue;'>แก้ไขชื่อโรคกรุณาติดต่อหอผู้ป่วย</span> ***</div></font></TD>
+	<TD bgcolor="#FFFFBC" colspan="5"><?php echo $arr["diagnos"];?><font color="#FF0033"><div style='margin-left:10px;'>*** ห้ามมีสัญลักษณ์พิเศษ เช่น เครื่องหมาย ' ในการ Diag โรค จะทำให้สั่งจ่ายยาในระบบไม่ได้ <span style='color:blue;'>แก้ไขชื่อโรคกรุณาติดต่อหอผู้ป่วย</span> ***</div></font></TD>
 </TR>
 </TABLE>
 <INPUT TYPE="hidden" name="age" value ="<?php echo $arr["age"];?>">
@@ -259,15 +259,15 @@ if($_SESSION["num_list"] > 0)
 <TABLE align="center"  border="1" bordercolor="#3300FF" cellspacing="0" cellpadding="0" width="90%">
 <TR>
 	<TD>
-<TABLE width="100%">
+<TABLE width="100%" id="pharDivideDrug">
 <TR bgcolor="#3300FF" class="font_title" align="center">
-	<TD >รหัสยา</TD>
+	<TD width="5%">รหัสยา</TD>
 	<TD >ชื่อยา</TD>
-	<TD >วิธีใช้</TD>
-    <TD >ประเภท</TD>
-	<TD >จำนวน</TD>
-	<TD >สถานะ</TD>
-	<TD colspan="3">จ่ายยาย้อนหลัง 3 วัน</TD>
+	<TD width="5%">วิธีใช้</TD>
+    <TD width="5%">ประเภท</TD>
+	<TD width="5%">จำนวน</TD>
+	<TD width="5%">สถานะ</TD>
+	<TD colspan="3" width="12%">จ่ายยาย้อนหลัง 3 วัน</TD>
 	<TD width="10%">สติกเกอร์ติด Tube</TD>
 </TR>
 <?php
@@ -310,7 +310,7 @@ if($resultsl["slcode"]=="1*1ad"){
 echo "
 <TR bgcolor=\"",$bgcolor,"\">
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
-	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b><br>",$_SESSION["list_druglst"]["genname"][$j],"<br><br></TD>
+	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b><br>",$_SESSION["list_druglst"]["genname"][$j],"<br></TD>
 	<TD align=\"center\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้','".$resultsl['detail1']." ".$resultsl['detail2']." ".$resultsl['detail3']."','left',-200,0);\" OnmouseOut = \"hid_tooltip();\">",$_SESSION["list_druglst"]["slcode"][$j],"</span></TD>
 	<TD align=\"center\">",$_SESSION["list_druglst"]["part"][$j],"</TD>
 	<TD align=\"center\"><INPUT TYPE=\"text\" Name=\"Amount[]\" Value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>
@@ -326,7 +326,7 @@ echo "
 	$xk =0;
 	$txt = "";
 	while($arr2 = Mysql_fetch_assoc($result)){
-		echo "<td align='center'>".substr($arr2["date2"],0,-5)."<BR>".$arr2["samount"]."</td>";
+		echo "<td align='center'>".substr($arr2["date2"],0,-5)."<BR><b>".$arr2["samount"]."</b></td>";
 		$xk++;
 	}
 
