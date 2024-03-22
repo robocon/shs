@@ -373,21 +373,82 @@ echo "
 </TR>
 </TABLE>
 <BR>
-<CENTER>
-โปรดเลือก&nbsp;:&nbsp;
-	<INPUT TYPE='radio' NAME='status' VALUE='รับใหม่'>รับใหม่&nbsp;
-	<INPUT TYPE='radio' NAME='status' VALUE='เบิกยาประจำวัน' checked>เบิกยาประจำวัน&nbsp;
-	<INPUT TYPE='radio' NAME='status' VALUE='จำหน่าย'>จำหน่าย
-</CENTER>
-
-<?php
-if($_SESSION["num_list"] > 0)
-	echo "
-	<BR>
-	<CENTER><INPUT TYPE=\"submit\" Name=\"Save_dgprofile\"  VALUE=\"   จ่ายยา   \" ></CENTER>
-	</FORM>";
-?>
+	<CENTER>
+		โปรดเลือก&nbsp;:&nbsp;
+		<INPUT TYPE='radio' NAME='status' VALUE='รับใหม่'>รับใหม่&nbsp;
+		<INPUT TYPE='radio' NAME='status' VALUE='เบิกยาประจำวัน' checked>เบิกยาประจำวัน&nbsp;
+		<INPUT TYPE='radio' NAME='status' VALUE='จำหน่าย'>จำหน่าย
+	</CENTER>
+	<div>
+		<?php
+		if($_SESSION["num_list"] > 0){
+		?>
+		<CENTER>
+			<input type="submit" name="Save_dgprofile" value="   จ่ายยา   " style="padding: 8px;">&nbsp;&nbsp;
+			<button type="button" onclick="reprint()" style="padding: 8px;">รีปริ้น พิมพ์สลากยา</button>
+			<button type="button" onclick="reprintQrCode()" style="padding: 8px;">รีปริ้น พิมพ์สลากยา QR Code</button>
+		</CENTER>
+		<?php
+		}
+		?>
+	</div>
+</FORM>
 </div>
+
+<div id="hiddenPost" style="display:none;"></div>
+<script>
+	async function reprint(){
+		
+		// let prePost = [];
+
+
+		var mapForm = document.createElement("form");
+		mapForm.target = "_blank";
+		mapForm.method = "POST"; // or "post" if appropriate
+		mapForm.action = "reprint_phardividedrug.php";
+
+
+		const formElements = document.querySelectorAll('#pharDivideDrug input');
+		let data = Array.from(formElements).map(function(element){
+			// return encodeURIComponent(element.name)+'='+encodeURIComponent(element.value);
+
+			var mapInput = document.createElement("input");
+			mapInput.type = "text";
+			mapInput.name = element.name;
+			mapInput.value = element.value;
+			mapForm.appendChild(mapInput);
+
+		});
+
+		var mapInput = document.createElement("input");
+		mapInput.type = "text";
+		mapInput.name = 'an';
+		mapInput.value = '<?=$arr["an"];?>';
+		mapForm.appendChild(mapInput);
+		
+
+		// document.body.appendChild(mapForm);
+		document.getElementById('hiddenPost').appendChild(mapForm);
+		mapForm.submit();
+
+		// let dataPost = data.join("&");
+		// let response = await fetch('reprint_phardividedrug.php', {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+		// 	},
+		// 	body: dataPost
+		// });
+		// const body = await response.json();
+		
+	}
+
+	function reprintQrCode(){
+		alert('จายเยนๆ');
+	}
+</script>
+
+
 
 </body>
 </html>
