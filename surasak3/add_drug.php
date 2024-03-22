@@ -530,7 +530,7 @@ var bas_cal,dp_cal,ms_cal;
 
 window.onload = function () {
 	dp_cal  = new Epoch('epoch_popup','popup',document.getElementById('firstdate'));
-	dp_cal  = new Epoch1('epoch_popup','popup',document.getElementById('enddate'));
+	dp_cal2  = new Epoch('epoch_popup','popup',document.getElementById('enddate'));
 
 	// Button ESC for Close Popup
 	document.addEventListener("keydown", (event) => {

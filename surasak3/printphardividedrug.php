@@ -236,22 +236,14 @@ $k31=$k21+50;
 			$j1 = $j1+12;
 
 			
-			$sql = "Select detail1,  detail2,  detail3,  detail4 From drugslip where slcode = '".$_POST["Slipcode"][$i]."'  ";
+			$detail1 = '';
+			$detail2 = '';
+			$detail3 = '';
+			$detail4 = '';
+			$sql = "SELECT `detail1`,`detail2`,`detail3`,`detail4` FROM `drugslip` WHERE `slcode` = '".$_POST["Slipcode"][$i]."'  ";
 			$result = Mysql_Query($sql);
-			list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
-
-			$drugslipHTML = '';
-			if(!empty($detail1)){
-				$drugslipHTML .= "<font style='line-height:16px; font-size:13px;' face='Angsana New'><b>".$detail1."</b></font><br>";
-			}
-			if(!empty($detail2)){
-				$drugslipHTML .= "<font style='line-height:16px; font-size:13px;' face='Angsana New'><b>".$detail2."</b></font><br>";
-			}
-			if(!empty($detail3)){
-				$drugslipHTML .= "<font style='line-height:14px; font-size:13px;' face='Angsana New'><b>".$detail3."</b></font><br>";
-			}
-			if(!empty($detail4)){
-				$drugslipHTML .= "<font style='line-height:14px; font-size:13px;' face='Angsana New'><b>".$detail4."</b></font><br>";
+			if(mysql_num_rows($result) > 0){
+				list($detail1,$detail2,$detail3,$detail4) = Mysql_fetch_row($result);
 			}
 
 			$_SESSION["drughome"] .= "
@@ -392,21 +384,21 @@ $k31=$k21+50;
 				$_SESSION["druglot_qrcode"] .= "</tr>";
 				//แถวที่ 2
 				$_SESSION["druglot_qrcode"] .= "<tr>";
-				$_SESSION["druglot_qrcode"] .= "<th colspan='2' align='center'>";
+				$_SESSION["druglot_qrcode"] .= "<th align='center'>";
 				if($j == $total_item){
 					if($drug_properties !="")  //ถ้ามีสรรพคุณ
-						$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px;font-size:10px;' face='Angsana New'><b><u>".$drug_properties."</u></b></font><br>";
+						$_SESSION["druglot_qrcode"] .= "<div style='' align='center'><font style='line-height:12px;font-size:10px;' face='Angsana New'><b><u>".$drug_properties."</u></b></font><br>";
 					
 					if($drugnote !="")  //ถ้ามีคำเตือน
 						$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:10px;' face='Angsana New'><b>".$drugnote."</b></font></div>";
 					
 				}else{
 					if($drug_properties !="")  //ถ้ามีสรรพคุณ
-						$_SESSION["druglot_qrcode"] .= "<div style='margin-right:30px;' align='center'><font style='line-height:12px; font-size:10px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
+						$_SESSION["druglot_qrcode"] .= "<div style='' align='center'><font style='line-height:12px; font-size:10px;' face='Angsana New' size='1'><b><u>".$drug_properties."</u></b></font><br>";														
 					if($drugnote !="")  //ถ้ามีคำเตือน
 						$_SESSION["druglot_qrcode"] .= "<font style='line-height:12px; font-size:10px;' face='Angsana New'><b>".$drugnote."</b></font></div>";  
 				}
-				$_SESSION["druglot_qrcode"] .= "</th>";	
+				$_SESSION["druglot_qrcode"] .= "</th><th></th>";	
 				$_SESSION["druglot_qrcode"] .= "</tr>";	
 				$_SESSION["druglot_qrcode"] .= "</table>";
 				$_SESSION["druglot_qrcode"] .= "</div>";	
@@ -444,6 +436,24 @@ for($i=0;$i<$item;$i++){
 	$drugcode2 = $_POST["Drugcode"][$i];
 	if(($drugcode2[0] == "0" || $drugcode2[0] == "2") && !(ord($drugcode2[1])  >= 48 && ord($drugcode2[1]) <= 57 )){
 		
+		$drugslipHTML = '';
+		$sql = "SELECT `detail1`,`detail2`,`detail3` FROM `drugslip` WHERE `slcode` = '".$_POST["Slipcode"][$i]."'  ";
+		$result = Mysql_Query($sql);
+		if(mysql_num_rows($result) > 0){
+			list($lotnew_detail1,$lotnew_detail2,$lognew_detail3) = Mysql_fetch_row($result);
+
+			if(!empty($lotnew_detail1)){
+				$drugslipHTML .= "<font style='line-height:16px; font-size:13px;' face='Angsana New'><b>".$lotnew_detail1."</b></font><br>";
+			}
+			if(!empty($lotnew_detail2)){
+				$drugslipHTML .= "<font style='line-height:16px; font-size:13px;' face='Angsana New'><b>".$lotnew_detail2."</b></font><br>";
+			}
+			if(!empty($lognew_detail3)){
+				$drugslipHTML .= "<font style='line-height:14px; font-size:13px;' face='Angsana New'><b>".$lognew_detail3."</b></font><br>";
+			}
+			
+		}
+
 		for($j=0;$j<$_POST["stiker"][$i];$j++){
 			if($j%2 == 0){
 				$_SESSION["druglot_new"] .= "<div style=\"page-break-before: always;\"></div>";
@@ -476,6 +486,24 @@ for($i=0;$i<$item;$i++){
 	$drugcode2 = $_POST["Drugcode"][$i];
 	if(($drugcode2[0] == "0" || $drugcode2[0] == "2") && !(ord($drugcode2[1])  >= 48 && ord($drugcode2[1]) <= 57 )){
 		
+		$drugslipHTML = '';
+		$sql = "SELECT `detail1`,`detail2`,`detail3` FROM `drugslip` WHERE `slcode` = '".$_POST["Slipcode"][$i]."'  ";
+		$result = Mysql_Query($sql);
+		if(mysql_num_rows($result) > 0){
+			list($qrcode_detail1,$qrcode_detail2,$qrcode_detail3) = Mysql_fetch_row($result);
+
+			if(!empty($qrcode_detail1)){
+				$drugslipHTML .= "<font style='line-height:16px; font-size:13px;' face='Angsana New'><b>".$qrcode_detail1."</b></font><br>";
+			}
+			if(!empty($qrcode_detail2)){
+				$drugslipHTML .= "<font style='line-height:16px; font-size:13px;' face='Angsana New'><b>".$qrcode_detail2."</b></font><br>";
+			}
+			if(!empty($qrcode_detail3)){
+				$drugslipHTML .= "<font style='line-height:14px; font-size:13px;' face='Angsana New'><b>".$qrcode_detail3."</b></font><br>";
+			}
+			
+		}
+
 		for($j=0;$j<$_POST["stiker"][$i];$j++){
 			if($j%2 == 0){
 				$_SESSION["druglot_qrcode"] .= "<div style=\"page-break-before: always;\"></div>";
