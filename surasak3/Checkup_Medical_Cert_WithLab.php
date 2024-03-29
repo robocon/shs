@@ -1202,7 +1202,19 @@ while($rows = mysql_fetch_array($query)){
     $reason_other1 = $rows["reason_other1"]; // เหตุผล 1
     $stat_other2 = $rows["other2"]; // ตรวจพิเศษอื่นๆ 2
     $stat_stat_other2 = $rows["stat_other2"]; // ผลตรวจพิเศษอื่นๆ 2
-    $reason_other2 = $rows["reason_other2"]; // เหตุผล 2    
+    $reason_other2 = $rows["reason_other2"]; // เหตุผล 2 
+
+    $stat_other3 = $rows["other3"]; // ตรวจพิเศษอื่นๆ 3
+    $stat_stat_other3 = $rows["stat_other3"]; // ผลตรวจพิเศษอื่นๆ 3
+    $reason_other3 = $rows["reason_other3"]; // เหตุผล 3 
+
+    $stat_other4 = $rows["other4"]; // ตรวจพิเศษอื่นๆ 4
+    $stat_stat_other4 = $rows["stat_other4"]; // ผลตรวจพิเศษอื่นๆ 4
+    $reason_other4 = $rows["reason_other4"]; // เหตุผล 4    
+
+    $stat_other5 = $rows["other5"]; // ตรวจพิเศษอื่นๆ 5
+    $stat_stat_other5 = $rows["stat_other5"]; // ผลตรวจพิเศษอื่นๆ 5
+    $reason_other5 = $rows["reason_other5"]; // เหตุผล 5 
     //--------------//
 
 
@@ -1275,6 +1287,18 @@ while($rows = mysql_fetch_array($query)){
 
     if($stat_other2 != "" OR $stat_other2 != null){
         echo "- ".$stat_other2." <b>".$stat_stat_other2." ".$reason_other2."</b><br>"; //ตรวจพิเศษอื่นๆ 2
+    }//end if
+
+    if($stat_other3 != "" OR $stat_other3 != null){
+        echo "- ".$stat_other3." <b>".$stat_stat_other3." ".$reason_other3."</b><br>"; //ตรวจพิเศษอื่นๆ 3
+    }//end if
+
+    if($stat_other4 != "" OR $stat_other4 != null){
+        echo "- ".$stat_other4." <b>".$stat_stat_other4." ".$reason_other4."</b><br>"; //ตรวจพิเศษอื่นๆ 4
+    }//end if
+
+    if($stat_other5 != "" OR $stat_other5 != null){
+        echo "- ".$stat_other5." <b>".$stat_stat_other5." ".$reason_other5."</b><br>"; //ตรวจพิเศษอื่นๆ 5
     }//end if
 
     if($stat_antihb != "" OR $stat_antihb != null){

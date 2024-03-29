@@ -575,15 +575,15 @@ if ($row->part=="DDN" and substr($row->date,0,10)!="$sDiscdate"){
             } 
 
 //4. ยาที่นำไปใช้ต่อที่บ้าน   (วันที่จำหน่าย)
-if ($row->part=="DDL" and substr($row->date,0,10)=="$sDiscdate"){
+if ($row->part=="DDL" and substr($row->date,0,10)=="$sDiscdate" && $row->status=="จำหน่าย"){
             array_push($aDEssd,$row->price);
             array_push($aBDEssd,$row->price-$row->paid);
             } 
-if ($row->part=="DDY" and substr($row->date,0,10)=="$sDiscdate"){
+if ($row->part=="DDY" and substr($row->date,0,10)=="$sDiscdate" && $row->status=="จำหน่าย"){
             array_push($aDNessdy,$row->price);
             array_push($aBDNessdy,$row->price-$row->paid);
             } 
-if ($row->part=="DDN" and substr($row->date,0,10)=="$sDiscdate"){
+if ($row->part=="DDN" and substr($row->date,0,10)=="$sDiscdate" && $row->status=="จำหน่าย"){
             array_push($aDNessdn,$row->price);
             array_push($aBDNessdn,$row->price-$row->paid);
             } 
@@ -973,8 +973,8 @@ print "        $DPY<br>";
 $DDLDDY=$DDLDDY-$pricedc;
 print "        $DDLDDY<br>";
 $pricedc=number_format($pricedc,0);
-print "        $pricedc<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
-//print "        $DDgy<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
+// print "        $pricedc<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
+print "        $DDgy<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
 print "        $DSY<br>";
 $Blood+=$Bloody;
 print "        $Blood<br>";
