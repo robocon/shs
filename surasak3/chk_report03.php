@@ -394,6 +394,8 @@ foreach($out_result_items AS $result){
 		|| labcode ='PLTC' 
 		|| labcode ='NEU' 
 		|| labcode ='LYMP' 
+		|| labcode ='HB' 
+		|| labcode ='MCV' 
 	) ORDER BY seq ASC";
 	$objQuery = mysql_query($strSQL) or die( mysql_error() );
 	$cbc_rows = mysql_num_rows($objQuery);
@@ -545,6 +547,9 @@ if( $num > 0 ){
 		|| labcode ='PROU' 
 		|| labcode ='WBCU' 
 		|| labcode ='RBCU' 
+		|| labcode ='COLOR' 
+		|| labcode ='APPEAR' 
+		|| labcode ='KETU' 
 	) 
 	ORDER BY seq ASC";
 	$objQuery = mysql_query($strSQL);
