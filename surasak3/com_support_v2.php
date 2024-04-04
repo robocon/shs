@@ -94,6 +94,7 @@ if($page==='load25page'){
     while ($item = $q->fetch_assoc()) {
         $id = $item['row_id'];
 
+        $item['detail'] = strip_tags(html_entity_decode($item['detail']));
         $items[] = $item;
 
     }
@@ -110,7 +111,7 @@ if($page==='load25page'){
 
             $is['depart'] = $i['depart'];
             $is['head'] = $i['head'];
-            $is['detail'] = nl2br($s['detail']);
+            $is['detail'] = strip_tags(html_entity_decode($s['detail']));
 
             $is['user'] = $i['user'];
             $is['programmer'] = $i['programmer'];
