@@ -224,7 +224,7 @@ foreach ($etc_items as $key => $item) {
     );
 }
 
-include 'fpdf_thai/shspdf.php';
+require_once 'fpdf_thai/shspdf.php';
 
 /**
  * x1,y1           x2,y2
@@ -249,6 +249,7 @@ function call_alert_result($x, $y, $w, $h){
     $pdf->SetFillColor(174,174,174); // เซ็ตค่าสีก่อน
     $pdf->Rect($x, $y, $w, $h, 'F'); //สร้างกรอบขึ้นมาแบบ fill สีลงไป
 }
+
 
 $pdf = new SHSPdf();
 $pdf->SetThaiFont(); // เซ็ตฟอนต์
@@ -402,10 +403,10 @@ $pdf->Cell(25, 6, 'NORMAL', 0, 1, 'C');
 
 ### 1
 $pdf->Rect(5, 85, 54, 12);
-$pdf->SetXY(5, 85);
-$pdf->Cell(46, 6, '1.การคัดกรองการได้ยิน', 0, 1);
-$pdf->SetXY(5, 91);
-$pdf->Cell(46, 6, 'Finger Rub Test', 0, 1);
+// $pdf->SetXY(5, 85);
+// $pdf->Cell(46, 6, '1.การคัดกรองการได้ยิน', 0, 1);
+// $pdf->SetXY(5, 91);
+// $pdf->Cell(46, 6, 'Finger Rub Test', 0, 1);
 
 $pdf->Rect(59, 85, 22, 12);
 if( $user['ear'] == 1 ){
