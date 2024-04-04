@@ -25,7 +25,7 @@ if($_POST["act"]=="add"){
 	if($g6pd==1){
 		$g6pdField = "'1'";
 	}else{
-		$g6pdField = 'null';
+		$g6pdField = 'NULL';
 	}
 	
 	$advreact = implode(',', $_POST["advreact"]);
@@ -132,6 +132,11 @@ if($_POST["act"]=="edit"){
 	$sideeffects=$_POST["sideeffects"];
 
 	$g6pd = sprintf("%d", $_POST['G6PD']);
+	if($g6pd==1){
+		$g6pdField = "'1'";
+	}else{
+		$g6pdField = 'NULL';
+	}
 	
 	$advreact = implode(',', $_POST["advreact"]);
 	$advreact_other=trim($_POST["advreact_other"]);
@@ -158,7 +163,7 @@ if($_POST["act"]=="edit"){
 	date='$report_date',
 	officer1='".$_SESSION['sOfficer']."',
 	groupname='$drugreact_group_name',
-	g6pd = '$g6pd'
+	g6pd = $g6pdField
 	where row_id='".$row_id."'";
 	//echo $edit;
 	if(mysql_query($edit)){	
