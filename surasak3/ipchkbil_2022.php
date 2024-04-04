@@ -36,7 +36,9 @@ function checkptring(opt){
 			}else if(  pt == "R07" && opt != 'ประกันสังคม' ){
 
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
+			}else if(  pt == "R27" && opt != 'ประกันสังคมทุพพลภาพ' ){
 
+				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
 			}else if(  (pt == "R09" || pt == "R13" || pt == "R11" || pt == "R10" || pt == "R17") && opt != '30บาท' ){
 
 				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
@@ -53,7 +55,7 @@ function checkptring(opt){
 		return false;
 	}else{
 		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false && document.f1.credit[11].checked == false){
+		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false && document.f1.credit[11].checked == false && document.f1.credit[12].checked == false && document.f1.credit[13].checked == false && document.f1.credit[14].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
@@ -70,7 +72,7 @@ function checkptring(opt){
 	}
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
@@ -1139,8 +1141,7 @@ print "ค้างจ่าย $debt บาท<br>";
     $DNessdn=array_sum($aBDNessdn);     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
 
     $DSY     =array_sum($aBDSY);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกได้
-    $DSN     =array_sum($aBDSN);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกไม่ได้  
-
+	$DSN     =array_sum($aBDSN);   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกไม่ได้  
     $DPY     =array_sum($aBDPY);   //รวมเงินค่าซื้ออุปกรณ์ ส่วนที่เบิกได้
     $DPN     =array_sum($aBDPN);   //รวมเงินค่าซื้ออุปกรณ์ ส่วนที่เบิกไม่ได้  
 
@@ -1321,10 +1322,12 @@ print "<b>ค้างจ่ายทั้งหมด $debt บาท</b><br>"
             <td>เงินโอน</td>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง อปท.' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
 		 	<TD>จ่ายตรง อปท.</TD>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กทม' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
+		 	<TD>จ่ายตรง กทม.</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคมทุพพลภาพ' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
+		 	<TD>ประกันสังคมทุพพลภาพ</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กท44' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
+		 	<TD>กท.44</TD>			
          </tr>
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";

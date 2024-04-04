@@ -29,7 +29,7 @@ if($action==='save'){
     $file_ok = false;
     $target_from = array();
     $target_to = array();
-    $maxsize = 2097152;
+    $maxsize = 1024*1024*5;
     for ($i=0; $i < count($files['name']); $i++) { 
         
         if($files['error'][$i]===0){
@@ -103,6 +103,37 @@ if($action==='save'){
     </script>
     <?php
     exit;
+}elseif ($action=='uploadOnlyImg') {
+
+    $detail_id = sprintf("%s", $_POST['detail_id']);
+    $files = $_FILES['file'];
+    $maxsize = 1024 * 1024 * 5;
+
+    for ($i=0; $i < count($files['name']); $i++) { 
+        
+        if($files['error'][$i]===0){
+        
+            $imageFileType = strtolower(pathinfo($files["name"][$i],PATHINFO_EXTENSION));
+            $size = $files["size"][$i];
+            
+            if( $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif" ){
+                continue;
+            }
+            if($size >= $maxsize){
+                continue;
+            }
+
+            $target_dir = "com_support_img/";
+            $set_new_filename = rand(100000,999999).strtotime('NOW').'.'.$imageFileType;
+            $target_from = $files["tmp_name"][$i];
+            $target_to = $target_dir.basename($set_new_filename);
+
+            $sql_img = "INSERT INTO `com_support_imgs` (`id`,`detail_id`,`path`) VALUES( NULL,'$detail_id','$target_to' )";
+            $q_imgs = $dbi->query($sql_img);
+            $upload = move_uploaded_file($target_from, $target_to);
+        }
+    }
+    exit;
 }
 
 $id = $_REQUEST['id'];
@@ -121,7 +152,7 @@ $item = $q->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITLE</title>
+    <title>อัพเดทสถานะงาน</title>
     <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <!-- <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -192,7 +223,7 @@ if ($q->num_rows>0) {
     <table width="100%">
         <tr valign="top" bgcolor="#FFCC00">
             <th width="20%">วันที่</th>
-            <th>รายละเอียด</th>
+            <th>ความคืบหน้า</th>
         </tr>
     <?php
     while ($a = $q->fetch_assoc()) {
@@ -218,14 +249,79 @@ if ($q->num_rows>0) {
                     </div>
                     <?php
                 }
-                
                 ?>
+                <div>
+                    <form id="uploadImage" method="POST" action="com_support_detail.php" enctype="multipart/form-data">
+                        <input type="file" name="file[]" id="file" multiple accept="image/*">
+                        <input type="hidden" name="detail_id" id="detail_id" value="<?=$detail_id;?>">
+                        <input type="hidden" name="action" value="uploadOnlyImg">
+                    </form>
+                    <div id="statusMessage"></div>
+                </div>
             </td>
         </tr>
         <?php
     }
     ?>
     </table>
+    <script>
+        const statusMessage = document.getElementById('statusMessage');
+        const input = document.querySelector('#file');
+        const allowType = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+        const sizeLimit = 1024 * 1024 * 5; // 1024 * 1024 = 1 megabyte
+
+        function updateStatusMessage(text) {
+            statusMessage.textContent = text;
+        }
+
+        input.addEventListener('change',()=>{ 
+            
+            handleInputChange(input);
+
+            
+            let formData = new FormData();
+            for (let index = 0; index < input.files.length; index++) {
+                formData.append(`file[${index}]`, input.files[index]);
+            }
+            
+            formData.append("detail_id", document.getElementById('detail_id').value);
+            formData.append("action", 'uploadOnlyImg');
+
+            const fetchOptions = {
+                method: "POST",
+                body: formData,
+            };
+
+            fetch("com_support_detail.php", fetchOptions).then((res){
+                location.reload();
+            });
+            
+        });
+
+        function handleInputChange(input) {
+            try {
+                assertFilesValid(input);
+            } catch (err) {
+                updateStatusMessage(err.message);
+                return;
+            }
+        }
+
+
+        function assertFilesValid(input){
+            for (let index = 0; index < input.files.length; index++) {
+
+                if (!allowType.includes(input.files[index])) {
+                    throw new Error(`❌ ไฟล์ "${input.files[index].name}" ไม่สามารถอัพโหลดได้`);
+                }
+
+                if (input.files[index].size > sizeLimit) {
+                    throw new Error(`❌ ไฟล์ "${input.files[index].name}" มีขนาดใหญ่เกินไป`);
+                }
+            }
+        }
+        
+    </script>
     <?php
 }
 ?>
