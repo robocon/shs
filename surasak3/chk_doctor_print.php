@@ -12,6 +12,10 @@ function conv($string) {
     return iconv('UTF-8', 'TIS-620', $string);
 }
 
+function iconv620ToUTF8($t){
+    return iconv('TIS-620', 'UTF-8', $t);
+}
+
 # กรณีที่ตรวจเป็นกลุ่มบริษัท
 
 # 2562-06-24 คุยกับแผนกตรวจสุขภาพแล้ว ไม่เอาชื่อ-สกุลจากทะเบียนเพราะทำงานล่าช้า
@@ -30,7 +34,7 @@ AND a.`vn` = '$vn'
 AND a.`date_chk` LIKE '$date%' ";
 $db->select($sql);
 $user = $db->get_item();
-// dump($user);
+
 // ตรวจเป็นกลุ่มจะดึงข้อมูลจากที่น้องนัทเอาเข้าระบบ
 if( $opcardchk_row > 0 ){ 
 
@@ -69,6 +73,11 @@ if($db->get_rows() > 0){
         $bp2 = $dxofyear['bp22'];
     }
 
+    if(empty($bmi)){
+        $ht = $height/100;
+        $bmi=number_format($weight /($ht*$ht),2);
+    }
+
     $nurse = "สัญญาณชีพ ชีพจร(p):$pause ครั้ง/นาที ความดันโลหิต: $bp1/$bp2 น้ำหนัก: $weight กก. ส่วนสูง: $height ซม. BMI: $bmi";
 }else if( !empty($dxofyear_out_id) ){ // ถ้าหาไม่เจอให้เอา dxofyear_out_id มาหาแทน
 
@@ -94,17 +103,25 @@ if($db->get_rows() > 0){
     if( !empty($dxofyear['bp22']) ){
         $bp2 = $dxofyear['bp22'];
     }
+    if(empty($bmi)){
+        $ht = $height/100;
+        $bmi=number_format($weight /($ht*$ht),2);
+    }
 
     $nurse = "สัญญาณชีพ ชีพจร(p):$pause ครั้ง/นาที ความดันโลหิต: $bp1/$bp2 น้ำหนัก: $weight กก. ส่วนสูง: $height ซม. BMI: $bmi";
 }
+
+$infoText = "ตรวจสุขภาพประจำปี$year_checkup";
+$clinicalinfo = iconv620ToUTF8($infoText);
 
 // ดึงวันที่ที่ตรวจ lab นับเป็นวันที่ได้รับการเข้ารับบริการ
 $sql = "SELECT SUBSTRING(`orderdate`,1,10) AS `lab_opd`  
 FROM `resulthead` 
 WHERE `hn` = '$hn' 
-AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+AND `clinicalinfo` = '$clinicalinfo' 
 ORDER BY `autonumber` DESC 
 LIMIT 1 ";
+
 $db->select($sql);
 $res_head = $db->get_item();
 
@@ -118,7 +135,7 @@ FROM (
     FROM `resulthead` 
     WHERE `hn` = '$hn' 
     AND `profilecode` = 'CBC'
-    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+    AND `clinicalinfo` = '$clinicalinfo' 
     GROUP BY `profilecode` 
     ORDER BY `autonumber` ASC 
 
@@ -130,6 +147,7 @@ OR b.`labcode` = 'NEU' OR b.`labcode` = 'LYMP' OR b.`labcode` = 'MONO'
 OR b.`labcode` = 'EOS' OR b.`labcode` = 'BASO' OR b.`labcode` = 'PLTC' 
 OR b.`labcode` = 'RBC' OR b.`labcode` = 'RBCMOR' OR b.`labcode` = 'MCV') 
 ORDER BY b.seq ASC";
+// dump($sql);
 $db->select($sql);
 $cbc_items = $db->get_items();
 
@@ -152,7 +170,7 @@ FROM (
     FROM `resulthead` 
     WHERE `hn` = '$hn' 
     AND `profilecode` = 'UA'
-    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+    AND `clinicalinfo` = '$clinicalinfo' 
     GROUP BY `profilecode` 
     ORDER BY `autonumber` ASC 
 
@@ -184,7 +202,7 @@ FROM (
     FROM `resulthead` 
     WHERE `hn` = '$hn' 
     AND ( `profilecode` != 'CBC' AND `profilecode` != 'UA' )
-    AND `clinicalinfo` = 'ตรวจสุขภาพประจำปี$year_checkup' 
+    AND `clinicalinfo` = '$clinicalinfo' 
     GROUP BY `profilecode` 
     ORDER BY `autonumber` ASC 
 
@@ -194,6 +212,7 @@ WHERE b.`autonumber` = a.`latest_number`
 AND ( 
     b.`labcode` = 'GLU' 
     OR b.`labcode` = 'CREA' 
+    OR b.`labcode` = 'GFR' 
     OR b.`labcode` = 'CHOL' 
     OR b.`labcode` = 'HDL' 
     OR b.`labcode` = 'HBSAG' 
@@ -398,9 +417,9 @@ $pdf->Cell(26, 6, 'NORMAL', 0, 1, 'C');
 ### 1
 
 // >>> ภาวะโลหิตจาง
-$cbc_lists['hb']['flag'] = 'H';
-$cbc_lists['hb']['result'] = '999';
-$cbc_lists['hb']['normalrange'] = '99 - 99';
+// $cbc_lists['hb']['flag'] = 'H';
+// $cbc_lists['hb']['result'] = '999';
+// $cbc_lists['hb']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 85);
 $pdf->Cell(34, 6, 'ภาวะโลหิตจาง', 0, 1);
@@ -421,9 +440,9 @@ $pdf->Cell(26, 6, $cbc_lists['hb']['normalrange'], 1, 1, 'C');
 // <<< ภาวะโลหิตจาง
 
 // >>> Hct
-$cbc_lists['hct']['flag'] = 'H';
-$cbc_lists['hct']['result'] = '999';
-$cbc_lists['hct']['normalrange'] = '99 - 99';
+// $cbc_lists['hct']['flag'] = 'H';
+// $cbc_lists['hct']['result'] = '999';
+// $cbc_lists['hct']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(39, 91);
 $pdf->Cell(20, 6, 'Hct', 0, 1);
@@ -441,9 +460,9 @@ $pdf->Cell(26, 6, $cbc_lists['hct']['normalrange'], 1, 1, 'C');
 // <<< Hct
 
 // >>> จำนวนเม็ดเลือดขาวรวม 
-$cbc_lists['wbc']['flag'] = 'H';
-$cbc_lists['wbc']['result'] = '999';
-$cbc_lists['wbc']['normalrange'] = '99 - 99';
+// $cbc_lists['wbc']['flag'] = 'H';
+// $cbc_lists['wbc']['result'] = '999';
+// $cbc_lists['wbc']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 97);
 $pdf->Cell(46, 6, 'จำนวนเม็ดเลือดขาวรวม', 0, 1);
@@ -463,9 +482,9 @@ $pdf->Cell(26, 6, $cbc_lists['wbc']['normalrange'], 1, 1, 'C');
 // <<< จำนวนเม็ดเลือดขาวรวม
 
 // >>> จำนวนเม็ดเลือดแดง 
-$cbc_lists['mcv']['flag'] = 'H';
-$cbc_lists['mcv']['result'] = '999';
-$cbc_lists['mcv']['normalrange'] = '99 - 99';
+// $cbc_lists['mcv']['flag'] = 'H';
+// $cbc_lists['mcv']['result'] = '999';
+// $cbc_lists['mcv']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 103);
 $pdf->Cell(46, 6, 'จำนวนเม็ดเลือดแดง', 0, 1);
@@ -485,9 +504,9 @@ $pdf->Cell(26, 6, $cbc_lists['mcv']['normalrange'], 1, 1, 'C');
 // <<< จำนวนเม็ดเลือดแดง
 
 // >>> จำนวนเกล็ดเลือด
-$cbc_lists['pltc']['flag'] = 'H';
-$cbc_lists['pltc']['result'] = '999';
-$cbc_lists['pltc']['normalrange'] = '99 - 99';
+// $cbc_lists['pltc']['flag'] = 'H';
+// $cbc_lists['pltc']['result'] = '999';
+// $cbc_lists['pltc']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 109);
 $pdf->Cell(46, 6, 'จำนวนเกล็ดเลือด', 0, 1);
@@ -523,13 +542,13 @@ $pdf->Cell(26, 6, 'ผลผิดปกติ', 0, 1, 'C');
 $pdf->SetXY(81, 121);
 $pdf->Cell(26, 6, 'ABNORMAL', 0, 1, 'C');
 
-$user['res_cbc'] = 1;
+// $user['res_cbc'] = 1;
 $pdf->Rect(59, 127, 22, 6);
 if( $user['res_cbc'] == 1 ){
     $pdf->Line(65, 132, 75, 128);
 }
 
-$user['res_cbc'] = 2;
+// $user['res_cbc'] = 2;
 $pdf->Rect(81, 127, 26, 6);
 if( $user['res_cbc'] == 2 ){
     $pdf->Line(89, 132, 99, 128);
@@ -557,9 +576,9 @@ $pdf->Cell(26, 6, 'NORMAL', 0, 1, 'C');
 
 
 // >>> UA Color
-$ua_lists['color']['flag'] = 'H';
-$ua_lists['color']['result'] = '999';
-$ua_lists['color']['normalrange'] = '99 - 99';
+// $ua_lists['color']['flag'] = 'H';
+// $ua_lists['color']['result'] = '999';
+// $ua_lists['color']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 145);
 $pdf->Cell(34, 6, 'Color', 0, 1);
@@ -577,9 +596,9 @@ $pdf->Cell(26, 6, $ua_lists['color']['normalrange'], 1, 1, 'C');
 // <<< UA Color
 
 // >>> UA Appearance
-$ua_lists['appear']['flag'] = 'H';
-$ua_lists['appear']['result'] = '999';
-$ua_lists['appear']['normalrange'] = '99 - 99';
+// $ua_lists['appear']['flag'] = 'H';
+// $ua_lists['appear']['result'] = '999';
+// $ua_lists['appear']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 151);
 $pdf->Cell(34, 6, 'Appearance', 0, 1);
@@ -597,9 +616,9 @@ $pdf->Cell(26, 6, $ua_lists['appear']['normalrange'], 1, 1, 'C');
 // <<< UA Appearance
 
 // >>> UA Protein
-$ua_lists['prou']['flag'] = 'H';
-$ua_lists['prou']['result'] = '999';
-$ua_lists['prou']['normalrange'] = '99 - 99';
+// $ua_lists['prou']['flag'] = 'H';
+// $ua_lists['prou']['result'] = '999';
+// $ua_lists['prou']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 157);
 $pdf->Cell(34, 6, 'Protein', 0, 1);
@@ -617,9 +636,9 @@ $pdf->Cell(26, 6, $ua_lists['prou']['normalrange'], 1, 1, 'C');
 // <<< UA Protein
 
 // >>> UA Glucose
-$ua_lists['gluu']['flag'] = 'H';
-$ua_lists['gluu']['result'] = '999';
-$ua_lists['gluu']['normalrange'] = '99 - 99';
+// $ua_lists['gluu']['flag'] = 'H';
+// $ua_lists['gluu']['result'] = '999';
+// $ua_lists['gluu']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 163);
 $pdf->Cell(34, 6, 'Glucose', 0, 1);
@@ -637,9 +656,9 @@ $pdf->Cell(26, 6, $ua_lists['gluu']['normalrange'], 1, 1, 'C');
 // <<< UA Glucose
 
 // >>> UA RBC
-$ua_lists['rbcu']['flag'] = 'H';
-$ua_lists['rbcu']['result'] = '999';
-$ua_lists['rbcu']['normalrange'] = '99 - 99';
+// $ua_lists['rbcu']['flag'] = 'H';
+// $ua_lists['rbcu']['result'] = '999';
+// $ua_lists['rbcu']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 169);
 $pdf->Cell(34, 6, 'RBC', 0, 1);
@@ -657,9 +676,9 @@ $pdf->Cell(26, 6, $ua_lists['rbcu']['normalrange'], 1, 1, 'C');
 // <<< UA RBC
 
 // >>> UA WBC
-$ua_lists['wbcu']['flag'] = 'H';
-$ua_lists['wbcu']['result'] = '999';
-$ua_lists['wbcu']['normalrange'] = '99 - 99';
+// $ua_lists['wbcu']['flag'] = 'H';
+// $ua_lists['wbcu']['result'] = '999';
+// $ua_lists['wbcu']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 175);
 $pdf->Cell(34, 6, 'WBC', 0, 1);
@@ -677,9 +696,9 @@ $pdf->Cell(26, 6, $ua_lists['wbcu']['normalrange'], 1, 1, 'C');
 // <<< UA WBC
 
 // >>> UA Ketone
-$ua_lists['ketu']['flag'] = 'H';
-$ua_lists['ketu']['result'] = '999';
-$ua_lists['ketu']['normalrange'] = '99 - 99';
+// $ua_lists['ketu']['flag'] = 'H';
+// $ua_lists['ketu']['result'] = '999';
+// $ua_lists['ketu']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(5, 181);
 $pdf->Cell(34, 6, 'Ketone', 0, 1);
@@ -713,13 +732,13 @@ $pdf->Cell(26, 6, 'ผลผิดปกติ', 0, 1, 'C');
 $pdf->SetXY(81, 193);
 $pdf->Cell(26, 6, 'ABNORMAL', 0, 1, 'C');
 
-$user['res_ua'] = 1;
+// $user['res_ua'] = 1;
 $pdf->Rect(59, 199, 22, 6);
 if( $user['res_ua'] == 1 ){
     $pdf->Line(65, 204, 75, 200);
 }
 
-$user['res_ua'] = 2;
+// $user['res_ua'] = 2;
 $pdf->Rect(81, 199, 26, 6);
 if( $user['res_ua'] == 2 ){
     $pdf->Line(89, 204, 99, 200);
@@ -744,209 +763,17 @@ $pdf->Cell(25, 6, 'ผลผิดปกติ', 0, 1, 'C');
 $pdf->SetXY(180, 169);
 $pdf->Cell(25, 6, 'ABNORMAL', 0, 1, 'C');
 
-$user['cxr'] = 1;
+// $user['cxr'] = 1;
 $pdf->Rect(158, 175, 22, 6);
 if( $user['cxr'] == 1 ){
     $pdf->Line(164, 180, 174, 176);
 }
 
-$user['cxr'] = 2;
+// $user['cxr'] = 2;
 $pdf->Rect(180, 175, 25, 6);
 if( $user['cxr'] == 2 ){
     $pdf->Line(186, 180, 196, 176);
 }
-
-// >>> ทดสอบย้าย UA มาด้านขวา
-/*
-$pdf->Rect(107, 73, 51, 12);
-$pdf->SetXY(107, 73);
-$pdf->Cell(46, 6, 'การตรวจปัสสาวะ UA', 0, 1);
-
-$pdf->Rect(158, 73, 22, 12);
-$pdf->SetXY(158, 73);
-$pdf->Cell(22, 6, 'ค่าที่ตรวจได้', 0, 1, 'C');
-$pdf->SetXY(158, 79);
-$pdf->Cell(22, 6, 'RESULT', 0, 1, 'C');
-
-$pdf->Rect(180, 73, 25, 12);
-$pdf->SetXY(180, 73);
-$pdf->Cell(25, 6, 'ค่าปกติ', 0, 1, 'C');
-$pdf->SetXY(180, 79);
-$pdf->Cell(25, 6, 'NORMAL', 0, 1, 'C');
-
-// >>> UA Color
-$ua_lists['color']['flag'] = 'H';
-$ua_lists['color']['result'] = '999';
-$ua_lists['color']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 85);
-$pdf->Cell(34, 6, 'Color', 0, 1);
-$pdf->Line(135, 91, 158, 91);
-
-$pdf->SetXY(158, 85);
-if( !empty($ua_lists['color']['flag']) && $ua_lists['color']['flag'] != 'N' ){
-    call_alert_result(158, 85, 22, 6);
-}
-$pdf->Cell(22, 6, $ua_lists['color']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 85);
-$pdf->Cell(25, 6, $ua_lists['color']['normalrange'], 1, 1, 'C');
-// <<< UA Color
-
-// >>> UA Appearance
-$ua_lists['appear']['flag'] = 'H';
-$ua_lists['appear']['result'] = '999';
-$ua_lists['appear']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 91);
-$pdf->Cell(34, 6, 'Appearance', 0, 1);
-$pdf->Line(135, 97, 158, 97);
-
-$pdf->SetXY(158, 91);
-if( !empty($ua_lists['appear']['flag']) && $ua_lists['appear']['flag'] != 'N' ){
-    call_alert_result(158, 91, 22, 6);
-}
-$pdf->Cell(22, 6, $ua_lists['appear']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 91);
-$pdf->Cell(25, 6, $ua_lists['appear']['normalrange'], 1, 1, 'C');
-// <<< UA Appearance
-
-// >>> UA Protein
-$ua_lists['prou']['flag'] = 'H';
-$ua_lists['prou']['result'] = '999';
-$ua_lists['prou']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 97);
-$pdf->Cell(34, 6, 'Protein', 0, 1);
-$pdf->Line(135, 103, 158, 103);
-
-$pdf->SetXY(158, 97);
-if( !empty($ua_lists['prou']['flag']) && $ua_lists['prou']['flag'] != 'N' ){
-    call_alert_result(158, 97, 22, 6);
-}
-$pdf->Cell(22, 6, $ua_lists['prou']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 97);
-$pdf->Cell(25, 6, $ua_lists['prou']['normalrange'], 1, 1, 'C');
-// <<< UA Protein
-
-// >>> UA Glucose
-$ua_lists['gluu']['flag'] = 'H';
-$ua_lists['gluu']['result'] = '999';
-$ua_lists['gluu']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 103);
-$pdf->Cell(34, 6, 'Glucose', 0, 1);
-$pdf->Line(135, 109, 158, 109);
-
-$pdf->SetXY(158, 103);
-if( !empty($ua_lists['gluu']['flag']) && $ua_lists['gluu']['flag'] != 'N' ){
-    call_alert_result(158, 103, 22, 6);
-}
-$pdf->Cell(22, 6, $ua_lists['gluu']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 103);
-$pdf->Cell(25, 6, $ua_lists['gluu']['normalrange'], 1, 1, 'C');
-// <<< UA Glucose
-
-// >>> UA RBC
-$ua_lists['rbcu']['flag'] = 'H';
-$ua_lists['rbcu']['result'] = '999';
-$ua_lists['rbcu']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 109);
-$pdf->Cell(34, 6, 'RBC', 0, 1);
-$pdf->Line(135, 115, 158, 115);
-
-$pdf->SetXY(158, 109);
-if( !empty($ua_lists['rbcu']['flag']) && $ua_lists['rbcu']['flag'] != 'N' ){
-    call_alert_result(158, 109, 22, 6);
-}
-$pdf->Cell(22, 6, $ua_lists['rbcu']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 109);
-$pdf->Cell(25, 6, $ua_lists['rbcu']['normalrange'], 1, 1, 'C');
-// <<< UA RBC
-
-// >>> UA WBC
-$ua_lists['wbcu']['flag'] = 'H';
-$ua_lists['wbcu']['result'] = '999';
-$ua_lists['wbcu']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 115);
-$pdf->Cell(34, 6, 'WBC', 0, 1);
-$pdf->Line(135, 121, 158, 121);
-
-$pdf->SetXY(158, 115);
-if( !empty($ua_lists['wbcu']['flag']) && $ua_lists['wbcu']['flag'] != 'N' ){
-    call_alert_result(158, 115, 22, 6);
-}
-$pdf->Cell(22, 6, $ua_lists['wbcu']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 115);
-$pdf->Cell(25, 6, $ua_lists['wbcu']['normalrange'], 1, 1, 'C');
-// <<< UA WBC
-
-// >>> UA Ketone
-$ua_lists['ketu']['flag'] = 'H';
-$ua_lists['ketu']['result'] = '999';
-$ua_lists['ketu']['normalrange'] = '99 - 99';
-
-$pdf->SetXY(107, 121);
-$pdf->Cell(34, 6, 'Ketone', 0, 1);
-// $pdf->Line(135, 187, 158, 187);
-
-$pdf->SetXY(158, 121);
-if( !empty($ua_lists['ketu']['flag']) && $ua_lists['ketu']['flag'] != 'N' ){
-    call_alert_result(158, 121, 22, 6);
-}
-
-$pdf->Cell(22, 6, $ua_lists['wbcu']['result'], 1, 1, 'C');
-$pdf->SetFont('AngsanaNew','',13);
-
-$pdf->SetXY(180, 121);
-$pdf->Cell(25, 6, $ua_lists['ketu']['normalrange'], 1, 1, 'C');
-// <<< UA Ketone
-
-// >>> สรุปผลตรวจ UA
-// $pdf->Rect(107, 127, 54, 18);
-$pdf->SetXY(107, 127);
-$pdf->Cell(51, 18, 'สรุปผลตรวจ UA', 1, 1);
-
-$pdf->Rect(158, 127, 22, 12);
-$pdf->SetXY(158, 127);
-$pdf->Cell(22, 6, 'ผลปกติ', 0, 1, 'C');
-$pdf->SetXY(158, 133);
-$pdf->Cell(22, 6, 'NORMAL', 0, 1, 'C');
-
-$pdf->Rect(180, 127, 25, 12);
-$pdf->SetXY(180, 127);
-$pdf->Cell(25, 6, 'ผลผิดปกติ', 0, 1, 'C');
-$pdf->SetXY(180, 133);
-$pdf->Cell(25, 6, 'ABNORMAL', 0, 1, 'C');
-
-$user['res_ua'] = 1;
-$pdf->Rect(158, 139, 22, 6);
-if( $user['res_ua'] == 1 ){
-    $pdf->Line(163, 144, 173, 140);
-}
-
-$user['res_ua'] = 2;
-$pdf->Rect(180, 139, 25, 6);
-if( $user['res_ua'] == 2 ){
-    $pdf->Line(185, 144, 195, 140);
-}
-// <<< สรุปผลตรวจ UA
-// <<< ทดสอบย้าย UA มาด้านขวา
-*/
-
 
 
 // Header ช่องขวา
@@ -969,9 +796,9 @@ $pdf->SetXY(180, 79);
 $pdf->Cell(25, 6, 'NORMAL', 0, 1, 'C');
 
 
-$etc_lists['glu']['flag'] = 'H';
-$etc_lists['glu']['result'] = '999';
-$etc_lists['glu']['normalrange'] = '99 - 99';
+// $etc_lists['glu']['flag'] = 'H';
+// $etc_lists['glu']['result'] = '999';
+// $etc_lists['glu']['normalrange'] = '99 - 99';
 
 $pdf->Rect(107, 85, 51, 12);
 $pdf->SetXY(107, 85);
@@ -992,34 +819,53 @@ $pdf->Cell(25, 6, $etc_lists['glu']['normalrange'], 0, 1, 'C');
 
 
 # 2
-$etc_lists['crea']['flag'] = 'H';
-$etc_lists['crea']['result'] = '999';
-$etc_lists['crea']['normalrange'] = '99 - 99';
+// $etc_lists['crea']['flag'] = 'H';
+// $etc_lists['crea']['result'] = '999';
+// $etc_lists['crea']['normalrange'] = '99 - 99';
 
 $pdf->Rect(107, 97, 51, 12);
 $pdf->SetXY(107, 97);
-$pdf->Cell(41, 6, 'การทำงานของไต', 0, 1);
-$pdf->SetXY(107, 103);
-$pdf->Cell(41, 6, 'Serum Creatinine', 0, 1);
-
+$pdf->Cell(26, 6, 'การทำงานของไต', 0, 1);
+$pdf->SetXY(133, 97);
+$pdf->Cell(25, 6, 'Serum Creatinine', 0, 1);
+$pdf->Line(133, 103, 158, 103);
 
 $pdf->SetXY(158, 97);
 if( !empty($etc_lists['crea']['flag']) && $etc_lists['crea']['flag'] != 'N' ){
-    call_alert_result(158, 97, 22, 12);
+    call_alert_result(158, 97, 22, 6);
 }
-$pdf->Rect(158, 97, 22, 12);
+$pdf->Rect(158, 97, 22, 6);
 $pdf->Cell(22, 6, $etc_lists['crea']['result'], 0, 1, 'C');
 $pdf->SetFont('AngsanaNew','',13);
 
-$pdf->Rect(180, 97, 25, 12);
+$pdf->Rect(180, 97, 25, 6);
 $pdf->SetXY(180, 97);
 $pdf->Cell(25, 6, $etc_lists['crea']['normalrange'], 0, 1, 'C');
 
 
+// $etc_lists['gfr']['flag'] = 'H';
+// $etc_lists['gfr']['result'] = '36.76';
+// $etc_lists['gfr']['normalrange'] = 'Average = 75';
+
+$pdf->SetXY(133, 103);
+$pdf->Cell(25, 6, 'eGFR', 0, 1);
+
+$pdf->SetXY(158, 103);
+if( !empty($etc_lists['gfr']['flag']) && $etc_lists['gfr']['flag'] != 'N' ){
+    call_alert_result(158, 103, 22, 6);
+}
+$pdf->Rect(158, 103, 22, 6);
+$pdf->Cell(22, 6, $etc_lists['gfr']['result'], 0, 1, 'C');
+$pdf->SetFont('AngsanaNew','',13);
+
+$pdf->Rect(180, 103, 25, 6);
+$pdf->SetXY(180, 103);
+$pdf->Cell(25, 6, $etc_lists['gfr']['normalrange'], 0, 1, 'C');
+
 # 3
-$etc_lists['chol']['flag'] = 'H';
-$etc_lists['chol']['result'] = '999';
-$etc_lists['chol']['normalrange'] = '99 - 99';
+// $etc_lists['chol']['flag'] = 'H';
+// $etc_lists['chol']['result'] = '999';
+// $etc_lists['chol']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(107, 109);
 $pdf->Cell(51, 6, 'การตรวจไขมันในเลือด', 0, 1);
@@ -1041,9 +887,9 @@ $pdf->SetXY(180, 115);
 $pdf->Cell(25, 6, $etc_lists['chol']['normalrange'], 0, 1, 'C');
 
 # 4
-$etc_lists['hdl']['flag'] = 'H';
-$etc_lists['hdl']['result'] = '999';
-$etc_lists['hdl']['normalrange'] = '99 - 99';
+// $etc_lists['hdl']['flag'] = 'H';
+// $etc_lists['hdl']['result'] = '999';
+// $etc_lists['hdl']['normalrange'] = '99 - 99';
 
 $pdf->SetXY(107, 121);
 $pdf->Cell(51, 6, 'HDL Cholesterol', 0, 1, 'R');
@@ -1061,8 +907,8 @@ $pdf->SetXY(180, 121);
 $pdf->Cell(25, 6, $etc_lists['hdl']['normalrange'], 0, 1, 'C');
 
 
-$etc_lists['hbsag']['result'] = 'Positive';
-$etc_lists['hbsag']['normalrange'] = 'negative';
+// $etc_lists['hbsag']['result'] = 'Positive';
+// $etc_lists['hbsag']['normalrange'] = 'negative';
 $pdf->Rect(107, 127, 51, 6);
 $pdf->SetXY(107, 127);
 $pdf->Cell(51, 6, 'ตรวจเชื้อไวรัสตับอักเสบ HBsAg', 0, 1);
@@ -1119,8 +965,8 @@ $pdf->Cell(51, 6, 'FIT Test', 0, 1);
 
 
 $pdf->SetXY(158, 151);
-$etc_lists['occult']['result'] = 'positive';
-$etc_lists['occult']['normalrange'] = 'negative';
+// $etc_lists['occult']['result'] = 'positive';
+// $etc_lists['occult']['normalrange'] = 'negative';
 
 $occult_result = ( !empty($etc_lists['occult']['result']) ) ? $etc_lists['occult']['result'] : $etc_lists['stocc']['result'] ;
 $occult_result = strtolower($occult_result);
@@ -1142,7 +988,7 @@ $pdf->Cell(25, 6, $occult_normalrange, 0, 1, 'C');
 $pdf->SetXY(5, 211);
 $pdf->Cell(41, 6, 'สรุปผลตรวจ', 0, 1);
 
-$user['conclution'] = 1;
+// $user['conclution'] = 1;
 $pdf->Rect(54, 212, 3, 3);
 $pdf->SetXY(58, 211);
 $pdf->Cell(10, 6, 'ปกติ', 0, 1);
@@ -1150,7 +996,7 @@ if( $user['conclution'] == "1" ){
     $pdf->Line(54,215,57,212);
 }
 
-$user['conclution'] = 2;
+// $user['conclution'] = 2;
 $pdf->Rect(70, 212, 3, 3);
 $pdf->SetXY(74, 211);
 $pdf->Cell(10, 6, 'ผิดปกติ', 0, 1);
@@ -1231,22 +1077,31 @@ $pdf->Line(40,247,86,247);
 $pdf->SetXY(40, 250);
 $pdf->Cell(46, 6, '( '.conv($user['prefix'].$user['name'].' '.$user['surname']).' )', 0, 1, 'C');
 
+// dump($user['doctor']);
+// $def_doctor = iconv620ToUTF8($user['doctor']);
+// dump($def_doctor);
+// $match = preg_match('/\d+/',$def_doctor, $matchs);
+// dump($match);
+// dump($matchs);
+// if( $match > 0 ){
+
+// $code_doctor = $matchs['0'];
+// dump($code_doctor);
+
 $def_doctor = $user['doctor'];
-$match = preg_match('/\d+/',$user['doctor'], $matchs);
 
-if( $match > 0 ){
-
-    $code_doctor = $matchs['0'];
-
-    // $sql = "SELECT CONCAT(b.`yot`,b.`yot2`,a.`name`) AS `doctor_full`
-    // FROM `inputm` AS a 
-    // LEFT JOIN `doctor` AS b ON b.`doctorcode` = a.`codedoctor` 
-    // WHERE a.`codedoctor` = '$code_doctor' 
-    // AND b.`name` NOT LIKE 'CHK%'";
-    // $db->select($sql);
-    // $dt = $db->get_item();
-    // $def_doctor = $dt['doctor_full'];
+$sql = "SELECT CONCAT(b.`yot`,b.`yot2`,a.`name`) AS `doctor_full`
+FROM `inputm` AS a 
+LEFT JOIN `doctor` AS b ON b.`doctorcode` = a.`codedoctor` 
+WHERE a.`name` = '".$user['doctor']."' 
+AND b.`name` NOT LIKE 'CHK%'";
+$db->select($sql);
+if($db->get_rows() > 0){
+    $dt = $db->get_item();
+    $def_doctor = $dt['doctor_full'];
 }
+
+// }
 
 $pdf->SetXY(107, 241);
 $pdf->Cell(25, 6, 'ลงชื่อแพทย์ผู้ตรวจ', 0, 1);
