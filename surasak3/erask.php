@@ -13,8 +13,12 @@ $strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
 $strresult = mysql_query($strsql);
 $strrow=mysql_num_rows($strresult);
 
+$accruedTxt = "";
 if($strrow>0){
-	echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
+
+	$accruedTxt = "ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้";
+	echo "<script>alert('$accruedTxt') </script>";
+
 	//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
 
 }
@@ -35,7 +39,16 @@ if(file_exists("../image_patient/$img")){
 }else{
 	$image="";
 }
+
+if(!empty($accruedTxt)){
 ?>
+<div style="color:red;">
+	<p><b>&gt;&gt;&nbsp;<u><?=$accruedTxt;?></u>&nbsp;&lt;&lt;</b></p>
+</div>
+<?php
+}
+?>
+
 <table  border="0">
 	<tr>
 		<td>ผู้ป่วยนอก</td>
