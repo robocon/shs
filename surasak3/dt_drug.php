@@ -3162,9 +3162,6 @@ function check_nsaids(drugcode){
 				}else if(res.status==400){ 
 					
 					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-					// console.log('confirm in check_nsaids ==> '+nForm);
-					// console.log(res.other_doctor);
-					// console.log(res.other_drug);
 
 					var other_doctor = res.other_doctor ? res.other_doctor : '' ;
 					var other_drug = res.other_drug ? res.other_drug : '' ;
@@ -3186,7 +3183,6 @@ function check_nsaids(drugcode){
 		}
 	};
 	xmlhttp.send(null);
-	// console.log('(JS) : check_nsaids ==> '+resNsaids);
 	return resNsaids;
 }
 
@@ -4047,6 +4043,28 @@ function viatch(ing,code){
 </SCRIPT>
 </head>
 <body>
+
+<?php 
+$hnNow = sprintf("%s", $_SESSION["hn_now"]);
+$vnNow = sprintf("%s", $_SESSION["vn_now"]);
+$thdatehn = date('d-m-').(date('Y')+543).$hnNow;
+$sql = "SELECT `toborow` FROM `opday` WHERE `thdatehn`='$thdatehn' AND `vn` = '$vnNow' ";
+$q = $dbi->query($sql);
+
+$toborowBanItem = array('EX16','EX26','EX40','EX45','EX46','EX47');
+if($q->num_rows>0){
+	$opdayData = $q->fetch_assoc();
+	$toborowCode = substr($opdayData['toborow'],0,4);
+	if(in_array($toborowCode, $toborowBanItem)){
+		echo "ผู้ป่วยมารับบริการด้วยสถานะ <b>EX16 ตรวจสุขภาพ</b><u>ไม่สามารถสั่งยาได้</u> กรุณาติดต่อห้องทะเบียนเพื่อออก VN ใหม่";
+		?>
+		<p></p>
+		<p><a href="javascript:void(0);" onclick="history.back()">คลิกที่นี่เพื่อ ย้อนกลับ</a></p>
+		<?php
+		exit;
+	}
+}
+?>
 
 <!-- <a href='../nindex.htm'>&lt;&lt;ไปเมนู</a><BR>
 <A HREF="dt_index.php">&lt;&lt; เลือกผู้ป่วยใหม่</A> -->
