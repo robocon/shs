@@ -42,7 +42,18 @@ if(file_exists("../image_patient/$img")){
 
 if(!empty($accruedTxt)){
 ?>
-<div style="color:red;">
+<style>
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+</style>
+<div style="color:red;" class="blink_me">
 	<p><b>&gt;&gt;&nbsp;<u><?=$accruedTxt;?></u>&nbsp;&lt;&lt;</b></p>
 </div>
 <?php

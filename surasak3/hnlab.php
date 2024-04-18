@@ -1,14 +1,15 @@
 <?php
-    $cHn="";
-    $cPtname="";
-    $cPtright="";
-    $nRunno="";
-	$tvn="";
-    session_register("nRunno");
-    session_register("cHn");
-    session_register("cPtname");
-    session_register("cPtright");
-    session_register("tvn");
+include("connect.inc");
+$cHn="";
+$cPtname="";
+$cPtright="";
+$nRunno="";
+$tvn="";
+session_register("nRunno");
+session_register("cHn");
+session_register("cPtname");
+session_register("cPtright");
+session_register("tvn");
 	
 function calcage($birth){
 
@@ -31,7 +32,7 @@ function calcage($birth){
 		$pAge="$ageY ปี $ageM เดือน";
 	}
 
-return $pAge;
+	return $pAge;
 }
 	
 ?>
@@ -46,55 +47,57 @@ document.getElementById('aLink').focus();
 </form>
 
 <?php
-include("connect.inc");
+
 if(!empty($_POST['hn']) && $confirm != true){
 
-// สคริปเช็กอีกตัวอยู่ใน vnlab.php 
-// dcdate เป็น 0 และ lock_dc เป็น null แสดงว่ายังอยู่ใน ward
-$ipsql="SELECT * FROM `ipcard` WHERE `hn` = '".$_POST['hn']."' AND ( `dcdate` = '0000-00-00 00:00:00' AND `lock_dc` IS NULL ) ";
-$ipquery=mysql_query($ipsql);
-if(mysql_num_rows($ipquery) > 0){
-	$iprows=mysql_fetch_array($ipquery);
-	$my_ward=$iprows["my_ward"];
-	echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
-	echo "<h2 style=\"color:red;\">ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน</h2>";
-	exit;
-}
+	// สคริปเช็กอีกตัวอยู่ใน vnlab.php 
+	// dcdate เป็น 0 และ lock_dc เป็น null แสดงว่ายังอยู่ใน ward
+	$ipsql="SELECT * FROM `ipcard` WHERE `hn` = '".$_POST['hn']."' AND ( `dcdate` = '0000-00-00 00:00:00' AND `lock_dc` IS NULL ) ";
+	$ipquery=mysql_query($ipsql);
+	if(mysql_num_rows($ipquery) > 0){
+		$iprows=mysql_fetch_array($ipquery);
+		$my_ward=$iprows["my_ward"];
+		echo "<script>alert('ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน');</script>";
+		echo "<h2 style=\"color:red;\">ผู้ป่วยรายนี้ Admit อยู่ที่ $my_ward กรุณาคิดค่าใช้จ่ายเป็นผู้ป่วยใน</h2>";
+		exit;
+	}
 
-$today = date("d-m-Y");   
+	$today = date("d-m-Y");   
     $d=substr($today,0,2);
     $m=substr($today,3,2);
     $yr=substr($today,6,4) +543;  
 
-$thdatehn=$d.'-'.$m.'-'.$yr.$hn;
- $query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth,ptright1,SUBSTRING(`idguard`,1,4) FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
- $result = mysql_query($query) or die(Mysql_Error());
- $row=mysql_num_rows($result);
- list($ccc,$xxx,$yyy,$zzz,$dbirth,$ptright1,$idguard) = Mysql_fetch_row($result);
-$age=calcage($dbirth);	
-if($row){	
+	// $thdatehn=$d.'-'.$m.'-'.$yr.$hn;
+	$query = "SELECT idcard ,hn, concat(yot,' ',name,' ',surname) as ptname, ptright,dbirth,ptright1,SUBSTRING(`idguard`,1,4) FROM opcard WHERE hn = '".$_POST['hn']."'  limit 1 ";
+	$result = mysql_query($query) or die(Mysql_Error());
+	$row=mysql_num_rows($result);
+	list($ccc,$xxx,$yyy,$zzz,$dbirth,$ptright1,$idguard) = Mysql_fetch_row($result);
+	$age=calcage($dbirth);	
+	if($row){
 	
-	if($idguard == 'MX05' OR $idguard == 'MX07'){
-		echo '<h3 style="color: red;">OPDCARDมีสถานะ <u>ทำลายประวัติ หรือ ยุบประวัติ</u> กรุณาติดต่อห้องทะเบียนเพื่อทำการตรวจสอบข้อมูลใหม่อีกครั้ง</h3>';
-		exit;
-	}
+		if($idguard == 'MX05' OR $idguard == 'MX07'){
+			echo '<h3 style="color: red;">OPDCARDมีสถานะ <u>ทำลายประวัติ หรือ ยุบประวัติ</u> กรุณาติดต่อห้องทะเบียนเพื่อทำการตรวจสอบข้อมูลใหม่อีกครั้ง</h3>';
+			exit;
+		}
 
-	print "HN :$xxx<br>";
-   	print "$yyy<br>";
-	print "อายุ : $age<br>";
-	print "สิทธิหลักในโรงพยาบาล : <span style='color:green;'><b>$ptright1</b></span><br>";
-   	print "สิทธิการรักษาครั้งล่าสุด : <span style='color:green;'><b>$zzz</b></span>";
+		$cHn = $hn = $xxx;
 
-	$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
-	$t = mysql_fetch_array($qToken);
-	$person_id = preg_replace('/\D/','', $t['cid']);
-	$smctoken = $t['token'];
-	?>
-	<div id="nhso">
-		<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
-	</div>
-	<?php
-	if(substr($zzz,0,3)=='R07'){
+		print "HN :$xxx<br>";
+		print "$yyy<br>";
+		print "อายุ : $age<br>";
+		print "สิทธิหลักในโรงพยาบาล : <span style='color:green;'><b>$ptright1</b></span><br>";
+		print "สิทธิการรักษาครั้งล่าสุด : <span style='color:green;'><b>$zzz</b></span>";
+
+		$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());
+		$t = mysql_fetch_array($qToken);
+		$person_id = preg_replace('/\D/','', $t['cid']);
+		$smctoken = $t['token'];
+		?>
+		<div id="nhso">
+			<br><span style="color: blue;"> <img src="images/Spinner-1s-28px.gif" alt=""> กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+		</div>
+		<?php
+		if(substr($zzz,0,3)=='R07'){
 			$sql = "Select id From ssodata where id LIKE '$ccc%' limit 1 ";
 			$query = mysql_query($sql) or die(mysql_error());
 			$numrows_r07 = mysql_num_rows($query);
@@ -139,19 +142,35 @@ if($row){
 		</script>
 		<?php
 
+		$strresult = mysql_query("select * from accrued where hn = '$hn' and status_pay='n' ");
+		$strrow=mysql_num_rows($strresult);
+		$accruedTxt = "";
+		if($strrow>0){
+			$accruedTxt = "<b><u>ผู้ป่วยมียอดค้างชำระ</u><br>กรุณาประสานส่วนเก็บเงินรายได้เพื่อตรวจสอบเงินค้างชำระ</b>";
+		}
+
+		if(!empty($accruedTxt)){
+			?>
+			<div style="color:#664d03; background-color: #fff3cd; margin-top: 16px; padding: 4px 8px;" class="blink_me">
+				<p><?=$accruedTxt;?></p>
+			</div>
+			<?php
+		}
+
 	}else{
-	echo "ไม่พบ HN $xxx";
+		echo "ไม่พบ HN $xxx";
 	}
 	
-   
-
 }else if (!empty($hn) && !empty($confirm)){
 
 	$chk_user = ( !empty($_GET['chk']) && $_GET['chk'] == "sso" ) ? '?chk=sso' : '' ;
 
 	//$tvn=$vn;
 	//$cHn=$hn;
-    include("connect.inc");
+	// include("connect.inc");
+
+	$hn = sprintf("%s", $_GET['hn']);
+    
     $vnlab = 'EX93 ออก VN โดย LAB';   
     $today = date("d-m-Y");   
     $d=substr($today,0,2);
@@ -162,34 +181,32 @@ if($row){
 	
 // ตรวจดูว่าลงทะเบียนหรือยัง
     $query = "SELECT * FROM opday WHERE thdatehn = '$thdatehn' Order by row_id DESC ";
-    $result = mysql_query($query)
-        or die("Query failed,opday");
+    $result = mysql_query($query) or die("Query failed,opday");
 
-		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-			if (!mysql_data_seek($result, $i)) {
-				echo "Cannot seek to row $i\n";
-				continue;
-			}
-	
-			if(!($row = mysql_fetch_object($result)))
-				continue;
-         }
+	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+		if (!mysql_data_seek($result, $i)) {
+			echo "Cannot seek to row $i\n";
+			continue;
+		}
+
+		if(!($row = mysql_fetch_object($result)))
+			continue;
+	}
 
  //     $cHn=$row->hn;
-        if(mysql_num_rows($result)){
-  //กรณีลงทะเบียนแล้ว
-  	      $cHn=$row->hn;
-  	      $cPtname=$row->ptname;
- 	       $cPtright=$row->ptright;
-  	  $tvn=$row->vn;
-  	      //print "VN  :$tvn<br>";
- 	      // print "HN :$cHn<br>";
-   	     //print "$cPtname<br>";
-   	     //print "สิทธิการรักษา :$cPtright";
-    	    //print "<br><a href='labask.php'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
-			 echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php$chk_user\">";
-		}
-		else{
+	if(mysql_num_rows($result)){
+		//กรณีลงทะเบียนแล้ว
+		$cHn=$row->hn;
+		$cPtname=$row->ptname;
+		$cPtright=$row->ptright;
+		$tvn=$row->vn;
+		//print "VN  :$tvn<br>";
+		// print "HN :$cHn<br>";
+		//print "$cPtname<br>";
+		//print "สิทธิการรักษา :$cPtright";
+		//print "<br><a href='labask.php'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=labask.php$chk_user\">";
+	}else{
 //หาข้อมูลจาก opcard ของ $cHn เพื่อใช้ทั้งในกรณีลงทะเบียนแล้ว หรือยังไม่ลง
 	    $query = "SELECT * FROM opcard WHERE hn = '$hn'";
 	    $result = mysql_query($query) or die("Query failed");
@@ -308,11 +325,10 @@ if($row){
 		else{
    			print"ไม่พบ HN $hn ในเวชระเบียน";
 		}
-		}
-//runno  for chktranx
+	}
+	//runno  for chktranx
     $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-    $result = mysql_query($query)
-        or die("Query failed");
+    $result = mysql_query($query) or die("Query failed");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
@@ -322,7 +338,7 @@ if($row){
 
         if(!($row = mysql_fetch_object($result)))
             continue;
-         }
+	}
 
     $nRunno=$row->runno;
     $nRunno++;
@@ -339,7 +355,6 @@ if($row){
         print "<br><a href='labask.php'>ชื่อถูกต้อง ทำรายการต่อไป</a>";
 */
 
-    include("unconnect.inc");
+include("unconnect.inc");
 }
 ?>
-
