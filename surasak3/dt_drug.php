@@ -981,7 +981,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
 	INNER JOIN dphardep as c ON a.date=c.date
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
-	GROUP BY a.drugcode, a.slcode
+	GROUP BY a.drugcode, a.slcode, a.part
 	HAVING sum( a.amount ) >0
 	";
 	//echo $sql;
@@ -3654,9 +3654,9 @@ function checkForm1(){
 	}else if(document.getElementById('drug_inject_type').style.display == '' && document.form1.drug_inject_type.value==''){
 		alert("กรุณาเลือก แบบในการฉีด");
 		document.form1.drug_inject_type.focus();
-	/*}else if(document.getElementById('reason').style.display == '' && document.form1.reason.value==''){
-		alert("กรุณาระบุเหตุผลในการเลือกใช้ยา NED");
-		document.form1.reason.focus();*/
+	}else if(document.getElementById('reason').style.display == '' && document.form1.reason.value==''){
+		alert("กรุณาระบุเหตุผลในการเลือกใช้ยานอกบัญชียาหลักแห่งชาติ (NED)");
+		document.form1.reason.focus();
 	}else if(document.getElementById('reason').style.display == '' && document.form1.reason2.value==''){
 	//(document.getElementById('reason11').checked==false && document.getElementById('reason22').checked==false)){
 		alert("กรุณาระบุข้อบ่งชี้ในการใช้ยานอก");
@@ -4427,6 +4427,17 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 	</TD>
 </TR>
 </TABLE>
+<div>
+<div style='font-size:18px;'>แจ้งเพื่อทราบ...</div>
+<div style='font-size:16px; margin-left:10px;'><strong style='color:blue;'>ยานอกบัญชียาหลักแห่งชาติ (NED)</strong> แพทย์จำเป็นต้อง</div>
+<div style='font-size:16px;'>ระบุเหตุผลการใช้ยาทุกครั้ง เนื่องจากโรงพยาบาล</div>
+<div style='font-size:16px;'>ไม่สามารถเบิกเงินคืนจากกองทุนได้</div>
+<div style='font-size:16px; margin-left:10px;'>หากแพทย์ไม่ระบุเหตุผลการใช้ยา จะไม่สามารถ</div>
+<div style='font-size:16px;'>ดำเนินการต่อไปได้</div>
+<div style='font-size:18px; margin-left:100px;'>รคส.ผอ.รพ.ค่ายฯ</div>
+</div>
+
+
 <?php 
 $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1 ";
 	$result = Mysql_Query($sql);
