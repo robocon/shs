@@ -4048,14 +4048,17 @@ function viatch(ing,code){
 $hnNow = sprintf("%s", $_SESSION["hn_now"]);
 $vnNow = sprintf("%s", $_SESSION["vn_now"]);
 $thdatehn = date('d-m-').(date('Y')+543).$hnNow;
-$sql = "SELECT `toborow` FROM `opday` WHERE `thdatehn`='$thdatehn' AND `vn` = '$vnNow' ";
+$sql = "SELECT `ptright`,`toborow` FROM `opday` WHERE `thdatehn`='$thdatehn' AND `vn` = '$vnNow' ";
 $q = $dbi->query($sql);
 
 $toborowBanItem = array('EX16','EX26','EX40','EX45','EX46','EX47');
+$ptrightBanItem = array('R01','R04');
 if($q->num_rows>0){
 	$opdayData = $q->fetch_assoc();
+	$ptrightCode = substr($opdayData['ptright'],0,3);
 	$toborowCode = substr($opdayData['toborow'],0,4);
-	if(in_array($toborowCode, $toborowBanItem)){
+	// ถ้ามาตรวจสุขภาพแล้วไม่ใช่เงินสดหรือรัฐวิสาหกิจ ให้แจ้งเตือนการเปลี่ยน EX
+	if(in_array($toborowCode, $toborowBanItem) && !in_array($ptrightCode, $ptrightBanItem)){
 		echo "ผู้ป่วยมารับบริการด้วยสถานะ <b>EX16 ตรวจสุขภาพ</b><u>ไม่สามารถสั่งยาได้</u> กรุณาติดต่อห้องทะเบียนเพื่อออก VN ใหม่";
 		?>
 		<p></p>
