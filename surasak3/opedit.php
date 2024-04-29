@@ -28,9 +28,9 @@ legend {
  }
  .fonthead1{
 	 font-family:"Angsana New";
-	 size:16PX;
+	 size:20PX;
 	 color:#FF0000;
-	/* font-weight:bold;*/
+	 font-weight:bold;
  } 
 
  .chk_table{
@@ -224,6 +224,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cMother =$row->mother;
 		$cCouple =$row->couple;
 		$cNote=$row->note;
+		$cAllergy=$row->allergy;
 		$cNote_vip=$row->note_vip;
 		$cSex =$row->sex;
 		$cCamp =$row->camp;
@@ -968,53 +969,12 @@ return $pAge;
 						?>
       </select></td>
     <td align="right" class="fonthead">สังกัด:</td>
-    <td><!--<select size="1" name="camp" id="camp">
-      <option value="<?//=$cCamp;?>" selected><?//=$cCamp;?></option>
-      <option value="M01 พลเรือน">พลเรือน</option>
-      <option value="M02 ร.17 พัน2">ร.17 พัน2</option>
-      <option value="M03 มณฑลทหารบกที่32">มณฑลทหารบกที่32</option>
-      <option value="M04 ร.พ.ค่ายสุรศักดิ์มนตรี">ร.พ.ค่ายสุรศักดิ์มนตรี</option>
-      <option value="M05 ช.พัน4">ช.พัน4</option>
-      <option value="M06 ร้อยฝึกรบพิเศษประตูผา">ร้อยฝึกรบพิเศษประตูผา</option>
-      <option value="M0301 บก.มทบ.32">บก.มทบ.32</option>
-      <option value="M0302 กกพ.มทบ.32">กกพ.มทบ.32</option>
-      <option value="M0303 กขว.,ฝผท.มทบ.32">กขว.,ฝผท.มทบ.32</option>
-      <option value="M0304 กยก.มทบ.32">กยก.มทบ.32</option>
-      <option value="M0305 กกบ.มทบ.32">กกบ.มทบ.32</option>
-      <option value="M0306 กกร.มทบ.32">กกร.มทบ.32</option>
-      <option value="M0307 ฝคง.มทบ.32">ฝคง.มทบ.32</option>
-      <option value="M0308 ฝกง.มทบ.32">ฝกง.มทบ.32</option>
-      <option value="M0309 ฝสก.มทบ.32">ฝสก.มทบ.32</option>
-      <option value="M0310 ฝปบฝ.มทบ.32">ฝปบฝ.มทบ.32</option>
-      <option value="M0311 ผพธ.มทบ.32">ผพธ.มทบ.32</option>
-      <option value="M0312 อก.ศาล มทบ.32">อก.ศาล มทบ.32</option>
-      <option value="M0313 ฝสวส.มทบ.32">ฝสวส.มทบ.32</option>
-      <option value="M0314 ฝธน.มทบ.32">ฝธน.มทบ.32</option>
-      <option value="M0315 อศจ.มทบ.32">อศจ.มทบ.32</option>
-      <option value="M0316 ร้อย.มทบ.32">ร้อย.มทบ.32</option>
-      <option value="M0317 สขส.มทบ.32">สขส.มทบ.32</option>
-      <option value="M0313 รจ.มทบ.32">รจ.มทบ.32</option>
-      <option value="M0318 ผยย.มทบ.32">ผยย.มทบ.32</option>
-      <option value="M0319 สส.มทบ.32">สส.มทบ.32</option>
-      <option value="M0320 ฝสห.มทบ.32">ฝสห.มทบ.32</option>
-      <option value="M0321 ร้อย.สห.มทบ.32">ร้อย.สห.มทบ.32</option>
-      <option value="M0322 มว.ดย.มทบ.32">มว.ดย.มทบ.32</option>
-      <option value="M0323 ผสพ.มทบ.32">ผสพ.มทบ.32</option>
-      <option value="M0324 สรรพกำลัง มทบ.32">สรรพกำลัง มทบ.32</option>
-      <option value="M0325 ศฝ.นศท.มทบ.32">ศฝ.นศท.มทบ.32</option>
-      <option value="M0326 ศาล.มทบ.32">ศาล.มทบ.32</option>
-      <option value="M0327 ศูนย์โทรศัพท์ มทบ.32">ศูนย์โทรศัพท์ มทบ.32</option>
-      <option value="M0328 ผปบ.มทบ.32">ผปบ.มทบ.32</option>
-      <option value="M08 สัสดีจังหวัดลำปาง">สัสดีจังหวัดลำปาง</option>
-      <option value="M09 มว.คลัง สป.๓ฯ">มว.คลัง สป.๓ฯ</option>
-      <option value="M10 กรม ทพ.33">กรม ทพ.33</option>
-      <option value="M07 หน่วยทหารอื่นๆ">หน่วยทหารอื่นๆ</option>
-    </select>-->
+    <td>
 		<SELECT NAME="camp" id="camp">
 		<option value="<?=$cCamp;?>" selected><?=$cCamp;?></option>
 		<option value=""><-เลือก-></option>
       <? 
-		$sqlcamp="SELECT * FROM `camp` order by row_id";
+		$sqlcamp="SELECT * FROM `camp` order by name";
 		$querycamp=mysql_query($sqlcamp)or die (mysql_error());
 		while($arrcamp=mysql_fetch_array($querycamp)){
 			if($cCamp==$arrcamp['name']){
@@ -1089,20 +1049,6 @@ return $pAge;
 	$sso_row = mysql_num_rows($q);
 	if( $sso_row > 0 ){
 		$ptCode = 'R07';
-	
-	}else{
-
-		// ถ้าไม่ใช่ ปกส เช็กใน cscd (เบิกจ่ายตรง)
-		$sql_cscd = "SELECT hn, status 
-		FROM cscddata 
-		WHERE hn = '$cHn' 
-		AND ( status LIKE '%U%' OR status = '\r' OR status LIKE '%V%' )  
-		LIMIT 1 ";
-		$q = mysql_query($sql_cscd);
-		$cscd_row = mysql_num_rows($q);
-		if( $cscd_row > 0 ){
-			$ptCode = 'R03';
-		}
 	}
 
 	$sql = "Select * From ptright Order by code ASC ";
@@ -1120,6 +1066,10 @@ return $pAge;
 	?>
     </select>    
 	</td>
+	
+	
+	
+	
     <td class="fonthead">ประเภทสิทธิ :</td>
     <td><select name="ptrightdetail" size="1" id="ptrightdetail">
       <option  value="<?=$cPtrightdetail;?>" selected><?=$cPtrightdetail;?></option>
@@ -1321,6 +1271,12 @@ $dis = mysql_fetch_assoc($q);
     <td><input type="text" name="note" size="50" value="<?=$cNote;?>" id="note"></td>
     </tr>
   <tr>
+    <td align="right" class="fonthead">แพ้อาหาร/สารเคมี/อื่นๆ</td>
+    <td><input type="text" name="allergy" size="50" value="<?=$cAllergy;?>" id="allergy"></td>
+    <td class="fonthead">&nbsp;</td>
+    <td>&nbsp;</td>
+    </tr>
+  <tr>
     <td align="right" class="fonthead">Note VIP</td>
     <td><input type="text" name="note_vip" size="50" value="<?=$cNote_vip;?>" id="note_vip"></td>
     <td class="fonthead">&nbsp;</td>
@@ -1369,8 +1325,8 @@ if($time >='16:00:00'){
 ?>
 <table width="100%" border="0">
   <tr>
-    <td align="right" class="fonthead">ออก OPD CARD</td>
-    <td colspan="2" class="fonthead"><!--<?//=$time;?>--> <select  id='case1' name='case'>
+    <td valign="top" align="right" class="fonthead">ออก OPD CARD</td>
+    <td valign="top" colspan="2" class="fonthead"><!--<?//=$time;?>--> <select  id='case1' name='case'>
 <?
 
 $today = date("d-m-Y");
@@ -1394,32 +1350,25 @@ while(list($rid,$typename,$typestatus)= mysql_fetch_array($rows)){
 
 ?>
 </select>&nbsp;&nbsp;ชื่อผู้ยืม : <input type='text' name='borow' size='30' value='<?=$borow;?>'> </td>
-    <td class="fonthead">สิทธิการรักษาปัจจุบัน</td>
-    <td class="fonthead">
+    <td class="fonthead" valign="top">สิทธิการรักษาปัจจุบัน</td>
+    <td class="fonthead" valign="top">
     <input type="checkbox" value="lock" name="lockptright5" <? if($cPtright2!="") echo "checked";?>> (LOCK)&nbsp;
     <select  name='ptright' id="ptright">
     <?
 	//////////////////////////////////การอัพเดทสิทธิปัจจุบัน//////////////////////////////////////
 if($cPtright2==""){
 	if($cIdcard !="" || $cIdcard !="-"){
-	if(substr($cPtright1,0,3)=='R03' || substr($cPtright1,0,3)=='R07'){
+	if(substr($cPtright1,0,3)=='R07'){
 		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
 		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 		?>
 			<option  value="R07 ประกันสังคม" selected>R07 ประกันสังคม</option>
 		<?
 		}else{
-			$sql55 = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-			if(Mysql_num_rows(Mysql_Query($sql55)) > 0){
-			?>
-				<option  value="R03 โครงการเบิกจ่ายตรง" selected>R03 โครงการเบิกจ่ายตรง</option>
-			<?
-			}else{
 			?>
 				<option  value="0" selected>กรุณาเลือกสิทธิการรักษา</option>
 				<script>alert('ผู้ป่วยมีการเปลี่ยนแปลงสิทธิ์ \nกรุณาเลือกสิทธิ์ใหม่และเปลี่ยนแปลงข้อมูลใน OPD CARD ด้วยคะ');</script>
 			<?
-			}
 		}
 	}else{
 		$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
@@ -1461,13 +1410,76 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 	print " <option value='{$ptright_code}&nbsp;{$ptright_name}' >{$ptright_code}&nbsp;{$ptright_name}</option>";
 }
 ?>
-</select></td>
+</select>
+
+<div style="color:red;">กรณีต้องการใช้สิทธิการรักษาอื่นๆ ที่ไม่ใช่สิทธิการรักษาหลักในวันต่อไป<br>กรุณากด  LOCK ด้วยครับ <u style='color:blue;font-size:20px;'><i>หากใช้สิทธิการรักษาอื่นๆ วันนี้วันเดียวไม่ต้องกด LOCK</i></u></div>
+</td>
   </tr>
-  <tr style="background-color: #FFFF99">
-    <td align="right" class="fonthead">แจ้งทราบ&nbsp;</td>
-    <td colspan="4" class="fonthead">*** <span class="fonthead1">วันที่ 16 พ.ย. 65 ถึง 20 ธ.ค. 65</span> ตรวจสุขภาพประจำปีกองทัพบก เลือก <span class="fonthead1">EX26 ตรวจสุขภาพประจำปี</span> สิทธิการรักษาเลือก <span class="fonthead1">R22ตรวจสุขภาพประจำปีกองทัพบก</span> ***</td>
+<tr>
+<td colspan="6"><span style='font-size: 24px;'>ตรวจสอบฐานข้อมูลตรวจสุขภาพกองทัพบกประจำปี 2567 (เก็บตก ถึงวันที่ 28 ธ.ค. 66)</span></td>
+</tr>
+<?
+
+////*runno ตรวจสุขภาพ*/////////
+$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+	$result = mysql_query($query) or die("Query failed");
+	
+	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+		if (!mysql_data_seek($result, $i)) {
+			echo "Cannot seek to row $i\n";
+			continue;
+		}
+			if(!($row = mysql_fetch_object($result)))
+			continue;
+	}
+	
+	$nPrefix=$row->prefix;
+	$yearcheck="25".$nPrefix;
+////*runno ตรวจสุขภาพ*/////////
+
+$sqlchk="select yot,name,surname,camp from register_chkup_soldier where yearcheck='$yearcheck' and idcard='".$cIdcard."'";
+//echo $sqlchk;
+$querychk=mysql_query($sqlchk);
+$numchk=mysql_num_rows($querychk);
+if($numchk > 0){
+list($chkyot,$chkname,$chksurname,$chkcamp)=mysql_fetch_array($querychk);
+	$chkupdetail="<div style='color:blue;font-size:20px;'>ชื่อ - นามสกุล : $chkyot $chkname $chksurname<span style='margin-left:10px;'>หน่วยต้นสังกัด: $chkcamp</span></div>";
+}else{
+	$chkupdetail="";
+}	
+
+
+$sqlchk1="select thidate from condxofyear_so where yearcheck='$yearcheck' and idcard='".$cIdcard."'";
+//echo $sqlchk1;
+$querychk1=mysql_query($sqlchk1);
+$numchk1=mysql_num_rows($querychk1);
+if($numchk1 > 0){	
+	list($thidate)=mysql_fetch_array($querychk1);	
+	$chkupalert="<div style='color:red;font-size:20px;'>!!! กำลังพลท่านนี้ได้รับการตรวจสุขภาพประจำปี 2567 เรียบร้อยแล้ว เมื่อวันที่ $thidate กรุณาตรวจสอบข้อมูลก่อนดำเนินการใดๆ <a href='report_dxofyear.php' target='_blank' style='color:blue;'>คลิกที่นี่เพื่อตรวจสอบ</a></div>";	
+}else{
+	$chkupalert="<div style='color:blue;font-size:20px;'>ไม่มีผลการตรวจสุขภาพกองทัพบกประจำปี 2567 ในระบบ</div>";	
+}
+if($numchk > 0){	
+?>  
+  <tr style="background-color: #A9DFBF">
+    <td align="right" class="fonthead" bgcolor="#45B39D"><span style='font-size: 28px;'>พบข้อมูล&nbsp;</span></td>
+    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>ตรวจสอบพบรายชื่อที่ลงทะเบียนตรวจสุขภาพกองทัพบก ประจำปี 2567</span> ให้เลือก <span class="fonthead1">EX26 ตรวจสุขภาพประจำปี</span> สิทธิการรักษาเลือก <span class="fonthead1">R22 ตรวจสุขภาพประจำปีกองทัพบก</span> ***
+	<? echo $chkupdetail;?>
+	<? echo $chkupalert;?>
+	</td>
     </tr>
   <tr>
+<? }else{ ?>
+  <tr style="background-color: #F5B7B1">
+    <td align="right" class="fonthead" bgcolor="#EC7063"><span style='font-size: 28px;'>ไม่พบข้อมูล&nbsp;</span></td>
+    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>หากกำลังพลมาตรวจสุขภาพกองทัพบก ประจำปี 2567</span> ให้เลือก <span class="fonthead1">EX16 ตรวจสุขภาพ</span> สิทธิการรักษาเลือก <span class="fonthead1">R01 เงินสด</span> ***
+	<? echo $chkupalert;?>
+	</td>
+    </tr>
+  <tr>
+<?
+}
+?>
     <td align="right" class="fonthead">ค่าบริการนอกเวลาราชการ</td>
     <td class="fonthead1"><input name="doctor100" type="checkbox" value="doctor100">
 ค่าบริการทางการแพทย์ 100 บาท</td>
@@ -1567,14 +1579,6 @@ if(substr($cPtright,0,3)=='R07'){
 			}else{
 				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"5\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิประกันสังคม&nbsp;&nbsp;&nbsp;</FONT></B></span>";
 			}
-		}else if(substr($cPtright,0,3)=='R03'){
-			$sql = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%' )  limit 1 ";
-
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-			echo "<div style=\"background-color: #0033CC; height: 30px;\"><B><FONT SIZE=\"5\"  COLOR=\"#FFFF00\">&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยมีสิทธจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></div>";
-			}else{
-				echo "<span style=\"background-color: #FF0000\"><B><FONT SIZE=\"5\"  COLOR=\"#0033CC\"><BR>&nbsp;&nbsp;&nbsp;ตรวจสอบจากสิทธิผู้ป่วยหมดสิทธิจ่ายตรง&nbsp;&nbsp;&nbsp;</FONT></B></span>";
-			}
 		}else{
 			$color = "66CDAA";
 		}
@@ -1606,17 +1610,6 @@ if(!empty($cIdcard)){
 	echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีเลขประจำตัวประชาชน</FONT>";
 }
 
-
-if(!empty($cHn)){
-$sql = "Select hn, status From cscddata where hn = '$cHn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";			
-if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				echo"<FONT SIZE='5' COLOR='#0000FF'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยมีสิทธิจ่ายตรง</FONT><br>";
-			}else{
-				echo"<FONT SIZE='5' COLOR='#FF3366'><BR>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มีสิทธิจ่ายตรง</FONT><br>";
-			}
-	}else{
-			echo"<FONT SIZE='5' COLOR='#FF3366'>&nbsp;&nbsp;ตรวจสอบฐานข้อมูลผู้ป่วยไม่มี HN</FONT><br>";
-		}
 
 if(substr($cPtright,0,3)=="R12" || substr($cPtright,0,3)=="R13" || substr($cPtright,0,3)=="R14" || substr($cPtright,0,3)=="R36"){
 	echo"<FONT SIZE='5' COLOR='#FFCC66'>&nbsp;&nbsp;กรุณาตรวจสอบสิทธิการรักษา เพื่อทบทวนค่ารักษาพยาบาลหรือส่งต่อการรักษาไปต้นสังกัด</FONT><br>";
@@ -1691,7 +1684,6 @@ function checkForm(){
 		var birth_m = document.getElementById('birth_m');
 		var birth_y = document.getElementById('birth_y');
 
-		// ตรวจเลขบัตรประชาชน
 		stat2 = checkID();
 		if(document.f1.new_vn.value == ''){
 			
@@ -1731,8 +1723,6 @@ function checkForm(){
 			document.f1.typearea.focus();
 			return false;
 		}else{	
-
-			// ถ้าค่าในการตรวจเลขบัตรประชาชนถูกต้องจะทำงานในเงื่อนไข
 			if(stat2 == true){
 				var ex = document.getElementById('case1').value;
 				ex = ex.substr(0,4);

@@ -281,27 +281,49 @@ if( $disabid != '' ){
 }
 // เก็บข้อมูลเข้า ICF กับ DISABILITY 
 
-$sqlIpcard = "SELECT * FROM `ipcard` WHERE `hn` = '$cHn' AND `dcdate` = '0000-00-00 00:00:00' ORDER BY `row_id` DESC LIMIT 1";
-$qIpcard = mysql_query($sqlIpcard);
-if(mysql_num_rows($qIpcard) > 0){ 
-	$ipcard = mysql_fetch_assoc($qIpcard);
-	$ipcardId = $ipcard['row_id'];
-	$ipcardAn = $ipcard['an'];
-	$updateIpcard = "UPDATE `ipcard` SET `ptright` = '$ptright', `age` = '$cAge' WHERE `row_id` = '$ipcardId' ";
-	mysql_query($updateIpcard);
-	
-	$sqlBed = "SELECT * FROM bed WHERE an = '$ipcardAn' ";
-	$qBed = mysql_query($sqlBed);
-	if(mysql_num_rows($qBed) > 0){
-		$bed = mysql_fetch_assoc($qBed);
-		$bedId = $bed['row_id'];
-		$updateBed = "UPDATE `bed` SET `ptright` = '$ptright', `age` = '$cAge' WHERE `row_id` = '$bedId' ";
-		mysql_query($updateBed);
+$sql_ipcard = "SELECT a.`row_id` AS `ipcard_id`, a.`hn`, a.`an`,b.`row_id` AS `bed_id` 
+FROM (
+	SELECT * FROM `ipcard` WHERE `hn` = '$cHn' AND `dcdate` = '0000-00-00 00:00:00' ORDER BY `row_id` DESC LIMIT 1
+) AS a 
+LEFT JOIN `bed` AS b ON a.`hn` = b.`hn` 
+WHERE b.`row_id` IS NOT NULL";
+$q_ipcard = mysql_query($sql_ipcard);
+if($q_ipcard==true)
+{
+	if(mysql_num_rows($q_ipcard) > 0)
+	{
 
-		echo '<p><b style="color: green;"><u>อัพเดท</u></b> ข้อมูลสิทธิการรักษาผู้ป่วยในเรียบร้อย</p>';
+		$ipd_item = mysql_fetch_assoc($q_ipcard);
+		$ipcard_id = $ipd_item['ipcard_id'];
+		$bed_id = $ipd_item['bed_id'];
+
+		$update_sql_ipcard = "UPDATE `ipcard` SET `ptright` = '$ptright' WHERE `row_id` = '$ipcard_id' ";
+		$q_update_ipcard = mysql_query($update_sql_ipcard);
+		if($q_update_ipcard!=true)
+		{
+			echo '<p><b>Error : </b>'.mysql_error().'</p>';
+		}
+
+		$update_sql_bed = "UPDATE `bed` SET `ptright` = '$ptright' WHERE `row_id` = '$bed_id' ";
+		$q_update_bed = mysql_query($update_sql_bed);
+		if($q_update_bed!=true)
+		{
+			echo '<p><b>Error : </b>'.mysql_error().'</p>';
+		}
+
+		if($q_update_ipcard==true && $q_update_bed==true)
+		{
+			echo '<p><b>อัพเดท</b> ข้อมูลสิทธิการรักษาผู้ป่วยในเรียบร้อย</p>';
+		}
 	}
-	
 }
+else
+{
+	echo '<p><b>Error : </b>'.mysql_error().'</p>';
+}
+
+
+// require_once 'opdwork_json.php';
 
 print " แก้ไขข้อมูลเรียบร้อย: <br>";
 print " ปิดหน้าต่างนี้: <br>";
@@ -316,7 +338,7 @@ include("unconnect.inc");
 
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint1bc.">พิมพ์บัตรผู้ป่วยบาร์โค้ด</a><br>
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="edprint.php">พิมพ์ใบรับรองยานอก</a><br>
-&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint6.php">พิมพ์ กท.16/1</a><br>
+&nbsp;&nbsp;&nbsp;<a target=_TOP href="opdprint6.php?cHn=<?=$cHn;?>">พิมพ์ กท.16/1</a><br>
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="rxformnvn.php">พิมพ์ใบสั่งยาไม่ออกVN</a><br>
 &nbsp;&nbsp;&nbsp;<a target=_TOP href="vnprint.php">พิมพ์ใบตรวจโรคไม่ออก VN</a><br>
 <br>
