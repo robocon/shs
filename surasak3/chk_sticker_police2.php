@@ -10,10 +10,21 @@ $pdf->SetThaiFont(); // เซ็ตฟอนต์
 $pdf->SetAutoPageBreak(true, 2);
 $pdf->SetMargins(2, 2);
 
+$part = sprintf("%s", $_GET['part']);
+if(strpos($part,'ศูนย์ฝึกอบรมตำรวจภูธร')===false){
+    echo 'พิมพ์สติกเกอร์เฉพาะตำรวจเท่านั้น';
+    exit;
+}
+
 $sql = "SELECT * FROM `opcardchk` 
-WHERE part = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66' 
+WHERE part = '$part' 
 ORDER BY `row` ASC ";
 $q = $dbi->query($sql);
+if($q->num_rows===0){
+    echo 'ไม่พบข้อมูล';
+    exit;
+}
+
 while ($a = $q->fetch_assoc()) {
 
     $hn = $a["HN"];
@@ -23,7 +34,8 @@ while ($a = $q->fetch_assoc()) {
     $labno2 = $exam_no.$type;
 
     
-    for ($i=0; $i < 2; $i++) { 
+    $stoolPage = 1; // <<<=== ปรับจำนวนหน้า
+    for ($i=0; $i < $stoolPage; $i++) { 
 
         // แผ่น1-2
         $pdf->AddPage();

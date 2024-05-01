@@ -315,9 +315,9 @@ include 'chk_menu.php';
         <tr>
             <td colspan="2">
                 <br>
-                <a href="chk_sticker_police.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 วันที่ 10 กรกฎาคม 2566</a><img src="images/icons/new-icon.gif" alt="">
-                <br>
-                <a href="chk_sticker_police2.php" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 วันที่ 11 กรกฎาคม 2566</a><img src="images/icons/new-icon.gif" alt="">
+                <a href="chk_sticker_police.php?part=<?=$part;?>" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5</a><img src="images/icons/new-icon.gif" alt="">
+                <!-- <br>
+                <a href="chk_sticker_police2.php?part=<?=$part;?>" target="_blank">พิมพ์สติกเกอร์ ศูนย์ฝึกอบรมตำรวจภูธรภาค5 วันที่ 11 กรกฎาคม 2566</a><img src="images/icons/new-icon.gif" alt=""> -->
             </td>
         </tr>
     </table>
