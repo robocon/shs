@@ -490,6 +490,7 @@ if($_POST["cigarette"]=="1"){
 
 	if(!empty($_POST['display_advice'])){
 		$display_advice = implode('|', $_POST['display_advice']);
+
 		$my_hn = sprintf("%s", $_REQUEST['hn']);
 		$officer = $_SESSION['sOfficer'];
 		$my_date_hn = date('Y-m-d').$my_hn;
@@ -497,7 +498,7 @@ if($_POST["cigarette"]=="1"){
 		$q_advice = $dbi->query("SELECT `id` FROM `opd_advice` WHERE `thdatehn` = '$my_date_hn' ");
 		if($q_advice->num_rows > 0){
 			$opd_advice = $q_advice->fetch_assoc();
-			$opd_advice_id = $opd_advice['id'];
+			$opd_device_id = $opd_advice_id = $opd_advice['id'];
 			
 			$sql_advice = "UPDATE `opd_advice` SET 
 			`ptname`='$my_ptname',
@@ -506,20 +507,50 @@ if($_POST["cigarette"]=="1"){
 			WHERE `id` = '$opd_advice_id' ;";
 			$save = $dbi->query($sql_advice);
 
-			if($display_advice=="form_i"){
-				$sql_advice_i = "UPDATE `opd_advice_form_i` SET `advice_organ`='".$_POST['advice_organ']."',
-																`advice_painscore1`='".$_POST['advice_painscore1']."',
-																`advice_rx`='".$_POST['advice_rx']."',
-																`advice_rxtime`='".$_POST['advice_rxtime']."',
-																`advice_activetime`='".$_POST['advice_activetime']."',
-																`advice_painscore2`='".$_POST['advice_painscore2']."',
-																`edit_by`='$officer',
-																`edit_time`= '".date("Y-m-d H:i:s")."' 
-				WHERE `opd_device_id` = '$opd_advice_id' ;";													
-				$save_i = $dbi->query($sql_advice_i);				
+		}else{
+			
+			$sql_advice = "INSERT INTO `opd_advice` (`id`, `date`, `hn`, `ptname`, `opd_id`, `thdatehn`, `officer`, `document`) 
+			VALUES 
+			(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_id', '$my_date_hn', '$officer', '$display_advice');";
+			$result_advice = Mysql_Query($sql_advice) or die("INSERT opd_advice ".Mysql_Error());
+			$opd_device_id = mysql_insert_id(); // คืนค่า id ที่ insert ล่าสุด
+			
+		}
+
+
+		if(strpos($display_advice, "form_i")!==false){
+
+			$sql = "SELECT `id` FROM `opd_advice_form_i` WHERE `opd_device_id` = '$opd_device_id' ";
+			$q = $dbi->query($sql);
+			if($q->num_rows>0){
+				$sql_advice_i = "UPDATE `opd_advice_form_i` SET 
+				`advice_organ`='".$_POST['advice_organ']."',
+				`advice_painscore1`='".$_POST['advice_painscore1']."',
+				`advice_rx`='".$_POST['advice_rx']."',
+				`advice_rxtime`='".$_POST['advice_rxtime']."',
+				`advice_activetime`='".$_POST['advice_activetime']."',
+				`advice_painscore2`='".$_POST['advice_painscore2']."',
+				`edit_by`='$officer',
+				`edit_time`= '".date("Y-m-d H:i:s")."' 
+				WHERE `opd_device_id` = '$opd_device_id' ;";
+				
+				$save_i = $dbi->query($sql_advice_i);
+			}else{
+
+				$sql_advice_i = "INSERT INTO `opd_advice_form_i` 
+				(`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`, `advice_organ`, `advice_painscore1`, `advice_rx`, `advice_rxtime`, `advice_activetime`, `advice_painscore2`) 
+				VALUES 
+				(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_device_id', '$my_date_hn', '$officer', '".$_POST['advice_organ']."', '".$_POST['advice_painscore1']."', '".$_POST['advice_rx']."', '".$_POST['advice_rxtime']."', '".$_POST['advice_activetime']."', '".$_POST['advice_painscore2']."');";
+				$save_i = $dbi->query($sql_advice_i);
 			}
 
-			if($display_advice=="form_j"){
+		}
+
+		if( strpos($display_advice, "form_j")!==false ){
+
+			$sql = "SELECT `id` FROM `opd_advice_form_j` WHERE `opd_device_id` = '$opd_device_id' ";
+			$q = $dbi->query($sql);
+			if($q->num_rows>0){
 				if(!empty($_POST['advice_inject1'])){
 					$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
 					$injectunit1=$_POST['advice_inject1_unit'];
@@ -527,7 +558,7 @@ if($_POST["cigarette"]=="1"){
 					$injectname1="";
 					$injectunit1="";
 				}	
-
+	
 				if(!empty($_POST['advice_inject2'])){
 					$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
 					$injectunit2=$_POST['advice_inject1_unit'];
@@ -542,48 +573,31 @@ if($_POST["cigarette"]=="1"){
 					$advice_inject3_name="";
 				}
 				
-				$sql_advice_j = "UPDATE `opd_advice_form_j` SET `advice_inject1`='".$_POST['advice_inject1']."',
-																`advice_inject1_name`='".$injectname1."',
-																`advice_inject1_unit`='".$injectunit1."',
-																`advice_inject2`='".$_POST['advice_inject2']."',
-																`advice_inject2_name`='".$injectname2."',
-																`advice_inject2_unit`='".$injectunit2."',
-																`advice_inject3`='".$_POST['advice_inject3']."',
-																`advice_inject3_name`='".$advice_inject3_name."',
-																`edit_by`='$officer',
-																`edit_time`= '".date("Y-m-d H:i:s")."' 
-				WHERE `opd_device_id` = '$opd_advice_id' ;";													
-				$save_j = $dbi->query($sql_advice_j);				
-			}			
-			
-			
-			
-
-		}else{
-			
-			$sql_advice = "INSERT INTO `opd_advice` (`id`, `date`, `hn`, `ptname`, `opd_id`, `thdatehn`, `officer`, `document`) 
-			VALUES 
-			(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_id', '$my_date_hn', '$officer', '$display_advice');";
-			$result_advice = Mysql_Query($sql_advice) or die("INSERT opd_advice ".Mysql_Error());
-			$opd_device_id = mysql_insert_id(); // คืนค่า id ที่ insert ล่าสุด
-			if($display_advice=="form_i"){
-				$sql_advice_i = "INSERT INTO `opd_advice_form_i` (`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`, `advice_organ`, `advice_painscore1`, `advice_rx`, `advice_rxtime`, `advice_activetime`, `advice_painscore2`) 
-				VALUES 
-				(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_device_id', '$my_date_hn', '$officer', '".$_POST['advice_organ']."', '".$_POST['advice_painscore1']."', '".$_POST['advice_rx']."', '".$_POST['advice_rxtime']."', '".$_POST['advice_activetime']."', '".$_POST['advice_painscore2']."');";
-				//echo $sql_advice_c;
-				$save_i = $dbi->query($sql_advice_i);				
-			}
-			if($display_advice=="form_j"){
+				$sql_advice_j = "UPDATE `opd_advice_form_j` SET 
+				`advice_inject1`='".$_POST['advice_inject1']."',
+				`advice_inject1_name`='".$injectname1."',
+				`advice_inject1_unit`='".$injectunit1."',
+				`advice_inject2`='".$_POST['advice_inject2']."',
+				`advice_inject2_name`='".$injectname2."',
+				`advice_inject2_unit`='".$injectunit2."',
+				`advice_inject3`='".$_POST['advice_inject3']."',
+				`advice_inject3_name`='".$advice_inject3_name."',
+				`edit_by`='$officer',
+				`edit_time`= '".date("Y-m-d H:i:s")."' 
+				WHERE `opd_device_id` = '$opd_advice_id' ;";
+				$save_j = $dbi->query($sql_advice_j);
+			}else{
 				$injectname1="Rabies vaccine 0.5 ml M NO.".$_POST['advice_inject1_unit'];
 				$injectname2="Tetanus vaccine 0.5 ml M NO.".$_POST['advice_inject2_unit'];
-				$sql_advice_j = "INSERT INTO `opd_advice_form_j` (`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`,`advice_inject1`, `advice_inject1_name`, `advice_inject1_unit`, `advice_inject2`, `advice_inject2_name`, `advice_inject2_unit`, `advice_inject3`, `advice_inject3_name`) 
+				$sql_advice_j = "INSERT INTO `opd_advice_form_j` 
+				(`id`, `date`, `hn`, `ptname`, `opd_device_id`, `thdatehn`, `officer`,`advice_inject1`, `advice_inject1_name`, `advice_inject1_unit`, `advice_inject2`, `advice_inject2_name`, `advice_inject2_unit`, `advice_inject3`, `advice_inject3_name`) 
 				VALUES 
 				(NULL, NOW(), '$my_hn', '$my_ptname', '$opd_device_id', '$my_date_hn', '$officer', '".$_POST['advice_inject1']."','".$injectname1."', '".$_POST['advice_inject1_unit']."', '".$_POST['advice_inject2']."','".$injectname2."', '".$_POST['advice_inject2_unit']."', '".$_POST['advice_inject3']."','".$_POST['advice_inject3_name']."');";
-				//echo $sql_advice_j;
-				$save_j = $dbi->query($sql_advice_j);				
-			}			
-			
+				$save_j = $dbi->query($sql_advice_j);
+			}
+
 		}
+
 	}else{
 
 		$my_date_hn = date('Y-m-d').sprintf("%s", $_REQUEST['hn']);
@@ -2424,20 +2438,20 @@ mmHg </td>
 					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe และคำแนะนำก่อนผ่าตัด</legend>
 					<table>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a" onClick="togglediv2('showform_i')"><label for="form_a">Refer</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e" onClick="togglediv2('showform_i')"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_e" value="form_e"><label for="form_e">คำแนะนำผู้ป่วยก่อนส่องตรวจลำไส้ใหญ่</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b" onClick="togglediv2('showform_i')"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f" onClick="togglediv2('showform_i')"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_b" value="form_b"><label for="form_b">คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_f" value="form_f"><label for="form_f">คำแนะนำผู้ป่วยก่อนส่องตรวจกระเพาะอาหาร</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c" onClick="togglediv2('showform_i')"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g" onClick="togglediv2('showform_i')"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_c" value="form_c"><label for="form_c">คำแนะนำผู้ป่วยมีอาการปวดท้องแบบบิด</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_g" value="form_g"><label for="form_g">คำแนะนำการปฏิบัติตัวก่อนผ่าตัด</label></div></td>
 						</tr>
 						<tr>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d" onClick="togglediv2('showform_i')"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
-							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_h" value="form_h" onClick="togglediv2('showform_i')"><label for="form_h">Sleep Test</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_d" value="form_d"><label for="form_d">คำแนะนำผู้ป่วยมีไข้</label></div></td>
+							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_h" value="form_h"><label for="form_h">Sleep Test</label></div></td>
 						</tr>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_i" value="form_i" onClick="togglediv('showform_i')"><label for="form_i">ผู้ป่วยมีอาการปวด</label></div></td>
