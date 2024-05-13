@@ -10,7 +10,7 @@ $db = Mysql::load();
  */
 
 
-$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66' ORDER BY `book`,`bill` ASC ";
+$sql = "SELECT * FROM `log_opcardchk` WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67' ORDER BY `book`,`bill` ASC ";
 // $sql = "SELECT * FROM `log_opcardchk` WHERE `log_id` = 1675";
 $db->select($sql);
 $items = $db->get_items();
