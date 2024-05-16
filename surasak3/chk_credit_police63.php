@@ -224,27 +224,27 @@ $doctor='ตรวจสุขภาพ';
  * สอบตำรวจ63 กับ สอบตำรวจ63_02
  */
 $part = urldecode($_GET['part']);
-if( $part == 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66' ){ 
+if( $part == 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67' ){ 
 
     $sql = "SELECT * 
     FROM `log_opcardchk` 
-    WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66' 
+    WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67' 
     AND `type` = '$type' 
     GROUP BY `log_hn` 
     ORDER BY `log_id` ASC";
     
 }
 
-if( $part == 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66' ){ 
+// if( $part == 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66' ){ 
 
-    $sql = "SELECT * 
-    FROM `log_opcardchk` 
-    WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66' 
-    AND `type` = '$type' 
-    GROUP BY `log_hn` 
-    ORDER BY `log_id` ASC";
+//     $sql = "SELECT * 
+//     FROM `log_opcardchk` 
+//     WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66' 
+//     AND `type` = '$type' 
+//     GROUP BY `log_hn` 
+//     ORDER BY `log_id` ASC";
     
-}
+// }
 
 $q = $dbi->query($sql);
 $rows = $q->num_rows;

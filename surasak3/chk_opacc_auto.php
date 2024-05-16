@@ -20,7 +20,7 @@ $depart = "OTHER";
 $detail = "ค่าบริการตรวจสุขภาพตำรวจ";
 $price = 880.00;
 $paid  = 880.00;
-$idname='นางสาว นทีพร เรียงสุข';
+$idname='นางสาว พวงเพ็ชร  หอมแก่นจันทร์';
 $credit="ตรวจสุขภาพตำรวจ";
 
 foreach ($items as $key => $value) {
@@ -30,12 +30,12 @@ foreach ($items as $key => $value) {
     $billno = $value['book'].'/'.$value['bill'];
     $moneyType = $value['type'];
 
-    $Thidate2 = (date('Y')+543).substr($value['log_datechk'],4);
+    list($date, $time) = explode(' ', $value['log_datechk']);
+    list($year, $month, $day) = explode('-', $date);
+    list($hour, $min, $sec) = explode('-', $time);
 
-    // var_dump($Thidate2);
-    // exit;
-
-    // $Thidate2 = $value['log_datechk'];
+    // $Thidate2 = (date('Y')+543).substr($value['log_datechk'],4);
+    $Thidate2 = ($year+543)."-$month-$day 10:00:00";
     
     $sqlOpacc = "INSERT INTO `opacc` ( 
         `date` , `txdate` , `hn` , `depart` , `detail` , 
