@@ -54,9 +54,9 @@ if($q->num_rows > 0 )
 {
     
     ?>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเข้าเป็นนักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2567 ( ผลการตรวจร่างกายทั่วไป )</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเข้าเป็นนักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2566 ( ผลการตรวจร่างกายทั่วไป )</h3>
     <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 16 กรกฎาคม 2567</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 16 พฤษภาคม 2567</h3>
     <table width="100%" class="chk_table">
         <thead>
         <tr style="text-align: center;">
