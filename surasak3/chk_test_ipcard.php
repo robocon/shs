@@ -56,7 +56,7 @@ if( $action == false ){
             <tr>
                 <th rowspan="2">#</th>
                 <th colspan="3">ข้อมูลที่ตรวจสอบ</th>
-                <th colspan="7">ข้อมูลจากฐานข้อมูล</th>
+                <th colspan="9">ข้อมูลจากฐานข้อมูล</th>
             </tr>
             <tr>
                 <th>เลขบัตรประชาชน</th>
@@ -67,6 +67,8 @@ if( $action == false ){
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>HN</th>
+                <th>อายุปัจจุบัน</th>
+                <th>วันเกิด</th>
                 <th>หมายเหตุ</th>
                 <th></th>
             </tr>
@@ -87,7 +89,8 @@ if( $action == false ){
 
                 ++$i;
             
-                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex`, idguard, idguard2
+                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex`, idguard, idguard2, 
+                `dbirth`, TIMESTAMPDIFF(YEAR,toEn(`dbirth`),NOW()) AS `age`
                 FROM `opcard` 
                 WHERE `idcard` = '$idcard' ";
                 $db->select($sql);
@@ -114,6 +117,8 @@ if( $action == false ){
                     <td><?=$user['name'];?></td>
                     <td><?=$user['surname'];?></td>
                     <td><?=$user['hn'];?></td>
+                    <td><?=$user['age'];?></td>
+                    <td><?=$user['dbirth'];?></td>
                     <td><?=$user['idguard'];?></td>
                     <td><?=$user['idguard2'];?></td>
                 </tr>

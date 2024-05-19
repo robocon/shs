@@ -56,7 +56,7 @@ if( $action == false ){
             <tr>
                 <th rowspan="2">#</th>
                 <th colspan="3">ข้อมูลที่ตรวจสอบ</th>
-                <th colspan="5">ข้อมูลจากฐานข้อมูล</th>
+                <th colspan="7">ข้อมูลจากฐานข้อมูล</th>
             </tr>
             <tr>
                 <th>HN</th>
@@ -67,6 +67,8 @@ if( $action == false ){
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>เลขบัตรประชาชน</th>
+                <th>อายุปัจจุบัน</th>
+                <th>วันเกิด</th>
             </tr>
         <?php
 
@@ -74,15 +76,15 @@ if( $action == false ){
         foreach ( $items as $key => $item ) {
 
             list($hn, $name, $surname) = explode(',', $item,3);
-
             if( !empty($hn) ){
 
                 ++$i;
 
-                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex` FROM `opcard` WHERE `hn` = '$hn' ";
+                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex`,`dbirth`,
+                TIMESTAMPDIFF(YEAR,toEn(`dbirth`),NOW()) AS `age`
+                FROM `opcard` WHERE `hn` = '$hn' ";
                 $db->select($sql);
-                $user = $db->get_item();
-
+                $user = $db->get_item()
                 ?>
                 <tr>
                     <td><?=$i;?></td>
@@ -94,6 +96,8 @@ if( $action == false ){
                     <td><?=$user['name'];?></td>
                     <td><?=$user['surname'];?></td>
                     <td><?=$user['idcard'];?></td>
+                    <td><?=$user['age'];?></td>
+                    <td><?=$user['dbirth'];?></td>
                 </tr>
                 <?php
             }
