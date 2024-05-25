@@ -434,6 +434,11 @@ if($opcard_rows > 0 )
                         {
                             echo "P";
                         }
+                        else
+                        {
+                            echo $labItems['KETU']['result'];
+                        }
+                        
                     }
                     ?>
                 </td>
