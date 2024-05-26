@@ -300,11 +300,10 @@ $nPhaok = 'p';
 		}
 		////////////////////////////////จบคิดเงิน 50 บาท
 		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=erask.php\">";
-                            }
-else {
-   print"ไม่พบ HN $hn ในเวชระเบียน";
+	} else {
+		print"ไม่พบ HN $hn ในเวชระเบียน";
 	}
-    }
+}
 
 
 //ตรวจดูว่าลงทะเบียนฝังเข็มหรือยังใน Opday2
@@ -368,7 +367,9 @@ if($count_opday2 == 0){
 */
 
    
-   }
-   include("unconnect.inc");
+}else{
+	echo '<div style="color:red;">กรุณาใส่ HN</div>';
+}
+include("unconnect.inc");
 ?>
 

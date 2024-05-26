@@ -11,6 +11,7 @@ $act = (!empty($_GET["act"])) ? sprintf("%s", $_GET["act"]) : '';
 
 if ($act == "search") {
 
+	$labnumber = substr($labnumber, 0, 9);
 	$sqlResulthead = "SELECT `labnumber` FROM `resulthead` WHERE `hn` = '$hn' AND `labnumber` = '$labnumber' LIMIT 1";
 	$qResulthead = $dbi->query($sqlResulthead);
 	$rows = $qResulthead->num_rows;
@@ -41,7 +42,7 @@ if ($act == "search") {
 		$res = array('status'=>200,'data'=>array('url'=>$url,'detail'=>''));
 
 	}else{
-		$res = array('status'=>400,'errors'=>array('status'=>400,'detail'=>'ไม่พบข้อมูล'));
+		$res = array('status'=>400,'errors'=>array('status'=>400,'detail'=>'ไม่พบข้อมูล','error'=>$labnumber));
 	}
 
 	echo json_encode($res);

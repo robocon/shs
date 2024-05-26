@@ -333,7 +333,38 @@ $opergcode='x';
 
 
 
+if($_POST['case']=="EX16 ตรวจสุขภาพ" || $_POST['case']=="EX26 ตรวจสุขภาพประจำปี"){
+	
+////*runno ตรวจสุขภาพ*/////////
+$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+	$result = mysql_query($query) or die("Query failed");
+	
+	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+		if (!mysql_data_seek($result, $i)) {
+			echo "Cannot seek to row $i\n";
+			continue;
+		}
+			if(!($row = mysql_fetch_object($result)))
+			continue;
+	}
+	
+	$nPrefix=$row->prefix;
+	$yearcheck="25".$nPrefix;
+////*runno ตรวจสุขภาพ*/////////	
 
+	$sqlchk1="select row_id,register_date from register_chkup_soldier where yearcheck='$yearcheck' and idcard='".$cIdcard."'";
+	//echo $sqlchk1;
+	$querychk1=mysql_query($sqlchk1);
+	$numchk1=mysql_num_rows($querychk1);
+	if($numchk1 > 0){  //พบข้อมูล
+	list($register_chkup_id,$register_date)=mysql_fetch_array($querychk1);
+		if($register_date="0000-00-00 00:00:00"){
+			$datetime=date("Y-m-d H:i:s");
+			$edit="UPDATE register_chkup_soldier SET register_type='".$_POST['case']."', register_date='$datetime' WHERE row_id='$register_chkup_id'";
+			$edit_query=mysql_query($edit);
+		}	
+	}	
+}
 
 
 if($_POST['case']=="EX46 ตรวจสุขภาพประกันสังคม" && $_POST["chkup50"]=="chkup50"){
@@ -1329,7 +1360,7 @@ a:hover, a:active {
 <a target="_blank" href="opdprint.php">พิมพ์บัตรตรวจโรค,บัตรผู้ป่วย</a>
 &nbsp;&nbsp;&nbsp;
 <a target="_blank" href="opdprint1bc.php">พิมพ์บัตรผู้ป่วย</a>&nbsp;&nbsp;&nbsp;
-<a target="_blank" href="opdprint6.php">พิมพ์ กท.16/1</a>&nbsp;&nbsp;&nbsp;
+<a target="_blank" href="opdprint6.php?cHn=<?=$cHn;?>">พิมพ์ กท.16/1</a>&nbsp;&nbsp;&nbsp;
 
 <a target="_blank" href="edprint.php">พิมพ์ใบใช้ยานอกบัญชี</a>
 &nbsp;&nbsp;&nbsp;<a target="_blank" href="FR-IPC-001_8.php?cHn=<?=$cHn;?>">แบบการรับนอนรักษาต่อ</a><br><br>

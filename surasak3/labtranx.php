@@ -38,13 +38,20 @@ return $ageY;
 	$room = ""; //ห้องผู้ป่วย
 	$clinicalinfo = "";
 
-   //item count
+   //item count นับจำนวน item 
    $item=0;
-   for ($n=1; $n<=$x; $n++){
-        If (!empty($aDgcode[$n])){
-             $item++;
+   $detaultPart = '';
+   $defaultDepart = '';
+	for ($n = 1; $n <= $x; $n++) {
+		if (!empty($aDgcode[$n])) { 
+
+			$labcare = mysql_fetch_assoc(mysql_query("SELECT `depart`,`part` FROM `labcare` WHERE `code` = '".$aDgcode[$n]."' LIMIT 0,1 "));
+			$detaultPart = $labcare['part'];
+   			$defaultDepart = $labcare['depart'];
+
+			$item++;
+		}
 	}
-            };
 
     include("connect.inc");
 
@@ -144,6 +151,13 @@ if($cDepart == 'XRAY'){
 
 }
 
+if(empty($cDepart)){
+	$cDepart = $defaultDepart;
+}
+if(empty($aDetail)){
+	$aDetail = 'ค่าบริการทางการแพทย์';
+}
+
 //insert data into depart
    $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright,lab,staf_massage)VALUES('$nRunno','$Thidate','$cPtname','$cHn','$cAn','$cDoctor','$cDepart','$item','$aDetail', '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright','$nLab','$cstaf_massage');";
 
@@ -173,10 +187,15 @@ if($cDepart == 'XRAY'){
 //insert data into patdata
     for ($n=1; $n<=$x; $n++){
          If (!empty($aDgcode[$n])){
-                $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright,film_size)
-                                 VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
-                                 '$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright','$aFilmsize[$n]');";
-                $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+
+			if(empty($aPart[$n])){
+				$aPart[$n] = $detaultPart;
+			}
+
+			$query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,idno,ptright,film_size)
+			VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aDgcode[$n]','$aTrade[$n]','$aAmount[$n]',
+			'$aMoney[$n]','$aYprice[$n]','$aNprice[$n]','$cDepart','$aPart[$n]','$idno','$cPtright','$aFilmsize[$n]');";
+			$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
         }
         }
 

@@ -169,7 +169,8 @@ LIKE '%R33%' OR ptright LIKE '%R56%'
 	OR `ptright` LIKE '%R36%' 
 	OR `ptright` LIKE '%R06%' 
 	OR `ptright` LIKE '%R40%' 
-	OR `ptright` LIKE '%R54%')";
+	OR `ptright` LIKE '%R54%'
+	OR `ptright` LIKE '%R59%')";
 }
 
 

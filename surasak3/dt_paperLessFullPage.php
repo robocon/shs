@@ -13,6 +13,7 @@ curl_setopt( $ch, CURLOPT_POST, 1);
 curl_setopt( $ch, CURLOPT_POSTFIELDS, array('file'=>$file, 'sOfficer'=>$sOfficer, 'hn'=>$hn, 'date'=>date('c'), 'action' => 'view')); 
 curl_setopt( $ch, CURLOPT_HTTPHEADER, array( 'Content-type: multipart/form-data' )); 
 curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt( $ch, CURLOPT_TIMEOUT_MS, 2000);
 $result = curl_exec( $ch );
 curl_close($ch);
 ?>

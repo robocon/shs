@@ -43,13 +43,18 @@ $dbi->set_charset('utf8');
         $date = $_POST['findDate'];
         $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname` 
         FROM ( 
-            SELECT `hn`, `row_id`, `date`, `depart`, `detail`, `price`, vn
+            /*SELECT `hn`, `row_id`, `date`, `depart`, `detail`, `price`, vn
             FROM `opacc` 
             WHERE `date` LIKE '$date%' 
             AND ( `depart` = '' OR `depart` IS NULL ) 
-            AND `credit` != 'ยกเลิก'
+            AND `credit` != 'ยกเลิก'*/
+            SELECT hn,row_id,date,depart,detail,price,tvn,cashok 
+            FROM depart 
+            WHERE date LIKE '$date%' 
+            AND ( `depart` = '' OR `depart` IS NULL ) 
         ) AS a 
         LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` ";
+        
         $q = $dbi->query($sql);
         ?>
         <table class="chk_table">
@@ -62,6 +67,7 @@ $dbi->set_charset('utf8');
                 <td>depart</td>
                 <td>detail</td>
                 <td>price</td>
+                <td>cashok</td>
             </tr>
         <?php
         while ($item = $q->fetch_assoc()) {
@@ -76,6 +82,7 @@ $dbi->set_charset('utf8');
                 <td><?=$item['depart'];?></td>
                 <td><?=$item['detail'];?></td>
                 <td><?=$item['price'];?></td>
+                <td><?=$item['cashok'];?></td>
             </tr>
             <?php
         }

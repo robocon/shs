@@ -17,9 +17,9 @@ $doctor = sprintf("%s", ($_POST['doctor'] ? $_POST['doctor'] : '' ));
 
 $apiUrl = "http://192.168.131.240:8081/api/getopcard?opcard_id=$hn";
 
-if(!empty($depart)){
+// if(!empty($depart)){
 	$apiUrl .= "&clinic=$depart";
-}
+// }
 
 if(!empty($year) && empty($month)){
 	$apiUrl .= "&date=$year";
@@ -29,9 +29,9 @@ if(!empty($year) && !empty($month)){
 	$apiUrl .= "&date=$year-$month";
 }
 
-if(!empty($doctor)){
+// if(!empty($doctor)){
 	$apiUrl .= "&doctor=$doctor";
-}
+// }
 
 if(!empty($sub_clinic)){
 	$apiUrl .= "&sub_clinic=$sub_clinic";
@@ -70,7 +70,7 @@ if($qSubclinic->num_rows>0){
 
 // $dataType = "API";
 $switchData = "DB";
-if($switchData==="API"){ 
+if($switchData==="API"){
 
 	$ch = curl_init(); 
 	curl_setopt($ch, CURLOPT_URL, $apiUrl);
@@ -111,7 +111,7 @@ if($switchData==="API"){
 	SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn' 
 	) AS a LEFT JOIN `digital_opcard` AS b ON b.`opcard_id` = a.`row_id` 
 	$actual_date $whereDoctor $whereSubclinic 
-	ORDER BY FIELD(upload_type, 'summary','normal','other',''),b.row_id DESC";
+	ORDER BY FIELD(upload_type, 'summary','normal','other',''),b.`actual_date` DESC";
 	$qDitial = $dbi->query($sqlDigitalOpcard);
 	$newItems = array();
 	if($qDitial->num_rows>0){

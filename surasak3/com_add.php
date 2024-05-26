@@ -249,7 +249,7 @@ if($q->num_rows>0){
 		</tr>
 		<tr>
 			<td align="right"><b>ชื่อ - นามสกุล : <br>(ผู้แจ้งเรื่อง) </b></td>
-			<td><input name="user" type="text" class="forntsarabun" size="20"value="<?= $sOfficer; ?>"></td>
+			<td><input name="user" type="text" class="forntsarabun" size="20" value="<?= $sOfficer; ?>" readonly></td>
 			<td width="144" align="right"><b>โทรศัพท์ภายใน : </b></td>
 			<td width="583">
 				<input name="phone" id="phone" type="text" class="forntsarabun"size="20" value="<?=$phone;?>" >

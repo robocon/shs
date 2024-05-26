@@ -47,49 +47,36 @@ while (list ($credit,$duplicate) = mysql_fetch_row ($result)) {
   " </tr>\n<br>");
 }
 
+/**
+ * @todo 
+ * 1.) กำหนด $appd1 ให้ตรงกับวันที่ต้องการออกรายงาน
+ * 2.) กำหนด $part ให้ตรงกับ code ในตาราง chk_company_list 
+ */
+if( $appd1 == '2567-05-16' ){
 
-if( $appd1 == '2566-07-10' ){
+  $log_datechk = ($thiyr-543).'-'.$appmo.'-'.$appdate;;
+  $part = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67';
 
-  $part = urlencode('ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (1)66');
-  $type1 = urlencode('เงินสด');
-  $appd = urlencode($appd);
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type1.'">ตรวจสุขภาพตำรวจ - เงินสด</a> จำนวน = 285 รายการ<br>';
+  $sql = "SELECT `log_datechk`,`type`,COUNT(`log_id`) AS `log_count`
+  FROM `log_opcardchk` 
+  WHERE log_datechk LIKE '$log_datechk%' AND `log_part` = '$part' 
+  GROUP BY `type`;";
 
-  $type2 = urlencode('เงินโอน');
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type2.'">ตรวจสุขภาพตำรวจ - เงินโอน</a> จำนวน = 16 รายการ';
+  $q = mysql_query($sql);
+  if(mysql_num_rows($q) > 0){ 
 
+    $partEncode = urlencode($part);
+
+    while($a = mysql_fetch_assoc($q)){
+      $typeEncode = urlencode($a['type']);
+      $count = $a['log_count'];
+
+      echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$partEncode.'&type='.$typeEncode.'">ตรวจสุขภาพตำรวจ - '.$a['type'].'</a> จำนวน = '.$count.' รายการ<br>';
+
+    }
+  }
 }
 
-if( $appd1 == '2566-07-11' ){
-
-  $part = urlencode('ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 (2)66');
-  $type1 = urlencode('เงินสด');
-  $appd = urlencode($appd);
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type1.'">ตรวจสุขภาพตำรวจ - เงินสด</a> จำนวน = 191 รายการ<br>';
-
-  $type2 = urlencode('เงินโอน');
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'&type='.$type2.'">ตรวจสุขภาพตำรวจ - เงินโอน</a> จำนวน = 38 รายการ';
-
-}
-
-/*
-if( $appd1 == '2562-12-22' ){
-  $part = urlencode('สอบตำรวจ63');
-  $appd = urlencode($appd);
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;417 &nbsp;&nbsp;รายการ';
-
-}elseif ( $appd1 == '2562-12-23' ) {
-  $part = urlencode('สอบตำรวจ63_02');
-  $appd = urlencode($appd);
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;281 &nbsp;&nbsp;รายการ';
-
-}elseif ( $appd1 == '2563-01-06' ) {
-  $part = urlencode('สอบตำรวจ63_03');
-  $appd = urlencode($appd);
-  echo '<a target="_BLANK" href="chk_credit_police63.php?repdate='.$appd.'&part='.$part.'">ตรวจสุขภาพตำรวจ ตรวจซ้ำ</a>&nbsp;&nbsp;จำนวน&nbsp; = &nbsp;11 &nbsp;&nbsp;รายการ';
-
-}
-*/
 
 include("unconnect.inc");
 ?>

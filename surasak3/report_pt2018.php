@@ -1,5 +1,12 @@
 <?php
-
+/*
+แก้ชื่อแพทย์แผนไทยมีไฟล์ตามนี้
+report_ptmonth.php
+report_pt2018.php
+report_ptformonth.php
+report_ptmonth2.php
+report_ptformonth2.php
+ */
 include 'bootstrap.php';
 
 function sign(){
@@ -21,7 +28,7 @@ function sign(){
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
-            <td align="left"><div style="margin-left:10px;">(อัจฉรา&nbsp;&nbsp;&nbsp;&nbsp;อวดห้าว)</div></td>
+            <td align="left"><div style="margin-left:10px;">(ประภัสสร&nbsp;&nbsp;&nbsp;&nbsp;เครืออินทร์)</div></td>
         </tr>
         <tr>
             <td>&nbsp;</td>

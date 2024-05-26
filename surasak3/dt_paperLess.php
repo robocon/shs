@@ -58,19 +58,16 @@ if($congenital_disease == ""){
 	// แพ้ยา
 	$i=0;
 	$list = array();
-	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
+	$sql = "SELECT `tradname` FROM `drugreact` WHERE `hn` = '$hn' AND `advreact` <> '' GROUP BY `tradname`";
 	$result = Mysql_Query($sql);
 	$numdrugreact=mysql_num_rows($result);
-	if($numdrugreact==0){
-		$drugreact_disease ="ปฎิเสธการแพ้ยา";
-	}else{	
+	$drugreact_disease ="ปฎิเสธการแพ้ยา";
+	if($numdrugreact>0){
 		while($arr = Mysql_fetch_assoc($result)){
 			array_push($list ,$arr["tradname"]);
 		}
-		$list_drug = implode(", ",$list);
-		$drugreact_disease .= $list_drug;
+		$drugreact_disease = implode(", ",$list);
 	}
-
 ?>
 <style>
 	body, h3{

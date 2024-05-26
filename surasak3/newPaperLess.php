@@ -334,15 +334,17 @@ if(empty($hn) OR empty($sOfficer)){
 		}
 
 		async function sendLog(url, dataPost){
-
-			// http://192.168.129.143/shslog/index.php
-			await fetch('http://192.168.129.143/shslog/index.php', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-				},
-				body: dataPost
-			});
+			try{
+				await fetch('http://192.168.129.143/shslog/index.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+					},
+					body: dataPost
+				});
+			}catch(error){
+				console.log(error)
+			}
 		}
 	</script>
 </body>
