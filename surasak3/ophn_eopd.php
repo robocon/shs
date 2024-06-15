@@ -14,7 +14,7 @@ session_unregister("Ptright1");
 //    session_destroy();
 
 if (empty($_SESSION["sOfficer"])) {
-    echo "Session หมดอายุ กรุณา Login ใหม่อีกครั้งเพื่อใช้งาน";
+    echo "<div style='font-weight:bold;font-size:24px;color:red;'>Session หมดอายุ กรุณา Login ใหม่อีกครั้งเพื่อใช้งาน</div>";
     echo "<br>";
     echo '<a href="../sm3.php">&gt;&gt;&nbsp;Login&nbsp;&lt;&lt;</a>';
     exit;
@@ -27,9 +27,19 @@ $disableUser = array(
     'ตรวจสุขภาพประกันสังคม'
 );
 if (in_array($_SESSION["sOfficer"], $disableUser) === true) {
-    echo "ผู้ใช้งานถูกปิดกั้นการเข้าถึงเนื่องจากไม่สามารถระบุตัวตนได้ หากท่านยืนยันที่จะใช้ user ดังกล่าว กรุณาติดต่อผู้อำนวยการโรงพยาบาลเพื่อทำเรื่องการเข้าถึงข้อมูล";
+    echo "<div align='center' style='font-size:64px;color:red;font-weight:bold;margin-top:30px;'><img src='images/not-approved.png'><br>ผู้ใช้งานถูกปิดกั้นการเข้าถึง<br>เนื่องจากไม่สามารถระบุตัวตนได้ หากท่านยืนยันที่จะใช้ user ดังกล่าว กรุณาติดต่อผู้อำนวยการโรงพยาบาลเพื่อทำเรื่องการเข้าถึงข้อมูล</div>";	
     exit;
 }
+
+
+$query1 = "SELECT * FROM inputm WHERE name = '".$_SESSION["sOfficer"]."' and level_eopd='y'";
+//echo $query1;
+$result = mysql_query($query1) or die("Query failed");
+$num = mysql_num_rows($result);
+if($num < 1){
+    echo "<div align='center' style='font-size:64px;color:red;font-weight:bold;margin-top:30px;'><img src='images/not-approved.png'><br>ผู้ใช้งานถูกปิดกั้นการเข้าถึง</br>กรุณาติดต่อแอดมินของแผนก/หัวหน้างาน<br>เพื่อเปิดการเข้าถึงข้อมูล...!!</div>";
+    exit;	
+}	
 ?>
 <style>
     body {
