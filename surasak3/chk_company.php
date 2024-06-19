@@ -235,6 +235,10 @@ if ( $views == 'search' ) {
         </tr>
         <?php
         $i = 1;
+
+        // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
+        $expense_list = array('เทศบาลเมืองพิชัย 67');
+
         foreach ($items as $key => $item) {
 
             $companyCode = $item['code']; 
@@ -268,6 +272,13 @@ if ( $views == 'search' ) {
                         <!-- <li>
                             <a href="chk_load_lab.php?id=<?=$item['id'];?>" target="_blank">พิมพ์ผลแลป METAMP</a>
                         </li> -->
+                        <?php 
+                        if(in_array($item['code'], $expense_list)===true){
+                            ?>
+                            <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank">บันทึกค่าใช้จ่าย อปท.</a>
+                            <?php
+                        }
+                        ?>
                     </ol>
                 </td>
                 <td style="vertical-align: top;">
