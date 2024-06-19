@@ -15,6 +15,9 @@ include("connect.inc");
         font-family: "TH SarabunPSK";
         font-size: 20px;
     }
+    .content_detail img{
+        max-height: 300px;
+    }
 </style>
 <a target="_self"  href="com_support.php" class="forntsarabun" style="text-decoration:none;">&lt;&lt;&nbsp;กลับหน้าเมนูแจ้งซ่อม</a>
 <hr>
@@ -41,7 +44,7 @@ if (mysql_num_rows($result)) {
             "  <td BGCOLOR=F5DEB3>$row</td>\n" .
             "  <td BGCOLOR=F5DEB3>$depart</td>\n" .
             "  <td BGCOLOR=F5DEB3>$head</a></td>\n" .
-            "  <td BGCOLOR=F5DEB3 style=\"overflow: auto;\">" . html_entity_decode($detail) . "</td>\n" .
+            "  <td BGCOLOR=F5DEB3 style=\"overflow: auto;\" class=\"content_detail\">" . html_entity_decode($detail) . "</td>\n" .
             "  <td BGCOLOR=F5DEB3>$date</td>\n" .
             "  <td BGCOLOR=F5DEB3>$user1</td>\n" .
             "  <td BGCOLOR=F5DEB3>$tel</td>\n" .
