@@ -20,11 +20,11 @@ if($action==='save'){
     $sql = "INSERT INTO `inputm` ( 
         `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, 
         `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, 
-        `report_tnb`) 
+        `report_tnb`,`last_login`, `idcard`, `level_eopd`) 
     VALUES ( 
         NULL, ?, ?, ?, ?, 'Y', 
         NULL, NULL, '', '', ?, ?, 
-        '' 
+        '', '', '', 'y'
     );";
     
     $thDate = date('Y-m-d H:i:s');

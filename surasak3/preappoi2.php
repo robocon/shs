@@ -562,7 +562,7 @@ function listb(number){
 	}
 	else if(document.getElementById("detail").value=='FU05 ผ่าตัด'){
 		document.getElementById("room").selectedIndex=3;
-		document.getElementById("setor").style.display='block';
+		document.getElementById("setor").style.display='';
 	}
 	else if(document.getElementById("detail").value=='FU06 สูติ'){
 		document.getElementById("room").selectedIndex=8;
@@ -789,15 +789,15 @@ if($date_en < date('Y-m-d')){
 	<?php
 }
 ?>
-<TABLE border="0">
+<TABLE border="0" width="100%">
 <TR valign="top">
 	<TD>
 <form  name="form1" method="POST" action="appinsert1.php" onSubmit="return checktext();">
 <font face="Angsana New" size = '4'>กรุณาระบุการนัดมาเพื่อ เพื่อที่แผนกทะเบียนจะทำการค้นหา OPD Card ได้ถูกต้อง
 <br>
 
-<table border="0">
-  <tr valign="top"><td><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
+<table border="0" width="100%">
+  <tr valign="top"><td width="11%" align="right"><font face="Angsana New">นัดมาเพื่อ&nbsp;&nbsp;&nbsp;</font></td>
     <td width="311"><font face="Angsana New">
       <select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
       <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
@@ -807,7 +807,7 @@ if($date_en < date('Y-m-d')){
       if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){
 	  $app = "select * from applist where status='Y' and applist ='มวลกระดูก'";
 	  }else{
-	  $app = "select * from applist where status='Y' ";
+	  $app = "select * from applist where status='Y' and appvalue NOT LIKE 'FU54%' ";
 	  }
 	  $row = mysql_query($app);
 
@@ -894,7 +894,7 @@ if($date_en < date('Y-m-d')){
 			<?php 
 			if($_SESSION['smenucode']=='ADMPT' OR $_SESSION['smenucode']=='ADM'){
 				?>
-				<select name="ptHelper" id="ptHelper" onchange="addToDetail2()">
+				<select name="ptHelper" id="ptHelper" onchange="addToDetail2()" style="width: 200px;">
 					<option value="">---- เลือกข้อมูล ----</option>
 					<option value="กรุณา ใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้น (ที่ไม่ใช่รองเท้าคัชชู) มาด้วยทุกครั้ง">กรุณา ใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้น (ที่ไม่ใช่รองเท้าคัชชู) มาด้วยทุกครั้ง</option>
 					<option value="โครงการสูงวัยไม่ล้ม ครั้งที่">โครงการสูงวัยไม่ล้ม ครั้งที่</option>
@@ -921,9 +921,9 @@ if($date_en < date('Y-m-d')){
 </tr>
 
   <tr style="display:none" id="setor">
-    <td>&nbsp;</td>
-    <td colspan="2">
-    <fieldset><legend>ใบเซตผ่าตัด</legend>
+    <td colspan="3">
+    <fieldset style="display:inline-block;">
+		<legend>ใบเซตผ่าตัด</legend>
     <table width="363">
         <tr><td width="64">วัน/เดือน/ปี</td><td width="287"><input type="text" name="date_surg" id="date_surg" size="10">
           เวลา
@@ -959,11 +959,12 @@ if($date_en < date('Y-m-d')){
           <textarea name="ordetail4" cols="30" rows="4" id="ordetail4"></textarea>
         </font></td></tr>
     </table>
-    </fieldset>    </td>
-    </tr>
+    </fieldset>
+	</td>
+</tr>
 
   <tr>
-    <td width="115"><font face="Angsana New" size = '4'><font face="Angsana New">ยื่นใบนัดที่</font></font></td>
+    <td width="115" align="right"><font face="Angsana New" size = '4'><font face="Angsana New">ยื่นใบนัดที่</font></font></td>
     <td colspan="2"><font face="Angsana New" size = '4'><font face="Angsana New">
 
 		<?php 
@@ -974,7 +975,9 @@ if($date_en < date('Y-m-d')){
 			'MD007 ณรงค์ ปรีดาอนันทสุข',
 			'MD008 อรรณพ ธรรมลักษมี',
 			'MD100 เชาวรินทร์ อุ่นเครือ',
-			'MD171 วีรวัฒน์ เลิศฤทธิ์เดชา'
+			'MD171 วีรวัฒน์ เลิศฤทธิ์เดชา',
+			'MD190 วิรดา  อนันตวงศ์',
+			'MD200 เมนัญชญา  พงษ์ไพรเจริญ'
 		);
 
 		$preOpd = '';
@@ -1103,7 +1106,7 @@ if($date_en < date('Y-m-d')){
   <td colspan="3"><div id="list_patho"></div></td>
 </tr>
 <tr>
-  <td><font face="Angsana New">เอกซเรย์&nbsp;</font></td>
+  <td align="right"><font face="Angsana New">เอกซเรย์&nbsp;</font></td>
   <td colspan="2"><font face="Angsana New">
     <select size="1" name="xray">
       <option selected value="NA">&#3652;&#3617;&#3656;&#3617;&#3637;&#3585;&#3634;&#3619;&#3648;&#3629;&#3585;&#3595;&#3648;&#3619;&#3618;&#3660;</option>
@@ -1144,20 +1147,20 @@ if($date_en < date('Y-m-d')){
     </font></td>
   </tr>
 <tr>
-  <td><font face="Angsana New">อื่นๆ&nbsp;&nbsp;</font></td>
+  <td align="right"><font face="Angsana New">อื่นๆ&nbsp;&nbsp;</font></td>
   <td colspan="2"><font face="Angsana New">
     <input type="text" name="other" size="30" /></font></td>
   </tr>
  <tr>
-  <td>ข้อควรปฏิบัติก่อนพบแพทย์</td>
+  <td align="right">ข้อควรปฏิบัติก่อนพบแพทย์</td>
   <td colspan="2"><font face="Angsana New" size = '4'>
   <? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
      <select size="1" name="advice" id="advice">
       <option value="ไม่มี" selected="selected">ไม่มี</option
       ></select> 
   <? }else{ ?>
-    <select size="1" name="advice" id="advice">
-      <option selected value="NA">ไม่มี</option>
+    <select size="1" name="advice" id="advice" style="width: 200px;">
+      <option selected value="NA">--- กรุณาเลือก ---</option>
       <option value="ไม่มี" <? if($_SESSION["smenucode"]=="ADMPT" OR $_SESSION["smenucode"]=="ADMXR"){ echo "selected";}?>>ไม่มี</option>
       <option>ไม่ต้องงดน้ำหรืออาหาร</option>
       <option>งดน้ำหวานและอาหารหลังเวลา 20:00 น.(ให้ดื่มน้ำเปล่าได้)</option>
@@ -1181,70 +1184,51 @@ if($date_en < date('Y-m-d')){
 	  <option value="งดน้ำและอาหารหลังเวลา 12.00 น. เริ่มกลั้นปัสสาวะหลังเวลา 15.00 น.">งดน้ำและอาหารหลังเวลา 12.00 น. เริ่มกลั้นปัสสาวะหลังเวลา 15.00 น.</option>
 	  <option value="งดน้ำและอาหารหลัง 11.00 น.">งดน้ำและอาหารหลัง 11.00 น.</option>
 	  <option value="งดน้ำและอาหารหลัง 11.00 น. หลัง 14.00 น.เริ่มกลั้นปัสสาวะ">งดน้ำและอาหารหลัง 11.00 น. หลัง 14.00 น.เริ่มกลั้นปัสสาวะ</option>
+	<option value="กรุณาสวมใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้นที่ไม่ใช่คัทชูมาด้วยทุกครั้ง">กรุณาสวมใส่รองเท้าผ้าใบ หรือรองเท้ารัดส้นที่ไม่ใช่คัทชูมาด้วยทุกครั้ง</option>
+	<option value="นัดให้ยากระดูกพรุนครั้งที่.....เจาะเลือดเวลา07.00น. ทำมวลกระดูกซ้ำเวลา08.30น. ก่อนพบแพทย์">นัดให้ยากระดูกพรุนครั้งที่.....เจาะเลือดเวลา07.00น. ทำมวลกระดูกซ้ำเวลา08.30น. ก่อนพบแพทย์</option>
+	<option value="ท่านที่ส่งอุจจาระแล้ว สำหรับสิทธิ์เบิกจ่ายตรง /เบิกครังจังหวัด กรุณาอยู่รอเจ้าหน้าที่ห้องพยาธิเรียกเพื่อรูดบัตรประชาชนก่อนกลับทุกครั้ง">ท่านที่ส่งอุจจาระแล้ว สำหรับสิทธิ์เบิกจ่ายตรง /เบิกครังจังหวัด กรุณาอยู่รอเจ้าหน้าที่ห้องพยาธิเรียกเพื่อรูดบัตรประชาชนก่อนกลับทุกครั้ง</option>
       </select>
       <? } ?>
   </font></td>
   </tr>
 
 <tr>
-  <td><font face="Angsana New">แผนกที่นัด</font></td>
-  <td><font face="Angsana New">
-    <select size="1" name="depcode" id="depcode">
+  <td align="right"><font face="Angsana New">แผนกที่นัด</font></td>
+  <td><font face="Angsana New">	
+  <select size="1" name="depcode" id="depcode">
     <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){?>
-      <option selected value="NA">&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3649;&#3612;&#3609;&#3585;&#3607;&#3637;&#3656;&#3609;&#3633;&#3604;&gt;</option>
+      <option selected value="NA">--- เลือกแผนกที่นัด ---</option>
       <? } ?>
-      <option>U09&nbsp;
-        ห้องตรวจโรค</option>
-      <option>U01&nbsp;
-        &#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3594;&#3634;&#3618;</option>
-      <option>U02&nbsp;
-        &#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3627;&#3597;&#3636;&#3591;</option>
-	  <option>U08&nbsp;&nbsp;หอผู้ป่วยรวม</option>
-	  <option>U03&nbsp;
-        &#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3626;&#3641;&#3605;&#3636;&#3609;&#3619;&#3637;</option>
-      <option>U19&nbsp;
-        &#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3614;&#3636;&#3648;&#3624;&#3625;3</option>
-      <option>U04&nbsp;
-        &#3627;&#3629;&#3612;&#3641;&#3657;&#3611;&#3656;&#3623;&#3618;&#3627;&#3609;&#3633;&#3585;ICU</option>
-      <option>U05&nbsp;
-        &#3627;&#3657;&#3629;&#3591;&#3612;&#3656;&#3634;&#3605;&#3633;&#3604;</option>
-      <option>U06&nbsp; &#3623;&#3636;&#3626;&#3633;&#3597;&#3597;&#3637;</option>
-      <option>U12&nbsp;
-        &#3649;&#3612;&#3609;&#3585;&#3652;&#3605;&#3648;&#3607;&#3637;&#3618;&#3617;</option>
-      <option>U10&nbsp;
-        &#3649;&#3612;&#3609;&#3585;&#3614;&#3618;&#3634;&#3608;&#3636;</option>
-      <option <?=($_SESSION["smenucode"]=="ADMXR") ? 'selected="selected"' : '';?>>U11&nbsp;
-        &#3649;&#3612;&#3609;&#3585;&#3648;&#3629;&#3585;&#3595;&#3660;&#3648;&#3619;&#3618;&#3660;</option>
-      <option>U13&nbsp;
-        &#3585;&#3629;&#3591;&#3607;&#3633;&#3609;&#3605;&#3585;&#3619;&#3619;&#3617;</option>
-      <option>U16&nbsp;
-        &#3627;&#3657;&#3629;&#3591;&#3593;&#3640;&#3585;&#3648;&#3593;&#3636;&#3609;</option>
-      <option>U19&nbsp; กองตรวจโรคผู้ป่วยสูติ</option>
-      <option <? if($_SESSION["smenucode"]=="ADMPT"){ echo "selected";}?>>U20&nbsp; กายภาพ</option>
-      <option>U21&nbsp; นวดแผนไทย</option>
-      <option>U22&nbsp; ห้องตรวจจักษุ(ตา)</option>
-      <option>U23&nbsp; ห้องตรวจเวชศาสตร์ฯ</option>
-      <option>U24&nbsp; คลินิกฝังเข็ม</option>
-      <option>U25&nbsp; CT Scan</option>
-       <option>U26&nbsp; คลินิกโรคไต</option>
-       <option>U27&nbsp; OPD PM&R</option>
-	<? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
-       <option selected="selected">U28&nbsp; ตรวจมวลกระดูก</option>
-     <? } ?>
-	 <option>U29&nbsp;แผนกตรวจสุขภาพ</option>
-    </select>
+    <?
+      $dep = "select * from departments  WHERE depstatus='y' order by depcode ";
+	  $row = mysql_query($dep);
+	  while($result = mysql_fetch_array($row)){
+		  $str="";
+		  if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ 
+		  	if($result['depcode']=="U28"){
+				$str = " Selected ";
+			}	
+		  }
+		  $depcode=$result['depcode']." ".$result['depname'];
+?>
+    <option value="<?=$depcode;?>" <?=$str;?>><?=$depcode?></option>
+    <?
+	  }
+	?>
+	</select>
+	
   </font></td>
   <td>&nbsp;</td>
 </tr>
 <tr>
-  <td><font face="Angsana New">เบอร์โทรศัพท์ผู้ป่วย</font></td>
+  <td align="right"><font face="Angsana New">เบอร์โทรศัพท์ผู้ป่วย</font></td>
   <td><font face="Angsana New">
     <input type="text" name="telp" size="20" value="<?=$rowT['phone']?>" />
   </font></td>
   <td>&nbsp;</td>
 </tr>
 <tr>
-  <td colspan="2"><font face="Angsana New">*ถ้าผู้ป่วยเปลี่ยนแปลงหมายเลขโทรศัพท์ให้กรอกหมายเลขโทรศัพท์ใหม่แทนหมายเลขเดิม</font></td>
+  <td colspan="2"><font face="Angsana New" style="color: red;">* ถ้าผู้ป่วยเปลี่ยนแปลงหมายเลขโทรศัพท์ให้กรอกหมายเลขโทรศัพท์ใหม่แทนหมายเลขเดิม</font></td>
   <td>&nbsp;</td>
 </tr>
 <tr>
@@ -1265,7 +1249,7 @@ if($date_en < date('Y-m-d')){
 	
 	<?php
 $i=0;
-$sql2 = "select * from labcare where lab_list !=0 order by lab_list asc";
+$sql2 = "select * from labcare where labstatus='Y' and lab_list !=0 order by lab_list asc";
 $rows2=mysql_query($sql2);
 while($result2=mysql_fetch_array($rows2)){	
 	$list_lab_check[$i]["code"] = $result2['code'];
