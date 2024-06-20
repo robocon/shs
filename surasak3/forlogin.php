@@ -161,3 +161,10 @@ $nPrefix = $row->prefix;
 	
 	include("unconnect.inc");
 ?>
+
+<style type="text/css" media="screen">
+	body{
+		font-family: THSarabunPSK;
+		font-size:20px;
+	}
+</style>	

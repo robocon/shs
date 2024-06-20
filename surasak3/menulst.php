@@ -65,7 +65,24 @@ if($nrow3==0){
 if($_SESSION["smenucode"] == "ADMSUR"){
 	include("alert_surgery_set.php");
 }	
-
+?>
+<style type="text/css">
+	*{
+		font-family: "TH SarabunPSK";
+	}
+@font-face {
+ font-family: THSarabunPSK;
+ src: url("/sm3/surasak3/THSarabun.eot") /* EOT file for IE */
+}
+@font-face {
+ font-family: THSarabunPSK;
+ src: url("/sm3/surasak3/THSarabun.ttf") /* TTF file for CSS3 browsers */
+}
+tr:hover td{
+	background-color: #007649;
+}
+</style>
+<?php
 
 echo "
 <FORM METHOD=POST ACTION=\"\">
@@ -297,6 +314,11 @@ if($rows){///  ถ้ามี rows
 }/// ปิด if rows		  
 
 }
+?>
+<tr>
+	<td style="text-align:center; font-size:24px;"><b>เมนูสารบัญทั่วไป</b></td>
+</tr>
+<?php
 	//สารบัญทั่วไป ทุกคนดูได้
 	$query = "SELECT menu,script,target FROM menulst WHERE status='Y' and menucode = 'ALL' ORDER BY menu_sort ASC ";
 	$result = mysql_query($query) or die( mysql_error($Conn) );
@@ -359,16 +381,7 @@ if($rows){///  ถ้ามี rows
 	   session_unregister("sLevel");
             }
 ?>
-<style type="text/css" media="screen">
-@font-face {
- font-family: THSarabunPSK;
- src: url("/sm3/surasak3/THSarabun.eot") /* EOT file for IE */
-}
-@font-face {
- font-family: THSarabunPSK;
- src: url("/sm3/surasak3/THSarabun.ttf") /* TTF file for CSS3 browsers */
-}
-</style>
+
 <script language="javascript" src="js/jquery-1.8.0.min.js"></script>
 <script>
 function Realtime(){
@@ -413,7 +426,7 @@ th, td {
   padding:3px;
 }
 .txt{
-	font-family:THSarabunPSK;
+	font-family:"TH SarabunPSK";
 	font-size:20px;	
 }	
 </style>

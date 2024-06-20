@@ -2,9 +2,10 @@
 session_start();
 ?>
 <style type="text/css">
-    body,
-    td,
-    th {
+    body{
+		background-color: #E9F7EF;	
+	}	
+    td,th {
         font-family: TH SarabunPSK;
         font-size: 20px;
     }
@@ -54,7 +55,7 @@ session_start();
                     <p style="margin:0;"><input type="checkbox" name="" id="showPass" onclick="showPassword(this.checked)"><label for="showPass">แสดงรหัสผ่าน</label></p>
                     <p><b>คำแนะนำในการตั้งรหัสผ่าน</b></p>
                     <ul>
-                        <li>รหัสผ่านควรมีความยาว 6ตัวอักษรขึ้นไป</li>
+                        <li>รหัสผ่านควรมีความยาว 8 ตัวอักษรขึ้นไป</li>
                         <li>รหัสผ่านควรมีตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และ อักขระพิเศษ(!@#$%^&*()_+)ผสมกัน</li>
                     </ul>
                 </td>
@@ -96,8 +97,8 @@ session_start();
             alert('กรุณายืนยันรหัสผ่านใหม่');
             fn.newpw2.focus();
             return false;
-        }else if(fn.newpw1.value.length<6){
-            alert('รหัสผ่านควรมีความยาว 6ตัวอักษรขึ้นไป');
+        }else if(fn.newpw1.value.length<8){
+            alert('รหัสผ่านควรมีความยาว 8 ตัวอักษรขึ้นไป');
             return false;
         }else if(fn.newpw1.value!==fn.newpw2.value){
             alert('รหัสผ่านใหม่ไม่ตรงกัน กรุณาตรวจสอบข้อมูลอีกครั้ง');

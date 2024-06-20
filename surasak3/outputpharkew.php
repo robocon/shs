@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 
@@ -9,18 +7,18 @@ include("connect.inc");
 
 $today=date("d-m-").(date("Y")+543);	
 $today1=(date("Y")+543).date("-m-d");	
-    $month["01"] = "¡°√“§¡";
-    $month["02"] = "°ÿ¡¿“æ—π∏Ï";
-    $month["03"] = "¡’π“§¡";
-    $month["04"] = "‡¡…“¬π";
-    $month["05"] = "æƒ…¿“§¡";
-    $month["06"] = "¡‘∂ÿπ“¬π";
-    $month["07"] = "°√°Ø“§¡";
-    $month["08"] = " ‘ßÀ“§¡";
-    $month["09"] = "°—π¬“¬π";
-    $month["10"] = "µÿ≈“§¡";
-    $month["11"] = "æƒ»®‘°“¬π";
-    $month["12"] = "∏—π«“§¡";
+    $month["01"] = "‡∏°‡∏Å‡∏£‡∏≤‡∏Ñ‡∏°";
+    $month["02"] = "‡∏Å‡∏∏‡∏°‡∏†‡∏≤‡∏û‡∏±‡∏ô‡∏ò‡πå";
+    $month["03"] = "‡∏°‡∏µ‡∏ô‡∏≤‡∏Ñ‡∏°";
+    $month["04"] = "‡πÄ‡∏°‡∏©‡∏≤‡∏¢‡∏ô";
+    $month["05"] = "‡∏û‡∏§‡∏©‡∏†‡∏≤‡∏Ñ‡∏°";
+    $month["06"] = "‡∏°‡∏¥‡∏ñ‡∏∏‡∏ô‡∏≤‡∏¢‡∏ô";
+    $month["07"] = "‡∏Å‡∏£‡∏Å‡∏è‡∏≤‡∏Ñ‡∏°";
+    $month["08"] = "‡∏™‡∏¥‡∏á‡∏´‡∏≤‡∏Ñ‡∏°";
+    $month["09"] = "‡∏Å‡∏±‡∏ô‡∏¢‡∏≤‡∏¢‡∏ô";
+    $month["10"] = "‡∏ï‡∏∏‡∏•‡∏≤‡∏Ñ‡∏°";
+    $month["11"] = "‡∏û‡∏§‡∏®‡∏à‡∏¥‡∏Å‡∏≤‡∏¢‡∏ô";
+    $month["12"] = "‡∏ò‡∏±‡∏ô‡∏ß‡∏≤‡∏Ñ‡∏°";
 
 
 
@@ -31,11 +29,12 @@ $refresh = "<meta http-equiv=\"refresh\" content=\"1;URL=".$_SERVER['PHP_SELF'].
 	 $cTdatehn = $today.$_POST["cTdatehn"];
     $cTdatehn1 =$_POST["cTdatehn"];
 
-$sql = "Select pharin,kewphar,item,ptname,hn,tvn,pharout From dphardep WHERE hn = '".$cTdatehn1."' AND  date LIKE '$today1%' limit 1 ";
+$sql = "Select row_id,pharin,kewphar,item,ptname,hn,tvn,pharout From dphardep WHERE hn = '".$cTdatehn1."' AND  date LIKE '$today1%' limit 1 ";
 	$result = Mysql_Query($sql);
 
 	if(Mysql_num_rows($result) > 0){
-		list($pharin,$kewphar,$item,$ptname,$hn,$tvn,$pharout) = Mysql_fetch_row($result);
+		list($id,$pharin,$kewphar,$item,$ptname,$hn,$tvn,$pharout) = Mysql_fetch_row($result);
+
 
 
     if(empty($pharout)){
@@ -61,39 +60,57 @@ $starttime = $pharin;
 
 
 //	echo "<body Onload='window.print();'>";
-			echo "<font face='Angsana New' size='5'><center>®Ë“¬¬“ <br></FONT>";
-	      // echo "<font face='Angsana New' size='5'>‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ ≈”ª“ß<br>";
-	   	   echo " <font face='Angsana New' size='5'>$today&nbsp;&nbsp;$todaytime<br>"; 
-	       echo "<font face='Angsana New' size='20'><b>™◊ËÕ &nbsp;$ptname <br> <font face='Angsana New' size='4'>&nbsp;HN:$hn&nbsp;VN:$tvn</b><br>";
-	   	   echo " <font face='Angsana New' size='20'>$kewphar<BR>";
-		   echo " <font face='Angsana New' size='15'>**„™È‡«≈“√Õ√—∫¬“**";
-		      echo " <font face='Angsana New' size='15'>$time3</center>";
-			
+		//echo "<center>‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤ <br></FONT>";
+	    // echo "‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏•‡∏≥‡∏õ‡∏≤‡∏á<br>";
+	   	//echo " $today&nbsp;&nbsp;$todaytime<br>"; 
+	    //echo "<font face='Angsana New' size='20'><b>‡∏ä‡∏∑‡πà‡∏≠ &nbsp;$ptname <br> <font face='Angsana New' size='4'>&nbsp;HN:$hn&nbsp;VN:$tvn</b><br>";
+	   	//echo " <font face='Angsana New' size='20'>$kewphar<BR>";
+		// echo " <font face='Angsana New' size='15'>**‡πÉ‡∏ä‡πâ‡πÄ‡∏ß‡∏•‡∏≤‡∏£‡∏≠‡∏£‡∏±‡∏ö‡∏¢‡∏≤**";
+		//echo " <font face='Angsana New' size='15'>$time3</center>";
+		echo "<div align='center' style='font-family:Tahoma; font-size:64px; margin-top:40px;'><strong>‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ô‡∏≠‡∏Å</strong></div>";
+		echo "<div align='center' style='font-family:Tahoma; font-size:64px; margin-top:30px;'><strong>$hn</strong></div>";	
+		echo "<div align='center' style='font-family:Tahoma; font-family:Tahoma; font-size:64px; margin-top:30px;'><strong>$ptname</strong></div>";
 
-$query11 = "INSERT INTO soundpha(kew,status,hn)VALUES('$kewphar','n','$hn');";
-$result = mysql_query($query11) or die("Query failed,cannot insert into soundpha");
+
+		$query11 = "INSERT INTO soundpha(kew,status,hn)VALUES('$kewphar','n','$hn');";
+		$result = mysql_query($query11) or die("Query failed,cannot insert into soundpha");
 
 
- 
+		///// ‡∏™‡πà‡∏á‡∏Ñ‡πà‡∏≤‡πÑ‡∏õ‡πÅ‡∏à‡πâ‡∏á‡πÄ‡∏ï‡∏∑‡∏≠‡∏ô Line OA
+		$page = 'phar.php';
+		$url = 'http://192.168.131.220/exten_sm3_notify_pt_manual/'.$page.'?id='.$id.'&hn='.$hn;
+		$ch = curl_init($url);
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($ch);
+
+		if (curl_errno($ch)) {
+			echo 'Curl error: ' . curl_error($ch);
+		} else {
+			echo $response;
+		}
+
+		curl_close($ch);	
 
 	   }else{
 
 
 	$query ="update dphardep SET pharout1 ='".date("H:i:s")."' WHERE hn = '".$cTdatehn1."' AND  date LIKE '$today1%'  ";
 		$result = mysql_query($query) or die("Query failed,update thaywin");
-  echo "<font face='Angsana New' size='6'><center><b>™◊ËÕ &nbsp;$ptname <br> <font face='Angsana New' size='5'>&nbsp;HN:$hn&nbsp;VN:$tvn</b><br>";
-		echo "<font face='Angsana New' size='15'><center>‰¥È√—∫¬“‰ª‡√’¬∫√ÈÕ¬<br>"; 
-        echo "‡«≈“ $pharout</center>"; 
-		
-		$query11 = "INSERT INTO soundpha(kew,status,hn)VALUES('$kewphar','n','$hn');";
-$result = mysql_query($query11) or die("Query failed,cannot insert into soundpha");
+		//echo "<font face='Angsana New' size='6'><center><b>‡∏ä‡∏∑‡πà‡∏≠ &nbsp;$ptname <br> &nbsp;HN:$hn&nbsp;VN:$tvn</b><br>";
+		//echo "<font face='Angsana New' size='15'><center>‡πÑ‡∏î‡πâ‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡πÑ‡∏õ‡πÄ‡∏£‡∏µ‡∏¢‡∏ö‡∏£‡πâ‡∏≠‡∏¢<br>"; 
+        //echo "‡πÄ‡∏ß‡∏•‡∏≤ $pharout</center>"; 
+		echo "<div align='center' style='font-family:Tahoma; font-size:64px; margin-top:40px;'><strong>‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ô‡∏≠‡∏Å</strong></div>";
+		echo "<div align='center' style='font-family:Tahoma; font-size:64px; margin-top:30px;'><strong>$hn</strong></div>";	
+		echo "<div align='center' style='font-family:Tahoma; font-family:Tahoma; font-size:64px; margin-top:30px;'><strong>$ptname</strong></div>";
+		echo "<div align='center' style='font-family:Tahoma; font-family:Tahoma; font-size:32px; margin-top:30px;color:red;'>***** ‡πÄ‡∏Ñ‡∏¢‡∏•‡∏á‡πÄ‡∏ß‡∏•‡∏≤‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤‡πÑ‡∏õ‡πÅ‡∏•‡πâ‡∏ß *****</div>";
 
 
 
 }
 
 	}else{
-		echo "<font face='Angsana New' size='15'><center>‰¡Ë¡’À¡“¬‡≈¢√—∫¬“π’È</center>"; 
+		echo "<font face='Angsana New' size='15'><center>‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏´‡∏°‡∏≤‡∏¢‡πÄ‡∏•‡∏Ç‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡∏ô‡∏µ‡πâ</center>"; 
 		echo "<embed src=''soundkewpha/001.wma' width='0' height='0' ></embed>";	
 
 	}
@@ -102,20 +119,23 @@ $result = mysql_query($query11) or die("Query failed,cannot insert into soundpha
 	exit();
 
 }
+
+
+
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head >
-    <title>∑¥ Õ∫</title>
+    <title>‡πÅ‡∏™‡∏î‡∏á‡∏ú‡∏•‡∏Ñ‡∏¥‡∏ß‡∏£‡∏±‡∏ö‡∏¢‡∏≤</title>
     <script type="text/javascript" >
         function date_time(id) {
             date = new Date;
             year = date.getFullYear();
             month = date.getMonth();
-            months = new Array('¡°√“§¡', '°ÿ¡¿“æ—π∏Ï', '¡’π“§¡', '‡¡…“¬π', 'æƒ…¿“§¡', '¡‘∂ÿπ“¬π', '°√°Æ“§¡', ' ‘ßÀ“§¡', '°—π¬“¬π', 'µÿ≈“§¡', 'æƒ»®‘°“¬π', '∏—π«“§¡');
+            months = new Array('‡∏°‡∏Å‡∏£‡∏≤‡∏Ñ‡∏°', '‡∏Å‡∏∏‡∏°‡∏†‡∏≤‡∏û‡∏±‡∏ô‡∏ò‡πå', '‡∏°‡∏µ‡∏ô‡∏≤‡∏Ñ‡∏°', '‡πÄ‡∏°‡∏©‡∏≤‡∏¢‡∏ô', '‡∏û‡∏§‡∏©‡∏†‡∏≤‡∏Ñ‡∏°', '‡∏°‡∏¥‡∏ñ‡∏∏‡∏ô‡∏≤‡∏¢‡∏ô', '‡∏Å‡∏£‡∏Å‡∏é‡∏≤‡∏Ñ‡∏°', '‡∏™‡∏¥‡∏á‡∏´‡∏≤‡∏Ñ‡∏°', '‡∏Å‡∏±‡∏ô‡∏¢‡∏≤‡∏¢‡∏ô', '‡∏ï‡∏∏‡∏•‡∏≤‡∏Ñ‡∏°', '‡∏û‡∏§‡∏®‡∏à‡∏¥‡∏Å‡∏≤‡∏¢‡∏ô', '‡∏ò‡∏±‡∏ô‡∏ß‡∏≤‡∏Ñ‡∏°');
             d = date.getDate();
             day = date.getDay();
-            days = new Array('Õ“∑‘µ¬Ï', '®—π∑√Ï', 'Õ—ß§“√', 'æÿ∏', 'æƒÀ— ¥’', '»ÿ°√Ï', '‡ “√Ï');
+            days = new Array('‡∏≠‡∏≤‡∏ó‡∏¥‡∏ï‡∏¢‡πå', '‡∏à‡∏±‡∏ô‡∏ó‡∏£‡πå', '‡∏≠‡∏±‡∏á‡∏Ñ‡∏≤‡∏£', '‡∏û‡∏∏‡∏ò', '‡∏û‡∏§‡∏´‡∏±‡∏™‡∏î‡∏µ', '‡∏®‡∏∏‡∏Å‡∏£‡πå', '‡πÄ‡∏™‡∏≤‡∏£‡πå');
             h = date.getHours();
             if (h < 10) {
                 h = "0" + h;
@@ -145,71 +165,61 @@ $result = mysql_query($query11) or die("Query failed,cannot insert into soundpha
 </html>
 <html>
 <head>
-<title>≈ß‡«≈“√—∫¬“¥È«¬  HN ºŸÈªË«¬</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874">
+<title>‡∏•‡∏á‡πÄ‡∏ß‡∏•‡∏≤‡∏£‡∏±‡∏ö‡∏¢‡∏≤‡∏î‡πâ‡∏ß‡∏¢  HN ‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="css/backoffice.css" rel="stylesheet" type="text/css">
 <meta http-equiv="refresh" content="30;URL=<?php echo $_SERVER['PHP_SELF'];?>">
 </head>
-<body onLoad="document.getElementById('cTdatehn').focus();" onclick="document.getElementById('cTdatehn').focus();">
-<?php
+<style>
+body,td,th {
+	font-family:Tahoma;
+	font-size: 36px;
+	font-weight:bold;	
+}
+table {
+  border-collapse: collapse;
+  width: 98%;
+}
 
-   // echo "«—π∑’Ë ".date("d")." ".$month[date("m")]." ".(date("Y")+543)." ";
-//	echo " $today1";
-    echo "<font size='3' color='#ff0000'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈ß‡«≈“®Ë“¬¬“ºŸÈªË«¬¥È«¬  HN ºŸÈªË«¬</font>&nbsp;&nbsp; <a target=bank  href='phas.php'>‡ª‘¥‡ ’¬ßæŸ¥</a> <a target=_self  href='../nindex.htm'>&lt;&lt;‰ª‡¡πŸ............</a> ";
-    
+th, td {
+  text-align: left;
+  padding: 20px;
+}
+		
+tr:nth-child(even) {
+  background-color: #FDEDEC;
+} 
+.txt {
+	font-family: TH SarabunPSK;
+	font-size: 20px;
+} 
+</style>
+<body onLoad="document.getElementById('cTdatehn').focus();" onclick="document.getElementById('cTdatehn').focus();">
+<?php    
 $today=(date("Y")+543).date("-m-d");
 $N='N';
 $todaytime=date("H:i:s");	
 ?>
-
 <FORM METHOD=POST ACTION="<?php echo $_SERVER['PHP_SELF'];?>">
-	<TABLE>
-		<TR>
-			<TD>HN&nbsp;:&nbsp;</TD>
-			<TD><INPUT ID="cTdatehn" TYPE="text" NAME="cTdatehn"></TD>
-		</TR>
-	</TABLE>
+<div align="right" style="margin-right:20px;font-size:20px;">HN : <INPUT ID="cTdatehn" TYPE="text" NAME="cTdatehn" class="txt"></div>
 </FORM>
 <?php
-/*
-function strtime($time){
-
-		$subtime = explode(":",$time);
-		$rt = mktime($subtime[0],$subtime[1],$subtime[2],date("m"),date("d"),date("Y"));
-
-	return  $rt;
-}
-*/
-
-
-
-
-$tk='∑§';
-
-    $query = "SELECT chktranx,date,ptname,hn,an,price,tvn,ptright,kew,pharout,doctor,pharin,pharout1,kewphar FROM dphardep WHERE date LIKE '$today1%' and pharout <> ''  and kewphar <> '' and stkcutdate <> '' and kewphar like '$tk%'  and dr_cancle 	is null order by pharout DESC  limit 2 ";
-
-    $result = mysql_query($query) or die("Query failed1111");
-	if(Mysql_num_rows($result) > 0){
-		
-		
-		
+$tk='‡∏ó‡∏Ñ';
+    $query = "SELECT chktranx,date,ptname,hn,an,price,tvn,ptright,kew,pharout,doctor,pharin,pharout1,kewphar FROM dphardep WHERE date LIKE '$today1%' and pharout <> ''  and kewphar <> '' and stkcutdate <> '' and kewphar like '$tk%'  and dr_cancle 	is null order by pharout DESC  limit 3";
+    //echo $query;
+	$result = mysql_query($query) or die("Query failed1111");
+	if(Mysql_num_rows($result) > 0){		
 ?>
-<table  align="center" style="font-family: Angsana New; font-size: 25px;">
+<div style="margin-top:-70px;">
+<table  align="center" cellpadding="10">
  <tr>
-	<th bgcolor="ffffff" colspan="9"  ><font size='8' color='#ff0000'><B><?php echo "√“¬™◊ËÕ∑’Ë°”≈—ß®Ë“¬¬“¢≥–π’È  ";?> </B></th>
-  </tr>
+	<th bgcolor="ffffff" colspan="9"  ><strong style='font-size:40px; color:#ff0000;'><?php echo "‡∏£‡∏≤‡∏¢‡∏ä‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡∏£‡∏±‡∏ö‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£‡∏ó‡∏µ‡πà‡∏Å‡∏≥‡∏•‡∏±‡∏á‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤‡∏Ç‡∏ì‡∏∞‡∏ô‡∏µ‡πâ  ";?> </strong></th>
+  </tr> 
  <tr>
- <th bgcolor="6495ED"><font size='4' >§‘«</th>	
- <th bgcolor="6495ED">##</th>	
-	<th bgcolor="6495ED"><font size='4' >„∫∑’Ë</th>
-    <th bgcolor="6495ED">##</th>	
-	<th bgcolor="6495ED"><font size='4' >™◊ËÕ- °ÿ≈ §‘«∑À“√·≈–§√Õ∫§√—«</th>
-	
-	
-	 
-	  <th bgcolor="6495ED">##</th>
-  
-	   <th bgcolor="6495ED"><font size='4' >‡«≈“√Õ</th>
+	<th width="10%" bgcolor="#16A085">‡∏Ñ‡∏¥‡∏ß</th>	
+	<th width="10%" bgcolor="#16A085">‡πÉ‡∏ö‡∏ó‡∏µ‡πà</th>	
+	<th bgcolor="#16A085">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• <strong style='margin-left:30px;font-size:40px;color:#E74C3C;text-shadow: #FDEDEC 0.1em 0.1em 0.1em;background-color:#FFFFFF;border:3px solid #FFFFFF;'><i>&nbsp;&nbsp;‡∏Ñ‡∏¥‡∏ß‡∏ó‡∏´‡∏≤‡∏£/‡∏Ñ‡∏£‡∏≠‡∏ö‡∏Ñ‡∏£‡∏±‡∏ß&nbsp;&nbsp;</i></strong></th>
+	<th width="10%" bgcolor="#16A085">‡πÄ‡∏ß‡∏•‡∏≤‡∏£‡∏≠</th>
   </tr>
 
 <?php
@@ -219,6 +229,8 @@ $tk='∑§';
     while (list ($chktranx,$date,$ptname,$hn,$an,$price,$tvn,$ptright,$kew,$pharout,$doctor,$pharin,$pharout1,$kewphar) = mysql_fetch_row ($result)) {
         $time=substr($thidate,11);
 
+		list($yot,$name,$surname)=explode(" ",$ptname);
+		$ptname=$yot."".$name." xxxxx";
 /*	if($pharout != ""){
 
 $subtime = explode(":",$pharin);
@@ -248,31 +260,19 @@ $starttime = $pharin;
 	}
 
         print (
-					" <tr>\n".
-					
-		
-			"  <td BGCOLOR=ffffff><font face='Angsana New' size ='20'><b>$kewphar</b></td>\n".
-		"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".	
-			
-						"  <td BGCOLOR=fffffff><font face='Angsana New' >$kew</td>\n".
-							"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' size ='11' ><b>$ptname</b></td>\n".
-					//"  <td BGCOLOR=ffffff><font face='Angsana New'>$hn</td>\n".
-					//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$ptright</td>\n".
-					//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$doctor</td>\n".
-					//"  <td BGCOLOR=ffffff><font face='Angsana New'>$pharin</td>\n".
-				//	"  <td BGCOLOR=ffffff><font face='Angsana New'>$pharout</td>\n".
-//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$pharout1</td>\n".
-		"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' size='5'><b>$time3</b></td>\n".
-					" </tr>\n");
+		" <tr>\n".
+		"  <td BGCOLOR=ffffff><b>$kewphar</b></td>\n".	
+		"  <td BGCOLOR=fffffff>$kew</td>\n".
+		"  <td BGCOLOR=fffffff><b>$ptname</b></td>\n".
+		"  <td BGCOLOR=fffffff><b>$time3</b></td>\n".
+		" </tr>\n");
        }
 	
 ?>
 
 
 </table>
-
+</div>
 
 <?php
 	}
@@ -294,28 +294,20 @@ function strtime($time){
 
 
 
-    $query = "SELECT chktranx,date,ptname,hn,an,price,tvn,ptright,kew,pharout,doctor,pharin,pharout1,kewphar FROM dphardep WHERE date LIKE '$today1%' and pharout <> ''  and kewphar <> '' and stkcutdate <> ''and kewphar NOT LIKE  '%∑§%'  and dr_cancle 	is null order by pharout DESC  limit 2 ";
-
+    $query = "SELECT chktranx,date,ptname,hn,an,price,tvn,ptright,kew,pharout,doctor,pharin,pharout1,kewphar FROM dphardep WHERE date LIKE '$today1%' and pharout <> ''  and kewphar <> '' and stkcutdate <> ''and kewphar NOT LIKE  '%‡∏ó‡∏Ñ%'  and dr_cancle 	is null order by pharout DESC  limit 3";
+	//echo $query;
     $result = mysql_query($query) or die("Query failed222");
 	if(Mysql_num_rows($result) > 0){
 		
 		
 		
 ?>
-<table  align="center" style="font-family: Angsana New; font-size: 25px;">
- 
+<table  align="center"> 
 <tr>
- <th bgcolor="6495ED"><font size='4' >§‘«</th>	
- <th bgcolor="6495ED">##</th>	
-	<th bgcolor="6495ED"><font size='4' >„∫∑’Ë</th>
-    <th bgcolor="6495ED">##</th>	
-	<th bgcolor="6495ED"><font size='4' >™◊ËÕ- °ÿ≈ §‘«∫ÿ§§≈∑—Ë«‰ª</th>
-	
-	
-	 
-	  <th bgcolor="6495ED">##</th>
-  
-	   <th bgcolor="6495ED"><font size='4' >‡«≈“√Õ</th>
+	<th width="10%" bgcolor="6495ED">‡∏Ñ‡∏¥‡∏ß</th>	
+	<th width="10%" bgcolor="6495ED">‡πÉ‡∏ö‡∏ó‡∏µ‡πà</th>	
+	<th bgcolor="6495ED">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏• <strong style='width:500px;margin-left:30px;font-size:40px;color:#E74C3C;text-shadow: #FDEDEC 0.1em 0.1em 0.1em;background-color:#FFFFFF;border:3px solid #FFFFFF;'><i>&nbsp;&nbsp;‡∏Ñ‡∏¥‡∏ß‡∏ö‡∏∏‡∏Ñ‡∏Ñ‡∏•‡∏ó‡∏±‡πà‡∏ß‡πÑ‡∏õ/‡∏≠‡∏∑‡πà‡∏ô‡πÜ &nbsp;&nbsp;</i></strong></th>
+	<th width="10%" bgcolor="6495ED">‡πÄ‡∏ß‡∏•‡∏≤‡∏£‡∏≠</th>
   </tr>
 
 <?php
@@ -325,6 +317,8 @@ function strtime($time){
     while (list ($chktranx,$date,$ptname,$hn,$an,$price,$tvn,$ptright,$kew,$pharout,$doctor,$pharin,$pharout1,$kewphar) = mysql_fetch_row ($result)) {
         $time=substr($thidate,11);
 
+		list($yot,$name,$surname)=explode(" ",$ptname);
+		$ptname=$yot."".$name." xxxxx";
 /*	if($pharout != ""){
 
 $subtime = explode(":",$pharin);
@@ -354,24 +348,12 @@ $starttime = $pharin;
 	}
 
         print (
-					" <tr>\n".
-					
-		
-			"  <td BGCOLOR=ffffff><font face='Angsana New' size ='20'><b>$kewphar</b></td>\n".
-		"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".	
-			
-						"  <td BGCOLOR=fffffff><font face='Angsana New' >$kew</td>\n".
-							"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' size ='11' ><b>$ptname</b></td>\n".
-					//"  <td BGCOLOR=ffffff><font face='Angsana New'>$hn</td>\n".
-					//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$ptright</td>\n".
-					//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$doctor</td>\n".
-					//"  <td BGCOLOR=ffffff><font face='Angsana New'>$pharin</td>\n".
-				//	"  <td BGCOLOR=ffffff><font face='Angsana New'>$pharout</td>\n".
-//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$pharout1</td>\n".
-		"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' size='5'><b>$time3</b></td>\n".
-					" </tr>\n");
+		" <tr>\n".
+		"  <td BGCOLOR=ffffff><b>$kewphar</b></td>\n".	
+		"  <td BGCOLOR=fffffff>$kew</td>\n".
+		"  <td BGCOLOR=fffffff><b>$ptname</b></td>\n".
+		"  <td BGCOLOR=fffffff><b>$time3</b></td>\n".
+		" </tr>\n");
        }
 	
 ?>
@@ -382,17 +364,12 @@ $starttime = $pharin;
 
 <?php
 	}
-	
-	
-	
-		$query3 = "select newpha from newpha  ";
+	$query3 = "select newpha from newpha  ";
 	$row3 = mysql_query($query3);
 	list($newpha) = mysql_fetch_array($row3);
 	
     include("unconnect.inc");
 ?>
-
-
 </body>
 <MARQUEE><STRONG><SPAN  <font color=#ffffff><font size="9"  face="THSarabunPSK"  color="#000099"> 
 ***<?php echo $newpha ?> ***</FONT></FONT></SPAN></STRONG></MARQUEE>
@@ -415,30 +392,25 @@ include("connect.inc");
 
 
 
-    $query = "SELECT chktranx,date,ptname,hn,an,price,tvn,ptright,kew,pharout,doctor,pharin,pharout1,kewphar FROM dphardep WHERE date LIKE '$today1%' and pharout <> ''  and kewphar <> ''  and dr_cancle 	is null order by pharout DESC  limit 20 ";
-
+    $query = "SELECT chktranx,date,ptname,hn,an,price,tvn,ptright,kew,pharout,doctor,pharin,pharout1,kewphar FROM dphardep WHERE date LIKE '$today1%' and pharout <> ''  and kewphar <> ''  and dr_cancle 	is null order by pharout DESC";
+	
     $result = mysql_query($query) or die("Query failed");
 	if(Mysql_num_rows($result) > 0){
 ?>
-<table  align="center" style="font-family: Angsana New; font-size: 25px;">
+<table  align="center">
  <tr>
-	<th bgcolor="ffffff" colspan="9"  ><font size='5' color='#ff0000'><B><?php echo "√“¬™◊ËÕºŸÈªË«¬∑’Ë®Ë“¬¬“·≈È«  ";?> </B></th>
+	<th bgcolor="ffffff" colspan="9"  ><font size='5' color='#ff0000'><B><?php echo "‡∏£‡∏≤‡∏¢‡∏ä‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏ó‡∏µ‡πà‡∏à‡πà‡∏≤‡∏¢‡∏¢‡∏≤‡πÅ‡∏•‡πâ‡∏ß  ";?> </B></th>
   </tr>
  <tr>
- <th bgcolor="6495ED"><font size='4' >§‘«</th>	
- <th bgcolor="6495ED">##</th>	
- <th bgcolor="6495ED"><font size='4' >‡«≈“‡√’¬°</th>	
- 
- <th bgcolor="6495ED">##</th>	
-	<th bgcolor="6495ED"><font size='4' >„∫∑’Ë</th>
-    <th bgcolor="6495ED">##</th>	
-	<th bgcolor="6495ED"><font size='4' >™◊ËÕ- °ÿ≈</th>
-	
-	
-	 
-	  <th bgcolor="6495ED">##</th>
-  
-	   <th bgcolor="6495ED"><font size='4' >‡«≈“√Õ</th>
+ <th width="10%" bgcolor="#EC7063">‡∏Ñ‡∏¥‡∏ß</th>	
+ <th width="5%" bgcolor="#EC7063">##</th>	
+ <th bgcolor="#EC7063">‡πÄ‡∏ß‡∏•‡∏≤‡πÄ‡∏£‡∏µ‡∏¢‡∏Å</th>	
+ <th bgcolor="#EC7063">##</th>	
+ <th bgcolor="#EC7063">‡πÉ‡∏ö‡∏ó‡∏µ‡πà</th>
+ <th bgcolor="#EC7063">##</th>	
+ <th bgcolor="#EC7063">‡∏ä‡∏∑‡πà‡∏≠-‡∏™‡∏Å‡∏∏‡∏•</th>
+ <th bgcolor="#EC7063">##</th>
+ <th bgcolor="#EC7063">‡πÄ‡∏ß‡∏•‡∏≤‡∏£‡∏≠</th>
   </tr>
 
 <?php
@@ -447,6 +419,8 @@ include("connect.inc");
 	$countavg = 0;
     while (list ($chktranx,$date,$ptname,$hn,$an,$price,$tvn,$ptright,$kew,$pharout,$doctor,$pharin,$pharout1,$kewphar) = mysql_fetch_row ($result)) {
         $time=substr($thidate,11);
+		list($yot,$name,$surname)=explode(" ",$ptname);
+		$ptname=$yot."".$name." xxxxx";		
 
 /*	if($pharout != ""){
 
@@ -477,25 +451,17 @@ $starttime = $pharin;
 	}
 
         print (
-					" <tr>\n".
-					
-		
-			"  <td BGCOLOR=ffffff><font face='Angsana New' size ='9'><b>$kewphar</b></td>\n".
-		"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".	
-				"  <td BGCOLOR=ffffff><font face='Angsana New' size ='6'><b>$pharout</b></td>\n".	
-			"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' >$kew</td>\n".
-							"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' size ='11' ><b>$ptname</b></td>\n".
-					//"  <td BGCOLOR=ffffff><font face='Angsana New'>$hn</td>\n".
-					//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$ptright</td>\n".
-					//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$doctor</td>\n".
-					//"  <td BGCOLOR=ffffff><font face='Angsana New'>$pharin</td>\n".
-				//	"  <td BGCOLOR=ffffff><font face='Angsana New'>$pharout</td>\n".
-//"  <td BGCOLOR=66CDAA><font face='Angsana New'>$pharout1</td>\n".
-		"  <td BGCOLOR=fffffff><font face='Angsana New' ></td>\n".
-					"  <td BGCOLOR=fffffff><font face='Angsana New' size='5'><b>$time3</b></td>\n".
-					" </tr>\n");
+		" <tr>\n".
+		"  <td BGCOLOR=ffffff><b>$kewphar</b></td>\n".
+		"  <td BGCOLOR=fffffff></td>\n".	
+		"  <td BGCOLOR=ffffff><b>$pharout</b></td>\n".	
+		"  <td BGCOLOR=fffffff></td>\n".
+		"  <td BGCOLOR=fffffff>$kew</td>\n".
+		"  <td BGCOLOR=fffffff></td>\n".
+		"  <td BGCOLOR=fffffff><b>$ptname</b></td>\n".
+		"  <td BGCOLOR=fffffff></td>\n".
+		"  <td BGCOLOR=fffffff><b>$time3</b></td>\n".
+		" </tr>\n");
        }
 	
 ?>
@@ -504,10 +470,6 @@ $starttime = $pharin;
 
 <?php
 	}
-	
-	
-
-	
     include("unconnect.inc");
 ?>
 

@@ -363,8 +363,14 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 
    include("unconnect.inc");
 //ใบแจ้งหนี้
-  print "ใบแจ้งหนี้<br>";
-     print "<font face='Angsana New'>$cPtname HN:$cHn VN:$tvn  สิทธิ: $cPtright<br>";
+if($cDepart=="EYE"){
+	print "<strong style='font-size:36px;'>ใบแจ้งหนี้ห้องจักษุ (ตา)</strong><br>";
+	print "<div style='font-size:28px;'>HN:$cHn VN:$tvn</div>";
+	print "<div style='font-size:28px;'>$cPtname   สิทธิ: $cPtright</div>";
+}else{
+	print "ใบแจ้งหนี้<br>";
+	print "<div>$cPtname HN:$cHn VN:$tvn  สิทธิ: $cPtright</div>";
+}	
 //    print "สิทธิ: $cPtright<br>";
     print "โรค:$cDiag แพทย์:$cDoctor<br>";
 //    print "แพทย์:$cDoctor<br>";
@@ -396,8 +402,15 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 			print"<B>(เบิกไม่ได้ $aSumNprice บาท )</B><br>";
 					   }
    print "จนท. $sOfficer";  
-      print "<font face='Angsana New'>&nbsp;&nbsp;$Thaidate<br>";
+      print "<div>&nbsp;&nbsp;$Thaidate</div>";
       print "***************************************************<br>";  
 	     print "<B>นำใบแจ้งหนี้ไปชำระเงินที่ห้องเก็บเงิน</B>";  
 //จบใบแจ้งหนี้
 ?>
+
+<style>
+body,td,th {
+	font-family:TH SarabunPSK;
+	font-size: 28px;
+}
+</style>
