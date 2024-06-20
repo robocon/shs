@@ -28,13 +28,13 @@ if($action==='import'){
             //     if(!empty($file)){
 
                     /**
-                     * $csv[0]  labnumber
-                     * $csv[1]  hn
-                     * $csv[2]  คำนำหน้า+ชื่อ
-                     * $csv[3]  นามสกุล
+                     * $csv[0]  labnumber (*)
+                     * $csv[1]  hn (*)
+                     * $csv[2]  คำนำหน้า+ชื่อ (*)
+                     * $csv[3]  นามสกุล (*)
                      * $csv[4]  เพศ
                      * $csv[5]  วดป เกิด 
-                     * $csv[6]  รายการตรวจ
+                     * $csv[6]  รายการตรวจ (*)
                      * $csv[7]  ประเภท อบจ / ประกันสังคม
                      */
 
@@ -162,6 +162,16 @@ require_once 'manual_expense_menu.php';
         </div>
 
         <img src="images/sso-import-lab.PNG" alt="">
+        <div>
+            <p><strong>ข้อมูลที่จำเป็นต้องกรอก</strong></p>
+            <ol>
+                <li>Lab Number</li>
+                <li>HN</li>
+                <li>คำนำหน้า+ชื่อ</li>
+                <li>นามสกุล</li>
+                <li>รายการที่ตรวจ</li>
+            </ol>
+        </div>
     </div>
 </div>
 

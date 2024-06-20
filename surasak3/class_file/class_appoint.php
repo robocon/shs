@@ -135,21 +135,24 @@ class Appoint extends DbConnect{
         $dt = new Doctor();
         $doctor = $dt->getDoctorFromCode($dt_doctor);
         $appoint_doctor = $doctor['name'];
-        $dr_position = $doctor['positon'];
+        $dr_position = $doctor['position'];
         $doctorcode = $doctor['doctorcode'];
 
         // หาตารางออกตรวจของแพทย์
         $all_days_exam = array();
         $days_exam = array();
         $items = $dt->getExamTableFromDoctorId($dt_doctor);
-        foreach ($items as $item) { 
-            $days_exam[] = $item;
-            $day_explode = explode(',', $item['day']);
-            foreach ($day_explode as $b) {
-                $all_days_exam[$b] = $b;
+        if(!$items['error'] && $items['error']!=400){
+            foreach ($items as $item) { 
+                $days_exam[] = $item;
+                $day_explode = explode(',', $item['day']);
+                foreach ($day_explode as $b) {
+                    $all_days_exam[$b] = $b;
+                }
             }
+            ksort($all_days_exam);
         }
-        ksort($all_days_exam);
+        
     
         /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 และกำหนด $diffMinute เป็น 15 */
         $diffHour = 0;
@@ -592,6 +595,8 @@ class Appoint extends DbConnect{
             ?>
         </table>
         <?php
+    }else{
+        ?>ไม่พบตารางออกตรวจของแพทย์ <br>ท่านสามารถเพิ่มข้อมูลได้ที่ <a target="_blank"  href="exam_doctor.php">จัดการตารางออกตรวจของแพทย์</a> <?php
     }
     ?>
     </div>
