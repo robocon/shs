@@ -254,7 +254,7 @@ if ( $views == 'search' ) {
             ?>
             <tr style="vertical-align:top;">
                 <td><?=$i;?></td>
-                <td><a href="chk_show_user.php?part=<?=$item['code'];?>" target="_blank" title="ดูรายชื่อทั้งหมด"><?=$item['name'];?></a></td>
+                <td><a href="chk_show_user.php?part=<?=urlencode($item['code']);?>" target="_blank" title="ดูรายชื่อทั้งหมด"><?=$item['name'];?></a></td>
                 <td><?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>

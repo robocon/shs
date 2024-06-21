@@ -67,6 +67,9 @@ if( $action == 'saveCinicalinfo' ){
     
     $msg = 'ข้อมูลไม่ถูกต้อง';
     if(!empty($labcode)){
+
+        $yearChk = get_year_checkup();
+
         $msg = 'บันทึกข้อมูลเรียบร้อย';
     
         $opc = new Opcard();
@@ -80,7 +83,7 @@ if( $action == 'saveCinicalinfo' ){
             'patientname' => $user['ptname'],
             'sex' => $sex,
             'dob' => $dob,
-            'clinicalinfo' => 'ตรวจสุขภาพประจำปี67' 
+            'clinicalinfo' => 'ตรวจสุขภาพประจำปี'.$yearChk
         );
         $insertOrderhead = $oh->insertOrderhead($data);
         if(!$insertOrderhead['error']){
