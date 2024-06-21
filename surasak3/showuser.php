@@ -12,6 +12,9 @@ if(empty($getMenucode)){
 	exit;
 }
 $sessionMenucode = sprintf("%s", $_SESSION['smenucode']);
+$officerName = sprintf("%s", $_SESSION['sOfficer']);
+$officerLevel = sprintf("%s", $_SESSION['sLevel']);
+
 if($sessionMenucode != $getMenucode){
 	echo "ไม่สามารถแก้ไขข้ามแผนกได้ กรุณาติดต่อโปรแกรมเมอร์ .... ไหว้ละจ้าาาาา ";
 	exit;
@@ -28,15 +31,32 @@ if($_SESSION['sLevel']!=='admin' && $sessionMenucode !== 'ADM'){
 	exit;
 }
 
-if ($_GET["act"] == "del") {
-	$del = "update inputm set status='N' where row_id='" . $_GET["id"] . "'";
+$act = sprintf("%s", $_GET["act"]);
+if ($act == "del") {
+
+	$id = sprintf("%s", $_GET["id"]);
+	$menucode = sprintf("%s", $_GET['menucode']);
+	$del = "UPDATE `inputm` SET `status`='N' WHERE `row_id`='$id'";
 	if (mysql_query($del)) {
-		echo "<script>alert('ปิดการใช้งานเรียบร้อยแล้ว');window.location='showuser.php?menucode=".$_GET['menucode']."';</script>";
+		echo "<script>alert('ปิดการใช้งานเรียบร้อยแล้ว');window.location='showuser.php?menucode=$menucode';</script>";
 	} else {
-		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=".$_GET['menucode']."';</script>";
+		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=$menucode';</script>";
+	}
+	exit;
+}elseif ($act=='enable') {
+	
+	$id = sprintf("%s", $_GET["id"]);
+	$menucode = sprintf("%s", $_GET['menucode']);
+
+	$del = "UPDATE `inputm` SET `status`='Y' WHERE `row_id`='$id'";
+	if (mysql_query($del)) {
+		echo "<script>alert('เปิดใช้งานเเรียบร้อย');window.location='showuser.php?menucode=$menucode';</script>";
+	} else {
+		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=$menucode';</script>";
 	}
 	exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,7 +88,12 @@ require_once 'com_user_menu.php';
 		<tr>
 			<th width="10%">ลำดับ</th>
 			<th width="30%">ชื่อ - นามสกุล</th>
-			<th width="15%">part</th>
+			<?php 
+			if($sessionMenucode=='ADM'){
+				?><th width="15%">part</th><?php
+			}
+			?>
+			<th width="15%">ระดับ</th>
 			<th width="15%">สถานะ</th>
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
@@ -93,18 +118,33 @@ require_once 'com_user_menu.php';
 				<tr class="<?=$statusClass;?>">
 					<td><?=$i; ?></td>
 					<td><?=$rows["name"]; ?></td>
-					<td><?=$rows["menucode"]; ?></td>
+					<?php 
+					if($sessionMenucode=='ADM'){
+						?><td><?=$rows["menucode"]; ?></td><?php
+					}
+					?>
+					<td><?=$rows["level"];?></td>
                     <td><?=$statusTxt;?></td>
 					<td>
 						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" class="btn btn-primary btn-sm">แก้ไข</a>
+
 						<?php 
 						if(strtolower($rows["status"])=='y'){
-						?>
-						<a href="showuser.php?act=del&menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" onClick="return confirm('คุณต้องการลบข้อมูลนี้ใช่หรือไม่');" class="btn btn-danger btn-sm">ปิดใช้งาน</a>
-						<?php 
+
+							// ไม่ให้ Disable ตัวเอง หรือในระดับ Admin ด้วยกันเอง
+							$disableIcon = $disable = '';
+							$url = 'showuser.php?act=del&menucode='.$getMenucode.'&id='.$rows["row_id"];
+							if($officerName==$rows['name'] || $officerLevel==$rows['level']){
+								$disable = 'aria-disabled="true"';
+								$disableIcon = 'disabled';
+								$url = 'javascript:void(0);';
+							}
+							?>
+							<a href="<?=$url;?>" onClick="return confirm('คุณต้องการระงับผู้ใช้งานนี้ใช่หรือไม่');" class="btn btn-danger btn-sm <?=$disableIcon;?>" role="button" <?=$disable;?> >ปิดใช้งาน</a>
+							<?php 
 						}else{
 							?>
-							<a href="javascript:void(0);" class="btn btn-success btn-sm">เปิดใช้งาน</a>
+							<a href="showuser.php?act=enable&menucode=<?=$getMenucode;?>&id=<?= $rows["row_id"]; ?>" class="btn btn-success btn-sm">เปิดใช้งาน</a>
 							<?php
 						}
 						?>
