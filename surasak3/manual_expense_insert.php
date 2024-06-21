@@ -114,6 +114,7 @@ $companyCode = $chkCompany['code'];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>นำเข้าข้อมูล <?=$companyName;?></title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">

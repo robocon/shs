@@ -6,7 +6,7 @@ require_once 'class_file/class_opacc.php';
 require_once 'class_file/class_resulthead.php';
 require_once 'class_file/opday.php';
 
-// require_once 'manual_expense_config.php';
+require_once 'includes/JSON.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -17,6 +17,27 @@ if($q->num_rows == 0){
     echo "Invalid part";
     exit;
 }
+
+$action = sprintf("%s", $_POST['action']);
+if($action == 'updateLabItem'){
+
+    $json = new Services_JSON();
+    $id = sprintf("%s", $_POST['id']);
+    $labitem = sprintf("%s", $_POST['labitem']);
+
+    $sql = "UPDATE `manual_expense` SET `lab_items`='$labitem' WHERE (`id`='$id');";
+    $q = $dbi->query($sql);
+    if($q!=false){
+        $res = '{"status":200, "message": " บันทึกข้อมูลเรียบร้อย"}';
+    }else{
+        $res = '{"status":400, "message": " ไม่สามารถบันทึกข้อมูลได้"}';
+    }
+
+    echo $json->encode($res);
+    exit;
+}
+
+
 $chkCompany = $q->fetch_assoc();
 $companyPart = $chkCompany['code'];
 
@@ -24,9 +45,12 @@ $dep = new ClassDepart();
 $result = new ClassResulthead();
 $opacc = new ClassOpacc();
 
+$dateSelect = sprintf("%s", $_POST['dateSelect']);
 $date = (date('Y')+543).date('-m-d');
-$startDate = $date.' 00:00:00';
-$endDate = $date.' 23:59:59';
+if(!empty($dateSelect)){
+    $date = $dateSelect;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,12 +61,13 @@ $endDate = $date.' 23:59:59';
     <title><?=$companyPart;?></title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
     <?php 
     // เอาค่า company part (code) ไปใช้ในเมนูด้วย
     require_once 'manual_expense_menu.php';
-
 
     $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
     c.`vn` 
@@ -52,9 +77,9 @@ $endDate = $date.' 23:59:59';
     LEFT JOIN (
         SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow 
         FROM opday 
-        WHERE thidate >= '$startDate' and thidate <= '$endDate' 
-    ) AS c ON a.`hn` = c.`hn`
-    GROUP BY a.hn
+        WHERE thidate LIKE '$date%' 
+    ) AS c ON a.`hn` = c.`hn` 
+    WHERE c.`row_id` IS NOT NULL
     ORDER BY a.id ASC";
     $q = $dbi->query($sql);
     if($q->num_rows == 0){
@@ -75,13 +100,24 @@ $endDate = $date.' 23:59:59';
         <strong>การใช้งาน</strong>
         <ol>
             <li>การลงทะเบียน สถานะออก OPD CARD จะเป็น <strong>EX51 ตรวจสุขภาพ อปท.</strong></li>
-            <li>การบันทึกค่าใช้จ่าย จำเป็นต้องกำหนดชื่อเจ้าหน้าที่ ที่ปฏิบัติงานในวันนั้นๆ</li>
+            <li>การบันทึกค่าใช้จ่าย จำเป็นต้องกำหนดชื่อเจ้าหน้าที่ ที่ปฏิบัติงานในวันนั้นๆ ในเมนู<strong>ตั้งค่า</strong></li>
         </ol>
     </div>
     <div class="">
         <h3><?=$companyPart;?></h3>
         <div>
-
+            <form action="manual_expense.php?part=<?=$part;?>" method="post" class="row g-3 m-1">
+                <div class="col-auto">
+                    <label>เลือกวันที่</label>
+                </div>
+                <div class="col-auto">
+                    <label for="dateSelect" class="visually-hidden"></label>
+                    <input type="text" class="form-control" id="dateSelect" name="dateSelect" value="<?=$date;?>">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary mb-3">แสดง</button>
+                </div>
+            </form>
         </div>
         <table class="table">
             <thead>
@@ -118,7 +154,10 @@ $endDate = $date.' 23:59:59';
                         <tr>
                             <td><?=$ii;?></td>
                             <td><?=$a['hn'];?></td>
-                            <td><?=$a['ptname'];?><br><?=$a['lab_items'];?></td>
+                            <td>
+                                <div><?=$a['ptname'];?></div>
+                                <a href="javascript:void(0);" class="badge text-bg-info" id="badge<?=$a['id'];?>" onclick="labItem('<?=$a['id'];?>','<?=$a['lab_items'];?>')"><?=$a['lab_items'];?></a>
+                            </td>
                             <td><?=$a['ptright'];?></td>
                             <td>
                                 <?php 
@@ -143,61 +182,57 @@ $endDate = $date.' 23:59:59';
                                         $labnumber = $rh['labnumber'];
                                         $profileCode[] = $rh['profilecode'];
                                     }
-                                    // echo $labnumber.'<br>'.implode(',', $profileCode);
                                     echo $labnumber;
                                 }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                // if ($patho===false && !empty($a['vn'])) { 
+                                $ptRightCode = substr($a['ptright'],0,3);
 
-                                    $urlLab = "hn=".$a['hn'];
-                                    $urlLab .= "&depart=PATHO";
-                                    $urlLab .= "&officer=".rawurldecode($config['lab']);
-                                    $urlLab .= "&moneyOfficer=".rawurldecode($config['money']);
-                                    $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
-                                    $urlLab .= "&companyPart=".rawurldecode($companyPart);
+                                $urlLab = "hn=".$a['hn'];
+                                $urlLab .= "&depart=PATHO";
+                                $urlLab .= "&officer=".rawurldecode($config['lab']);
+                                $urlLab .= "&moneyOfficer=".rawurldecode($config['money']);
+                                $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
+                                $urlLab .= "&companyPart=".rawurldecode($companyPart);
+                                if($ptRightCode=='R33' OR $ptRightCode=='R21'){
                                     ?>
                                     <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
-                                // }
+                                }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                // if ($xray===false && !empty($a['vn'])) { 
-                                    $url = "hn=".$a['hn'];
-                                    $url .= "&depart=XRAY";
-                                    $url .= "&officer=".rawurldecode($config['xray']);
-                                    $url .= "&moneyOfficer=".rawurldecode($config['money']);
-                                    $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
-                                    $url .= "&companyPart=".rawurldecode($companyPart);
+                                $url = "hn=".$a['hn'];
+                                $url .= "&depart=XRAY";
+                                $url .= "&officer=".rawurldecode($config['xray']);
+                                $url .= "&moneyOfficer=".rawurldecode($config['money']);
+                                $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
+                                $url .= "&companyPart=".rawurldecode($companyPart);
+                                if($ptRightCode=='R33' OR $ptRightCode=='R21'){ 
                                     ?>
                                     <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
-                                // }
+                                }
                                 ?>
                             </td>
                             <td>
                                 <?php 
-                                // dump($a);
                                 foreach ($patho as $key => $pItem) {
                                     $id = $pItem['row_id'];
 
                                     $pathoDate = substr($pItem['date'], 0, 10);
                                     $pathoHn = $pItem['hn'];
                                     $pathoVn = $pItem['tvn'];
-                                    
                                     ?>
-                                    <!-- manual_expense_update.php?depart_id=<?=$id;?>&new_lab=<?=rawurldecode($a['lab_items']);?>&vn=<?=$a['vn'];?> -->
                                     <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank">
                                         <?=$pItem['row_id'];?> <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
                                     </a>
                                     <?php 
                                 }
 
-                                // dump($xray);
                                 foreach($xray AS $x){ 
                                     $pathoDate = substr($x['date'], 0, 10);
                                     $pathoHn = $x['hn'];
@@ -222,8 +257,59 @@ $endDate = $date.' 23:59:59';
                 <?php
             }
             ?>
-            
         </table>
+        <script>
+            async function labItem(id, labItem){
+                
+                const inputValue = labItem;
+                const { value: resLabItem } = await Swal.fire({
+                    title: "ปรับรายการแลป",
+                    input: "text",
+                    inputValue,
+                    showCancelButton: true,
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return "กรุณาใส่ข้อมูลให้ถูกต้อง";
+                        }
+                    },
+                    confirmButtonText: "บันทึกข้อมูล",
+                    cancelButtonText: "ยกเลิก",
+                });
+
+                if(resLabItem){
+                    let data = [];
+                    data.push(encodeURIComponent('action')+"="+encodeURIComponent('updateLabItem'));
+                    data.push(encodeURIComponent('id')+"="+encodeURIComponent(id));
+                    data.push(encodeURIComponent('labitem')+"="+encodeURIComponent(resLabItem));
+                    let dataPost = data.join("&");
+                    
+                    let response = await fetch('manual_expense.php?part=<?=urldecode($part);?>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        },
+                        body: dataPost
+                    });
+                    const resData = await response.json();
+                    const pResData = JSON.parse(resData);
+
+                    let iconStatus = 'warning';
+                    if(pResData.status==200){
+                        iconStatus = 'success';
+                        document.getElementById('badge'+id).innerHTML = resLabItem;
+                    }
+                    Swal.fire({
+                        icon: iconStatus,
+                        title: pResData.message,
+                        showConfirmButton: false,
+                        timer: 1000
+                    }).then(()=>{
+                        // location.reload(true);
+                    });
+
+                }
+            }
+        </script>
     </div>
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
