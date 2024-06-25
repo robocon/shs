@@ -203,42 +203,44 @@ if($menucode=="ADM"){
 				" </tr>\n");	
 }else{
 		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-				" </tr>\n");							
+		"  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
+		" </tr>\n");							
 		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
+		" </tr>\n");
 		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
-				" </tr>\n");				
+		"  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
+		" </tr>\n");				
 
-if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
-	print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_blank' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
-				" </tr>\n");	
-	print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_blank' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='5'>:: ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
-				" </tr>\n");
-	print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_blank' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='5'>:: รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
-				" </tr>\n");							
-}		
+		if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
+			print (" <tr>\n".
+			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"newpassdrug.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัส Lock การจ่ายยา</font></a></td>\n".
+			" </tr>\n");	
+			print (" <tr>\n".
+			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"lock_drug_md.php\"><font face='THSarabunPSK' size='5'>:: ระบุยาที่ต้องการ Lock/Un Lock</font></a></td>\n".
+			" </tr>\n");
+			print (" <tr>\n".
+			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"report_cscdformonth.php\"><font face='THSarabunPSK' size='5'>:: รายงานส่งเบิกเงินกรมบัญชีกลาง (ผู้ป่วยนอก)</font></a></td>\n".
+			" </tr>\n");
+		}
 		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม </font></a></td>\n".
-				" </tr>\n");		
-				
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม </font></a></td>\n".
+		" </tr>\n");
 		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='5'>:: ข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
-				" </tr>\n");					
-							 
-					 
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='5'>:: ข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
+		" </tr>\n");
 		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
+		" </tr>\n");			
 		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
-}							 
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
+		" </tr>\n");
+		if($menucode!=='ADMDR1'){
+			print (" <tr>\n".
+			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"ha_index.php\"><font face='THSarabunPSK' size='5'>:: แบบบันทึกตัวชี้วัด</font></a></td>\n".
+			" </tr>\n");
+		}
+}
 ?>
 <tr style="background-color: #148F77;">
 	<td><a href="opd_reprint.php" target="_blank" style="font-family: 'TH SarabunPSK'; font-weight: bold; font-size: 24px;color:black;">:: ใบตรวจโรคผู้ป่วยนอกวันนี้</a></td>
@@ -328,7 +330,7 @@ if($rows){///  ถ้ามี rows
 		"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4' >$menu</font></a></td>\n".
 		" </tr>\n");
 	};
-	
+
 	$ua = htmlentities($_SERVER['HTTP_USER_AGENT'], ENT_QUOTES, 'UTF-8');
     if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
         // do stuff for IE
