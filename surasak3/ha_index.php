@@ -131,7 +131,7 @@ $dbi->query("SET NAMES UTF8");
 2 คนนี้เป็น Superadmin เห็นได้ทุกเมนูย่อย สุมีนา / นิธิวดี
 IC และ CMS  ==>  ปพิชญา
 NSO  ==>  ปณิธิ
-PCT Med  ==>  วิลาวรรณ / ภิรมย์ภรณ์ / ปิยาภรณ์ / จีราภรณ์ / จันทร์วลัย
+PCT Med  ==>  วิลาวรรณ / ภิรมภรณ์ / ปิยาภรณ์ / จีราภรณ์ / จันทร์วลัย
 PCT OB-Gyne  ==>  วราภรณ์ (ศรีรัตนา ห้องคลอด)
 PCT Sx  ==>  วราภรณ์(ชัย) / นันท์นภัส
 PCT QMR / HRD / PTC  ==>  ภัทรียา / ปภาวิน / ภูมิพัฒน์ 
@@ -151,7 +151,7 @@ $thip_items = array(
     array(
         'name' => '[THIP] PCT Med', 
         'link' => 'https://docs.google.com/spreadsheets/d/13veL0zpa42qeapAXVXiKXyHS-ZeSimjVSK-rlemCqL8/edit?usp=sharing', 
-        'allow'=>array('วิลาวรรณ','ภิรมย์ภรณ์','ปิยาภรณ์','จีราภรณ์2','จันทร์วลัย')
+        'allow'=>array('วิลาวรรณ','ภิรมภรณ์','ปิยาภรณ์','จีราภรณ์2','จันทร์วลัย')
     ),
     array(
         'name' => '[THIP] PCT OB-Gyne', 
