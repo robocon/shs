@@ -183,7 +183,12 @@ if($menucode=="ADM"){
 				" </tr>\n");			
 		print (" <tr>\n".
                 "  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
+				" </tr>\n");
+		if($menucode!=='ADMDR1'){
+			print (" <tr>\n".
+			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"ha_index.php\"><font face='THSarabunPSK' size='5'>:: แบบบันทึกตัวชี้วัด</font></a></td>\n".
+			" </tr>\n");
+		}
 }else if($menucode=="ADMXR"){						
 		print (" <tr>\n".
                 "  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".

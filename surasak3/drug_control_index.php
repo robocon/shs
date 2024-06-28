@@ -9,22 +9,29 @@ $_SESSION['datetime'] = '';
 
 $user_group = trim($_SESSION['smenucode']);
 $user_id = trim($_SESSION['sRowid']);
-$allow_group = array('ADM', 'ADMPHA', 'ADMPHARX');
+if(empty($user_id)){
+	?>
+	<div>Session หมดอายุ <a href="../sm3.php">คลิกที่นี่</a> เพื่อ Login ใหม่อีกครั้ง</div>
+	<?php
+	exit;
+}
 
+
+$allow_group = array('ADM', 'ADMPHA', 'ADMPHARX');
 if( in_array($user_group, $allow_group) === false ){
 
 	$sql = "SELECT * FROM `drug_user_ward` WHERE `user_id` = '$user_id'";
-	//echo $sql;
 	$query = mysql_query($sql);
 	$user_row = mysql_num_rows($query);
 	if( empty($user_row) ){
-		echo 'ไม่สามารถเข้าใช้งานได้ กรุณาติดต่อห้องยา';
+		echo "<div align='center' style='margin-top:50px; font-size:48px; color:red;'>ไม่สามารถเข้าใช้งานได้  <u>กรุณาติดต่อเจ้าหน้าที่ห้องยา</u><br>เพื่อขอเพิ่มผู้ใช้งานระบุยาประจำตัว</div>";
+		echo "<div align='center' style='margin-left:200px;'><img src='images/customer-service.png'></div>";
 		exit;
 	}
 }
 
 ?>
-<p><a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a> | <a href='drug_user_ward.php'>จำกัดผู้ใช้ระบุยาประจำตัว</a></p>
+<p><a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a> | <a href='drug_user_ward.php'>กำหนดผู้ใช้เมนูระบุยาประจำตัว</a> <strong>( <<< เมนูนี้ <<< จนท.ห้องยาและเภสัชฯทุกคนสามารถทำได้ )</strong></p>
 <?php
 if($_SESSION['sOfficer']!=''){
 	echo "<br><span class='font1'>".$_SESSION['sOfficer']."</span>";

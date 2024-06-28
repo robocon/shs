@@ -1,9 +1,9 @@
 <?php
 session_start();
-include("connect.inc");
+include("connect.php");
 
-
-if ($newpw1 == $newpw2) {
+$action = sprintf("%s", $_POST['action']);
+if ( $action == 'setNewPass' && ( $newpw1 == $newpw2) ){
 
     $password = sprintf("%s", $_POST['password']);
     $newpw1 = sprintf("%s", $_POST['newpw1']);
@@ -21,8 +21,7 @@ if ($newpw1 == $newpw2) {
 		if (mysql_num_rows($result)) {
 
 			$sPword = $newpw1;
-
-			$query = "UPDATE inputm SET pword = '$newpw1',date_pword='" . date("Y-m-d H:s:i") . "' WHERE idname= '$username' ";
+			$query = "UPDATE `inputm` SET `pword` = '$newpw1',`date_pword`='" . date("Y-m-d H:s:i") . "' WHERE `idname`= '$username' ";
 			$result = mysql_query($query) or die("รหัสผ่านซ้ำที่มีอยู่เดิม ไม่สามารถเปลี่ยนรหัสผ่านได้");
 
 			echo "<script>alert('เปลี่ยนรหัสผ่านเรียบร้อย');window.location='../display.php';</script>";
@@ -30,6 +29,20 @@ if ($newpw1 == $newpw2) {
 			echo "<br><br><br>........ชื่อผู้ใช้หรือรหัสผ่านเดิมไม่ถูกต้อง  ไม่สามารถเปลี่ยนรหัสผ่านได้ !<br>";
 		}
 
+}elseif($action == 'checkOldPass'){
+	
+	$id = sprintf("%s", $_POST['id']);
+	$pass = sprintf("%s", $_POST['pass']);
+	$sql = "SELECT `row_id` FROM `inputm` WHERE `row_id` = '$id' AND `pword` = '$pass' LIMIT 1; ";
+	$q = mysql_query($sql);
+	$qRow = mysql_num_rows($q);
+	if($qRow==0){
+		$res = '{"status":"400","message":"รหัสผ่านเก่าไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง"}';
+	}elseif($qRow==1){ // ถ้ามีแสดงว่ารหัสผ่านเก่าตรงกัน
+		$res = '{"status":"200","message":"ยืนยันรหัสผ่านเก่าถูกต้อง"}';
+	}
+	echo $res;
+	exit;
 }else{
     echo "<br><br><br>........รหัสผ่านใหม่ พิมพ์สองครั้งไม่เหมือนกัน ไม่สามารถเปลี่ยนได้ !<br>";
 }
