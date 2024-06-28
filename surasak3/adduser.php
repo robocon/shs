@@ -239,7 +239,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                 }
 
                 async function checkuser(username){
-                    const response = await fetch('adduser.php?action=checkuser&username='+username);
+                    const response =('adduser.php?action=checkuser&username='+username);
                     const data = await response.json();
                     return data;
                 }

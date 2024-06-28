@@ -82,7 +82,7 @@ if ($act == "del") {
 <?php 
 require_once 'com_user_menu.php';
 ?>
-<div class="container mt-2">
+<div class="container-lg mt-2">
 	<h3>จัดการข้อมูลผู้ใช้งานระบบ</h3>
 	<table class="table table-hover">
 		<tr>
@@ -117,7 +117,9 @@ require_once 'com_user_menu.php';
 				?>
 				<tr class="<?=$statusClass;?>">
 					<td><?=$i; ?></td>
-					<td><?=$rows["name"]; ?></td>
+					<td>
+						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" title="คลิกเพื่อแก้ไข"><?=$rows["name"];?></a>
+					</td>
 					<?php 
 					if($sessionMenucode=='ADM'){
 						?><td><?=$rows["menucode"]; ?></td><?php
@@ -126,28 +128,32 @@ require_once 'com_user_menu.php';
 					<td><?=$rows["level"];?></td>
                     <td><?=$statusTxt;?></td>
 					<td>
-						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" class="btn btn-primary btn-sm">แก้ไข</a>
-
+						<div class="d-grid gap-2 d-md-block">
 						<?php 
 						if(strtolower($rows["status"])=='y'){
 
 							// ไม่ให้ Disable ตัวเอง หรือในระดับ Admin ด้วยกันเอง
 							$disableIcon = $disable = '';
 							$url = 'showuser.php?act=del&menucode='.$getMenucode.'&id='.$rows["row_id"];
-							if($officerName==$rows['name'] || $officerLevel==$rows['level']){
-								$disable = 'aria-disabled="true"';
-								$disableIcon = 'disabled';
-								$url = 'javascript:void(0);';
+							if( $sessionMenucode != 'ADM' ){
+								
+								if($officerName==$rows['name'] || $officerLevel==$rows['level']){
+									$disable = 'aria-disabled="true"';
+									$disableIcon = 'disabled';
+									$url = 'javascript:void(0);';
+								}
+								
 							}
 							?>
-							<a href="<?=$url;?>" onClick="return confirm('คุณต้องการระงับผู้ใช้งานนี้ใช่หรือไม่');" class="btn btn-danger btn-sm <?=$disableIcon;?>" role="button" <?=$disable;?> >ปิดใช้งาน</a>
+							<a href="<?=$url;?>" onClick="return confirm('คุณต้องการระงับผู้ใช้งานนี้ใช่หรือไม่');" class="btn btn-danger btn-sm <?=$disableIcon;?>" role="button" <?=$disable;?> >ปิด</a>
 							<?php 
 						}else{
 							?>
-							<a href="showuser.php?act=enable&menucode=<?=$getMenucode;?>&id=<?= $rows["row_id"]; ?>" class="btn btn-success btn-sm">เปิดใช้งาน</a>
+							<a href="showuser.php?act=enable&menucode=<?=$getMenucode;?>&id=<?= $rows["row_id"]; ?>" class="btn btn-success btn-sm">เปิด</a>
 							<?php
 						}
 						?>
+						</div>
 					</td>
 				</tr>
 			<?
