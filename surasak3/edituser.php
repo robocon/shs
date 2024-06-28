@@ -1,6 +1,6 @@
 <?php
 session_start();
-include ("connect.inc");
+include("connect.inc");
 
 $act = sprintf("%s", $_GET["act"]);
 if ($act == "edit") {
@@ -16,7 +16,7 @@ if ($act == "edit") {
   }
 
   exit;
-}elseif ($act=="updatePass") {
+} elseif ($act == "updatePass") {
 
   $password = sprintf("%s", $_POST["password"]);
 
@@ -49,7 +49,7 @@ $menucode = sprintf("%s", $_GET["menucode"]);
   }
 </style>
 <div>
-  <a href="showuser.php?menucode=<?=$menucode;?>">&lt;&lt;&nbsp;กลับไปหน้าจัดการผู้ใช้งาน</a>
+  <a href="showuser.php?menucode=<?= $menucode; ?>">&lt;&lt;&nbsp;กลับไปหน้าจัดการผู้ใช้งาน</a>
 </div>
 <div align="center">
   <p><strong>แก้ไขข้อมูลผู้ใช้งานระบบ</strong></p>
@@ -57,7 +57,7 @@ $menucode = sprintf("%s", $_GET["menucode"]);
   $sql = "SELECT * FROM inputm WHERE row_id='$id' and menucode='$menucode'";
   $query = mysql_query($sql);
   $num = mysql_num_rows($query);
-  if($num===0){
+  if ($num === 0) {
     echo "ไม่พบข้อมูล";
     exit;
   }
@@ -65,8 +65,8 @@ $menucode = sprintf("%s", $_GET["menucode"]);
   ?>
   <form action="edituser.php?act=edit" method="post" name="form1">
     <input name="act" type="hidden" value="edit">
-    <input name="row_id" type="hidden" value="<?=$id;?>">
-    <input name="menucode" type="hidden" value="<?=$menucode; ?>">
+    <input name="row_id" type="hidden" value="<?= $id; ?>">
+    <input name="menucode" type="hidden" value="<?= $menucode; ?>">
     <table width="50%" border="0" cellspacing="0" cellpadding="5">
       <tr>
         <td width="34%" align="right" bgcolor="#FF9999"><strong>ชื่อ-นามสกุล : </strong></td>
@@ -114,27 +114,46 @@ $menucode = sprintf("%s", $_GET["menucode"]);
               <input type="submit" name="button" id="button" class="forntsarabun" value="แก้ไขข้อมูล">
             </label>
             <input name="act" type="hidden" value="updatePass">
-            <input name="row_id" type="hidden" value="<?=$id;?>">
-            <input name="menucode" type="hidden" value="<?=$menucode;?>">
+            <input name="row_id" type="hidden" value="<?= $id; ?>">
+            <input name="menucode" type="hidden" value="<?= $menucode; ?>">
           </td>
         </tr>
       </table>
     </form>
     <script>
-      function checkPassword(){
+      function checkPassword() {
         let res = true;
-        let p1 =document.getElementById('password').value;
-        let p2 =document.getElementById('password2').value;
-        if(p1 != p2){
-          
+        let p1 = document.getElementById('password').value;
+        let p2 = document.getElementById('password2').value;
+        if (p1 != p2) {
+
           alert('รหัสผ่านไม่ตรงกัน');
           res = false;
-        }else if(p1=='' || p2==''){
+        } else if (p1 == '' || p2 == '') {
           alert('รหัสผ่านไม่ควรเป็นค่าว่าง');
           res = false;
         }
         return res;
       }
     </script>
+  </div>
+  <div>
+    <form action="edituser.php?act=updateLevel" method="post">
+      <div class="mb-3 row">
+        <label for="inputUserlevel" class="col-sm-2 col-form-label">ระดับผู้ใช้งาน</label>
+        <div class="col-sm-10">
+          <select name="userlevel" id="userlevel">
+            <option value="">Admin</option>
+            <option value="">User</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <label for="inputUserlevel" class="col-sm-2 col-form-label">ระดับผู้ใช้งาน</label>
+        <div class="col-sm-10">
+          <button type="submit">บันทึก</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
