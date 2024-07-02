@@ -104,7 +104,9 @@ $cDoctor2 = substr($cDoctor,0,5);
 //
 $acu = 0;
 $licen = '';
-if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
+
+if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true )
+{
   
     // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
     $subDoctor = (int) $_GET['subDoctor'];
@@ -120,12 +122,15 @@ if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoc
     }else if( $subDoctor === 4 ){
         $cDoctor1 = "ประภัสสร เครืออินทร์";
         $doctorcode = "พท.ป. 3011";
+    }else if( $subDoctor === 5 ){
+        $cDoctor1 = "พิมพ์ทอง สุระเรืองชัย";
+        $doctorcode = "พท.ว. 21447";
     }
 
     $yot = "น.ส.";
-    $position = "แพทย์แผนไทยประยุกต์";
-    $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขา การแพทย์แผนไทยประยุกต์";
-    $licen = "แพทย์แผนไทยประยุกต์ $doctorcode";
+    $position = "แพทย์แผนไทย";
+    $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขา การแพทย์แผนไทย";
+    $licen = "แพทย์แผนไทย $doctorcode";
     $acu = 1;
 
 }else{
@@ -207,7 +212,8 @@ if( $inBy === true ){
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทางแพทย์แผนไทยด้วยการ $nid_ext "; 
 	  
 // ถ้าเป็นแพทย์แผนไทย
-if( $cDoctor2 === "MD058"  || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
+if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true )
+{
     
     // $inList = test_diag($cDiag, $diag_list);
     // if( $inList !== true ){
