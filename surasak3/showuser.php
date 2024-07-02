@@ -1,6 +1,9 @@
 <?php
-session_start();
-include("connect.php");
+// session_start();
+// include("connect.php");
+include 'bootstrap.php';
+$dbi = new mysqli(HOST, USER, PASS, DB);
+$dbi->query("SET NAMES UTF8");
 
 /**
  * Rule of this page
@@ -23,8 +26,8 @@ if($sessionMenucode != $getMenucode){
 if($_SESSION['sLevel']!=='admin' && $sessionMenucode !== 'ADM'){
 	echo "กรุณาติดต่อผู้ใช้งานระดับ Admin ประจำแผนกของท่าน<br>";
 	$sql = "SELECT `name` FROM `inputm` WHERE `menucode` = '$sessionMenucode' AND `level` = 'admin' ";
-	$q = mysql_query($sql);
-	while ($a = mysql_fetch_assoc($q)) {
+	$q = $dbi->query($sql);
+	while ($a = $q->fetch_assoc()) {
 		echo '- '.$a['name'].'<br>';
 	}
 	echo '<br><a href="../sm3.php">&lt;&lt;&nbsp;กลับไปหน้า Login</a>';
@@ -36,8 +39,10 @@ if ($act == "del") {
 
 	$id = sprintf("%s", $_GET["id"]);
 	$menucode = sprintf("%s", $_GET['menucode']);
-	$del = "UPDATE `inputm` SET `status`='N' WHERE `row_id`='$id'";
-	if (mysql_query($del)) {
+
+	$sql = "UPDATE `inputm` SET `status`='N' WHERE `row_id`='$id' LIMIT 1";
+	$q = $dbi->query($sql);
+	if ($q) {
 		echo "<script>alert('ปิดการใช้งานเรียบร้อยแล้ว');window.location='showuser.php?menucode=$menucode';</script>";
 	} else {
 		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=$menucode';</script>";
@@ -48,8 +53,9 @@ if ($act == "del") {
 	$id = sprintf("%s", $_GET["id"]);
 	$menucode = sprintf("%s", $_GET['menucode']);
 
-	$del = "UPDATE `inputm` SET `status`='Y' WHERE `row_id`='$id'";
-	if (mysql_query($del)) {
+	$sql = "UPDATE `inputm` SET `status`='Y' WHERE `row_id`='$id' LIMIT 1";
+	$q = $dbi->query($sql);
+	if ($q) {
 		echo "<script>alert('เปิดใช้งานเเรียบร้อย');window.location='showuser.php?menucode=$menucode';</script>";
 	} else {
 		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=$menucode';</script>";
@@ -98,20 +104,20 @@ require_once 'com_user_menu.php';
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
 		<?php
-		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' ORDER BY `menucode` ";
-		$query = mysql_query($sql);
-		$num = mysql_num_rows($query);
+		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' ORDER BY `row_id` ASC ";
+		$q = $dbi->query($sql);
+		$num = $q->num_rows;
 		if ($num < 1) {
 			echo "<tr><td colspan='3' align='center'>------------------------ ไม่มีข้อมูล ------------------------</td></tr>";
 		} else {
 			$i = 0;
-			while ($rows = mysql_fetch_array($query)) {
+			while ($rows = $q->fetch_assoc()) {
 				$i++;
 
                 $statusTxt = 'ใช้งาน';
 				$statusClass='';
                 if(strtolower($rows["status"])!='y'){
-                    $statusTxt = 'ปิดการใช้งาน';
+                    $statusTxt = '<strong class="text-danger">ปิดการใช้งาน</strong>';
 					$statusClass='table-warning';
                 }
 				?>

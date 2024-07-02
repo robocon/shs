@@ -29,6 +29,12 @@ if ($act == "add") {
         $txtpass = sprintf("%s", $_POST["txtpass"]);
         $idcard = sprintf("%s", $_POST["idcard"]);
         $menucode = sprintf("%s", $_POST["menucode"]);
+        $eopd = sprintf("%s", $_POST["eopd"]);
+
+        $eopdStatus = 'n';
+        if($eopd=='1'){
+            $eopdStatus = 'y';
+        }
 
         $add = "INSERT INTO `inputm` SET `name`='$txtname',
         `idname`='$txtuser',
@@ -37,7 +43,8 @@ if ($act == "add") {
         `status`='Y',
         `date_pword`='$date_pword',
         `idcard`='$idcard',
-        `level`='user'";
+        `level`='user',
+        `level_eopd` = '$eopdStatus' ";
 
         if (mysql_query($add)) {
             echo "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว";
@@ -103,6 +110,9 @@ if ($act == "add") {
         float: none;
         margin-left: 10px;
         font-weight: bold;
+    }
+    label:hover{
+        cursor: pointer;
     }
 </style>
 <?php 
@@ -176,11 +186,12 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><b>ชื่อผู้ใช้งาน : </b></td>
                             <td>
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username" autocomplete="off">
+                                    <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username">
                                     <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button>
+                                    <span id="resTestCheckUser"></span>
                                 </div>
                                 
-                                <span id="resTestCheckUser"></span>
+                                
                                 <input type="hidden" name="testCheckUser" id="testCheckUser">
                             </td>
                         </tr>
@@ -188,7 +199,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><b>รหัสผ่าน :</b></td>
                             <td>
                                 <label>
-                                    <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password" value="" autocomplete="off">
+                                    <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password">
                                 </label>
                                 <div>
                                     <span class="badge text-bg-warning">คำแนะนำ</span><span>การตั้งรหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และอักขระพิเศษ(!@#$%&) ผสมกัน</span>
@@ -201,6 +212,12 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 <label>
                                     <input name="txtpass2" type="password" class="form-control" id="txtpass2" autocomplete="off">
                                 </label>
+                            </td>
+                        </tr>
+                        <tr valign="top">
+                            <td align="right"></td>
+                            <td>
+                                <input type="checkbox" name="eopd" id="eopd" value="1"><label for="eopd">&nbsp;เปิดการใช้งานเมนู <strong>ค้นหา e-OPD จาก HN</strong></label>
                             </td>
                         </tr>
                         <tr>
@@ -227,19 +244,23 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         return false;
                     }
 
-                    checkuser(username).then(function(data){
+                    checkuser(username).then(function(data){ 
+                        document.getElementById('resTestCheckUser').innerHTML = '';
                         if(data.status==200){
                             document.getElementById("testCheckUser").value = "1";
                             Swal.fire("สามารถใช้งานได้");
+                            // https://www.w3schools.com/charsets/ref_utf_dingbats.asp
+                            document.getElementById('resTestCheckUser').innerHTML = '&#9989;';
                         }else{
                             Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
+                            document.getElementById('resTestCheckUser').innerHTML = '&#10060;';
                             return false;
                         }
                     });
                 }
 
                 async function checkuser(username){
-                    const response =('adduser.php?action=checkuser&username='+username);
+                    const response = await fetch('adduser.php?action=checkuser&username='+username);
                     const data = await response.json();
                     return data;
                 }
@@ -255,6 +276,8 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
 
             let pass1 = document.getElementById('txtpass');
             let pass2 = document.getElementById('txtpass2');
+
+            const regex = /\d{8}/g;
             
             if (document.getElementById('txtname').value == '') {
                 Swal.fire("กรุณากรอกชื่อ-นามสกุล");
@@ -267,11 +290,14 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             }else if(document.getElementById('txtpass').value == ''){
                 Swal.fire("กรุณากรอก Password");
                 stat = false;
-            }else if(document.getElementById('txtpass').value.length < 6){
-                Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 6 ตัวอักษร");
+            }else if(document.getElementById('txtpass').value.length < 8){
+                Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 8 ตัวอักษร");
+                stat = false;
+            }else if(pass1.value.match(regex)){
+                Swal.fire("ไม่ควรใส่แต่ตัวเลข ควรมีตัวอักษรตัวเล็กหรือตัวใหญ่ผสมเข้าไปด้วย");
                 stat = false;
             }else if(pass1.value != pass2.value){
-                Swal.fire("รหัสผ่าน ไม่ตรงกันกรุณาตรวจสอบข้อมูลอีกครั้ง");
+                Swal.fire("รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบข้อมูลอีกครั้ง");
                 stat = false;
             }else if(document.getElementById('testCheckUser').value==""){
                 Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
