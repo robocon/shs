@@ -23,6 +23,8 @@ $sOfficer = $_SESSION['sOfficer'];
                         <li><a class="dropdown-item" href="report_checkup_employee_risk.php">กลุ่มเสี่ยง</a></li>
                         <li><a class="dropdown-item" href="report_checkup_employee_risk2.php">กลุ่มเสี่ยง HR</a></li>
                         <li><a class="dropdown-item" href="report_checkup_employee_all.php">ยอดรวมทั้งหมด</a></li>
+                        <li><a class="dropdown-item" href="report_checkup_employee_borgor.php">รายงานกองบังคับการ</a></li>
+                        
                         <!-- <li>
                             <hr class="dropdown-divider">
                         </li>
