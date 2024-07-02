@@ -14,6 +14,10 @@ if(!isset($password)){
 $sIdname = $username;
 $sPword = $password;
 
+if((date("Y-m-d")=="2024-07-01") && ($sPword=="1234" || $sPword=="123456")){
+$sPword="xxx";  //แปลงให้เป็นรหัสอื่นๆ	
+}	
+
 session_register("sIdname");
 session_register("sPword");
 session_register("sRowid");
@@ -138,7 +142,7 @@ $nPrefix = $row->prefix;
 		echo "<script>alert('คำเตือน! รหัสผ่านของท่านยังไม่ได้เปลี่ยนแปลง กรุณาเปลี่ยนรหัสผ่านที่เมนูเปลี่ยนรหัสเพื่อความปลอดภัยของท่าน') </script>";
 	}
 
-	if($sPword=="1234"){
+	if($sPword=="1234" || $sPword=="123456"){
 		echo "<script>alert('คำเตือน! รหัสผ่านของท่านจะไม่สามารถใช้งานได้หลังวันที่ 30 มิ.ย.67 เป็นต้นไป เนื่องจากไม่ตรงตามข้อกำหนดความปลอดภัย กรุณาเปลี่ยนรหัสผ่านเพื่อความปลอดภัยของท่าน') </script>";
 	}	
 
