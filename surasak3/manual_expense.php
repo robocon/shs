@@ -14,7 +14,7 @@ $dbi->query("SET NAMES UTF8");
 $part = sprintf("%s", $_GET['part']);
 $q = $dbi->query("SELECT `id`,`code` FROM `chk_company_list` WHERE `code` = '$part' LIMIT 1 ");
 if($q->num_rows == 0){
-    echo "Invalid part";
+    echo 'ไม่พบข้อมูลบริษัท <a href="chk_company.php">ย้อนหลับไปหน้าหลัก</a>';
     exit;
 }
 
@@ -79,7 +79,7 @@ if(!empty($dateSelect)){
         FROM opday 
         WHERE thidate LIKE '$date%' 
     ) AS c ON a.`hn` = c.`hn` 
-    WHERE c.`row_id` IS NOT NULL
+    #WHERE c.`row_id` IS NOT NULL
     ORDER BY a.id ASC";
     $q = $dbi->query($sql);
     if($q->num_rows == 0){
@@ -245,7 +245,7 @@ if(!empty($dateSelect)){
                                 
                             </td>
                             <td>
-                                <?=$a['comment'];?>
+                                <?=$a['labnumber'];?>
                             </td>
                         </tr>
                         <?php

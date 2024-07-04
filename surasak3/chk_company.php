@@ -237,7 +237,8 @@ if ( $views == 'search' ) {
         $i = 1;
 
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
-        $expense_list = array('เทศบาลเมืองพิชัย 67');
+        // เทศบาลเมืองพิชัย 67
+        $expense_list = array('เทศบาลเมืองเขลางค์นคร 67 ก.ค.');
 
         foreach ($items as $key => $item) {
 
@@ -275,7 +276,7 @@ if ( $views == 'search' ) {
                         <?php 
                         if(in_array($item['code'], $expense_list)===true){
                             ?>
-                            <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank">บันทึกค่าใช้จ่าย อปท.</a>
+                            <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank" style="border: 1px solid #1e8958; background-color: #0a3622; border-radius: 4px; padding: 0 2px; color: #ffffff;">&#128073; บันทึกค่าใช้จ่าย อปท.</a>
                             <?php
                         }
                         ?>
