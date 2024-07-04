@@ -37,6 +37,14 @@ if( $action === 'login' ){
 		$_SESSION['sOfficer'] = $item['name'];
 		$_SESSION['sRowid'] = $item['row_id'];
 		$_SESSION['sLevel'] = $item['level'];
+
+		DB::exec("UPDATE `inputm` SET `last_login`=NOW() WHERE (`row_id`=:row_id);", array(':row_id' => $item['row_id']));
+
+		$sqlLogInputm = "INSERT INTO `log_inputm` 
+		(`id`, `log_date`, `user_id`, `name`, `menucode`, `login_date`) 
+		VALUES 
+		(NULL, '".(date("Y")+543).date('-m-d')."', '".$item['row_id']."', '".$item['name']."', '".$item['menucode']."', '".(date("Y")+543).date('-m-d H:i:s')."');";
+		DB::exec($sqlLogInputm);
 	
 		$refer = isset($_SESSION['refer']) ? $_SESSION['refer'] : '../nindex.htm';
 	

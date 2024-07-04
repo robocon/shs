@@ -49,7 +49,21 @@ if ($act == "edit") {
 	$q = $dbi->query($sql);
 	redirect('edituser.php?menucode='.$menucode.'&id='.$row_id, 'บันทึกข้อมูลเรียบร้อย');
 	exit;
+}elseif ($act == "updateDepartment") {
+
+	$row_id = sprintf("%s", $_POST["row_id"]);
+	$department = sprintf("%s", $_POST["department"]);
+	$menucode = sprintf("%s", $_POST["menucode"]);
+
+	$sql = "UPDATE `inputm` SET `menucode`='$department' WHERE `row_id`='$row_id' LIMIT 1";
+	$q = $dbi->query($sql);
+	redirect('edituser.php?menucode='.$menucode.'&id='.$row_id, 'บันทึกข้อมูลเรียบร้อย');
+	exit;
 }
+
+
+
+
 
 $id = sprintf("%s", $_GET["id"]);
 $menucode = sprintf("%s", $_GET["menucode"]);
@@ -217,6 +231,41 @@ $menucode = sprintf("%s", $_GET["menucode"]);
 						<div>
 							กรณีที่ต้องการ<strong>ปิดการใช้งาน</strong>ผู้ใช้ระดับ admin ต้องทำการปรับให้เป็นระดับ user ก่อน
 						</div>
+					</td>
+				</tr>
+				<tr>
+					<td bgcolor="#FF9999">&nbsp;</td>
+					<td bgcolor="#FF9999">
+						<button type="submit" class="forntsarabun">บันทึก</button>
+						<input name="menucode" type="hidden" value="<?= $menucode; ?>">
+						<input name="row_id" type="hidden" value="<?= $id; ?>">
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<div>
+		<form action="edituser.php?act=updateDepartment" method="post" name="form1">
+			<table width="50%" border="0" cellspacing="0" cellpadding="5">
+				<tr valign="top">
+					<td width="34%" align="right" bgcolor="#FF9999"><strong>แผนกที่ปฏิบัตติงาน : </strong></td>
+					<td width="66%" bgcolor="#FFCCCC">
+						<?php 
+						$sql = "SELECT `name`,`menucode` FROM `departments` WHERE `menucode` <> '' ";
+						$q = $dbi->query($sql);
+						?>
+						<select name="department" id="department" class="forntsarabun">
+							<option name="" id="">-- เลือกแผนก --</option>
+							<?php 
+							while($a = $q->fetch_assoc()){
+								$selected = ($rows['menucode'] == $a['menucode']) ? 'selected="selected"' : '' ;
+								?>
+								<option value="<?=$a['menucode'];?>" class="forntsarabun" <?=$selected;?> ><?=$a['name'];?></option>
+								<?php
+							}
+							?>
+						</select>
+						<div>แผนกที่ตกหล่นไม่มีข้อมูล สามารถแจ้งมาที่ศูนย์คอมฯ เพื่อทำการอัพเดท</div>
 					</td>
 				</tr>
 				<tr>
