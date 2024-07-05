@@ -1,6 +1,7 @@
 <?php
 
 include 'bootstrap.php';
+include 'includes/JSON.php';
 
 $action = input('action');
 $db = Mysql::load();
@@ -75,6 +76,30 @@ if( $action == 'save' ) {
         $msg = errorMsg('delete', $del['id']);
     }
     redirect('chk_company.php', $msg);
+    exit;
+}elseif ($action==='findWithYear') {
+
+    $year = sprintf("%s", $_GET['year'])+543;
+    $json = new Services_JSON();
+    $items = array();
+    $db->select("SELECT `id`,`name`,`code` FROM `chk_company_list` WHERE `yearchk` = '$year' AND `status` = '1' ORDER BY `id` DESC ");
+    $itemCount = $db->get_rows();
+    if($itemCount > 0){
+        $items = $db->get_items();
+        $res = array(
+            'count' => $itemCount,
+            'data' => $items,
+            'status' => 200
+        );
+    }else{
+        $res = array(
+            'count' => $itemCount,
+            'data' => $items,
+            'status' => 400
+        );
+    }
+
+    echo $json->encode($res);
     exit;
 }
 
@@ -196,17 +221,63 @@ ol > li {
             <?php 
             $year_selected = input_post('year_selected', date('Y') );
             $year_range = range('2018',get_year_checkup(true, true)+1);
-            getYearList('year_selected', true, $year_selected, $year_range);
+            getYearList('year_selected', true, $year_selected, $year_range,false, 'getCompany');
             ?>
         </div>
-
+        <div>
+            <span>เลือกบริษัท : </span>
+            <?php 
+            $db->select("SELECT `id`,`name`,`code` FROM `chk_company_list` WHERE `yearchk` = '".($year_selected+543)."' AND `status` = '1' ORDER BY `id` DESC ");
+            if($db->get_rows()>0){
+                ?>
+                <span id="selectYearResponse">
+                    <select name="companySelected" id="companySelected">
+                        <option value="">-- แสดงทั้งหมด --</option>
+                        <?php 
+                        $companyItems = $db->get_items();
+                        foreach ($companyItems as $companyItem) {
+                            ?><option value="<?=$companyItem['id'];?>"><?=$companyItem['code'];?></option><?php
+                        }
+                        ?>
+                    </select>
+                </span>
+                <?php
+            }
+            ?>
+        </div>
         <div>
             <button type="submit">แสดงผล</button>
             <input type="hidden" name="views" value="search">
         </div>
     </form>
 </fieldset>
+<script>
+    function getCompany(){
+        let yearSelected = document.getElementById('year_selected').value;
+        getComapnyAsync(yearSelected).then((response)=>{
+            let res = JSON.parse(response);
+            if(res.count>0){
+                
+                document.getElementById('companySelected').innerHTML = '';
 
+                let companyTxt = '<option value="">-- แสดงทั้งหมด --</option>';
+                for( let i=0; i<res.count; i++){
+                    const com = res.data[i];
+                    companyTxt += '<option value="'+com.id+'">'+com.code+'</option>';
+                }
+
+                document.getElementById('companySelected').innerHTML = companyTxt;
+            }
+        });
+    }
+    async function getComapnyAsync(year){
+        const response = await fetch('chk_company.php?action=findWithYear&year='+year);
+        if (!response.ok) {
+        }
+        const body = await response.text();
+        return body;
+    }
+</script>
 <?php 
 $views = input_post('views');
 if ( $views == 'search' ) {
@@ -214,10 +285,16 @@ if ( $views == 'search' ) {
 <div>
     <?php 
     
-    $year_selected += 543;
+    $year_selected += 543; 
+
+    $companySelected = sprintf($_POST['companySelected']);
+    $whereCompany = '';
+    if(!empty($companySelected)){
+        $whereCompany = "AND `id` = '$companySelected' ";
+    }
 
     $sql = "SELECT * FROM `chk_company_list` 
-    WHERE `yearchk` = '$year_selected' AND `status` = '1' 
+    WHERE `yearchk` = '$year_selected' $whereCompany AND `status` = '1' 
     ORDER BY `id` ASC";
     $db->select($sql);
     $items = $db->get_items();

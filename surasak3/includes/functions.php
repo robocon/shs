@@ -286,9 +286,13 @@ function getMonthList($name = 'months', $match = null, $class_name = false){
  * @example getYearList('new_name', true, 2558, array(2556,2557,2558,2559));
  * เป็นการตั้งชื่อ input ชื่อ new_name แสดงเป็นปี พศ และแสดงปี 2558 เป็นค่าเริ่มต้นโดยมีช่วงการแสดงผลตั้งแต่ปี 2556 ถึง 2559
  */
-function getYearList($name = 'years', $thai = false, $year = null, $range = array(), $class_name = false){
+function getYearList($name = 'years', $thai = false, $year = null, $range = array(), $class_name = false, $function = false){ 
+	$selectCallFunction = '';
+	if(!empty($function)){
+		$selectCallFunction = 'onChange="'.$function.'()"';
+	}
 	?>
-	<select name="<?=$name;?>" class="<?=$class_name;?>" id="<?=$name;?>">
+	<select name="<?=$name;?>" class="<?=$class_name;?>" id="<?=$name;?>" <?=$selectCallFunction;?> >
 		<?php
 		if( !empty($range) ){
 			$y_min = min($range);
