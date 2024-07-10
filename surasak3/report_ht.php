@@ -39,8 +39,8 @@ $dbi->query("SET NAMES UTF8");
             ?>
             <form action="report_ht.php" method="post">
                 <div class="mb-3 row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">เลือกปี</label>
-                    <div class="col-sm-2">
+                    <label for="staticEmail" class="col-md-1 col-form-label">เลือกปี</label>
+                    <div class="col-md-2">
                         <select class="form-select" name="year">
                             <option value="">เลือกปีที่ต้องการ</option>
                             <?php 
@@ -53,8 +53,8 @@ $dbi->query("SET NAMES UTF8");
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label"></label>
-                    <div class="col-sm-2">
+                    <label for="staticEmail" class="col-md-1 col-form-label"></label>
+                    <div class="col-md-2">
                         <button type="submit" class="btn btn-primary">แสดงผล</button>
                         <input type="hidden" name="page" value="show">
                     </div>
@@ -70,7 +70,7 @@ $dbi->query("SET NAMES UTF8");
             $sqlTemp = "CREATE TEMPORARY TABLE `tempory_opd` 
             SELECT y.*,x.`regis_id`,x.`regis_date` FROM 
             ( 
-                SELECT b.`row_id`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` FROM ( 
+                SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` FROM ( 
                     SELECT MAX(`row_id`) AS `latest_row_id`,`thidate` 
                     FROM `opd` 
                     WHERE `thidate` LIKE '$yearSelected%' 
@@ -110,7 +110,7 @@ $dbi->query("SET NAMES UTF8");
                                 $all = $a['all'];
                                 $ht = $a['ht'];
 
-                                echo '<a href="report_ht1.php?year='.$year.'&all='.$all.'&ht='.$ht.'" title="OPD ทั้งหมด '.$all.'/ ยอด HT '.$ht.'">'.round(($ht*100/$all),2).'</a>';
+                                echo '<a href="report_ht1.php?year='.$year.'&all='.$all.'&ht='.$ht.'" title="OPD ทั้งหมด '.$all.'ราย/ ยอด HT '.$ht.'ราย" target="_blank">'.round(($ht*100/$all),2).'</a>';
                                 ?>
                             </td>
                         </tr>
@@ -135,13 +135,32 @@ $dbi->query("SET NAMES UTF8");
                                 $a = $q->fetch_assoc();
                                 $ht_bp = $a['bp'];
 
-                                echo '<a href="report_ht2.php?year='.$year.'" title="HT ทั้งหมด '.$ht_all.'/ HT bp < 140/90 '.$ht_bp.'">'.(round(($ht_bp*100/$ht_all))).'</a>';
+                                echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$ht_all.'&ht_bp='.$ht_bp.'" title="HT ทั้งหมด '.$ht_all.'ราย/ HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.(round(($ht_bp*100/$ht_all))).'</a>';
                                 ?>
                             </td>
                         </tr>
                         <tr>
                             <td>3.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR </td>
-                            <td></td>
+                            <td>
+                                <?php 
+                                $sql = "SELECT COUNT(a.`row_id`) AS `htEcgCxr`
+                                FROM ( SELECT * FROM tempory_opd WHERE regis_id IS NOT NULL ) AS a 
+                                LEFT JOIN ( 
+                                    SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
+                                    FROM `patdata` 
+                                    WHERE `date` LIKE '$yearSelected%' 
+                                    AND `hn` <> '' 
+                                    AND ( `code` LIKE '41001%' OR `code` LIKE '%EKG%') 
+                                    GROUP BY `hn`
+                                ) AS b ON a.thdatehn = b.thdatehn 
+                                WHERE b.row_id IS NOT NULL;";
+                                $q = $dbi->query($sql);
+                                $a = $q->fetch_assoc();
+                                $ecgCxr = $a['htEcgCxr'];
+                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$ht_all.'&ecgCxr='.$ecgCxr.'" title="HT ทั้งหมด '.$ht_all.'ราย/ HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.(round(($ecgCxr*100/$ht_all))).'</a>';
+                                
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <td>4.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin</td>

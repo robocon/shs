@@ -20,7 +20,7 @@ $ht = sprintf("%s", $_GET['ht']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</title>
+    <title>1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</title>
     <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -42,9 +42,9 @@ $ht = sprintf("%s", $_GET['ht']);
 <body>
     <div class="container">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
-        <h5>1.) ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</h5>
+        <h5>1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</h5>
         <div class="row">
-            <div class="col-sm-4">
+            <div class="col-sm-6">
                 <table class="table">
                     <tr>
                         <th>ยอด OPD</th>
