@@ -18,8 +18,6 @@ if ($action == 'insert') {
     WHERE `part` = '$part' 
     AND `status` = 'N' 
     ORDER BY `id` ASC ";
-    dump($sql);
-    exit;
     $db->select($sql);
     
     if( $db->get_rows() > 0 ){
