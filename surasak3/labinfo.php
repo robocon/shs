@@ -271,7 +271,7 @@ if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))==
 	<br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=4&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ประภัสสร เครืออินทร์</a>
 	<br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=5&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - พิมพ์ทอง สุระเรืองชัย</a>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=5&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทย - พิมพ์ทอง สุระเรืองชัย</a>
     <!--<br><br>
     <a target="_blank" href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
 
