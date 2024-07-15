@@ -1,6 +1,12 @@
 <?php
+session_start();
 include ("connect.inc");
-//    $Thidate = (date("Y")+543).date("-m-d G:i:s"); 
+
+if(empty($_SESSION['sRowid'])){
+	echo "Session หมดอายุ กรุณา Login ใหม่อีกครั้ง ";
+	exit;
+}
+
 $Thdate = date("d-m-") . (date("Y") + 543) . '   ' . date("H:i:s");
 print "รายงานเมื่อ $Thdate<br>";
 if ($_GET['id'] == "41") {
@@ -20,6 +26,7 @@ if ($_GET['id'] == "41") {
 } elseif ($_GET['id'] == "48") {
 	print "รายการอาหาร รพ.สนาม<br>";
 }
+
 ?>
 <style>
 	.font {
@@ -48,13 +55,17 @@ if ($_GET['id'] == "41") {
 		<th width="30%" bgcolor=6495ED>อาหาร</th>
 	</tr>
 	<?php 
-	$id = sprintf("%s", $_GET['id']);
-	$query = "SELECT a.bed,a.ptname,a.diagnos,a.diag1,a.food,a.bedcode,a.age,a.hn,b.an 
+	$id = sprintf("%s", $_GET['id']); 
+
+	$time2 = strtotime(date("Y-m-d H:i:s"));
+	$thDateYmd = (date("Y") + 543).date('-m-d');
+
+	$query = "SELECT a.bed,a.ptname,a.diagnos,a.diag1,a.food,a.bedcode,a.age,a.hn,b.an ,a.`date` 
 	FROM bed as a INNER JOIN ipcard as b ON a.an=b.an 
 	WHERE b.hi_type !='out' 
 	AND a.bedcode LIKE '$id%' ORDER BY a.bed ASC ";
 	$result = mysql_query($query) or die("Query failed");
-	while (list($bed, $ptname, $diagnos, $diag1, $food, $bedcode, $age, $hn, $an) = mysql_fetch_row($result)) {
+	while (list($bed, $ptname, $diagnos, $diag1, $food, $bedcode, $age, $hn, $an, $date) = mysql_fetch_row($result)) {
 
 		$foodFromBed = $food; 
 
@@ -81,24 +92,34 @@ if ($_GET['id'] == "41") {
 		// }
 
 		//print "<table width='100%' border='1' ><tr><th width='7%'>เตียง</th><th width=37%>ชื่อผู้ป่วย</th><th width=14%>โรค</th><th width=30%>โรคประจำตัว</th><th width=10%>อายุ</th><th width=10%>BMI</th></tr>";
+		list($shortDate, $shortTime) = explode(' ', $date);
 		?>
 
 		<tr style="line-height:16px;">
 			<td align="center" valign="top"><?= $bed ?></td>
-			<td valign="top"><?=$an;?></td>
+			<td valign="top"><span title="<?=$date;?>"><?=$an;?></span></td>
 			<td valign="top"><?= $ptname ?></td>
 			<td valign="top"><?= $diagnos ?></td>
 			<td valign="top"><?= $diag1_value ?></td>
 			<td valign="top">
 				<?php 
+				
 				if(!empty($a['new'])){ 
 
 					$time1 = strtotime($a['regisdateEn']);
-					$time2 = strtotime(date("Y-m-d H:i:s"));
+					
 					$hourDiff = abs($time2 - $time1)/(60*60);
 					if($a['old']!==$foodFromBed && $hourDiff<12){
 						// แสดง icon new
 						echo '<span style="background-color: #ff1f1f; color: white; padding: 0 8px;" title="'.$a['old'].'">NEW</span>';
+					}
+				}elseif( $shortDate == $thDateYmd ){
+					
+					$newEnDate = (substr($date,0,4)-543).substr($date,4,15);
+					$time1 = strtotime($newEnDate);
+					$hourDiff = abs($time2 - $time1)/(60*60);
+					if( $hourDiff<12){ 
+						echo '<span style="background-color: #00971f; color: white; padding: 0 8px;">รับ Admit</span>';
 					}
 				}
 				?>
