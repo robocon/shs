@@ -1,5 +1,8 @@
 <?php
-  	session_start();
+session_start();
+if(empty($cHn)){
+	exit();	
+}else{	
     $Thaidate=date("d-m-").(date("Y")+543);
 
     $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
@@ -196,69 +199,69 @@
     echo "แพทย์: $cDoctor<br>";
 
 
-for($no=1; $no<=12; $no++){
-   if($_POST['item'.$no] !="") {
-       //insert data into patdata
-	   if($_POST['yprice'.$no] >0){
-		   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aCode[$no]','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPY[$no]','$cPtright','$idno');";
-		  	$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-	   }else{
-		   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aCode[$no]','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPN[$no]','$cPtright','$idno');";
-		  	$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
-	   }
+	for($no=1; $no<=12; $no++){
+	   if($_POST['item'.$no] !="") {
+		   //insert data into patdata
+		   if($_POST['yprice'.$no] >0){
+			   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aCode[$no]','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPY[$no]','$cPtright','$idno');";
+				$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+		   }else{
+			   $query = "INSERT INTO patdata(date,hn,an,ptname,doctor,item,code,detail,amount,price,yprice,nprice,depart,part,ptright,idno) VALUES('$Thidate','$cHn','$cAn','$cPtname','$cDoctor','$item','$aCode[$no]','$aDetail[$no]','$aAmount[$no]','$aMCprice[$no]','$aYprino[$no]','$aNprino[$no]','SURG','$aDSPN[$no]','$cPtright','$idno');";
+				$result = mysql_query($query) or die("Query failed,cannot insert into patdata");
+		   }
 
 
-	if ($cAn!=""){
-		if($aYprino[$no] > 0 and ($aDSPY[$no]=="DPY" or $aDSPY[$no]=="DSY")){
-            //insert data into ipacc
-       		$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn','$aCode[$no]','SURG','$aDetail[$no]','$aAmount[$no]','$aYprino[$no]','$sOfficer','$aDSPY[$no]','$cAccno','$idno','$cPtright');";
-       		$result1 = mysql_query($query) or die("Query failed,cannot insert into ipacc");
-	   }
-       if($aNprino[$no] > 0 and $aDSPN[$no]=="DPN"){
-            $cNprice='(เบิกไม่ได้)';
-			if($aAmount[$no]==0){  
-				$aAmount[$no]=="1";  //ถ้าจำนวนเท่ากับ 0 ให้ใส่ค่าเป็น 1
+		if ($cAn!=""){
+			if($aYprino[$no] > 0 and ($aDSPY[$no]=="DPY" or $aDSPY[$no]=="DSY")){
+				//insert data into ipacc
+				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn','$aCode[$no]','SURG','$aDetail[$no]','$aAmount[$no]','$aYprino[$no]','$sOfficer','$aDSPY[$no]','$cAccno','$idno','$cPtright');";
+				$result1 = mysql_query($query) or die("Query failed,cannot insert into ipacc");
+		   }
+		   if($aNprino[$no] > 0 and $aDSPN[$no]=="DPN"){
+				$cNprice='(เบิกไม่ได้)';
+				if($aAmount[$no]==0){  
+					$aAmount[$no]=="1";  //ถ้าจำนวนเท่ากับ 0 ให้ใส่ค่าเป็น 1
+				}
+				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
+						idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn',
+		'$aCode[$no]','SURG','$aDetail[$no] $cNprice',
+						'$aAmount[$no]','$aNprino[$no]','$sOfficer','$aDSPN[$no]','$cAccno','$idno','$cPtright');";
+				$result1 = mysql_query($query) or die("Query failed,cannot insert into ipacc");
+		   }
+			if($aNprino[$no] > 0 and $aDSPN[$no]=="DSN"){
+				$cNprice='(เบิกไม่ได้)';
+				if($aAmount[$no]==0){  
+					$aAmount[$no]=="1";  //ถ้าจำนวนเท่ากับ 0 ให้ใส่ค่าเป็น 1
+				}			
+				$query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
+						idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn',
+		'$aCode[$no]','SURG','$aDetail[$no] $cNprice',
+						'$aAmount[$no]','$aNprino[$no]','$sOfficer','$aDSPN[$no]','$cAccno','$idno','$cPtright');";
+				$result1 = mysql_query($query) or die("Query failed,cannot insert into ipacc");
 			}
-            $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
-                    idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn',
-	'$aCode[$no]','SURG','$aDetail[$no] $cNprice',
-                    '$aAmount[$no]','$aNprino[$no]','$sOfficer','$aDSPN[$no]','$cAccno','$idno','$cPtright');";
-          	$result1 = mysql_query($query) or die("Query failed,cannot insert into ipacc");
-	   }
-		if($aNprino[$no] > 0 and $aDSPN[$no]=="DSN"){
-            $cNprice='(เบิกไม่ได้)';
-			if($aAmount[$no]==0){  
-				$aAmount[$no]=="1";  //ถ้าจำนวนเท่ากับ 0 ให้ใส่ค่าเป็น 1
-			}			
-            $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,
-                    idname,part,accno,idno,ptright)VALUES('$Thidate','$cAn',
-	'$aCode[$no]','SURG','$aDetail[$no] $cNprice',
-                    '$aAmount[$no]','$aNprino[$no]','$sOfficer','$aDSPN[$no]','$cAccno','$idno','$cPtright');";
-            $result1 = mysql_query($query) or die("Query failed,cannot insert into ipacc");
 		}
+	   }
 	}
-   }
-}
 
-print"<table>";
-print" <tr>";
-print"  <th bgcolor=6495ED>#</th>";
-print"  <th bgcolor=6495ED>ชื่อรายการ</th>";
-print"  <th bgcolor=6495ED>ประเภท</th>";
-print"  <th bgcolor=6495ED>จำนวน</th>";
-print"  <th bgcolor=6495ED>ราคารวม</th>";
-print"  <th bgcolor=6495ED>เบิกได้</th>";
-print"  <th bgcolor=6495ED>เบิกไม่ได้</th>";
-print"  </tr>";
-if($result1){
+	print"<table>";
+	print" <tr>";
+	print"  <th bgcolor=6495ED>#</th>";
+	print"  <th bgcolor=6495ED>ชื่อรายการ</th>";
+	print"  <th bgcolor=6495ED>ประเภท</th>";
+	print"  <th bgcolor=6495ED>จำนวน</th>";
+	print"  <th bgcolor=6495ED>ราคารวม</th>";
+	print"  <th bgcolor=6495ED>เบิกได้</th>";
+	print"  <th bgcolor=6495ED>เบิกไม่ได้</th>";
+	print"  </tr>";
+	if($result1){
 	$sql2 ="select detail,part,amount,price,yprice,nprice from patdata where an='$cAn' and date ='$Thidate' and depart='SURG'";
-}elseif($result){
+	}elseif($result){
 	$sql2 ="select detail,part,amount,price,yprice,nprice from patdata where hn='$cHn' and date ='$Thidate' and depart='SURG'";
-}
-$result5 = mysql_query($sql2);
-while(list($detail,$part,$amount,$price,$yprice,$nprice) = mysql_fetch_array($result5)){
+	}
+	$result5 = mysql_query($sql2);
+	while(list($detail,$part,$amount,$price,$yprice,$nprice) = mysql_fetch_array($result5)){
 	$nnn++;
-print("<tr>\n".
+	print("<tr>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$nnn</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$detail</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$part</td>\n".
@@ -267,22 +270,23 @@ print("<tr>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$yprice</td>\n".  
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$nprice</td>\n".  
                 " </tr>\n");
-}
-print"</table>";
-////////////////
-if($result1||$result){
-    print "บันทึกข้อมูลเรียบร้อย,ผู้บันทึก:$sOfficer";
-    print "<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
-  include("unconnect.inc");
-    session_unregister("cHn");  
-    session_unregister("cPtname");
-    session_unregister("cPtright");
-    session_unregister("cDiag");
-    session_unregister("cAn"); 
-    session_unregister("cDoctor"); 
-    session_unregister("cAccno"); 
-    session_unregister("cBedcode"); 
-}else{
-	print "บันทึกข้อมูลผิดพลาด กรุณาบันทึกใหม่";
+	}
+	print"</table>";
+	////////////////
+	if($result1||$result){
+		print "บันทึกข้อมูลเรียบร้อย,ผู้บันทึก:$sOfficer";
+		print "<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
+	  include("unconnect.inc");
+		session_unregister("cHn");  
+		session_unregister("cPtname");
+		session_unregister("cPtright");
+		session_unregister("cDiag");
+		session_unregister("cAn"); 
+		session_unregister("cDoctor"); 
+		session_unregister("cAccno"); 
+		session_unregister("cBedcode"); 
+	}else{
+		print "บันทึกข้อมูลผิดพลาด กรุณาบันทึกใหม่";
+	}
 }
 ?>
