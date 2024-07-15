@@ -1,5 +1,5 @@
 <?php
-
+include("connect.inc");
 session_start();
 
 // error_reporting(0);
@@ -14,9 +14,9 @@ if(!isset($password)){
 $sIdname = $username;
 $sPword = $password;
 
-if((date("Y-m-d")=="2024-07-01") && ($sPword=="1234" || $sPword=="123456")){
-$sPword="xxx";  //แปลงให้เป็นรหัสอื่นๆ	
-}	
+// if((date("Y-m-d")>="2024-07-01") && ($sPword=="1234" || $sPword=="123456")){
+// 	$sPword="xxx";  //แปลงให้เป็นรหัสอื่นๆ
+// }	
 
 session_register("sIdname");
 session_register("sPword");
@@ -34,7 +34,6 @@ print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' ali
 print "<br>";
 print "<font face='THSarabunPSK'><CENTER><br>";
 
-include("connect.inc");
 
 $sql = "SELECT * FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' AND `status` = 'y'";
 $query = sprintf($sql, $sIdname, $sPword);
@@ -61,14 +60,53 @@ $sRowid = false;
 // มีชื่อและรหัสผ่านอยู่ในฐานข้อมูล
 if(mysql_num_rows($result)){
 	$sRowid = $row->row_id;
-	//$sql=mysql_query("UPDATE inputm SET date_pword='".date("Y-m-d H:s:i")."' WHERE row_id='$sRowid'");
 	$sDatepass = $row->date_pword;
 	$sPass = $row->pword;
 	$datepass = substr($sDatepass,0,10);
 	$datenow = date("Y-m-d");
 	
 	$df = date_diff_test($datepass, $datenow);
-	
+
+		// $set_user = array(
+			// 'id' => $user['row_id'],
+			// 'name' => $user['name'],
+			// 'code' => $user['menucode'],
+		// );
+		// setcookie("user", serialize($set_user), time()+(3600*365), "/");
+	mysql_query("UPDATE `inputm` SET `last_login`=NOW() WHERE (`row_id`='$sRowid');");
+
+	$passwordBlock = array('1234', '123456');
+	if(in_array($sPword, $passwordBlock)===true){
+		?>
+		<script>
+			alert('คำเตือน! รหัสผ่านของท่านไม่ตรงตามข้อกำหนดความปลอดภัย กรุณาติดต่อ Admin ประจำแผนกเพื่อเปลี่ยนรหัสผ่าน');
+			setTimeout(() => {
+				window.location = 'login.php';
+			}, 800);
+		</script>
+		<?php
+		exit;
+	}
+
+	if($user['menucode']!=='ADMDR1'){
+		$passwordWarning = array('12345678');
+
+		$checkDigit = preg_match('/\d+/', $sPword);
+		$checkEnUpperCase = preg_match('/[a-zA-Z]+/', $sPword);
+		// $checkEnLowerCase = preg_match('/[a-z]+/', $sPword);
+
+		if(in_array($sPword, $passwordWarning)===true OR ($checkDigit==0 OR $checkEnUpperCase==0) OR strlen($sPword)<8 ){
+			?>
+			<script>
+				alert("รหัสผ่านของท่านอยู่ในกลุ่มเสี่ยงที่จะโดน Hack\n!!! กรุณาเปลี่ยนรหัสผ่านใหม่ ก่อนวันที่ 31 ธันวาคม 2567 !!!");
+			</script>
+			<?php
+		}
+	}
+
+	// กำหนดอายุ Session ให้มีอายุ 6ชั่วโมง
+	ini_set('session.gc_maxlifetime', 60*60*6);
+
 	// เพิ่ม log กรณีที่ login ผ่านเรียบร้อยแล้ว
 	$user = mysql_fetch_assoc(mysql_query($query));
 	$sql = sprintf("INSERT INTO `log_inputm` (
@@ -77,14 +115,7 @@ if(mysql_num_rows($result)){
 	'%s', '%s', '%s', '%s', '%s', '%s', '%s'
 	);", $ymd, $user['row_id'], $user['name'], $user['menucode'], $current_date, null, null);
 	$result = mysql_query($sql);
-		
-		// $set_user = array(
-			// 'id' => $user['row_id'],
-			// 'name' => $user['name'],
-			// 'code' => $user['menucode'],
-		// );
-		// setcookie("user", serialize($set_user), time()+(3600*365), "/");
-	mysql_query("UPDATE `inputm` SET `last_login`=NOW() WHERE (`row_id`='$sRowid');");
+	
 
 }else{ //กรณีที่ login ไม่ผ่าน
 	
@@ -131,21 +162,16 @@ $nPrefix = $row->prefix;
 ////*runno ตรวจสุขภาพ*/////////
 	
 	// tb_access น่าจะเป็นตารางแบบสอบถาม
-	$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' and year = '$nPrefix' ";
-	$result3 = mysql_query($query3) or die( mysql_error($Conn) );
-	$nrow3 = mysql_num_rows($result3);
+	// $query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' and year = '$nPrefix' ";
+	// $result3 = mysql_query($query3) or die( mysql_error($Conn) );
+	// $nrow3 = mysql_num_rows($result3);
 	
 	print "<font face='THSarabunPSK'><a href='menulst.php' ><B>เข้าสู่<BR>โปรแกรมสุรศักดิ์มนตรี 3</B></a></font>";
 	print "<BR>*********";	
-    print "</body>";
+    
 	if( $sIdname == $sPword ){
 		echo "<script>alert('คำเตือน! รหัสผ่านของท่านยังไม่ได้เปลี่ยนแปลง กรุณาเปลี่ยนรหัสผ่านที่เมนูเปลี่ยนรหัสเพื่อความปลอดภัยของท่าน') </script>";
 	}
-
-	if($sPword=="1234" || $sPword=="123456"){
-		echo "<script>alert('คำเตือน! รหัสผ่านของท่านจะไม่สามารถใช้งานได้หลังวันที่ 30 มิ.ย.67 เป็นต้นไป เนื่องจากไม่ตรงตามข้อกำหนดความปลอดภัย กรุณาเปลี่ยนรหัสผ่านเพื่อความปลอดภัยของท่าน') </script>";
-	}	
-
 
 	/*echo "<script>alert('ศูนย์คอมพิวเตอร์จะทำการปรับปรุงฐานข้อมูลคอมพิวเตอร์ มีความจำเป็นปิดให้บริการเวลา 00.30 - 02.00 มีปัญหาการใช้งานติดต่อได้ที่ 6206') </script>"; */
 	// include("connect.inc");  
@@ -168,7 +194,9 @@ $nPrefix = $row->prefix;
 
 <style type="text/css" media="screen">
 	body{
-		font-family: THSarabunPSK;
+		font-family: "TH SarabunPSK";
 		font-size:20px;
 	}
-</style>	
+</style>
+<?php 
+print "</body>";
