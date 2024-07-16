@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.php");
+include("connect.inc");
 
 ?>
 <style type="text/css">
@@ -47,10 +47,20 @@ print"<div align='center' class='forntsarabun'>แสกน QR Code เพื่
 $Thaidate=date("d-m-").(date("Y")+543);
 $n =0;
 $num = "Y";
-
+$datechk=(date("Y")+543).date("-m-d");
 // งานค้างที่ยังไม่ได้รับผิดชอบ
-$query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1` FROM `com_support` WHERE `status` ='Y' AND `date` >= '2565-01-01 00:00:00' ORDER BY `row` DESC";
-$result = mysql_query($query) or die("Query failed111 ".mysql_error());
+/*if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCOM"){
+	$query = "SELECT row,depart,head,datetime,programmer,date,user1 
+FROM com_support 
+WHERE status ='$num'
+ORDER BY row desc";
+}else{*/
+$query = "SELECT row,jobtype,depart,head,datetime,programmer,date,user1 
+FROM com_support 
+WHERE status ='$num' and date >= '2565-01-01 00:00:00'
+ORDER BY row desc";
+//}
+$result = mysql_query($query) or die("Query failed111");
 if($num1=mysql_num_rows($result)){
     print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
     print"<table class='forntsarabun'  align='center' width='98%'>";
@@ -65,7 +75,13 @@ if($num1=mysql_num_rows($result)){
     print" </tr>";
     while (list ($row,$jobtype,$depart,$head,$datetime,$programmer,$date,$user1) = mysql_fetch_row ($result)) {
         $n++;
-
+	$date_key=substr($date,0,10);
+	//echo $date_key;
+if($datechk==$date_key){
+	$new="<img src='images/new-40.png' width='32' height='32'>";
+}else{
+	$new="";	
+}	
         $programmer = ( !empty($programmer) ) ? $programmer : 'รอการตอบรับ' ;
 
         if($_SESSION['smenucode']=='ADM' || $_SESSION['smenucode']=='ADMCOM'){
@@ -80,7 +96,7 @@ if($num1=mysql_num_rows($result)){
         print (" <tr>\n".
         "  <td BGCOLOR=$color align='center'>$row</td>\n".
 		"  <td BGCOLOR=$color>$depart</td>\n".
-        "  <td BGCOLOR=$color><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
+        "  <td BGCOLOR=$color><a target=_TOP href=\"comdetail.php? row=$row\">$head</a> <span style='margin-left:5px;'>$new</span></td>\n".
         "  <td BGCOLOR=$color>$user1</td>\n".
         "  <td BGCOLOR=$color>$date</td>\n".
         "  <td BGCOLOR=$color>$where</td>\n".
@@ -102,8 +118,11 @@ $Thaidate=date("d-m-").(date("Y")+543);
 $n=0;
 $num = A;
 include("connect.inc");
-$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user` FROM `com_support` WHERE status ='$num' ORDER BY `row` desc";
-$result = mysql_query($query) or die("Query failed111 ".mysql_error());
+$query = "SELECT  row,depart,head,datetime,programmer,date,user 
+FROM com_support 
+WHERE status ='$num' 
+ORDER BY row desc";
+$result = mysql_query($query) or die("Query failed111");
 
    if($num2=mysql_num_rows($result)){
         print"<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการ จำนวน $num2 รายการ</strong></div>";
@@ -118,18 +137,27 @@ $result = mysql_query($query) or die("Query failed111 ".mysql_error());
 		//print"  <th bgcolor=#FAD7A0>การทำงาน</th>";
         if($_SESSION['smenucode']=='ADM' OR $_SESSION['smenucode']=='ADMCOM'){
             print"  <th bgcolor=#FAD7A0>เพิ่มรายละเอียด</th>";
-        }
-      
+        }	
+	  
+	  
         print" </tr>";
         while (list ($row,$depart,$head,$datetime,$programmer,$date,$user) = mysql_fetch_row ($result)) {
-			$n++;
+			$n++;     
+$sql_detail = "SELECT * FROM `com_support_details` WHERE `com_id` = '$row' ORDER BY `id` DESC";
+//echo $sql_detail."<br>";
+$q=mysql_query($sql_detail);
+if (mysql_num_rows($q)>0) {
+	$comment="<img src='images/comment-64.png' width='32' height='32'>";	
+}else{
+	$comment="";
+}			
 			if($_SESSION['smenucode']=='ADM' || $_SESSION['smenucode']=='ADMCOM'){$where="<a target=_TOP href=\"comsucces.php?row=$row\">$programmer</a>";} else {$where="$programmer";};
 			if($_SESSION['smenucode']=='ADM'){$add="<a target='_blank' href=\"comservice.php?row=$row&act=win\">บันทึก</a>";} else {$add="บันทึก";};
 			
             print (" <tr>\n".
                 "  <td BGCOLOR=#FCF3CF align='center'>$row</td>\n".
                 "  <td BGCOLOR=#FCF3CF>$depart</td>\n".
-                "  <td BGCOLOR=#FCF3CF><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n".
+                "  <td BGCOLOR=#FCF3CF><a target=_TOP href=\"comdetail.php? row=$row\">$head</a><span style='margin-left:5px;'>$comment</span></td>\n".
                 "  <td BGCOLOR=#FCF3CF>$date</td>\n".
 				  "  <td BGCOLOR=#FCF3CF>$where</td>\n".
 				  "  <td BGCOLOR=#FCF3CF><a target='_blank' href=\"com_form.php?row=$row\">พิมพ์</a></td>\n");
@@ -154,11 +182,11 @@ echo "<hr />";
 
 $num = 'n';
 include("connect.inc");
-$query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`p_edit`,`dateend` 
-FROM `com_support` 
-WHERE `status` ='$num' AND `dateend` LIKE '$year%'
-ORDER BY `dateend` DESC ";
-$result_all = mysql_query($query) or die("Query failed111 ".mysql_error());
+$query = "SELECT row,depart,head,datetime,programmer,date,p_edit,dateend 
+FROM com_support 
+WHERE status ='$num' and dateend like '$year%'
+ORDER BY dateend desc ";
+$result_all = mysql_query($query) or die("Query failed111");
 $all_rows = mysql_num_rows($result_all);
 
 $limit = '1000';
