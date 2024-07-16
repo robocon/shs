@@ -1,5 +1,6 @@
 <?php
-global $cHn, $cAn, $electric;
+global $cHn, $cAn, $electric, $phone,$loss,$ambulance,$food,$death,$preserve,$robe;
+
 session_start();
 $Thidate = (date("Y") + 543) . date("-m-d H:i:s");
 $th_date = (date("Y") + 543) . date("-m-d");
@@ -21,37 +22,37 @@ $aCode = array("รหัส");
 $aDetail = array("รายการ");
 $aMCprice = array("ราคา ");
 
-$aCode[1] = "elect";
-$aDetail[1] = "ค่าไฟฟ้า";
-$aMCprice[1] = (int) $electric;
+$aCode[] = "elect";
+$aDetail[] = "ค่าไฟฟ้า";
+$aMCprice[] = sprintf("%d", $_POST['electric']);
 
-$aCode[2] = "phone";
-$aDetail[2] = "ค่าโทรศัพท์";
-$aMCprice[2] = (int) $phone;
+$aCode[] = "phone";
+$aDetail[] = "ค่าโทรศัพท์";
+$aMCprice[] = sprintf("%d", $_POST['phone']);
 
-$aCode[3] = "loss";
-$aDetail[3] = "ค่าสิ่งอุปกรณ์เสียหาย";
-$aMCprice[3] = (int) $loss;
+$aCode[] = "loss";
+$aDetail[] = "ค่าสิ่งอุปกรณ์เสียหาย";
+$aMCprice[] = sprintf("%d", $_POST['loss']);
 
-$aCode[4] = "ambulance";
-$aDetail[4] = "ค่ารถพยาบาล";
-$aMCprice[4] = (int) $ambulance;
+$aCode[] = "ambulance";
+$aDetail[] = "ค่ารถพยาบาล";
+$aMCprice[] = sprintf("%d", $_POST['ambulance']);
 
-$aCode[4] = "food";
-$aDetail[4] = "ค่าอาหารญาติผู้ป่วย";
-$aMCprice[4] = (int) $food;
+$aCode[] = "food";
+$aDetail[] = "ค่าอาหารญาติผู้ป่วย";
+$aMCprice[] = sprintf("%d", $_POST['food']);
 
-$aCode[5] = "death";
-$aDetail[5] = "ค่าบริการศพ";
-$aMCprice[5] = (int) $death;
+$aCode[] = "death";
+$aDetail[] = "ค่าบริการศพ";
+$aMCprice[] = sprintf("%d", $_POST['death']);
 
-$aCode[6] = "preserve";
-$aDetail[6] = "ค่าฉีดยาศพ";
-$aMCprice[6] = (int) $preserve;
+$aCode[] = "preserve";
+$aDetail[] = "ค่าฉีดยาศพ";
+$aMCprice[] = sprintf("%d", $_POST['preserve']);
 
-$aCode[7] = "robe";
-$aDetail[7] = "ค่าตราสังข์";
-$aMCprice[7] = (int) $robe;
+$aCode[] = "robe";
+$aDetail[] = "ค่าตราสังข์";
+$aMCprice[] = sprintf("%d", $_POST['robe']);
 
 // ตรวจสอบข้อมูลต่างๆ
 if (
