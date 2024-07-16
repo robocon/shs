@@ -83,7 +83,7 @@ if(usingIE()==true){
                         <li>รหัสผ่านควรมีตัวพิมพ์เล็ก พิมพ์ใหญ่ ตัวเลข และ อักขระพิเศษ(!@#$%^&*()_+)ผสมกัน</li>
                     </ul>
                     <p>
-                        <a href="showAdmin.php" target="_blank">รายชื่อระดับ Admin ประจำแผนก</a>
+                        <a href="showAdmin.php?group=<?=$_SESSION['smenucode'];?>" target="_blank">รายชื่อระดับ Admin ประจำแผนก</a>
                     </p>
                 </td>
             </tr>
