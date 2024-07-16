@@ -38,7 +38,7 @@ if( $action === 'login' ){
 	if( $item ){
 		
 		// Set session to one day
-		ini_set('session.gc_maxlifetime', 60*60*6);
+		ini_set('session.gc_maxlifetime', 60*60*24);
 		
 		$_SESSION['sIdname'] = $item['idname'];
 		$_SESSION['sPword'] = $item['pword'];

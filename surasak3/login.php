@@ -32,30 +32,16 @@ font, .txt{
         <p><input type="submit" value="เข้าสู่ระบบ" name="B2" class="txt"></p>
       </td>
     </tr>
-    <tr>
+    <!-- <tr>
       <td width="2%"></td>
       <td width="98%">
         <div style="text-align:left;">
           <a target="_parent" href="javascript:void(0);" class="txt">ลืมรหัสผ่าน?</a>
         </div>
       </td>
-    </tr>
+    </tr> -->
     
   </table>
 </form>
-<!-- <font face="THSarabunPSK"><a target="_parent"  href='../index.htm'>อินทราเนท</a></font> -->
-
-<?php 
-$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
-$isMob = is_numeric(strpos($ua, "mobile"));
-if($isMob === true)
-{
-  ?>
-  <p>
-    <a target="_parent" href='login_mobile.php'>Mobile Version</a>
-  </p>
-  <?php
-}
-?>
 </body>
 

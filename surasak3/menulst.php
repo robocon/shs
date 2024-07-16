@@ -1,13 +1,13 @@
 <?php
-    session_start();
-    $sOfficer="";
-	$smenucode = "";
-	$sRowid="";
-	$sLevel="";
-    session_register("sOfficer");
-	session_register("smenucode");
-	session_register("sRowid");
-	session_register("sLevel");
+session_start();
+$sOfficer="";
+$smenucode = "";
+$sRowid="";
+$sLevel="";
+session_register("sOfficer");
+session_register("smenucode");
+session_register("sRowid");
+session_register("sLevel");
 //error_reporting (E_ALL ^ E_NOTICE);
 
 function displaydate($x) {
@@ -27,9 +27,9 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-    include("connect.inc");
-//    print "$username<br>";
-//    print "$password<br>";
+include("connect.inc");
+
+
     $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
     $result = mysql_query($query) or die( mysql_error($Conn) );
         for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -42,12 +42,12 @@ $showtime=date("H:i:s");
             continue;
          }
     if(mysql_num_rows($result)){
-         $sOfficer=$row->name;
-         $menucode=$row->menucode;
-		  $_SESSION["smenucode"]=$row->menucode;
+		$sOfficer=$row->name;
+		$menucode=$row->menucode;
+		$_SESSION["smenucode"]=$row->menucode;
 		$sRowid=$row->row_id;
-		 $sLevel=$row->level;
-$where_search= "";
+		$sLevel=$row->level;
+		$where_search= "";
 //if($_SESSION["smenucode"] == "ADM"){
 ///////แบบสอบถาม//////
 /*$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
@@ -67,25 +67,83 @@ if($_SESSION["smenucode"] == "ADMSUR"){
 }	
 ?>
 <style type="text/css">
-	*{
-		font-family: "TH SarabunPSK";
-	}
-@font-face {
- font-family: THSarabunPSK;
- src: url("/sm3/surasak3/THSarabun.eot") /* EOT file for IE */
+*{
+	font-family: "TH SarabunPSK";
 }
-@font-face {
- font-family: THSarabunPSK;
- src: url("/sm3/surasak3/THSarabun.ttf") /* TTF file for CSS3 browsers */
+#userInfo{
+	text-align: center;
+	font-size: 24px;
+	background-color: #148F77;
 }
+
+#logout{
+	display: inline-block;
+	cursor: pointer;
+	text-decoration: none;
+	border-radius: 4px; 
+	padding: 0 6px; 
+	background-color: rgb(0 111 89); 
+	font-size: 24px; 
+	box-shadow: 0 5px #999;
+	margin-bottom: 8px;
+}
+#logout:active {
+	/* background-color: #3e8e41; */
+	box-shadow: 0 2px #666;
+	transform: translateY(2px);
+}
+
+#menuAll{
+	text-align:center;
+	font-size:24px;
+	background-color: #148F77;
+	color: #ffffff;
+}
+#showDateTxt:hover{
+	background-color: #CCFFCC!important;
+}
+#userInfo:hover, #menuAll:hover{
+	background-color: #148F77!important;
+}
+
 tr:hover td{
 	background-color: #007649;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  /*border-bottom: 1px dotted black;*/ /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 220px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+.tooltiptext{
+	font-size: 14px;
 }
 </style>
 <?php
 
 echo "
-<FORM METHOD=POST ACTION=\"\">
+<FORM METHOD=POST ACTION=\"\" style=\"margin:0;\">
 	<INPUT TYPE=\"text\" NAME=\"search\" size=\"25\" class='txt'>&nbsp;<INPUT TYPE=\"submit\" value=\" ค้นหา \" class='txt'>
 </FORM>
 ";
@@ -121,101 +179,107 @@ if($menucode=='ADM' ){
 	$sort = "ORDER BY menu_sort ASC ,menu ASC";
 }
 				 		
-if($menucode=="ADM"){
-		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-				" </tr>\n");
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
-				" </tr>\n");		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");	
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='5'>:: ข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
-				" </tr>\n");					
-				
-				
-				print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"showcomservice.php\"><font face='THSarabunPSK' size='5'>:: บันทึกการปฏิบัติงาน</font></a></td>\n".
-				" </tr>\n");	
-
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_blank' href=\"showuser.php?menucode=$menucode\"><font face='THSarabunPSK' size='5'>:: จัดการข้อมูลผู้ใช้งาน</font></a></td>\n".
-				" </tr>\n");									 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
-}else if($sLevel=="admin"){
-		print (" <tr>\n".
-                "  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-				" </tr>\n");
-				
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
-				" </tr>\n");		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");	
-
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"holiday_add.php\"><font face='THSarabunPSK' size='5'>:: ข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>\n".
-				" </tr>\n");					
-
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_blank' href=\"showuser.php?menucode=$menucode\"><font face='THSarabunPSK' size='5'>:: จัดการข้อมูลผู้ใช้งาน</font></a></td>\n".
-				" </tr>\n");									 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");
-		if($menucode!=='ADMDR1'){
-			print (" <tr>\n".
-			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"ha_index.php\"><font face='THSarabunPSK' size='5'>:: แบบบันทึกตัวชี้วัด</font></a></td>\n".
-			" </tr>\n");
-		}
+if($sLevel=="admin" OR $menucode=="ADM"){
+	?>
+	<tr>
+		<td BGCOLOR='#CCFFCC' align='center' style='color: red;' id="showDateTxt"><strong><font face='THSarabunPSK' size='5'><?=$showdate;?> <div id='divDetail'>&nbsp;</div></font></strong></td>
+	</tr>
+	<tr>
+		<td id="userInfo">
+			<div><?=$sOfficer;?> (Admin)</div>
+			<a target='_top' href="../sm3.php" id="logout" ><strong>&gt;&gt; ออกจากระบบ &lt;&lt;</strong></a>
+		</td>
+	</tr>
+	<tr>
+		<td BGCOLOR='#148F77'><a target='main' href="newpw.php"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>
+	</tr>
+	<tr>
+		<td BGCOLOR='#148F77'><a target='_top' href="com_support.php"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>
+	</tr>
+	<tr>
+		<td BGCOLOR='#148F77'><a target='_top' href="holiday_add.php"><font face='THSarabunPSK' size='5'>:: ข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>
+	</tr>
+	<tr>
+		<td BGCOLOR='#148F77'><a target='_blank' href="showuser.php?menucode=<?=$menucode;?>"><font face='THSarabunPSK' size='5'>:: จัดการข้อมูลผู้ใช้งาน</font></a></td>
+	</tr>
+	<?php
+	if($menucode=="ADM"){
+		?>
+		<tr>
+			<td BGCOLOR='#148F77'><a target='_top' href="showcomservice.php"><font face='THSarabunPSK' size='5'>:: บันทึกการปฏิบัติงาน</font></a></td>
+		</tr>
+		<?php
+	}
+	?>
+	<tr>
+		<td BGCOLOR='#148F77'><a target='_top' href="document_list.php"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>
+	</tr>
+	<tr>
+		<td BGCOLOR='#148F77'><a target='_top' href="km_index.php?act=view"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>
+	</tr>
+	<?php
+	if($menucode!=='ADMDR1'){
+		?>
+		<tr>
+			<td BGCOLOR='#148F77'><a target='_blank' href="ha_index.php"><font face='THSarabunPSK' size='5'>:: แบบบันทึกตัวชี้วัด</font></a></td>
+		</tr>
+		<?php
+	}
 }else if($menucode=="ADMXR"){						
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
-				" </tr>\n");
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
-				" </tr>\n");		
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-				" </tr>\n");					 
-					 
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-				" </tr>\n");			
-		print (" <tr>\n".
-                "  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
-				" </tr>\n");	
-}else{
-		print (" <tr>\n".
-		"  <td BGCOLOR='#CCFFCC' align='center' style='color: red;'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
-		" </tr>\n");							
 		print (" <tr>\n".
 		"  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
 		" </tr>\n");
 		print (" <tr>\n".
 		"  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
-		" </tr>\n");				
+		" </tr>\n");		
+		print (" <tr>\n".
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
+		" </tr>\n");
+		print (" <tr>\n".
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
+		" </tr>\n");
+		print (" <tr>\n".
+		"  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
+		" </tr>\n");
+}else{
+		print (" <tr>\n".
+		"  <td BGCOLOR='#CCFFCC' align='center' style='color: red;' id='showDateTxt'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
+		" </tr>\n");
+
+		if($xxx!='DR1'){ 
+			$notifyTxt = "!!! คำเตือน !!!<br>รหัสผ่านของท่านไม่ปลอดภัย<br>ไม่ควรใช้รหัสผ่านที่คาดเดาได้ง่าย เช่น<br>- รหัสผ่านที่มีตัวเลขอย่างเดียว<br>- 12345678 หรือ 123456789<br>- วันเดือนปีเกิด หรือเบอร์โทรศัพท์";
+			$notifyTxt = '';
+			$notifyIcon = '🔔'; // ⚠️
+			$notifyIcon = '';
+			$classNotify = 'tooltiptext';
+			$classNotify = '';
+			?>
+			<tr>
+				<td id="userInfo">
+					<!-- 🚧 / &#x1F6A7; ( Window + . ใน VS Code เพื่อเรียกใช้งาน Emoji )-->
+					<div style="font-size:24px; width: 100%;" class="tooltip">
+						<?=$sOfficer;?>&nbsp;<?=$notifyIcon;?>
+						<div class="<?=$classNotify;?>"><?=$notifyTxt;?></div>
+					</div>
+					<div>
+						<a target='_top' href="../sm3.php" id="logout" ><strong>&gt;&gt; ออกจากระบบ &lt;&lt;</strong></a>
+					</div>
+					
+				</td>
+			</tr>
+			<?php
+		}else{
+			?>
+			<tr>
+				<td BGCOLOR='#148F77'><a target='_top' href="../sm3.php"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>
+			</tr>
+			<?php
+		}
+
+		
+		print (" <tr>\n".
+		"  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
+		" </tr>\n");
 
 		if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
 			print (" <tr>\n".
@@ -323,7 +387,7 @@ if($rows){///  ถ้ามี rows
 }
 ?>
 <tr>
-	<td style="text-align:center; font-size:24px;"><b>เมนูสารบัญทั่วไป</b></td>
+	<td id="menuAll"><b>เมนูสารบัญทั่วไป</b></td>
 </tr>
 <?php
 	//สารบัญทั่วไป ทุกคนดูได้
@@ -373,20 +437,21 @@ if($rows){///  ถ้ามี rows
 	include("unconnect.inc");
 
 }
-   else {
-        print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
-        print "...<br>";
-        print "...<br>";
-        print "...<br>";
-        print "...<br>";
-        print "<font face='THSarabunPSK' size='5'>...ไม่ผ่าน !... <a href='login.php' >เข้าระบบใหม่</a></font>";
-        print "</body>";
-       session_unregister("sIdname");
-       session_unregister("sPword");
-       session_unregister("sOfficer");
-	   session_unregister("sRowid");
-	   session_unregister("sLevel");
-            }
+else {
+	?>
+	<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00' style="padding: 4px;">
+	&nbsp;<br><br><br>
+	<font size='5' style="font-family: 'TH SarabunPSK';">
+		ชื่อผู้ใช้งาน หรือ รหัสผ่านไม่ถูกต้อง<br>คลิก<a href="login.php"><strong>ที่นี่เพื่อเข้าระบบใหม่</strong></a> อีกครั้ง
+	</font>
+	</body>
+	<?php
+	session_unregister("sIdname");
+	session_unregister("sPword");
+	session_unregister("sOfficer");
+	session_unregister("sRowid");
+	session_unregister("sLevel");
+}
 ?>
 
 <script language="javascript" src="js/jquery-1.8.0.min.js"></script>

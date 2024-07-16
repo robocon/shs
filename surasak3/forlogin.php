@@ -31,8 +31,16 @@ function date_diff_test($str_start, $str_end){
 }
 
 print "<body bgcolor='#669999' text='#00FFFF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>";
+?>
+<style type="text/css" media="screen">
+	body{
+		font-family: "TH SarabunPSK";
+		font-size:20px;
+	}
+</style>
+<?php 
 print "<br>";
-print "<font face='THSarabunPSK'><CENTER><br>";
+print "<font face=''><CENTER><br>";
 
 
 $sql = "SELECT * FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' AND `status` = 'y'";
@@ -79,7 +87,7 @@ if(mysql_num_rows($result)){
 	if(in_array($sPword, $passwordBlock)===true){
 		?>
 		<script>
-			alert('คำเตือน! รหัสผ่านของท่านไม่ตรงตามข้อกำหนดความปลอดภัย กรุณาติดต่อ Admin ประจำแผนกเพื่อเปลี่ยนรหัสผ่าน');
+			alert('คำเตือน! รหัสผ่านของท่านไม่ปลอดภัย กรุณาติดต่อ Admin ประจำแผนกเพื่อเปลี่ยนรหัสผ่าน');
 			setTimeout(() => {
 				window.location = 'login.php';
 			}, 800);
@@ -91,14 +99,16 @@ if(mysql_num_rows($result)){
 	if($user['menucode']!=='ADMDR1'){
 		$passwordWarning = array('12345678');
 
-		$checkDigit = preg_match('/\d+/', $sPword);
-		$checkEnUpperCase = preg_match('/[a-zA-Z]+/', $sPword);
+		$checkDigit = preg_match('/\d+/', $sPword, $digiMatch);
+		// $checkEnUpperCase = preg_match('/[a-zA-Z]+/', $sPword);
 		// $checkEnLowerCase = preg_match('/[a-z]+/', $sPword);
 
-		if(in_array($sPword, $passwordWarning)===true OR ($checkDigit==0 OR $checkEnUpperCase==0) OR strlen($sPword)<8 ){
+
+		// ถ้า strlen($digiMatch['0']) เท่ากับ strlen($sPword) แสดงว่าใช้รหัสผ่านเป็นตัวเลขอย่างเดียว
+		if(in_array($sPword, $passwordWarning)===true OR $checkDigit==0 OR strlen($sPword)<8 OR strlen($digiMatch['0'])===strlen($sPword) ){
 			?>
 			<script>
-				alert("รหัสผ่านของท่านอยู่ในกลุ่มเสี่ยงที่จะโดน Hack\n!!! กรุณาเปลี่ยนรหัสผ่านใหม่ ก่อนวันที่ 31 ธันวาคม 2567 !!!");
+				alert("!!! คำเตือน !!! \nรหัสผ่านของท่านไม่ปลอดภัย ไม่ควรใช้รหัสผ่านที่คาดเดาได้ง่าย เช่น\n- รหัสผ่านที่มีตัวเลขอย่างเดียว\n- 12345678 หรือ 123456789\n- วันเดือนปีเกิด หรือเบอร์โทรศัพท์");
 			</script>
 			<?php
 		}
@@ -166,7 +176,7 @@ $nPrefix = $row->prefix;
 	// $result3 = mysql_query($query3) or die( mysql_error($Conn) );
 	// $nrow3 = mysql_num_rows($result3);
 	
-	print "<font face='THSarabunPSK'><a href='menulst.php' ><B>เข้าสู่<BR>โปรแกรมสุรศักดิ์มนตรี 3</B></a></font>";
+	print "<font face=''><a href='menulst.php' style='font-size: 26px;'><B>เข้าสู่<BR>โปรแกรมสุรศักดิ์มนตรี 3</B></a></font>";
 	print "<BR>*********";	
     
 	if( $sIdname == $sPword ){
@@ -181,22 +191,14 @@ $nPrefix = $row->prefix;
 	$year_now = substr(date("Y")+543,2);
 	if($title_hn != $year_now){
 
-		$sql1= "Update runno set prefix = '56-', runno = 0 where  title = 'HN' limit 1;";
-		$result1 = mysql_Query($sql1);
-		$sql2 = "Update runno set prefix = '56/', runno = 0 where  title = 'AN' limit 1;";
-		$result2 = mysql_Query($sql2);
-		$sql3 = "Update runno set prefix = '56/', runno = 0 where  title = 'nid_c' limit 1;";
-		$result3 = mysql_Query($sql3);
+		// $sql1= "Update runno set prefix = '56-', runno = 0 where  title = 'HN' limit 1;";
+		// $result1 = mysql_Query($sql1);
+		// $sql2 = "Update runno set prefix = '56/', runno = 0 where  title = 'AN' limit 1;";
+		// $result2 = mysql_Query($sql2);
+		// $sql3 = "Update runno set prefix = '56/', runno = 0 where  title = 'nid_c' limit 1;";
+		// $result3 = mysql_Query($sql3);
 	}
 	
 	include("unconnect.inc");
-?>
 
-<style type="text/css" media="screen">
-	body{
-		font-family: "TH SarabunPSK";
-		font-size:20px;
-	}
-</style>
-<?php 
 print "</body>";
