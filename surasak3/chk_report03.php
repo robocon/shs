@@ -798,7 +798,7 @@ $outlab_query = mysql_query($sql) or die( mysql_error() );
 $outlab_row = mysql_num_rows($outlab_query);
 // ตัดพวก outlab ออกไปก่อน
 
- if( $other_result_row > 0 ){ 
+ if( $other_result_row > 0 || $outlab_row > 0 ){ 
  ?>
 	<tr>
 		<td colspan="2" valign="top">
@@ -1220,7 +1220,6 @@ $outlab_row = mysql_num_rows($outlab_query);
 								'PSA' => '0-4',
 							);
 						
-			
 							if( $outlab_row > 0 ){
 
 
@@ -1279,8 +1278,6 @@ $outlab_row = mysql_num_rows($outlab_query);
 									<?php
 								}
 							}
-
-
 							
 							if( !empty($c_s) ){
 								?>
@@ -1292,8 +1289,6 @@ $outlab_row = mysql_num_rows($outlab_query);
 								</tr>
 								<?php
 							}
-							
-
 
 							
 							if( $result['metal'] != '' && $result['metal_result'] != '' ){ 

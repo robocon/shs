@@ -599,7 +599,7 @@ if($sendto_out_result_chkup > 0){
 		`alcohol` = '$alcohol_name',
 		`exercise` = '$exercise_name',
 		`allergic` = '$allergic',
-		`comment` = '".$_POST['organ'].", ".$_POST['dx']."',
+		`comment` = '',
 		
 		`eye` = '".sprintf("%s",$_POST['eye'])."',
 		`eye_detail` =  '".sprintf("%s",$_POST['eye_detail'])."',

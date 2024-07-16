@@ -25,7 +25,6 @@ $pdf->SetMargins(9, 11, 9);
 $sql = "SELECT * FROM opcardchk WHERE part = '$company' ORDER BY `row` ASC ";
 $q = $dbi->query($sql);
 
-$number = 1;
 while ($a = $q->fetch_assoc()) {
 
 $pdf->AddPage();
@@ -55,7 +54,7 @@ $pdf->Cell(60, 7, 'â·Ã.053-839305', 0, 1, 'L');
 
 $hn_match = preg_match('/-/', $a['HN'], $matchs);
 
-$txtNumber = sprintf('%03d', $number);
+$txtNumber = sprintf('%03d', $a['pid']);
 if($company==='ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (1)66' OR $company==='ÈÙ¹Âì½Ö¡ÍºÃÁµÓÃÇ¨ÀÙ¸Ã ÀÒ¤ 5 (2)66'){
     $txtNumber = (int) substr($a['HN'], 2);
 }
@@ -140,7 +139,6 @@ $pdf->Cell(40, 7, 'à¨éÒË¹éÒ·Õè X-Ray', 0, 1, 'R');
 $pdf->SetXY(129, 84);
 $pdf->Cell(0, 7, '.................................', 0, 1, 'L');
 
-$number++;
 }
 
 $pdf->Output();
