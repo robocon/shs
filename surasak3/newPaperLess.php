@@ -402,15 +402,12 @@ if(empty($hn) OR empty($sOfficer)){
 			sendLog(url, dataPost);
 			
 			var target = encodeURIComponent('print_eopd.php?img='+url);
-			// var printUrl = 'http://localhost/shspdf/printPdf.php?target='+target;
-			var printUrl = 'http://192.168.129.143/shspdf/printPdf.php?target='+target;
+			var printUrl = '<?=NOTIFY_HOST;?>/shspdf/printPdf.php?target='+target;
 			window.open(printUrl,"myWindow","_blank");
 		}
 
 		async function sendLog(url, dataPost){
-
-			// http://192.168.129.143/shslog/index.php
-			await fetch('http://192.168.129.143/shslog/index.php', {
+			await fetch('<?=NOTIFY_HOST;?>/shslog/index.php', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'

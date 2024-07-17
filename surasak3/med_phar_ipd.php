@@ -39,122 +39,6 @@ function getFullWardName($cbedcode){
     return $fullWardName;
 }
 
-if ($action === 'active') {
-    $confirm = sprintf("%s", trim($_SESSION['sOfficer']));
-    $id = input_get('id');
-    $an = input_get('an');
-
-    $sql = "UPDATE `med_scan` SET 
-    `lastupdate`=NOW(), 
-    `confirm`='y', 
-    `lasteditor`='$confirm' 
-    WHERE (`id`='$id');";
-    $q = $dbi->query($sql);
-    if( $q !== false ){ 
-        $_SESSION['line_msg'] = null;
-        $_SESSION['line_type'] = null;
-        
-        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย บันทึกโดย: $confirm");
-        $_SESSION['line_type'] = 'ward';
-        
-        $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
-    }else{
-        $err = set_log($dbi->error);
-        $msg = 'ไม่สามารถบันทึกข้อมูลได้'.$err['id'].' ' .$err['msg'];
-    }
-
-    redirect('med_phar.php?action=print&id='.$id, $msg);
-    exit;
-}elseif ( $action === 'print' ) {
-    $id = sprintf("%s", $_REQUEST['id']);
-    $q = $dbi->query("SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ");
-    $item = $q->fetch_assoc();
-    ?>
-    <style>
-    @media print{
-        .no-print{
-            display: none;
-        }
-    }
-    
-    </style>
-    <div class="no-print">
-        <button type="button" onclick="print_img()" >พิมพ์</button> | <a href="med_phar.php">กลับหน้ารายการ</a>
-    </div>
-    <!-- 210mm is 793.7007874px -->
-    <!-- 190mm is 718.11023622px -->
-    <img src="<?=$item['path'];?>" width="700px" id="mainImg">
-    <script type="text/javascript">
-
-        <?php 
-        if(isset($_SESSION['line_msg'])){ 
-        ?>
-            function newXmlHttp(){
-                var xmlhttp = false;
-                try{
-                    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-                }catch(e){
-                    try{
-                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                    }catch(e){
-                        xmlhttp = false;
-                    }
-                }
-                if(!xmlhttp && document.createElement){
-                    xmlhttp = new XMLHttpRequest();
-                }
-                return xmlhttp;
-            }
-
-            function sendLineNotifyV2(){
-                var line_message = '<?=$_SESSION['line_msg'];?>';
-                var line_type = '<?=$_SESSION['line_type'];?>';
-                var test_str = [];
-                test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
-                test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
-                var dataPost = test_str.join("&");
-                var request = new newXmlHttp();
-                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
-                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                request.onreadystatechange = function(){
-                    if( request.readyState == 4 && request.status == 200 ){
-                    }
-                };
-                request.send(dataPost); 
-            }
-            sendLineNotifyV2();
-
-            <?php
-            unset($_SESSION['line_msg']);
-            unset($_SESSION['line_type']);
-        }
-        ?>
-        function print_img(){
-            window.print();
-        }
-
-        window.onload = function(){
-            window.print();
-        };
-    </script>
-    <?php
-    exit;
-
-}elseif ($action === 'clear_an') {
-    unset($_SESSION['fix_an']);
-    redirect('med_phar.php');
-    exit;
-}elseif ($action==='cancel') {
-    
-    $sOfficer = sprintf("%s", trim($_SESSION['sOfficer']));
-    $id = sprintf("%d", $_GET['id']);
-    $q = $dbi->query("UPDATE `med_scan` SET `confirm` = 'n', `lasteditor` = '$sOfficer' WHERE `id` = '$id' ");
-    if($q!==false){
-        redirect('med_phar.php','ยกเลิกรายการเรียบร้อย');
-    }
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -222,9 +106,6 @@ tr{
   display: table;
 }
 </style>
-<div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
-</div>
 <?php
 if( isset($_SESSION['x-msg']) ){
     ?><p style="background-color: #ffffc1; border: 2px solid #afaf00; padding: 5px;"><?=$_SESSION['x-msg'];?></p><?php
@@ -330,20 +211,6 @@ if ( $q->num_rows > 0 ) {
 }
 ?>
 
-<fieldset>
-    <legend>ค้นหาเอกสารด้วย AN</legend>
-    <form action="med_phar.php" method="post">
-        <div>
-            AN: <input type="text" name="an" id="" value="<?=( isset($_SESSION['fix_an']) ? $_SESSION['fix_an'] : '' );?>">
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="searchFile">
-            <input type="hidden" name="typeSearch" value="an">
-        </div>
-    </form>
-</fieldset>
-
 <?php 
 $dateSelected = input('days',date('d'));
 $monthSelected = input('months',date('m'));
@@ -353,14 +220,16 @@ $yearRange = range('2019', date('Y'));
 ?>
 <fieldset>
     <legend>ค้นหาเอกสารจากวันที่</legend>
-    <form action="med_phar.php" method="post">
+    <form action="med_phar_ipd.php" method="post">
         <div>
             วัน <?=getDateList('days',$dateSelected);?>
             เดือน <?=getMonthList('months', $monthSelected);?>
             ปี <?=getYearList('years',fase, $yearSelected,$yearRange);?>
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
+        <button type="submit">ค้นหา</button>
+		</div>
+        
+		<div>
+            
             <input type="hidden" name="page" value="searchFile">
             <input type="hidden" name="typeSearch" value="date">
         </div>
@@ -371,34 +240,31 @@ $yearRange = range('2019', date('Y'));
 if ( $page === 'searchFile' ) {
     
     $typeSearch = sprintf("%s", $_POST['typeSearch']);
-    $an = sprintf("%s", $_POST['an']);
+    $an = sprintf("%s", $_GET['an']);
 
-    if($typeSearch=='an'){
-        $where = " AND a.`an` = '$an' ";
-
-    }elseif ($typeSearch=='date') {
+	if ($typeSearch=='date') {
 
         $d = input_post('days');
         $m = input_post('months');
         $y = input_post('years');
 
         $where = " AND a.`date` LIKE '$y-$m-$d%' ";
-
     }
     
     $sql = "SELECT a.*,b.`bedcode` 
     FROM `med_scan` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
-    WHERE a.`confirm` = 'y' 
+    WHERE a.`confirm` = 'y' AND a.`an` = '$an' 
     $where 
     AND a.`status` = 'y' 
     ORDER BY a.`id` DESC";
-    
+    //echo $sql;
     $q = $dbi->query($sql);
     if ( $q->num_rows > 0 ) {
 
         ?>
-        <table class="chk_table">
+		<hr>
+        <table class="chk_table" align="center" width="90%">
             <tr>
                 <th>วันที่บันทึกข้อมูล</th>
                 <th>ข้อมูล</th>
@@ -445,7 +311,7 @@ if ( $page === 'searchFile' ) {
                 }
                 ?>
                 </td>
-                <td style="vertical-align: middle;">
+                <td style="vertical-align: middle;" align="center">
                     <a href="med_phar.php?action=print&id=<?=$item['id'];?>" class="btnActive" target="_blank">พิมพ์</a>
                 </td>
             </tr>

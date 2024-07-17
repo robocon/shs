@@ -1,3 +1,5 @@
 <?php 
 session_start();
-header("Location: http://192.168.129.143/epidem/epidem.php?idname=".$_SESSION['sIdname']);
+require_once 'includes/config.php';
+
+header("Location: ".NOTIFY_HOST."/epidem/epidem.php?idname=".$_SESSION['sIdname']);

@@ -278,7 +278,7 @@ if( isset($_SESSION['x-msg']) ){
                         // console.log(request.responseText);
                     }
                 };
-                request.open('POST', 'http://192.168.129.143/send_notify_v2.php', false);
+                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
                 request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.send(data); 
 

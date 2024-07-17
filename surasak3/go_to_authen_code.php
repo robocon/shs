@@ -1,2 +1,3 @@
 <?php 
-header("Location: http://192.168.129.143/nhsoatk/index.php");
+require_once 'includes/config.php';
+header("Location: ".NOTIFY_HOST."/nhsoatk/index.php");

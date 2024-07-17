@@ -31,7 +31,7 @@ if( in_array($user_group, $allow_group) === false ){
 }
 
 ?>
-<p><a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a> | <a href='drug_user_ward.php'>กำหนดผู้ใช้เมนูระบุยาประจำตัว</a> <strong>( <<< เมนูนี้ <<< จนท.ห้องยาและเภสัชฯทุกคนสามารถทำได้ )</strong></p>
+<p><a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a> | <a href='drug_user_ward.php'>กำหนดผู้ใช้เมนูระบุยาประจำตัว</a> <strong>( <<< เมนูนี้ จนท.ห้องยา จนท.คลังยา และเภสัชฯทุกคนสามารถทำได้ )</strong></p>
 <?php
 if($_SESSION['sOfficer']!=''){
 	echo "<br><span class='font1'>".$_SESSION['sOfficer']."</span>";

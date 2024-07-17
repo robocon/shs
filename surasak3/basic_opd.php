@@ -2331,7 +2331,7 @@ mmHg </td>
 
 					function callRequest(idcard) {
 						var request = new newXmlHttp();
-						request.open('GET', 'http://192.168.129.143/moph/?page=ImmunizationHistory&cid='+idcard, true);
+						request.open('GET', '<?=NOTIFY_HOST;?>/moph/?page=ImmunizationHistory&cid='+idcard, true);
 
 						request.onreadystatechange = function () {
 							if (request.readyState === 4) {

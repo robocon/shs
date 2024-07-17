@@ -8,6 +8,7 @@ exit();
 }
 
 include("connect.inc");
+require_once 'includes/config.php';
 
 function calcage($birth){
 
@@ -105,6 +106,7 @@ list($hn, $fullname, $ptright, $dbirth,$idcard,$sex,$phone,$address,$tambol,$amp
 	}
 	//56-4311	
 ?>
+<link rel="stylesheet" type="text/css" href="epoch_styles.css" />
 <style type="text/css">
 <!--
 body,td,th {
@@ -127,6 +129,7 @@ a:visited {
 	font-weight:bold;
 	}
 </style>
+<script type="text/javascript" src="diabetes_clinic/epoch_classes.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 function checkForm(){
 	if(document.f2.symptom_date.value == ""){
@@ -154,6 +157,14 @@ function checkForm(){
 		return true;
 	}
 }
+
+	var popup1, popup2, popup3, popup4;
+	window.onload = function() {
+		popup1 = new Epoch('popup1','popup',document.getElementById('symptom_date'),false);
+		popup2 = new Epoch('popup2','popup',document.getElementById('dcdate'),false);
+		popup3 = new Epoch('popup3','popup',document.getElementById('atkdate'),false);
+		popup4 = new Epoch('popup4','popup',document.getElementById('rtpcr_date'),false);
+	};
 </script>
 <?
 $sql = "Select * From opselfisolation_detail where thdatehn = '".$thidatehn."' limit 1";
@@ -228,9 +239,9 @@ if($num < 1){ //ยังไม่มีการบันทึกข้อม�
 		<span style="margin-left: 20px;">วันที่รับบริการ</span>
 		<span style="margin-left: 20px;"><?=date("d")."/".date("m")."/".(date("Y")+543);?> <input type="hidden" name="registerdate" value="<?=date("d")."/".date("m")."/".(date("Y")+543);?>"></span>
 		<span style="margin-left: 20px;">วันที่มีอาการ</span>
-		<span style="margin-left: 20px;"><input class="txtsarabun" name="symptom_date" type="text" id="symptom_date" size="20" placeholder="ระบุข้อมูลให้ตรงตามรูปแบบ" value="" /></span>	
+		<span style="margin-left: 20px;"><input class="txtsarabun" name="symptom_date" type="text" id="symptom_date" size="20" placeholder="เลือกจากปฏิทิน" value="" readonly /></span>	
 		<span style="margin-left: 20px;">วันที่จำหน่าย</span>
-		<span style="margin-left: 20px;"><input class="txtsarabun" name="dcdate" type="text" id="dcdate" size="20" placeholder="ระบุข้อมูลให้ตรงตามรูปแบบ" value="" /> <span style="color:red;">*** ระบุ เช่น 01/01/2565</span></span>
+		<span style="margin-left: 20px;"><input class="txtsarabun" name="dcdate" type="text" id="dcdate" size="20" placeholder="เลือกจากปฏิทิน" value="" readonly /></span>
 	</div>
 	<div align="left" style="margin-left: 100px;margin-top: 10px;">
 		<span style="margin-left: 20px;">ชื่อ - นามสกุล</span>
@@ -307,8 +318,12 @@ if($num < 1){ //ยังไม่มีการบันทึกข้อม�
 			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk6" type="checkbox" id="typerisk6" value="โรคเบาหวาน" /> โรคเบาหวาน</div>
 			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk7" type="checkbox" id="typerisk7" value="โรคอ้วน (BMI > 30 or BW > 90kg)" /> โรคอ้วน (BMI > 30 or BW > 90kg)</div>
 			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk8" type="checkbox" id="typerisk8" value="CKD (โรคไตวายเรื้อรัง)" /> CKD (โรคไตวายเรื้อรัง)</div>
-			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk9" type="checkbox" id="typerisk9" value="หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป" /> หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป</div>
-			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk10" type="checkbox" id="typerisk10" value="ไม่ได้รับวัคซีนป้องกันโควิด 19" /> ไม่ได้รับวัคซีนป้องกันโควิด 19</div>
+			<!--<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk9" type="checkbox" id="typerisk9" value="หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป" /> หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk10" type="checkbox" id="typerisk10" value="ไม่ได้รับวัคซีนป้องกันโควิด 19" /> ไม่ได้รับวัคซีนป้องกันโควิด 19</div>-->
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk11" type="checkbox" id="typerisk11" value="ตับแข็ง" /> ตับแข็ง</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk12" type="checkbox" id="typerisk12" value="ภาวะภูมิคุ้มกันต่ำ (ได้ยาเคมีบำบัด/ได้ยากดภูมิ)" /> ภาวะภูมิคุ้มกันต่ำ (ได้ยาเคมีบำบัด/ได้ยากดภูมิ)</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk13" type="checkbox" id="typerisk13" value="HIV (CD4 Cell Count < 200)" /> HIV (CD4 Cell Count < 200)</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk14" type="checkbox" id="typerisk14" value="อื่นๆ" />อื่นๆ..........................</div>			
 		</td>
 		
 		<td align="left">
@@ -335,11 +350,8 @@ if($num < 1){ //ยังไม่มีการบันทึกข้อม�
 		</td>
 		<td align="left">
 		<div style="margin-left: 10px; margin-top:10px;">รายการสั่งยา</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar1" type="checkbox" id="phar1" value="favipiravir" /> Favipiravir
+		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar1" type="checkbox" id="phar1" value="paxlovid" /> Paxlovid
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other1" type="text" id="phar_other1" size="20" value="" /></span>
-		</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar2" type="checkbox" id="phar2" value="paniculata" /> ฟ้าทะลายโจร
-			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other2" type="text" id="phar_other2" size="20" value="" /></span>
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar3" type="checkbox" id="phar3" value="paracetamol" /> Paracetamol (500)
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other3" type="text" id="phar_other3" size="20" value="" /></span>
@@ -350,14 +362,14 @@ if($num < 1){ //ยังไม่มีการบันทึกข้อม�
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar5" type="checkbox" id="phar5" value="cpm" /> CPM
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other5" type="text" id="phar_other5" size="20" value="" /></span>
 		</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar6" type="checkbox" id="phar6" value="ors" /> ORS
-			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other6" type="text" id="phar_other6" size="20" value="" /></span>
-		</div>
+		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar9" type="checkbox" id="phar9" value="brownmixture" /> Brown mixture
+			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other9" type="text" id="phar_other9" size="20" value="" /></span>
+		</div>		
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar8" type="checkbox" id="phar8" value="molnupiravir" /> Molnupiravir
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other8" type="text" id="phar_other8" size="20" value="" /></span>
 		</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar9" type="checkbox" id="phar9" value="brownmixture" /> Brown mixture
-			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other9" type="text" id="phar_other9" size="20" value="" /></span>
+		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar6" type="checkbox" id="phar6" value="ors" /> ORS
+			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other6" type="text" id="phar_other6" size="20" value="" /></span>
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar7" type="checkbox" id="phar7" value="other" /> ยาคนไข้ที่จำเป็นต้องสั่งเพิ่ม
 		</div>		
@@ -380,7 +392,7 @@ if($num < 1){ //ยังไม่มีการบันทึกข้อม�
 		<td align="left">
 		<div style="margin-left: 60px; margin-top:10px;"><input class="txtsarabun" name="atk" type="checkbox" id="atk" value="1" /> Rapid antigen test</div>
 		<div style="margin-left: 20px; margin-top:10px;">วันที่ตรวจ
-		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="atkdate" type="text" id="atkdate" value="" placeholder="กรุณาระบุข้อมูลให้ตรงตามรูปแบบ" size="25"/> *** ระบุ เช่น 01/07/2565</span>
+		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="atkdate" type="text" id="atkdate" value="" placeholder="เลือกจากปฏิทิน" size="25" readonly/></span>
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;">หน่วยที่คัดกรอง
 		<span style="margin-left: 10px;"><input class="txtsarabun" name="atkunit" type="text" id="atkunit" value="" /></span> 
@@ -389,7 +401,7 @@ if($num < 1){ //ยังไม่มีการบันทึกข้อม�
 		<span style="margin-left: 10px;"><input class="txtsarabun" name="rtpcr_result" type="text" id="rtpcr_result" value="" /></span> 
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;">วันที่ตรวจ
-		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="rtpcr_date" type="text" id="rtpcr_date" value="" placeholder="กรุณาระบุข้อมูลให้ตรงตามรูปแบบ" size="25" /> *** ระบุ เช่น 01/07/2565</span> 
+		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="rtpcr_date" type="text" id="rtpcr_date" value="" placeholder="เลือกจากปฏิทิน" size="25" readonly /></span> 
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;">หน่วยที่คัดกรอง
 		<span style="margin-left: 10px;"><input class="txtsarabun" name="rtpcr_unit" type="text" id="rtpcr_unit" value="" /></span>
@@ -557,11 +569,11 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 	
 	list($y,$m,$d)=explode("-",$rows["symptom_date"]);
 	$y=$y+543;
-	$symptom_date="$d/$m/$y";	
+	$symptom_date="$y-$m-$d";	
 
 	list($y,$m,$d)=explode("-",$rows["dcdate"]);
 	$y=$y+543;
-	$dcdate="$d/$m/$y";	
+	$dcdate="$y-$m-$d";	
 	
 		
 	if(!empty($rows["mens_date"])){
@@ -575,7 +587,7 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 	if(!empty($rows["atkdate"])){
 		list($y,$m,$d)=explode("-",$rows["atkdate"]);
 		$y=$y+543;
-		$atkdate="$d/$m/$y";
+		$atkdate="$y-$m-$d";
 	}else{
 		$atkdate="";
 	}
@@ -583,7 +595,7 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 	if(!empty($rows["rtpcr_date"])){
 		list($y,$m,$d)=explode("-",$rows["rtpcr_date"]);
 		$y=$y+543;
-		$rtpcr_date="$d/$m/$y";
+		$rtpcr_date="$y-$m-$d";
 	}else{
 		$rtpcr_date="";
 	}
@@ -694,9 +706,9 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 		<span style="margin-left: 20px;">วันที่รับบริการ</span>
 		<span style="margin-left: 20px;"><?=$registerdate;?> <input type="hidden" name="registerdate" value="<?=$registerdate;?>"></span>
 		<span style="margin-left: 20px;">วันที่มีอาการ</span>
-		<span style="margin-left: 20px;"><input class="txtsarabun" name="symptom_date" type="text" id="symptom_date" size="10" size="25" placeholder="กรุณาระบุข้อมูลให้ตรงตามรูปแบบ" value="<?=$symptom_date;?>" /></span>
+		<span style="margin-left: 20px;"><input class="txtsarabun" name="symptom_date" type="text" id="symptom_date" size="10" size="25" placeholder="เลือกจากปฏิทิน" value="<?=$symptom_date;?>" readonly /></span>
 		<span style="margin-left: 20px;">วันที่จำหน่าย</span>
-		<span style="margin-left: 20px;"><input class="txtsarabun" name="dcdate" type="text" id="dcdate" size="10" size="25" placeholder="กรุณาระบุข้อมูลให้ตรงตามรูปแบบ" value="<?=$dcdate;?>" /></span>
+		<span style="margin-left: 20px;"><input class="txtsarabun" name="dcdate" type="text" id="dcdate" size="10" size="25" placeholder="เลือกจากปฏิทิน" value="<?=$dcdate;?>" readonly /></span>
 	</div>
 	<div align="left" style="margin-left: 100px;margin-top: 10px;">
 		<span style="margin-left: 20px;">ชื่อ - นามสกุล</span>
@@ -773,8 +785,10 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk6" type="checkbox" id="typerisk6" <? if(!empty($rows["typerisk6"])){ echo "checked";}?> value="โรคเบาหวาน" /> โรคเบาหวาน</div>
 			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk7" type="checkbox" id="typerisk7" <? if(!empty($rows["typerisk7"])){ echo "checked";}?> value="โรคอ้วน (BMI > 30 or BW > 90kg)" /> โรคอ้วน (BMI > 30 or BW > 90kg)</div>
 			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk8" type="checkbox" id="typerisk8" <? if(!empty($rows["typerisk8"])){ echo "checked";}?> value="CKD (โรคไตวายเรื้อรัง)" /> CKD (โรคไตวายเรื้อรัง)</div>
-			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk9" type="checkbox" id="typerisk9" <? if(!empty($rows["typerisk9"])){ echo "checked";}?> value="หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป" /> หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป</div>
-			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk10" type="checkbox" id="typerisk10" <? if(!empty($rows["typerisk10"])){ echo "checked";}?> value="ไม่ได้รับวัคซีนป้องกันโควิด 19" /> ไม่ได้รับวัคซีนป้องกันโควิด 19</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk11" type="checkbox" id="typerisk11" <? if(!empty($rows["typerisk11"])){ echo "checked";}?> value="ตับแข็ง" /> ตับแข็ง</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk12" type="checkbox" id="typerisk12" <? if(!empty($rows["typerisk12"])){ echo "checked";}?> value="ภาวะภูมิคุ้มกันต่ำ (ได้ยาเคมีบำบัด/ได้ยากดภูมิ)" /><span style="font-size:14"> ภาวะภูมิคุ้มกันต่ำ (ได้ยาเคมีบำบัด/ได้ยากดภูมิ)</span></div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk13" type="checkbox" id="typerisk13" <? if(!empty($rows["typerisk13"])){ echo "checked";}?> value="HIV (CD4 Cell Count < 200)" /> HIV (CD4 Cell Count < 200)</div>
+			<div style="margin-left: 30px; margin-top:10px;"><input class="txtsarabun" name="typerisk14" type="checkbox" id="typerisk14" <? if(!empty($rows["typerisk14"])){ echo "checked";}?> value="อื่นๆ" /> อื่นๆ..........................</div>			
 		</td>
 		
 		<td align="left">
@@ -801,11 +815,8 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 		</td>
 		<td align="left">
 		<div style="margin-left: 10px; margin-top:10px;">รายการสั่งยา</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar1" type="checkbox" id="phar1" <? if(!empty($rows["phar1"])){ echo "checked";}?> value="favipiravir" /> Favipiravir
+		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar1" type="checkbox" id="phar1" <? if(!empty($rows["phar1"])){ echo "checked";}?> value="paxlovid" /> Paxlovid
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other1" type="text" id="phar_other1" size="20" value="<?=$rows["phar_other1"];?>" /></span>
-		</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar2" type="checkbox" id="phar2" <? if(!empty($rows["phar2"])){ echo "checked";}?> value="paniculata" /> ฟ้าทะลายโจร
-			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other2" type="text" id="phar_other2" size="20" value="<?=$rows["phar_other2"];?>" /></span>
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar3" type="checkbox" id="phar3" <? if(!empty($rows["phar3"])){ echo "checked";}?> value="paracetamol" /> Paracetamol (500)
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other3" type="text" id="phar_other3" size="20" value="<?=$rows["phar_other3"];?>" /></span>
@@ -816,14 +827,14 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar5" type="checkbox" id="phar5" <? if(!empty($rows["phar5"])){ echo "checked";}?> value="cpm" /> CPM
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other5" type="text" id="phar_other5" size="20" value="<?=$rows["phar_other5"];?>" /></span>
 		</div>
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar6" type="checkbox" id="phar6" <? if(!empty($rows["phar6"])){ echo "checked";}?> value="ors" /> ORS
-			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other6" type="text" id="phar_other6" size="20" value="<?=$rows["phar_other6"];?>" /></span>
-		</div>
+		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar9" type="checkbox" id="phar9" <? if(!empty($rows["phar9"])){ echo "checked";}?> value="brownmixture" /> Brown mixture
+			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other9" type="text" id="phar_other9" size="20" value="<?=$rows["phar_other9"];?>" /></span>
+		</div>		
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar8" type="checkbox" id="phar8" <? if(!empty($rows["phar8"])){ echo "checked";}?> value="molnupiravir" /> Molnupiravir
 			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other8" type="text" id="phar_other8" size="20" value="<?=$rows["phar_other8"];?>" /></span>
 		</div>	
-		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar9" type="checkbox" id="phar9" <? if(!empty($rows["phar9"])){ echo "checked";}?> value="brownmixture" /> Brown mixture
-			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other9" type="text" id="phar_other9" size="20" value="<?=$rows["phar_other9"];?>" /></span>
+		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar6" type="checkbox" id="phar6" <? if(!empty($rows["phar6"])){ echo "checked";}?> value="ors" /> ORS
+			<span style="margin-left: 10px;"><input class="txtsarabun" name="phar_other6" type="text" id="phar_other6" size="20" value="<?=$rows["phar_other6"];?>" /></span>
 		</div>		
 		<div style="margin-left: 20px; margin-top:10px;"><input class="txtsarabun" name="phar7" type="checkbox" id="phar7" <? if(!empty($rows["phar7"])){ echo "checked";}?> value="other" /> ยาคนไข้ที่จำเป็นต้องสั่งเพิ่ม
 		</div>
@@ -846,7 +857,7 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 		<td align="left">
 		<div style="margin-left: 60px; margin-top:10px;"><input class="txtsarabun" name="atk" type="checkbox" id="atk" <? if(!empty($rows["atk"])){ echo "checked";}?> value="1" /> Rapid antigen test</div>
 		<div style="margin-left: 20px; margin-top:10px;">วันที่ตรวจ
-		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="atkdate" type="text" id="atkdate" value="<?=$atkdate;?>" placeholder="ระบุข้อมูลให้ตรงตามรูปแบบ" size="25" /> *** ระบุ เช่น 01/07/2565</span>
+		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="atkdate" type="text" id="atkdate" value="<?=$atkdate;?>" placeholder="เลือกจากปฏิทิน" size="25" readonly /></span>
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;">หน่วยที่คัดกรอง
 		<span style="margin-left: 10px;"><input class="txtsarabun" name="atkunit" type="text" id="atkunit" value="<?=$rows["atkunit"];?>" /></span> 
@@ -855,7 +866,7 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 		<span style="margin-left: 10px;"><input class="txtsarabun" name="rtpcr_result" type="text" id="rtpcr_result" value="<?=$rows["rtpcr_result"];?>" /></span> 
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;">วันที่ตรวจ
-		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="rtpcr_date" type="text" id="rtpcr_date" value="<?=$rtpcr_date;?>" placeholder="ระบุข้อมูลให้ตรงตามรูปแบบ" size="25" /> *** ระบุ เช่น 01/07/2565</span> 
+		<span style="margin-left: 10px; color:red;"><input class="txtsarabun" name="rtpcr_date" type="text" id="rtpcr_date" value="<?=$rtpcr_date;?>" placeholder="เลือกจากปฏิทิน" size="25" readonly /></span> 
 		</div>
 		<div style="margin-left: 20px; margin-top:10px;">หน่วยที่คัดกรอง
 		<span style="margin-left: 10px;"><input class="txtsarabun" name="rtpcr_unit" type="text" id="rtpcr_unit" value="<?=$rows["rtpcr_unit"];?>" /></span>
@@ -1017,7 +1028,7 @@ $bmi=number_format($rows["weight"]/($ht*$ht),2);
 
 function send_line_noti($sMessage, $sToken){
 	$curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
 	curl_setopt( $curl, CURLOPT_POST, 1); 
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
 	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
@@ -1036,11 +1047,13 @@ if($_POST["act"]=="add"){
 	$y=$y-543;
 	$regisdate="$y-$m-$d";
 	
-	list($d,$m,$y)=explode("/",$_POST["symptom_date"]);
+	//list($d,$m,$y)=explode("/",$_POST["symptom_date"]);
+	list($y,$m,$d)=explode("-",$_POST["symptom_date"]);
 	$y=$y-543;
 	$symptom_date="$y-$m-$d";	
 	
-	list($d,$m,$y)=explode("/",$_POST["dcdate"]);
+	//list($d,$m,$y)=explode("/",$_POST["dcdate"]);
+	list($y,$m,$d)=explode("-",$_POST["dcdate"]);
 	$y=$y-543;
 	$dcdate="$y-$m-$d";	
 	
@@ -1053,7 +1066,8 @@ if($_POST["act"]=="add"){
 	}
 	
 	if(!empty($_POST["atkdate"])){
-		list($d,$m,$y)=explode("/",$_POST["atkdate"]);
+		//list($d,$m,$y)=explode("/",$_POST["atkdate"]);
+		list($y,$m,$d)=explode("-",$_POST["atkdate"]);
 		$y=$y-543;
 		$atkdate="$y-$m-$d";			
 	}else{
@@ -1061,7 +1075,8 @@ if($_POST["act"]=="add"){
 	}	
 
 	if(!empty($_POST["rtpcr_date"])){
-		list($d,$m,$y)=explode("/",$_POST["rtpcr_date"]);
+		//list($d,$m,$y)=explode("/",$_POST["rtpcr_date"]);
+		list($y,$m,$d)=explode("-",$_POST["rtpcr_date"]);
 		$y=$y-543;
 		$rtpcr_date="$y-$m-$d";			
 	}else{
@@ -1142,6 +1157,10 @@ if($_POST["act"]=="add"){
 												typerisk8='".$_POST["typerisk8"]."',
 												typerisk9='".$_POST["typerisk9"]."',
 												typerisk10='".$_POST["typerisk10"]."',
+												typerisk11='".$_POST["typerisk11"]."',
+												typerisk12='".$_POST["typerisk12"]."',
+												typerisk13='".$_POST["typerisk13"]."',
+												typerisk14='".$_POST["typerisk14"]."',												
 												weight='".$_POST["weight"]."',
 												height='".$_POST["height"]."',
 												temperature='".$_POST["temperature"]."',
@@ -1226,7 +1245,7 @@ if($_POST["act"]=="add"){
 		$sMessage ="บันทึกข้อมูลสำเร็จ\nกลุ่มอาการ: $color\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nน้ำหนัก: $weight กก.\nส่วนสูง: $height ซม.\nค่า BMI: $bmi\nสิทธิ: $ptright\nแพ้ยา: $drugreact $all_drugreact\nรายการยา: $phar\nเจ้าหน้าที่: $sOfficer";
 		send_line_noti($sMessage, $sToken);			
 		
-		echo "<script>alert('บันทึกข้อมูลเรียบร้อย');window.close();</script>";
+		echo "<script>alert('บันทึกติดตามอาการผู้ป่วยเรียบร้อย');window.location='Opd_Covid19_Medical_Cert.php?hn=$hn';</script>";
 	}
 	exit;
 }
@@ -1241,11 +1260,13 @@ if($_POST["act"]=="edit"){
 	$regisdate="$y-$m-$d";
 	
 
-	list($d,$m,$y)=explode("/",$_POST["symptom_date"]);
+	//list($d,$m,$y)=explode("/",$_POST["symptom_date"]);
+	list($y,$m,$d)=explode("-",$_POST["symptom_date"]);
 	$y=$y-543;
 	$symptom_date="$y-$m-$d";		
 
-	list($d,$m,$y)=explode("/",$_POST["dcdate"]);
+	//list($d,$m,$y)=explode("/",$_POST["dcdate"]);
+	list($y,$m,$d)=explode("-",$_POST["dcdate"]);
 	$y=$y-543;
 	$dcdate="$y-$m-$d";	
 	
@@ -1258,7 +1279,8 @@ if($_POST["act"]=="edit"){
 	}
 	
 	if(!empty($_POST["atkdate"])){
-		list($d,$m,$y)=explode("/",$_POST["atkdate"]);
+		//list($d,$m,$y)=explode("/",$_POST["atkdate"]);
+		list($y,$m,$d)=explode("-",$_POST["atkdate"]);
 		$y=$y-543;
 		$atkdate="$y-$m-$d";			
 	}else{
@@ -1266,7 +1288,8 @@ if($_POST["act"]=="edit"){
 	}	
 
 	if(!empty($_POST["rtpcr_date"])){
-		list($d,$m,$y)=explode("/",$_POST["rtpcr_date"]);
+		//list($d,$m,$y)=explode("/",$_POST["rtpcr_date"]);
+		list($y,$m,$d)=explode("-",$_POST["rtpcr_date"]);
 		$y=$y-543;
 		$rtpcr_date="$y-$m-$d";			
 	}else{
@@ -1344,7 +1367,7 @@ if($_POST["act"]=="edit"){
 			$sMessage ="ติดตามอาการ\nวันที่รับบริการ :  $visit_date\nHN: $hn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nสิทธิ: $ptright\nเจ้าหน้าที่: $sOfficer";
 			send_line_noti($sMessage, $sToken);	
 			
-			echo "<script>alert('บันทึกติดตามอาการผู้ป่วยเรียบร้อย');window.close();</script>";
+			echo "<script>alert('บันทึกติดตามอาการผู้ป่วยเรียบร้อย');window.location='Opd_Covid19_Medical_Cert.php?hn=$hn';</script>";
 		}
 		exit;
 	}else{
@@ -1378,6 +1401,10 @@ if($_POST["act"]=="edit"){
 													typerisk8='".$_POST["typerisk8"]."',
 													typerisk9='".$_POST["typerisk9"]."',
 													typerisk10='".$_POST["typerisk10"]."',
+													typerisk11='".$_POST["typerisk11"]."',
+													typerisk12='".$_POST["typerisk12"]."',
+													typerisk13='".$_POST["typerisk13"]."',
+													typerisk14='".$_POST["typerisk14"]."',
 													weight='".$_POST["weight"]."',
 													height='".$_POST["height"]."',
 													temperature='".$_POST["temperature"]."',
@@ -1461,7 +1488,7 @@ if($_POST["act"]=="edit"){
 			$sMessage ="แก้ไขข้อมูลสำเร็จ\nกลุ่มอาการ:  $color\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nน้ำหนัก: $weight กก.\nส่วนสูง: $height ซม.\nค่า BMI: $bmi\nสิทธิ: $ptright\nแพ้ยา: $drugreact $all_drugreact\nรายการยา: $phar\nเจ้าหน้าที่: $sOfficer";
 			send_line_noti($sMessage, $sToken);	
 			
-			echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.close();</script>";
+			echo "<script>alert('แก้ไขข้อมูลเรียบร้อย');window.location='Opd_Covid19_Medical_Cert.php?hn=$hn';</script>";
 		}
 		exit;
 	}

@@ -202,7 +202,11 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                     <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password">
                                 </label>
                                 <div>
-                                    <span class="badge text-bg-warning">คำแนะนำ</span><span>การตั้งรหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และอักขระพิเศษ(!@#$%&) ผสมกัน</span>
+                                    <span class="badge text-bg-warning">คำแนะนำการตั้งรหัสผ่าน</span>
+                                    <ol>
+                                        <li>รหัสผ่านควรมีความยาว 8 ตัวอักษรขึ้นไป</li>
+                                        <li>การตั้งรหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และอักขระพิเศษ(!@#$%^&*[]_+) ผสมกัน</li>
+                                    </ol>
                                 </div>
                             </td>
                         </tr>

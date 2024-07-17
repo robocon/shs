@@ -46,7 +46,7 @@ $opday_rows = $result3->num_rows;
 if($opday_rows > 0){
 	?>
 	<p>
-		<a class="w3-button w3-round-large w3-teal" href="http://192.168.129.143/phpspreadsheet/index.php?hn=<?=$hn;?>&date_start=<?=$date_start;?>&date_end=<?=$date_end;?>" target="_blank"><b>ดาวโหลดไฟล์ XLSX</b></a>
+		<a class="w3-button w3-round-large w3-teal" href="<?=NOTIFY_HOST;?>/phpspreadsheet/index.php?hn=<?=$hn;?>&date_start=<?=$date_start;?>&date_end=<?=$date_end;?>" target="_blank"><b>ดาวโหลดไฟล์ XLSX</b></a>
 	</p>
 	<?php 
 }

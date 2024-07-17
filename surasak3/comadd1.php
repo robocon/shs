@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("connect.inc");
+require_once 'includes/config.php';
 ?>
 <script src="sweetalert/jquery-3.6.0.js"></script>
 <script src="sweetalert/sweetalert2@11.js"></script>
@@ -23,7 +24,7 @@ $jobtype=$_POST["jobtype"];
 
 function send_line_noti($sMessage, $sToken){
 	$curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
 	curl_setopt( $curl, CURLOPT_POST, 1); 
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
 	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
