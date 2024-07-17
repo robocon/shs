@@ -5,9 +5,15 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $group = sprintf("%s", $_GET['group']);
+$ignoreGroup = array('ADM', 'ADMDR1');
 $where = '';
 if(!empty($group)){
-    $where = "AND `menucode` = '$group'";
+    if(in_array($group, $ignoreGroup)===true){
+        $where = '';
+    }else{
+        $where = "AND `menucode` = '$group'";
+    }
+    
 }
 
 ?>
@@ -26,27 +32,41 @@ if(!empty($group)){
 <body>
     <div class="container">
         <h3>รายชื่อ Admin ประจำแผนก</h3>
-        <div class="alert alert-warning" role="alert">หากรายชื่อไม่ถูกต้อง กรุณาประสานศูนย์คอมพิวเตอร์เพื่อทำการอัพเดทข้อมูลด้วยครับ ขอบคุณครับ</div>
-        <table class="table">
-            <tr>
-                <th>ชื่อ-สกุล</th>
-                <th></th>
-            </tr>
-            <?php 
-            $sql = "SELECT * FROM `inputm` WHERE `status` = 'y' $where AND `level` = 'admin' AND `menucode` != 'ADM' ORDER BY `menucode` ASC";
-            $q = $dbi->query($sql);
-            if($q->num_rows>0){
-                while ($a = $q->fetch_assoc()) {
-                    ?>
+        <div class="alert alert-warning" role="alert">หากรายชื่อไม่ถูกต้อง กรุณาประสานศูนย์คอมพิวเตอร์เพื่อทำการอัพเดทข้อมูล ขอบคุณครับ</div>
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table">
                     <tr>
-                        <td><?=$a['name'];?></td>
-                        <td><?=$a['menucode'];?></td>
+                        <th>ชื่อ-สกุล</th>
+                        <th></th>
                     </tr>
-                    <?php
-                }
-            }
-            ?>
-        </table>
+                    <?php 
+                    $sql = "SELECT `name`,`menucode` FROM `departments` WHERE `status`='y' AND `menucode` <> '' ORDER BY `id` ASC";
+                    $q = $dbi->query($sql);
+                    $departments = array();
+                    while ($b = $q->fetch_assoc()) {
+                        $key = $b['menucode'];
+                        $departments[$key] = $b['name'];
+                    }
+
+                    $sql = "SELECT `name`,`menucode` FROM `inputm` WHERE `status` = 'y' $where AND `level` = 'admin' AND `menucode` != 'ADM' AND `idname` NOT IN('hrd','สตน') ORDER BY `menucode` ASC";
+                    $q = $dbi->query($sql);
+                    if($q->num_rows>0){
+                        while ($a = $q->fetch_assoc()) {
+                            $code = $a['menucode'];
+                            ?>
+                            <tr>
+                                <td><?=$a['name'];?></td>
+                                <td><?=$departments[$code]?></td>
+                            </tr>
+                            <?php
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+        </div>
+        
     </div>
     
 </body>

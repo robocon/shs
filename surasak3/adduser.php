@@ -1,19 +1,21 @@
 <?php
-session_start();
-
-include_once 'connect.php';
+// session_start();
+// include_once 'connect.php';
+require_once 'bootstrap.php';
 include_once 'includes/JSON.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
 $json = new Services_JSON();
 
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='checkuser'){
-    $username = $_REQUEST['username'];
-    $sql = "SELECT row_id FROM inputm WHERE idname = '$username' ";
-    $q = mysql_query($sql);
-    if(mysql_num_rows($q)>0){
+    $username = sprintf("%s", $_REQUEST['username']);
+    $q = $dbi->query("SELECT row_id FROM inputm WHERE idname = '$username' ");
+    if($q->num_rows>0){
         $res = array("msg"=>"มีผู้ใช้งานแล้ว", "status"=>400);
     }else{
-        $res = array("msg"=>"ไม่มีข้อมูล", "status"=>200);
+        $res = array("msg"=>"ใช้งานได้", "status"=>200);
     }
     echo $json->encode($res);
     exit;
@@ -147,15 +149,15 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
         </table>
     </form>
     <?php
-    
     if ( $act == "show") {
-        $chkop = mysql_query("SELECT `name`,`surname`,`idcard` FROM `opcard` WHERE `idcard`='$idcard'");
-        list($name, $surname, $idcard) = mysql_fetch_array($chkop);
-        if (empty($idcard)) {
+        $chkop = $dbi->query("SELECT `name`,`surname`,`idcard` FROM `opcard` WHERE `idcard`='$idcard'");
+        $numRows = $chkop->num_rows;
+        if ($numRows==0) {
             ?>
             <p class="text-danger fw-bold">ไม่พบข้อมูลเลขบัตรประชาชน กรุณาติดต่อแผนกทะเบียน เพื่อบันทึกประวัติ</p>
             <?php
         }else{
+            list($name, $surname, $idcard) = $chkop->fetch_array();
             ?>
             <fieldset class="mb-4">
                 <legend>ฟอร์มบันทึก</legend>
@@ -190,8 +192,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                     <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button>
                                     <span id="resTestCheckUser"></span>
                                 </div>
-                                
-                                
                                 <input type="hidden" name="testCheckUser" id="testCheckUser">
                             </td>
                         </tr>
@@ -201,13 +201,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 <label>
                                     <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password">
                                 </label>
-                                <div>
-                                    <span class="badge text-bg-warning">คำแนะนำการตั้งรหัสผ่าน</span>
-                                    <ol>
-                                        <li>รหัสผ่านควรมีความยาว 8 ตัวอักษรขึ้นไป</li>
-                                        <li>การตั้งรหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และอักขระพิเศษ(!@#$%^&*[]_+) ผสมกัน</li>
-                                    </ol>
-                                </div>
                             </td>
                         </tr>
                         <tr valign="top">
@@ -216,6 +209,13 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 <label>
                                     <input name="txtpass2" type="password" class="form-control" id="txtpass2" autocomplete="off">
                                 </label>
+                                <div>
+                                    <span class="badge text-bg-warning">คำแนะนำการตั้งรหัสผ่าน</span>
+                                    <ol>
+                                        <li>รหัสผ่านควรมีความยาว 8 ตัวอักษรขึ้นไป</li>
+                                        <li>การตั้งรหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และอักขระพิเศษ(!@#$%^&*[]_+) ผสมกัน</li>
+                                    </ol>
+                                </div>
                             </td>
                         </tr>
                         <tr valign="top">

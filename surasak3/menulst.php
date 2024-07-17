@@ -1,5 +1,8 @@
 <?php
 session_start();
+include("connect.inc");
+require_once 'includes/config.php';
+
 $sOfficer="";
 $smenucode = "";
 $sRowid="";
@@ -27,27 +30,25 @@ function displaydate($x) {
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
 
-include("connect.inc");
+$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+$result = mysql_query($query) or die( mysql_error($Conn) );
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
 
+	if(!($row = mysql_fetch_object($result)))
+		continue;
+}
 
-    $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
-    $result = mysql_query($query) or die( mysql_error($Conn) );
-        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-        }
-
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
-    if(mysql_num_rows($result)){
-		$sOfficer=$row->name;
-		$menucode=$row->menucode;
-		$_SESSION["smenucode"]=$row->menucode;
-		$sRowid=$row->row_id;
-		$sLevel=$row->level;
-		$where_search= "";
+if(mysql_num_rows($result)){
+	$sOfficer=$row->name;
+	$menucode=$row->menucode;
+	$_SESSION["smenucode"]=$row->menucode;
+	$sRowid=$row->row_id;
+	$sLevel=$row->level;
+	$where_search= "";
 //if($_SESSION["smenucode"] == "ADM"){
 ///////แบบสอบถาม//////
 /*$query3 = "SELECT * FROM tb_assess WHERE row_id = '$sRowid' ";
@@ -182,11 +183,11 @@ if($menucode=='ADM' ){
 if($sLevel=="admin" OR $menucode=="ADM"){
 	?>
 	<tr>
-		<td BGCOLOR='#CCFFCC' align='center' style='color: red;' id="showDateTxt"><strong><font face='THSarabunPSK' size='5'><?=$showdate;?> <div id='divDetail'>&nbsp;</div></font></strong></td>
+		<td BGCOLOR='#CCFFCC' align='center' style='color: red;' id="showDateTxt"><strong><font face='THSarabunPSK' size='5'><?=$showdate;?> <div id='divDetail'><?=date('H:i:s');?> น.</div></font></strong></td>
 	</tr>
 	<tr>
 		<td id="userInfo">
-			<div><?=$sOfficer;?> (Admin)</div>
+			<div><?=$sOfficer;?> <?=($sLevel=="admin" ? '(Admin)' : '' );?></div>
 			<a target='_top' href="../sm3.php" id="logout" ><strong>&gt;&gt; ออกจากระบบ &lt;&lt;</strong></a>
 		</td>
 	</tr>
@@ -199,10 +200,15 @@ if($sLevel=="admin" OR $menucode=="ADM"){
 	<tr>
 		<td BGCOLOR='#148F77'><a target='_top' href="holiday_add.php"><font face='THSarabunPSK' size='5'>:: ข้อมูลวันหยุดประจำปี (Holiday)</font></a></td>
 	</tr>
-	<tr>
-		<td BGCOLOR='#148F77'><a target='_blank' href="showuser.php?menucode=<?=$menucode;?>"><font face='THSarabunPSK' size='5'>:: จัดการข้อมูลผู้ใช้งาน</font></a></td>
-	</tr>
-	<?php
+	<?php 
+	if($sLevel=="admin"){
+		?>
+		<tr>
+			<td BGCOLOR='#148F77'><a target='_blank' href="showuser.php?menucode=<?=$menucode;?>"><font face='THSarabunPSK' size='5'>:: จัดการข้อมูลผู้ใช้งาน</font></a></td>
+		</tr>
+		<?php
+	}
+	
 	if($menucode=="ADM"){
 		?>
 		<tr>
@@ -221,26 +227,10 @@ if($sLevel=="admin" OR $menucode=="ADM"){
 	if($menucode!=='ADMDR1'){
 		?>
 		<tr>
-			<td BGCOLOR='#148F77'><a target='_blank' href="ha_index.php"><font face='THSarabunPSK' size='5'>:: แบบบันทึกตัวชี้วัด</font></a></td>
+			<td BGCOLOR='#148F77'><a target='_blank' href="ha_index.php"><font face='THSarabunPSK' size='5'>KPI Center (แบบบันทึกตัวชี้วัด)</font></a></td>
 		</tr>
 		<?php
 	}
-}else if($menucode=="ADMXR"){						
-		print (" <tr>\n".
-		"  <td BGCOLOR='#148F77'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>\n".
-		" </tr>\n");
-		print (" <tr>\n".
-		"  <td BGCOLOR='#148F77'><a target='main' href=\"newpw.php\"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>\n".
-		" </tr>\n");		
-		print (" <tr>\n".
-		"  <td BGCOLOR='#148F77'><a target='_top' href=\"com_support.php\"><font face='THSarabunPSK' size='5'>:: แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a></td>\n".
-		" </tr>\n");
-		print (" <tr>\n".
-		"  <td BGCOLOR='#148F77'><a target='_top' href=\"document_list.php\"><font face='THSarabunPSK' size='5'>:: Edocument- จัดเก็บเอกสาร</font></a></td>\n".
-		" </tr>\n");
-		print (" <tr>\n".
-		"  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
-		" </tr>\n");
 }else{
 		print (" <tr>\n".
 		"  <td BGCOLOR='#CCFFCC' align='center' style='color: red;' id='showDateTxt'><strong><font face='THSarabunPSK' size='5'>$showdate <div id='divDetail'>&nbsp;</div></font></strong></td>\n".
@@ -248,11 +238,12 @@ if($sLevel=="admin" OR $menucode=="ADM"){
 
 		if($xxx!='DR1'){ 
 			$notifyTxt = "!!! คำเตือน !!!<br>รหัสผ่านของท่านไม่ปลอดภัย<br>ไม่ควรใช้รหัสผ่านที่คาดเดาได้ง่าย เช่น<br>- รหัสผ่านที่มีตัวเลขอย่างเดียว<br>- 12345678 หรือ 123456789<br>- วันเดือนปีเกิด หรือเบอร์โทรศัพท์";
-			$notifyTxt = '';
 			$notifyIcon = '🔔'; // ⚠️
-			$notifyIcon = '';
 			$classNotify = 'tooltiptext';
-			$classNotify = '';
+
+			// $notifyTxt = '';
+			// $notifyIcon = '';
+			// $classNotify = '';
 			?>
 			<tr>
 				<td id="userInfo">
@@ -304,9 +295,10 @@ if($sLevel=="admin" OR $menucode=="ADM"){
 		print (" <tr>\n".
 		"  <td BGCOLOR='#148F77'><a target='_top' href=\"km_index.php?act=view\"><font face='THSarabunPSK' size='5'>:: KM- Knowledge base</font></a></td>\n".
 		" </tr>\n");
+		
 		if($menucode!=='ADMDR1'){
 			print (" <tr>\n".
-			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"ha_index.php\"><font face='THSarabunPSK' size='5'>:: แบบบันทึกตัวชี้วัด</font></a></td>\n".
+			"  <td BGCOLOR='#148F77'><a target='_blank' href=\"ha_index.php\"><font face='THSarabunPSK' size='5'>KPI Center (แบบบันทึกตัวชี้วัด)</font></a></td>\n".
 			" </tr>\n");
 		}
 }
@@ -404,11 +396,11 @@ if($rows){///  ถ้ามี rows
     if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
         // do stuff for IE
         print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='5'>::  Authen Code ::</font></a></td>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:".NOTIFY_HOST."/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='5'>::  Authen Code ::</font></a></td>\n" .
         " </tr>\n");
     }else{
         print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='5'>::  Authen Code ::</font></a></td>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='".NOTIFY_HOST."/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='5'>::  Authen Code ::</font></a></td>\n" .
         " </tr>\n");
     }
 
