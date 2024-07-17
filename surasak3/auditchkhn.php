@@ -69,7 +69,7 @@ if ($_POST["act"] == "search") {
 	$date_end = ($deY+543)."-$deM-$deD";
 	?>
 	<div align="center" class="font3" style="width:100%;">
-		<a href="http://192.168.129.143/phpspreadsheet/page2.php?hn=<?=$hn;?>&date_start=<?=$date_start;?>&date_end=<?=$date_end;?>" target="_blank">ดาวโหลดข้อมูลไฟล์ Excel</a>
+		<a href="<?=NOTIFY_HOST;?>/phpspreadsheet/page2.php?hn=<?=$hn;?>&date_start=<?=$date_start;?>&date_end=<?=$date_end;?>" target="_blank">ดาวโหลดข้อมูลไฟล์ Excel</a>
 	</div>
 	<div align="center" class="font3" style="width:100%;"><strong>เอกสารการสุ่มตรวจเวชระเบียน opd billding</strong></div>
 	<div align="center" class="font3" style="width:100%;"><strong>วันที่ <?=$date_start;?> ถึง <?=$date_end;?></strong></div>

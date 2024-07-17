@@ -1,9 +1,8 @@
 <?php
-    session_start();
-    if (isset($sIdname)){
-		} else {die;}
+session_start();
+require_once 'includes/config.php';
+if (isset($sIdname)){} else {die;}
 
-define('BASE_URL', 'https://192.168.129.143/testqrcode/');
 $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 		
 	//header("content-type: application/x-javascript; charset=UTF-8");
@@ -54,7 +53,7 @@ $sortname="รพ.สนาม";
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="med_record.php?code=<?=$lbedcode;?>">Med Record</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=BASE_URL;?>show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=NOTIFY_HOST;?>/testqrcode/show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 <br />
 
@@ -137,9 +136,7 @@ $time=explode(" ",$date1);
 
 
 $sql = "SELECT hi_type FROM ipcard  WHERE `an` = '".$an."' limit 1 ";
-
 $rows = mysql_query($sql);
-
 list($hi_type) = Mysql_fetch_row($rows);
 
 	if($hi_type=="in"){
@@ -150,6 +147,15 @@ list($hi_type) = Mysql_fetch_row($rows);
 		$location="";
 	}
 
+
+$sql1 = "SELECT idguard FROM opcard  WHERE `hn` = '".$hn."' limit 1 ";
+$rows1 = mysql_query($sql1);
+list($idguard) = Mysql_fetch_row($rows1);
+
+
+$sql_ipacc="SELECT sum(price),sum(paid),sum(yprice),sum(nprice) FROM `ipacc` WHERE an='$an'";
+$row_ipacc = mysql_query($sql_ipacc);
+list($sumprice,$sumpaid,$sumyprice,$sumnprice) = Mysql_fetch_row($row_ipacc);
 ?>
 <script type="text/javascript">
 $(document).ready(function(){
@@ -176,7 +182,21 @@ $(document).ready(function(){
     <td>
     <div id="div<?=$i;?>">
     <table width="100%" border="0">
+	<?php
+	if($sumnprice > 0){
+	?>	
       <tr>
+		<td width="90%" align='right' colspan="2">
+			<table width="100%" border="0">
+			<tr>
+				<td width="95%" align="right"><div style='background-color: #EC7063;  width: 380px; height: 25px; border: 1px solid black;'><span>ค่าหัตถการ/ตรวจวินิจฉัย &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เบิกไม่ได้ : <?=$sumnprice;?> บาท</span>&nbsp;&nbsp;</div></td>
+				<td width="5%" align="left"><div style="margin-bottom:10px;"><img src="images/profile.png" width="32" height="32"></div></td>
+			</tr>
+			</table>
+		</td>
+	  </tr>
+	<?php } ?>  
+	  <tr>
         <td width="25%">
 				<a name="<?=$bed;?>" id="<?=$bed;?>"></a>
 				<font class="bed">
@@ -189,7 +209,7 @@ $(document).ready(function(){
 		<? echo "<a target=_blank  href=\"bedstatus.php? cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cstatus=$status\" class='tablefont'>$status</a>"; ?></td>
         <td > <font class="tablefontt1">AN : </font><font class="tablefont"><a href="show_wardlog.php?sAn=<?=$an;?>" target="_blank"><?=$an;?></a></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1"> HN : </font><font class='tablefont'><?=$hn; ?></font> &nbsp;&nbsp;&nbsp;<font class="tablefontt1">วันที่รับป่วย : </font>
          <font class="tablefont"> <?=$date.' '.$time[1];?></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1">วันนอนรวม </font>
-         <font class="tablefont"> <?=$daysall;?> วัน</font>
+         <font class="tablefont"> <?=$daysall;?> วัน</font>		 
         </td>
         </tr>
       <tr>
@@ -205,6 +225,9 @@ $(document).ready(function(){
           
             <td class="tablefontt1">สิทธิการรักษา  :</td>
             <td class="tablefont"><?=$ptright;?></td>
+			
+            <td class="tablefontt1">ประเภท  :</td>
+            <td class="tablefont"><u><i><?=$idguard;?></i></u></td>			
           </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top" >
@@ -255,6 +278,41 @@ $(document).ready(function(){
       </tr>
     </table>
     
+
+    <? 
+        	$sql_bacteria = "SELECT * FROM bacteria_resistant  WHERE `hn` = '".$hn."' AND Alert_Flag = 'Y' ORDER BY Id DESC ";
+					$rows_bacteria = mysql_query($sql_bacteria);
+					$num_bacteria = mysql_num_rows($rows_bacteria);
+					if(!empty($num_bacteria)){
+        	?>
+        	<table border="0" >
+        	<?  
+        		while($rows = mysql_fetch_array($rows_bacteria)){
+        				echo "<td style='background-color: #CD5C5C;'>";
+        				echo "<img src='beacteria_img/alert.png' width='20' height='20'> เชื้อที่พบ : <font color=white>".$rows['Bacteria_Name']." <br></font>";	
+        				echo "แหล่งกำเนิด : <font color=white>".$rows['Bacteria_Source']." </font> 
+        							ชื่อยา : <font color=white>".$rows['Drug_Name']."<br></font>";
+
+        				//---> convert date 2024-05-01 to 01-05-2567
+        				$tmp_y = substr($rows['Date_Send'],0,4)+543;
+        				$tmp_m = substr($rows['Date_Send'],5,2);
+        				$tmp_d = substr($rows['Date_Send'],8,2);
+        				$Date_Send_Th = $tmp_d."-".$tmp_m."-".$tmp_y;
+        				echo "วันที่ส่งตรวจ : <font color=white>".$Date_Send_Th." <br></font>";
+        				echo "Ward : <font color=white>".$rows['Ward']." <br></font>";
+
+        				if($rows['Alert_Status'] != ""){
+        					echo "หมายเหตุ : <font color=white>".$rows['Alert_Status']." <br></font>";
+        				}//end if Alert_Status
+
+        				echo "</td> ";
+
+        				echo "<td'> </td>";
+        		}//end while
+        			echo "</tr></table>";
+        	}//!empty($num_bacteria)
+        	?>
+
     </div>
     
     </td>

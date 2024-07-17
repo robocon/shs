@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once 'config.php';
+require_once 'includes/config.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -135,7 +135,7 @@ while ($a = $qAppoint->fetch_assoc()) {
 
     var ptrightList = [];
     async function getPtright(){
-        const response = await fetch('http://192.168.131.240:8081/api/ptright');
+        const response = await fetch('<?=LARAVEL_API_HOST;?>ptright');
         const data = await response.json();
         ptrightList = data.list;
     }
@@ -185,7 +185,7 @@ while ($a = $qAppoint->fetch_assoc()) {
         for (let index = 0; index < appointUserList.length; index++) {
             const el = appointUserList[index];
             let data = null;
-            const response = await fetch('http://192.168.129.143/appointNhso.php?idcard='+el+'&user_person_id='+person_id+'&smctoken='+smctoken);
+            const response = await fetch('<?=NOTIFY_HOST;?>/appointNhso.php?idcard='+el+'&user_person_id='+person_id+'&smctoken='+smctoken);
             data = await response.json();
 
             res = '';

@@ -10,8 +10,8 @@ if( empty($camp) ){
     exit;
 }
 
-$Conn = mysql_connect(HOST13, USER13, PASS13) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
-mysql_select_db(DB13, $Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
+$Conn = mysql_connect(HOST, USER, PASS) or die ("ไม่สามารถติดต่อกับเซิร์ฟเวอร์ได้");
+mysql_select_db(DB, $Conn) or die ("ไม่สามารถติดต่อกับฐานข้อมูลได้");
 
 $sql = "SELECT *,SUBSTRING(`yearchk`, 3, 2) AS `short_year` FROM `chk_company_list` WHERE `code` = '$camp' ";
 $q = mysql_query($sql);
