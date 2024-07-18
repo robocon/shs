@@ -22,7 +22,7 @@ if(!empty($group)){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายชื่อ Admin ประจำแผนก</title>
+    <title>ติดต่อ Admin ประจำแผนก</title>
     <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -31,7 +31,7 @@ if(!empty($group)){
 </head>
 <body>
     <div class="container">
-        <h3>รายชื่อ Admin ประจำแผนก</h3>
+        <h3>ติดต่อ Admin ประจำแผนก</h3>
         <div class="alert alert-warning" role="alert">หากรายชื่อไม่ถูกต้อง กรุณาประสานศูนย์คอมพิวเตอร์เพื่อทำการอัพเดทข้อมูล ขอบคุณครับ</div>
         <div class="row">
             <div class="col-md-6">

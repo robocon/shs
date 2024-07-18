@@ -38,7 +38,7 @@ if ($act == "add") {
             $eopdStatus = 'y';
         }
 
-        $add = "INSERT INTO `inputm` SET `name`='$txtname',
+        $sqlAdd = "INSERT INTO `inputm` SET `name`='$txtname',
         `idname`='$txtuser',
         `pword`='$txtpass',
         `menucode`='$menucode',
@@ -47,26 +47,25 @@ if ($act == "add") {
         `idcard`='$idcard',
         `level`='user',
         `level_eopd` = '$eopdStatus' ";
+        $q = $dbi->query($sqlAdd);
+        if ($q!==false) { 
 
-        if (mysql_query($add)) {
-            echo "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว";
-            ?>
-            <script>
-                window.open('printuser.php?<?="prName=$txtname&prUser=$txtuser&prPass=$txtpass";?>', '', 'nenuber=no,toorlbar=no,location=no,scrollbars=yes, status=no,resizable=no,width=400,height=400,top=220,left=650 ');
-                setTimeout(function(){
-                    window.location='adduser.php?menucode=<?=$menucode;?>';
-                },1500);
-            </script>
-            <?php
+
+            $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
+            $sMessage = $_SESSION['sOfficer']."($menucode) ได้เพิ่มผู้ใช้".$txtname." เข้าสู่ระบบโรงพยาบาล";
+            $curl = curl_init(); 
+            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
+            curl_setopt( $curl, CURLOPT_POST, 1); 
+            curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+            $headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+            $result = curl_exec( $curl ); 
+            curl_close($curl); 
+
+            redirect('showuser.php?menucode='.$menucode, "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว");
         } else {
-            echo "!!! ผิดพลาดไม่สามารถเพิ่มข้อมูลได้";
-            ?>
-            <script>
-                setTimeout(function(){
-                    window.location='adduser.php?menucode=<?=$menucode;?>';
-                },1500);
-            </script>
-            <?php
+            redirect('showuser.php?menucode='.$menucode, "เพิ่มข้อมูลไม่สำเร็จ กรุณาตรวจสอบข้อมูลให้ครบถ้วนก่อนทำการบันทึก");
         }
         exit;
     }
@@ -126,8 +125,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
 <div class="container">
     <h3 class="h3">เพิ่มข้อมูลผู้ใช้งานระบบ</h3>
     <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1">
-        <input name="act" type="hidden" value="show">
-        <input name="menucode" type="hidden" value="<?=$menucode;?>">
         <table>
             <tr>
                 <td width="19%" align="right"><b>เลขบัตรประชาชน : </b></td>
@@ -142,7 +139,9 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                 <td>&nbsp;</td>
                 <td>
                     <label>
-                        <input type="submit" name="button" id="button" class="btn btn-primary" value="ตรวจสอบข้อมูลจากทะเบียน">
+                        <input type="submit" name="button" id="chkButton" class="btn btn-primary" value="ตรวจสอบข้อมูลจากทะเบียน">
+                        <input name="act" type="hidden" value="show">
+                        <input name="menucode" type="hidden" value="<?=$menucode;?>">
                     </label>
                 </td>
             </tr>
@@ -162,11 +161,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             <fieldset class="mb-4">
                 <legend>ฟอร์มบันทึก</legend>
                 <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1" onsubmit="return checkForm();">
-                    <input name="act" type="hidden" value="add">
-                    <input name="menucode" type="hidden" value="<?=$menucode;?>">
-                    <input name="status" type="hidden" value="Y">
-                    <input name="level" type="hidden" value="user">
-                    <!-- <input name="txtrepass" type="hidden" id="txtrepass" value="1234" /> -->
                     <table>
                         <tr>
                             <td width="19%" align="right"><b>ชื่อ-นามสกุล : </b></td>
@@ -180,7 +174,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td width="19%" align="right"><b>เลขบัตรประชาชน : </b></td>
                             <td width="81%">
                                 <label>
-                                    <input name="idcard" type="text" class="form-control" id="idcard" value="<?=$idcard;?>" readonly="readonly">
+                                    <input name="idcard" type="text" class="form-control" id="cid" value="<?=$idcard;?>" readonly="readonly">
                                 </label>
                             </td>
                         </tr>
@@ -192,6 +186,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                     <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button>
                                     <span id="resTestCheckUser"></span>
                                 </div>
+                                <div>* ไม่จำเป็นต้องใช้ username ภาษาไทย</div>
                                 <input type="hidden" name="testCheckUser" id="testCheckUser">
                             </td>
                         </tr>
@@ -229,6 +224,10 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td>
                                 <label>
                                     <input type="submit" name="button" id="button" class="btn btn-primary" value="เพิ่มผู้ใช้งาน">
+                                    <input name="act" type="hidden" value="add">
+                                    <input name="menucode" type="hidden" value="<?=$menucode;?>">
+                                    <input name="status" type="hidden" value="Y">
+                                    <input name="level" type="hidden" value="user">
                                 </label>
                             </td>
                         </tr>
@@ -281,7 +280,8 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             let pass1 = document.getElementById('txtpass');
             let pass2 = document.getElementById('txtpass2');
 
-            const regex = /\d{8}/g;
+            const regex = /\d+/g;
+            const checkPass = pass1.value.match(regex);
             
             if (document.getElementById('txtname').value == '') {
                 Swal.fire("กรุณากรอกชื่อ-นามสกุล");
@@ -297,7 +297,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             }else if(document.getElementById('txtpass').value.length < 8){
                 Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 8 ตัวอักษร");
                 stat = false;
-            }else if(pass1.value.match(regex)){
+            }else if(checkPass[0].length == pass1.value.length){
                 Swal.fire("ไม่ควรใส่แต่ตัวเลข ควรมีตัวอักษรตัวเล็กหรือตัวใหญ่ผสมเข้าไปด้วย");
                 stat = false;
             }else if(pass1.value != pass2.value){

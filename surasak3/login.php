@@ -32,14 +32,14 @@ font, .txt{
         <p><input type="submit" value="เข้าสู่ระบบ" name="B2" class="txt"></p>
       </td>
     </tr>
-    <!-- <tr>
+    <tr>
       <td width="2%"></td>
       <td width="98%">
         <div style="text-align:left;">
-          <a target="_parent" href="javascript:void(0);" class="txt">ลืมรหัสผ่าน?</a>
+          <a target="_blank" href="showAdmin.php" class="txt">ลืมรหัสผ่าน?</a>
         </div>
       </td>
-    </tr> -->
+    </tr>
     
   </table>
 </form>

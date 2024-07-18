@@ -89,6 +89,14 @@ if ($act == "del") {
 require_once 'com_user_menu.php';
 ?>
 <div class="container-lg mt-2">
+	<?php 
+	if($_SESSION['x-msg']){
+		?>
+		<div class="alert alert-warning" role="alert"><?=$_SESSION['x-msg'];?></div>
+		<?php
+	}
+	unset($_SESSION['x-msg']);
+	?>
 	<h3>จัดการข้อมูลผู้ใช้งานระบบ</h3>
 	<table class="table table-hover">
 		<tr>
@@ -104,7 +112,7 @@ require_once 'com_user_menu.php';
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
 		<?php
-		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' ORDER BY `row_id` ASC ";
+		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' AND `menucode` != 'ADMDR1' ORDER BY `row_id` ASC ";
 		$q = $dbi->query($sql);
 		$num = $q->num_rows;
 		if ($num < 1) {

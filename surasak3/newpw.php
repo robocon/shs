@@ -44,7 +44,7 @@ if(usingIE()==true){
     <div align="left">
         <table border="0" cellpadding="3" cellspacing="0" width="100%" height="202">
             <tr>
-                <td align="center" colspan="2"><h3>เปลี่ยนรหัสผ่านผู้ใช้งานใหม่</h3></td>
+                <td align="center" colspan="2"><h3>เปลี่ยนรหัสผ่านผู้ใช้งาน</h3></td>
             </tr>
             <tr>
                 <td width="21%" height="33" align="right"><strong>ชื่อผู้ใช้ : &nbsp;
