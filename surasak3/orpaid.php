@@ -1,12 +1,22 @@
 <?php
 session_start();
-if(empty($cHn)){
-	exit();	
-}else{	
+include("connect.inc");
+	$cRowid=$_POST["cRowid"];
+    $query = "SELECT * FROM bed WHERE row_id = '$cRowid'";
+    $result = mysql_query($query);
+	$rows = mysql_fetch_array($result);
+	$cAn=$rows["an"];
+	$cHn=$rows["hn"];
+	$cPtname=$rows["ptname"];
+	$cBedcode=$rows["bedcode"];
+	$cDiag=$rows["diagnos"];
+	$cDoctor=$rows["doctor"];
+	
+	
     $Thaidate=date("d-m-").(date("Y")+543);
 
     $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
-	include("connect.inc");
+	
  	$aCode = array("รหัส");
     $aDetail  = array("รายการ");
     $aDSPY = array("dspy"); 
@@ -176,7 +186,7 @@ if(empty($cHn)){
     $Netnprice=0;
     $item=0;*/
        //insert data into depart
-	   if (!empty($cAn)){
+	   if (!empty($cAn)){  //ถ้าเป็นผู้ป่วยใน
                 $tvn=$cAn;
        	}
     	else{
@@ -288,5 +298,4 @@ if(empty($cHn)){
 	}else{
 		print "บันทึกข้อมูลผิดพลาด กรุณาบันทึกใหม่";
 	}
-}
 ?>
