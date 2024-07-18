@@ -1,5 +1,7 @@
 <?php
  session_start();
+ include("connect.inc");
+
     $cHn="";
     $cPtname="";
     $cPtright="";
@@ -37,8 +39,6 @@ return $pAge;
    $tvn="";
     session_register("tvn");
 If (!empty($hn)){
-    include("connect.inc");
-	
 
 
     $today = date("d-m-Y");   
@@ -214,51 +214,29 @@ echo "</pre>";*/
 ?>
 <select name="cDoctor" id="cDoctor"> 
 <option value="" selected="selected">- - กรุณาเลือกแพทย์ - -</option>
-<option value="MD007 ณรงค์ ปรีดาอนันทสุข" >MD007 ณรงค์ ปรีดาอนันทสุข</option>  
-<option value="MD009 นภสมร ธรรมลักษมี" >MD009 นภสมร ธรรมลักษมี</option>
-<option value="MD013 ธนบดินทร์ ผลศรีนาค" >MD013 ธนบดินทร์ ผลศรีนาค</option>
-<option value="MD100 เชาวรินทร์ อุ่นเครือ" >MD100 เชาวรินทร์ อุ่นเครือ</option>
-<!-- <option value="MD070 ประทีป เหลือแก้ว" >MD070 ประทีป เหลือแก้ว</option> -->
-<option value="MD105 ภควดี วุฒิพิทยามงคล" >MD105 ภควดี วุฒิพิทยามงคล</option> 
-<option value="MD106 มนัสจิตต์ บุณยทรรพ" >MD106 มนัสจิตต์ บุณยทรรพ</option> 
-<option value="MD107 รวี อัศวกิติพงษ์" >MD107 รวี อัศวกิติพงษ์</option> 
-<option value="MD112 สาริศ เฉลิมพงศ์ชัย" >MD112 สาริศ เฉลิมพงศ์ชัย</option>
-<option value="MD117 ณัชญ์ระวี บุรีคำ" >MD117 ณัชญ์ระวี บุรีคำ</option> 
-<option value="MD122 นวมน สุนทรวราภาส" >MD122 นวมน สุนทรวราภาส</option> 
-<option value="MD123 วาทินี แสนโภชน์" >MD123 วาทินี แสนโภชน์</option>
-<option value="MD127 ปัทมพร แสงแก้ว" >MD127 ปัทมพร แสงแก้ว</option>
-<!-- <option value="MD125 จรรยวรรธน์  สร้างสมวงษ์" >MD125 จรรยวรรธน์  สร้างสมวงษ์</option> -->
-<option value="MD134 ปริณดา กิตติดนัยรักษ์" >MD134 ปริณดา กิตติดนัยรักษ์</option>
-<option value="MD136 ปริญญา เรือนวิไล" >MD136 ปริญญา เรือนวิไล</option> 
-<option value="MD137 กฤษฎิ์พงษ์ ศิริสารศักดา" >MD137 กฤษฎิ์พงษ์ ศิริสารศักดา</option> 
-<option value="MD138 มัทนา อัมพะเศวต" >MD138 มัทนา อัมพะเศวต</option> 
-<option value="MD140 ชัชวาลย์  เชวงชุติรัตน์" >MD140 ชัชวาลย์  เชวงชุติรัตน์</option>
-<option value="MD141 อมร ตามไท" >MD141 อมร ตามไท</option> 
-<option value="MD142 กรรณิการ์  ศรีสุวรรณ" >MD142 กรรณิการ์  ศรีสุวรรณ</option>
-<option value="MD144 อนวัช บุปผาเจริญสุข" >MD144 อนวัช บุปผาเจริญสุข</option>
-<option value="MD150 รัตนเกียรติ พงษ์รัตนกุล" >MD150 รัตนเกียรติ พงษ์รัตนกุล</option>
-<option value="MD152 ยิ่งวิชช์ วิทยาวิศวสกุล" >MD152 ยิ่งวิชช์ วิทยาวิศวสกุล</option>
-<option value="MD164 ชนะรัตน์ โชคชัยสมุทร" >MD164 ชนะรัตน์ โชคชัยสมุทร</option>
-<option value="MD171 วีรวัฒน์ เลิศฤทธิ์เดชา" >MD171 วีรวัฒน์ เลิศฤทธิ์เดชา</option>
-<option value="MD183 ธนาคาร ศรีพนม" >MD183 ธนาคาร ศรีพนม</option>
-<option value="MD190 วิรดา  อนันตวงศ์" >MD190 วิรดา  อนันตวงศ์</option>
-<option value="MD191 กิตติ์ สัญชยานุกูล" >MD191 กิตติ์ สัญชยานุกูล</option>
-<option value="MD200 เมนัญชญา  พงษ์ไพรเจริญ" >MD200 เมนัญชญา  พงษ์ไพรเจริญ</option>
-<option value="MD199 ภาริดา เป็งวัน" <?php if($_SESSION["smenucode"]=="ADMXR"){ echo "selected";}?>>MD199 ภาริดา เป็งวัน</option>
-<option value="MD114 วริทธิ์ พสุธาดล" >MD114 วริทธิ์ พสุธาดล</option>
+<?php 
+$sql = "SELECT * FROM `doctor` WHERE `status` = 'y' AND `menucode` = 'ADM' ORDER BY `row_id` ASC";
+$q = mysql_query($sql);
+while ($a = mysql_fetch_assoc($q)) {
+
+    $mdCode = substr($a['name'], 0,5);
+    $selected = ($mdCode=='MD211') ? 'selected="selected"' : '' ;
+    ?>
+    <option value="<?=$a['name'];?>" <?=$selected;?> ><?=$a['name'];?></option> 
+    <?php
+}
+?>
+
 </select>
-<?
-	print "<br><br>ราคา :";
 
-
-	
-	?>
+<br><br>ราคา :
 <select name="cPrice" id="cPrice"> 
 <option value="" >- - กรุณาเลือกค่าบริการ- -</option>
 <option value="100">100 บาท</option>  
 <option value="150">150 บาท</option>
 <option value="200">200 บาท</option>
-<option value="300" <?php if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADMMAINOPD"){ echo "selected";}?>>300 บาท</option>  
+<option value="300" <?php if($_SESSION["smenucode"]=="ADMMAINOPD"){ echo "selected";}?>>300 บาท</option> 
+<option value="400" <?php if($_SESSION["smenucode"]=="ADMXR"){ echo "selected";}?>>400 บาท</option>  
 </select>
 <br /><br />
 <input name="save" type="submit" value="ชื่อถูกต้อง คิดค่าใช้จ่าย" />
