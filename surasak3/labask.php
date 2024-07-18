@@ -2,8 +2,13 @@
    session_start();
    if(isset($sIdname)){} else {die;}
     include("connect.inc");
+?>
+<link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+<script type="text/javascript" src="epoch_classes.js"></script>
+<script src="sweetalert/jquery-3.6.0.js"></script>
+<script src="sweetalert/sweetalert2@11.js"></script>
+<?php  
 
-  
     ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
 	$strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
 	$strresult = mysql_query($strsql);
@@ -68,10 +73,10 @@
 	list($aptright,$atoborow,$idcard)=mysql_fetch_array($sql1);
 	
 	
- $query = "SELECT ptright1 FROM opcard WHERE hn = '".$cHn."'  limit 1 ";
+ $query = "SELECT idcard,ptright1 FROM opcard WHERE hn = '".$cHn."'  limit 1 ";
  $result = mysql_query($query) or die(Mysql_Error());
  $row=mysql_num_rows($result);
- list($ptright1) = Mysql_fetch_row($result);	
+ list($ccc,$ptright1) = Mysql_fetch_row($result);	
  $codeptright=substr($ptright1,0,3);
  
  if(substr($atoborow,0,4)=="EX04" && substr($aptright,0,3) == "R22"){
@@ -93,6 +98,24 @@
 			<?php
 		}
 	}
+	
+
+
+
+	// ตรวจสอบ VN ซ้ำซ้อน**************************************************
+	$chkdate = (date("Y")+543).date("-m-d");
+	$sqlvn = "Select count(vn) From opday where thidate LIKE '".$chkdate."%' AND vn = '$tvn'";
+	//echo $sqlvn;
+	list($vn_row) = mysql_fetch_row(mysql_query($sqlvn));
+	if($vn_row > 1){
+		echo "<div align='center' style='font-size:24px;color:red;font-weight:bold;margin-top:20px;margin-bottom:20px;'>
+		<div><img src='images/warning-1.png' width='96px;' height='96px;'></div>
+		<div>แจ้งเตือนข้อมูลการลงทะเบียน VN $tvn ซ้ำซ้อน<br>
+		<span style='font-size:16px;'>กรุณาตรวจสอบข้อมูลและทบทวน VN ของผู้ป่วยกับห้องทะเบียนก่อนครับ</span>
+		</div>
+		</div>";
+	}
+	
 ?>		
 <table  border="0">
   <tr>
@@ -136,8 +159,8 @@
     </tr>    -->
 </table>
 <?
-			if(substr($aptright,0,3)=='R12' || substr($aptright,0,3)=='R13' || substr($aptright,0,3)=='R14' || substr($aptright,0,3)=='R35'){
-				echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+			if(substr($aptright,0,3)=='R12' || substr($aptright,0,3)=='R13' || substr($aptright,0,3)=='R14' || substr($aptright,0,3)=='R35' || substr($aptright,0,3)=='R36'){
+				echo "<div style=\"background-color: #FF0000;font-size:28px;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>รพ.เบิกเงินจากต้นสังกัดได้ไม่เกิน 700 บาท</div>";
 			}
 ?>
  <? 
@@ -308,21 +331,23 @@ if(!isset($c)){
 </font>
 
 <?php 
-$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
-$t = mysql_fetch_array($qToken);
-$person_id = preg_replace('/\D/','', $t['cid']);
-$smctoken = $t['token'];
+	$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());
+	$t = mysql_fetch_array($qToken);
+	$person_id = preg_replace('/\D/','', $t['cid']);
+	$smctoken = $t['token'];
 ?>
-<div id="nhso">
-	<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
-</div>
+	<div id="nhso">
+		<br><span style="color: blue;"> <img src="images/Spinner-1s-28px.gif" alt=""> กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+	</div>
+
 <script type="text/javascript" src="js/nhso.js"></script>
 <script>
-window.onload = function(){
-	checksit('nhso','<?=$idcard;?>','<?=$person_id;?>','<?=$smctoken;?>');
-}
+	window.onload = function(){
+		checksit('nhso','<?=$ccc;?>','<?=$person_id;?>','<?=$smctoken;?>');
+	}
 </script>
- 
+
+
   <p><font face="Angsana New" >&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
  
   <?php
