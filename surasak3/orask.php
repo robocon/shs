@@ -1,25 +1,21 @@
 <?php
 session_start();
+include("connect.inc");
 print "ผู้ป่วยนอก<br>";
 print "HN: $cHn<br>";
 print "VN: $tvn<br>";
-
 print "$cPtname<br>";
 print "สิทธิการรักษา: $cPtright<br>";
 ?>
 <form method="POST" action="preor.php">
 	<p>
-		<font face="Angsana New">&nbsp;&nbsp;<a target=_BLANK href='diaghlp.htm'>&#3650;&#3619;&#3588;</a>&nbsp;&nbsp;&nbsp;&nbsp;
-			&nbsp;&nbsp;<input type="text" name="diag" size="20">&nbsp;</font>
+		<font face="Angsana New">&nbsp;&nbsp;<a target=_BLANK href='diaghlp.htm'>&#3650;&#3619;&#3588;</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="diag" size="20">&nbsp;</font>
 	</p>
 	<p>
 		<font face="Angsana New">&nbsp;&nbsp;</font>
-		<font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
-		</font>
+		<font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;</font>
 		<font face="Angsana New">
-
 			<?php
-			include("connect.inc");
 			$sql = "Select menucode From inputm where idname = '" . $_SESSION["sIdname"] . "' ";
 			list($menucode) = Mysql_fetch_row(Mysql_Query($sql));
 

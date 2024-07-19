@@ -34,7 +34,6 @@ session_register("aAmount");
 session_register("aMoney");
 session_register("Netprice");
 
-
 session_register("cPart");
 session_register("cDiag");
 session_register("cAn");

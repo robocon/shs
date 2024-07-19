@@ -2,7 +2,6 @@
 session_start();
 include("connect.inc");
 
-///////////////////////////////
 if (isset($_GET["action"]) && $_GET["action"] == "drugreact") {
 
 	$sql = "Select * from dpy where detail like '%" . $_GET["search"] . "%' or code like '%" . $_GET["search"] . "%' limit 10 ";
@@ -98,7 +97,7 @@ if (isset($_GET["action"]) && $_GET["action"] == "drugreact") {
 	}
 </script>
 
-<?
+<?php
 /*
 //seek $an in bed
     $query = "SELECT * FROM bed WHERE an = '$an'";

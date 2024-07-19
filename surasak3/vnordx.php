@@ -11,7 +11,7 @@ session_register("cPtright");
 session_register("tvn");
 ?>
 <div>
-	<a target="_self"  href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลักโปรแกรม</a>
+	<a target="_self" href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลักโปรแกรม</a>
 </div>
 <fieldset style="display:inline-block;">
     <legend>ผู้ป่วยนอก หมายเลข VN (ได้จากแผนกเวชระเบียน)</legend>
@@ -29,7 +29,6 @@ session_register("tvn");
     </form>
 </fieldset>
 <div>&nbsp;</div>
-
 <?php
 if (!empty($vn)) {
     $tvn = "$vn";
