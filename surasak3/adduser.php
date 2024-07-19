@@ -52,7 +52,7 @@ if ($act == "add") {
 
 
             $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
-            $sMessage = $_SESSION['sOfficer']."($menucode) ได้เพิ่มผู้ใช้".$txtname." เข้าสู่ระบบโรงพยาบาล";
+            $sMessage = $_SESSION['sOfficer']."($menucode) ได้เพิ่มผู้ใช้ $txtname($idcard) เข้าสู่ระบบโรงพยาบาล";
             $curl = curl_init(); 
             curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
             curl_setopt( $curl, CURLOPT_POST, 1); 
