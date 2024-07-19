@@ -11,9 +11,9 @@ $json = new Services_JSON();
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='checkuser'){
     $username = sprintf("%s", $_REQUEST['username']);
-    $q = $dbi->query("SELECT row_id FROM inputm WHERE idname = '$username' ");
-    if($q->num_rows>0){
-        $res = array("msg"=>"มีผู้ใช้งานแล้ว", "status"=>400);
+    $q = $dbi->query("SELECT `row_id` FROM inputm WHERE idname = '$username' ");
+    if($q->num_rows>0){ 
+        $res = array("msg"=>"มีผู้ใช้งานแล้ว", "status"=>400, );
     }else{
         $res = array("msg"=>"ใช้งานได้", "status"=>200);
     }
@@ -46,22 +46,22 @@ if ($act == "add") {
         `date_pword`='$date_pword',
         `idcard`='$idcard',
         `level`='user',
-        `level_eopd` = '$eopdStatus' ";
+        `level_eopd` = '$eopdStatus',
+        `officer` = '".$_SESSION['sOfficer']."' ";
         $q = $dbi->query($sqlAdd);
-        if ($q!==false) { 
-
+        if ($q!==false) {
 
             $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
             $sMessage = $_SESSION['sOfficer']."($menucode) ได้เพิ่มผู้ใช้ $txtname($idcard) เข้าสู่ระบบโรงพยาบาล";
-            $curl = curl_init(); 
-            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
-            curl_setopt( $curl, CURLOPT_POST, 1); 
-            curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-            $headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
-            curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
-            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
-            $result = curl_exec( $curl ); 
-            curl_close($curl); 
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
+            curl_setopt( $curl, CURLOPT_POST, 1);
+            curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
+            $headers = array( 'Content-type: application/x-www-form-urlencoded' );
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec( $curl );
+            curl_close($curl);
 
             redirect('showuser.php?menucode='.$menucode, "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว");
         } else {
@@ -147,21 +147,79 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             </tr>
         </table>
     </form>
-    <?php
-    if ( $act == "show") {
-        $chkop = $dbi->query("SELECT `name`,`surname`,`idcard` FROM `opcard` WHERE `idcard`='$idcard'");
+    <?php 
+    
+    if ( $act == "show" && !empty($idcard)) { 
+        
+        $chkop = $dbi->query("SELECT `name`,`surname`,`idcard`,`employee` FROM `opcard` WHERE `idcard`='$idcard'");
         $numRows = $chkop->num_rows;
         if ($numRows==0) {
             ?>
-            <p class="text-danger fw-bold">ไม่พบข้อมูลเลขบัตรประชาชน กรุณาติดต่อแผนกทะเบียน เพื่อบันทึกประวัติ</p>
+            <div class="col-md-6">
+                <div class="alert alert-danger mt-4" role="alert">ไม่พบข้อมูลเลขบัตรประชาชน กรุณาติดต่อแผนกทะเบียน เพื่อบันทึกประวัติ</div>
+            </div>
             <?php
         }else{
-            list($name, $surname, $idcard) = $chkop->fetch_array();
+            list($name, $surname, $idcard, $employee) = $chkop->fetch_array();
+            $opcardPtName = $name.' '.$surname;
+            $checkFullName = false;
+            
+            $sql = "SELECT REPLACE(`name`,'  ',' ') AS `name`,`menucode`,`status`,`date_pword` FROM `inputm` WHERE `name` LIKE '$name%' AND `menucode` != 'ADMDR1' ";
+            $q = $dbi->query($sql);
+            if($q->num_rows > 0){
+                ?>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div><strong>ข้อมูลเพิ่มเติม ก่อนเพิ่มผู้ใช้งาน</strong></div>
+                        <table class="table">
+                            <tr>
+                                <th>ชื่อ-สกุล</th>
+                                <th>แผนก</th>
+                                <th>สถานะ</th>
+                                <th>วดป.ที่เพิ่มเข้าระบบ</th>
+                            </tr>
+                        <?php
+                        while ($a = $q->fetch_assoc()) { 
+
+                            if($opcardPtName==$a['name'] && $_SESSION['smenucode']==$a['menucode']){
+                                $checkFullName = true;
+                            }
+
+                            $sqlDepartment = "SELECT `name` FROM `departments` WHERE `menucode` LIKE '".$a['menucode']."%' ORDER BY `id` ASC LIMIT 1 ";
+                            $qDep = $dbi->query($sqlDepartment);
+                            $dep = $qDep->fetch_assoc();
+                            ?>
+                            <tr>
+                                <td><?=$a['name'];?></td>
+                                <td><?=$dep['name'];?></td>
+                                <td><?=$a['status'];?></td>
+                                <td><?=$a['date_pword'];?></td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                        </table>
+                    </div>
+                </div>
+                <?php
+            }
+            
             ?>
-            <fieldset class="mb-4">
+            <fieldset class="mb-4 mt-4">
                 <legend>ฟอร์มบันทึก</legend>
                 <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1" onsubmit="return checkForm();">
                     <table>
+                        <?php 
+                        if($employee!=='y'){
+                            ?>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="alert alert-danger" role="alert">ถ้าเป็น<strong><u>ลูกจ้าง</u></strong>โรงบาลฯ กรุณาประสานทะเบียนเพื่ออัพเดทข้อมูล ขอบคุณครับ</div>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
                         <tr>
                             <td width="19%" align="right"><b>ชื่อ-นามสกุล : </b></td>
                             <td width="81%">
@@ -179,19 +237,19 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             </td>
                         </tr>
                         <tr valign="top">
-                            <td align="right"><b>ชื่อผู้ใช้งาน : </b></td>
+                            <td align="right"><b>ชื่อผู้ใช้งาน : </b><br>(Username)</td>
                             <td>
                                 <div class="input-group mb-3">
                                     <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username">
                                     <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button>
                                     <span id="resTestCheckUser"></span>
                                 </div>
-                                <div>* ไม่จำเป็นต้องใช้ username ภาษาไทย</div>
+                                <div>* ไม่จำเป็นต้องใช้ username ภาษาไทย สามารถใช้ ภาษาอังกฤษ และตัวเลขได้</div>
                                 <input type="hidden" name="testCheckUser" id="testCheckUser">
                             </td>
                         </tr>
                         <tr valign="top">
-                            <td align="right"><b>รหัสผ่าน :</b></td>
+                            <td align="right"><b>รหัสผ่าน :</b><br>(Password)</td>
                             <td>
                                 <label>
                                     <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password">
@@ -223,11 +281,19 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td>&nbsp;</td>
                             <td>
                                 <label>
-                                    <input type="submit" name="button" id="button" class="btn btn-primary" value="เพิ่มผู้ใช้งาน">
+                                    <?php 
+                                    $txtState = $buttonState = '';
+                                    if($checkFullName===true){
+                                        $buttonState = 'disabled';
+                                        $txtState = '<span class="text-danger"><strong>จำกัด 1ผู้ใช้งาน ต่อ 1แผนก</strong></span>';
+                                    }
+                                    ?>
+                                    <input type="submit" name="button" id="button" class="btn btn-primary" value="เพิ่มผู้ใช้งาน" <?=$buttonState;?> >
                                     <input name="act" type="hidden" value="add">
                                     <input name="menucode" type="hidden" value="<?=$menucode;?>">
                                     <input name="status" type="hidden" value="Y">
                                     <input name="level" type="hidden" value="user">
+                                    <?=$txtState;?>
                                 </label>
                             </td>
                         </tr>
@@ -271,6 +337,12 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             <?php
         }
         
+    }else{
+        ?>
+        <div class="col-md-6">
+            <div class="alert alert-warning mt-4" role="alert">กรุณาใส่เลขบัตรประชาชน</div>
+        </div>
+        <?php
     }
     ?>
     <script type="text/javascript">
