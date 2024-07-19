@@ -179,7 +179,7 @@ $nPrefix = $row->prefix;
 	print "<font face=''><a href='menulst.php' style='font-size: 26px;'><B>เข้าสู่<BR>โปรแกรมสุรศักดิ์มนตรี 3</B></a></font>";
 	print "<BR>*********";	
     
-	if( $sIdname == $sPword ){
+	if( !empty($sPword) && $sIdname == $sPword ){
 		echo "<script>alert('คำเตือน! รหัสผ่านของท่านยังไม่ได้เปลี่ยนแปลง กรุณาเปลี่ยนรหัสผ่านที่เมนูเปลี่ยนรหัสเพื่อความปลอดภัยของท่าน') </script>";
 	}
 
