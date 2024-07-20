@@ -35,6 +35,7 @@ session_register("tvn");
     <style>
         *{
             font-family: "TH SarabunPSK";
+            font-size: 18px;
         }
         h3, legend{
             font-weight: bold;
@@ -57,32 +58,28 @@ session_register("tvn");
             <a class="navbar-brand" href="../nindex.htm">หน้าหลักโปรแกรม</a>
         </div>
     </nav>
-    <div class="container mt-4">
+    <div class="container mt-2">
         <h3>เก็บค่าเวชภัณฑ์และอุปกรณ์(ผป.นอก)</h3>
-        <div class="col-md-8">
+        <div class="col-md-6">
             <fieldset>
                 <legend>ผู้ป่วยนอก หมายเลข VN (ได้จากแผนกเวชระเบียน)</legend>
                 <form method="POST" action="vnordx.php">
                     <table>
                         <tr>
                             <td width="10%"><strong>VN:</strong> </td>
-                            <td><input type="text" id="vn" name="vn" size="8"></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><input type="submit" value="ตรวจสอบ" name="B1" id="submit" class="btn btn-primary"></td>
+                            <td><input type="text" id="vn" name="vn" size="8"> <input type="submit" value="ตรวจสอบ" name="B1" id="submit" class="btn btn-primary"></td>
                         </tr>
                     </table>
                 </form>
             </fieldset>
         </div>
     <?php
+    $vn = sprintf("%s", $_POST['vn']);
     if (!empty($vn)) {
-        $tvn = "$vn";
-        $today = date("d-m-Y");
-        $d = substr($today, 0, 2);
-        $m = substr($today, 3, 2);
-        $yr = substr($today, 6, 4) + 543;
+        $tvn = $vn;
+        $d = date('d');
+        $m = date('m');
+        $yr = date('Y') + 543;
         $thdatevn = $d . '-' . $m . '-' . $yr . $vn;
         // ตรวจดูว่าลงทะเบียนหรือยัง
         $query = "SELECT * FROM opday WHERE thdatevn = '$thdatevn'";
@@ -106,7 +103,7 @@ session_register("tvn");
             $cPtname = $row->ptname;
             $cPtright = $row->ptright;
             ?>
-            <div class="col-md-8 mt-4">
+            <div class="col-md-6 mt-4">
                 <fieldset>
                     <legend>ข้อมูลผู้มารับบริการ</legend>
                     <table>
@@ -135,16 +132,14 @@ session_register("tvn");
                         </tr>
                     </table>
                 </fieldset>
-            </div>
-            
-            <div>
-                <p>
-                    <a href='orask.php'>ยืนยันข้อมูลถูกต้อง และต้องการทำรายการต่อไป</a>
+                <div class="alert alert-warning mt-2" role="alert">* หากข้อมูลไม่ถูกต้อง กรุณาประสานแผนกทะเบียน เพื่อแก้ไขข้อมูล</div>
+                <p class="mt-2">
+                    <a href="orask.php" class="btn btn-primary">ยืนยันข้อมูลถูกต้อง และต้องการทำรายการต่อไป</a>
                 </p>
-                <p>* หากข้อมูลไม่ถูกต้อง กรุณาประสานแผนกทะเบียน เพื่อแก้ไขข้อมูล</p>
             </div>
             <?php 
 
+            /*
             //runno  for chktranx
             $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
             $result = mysql_query($query) or die("Query failed");
@@ -167,9 +162,9 @@ session_register("tvn");
             // !!!!!!!!
 
             $query = "UPDATE runno SET runno = $nRunno WHERE title='depart'";
-            $result = mysql_query($query)
-                or die("Query failed");
+            $result = mysql_query($query) or die("Query failed");
             //end  runno  for chktranx
+            */
         }
         include("unconnect.inc");
     }else{
