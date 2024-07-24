@@ -1,17 +1,29 @@
 <?php
 session_start();
 include("connect.inc");
-	$cRowid=$_POST["cRowid"];
-    $query = "SELECT * FROM bed WHERE row_id = '$cRowid'";
-    $result = mysql_query($query);
-	$rows = mysql_fetch_array($result);
-	$cAn=$rows["an"];
-	$cHn=$rows["hn"];
-	$cPtname=$rows["ptname"];
-	$cBedcode=$rows["bedcode"];
-	$cDiag=$rows["diagnos"];
-	$cDoctor=$rows["doctor"];
-	
+$tvn=$_POST["tvn"];
+	if(!empty($tvn)){  //ถ้าเป็นผู้ป่วยนอก
+		$row_id=$_POST["row_id"];
+		$query = "SELECT * FROM opday WHERE row_id = '$row_id'";
+		$result = mysql_query($query);
+		$rows = mysql_fetch_array($result);
+		$tvn=$rows["vn"];
+		$cHn=$rows["hn"];
+		$cPtname=$rows["ptname"];
+		$cDiag=$rows["diag"];
+		$cDoctor=$rows["doctor"];	
+	}else{
+		$cRowid=$_POST["cRowid"];
+		$query = "SELECT * FROM bed WHERE row_id = '$cRowid'";
+		$result = mysql_query($query);
+		$rows = mysql_fetch_array($result);
+		$cAn=$rows["an"];
+		$cHn=$rows["hn"];
+		$cPtname=$rows["ptname"];
+		$cBedcode=$rows["bedcode"];
+		$cDiag=$rows["diagnos"];
+		$cDoctor=$rows["doctor"];
+	}
 	
     $Thaidate=date("d-m-").(date("Y")+543);
 
