@@ -38,16 +38,45 @@ if(!empty($group)){
                 <table class="table">
                     <tr>
                         <th>ชื่อ-สกุล</th>
-                        <th></th>
+                        <th>แผนก</th>
                     </tr>
                     <?php 
-                    $sql = "SELECT `name`,`menucode` FROM `departments` WHERE `status`='y' AND `menucode` <> '' ORDER BY `id` ASC";
-                    $q = $dbi->query($sql);
-                    $departments = array();
-                    while ($b = $q->fetch_assoc()) {
-                        $key = $b['menucode'];
-                        $departments[$key] = $b['name'];
-                    }
+                    // $sql = "SELECT `name`,`menucode` FROM `departments` WHERE `status`='y' AND `menucode` <> '' ORDER BY `id` ASC";
+                    // $q = $dbi->query($sql);
+                    // $departments = array();
+                    // while ($b = $q->fetch_assoc()) {
+                    //     $key = $b['menucode'];
+                    //     $departments[$key] = $b['name'];
+                    // }
+
+                    $departments = array(
+                        'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
+                        'ADMOPD' => 'ทะเบียน',
+                        'ADMWF' => 'หอผู้ป่วยรวม',
+                        'ADMICU' => 'หอผู้ป่วยหนัก',
+                        'ADMVIP' => 'หอผู้ป่วยพิเศษ',
+                        'ADMMAINREPORT' => 'กองบังคับการ',
+                        'ADMPT' => 'กายภาพบำบัด',
+                        'ADMOBG' => 'หอผู้ป่วยสูตินรีเวชกรรม',
+                        'ADMHEM' => 'ห้องไตเทียม',
+                        'ADMSUR' => 'ห้องผ่าตัด',
+                        'ADMPHA' => 'กองเภสัชกรรม',
+                        'ADMPHARX' => 'เภสัชกร',
+                        'ADMDEN' => 'กองทันตกรรม',
+                        'ADMER' => 'ห้องฉุกเฉิน',
+                        'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
+                        'ADMMON' => 'ส่วนเก็บเงินรายได้',
+                        'ADMNHSO' => 'ห้องประกันสุขภาพฯ',
+                        'ADMLAB' => 'แผนกพยาธิวิทยา',
+                        'ADMXR' => 'แผนกรังสีกรรม',
+                        'ADMCMS' => 'ห้องจ่ายกลาง',
+                        'ADMSSO' => 'ประกันสังคม',
+                        'ADMNID' => 'ห้องฝังเข็ม',
+                        'ADMEYE' => 'ห้องตรวจตา',
+                        'ADMFOD' => 'โภชนาการ',
+                        'ADMNEWCHKUP' => 'ตรวจสุขภาพ'
+                    );
+
 
                     $sql = "SELECT `name`,`menucode` FROM `inputm` WHERE `status` = 'y' $where AND `level` = 'admin' AND `menucode` != 'ADM' AND `idname` NOT IN('hrd','สตน') ORDER BY `menucode` ASC";
                     $q = $dbi->query($sql);

@@ -32,6 +32,12 @@ if ($act == "add") {
         $idcard = sprintf("%s", $_POST["idcard"]);
         $menucode = sprintf("%s", $_POST["menucode"]);
         $eopd = sprintf("%s", $_POST["eopd"]);
+        $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
+
+        $department == sprintf("%s", $_POST['department']);
+        if(!empty($department)){
+            $menucode = $department;
+        }
 
         $eopdStatus = 'n';
         if($eopd=='1'){
@@ -47,12 +53,12 @@ if ($act == "add") {
         `idcard`='$idcard',
         `level`='user',
         `level_eopd` = '$eopdStatus',
-        `officer` = '".$_SESSION['sOfficer']."' ";
+        `officer` = '$sOfficer' ";
         $q = $dbi->query($sqlAdd);
         if ($q!==false) {
 
             $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
-            $sMessage = $_SESSION['sOfficer']."($menucode) ได้เพิ่มผู้ใช้ $txtname($idcard) เข้าสู่ระบบโรงพยาบาล";
+            $sMessage = "$sOfficer($menucode) ได้เพิ่มผู้ใช้ $txtname($idcard) เข้าสู่ระบบโรงพยาบาล";
             $curl = curl_init();
             curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
             curl_setopt( $curl, CURLOPT_POST, 1);
@@ -164,12 +170,12 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             $opcardPtName = $name.' '.$surname;
             $checkFullName = false;
             
-            $sql = "SELECT REPLACE(`name`,'  ',' ') AS `name`,`menucode`,`status`,`date_pword` FROM `inputm` WHERE `name` LIKE '$name%' AND `menucode` != 'ADMDR1' ";
+            $sql = "SELECT REPLACE(`name`,'  ',' ') AS `name`,`menucode`,`status`,`date_pword`,`last_login` FROM `inputm` WHERE `name` LIKE '$name%' AND `menucode` != 'ADMDR1' ";
             $q = $dbi->query($sql);
             if($q->num_rows > 0){
                 ?>
                 <div class="row mt-4">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div><strong>ข้อมูลเพิ่มเติม ก่อนเพิ่มผู้ใช้งาน</strong></div>
                         <table class="table">
                             <tr>
@@ -177,6 +183,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 <th>แผนก</th>
                                 <th>สถานะ</th>
                                 <th>วดป.ที่เพิ่มเข้าระบบ</th>
+                                <th>เข้าใช้งานล่าสุด</th>
                             </tr>
                         <?php
                         while ($a = $q->fetch_assoc()) { 
@@ -192,8 +199,27 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <tr>
                                 <td><?=$a['name'];?></td>
                                 <td><?=$dep['name'];?></td>
-                                <td><?=$a['status'];?></td>
+                                <td>
+                                    <?php 
+                                    $statusTxt = 'ปิดใช้งาน';
+                                    $statusClass = 'text-bg-danger';
+                                    if($a['status']=='y'){
+                                        $statusTxt = 'เปิดใช้งาน';
+                                        $statusClass = 'text-bg-success';
+                                    }
+                                    echo '<strong class="'.$statusClass.' p-1">'.$statusTxt.'</strong>';
+                                    ?>
+                                </td>
                                 <td><?=$a['date_pword'];?></td>
+                                <td>
+                                    <?php 
+                                    if(!empty($a['last_login'])){
+                                        echo $a['last_login'];
+                                    }else{
+                                        echo '<p class="text-bg-danger text-center">ยังไม่เคย Login</p>';
+                                    }
+                                    ?>
+                                </td>
                             </tr>
                             <?php
                         }
@@ -239,13 +265,60 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         <tr valign="top">
                             <td align="right"><b>ชื่อผู้ใช้งาน : </b><br>(Username)</td>
                             <td>
-                                <div class="input-group mb-3">
+                                <div class="input-group mb-1">
                                     <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username">
-                                    <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onCheckUser()">ตรวจสอบผู้ใช้งาน</button>
+                                    <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onClickCheckuser()">ตรวจสอบผู้ใช้งาน</button>
                                     <span id="resTestCheckUser"></span>
+                                    <input type="hidden" name="testCheckUser" id="testCheckUser">
                                 </div>
-                                <div>* ไม่จำเป็นต้องใช้ username ภาษาไทย สามารถใช้ ภาษาอังกฤษ และตัวเลขได้</div>
-                                <input type="hidden" name="testCheckUser" id="testCheckUser">
+                                <span class="badge text-bg-info">* ไม่จำเป็นต้องใช้ username ภาษาไทย สามารถใช้ ภาษาอังกฤษ และตัวเลขได้</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><strong>แผนก : </strong></td>
+                            <td>
+                                <div class="col-md-4">
+                                    <?php 
+                                    $departments = array(
+                                        'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
+                                        'ADMOPD' => 'ทะเบียน',
+                                        'ADMWF' => 'หอผู้ป่วยรวม',
+                                        'ADMICU' => 'หอผู้ป่วยหนัก',
+                                        'ADMVIP' => 'หอผู้ป่วยพิเศษ',
+                                        'ADMMAINREPORT' => 'กองบังคับการ',
+                                        'ADMPT' => 'กายภาพบำบัด',
+                                        'ADMOBG' => 'หอผู้ป่วยสูตินรีเวชกรรม',
+                                        'ADMHEM' => 'ห้องไตเทียม',
+                                        'ADMSUR' => 'ห้องผ่าตัด',
+                                        'ADMPHA' => 'กองเภสัชกรรม',
+                                        'ADMPHARX' => 'เภสัชกร',
+                                        'ADMDEN' => 'กองทันตกรรม',
+                                        'ADMER' => 'ห้องฉุกเฉิน',
+                                        'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
+                                        'ADMMON' => 'ส่วนเก็บเงินรายได้',
+                                        'ADMNHSO' => 'ห้องประกันสุขภาพฯ',
+                                        'ADMLAB' => 'แผนกพยาธิวิทยา',
+                                        'ADMXR' => 'แผนกรังสีกรรม',
+                                        'ADMCMS' => 'ห้องจ่ายกลาง',
+                                        'ADMSSO' => 'ประกันสังคม',
+                                        'ADMNID' => 'ห้องฝังเข็ม',
+                                        'ADMEYE' => 'ห้องตรวจตา',
+                                        'ADMFOD' => 'โภชนาการ',
+                                        'ADMNEWCHKUP' => 'ตรวจสุขภาพ'
+                                    );
+                                    ?>
+                                    <select name="department" id="department" class="form-select">
+                                        <option value="">เลือกแผนก</option>
+                                        <?php 
+                                        foreach ($departments as $keyDep => $dep) {
+                                            ?>
+                                            <option value="<?=$keyDep;?>"><?=$dep;?></option>
+                                            <?php
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                
                             </td>
                         </tr>
                         <tr valign="top">
@@ -301,18 +374,26 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                 </form>
             </fieldset>
             <script type="text/javascript">
-                function onCheckUser(){
+                function onClickCheckuser(){
                     const username = document.getElementById('txtuser').value;
                     if(username==''){
-                        Swal.fire("กรุณาใส่ชื่อผู้ใช้งาน");
+                        Swal.fire({title: "กรุณาใส่ชื่อผู้ใช้งาน", showConfirmButton: false, timer:1500});
+                        return false;
+                    }
+                    if(username.length < 4){
+                        Swal.fire({title: "ชื่อ Username ไม่ควรมีจำนวนที่น้อยกว่า 4 ตัวอักษร", showConfirmButton: false, timer:1500});
                         return false;
                     }
                     const regex = /(admin|test)/;
                     if(username.match(regex)){
-                        Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
+                        Swal.fire({title: "มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น", showConfirmButton: false, timer:1500});
                         return false;
                     }
 
+                    onCheckuser(username);
+                }
+
+                function onCheckuser(username){
                     checkuser(username).then(function(data){ 
                         document.getElementById('resTestCheckUser').innerHTML = '';
                         if(data.status==200){
@@ -354,30 +435,38 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
 
             const regex = /\d+/g;
             const checkPass = pass1.value.match(regex);
+
+            let username = document.getElementById('txtuser');
+            onClickCheckuser();
             
-            if (document.getElementById('txtname').value == '') {
-                Swal.fire("กรุณากรอกชื่อ-นามสกุล");
-                stat = false;
-                document.getElementById('txtname').focus();
-            } else if (document.getElementById('txtuser').value == '') {
+            if (username.value == '') {
                 Swal.fire("กรุณากรอก Username");
                 stat = false;
-                document.getElementById('txtuser').focus();
+
+            }else if(username.value.length < 4){
+                Swal.fire("ชื่อ Username ไม่ควรมีจำนวนที่น้อยกว่า 4 ตัวอักษร");
+                stat = false;
+
             }else if(document.getElementById('txtpass').value == ''){
                 Swal.fire("กรุณากรอก Password");
                 stat = false;
+
             }else if(document.getElementById('txtpass').value.length < 8){
                 Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 8 ตัวอักษร");
                 stat = false;
+
             }else if(checkPass[0].length == pass1.value.length){
                 Swal.fire("ไม่ควรใส่แต่ตัวเลข ควรมีตัวอักษรตัวเล็กหรือตัวใหญ่ผสมเข้าไปด้วย");
                 stat = false;
+
             }else if(pass1.value != pass2.value){
                 Swal.fire("รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบข้อมูลอีกครั้ง");
                 stat = false;
+
             }else if(document.getElementById('testCheckUser').value==""){
                 Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
                 stat = false;
+
             }
             return stat;
         }
