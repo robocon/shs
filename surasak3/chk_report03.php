@@ -666,15 +666,30 @@ if( $num > 0 ){
 								}
 								
 							}else{
-								
 								if($objResult['flag']=='L' || $objResult['flag']=='H' || $objResult['result']=='1+'|| $objResult['result']=='2+'|| $objResult['result']=='3+'|| $objResult['result']=='4+'|| $objResult['result']=='5+'|| $objResult['result']=='6+'|| $objResult['result']=='7+'|| $objResult['result']=='8+'|| $objResult['result']=='9+'){
 									$objResult["result"]="<strong>".$objResult["result"]."</strong>";
 									$showresultua="ผิดปกติ";
 								}else{
-									$objResult["result"]=$objResult["result"];
+									// $objResult["result"]=$objResult["result"];
 									$showresultua="ปกติ";
 								}
 							}
+
+							// พวกผลที่เป็น Range เช่น xx-xx
+							$resultRangeTxt = str_replace(' ', '', $objResult["result"]);
+							$normalRangeTxt = str_replace(' ', '', $objResult["normalrange"]);
+							if(strstr($resultRangeTxt, '-')!==false){ 
+								
+								list($resultMin, $resultMax) = explode('-', $resultRangeTxt);
+								list($normalMin, $normalMax) = explode('-', $normalRangeTxt);
+
+								$showresultua="ผิดปกติ";
+								if( ($resultMin >= $normalMin && $resultMin <= $normalMax) && ($resultMax >= $normalMin && $resultMax <= $normalMax) ){
+									$showresultua="ปกติ";
+								}
+								
+							}
+							// พวกผลที่เป็น Range เช่น xx-xx
 							
 							if($objResult["labcode"]=="PROU" || $objResult["labcode"]=="GLUU"){
 								$normalrange="Negative";
