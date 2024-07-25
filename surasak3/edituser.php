@@ -257,10 +257,38 @@ $menucode = sprintf("%s", $_GET["menucode"]);
 						<select name="department" id="department" class="forntsarabun">
 							<option name="" id="">-- เลือกแผนก --</option>
 							<?php 
-							while($a = $q->fetch_assoc()){
-								$selected = ($rows['menucode'] == $a['menucode']) ? 'selected="selected"' : '' ;
+							$departments = array(
+								'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
+								'ADMOPD' => 'ทะเบียน',
+								'ADMWF' => 'หอผู้ป่วยรวม',
+								'ADMICU' => 'หอผู้ป่วยหนัก',
+								'ADMVIP' => 'หอผู้ป่วยพิเศษ',
+								'ADMMAINREPORT' => 'กองบังคับการ',
+								'ADMPT' => 'กายภาพบำบัด/นวดแผนไทย/เวชศาสตร์ฟื้นฟู',
+								'ADMOBG' => 'หอผู้ป่วยสูตินรีเวชกรรม',
+								'ADMHEM' => 'ห้องไตเทียม',
+								'ADMSUR' => 'ห้องผ่าตัด/วิสัญญี',
+								'ADMPHA' => 'กองเภสัชกรรม',
+								'ADMPHARX' => 'เภสัชกร',
+								'ADMDEN' => 'กองทันตกรรม',
+								'ADMER' => 'ห้องฉุกเฉิน',
+								'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
+								'ADMMON' => 'ส่วนเก็บเงินรายได้',
+								'ADMNHSO' => 'ห้องประกันสุขภาพฯ',
+								'ADMLAB' => 'แผนกพยาธิวิทยา',
+								'ADMXR' => 'แผนกรังสีกรรม/ตรวจมวลกระดูก',
+								'ADMCMS' => 'ห้องจ่ายกลาง',
+								'ADMSSO' => 'ประกันสังคม',
+								'ADMNID' => 'ห้องฝังเข็ม',
+								'ADMEYE' => 'ห้องตรวจตา',
+								'ADMFOD' => 'โภชนาการ',
+								'ADMNEWCHKUP' => 'ตรวจสุขภาพ',
+								'ADMLIBRARY'=>'ส่งเสริมสุขภาพ'
+							);
+							foreach ($departments as $key => $value) { 
+								$selected = ($rows['menucode'] == $key) ? 'selected="selected"' : '' ;
 								?>
-								<option value="<?=$a['menucode'];?>" class="forntsarabun" <?=$selected;?> ><?=$a['name'];?></option>
+								<option value="<?=$key;?>" class="forntsarabun" <?=$selected;?> ><?=$value;?></option>
 								<?php
 							}
 							?>

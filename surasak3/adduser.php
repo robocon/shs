@@ -8,6 +8,35 @@ $dbi->query("SET NAMES UTF8");
 
 $json = new Services_JSON();
 
+$departments = array(
+    'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
+    'ADMOPD' => 'ทะเบียน',
+    'ADMWF' => 'หอผู้ป่วยรวม',
+    'ADMICU' => 'หอผู้ป่วยหนัก',
+    'ADMVIP' => 'หอผู้ป่วยพิเศษ',
+    'ADMMAINREPORT' => 'กองบังคับการ',
+    'ADMPT' => 'กายภาพบำบัด/นวดแผนไทย/เวชศาสตร์ฟื้นฟู',
+    'ADMOBG' => 'หอผู้ป่วยสูตินรีเวชกรรม',
+    'ADMHEM' => 'ห้องไตเทียม',
+    'ADMSUR' => 'ห้องผ่าตัด/วิสัญญี',
+    'ADMPHA' => 'กองเภสัชกรรม',
+    'ADMPHARX' => 'เภสัชกร',
+    'ADMDEN' => 'กองทันตกรรม',
+    'ADMER' => 'ห้องฉุกเฉิน',
+    'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
+    'ADMMON' => 'ส่วนเก็บเงินรายได้',
+    'ADMNHSO' => 'ห้องประกันสุขภาพฯ',
+    'ADMLAB' => 'แผนกพยาธิวิทยา',
+    'ADMXR' => 'แผนกรังสีกรรม/ตรวจมวลกระดูก',
+    'ADMCMS' => 'ห้องจ่ายกลาง',
+    'ADMSSO' => 'ประกันสังคม',
+    'ADMNID' => 'ห้องฝังเข็ม',
+    'ADMEYE' => 'ห้องตรวจตา',
+    'ADMFOD' => 'โภชนาการ',
+    'ADMNEWCHKUP' => 'ตรวจสุขภาพ',
+    'ADMLIBRARY'=>'ส่งเสริมสุขภาพ'
+);
+
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='checkuser'){
     $username = sprintf("%s", $_REQUEST['username']);
@@ -30,7 +59,7 @@ if ($act == "add") {
         $txtuser = sprintf("%s", $_POST["txtuser"]);
         $txtpass = sprintf("%s", $_POST["txtpass"]);
         $idcard = sprintf("%s", $_POST["idcard"]);
-        $menucode = sprintf("%s", $_POST["menucode"]);
+        $oldMenucode = $menucode = sprintf("%s", $_POST["menucode"]);
         $eopd = sprintf("%s", $_POST["eopd"]);
         $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 
@@ -69,9 +98,9 @@ if ($act == "add") {
             $result = curl_exec( $curl );
             curl_close($curl);
 
-            redirect('showuser.php?menucode='.$menucode, "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว");
+            redirect('showuser.php?menucode='.$_SESSION['smenucode'], "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว");
         } else {
-            redirect('showuser.php?menucode='.$menucode, "เพิ่มข้อมูลไม่สำเร็จ กรุณาตรวจสอบข้อมูลให้ครบถ้วนก่อนทำการบันทึก");
+            redirect('showuser.php?menucode='.$_SESSION['smenucode'], "เพิ่มข้อมูลไม่สำเร็จ กรุณาตรวจสอบข้อมูลให้ครบถ้วนก่อนทำการบันทึก");
         }
         exit;
     }
@@ -175,7 +204,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             if($q->num_rows > 0){
                 ?>
                 <div class="row mt-4">
-                    <div class="col-md-8">
+                    <div class="col-md-10">
                         <div><strong>ข้อมูลเพิ่มเติม ก่อนเพิ่มผู้ใช้งาน</strong></div>
                         <table class="table">
                             <tr>
@@ -192,18 +221,17 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 $checkFullName = true;
                             }
 
-                            $sqlDepartment = "SELECT `name` FROM `departments` WHERE `menucode` LIKE '".$a['menucode']."%' ORDER BY `id` ASC LIMIT 1 ";
-                            $qDep = $dbi->query($sqlDepartment);
-                            $dep = $qDep->fetch_assoc();
+                            $menucode = $a['menucode'];
+
                             ?>
                             <tr>
                                 <td><?=$a['name'];?></td>
-                                <td><?=$dep['name'];?></td>
+                                <td><?=$departments[$menucode];?></td>
                                 <td>
                                     <?php 
                                     $statusTxt = 'ปิดใช้งาน';
                                     $statusClass = 'text-bg-danger';
-                                    if($a['status']=='y'){
+                                    if(strtolower($a['status'])=='y'){
                                         $statusTxt = 'เปิดใช้งาน';
                                         $statusClass = 'text-bg-success';
                                     }
@@ -233,7 +261,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             ?>
             <fieldset class="mb-4 mt-4">
                 <legend>ฟอร์มบันทึก</legend>
-                <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1" onsubmit="return checkForm();">
+                <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="addUserForm" id="addUserForm" onsubmit="return checkForm();">
                     <table>
                         <?php 
                         if($employee!=='y'){
@@ -278,35 +306,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><strong>แผนก : </strong></td>
                             <td>
                                 <div class="col-md-4">
-                                    <?php 
-                                    $departments = array(
-                                        'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
-                                        'ADMOPD' => 'ทะเบียน',
-                                        'ADMWF' => 'หอผู้ป่วยรวม',
-                                        'ADMICU' => 'หอผู้ป่วยหนัก',
-                                        'ADMVIP' => 'หอผู้ป่วยพิเศษ',
-                                        'ADMMAINREPORT' => 'กองบังคับการ',
-                                        'ADMPT' => 'กายภาพบำบัด',
-                                        'ADMOBG' => 'หอผู้ป่วยสูตินรีเวชกรรม',
-                                        'ADMHEM' => 'ห้องไตเทียม',
-                                        'ADMSUR' => 'ห้องผ่าตัด',
-                                        'ADMPHA' => 'กองเภสัชกรรม',
-                                        'ADMPHARX' => 'เภสัชกร',
-                                        'ADMDEN' => 'กองทันตกรรม',
-                                        'ADMER' => 'ห้องฉุกเฉิน',
-                                        'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
-                                        'ADMMON' => 'ส่วนเก็บเงินรายได้',
-                                        'ADMNHSO' => 'ห้องประกันสุขภาพฯ',
-                                        'ADMLAB' => 'แผนกพยาธิวิทยา',
-                                        'ADMXR' => 'แผนกรังสีกรรม',
-                                        'ADMCMS' => 'ห้องจ่ายกลาง',
-                                        'ADMSSO' => 'ประกันสังคม',
-                                        'ADMNID' => 'ห้องฝังเข็ม',
-                                        'ADMEYE' => 'ห้องตรวจตา',
-                                        'ADMFOD' => 'โภชนาการ',
-                                        'ADMNEWCHKUP' => 'ตรวจสุขภาพ'
-                                    );
-                                    ?>
                                     <select name="department" id="department" class="form-select">
                                         <option value="">เลือกแผนก</option>
                                         <?php 
@@ -361,7 +360,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                         $txtState = '<span class="text-danger"><strong>จำกัด 1ผู้ใช้งาน ต่อ 1แผนก</strong></span>';
                                     }
                                     ?>
-                                    <input type="submit" name="button" id="button" class="btn btn-primary" value="เพิ่มผู้ใช้งาน" <?=$buttonState;?> >
+                                    <button type="submit" id="button" class="btn btn-primary" <?=$buttonState;?> >เพิ่มผู้ใช้งาน</button>
                                     <input name="act" type="hidden" value="add">
                                     <input name="menucode" type="hidden" value="<?=$menucode;?>">
                                     <input name="status" type="hidden" value="Y">
@@ -401,6 +400,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             Swal.fire("สามารถใช้งานได้");
                             // https://www.w3schools.com/charsets/ref_utf_dingbats.asp
                             document.getElementById('resTestCheckUser').innerHTML = '&#9989;';
+                            return true;
                         }else{
                             Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
                             document.getElementById('resTestCheckUser').innerHTML = '&#10060;';
@@ -414,6 +414,66 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                     const data = await response.json();
                     return data;
                 }
+
+                function checkForm() {
+                    var stat = true;
+                    
+                    let pass1 = document.getElementById('txtpass');
+                    let pass2 = document.getElementById('txtpass2');
+
+                    const regex = /\d+/g;
+                    const checkPass = pass1.value.match(regex);
+
+                    let username = document.getElementById('txtuser');
+
+                    if (username.value == '') {
+                        Swal.fire("กรุณากรอก Username");
+                        stat = false;
+
+                    }else if(username.value.length < 4){
+                        Swal.fire("ชื่อ Username ไม่ควรมีจำนวนที่น้อยกว่า 4 ตัวอักษร");
+                        stat = false;
+
+                    }else if(document.getElementById('txtpass').value == ''){
+                        Swal.fire("กรุณากรอก Password");
+                        stat = false;
+
+                    }else if(document.getElementById('txtpass').value.length < 8){
+                        Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 8 ตัวอักษร");
+                        stat = false;
+
+                    }else if(checkPass[0].length == pass1.value.length){
+                        Swal.fire("ไม่ควรใส่แต่ตัวเลข ควรมีตัวอักษรตัวเล็กหรือตัวใหญ่ผสมเข้าไปด้วย");
+                        stat = false;
+
+                    }else if(pass1.value != pass2.value){
+                        Swal.fire("รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบข้อมูลอีกครั้ง");
+                        stat = false;
+
+                    }else if(document.getElementById('testCheckUser').value==""){
+                        Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
+                        stat = false;
+
+                    }
+
+                    const regexF = /(admin|test)/i;
+                    if(username.value.match(regexF)!=null){
+                        Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
+                        return false;
+                    }
+
+                    if(stat===true){
+                        let test = checkuser(username.value).then((res)=>{
+                            if(res.status===400){
+                                Swal.fire("กรุณากด \"ตรวจสอบผู้ใช้งาน\" อีกครั้ง");
+                            }else{
+                                document.getElementById('addUserForm').submit();
+                            }
+                        });
+                    }
+
+                    return false;
+                }
             </script>
             <?php
         }
@@ -426,52 +486,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
         <?php
     }
     ?>
-    <script type="text/javascript">
-        function checkForm() {
-            var stat = true;
-
-            let pass1 = document.getElementById('txtpass');
-            let pass2 = document.getElementById('txtpass2');
-
-            const regex = /\d+/g;
-            const checkPass = pass1.value.match(regex);
-
-            let username = document.getElementById('txtuser');
-            onClickCheckuser();
-            
-            if (username.value == '') {
-                Swal.fire("กรุณากรอก Username");
-                stat = false;
-
-            }else if(username.value.length < 4){
-                Swal.fire("ชื่อ Username ไม่ควรมีจำนวนที่น้อยกว่า 4 ตัวอักษร");
-                stat = false;
-
-            }else if(document.getElementById('txtpass').value == ''){
-                Swal.fire("กรุณากรอก Password");
-                stat = false;
-
-            }else if(document.getElementById('txtpass').value.length < 8){
-                Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 8 ตัวอักษร");
-                stat = false;
-
-            }else if(checkPass[0].length == pass1.value.length){
-                Swal.fire("ไม่ควรใส่แต่ตัวเลข ควรมีตัวอักษรตัวเล็กหรือตัวใหญ่ผสมเข้าไปด้วย");
-                stat = false;
-
-            }else if(pass1.value != pass2.value){
-                Swal.fire("รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบข้อมูลอีกครั้ง");
-                stat = false;
-
-            }else if(document.getElementById('testCheckUser').value==""){
-                Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
-                stat = false;
-
-            }
-            return stat;
-        }
-
-    </script>
 </div>
 </body>
 </html>
