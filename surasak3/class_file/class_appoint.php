@@ -94,10 +94,6 @@ class Appoint extends DbConnect{
     */
     public function getCalendar($dt_doctor=null,$today=null, $dfMonth=null, $dfYear=null){
 
-        // if( $_GET['id'] != "" ){
-        //     $dt_doctor = iconv('UTF-8','UTF-8',$_GET['id']);
-        // }
-
         if (empty($dt_doctor)) {
             return array('error'=>400,'message'=>'Doctorcode is required');
         }
@@ -160,10 +156,10 @@ class Appoint extends DbConnect{
     
         if ($dfMonth == "") {
         /* ถ้าไม่มีการระบุให้แสดงปฏิทินของเดือนใดเดือนหนึ่ง เราจะแสดงปฏิทินของเดือนปัจจุบันตามเวลาในเครื่องไคลเอ็นต์ โดยใช้ฟังก์ชั่น getdate() สร้างวันที่/เวลาปัจจุบันของเครื่องไคลเอ็นต์เก้บไว้ในตัวแปร $calTime ซึ่งฟังก์ชั่นนี้จะคืนค่ากลับมาเป็นอาร์เรย์ */
-        $calTime = getdate(date(mktime(date("H") + $diffHour, date("i") + $diffMinute)));
-        $today = $calTime["mday"]; //วันที่
-        $month = $calTime["mon"]; //เดือน
-        $year = $calTime["year"]; // ปี
+            $calTime = getdate(date(mktime(date("H") + $diffHour, date("i") + $diffMinute)));
+            $today = $calTime["mday"]; //วันที่
+            $month = $calTime["mon"]; //เดือน
+            $year = $calTime["year"]; // ปี
 
         } else {
             /* กรณีที่ระบุให้แสดงปฏิทินของเดือน/ปีหนึ่งๆ นั้น จะมีการส่งตัวแปร $today, $dfMonth และ $dfYear ผ่านมาทาง query string ด้วย */
@@ -188,7 +184,7 @@ class Appoint extends DbConnect{
     
         /* เรียกฟังก์ชัน LastDay() ซึ่งเป็นฟังก์ชั่นที่เราสร้างขึ้นเอง เพื่อหา"จำนวนวัน" ของเดือนและปีที่จะแสดงปฏิทิน โดยเก้บไว้ในตัวแปร $Lday */
         // $Lday = LastDay($month, $year);
-        $Lday = date("t", "$year-$month-01");
+        $Lday = date("t", strtotime("$year-".sprintf("%02d", $month)."-01"));
 
         //เก็บ timestamp ของวันที่ 1 ของเดือนที่จะแสดงปฏิทิน ไว้ในตัวแปร $FTime
         $FTime = getdate(date(mktime(0, 0, 0, $month, 1, $year)));
