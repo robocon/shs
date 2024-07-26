@@ -5,7 +5,7 @@ $dbi->query("SET NAMES UTF8");
 /*
 ต้องการสรุปตัวชี้วัดรายปี. 
 [x] 1 ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง 
-[] 2 ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี ( <140/90 ) **ดึงจากการวัดครั้งที่2 
+[x] 2 ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี ( <140/90 ) **ดึงจากการวัดครั้งที่2 
 [] 3 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR 
 [] 4 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin 
 [] 5 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
@@ -21,8 +21,19 @@ $dbi->query("SET NAMES UTF8");
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="bootstrap/js/popper.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     <style>
+    *{
+        font-family: "TH SarabunPSK";
+        font-size: 18px;
+    }
+    h3{
+        font-weight: bold;
+    }
+    th,td{
+        font-size: 18px;
+    }
     table.table th{
 		background-color: #13795b; 
 		color: #ffffff;
@@ -31,11 +42,12 @@ $dbi->query("SET NAMES UTF8");
 </head>
 <body>
     <div class="container">
-        <h3>ตัวชี้วัด Hypertension รายปี</h3>
+        <h3 class="mt-4">ตัวชี้วัด Hypertension รายปี</h3>
         <div>
             <?php 
             $year = sprintf("%s", (!empty($_POST['year']) ? $_POST['year'] : date('Y') ));
             $yearRange = range('2013', date('Y'));
+            $yearRange = array_reverse($yearRange);
             ?>
             <form action="report_ht.php" method="post">
                 <div class="mb-3 row">
@@ -67,6 +79,10 @@ $dbi->query("SET NAMES UTF8");
 
             $yearSelected = $year+543;
 
+            /*
+            ข้อมูลซักประวัติ(opd) ที่มารับบริการครั้งล่าสุดแต่ละ HN รวมกับข้อมูลผู้ป่วย ht(hypertension_clinic)
+            ถ้ามี x.regis_id แสดงว่าเป็นผู้ป่วย ht ที่มีการซักประวัติในปีที่เลือก
+            */
             $sqlTemp = "CREATE TEMPORARY TABLE `tempory_opd` 
             SELECT y.*,x.`regis_id`,x.`regis_date` FROM 
             ( 
@@ -81,12 +97,17 @@ $dbi->query("SET NAMES UTF8");
                 LEFT JOIN `opd` AS b ON b.`row_id` = a.`latest_row_id`
             ) AS y 
             LEFT JOIN (
-                SELECT `row_id` AS `regis_id`,`hn`,`thidate` AS `regis_date` FROM `diabetes_clinic` 
+                SELECT `row_id` AS `regis_id`,`hn`,`thidate` AS `regis_date` FROM `hypertension_clinic` 
             ) AS x ON x.`hn` = y.`hn`";
             $dbi->query($sqlTemp);
+
+
+            $sql = "SELECT `hn`,`ptname`,`thidate` FROM `hypertension_clinic`";
+            $qHC = $dbi->query($sql);
+            $hcRows = $qHC->num_rows;
             
             ?>
-            <div>
+            <div class="col-md-8">
                 <h3>ปี 2567</h3>
                 <table class="table table-hover">
                     <thead class="table-dark">
@@ -98,49 +119,47 @@ $dbi->query("SET NAMES UTF8");
                     <tbody>
                         <tr>
                             <td>
+                                <!-- ข้อมูลผู้ป่วยซักประวัติ และยังไม่เคยมีการลง ICD10 ที่เป็น Hypertension มาก่อน -->
                                 1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง
                             </td>
                             <td>
                                 <?php 
-                                $sql = "SELECT COUNT(`row_id`) AS `all`,COUNT(`regis_id`) AS `ht` FROM 
-                                `tempory_opd` 
-                                WHERE `age` > 35 ";
+                                $sql = "SELECT COUNT(`row_id`) AS `all`,COUNT(`regis_id`) AS `ht` FROM `tempory_opd` WHERE `regis_id` IS NOT NULL AND `age` > 35 ";
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
-                                $all = $a['all'];
                                 $ht = $a['ht'];
 
-                                echo '<a href="report_ht1.php?year='.$year.'&all='.$all.'&ht='.$ht.'" title="OPD ทั้งหมด '.$all.'ราย/ ยอด HT '.$ht.'ราย" target="_blank">'.round(($ht*100/$all),2).'</a>';
+                                echo '<a href="report_ht1.php?year='.$year.'&all='.$hcRows.'&ht='.$ht.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$hcRows.'ราย/ ผ่านเกณฑ์ '.$ht.'ราย" target="_blank">'.round(($ht*100/$hcRows),2).'</a>';
                                 ?>
                             </td>
                         </tr>
                         <tr>
                             <td>
+                                <!-- คนที่เป็น HT เรียบร้อยแล้ว -->
                                 2.&#41; ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี &#40; &lt;140/90 &#41; ดึงจากการวัดครั้งที่2 
                             </td>
                             <td>
                                 <?php 
-                                $sql = "SELECT COUNT(`row_id`) AS `all` FROM `tempory_opd` WHERE `regis_id` IS NOT NULL";
-                                $q = $dbi->query($sql);
-                                $a = $q->fetch_assoc();
-                                $ht_all = $a['all'];
 
                                 $sql = "SELECT COUNT(`row_id`) AS `bp` FROM 
                                 `tempory_opd` 
                                 WHERE `regis_id` IS NOT NULL 
                                 AND ( `bp3` <> '' AND `bp4` <> '' ) 
-                                AND ( `bp3` NOT LIKE '...%' AND `bp4` NOT LIKE '...%' )
+                                AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' )
                                 AND ( `bp3` < 140 AND `bp4` < 90)";
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $ht_bp = $a['bp'];
 
-                                echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$ht_all.'&ht_bp='.$ht_bp.'" title="HT ทั้งหมด '.$ht_all.'ราย/ HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.(round(($ht_bp*100/$ht_all))).'</a>';
+                                echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$hcRows.'&ht_bp='.$ht_bp.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$hcRows.'ราย/ HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.(round(($ht_bp*100/$hcRows))).'</a>';
                                 ?>
                             </td>
                         </tr>
                         <tr>
-                            <td>3.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR </td>
+                            <td>
+                                <!-- ดูจาการบันทึกค่าใช้จ่าย -->
+                                3.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR 
+                            </td>
                             <td>
                                 <?php 
                                 $sql = "SELECT COUNT(a.`row_id`) AS `htEcgCxr`
@@ -157,25 +176,33 @@ $dbi->query("SET NAMES UTF8");
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $ecgCxr = $a['htEcgCxr'];
-                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$ht_all.'&ecgCxr='.$ecgCxr.'" title="HT ทั้งหมด '.$ht_all.'ราย/ HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.(round(($ecgCxr*100/$ht_all))).'</a>';
+                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$hcRows.'&ecgCxr='.$ecgCxr.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$hcRows.'ราย/ HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.(round(($ecgCxr*100/$hcRows))).'</a>';
                                 
                                 ?>
                             </td>
                         </tr>
                         <tr>
-                            <td>4.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin</td>
+                            <td>
+                                <!-- มันมี 2 แบบคือ การตรวจ Albumin Urine และ UA (ข้างใน UA จะมี Urine albumin เป็นซับเซ็ตอีกที) -->
+                                4.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin
+                            </td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td>5.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน</td>
+                            <td>
+                                <!-- มันคือ CR((32202)Creatinine) ในโรงบาลเราเอง -->
+                                5.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
+                            </td>
                             <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <script>
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            </script>
             <?php 
-
-            
         }
         ?>
     </div>
