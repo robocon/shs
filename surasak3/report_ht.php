@@ -9,6 +9,17 @@ $dbi->query("SET NAMES UTF8");
 [] 3 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR 
 [] 4 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin 
 [] 5 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
+
+
+
+SELECT `svdate`,`hn`,`an` AS `vn`,CONCAT(SUBSTRING(`svdate`,9,2),'-',SUBSTRING(`svdate`,6,2),'-',SUBSTRING(`svdate`,1,4),`hn`) AS `thdatehn`,NOW() AS `date_generate`
+FROM `diag` 
+WHERE `icd10` = 'I10' 
+AND `status` = 'Y' 
+AND `svdate` LIKE '2567%' 
+ORDER BY `row_id` ASC
+
+
 */
 ?>
 <!DOCTYPE html>
