@@ -481,7 +481,7 @@ return $pAge;
   <tr>
     <td width="15%" align="center">
 	<!-- <a href='Capture1.php?id=<?=$cIdcard;?>&hn=<?=$cHn;?>&yot=<?=$cYot;?>&name1=<?=$cName;?>&name2=<?=$cSurname;?>'> -->
-	<a href="javascript: void(0)" onclick="window.open('<?=NOTIFY_HOST;?>/camera/index.php?idcard=<?=$cIdcard;?>','uploadPatientImg','width=1124,height=600,left=100,top=100')">
+	<a href="javascript: void(0)" onclick="window.open('<?=NOTIFY_HOST_CAMERA;?>/camera/index.php?idcard=<?=$cIdcard;?>','uploadPatientImg','width=1124,height=600,left=100,top=100')">
     <IMG SRC='../image_patient/<?=$img;?>' WIDTH='100' HEIGHT='150' BORDER='0' ALT=''>
 	</a>
 	</td>
