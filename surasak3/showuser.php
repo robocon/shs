@@ -1,27 +1,31 @@
 <?php
-// session_start();
-// include("connect.php");
 include 'bootstrap.php';
 $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
-/**
- * Rule of this page
- * [] Level is admin 
- */
+require_once 'includes/JSON.php';
+$json = new Services_JSON();
+
+$sessionMenucode = sprintf("%s", $_SESSION['smenucode']);
 $getMenucode = sprintf("%s", $_GET['menucode']);
-if(empty($getMenucode)){
+if(empty($sessionMenucode)){
 	echo "Invalid data";
 	exit;
 }
-$sessionMenucode = sprintf("%s", $_SESSION['smenucode']);
-$officerName = sprintf("%s", $_SESSION['sOfficer']);
-$officerLevel = sprintf("%s", $_SESSION['sLevel']);
 
-if($sessionMenucode != $getMenucode){
-	echo "ไม่สามารถแก้ไขข้ามแผนกได้ กรุณาติดต่อโปรแกรมเมอร์ .... ไหว้ละจ้าาาาา ";
-	exit;
+$officerLevel = sprintf("%s", $_SESSION['sLevel']);
+if($officerLevel!='admin'){
+    echo "อนุญาตเฉพาะAdminประจำแผนก";
+    exit;
 }
+
+$officerName = sprintf("%s", $_SESSION['sOfficer']);
+
+
+// if($sessionMenucode != $getMenucode){
+// 	echo "ไม่สามารถแก้ไขข้ามแผนกได้ กรุณาติดต่อโปรแกรมเมอร์ .... ไหว้ละจ้าาาาา ";
+// 	exit;
+// }
 
 if($_SESSION['sLevel']!=='admin' && $sessionMenucode !== 'ADM'){
 	echo "กรุณาติดต่อผู้ใช้งานระดับ Admin ประจำแผนกของท่าน<br>";
@@ -35,32 +39,18 @@ if($_SESSION['sLevel']!=='admin' && $sessionMenucode !== 'ADM'){
 }
 
 $act = sprintf("%s", $_GET["act"]);
-if ($act == "del") {
+if ($act == "disable") {
 
 	$id = sprintf("%s", $_GET["id"]);
-	$menucode = sprintf("%s", $_GET['menucode']);
-
-	$sql = "UPDATE `inputm` SET `status`='N' WHERE `row_id`='$id' LIMIT 1";
+	$sql = "UPDATE `inputm` AS a INNER JOIN ( SELECT `row_id` FROM `inputm` WHERE `row_id` = '$id' ) AS b ON a.`row_id` = b.`row_id` SET a.`status` = 'N' ";
 	$q = $dbi->query($sql);
-	if ($q) {
-		echo "<script>alert('ปิดการใช้งานเรียบร้อยแล้ว');window.location='showuser.php?menucode=$menucode';</script>";
+	if ($q) { 
+		$res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย');
 	} else {
-		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=$menucode';</script>";
+		$res = array('status'=>400, 'message'=>$dbi->error);
 	}
-	exit;
-}elseif ($act=='enable') {
-	
-	$id = sprintf("%s", $_GET["id"]);
-	$menucode = sprintf("%s", $_GET['menucode']);
-
-	$sql = "UPDATE `inputm` SET `status`='Y' WHERE `row_id`='$id' LIMIT 1";
-	$q = $dbi->query($sql);
-	if ($q) {
-		echo "<script>alert('เปิดใช้งานเเรียบร้อย');window.location='showuser.php?menucode=$menucode';</script>";
-	} else {
-		echo "<script>alert('!!! ผิดพลาดไม่สามารถปิดการใช้งาน');window.location='showuser.php?menucode=$menucode';</script>";
-	}
-	exit;
+	echo $json->encode($res);
+    exit;
 }
 
 ?>
@@ -71,32 +61,16 @@ if ($act == "del") {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>จัดการข้อมูลผู้ใช้งานระบบ</title>
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
-<style type="text/css">
-	* {
-		font-family: "TH SarabunPSK";
-		font-size: 20px;
-	}
-	table.table th, #comNav{
-		background-color: #13795b; 
-		color: #ffffff;
-	}
-</style>
 <?php 
 require_once 'com_user_menu.php';
 ?>
-<div class="container-lg mt-2">
-	<?php 
-	if($_SESSION['x-msg']){
-		?>
-		<div class="alert alert-warning" role="alert"><?=$_SESSION['x-msg'];?></div>
-		<?php
-	}
-	unset($_SESSION['x-msg']);
-	?>
+<div class="container mt-2">
 	<h3>จัดการข้อมูลผู้ใช้งานระบบ</h3>
 	<table class="table table-hover">
 		<tr>
@@ -112,12 +86,11 @@ require_once 'com_user_menu.php';
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
 		<?php
-		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' AND `menucode` != 'ADMDR1' ORDER BY `row_id` ASC ";
+		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'Y' ORDER BY `row_id` ASC ";
 		$q = $dbi->query($sql);
 		$num = $q->num_rows;
-		if ($num < 1) {
-			echo "<tr><td colspan='3' align='center'>------------------------ ไม่มีข้อมูล ------------------------</td></tr>";
-		} else {
+		if ($num > 0) {
+
 			$i = 0;
 			while ($rows = $q->fetch_assoc()) {
 				$i++;
@@ -129,7 +102,7 @@ require_once 'com_user_menu.php';
 					$statusClass='table-warning';
                 }
 				?>
-				<tr class="<?=$statusClass;?>">
+				<tr class="<?=$statusClass;?>" id="user-<?=$rows['row_id'];?>">
 					<td><?=$i; ?></td>
 					<td>
 						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" title="คลิกเพื่อแก้ไข"><?=$rows["name"];?></a>
@@ -140,42 +113,54 @@ require_once 'com_user_menu.php';
 					}
 					?>
 					<td><?=$rows["level"];?></td>
-                    <td><?=$statusTxt;?></td>
+                    <td><span class="badge text-bg-info"><?=$statusTxt;?></span></td>
 					<td>
-						<div class="d-grid gap-2 d-md-block">
 						<?php 
-						if(strtolower($rows["status"])=='y'){
-
-							// ไม่ให้ Disable ตัวเอง หรือในระดับ Admin ด้วยกันเอง
-							$disableIcon = $disable = '';
-							$url = 'showuser.php?act=del&menucode='.$getMenucode.'&id='.$rows["row_id"];
-							if( $sessionMenucode != 'ADM' ){
-								
-								if($officerName==$rows['name'] || $officerLevel==$rows['level']){
-									$disable = 'aria-disabled="true"';
-									$disableIcon = 'disabled';
-									$url = 'javascript:void(0);';
-								}
-								
+						// ไม่ให้ Disable ตัวเอง หรือในระดับ Admin ด้วยกันเอง
+						$disableIcon = $disable = '';
+						if( $sessionMenucode != 'ADM' ){
+							if($officerName==$rows['name'] || $officerLevel==$rows['level']){
+								$disable = 'aria-disabled="true"';
+								$disableIcon = 'disabled';
+								$url = 'javascript:void(0);';
 							}
-							?>
-							<a href="<?=$url;?>" onClick="return confirm('คุณต้องการระงับผู้ใช้งานนี้ใช่หรือไม่');" class="btn btn-danger btn-sm <?=$disableIcon;?>" role="button" <?=$disable;?> >ปิด</a>
-							<?php 
-						}else{
-							?>
-							<a href="showuser.php?act=enable&menucode=<?=$getMenucode;?>&id=<?= $rows["row_id"]; ?>" class="btn btn-success btn-sm">เปิด</a>
-							<?php
 						}
 						?>
-						</div>
+						<a href="javascript:void(0);" onclick="onDisable('<?=$rows['row_id'];?>')" class="btn btn-danger btn-sm <?=$disableIcon;?>" role="button" <?=$disable;?> >ปิด</a>
 					</td>
 				</tr>
-			<?
+			<?php
 			}
 		}
 		?>
 	</table>
-
+	<script>
+		function onDisable(id){
+			onDisableProcess(id).then((res)=>{
+				console.log(res);
+				if(res.status==200){
+					document.getElementById('user-'+id).remove();
+					Swal.fire({
+						title: "บันทึกข้อมูลเรียบร้อย!",
+						icon: "success",
+						showConfirmButton: false,
+						timer: 1200
+					});
+				}else{
+					Swal.fire({
+						title: "บันทึกข้อมูลไม่สมบูรณ์ ",
+						text: res.message,
+						icon: "warning"
+					});
+				}
+			});
+		}
+		async function onDisableProcess(id){
+			const response = await fetch('showuser.php?act=disable&id='+id);
+			const res = await response.json();
+			return res;
+		}
+	</script>
 </div>
 
 </body>
