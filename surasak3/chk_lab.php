@@ -215,6 +215,10 @@ if ( $page === 'form' ) {
         <legend>ข้อมูลเบื้องต้น</legend>
         <table>
             <tr>
+                <td align="right"><strong>Exam no : </strong></td>
+                <td><?=$user['exam_no'];?></td>
+            </tr>
+            <tr>
                 <td align="right"><b>HN : </b></td>
                 <td><?=$user['hn'];?></td>
             </tr>
@@ -226,6 +230,7 @@ if ( $page === 'form' ) {
                 <td align="right"><b>บริษัท : </b></td>
                 <td><?=$user['part'];?></td>
             </tr>
+            
         </table>
     </fieldset>
     <fieldset style="width:50%; margin-bottom:8px;">
