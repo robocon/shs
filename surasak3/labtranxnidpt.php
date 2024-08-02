@@ -104,8 +104,15 @@ $cDoctor2 = substr($cDoctor,0,5);
 //
 $acu = 0;
 $licen = '';
-if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
+
+if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true )
+{
   
+    /*
+    11/07/2567 รับแจ้งจากหน้างาน
+    ถ้าเป็น พท.ป. จะใช้ตำแหน่งเป็น แพทย์แผนไทยประยุกต์
+    ถ้าเป็น พท.ว. จะใช้ตำแหน่งเป็น แพทย์แผนไทยเฉยๆ
+    */
     // จันทร์ ถึง ศุกร์เป็นของ ศิริพร อินปัน
     $subDoctor = (int) $_GET['subDoctor'];
     if( $subDoctor === 1 ){
@@ -120,12 +127,23 @@ if($cDoctor2 == "MD058" || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoc
     }else if( $subDoctor === 4 ){
         $cDoctor1 = "ประภัสสร เครืออินทร์";
         $doctorcode = "พท.ป. 3011";
+    }else if( $subDoctor === 5 ){
+        $cDoctor1 = "พิมพ์ทอง สุระเรืองชัย";
+        $doctorcode = "พท.ว. 21447";
+    }
+
+    if(preg_match('/(พท\.ป\.)/', $doctorcode, $matchs) > 0){
+        $position = "แพทย์แผนไทยประยุกต์";
+        $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขา การแพทย์แผนไทยประยุกต์";
+        $licen = "แพทย์แผนไทยประยุกต์ $doctorcode";
+
+    }else{
+        $position = "แพทย์แผนไทย";
+        $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขา การแพทย์แผนไทย";
+        $licen = "แพทย์แผนไทย $doctorcode";
     }
 
     $yot = "น.ส.";
-    $position = "แพทย์แผนไทยประยุกต์";
-    $certificate = "ใบอนุญาตประกอบโรคศิลปะ สาขา การแพทย์แผนไทยประยุกต์";
-    $licen = "แพทย์แผนไทยประยุกต์ $doctorcode";
     $acu = 1;
 
 }else{
@@ -203,11 +221,19 @@ $nid_ext = 'นวดพร้อมประคบสมุนไพร';
 if( $inBy === true ){
     $nid_ext = 'อบไอน้ำสมุนไพร';
 }
-      
-print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทางแพทย์แผนไทยด้วยการ $nid_ext "; 
+
+if(preg_match('/(พท\.ป\.)/', $doctorcode, $matchs) > 0){
+    $extra = "แพทย์แผนไทยประยุกต์";
+
+}else{
+    $extra = "แพทย์แผนไทย";
+}
+
+print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทาง".$extra."ด้วยการ $nid_ext ";
 	  
 // ถ้าเป็นแพทย์แผนไทย
-if( $cDoctor2 === "MD058"  || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
+if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true )
+{
     
     // $inList = test_diag($cDiag, $diag_list);
     // if( $inList !== true ){

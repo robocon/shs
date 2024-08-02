@@ -49,6 +49,21 @@ $sql1 = "Select cvriskscore,cvriskscore_lab From opd where thdatehn = '".date("d
 //echo $sql1;
 list($cvriskscore,$cvriskscore_lab) = Mysql_fetch_row(Mysql_Query($sql1));
 
+$sql2 = "Select smoke_amount From opd where thdatehn = '".date("d-m-").(date("Y")+543).$_SESSION["hn_now"]."' ";
+//echo $sql1;
+list($smoke_amount) = Mysql_fetch_row(Mysql_Query($sql2));
+$smoketotal=$smoke_amount*365;
+$smokescore=$smoketotal/20;
+if($smokescore > 20){
+	$smokeshow="<span style='color:red;'>$smokescore</span>";
+}else{
+	$smokeshow="<span style='color:blue;'>$smokescore</span>";
+}	
+//echo "==>".$smokescore;
+
+
+$sql3 = "Select hospcode From opcard where hn = '".$_SESSION["hn_now"]."' ";
+list($hospcode) = Mysql_fetch_row(Mysql_Query($sql3));
 
 if($style_menu==2){?>
 <TABLE align="center" border="1" bordercolor="#F0F000">
@@ -67,6 +82,10 @@ if($style_menu==2){?>
 	<TD><?php echo $_SESSION["age_now"];?></TD>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
 	<TD><?php echo $ptright;?></TD>
+</TR>
+<TR>
+	<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
+	<TD colspan="6"><?php echo $hospcode;?></TD>
 </TR>
 </TABLE>
 </TD>
@@ -104,6 +123,10 @@ if($style_menu==2){?>
 		</td>
 </TR>
 <TR>
+	<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
+	<TD colspan="6"><FONT COLOR="#FF0000"><?php echo $hospcode;?></FONT></TD>
+</TR>
+<TR>
 	<TD colspan='6'>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" >
            <tr>
@@ -133,11 +156,16 @@ if($style_menu==2){?>
 			 }?></td>
 
            </tr>
+		   <? if($smokescore > 0){ ?>
+           <tr>
+             <td align="left" colspan="14">จำนวนที่สูบบุหรี่ :  <B><?php echo $smokeshow;?></B> (ซอง/ปี) </td>
+           </tr>
+		   <? } ?>			   
 		   <? if(!empty($cvriskscore)){ ?>
            <tr>
              <td align="left" colspan="14">CV risk score (ไม่ใช้ผลเลือด) :  <B><?php echo $cvriskscore;?></B></td>
            </tr>
-		   <? } ?>
+		   <? } ?>	   
 		   <? if(!empty($cvriskscore_lab)){ ?>
            <tr>
              <td align="left" colspan="14">CV risk score (ใช้ผลเลือด) :  <B><?php echo $cvriskscore_lab;?></B></td>

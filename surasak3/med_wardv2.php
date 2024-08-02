@@ -292,8 +292,7 @@ if( isset($_SESSION['x-msg']) ){
                         // console.log(request.responseText);
                     }
                 };
-                request.open('POST', 'http://192.168.129.143/send_notify.php', true);
-                // request.open('POST', 'http://localhost:8080/sm3dev/send_notify.php', false);
+                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify.php', true);
                 request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.send(data); 
 
@@ -511,7 +510,7 @@ if ( $page === 'search_an' ) {
 
                 var request = new newXmlHttp();
                 // request.open('POST', 'http://localhost/sm3dev/send_notify.php', false);
-                request.open('POST', 'http://192.168.129.143/send_notify.php', true);
+                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify.php', true);
                 request.setRequestHeader( 
                     'Content-Type',
                     'application/x-www-form-urlencoded'

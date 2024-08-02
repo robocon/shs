@@ -9,12 +9,13 @@ $ward_lists = array(
 
 $cAn = urldecode(input_get('an'));
 
-$sql = "SELECT `drugcode`,`date`,`tradname`,`unit`,`slcode`,`amount`,`statcon`,`onoff`,`row_id`, 
-SUBSTRING(`dateoff`,1,10) AS `dateoff` 
-FROM `dgprofile` 
-WHERE `an` = '$cAn' 
+$sql = "SELECT a.`drugcode`,a.`date`,a.`tradname`,a.`unit`,a.`slcode`,a.`amount`,a.`statcon`,a.`onoff`,a.`row_id`, 
+SUBSTRING(a.`dateoff`,1,10) AS `dateoff`, b.`genname`
+FROM `dgprofile` AS a 
+LEFT JOIN `druglst` AS b ON a.`drugcode` = b.`drugcode`
+WHERE a.`an` = '$cAn' 
 #AND `onoff` = 'ON' 
-ORDER BY `date` DESC ";
+ORDER BY a.`date` DESC ";
 $db->select($sql);
 $items = $db->get_items();
 
@@ -52,10 +53,12 @@ if( $wardExTest > 0 ){
 ?>
 <style>
 *{
-    font-family: "TH Sarabun New", "TH SarabunPSK";
+    font-family: "TH SarabunPSK";
     font-size: 16pt;
 }
-
+.generic_name{
+    font-size: 12pt;
+}
 label{
     cursor: pointer;
 }
@@ -163,7 +166,10 @@ label{
                         <label for="<?=$dCode.$item['statcon'];?>"><?=$item['date'];?></label>
                     </td>
                     <td><?=$dCode;?></td>
-                    <td><?=$item['tradname'];?></td>
+                    <td>
+                        <div title="ชื่อทางการค้า (Trade name)"><?=$item['tradname'];?></div>
+                        <div title="ยาชื่อสามัญ (Generic name)" class="generic_name"><strong><?=$item['genname'];?></strong></div>
+                    </td>
                     <td><?=$item['unit'];?></td>
                     <td><b><?=$item['slcode'];?></b><br><?=$detail_txt;?></td>
                     <td><?=$item['statcon'];?></td>

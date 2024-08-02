@@ -7,8 +7,9 @@ session_register("smenucode");
 //error_reporting (E_ALL ^ E_NOTICE);
 
 include("connect.inc");
-//    print "$username<br>";
-//    print "$password<br>";
+
+require_once 'surasak3/includes/config.php';
+
 $query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
 $result = mysql_query($query) or die("Query failed");
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -57,7 +58,7 @@ if (mysql_num_rows($result)) {
         $sort = "ORDER BY menu_sort ASC ,menu ASC";
     }
     print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/index.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:".NOTIFY_HOST."/newauthen/index.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
         " </tr>\n");
     print(" <tr>\n" .
         "  <td BGCOLOR='#009933'><a target='_top' href=\"../sm3.php\"><font face='THSarabunPSK' size='4' >::Logout- ออกจากระบบ</font></a></td>\n" .
@@ -103,11 +104,11 @@ if (mysql_num_rows($result)) {
     if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') !== false && strpos($ua, 'rv:11.0') !== false)) {
         // do stuff for IE
         print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='microsoft-edge:".NOTIFY_HOST."/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
         " </tr>\n");
     }else{
         print(" <tr>\n" .
-        "  <td BGCOLOR='#009933'><a target='_blank' href='http://192.168.129.143/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
+        "  <td BGCOLOR='#009933'><a target='_blank' href='".NOTIFY_HOST."/newauthen/staff.php?sOfficer=".$_SESSION['sOfficer']."'><font face='THSarabunPSK' size='4' >:: Authen Code ::</font></a></td>\n" .
         " </tr>\n");
     }
     

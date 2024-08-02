@@ -14,6 +14,15 @@ $action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
 if( $action === 'login' ){ 
 	
 	DB::load();
+
+	$username = sprintf("%s", trim($_POST['username']));
+	$password = sprintf("%s", trim($_POST['password']));
+
+	if(in_array($password, array('1234','123456','12345678'))===true){
+		$_SESSION['x-msg'] = 'ไม่อนุญาตให้ใช้รหัสผ่าน 1234, 123456 หรือ 12345678 กรุณาติดต่อ Admin ประจำแผนกเพื่อแก้ไขรหัสผ่าน';
+		redirect('login_page.php');
+		exit;
+	}
 	
 	$sql = "SELECT * FROM `inputm` 
 	WHERE `idname` = :test_idname 
@@ -21,8 +30,8 @@ if( $action === 'login' ){
 	AND `status` = 'y'";
 	
 	$data = array(
-		':test_idname' => trim($_POST['username']),
-		':test_pword' => trim($_POST['password']),
+		':test_idname' => $username,
+		':test_pword' => $password,
 		);
 	
 	$item = DB::select($sql, $data, true);
@@ -37,6 +46,14 @@ if( $action === 'login' ){
 		$_SESSION['sOfficer'] = $item['name'];
 		$_SESSION['sRowid'] = $item['row_id'];
 		$_SESSION['sLevel'] = $item['level'];
+
+		DB::exec("UPDATE `inputm` SET `last_login`=NOW() WHERE (`row_id`=:row_id);", array(':row_id' => $item['row_id']));
+
+		$sqlLogInputm = "INSERT INTO `log_inputm` 
+		(`id`, `log_date`, `user_id`, `name`, `menucode`, `login_date`) 
+		VALUES 
+		(NULL, '".(date("Y")+543).date('-m-d')."', '".$item['row_id']."', '".$item['name']."', '".$item['menucode']."', '".(date("Y")+543).date('-m-d H:i:s')."');";
+		DB::exec($sqlLogInputm);
 	
 		$refer = isset($_SESSION['refer']) ? $_SESSION['refer'] : '../nindex.htm';
 	

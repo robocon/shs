@@ -230,17 +230,10 @@ $cDoctor2 = substr($cDoctor,0,5);
 // MD151 กันยกร มาเกตุ
 // MD115 คือแพทย์แผนจีน
 // MD163 ศุภกิตติ มงคล พจ.1254
-if( $cDoctor2 == 'MD037' 
-OR $cDoctor2 == 'MD054' 
-OR $cDoctor2 == 'MD115' 
-OR $cDoctor2 == 'MD128' 
-OR $cDoctor2 == 'MD129' 
-OR $cDoctor2 == 'MD130' 
-OR $cDoctor2 == 'MD116' 
-OR $cDoctor2 == 'NID ว' 
-OR $cDoctor2 == 'MD151' 
-OR $cDoctor2 == 'MD163'
-OR $cDoctor2 == 'MD203'){
+// MD203 พรชนก มั่งมูล
+
+if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD116','NID ว','MD151','MD163','MD203'))===true)
+{
     ?>
     <br><br>
     <a target="_blank" href="labtranxnid.php?code=<?=$Dgcode;?>"<?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>หมดรายการ/ใบแจ้งหนี้/ใบรับรองแพทย์ ฝังเข็ม </a>
@@ -264,8 +257,10 @@ OR $cDoctor2 == 'MD203'){
 // MD156 อัจฉรา อวดห้าว
 // MD157 ธัญญาวดี มูลรัตน์
 // MD202 ประภัสสร เครืออินทร์
+// MD212 พิมพ์ทอง สุระเรืองชัย
 // เฉพาะแพทย์แผนไทย
-if( $cDoctor2 == 'MD058' || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDoctor2 == 'MD157' || $cDoctor2 == 'MD202'){
+if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true)
+{
     ?>
     <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - อัจฉรา อวดห้าว</a>
@@ -275,6 +270,8 @@ if( $cDoctor2 == 'MD058' || $cDoctor2 == 'MD155' || $cDoctor2 == 'MD156' || $cDo
     <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - กัลย์ปภารัศมิ์ กุลชิงชัย</a>
 	<br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=4&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ประภัสสร เครืออินทร์</a>
+	<br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=5&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทย - พิมพ์ทอง สุระเรืองชัย</a>
     <!--<br><br>
     <a target="_blank" href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
 

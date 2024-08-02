@@ -316,18 +316,22 @@ if( $view == 'search' ){
             ?>
             <tr>
                 <td><?=$i;?></td>
-                <td><?=$item['name'];?><br><span style="font-size:10px; color: green;"><?=$item['code'];?></span></td>
+                <td><?=$item['name'];?><br><span style="font-size:16px; color: green;"><?=$item['code'];?></span></td>
                 <td align="center">
                     <?php 
-                    $show_link = true;
+                    $lab_status = 'ไม่มีข้อมูล';
+                    $show_link = false;
+
                     if( $rows_n > 0 ){ 
-                        echo "รอบันทึกเข้า LIS";
-                    }elseif ($rows_y > 0) {
-                        echo "บันทึกข้อมูลเข้า LIS เรียบร้อย";
-                    }else{
-                        $show_link = false;
-                        echo "ไม่มีข้อมูล";
+                        $lab_status = 'รอบันทึกเข้า LIS';
+                        $show_link = true;
                     }
+                    
+                    if ($rows_y > 0) {
+                        $lab_status = 'บันทึกข้อมูลเข้า LIS เรียบร้อย';
+                    }
+
+                    echo $lab_status;
                     ?>
                 </td>
                 <td align="center">
@@ -342,11 +346,11 @@ if( $view == 'search' ){
                 </td>
                 <td>
                     <?php 
-                    if ( $show_link == true ) {
+                    // if ( $show_link == true ) {
                         ?>
                         <a href="chk_lab_lis.php?action=showlab&part=<?=$code;?>" target="_blank">ตรวจสอบข้อมูล</a>
                         <?php
-                    }
+                    // }
                     ?>
                 </td>
                 <td>

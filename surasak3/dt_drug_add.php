@@ -2,10 +2,11 @@
 session_start();
 
 include("connect.inc");
+require_once 'includes/config.php';
 
 function send_line_noti($sMessage, $sToken){
 	$curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, "http://192.168.129.143/send_notify_v2.php"); 
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
 	curl_setopt( $curl, CURLOPT_POST, 1); 
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
 	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
@@ -539,12 +540,13 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 			
 			//ถ้ายาฉีด หรือ insurin
 			if($_SESSION["list_drug_inject_slip"][$i]!=""){
-				if($_SESSION["list_drug_inject_slip"][$i]=="1ins"||$_SESSION["list_drug_inject_slip"][$i]=="2ins"){
+				if($_SESSION["list_drug_inject_slip"][$i]=="1ins" || $_SESSION["list_drug_inject_slip"][$i]=="2ins"){
+					
 					$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
-					<TD colspan='3'><font style=\"font-family:'MS Sans Serif'; font-size:10px\">(".$_SESSION["list_drug_inject_amount"][$i]." ".$_SESSION["list_drug_inject_unit"][$i]." ".$_SESSION["list_drug_inject_amount2"][$i]." ".$_SESSION["list_drug_inject_unit2"][$i].")</TD>
+					<TD colspan='3'><font style=\"font-family:'MS Sans Serif'; font-size:10px\">[".$_SESSION["list_drug_inject_amount"][$i]." ".iconv('TIS-620', 'UTF-8',$_SESSION["list_drug_inject_unit"][$i])." ".$_SESSION["list_drug_inject_amount2"][$i]." ".iconv('TIS-620', 'UTF-8',$_SESSION["list_drug_inject_unit2"][$i])."]</TD>
 					</TR>";
 				}
-				elseif(trim($_SESSION["list_drug_inject_amount"][$i]) != "" && trim($_SESSION["list_drug_inject_slip"][$i]) != "" && trim($_SESSION["list_drug_inject_type"][$i]) != "" ){
+				else if(trim($_SESSION["list_drug_inject_amount"][$i]) != "" && trim($_SESSION["list_drug_inject_slip"][$i]) != "" && trim($_SESSION["list_drug_inject_type"][$i]) != "" ){
 
 					$_SESSION["dt_drugstk"] .="<TR style='line-height:12px;'>
 					<TD><font style=\"font-family:'MS Sans Serif'; font-size:10px\">จำนวนที่ฉีด ".$_SESSION["list_drug_inject_amount"][$i]."</TD>

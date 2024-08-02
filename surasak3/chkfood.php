@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Untitled Document</title>
 </head>
  <style type="text/css">
@@ -17,7 +17,7 @@
 function chknull(){
 	if(document.form1.menu.selectedIndex==0)
 	{
-		alert('กรุณาเลือกรายการอาหาร');
+		alert('เธเธฃเธธเธ“เธฒเน€เธฅเธทเธญเธเธฃเธฒเธขเธเธฒเธฃเธญเธฒเธซเธฒเธฃ');
 		document.form1.menu.focus();
 		return false;
 	}
@@ -28,20 +28,20 @@ function chknull(){
 <form id="form1" name="form1" method="post" action="allfood.php?code=<?=$lbedcode;?>" onsubmit="JavaScript:return chknull();">
   <table border="0" class="font1" align="center">
     <tr>
-      <td colspan="2" align="center">กรุณาเลือก รายการอาหาร</td>
+      <td colspan="2" align="center">เธเธฃเธธเธ“เธฒเน€เธฅเธทเธญเธ เธฃเธฒเธขเธเธฒเธฃเธญเธฒเธซเธฒเธฃ</td>
     </tr>
     <tr>
       <td><select name="menu" class="font1">
-      <option value="0">กรุณาเลือกรายการอาหาร</option>
-      <option value="อาหารเช้า">อาหารเช้า</option>
-      <option value="อาหารกลางวัน">อาหารกลางวัน</option>
-      <option value="อาหารเย็น">อาหารเย็น</option>
+      <option value="0">เธเธฃเธธเธ“เธฒเน€เธฅเธทเธญเธเธฃเธฒเธขเธเธฒเธฃเธญเธฒเธซเธฒเธฃ</option>
+      <option value="เธญเธฒเธซเธฒเธฃเน€เธเนเธฒ">เธญเธฒเธซเธฒเธฃเน€เธเนเธฒ</option>
+      <option value="เธญเธฒเธซเธฒเธฃเธเธฅเธฒเธเธงเธฑเธ">เธญเธฒเธซเธฒเธฃเธเธฅเธฒเธเธงเธฑเธ</option>
+      <option value="เธญเธฒเธซเธฒเธฃเน€เธขเนเธ">เธญเธฒเธซเธฒเธฃเน€เธขเนเธ</option>
       </select>
       </td>
-      <td><input type="submit" name="b1" value="ตกลง"  class="font1"/></td>
+      <td><input type="submit" name="b1" value="เธ•เธเธฅเธ"  class="font1"/></td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><a target=_self  href="../nindex.htm">/-----กลับเมนู</a></td>
+      <td colspan="2" align="center"><a target=_self  href="../nindex.htm">/-----เธเธฅเธฑเธเน€เธกเธเธน</a></td>
     </tr>
   </table>
 </form>

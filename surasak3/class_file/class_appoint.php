@@ -94,10 +94,6 @@ class Appoint extends DbConnect{
     */
     public function getCalendar($dt_doctor=null,$today=null, $dfMonth=null, $dfYear=null){
 
-        // if( $_GET['id'] != "" ){
-        //     $dt_doctor = iconv('UTF-8','UTF-8',$_GET['id']);
-        // }
-
         if (empty($dt_doctor)) {
             return array('error'=>400,'message'=>'Doctorcode is required');
         }
@@ -135,21 +131,24 @@ class Appoint extends DbConnect{
         $dt = new Doctor();
         $doctor = $dt->getDoctorFromCode($dt_doctor);
         $appoint_doctor = $doctor['name'];
-        $dr_position = $doctor['positon'];
+        $dr_position = $doctor['position'];
         $doctorcode = $doctor['doctorcode'];
 
         // หาตารางออกตรวจของแพทย์
         $all_days_exam = array();
         $days_exam = array();
         $items = $dt->getExamTableFromDoctorId($dt_doctor);
-        foreach ($items as $item) { 
-            $days_exam[] = $item;
-            $day_explode = explode(',', $item['day']);
-            foreach ($day_explode as $b) {
-                $all_days_exam[$b] = $b;
+        if(!$items['error'] && $items['error']!=400){
+            foreach ($items as $item) { 
+                $days_exam[] = $item;
+                $day_explode = explode(',', $item['day']);
+                foreach ($day_explode as $b) {
+                    $all_days_exam[$b] = $b;
+                }
             }
+            ksort($all_days_exam);
         }
-        ksort($all_days_exam);
+        
     
         /* $diffHour และ $diffMinute คือตัวแปรที่ใช้เก็บจำนวนชั่วโมงและจำนวนนาทีที่แตกต่างกันระหว่างเครื่อง ไคลเอนต์กับเครื่องเซิร์ฟเวอร์ ตามลำดับ เช่นถ้าเวลาของเครื่องไคลเอ็นต์เร็วกว่าเวลาของเครื่องเซิร์ฟเวอร์ 11 ชั่วโมง 15 นาที ก็ให้กำหนด $diffHour เป็น 11 และกำหนด $diffMinute เป็น 15 */
         $diffHour = 0;
@@ -157,10 +156,10 @@ class Appoint extends DbConnect{
     
         if ($dfMonth == "") {
         /* ถ้าไม่มีการระบุให้แสดงปฏิทินของเดือนใดเดือนหนึ่ง เราจะแสดงปฏิทินของเดือนปัจจุบันตามเวลาในเครื่องไคลเอ็นต์ โดยใช้ฟังก์ชั่น getdate() สร้างวันที่/เวลาปัจจุบันของเครื่องไคลเอ็นต์เก้บไว้ในตัวแปร $calTime ซึ่งฟังก์ชั่นนี้จะคืนค่ากลับมาเป็นอาร์เรย์ */
-        $calTime = getdate(date(mktime(date("H") + $diffHour, date("i") + $diffMinute)));
-        $today = $calTime["mday"]; //วันที่
-        $month = $calTime["mon"]; //เดือน
-        $year = $calTime["year"]; // ปี
+            $calTime = getdate(date(mktime(date("H") + $diffHour, date("i") + $diffMinute)));
+            $today = $calTime["mday"]; //วันที่
+            $month = $calTime["mon"]; //เดือน
+            $year = $calTime["year"]; // ปี
 
         } else {
             /* กรณีที่ระบุให้แสดงปฏิทินของเดือน/ปีหนึ่งๆ นั้น จะมีการส่งตัวแปร $today, $dfMonth และ $dfYear ผ่านมาทาง query string ด้วย */
@@ -185,7 +184,7 @@ class Appoint extends DbConnect{
     
         /* เรียกฟังก์ชัน LastDay() ซึ่งเป็นฟังก์ชั่นที่เราสร้างขึ้นเอง เพื่อหา"จำนวนวัน" ของเดือนและปีที่จะแสดงปฏิทิน โดยเก้บไว้ในตัวแปร $Lday */
         // $Lday = LastDay($month, $year);
-        $Lday = date("t", "$year-$month-01");
+        $Lday = date("t", strtotime("$year-".sprintf("%02d", $month)."-01"));
 
         //เก็บ timestamp ของวันที่ 1 ของเดือนที่จะแสดงปฏิทิน ไว้ในตัวแปร $FTime
         $FTime = getdate(date(mktime(0, 0, 0, $month, 1, $year)));
@@ -592,6 +591,8 @@ class Appoint extends DbConnect{
             ?>
         </table>
         <?php
+    }else{
+        ?>ไม่พบตารางออกตรวจของแพทย์ <br>ท่านสามารถเพิ่มข้อมูลได้ที่ <a target="_blank"  href="exam_doctor.php">จัดการตารางออกตรวจของแพทย์</a> <?php
     }
     ?>
     </div>

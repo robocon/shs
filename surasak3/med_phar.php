@@ -114,7 +114,7 @@ if ($action === 'active') {
                 test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
                 var dataPost = test_str.join("&");
                 var request = new newXmlHttp();
-                request.open('POST', 'http://192.168.129.143/send_notify_v2.php', false);
+                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
                 request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.onreadystatechange = function(){
                     if( request.readyState == 4 && request.status == 200 ){
@@ -291,6 +291,7 @@ if ( $q->num_rows > 0 ) {
                 <p>AN: <?=$item['an'];?></p>
                 <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                 <p><?=$fullWardName;?></p>
+                <p>ผู้บันทึก: <?=$item['editor'];?></p>
             </td>
             <td>
                 <?php 
@@ -319,7 +320,7 @@ if ( $q->num_rows > 0 ) {
                 <a href="med_phar.php?action=active&id=<?=$item['id'];?>&an=<?=$item['an'];?>" class="btnActive">Active & Print</a>
             </td>
             <td style="vertical-align: middle;">
-                <a href="med_phar.php?action=cancel&id=<?=$item['id'];?>" class="btnActive" onclick="return confirm('ยืนยันที่จะยกเลิกข้อมูลหรือไม่?');">ยกเลิกรายการ</a>
+                <a href="med_phar.php?action=cancel&id=<?=$item['id'];?>" class="btnActive" onclick="return confirm('ยืนยันที่จะยกเลิกข้อมูลหรือไม่?');">ยกเลิก 🚮</a>
             </td>
         </tr>
         <?php
@@ -398,7 +399,7 @@ if ( $page === 'searchFile' ) {
     if ( $q->num_rows > 0 ) {
 
         ?>
-        <table class="chk_table">
+        <table class="chk_table" style="margin-top:6px;">
             <tr>
                 <th>วันที่บันทึกข้อมูล</th>
                 <th>ข้อมูล</th>
@@ -421,6 +422,7 @@ if ( $page === 'searchFile' ) {
                     <p>AN: <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                     <p><?=$fullWardName;?></p>
+                    <p>ผู้สั่งพิมพ์: <?=$item['lasteditor'];?></p>
                 </td>
                 <td>
                 <?php 
@@ -446,7 +448,7 @@ if ( $page === 'searchFile' ) {
                 ?>
                 </td>
                 <td style="vertical-align: middle;">
-                    <a href="med_phar.php?action=print&id=<?=$item['id'];?>" class="btnActive" target="_blank">พิมพ์</a>
+                    <a href="med_phar.php?action=print&id=<?=$item['id'];?>" class="btnActive" target="_blank">พิมพ์ 🖨️</a>
                 </td>
             </tr>
             <?php

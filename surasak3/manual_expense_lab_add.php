@@ -6,7 +6,9 @@ require_once 'class_file/class_opacc.php';
 require_once 'class_file/class_resulthead.php';
 require_once 'class_file/opday.php';
 
-require_once 'manual_expense_config.php';
+// require_once 'manual_expense_config.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 $date = (date('Y')+543).date('-m-d');
 
@@ -15,6 +17,8 @@ $depart = sprintf("%s", $_GET['depart']);
 $labOfficer = sprintf("%s", $_GET['officer']);
 $moneyOfficer = sprintf("%s", $_GET['moneyOfficer']);
 $credit = sprintf("%s", $_GET['credit']);
+$companyPart = sprintf("%s", $_GET['companyPart']);
+
 
 // $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
 // c.`vn` 
@@ -32,7 +36,7 @@ $credit = sprintf("%s", $_GET['credit']);
 $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
 c.`vn` 
 FROM (
-    SELECT * FROM `manual_expense` WHERE `part` = '".COMPANY_PART."' AND hn = '$hn' 
+    SELECT * FROM `manual_expense` WHERE `part` = '$companyPart' AND hn = '$hn' 
 ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
 LEFT JOIN (
     SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
@@ -52,28 +56,30 @@ $labOfficer = $_GET['officer'];
 $nLab_orderhead = '';
 
 if(empty($a['vn'])){
-    echo "ทะเบียน ยังไม่ได้ออก VN";
+    echo "<h3>ทะเบียน ยังไม่ได้ออก VN</h3>";
 }else{
 
     $opacc = new ClassOpacc();
     $resOpacc = $opacc->getOpacc($date, $hn, 'PATHO');
     if($resOpacc!==false){
-        echo '<h1>มีข้อมูลแล้ว</h1>';
-        dump($resOpacc);
+        echo '<h3>เคยบันทึกข้อมูลไปแล้ว</h3>';
+        // dump($resOpacc);
         exit;
+    }else{
+
+        $dep = new ClassDepart();
+        $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart);
+        $departIdList[] = $departId;
+        // dump($departId);
+
+        $patdata = new ClassPatdata();
+        $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
+        // dump($insertPatdata);
+
+        $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
+        // dump($opaccInsert);
+
+        echo "<h3>บันทึกข้อมูลเรียบร้อย</h3>";
     }
     
-    $dep = new ClassDepart();
-    $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart);
-    $departIdList[] = $departId;
-    dump($departId);
-
-    $patdata = new ClassPatdata();
-    $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
-    dump($insertPatdata);
-
-    // $officer = 'นาง นทีพร เรียงสุข';
-    // $credit = 'กฟผ';
-    $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
-    dump($opaccInsert);
 }

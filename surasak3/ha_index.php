@@ -33,6 +33,30 @@ $dbi->query("SET NAMES UTF8");
         .list-item a:hover{
             background-color: #00b9a7;
         }
+
+        .list-item-thip{
+            display: block;
+            position: relative;
+            min-width: 200px;
+        }
+        .list-item-thip a{
+            display: block;
+            background-color: #009688;
+            border: 1px solid #009688;
+            padding: 4px 8px;
+            color: #ffffff;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            box-shadow: 0 4px #999;
+        }
+        .list-item-thip a:hover{
+            background-color: #01796d;
+        }
+        .list-item-thip a:active {
+            transform: translateY(2px);
+        }
+
+
         .sub{
             display: block;
             position: absolute;
@@ -50,11 +74,16 @@ $dbi->query("SET NAMES UTF8");
             display: inline-block;
             min-width: 250px;
         }
-
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
     </style>
     <div>
         <h1>เลือกตัวชี้วัดที่จะบันทึก</h1>
     </div>
+    
     <div style="display:inline-block;">
         <?php 
         $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' AND `parent` IS NULL ORDER BY `sort` ");
@@ -97,5 +126,66 @@ $dbi->query("SET NAMES UTF8");
         }
         ?>
     </div>
+<?php 
+/*
+2 คนนี้เป็น Superadmin เห็นได้ทุกเมนูย่อย สุมีนา / นิธิวดี
+IC และ CMS  ==>  ปพิชญา
+NSO  ==>  ปณิธิ
+PCT Med  ==>  วิลาวรรณ / ภิรมภรณ์ / ปิยาภรณ์ / จีราภรณ์ / จันทร์วลัย
+PCT OB-Gyne  ==>  วราภรณ์ (ศรีรัตนา ห้องคลอด)
+PCT Sx  ==>  วราภรณ์(ชัย) / นันท์นภัส
+PCT QMR / HRD / PTC  ==>  ภัทรียา / ปภาวิน / ภูมิพัฒน์ 
+*/
+
+$thip_items = array(
+    array(
+        'name' => '[THIP] IC และ CMS', 
+        'link' => 'https://docs.google.com/spreadsheets/d/1ufumSlAJTPR6NRMsfHu-rrVSOhArC-IjCX3UAuWuIc0/edit?usp=sharing', 
+        'allow'=>array('ปพิชญา')
+    ),
+    array(
+        'name' => '[THIP] NSO', 
+        'link' => 'https://docs.google.com/spreadsheets/d/1hWn2SXbtQeg3y0r4-ewK3Mbr-ewnZNzoFp3hVFT2pK8/edit?usp=sharing', 
+        'allow'=>array('ปณิธิ')
+    ),
+    array(
+        'name' => '[THIP] PCT Med', 
+        'link' => 'https://docs.google.com/spreadsheets/d/13veL0zpa42qeapAXVXiKXyHS-ZeSimjVSK-rlemCqL8/edit?usp=sharing', 
+        'allow'=>array('วิลาวรรณ','ภิรมภรณ์','ปิยาภรณ์','จีราภรณ์2','จันทร์วลัย')
+    ),
+    array(
+        'name' => '[THIP] PCT OB-Gyne', 
+        'link' => 'https://docs.google.com/spreadsheets/d/13QH2ijKYKQ5_k1tX9Et6y0ZNXgQQCWRzgjtb5YmnoTY/edit?usp=drive_link', 
+        'allow'=>array('วราภรณ์'/* วราภรณ์ ศรีรัตนา */)
+    ),
+    array(
+        'name' => '[THIP] PCT Sx', 
+        'link' => 'https://docs.google.com/spreadsheets/d/1FMQ8GAARMhfP45KbelR1t9d5r4N8UPtjODMGi8YbBJs/edit?usp=sharing', 
+        'allow'=>array('วราภรณ์2'/* วราภรณ์ ชัยวณิชยา */,'นันท์นภัส')
+    ),
+    array(
+        'name' => '[THIP] PCT QMR / HRD / PTC', 
+        'link' => 'https://docs.google.com/spreadsheets/d/1lnTLYxmZe_oGsxbB1rLr3Ck6I6aG5MX7NzjocWHiYsw/edit?usp=sharing', 
+        'allow'=>array('ภัทรียา','ปภาวิน','ภูมิพัฒน์')
+    ),
+);
+?>
+<div style="margin-top:8px;">
+    <div style="display:inline-block;">
+        <div class="list-item-thip">
+            <?php 
+            foreach ($thip_items as $thip) {
+                
+                if(in_array($_SESSION['sIdname'], $thip['allow'])==true || $_SESSION['smenucode']=='ADM' || in_array($_SESSION['sIdname'], array('สุมีนา','นิธิวดี'))==true ){
+                    ?>
+                    <a href="<?=$thip['link'];?>" target="_blank"><?=$thip['name'];?></a>
+                    <?php 
+                }
+            }
+            ?>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

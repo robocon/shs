@@ -15,6 +15,13 @@ define('API_HOST', 'http://192.168.131.240:8081/api');
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$q = $dbi->query("SELECT `row_id`,`name` FROM `doctor` ORDER BY `row_id` ASC ");
+$doctorList = array();
+while ($a = $q->fetch_assoc()) {
+    $key = $a['row_id'];
+    $doctorList[$key] = $a;
+}
+
 function getDigitalOpcard($url){ 
     global $json;
     $ch = curl_init(); 
@@ -101,6 +108,7 @@ if($action==='delete'){
                 <tbody>
                 <?php
                 foreach ($items->list as $key => $value) {
+                    $doctorId = $value->doctor;
                     $row_id = $value->row_id;
                     ?>
                     <tr id="item-<?=$row_id;?>">
@@ -110,7 +118,7 @@ if($action==='delete'){
                         <th>
                             <a href="<?=$value->original;?>" target="_blank"><img src="<?=$value->thumbnail;?>" alt="digital opd" height="120"></a>
                         </th>
-                        <td><?=$value->doctyor;?></td>
+                        <td><?=$doctorList[$doctorId]['name'];?></td>
                         <td><?=$value->type;?></td>
                         <td><?=$value->officer;?></td>
                         <th>
@@ -143,8 +151,8 @@ if($action==='delete'){
 
         async function deleteDigitalOpcard(id){
             // 192.168.131.240:8081
-            // const response = await fetch(apiHost+'/deleteDigitalOpcard/'+id,{method:'DELETE'});
-            const response = await fetch('digital_opd_manage.php?action=delete&row_id='+id);
+            const response = await fetch(apiHost+'/deleteDigitalOpcard/'+id,{method:'DELETE'});
+            // const response = await fetch('digital_opd_manage.php?action=delete&row_id='+id);
             const data = await response.json();
             if(data.status===200){ 
                 alert('ลบข้อมูลเรียบร้อย');

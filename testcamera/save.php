@@ -1,10 +1,11 @@
 <?php 
 set_time_limit(0);
-require __DIR__ . "/vendor/autoload.php";
-use PHPZxing\PHPZxingDecoder;
+// require __DIR__ . "/vendor/autoload.php";
+// use PHPZxing\PHPZxingDecoder;
 
 define('UPLOAD_DIR', '');
 
+// ฝั่งรับข้อมูลเข้ามาบันทึก
 $imgLists = $_POST['imgScan'];
 $barcodeLists = array();
 foreach ($imgLists as $key => $img) {
@@ -14,10 +15,14 @@ foreach ($imgLists as $key => $img) {
     $data = base64_decode($img);
     $file = UPLOAD_DIR . uniqid() . '.png';
     $success = file_put_contents($file, $data);
+    var_dump($success);
+
     $barcodeLists[] = $file;
 }
 
 sleep(1);
+
+exit;
 
 $config = array(
     'try_harder'            => true,

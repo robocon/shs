@@ -172,7 +172,7 @@ $officer_date=$rows["officer_date"];
 			// notify-api.line.me
 			// 203.104.138.174
 			// curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify"); 
-			curl_setopt( $chOne, CURLOPT_URL, "http://192.168.129.143/send_notify.php"); 
+			
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0); 
 			curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0); 
 			// curl_setopt ($chOne, CURLOPT_SSLVERSION, 6);
@@ -277,8 +277,10 @@ $officer_date=$rows["officer_date"];
 			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk6" type="checkbox" id="typerisk6" <? if(!empty($rows["typerisk6"])){ echo "checked";}?> value="โรคเบาหวาน" /> โรคเบาหวาน</div>
 			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk7" type="checkbox" id="typerisk7" <? if(!empty($rows["typerisk7"])){ echo "checked";}?> value="โรคอ้วน (BMI > 30 or BW > 90kg)" /> โรคอ้วน (BMI > 30 or BW > 90kg)</div>
 			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk8" type="checkbox" id="typerisk8" <? if(!empty($rows["typerisk8"])){ echo "checked";}?> value="CKD (โรคไตวายเรื้อรัง)" /> CKD (โรคไตวายเรื้อรัง)</div>
-			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk9" type="checkbox" id="typerisk9" <? if(!empty($rows["typerisk9"])){ echo "checked";}?> value="หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป" /> หญิงตั้งครรภ์ 12 สัปดาห์ขึ้นไป</div>
-			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk9" type="checkbox" id="typerisk10" <? if(!empty($rows["typerisk10"])){ echo "checked";}?> value="ไม่ได้รับวัคซีนป้องกันโควิด 19" /> ไม่ได้รับวัคซีนป้องกันโควิด 19</div>
+			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk11" type="checkbox" id="typerisk11" <? if(!empty($rows["typerisk11"])){ echo "checked";}?> value="ตับแข็ง" /> ตับแข็ง</div>
+			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk12" type="checkbox" id="typerisk12" <? if(!empty($rows["typerisk12"])){ echo "checked";}?> value="ภาวะภูมิคุ้มกันต่ำ (ได้ยาเคมีบำบัด/ได้ยากดภูมิ)" /><span style="font-size:14"> ภาวะภูมิคุ้มกันต่ำ (ได้ยาเคมีบำบัด/ได้ยากดภูมิ)</span></div>
+			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk13" type="checkbox" id="typerisk13" <? if(!empty($rows["typerisk13"])){ echo "checked";}?> value="HIV (CD4 Cell Count < 200)" /> HIV (CD4 Cell Count < 200)</div>
+			<div style="margin-left: 20px;"><input class="txtsarabun" name="typerisk14" type="checkbox" id="typerisk14" <? if(!empty($rows["typerisk14"])){ echo "checked";}?> value="อื่นๆ" /> อื่นๆ..........................</div>
 		</td>
 		
 		<td align="left" width="33%">
@@ -304,11 +306,8 @@ $officer_date=$rows["officer_date"];
 		</td>
 		<td align="left" width="33%">
 		<div style="margin-left: 10px;">รายการสั่งยา</div>
-		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar1" type="checkbox" id="phar1" <? if(!empty($rows["phar1"])){ echo "checked";}?> value="favipiravir" /> Favipiravir
+		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar1" type="checkbox" id="phar1" <? if(!empty($rows["phar1"])){ echo "checked";}?> value="paxlovid" /> Paxlovid
 			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other1"])){ echo $rows["phar_other1"];}else{ echo "..............................";}?></span>
-		</div>
-		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar2" type="checkbox" id="phar2" <? if(!empty($rows["phar2"])){ echo "checked";}?> value="paniculata" /> ฟ้าทะลายโจร
-			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other2"])){ echo $rows["phar_other2"];}else{ echo "..............................";}?></span>
 		</div>
 		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar3" type="checkbox" id="phar3" <? if(!empty($rows["phar3"])){ echo "checked";}?> value="paracetamol" /> Paracetamol (500)
 			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other3"])){ echo $rows["phar_other3"];}else{ echo "..............................";}?></span>
@@ -319,15 +318,15 @@ $officer_date=$rows["officer_date"];
 		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar5" type="checkbox" id="phar5" <? if(!empty($rows["phar5"])){ echo "checked";}?> value="cpm" /> CPM
 			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other5"])){ echo $rows["phar_other5"];}else{ echo "..............................";}?></span>
 		</div>
-		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar6" type="checkbox" id="phar6" <? if(!empty($rows["phar6"])){ echo "checked";}?> value="ors" /> ORS
-			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other6"])){ echo $rows["phar_other6"];}else{ echo "..............................";}?></span>
-		</div>
+		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar9" type="checkbox" id="phar9" <? if(!empty($rows["phar8"])){ echo "checked";}?> value="brown mixture" /> Brown mixture
+			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other9"])){ echo $rows["phar_other9"];}else{ echo "..............................";}?></span>
+		</div>			
 		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar8" type="checkbox" id="phar8" <? if(!empty($rows["phar8"])){ echo "checked";}?> value="molnupiravir" /> Molnupiravir
 			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other8"])){ echo $rows["phar_other8"];}else{ echo "..............................";}?></span>
 		</div>
-		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar9" type="checkbox" id="phar9" <? if(!empty($rows["phar8"])){ echo "checked";}?> value="brown mixture" /> Brown mixture
-			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other9"])){ echo $rows["phar_other9"];}else{ echo "..............................";}?></span>
-		</div>		
+		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar6" type="checkbox" id="phar6" <? if(!empty($rows["phar6"])){ echo "checked";}?> value="ors" /> ORS
+			<span style="margin-left: 5px;"><? if(!empty($rows["phar_other6"])){ echo $rows["phar_other6"];}else{ echo "..............................";}?></span>
+		</div>	
 		<div style="margin-left: 15px;"><input class="txtsarabun" name="phar7" type="checkbox" id="phar7" <? if(!empty($rows["phar7"])){ echo "checked";}?> value="other" /> ยาคนไข้ที่จำเป็นต้องสั่งเพิ่ม
 		</div>
 		<div style="margin-left: 15px; margin-bottom:5px;"><? if(!empty($rows["phar_other7"])){ echo $rows["phar_other7"];}else{ echo "............................................................<br>............................................................";}?></div>

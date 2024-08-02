@@ -70,12 +70,14 @@ window.onload = function(){
 				
 				//if( $_SESSION["smenucode"] == "ADMDEN")
 					//$where = "AND (a.row_id = '160' || a.row_id = '161' || a.row_id = '162' || a.row_id = '163' || a.row_id = '164' )";
-					$where = "AND (a.row_id = '174' || a.row_id = '175' || a.row_id = '176' || a.row_id = '177' )";
+					// $where = "AND (a.row_id = '194' || a.row_id = '195' || a.row_id = '196' || a.row_id = '197')";
 				//else
 					//$where = " AND  menucode like '%%' ";
 
-				$sql = "Select a.name From doctor as a where status = 'y' AND left(a.name,2) = 'MD' AND a.name <> '' ".$where;
-				//echo $sql;
+				// $sql = "Select a.name From doctor as a where status = 'y' AND left(a.name,2) = 'MD' AND a.name <> '' ".$where;
+
+				// update 10/07/2567 เอาเฉพาะหมอ intern ที่สถานะเป็น y
+				$sql = "SELECT `name` FROM `doctor` WHERE `position2` = 'แพทย์เวชปฏิบัติ' AND `status` = 'y' ORDER BY `row_id` DESC";
 				$result = mysql_query($sql);
 				echo "<Select name='doctor'>";
 				while($arr = mysql_fetch_assoc($result)){

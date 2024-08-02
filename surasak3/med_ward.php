@@ -247,6 +247,13 @@ tr{
 #imgBtnClose:hover{
     cursor: pointer;
 }
+.btnActive{
+    padding: 3px;
+    color: #000000;
+    background-color: #b8b8b8;
+    margin: 2px;
+    text-decoration: none;
+}
 </style>
 <?php 
 $PharLink = '';
@@ -255,7 +262,7 @@ if ($_SESSION['sLevel'] == "admin") {
 }
 ?>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?> | <a href="med_ward_howto.php" target="_blank">การใช้งานผ่านมือถือ/Tablet</a> | <a href="med_wardv2.php" target="_blank">Doctor Order V2(ส่งรูปในไลน์)</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a><?=$PharLink;?> <!--| <a href="med_ward_howto.php" target="_blank">การใช้งานผ่านมือถือ/Tablet</a> | <a href="med_wardv2.php" target="_blank">Doctor Order V2(ส่งรูปในไลน์)</a>--></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){ 
@@ -278,7 +285,7 @@ if( isset($_SESSION['x-msg']) ){
                         // console.log(request.responseText);
                     }
                 };
-                request.open('POST', 'http://192.168.129.143/send_notify_v2.php', false);
+                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
                 request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
                 request.send(data); 
 
@@ -298,10 +305,10 @@ if( isset($_SESSION['x-msg']) ){
 
 $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
 ?>
-<div style="position:absolute; top:0; right:0; line-height:16px; text-align:center;">
+<!-- <div style="position:absolute; top:0; right:0; line-height:16px; text-align:center;">
     <img src="printQrCode.php?hn=http://192.168.131.250/sm3/surasak3/med_ward.php&size=3&level=2&margin=1">
     <div>Scan Order<br>Tablet/Mobile</div>
-</div>
+</div> -->
 <div>
 <h3>อัพโหลดไฟล์ Doctor Order</h3>
 </div>
@@ -413,12 +420,13 @@ if ( $page === 'search_an' ) {
                     <p>AN: <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                     <p><?=$fullWardName;?></p>
+                    <p>ผู้บันทึก: <?=$item['editor'];?></p>
                 </td>
                 <td>
                     <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>
                 </td>
                 <td>
-                    <a href="med_ward.php?action=delete&id=<?=$id;?>" onclick="return confirmDelete();">ลบ</a>
+                    <a href="med_ward.php?action=delete&id=<?=$id;?>" onclick="return confirmDelete();" class="btnActive">ลบ</a>
                 </td>
             </tr>
             <?php

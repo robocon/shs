@@ -1,11 +1,13 @@
-<?php
+<?php 
 session_start();
+require_once 'includes/config.php';
+
 $file = $_GET['path'];
 $hn = sprintf("%s", $_GET['hn']);
 $sOfficer = sprintf("%s", $_SESSION["sOfficer"]);
 
 $ch = curl_init(); 
-curl_setopt( $ch, CURLOPT_URL, "http://192.168.129.143/shslog/index.php"); 
+curl_setopt( $ch, CURLOPT_URL, NOTIFY_HOST."/shslog/index.php"); 
 curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0);
 curl_setopt( $ch, CURLOPT_SSLVERSION, 6);

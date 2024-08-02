@@ -4,7 +4,7 @@ include 'bootstrap.php';
 $user_session = get_session('sOfficer');
 if( empty($user_session) ){
 	?>
-	<p>Session หมดอายุ <a href="../nindex.htm">คลิกที่นี่</a>เพื่อ Login ใหม่</p>
+	<p>Session หมดอายุ <a href="../sm3.php">คลิกที่นี่</a> เพื่อ Login ใหม่อีกครั้ง</p>
 	<?php
 	exit;
 }
@@ -49,12 +49,12 @@ if ( $action === false ) {
 		'ADMPH' => 'ห้องยา',
 		'ADMPHA' => 'ห้องยา',
 		'ADMPHARX' => 'เภสัช',
-		'ADMPT' => 'กายภาพ',
+		'ADMPT' => 'กายภาพบำบัด',
 		'ADMSUB' => 'NCR',
 		'ADMSUR' => 'ห้องผ่าตัด',
 		'ADMVIP' => 'หอผู้ป่วยพิเศษ',
 		'ADMWF' => 'หอผู้ป่วยรวม',
-		'ADMXR' => 'รังษีกรรม',
+		'ADMXR' => 'รังสีกรรม',
 		'ADMLIBRARY' => 'เวชกรรมป้องกัน',
 		'ADMCMS' => 'หน่วยจ่ายกลาง',
 		'ADMNEWCHKUP' => 'ตรวจสุขภาพนอกโรงพยาบาล',
@@ -89,7 +89,7 @@ if ( $action === false ) {
 					<div class="cell">
 
 						<fieldset>
-							<legend>เลือกกลุ่มผู้ใช้งาน</legend>
+							<legend><span style="font-weight: bold; color:red;">1.&#41;</span> เลือกกลุ่มผู้ใช้งาน</legend>
 							<select name="section" id="section" onchange="changeCategory(this.value)">
 								<option value="">-- เลือกแผนก --</option>
 								<?php
@@ -130,7 +130,7 @@ if ( $action === false ) {
 						</script>
 						<div>
 							<fieldset>
-								<legend>เลือกผู้ใช้งาน</legend>
+								<legend><span style="font-weight: bold; color:red;">2.&#41;</span> เลือกผู้ใช้งาน</legend>
 								<div id="user_lists"></div>
 							</fieldset>
 						</div>
@@ -181,7 +181,8 @@ if ( $action === false ) {
 				</div>
 				<div class="col">
 					<div class="cell">
-						<button type="submit" id="sumitBtn">บันทึก</button>
+						<span><span style="font-weight: bold; color:red;">3.&#41;</span> กดปุ่มบันทึก >> </span><button type="submit" id="sumitBtn">บันทึก</button> 
+						<div style="    font-size: 18px;color: white;background-color: #b5b500;display: inline-block;padding: 4px;">กรุณาตรวจสอบรายชื่อด้านล่างก่อนทำการบันทึก</div>
 						<input type="hidden" name="action" value="save">
 					</div>
 				</div>

@@ -1,6 +1,8 @@
 <?php 
 error_reporting(E_ALL);
 include("connect.inc");
+require_once 'includes/config.php';
+
 ?>
 <meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8,chrome=1">
 <style>
@@ -478,8 +480,11 @@ return $pAge;
 <table width="100%" border="0">
   <tr>
     <td width="15%" align="center">
-<a href='Capture1.php?id=<?=$cIdcard;?>&hn=<?=$cHn;?>&yot=<?=$cYot;?>&name1=<?=$cName;?>&name2=<?=$cSurname;?>' target=_blank>
-    <IMG SRC='../image_patient/<?=$img;?>' WIDTH='100' HEIGHT='150' BORDER='0' ALT=''></a></td>
+	<!-- <a href='Capture1.php?id=<?=$cIdcard;?>&hn=<?=$cHn;?>&yot=<?=$cYot;?>&name1=<?=$cName;?>&name2=<?=$cSurname;?>'> -->
+	<a href="javascript: void(0)" onclick="window.open('<?=NOTIFY_HOST_CAMERA;?>/camera/index.php?idcard=<?=$cIdcard;?>','uploadPatientImg','width=1124,height=600,left=100,top=100')">
+    <IMG SRC='../image_patient/<?=$img;?>' WIDTH='100' HEIGHT='150' BORDER='0' ALT=''>
+	</a>
+	</td>
     <td width="85%" valign="top">
     	<table border="0">
       	<tr style="vertical-align:top;">
@@ -840,7 +845,7 @@ return $pAge;
     <td><input type="text" name="hphone" value="<?=$chPhone;?>" id="hphone"></td>
     <td align="right" class="fonthead">มือถือ(เบอร์หลัก):</td>
     <td colspan="5">
-		<input type="text" name="phone" size="10" maxlength="10" value="<?=$cPhone;?>" class="notify43">
+		<input type="text" name="phone" id="phone" size="10" maxlength="10" value="<?=$cPhone;?>" class="notify43">
 		<span class="fonthead" style="color:red;">ใส่เฉพาะตัวเลขเท่านั้น ถ้าไม่ทราบข้อมูลให้เว้นว่างไว้</span>
 	</td>
   </tr>
@@ -1689,6 +1694,14 @@ function checkForm(){
 		var birth_d = document.getElementById('birth_d');
 		var birth_m = document.getElementById('birth_m');
 		var birth_y = document.getElementById('birth_y');
+
+		const regexPhone = /^\d{9,10}$/i;
+		let resRegexPhone = document.f1.phone.value.match(regexPhone);
+		if(document.f1.phone.value !== '' && (typeof(resRegexPhone) === "undefined" || resRegexPhone === null) ){
+			document.f1.phone.focus();
+			alert('มือถือ(เบอร์หลัก) ไม่ถูกต้อง กรุณาตรวจสอบ\n- แนะนำว่าควรใส่เป็นเบอร์หลักเบอร์เดียว ถ้ามีมากกว่านั้น กรุณากรอกในช่อง โทรศัพท์\n- ไม่ควรมีช่องว่าง\n- ใส่เฉพาะตัวเลข\n- เบอร์มือควรมี 10หลัก\n- เบอร์บ้านควรมี 9หลัก');
+			return false;
+		}
 
 		stat2 = checkID();
 		if(document.f1.new_vn.value == ''){

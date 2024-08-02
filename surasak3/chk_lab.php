@@ -40,6 +40,12 @@ if( $action == 'saveCinicalinfo' ){
     $oldLabnumber = sprintf("%s", $_POST['oldLabnumber']);
     $newLabnumber = trim(sprintf("%s", $_POST['newLabnumber']));
 
+    $part = trim(sprintf("%s", $_POST['part']));
+    $hn = trim(sprintf("%s", $_POST['hn']));
+
+    $sqlUpdate = "UPDATE `opcardchk` SET `exam_no` = '$newLabnumber' WHERE `part` = '$part' AND `hn` = '$hn' ";
+    $save = $db->update($sqlUpdate);
+
     $sqlUpdate = "UPDATE resulthead SET labnumber = '$newLabnumber' WHERE labnumber = '$oldLabnumber' ";
     $save = $db->update($sqlUpdate);
     if($save===true){
@@ -61,6 +67,9 @@ if( $action == 'saveCinicalinfo' ){
     
     $msg = 'ข้อมูลไม่ถูกต้อง';
     if(!empty($labcode)){
+
+        $yearChk = get_year_checkup();
+
         $msg = 'บันทึกข้อมูลเรียบร้อย';
     
         $opc = new Opcard();
@@ -74,7 +83,7 @@ if( $action == 'saveCinicalinfo' ){
             'patientname' => $user['ptname'],
             'sex' => $sex,
             'dob' => $dob,
-            'clinicalinfo' => 'ตรวจสุขภาพประจำปี67' 
+            'clinicalinfo' => 'ตรวจสุขภาพประจำปี'.$yearChk
         );
         $insertOrderhead = $oh->insertOrderhead($data);
         if(!$insertOrderhead['error']){
@@ -206,6 +215,10 @@ if ( $page === 'form' ) {
         <legend>ข้อมูลเบื้องต้น</legend>
         <table>
             <tr>
+                <td align="right"><strong>Exam no : </strong></td>
+                <td><?=$user['exam_no'];?></td>
+            </tr>
+            <tr>
                 <td align="right"><b>HN : </b></td>
                 <td><?=$user['hn'];?></td>
             </tr>
@@ -217,6 +230,7 @@ if ( $page === 'form' ) {
                 <td align="right"><b>บริษัท : </b></td>
                 <td><?=$user['part'];?></td>
             </tr>
+            
         </table>
     </fieldset>
     <fieldset style="width:50%; margin-bottom:8px;">
@@ -533,6 +547,8 @@ if ( $page === 'form' ) {
                     data.push(encodeURIComponent('action')+"="+encodeURIComponent('saveLabnumber'));
                     data.push(encodeURIComponent('oldLabnumber')+"="+encodeURIComponent(labnumber));
                     data.push(encodeURIComponent('newLabnumber')+"="+encodeURIComponent(labnumberInput));
+                    data.push(encodeURIComponent('part')+"="+encodeURIComponent('<?=$user['part'];?>'));
+                    data.push(encodeURIComponent('hn')+"="+encodeURIComponent('<?=$user['hn'];?>'));
                     let dataPost = data.join("&");
                     
                     let response = await fetch('chk_lab.php', {
@@ -542,16 +558,18 @@ if ( $page === 'form' ) {
                         },
                         body: dataPost
                     });
-                    const body = await response.json();
                     
-                    Swal.fire({
-                        icon: "success",
-                        title: "บันทึกข้อมูลเรียบร้อย",
-                        showConfirmButton: false,
-                        timer: 1000
-                    }).then(()=>{
-                        location.reload(true);
-                    });
+                    const body = await response.json();
+                    if(body.status==200){
+                        Swal.fire({
+                            icon: "success",
+                            title: "บันทึกข้อมูลเรียบร้อย",
+                            showConfirmButton: false,
+                            timer: 1000
+                        }).then(()=>{
+                            location.reload(true);
+                        });
+                    }
                 }
             }
         </script>

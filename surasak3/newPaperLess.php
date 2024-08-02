@@ -51,8 +51,11 @@ if(empty($hn) OR empty($sOfficer)){
 			text-align: center;
 		}
 		#right-menu{
-			width: 86%;
-			float:right;
+			width: 87%;
+			float: right;
+			/* padding-left: 13%; */
+			top:0;
+			right:0;
 		}
 		#fullPage{
 			/* position:fixed; */
@@ -65,7 +68,7 @@ if(empty($hn) OR empty($sOfficer)){
         * {box-sizing: border-box;}
 
         .img-zoom-container {
-            position: relative;
+			position: fixed;
         }
 
         .img-zoom-lens {
@@ -98,6 +101,34 @@ if(empty($hn) OR empty($sOfficer)){
 	</style>
 	<div class="clearfix">
 		<div id="left-menu">
+			<div>
+				<form action="javascript:void(0);" method="post" onsubmit="eopdFormSearch();">
+					<?php 
+					$currentYear = date('Y');
+					$currentMonth = date('m');
+					$range = range(2019, $currentYear);
+					?>
+					<select name="selectYear" id="selectYear">
+						<option value="">All</option>
+						<?php 
+						foreach ($range as $key => $value) {
+							$select = ( $currentYear == $value ) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$value;?>" <?=$select;?>><?=($value+543);?></option>
+							<?php
+						}
+						?>
+					</select>
+					<select name="selectMonth" class="<?=$class_name;?>" id="selectMonth">
+						<option value="">All</option>
+						<?php foreach($def_month_th as $key => $month): ?>
+						<?php $select = ( $currentMonth == $key ) ? 'selected="selected"' : '' ; ?>
+						<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
+						<?php endforeach; ?>
+					</select>
+					<button type="submit">show</button>
+				</form>
+			</div>
 			<div class="row" id="thumbList"></div>
 		</div>
 		<div id="right-menu" class="img-zoom-container clearfix">
@@ -105,6 +136,44 @@ if(empty($hn) OR empty($sOfficer)){
 	</div>
 	<script type="text/javascript">
         
+		function eopdFormSearch(){
+			console.log("Form submit");
+
+			let selectYear = document.getElementById('selectYear').value;
+			let selectMonth = document.getElementById('selectMonth').value;
+			
+			let selectDate = "";
+			if(selectYear != "" && selectMonth != ""){
+				selectDate = "&date="+document.getElementById('selectYear').value+"-"+document.getElementById('selectMonth').value;
+			}else if(selectYear != "" && selectMonth == ""){
+				selectDate = "&date="+document.getElementById('selectYear').value;
+			}
+			
+			var request = new newXmlHttp();
+			var hn = '<?=$hn;?>';
+			request.open('GET', 'http://192.168.131.240:8081/api/getopcard?opcard_id='+hn+selectDate, true);
+			request.onreadystatechange = function () {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status < 400) { 
+						try {
+							var d = JSON.parse(request.responseText);
+							
+							addContentToThumbList(d)
+
+						} catch (error) {
+							// alert("เบราเซอร์เก่าเกินไป กรุณาอัพเกรดเป็นเบราเซอร์เวอร์ชั่นใหม่");
+              				// alert("asdfadsf");
+						}
+					} else {
+						// Error :(
+						// document.getElementById("resVacc").innerHTML = 'สัญญาณอินทราเน็ตมีปัญหา กรุณาลองใหม่อีกครั้ง';
+					}
+				} 
+			};
+
+			request.send();
+		}
+
 		var isNS = (navigator.appName == "Netscape") ? 1 : 0;
  
 		if(navigator.appName == "Netscape") document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
@@ -134,6 +203,7 @@ if(empty($hn) OR empty($sOfficer)){
             /* Calculate the ratio between result DIV and lens: */
             cx = result.offsetWidth / lens.offsetWidth;
             cy = result.offsetHeight / lens.offsetHeight;
+
             /* Set background properties for the result DIV */
             result.style.backgroundImage = "url('" + img.src + "')";
 			
@@ -141,7 +211,7 @@ if(empty($hn) OR empty($sOfficer)){
 				img.height=570;
 			}
 
-            result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+            result.style.backgroundSize = (img.width * Math.floor(cx)) + "px " + (img.height * Math.ceil(cy)) + "px";
             /* Execute a function when someone moves the cursor over the image, or the lens: */
             lens.addEventListener("mousemove", moveLens);
             img.addEventListener("mousemove", moveLens);
@@ -196,9 +266,7 @@ if(empty($hn) OR empty($sOfficer)){
                 };
             }
         }
-
         
-
 		function newXmlHttp(){
 			var xmlhttp = false;
 			try{
@@ -228,26 +296,7 @@ if(empty($hn) OR empty($sOfficer)){
 						try {
 							var d = JSON.parse(request.responseText);
 							
-							if(d.totalCount>0){ 
-								d.list.reverse();
-								var html = '';
-								for (var index = 0; index < d.list.length; index++) {
-									const element = d.list[index];
-
-									var dateSplit = element.date.split(" ");
-									var dd = dateSplit[0].split("-");
-									var year = parseInt(dd[0])+543;
-									var month = def_fullm_th[dd[1]];
-
-									html += '<div class="column thumbContain">';
-									html += '<img src="'+element.thumbnail+'" alt="Lights" class="thumbImg" loading="lazy" onclick="myFunction(\''+element.original+'\');">';
-									html += '<p><b>'+dd[2]+' '+month+' '+year+'</b></p>';
-									html += '</div>';
-								}
-								document.getElementById('thumbList').innerHTML = html;
-							}else{
-								document.getElementById('thumbList').innerHTML = '<p>ยังไม่มีประวัติ e-OPD</p>';
-							}
+							addContentToThumbList(d)
 
 						} catch (error) {
 							// alert("เบราเซอร์เก่าเกินไป กรุณาอัพเกรดเป็นเบราเซอร์เวอร์ชั่นใหม่");
@@ -262,6 +311,31 @@ if(empty($hn) OR empty($sOfficer)){
 
 			request.send();
 		}
+
+		function addContentToThumbList(d){
+			if(d.totalCount>0){ 
+				// d.list.reverse();
+				var html = '';
+				for (var index = 0; index < d.list.length; index++) {
+					const element = d.list[index];
+
+					var dateSplit = element.date.split(" ");
+					var dd = dateSplit[0].split("-");
+					var year = parseInt(dd[0])+543;
+					var month = def_fullm_th[dd[1]];
+
+					html += '<div class="column thumbContain">';
+					html += '<img src="'+element.thumbnail+'" alt="Lights" class="thumbImg" loading="lazy" onclick="myFunction(\''+element.original+'\');">';
+					html += '<p><b>'+dd[2]+' '+month+' '+year+'</b></p>';
+					html += '</div>';
+				}
+				document.getElementById('thumbList').innerHTML = html;
+			}else{
+				document.getElementById('thumbList').innerHTML = '<p>ยังไม่มีประวัติ e-OPD</p>';
+			}
+		}
+
+
 		
 		// ส่ง url ของรูปเข้ามา
 		function myFunction(url){ 
@@ -284,11 +358,11 @@ if(empty($hn) OR empty($sOfficer)){
 			var img = document.createElement("img");
 			img.src = url;
 			img.setAttribute("id", "myZoomImage");
-            img.setAttribute("style", "width: 400px; float: left;");
+            img.setAttribute("style", "width: 100%; float: left;");
 
 			// div สำหรับเก็บรูปใหญ่ที่แสดง กับ link
 			var previewImgContain = document.createElement("div");
-			previewImgContain.setAttribute("style", "float:left;");
+			previewImgContain.setAttribute("style", "float:left; position:relative; width:35%;");
 			previewImgContain.appendChild(img);
 			
 			// สร้างลิ้งสำหรับสั่งพิมพ์
@@ -310,7 +384,7 @@ if(empty($hn) OR empty($sOfficer)){
 			// แปะ div สำหรับซูม
             rightMenu.innerHTML += '<div id="myresult" class="img-zoom-result" style="float:left;"></div>';
 			
-            document.getElementById("myresult").setAttribute("style", "background-image: url("+url+"); float:left; width: 63%;");
+            document.getElementById("myresult").setAttribute("style", "background-image: url("+url+"); float:left; width: 65%;");
             
 			imageZoom("myZoomImage", "myresult");
 		}
@@ -328,23 +402,18 @@ if(empty($hn) OR empty($sOfficer)){
 			sendLog(url, dataPost);
 			
 			var target = encodeURIComponent('print_eopd.php?img='+url);
-			// var printUrl = 'http://localhost/shspdf/printPdf.php?target='+target;
-			var printUrl = 'http://192.168.129.143/shspdf/printPdf.php?target='+target;
+			var printUrl = '<?=NOTIFY_HOST;?>/shspdf/printPdf.php?target='+target;
 			window.open(printUrl,"myWindow","_blank");
 		}
 
 		async function sendLog(url, dataPost){
-			try{
-				await fetch('http://192.168.129.143/shslog/index.php', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-					},
-					body: dataPost
-				});
-			}catch(error){
-				console.log(error)
-			}
+			await fetch('<?=NOTIFY_HOST;?>/shslog/index.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				body: dataPost
+			});
 		}
 	</script>
 </body>

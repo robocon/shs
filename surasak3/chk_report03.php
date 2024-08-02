@@ -666,15 +666,30 @@ if( $num > 0 ){
 								}
 								
 							}else{
-								
 								if($objResult['flag']=='L' || $objResult['flag']=='H' || $objResult['result']=='1+'|| $objResult['result']=='2+'|| $objResult['result']=='3+'|| $objResult['result']=='4+'|| $objResult['result']=='5+'|| $objResult['result']=='6+'|| $objResult['result']=='7+'|| $objResult['result']=='8+'|| $objResult['result']=='9+'){
 									$objResult["result"]="<strong>".$objResult["result"]."</strong>";
 									$showresultua="ผิดปกติ";
 								}else{
-									$objResult["result"]=$objResult["result"];
+									// $objResult["result"]=$objResult["result"];
 									$showresultua="ปกติ";
 								}
 							}
+
+							// พวกผลที่เป็น Range เช่น xx-xx
+							$resultRangeTxt = str_replace(' ', '', $objResult["result"]);
+							$normalRangeTxt = str_replace(' ', '', $objResult["normalrange"]);
+							if(strstr($resultRangeTxt, '-')!==false){ 
+								
+								list($resultMin, $resultMax) = explode('-', $resultRangeTxt);
+								list($normalMin, $normalMax) = explode('-', $normalRangeTxt);
+
+								$showresultua="ผิดปกติ";
+								if( ($resultMin >= $normalMin && $resultMin <= $normalMax) && ($resultMax >= $normalMin && $resultMax <= $normalMax) ){
+									$showresultua="ปกติ";
+								}
+								
+							}
+							// พวกผลที่เป็น Range เช่น xx-xx
 							
 							if($objResult["labcode"]=="PROU" || $objResult["labcode"]=="GLUU"){
 								$normalrange="Negative";
@@ -798,7 +813,7 @@ $outlab_query = mysql_query($sql) or die( mysql_error() );
 $outlab_row = mysql_num_rows($outlab_query);
 // ตัดพวก outlab ออกไปก่อน
 
- if( $other_result_row > 0 ){ 
+ if( $other_result_row > 0 || $outlab_row > 0 ){ 
  ?>
 	<tr>
 		<td colspan="2" valign="top">
@@ -1220,7 +1235,6 @@ $outlab_row = mysql_num_rows($outlab_query);
 								'PSA' => '0-4',
 							);
 						
-			
 							if( $outlab_row > 0 ){
 
 
@@ -1279,8 +1293,6 @@ $outlab_row = mysql_num_rows($outlab_query);
 									<?php
 								}
 							}
-
-
 							
 							if( !empty($c_s) ){
 								?>
@@ -1292,8 +1304,6 @@ $outlab_row = mysql_num_rows($outlab_query);
 								</tr>
 								<?php
 							}
-							
-
 
 							
 							if( $result['metal'] != '' && $result['metal_result'] != '' ){ 

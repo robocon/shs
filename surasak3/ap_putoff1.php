@@ -4,7 +4,7 @@ include_once 'bootstrap.php';
 include_once 'class_file/class_appoint.php';
 include_once 'class_file/class_doctor.php';
 
-include("connect.inc");
+include("connect.php");
 
 $app = new Appoint();
 $doctor = new Doctor();
@@ -33,7 +33,7 @@ if($page==='loadCalendar'){
 	font-family: "TH SarabunPSK";
 	font-size:30px;
 }
-.font1 {
+.font1,select,option {
 	font-family: "TH SarabunPSK";
 	font-size:20px;
 }
@@ -59,8 +59,13 @@ function CheckAll() {
 </script>
 <body>
 <div id="no_print" >
-<center><span class="font3"><strong>โปรแกรมเลื่อนนัด</strong></span></center>
-<a target=_top  href="../nindex.htm"><< ไปเมนู </a><br />
+
+<div>
+	<a target=_top  href="../nindex.htm">&lt;&lt;&nbsp; ไปเมนู</a> | <a target="_blank"  href="exam_doctor.php">จัดการตารางออกตรวจของแพทย์</a>
+	<center><span class="font3"><strong>โปรแกรมเลื่อนนัด</strong></span></center>
+</div>
+
+<br />
 <form action="ap_putoff1.php" method="post" class="font1" name="form11">
 <table width="38%" border="1" cellpadding="0" cellspacing="0">
 <tr>
@@ -152,7 +157,21 @@ $doctor111 =substr($_POST['dr'],0,5);
 		if($num1>0){
 			echo "<form action='ap_putoff1.php' method='post' class='font1' name='form12'>";
 			echo "<strong>วันที่ ".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."</strong>";
-			echo "<table border='1' class='font1' style='border-collapse:collapse' width='100%'><tr><strong><td align='center'>HN</td><td align='center'>ชื่อ-สกุล</td><td align='center'>ที่อยู่</td><td align='center'>เบอร์โทร.</td><td align='center'>อายุ</td><td align='center'>นัดมาเพื่อ</td><td align='center'>วันที่</td><td align='center'>เวลา</td><td align='center'>เลือก </td></strong>";
+			?>
+			<table border="1" class="font1" style="border-collapse:collapse" width="100%">
+				<tr style="background-color: #009688; color: #ffffff;">
+					<th align="center">HN</th>
+					<th align="center">ชื่อ-สกุล</th>
+					<th align="center">ที่อยู่</th>
+					<th align="center">เบอร์โทร.</th>
+					<th align="center">อายุ</th>
+					<th align="center">นัดมาเพื่อ</th>
+					<th align="center">เพิ่มเติม</th>
+					<th align="center">วันที่</th>
+					<th align="center">เวลา</th>
+					<th align="center">เลือก </th>
+				</tr>
+			<?php
 			//<input name='chch' type='checkbox' onclick=CheckAll();>
 			$i=0;
 			while($result = mysql_fetch_array($row)){
@@ -166,6 +185,7 @@ $doctor111 =substr($_POST['dr'],0,5);
 				echo "<td>".$num3['phone']."</td>";
 				echo "<td>".$result['age']."</td>";
 				echo "<td>".$result['detail']."</td>";
+				echo "<td>".$result['detail2']."</td>";
 				echo "<td>".$result['appdate']."</td>";
 				echo "<td>".$result['apptime']."</td>";
 				echo "<td align='center'><input name='ch".$i."' id='ch".$i."' type='checkbox' value='".$result['row_id']."' ></td></tr>";

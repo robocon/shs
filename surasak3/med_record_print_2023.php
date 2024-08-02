@@ -1,9 +1,7 @@
-<?
+<?php
 session_start();
 include("connect.inc");
-
-// var_dump($_SESSION);
-// exit;
+require_once 'includes/config.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -155,7 +153,7 @@ list($hn,$age,$ptname,$ward,$bedcode,$ptright,$diag,$doctor)=mysql_fetch_array($
 	</td>
 	<td width='15%' align='center' valign="middle">
 		<div id="no-print" align="center">
-		<div><A HREF="https://192.168.129.143/testqrcode/ipd_drugorder.php?an=<?=$an;?>&hn=<?=$hn;?>&act=<?=$getact;?>"><button type="button" class="button-green" style="width:200px;"><img src="images/nurse.png" height="32px" width="32px" /><br>จ่ายยาผู้ป่วย</button></a></div>
+		<div><A HREF="<?=NOTIFY_HOST;?>/testqrcode/ipd_drugorder.php?an=<?=$an;?>&hn=<?=$hn;?>&act=<?=$getact;?>"><button type="button" class="button-green" style="width:200px;"><img src="images/nurse.png" height="32px" width="32px" /><br>จ่ายยาผู้ป่วย</button></a></div>
 		</div>
 	</td>	
 	<td width='20%'>
