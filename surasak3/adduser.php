@@ -120,15 +120,6 @@ if ($act == "add") {
 </head>
 <body>
 <style type="text/css">
-    * {
-        font-family: "TH SarabunPSK";
-        font-size: 20px;
-    }
-    table.table th, #comNav{
-		background-color: #13795b; 
-		color: #ffffff;
-	}
-
     .style1 {
         color: #FF0000
     }
@@ -157,7 +148,7 @@ require_once 'com_user_menu.php';
 $idcard = sprintf("%s", (!empty($_POST["idcard"]) ? $_POST["idcard"] : '' ));
 $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ));
 ?>
-<div class="container">
+<div class="container mt-2">
     <h3 class="h3">เพิ่มข้อมูลผู้ใช้งานระบบ</h3>
     <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="f1">
         <table>

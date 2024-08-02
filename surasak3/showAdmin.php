@@ -30,24 +30,27 @@ if(!empty($group)){
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
-    <div class="container">
+    <style type="text/css">
+        * {
+            font-family: "TH SarabunPSK";
+            font-size: 20px;
+        }
+        table.table th, #comNav{
+            background-color: #13795b; 
+            color: #ffffff;
+        }
+    </style>
+    <div class="container mt-2">
         <h3>ติดต่อ Admin ประจำแผนก</h3>
         <div class="alert alert-warning" role="alert">หากรายชื่อไม่ถูกต้อง กรุณาประสานศูนย์คอมพิวเตอร์เพื่อทำการอัพเดทข้อมูล ขอบคุณครับ</div>
         <div class="row">
             <div class="col-md-6">
-                <table class="table">
+                <table class="table table-hover">
                     <tr>
                         <th>ชื่อ-สกุล</th>
                         <th>แผนก</th>
                     </tr>
                     <?php 
-                    // $sql = "SELECT `name`,`menucode` FROM `departments` WHERE `status`='y' AND `menucode` <> '' ORDER BY `id` ASC";
-                    // $q = $dbi->query($sql);
-                    // $departments = array();
-                    // while ($b = $q->fetch_assoc()) {
-                    //     $key = $b['menucode'];
-                    //     $departments[$key] = $b['name'];
-                    // }
 
                     $departments = array(
                         'ADMCOM' => 'ศูนย์คอมพิวเตอร์',

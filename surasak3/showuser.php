@@ -21,12 +21,6 @@ if($officerLevel!='admin'){
 
 $officerName = sprintf("%s", $_SESSION['sOfficer']);
 
-
-// if($sessionMenucode != $getMenucode){
-// 	echo "ไม่สามารถแก้ไขข้ามแผนกได้ กรุณาติดต่อโปรแกรมเมอร์ .... ไหว้ละจ้าาาาา ";
-// 	exit;
-// }
-
 if($_SESSION['sLevel']!=='admin' && $sessionMenucode !== 'ADM'){
 	echo "กรุณาติดต่อผู้ใช้งานระดับ Admin ประจำแผนกของท่าน<br>";
 	$sql = "SELECT `name` FROM `inputm` WHERE `menucode` = '$sessionMenucode' AND `level` = 'admin' ";
@@ -42,12 +36,12 @@ $act = sprintf("%s", $_GET["act"]);
 if ($act == "disable") {
 
 	$id = sprintf("%s", $_GET["id"]);
-	$sql = "UPDATE `inputm` AS a INNER JOIN ( SELECT `row_id` FROM `inputm` WHERE `row_id` = '$id' ) AS b ON a.`row_id` = b.`row_id` SET a.`status` = 'N' ";
+	$sql = "UPDATE `inputm` SET `status` = 'N' WHERE row_id = '$id' ";
 	$q = $dbi->query($sql);
-	if ($q) { 
+	if ($q !== false) { 
 		$res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย');
 	} else {
-		$res = array('status'=>400, 'message'=>$dbi->error);
+		$res = array('status'=>400, 'message'=>'ไม่พบผู้ใช้งาน');
 	}
 	echo $json->encode($res);
     exit;
@@ -82,11 +76,10 @@ require_once 'com_user_menu.php';
 			}
 			?>
 			<th width="15%">ระดับ</th>
-			<th width="15%">สถานะ</th>
 			<th width="30">จัดการข้อมูล</th>
 		</tr>
 		<?php
-		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'Y' ORDER BY `row_id` ASC ";
+		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$sessionMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'Y' ORDER BY `row_id` ASC ";
 		$q = $dbi->query($sql);
 		$num = $q->num_rows;
 		if ($num > 0) {
@@ -94,18 +87,15 @@ require_once 'com_user_menu.php';
 			$i = 0;
 			while ($rows = $q->fetch_assoc()) {
 				$i++;
-
-                $statusTxt = 'ใช้งาน';
 				$statusClass='';
                 if(strtolower($rows["status"])!='y'){
-                    $statusTxt = '<strong class="text-danger">ปิดการใช้งาน</strong>';
 					$statusClass='table-warning';
                 }
 				?>
 				<tr class="<?=$statusClass;?>" id="user-<?=$rows['row_id'];?>">
 					<td><?=$i; ?></td>
 					<td>
-						<a href="edituser.php?menucode=<?=$getMenucode; ?>&id=<?= $rows["row_id"]; ?>" title="คลิกเพื่อแก้ไข"><?=$rows["name"];?></a>
+						<a href="edituser.php?menucode=<?=$sessionMenucode; ?>&id=<?= $rows["row_id"]; ?>" title="คลิกเพื่อแก้ไข"><?=$rows["name"];?></a>
 					</td>
 					<?php 
 					if($sessionMenucode=='ADM'){
@@ -113,7 +103,6 @@ require_once 'com_user_menu.php';
 					}
 					?>
 					<td><?=$rows["level"];?></td>
-                    <td><span class="badge text-bg-info"><?=$statusTxt;?></span></td>
 					<td>
 						<?php 
 						// ไม่ให้ Disable ตัวเอง หรือในระดับ Admin ด้วยกันเอง
@@ -122,7 +111,6 @@ require_once 'com_user_menu.php';
 							if($officerName==$rows['name'] || $officerLevel==$rows['level']){
 								$disable = 'aria-disabled="true"';
 								$disableIcon = 'disabled';
-								$url = 'javascript:void(0);';
 							}
 						}
 						?>
@@ -137,7 +125,6 @@ require_once 'com_user_menu.php';
 	<script>
 		function onDisable(id){
 			onDisableProcess(id).then((res)=>{
-				console.log(res);
 				if(res.status==200){
 					document.getElementById('user-'+id).remove();
 					Swal.fire({
