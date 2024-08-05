@@ -5,8 +5,9 @@ include("connect.php");
 $action = sprintf("%s", $_POST['action']);
 if ( $action == 'setNewPass' && ( $newpw1 == $newpw2) ){
 
-    $password = sprintf("%s", $_POST['password']);
-    $newpw1 = sprintf("%s", $_POST['newpw1']);
+	$username = sprintf("%s", $_POST['user']);
+    $password = sprintf("%s", $_POST['oldpass']);
+    $newpw1 = sprintf("%s", $_POST['newpass']);
 		$query = "SELECT * FROM inputm WHERE idname = '$username' and pword='$password'";
 		$result = mysql_query($query) or die("Query failed");
 		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -18,29 +19,38 @@ if ( $action == 'setNewPass' && ( $newpw1 == $newpw2) ){
 			if (!($row = mysql_fetch_object($result)))
 				continue;
 		}
+
 		if (mysql_num_rows($result)) {
 
-			$sPword = $newpw1;
-			$query = "UPDATE `inputm` SET `pword` = '$newpw1',`date_pword`='" . date("Y-m-d H:s:i") . "' WHERE `idname`= '$username' ";
-			$result = mysql_query($query) or die("รหัสผ่านซ้ำที่มีอยู่เดิม ไม่สามารถเปลี่ยนรหัสผ่านได้");
 
-			echo "<script>alert('เปลี่ยนรหัสผ่านเรียบร้อย');window.location='../display.php';</script>";
+			$query = "UPDATE `inputm` SET `pword` = '$newpw1',`date_pword`='" . date("Y-m-d H:s:i") . "' WHERE `idname`= '$username' ";
+			$result = mysql_query($query);
+			$res = '{"status":200,"message":"เปลี่ยนรหัสผ่านเรียบร้อย"}';
+			
 		} else {
-			echo "<br><br><br>........ชื่อผู้ใช้หรือรหัสผ่านเดิมไม่ถูกต้อง  ไม่สามารถเปลี่ยนรหัสผ่านได้ !<br>";
+
+			$res = '{"status":400,"message":"ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง"}';
 		}
+		echo $res;
+		exit;
 
 }elseif($action == 'checkOldPass'){
 	
 	$id = sprintf("%s", $_POST['id']);
 	$pass = sprintf("%s", $_POST['pass']);
-	$sql = "SELECT `row_id` FROM `inputm` WHERE `row_id` = '$id' AND `pword` = '$pass' LIMIT 1; ";
-	$q = mysql_query($sql);
-	$qRow = mysql_num_rows($q);
-	if($qRow==0){
-		$res = '{"status":"400","message":"รหัสผ่านเก่าไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง"}';
-	}elseif($qRow==1){ // ถ้ามีแสดงว่ารหัสผ่านเก่าตรงกัน
-		$res = '{"status":"200","message":"ยืนยันรหัสผ่านเก่าถูกต้อง"}';
+	if(empty($id) OR empty($pass)){
+		$res = '{"status":400,"message":"ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง"}';
+	}else{
+		$sql = "SELECT `row_id` FROM `inputm` WHERE `row_id` = '$id' AND `pword` = '$pass' LIMIT 1; ";
+		$q = mysql_query($sql);
+		$qRow = mysql_num_rows($q);
+		if($qRow==0){
+			$res = '{"status":400,"message":"รหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง"}';
+		}elseif($qRow==1){ // ถ้ามีแสดงว่ารหัสผ่านเก่าตรงกัน
+			$res = '{"status":200,"message":"ยืนยันรหัสผ่านเก่าถูกต้อง"}';
+		}
 	}
+	
 	echo $res;
 	exit;
 }else{
