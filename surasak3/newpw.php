@@ -33,7 +33,7 @@ function usingIE()
 <body>
     <style type="text/css">
         body {
-            background-color: #E9F7EF;
+            /* background-color: #E9F7EF; */
         }
 
         *{
@@ -47,7 +47,6 @@ function usingIE()
 
         input[readonly] {
             background-color: #d5d5d5;
-            ;
         }
     </style>
     <div class="container mt-4">

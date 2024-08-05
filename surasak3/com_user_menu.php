@@ -20,10 +20,10 @@ $menuCode = sprintf("%s", $_GET["menucode"]);
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="showuser.php?menucode=<?=$menuCode;?>">รายชื่อ &#128195;</a>
+          <a class="nav-link active" aria-current="page" href="showuser.php">รายชื่อ &#128195;</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="adduser.php?menucode=<?=$menuCode;?>">เพิ่มผู้ใช้ &#128118;</a>
+          <a class="nav-link" href="adduser.php">เพิ่มผู้ใช้ &#128118;</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="disableuser.php">รายชื่อปิดใช้งาน 🗑️</a>
