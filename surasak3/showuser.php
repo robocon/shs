@@ -98,15 +98,16 @@ require_once 'com_user_menu.php';
 	<h3>จัดการข้อมูลผู้ใช้งานระบบ</h3>
 	<table class="table table-hover">
 		<tr>
-			<th width="10%">ลำดับ</th>
-			<th width="30%">ชื่อ - นามสกุล</th>
+			<th>ลำดับ</th>
+			<th>ชื่อ - นามสกุล</th>
 			<?php 
 			if($sessionMenucode=='ADM'){
-				?><th width="15%">part</th><?php
+				?><th>part</th><?php
 			}
 			?>
-			<th width="15%">ระดับ</th>
-			<th width="30">จัดการข้อมูล</th>
+			<th>ระดับ</th>
+			<th>วันเข้าใช้งาน</th>
+			<th>จัดการข้อมูล</th>
 		</tr>
 		<?php
 		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$sessionMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'Y' ORDER BY `row_id` ASC ";
@@ -133,6 +134,7 @@ require_once 'com_user_menu.php';
 					}
 					?>
 					<td><?=$rows["level"];?></td>
+					<td><?=$rows['last_login'];?></td>
 					<td>
 						<?php 
 						// ไม่ให้ Disable ตัวเอง หรือในระดับ Admin ด้วยกันเอง

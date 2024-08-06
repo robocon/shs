@@ -11,13 +11,9 @@ if ($loginLevel !== 'admin') {
 	exit;
 }
 
-$act = sprintf("%s", $_REQUEST["act"]);
-if ($act == "editFullname") {
-
-	$fullname = sprintf("%s", $_POST["fullname"]);
-	$row_id = sprintf("%s", $_POST["row_id"]);
-
-	$q = $dbi->query("UPDATE `inputm` SET `name`='$fullname' WHERE `row_id`='$row_id' LIMIT 1");
+function updateStatement($sql){
+	global $dbi, $json;
+	$q = $dbi->query($sql);
 	if($q !== false) {
 		$res = array('status'=>200, 'message'=> 'บันทึกข้อมูลเรียบร้อย');
 	} else {
@@ -25,15 +21,23 @@ if ($act == "editFullname") {
 	}
 	echo $json->encode($res);
 	exit;
+}
+
+$act = sprintf("%s", $_REQUEST["act"]);
+if ($act == "editFullname") {
+
+	$fullname = sprintf("%s", $_POST["fullname"]);
+	$row_id = sprintf("%s", $_POST["row_id"]);
+
+	updateStatement("UPDATE `inputm` SET `name`='$fullname' WHERE `row_id`='$row_id' LIMIT 1");
+	exit;
 
 } elseif ($act == "updatePass") {
 
 	$row_id = sprintf("%s", $_POST["row_id"]);
 	$password = sprintf("%s", $_POST["password"]);
-	$sql = "UPDATE `inputm` SET `pword`='$password' WHERE `row_id`='$row_id' LIMIT 1";
-	dump($sql);
-	// $q = $dbi->query($sql);
-	// redirect('edituser.php?menucode='.$menucode.'&id='.$row_id, 'บันทึกข้อมูลเรียบร้อย');
+
+	updateStatement("UPDATE `inputm` SET `pword`='$password' WHERE `row_id`='$row_id' LIMIT 1");
 	exit;
 
 } elseif ($act == "updateLevel") {
@@ -41,9 +45,7 @@ if ($act == "editFullname") {
 	$row_id = sprintf("%s", $_POST["row_id"]);
 	$userlevel = sprintf("%s", $_POST["userlevel"]);
 
-	// $sql = "UPDATE `inputm` SET `level`='$userlevel' WHERE `row_id`='$row_id' LIMIT 1";
-	// $q = $dbi->query($sql);
-	// redirect('edituser.php?menucode='.$menucode.'&id='.$row_id, 'บันทึกข้อมูลเรียบร้อย');
+	updateStatement("UPDATE `inputm` SET `level`='$userlevel' WHERE `row_id`='$row_id' LIMIT 1");
 	exit;
 
 }elseif ($act == "editUsername") {
@@ -70,9 +72,8 @@ if ($act == "editFullname") {
 	$row_id = sprintf("%s", $_POST["row_id"]);
 	$department = sprintf("%s", $_POST["department"]);
 
-	// $sql = "UPDATE `inputm` SET `menucode`='$department' WHERE `row_id`='$row_id' LIMIT 1";
-	// $q = $dbi->query($sql);
-	// redirect('edituser.php?menucode='.$menucode.'&id='.$row_id, 'บันทึกข้อมูลเรียบร้อย');
+	$sql = "UPDATE `inputm` SET `menucode`='$department' WHERE `row_id`='$row_id' LIMIT 1";
+	updateStatement($sql);
 	exit;
 }
 
@@ -217,15 +218,15 @@ require_once 'com_user_menu.php';
         }
 	</script>
 	
-	<form action="edituser.php?act=updateLevel" method="post" name="form4" class="border-bottom mt-4">
+	<form action="edituser.php?act=updateLevel" method="post" name="form4" class="border-bottom mt-4" onsubmit="return formUpdateLevel()">
 		<div class="mb-3 row">
 			<label for="password" class="col-sm-2 col-form-label">ระดับผู้ใช้งาน : </label>
 			<div class="col-sm-6 col-md-4">
-				<?php 
-				$levelList = array('admin','user');
+				<?php
+				$levelList = array('user','admin');
 				?>
 				<select name="userlevel" id="userlevel" class="form-select">
-					<?php 
+					<?php
 					foreach ($levelList as $ll) {
 						$selected = ($ll == $rows['level']) ? 'selected="selected"' : '' ;
 						?>
@@ -239,12 +240,11 @@ require_once 'com_user_menu.php';
 		<div class="mb-3 row">
 			<div class="col-sm-10">
 				<button type="submit" class="btn btn-primary" id="saveLevel">บันทึก</button>
-				
 			</div>
 		</div>
 	</form>
 	
-	<form action="edituser.php?act=updateDepartment" method="post" name="form5" class="mt-4">
+	<form action="edituser.php?act=updateDepartment" method="post" name="form5" class="mt-4" onsubmit="return formUpdateDepartment()">
 		<div class="mb-3 row">
 			<label for="password" class="col-sm-2 col-form-label">แผนกผู้ใช้งาน : </label>
 			<div class="col-sm-6 col-md-4">
@@ -372,12 +372,44 @@ require_once 'com_user_menu.php';
             data.push(encodeURIComponent('row_id') + "=" + encodeURIComponent('<?=$id;?>'));
             let dataPost = data.join("&");
 
-			console.log(dataPost);
+			sendForm(dataPost).then((res)=>{
+				Swal.fire(res.message);
+				if(res.status===200){
+					document.getElementById('password').value='';
+					document.getElementById('password2').value='';
+				}
+			});
+			
+		}
+
+		function formUpdateLevel(){
+			let userlevel = document.getElementById('userlevel').value.trim();
+
+			let data = [];
+			data.push(encodeURIComponent('act') + "=" + encodeURIComponent('updateLevel'));
+            data.push(encodeURIComponent('userlevel') + "=" + encodeURIComponent(userlevel));
+            data.push(encodeURIComponent('row_id') + "=" + encodeURIComponent('<?=$id;?>'));
+            let dataPost = data.join("&");
 
 			sendForm(dataPost).then((res)=>{
 				Swal.fire(res.message);
 			});
+			return false;
+		}
 
+		function formUpdateDepartment(){
+			let department = document.getElementById('department').value.trim();
+
+			let data = [];
+			data.push(encodeURIComponent('act') + "=" + encodeURIComponent('updateDepartment'));
+            data.push(encodeURIComponent('department') + "=" + encodeURIComponent(department));
+            data.push(encodeURIComponent('row_id') + "=" + encodeURIComponent('<?=$id;?>'));
+            let dataPost = data.join("&");
+
+			sendForm(dataPost).then((res)=>{
+				Swal.fire(res.message);
+			});
+			return false;
 		}
 	</script>
 </div>
