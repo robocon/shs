@@ -5,9 +5,10 @@ include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-if (!isset($sOfficer)) {
-	echo "กรุณาเข้าสู่ระบบใหม่ <br>";
-	echo "<a href='../sm3.php'>กดที่นี่เพื่อ Login อีกครั้ง</a>";
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 	exit();
 }
 
