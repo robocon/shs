@@ -442,3 +442,25 @@ function findPtAge($birth,$type='f'){
 	
 	return $pAge;
 }
+
+
+function sendLineNotify($sMessage, $token=null){ 
+
+	// Default เป็น token ไลน์ศูนย์คอมฯ
+	$sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
+
+	if(!empty($token)){
+		$sToken = $token;
+	}
+	
+	$curl = curl_init();
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
+	curl_setopt( $curl, CURLOPT_POST, 1);
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+	$result = curl_exec( $curl );
+	curl_close($curl);
+
+	return $result;
+}
