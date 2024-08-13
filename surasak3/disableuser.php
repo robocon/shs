@@ -40,13 +40,13 @@ if($action=='enable'){
         $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
         $smenucode = sprintf("%s", $_SESSION['smenucode']);
 
-        $message = "$sOfficer($smenucode) ได้ขอลบผู่้ใช้งาน ".$user['name'].'('.$user['menucode'].') เหตุผล: '.$detail;
-        // 'LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL'
+        $message = "$sOfficer($smenucode) ได้ขอลบผู้ใช้งาน ".$user['name'].'('.$user['menucode'].') เหตุผล: '.$detail;
+        // 'LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL' // ตัวเทสเท่านั้น
         $lineRes = sendLineNotify($message);
         if($lineRes===false){
             $res = array('status'=>400, 'message'=>'ระบบการแจ้งเตือนขัดข้อง กรุณาตรวจสอบอินเตอร์เน็ตว่าสามารถใช้งานได้ตามปกติได้หรือไม่');
         }else{
-            $res = array('status'=>200, 'message'=>'return กลับมาเฉยๆ');
+            $res = array('status'=>200, 'message'=>'OK');
         }
         
     }else{

@@ -8,6 +8,12 @@ $dbi->query("SET NAMES UTF8");
 
 $json = new Services_JSON();
 
+$sessionMenucode = sprintf("%s", $_SESSION['smenucode']);
+if(empty($sessionMenucode)){
+	echo "Invalid data";
+	exit;
+}
+
 $departments = array(
     'ADMCOM' => 'ศูนย์คอมพิวเตอร์',
     'ADMOPD' => 'ทะเบียน',
@@ -54,28 +60,51 @@ $act = sprintf("%s", (!empty($_POST["act"]) ? $_POST["act"] : '' ));
 if ($act == "add") {
     if (!empty($_POST["txtuser"])) {
 
-        $date_pword = date("Y-m-d H:i:s");
+
         $txtname = sprintf("%s", $_POST["txtname"]);
         $txtuser = sprintf("%s", $_POST["txtuser"]);
-        $txtpass = sprintf("%s", $_POST["txtpass"]);
+        $password1 = sprintf("%s", $_POST["password1"]);
         $idcard = sprintf("%s", $_POST["idcard"]);
-        $oldMenucode = $menucode = sprintf("%s", $_POST["menucode"]);
+        
         $eopd = sprintf("%s", $_POST["eopd"]);
         $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
-
-        $department == sprintf("%s", $_POST['department']);
-        if(!empty($department)){
-            $menucode = $department;
-        }
+        $department = sprintf("%s", $_POST['department']);
+        $position = sprintf("%s", $_POST['position']);
+        $perform = sprintf("%s", $_POST['perform']);
+        // if(!empty($department)){
+        //     $menucode = $department;
+        // }
 
         $eopdStatus = 'n';
         if($eopd=='1'){
             $eopdStatus = 'y';
         }
 
+        $sql = "INSERT INTO `form_inputm` 
+        (`id`, `date`, `fullname`, `idcard`, `department`, `position`, `perform`, `user`, `pass`, `e_opd`, `status`, `last_update`, `officer`) 
+        VALUES 
+        (NULL, NOW(), '$txtname', '$idcard', '$department', '$position', '$perform', '$txtuser', '$password1', '$eopdStatus', 'H', NULL, '$sOfficer');";
+        $q = $dbi->query($sql);
+        if ($q!==false) { 
+
+            $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
+            $sMessage = "$sOfficer ได้ทำการร้องขอผู้ใช้งาน $txtname($txtuser) $department $position $perform";
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
+            curl_setopt( $curl, CURLOPT_POST, 1);
+            curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
+            $headers = array( 'Content-type: application/x-www-form-urlencoded' );
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+            $result = curl_exec( $curl );
+            curl_close($curl);
+
+        }
+
+        /*
         $sqlAdd = "INSERT INTO `inputm` SET `name`='$txtname',
         `idname`='$txtuser',
-        `pword`='$txtpass',
+        `pword`='$password1',
         `menucode`='$menucode',
         `status`='Y',
         `date_pword`='$date_pword',
@@ -102,6 +131,8 @@ if ($act == "add") {
         } else {
             redirect('showuser.php?menucode='.$_SESSION['smenucode'], "เพิ่มข้อมูลไม่สำเร็จ กรุณาตรวจสอบข้อมูลให้ครบถ้วนก่อนทำการบันทึก");
         }
+        */
+
         exit;
     }
 }
@@ -196,7 +227,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                 ?>
                 <div class="row mt-4">
                     <div class="col-md-10">
-                        <div><strong>ข้อมูลเพิ่มเติม ก่อนเพิ่มผู้ใช้งาน</strong></div>
+                        <div><strong>ข้อมูลเพิ่มเติม ก่อนเพิ่มผู้ใช้งาน</strong> (เป็นการแจ้งเบื้องต้นว่าผู้ใช้งานเคยมี user อยู่แล้วหรือยังไม่มี)</div>
                         <table class="table">
                             <tr>
                                 <th>ชื่อ-สกุล</th>
@@ -248,55 +279,49 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                 </div>
                 <?php
             }
-            
             ?>
-            <fieldset class="mb-4 mt-4">
-                <legend>ฟอร์มบันทึก</legend>
-                <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="addUserForm" id="addUserForm" onsubmit="return checkForm();">
+            <form action="adduser.php?menucode=<?=$menucode;?>" method="post" name="addUserForm" id="addUserForm" onsubmit="return checkForm();">
+                <?php 
+                if($employee!=='y'){
+                ?>
+                <div class="alert alert-danger col-md-8" role="alert">ถ้าเป็น<strong><u>ลูกจ้าง</u></strong>โรงบาลฯ กรุณาประสานทะเบียนเพื่ออัพเดทข้อมูล สถานะการเป็น<strong><u>ลูกจ้าง</u></strong> ด้วยครับขอบคุณครับ</div>
+                <?php
+                }
+                ?>
+
+                <fieldset class="mb-4 mt-4">
+                    <legend>ข้อมูลส่วนตัว</legend>
                     <table>
-                        <?php 
-                        if($employee!=='y'){
-                            ?>
-                            <tr>
-                                <td colspan="2">
-                                    <div class="alert alert-danger" role="alert">ถ้าเป็น<strong><u>ลูกจ้าง</u></strong>โรงบาลฯ กรุณาประสานทะเบียนเพื่ออัพเดทข้อมูล ขอบคุณครับ</div>
-                                </td>
-                            </tr>
-                            <?php
-                        }
-                        ?>
                         <tr>
-                            <td width="19%" align="right"><b>ชื่อ-นามสกุล : </b></td>
-                            <td width="81%">
-                                <label>
-                                    <input name="txtname" type="text" class="form-control" id="txtname" value="<?= $name . " " . $surname; ?>" readonly="readonly">
-                                </label>
+                            <td align="right"><strong>ชื่อ-นามสกุล : </strong></td>
+                            <td >
+                                <input name="txtname" type="text" class="form-control" id="txtname" value="<?= $name . " " . $surname; ?>" readonly="readonly">
                             </td>
                         </tr>
                         <tr>
-                            <td width="19%" align="right"><b>เลขบัตรประชาชน : </b></td>
-                            <td width="81%">
-                                <label>
-                                    <input name="idcard" type="text" class="form-control" id="cid" value="<?=$idcard;?>" readonly="readonly">
-                                </label>
-                            </td>
-                        </tr>
-                        <tr valign="top">
-                            <td align="right"><b>ชื่อผู้ใช้งาน : </b><br>(Username)</td>
+                            <td align="right"><strong>เลขบัตรประชาชน : </strong></td>
                             <td>
-                                <div class="input-group mb-1">
-                                    <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username">
-                                    <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onClickCheckuser()">ตรวจสอบผู้ใช้งาน</button>
-                                    <span id="resTestCheckUser"></span>
-                                    <input type="hidden" name="testCheckUser" id="testCheckUser">
+                                <input name="idcard" type="text" class="form-control" id="cid" value="<?=$idcard;?>" readonly="readonly">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><strong>อายุ : </strong></td>
+                            <td>
+                                <div class="col-md-4">
+                                    <input name="age" type="text" class="form-control" id="age" value="99">
                                 </div>
-                                <span class="badge text-bg-info">* ไม่จำเป็นต้องใช้ username ภาษาไทย สามารถใช้ ภาษาอังกฤษ และตัวเลขได้</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><strong>อีเมล์ : </strong></td>
+                            <td>
+                                <input name="email" type="text" class="form-control" id="email">
                             </td>
                         </tr>
                         <tr>
                             <td align="right"><strong>แผนก : </strong></td>
                             <td>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <select name="department" id="department" class="form-select">
                                         <option value="">เลือกแผนก</option>
                                         <?php 
@@ -308,14 +333,48 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                         ?>
                                     </select>
                                 </div>
-                                
                             </td>
                         </tr>
+                        <tr>
+                            <td align="right"><strong>ตำแหน่ง : </strong></td>
+                            <td>
+                                <div class="col-md-6">
+                                    <input type="text" name="position" id="position" class="form-control">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><strong>ปฏิบัติหน้าที่ : </strong></td>
+                            <td>
+                                <div class="col-md-6">
+                                    <input type="text" name="perform" id="perform" class="form-control">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
+                <fieldset class="mb-4 mt-4">
+                <legend>ข้อมูลผู้ใช้ในระบบ</legend>
+                    <table>
                         <tr valign="top">
-                            <td align="right"><b>รหัสผ่าน :</b><br>(Password)</td>
+                            <td align="right"><b>ชื่อผู้ใช้งาน : </b></td>
+                            <td>
+                                <div class="input-group mb-1">
+                                    <input type="text" class="form-control" id="txtuser" name="txtuser" placeholder="Username" aria-label="Username">
+                                    <button class="btn btn-outline-secondary btn-warning" type="button" id="button-addon2" onclick="onClickCheckuser()">ตรวจสอบผู้ใช้งาน</button>
+                                    <span id="resTestCheckUser"></span>
+                                    <input type="hidden" name="testCheckUser" id="testCheckUser">
+                                </div>
+                                <span class="badge text-bg-info">* ไม่จำเป็นต้องใช้ username ภาษาไทย สามารถใช้ ภาษาอังกฤษ และตัวเลขได้</span>
+                            </td>
+                        </tr>
+                        
+                        <tr valign="top">
+                            <td align="right"><b>รหัสผ่าน :</b></td>
                             <td>
                                 <label>
-                                    <input name="txtpass" type="password" class="form-control" id="txtpass" placeholder="Password">
+                                    <input name="password1" type="password" class="form-control" id="password1" placeholder="Password">
                                 </label>
                             </td>
                         </tr>
@@ -323,7 +382,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><b>ยืนยันรหัสผ่าน :</b></td>
                             <td>
                                 <label>
-                                    <input name="txtpass2" type="password" class="form-control" id="txtpass2" autocomplete="off">
+                                    <input name="password2" type="password" class="form-control" id="password2" autocomplete="off">
                                 </label>
                                 <div>
                                     <span class="badge text-bg-warning">คำแนะนำการตั้งรหัสผ่าน</span>
@@ -340,29 +399,31 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 <input type="checkbox" name="eopd" id="eopd" value="1"><label for="eopd">&nbsp;เปิดการใช้งานเมนู <strong>ค้นหา e-OPD จาก HN</strong></label>
                             </td>
                         </tr>
+                    </table>
+                    
+                </fieldset>
+                <table class="mb-4">
                         <tr>
                             <td>&nbsp;</td>
                             <td>
-                                <label>
-                                    <?php 
-                                    $txtState = $buttonState = '';
-                                    if($checkFullName===true){
-                                        $buttonState = 'disabled';
-                                        $txtState = '<span class="text-danger"><strong>จำกัด 1ผู้ใช้งาน ต่อ 1แผนก</strong></span>';
-                                    }
-                                    ?>
-                                    <button type="submit" id="button" class="btn btn-primary" <?=$buttonState;?> >เพิ่มผู้ใช้งาน</button>
-                                    <input name="act" type="hidden" value="add">
-                                    <input name="menucode" type="hidden" value="<?=$menucode;?>">
-                                    <input name="status" type="hidden" value="Y">
-                                    <input name="level" type="hidden" value="user">
-                                    <?=$txtState;?>
-                                </label>
+                                <?php 
+                                $txtState = $buttonState = '';
+                                if($checkFullName===true){
+                                    $buttonState = 'disabled';
+                                    $txtState = '<span class="text-danger"><strong>จำกัด 1ผู้ใช้งาน ต่อ 1แผนก</strong></span>';
+                                }
+                                ?>
+                                <button type="submit" id="button" class="btn btn-primary" <?=$buttonState;?> >เพิ่มผู้ใช้งาน</button>
+                                <input name="act" type="hidden" value="add">
+                                <input name="menucode" type="hidden" value="<?=$menucode;?>">
+                                <input name="status" type="hidden" value="Y">
+                                <input name="level" type="hidden" value="user">
+                                <?=$txtState;?>
                             </td>
                         </tr>
-                    </table>
-                </form>
-            </fieldset>
+                </table>
+            </form>
+            
             <script type="text/javascript">
                 function onClickCheckuser(){
                     const username = document.getElementById('txtuser').value;
@@ -409,15 +470,36 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                 function checkForm() {
                     var stat = true;
                     
-                    let pass1 = document.getElementById('txtpass');
-                    let pass2 = document.getElementById('txtpass2');
+                    let pass1 = document.getElementById('password1');
+                    let pass2 = document.getElementById('password2');
 
                     const regex = /\d+/g;
                     const checkPass = pass1.value.match(regex);
 
                     let username = document.getElementById('txtuser');
+                    
+                    
+                    if (document.getElementById('age').value.trim() == '') {
+                        Swal.fire("กรุณาระบุ อายุ");
+                        stat = false;
 
-                    if (username.value == '') {
+                    }else if (document.getElementById('email').value.trim() == '') {
+                        Swal.fire("กรุณาระบุ อีเมล์");
+                        stat = false;
+
+                    }else if (document.getElementById('department').value.trim() == '') {
+                        Swal.fire("กรุณาระบุ แผนกที่ปฏิบัติงาน");
+                        stat = false;
+
+                    }else if (document.getElementById('position').valu.trim()e == '') {
+                        Swal.fire("กรุณาระบุ ตำแหน่ง");
+                        stat = false;
+
+                    }else if (document.getElementById('perform').value.trim() == '') {
+                        Swal.fire("กรุณาระบุ การปฎิบัติหน้าที่ของตนเองในหน่วยงาน");
+                        stat = false;
+
+                    }else if (username.value == '') {
                         Swal.fire("กรุณากรอก Username");
                         stat = false;
 
@@ -425,11 +507,15 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         Swal.fire("ชื่อ Username ไม่ควรมีจำนวนที่น้อยกว่า 4 ตัวอักษร");
                         stat = false;
 
-                    }else if(document.getElementById('txtpass').value == ''){
+                    }else if(document.getElementById('testCheckUser').value==""){
+                        Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
+                        stat = false;
+
+                    }else if(document.getElementById('password1').value.trim() == ''){
                         Swal.fire("กรุณากรอก Password");
                         stat = false;
 
-                    }else if(document.getElementById('txtpass').value.length < 8){
+                    }else if(document.getElementById('password1').value.length < 8){
                         Swal.fire("ควรตั้ง Password มากกว่าหรือเท่ากับ 8 ตัวอักษร");
                         stat = false;
 
@@ -441,10 +527,6 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         Swal.fire("รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบข้อมูลอีกครั้ง");
                         stat = false;
 
-                    }else if(document.getElementById('testCheckUser').value==""){
-                        Swal.fire("กรุณากดตรวจสอบผู้ใช้งาน");
-                        stat = false;
-
                     }
 
                     const regexF = /(admin|test)/i;
@@ -454,17 +536,48 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                     }
 
                     if(stat===true){
-                        let test = checkuser(username.value).then((res)=>{
+                        checkuser(username.value).then((res)=>{ 
+                            console.log(res);
                             if(res.status===400){
                                 Swal.fire("กรุณากด \"ตรวจสอบผู้ใช้งาน\" อีกครั้ง");
                             }else{
-                                document.getElementById('addUserForm').submit();
+                                // document.getElementById('addUserForm').submit();
+
+                                let data = [];
+                                data.push(encodeURIComponent('txtname')+"="+encodeURIComponent(document.getElementById('txtname').value));
+                                data.push(encodeURIComponent('idcard')+"="+encodeURIComponent(document.getElementById('idcard').value));
+                                data.push(encodeURIComponent('department')+"="+encodeURIComponent(document.getElementById('department').value));
+                                data.push(encodeURIComponent('position')+"="+encodeURIComponent(document.getElementById('position').value));
+                                data.push(encodeURIComponent('perform')+"="+encodeURIComponent(document.getElementById('perform').value));
+                                data.push(encodeURIComponent('txtuser')+"="+encodeURIComponent(document.getElementById('txtuser').value));
+                                data.push(encodeURIComponent('password1')+"="+encodeURIComponent(document.getElementById('password1').value));
+                                data.push(encodeURIComponent('eopd')+"="+encodeURIComponent(document.getElementById('eopd').value));
+                                data.push(encodeURIComponent('act')+"="+encodeURIComponent('add'));
+                                let dataPost = data.join("&");
+
+                                sendForm(dataPost).then((res)=>{
+                                    Swal.fire(res.message);
+                                });
+
                             }
                         });
                     }
 
                     return false;
                 }
+
+                async function sendForm(dataPost){
+                    let response = await fetch('adduser.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                        },
+                        body: dataPost
+                    });
+                    const body = await response.json();
+                    return body;
+                }
+
             </script>
             <?php
         }
