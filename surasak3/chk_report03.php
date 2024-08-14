@@ -66,11 +66,17 @@ function calcage($birth){
 	.textsub{ font-size: 15px;}
 
 	@media print{ #no_print{ display:none; } }
-	#divprint{ page-break-after:always; }
+	#divprint{ 
+		page-break-after:always; 
+		margin-top:8px;
+	}
 
 	.theBlocktoPrint{ background-color: #000; color: #FFF; } 
 	label{ display: block; }
 	.etc label{ display: inline; }
+	table{
+		border-spacing: 0;
+	}
 </style>
 </head>
 
@@ -186,10 +192,7 @@ foreach($out_result_items AS $result){
 						<span class="text">
 							<span class="text1">
 								<span class="text2">
-									<strong>
-										หน่วยงาน : <?=$result['company_name'];?>
-										วันที่ตรวจ <?=$show_date;?>
-									</strong>
+									<strong>หน่วยงาน : <?=$result['company_name'];?> วันที่ตรวจ <?=$show_date;?></strong>
 								</span>
 							</span>
 						</span>
@@ -236,7 +239,7 @@ foreach($out_result_items AS $result){
 						<table width="100%"  class="text1" >
 							<tr>
 								<td width="100%" valign="top">
-									<strong class="text" style="font-size:20px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;
+									<strong class="text" style="font-size:18px"><u>ตรวจร่างกายทั่วไป</u></strong>&nbsp;&nbsp;
 									<span class="text3">
 										<strong>น้ำหนัก : </strong><?=$result['weight']?>&nbsp;กก. 
 										<strong>ส่วนสูง : </strong><?=$result['height']?>&nbsp;ซม. 
@@ -255,7 +258,7 @@ foreach($out_result_items AS $result){
 							</tr>
 							<tr>
 								<td valign="top">
-									<strong style="font-size:20px;">ผลตรวจ : </strong>
+									<strong style="font-size:18px;">ผลตรวจ : </strong>
 									<span style="font-size:16px;"> ดัชนีมวลกาย 
 									<?php 
 									if($bmi == '0.00' ){
@@ -413,17 +416,17 @@ if( $num > 0 ){
         <table width="100%" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" class="text3" style="border-collapse:collapse;">
 			<tr>
 				<td height="30" align="center" style="padding: 0px;">
-					<strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong>
+					<strong class="text" style="font-size:20px"><u>CBC : การตรวจเม็ดเลือด</u></strong>
 				</td>
 			</tr>
 			<tr>
 				<td>
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr>
-							<td width="50%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด</strong></td>
+							<td width="52%" align="center" bgcolor="#CCCCCC"><strong>การตรวจเม็ดเลือด</strong></td>
 							<td width="15%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
 							<td width="18%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
-							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
+							<td width="15%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 						</tr>
 						<?php 
 						$wbc_result = '';
@@ -564,7 +567,7 @@ if( $num > 0 ){
 		<table width="100%" height="77" border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse">
 			<tr>
 				<td height="30" align="center" style="padding: 0px;">
-					<strong class="text" style="font-size:22px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong>
+					<strong class="text" style="font-size:20px"><u>UA : การตรวจการทำงานของปัสสาวะ</u></strong>
 				</td>
 			</tr>
 			<tr>
@@ -572,7 +575,7 @@ if( $num > 0 ){
 					<table width="100%" border="0" cellpadding="0" cellspacing="0" class="text3">
 						<tr>
 							<td width="49%" align="center" bgcolor="#CCCCCC"><strong>การตรวจปัสสาวะ</strong></td>
-							<td width="14%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
+							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>ผลตรวจ</strong></td>
 							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>ค่าปกติ</strong></td>
 							<td width="17%" align="center" bgcolor="#CCCCCC"><strong>สรุปผล</strong></td>
 						</tr>
@@ -1675,7 +1678,8 @@ if ( $group2_rows > 0 ) {
 	</td>
   </tr>
 </table>
-<!-- <div class="text4"><strong>*** หมายเหตุ ***</strong> สามารถติดต่อฝ่ายตรวจสุขภาพ 093-2744550 เพื่อเข้าระบบนัดตรวจกับนายแพทย์ พ.อ.วรวิทย์ วงษ์มณี ในเวลาราชการวันจันทร์ - พฤหัสบดี เวลา 09.00-11.30 น.</div> -->
+<div class="text4" style="text-align:center;">
+	<strong>หมายเหตุ : </strong> "กรณีผลตรวจผิดปกติ" หากท่านต้องการพบแพทย์และมีสิทธิการรักษาที่รพ.ค่ายฯ สามารถติดต่อพบแพทย์ได้ที่แผนกผู้ป่วยนอก วันจันทร์-พฤหัสบดี เวลา 9.00-11.00 น.<br>สอบถามเพิ่มเติม แผนกตรวจสุขภาพเบอร์ โทร 054-839305 ต่อ 1135 , 093-2744550 (ในวันและเวลาราชการ)</div>
 </div>
 <?php 
 } // while
