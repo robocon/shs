@@ -46,11 +46,18 @@ $departments = array(
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='checkuser'){
     $username = sprintf("%s", $_REQUEST['username']);
-    $q = $dbi->query("SELECT `row_id` FROM inputm WHERE idname = '$username' ");
+    $q = $dbi->query("SELECT `row_id` FROM `inputm` WHERE `idname` = '$username' LIMIT 1;");
     if($q->num_rows>0){ 
-        $res = array("msg"=>"มีผู้ใช้งานแล้ว", "status"=>400, );
+        $res = array("msg"=>"มีผู้ใช้งานแล้ว", "status"=>400);
     }else{
-        $res = array("msg"=>"ใช้งานได้", "status"=>200);
+
+        $q = $dbi->query("SELECT `id` FROM `form_inputm` WHERE `user` = '$username' AND `status` = 'H' LIMIT 1;");
+        if($q->num_rows>0){ 
+            $res = array("msg"=>"ผู้ใช้นี้เคยร้องขอการเข้าใช้งานไปแล้ว", "status"=>400);
+        }else{
+            $res = array("msg"=>"ใช้งานได้", "status"=>200);
+        }
+        
     }
     echo $json->encode($res);
     exit;
@@ -65,42 +72,64 @@ if ($act == "add") {
         $txtuser = sprintf("%s", $_POST["txtuser"]);
         $password1 = sprintf("%s", $_POST["password1"]);
         $idcard = sprintf("%s", $_POST["idcard"]);
-        
+        $age = sprintf("%s", $_POST["age"]);
+        $email = sprintf("%s", $_POST["email"]);
         $eopd = sprintf("%s", $_POST["eopd"]);
         $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
         $department = sprintf("%s", $_POST['department']);
         $position = sprintf("%s", $_POST['position']);
         $perform = sprintf("%s", $_POST['perform']);
-        // if(!empty($department)){
-        //     $menucode = $department;
-        // }
-
+        
         $eopdStatus = 'n';
         if($eopd=='1'){
             $eopdStatus = 'y';
         }
 
         $sql = "INSERT INTO `form_inputm` 
-        (`id`, `date`, `fullname`, `idcard`, `department`, `position`, `perform`, `user`, `pass`, `e_opd`, `status`, `last_update`, `officer`) 
+        (`id`, `date`, `fullname`, `idcard`, `age`, `department`, `position`, `perform`, `user`, `email`, `pass`, `e_opd`, `status`, `last_update`, `officer`) 
         VALUES 
-        (NULL, NOW(), '$txtname', '$idcard', '$department', '$position', '$perform', '$txtuser', '$password1', '$eopdStatus', 'H', NULL, '$sOfficer');";
+        (NULL, NOW(), '$txtname', '$idcard', '$age', '$department', '$position', '$perform', '$txtuser', '$email', '$password1', '$eopdStatus', 'H', NULL, '$sOfficer');";
+        // dump($sql);
         $q = $dbi->query($sql);
+        // $q = false;
         if ($q!==false) { 
 
             $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
             $sMessage = "$sOfficer ได้ทำการร้องขอผู้ใช้งาน $txtname($txtuser) $department $position $perform";
-            $curl = curl_init();
-            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
-            curl_setopt( $curl, CURLOPT_POST, 1);
-            curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
-            $headers = array( 'Content-type: application/x-www-form-urlencoded' );
-            curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-            $result = curl_exec( $curl );
-            curl_close($curl);
+            // $curl = curl_init();
+            // curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
+            // curl_setopt( $curl, CURLOPT_POST, 1);
+            // curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
+            // $headers = array( 'Content-type: application/x-www-form-urlencoded' );
+            // curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers);
+            // curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+            // $result = curl_exec( $curl );
+            // curl_close($curl);
 
+            $result = sendLineNotify($sMessage, $sToken);
+            $lineRes = $json->decode($result);
+            // dump($lineRes);
+            // if($lineRes->status===200){
+            //     $res = array('status'=>400, 'message'=>$dbi->error);
+            // }else{
+
+            // }
+
+            $res = array('status'=>200, 'message'=>'ทำการร้องขอผู้ใช้งานในระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ', 'id'=>$dbi->insert_id, 'res'=>$lineRes);
+
+        }else{
+            
+            if(!$dbi->error){
+                $errorMsg = 'ชื่อผู้ใช้งานถูกใช้งานไปเรียบร้อยแล้ว กรุณาตรวจสอบข้อมูลอีกครั้ง';
+            }else{
+                $errorMsg = $dbi->error;
+            }
+            
+            $res = array('status'=>400, 'message'=>$errorMsg);
         }
 
+
+        echo $json->encode($res);
         /*
         $sqlAdd = "INSERT INTO `inputm` SET `name`='$txtname',
         `idname`='$txtuser',
@@ -208,7 +237,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
     
     if ( $act == "show" && !empty($idcard)) { 
         
-        $chkop = $dbi->query("SELECT `name`,`surname`,`idcard`,`employee` FROM `opcard` WHERE `idcard`='$idcard'");
+        $chkop = $dbi->query("SELECT `name`,`surname`,`idcard`,`employee`,TIMESTAMPDIFF(year,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)), now() ) AS `age` FROM `opcard` WHERE `idcard`='$idcard'");
         $numRows = $chkop->num_rows;
         if ($numRows==0) {
             ?>
@@ -217,7 +246,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
             </div>
             <?php
         }else{
-            list($name, $surname, $idcard, $employee) = $chkop->fetch_array();
+            list($name, $surname, $idcard, $employee, $age) = $chkop->fetch_array();
             $opcardPtName = $name.' '.$surname;
             $checkFullName = false;
             
@@ -238,7 +267,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             </tr>
                         <?php
                         while ($a = $q->fetch_assoc()) { 
-
+                            
                             if($opcardPtName==$a['name'] && $_SESSION['smenucode']==$a['menucode']){
                                 $checkFullName = true;
                             }
@@ -308,7 +337,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><strong>อายุ : </strong></td>
                             <td>
                                 <div class="col-md-4">
-                                    <input name="age" type="text" class="form-control" id="age" value="99">
+                                    <input name="age" type="text" class="form-control" id="age" value="<?=$age;?>">
                                 </div>
                             </td>
                         </tr>
@@ -454,7 +483,7 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             document.getElementById('resTestCheckUser').innerHTML = '&#9989;';
                             return true;
                         }else{
-                            Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
+                            Swal.fire(data.msg);
                             document.getElementById('resTestCheckUser').innerHTML = '&#10060;';
                             return false;
                         }
@@ -487,11 +516,11 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         Swal.fire("กรุณาระบุ อีเมล์");
                         stat = false;
 
-                    }else if (document.getElementById('department').value.trim() == '') {
+                    }else if (document.getElementById('department').value == '') {
                         Swal.fire("กรุณาระบุ แผนกที่ปฏิบัติงาน");
                         stat = false;
 
-                    }else if (document.getElementById('position').valu.trim()e == '') {
+                    }else if (document.getElementById('position').value.trim() == '') {
                         Swal.fire("กรุณาระบุ ตำแหน่ง");
                         stat = false;
 
@@ -534,18 +563,19 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
                         return false;
                     }
-
+                    // console.log(stat);
                     if(stat===true){
                         checkuser(username.value).then((res)=>{ 
-                            console.log(res);
+                            // console.log(res);
                             if(res.status===400){
                                 Swal.fire("กรุณากด \"ตรวจสอบผู้ใช้งาน\" อีกครั้ง");
                             }else{
-                                // document.getElementById('addUserForm').submit();
-
+                                
                                 let data = [];
                                 data.push(encodeURIComponent('txtname')+"="+encodeURIComponent(document.getElementById('txtname').value));
                                 data.push(encodeURIComponent('idcard')+"="+encodeURIComponent(document.getElementById('idcard').value));
+                                data.push(encodeURIComponent('age')+"="+encodeURIComponent(document.getElementById('age').value));
+                                data.push(encodeURIComponent('email')+"="+encodeURIComponent(document.getElementById('email').value));
                                 data.push(encodeURIComponent('department')+"="+encodeURIComponent(document.getElementById('department').value));
                                 data.push(encodeURIComponent('position')+"="+encodeURIComponent(document.getElementById('position').value));
                                 data.push(encodeURIComponent('perform')+"="+encodeURIComponent(document.getElementById('perform').value));
@@ -556,7 +586,23 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                 let dataPost = data.join("&");
 
                                 sendForm(dataPost).then((res)=>{
-                                    Swal.fire(res.message);
+                                    if(res.status===200){
+                                        const id = res.id;
+                                        const url = 'http://<?=NOTIFY_HOST;?>/shspdf/form_inputm_main.php?id='+id;
+                                        Swal.fire({
+                                            title: "SUCCESS",
+                                            icon: "success",
+                                            html: res.message + `
+                                                <br>คลิก <a href="${url}" target="_blank">ที่นี่</a> เพื่อพิมพ์ใบคำร้องขอใช้อินเตอร์เน็ต
+                                            `,
+                                            confirmButtonText: "OK"
+                                        }).then((result)=>{
+                                            window.location = 'user_register_request.php';
+                                        });
+                                    }else{
+                                        Swal.fire(res.message);
+                                    }
+                                    
                                 });
 
                             }

@@ -31,7 +31,9 @@ $menuCode = sprintf("%s", $_GET["menucode"]);
         <li class="nav-item">
           <a class="nav-link" href="showAdmin.php">ดูรายชื่อ Admin แผนก &#128587;&#128591;</a>
         </li>
-        
+        <li class="nav-item">
+          <a class="nav-link" href="user_register_request.php">ตรวจสอบรายชื่อขอใช้ระบบโรงบาล 🏨</a>
+        </li>
         <!-- <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dropdown
