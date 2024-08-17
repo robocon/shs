@@ -29,7 +29,7 @@ $menuCode = sprintf("%s", $_GET["menucode"]);
           <a class="nav-link" href="disableuser.php">รายชื่อปิดใช้งาน 🗑️</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="showAdmin.php">ดูรายชื่อ Admin แผนก &#128587;&#128591;</a>
+          <a class="nav-link" href="showAdmin.php" target="_blank">ดูรายชื่อ Admin แผนก &#128587;&#128591;</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="user_register_request.php">ตรวจสอบรายชื่อขอใช้ระบบโรงบาล 🏨</a>

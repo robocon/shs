@@ -95,7 +95,7 @@ require_once 'com_user_menu.php';
                     ?>
                     <tr>
                         <td>
-                            <a href="form_inputm_main copy.php?id=<?=$a['id'];?>" title="คลิกเพื่อพิมพ์ใบคำร้อง"><?=$a['fullname'];?></a>
+                            <a href="<?=NOTIFY_HOST;?>/shspdf/form_inputm_main.php?id=<?=$a['id'];?>" title="คลิกเพื่อพิมพ์ใบคำร้อง" target="_blank"><?=$a['fullname'];?></a>
                         </td>
                         <td><?=$a['age'];?></td>
                         <td><?=$departments[$dep];?></td>
