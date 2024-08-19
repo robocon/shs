@@ -89,31 +89,14 @@ if ($act == "add") {
         (`id`, `date`, `fullname`, `idcard`, `age`, `department`, `position`, `perform`, `user`, `email`, `pass`, `e_opd`, `status`, `last_update`, `officer`) 
         VALUES 
         (NULL, NOW(), '$txtname', '$idcard', '$age', '$department', '$position', '$perform', '$txtuser', '$email', '$password1', '$eopdStatus', 'H', NULL, '$sOfficer');";
-        // dump($sql);
         $q = $dbi->query($sql);
-        // $q = false;
         if ($q!==false) { 
 
             $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
             $sMessage = "$sOfficer ได้ทำการร้องขอผู้ใช้งาน $txtname($txtuser) $department $position $perform";
-            // $curl = curl_init();
-            // curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
-            // curl_setopt( $curl, CURLOPT_POST, 1);
-            // curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
-            // $headers = array( 'Content-type: application/x-www-form-urlencoded' );
-            // curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers);
-            // curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-            // $result = curl_exec( $curl );
-            // curl_close($curl);
 
             $result = sendLineNotify($sMessage, $sToken);
             $lineRes = $json->decode($result);
-            // dump($lineRes);
-            // if($lineRes->status===200){
-            //     $res = array('status'=>400, 'message'=>$dbi->error);
-            // }else{
-
-            // }
 
             $res = array('status'=>200, 'message'=>'ทำการร้องขอผู้ใช้งานในระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ', 'id'=>$dbi->insert_id, 'res'=>$lineRes);
 
@@ -128,40 +111,7 @@ if ($act == "add") {
             $res = array('status'=>400, 'message'=>$errorMsg);
         }
 
-
         echo $json->encode($res);
-        /*
-        $sqlAdd = "INSERT INTO `inputm` SET `name`='$txtname',
-        `idname`='$txtuser',
-        `pword`='$password1',
-        `menucode`='$menucode',
-        `status`='Y',
-        `date_pword`='$date_pword',
-        `idcard`='$idcard',
-        `level`='user',
-        `level_eopd` = '$eopdStatus',
-        `officer` = '$sOfficer' ";
-        $q = $dbi->query($sqlAdd);
-        if ($q!==false) {
-
-            $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
-            $sMessage = "$sOfficer($menucode) ได้เพิ่มผู้ใช้ $txtname($idcard) เข้าสู่ระบบโรงพยาบาล";
-            $curl = curl_init();
-            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
-            curl_setopt( $curl, CURLOPT_POST, 1);
-            curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
-            $headers = array( 'Content-type: application/x-www-form-urlencoded' );
-            curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-            $result = curl_exec( $curl );
-            curl_close($curl);
-
-            redirect('showuser.php?menucode='.$_SESSION['smenucode'], "เพิ่มข้อมูลคุณ $txtname เรียบร้อยแล้ว");
-        } else {
-            redirect('showuser.php?menucode='.$_SESSION['smenucode'], "เพิ่มข้อมูลไม่สำเร็จ กรุณาตรวจสอบข้อมูลให้ครบถ้วนก่อนทำการบันทึก");
-        }
-        */
-
         exit;
     }
 }

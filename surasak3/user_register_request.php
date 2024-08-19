@@ -1,7 +1,11 @@
 <?php
 require_once 'bootstrap.php';
+require_once 'includes/JSON.php';
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
+
+$json = new Services_JSON();
 
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
 if(empty($smenucode)){
@@ -45,6 +49,94 @@ $statusList = array(
 );
 
 
+$action = sprintf("%s", $_REQUEST['action']);
+if($action==='addNewUser'){
+
+    $id = sprintf("%s", $_GET['id']);
+    $q = $dbi->query("SELECT * FROM `form_inputm` WHERE `id` = '$id' AND `status` = 'H' LIMIT 1");
+    if($q->num_rows>0){
+
+        $a = $q->fetch_assoc();
+        $form_inputm_id = $a['id'];
+        $fullname = $a['fullname'];
+        $idcard = $a['idcard'];
+        $department = $a['department'];
+        $user = $a['user'];
+        $pass = $a['pass'];
+        $eopd = $a['e_opd'];
+
+        $officer = sprintf("%s", $_SESSION['sIdname']);
+
+        $sql = "INSERT INTO `inputm` 
+        (`row_id`, `name`, `idname`, `pword`, `menucode`, `status`, 
+        `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, 
+        `report_tnb`, `last_login`, `idcard`, `level_eopd`, `officer`, `login_status`) 
+        VALUES
+         (NULL, '$fullname', '$user', '$pass', '$department', 'Y', 
+         NULL, NULL, '', '', NOW(), 'user', 
+         '', '0000-00-00 00:00:00', '$idcard', '$eopd', NULL, '0');";
+        $q = $dbi->query($sql);
+
+        $sql = "UPDATE `form_inputm` SET `status`='A', `last_update`=NOW(), `officer`='$officer' WHERE (`id`='$form_inputm_id');";
+        $q = $dbi->query($sql);
+        $res = array('status'=>200,'message'=>'ดำเนินการเพิ่มผู้ใช้งานเรียบร้อย');
+        
+    }else{
+        $res = array('status'=>400,'message'=>'ไม่พบข้อมูล');
+
+    }
+    echo $json->encode($res);
+    exit;
+}elseif ($action==='userReject') {
+
+    $id = sprintf("%s", $_GET['id']);
+    $officer = sprintf("%s", $_SESSION['sIdname']);
+    $q = $dbi->query("SELECT * FROM `form_inputm` WHERE `id` = '$id' AND `status` = 'H' LIMIT 1");
+    if($q->num_rows>0){
+        $sqlReject = "UPDATE `form_inputm` SET `status`='R', `last_update`=NOW(), `officer`='$officer' WHERE (`id`='$id');";
+        $q = $dbi->query($sqlReject);
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย');
+    }else{
+        $res = array('status'=>400,'message'=>'ไม่พบข้อมูล');
+    }
+
+    echo $json->encode($res);
+    exit;
+}elseif ($action==='uploadFile') {
+    
+    $id = sprintf("%s", $_POST['id']);
+    $files = $_FILES['picture'];
+    $fileOk = false;
+
+    $upLoadRes = array('status' => 400, 'message' => 'ไม่สามารถบันทึกไฟล์ได้ กรุณาตรวจสอบประเภทไฟล์อีกครั้ง');
+    $setNewFileName = '';
+    if($files['error']===0){
+    
+        $imageFileType = strtolower(pathinfo($files["name"],PATHINFO_EXTENSION));
+
+        if(in_array($imageFileType, array('png', 'jpeg', 'jpg'))===true){
+            $setNewFileName = rand(100000,999999).strtotime('NOW').'.'.$imageFileType;
+            $target_file = dirname(__FILE__).'/data/internet_form/'.$setNewFileName;
+            if (move_uploaded_file($files["tmp_name"], $target_file)) {
+                $upLoadRes = array('status' => 200, 'message' => 'บันทึกไฟล์เรียบร้อย','file' => htmlspecialchars($setNewFileName));
+                $fileOk = true;
+            }
+        }
+    }
+
+    $res = array('status'=>400,'message'=>'ไม่สามารถบันทึกข้อมูลได้','uploadStatus'=>$upLoadRes);
+    if($fileOk === true){
+        $sqlUpdate = "UPDATE `form_inputm` SET `file`='$setNewFileName' WHERE (`id`='$id');";
+        $q = $dbi->query($sqlUpdate);
+        if($q!==false){
+            $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','uploadStatus'=>$upLoadRes);
+        }
+    }
+
+    echo $json->encode($res);
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +175,7 @@ require_once 'com_user_menu.php';
                         ?>
                         <th>e-mail</th>
                         <th>เลขที่บัตร</th>
-                        <th></th>
+                        <th>จัดการ</th>
                         <?php
                     }
                     ?>
@@ -109,18 +201,103 @@ require_once 'com_user_menu.php';
                             <td><?=$a['email'];?></td>
                             <td><?=$a['idcard'];?></td>
                             <td>
-                                <a href="user_register_request.php" class="btn btn-primary">อนุมัติ</a>
+                                <?php 
+                                if($a['status']==='H'){
+                                    ?>
+                                    <a href="user_register_request.php?action=addNewUser&id=<?=$a['id'];?>" class="btn btn-primary" onclick="handleAccept(event,'<?=$a['id'];?>')">อนุมัติ</a>
+                                    <a href="user_register_request.php?action=reject" class="btn btn-danger" onclick="handleReject(event,'<?=$a['id'];?>')">ไม่อนุมัติ</a>
+                                    <?php 
+                                }elseif ( empty($a['file']) && $a['status']==='A') {
+                                    ?>
+                                    <form action="user_register_request.php" method="post" id="formUpload" enctype="multipart/form-data">
+                                        <input type="file" name="picture" id="picture" class="btn btn-primary" title="Upload File" accept="image/jpeg, image/png" onchange="handleSubmit(event)">
+                                        <input type="hidden" name="action" value="uploadFile">
+                                        <input type="hidden" name="id" value="<?=$a['id'];?>">
+                                    </form>
+                                    <?php
+                                }elseif( !empty($a['file']) ){
+                                    ?>
+                                    <a href="data/internet_form/<?=$a['file'];?>" class="btn btn-success" target="_blank">Print 🖨️</a>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <p><strong>-</strong></p>
+                                    <?php
+                                }
+                            ?>
                             </td>
                             <?php
                         }
                         ?>
-                        
                     </tr>
                     <?php
                 }
                 ?>
-                
             </table>
+            <script>
+                function handleSubmit(event){ 
+                    event.preventDefault();
+                    uploadFiles();
+                }
+
+                function uploadFiles(){
+
+                    const form = document.querySelector('#formUpload');
+                    const url = 'user_register_request.php';
+                    const method = 'post';
+
+                    const xhr = new XMLHttpRequest();
+                    const data = new FormData(form);
+
+                    xhr.onreadystatechange = function(){
+                        if( xhr.readyState == 4 && xhr.status == 200 ){
+                            if(xhr.status>=200&&xhr.status<400){
+                                var res = JSON.parse(xhr.responseText);
+                                Swal.fire(res.message).then((res)=>{
+                                    window.location='user_register_request.php';
+                                });
+                            }
+                            
+                        }
+                    };
+
+                    xhr.open(method, url);
+                    xhr.send(data);
+                    
+                }
+
+                function handleAccept(event,id){
+                    event.preventDefault();
+                    formAccept(id).then((res)=>{
+                        Swal.fire(res.message).then(()=>{
+                            window.location='user_register_request.php';
+                        });
+                    });
+
+                    return false;
+                }
+
+                async function formAccept(id){
+                    const response = await fetch('user_register_request.php?action=addNewUser&id='+id);
+                    const data = await response.json();
+                    return data;
+                }
+
+                function handleReject(event,id){
+                    event.preventDefault();
+                    formReject(id).then((res)=>{
+                        Swal.fire(res.message).then(()=>{
+                            window.location='user_register_request.php';
+                        });
+                    });
+                }
+
+                async function formReject(id){
+                    const response = await fetch('user_register_request.php?action=userReject&id='+id);
+                    const data = await response.json();
+                    return data;
+                }
+            </script>
             <?php 
         }else{
             ?>
