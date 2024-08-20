@@ -83,15 +83,16 @@ if($action=='enable'){
             ?>
             <table class="table table-hover">
             <tr>
-                <th width="10%">ลำดับ</th>
-                <th width="30%">ชื่อ - นามสกุล</th>
+                <th>ลำดับ</th>
+                <th>ชื่อ - นามสกุล</th>
                 <?php 
                 if($getMenucode=='ADM'){
-                    ?><th width="15%">part</th><?php
+                    ?><th>part</th><?php
                 }
                 ?>
-                <th width="15%">ระดับ</th>
-                <th width="30">จัดการข้อมูล</th>
+                <th>ระดับ</th>
+                <th>เข้าใช้งานล่าสุด</th>
+                <th>จัดการข้อมูล</th>
             </tr>
             <?php
             $i = 1;
@@ -110,6 +111,7 @@ if($action=='enable'){
 					}
 					?>
 					<td><?=$a["level"];?></td>
+                    <td><?=$a['last_login'];?></td>
 					<td>
 						<div class="d-grid gap-2 d-md-block">
                             <a href="javascript:void(0);" class="btn btn-success btn-sm" data-id="<?=$a['row_id'];?>" onclick="onEnable('<?=$a['row_id'];?>')">เปิดใช้งาน</a>
