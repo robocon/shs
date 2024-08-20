@@ -2,6 +2,24 @@
 require_once 'bootstrap.php';
 include_once 'includes/JSON.php';
 
+DROP TABLE IF EXISTS `doctor_register`;
+CREATE TABLE `doctor_register` (
+  `id` int(11) NOT NULL,
+  `date` varchar(255) DEFAULT NULL,
+  `prefix` varchar(255) DEFAULT NULL,
+  `firstname` varchar(255) DEFAULT NULL,
+  `lastname` varchar(255) DEFAULT NULL,
+  `doctor_number` varchar(255) DEFAULT NULL,
+  `depart` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `room` varchar(255) DEFAULT NULL,
+  `intern` varchar(255) DEFAULT NULL,
+  `hem` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `officer` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
