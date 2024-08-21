@@ -14,6 +14,10 @@ top.window.outerWidth = screen.availWidth;
 </script>
 
 <?php
+include("connect.inc");
+$sRowid=$_GET["user_id"];
+mysql_query("UPDATE `inputm` SET `login_status`=0 WHERE (`row_id`='$sRowid');");
+
     session_start();
     session_destroy();
 

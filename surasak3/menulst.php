@@ -207,7 +207,7 @@ if($menucode != 'ADMDR1'){
 				<div class="<?=$classNotify;?>"><?=$notifyTxt;?></div>
 			</div>
 			<div>
-				<a target='_top' href="../sm3.php" id="logout" ><strong>&gt;&gt; ออกจากระบบ &lt;&lt;</strong></a>
+				<a target='_top' href="../sm3.php?user_id=<?=$sRowid;?>" id="logout" ><strong>&gt;&gt; ออกจากระบบ &lt;&lt;</strong></a>
 			</div>
 			
 		</td>
@@ -216,7 +216,7 @@ if($menucode != 'ADMDR1'){
 }else{
 	?>
 	<tr>
-		<td BGCOLOR='#148F77'><a target='_top' href="../sm3.php"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>
+		<td BGCOLOR='#148F77'><a target='_top' href="../sm3.php?user_id=<?=$sRowid;?>"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>
 	</tr>
 	<?php
 }
@@ -339,7 +339,7 @@ if($rows){///  ถ้ามี rows
 
 	while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
 		print (" <tr>\n".
-		"  <td BGCOLOR='#008484'><a target='$target' class='menulst-refer05' href=\"$link?$userRowId\"><font face='THSarabunPSK' size='5'>$menu</font></a></td>\n".
+		"  <td BGCOLOR='#008484'><a target='$target' class='menulst-refer05' href=\"$link?$userRowId\"><font face='' size='5'>$menu</font></a></td>\n".
 		" </tr>\n");
 	}
 
@@ -350,7 +350,7 @@ if($rows){///  ถ้ามี rows
 
 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 		print (" <tr>\n".
-		"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='THSarabunPSK' size='4'COLOR='#ffffff'>$menu</font></a></td>\n".
+		"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='' size='5'COLOR='#ffffff'>$menu</font></a></td>\n".
 		" </tr>\n");
 	}
 
@@ -384,9 +384,9 @@ if($rows){///  ถ้ามี rows
         " </tr>\n");
     }
 
-	print (" <tr>\n".
-	"  <td BGCOLOR='#148F77'><a target='_top' class='menulst-refer07' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: Logout- ออกจากระบบ</font></a></td>\n".
-	" </tr>\n");
+	// print (" <tr>\n".
+	// "  <td BGCOLOR='#148F77'><a target='_top' class='menulst-refer07' href=\"../sm3.php\"><font face='THSarabunPSK' size='5'>:: Logout- ออกจากระบบ</font></a></td>\n".
+	// " </tr>\n");
 
 	print "</table>";
 	
