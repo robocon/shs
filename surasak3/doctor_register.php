@@ -2,28 +2,17 @@
 require_once 'bootstrap.php';
 include_once 'includes/JSON.php';
 
-DROP TABLE IF EXISTS `doctor_register`;
-CREATE TABLE `doctor_register` (
-  `id` int(11) NOT NULL,
-  `date` varchar(255) DEFAULT NULL,
-  `prefix` varchar(255) DEFAULT NULL,
-  `firstname` varchar(255) DEFAULT NULL,
-  `lastname` varchar(255) DEFAULT NULL,
-  `doctor_number` varchar(255) DEFAULT NULL,
-  `depart` varchar(255) DEFAULT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `room` varchar(255) DEFAULT NULL,
-  `intern` varchar(255) DEFAULT NULL,
-  `hem` varchar(255) DEFAULT NULL,
-  `status` varchar(255) DEFAULT NULL,
-  `officer` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $json = new Services_JSON();
+
+$sIdname = sprintf("%s", $_SESSION['sIdname']);
+$sOfficer = sprintf("%s", $_SESSION['sOfficer']);
+if(empty($sIdname)){
+    echo "Invalid";
+    exit;
+}
 
 // ข้อมูลจาก 43แฟ้ม รหัสแผนกที่รับบริการ 26Sep16.xls
 $section = array(
@@ -105,8 +94,73 @@ if($action==='testDoctorId'){
     echo $json->encode($res);
     exit;
 }elseif ($action==='saveDoctorForm') {
-    # code...
-    dump($_REQUEST);
+
+    $prefix = sprintf("%s", $_POST['prefix']);
+    $prefixDoctorNumber = sprintf("%s", $_POST['prefixDoctorNumber']);
+    $doctorNum = sprintf("%s", $_POST['doctorNum']);
+    $depart = sprintf("%s", $_POST['depart']);
+    $doctorJob = sprintf("%s", $_POST['doctorJob']);
+    $room = sprintf("%s", $_POST['room']);
+    $intern = sprintf("%s", $_POST['intern']);
+    $hem = sprintf("%s", $_POST['hem']);
+    $firstname  = sprintf("%s", $_POST['firstname']);
+    $lastname  = sprintf("%s", $_POST['lastname']);
+    $request_login = sprintf("%s", $_POST['request_login']);
+
+    $sql = "INSERT INTO `doctor_register` (
+        `id`, `date`, `prefix`, `firstname`, `lastname`, `prefix_doctor_number`,`doctor_number`, `depart`, `type`, `room`, `intern`, `hem`, `status`, `officer`, `request_login`
+    ) VALUES (
+        NULL, NOW(), '$prefix', '$firstname', '$lastname', '$prefixDoctorNumber', '$doctorNum', '$depart', '$doctorJob', '$room', '$intern', '$hem', 'H', '$sOfficer', '$request_login'
+    );";
+    $q = $dbi->query($sql);
+    if($q!==false){
+        $res = array('status'=>200,'message'=>'บันทึกข้อมุลเรียบร้อย');
+
+        // send line notify
+        $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
+        $message = "ชื่อ-สกุล : $prefix $firstname $lastname\n";
+        $message .= "เลขที่เวชกรรม : $prefixDoctorNumber $doctorNum\n";
+        $message .= "แผนก : $depart\n";
+        $message .= "ประเภท : $doctorJob\n";
+        $message .= "ห้องตรวจ : $room\n";
+        if($intern == '1'){
+            $message .= "เป็นแพทย์อินเทิร์น\n";
+        }
+        if($hem == '1'){
+            $message .= "แพทย์ออกตรวจห้องไตเทียม\n";
+        }
+        if($request_login=='1'){ 
+            $message .= "* ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล *\n";
+        }
+        $message .= "ขอเพิ่มผู้ใช้งานเข้าสู่ระบบ";
+        sendLineNotify($message, $sToken);
+
+        // send an email
+
+        // Always set content-type when sending HTML email
+        // $internEmoji = ($intern == '1') ? '&#9989;' : '&#10060;' ;
+        // $hemEmoji = ($hem == '1') ? '&#9989;' : '&#10060;' ;
+        // $to = "roboconk@gmail.com";
+        // $subject = "ขอเพิ่มแพทย์ $firstname $lastname ($prefixDoctorNumber $doctorNum) ในระบบ ";
+
+        // $message = "<table>
+        //     <tr><td>ชื่อ-สกุล : </td><td>$prefix $firstname $lastname</td></tr>
+        //     <tr><td>เลขที่เวชกรรม : </td><td>$prefixDoctorNumber $doctorNum</td></tr>
+        //     <tr><td>แผนก : </td><td>$depart</td></tr>
+        //     <tr><td>ประเภท : </td><td>$doctorJob</td></tr>
+        //     <tr><td>ห้องตรวจ : </td><td>$room</td></tr>
+        //     <tr><td>เป็นแพทย์อินเทิร์น : </td><td>$internEmoji</td></tr>
+        //     <tr><td>แพทย์ออกตรวจห้องไตเทียม : </td><td>$hemEmoji</td></tr>
+        // </table>";
+
+        // $headers = "MIME-Version: 1.0" . "\r\n";
+        // $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        // $resMail = mail($to, "This is subject", "Hello This is message");
+        // dump($resMail);
+    }else{
+        $res = array('status'=>200,'message'=>'ไม่สามารถบันทึกข้อมูลได้','error'=>$dbi->error);
+    }
+    echo $json->encode($res);
     exit;
 }
 
@@ -169,10 +223,10 @@ if($action==='testDoctorId'){
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">ชื่อ - นามสกุล</label>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="firstname" placeholder="ชื่อ">
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ">
                 </div>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="lastname" placeholder="นามสกุล">
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล">
                 </div>
             </div>
             <div class="row mb-2">
@@ -237,16 +291,26 @@ if($action==='testDoctorId'){
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label text-end">&#128679;</label>
+                <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
                 <div class="col-sm-5">
                     <input class="form-check-input" type="checkbox" name="intern" id="intern" value="1"> <label for="intern" class="form-check-label">เป็นแพทย์อินเทิร์น</label>
                 </div>
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label text-end">&#128679;</label>
+                <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
                 <div class="col-sm-8">
                     <input class="form-check-input" type="checkbox" name="hem" id="hem" value="1"> <label for="hem" class="form-check-label">แพทย์ออกตรวจห้องไตเทียม</label>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <label for="user" class="col-sm-3 col-form-label text-end">👉</label>
+                <div class="col-sm-8">
+                    <input class="form-check-input" type="checkbox" name="request_login" id="request_login" value="1"> <label for="request_login" class="form-check-label">ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล</label>
+                    <div>
+                        <span class="badge text-bg-warning">หากต้องการให้แพทย์สามารถเข้าไป คีย์ยา ลงDiag ฯลฯ กรุณาติ๊กตัวเลือกนี้ด้วยครับ</span>
+                    </div>
                 </div>
             </div>
 
@@ -312,9 +376,20 @@ if($action==='testDoctorId'){
 
                 const form =document.querySelector('#formRegister');
                 const data = new URLSearchParams(new FormData(form)).toString();
-                console.log(data);
                 sendForm(data).then((res)=>{
-                    console.log(res);
+                    
+                    if(res.status==200){
+                        Swal.fire({
+                            title: "SUCCESS",
+                            icon: "success",
+                            html: `
+                                แจ้งผู้ดูแลระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ
+                            `,
+                            confirmButtonText: "OK"
+                        }).then((result)=>{
+                            window.location = 'doctor_register_list.php';
+                        });
+                    }
                 })
                 
                 return false;

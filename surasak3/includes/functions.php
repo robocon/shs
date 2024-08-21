@@ -443,7 +443,12 @@ function findPtAge($birth,$type='f'){
 	return $pAge;
 }
 
-
+/**
+ * Summary of sendLineNotify
+ * @param mixed $sMessage
+ * @param mixed $token
+ * @return bool|string
+ */
 function sendLineNotify($sMessage, $token=null){ 
 
 	// Default เป็น token ไลน์ศูนย์คอมฯ
