@@ -16,6 +16,26 @@ if(empty($sIdname)){
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
 $sLevel = sprintf("%s", $_SESSION['sLevel']);
 
+/**
+ * Summary of getMdNumber : get doctor number LIKE MD999
+ * @return string 
+ */
+function getMdNumber(){
+    global $dbi;
+
+    $mdNumber = '';
+    $sqlRunno = "SELECT `runno` FROM `runno` WHERE `title`='doctor' ";
+    $qRunno = $dbi->query($sqlRunno);
+    if($qRunno->num_rows>0){
+        $aRunno = $qRunno->fetch_assoc();
+        $mdNumber = 'MD'.$aRunno['runno'];
+
+        $runnoPlus = $aRunno['runno'] + 1;
+        $dbi->query("UPDATE `runno` SET `runno` = '$runnoPlus',`startday` = NOW() WHERE `title` = 'doctor' LIMIT 1 ");
+    }
+    return $mdNumber;
+}
+
 $phpGetContent = file_get_contents('php://input');
 $j = $json->decode($phpGetContent);
 $action = sprintf("%s", $j->action);
@@ -26,16 +46,18 @@ if($j->action==='addDoctor'){
     if($q->num_rows>0){
         $a = $q->fetch_assoc();
 
-        $mdNumber = '';
-        $sqlRunno = "SELECT `runno` FROM `runno` WHERE `title`='doctor' ";
-        $qRunno = $dbi->query($sqlRunno);
-        if($qRunno->num_rows>0){
-            $aRunno = $qRunno->fetch_assoc();
-            $mdNumber = 'MD'.$aRunno['runno'];
+        // $mdNumber = '';
+        // $sqlRunno = "SELECT `runno` FROM `runno` WHERE `title`='doctor' ";
+        // $qRunno = $dbi->query($sqlRunno);
+        // if($qRunno->num_rows>0){
+        //     $aRunno = $qRunno->fetch_assoc();
+        //     $mdNumber = 'MD'.$aRunno['runno'];
 
-            $runnoPlus = $aRunno['runno'] + 1;
-            $dbi->query("UPDATE `runno` SET `runno` = '$runnoPlus',`startday` = NOW() WHERE `title` = 'doctor' LIMIT 1 ");
-        }
+        //     $runnoPlus = $aRunno['runno'] + 1;
+        //     $dbi->query("UPDATE `runno` SET `runno` = '$runnoPlus',`startday` = NOW() WHERE `title` = 'doctor' LIMIT 1 ");
+        // }
+
+        $mdNumber = getMdNumber();
         
         $prefix = $a['prefix'];
         $fullnameMd = $mdNumber.' '.$a['firstname'].' '.$a['lastname'];
@@ -79,7 +101,7 @@ if($j->action==='addDoctor'){
         // เพิ่ม inputm
         if($a['request_login']=='1'){
 
-            $nameForInputm = $a['firstname'].' '.$a['lastname'].' ('.$a['prefix'].$doctor_number.')';
+            $nameForInputm = $a['firstname'].' '.$a['lastname'].' ('.$a['prefix_doctor_number'].$doctor_number.')';
             $idname = 'md'.$doctor_number;
 
             $level = 'dr';
@@ -101,9 +123,12 @@ if($j->action==='addDoctor'){
             if($a['hem']=='1'){
                 // insert inputm อีกรอบแต่เป็น ID สำหรับไตเทียม
 
-                INSERT INTO `doctor` (`row_id`, `yot`, `yot2`, `name`, `doctorcode`, `position2`, `status`, `menucode`, `position`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
-                ) VALUES (
-                '200', 'ร.อ.หญิง', '', 'HD เมนัญชญา (ว.58058)', '58058', 'อายุรแพทย์', 'y', 'ADM', '01 อายุรแพทย์', '1', '1', '1', '1', '1', 'ห้องตรวจ 6', '99', '', 'y', 'y', '', 'อายุรกรรม', '', '');
+                $hdname = 'HD '.$a['firstname'].' ('.$a['prefix_doctor_number'].$doctor_number.')';
+                $hdIdname = 'HD'.$a['firstname'];
+
+                // INSERT INTO `doctor` (`row_id`, `yot`, `yot2`, `name`, `doctorcode`, `position2`, `status`, `menucode`, `position`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
+                // ) VALUES (
+                // '200', 'ร.อ.หญิง', '', 'HD เมนัญชญา (ว.58058)', '58058', 'อายุรแพทย์', 'y', 'ADM', '01 อายุรแพทย์', '1', '1', '1', '1', '1', 'ห้องตรวจ 6', '99', '', 'y', 'y', '', 'อายุรกรรม', '', '');
                 $sql = "INSERT INTO `doctor` 
                 (
                     `row_id`, `yot`, `yot2`, `name`, `doctorcode`, `position2`, 
@@ -111,19 +136,22 @@ if($j->action==='addDoctor'){
                     `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, 
                     `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
                 ) VALUES (
-                    NULL, '$prefix', '', '$fullnameMd', '$doctor_number', '$type', 
+                    NULL, '$prefix', '', '$hdname', '$doctor_number', '$type', 
                     'y', '$menucode', '$depart', '1', '1', '1', 
                     '1', '1', '$room', '99', '', 'y', 
                     'y', '', '$type', '', ''
                 );";
 
-                INSERT INTO `inputm` (`row_id`, `name`, `idname`, `pword`, `menucode`, `status`, `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, `report_tnb`, `last_login`, `idcard`, `level_eopd`, `officer`, `login_status`) VALUES ('1057', 'HD เมนัญชญา (ว.58058)', 'HDเมนัญชญา', 'HDเมนัญชญา', 'ADMDR1', 'Y', '58058', 'MD200', '', '', '2023-07-31 08:00:00', 'dr', 'n', '2024-08-19 18:11:47', NULL, 'y', NULL, '0');
+                // INSERT INTO `inputm` (
+                // `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, `report_tnb`, `last_login`, `idcard`, `level_eopd`, `officer`, `login_status`
+                // ) VALUES (
+                // '1057', 'HD เมนัญชญา (ว.58058)', 'HDเมนัญชญา', 'HDเมนัญชญา', 'ADMDR1', 'Y', '58058', 'MD200', '', '', '2023-07-31 08:00:00', 'dr', 'n', '2024-08-19 18:11:47', NULL, 'y', NULL, '0');
                 $sql = "INSERT INTO `inputm` ( 
                     `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, 
                     `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, 
                     `report_tnb`, `level_eopd`
                 ) VALUES (
-                    NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', 
+                    NULL, '$hdname', '$hdIdname', '$hdIdname', 'ADMDR1', 'Y', 
                     '$doctor_number', '$mdNumber', '', '', NOW(), '$level', 
                     '', 'y'
                 );";
