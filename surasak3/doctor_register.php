@@ -57,7 +57,9 @@ $room_list = array(
     'ห้องตรวจ 10',
     'ห้องศัลยกรรม',
     'ห้องตรวจ สูติ',
-    'ห้องตรวจตา'
+    'ห้องตรวจตา',
+    'ห้องทันตกรรม',
+    'ห้องตรวจเวชศาสตร์ฟื้นฟู'
 );
 
 
@@ -192,6 +194,13 @@ if($action==='testDoctorId'){
     <div class="container mt-4">
         <h3>แบบฟอร์มขอเพิ่มชื่อแพทย์ในระบบ 👨🏽‍⚕️</h3>
         <form action="doctor_register.php" method="post" class="col-lg-8" id="formRegister">
+            <div class="row mb-2">
+                <label for="user" class="col-sm-3 col-form-label">เลขบัตรประชาชน</label>
+                <div class="col-sm-4">
+                    <input class="form-control" type="text" name="idcard" id="idcard"> 
+                </div>
+            </div>
+
             <div class="row mb-2">
                 <label for="prefix" class="col-sm-3 col-form-label">ยศ/คำนำหน้าชื่อ</label>
                 <div class="col-sm-3">
@@ -353,6 +362,7 @@ if($action==='testDoctorId'){
             document.getElementById('formRegister').onsubmit = function(event){
                 event.preventDefault();
 
+                let idcard = document.getElementById('idcard').value.trim();
                 let prefix = document.getElementById('prefix').value.trim();
                 let firstname = document.getElementById('firstname').value.trim();
                 let lastname = document.getElementById('lastname').value.trim();
@@ -360,7 +370,10 @@ if($action==='testDoctorId'){
                 let testDoctorNumber = document.getElementById('testDoctorNumber').value;
                 
 
-                if(prefix===''){
+                if(idcard==='' || idcaard.length != 13){
+                    Swal.fire({title: "กรุณาใส่เลขบัตรประชาชนให้ถูกต้อง", showConfirmButton: false, timer: 1000, didClose: handleOnFocus('idcard')});
+                    return false;
+                }else if(prefix===''){
                     Swal.fire({title: "กรุณาใส่ยศ/คำนำหน้าชื่อ", showConfirmButton: false, timer: 1000, didClose: handleOnFocus('prefix')});
                     return false;
                 }else if(firstname==='' || lastname===''){

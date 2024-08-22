@@ -106,6 +106,8 @@ function usingIE()
                             <input type="checkbox" name="" id="showPass" onclick="showPassword(this.checked)"> <label for="showPass"><strong>แสดงรหัสผ่าน</strong></label>
                         </p>
 
+                        <span class="badge text-bg-warning mb-2">ถ้าไม่มั่นใจว่าตั้งรหัสผ่านถูกต้องหรือไม่สามารถกด แสดงรหัสผ่าน เพื่อดูรหัสของท่านได้</span>
+
                         <div class="alert alert-warning" role="alert">
                             <p><b>คำแนะนำในการตั้งรหัสผ่าน</b></p>
                             <ul>
