@@ -141,6 +141,7 @@ if($j->action==='addDoctor'){
                     '1', '1', '$room', '99', '', 'y', 
                     'y', '', '$type', '', ''
                 );";
+                $inputmInsert = $dbi->query($sql);
 
                 // INSERT INTO `inputm` (
                 // `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, `report_tnb`, `last_login`, `idcard`, `level_eopd`, `officer`, `login_status`
@@ -155,6 +156,7 @@ if($j->action==='addDoctor'){
                     '$doctor_number', '$mdNumber', '', '', NOW(), '$level', 
                     '', 'y'
                 );";
+                $inputmInsert = $dbi->query($sql);
 
             }
 

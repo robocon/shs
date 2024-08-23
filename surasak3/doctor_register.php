@@ -64,10 +64,10 @@ $room_list = array(
 
 
 $jobsList = array(
+    'อายุรกรรม',
     'ศัลยกรรม',
     'ศัลยกรรมออร์โธปิดิกส์',
     'สูติกรรม',
-    'อายุรกรรม',
     'โสต ศอ นาสิก',
     'กุมารเวชกรรม',
     'จักษุวิทยา',
@@ -97,6 +97,7 @@ if($action==='testDoctorId'){
     exit;
 }elseif ($action==='saveDoctorForm') {
 
+    $idcard = sprintf("%s", $_POST['idcard']);
     $prefix = sprintf("%s", $_POST['prefix']);
     $prefixDoctorNumber = sprintf("%s", $_POST['prefixDoctorNumber']);
     $doctorNum = sprintf("%s", $_POST['doctorNum']);
@@ -110,32 +111,34 @@ if($action==='testDoctorId'){
     $request_login = sprintf("%s", $_POST['request_login']);
 
     $sql = "INSERT INTO `doctor_register` (
-        `id`, `date`, `prefix`, `firstname`, `lastname`, `prefix_doctor_number`,`doctor_number`, `depart`, `type`, `room`, `intern`, `hem`, `status`, `officer`, `request_login`
+        `id`, `date`, `idcard`,`prefix`, `firstname`, `lastname`, `prefix_doctor_number`,`doctor_number`, `depart`, `type`, `room`, `intern`, `hem`, `status`, `officer`, `request_login`
     ) VALUES (
-        NULL, NOW(), '$prefix', '$firstname', '$lastname', '$prefixDoctorNumber', '$doctorNum', '$depart', '$doctorJob', '$room', '$intern', '$hem', 'H', '$sOfficer', '$request_login'
+        NULL, NOW(), '$idcard', '$prefix', '$firstname', '$lastname', '$prefixDoctorNumber', '$doctorNum', '$depart', '$doctorJob', '$room', '$intern', '$hem', 'H', '$sOfficer', '$request_login'
     );";
     $q = $dbi->query($sql);
     if($q!==false){
-        $res = array('status'=>200,'message'=>'บันทึกข้อมุลเรียบร้อย');
+        $id = $dbi->insert_id;
+        $res = array('status'=>200,'message'=>'บันทึกข้อมุลเรียบร้อย','id'=>$id);
 
         // send line notify
         $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
-        $message = "ชื่อ-สกุล : $prefix $firstname $lastname\n";
+        $message = "บัตรประชาชน : $idcard\n";
+        $message .= "ชื่อ-สกุล : $prefix $firstname $lastname\n";
         $message .= "เลขที่เวชกรรม : $prefixDoctorNumber $doctorNum\n";
         $message .= "แผนก : $depart\n";
         $message .= "ประเภท : $doctorJob\n";
         $message .= "ห้องตรวจ : $room\n";
         if($intern == '1'){
-            $message .= "เป็นแพทย์อินเทิร์น\n";
+            $message .= "-> เป็นแพทย์อินเทิร์น\n";
         }
         if($hem == '1'){
-            $message .= "แพทย์ออกตรวจห้องไตเทียม\n";
+            $message .= "-> แพทย์ออกตรวจห้องไตเทียม\n";
         }
         if($request_login=='1'){ 
             $message .= "* ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล *\n";
         }
         $message .= "ขอเพิ่มผู้ใช้งานเข้าสู่ระบบ";
-        sendLineNotify($message, $sToken);
+        // sendLineNotify($message, $sToken);
 
         // send an email
 
@@ -160,7 +163,7 @@ if($action==='testDoctorId'){
         // $resMail = mail($to, "This is subject", "Hello This is message");
         // dump($resMail);
     }else{
-        $res = array('status'=>200,'message'=>'ไม่สามารถบันทึกข้อมูลได้','error'=>$dbi->error);
+        $res = array('status'=>400,'message'=>'ไม่สามารถบันทึกข้อมูลได้','error'=>$dbi->error);
     }
     echo $json->encode($res);
     exit;
@@ -209,9 +212,6 @@ if($action==='testDoctorId'){
                 <div class="col-sm-4">
                     <select class="form-select" onchange="setPrefix(this.value)">
                         <option value="">ตัวช่วย</option>
-                        <option value="นาย">นาย</option>
-                        <option value="นาง">นาง</option>
-                        <option value="น.ส.">น.ส.</option>
                         <option value="น.พ.">น.พ.</option>
                         <option value="พ.ญ.">พ.ญ.</option>
                         <option value="ร.ต.">ร.ต.</option>
@@ -266,7 +266,7 @@ if($action==='testDoctorId'){
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label">แผนก</label>
+                <label for="user" class="col-sm-3 col-form-label">ทำงานที่แผนก</label>
                 <div class="col-sm-5">
                     <select name="depart" id="depart" class="form-select">
                         <?php foreach( $section AS $key => $item ){ ?>
@@ -278,7 +278,7 @@ if($action==='testDoctorId'){
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label">ประเภท</label>
+                <label for="user" class="col-sm-3 col-form-label">ประเภทแพทย์</label>
                 <div class="col-sm-5">
                     <select name="doctorJob" id="doctorJob" class="form-select">
                         <?php foreach( $jobsList AS $jobKey => $jobItem ){ ?>
@@ -339,7 +339,7 @@ if($action==='testDoctorId'){
             document.getElementById('checkDoctorNumber').onclick = function(){
                 const doctorNum = document.getElementById('doctorNum');
                 if(doctorNum.value.trim()==''){
-                    Swal.fire('กรุณาใส่เลข ว.');
+                    Swal.fire('กรุณาใส่เลขที่เวชกรรม');
                     return false;
                 }else if(doctorNum.value.length < 3){
                     Swal.fire('เลข ว. ควรมีอย่างน้อย 3 หลัก');
@@ -370,7 +370,7 @@ if($action==='testDoctorId'){
                 let testDoctorNumber = document.getElementById('testDoctorNumber').value;
                 
 
-                if(idcard==='' || idcaard.length != 13){
+                if(idcard==='' || idcard.length != 13){
                     Swal.fire({title: "กรุณาใส่เลขบัตรประชาชนให้ถูกต้อง", showConfirmButton: false, timer: 1000, didClose: handleOnFocus('idcard')});
                     return false;
                 }else if(prefix===''){
@@ -392,12 +392,23 @@ if($action==='testDoctorId'){
                 sendForm(data).then((res)=>{
                     
                     if(res.status==200){
+
+                        
+
+                        let txtMessage = `แจ้งผู้ดูแลระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง `
+
+                        const reqLogin = document.getElementById('request_login').value;
+                        if(reqLogin==1){
+                            const url = 'http://<?=NOTIFY_HOST;?>/shspdf/form_inputm_doctor.php?id='+res.id;
+                            txtMessage += `<br>คลิก <a href="${url}" target="_blank">ที่นี่</a> เพื่อพิมพ์ใบคำร้องขอใช้อินเตอร์เน็ต`
+                        }
+
+                        txtMessage += '<br>ขอบคุณครับ';
+
                         Swal.fire({
                             title: "SUCCESS",
                             icon: "success",
-                            html: `
-                                แจ้งผู้ดูแลระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ
-                            `,
+                            html: txtMessage,
                             confirmButtonText: "OK"
                         }).then((result)=>{
                             window.location = 'doctor_register_list.php';
