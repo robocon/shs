@@ -261,7 +261,7 @@ if($action==='testDoctorId'){
                         </select>
                         <input type="number" class="form-control" id="doctorNum" name="doctorNum">
                         <button class="btn btn-primary" type="button" id="checkDoctorNumber">ตรวจสอบ</button>
-                        <button class="btn btn-secondary" id="responseCheck"></button>
+                        <button class="btn btn-secondary" id="responseCheck">😑</button>
                     </div>
                     <input type="hidden" name="testDoctorNumber" id="testDoctorNumber" value="0">
                 </div>
@@ -280,6 +280,7 @@ if($action==='testDoctorId'){
                 <div class="col-sm-5">
                     <?php
                     $qF43Clinic = $dbi->query("SELECT * FROM `f43_clinic` ORDER BY `id` ASC");
+                    if($qF43Clinic->num_rows>0){
                     ?>
                     <select name="depart" id="depart" class="form-select">
                         <?php 
@@ -288,6 +289,11 @@ if($action==='testDoctorId'){
                         }
                         ?>
                     </select>
+                    <?php
+                    }else{
+                    ?><div class="alert alert-danger" role="alert">ไม่พบตาราง f43_clinic</div><?php
+                    }
+                    ?>
                 </div>
             </div>
 
@@ -409,7 +415,8 @@ if($action==='testDoctorId'){
                     
                     if(res.status==200){
                         
-                        let txtMessage = `แจ้งผู้ดูแลระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง `
+                        let txtMessage = `แจ้งผู้ดูแลระบบเรียบร้อย<br>
+                        ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง `
 
                         const reqLogin = document.getElementById('request_login').value;
                         if(reqLogin==1){

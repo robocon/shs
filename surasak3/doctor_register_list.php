@@ -89,10 +89,10 @@ if($j->action==='addDoctor'){
             `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, 
             `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
         ) VALUES (
-            NULL, '$prefix', '', '$fullnameMd', '$doctor_number', '$type', 
+            NULL, '$prefix', '', '$fullnameMd', '$doctor_number', '$depart', 
             'y', '$menucode', '$depart', '1', '1', '1', 
             '1', '1', '$room', '99', '', 'y', 
-            'y', '', '$type', '', ''
+            'y', '', '$depart', '', ''
         );";
         $qInsertDr = $dbi->query($sql);
 
@@ -136,10 +136,10 @@ if($j->action==='addDoctor'){
                     `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, 
                     `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
                 ) VALUES (
-                    NULL, '$prefix', '', '$hdname', '$doctor_number', '$type', 
+                    NULL, '$prefix', '', '$hdname', '$doctor_number', '$depart', 
                     'y', '$menucode', '$depart', '1', '1', '1', 
                     '1', '1', '$room', '99', '', 'y', 
-                    'y', '', '$type', '', ''
+                    'y', '', '$depart', '', ''
                 );";
                 $inputmInsert = $dbi->query($sql);
 
