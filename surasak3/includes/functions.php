@@ -464,8 +464,21 @@ function sendLineNotify($sMessage, $token=null){
 	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
 	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
 	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
 	$result = curl_exec( $curl );
 	curl_close($curl);
 
 	return $result;
+}
+
+/**
+ * Summary of writeLog
+ * @param mixed $msg
+ * @param mixed $file	Path to file text
+ * @return bool|int
+ */
+function writeLog($msg, $file){
+	$text = '['.date('Y-m-d H:i:s').'] : '.$msg;
+	$f = file_put_contents($file, $text.PHP_EOL , FILE_APPEND | LOCK_EX);
+	return $f;
 }

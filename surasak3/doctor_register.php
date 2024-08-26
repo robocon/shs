@@ -56,6 +56,7 @@ $room_list = array(
     'ห้องตรวจ 9',
     'ห้องตรวจ 10',
     'ห้องศัลยกรรม',
+    'ห้องรังสี',
     'ห้องตรวจ สูติ',
     'ห้องตรวจตา',
     'ห้องทันตกรรม',
@@ -83,12 +84,13 @@ $jobsList = array(
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='testDoctorId'){
     $doctorNumber = sprintf("%s", $_REQUEST['doctorNumber']);
+    dump($doctorNumber);
     $q = $dbi->query("SELECT `row_id`,`name`,`status` FROM `doctor` WHERE doctorcode = '$doctorNumber' LIMIT 1 ");
     $res = array('status'=>200, 'message' => 'สามารถบันทึกข้อมูลได้');
     if($q->num_rows>0){
         $d = $q->fetch_assoc();
         $exText = '';
-        if(strtolower($d['status'])=='n'){
+        if(strtolower($d['status'])=='R'){
             $exText = ' ปัจจุบันมีสถานะปิดการใช้งาน กรุณาติดต่อศูนย์คอมเพื่อเปิดการใช้งานอีกครั้ง';
         }
         $res = array('status'=>400, 'message' => 'เคยบันทึกเลข ว. แพทย์ '.$d['name'].'ไปแล้ว'.$exText, 'doctor_status' => $d['status'] );
@@ -122,7 +124,8 @@ if($action==='testDoctorId'){
 
         // send line notify
         $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
-        $message = "บัตรประชาชน : $idcard\n";
+        $message = "$sOfficer ได้ทำการขอเพิ่มชื่อแพทย์เข้าสู่ระบบ มีรายละเอียดดังนี้\n";
+        $message .= "บัตรประชาชน : $idcard\n";
         $message .= "ชื่อ-สกุล : $prefix $firstname $lastname\n";
         $message .= "เลขที่เวชกรรม : $prefixDoctorNumber $doctorNum\n";
         $message .= "แผนก : $depart\n";
@@ -137,8 +140,8 @@ if($action==='testDoctorId'){
         if($request_login=='1'){ 
             $message .= "* ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล *\n";
         }
-        $message .= "ขอเพิ่มผู้ใช้งานเข้าสู่ระบบ";
-        // sendLineNotify($message, $sToken);
+        // $message .= "ขอเพิ่มชื่อแพทย์เข้าสู่ระบบ";
+        sendLineNotify($message, $sToken);
 
         // send an email
 
@@ -200,14 +203,14 @@ if($action==='testDoctorId'){
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">เลขบัตรประชาชน</label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="text" name="idcard" id="idcard"> 
+                    <input class="form-control" type="text" name="idcard" id="idcard" value="2505822727010"> 
                 </div>
             </div>
 
             <div class="row mb-2">
                 <label for="prefix" class="col-sm-3 col-form-label">ยศ/คำนำหน้าชื่อ</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="prefix" name="prefix">
+                    <input type="text" class="form-control" id="prefix" name="prefix" value="น.พ.">
                 </div>
                 <div class="col-sm-4">
                     <select class="form-select" onchange="setPrefix(this.value)">
@@ -232,10 +235,10 @@ if($action==='testDoctorId'){
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">ชื่อ - นามสกุล</label>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ">
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ" value="ชนกนันท์">
                 </div>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล">
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล" value="อุดมเสก">
                 </div>
             </div>
             <div class="row mb-2">
@@ -249,7 +252,7 @@ if($action==='testDoctorId'){
                             <option value="พท.ว.">พท.ว.</option>
                             <option value="พจ.">พจ.</option>
                         </select>
-                        <input type="number" class="form-control" id="doctorNum" name="doctorNum">
+                        <input type="number" class="form-control" id="doctorNum" name="doctorNum" value="11991">
                         <button class="btn btn-primary" type="button" id="checkDoctorNumber">ตรวจสอบ</button>
                         <button class="btn btn-secondary" id="responseCheck"></button>
                     </div>
@@ -266,7 +269,7 @@ if($action==='testDoctorId'){
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label">ทำงานที่แผนก</label>
+                <label for="user" class="col-sm-3 col-form-label">สายงาน</label>
                 <div class="col-sm-5">
                     <select name="depart" id="depart" class="form-select">
                         <?php foreach( $section AS $key => $item ){ ?>
@@ -277,7 +280,7 @@ if($action==='testDoctorId'){
                 
             </div>
 
-            <div class="row mb-2">
+            <!-- <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">ประเภทแพทย์</label>
                 <div class="col-sm-5">
                     <select name="doctorJob" id="doctorJob" class="form-select">
@@ -286,7 +289,7 @@ if($action==='testDoctorId'){
                         <?php } ?>
                     </select>
                 </div>
-            </div>
+            </div> -->
 
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">ห้องตรวจ</label>
@@ -392,9 +395,7 @@ if($action==='testDoctorId'){
                 sendForm(data).then((res)=>{
                     
                     if(res.status==200){
-
                         
-
                         let txtMessage = `แจ้งผู้ดูแลระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง `
 
                         const reqLogin = document.getElementById('request_login').value;

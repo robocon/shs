@@ -24,6 +24,11 @@ if(!defined('NEW_SITE')){
 	mysql_query("SET NAMES UTF8", $Conn);
 }
 
+if(empty($dbi)){
+	$dbi = new mysqli(HOST,USER,PASS,DB);
+	$dbi->query("SET NAMES UTF8");
+}
+
 /**
  * HOW TO USED
  *
@@ -451,12 +456,6 @@ class Mysql
 	}
 	
 }
-
-// $db = Mysql::load();
-// $sql = "SELECT * FROM `opcard` WHERE `hn` LIKE :hn";
-// $data = array(':hn' => '58-27%');
-// $db->select($sql, $data);
-// $item = $db->get_item();
 
 // E.g. http://localhost/
 define('DOMAIN', ( strtolower(getenv('HTTPS')) == 'on' ? 'https' : 'http' ).'://'.getenv('HTTP_HOST').'/');
