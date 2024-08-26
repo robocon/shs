@@ -208,7 +208,16 @@ if($j->action==='addDoctor'){
                     <tr>
                         <td><?=$a['date'];?></td>
                         <td><?=$a['prefix'].$a['firstname'].' '.$a['lastname'];?></td>
-                        <td><?=$a['prefix_doctor_number'].$a['doctor_number'];?></td>
+                        <td>
+                            <?php 
+                            if($a['request_login']=='1'){
+                                ?><a href="http://<?=NOTIFY_HOST;?>/shspdf/form_inputm_doctor.php?id=<?=$a['id'];?>" target="_blank"><?=$a['prefix_doctor_number'].$a['doctor_number'];?></a><?php
+                            }else{
+                                ?><?=$a['prefix_doctor_number'].$a['doctor_number'];?><?php
+                            }
+                            ?>
+                            
+                        </td>
                         <td><?=$a['depart'];?></td>
                         <td>
                             <?php 

@@ -60,7 +60,11 @@ $room_list = array(
     'ห้องตรวจ สูติ',
     'ห้องตรวจตา',
     'ห้องทันตกรรม',
-    'ห้องตรวจเวชศาสตร์ฟื้นฟู'
+    'ห้องตรวจเวชศาสตร์ฟื้นฟู',
+    'หอผู้ป่วยรวม',
+    'หอผู้ป่วยพิเศษ',
+    'หอผู้ป่วยICU',
+    'หอผู้ป่วยสูตินรี',
 );
 
 
@@ -84,7 +88,6 @@ $jobsList = array(
 $action = sprintf("%s", $_REQUEST['action']);
 if($action==='testDoctorId'){
     $doctorNumber = sprintf("%s", $_REQUEST['doctorNumber']);
-    dump($doctorNumber);
     $q = $dbi->query("SELECT `row_id`,`name`,`status` FROM `doctor` WHERE doctorcode = '$doctorNumber' LIMIT 1 ");
     $res = array('status'=>200, 'message' => 'สามารถบันทึกข้อมูลได้');
     if($q->num_rows>0){
@@ -94,6 +97,11 @@ if($action==='testDoctorId'){
             $exText = ' ปัจจุบันมีสถานะปิดการใช้งาน กรุณาติดต่อศูนย์คอมเพื่อเปิดการใช้งานอีกครั้ง';
         }
         $res = array('status'=>400, 'message' => 'เคยบันทึกเลข ว. แพทย์ '.$d['name'].'ไปแล้ว'.$exText, 'doctor_status' => $d['status'] );
+    }else{
+        $q = $dbi->query("SELECT `id`,`status` FROM `doctor_register` WHERE `doctor_number` = '$doctorNumber' LIMIT 1 ");
+        if($q->num_rows>0){
+            $res = array('status'=>400, 'message' => 'แพทย์เคยร้องขอการเพิ่มข้อมูลไปแล้ว กรุณาตรววจสอบข้อมูลอีกครั้ง' );
+        }
     }
     echo $json->encode($res);
     exit;
@@ -128,8 +136,7 @@ if($action==='testDoctorId'){
         $message .= "บัตรประชาชน : $idcard\n";
         $message .= "ชื่อ-สกุล : $prefix $firstname $lastname\n";
         $message .= "เลขที่เวชกรรม : $prefixDoctorNumber $doctorNum\n";
-        $message .= "แผนก : $depart\n";
-        $message .= "ประเภท : $doctorJob\n";
+        $message .= "คลินิก : $depart\n";
         $message .= "ห้องตรวจ : $room\n";
         if($intern == '1'){
             $message .= "-> เป็นแพทย์อินเทิร์น\n";
@@ -203,14 +210,14 @@ if($action==='testDoctorId'){
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">เลขบัตรประชาชน</label>
                 <div class="col-sm-4">
-                    <input class="form-control" type="text" name="idcard" id="idcard" value="2505822727010"> 
+                    <input class="form-control" type="text" name="idcard" id="idcard"> 
                 </div>
             </div>
 
             <div class="row mb-2">
                 <label for="prefix" class="col-sm-3 col-form-label">ยศ/คำนำหน้าชื่อ</label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="prefix" name="prefix" value="น.พ.">
+                    <input type="text" class="form-control" id="prefix" name="prefix">
                 </div>
                 <div class="col-sm-4">
                     <select class="form-select" onchange="setPrefix(this.value)">
@@ -235,10 +242,10 @@ if($action==='testDoctorId'){
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">ชื่อ - นามสกุล</label>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ" value="ชนกนันท์">
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ">
                 </div>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล" value="อุดมเสก">
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล">
                 </div>
             </div>
             <div class="row mb-2">
@@ -252,7 +259,7 @@ if($action==='testDoctorId'){
                             <option value="พท.ว.">พท.ว.</option>
                             <option value="พจ.">พจ.</option>
                         </select>
-                        <input type="number" class="form-control" id="doctorNum" name="doctorNum" value="11991">
+                        <input type="number" class="form-control" id="doctorNum" name="doctorNum">
                         <button class="btn btn-primary" type="button" id="checkDoctorNumber">ตรวจสอบ</button>
                         <button class="btn btn-secondary" id="responseCheck"></button>
                     </div>
@@ -269,15 +276,19 @@ if($action==='testDoctorId'){
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label">สายงาน</label>
+                <label for="user" class="col-sm-3 col-form-label">คลินิก</label>
                 <div class="col-sm-5">
+                    <?php
+                    $qF43Clinic = $dbi->query("SELECT * FROM `f43_clinic` ORDER BY `id` ASC");
+                    ?>
                     <select name="depart" id="depart" class="form-select">
-                        <?php foreach( $section AS $key => $item ){ ?>
-                        <option value="<?=$key;?> <?=$item;?>"><?=$item;?></option>
-                        <?php } ?>
+                        <?php 
+                        while ($a = $qF43Clinic->fetch_assoc()) {
+                            ?><option value="<?=$a['detail'];?>"><?=$a['detail'];?></option><?php
+                        }
+                        ?>
                     </select>
                 </div>
-                
             </div>
 
             <!-- <div class="row mb-2">
@@ -303,28 +314,30 @@ if($action==='testDoctorId'){
             </div>
 
             <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
-                <div class="col-sm-5">
-                    <input class="form-check-input" type="checkbox" name="intern" id="intern" value="1"> <label for="intern" class="form-check-label">เป็นแพทย์อินเทิร์น</label>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
-                <div class="col-sm-8">
-                    <input class="form-check-input" type="checkbox" name="hem" id="hem" value="1"> <label for="hem" class="form-check-label">แพทย์ออกตรวจห้องไตเทียม</label>
-                </div>
-            </div>
-
-            <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label text-end">👉</label>
                 <div class="col-sm-8">
-                    <input class="form-check-input" type="checkbox" name="request_login" id="request_login" value="1"> <label for="request_login" class="form-check-label">ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล</label>
+                    <input class="form-check-input" type="checkbox" name="request_login" id="request_login"> <label for="request_login" class="form-check-label">ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล</label>
                     <div>
                         <span class="badge text-bg-warning">หากต้องการให้แพทย์สามารถเข้าไป คีย์ยา ลงDiag ฯลฯ กรุณาติ๊กตัวเลือกนี้ด้วยครับ</span>
                     </div>
                 </div>
             </div>
+
+            <div class="row mb-2" id="internContainer" style="display:none;">
+                <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
+                <div class="col-sm-5">
+                    <input class="form-check-input" type="checkbox" name="intern" id="intern"> <label for="intern" class="form-check-label">เป็นแพทย์อินเทิร์น</label>
+                </div>
+            </div>
+
+            <div class="row mb-2" id="hemContainer" style="display:none;">
+                <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
+                <div class="col-sm-8">
+                    <input class="form-check-input" type="checkbox" name="hem" id="hem"> <label for="hem" class="form-check-label">แพทย์ออกตรวจห้องไตเทียม</label>
+                </div>
+            </div>
+
+            
 
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label"></label>
@@ -440,6 +453,21 @@ if($action==='testDoctorId'){
                 const response = await fetch('doctor_register.php?action=testDoctorId&doctorNumber='+doctorNumber);
                 const data = await response.json();
                 return data;
+            }
+
+            document.getElementById('request_login').onclick = function(event){
+                console.log(this.checked);
+                if(this.checked===true){
+                    document.getElementById('internContainer').style.display = '';
+                    document.getElementById('hemContainer').style.display = '';
+
+                }else{
+                    document.getElementById('internContainer').style.display = 'none';
+                    document.getElementById('hemContainer').style.display = 'none';
+
+                    document.getElementById('intern').checked = false;
+                    document.getElementById('hem').checked = false;
+                }
             }
         </script>
     </div>
