@@ -128,7 +128,11 @@ if($action==='testDoctorId'){
     $q = $dbi->query($sql);
     if($q!==false){
         $id = $dbi->insert_id;
-        $res = array('status'=>200,'message'=>'บันทึกข้อมุลเรียบร้อย','id'=>$id);
+        $res = array('status'=>200,'message'=>'บันทึกข้อมุลเรียบร้อย');
+
+        if($request_login==1){
+            $res['id'] = $id;
+        }
 
         // send line notify
         $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
@@ -148,7 +152,7 @@ if($action==='testDoctorId'){
             $message .= "* ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล *\n";
         }
         // $message .= "ขอเพิ่มชื่อแพทย์เข้าสู่ระบบ";
-        sendLineNotify($message, $sToken);
+        // sendLineNotify($message, $sToken);
 
         // send an email
 
@@ -285,7 +289,8 @@ if($action==='testDoctorId'){
                     <select name="depart" id="depart" class="form-select">
                         <?php 
                         while ($a = $qF43Clinic->fetch_assoc()) {
-                            ?><option value="<?=$a['detail'];?>"><?=$a['detail'];?></option><?php
+                            $checked = ($a['detail']=='อายุรกรรม') ? 'checked="checked"' : '' ;
+                            ?><option value="<?=$a['detail'];?>" <?=$checked;?> ><?=$a['detail'];?></option><?php
                         }
                         ?>
                     </select>
@@ -354,6 +359,13 @@ if($action==='testDoctorId'){
             </div>
         </form>
         <script>
+            // set default เป็น 0
+            window.onload = function(){ 
+                document.getElementById('request_login').value=0;
+                document.getElementById('intern').value=0;
+                document.getElementById('hem').value=0;
+            }
+
             function setPrefix(v){
                 document.getElementById('prefix').value=v;
             }
@@ -463,12 +475,14 @@ if($action==='testDoctorId'){
             }
 
             document.getElementById('request_login').onclick = function(event){
-                console.log(this.checked);
+                
                 if(this.checked===true){
+                    this.value=1;
                     document.getElementById('internContainer').style.display = '';
                     document.getElementById('hemContainer').style.display = '';
 
                 }else{
+                    this.value=0;
                     document.getElementById('internContainer').style.display = 'none';
                     document.getElementById('hemContainer').style.display = 'none';
 
@@ -476,6 +490,23 @@ if($action==='testDoctorId'){
                     document.getElementById('hem').checked = false;
                 }
             }
+
+            document.getElementById('intern').onclick = function(){
+                if(this.checked==true){
+                    this.value=1;
+                }else{
+                    this.value=0;
+                }
+            }
+
+            document.getElementById('hem').onclick = function(){
+                if(this.checked==true){
+                    this.value=1;
+                }else{
+                    this.value=0;
+                }
+            }
+
         </script>
     </div>
 </body>

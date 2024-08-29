@@ -46,17 +46,6 @@ if($j->action==='addDoctor'){
     if($q->num_rows>0){
         $a = $q->fetch_assoc();
 
-        // $mdNumber = '';
-        // $sqlRunno = "SELECT `runno` FROM `runno` WHERE `title`='doctor' ";
-        // $qRunno = $dbi->query($sqlRunno);
-        // if($qRunno->num_rows>0){
-        //     $aRunno = $qRunno->fetch_assoc();
-        //     $mdNumber = 'MD'.$aRunno['runno'];
-
-        //     $runnoPlus = $aRunno['runno'] + 1;
-        //     $dbi->query("UPDATE `runno` SET `runno` = '$runnoPlus',`startday` = NOW() WHERE `title` = 'doctor' LIMIT 1 ");
-        // }
-
         $mdNumber = getMdNumber();
         
         $prefix = $a['prefix'];
@@ -81,6 +70,7 @@ if($j->action==='addDoctor'){
 
         }
         
+        $res = array('status'=>200, 'message'=>'เพิ่มข้อมูลเรียบร้อย');
         // เพิ่ม doctor
         $sql = "INSERT INTO `doctor` 
         (
@@ -95,14 +85,18 @@ if($j->action==='addDoctor'){
             'y', '', '$depart', '', ''
         );";
         $qInsertDr = $dbi->query($sql);
+        if($qInsertDr!==false){
+            $res['doctor'] = 'เพิ่มชื่อแพทย์เรียบร้อย';
+        }
 
-        $dbi->query("UPDATE `doctor_register` SET `status` = 'A' WHERE `id` = '$id' LIMIT 1 ");
+        $dbi->query("UPDATE `doctor_register` SET `status` = 'A', `date_generate`=NOW(), `officer_generate`='$sOfficer' WHERE `id` = '$id' LIMIT 1 ");
 
         // เพิ่ม inputm
         if($a['request_login']=='1'){
 
             $nameForInputm = $a['firstname'].' '.$a['lastname'].' ('.$a['prefix_doctor_number'].$doctor_number.')';
             $idname = 'md'.$doctor_number;
+            $idcard = $a['idcard'];
 
             $level = 'dr';
             if($a['intern']=='1'){
@@ -112,23 +106,23 @@ if($j->action==='addDoctor'){
             $sql = "INSERT INTO `inputm` ( 
                 `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, 
                 `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, 
-                `report_tnb`, `level_eopd`
+                `report_tnb`, `level_eopd`, `idcard`, `officer`
             ) VALUES (
                 NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', 
                 '$doctor_number', '$mdNumber', '', '', NOW(), '$level', 
-                '', 'y'
+                '', 'y', '$idcard', '$sOfficer'
             );";
             $inputmInsert = $dbi->query($sql);
+            if($inputmInsert!==false){
+                $res['inputm'] = 'เพิ่มผู้ใช้งานในระบบเรียบร้อย';
+            }
 
+            // insert inputm อีกรอบแต่เป็น ID สำหรับไตเทียม
             if($a['hem']=='1'){
-                // insert inputm อีกรอบแต่เป็น ID สำหรับไตเทียม
-
+                
                 $hdname = 'HD '.$a['firstname'].' ('.$a['prefix_doctor_number'].$doctor_number.')';
-                $hdIdname = 'HD'.$a['firstname'];
+                $hdIdname = 'HD'.$a['doctor_number'];
 
-                // INSERT INTO `doctor` (`row_id`, `yot`, `yot2`, `name`, `doctorcode`, `position2`, `status`, `menucode`, `position`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `room`, `rowshow`, `room_app`, `erstatus`, `opdstatus`, `rg_status`, `clinic`, `queue_code`, `queue_status`
-                // ) VALUES (
-                // '200', 'ร.อ.หญิง', '', 'HD เมนัญชญา (ว.58058)', '58058', 'อายุรแพทย์', 'y', 'ADM', '01 อายุรแพทย์', '1', '1', '1', '1', '1', 'ห้องตรวจ 6', '99', '', 'y', 'y', '', 'อายุรกรรม', '', '');
                 $sql = "INSERT INTO `doctor` 
                 (
                     `row_id`, `yot`, `yot2`, `name`, `doctorcode`, `position2`, 
@@ -141,28 +135,77 @@ if($j->action==='addDoctor'){
                     '1', '1', '$room', '99', '', 'y', 
                     'y', '', '$depart', '', ''
                 );";
-                $inputmInsert = $dbi->query($sql);
+                $dtHemInsert = $dbi->query($sql);
 
-                // INSERT INTO `inputm` (
-                // `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, `report_tnb`, `last_login`, `idcard`, `level_eopd`, `officer`, `login_status`
-                // ) VALUES (
-                // '1057', 'HD เมนัญชญา (ว.58058)', 'HDเมนัญชญา', 'HDเมนัญชญา', 'ADMDR1', 'Y', '58058', 'MD200', '', '', '2023-07-31 08:00:00', 'dr', 'n', '2024-08-19 18:11:47', NULL, 'y', NULL, '0');
                 $sql = "INSERT INTO `inputm` ( 
                     `row_id`, `name`, `idname`, `pword`, `menucode`, `status`, 
                     `codedoctor`, `mdcode`, `id`, `room_app`, `date_pword`, `level`, 
-                    `report_tnb`, `level_eopd`
+                    `report_tnb`, `level_eopd`, `idcard`, `officer`
                 ) VALUES (
                     NULL, '$hdname', '$hdIdname', '$hdIdname', 'ADMDR1', 'Y', 
                     '$doctor_number', '$mdNumber', '', '', NOW(), '$level', 
-                    '', 'y'
+                    '', 'y', '$idcard', '$sOfficer' 
                 );";
-                $inputmInsert = $dbi->query($sql);
+                $inputHemInsert = $dbi->query($sql);
+
+
+                if($inputHemInsert!==false){
+                    $res['hem'] = 'เพิ่มผู้ใช้งานไตเทียมเรียบร้อย';
+                }
 
             }
 
         }
+        
+    }else{
+        $res = array('status'=>400, 'message'=>'ไม่พบข้อมูล');
     }
     
+    echo $json->encode($res);
+    exit;
+}
+
+$getAction = sprintf("%s", $_GET['action']);
+if($getAction == 'info'){
+    $id = sprintf("%s", $_GET['id']);
+    $q = $dbi->query("SELECT `firstname`,`doctor_number`,`hem` FROM `doctor_register` WHERE `id` = '$id' AND `status` = 'A' LIMIT 1");
+    if($q->num_rows>0){
+        $d = $q->fetch_assoc();
+        ?>
+        <table>
+            <tr>
+                <td colspan="2"><h4>ชื่อผู้ใช้และรหัสเข้าใช้งานของแพทย์</h4></td>
+            </tr>
+            <tr>
+                <td><strong>Username</strong>: </td>
+                <td>md<?=$d['doctor_number'];?></td>
+            </tr>
+            <tr>
+                <td><strong>Password</strong>: </td>
+                <td>md<?=$d['doctor_number'];?></td>
+            </tr>
+            <?php 
+            if($d['hem']=='1'){
+                ?>
+                <tr>
+                    <td colspan="2"><h4 class="mt-2">ชื่อผู้ใช้และรหัสผ่านใช้งานไตเทียม</h4></td>
+                </tr>
+                <tr>
+                    <td><strong>Username</strong>: </td>
+                    <td>HD<?=$d['firstname'];?></td>
+                </tr>
+                <tr>
+                    <td><strong>Password</strong>: </td>
+                    <td>HD<?=$d['firstname'];?></td>
+                </tr>
+                <?php
+            }
+            ?>
+        </table>
+        <?php
+    }else{
+        echo "ไม่พบข้อมูล";
+    }
     exit;
 }
 ?>
@@ -235,9 +278,11 @@ if($j->action==='addDoctor'){
                                 <?php 
                                 if($a['status']==='H'){
                                     ?><a href="javascript:void(0);" class="btn btn-primary" onclick="createUser('<?=$a['id'];?>')">สร้าง</a><?php
-                                }elseif($a['status']==='A'){
+                                }elseif($a['status']==='A' && $a['request_login']=='1'){
                                     // ดูข้อมูล
-                                    ?><a href="javascript:void(0);" class="btn btn-primary">ดูข้อมูลการร้องขอ</a><?php
+                                    ?><a href="javascript:void(0);" class="btn btn-primary" onclick="onShowInfo('<?=$a['id'];?>')">ดูข้อมูลการร้องขอ</a><?php
+                                }else{
+                                    ?>-<?php
                                 }
                                 ?>
                             </td>
@@ -252,7 +297,18 @@ if($j->action==='addDoctor'){
             <script>
                 function createUser(id){
                     onCreateUser(id).then((res)=>{
-                        console.log(res);
+                        
+                        if(res.status==200){
+                            Swal.fire({
+                                title: "SUCCESS",
+                                icon: "success",
+                                html: res.message,
+                                confirmButtonText: "OK"
+                            }).then((result)=>{
+                                window.location = 'doctor_register_list.php';
+                            });
+                        }
+                        
                     });
                 }
                 async function onCreateUser(id){
@@ -266,6 +322,22 @@ if($j->action==='addDoctor'){
                     });
                     const data = await response.json();
                     return data;
+                }
+
+                function onShowInfo(id){
+                    showInfo(id).then((res)=>{
+                        Swal.fire({
+                            title: "ข้อมูลเข้าใช้งานครั้งแรก",
+                            html: res,
+                            showCloseButton: true
+                        });
+                    });
+                }
+
+                async function showInfo(id){
+                    const response = await fetch('doctor_register_list.php?action=info&id='+id);
+                    const body = await response.text();
+                    return body;
                 }
             </script>
             <?php
