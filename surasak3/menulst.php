@@ -216,7 +216,7 @@ if($menucode != 'ADMDR1'){
 }else{
 	?>
 	<tr>
-		<td BGCOLOR='#148F77'><a target='_top' href="../sm3.php?user_id=<?=$sRowid;?>"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ($sOfficer)</font></a></td>
+		<td BGCOLOR='#148F77'><a target='_top' href="../sm3.php?user_id=<?=$sRowid;?>"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ(<?=$sOfficer;?>)</font></a></td>
 	</tr>
 	<?php
 }
