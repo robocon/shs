@@ -196,6 +196,16 @@ ORDER BY `row_id` ASC
                         <tr>
                             <td>
                                 <!-- มันมี 2 แบบคือ การตรวจ Albumin Urine และ UA (ข้างใน UA จะมี Urine albumin เป็นซับเซ็ตอีกที) -->
+                                <!-- 
+
+                                https://www.si.mahidol.ac.th/Th/healthdetail.asp?aid=411
+                                การวัดระดับไมโครอัลบูมินในปัสสาวะ( Microalbuminuria )
+
+                                LABCODE     LABNAME             PARENTCODE      PARENTNAME
+                                ALB	        Albumin*            ALB	            Albumin*
+                                ALB	        Albumin*            LFT	            Liver function test*
+                                MAU	        Urine-microalbumin  UMALB	        Urine Microalbumin
+                                -->
                                 4.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin
                             </td>
                             <td></td>
