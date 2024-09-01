@@ -3,9 +3,9 @@ include_once 'bootstrap.php';
 // include_once 'includes/JSON.php';
 // $json = new Services_JSON();
 
-$dbi=new mysqli(HOST,USER,PASS,DB);
+// $dbi=new mysqli(HOST,USER,PASS,DB);
 // $dbi->set_charset('utf8');
-$dbi->query("SET NAMES UTF8");
+// $dbi->query("SET NAMES UTF8");
 
 $action = $_REQUEST['action'];
 if ($action === 'search_user') {
