@@ -1,7 +1,7 @@
 <?php 
 include 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+// $dbi = new mysqli(HOST,USER,PASS,DB);
+// $dbi->query("SET NAMES UTF8");
 /*
 ต้องการสรุปตัวชี้วัดรายปี. 
 [x] 1 ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง 
@@ -94,28 +94,33 @@ ORDER BY `row_id` ASC
             ข้อมูลซักประวัติ(opd) ที่มารับบริการครั้งล่าสุดแต่ละ HN รวมกับข้อมูลผู้ป่วย ht(hypertension_clinic)
             ถ้ามี x.regis_id แสดงว่าเป็นผู้ป่วย ht ที่มีการซักประวัติในปีที่เลือก
             */
-            $sqlTemp = "CREATE TEMPORARY TABLE `tempory_opd` 
-            SELECT y.*,x.`regis_id`,x.`regis_date` FROM 
-            ( 
-                SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` FROM ( 
-                    SELECT MAX(`row_id`) AS `latest_row_id`,`thidate` 
-                    FROM `opd` 
-                    WHERE `thidate` LIKE '$yearSelected%' 
-                    AND ( `bp1` <> '' AND `bp2` <> '' AND `bp1` NOT LIKE '...%' ) 
+            // $yearSelected
+            $sqlTemp = "CREATE TEMPORARY TABLE `tempOpdXDiag` 
+            SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,a.`icd10`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` 
+            FROM ( 
+                SELECT y.`row_id`,y.`svdate`,y.`hn`,y.`an` AS `vn`,`icd10`,CONCAT(SUBSTRING(y.`svdate`,9,2),'-',SUBSTRING(y.`svdate`,6,2),'-',SUBSTRING(y.`svdate`,1,4),y.`hn`) AS `thdatehn`,NOW() AS `date_generate`,x.`latest_row_id` 
+                FROM ( 
+                    SELECT MAX(`row_id`) AS `latest_row_id` 
+                    FROM `diag` 
+                    WHERE `icd10` = 'I10' 
+                    AND `status` = 'Y' 
+                    AND `svdate` LIKE '2567%' 
                     GROUP BY `hn` 
                     ORDER BY `row_id` ASC 
-                ) AS a 
-                LEFT JOIN `opd` AS b ON b.`row_id` = a.`latest_row_id`
-            ) AS y 
-            LEFT JOIN (
-                SELECT `row_id` AS `regis_id`,`hn`,`thidate` AS `regis_date` FROM `hypertension_clinic` 
-            ) AS x ON x.`hn` = y.`hn`";
+                ) AS x 
+                LEFT JOIN `diag` AS y ON x.`latest_row_id` = y.`row_id` 
+            ) AS a 
+            LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
+            WHERE b.`row_id` IS NOT NULL 
+            AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
             $dbi->query($sqlTemp);
 
+            $sql = "SELECT COUNT(`row_id`) AS `count` FROM `tempOpdXDiag`";
+            $q = $dbi->query($sql);
+            $all = $q->fetch_assoc();
+            $allCount = $all['count'];
 
-            $sql = "SELECT `hn`,`ptname`,`thidate` FROM `hypertension_clinic`";
-            $qHC = $dbi->query($sql);
-            $hcRows = $qHC->num_rows;
+            // dump($allCount);
             
             ?>
             <div class="col-md-8">
@@ -134,13 +139,12 @@ ORDER BY `row_id` ASC
                                 1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง
                             </td>
                             <td>
-                                <?php 
-                                $sql = "SELECT COUNT(`row_id`) AS `all`,COUNT(`regis_id`) AS `ht` FROM `tempory_opd` WHERE `regis_id` IS NOT NULL AND `age` > 35 ";
+                                <?php
+                                $sql = "SELECT COUNT(`row_id`) AS `age35` FROM `tempOpdXDiag` WHERE `age` > 35 ";
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
-                                $ht = $a['ht'];
-
-                                echo '<a href="report_ht1.php?year='.$year.'&all='.$hcRows.'&ht='.$ht.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$hcRows.'ราย/ ผ่านเกณฑ์ '.$ht.'ราย" target="_blank">'.round(($ht*100/$hcRows),2).'</a>';
+                                $age35 = $a['age35'];
+                                echo '<a href="report_ht1.php?year='.$year.'&all='.$allCount.'&ht='.$age35.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$allCount.'ราย/ ผ่านเกณฑ์ '.$age35.'ราย" target="_blank">'.round(($age35*100/$allCount),2).'</a>';
                                 ?>
                             </td>
                         </tr>
@@ -150,19 +154,14 @@ ORDER BY `row_id` ASC
                                 2.&#41; ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี &#40; &lt;140/90 &#41; ดึงจากการวัดครั้งที่2 
                             </td>
                             <td>
-                                <?php 
-
-                                $sql = "SELECT COUNT(`row_id`) AS `bp` FROM 
-                                `tempory_opd` 
-                                WHERE `regis_id` IS NOT NULL 
-                                AND ( `bp3` <> '' AND `bp4` <> '' ) 
-                                AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' )
-                                AND ( `bp3` < 140 AND `bp4` < 90)";
+                                <?php
+                                $sql = "SELECT COUNT(`row_id`) AS `bp` 
+                                FROM `tempOpdXDiag` 
+                                WHERE ( `bp3` <> '' AND `bp4` <> '' ) AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' )AND ( `bp3` < 140 AND `bp4` < 90)";
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $ht_bp = $a['bp'];
-
-                                echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$hcRows.'&ht_bp='.$ht_bp.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$hcRows.'ราย/ HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.(round(($ht_bp*100/$hcRows))).'</a>';
+                                echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$allCount.'&ht_bp='.$ht_bp.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$allCount.'ราย/ HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.(round(($ht_bp*100/$allCount))).'</a>';
                                 ?>
                             </td>
                         </tr>
@@ -174,7 +173,7 @@ ORDER BY `row_id` ASC
                             <td>
                                 <?php 
                                 $sql = "SELECT COUNT(a.`row_id`) AS `htEcgCxr`
-                                FROM ( SELECT * FROM tempory_opd WHERE regis_id IS NOT NULL ) AS a 
+                                FROM `tempOpdXDiag` AS a 
                                 LEFT JOIN ( 
                                     SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
                                     FROM `patdata` 
@@ -187,7 +186,7 @@ ORDER BY `row_id` ASC
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $ecgCxr = $a['htEcgCxr'];
-                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$hcRows.'&ecgCxr='.$ecgCxr.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$hcRows.'ราย/ HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.(round(($ecgCxr*100/$hcRows))).'</a>';
+                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$ecgCxr.'" data-bs-toggle="tooltip"  data-bs-title="HT ทั้งหมด '.$allCount.'ราย/ HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.(round(($ecgCxr*100/$allCount))).'</a>';
                                 
                                 ?>
                             </td>
