@@ -6,20 +6,9 @@ include 'bootstrap.php';
 ต้องการสรุปตัวชี้วัดรายปี. 
 [x] 1 ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง 
 [x] 2 ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี ( <140/90 ) **ดึงจากการวัดครั้งที่2 
-[] 3 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR 
-[] 4 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin 
-[] 5 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
-
-
-
-SELECT `svdate`,`hn`,`an` AS `vn`,CONCAT(SUBSTRING(`svdate`,9,2),'-',SUBSTRING(`svdate`,6,2),'-',SUBSTRING(`svdate`,1,4),`hn`) AS `thdatehn`,NOW() AS `date_generate`
-FROM `diag` 
-WHERE `icd10` = 'I10' 
-AND `status` = 'Y' 
-AND `svdate` LIKE '2567%' 
-ORDER BY `row_id` ASC
-
-
+[x] 3 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR 
+[x] 4 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin 
+[x] 5 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
 */
 ?>
 <!DOCTYPE html>
@@ -90,11 +79,6 @@ ORDER BY `row_id` ASC
 
             $yearSelected = $year+543;
 
-            /*
-            ข้อมูลซักประวัติ(opd) ที่มารับบริการครั้งล่าสุดแต่ละ HN รวมกับข้อมูลผู้ป่วย ht(hypertension_clinic)
-            ถ้ามี x.regis_id แสดงว่าเป็นผู้ป่วย ht ที่มีการซักประวัติในปีที่เลือก
-            */
-            // $yearSelected
             $sqlTemp = "CREATE TEMPORARY TABLE `tempOpdXDiag` 
             SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,a.`icd10`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` 
             FROM ( 
@@ -104,7 +88,7 @@ ORDER BY `row_id` ASC
                     FROM `diag` 
                     WHERE `icd10` = 'I10' 
                     AND `status` = 'Y' 
-                    AND `svdate` LIKE '2567%' 
+                    AND `svdate` LIKE '$yearSelected%' 
                     GROUP BY `hn` 
                     ORDER BY `row_id` ASC 
                 ) AS x 
@@ -113,16 +97,11 @@ ORDER BY `row_id` ASC
             LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
             WHERE b.`row_id` IS NOT NULL 
             AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
-            // dump($sqlTemp);
 
             $dbi->query($sqlTemp);
-
-            $sql = "SELECT COUNT(`row_id`) AS `count` FROM `tempOpdXDiag`";
+            $sql = "SELECT row_id FROM `tempOpdXDiag`";
             $q = $dbi->query($sql);
-            $all = $q->fetch_assoc();
-            $allCount = $all['count'];
-
-            // dump($allCount);
+            $allCount = $q->num_rows;
             
             ?>
             <div class="col-md-8">
@@ -142,9 +121,9 @@ ORDER BY `row_id` ASC
                             </td>
                             <td>
                                 <?php
-                                $sql = "SELECT COUNT(`row_id`) AS `age35` FROM `tempOpdXDiag` WHERE `age` > 35 ";
+                                $sql = "SELECT row_id FROM `tempOpdXDiag` WHERE `age` > 35 ";
                                 $q = $dbi->query($sql);
-                                $a = $q->fetch_assoc();
+                                $a['age35'] = $q->num_rows;
                                 $age35 = $a['age35'];
                                 echo '<a href="report_ht1.php?year='.$year.'&all='.$allCount.'&ht='.$age35.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> ผ่านเกณฑ์ '.$age35.'ราย" target="_blank">'.round(($age35*100/$allCount),2).'</a>';
                                 ?>
@@ -208,12 +187,46 @@ ORDER BY `row_id` ASC
                                 -->
                                 4.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin
                             </td>
-                            <td></td>
+                            <td>
+                                <?php 
+                                $sqlTempResulthead = "CREATE TEMPORARY TABLE `tempResulthead` 
+                                SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn`  
+                                FROM (
+                                    SELECT MAX(autonumber) AS latest_autonumber 
+                                    FROM resulthead 
+                                    WHERE orderdate LIKE '$year%' 
+                                    AND profilecode IN ('CREAG','ALB','UMALB') 
+                                    GROUP BY hn
+                                ) AS a 
+                                LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
+                                ORDER BY b.autonumber ASC";
+                                // dump($sqlTempResulthead);
+                                $qTempResulthead = $dbi->query($sqlTempResulthead);
+
+                                $sql = "SELECT COUNT(`autonumber`) AS 'albuminRows' FROM `tempOpdXDiag` AS m 
+                                LEFT JOIN ( 
+                                        
+                                    SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
+                                    FROM `tempResulthead` AS x
+                                    LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
+                                    WHERE y.`labcode` IN ('ALB','UMALB') 
+                                    GROUP BY `hn`
+
+                                ) AS n ON m.`thdatehn` = n.`thdatehn`
+                                WHERE n.`autonumber` IS NOT NULL;";
+                                // dump($sql);
+                                $q = $dbi->query($sql);
+                                $a = $q->fetch_assoc();
+                                $albuminRows = $a['albuminRows'];
+                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$albuminRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$albuminRows.'ราย" target="_blank">'.round(($albuminRows*100/$allCount),2).'</a>';
+                                
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <td>
                                 <!-- มันคือ CR((32202)Creatinine) ในโรงบาลเราเอง -->
-                                5.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
+                                5.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr
                             </td>
                             <td>
                                 <?php 
@@ -221,29 +234,15 @@ ORDER BY `row_id` ASC
                                 LEFT JOIN ( 
                                         
                                     SELECT x.*,y.labcode,y.labname,y.result  
-                                    FROM ( 
-                                        SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn`  
-                                        FROM (
-                                            SELECT MAX(autonumber) AS latest_autonumber 
-                                            FROM resulthead 
-                                            WHERE orderdate LIKE '2024%' 
-                                            AND profilecode = 'CREAG'
-                                            GROUP BY hn
-                                        ) AS a 
-                                        LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
-                                        ORDER BY b.autonumber ASC
-                                    ) AS x
+                                    FROM tempResulthead AS x
                                     LEFT JOIN resultdetail AS y ON x.autonumber = y.autonumber 
                                     WHERE y.labcode = 'CREA'  
 
                                 ) AS n ON m.thdatehn = n.thdatehn
                                 WHERE n.`autonumber` IS NOT NULL;";
-                                // dump($sql);
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $CrRows = $a['CrRows'];
-                                // dump($CrRows);
-                                // dump($allCount);
                                 echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$CrRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$CrRows.'ราย" target="_blank">'.round(($CrRows*100/$allCount),2).'</a>';
                                 
                                 ?>
@@ -251,6 +250,11 @@ ORDER BY `row_id` ASC
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div>
+                <ul>
+                    <li>ข้อมูลผู้ป่วยจาก ICD10 I10</li>
+                </ul>
             </div>
             <script>
                 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
