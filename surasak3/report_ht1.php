@@ -43,8 +43,8 @@ $ht = sprintf("%s", $_GET['ht']);
     </style>
 </head>
 <body>
-    <div class="container">
-        <h3 class="mt-4">ตัวชี้วัด Hypertension รายปี</h3>
+    <div class="container mt-4">
+        <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</h5>
         <div class="row">
             <div class="col-sm-6">

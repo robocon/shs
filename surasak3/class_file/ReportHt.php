@@ -2,7 +2,7 @@
 require_once dirname(__FILE__).'/database.php';
 class ReportHt extends DbConnect
 {
-    private $qOpdXDiag = false;
+    public $qOpdXDiag = false;
     public function __construct()
     {
         parent::__construct();
@@ -54,8 +54,52 @@ class ReportHt extends DbConnect
         return $q;
     }
 
+    /**
+     * Summary of getAgeLessThan35
+     * @return bool|mysqli_result
+     */
     public function getAgeLessThan35(){
         $q = $this->dbi->query("SELECT * FROM `tempOpdXDiag` WHERE `age` <= 35");
+        return $q;
+    }
+
+    /**
+     * Summary of getBPLess140
+     * @return bool|mysqli_result
+     */
+    public function getBPLess140(){
+        $sql = "SELECT * 
+        FROM `tempOpdXDiag` 
+        WHERE ( `bp3` <> '' AND `bp4` <> '' ) 
+        AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' ) 
+        AND ( `bp3` < 140 AND `bp4` < 90)";
+        $q = $this->dbi->query($sql);
+        return $q;
+    }
+
+    public function getBPMore140(){
+        $sql = "SELECT * 
+        FROM `tempOpdXDiag` 
+        WHERE ( `bp3` <> '' AND `bp4` <> '' ) 
+        AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' ) 
+        AND ( `bp3` >= 140 AND `bp4` >= 90)";
+        $q = $this->dbi->query($sql);
+        return $q;
+    }
+
+    public function getXrayXEkg($year){
+        $sql = "SELECT * 
+        FROM `tempOpdXDiag` AS a 
+        LEFT JOIN ( 
+            SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
+            FROM `patdata` 
+            WHERE `date` LIKE '$year%' 
+            AND `hn` <> '' 
+            AND ( `code` LIKE '41001%' OR `code` LIKE '%EKG%') 
+            GROUP BY `hn`
+        ) AS b ON a.`thdatehn` = b.`thdatehn` 
+        WHERE b.`row_id` IS NOT NULL;";
+        $q = $this->dbi->query($sql);
         return $q;
     }
 }

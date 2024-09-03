@@ -1,11 +1,8 @@
 <?php 
-include 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+require_once 'bootstrap.php';
+require_once 'class_file/ReportHt.php';
 
 // รูปแบบไทย
-
-
 $year = sprintf("%s", $_GET['year']);
 $ht_all = sprintf("%s", $_GET['ht_all']);
 $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
@@ -42,7 +39,7 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container mt-4">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>3.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR </h5>
         <div class="row">
@@ -60,47 +57,13 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
             </div>
         </div>
         <?php
+        $ht = new ReportHt();
         $yearSelected = $year+543;
 
+        // สร้าง temporary table ระหว่าง opd กับ diag
+        $ht->generateTempOpdXDiag($yearSelected);
 
-        $sqlTemp = "CREATE TEMPORARY TABLE `tempory_opd` 
-        SELECT y.*,x.`regis_id`,x.`regis_date` FROM 
-        ( 
-                SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` FROM ( 
-                        SELECT MAX(`row_id`) AS `latest_row_id`,`thidate` 
-                        FROM `opd` 
-                        WHERE `thidate` LIKE '2567%' 
-                        AND ( `bp1` <> '' AND `bp2` <> '' AND `bp1` NOT LIKE '...%' ) 
-                        GROUP BY `hn` 
-                        ORDER BY `row_id` ASC 
-                ) AS a 
-                LEFT JOIN `opd` AS b ON b.`row_id` = a.`latest_row_id`
-        ) AS y 
-        LEFT JOIN (
-                SELECT `ht_no` AS `regis_id`,`hn`,`thidate` AS `regis_date` FROM `hypertension_clinic` ORDER BY `row_id` ASC 
-        ) AS x ON x.`hn` = y.`hn`
-        where regis_id is not null 
-        order by regis_id asc";
-        dump($sqlTemp);
-        $dbi->query($sqlTemp);
-
-
-
-        $sql = "SELECT a.* 
-        FROM ( SELECT * FROM tempory_opd WHERE regis_id IS NOT NULL ) AS a 
-        LEFT JOIN ( 
-            SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
-            FROM `patdata` 
-            WHERE `date` LIKE '$yearSelected%' 
-            AND `hn` <> '' 
-            AND ( `code` LIKE '41001%' OR `code` LIKE '%EKG%') 
-            GROUP BY `hn`
-        ) AS b ON a.thdatehn = b.thdatehn 
-        WHERE b.row_id IS NOT NULL
-        ORDER BY b.`date` DESC ;";
-        dump($sql);
-        $q = $dbi->query($sql);
-        $a = $q->fetch_assoc();
+        $q = $ht->getXrayXEkg($yearSelected);
         
         ?>
         <div>
@@ -118,7 +81,6 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
                     <?php 
                     $i = 1;
                     while ($a = $q->fetch_assoc()) { 
-                        // dump($a);
                     ?>
                     <tr>
                         <td><?=$i;?></td>
