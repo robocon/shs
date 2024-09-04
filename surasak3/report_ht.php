@@ -200,7 +200,6 @@ include 'bootstrap.php';
                                 ) AS a 
                                 LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
                                 ORDER BY b.autonumber ASC";
-                                // dump($sqlTempResulthead);
                                 $qTempResulthead = $dbi->query($sqlTempResulthead);
 
                                 $sql = "SELECT COUNT(`autonumber`) AS 'albuminRows' FROM `tempOpdXDiag` AS m 
@@ -214,11 +213,10 @@ include 'bootstrap.php';
 
                                 ) AS n ON m.`thdatehn` = n.`thdatehn`
                                 WHERE n.`autonumber` IS NOT NULL;";
-                                // dump($sql);
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $albuminRows = $a['albuminRows'];
-                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$albuminRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$albuminRows.'ราย" target="_blank">'.round(($albuminRows*100/$allCount),2).'</a>';
+                                echo '<a href="report_ht4.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$albuminRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$albuminRows.'ราย" target="_blank">'.round(($albuminRows*100/$allCount),2).'</a>';
                                 
                                 ?>
                             </td>
@@ -243,7 +241,7 @@ include 'bootstrap.php';
                                 $q = $dbi->query($sql);
                                 $a = $q->fetch_assoc();
                                 $CrRows = $a['CrRows'];
-                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$CrRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$CrRows.'ราย" target="_blank">'.round(($CrRows*100/$allCount),2).'</a>';
+                                echo '<a href="report_ht5.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$CrRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$CrRows.'ราย" target="_blank">'.round(($CrRows*100/$allCount),2).'</a>';
                                 
                                 ?>
                             </td>

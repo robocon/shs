@@ -8,6 +8,15 @@ class ReportHt extends DbConnect
         parent::__construct();
     }
 
+    private function doQuery($sql){
+        $q = $this->dbi->query($sql);
+        if($q!==false){
+            return $q;
+        }else{
+            return $this->dbi->error;
+        }
+    }
+
     /**
      * Summary of generateTempOpdXDiag
      * @param mixed $year ปี พ.ศ. ไทย
@@ -32,8 +41,8 @@ class ReportHt extends DbConnect
         LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
         WHERE b.`row_id` IS NOT NULL 
         AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
-        $this->qOpdXDiag = $this->dbi->query($sqlTemp);
-        return $this->qOpdXDiag;
+        $q = $this->doQuery($sqlTemp);
+        return $q;
     }
 
     /**
@@ -41,7 +50,7 @@ class ReportHt extends DbConnect
      * @return bool|mysqli_result
      */
     public function getAllOpdXDiag(){
-        $q = $this->dbi->query("SELECT * FROM `tempOpdXDiag`");
+        $q = $this->doQuery("SELECT * FROM `tempOpdXDiag`");
         return $q;
     }
 
@@ -50,7 +59,7 @@ class ReportHt extends DbConnect
      * @return bool|mysqli_result
      */
     public function getAgeMoreThan35(){
-        $q = $this->dbi->query("SELECT * FROM `tempOpdXDiag` WHERE `age` > 35");
+        $q = $this->doQuery("SELECT * FROM `tempOpdXDiag` WHERE `age` > 35");
         return $q;
     }
 
@@ -59,7 +68,7 @@ class ReportHt extends DbConnect
      * @return bool|mysqli_result
      */
     public function getAgeLessThan35(){
-        $q = $this->dbi->query("SELECT * FROM `tempOpdXDiag` WHERE `age` <= 35");
+        $q = $this->doQuery("SELECT * FROM `tempOpdXDiag` WHERE `age` <= 35");
         return $q;
     }
 
@@ -73,7 +82,7 @@ class ReportHt extends DbConnect
         WHERE ( `bp3` <> '' AND `bp4` <> '' ) 
         AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' ) 
         AND ( `bp3` < 140 AND `bp4` < 90)";
-        $q = $this->dbi->query($sql);
+        $q = $this->doQuery($sql);
         return $q;
     }
 
@@ -83,12 +92,12 @@ class ReportHt extends DbConnect
         WHERE ( `bp3` <> '' AND `bp4` <> '' ) 
         AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' ) 
         AND ( `bp3` >= 140 AND `bp4` >= 90)";
-        $q = $this->dbi->query($sql);
+        $q = $this->doQuery($sql);
         return $q;
     }
 
     public function getXrayXEkg($year){
-        $sql = "SELECT * 
+        $sql = "SELECT a.*,b.*  
         FROM `tempOpdXDiag` AS a 
         LEFT JOIN ( 
             SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
@@ -99,7 +108,57 @@ class ReportHt extends DbConnect
             GROUP BY `hn`
         ) AS b ON a.`thdatehn` = b.`thdatehn` 
         WHERE b.`row_id` IS NOT NULL;";
-        $q = $this->dbi->query($sql);
+        $q = $this->doQuery($sql);
+        return $q;
+    }
+
+    public function generateTempResulthead($year){
+        $sqlTemp = "CREATE TEMPORARY TABLE `tempResulthead` 
+        SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn` 
+        FROM (
+            SELECT MAX(autonumber) AS latest_autonumber 
+            FROM resulthead 
+            WHERE orderdate LIKE '$year%' 
+            AND profilecode IN ('CREAG','ALB','UMALB') 
+            GROUP BY hn
+        ) AS a 
+        LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
+        ORDER BY b.autonumber ASC";
+        $q = $this->doQuery($sqlTemp);
+        return $q;
+    }
+
+    /**
+     * Summary of getAlbumin ต้องการการเรียกใช้งาน generateTempOpdXDiag()
+     * @return mysqli_result|string
+     */
+    public function getAlbumin(){
+        $sql = "SELECT m.*,n.* FROM `tempOpdXDiag` AS m 
+        LEFT JOIN ( 
+                
+            SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
+            FROM `tempResulthead` AS x
+            LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
+            WHERE y.`labcode` IN ('ALB','UMALB') 
+            GROUP BY `hn`
+
+        ) AS n ON m.`thdatehn` = n.`thdatehn`
+        WHERE n.`autonumber` IS NOT NULL;";
+        $q = $this->doQuery($sql);
+        return $q;
+    }
+
+    public function getCREA(){
+        $sql = "SELECT m.*,n.* FROM `tempOpdXDiag` AS m 
+        LEFT JOIN ( 
+            SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
+            FROM `tempResulthead` AS x
+            LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
+            WHERE y.`labcode` = 'CREA' 
+            GROUP BY `hn`
+        ) AS n ON m.`thdatehn` = n.`thdatehn`
+        WHERE n.`autonumber` IS NOT NULL;";
+        $q = $this->doQuery($sql);
         return $q;
     }
 }
