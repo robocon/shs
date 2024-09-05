@@ -1,7 +1,8 @@
 <?php 
-include 'bootstrap.php';
-// $dbi = new mysqli(HOST,USER,PASS,DB);
-// $dbi->query("SET NAMES UTF8");
+require_once 'bootstrap.php';
+require_once 'includes/JSON.php';
+
+$json = new Services_JSON();
 /*
 ต้องการสรุปตัวชี้วัดรายปี. 
 [x] 1 ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง 
@@ -10,6 +11,50 @@ include 'bootstrap.php';
 [x] 4 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin 
 [x] 5 ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr ให้มีข้อมูลเหมือนคลินิกเบาหวาน
 */
+$minutes = 60;
+$hour = $minutes * 60;
+$day = $hour * 24;
+$month = $day * 31;
+
+$setCookieTime = time() + ($month*7);
+$delCookieTime = time() - ($month*7);
+
+$action = sprintf("%s", $_GET['action']);
+if($action==='create_report'){
+
+    $year = sprintf("%s", $_GET['year']);
+    // dump($year);
+    // setcookie('report_ht', $cookie_value, time() + (86400 * 30), "/");
+
+    /*
+
+    ถ้ายังไม่่มีข้อมูลในปีนั้นๆ ให้โหลดมาใหม่
+    แต่ถ้ามีแล้วให้โหลดจาก cookie เดิมมาได้เลย
+
+    [ปี 56] => [
+        '1' => 'xxxx', '2' => 'xxxx', '3' => 'xxxx', '4' => 'xxxx', '5' => 'xxxx'
+    ],
+    [ปี 57] => [
+        '1' => 'xxxx', '2' => 'xxxx', '3' => 'xxxx', '4' => 'xxxx', '5' => 'xxxx'
+    ]
+    */
+
+    sleep(4);
+    echo $json->encode(array('year'=>$year));
+    exit;
+}elseif ($action==='clear_cookie') {
+    
+    setcookie('report_ht', '', $delCookieTime, '/');
+    exit;
+}
+
+
+// setcookie('report_ht', $json->encode($test_data), $setCookieTime, '/');
+
+// dump($_COOKIE['report_ht']);
+// exit;
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,6 +91,7 @@ include 'bootstrap.php';
         <div>
             <?php 
             $year = sprintf("%s", (!empty($_POST['year']) ? $_POST['year'] : date('Y') ));
+            dump($year);
             $yearRange = range('2013', date('Y'));
             $yearRange = array_reverse($yearRange);
             ?>
@@ -53,22 +99,31 @@ include 'bootstrap.php';
                 <div class="mb-3 row">
                     <label for="staticEmail" class="col-md-1 col-form-label">เลือกปี</label>
                     <div class="col-md-2">
-                        <select class="form-select" name="year">
+                        <select class="form-select" name="year" id="yearSelected">
                             <option value="">เลือกปีที่ต้องการ</option>
                             <?php 
                             foreach ($yearRange as $y) { 
-                                $selected = ($y===$year) ? 'selected="selected"' : '' ;
+                                $selected = ($y==$year) ? 'selected="selected"' : '' ;
                                 ?><option value="<?=$y;?>" <?=$selected;?> ><?=$y+543;?></option><?php
                             }
                             ?>
                         </select>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                <div class="mb-6 row">
                     <label for="staticEmail" class="col-md-1 col-form-label"></label>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary">แสดงผล</button>
+                    <div class="col-md-5">
+                        <button type="submit" class="btn btn-primary" disabled>
+                            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span role="status">กำลังโหลดข้อมูล...</span>
+                        </button>
                         <input type="hidden" name="page" value="show">
+                    </div>
+                </div>
+                <div class="mb-3 row" id="loading" style="display:none;">
+                    <label class="col-md-1 col-form-label"></label>
+                    <div class="col-md-2">
+                        กำลังโหลดข้อมูล...
                     </div>
                 </div>
             </form>
@@ -79,33 +134,33 @@ include 'bootstrap.php';
 
             $yearSelected = $year+543;
 
-            $sqlTemp = "CREATE TEMPORARY TABLE `tempOpdXDiag` 
-            SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,a.`icd10`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` 
-            FROM ( 
-                SELECT y.`row_id`,y.`svdate`,y.`hn`,y.`an` AS `vn`,`icd10`,CONCAT(SUBSTRING(y.`svdate`,9,2),'-',SUBSTRING(y.`svdate`,6,2),'-',SUBSTRING(y.`svdate`,1,4),y.`hn`) AS `thdatehn`,NOW() AS `date_generate`,x.`latest_row_id` 
-                FROM ( 
-                    SELECT MAX(`row_id`) AS `latest_row_id` 
-                    FROM `diag` 
-                    WHERE `icd10` = 'I10' 
-                    AND `status` = 'Y' 
-                    AND `svdate` LIKE '$yearSelected%' 
-                    GROUP BY `hn` 
-                    ORDER BY `row_id` ASC 
-                ) AS x 
-                LEFT JOIN `diag` AS y ON x.`latest_row_id` = y.`row_id` 
-            ) AS a 
-            LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
-            WHERE b.`row_id` IS NOT NULL 
-            AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
+            // $sqlTemp = "CREATE TEMPORARY TABLE `tempOpdXDiag` 
+            // SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,a.`icd10`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` 
+            // FROM ( 
+            //     SELECT y.`row_id`,y.`svdate`,y.`hn`,y.`an` AS `vn`,`icd10`,CONCAT(SUBSTRING(y.`svdate`,9,2),'-',SUBSTRING(y.`svdate`,6,2),'-',SUBSTRING(y.`svdate`,1,4),y.`hn`) AS `thdatehn`,NOW() AS `date_generate`,x.`latest_row_id` 
+            //     FROM ( 
+            //         SELECT MAX(`row_id`) AS `latest_row_id` 
+            //         FROM `diag` 
+            //         WHERE `icd10` = 'I10' 
+            //         AND `status` = 'Y' 
+            //         AND `svdate` LIKE '$yearSelected%' 
+            //         GROUP BY `hn` 
+            //         ORDER BY `row_id` ASC 
+            //     ) AS x 
+            //     LEFT JOIN `diag` AS y ON x.`latest_row_id` = y.`row_id` 
+            // ) AS a 
+            // LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
+            // WHERE b.`row_id` IS NOT NULL 
+            // AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
 
-            $dbi->query($sqlTemp);
-            $sql = "SELECT row_id FROM `tempOpdXDiag`";
-            $q = $dbi->query($sql);
-            $allCount = $q->num_rows;
+            // $dbi->query($sqlTemp);
+            // $sql = "SELECT row_id FROM `tempOpdXDiag`";
+            // $q = $dbi->query($sql);
+            // $allCount = $q->num_rows;
             
             ?>
             <div class="col-md-8">
-                <h3>ปี 2567</h3>
+                <h3><a href="javascript:void(0);" target="_blank">ปี <?=$year;?></a></h3>
                 <table class="table table-hover">
                     <thead class="table-dark">
                         <tr>
@@ -121,11 +176,11 @@ include 'bootstrap.php';
                             </td>
                             <td>
                                 <?php
-                                $sql = "SELECT row_id FROM `tempOpdXDiag` WHERE `age` > 35 ";
-                                $q = $dbi->query($sql);
-                                $a['age35'] = $q->num_rows;
-                                $age35 = $a['age35'];
-                                echo '<a href="report_ht1.php?year='.$year.'&all='.$allCount.'&ht='.$age35.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> ผ่านเกณฑ์ '.$age35.'ราย" target="_blank">'.round(($age35*100/$allCount),2).'</a>';
+                                // $sql = "SELECT row_id FROM `tempOpdXDiag` WHERE `age` > 35 ";
+                                // $q = $dbi->query($sql);
+                                // $a['age35'] = $q->num_rows;
+                                // $age35 = $a['age35'];
+                                // echo '<a href="report_ht1.php?year='.$year.'&all='.$allCount.'&ht='.$age35.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> ผ่านเกณฑ์ '.$age35.'ราย" target="_blank">'.round(($age35*100/$allCount),2).'</a>';
                                 ?>
                             </td>
                         </tr>
@@ -136,13 +191,13 @@ include 'bootstrap.php';
                             </td>
                             <td>
                                 <?php
-                                $sql = "SELECT COUNT(`row_id`) AS `bp` 
-                                FROM `tempOpdXDiag` 
-                                WHERE ( `bp3` <> '' AND `bp4` <> '' ) AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' )AND ( `bp3` < 140 AND `bp4` < 90)";
-                                $q = $dbi->query($sql);
-                                $a = $q->fetch_assoc();
-                                $ht_bp = $a['bp'];
-                                echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$allCount.'&ht_bp='.$ht_bp.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.round(($ht_bp*100/$allCount),2).'</a>';
+                                // $sql = "SELECT COUNT(`row_id`) AS `bp` 
+                                // FROM `tempOpdXDiag` 
+                                // WHERE ( `bp3` <> '' AND `bp4` <> '' ) AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' )AND ( `bp3` < 140 AND `bp4` < 90)";
+                                // $q = $dbi->query($sql);
+                                // $a = $q->fetch_assoc();
+                                // $ht_bp = $a['bp'];
+                                // echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$allCount.'&ht_bp='.$ht_bp.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.round(($ht_bp*100/$allCount),2).'</a>';
                                 ?>
                             </td>
                         </tr>
@@ -153,21 +208,21 @@ include 'bootstrap.php';
                             </td>
                             <td>
                                 <?php 
-                                $sql = "SELECT COUNT(a.`row_id`) AS `htEcgCxr`
-                                FROM `tempOpdXDiag` AS a 
-                                LEFT JOIN ( 
-                                    SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
-                                    FROM `patdata` 
-                                    WHERE `date` LIKE '$yearSelected%' 
-                                    AND `hn` <> '' 
-                                    AND ( `code` LIKE '41001%' OR `code` LIKE '%EKG%') 
-                                    GROUP BY `hn`
-                                ) AS b ON a.thdatehn = b.thdatehn 
-                                WHERE b.row_id IS NOT NULL;";
-                                $q = $dbi->query($sql);
-                                $a = $q->fetch_assoc();
-                                $ecgCxr = $a['htEcgCxr'];
-                                echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$ecgCxr.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.round(($ecgCxr*100/$allCount),2).'</a>';
+                                // $sql = "SELECT COUNT(a.`row_id`) AS `htEcgCxr`
+                                // FROM `tempOpdXDiag` AS a 
+                                // LEFT JOIN ( 
+                                //     SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
+                                //     FROM `patdata` 
+                                //     WHERE `date` LIKE '$yearSelected%' 
+                                //     AND `hn` <> '' 
+                                //     AND ( `code` LIKE '41001%' OR `code` LIKE '%EKG%') 
+                                //     GROUP BY `hn`
+                                // ) AS b ON a.thdatehn = b.thdatehn 
+                                // WHERE b.row_id IS NOT NULL;";
+                                // $q = $dbi->query($sql);
+                                // $a = $q->fetch_assoc();
+                                // $ecgCxr = $a['htEcgCxr'];
+                                // echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$ecgCxr.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.round(($ecgCxr*100/$allCount),2).'</a>';
                                 
                                 ?>
                             </td>
@@ -189,34 +244,34 @@ include 'bootstrap.php';
                             </td>
                             <td>
                                 <?php 
-                                $sqlTempResulthead = "CREATE TEMPORARY TABLE `tempResulthead` 
-                                SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn`  
-                                FROM (
-                                    SELECT MAX(autonumber) AS latest_autonumber 
-                                    FROM resulthead 
-                                    WHERE orderdate LIKE '$year%' 
-                                    AND profilecode IN ('CREAG','ALB','UMALB') 
-                                    GROUP BY hn
-                                ) AS a 
-                                LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
-                                ORDER BY b.autonumber ASC";
-                                $qTempResulthead = $dbi->query($sqlTempResulthead);
+                                // $sqlTempResulthead = "CREATE TEMPORARY TABLE `tempResulthead` 
+                                // SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn`  
+                                // FROM (
+                                //     SELECT MAX(autonumber) AS latest_autonumber 
+                                //     FROM resulthead 
+                                //     WHERE orderdate LIKE '$year%' 
+                                //     AND profilecode IN ('CREAG','ALB','UMALB') 
+                                //     GROUP BY hn
+                                // ) AS a 
+                                // LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
+                                // ORDER BY b.autonumber ASC";
+                                // $qTempResulthead = $dbi->query($sqlTempResulthead);
 
-                                $sql = "SELECT COUNT(`autonumber`) AS 'albuminRows' FROM `tempOpdXDiag` AS m 
-                                LEFT JOIN ( 
+                                // $sql = "SELECT COUNT(`autonumber`) AS 'albuminRows' FROM `tempOpdXDiag` AS m 
+                                // LEFT JOIN ( 
                                         
-                                    SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
-                                    FROM `tempResulthead` AS x
-                                    LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
-                                    WHERE y.`labcode` IN ('ALB','UMALB') 
-                                    GROUP BY `hn`
+                                //     SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
+                                //     FROM `tempResulthead` AS x
+                                //     LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
+                                //     WHERE y.`labcode` IN ('ALB','UMALB') 
+                                //     GROUP BY `hn`
 
-                                ) AS n ON m.`thdatehn` = n.`thdatehn`
-                                WHERE n.`autonumber` IS NOT NULL;";
-                                $q = $dbi->query($sql);
-                                $a = $q->fetch_assoc();
-                                $albuminRows = $a['albuminRows'];
-                                echo '<a href="report_ht4.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$albuminRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$albuminRows.'ราย" target="_blank">'.round(($albuminRows*100/$allCount),2).'</a>';
+                                // ) AS n ON m.`thdatehn` = n.`thdatehn`
+                                // WHERE n.`autonumber` IS NOT NULL;";
+                                // $q = $dbi->query($sql);
+                                // $a = $q->fetch_assoc();
+                                // $albuminRows = $a['albuminRows'];
+                                // echo '<a href="report_ht4.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$albuminRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$albuminRows.'ราย" target="_blank">'.round(($albuminRows*100/$allCount),2).'</a>';
                                 
                                 ?>
                             </td>
@@ -228,20 +283,20 @@ include 'bootstrap.php';
                             </td>
                             <td>
                                 <?php 
-                                $sql = "SELECT COUNT(`autonumber`) AS 'CrRows' FROM `tempOpdXDiag` AS m 
-                                LEFT JOIN ( 
+                                // $sql = "SELECT COUNT(`autonumber`) AS 'CrRows' FROM `tempOpdXDiag` AS m 
+                                // LEFT JOIN ( 
                                         
-                                    SELECT x.*,y.labcode,y.labname,y.result  
-                                    FROM tempResulthead AS x
-                                    LEFT JOIN resultdetail AS y ON x.autonumber = y.autonumber 
-                                    WHERE y.labcode = 'CREA'  
+                                //     SELECT x.*,y.labcode,y.labname,y.result  
+                                //     FROM tempResulthead AS x
+                                //     LEFT JOIN resultdetail AS y ON x.autonumber = y.autonumber 
+                                //     WHERE y.labcode = 'CREA'  
 
-                                ) AS n ON m.thdatehn = n.thdatehn
-                                WHERE n.`autonumber` IS NOT NULL;";
-                                $q = $dbi->query($sql);
-                                $a = $q->fetch_assoc();
-                                $CrRows = $a['CrRows'];
-                                echo '<a href="report_ht5.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$CrRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$CrRows.'ราย" target="_blank">'.round(($CrRows*100/$allCount),2).'</a>';
+                                // ) AS n ON m.thdatehn = n.thdatehn
+                                // WHERE n.`autonumber` IS NOT NULL;";
+                                // $q = $dbi->query($sql);
+                                // $a = $q->fetch_assoc();
+                                // $CrRows = $a['CrRows'];
+                                // echo '<a href="report_ht5.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$CrRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$CrRows.'ราย" target="_blank">'.round(($CrRows*100/$allCount),2).'</a>';
                                 
                                 ?>
                             </td>
@@ -249,12 +304,46 @@ include 'bootstrap.php';
                     </tbody>
                 </table>
             </div>
-            <div>
-                <ul>
-                    <li>ข้อมูลผู้ป่วยจาก ICD10 I10</li>
-                </ul>
-            </div>
             <script>
+
+                function getCookie(cname) {
+                    let name = cname + "=";
+                    let decodedCookie = decodeURIComponent(document.cookie);
+                    let ca = decodedCookie.split(';');
+                    for(let i = 0; i <ca.length; i++) {
+                        let c = ca[i];
+                        while (c.charAt(0) == ' ') {
+                            c = c.substring(1);
+                        }
+                        if (c.indexOf(name) == 0) {
+                            return c.substring(name.length, c.length);
+                        }
+                    }
+                    return "";
+                }
+
+                window.onload = function(){
+                    // let x = document.cookie;
+                    let x = getCookie('report_ht');
+                    console.log(x);
+                    if(x==''){
+                        document.getElementById('loading').style.display = '';
+                        let yearSelected = document.getElementById('yearSelected').value;
+                        onLoadingData(yearSelected).then((data)=>{
+                            console.log(data);
+                            document.getElementById('loading').style.display = 'none';
+                        });
+                    }
+                }
+
+                async function onLoadingData(year){ 
+                    const response = await fetch('report_ht.php?action=create_report&year='+year);
+                    if (!response.ok) {
+                    }
+                    const data = await response.json();
+                    return data;
+                }
+
                 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
                 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
             </script>
