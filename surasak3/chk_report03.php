@@ -919,7 +919,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="eGFR";
 									}else if($objResult["labname"]=="Xylene"){
 										$labmean="การตรวจสารโลหะหนัก";
-									}else if($objResult["labname"]=="Blood group(Tube method)"){
+									}else if($objResult["labname"]=="Blood group(Tube method)" OR $objResult['labcode']=='GROUPT'){
 										$labmean="หมู่เลือด";
 									}else if($objResult["labname"]=="HIV Ab screening"){
 										$labmean="ไวรัส เอช ไอ วี";
@@ -947,7 +947,7 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 
 									// หมุ่เลือด
-									if( $objResult["labcode"]=='GROUPT'){
+									if( $objResult['labcode']=='GROUPT'){
 										$app="";
 									}
 
