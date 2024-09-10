@@ -18,28 +18,57 @@ if (isset($sIdname)){} else {die;} //for security
     $Netprice=array_sum($aMoney);
 	$aFilmsize[$n]="";
 ?>
-<table>
+<style>
+	
+table, th, td {
+  font-size: 16px;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 10px;
+}
+</style>
+<table align='center' width='98%' >
  <tr>
-  <th bgcolor=CD853F>ลบ</th>
-  <th bgcolor=CD853F>#</th>
-  <th bgcolor=CD853F>รหัส</th>
-  <th bgcolor=CD853F>รายการ</th>
-  <th bgcolor=CD853F>ราคา</th>
-  <th bgcolor=CD853F>จำนวน</th>
-  <th bgcolor=CD853F>รวมเงิน</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>ลบ</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>#</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>รหัส</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>รายการ</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>ราคา</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>จำนวน</th>
+  <th bgcolor=#F5CBA7><font face='Angsana New' size='3'>รวมเงิน</th>
  </tr>
 <?php
+   $lipid=0;
    for ($n=1; $n<=$x; $n++){
+			if($aDgcode[$n]=="CHOL"){
+				$lipid++;
+			}
+			if($aDgcode[$n]=="TRI"){
+				$lipid++;
+			}
+			if($aDgcode[$n]=="HDL"){
+				$lipid++;
+			}
+			if($aDgcode[$n]=="LDL"){
+				$lipid++;
+			}	   
         print("<tr>\n".
-                "<td bgcolor=F5DEB3><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
-                "<td bgcolor=F5DEB3>$aDgcode[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aTrade[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aPrice[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aAmount[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aMoney[$n]</td>\n".
+                "<td bgcolor=#FDEBD0><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
+                "<td align='center' bgcolor=#FDEBD0><font face='Angsana New'>$n</td>\n".
+                "<td bgcolor=#FDEBD0><font face='Angsana New'>$aDgcode[$n]</td>\n".
+                "<td bgcolor=#FDEBD0><font face='Angsana New'>$aTrade[$n]</td>\n".
+                "<td bgcolor=#FDEBD0><font face='Angsana New'>$aPrice[$n]</td>\n".
+                "<td bgcolor=#FDEBD0><font face='Angsana New'>$aAmount[$n]</td>\n".
+                "<td bgcolor=#FDEBD0><font face='Angsana New'>$aMoney[$n]</td>\n".				
                 " </tr>\n");
         }
+		//echo "lipid==$lipid";	
+		if($lipid==4){
+			echo "<div align='center'><img src='images/warning-1.png' width='64px;' height='64px;'></div>";
+			echo "<div align='center' style='color:red;font-weigth:bold;font-size:16px;'>ไม่สามารถสั่งรายการ  CHOL,TRI,HDL,LDL พร้อมกัน 4 รายการได้ สามารถสั่งได้มากสุด 3 ตัว<br>ถ้าจะสั่งทั้ง 4 รายการ ต้องสั่งรายการ LIPID</div>";
+		}		
 ?>
 </table>
 <?php
