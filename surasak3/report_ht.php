@@ -1,6 +1,7 @@
 <?php 
 require_once 'bootstrap.php';
 require_once 'includes/JSON.php';
+require_once 'class_file/ReportHt.php';
 
 $json = new Services_JSON();
 /*
@@ -24,52 +25,28 @@ if($action==='create_report'){
 
     $year = sprintf("%s", $_GET['year']);
 
-    /*
-    ถ้ายังไม่่มีข้อมูลในปีนั้นๆ ให้โหลดมาใหม่
-    แต่ถ้ามีแล้วให้โหลดจาก cookie เดิมมาได้เลย
-
-    [ปี 56] => [
-        '1' => 'xxxx', '2' => 'xxxx', '3' => 'xxxx', '4' => 'xxxx', '5' => 'xxxx'
-    ],
-    [ปี 57] => [
-        '1' => 'xxxx', '2' => 'xxxx', '3' => 'xxxx', '4' => 'xxxx', '5' => 'xxxx'
-    ]
-    */
-
     $report_ht = $json->decode($_COOKIE['report_ht']);
-    // $res = $report_ht->$year;
-    // dump($report_ht->$year);
 
     if($report_ht->$year!==null){
-        // $res = $_COOKIE['report_ht'][$year];
         $res = $report_ht->$year;
     }else{
 
         $yearSelected = $year+543;
 
-        $sqlTemp = "CREATE TEMPORARY TABLE `tempOpdXDiag` 
-        SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,a.`icd10`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` 
-        FROM ( 
-            SELECT y.`row_id`,y.`svdate`,y.`hn`,y.`an` AS `vn`,`icd10`,CONCAT(SUBSTRING(y.`svdate`,9,2),'-',SUBSTRING(y.`svdate`,6,2),'-',SUBSTRING(y.`svdate`,1,4),y.`hn`) AS `thdatehn`,NOW() AS `date_generate`,x.`latest_row_id` 
-            FROM ( 
-                SELECT MAX(`row_id`) AS `latest_row_id` 
-                FROM `diag` 
-                WHERE `icd10` = 'I10' 
-                AND `status` = 'Y' 
-                AND `svdate` LIKE '$yearSelected%' 
-                GROUP BY `hn` 
-                ORDER BY `row_id` ASC 
-            ) AS x 
-            LEFT JOIN `diag` AS y ON x.`latest_row_id` = y.`row_id` 
-        ) AS a 
-        LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
-        WHERE b.`row_id` IS NOT NULL 
-        AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
+        $ht = new ReportHt();
+        $q = $ht->generateTempOpdXDiag($yearSelected);
 
-        $dbi->query($sqlTemp);
-        $sql = "SELECT row_id FROM `tempOpdXDiag`";
-        $q = $dbi->query($sql);
-        $allCount = $q->num_rows;
+        $qAgeMore35 = $ht->getAgeMoreThan35();
+        $age35 = $qAgeMore35->num_rows;
+
+        dump($age35);
+
+        // $dbi->query($sqlTemp);
+        // $sql = "SELECT row_id FROM `tempOpdXDiag`";
+        // $q = $dbi->query($sql);
+        // $allCount = $q->num_rows;
+
+        exit;
 
 
         // ตัวชี้วัดที่ 1 
@@ -165,6 +142,8 @@ if($action==='create_report'){
             'report4'=> $report4,
             'report5'=> $report5,
         );
+
+        $report_ht->$year;
 
         setcookie('report_ht', $json->encode($res), $setCookieTime, "/");
     }
