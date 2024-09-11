@@ -634,6 +634,7 @@ if(isset($_POST['okbtn'])){
 		<select size="1" name="capptime">
 		<option selected>&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3648;&#3623;&#3621;&#3634;&#3609;&#3633;&#3604;&gt;</option>
 		<option selected>08:00 &#3609;. - 10.30 &#3609;.</option>
+		<option>06:00 &#3609;.</option>
 		<option>07:00 &#3609;.</option>
 		<option>07:30 &#3609;.</option>
 		<option>08:00 &#3609;.</option>
