@@ -415,6 +415,14 @@ if($cDepart=="EYE"){
       print "***************************************************<br>";  
 	     print "<B>นำใบแจ้งหนี้ไปชำระเงินที่ห้องเก็บเงิน</B>";  
 //จบใบแจ้งหนี้
+
+
+unset($_COOKIE['labtranxStatus']); 
+setcookie('labtranxStatus', '', -1, "/");
+
+unset($_COOKIE['labtranXAn']); 
+setcookie('labtranXAn', '', -1, "/");
+
 ?>
 
 <style>
