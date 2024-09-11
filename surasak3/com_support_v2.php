@@ -109,6 +109,7 @@ if($page==='load25page'){
             $q = $dbi->query($sql);
             $i = $q->fetch_assoc();
 
+            $is['row'] = $i['row'];
             $is['depart'] = $i['depart'];
             $is['head'] = $i['head'];
             $is['detail'] = strip_tags(html_entity_decode($s['detail']));
@@ -118,6 +119,7 @@ if($page==='load25page'){
             $is['user1'] = $i['user1'];
             $is['p_edit'] = '';
             $is['date'] = $i['date'];
+            $is['dateend'] = $i['dateend'];
             $items[] = $is;
         }
     }
