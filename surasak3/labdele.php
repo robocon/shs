@@ -1,7 +1,17 @@
 <?php
 session_start();
 if (isset($sIdname)){} else {die;} //for security
-    $n=$Delrow;
+
+$n=$Delrow;
+
+$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+if($log_smenucode == 'ADMPT'){
+	$log_officer = sprintf("%s", $_SESSION['sOfficer']);
+	$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'ลบรายการ', '".$aDgcode[$n]."');";
+	mysql_query($logSql);
+}
+
+    
     $aDgcode[$n]=""; 
     $aTrade[$n]=""; 
     $aPrice[$n]=""; 

@@ -218,6 +218,14 @@ function searchSuggest(str,len,getto) {
 }
 
 </script>
+<?php 
+$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+if($log_smenucode == 'ADMPT' && empty($_POST['code'])){
+	$log_officer = sprintf("%s", $_SESSION['sOfficer']);
+	$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'มาจากหน้า preilab ได้เลือก ทำรายการต่อไป', NULL);";
+	mysql_query($logSql);
+}
+?>
 <form method="POST" action="<?php echo $PHP_SELF ?>"> <font face="Angsana New"><a target=_BLANK href="codehlp.php">&#3619;&#3627;&#3633;&#3626;</a><Div id="list" style="left: 9px; top: 121px; position: absolute;"></Div>&nbsp;&nbsp;&nbsp;
 
 	<?php

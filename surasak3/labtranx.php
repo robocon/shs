@@ -201,6 +201,15 @@ if(empty($aDetail)){
 
 // in case of inpatient insert data into ipacc
 
+
+$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+if($log_smenucode == 'ADMPT'){
+	$log_officer = sprintf("%s", $_SESSION['sOfficer']);
+	$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'หมดรายการ/ใบแจ้งหนี้', '');";
+	mysql_query($logSql);
+}
+
+
 if(!empty($cAn)) {
 	$patienttype = "IPD";
 		$sql = "Select bedcode , left(doctor,5), doctor From bed where an = '".$cAn."' limit 0,1 ";
@@ -411,6 +420,6 @@ if($cDepart=="EYE"){
 <style>
 body,td,th {
 	font-family:TH SarabunPSK;
-	font-size: 28px;
+	font-size: 20px;
 }
 </style>

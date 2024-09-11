@@ -1,4 +1,5 @@
 <?php
+    session_start();
     $x=0;
     $aDgcode = array("รหัส");
     $aTrade  = array("รายการ");
@@ -76,6 +77,14 @@
    //   $cDiag= $row->diagnos;
     //  $cAccno=$row->accno;
    }
+
+    // 2567-09-10 ถ้าเป็น จนท.กายภาพให้เก็บ Log บันทึกว่าแต่ละหน้าทำอะไรบ้าง
+    $log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+    if($log_smenucode == 'ADMPT'){
+        $log_officer = sprintf("%s", $_SESSION['sOfficer']);
+        $logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'ค้นหา HN', NULL);";
+        mysql_query($logSql);
+    }
 
    $sqlIP = "SELECT `row_id` FROM `ipcard` WHERE `an` = '$an' AND `status_log` = 'จำหน่าย' ";
    $qIP = mysql_query($sqlIP);
