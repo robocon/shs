@@ -415,41 +415,47 @@ if($cDepart  == "PATHO" ){
 	
 
 }
-		////////////////////////
-		
-		$sql ="SELECT date,ptname,hn,an,depart,detail,price,paid,row_id,accno,ptright,lab FROM labdepart WHERE hn = '".$cHn."' and date LIKE '$date_n1%' and depart='PATHO' AND (lab = 'DR' OR lab = 'ER') ";
-		//echo $sql;
-		$result = mysql_query($sql) or die(mysql_error());
-		$row_app = mysql_num_rows($result);
-		
-		if($row_app > 0){
-			$query = "SELECT code,detail,amount,price,nprice FROM labpatdata WHERE date like  '$date_n1%' AND hn = '".$cHn."' ";
-		//echo $query;
-			$result1 = mysql_query($query) or die(mysql_error());
-			
-			$list_app = array();
-			$code_app = "";
-			while($arr = mysql_fetch_assoc($result1)){
-				array_push($list_app, $arr["code"]);
-				$code_app = $cHn;
-			}
-			$code_app = "HN".$code_app;
+////////////////////////
 
-				echo "<BR><TABLE border='1' bordercolor=\"#330099\">
-				<TR>
-					<TD><table  width='300'>";
-					echo "<tr  bgcolor=\"#000080\">";
-						echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการสั่งจากแพทย์</FONT></td>";
-					echo "</tr>";
-					echo "<tr>";
-						echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
-						echo "<td>",implode("<BR> ",$list_app),"</td>";
-					echo "</tr>";
-				echo "</table></TD>
-				</TR>
-				</TABLE>";
+$sql ="SELECT `row_id` AS `labdepart_rowId`,`date`,ptname,hn,an,depart,detail,price,paid,accno,ptright,lab,SUBSTRING(`date`,10,8) AS `time` FROM labdepart WHERE hn = '".$cHn."' and date LIKE '$date_n1%' and depart='PATHO' AND (lab = 'DR' OR lab = 'ER') GROUP BY `row_id`";
+//echo $sql;
+$resLabdepart = mysql_query($sql) or die(mysql_error());
+$row_app = mysql_num_rows($resLabdepart);
 
-			}
+if($row_app > 0){
+
+	while ($labdepart = mysql_fetch_assoc($resLabdepart)) {
+		
+		$labdepart_rowId = $labdepart['labdepart_rowId'];
+		$labdepart_time = $labdepart['time'];
+
+		// $query = "SELECT code,detail,amount,price,nprice FROM labpatdata WHERE date like  '$date_n1%' AND hn = '".$cHn."' ";
+		$query = "SELECT code,detail,amount,price,nprice FROM labpatdata WHERE idno = '$labdepart_rowId' ";
+		$result1 = mysql_query($query) or die(mysql_error());
+		
+		$list_app = array();
+		$code_app = "";
+		while($arr = mysql_fetch_assoc($result1)){
+			array_push($list_app, $arr["code"]);
+			$code_app = $cHn;
+		}
+		$code_app = "HN".$code_app;
+
+		echo "<BR><TABLE border='1' bordercolor=\"#330099\">
+		<TR>
+			<TD><table  width='300'>";
+			echo "<tr  bgcolor=\"#000080\">";
+				echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการสั่งจากแพทย์ ($labdepart_time)</FONT></td>";
+			echo "</tr>";
+			echo "<tr>";
+				echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?labdepart_rowId=$labdepart_rowId&Dgcode=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
+				echo "<td>",implode("<BR> ",$list_app),"</td>";
+			echo "</tr>";
+		echo "</table></TD>
+		</TR>
+		</TABLE>";
+	}
+}
 
 ////////////////////////
 

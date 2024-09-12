@@ -14,7 +14,7 @@ if (isset($sIdname)){} else {die;} //for security
   <th bgcolor=CD853F><font face='Angsana New' size='2'>ขนาดฟิล์ม</th>
  </tr>
 <?php
-    include("connect.inc");
+    include("connect.php");
 	if (substr($Dgcode, 0, 1) == '@' || substr($Dgcode, 0, 1) == '#' || substr($Dgcode1, 0, 2) == 'AN' || substr($Dgcode, 0, 2) == 'HN') {
 		$aCode = array("code");
 		$aAmt = array("amount");
@@ -66,7 +66,10 @@ if (isset($sIdname)){} else {die;} //for security
 			$code_app = substr($Dgcode, 2);
 			$date_n1 = (date("Y") + 543) . "-" . date("m") . "-" . date("d");
 
-			$query = "SELECT code,amount FROM labpatdata WHERE hn = '$code_app' and date like '" . $date_n1 . "%'";
+			$labdepart_rowId = sprintf("%s", $_GET['labdepart_rowId']);
+			// $query = "SELECT code,amount FROM labpatdata WHERE hn = '$code_app' and date like '" . $date_n1 . "%'";
+			$query = "SELECT `code`,`amount` FROM `labpatdata` WHERE `idno` = '$labdepart_rowId'; ";
+			
 		}
 		// echo $query;
 		$result = mysql_query($query) or die("Query failed111");
@@ -127,38 +130,39 @@ if (isset($sIdname)){} else {die;} //for security
 		}
 
 	} else {
-		$query = "SELECT * FROM labcare WHERE code = '$Dgcode' ";
-		$result = mysql_query($query) or die("Query failed");
-		//echo $query;
-		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-			if (!mysql_data_seek($result, $i)) {
-				echo "Cannot seek to row $i\n";
-				continue;
+		if(!empty($Dgcode)){
+			$query = "SELECT * FROM labcare WHERE code = '$Dgcode' ";
+			$result = mysql_query($query) or die("Query failed");
+			for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+				if (!mysql_data_seek($result, $i)) {
+					echo "Cannot seek to row $i\n";
+					continue;
+				}
+
+				if (!($row = mysql_fetch_object($result)))
+					continue;
 			}
+			$x++;
+			$aDgcode[$x] = $row->code; // <----- เอาไปใช้ต่อใน labtranx.php
+			$aTrade[$x] = $row->detail;
+			$aPrice[$x] = $row->price;
 
-			if (!($row = mysql_fetch_object($result)))
-				continue;
+			$aPart[$x] = $row->part;
+			$aAmount[$x] = $Amount;
+			$money = $Amount * $row->price;
+			$aMoney[$x] = $money;
+			$aFilmsize[$x] = $_GET["films"];
+			$Netprice = array_sum($aMoney);
+
+			$aYprice[$x] = $row->yprice * $Amount;
+			$aNprice[$x] = $row->nprice * $Amount;
+			$aSumYprice = array_sum($aYprice);
+			$aSumNprice = array_sum($aNprice);
+		} // end if not empty $Dgcode
+
+		if($aDgcode[$x]=="clinicy-sso" || $aDgcode[$x]=="clinicn-sso"){
+			echo "<script>alert('แจ้งเตือน...มีการคิดค่าบริการทันตกรรม ปกส. กรุณาบันทึกรายการเพิ่มเติมครับ');</script>";
 		}
-		$x++;
-		$aDgcode[$x] = $row->code; // <----- เอาไปใช้ต่อใน labtranx.php
-		$aTrade[$x] = $row->detail;
-		$aPrice[$x] = $row->price;
-
-		$aPart[$x] = $row->part;
-		$aAmount[$x] = $Amount;
-		$money = $Amount * $row->price;
-		$aMoney[$x] = $money;
-		$aFilmsize[$x] = $_GET["films"];
-		$Netprice = array_sum($aMoney);
-
-		$aYprice[$x] = $row->yprice * $Amount;
-		$aNprice[$x] = $row->nprice * $Amount;
-		$aSumYprice = array_sum($aYprice);
-		$aSumNprice = array_sum($aNprice);
-
-if($aDgcode[$x]=="clinicy-sso" || $aDgcode[$x]=="clinicn-sso"){
-	echo "<script>alert('แจ้งเตือน...มีการคิดค่าบริการทันตกรรม ปกส. กรุณาบันทึกรายการเพิ่มเติมครับ');</script>";
-}
 
 		for ($n = 1; $n <= $x; $n++) {			
 			print ("<tr>\n" .

@@ -1,22 +1,51 @@
 <?php
 session_start();
 if (isset($sIdname)){} else {die;} //for security
-    $n=$Delrow;
-    $aDgcode[$n]=""; 
-    $aTrade[$n]=""; 
-    $aPrice[$n]=""; 
 
-       $aYprice[$n]=""; 
-       $aNprice[$n]=""; 
-      $aSumYprice=array_sum($aYprice);
-       $aSumNprice=array_sum($aNprice);
+// var_dump($Delrow);
 
-    $aPart[$n]=""; 
-    $aAmount[$n]="";
-    $money = "";
-    $aMoney[$n]="";
-    $Netprice=array_sum($aMoney);
-	$aFilmsize[$n]="";
+// echo "<pre>";
+// var_dump($aDgcode);
+// echo "</pre>";
+$n = $Delrow;
+unset($aDgcode[$n]);
+unset($aTrade[$n]);
+unset($aPrice[$n]);
+unset($aAmount[$n]);
+unset($aMoney[$n]);
+unset($aYprice[$n]);
+unset($aNprice[$n]);
+unset($aMoney[$n]);
+unset($aPart[$n]);
+unset($aFilmsize[$n]);
+
+$aSumYprice=array_sum($aYprice);
+$aSumNprice=array_sum($aNprice);
+$money = "";
+
+header('Location: labinfo.php');
+exit;
+
+
+$n=$Delrow;
+$aDgcode[$n]=""; 
+$aTrade[$n]=""; 
+$aPrice[$n]=""; 
+
+$aYprice[$n]=""; 
+$aNprice[$n]=""; 
+$aSumYprice=array_sum($aYprice);
+$aSumNprice=array_sum($aNprice);
+
+$aPart[$n]=""; 
+$aAmount[$n]="";
+$money = "";
+$aMoney[$n]="";
+$Netprice=array_sum($aMoney);
+$aFilmsize[$n]="";
+
+
+
 ?>
 <table>
  <tr>
@@ -29,17 +58,23 @@ if (isset($sIdname)){} else {die;} //for security
   <th bgcolor=CD853F>รวมเงิน</th>
  </tr>
 <?php
-   for ($n=1; $n<=$x; $n++){
+
+for ($n=1; $n<=count($aDgcode); $n++){
+
+    $k = key($aDgcode[$n]);
+    if($aDgcode[$n]){
         print("<tr>\n".
-                "<td bgcolor=F5DEB3><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
-                "<td bgcolor=F5DEB3>$aDgcode[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aTrade[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aPrice[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aAmount[$n]</td>\n".
-                "<td bgcolor=F5DEB3>$aMoney[$n]</td>\n".
-                " </tr>\n");
-        }
+        "<td bgcolor=F5DEB3><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n".
+        "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
+        "<td bgcolor=F5DEB3>$aDgcode[$n]</td>\n".
+        "<td bgcolor=F5DEB3>$aTrade[$n]</td>\n".
+        "<td bgcolor=F5DEB3>$aPrice[$n]</td>\n".
+        "<td bgcolor=F5DEB3>$aAmount[$n]</td>\n".
+        "<td bgcolor=F5DEB3>$aMoney[$n]</td>\n".
+        " </tr>\n");
+    }
+    
+}
 ?>
 </table>
 <?php
