@@ -452,7 +452,7 @@ if($cDepart  == "PATHO" ){
 								echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการสั่งจากแพทย์</FONT></td>";
 							echo "</tr>";
 							echo "<tr>";
-								echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
+								echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?labdepart_rowId=$idno&Dgcode=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
 								echo "<td>",implode("<BR> ",$list_app),"</td>";
 							echo "</tr>";
 						echo "</table></TD>

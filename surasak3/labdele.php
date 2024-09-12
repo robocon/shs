@@ -1,8 +1,9 @@
 <?php
 session_start();
+require_once 'connect.php';
 if (isset($sIdname)){} else {die;} //for security
 
-$n=$Delrow;
+$n = $Delrow;
 
 $log_smenucode = sprintf("%s", $_SESSION['smenucode']);
 if($log_smenucode == 'ADMPT'){
@@ -11,22 +12,44 @@ if($log_smenucode == 'ADMPT'){
 	mysql_query($logSql);
 }
 
-    
-    $aDgcode[$n]=""; 
-    $aTrade[$n]=""; 
-    $aPrice[$n]=""; 
+unset($aDgcode[$n]);
+unset($aTrade[$n]);
+unset($aPrice[$n]);
+unset($aAmount[$n]);
+unset($aMoney[$n]);
+unset($aYprice[$n]);
+unset($aNprice[$n]);
+unset($aMoney[$n]);
+unset($aPart[$n]);
+unset($aFilmsize[$n]);
 
-       $aYprice[$n]=""; 
-       $aNprice[$n]=""; 
-      $aSumYprice=array_sum($aYprice);
-       $aSumNprice=array_sum($aNprice);
+$aSumYprice=array_sum($aYprice);
+$aSumNprice=array_sum($aNprice);
+$money = "";
 
-    $aPart[$n]=""; 
-    $aAmount[$n]="";
-    $money = "";
-    $aMoney[$n]="";
-    $Netprice=array_sum($aMoney);
-	$aFilmsize[$n]="";
+header('Location: labinfo.php');
+exit;
+
+
+$n=$Delrow;
+$aDgcode[$n]=""; 
+$aTrade[$n]=""; 
+$aPrice[$n]=""; 
+
+$aYprice[$n]=""; 
+$aNprice[$n]=""; 
+$aSumYprice=array_sum($aYprice);
+$aSumNprice=array_sum($aNprice);
+
+$aPart[$n]=""; 
+$aAmount[$n]="";
+$money = "";
+$aMoney[$n]="";
+$Netprice=array_sum($aMoney);
+$aFilmsize[$n]="";
+
+
+
 ?>
 <style>
 	
@@ -74,7 +97,7 @@ th, td {
                 "<td bgcolor=#FDEBD0><font face='Angsana New'>$aMoney[$n]</td>\n".				
                 " </tr>\n");
         }
-		//echo "lipid==$lipid";	
+		
 		if($lipid==4){
 			echo "<div align='center'><img src='images/warning-1.png' width='64px;' height='64px;'></div>";
 			echo "<div align='center' style='color:red;font-weigth:bold;font-size:16px;'>ไม่สามารถสั่งรายการ  CHOL,TRI,HDL,LDL พร้อมกัน 4 รายการได้ สามารถสั่งได้มากสุด 3 ตัว<br>ถ้าจะสั่งทั้ง 4 รายการ ต้องสั่งรายการ LIPID</div>";
