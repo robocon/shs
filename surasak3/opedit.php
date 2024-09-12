@@ -465,12 +465,6 @@ return $pAge;
 	}	
 ?>
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
-<div id="resOpenTab" style="color: red; text-align: center; display:none;">
-	<br>
-	<h1>!!! คำเตือน !!! ท่านกำลังเปิด Tab ซ้ำซ้อน อาจทำให้การลงทะเบียนมีปัญหา VN ซ้ำกัน</h1>
-	<!-- <h1>กรุณาปิด Tab ที่เกี่ยวข้องและเข้าใช้งานในเมนูใหม่เพื่อความปลอดภัย</h1> -->
-	<br>
-</div>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
 <?php echo $showscan; ?>
@@ -1800,30 +1794,49 @@ function close_res_yot(){
 	document.getElementById('res_yot').style.display = 'none';
 }
 
-/**
- * README : https://meetzaveri.medium.com/track-or-detect-number-of-tabs-open-for-same-website-in-react-f03406ae744b
- */
-// คำสั่งล้างค่า
-// localStorage.clear();
 
-// ถ้า tabsOpen เป็น Null ให้ตั้งค่าเป็น 1 แต่ถ้าเคยมีค่าแล้วให้ +1
-let tabsOpen = localStorage.getItem('tabsOpen');
-if(tabsOpen == null){
-	localStorage.setItem('tabsOpen', 1);
-}else{
-	localStorage.setItem('tabsOpen', parseInt(tabsOpen) + 1);
-}
+document.addEventListener('DOMContentLoaded', () => {
+	// const messageEle = document.getElementById('message');
+	const channel = new BroadcastChannel('tab-activity');
 
-// ถ้ามีการรีเฟรชหรือปิดหน้าจอให้ -1
-window.onunload = function(e){
-	const newTabCount = localStorage.getItem('tabsOpen');
-	if (newTabCount !== null ) { 
-		localStorage.setItem('tabsOpen', parseInt(newTabCount) - 1);
+	// Listen for messages on the channel
+	channel.addEventListener('message', (event) => {
+		switch (event.data) {
+			case 'open-new-tab':
+				onSendTab();
+				break;
+			case 'tab-closing':
+				onSendTab();
+				break;
+			default:
+				break;
+		}
+	});
+
+	// Send a message to all other tabs when a new tab is opened
+	document.addEventListener('visibilitychange', function() {
+		if (document.hidden) {
+			channel.postMessage('open-new-tab');
+		}
+	});
+
+	// Send a message to all other tabs that this tab is closing
+	window.addEventListener('beforeunload', (event) => {
+		// event.preventDefault();
+		channel.postMessage('tab-closing');
+	});
+});
+
+async function onSendTab() {
+	const username = encodeURIComponent('<?=$sOfficer;?>');
+	const tab = encodeURIComponent('<?=basename(__FILE__, '.php');?>');
+	const hn = encodeURIComponent('<?=$cHn;?>');
+	const response = await fetch('open_tab.php?username='+username+'&tab='+tab+'&hn='+hn);
+
+	if (!response.ok) {
 	}
-};
 
-if(tabsOpen > 0){
-	document.getElementById('resOpenTab').style.display = '';
+	const body = await response.text();
 }
 
 </script>
