@@ -17,6 +17,11 @@ if($action=='cancel'){
         font-family: "TH SarabunPSK";
         font-size: 18px;
     }
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
     h3{
         font-weight: bold;
         font-size: 24px;
@@ -45,28 +50,56 @@ if(!empty($_SESSION['x-msg'])){
     $_SESSION['x-msg'] = null;
 }
 ?>
-<fieldset>
-    <legend>พิมพ์ผล Echo</legend>
-    <form action="echo_form_print.php" method="post">
-        <?php 
-        $date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
-        ?>
-        <div>
-            เลือกวันที่ <input type="text" name="date" id="date" value="<?=$date;?>">
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="search">
-        </div>
-    </form>
-</fieldset>
+<div class="clearfix">
+    <div style="float:left;">
+        <fieldset>
+            <legend>พิมพ์ผล Echo ค้นหาจากวันที่</legend>
+            <form action="echo_form_print.php" method="post">
+                <?php 
+                $date = (empty($_POST['date'])) ? (date('Y')+543).date('-m-d') : $_POST['date'] ;
+                ?>
+                <div>
+                    เลือกวันที่ <input type="text" name="date" id="date" value="<?=$date;?>">
+                </div>
+                <div>
+                    <button type="submit">ค้นหา</button>
+                    <input type="hidden" name="page" value="search">
+                    <input type="hidden" name="inputType" value="date">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+    <div style="float:left;">
+        <fieldset>
+            <legend>ค้นหาจาก HN</legend>
+            <form action="echo_form_print.php" method="post">
+                <div>
+                    HN : <input type="text" name="hn" id="hn" value="">
+                </div>
+                <div>
+                    <button type="submit">ค้นหา</button>
+                    <input type="hidden" name="page" value="search">
+                    <input type="hidden" name="inputType" value="hn">
+                </div>
+            </form>
+        </fieldset>
+    </div>
+</div>
+
 <?php 
 $page = sprintf("%s", $_REQUEST['page']);
 if($page === "search"){
     
-    list($y,$m,$d) = explode('-', $date);
-    $date = bc_to_ad($_POST['date']);
-    $sql = "SELECT `id`, `date`, `hn`, `ptname`, `vn`, `doctor`,`type` FROM `echo_cardio` WHERE `date` LIKE '$date%' AND `status` = 'y'";
+    $inputType = sprintf("%s", $_POST['inputType']);
+    if($inputType === 'date'){
+        list($y,$m,$d) = explode('-', $date);
+        $date = bc_to_ad($_POST['date']);
+        $sql = "SELECT `id`, `date`, `hn`, `ptname`, `vn`, `doctor`,`type` FROM `echo_cardio` WHERE `date` LIKE '$date%' AND `status` = 'y'";
+        
+    }elseif ($inputType === 'hn') {
+        $sql = "SELECT `id`, `date`, `hn`, `ptname`, `vn`, `doctor`,`type` FROM `echo_cardio` WHERE `hn` = '$hn' AND `status` = 'y'";
+    }
+
     $q = $dbi->query($sql);
     if($q->num_rows > 0){
         ?>
