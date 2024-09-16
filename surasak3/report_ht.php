@@ -36,106 +36,44 @@ if($action==='create_report'){
         $ht = new ReportHt();
         $q = $ht->generateTempOpdXDiag($yearSelected);
 
+        $all = $ht->getAllOpdXDiag();
+        $allCount = $all->num_rows;
+
+        // ตัวชี้วัดที่ 1
         $qAgeMore35 = $ht->getAgeMoreThan35();
         $age35 = $qAgeMore35->num_rows;
-
-        dump($age35);
-
-        // $dbi->query($sqlTemp);
-        // $sql = "SELECT row_id FROM `tempOpdXDiag`";
-        // $q = $dbi->query($sql);
-        // $allCount = $q->num_rows;
-
-        exit;
-
-
-        // ตัวชี้วัดที่ 1 
-        $sql = "SELECT row_id FROM `tempOpdXDiag` WHERE `age` > 35 ";
-        $q = $dbi->query($sql);
-        $a['age35'] = $q->num_rows;
-        $age35 = $a['age35'];
         $report1 = round(($age35*100/$allCount),2);
-
+        $report1 = is_nan($report1) ? 0 : $report1 ;
 
         // ตัวชี้วัดที่ 2
-        $sql = "SELECT COUNT(`row_id`) AS `bp` 
-        FROM `tempOpdXDiag` 
-        WHERE ( `bp3` <> '' AND `bp4` <> '' ) AND ( `bp3` NOT LIKE '..%' AND `bp4` NOT LIKE '..%' )AND ( `bp3` < 140 AND `bp4` < 90)";
-        $q = $dbi->query($sql);
-        $a = $q->fetch_assoc();
-        $ht_bp = $a['bp'];
+        $bp = $ht->getBPLess140();
+        $ht_bp = $bp->num_rows;
         $report2 = round(($ht_bp*100/$allCount),2);
-
-
-        // ตัวชี้วัดที่ 3
-        $sql = "SELECT COUNT(a.`row_id`) AS `htEcgCxr`
-        FROM `tempOpdXDiag` AS a 
-        LEFT JOIN ( 
-            SELECT `row_id`,`date`,`hn`,`ptname`,`code`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
-            FROM `patdata` 
-            WHERE `date` LIKE '$yearSelected%' 
-            AND `hn` <> '' 
-            AND ( `code` LIKE '41001%' OR `code` LIKE '%EKG%') 
-            GROUP BY `hn`
-        ) AS b ON a.thdatehn = b.thdatehn 
-        WHERE b.row_id IS NOT NULL;";
-        $q = $dbi->query($sql);
-        $a = $q->fetch_assoc();
-        $ecgCxr = $a['htEcgCxr'];
-        $report3 = round(($ecgCxr*100/$allCount),2);
+        $report2 = is_nan($report2) ? 0 : $report2 ;
         
+        // ตัวชี้วัดที่ 3
+        $ecg = $ht->getXrayXEkg($yearSelected);
+        $ecgCxr = $ecg->num_rows;
+        $report3 = round(($ecgCxr*100/$allCount),2);
+        $report3 = is_nan($report3) ? 0 : $report3 ;
+        
+        // สร้าง temporary ของ resulthead
+        $qResulthead = $ht->generateTempResulthead($year);
 
-
-        $sqlTempResulthead = "CREATE TEMPORARY TABLE `tempResulthead` 
-        SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn`  
-        FROM (
-            SELECT MAX(autonumber) AS latest_autonumber 
-            FROM resulthead 
-            WHERE orderdate LIKE '$year%' 
-            AND profilecode IN ('CREAG','ALB','UMALB') 
-            GROUP BY hn
-        ) AS a 
-        LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
-        ORDER BY b.autonumber ASC";
-        $qTempResulthead = $dbi->query($sqlTempResulthead);
-
-
-        // ตัวชี้วัดที่ 4
-        $sql = "SELECT COUNT(`autonumber`) AS 'albuminRows' FROM `tempOpdXDiag` AS m 
-        LEFT JOIN ( 
-                
-            SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
-            FROM `tempResulthead` AS x
-            LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
-            WHERE y.`labcode` IN ('ALB','UMALB') 
-            GROUP BY `hn`
-
-        ) AS n ON m.`thdatehn` = n.`thdatehn`
-        WHERE n.`autonumber` IS NOT NULL;";
-        $q = $dbi->query($sql);
-        $a = $q->fetch_assoc();
-        $albuminRows = $a['albuminRows'];
+        // ตัวชี้วัดที่ 4 ALB + UMALB
+        $alb = $ht->getAlbumin();
+        $albuminRows = $alb->num_rows;
         $report4 = round(($albuminRows*100/$allCount),2);
+        $report4 = is_nan($report4) ? 0 : $report4 ;
 
 
         // ตัวชี้วัดที่ 5
-        $sql = "SELECT COUNT(`autonumber`) AS 'CrRows' FROM `tempOpdXDiag` AS m 
-        LEFT JOIN ( 
-                
-            SELECT x.*,y.labcode,y.labname,y.result  
-            FROM tempResulthead AS x
-            LEFT JOIN resultdetail AS y ON x.autonumber = y.autonumber 
-            WHERE y.labcode = 'CREA'  
-
-        ) AS n ON m.thdatehn = n.thdatehn
-        WHERE n.`autonumber` IS NOT NULL;";
-        $q = $dbi->query($sql);
-        $a = $q->fetch_assoc();
-        $CrRows = $a['CrRows'];
+        $crea = $ht->getCREA();
+        $CrRows = $crea->num_rows;
         $report5 = round(($CrRows*100/$allCount),2);
+        $report5 = is_nan($report5) ? 0 : $report5 ;
 
-
-        $res[$year] = array(
+        $data = array(
             'report1'=> $report1,
             'report2'=> $report2,
             'report3'=> $report3,
@@ -143,16 +81,22 @@ if($action==='create_report'){
             'report5'=> $report5,
         );
 
-        $report_ht->$year;
+        $res[$year] = $data;
 
-        setcookie('report_ht', $json->encode($res), $setCookieTime, "/");
+        $report_ht->$year = $json->decode($json->encode($data));
+        
+        setcookie('report_ht', $json->encode($report_ht), $setCookieTime, "/");
     }
     
     echo $json->encode($res[$year]);
     exit;
 }elseif ($action==='clear_cookie') {
     
-    setcookie('report_ht', '', $delCookieTime, '/');
+    $year = sprintf("%s", $_GET['year']);
+    $report_ht = $json->decode($_COOKIE['report_ht']);
+    unset($report_ht->$year);
+    setcookie('report_ht', $json->encode($report_ht), $setCookieTime, "/");
+    echo $json->encode(array('status'=>200));
     exit;
 }
 
@@ -243,7 +187,7 @@ if($action==='create_report'){
                     <?php 
                     if(!empty($report_ht->$year)){
                         ?>
-                        <div class="col-md"><a href="javascript:void(0);" class="btn btn-warning float-end">ล้างค่าความจำ</a></div>
+                        <div class="col-md"><a href="javascript:void(0);" class="btn btn-warning float-end" onclick="clearCookie('<?=$year;?>')">ล้างค่าความจำ</a></div>
                         <?php
                     }
                     ?>
@@ -263,43 +207,26 @@ if($action==='create_report'){
                                 <!-- ข้อมูลผู้ป่วยซักประวัติ และยังไม่เคยมีการลง ICD10 ที่เป็น Hypertension มาก่อน -->
                                 1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง
                             </td>
-                            <td id="resReport1">
-                                <?php
-                                
-                                // echo '<a href="report_ht1.php?year='.$year.'&all='.$allCount.'&ht='.$age35.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> ผ่านเกณฑ์ '.$age35.'ราย" target="_blank">'.round(($age35*100/$allCount),2).'</a>';
-                                ?>
-                            </td>
+                            <td id="resReport1"></td>
                         </tr>
                         <tr>
                             <td>
                                 <!-- คนที่เป็น HT เรียบร้อยแล้ว -->
                                 2.&#41; ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี &#40; &lt;140/90 &#41; ดึงจากการวัดครั้งที่2 
                             </td>
-                            <td id="resReport2">
-                                <?php
-                                
-                                // echo '<a href="report_ht2.php?year='.$year.'&ht_all='.$allCount.'&ht_bp='.$ht_bp.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT bp < 140/90 '.$ht_bp.'ราย" target="_blank">'.round(($ht_bp*100/$allCount),2).'</a>';
-                                ?>
-                            </td>
+                            <td id="resReport2"></td>
                         </tr>
                         <tr>
                             <td>
                                 <!-- ดูจาการบันทึกค่าใช้จ่าย -->
                                 3.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR 
                             </td>
-                            <td id="resReport3">
-                                <?php 
-                                
-                                // echo '<a href="report_ht3.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$ecgCxr.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ ECG, CXR '.$ecgCxr.'ราย" target="_blank">'.round(($ecgCxr*100/$allCount),2).'</a>';
-                                
-                                ?>
-                            </td>
+                            <td id="resReport3"></td>
                         </tr>
                         <tr>
                             <td>
                                 <!-- มันมี 2 แบบคือ การตรวจ Albumin Urine และ UA (ข้างใน UA จะมี Urine albumin เป็นซับเซ็ตอีกที) -->
                                 <!-- 
-
                                 https://www.si.mahidol.ac.th/Th/healthdetail.asp?aid=411
                                 การวัดระดับไมโครอัลบูมินในปัสสาวะ( Microalbuminuria )
 
@@ -310,64 +237,14 @@ if($action==='create_report'){
                                 -->
                                 4.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Urine albumin
                             </td>
-                            <td id="resReport4">
-                                <?php 
-                                // $sqlTempResulthead = "CREATE TEMPORARY TABLE `tempResulthead` 
-                                // SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn`  
-                                // FROM (
-                                //     SELECT MAX(autonumber) AS latest_autonumber 
-                                //     FROM resulthead 
-                                //     WHERE orderdate LIKE '$year%' 
-                                //     AND profilecode IN ('CREAG','ALB','UMALB') 
-                                //     GROUP BY hn
-                                // ) AS a 
-                                // LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
-                                // ORDER BY b.autonumber ASC";
-                                // $qTempResulthead = $dbi->query($sqlTempResulthead);
-
-                                // $sql = "SELECT COUNT(`autonumber`) AS 'albuminRows' FROM `tempOpdXDiag` AS m 
-                                // LEFT JOIN ( 
-                                        
-                                //     SELECT x.*,y.`labcode`,y.`labname`,y.`result`  
-                                //     FROM `tempResulthead` AS x
-                                //     LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
-                                //     WHERE y.`labcode` IN ('ALB','UMALB') 
-                                //     GROUP BY `hn`
-
-                                // ) AS n ON m.`thdatehn` = n.`thdatehn`
-                                // WHERE n.`autonumber` IS NOT NULL;";
-                                // $q = $dbi->query($sql);
-                                // $a = $q->fetch_assoc();
-                                // $albuminRows = $a['albuminRows'];
-                                // echo '<a href="report_ht4.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$albuminRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$albuminRows.'ราย" target="_blank">'.round(($albuminRows*100/$allCount),2).'</a>';
-                                
-                                ?>
-                            </td>
+                            <td id="resReport4"></td>
                         </tr>
                         <tr>
                             <td>
                                 <!-- มันคือ CR((32202)Creatinine) ในโรงบาลเราเอง -->
                                 5.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr
                             </td>
-                            <td id="resReport5">
-                                <?php 
-                                // $sql = "SELECT COUNT(`autonumber`) AS 'CrRows' FROM `tempOpdXDiag` AS m 
-                                // LEFT JOIN ( 
-                                        
-                                //     SELECT x.*,y.labcode,y.labname,y.result  
-                                //     FROM tempResulthead AS x
-                                //     LEFT JOIN resultdetail AS y ON x.autonumber = y.autonumber 
-                                //     WHERE y.labcode = 'CREA'  
-
-                                // ) AS n ON m.thdatehn = n.thdatehn
-                                // WHERE n.`autonumber` IS NOT NULL;";
-                                // $q = $dbi->query($sql);
-                                // $a = $q->fetch_assoc();
-                                // $CrRows = $a['CrRows'];
-                                // echo '<a href="report_ht5.php?year='.$year.'&ht_all='.$allCount.'&ecgCxr='.$CrRows.'" data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="HT ทั้งหมด '.$allCount.'ราย<br> HT ที่ได้ตรวจ Serum Cr '.$CrRows.'ราย" target="_blank">'.round(($CrRows*100/$allCount),2).'</a>';
-                                
-                                ?>
-                            </td>
+                            <td id="resReport5"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -391,34 +268,41 @@ if($action==='create_report'){
                 }
 
                 window.onload = function(){
-                    
-                    let x = getCookie('report_ht');
+                    document.getElementById('loading').style.display = '';
+                    let report_ht = getCookie('report_ht');
                     let yearSelected = document.getElementById('yearSelected').value;
+                    if(report_ht===''){
 
-                    let json = JSON.parse(x);
-                    let yearText = yearSelected.toString();
-                    console.log(json[yearSelected]);
-                    if(json[yearSelected]===undefined){
-                        document.getElementById('loading').style.display = '';
+                        preLoadData(yearSelected);
+
+                    }else{ 
                         
-                        onLoadingData(yearSelected).then((data)=>{
+                        let json = JSON.parse(report_ht);
+                        let yearText = yearSelected.toString();
 
-                            document.getElementById('resReport1').innerHTML = data.report1;
-                            document.getElementById('resReport2').innerHTML = data.report2;
-                            document.getElementById('resReport3').innerHTML = data.report3;
-                            document.getElementById('resReport4').innerHTML = data.report4;
-                            document.getElementById('resReport5').innerHTML = data.report5;
-
+                        if(json[yearText]===undefined){
+                            preLoadData(yearSelected);
+                        }else{
+                            document.getElementById('resReport1').innerHTML = json[yearText].report1;
+                            document.getElementById('resReport2').innerHTML = json[yearText].report2;
+                            document.getElementById('resReport3').innerHTML = json[yearText].report3;
+                            document.getElementById('resReport4').innerHTML = json[yearText].report4;
+                            document.getElementById('resReport5').innerHTML = json[yearText].report5;
                             document.getElementById('loading').style.display = 'none';
-                        });
-                    }else{
-
-                        document.getElementById('resReport1').innerHTML = json[yearSelected].report1;
-                        document.getElementById('resReport2').innerHTML = json[yearSelected].report2;
-                        document.getElementById('resReport3').innerHTML = json[yearSelected].report3;
-                        document.getElementById('resReport4').innerHTML = json[yearSelected].report4;
-                        document.getElementById('resReport5').innerHTML = json[yearSelected].report5;
+                        }
                     }
+                }
+
+                function preLoadData(yearSelected){
+                    onLoadingData(yearSelected).then((data)=>{
+                        document.getElementById('resReport1').innerHTML = data.report1;
+                        document.getElementById('resReport2').innerHTML = data.report2;
+                        document.getElementById('resReport3').innerHTML = data.report3;
+                        document.getElementById('resReport4').innerHTML = data.report4;
+                        document.getElementById('resReport5').innerHTML = data.report5;
+
+                        document.getElementById('loading').style.display = 'none';
+                    });
                 }
 
                 async function onLoadingData(year){ 
@@ -429,16 +313,27 @@ if($action==='create_report'){
                     return data;
                 }
 
+                function clearCookie(year){
+                    onClearCookie(year).then((res)=>{
+                        if(res.status==200){
+
+                            Swal.fire("ล้างข้อมูลเรียบร้อย").then((result)=>{
+                                window.location = 'report_ht.php';
+                            });
+                        }
+                    });
+                }
+
+                async function onClearCookie(year){
+                    const response = await fetch('report_ht.php?action=clear_cookie&year='+year);
+                    if (!response.ok) {
+                    }
+                    const data = await response.json();
+                    return data;
+                }
+
                 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
                 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-                
-                
-                        
-
-                document.getElementById('formSearch').onsubmit = function(){
-                    // document.getElementById('btnSearch').innerHTML = '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span role="status">กำลังโหลดข้อมูล...</span>';
-                }
             </script>
             <?php 
         }

@@ -3,18 +3,24 @@ require_once dirname(__FILE__).'/database.php';
 class ReportHt extends DbConnect
 {
     public $qOpdXDiag = false;
+    private $statement = '';
     public function __construct()
     {
         parent::__construct();
     }
 
     private function doQuery($sql){
-        $q = $this->dbi->query($sql);
+        $this->statement = $sql;
+        $q = $this->dbi->query($this->statement);
         if($q!==false){
             return $q;
         }else{
             return $this->dbi->error;
         }
+    }
+
+    public function getStatement(){
+        return $this->statement;
     }
 
     /**
@@ -41,8 +47,8 @@ class ReportHt extends DbConnect
         LEFT JOIN `opd` AS b ON a.`thdatehn` = b.`thdatehn` 
         WHERE b.`row_id` IS NOT NULL 
         AND ( b.`bp1` <> '' AND b.`bp2` <> '');";
-        $q = $this->doQuery($sqlTemp);
-        return $q;
+        $query = $this->doQuery($sqlTemp);
+        return $query;
     }
 
     /**
@@ -86,6 +92,10 @@ class ReportHt extends DbConnect
         return $q;
     }
 
+    /**
+     * Summary of getBPMore140
+     * @return mysqli_result|string
+     */
     public function getBPMore140(){
         $sql = "SELECT * 
         FROM `tempOpdXDiag` 
@@ -96,6 +106,11 @@ class ReportHt extends DbConnect
         return $q;
     }
 
+    /**
+     * Summary of getXrayXEkg 
+     * @param mixed $year ปี พ.ศ. ไทย
+     * @return mysqli_result|string
+     */
     public function getXrayXEkg($year){
         $sql = "SELECT a.*,b.*  
         FROM `tempOpdXDiag` AS a 
@@ -111,7 +126,11 @@ class ReportHt extends DbConnect
         $q = $this->doQuery($sql);
         return $q;
     }
-
+    /**
+     * Summary of generateTempResulthead
+     * @param mixed $year ปี ค.ศ.
+     * @return mysqli_result|string
+     */
     public function generateTempResulthead($year){
         $sqlTemp = "CREATE TEMPORARY TABLE `tempResulthead` 
         SELECT b.autonumber,b.hn,b.patientname,CONCAT(SUBSTRING(b.`orderdate`,9,2),'-',SUBSTRING(b.`orderdate`,6,2),'-',(SUBSTRING(b.`orderdate`,1,4)+543),b.`hn`) AS `thdatehn` 
@@ -148,6 +167,10 @@ class ReportHt extends DbConnect
         return $q;
     }
 
+    /**
+     * Summary of getCREA
+     * @return mysqli_result|string
+     */
     public function getCREA(){
         $sql = "SELECT m.*,n.* FROM `tempOpdXDiag` AS m 
         LEFT JOIN ( 
