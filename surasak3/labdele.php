@@ -25,6 +25,7 @@ unset($aFilmsize[$n]);
 
 $aSumYprice=array_sum($aYprice);
 $aSumNprice=array_sum($aNprice);
+$Netprice=array_sum($aMoney);
 $money = "";
 
 header('Location: labinfo.php');
