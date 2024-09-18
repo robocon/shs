@@ -52,7 +52,7 @@ function checkptring(opt){
 		return false;
 	}else{
 		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false && document.f1.credit[11].checked == false && document.f1.credit[12].checked == false && document.f1.credit[13].checked == false && document.f1.credit[14].checked == false){
+		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false && document.f1.credit[11].checked == false && document.f1.credit[12].checked == false && document.f1.credit[13].checked == false && document.f1.credit[14].checked == false && document.f1.credit[15].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
@@ -1251,6 +1251,18 @@ print "<b>ค้างจ่ายเบิกไม่ได้/ส่วนเ
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กท44' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
 		 	<TD>กท.44</TD>
          </tr>
+         <tr>
+            <TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กสทช' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
+            <td>กสทช</td>
+		 	<TD align='right'></TD>
+		 	<TD></TD>	
+		 	<TD align='right'></TD>
+		 	<TD></TD>	
+		 	<TD align='right'></TD>
+		 	<TD></TD>	
+		 	<TD align='right'></TD>
+		 	<TD></TD>			
+         </tr>			 
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";
 
