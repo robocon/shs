@@ -29,12 +29,15 @@
         <tr>
           <td>AN:</td>
           <td>
-            <input name="cAn" type="text" class="font1" id="cAn" value="<?= $_REQUEST['cAn']; ?>" />
+            <input name="cAn" type="text" class="font1" id="cAn" value="<?=$_REQUEST['cAn']; ?>" />
           </td>
         </tr>
         <tr>
-          <td colspan="2" align="center"><input name="button" type="submit" class="font1" id="button"
-              value="     ตกลง     " /><a target=_self href='../nindex.htm'> ไปเมนู</a></td>
+          <td colspan="2" align="center">
+            <input name="button" type="submit" class="font1" id="button" value="     ตกลง     " />
+            <input type="hidden" name="backTo" value="drugoutside_hnward">
+            <a target=_self href='../nindex.htm'> ไปเมนู</a>
+          </td>
         </tr>
       </table>
     </form>
