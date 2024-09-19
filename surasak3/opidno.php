@@ -1,7 +1,7 @@
 <?php
 session_start();
-   
-require "includes/functions.php";
+require_once "connect.inc";
+require_once "includes/functions.php";
 
 if(PHP_VERSION_ID <= 50217){
 	session_unregister("cIdcard");  
@@ -117,7 +117,7 @@ font-size:20px;
 <?php
 $pre_hn = null;
 If (!empty($idcard)){
-    include("connect.inc");
+    
     $query = "SELECT idcard,hn,yot,name,surname,ptright1, idcard FROM opcard WHERE idcard = '$idcard'";
     $result = mysql_query($query) or die("query failed,opcard");
 
@@ -130,14 +130,6 @@ If (!empty($idcard)){
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 				$color = "#208eb4";
-			}else{
-				$color = "#FF8C8C";
-			}
-		}else if(substr($ptright,0,3)=='R03'){
-			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
-
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				$color = "#7dcf80";
 			}else{
 				$color = "#FF8C8C";
 			}
@@ -172,18 +164,13 @@ If (!empty($idcard)){
 		}
 
 		if(!empty($hn)){
-			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";			
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				echo"ผู้ป่วยมีสิทธิจ่ายตรง";
-			}else{
-				echo"";
-			}
+			echo"";
 		}else{
 			echo"ผู้ป่วยไม่มี HN";
 		}
 
 		print (" <tr style='font-size: 18px;'>\n".
-		"  <td BGCOLOR=".$color."><a target=\"_BLANK\" onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php?cIdcard=$idcard&cHn=$hn&cName=$name&cSurname=$surname\">$idcard</a></td>\n".
+		"  <td BGCOLOR=".$color."><a onclick=\"checkIpd(this, event, '$hn')\" href=\"javascript:void(0);\" oncontextmenu=\"return doNotOpenNewTab(event, '$hn');\" data-url=\"opedit.php?cIdcard=$idcard&cHn=$hn&cName=$name&cSurname=$surname\">$idcard</a></td>\n".
 		"  <td BGCOLOR=".$color.">$hn</td>\n".
 		"  <td BGCOLOR=".$color.">$yot</td>\n".
 		"  <td BGCOLOR=".$color.">$name</td>\n".
@@ -233,27 +220,6 @@ $smctoken = $t['token'];
         registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
         document.getElementById('ptrightNotify').style.display = '';
     }
-
-    /* checkIpd */
-    function checkIpd(link, ev, hn){
-        
-        var newSm = new SmHttp();
-        newSm.ajax(
-            'templates/regis/checkIpd.php',
-            { id: hn },
-            function(res){
-                var txt = JSON.parse(res);
-                if( txt.state === 400 ){
-                    alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
-                    SmPreventDefault(ev);
-                }else{
-                    // window.open(link.href, '_blank');
-                }
-            },
-            false // true is Syncronous and false is Assyncronous (Default by true)
-        );
-        
-    }
 </script>
 <div style="margin-top: 30px; font-size:18px; font-weight:bold;">
 <FONT COLOR="#990000">***คำอธิบาย***</FONT> <BR>
@@ -283,26 +249,48 @@ if($pre_hn !== null){
 ?>
 <script type="text/javascript">
 	/* checkIpd */
-	function checkIpd(link, ev, hn){
-		// SmPreventDefault(ev);
-		// var href = this.href;
-		var newSm = new SmHttp();
-		newSm.ajax(
-			'templates/regis/checkIpd.php',
-			{ id: hn },
-			function(res){
-				var txt = JSON.parse(res);
-				if( txt.state === 400 ){
-					alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
-					SmPreventDefault(ev);
-				}else{
-					// window.open(link.href, '_blank');
-				}
-			},
-			false // true is Syncronous and false is Assyncronous (Default by true)
-		);
-		
-	}
+    function checkIpd(link, ev, hn){
+        ev.preventDefault();
+
+        if (ev.ctrlKey) {
+            return doNotOpenNewTab(ev, hn);
+        }
+
+        var newSm = new SmHttp();
+        newSm.ajax(
+            'templates/regis/checkIpd.php',
+            { id: hn },
+            function(res){
+                var txt = JSON.parse(res);
+                if( txt.state === 400 ){
+                    alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
+                    
+                }else{
+                    const baseUrl = link.getAttribute('data-url');
+                    window.open(baseUrl, 'registerVn',"width="+screen.width+",height="+screen.height);
+                }
+            },
+            false // true is Syncronous and false is Assyncronous (Default by true)
+        );
+        
+    }
+
+    function doNotOpenNewTab(ev,hn){
+        onSendTab(hn);
+        alert("ห้ามเปิดหน้าลงทะเบียนซ้ำซ้อน");
+        return false;
+    }
+
+    async function onSendTab(hn) {
+        const username = encodeURIComponent('<?=$sOfficer;?>');
+        const tab = encodeURIComponent('ophn จะเปิด tab ใหม่');
+        const response = await fetch('open_tab.php?username='+username+'&tab='+tab+'&hn='+hn);
+
+        if (!response.ok) {
+        }
+
+        const body = await response.text();
+    }
 </script>
 <?php
 include("unconnect.inc");

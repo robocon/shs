@@ -1,4 +1,7 @@
-<?php
+<?php 
+header("Location: opnameops.php");
+exit;
+
 session_start(); 
 include("connect.inc");
 require "includes/functions.php";
