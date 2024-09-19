@@ -68,6 +68,9 @@ legend {
 .style1 {color: #FF0000}
 </style>
 <script type="text/javascript" src="js/jql.min.js"></script>
+<script>
+	const getHn = '<?=sprintf("%s", $_GET['cHn']);?>';
+</script>
 <script language="JavaScript1.2">
 <!--
 window.moveTo(0,0);
@@ -1794,10 +1797,10 @@ function close_res_yot(){
 	document.getElementById('res_yot').style.display = 'none';
 }
 
-
+const channel = new BroadcastChannel('tab-activity');
 document.addEventListener('DOMContentLoaded', () => {
 	// const messageEle = document.getElementById('message');
-	const channel = new BroadcastChannel('tab-activity');
+	
 
 	// Listen for messages on the channel
 	channel.addEventListener('message', (event) => {
@@ -1830,7 +1833,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function onSendTab() {
 	const username = encodeURIComponent('<?=$sOfficer;?>');
 	const tab = encodeURIComponent('<?=basename(__FILE__, '.php');?>');
-	const hn = encodeURIComponent('<?=$cHn;?>');
+	const hn = encodeURIComponent(getHn);
 	const response = await fetch('open_tab.php?username='+username+'&tab='+tab+'&hn='+hn);
 
 	if (!response.ok) {
