@@ -467,6 +467,9 @@ return $pAge;
 		$showscan="<p align='right' style='color:blue; font-size:24px;'><strong>ยังไม่ได้เริ่มสแกนเอกสาร</strong></p>";
 	}	
 ?>
+
+<div id="alertOpcard" style="display:none;"><h1>คำเตือน!!! ไม่ควรเปิดหน้า<u>ออกVN</u> พร้อมกับหน้า<u>ทำบัตรตรวจโรค</u> <br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกัน ศูนย์คอมไม่สามารถกู้คืนให้ได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
+
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
@@ -1797,6 +1800,10 @@ function close_res_yot(){
 	document.getElementById('res_yot').style.display = 'none';
 }
 
+if(localStorage.getItem('register_opcard')=='1'){
+	document.getElementById('alertOpcard').style.display = '';
+}
+
 const channel = new BroadcastChannel('tab-activity');
 document.addEventListener('DOMContentLoaded', () => {
 	// const messageEle = document.getElementById('message');
@@ -1806,11 +1813,28 @@ document.addEventListener('DOMContentLoaded', () => {
 	channel.addEventListener('message', (event) => {
 		switch (event.data) {
 			case 'open-new-tab':
-				onSendTab();
+				console.log('open-new-tab opedit');
+				if(localStorage.getItem('register_opcard')=='1'){
+					document.getElementById('alertOpcard').style.display = '';
+				}
 				break;
+
 			case 'tab-closing':
-				onSendTab();
+				console.log('tab-closing opedit');
+				if(localStorage.getItem('register_opcard')===null){
+					document.getElementById('alertOpcard').style.display = 'none';
+				}
 				break;
+
+			case 'window-load':
+        		console.log('window-load opedit');
+				if(localStorage.getItem('register_opcard')=='1'){
+					document.getElementById('alertOpcard').style.display = '';
+				}else{
+					document.getElementById('alertOpcard').style.display = 'none';
+				}
+				break;
+
 			default:
 				break;
 		}
@@ -1818,15 +1842,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Send a message to all other tabs when a new tab is opened
 	document.addEventListener('visibilitychange', function() {
-		if (document.hidden) {
-			channel.postMessage('open-new-tab');
-		}
+		// if (document.hidden) {
+		// 	channel.postMessage('open-new-tab');
+		// }
+	});
+
+	window.addEventListener('load', function(){
+		channel.postMessage('window-load');
+		localStorage.setItem('register_opedit', '1');
 	});
 
 	// Send a message to all other tabs that this tab is closing
 	window.addEventListener('beforeunload', (event) => {
 		// event.preventDefault();
 		channel.postMessage('tab-closing');
+		localStorage.removeItem('register_opedit');
 	});
 });
 
