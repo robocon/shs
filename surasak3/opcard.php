@@ -308,7 +308,7 @@ function searchSuggest2(str,len,getto1) {
 </SCRIPT>
 <?  include("connect.inc"); ?>
 
-<div id="alertOpedit" style="display:none;"><h1>คำเตือน!!! ไม่ควรเปิดหน้า<u>ออกVN</u> พร้อมกับหน้า<u>ทำบัตรตรวจโรค</u> <br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกัน ศูนย์คอมไม่สามารถกู้คืนให้ได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
+<div id="alertOpedit" style="display:none; text-align:center; color:red;"><h1>คำเตือน!!!<br>ไม่ควรเปิดหน้า<u>ลงทะเบียน / ทำบัตรตรวจโรค / แก้ไขข้อมูล OPDCARD</u> อย่างใดอย่างหนึ่งพร้อมกัน<br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกันได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
 
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
@@ -1011,9 +1011,11 @@ function close_res_yot(){
 				
 		});
 		})(jQuery);
-		
-if(localStorage.getItem('register_opedit')=='1'){
-	document.getElementById('alertOpedit').style.display = '';
+
+const divAlert = document.getElementById('alertOpedit');
+
+if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opdedit')=='1'){
+	divAlert.style.display = '';
 }
 
 const channel = new BroadcastChannel('tab-activity');
@@ -1023,25 +1025,28 @@ document.addEventListener('DOMContentLoaded', () => {
 	channel.addEventListener('message', (event) => {
 		switch (event.data) {
 			case 'open-new-tab':
-				console.log('open-new-tab opcard');
-				if(localStorage.getItem('register_opedit')=='1'){
-					document.getElementById('alertOpedit').style.display = '';
+				
+				if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opdedit')=='1'){
+					divAlert.style.display = '';
 				}
 				break;
 
 			case 'tab-closing':
-				console.log('tab-closing opcard');
+				
 				if(localStorage.getItem('register_opedit')===null){
-					document.getElementById('alertOpedit').style.display = 'none';
+					divAlert.style.display = 'none';
+				}
+				if(localStorage.getItem('register_opdedit')===null){
+					divAlert.style.display = 'none';
 				}
 				break;
 
       		case 'window-load':
-        		console.log('window-load opcard');
-				if(localStorage.getItem('register_opedit')=='1'){
-					document.getElementById('alertOpedit').style.display = '';
+        	
+				if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opdedit')=='1'){
+					divAlert.style.display = '';
 				}else{
-					document.getElementById('alertOpedit').style.display = 'none';
+					divAlert.style.display = 'none';
 				}
 				break;
 
@@ -1057,15 +1062,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		// }
 	});
 
-  window.addEventListener('load', function(){
-    channel.postMessage('window-load');
-    localStorage.setItem('register_opcard', '1');
-  });
+	window.addEventListener('load', function(){
+		channel.postMessage('window-load');
+		localStorage.setItem('register_opcard', '1');
+	});
 
 	// Send a message to all other tabs that this tab is closing
 	window.addEventListener('beforeunload', (event) => {
 		channel.postMessage('tab-closing');
-    	localStorage.removeItem('register_opcard');
+		localStorage.removeItem('register_opcard');
 	});
 });
 

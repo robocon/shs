@@ -355,7 +355,7 @@ if($rows>0){
 				}
 				var new_sum = pre_digit-sum_mod;
 				if( new_sum != parseFloat(id13.charAt(12)) )
-					if(confirm("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n คุณต้องการกลับไปแก้ไขหรือไม่?"))
+					if(confirm("ระบบตรวจสอบว่าคุณกรอกเลขบัตรประชาชนไม่ถูกต้อง \n คุณต้องการกลับไปแก้ไขหรือไม่? \n * กรณีเป็นชาวต่างชาติหรือต่างด้าวกดยกเลิกได้เลยครับ"))
 						stat = false;
 					else
 						stat = true;
@@ -468,7 +468,7 @@ return $pAge;
 	}	
 ?>
 
-<div id="alertOpcard" style="display:none;"><h1>คำเตือน!!! ไม่ควรเปิดหน้า<u>ออกVN</u> พร้อมกับหน้า<u>ทำบัตรตรวจโรค</u> <br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกัน ศูนย์คอมไม่สามารถกู้คืนให้ได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
+<div id="alertOpcard" style="display:none; text-align:center; color:red;"><h1>คำเตือน!!!<br>ไม่ควรเปิดหน้า<u>ลงทะเบียน / ทำบัตรตรวจโรค / แก้ไขข้อมูล OPDCARD</u> อย่างใดอย่างหนึ่งพร้อมกัน<br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกันได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
 
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
@@ -1800,38 +1800,44 @@ function close_res_yot(){
 	document.getElementById('res_yot').style.display = 'none';
 }
 
-if(localStorage.getItem('register_opcard')=='1'){
+function getLocalStorage(name){
+	return localStorage.getItem(name);
+}
+
+if(getLocalStorage('register_opcard')=='1' || getLocalStorage('register_opdedit')=='1'){
 	document.getElementById('alertOpcard').style.display = '';
 }
 
+// เริ่มใช้งาน BroadcastChannel โดยใช้ชื่อ tab-activity
 const channel = new BroadcastChannel('tab-activity');
+// เมื่อ Dom โหลดหน้าเสร็จ
 document.addEventListener('DOMContentLoaded', () => {
-	// const messageEle = document.getElementById('message');
-	
 
-	// Listen for messages on the channel
+	const divAlert = document.getElementById('alertOpcard');
+
+	// ฟังว่าจะมีการส่งข้อมูลอะไรมาให้
 	channel.addEventListener('message', (event) => {
 		switch (event.data) {
 			case 'open-new-tab':
-				console.log('open-new-tab opedit');
-				if(localStorage.getItem('register_opcard')=='1'){
-					document.getElementById('alertOpcard').style.display = '';
+				if(getLocalStorage('register_opcard')=='1' || getLocalStorage('register_opdedit')=='1'){
+					divAlert.style.display = '';
 				}
 				break;
 
 			case 'tab-closing':
-				console.log('tab-closing opedit');
-				if(localStorage.getItem('register_opcard')===null){
-					document.getElementById('alertOpcard').style.display = 'none';
+				if(getLocalStorage('register_opcard')===null){
+					divAlert.style.display = 'none';
+				}
+				if(getLocalStorage('register_opdedit')===null){
+					divAlert.style.display = 'none';
 				}
 				break;
 
 			case 'window-load':
-        		console.log('window-load opedit');
-				if(localStorage.getItem('register_opcard')=='1'){
-					document.getElementById('alertOpcard').style.display = '';
+				if(getLocalStorage('register_opcard')=='1' || getLocalStorage('register_opdedit')=='1'){
+					divAlert.style.display = '';
 				}else{
-					document.getElementById('alertOpcard').style.display = 'none';
+					divAlert.style.display = 'none';
 				}
 				break;
 
@@ -1840,19 +1846,21 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
-	// Send a message to all other tabs when a new tab is opened
+	// เมื่อมีการสลับหน้า
 	document.addEventListener('visibilitychange', function() {
 		// if (document.hidden) {
 		// 	channel.postMessage('open-new-tab');
 		// }
 	});
 
+	// ลงทะเบียน event load
 	window.addEventListener('load', function(){
+		// ส่งข้อมูลกกลับไปที่ event message ด้านบน
 		channel.postMessage('window-load');
 		localStorage.setItem('register_opedit', '1');
 	});
 
-	// Send a message to all other tabs that this tab is closing
+	// เมื่อมีการปิดหน้า
 	window.addEventListener('beforeunload', (event) => {
 		// event.preventDefault();
 		channel.postMessage('tab-closing');

@@ -289,6 +289,9 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		exit();
 }
 ?>
+
+<div id="alertV2" style="display:none; text-align:center; color:red;"><h1>คำเตือน!!!<br>ไม่ควรเปิดหน้า<u>ลงทะเบียน / ทำบัตรตรวจโรค / แก้ไขข้อมูล OPDCARD</u> อย่างใดอย่างหนึ่งพร้อมกัน<br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกันได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
+
 <title>แก้ไขข้อมูลเวชระเบียนผู้ป่วย</title>
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
@@ -1245,5 +1248,70 @@ function close_res_yot(){
 
 	});
 	})(jQuery);
+
+
+function getLocalStorage(name){
+	return localStorage.getItem(name);
+}
+
+const divAlert = document.getElementById('alertV2');
+
+if(getLocalStorage('register_opedit')=='1' || getLocalStorage('register_opcard')=='1'){
+	divAlert.style.display = '';
+}
+
+const channel = new BroadcastChannel('tab-activity');
+document.addEventListener('DOMContentLoaded', () => {
+	
+	// Listen for messages on the channel
+	channel.addEventListener('message', (event) => {
+		switch (event.data) {
+			case 'open-new-tab':
+				if(getLocalStorage('register_opedit')=='1' || getLocalStorage('register_opcard')=='1'){
+					divAlert.style.display = '';
+				}
+				break;
+
+			case 'tab-closing':
+				if(getLocalStorage('register_opcard')===null){
+					divAlert.style.display = 'none';
+				}
+        if(getLocalStorage('register_opedit')===null){
+					divAlert.style.display = 'none';
+				}
+				break;
+
+			case 'window-load':
+				if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opcard')=='1'){
+					divAlert.style.display = '';
+				}else{
+					divAlert.style.display = 'none';
+				}
+				break;
+
+			default:
+				break;
+		}
+	});
+
+	// Send a message to all other tabs when a new tab is opened
+	document.addEventListener('visibilitychange', function() {
+		// if (document.hidden) {
+		// 	channel.postMessage('open-new-tab');
+		// }
+	});
+
+	window.addEventListener('load', function(){
+		channel.postMessage('window-load');
+		localStorage.setItem('register_opdedit', '1');
+	});
+
+	// Send a message to all other tabs that this tab is closing
+	window.addEventListener('beforeunload', (event) => {
+		// event.preventDefault();
+		channel.postMessage('tab-closing');
+		localStorage.removeItem('register_opdedit');
+	});
+});
 </script>
 </body>

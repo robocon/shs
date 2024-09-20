@@ -33,9 +33,7 @@ if (!isset($sIdname)) {
               return false;
             }
             window.open('opcard.php', 'registerVn',"width="+screen.width+",height="+screen.height);
-            return false;
           }
-          
         </script>
       </td>
     </tr>
