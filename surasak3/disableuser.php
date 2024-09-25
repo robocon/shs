@@ -126,6 +126,14 @@ if($action=='enable'){
             </table>
             <script>
                 async function onEnable(row_id){
+
+                    // Ban
+                    if(row_id=='1063'){
+                        Swal.fire({
+                            title: "ผู้ใช้ถูกระงับการใช้งาน เพราะไม่สามารถระบุตัวตนจาก ชื่อ-นามสกุล ที่ใช้งานอยู่ได้ กรุณาติดต่อศูนย์คอมฯ เพื่อยืนยันตัวตน",
+                        });
+                        return false;
+                    }
                     const response = await fetch('disableuser.php?action=enable&id='+row_id);
                     const res = await response.json();
                     if(res.status==200){
