@@ -32,7 +32,7 @@ if (empty($_SESSION["sOfficer"])) {
         </tr>
         <tr>
             <td>
-                <iframe src="edit_opacc3.php" name="depart" frameborder="0" width="100%"></iframe>
+                <iframe src="edit_opacc3.php<?=$url?>" name="depart" frameborder="0" width="100%"></iframe>
             </td>
         </tr>
         <tr>

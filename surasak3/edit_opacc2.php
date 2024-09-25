@@ -16,6 +16,7 @@ include 'bootstrap.php';
     </div>
     <div>
         <button type="submit">search</button>
+        <a href="edit_opacc3.php?date=<?=$_REQUEST['date'];?>&hn=<?=$_REQUEST['hn'];?>" target="depart">Show Depart</a>
     </div>
 
 </form>
