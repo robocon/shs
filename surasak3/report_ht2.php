@@ -42,6 +42,20 @@ $ht_bp = sprintf("%s", $_GET['ht_bp']);
     <div class="container mt-4">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>2.&#41; ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี &#40; &lt;140/90 &#41; ดึงจากการวัดครั้งที่2 </h5>
+        <?php 
+        $ht = new ReportHt();
+        $yearSelected = $year+543;
+
+        $ht->generateTempOpdXDiag($yearSelected);
+        $qAllOpdXDiag = $ht->getAllOpdXDiag();
+        $ht_all = $qAllOpdXDiag->num_rows;
+        
+        // สร้าง temporary table ระหว่าง opd กับ diag
+        $ht->generateTempOpdXDiag($yearSelected);
+
+        $q = $ht->getBPLess140();
+        $bpLess = $q->num_rows;
+        ?>
         <div class="row">
             <div class="col-sm-6">
                 <table class="table">
@@ -51,20 +65,14 @@ $ht_bp = sprintf("%s", $_GET['ht_bp']);
                     </tr>
                     <tr>
                         <td><?=number_format($ht_all);?></td>
-                        <td><?=number_format($ht_bp);?></td>
+                        <td><?=number_format($bpLess);?></td>
                     </tr>
                 </table>
             </div>
         </div>
         <?php
-        $ht = new ReportHt();
-        $yearSelected = $year+543;
-
-        // สร้าง temporary table ระหว่าง opd กับ diag
-        $ht->generateTempOpdXDiag($yearSelected);
-
-        $q = $ht->getBPLess140();
-        if($q->num_rows>0){
+        
+        if($bpLess>0){
             ?>
             <div>
                 <h3>ปี <?=$year;?></h3>

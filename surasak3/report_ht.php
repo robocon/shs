@@ -283,11 +283,11 @@ if($action==='create_report'){
                         if(json[yearText]===undefined){
                             preLoadData(yearSelected);
                         }else{
-                            document.getElementById('resReport1').innerHTML = json[yearText].report1;
-                            document.getElementById('resReport2').innerHTML = json[yearText].report2;
-                            document.getElementById('resReport3').innerHTML = json[yearText].report3;
-                            document.getElementById('resReport4').innerHTML = json[yearText].report4;
-                            document.getElementById('resReport5').innerHTML = json[yearText].report5;
+                            document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+yearText+'" target="_blank">'+json[yearText].report1+'</a>';
+                            document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+yearText+'" target="_blank">'+json[yearText].report2+'</a>';
+                            document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+yearText+'" target="_blank">'+json[yearText].report3+'</a>';
+                            document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+yearText+'" target="_blank">'+json[yearText].report4+'</a>';
+                            document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+yearText+'" target="_blank">'+json[yearText].report5+'</a>';
                             document.getElementById('loading').style.display = 'none';
                         }
                     }
@@ -295,12 +295,11 @@ if($action==='create_report'){
 
                 function preLoadData(yearSelected){
                     onLoadingData(yearSelected).then((data)=>{
-                        document.getElementById('resReport1').innerHTML = data.report1;
-                        document.getElementById('resReport2').innerHTML = data.report2;
-                        document.getElementById('resReport3').innerHTML = data.report3;
-                        document.getElementById('resReport4').innerHTML = data.report4;
-                        document.getElementById('resReport5').innerHTML = data.report5;
-
+                        document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+year+'" target="_blank">'+data.report1+'</a>';
+                        document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+year+'" target="_blank">'+data.report2+'</a>';
+                        document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+year+'" target="_blank">'+data.report3+'</a>';
+                        document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+year+'" target="_blank">'+data.report4+'</a>';
+                        document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+year+'" target="_blank">'+data.report5+'</a>';
                         document.getElementById('loading').style.display = 'none';
                     });
                 }
@@ -334,6 +333,11 @@ if($action==='create_report'){
 
                 const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
                 const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+                function buildUrl(url,year){
+                    const aLink = document.createElement('a');
+                    a.href = url+'?year='+year;
+                }
             </script>
             <?php 
         }

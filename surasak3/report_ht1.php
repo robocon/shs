@@ -46,6 +46,18 @@ $ht = sprintf("%s", $_GET['ht']);
     <div class="container mt-4">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</h5>
+
+        <?php
+        $ht = new ReportHt();
+        $yearSelected = $year+543;
+
+        // สร้าง temporary table ระหว่าง opd กับ diag
+        $ht->generateTempOpdXDiag($yearSelected);
+        $qAllOpdXDiag = $ht->getAllOpdXDiag();
+
+        $qAgeMore35 = $ht->getAgeMoreThan35();
+        ?>
+
         <div class="row">
             <div class="col-sm-6">
                 <table class="table">
@@ -54,21 +66,12 @@ $ht = sprintf("%s", $_GET['ht']);
                         <th>จำนวนที่ผ่านเกณฑ์</th>
                     </tr>
                     <tr>
-                        <td><?=number_format($all);?></td>
-                        <td><?=number_format($ht);?></td>
+                        <td><?=number_format($qAllOpdXDiag->num_rows);?></td>
+                        <td><?=number_format($qAgeMore35->num_rows);?></td>
                     </tr>
                 </table>
             </div>
         </div>
-        <?php
-        $ht = new ReportHt();
-
-        $yearSelected = $year+543;
-
-        // สร้าง temporary table ระหว่าง opd กับ diag
-        $q = $ht->generateTempOpdXDiag($yearSelected);
-        
-        ?>
         <div>
             <h3>ปี <?=$year;?></h3>
             <table class="table table-hover">
@@ -83,7 +86,6 @@ $ht = sprintf("%s", $_GET['ht']);
                 </thead>
                 <tbody>
                     <?php 
-                    $qAgeMore35 = $ht->getAgeMoreThan35();
                     $i = 1;
                     while ($a = $qAgeMore35->fetch_assoc()) {
                     ?>
@@ -118,7 +120,6 @@ $ht = sprintf("%s", $_GET['ht']);
                     <?php 
                         $i++;
                     }
-
                     ?>
                 </tbody>
             </table>

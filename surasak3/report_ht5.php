@@ -42,6 +42,18 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
     <div class="container mt-4">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>5.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ Serum Cr</h5>
+        <?php
+        $ht = new ReportHt();
+        $yearSelected = $year+543;
+
+        $ht->generateTempOpdXDiag($yearSelected);
+        $qAllOpdXDiag = $ht->getAllOpdXDiag();
+        $ht_all = $qAllOpdXDiag->num_rows;
+
+        $ht->generateTempResulthead($year);
+        $q = $ht->getCREA();
+        $serunCrRows = $q->num_rows;
+        ?>
         <div class="row">
             <div class="col-sm-6">
                 <table class="table">
@@ -51,20 +63,11 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
                     </tr>
                     <tr>
                         <td><?=number_format($ht_all);?></td>
-                        <td><?=number_format($ecgCxr);?></td>
+                        <td><?=number_format($serunCrRows);?></td>
                     </tr>
                 </table>
             </div>
         </div>
-        <?php
-        $ht = new ReportHt();
-        $yearSelected = $year+543;
-
-        $ht->generateTempOpdXDiag($yearSelected);
-        $ht->generateTempResulthead($year);
-        $q = $ht->getCREA();
-        
-        ?>
         <div>
             <h3>ปี <?=$year;?></h3>
             <table class="table table-hover">

@@ -42,6 +42,18 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
     <div class="container mt-4">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>3.&#41; ร้อยละผู้ป่วยความดันโลหิตสูง ที่ได้การตรวจ ECG, CXR </h5>
+        <?php
+        $ht = new ReportHt();
+        $yearSelected = $year+543;
+
+        // สร้าง temporary table ระหว่าง opd กับ diag
+        $ht->generateTempOpdXDiag($yearSelected);
+        $qAllOpdXDiag = $ht->getAllOpdXDiag();
+        $ht_all = $qAllOpdXDiag->num_rows;
+
+        $q = $ht->getXrayXEkg($yearSelected);
+        $ecgCxrRows = $q->num_rows;
+        ?>
         <div class="row">
             <div class="col-sm-6">
                 <table class="table">
@@ -56,16 +68,6 @@ $ecgCxr = sprintf("%s", $_GET['ecgCxr']);
                 </table>
             </div>
         </div>
-        <?php
-        $ht = new ReportHt();
-        $yearSelected = $year+543;
-
-        // สร้าง temporary table ระหว่าง opd กับ diag
-        $ht->generateTempOpdXDiag($yearSelected);
-
-        $q = $ht->getXrayXEkg($yearSelected);
-        
-        ?>
         <div>
             <h3>ปี <?=$year;?></h3>
             <table class="table table-hover">
