@@ -142,8 +142,7 @@ session_unregister("Ptright1");
 
                 }
 
-                $sql1 = "SELECT  * FROM opcard
-        where name='" . $_SESSION['name'] . "' and surname='" . $_SESSION['surname'] . "' and hn !='" . $_SESSION['hn'] . "' ";
+                $sql1 = "SELECT  * FROM opcard where name='" . $_SESSION['name'] . "' and surname='" . $_SESSION['surname'] . "' and hn !='" . $_SESSION['hn'] . "' ";
                 $result1 = mysql_query($sql1);
                 $rows1 = mysql_num_rows($result1);
                 if ($rows1) {
@@ -179,7 +178,7 @@ session_unregister("Ptright1");
             <hr />
 
             <?php
-
+        }
             $alert_msg = null;
             $hn = isset($_POST['hn']) ? $_POST['hn'] : null;
             if ($hn !== null) {

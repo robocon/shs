@@ -82,13 +82,23 @@ table tr td{
 <?php
 $name = htmlspecialchars($_POST['name'], ENT_QUOTES);
 $sname = htmlspecialchars($_POST['sname'], ENT_QUOTES);
-if(!empty($name)){
+if(!empty($name) OR !empty($sname)){
 
-    $query = "SELECT `hn`,`yot`,`name`,`surname`,`dbirth`,`idcard`,`idguard` FROM `opcard` WHERE `name` LIKE '%$name%' ORDER BY `row_id` DESC";
+    $query = "SELECT `hn`,`yot`,`name`,`surname`,`dbirth`,`idcard`,`idguard` FROM `opcard` WHERE ";
 
-	if( !empty($sname) ){
-		$query .= " AND `surname` LIKE '%$sname%'";
+    if( !empty($name) ){
+		$query .= "`name` LIKE '%$name%' ";
 	}
+
+	if( !empty($sname) ){ 
+        if( !empty($name) ){
+            $query .= "OR ";
+        }
+
+		$query .= "`surname` LIKE '%$sname%' ";
+	}
+
+    $query .= "ORDER BY `row_id` DESC";
 
     $result = mysql_query($query) or die("Query failed");
 
