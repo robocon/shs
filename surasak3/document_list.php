@@ -1,55 +1,69 @@
-<style type="text/css">
-<!--
-@import url("style11.css");
--->
-</style>
-<script language="JavaScript" type="text/JavaScript">
-<!--
-function MM_openBrWindow(theURL,winName,features) { //v2.0
-  window.open(theURL,winName,features);
-}
-//-->
-</script>
-<meta http-equiv="Content-Type" content="text/html; charset=tis-620">
-<h2 class="forntsarabun" align="center">�к��Ѵ��ͧ�������� </h2>
-<a href="../nindex.htm" class="forntsarabun">��Ѻ������ѡ </a>
-|| <a href="document_Search2.php" class="forntsarabun">�����͡��÷�����</a> || <a href="document_add.php"><span class="forntsarabun">�����͡�������</span></a><br />
 <?php
-include("connect.inc");
-
-
-$strSQL = "SELECT count(depart)as count,depart FROM document Group by depart order by count desc";
-$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
-$rows=mysql_num_rows($objQuery);		
-if($rows){
+include("connect.php");
 ?>
-<table  border="1" cellpadding="0" cellspacing="0" style="border-collapse:collapse"  bordercolor="#000000" id="box-table-a">
-  <tr>
-    <th width="69%"> <div align="center">Ἱ�</div></th>
-    <th width="31%"> <div align="center">�ӹǹ�͡���/����ͧ</div></th>
-    <!--<th>ź</th>-->
-  </tr>
-<?
-while($objResult = mysql_fetch_array($objQuery))
-{
-	
-?>
-  <tr>
-    <td align="left"><a href="document_list1.php?depart=<?=$objResult["depart"];?>"><?=$objResult["depart"];?></a></td>
-    <td align="center"><?=$objResult["count"];?></td>
-    <!-- <td align="center"><a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='document_delete.php?doc_id=<?//=$objResult["doc_id"];?>';}">Delete</a></td>-->
-  </tr>
-  <?
-  $all+=$objResult["count"];
-}
+<!DOCTYPE html>
+<html lang="en">
 
-?>
-  <tr id="box-table-a">
-    <td colspan="2" align="center" class="forntsarabun"><hr color="#000000" />��� <?=$all;?> ����ͧ</td>
-  </tr>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ระบบจัดเก็บองค์ความรู้</title>
+	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="js/sweetalert2.all.min.js"></script>
+</head>
 
-</table>
-<?
-} 
-?>
+<body>
+<style>
+	body {
+		font-family: "TH SarabunPSK";
+		font-size: 18px;
+	}
+</style>
+	<div class="container">
+	<h2 class="mt-2" align="center">ระบบจัดเก็บองค์ความรู้</h2>
+	<div class="mt-4">
+		<a href="../nindex.htm" class="btn btn-primary">กลับเมนูหลัก </a>
+		<a href="document_Search2.php" class="btn btn-primary">ค้นหาเอกสารทั้งหมด</a>
+		<a href="document_add.php"><span class="btn btn-primary">เพิ่มเอกสารใหม่</span></a>
+	</div>
+	<?php
+	$strSQL = "SELECT count(depart)as count,depart FROM document Group by depart order by count desc";
+	$objQuery = mysql_query($strSQL) or die("Error Query [" . $strSQL . "]");
+	$rows = mysql_num_rows($objQuery);
+	if ($rows) {
+		?>
+		<table class="table table-striped table-hover mt-4">
+			<tr>
+				<th >แผนก</th>
+				<th >จำนวนเอกสาร/เรื่อง</th>
+			</tr>
+			<?php
+			while ($objResult = mysql_fetch_array($objQuery)) {
 
+				?>
+				<tr>
+					<td><a
+							href="document_list1.php?depart=<?= $objResult["depart"]; ?>"><?= $objResult["depart"]; ?></a></td>
+					<td><?= $objResult["count"]; ?></td>
+					<!-- <td align="center"><a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='document_delete.php?doc_id=<?//=$objResult["doc_id"]; ?>';}">Delete</a></td>-->
+				</tr>
+				<?
+				$all += $objResult["count"];
+			}
+
+			?>
+			<tr id="">
+				<td colspan="2" align="center" class=""><strong>ยอดรวม <?= $all; ?> เรื่อง</strong></td>
+			</tr>
+
+		</table>
+		<?php
+	}
+	?>
+	</div>
+</body>
+
+</html>
