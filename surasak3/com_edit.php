@@ -120,6 +120,10 @@ if ($_REQUEST['do'] == 'edit') {
 				<td colspan="3" bgcolor="#66CCCC"><input name="head" type="text" class="forntsarabun" value="<?= $dbarr['head']; ?>" size="60" readonly></td>
 			</tr>
 			<tr>
+				<td bgcolor="#66CCCC"><strong>วัน-เวลาที่แจ้ง</strong></td>
+				<td colspan="3" bgcolor="#66CCCC"><p><?=$dbarr['date'];?></p></td>
+			</tr>
+			<tr>
 				<td valign="top" bgcolor="#66CCCC"><strong>รายละเอียด</strong></td>
 				<td colspan="3" bgcolor="#66CCCC">
 					<script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
@@ -132,6 +136,7 @@ if ($_REQUEST['do'] == 'edit') {
 						});
 					</script>
 					<textarea name="detail" id="detail" cols="100" rows="10" readonly class="forntsarabun"><?=htmlspecialchars_decode($dbarr['detail']);?></textarea>
+				
 				</td>
 			</tr>
 			<tr>
