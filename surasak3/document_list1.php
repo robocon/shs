@@ -42,11 +42,11 @@ $depart1 = sprintf("%s", $_GET['depart']);
 		<?php
 		
 		$strSQL = "SELECT count(b.doc_id) as count ,a.doc_name,a.doc_id,a.row_id,a. post_name 
-FROM document as a ,document_file as b  
-where a.doc_id=b.doc_id 
-AND depart='" . $depart1 . "' 
-Group by b.doc_id
-ORDER BY `doc_date` DESC";
+		FROM document as a ,document_file as b  
+		where a.doc_id=b.doc_id 
+		AND depart='" . $depart1 . "' 
+		Group by b.doc_id
+		ORDER BY `doc_date` DESC";
 		$objQuery = mysql_query($strSQL) or die("Error Query [" . $strSQL . "]");
 		$rows = mysql_num_rows($objQuery);
 
@@ -60,12 +60,12 @@ ORDER BY `doc_date` DESC";
 					<!--<th>ลบ</th>-->
 				</tr>
 				<?
-				while ($objResult = mysql_fetch_array($objQuery)) {
-
+				while ($objResult = mysql_fetch_assoc($objQuery)) {
+					
 					/*if($_SESSION['sOfficer']==$objResult['post_name'] || $_SESSION['sOfficer']=="เพลิงพายุ อุปนันท์"){ */
 
-					$link = "<a href='document_edit.php?doc_id=$objResult[doc_id]'>แก้ไข</a>";
-					$linkdel = "<a href='document_delete.php?doc_id=$objResult[doc_id]' OnClick='return chkdel();' title='ลบข้อมูล ชื่อเรื่องและเอกสารทั้งหมด ของเรื่องนี้'>ลบ</a>";
+					$link = "<a href='document_edit.php?doc_id=".$objResult['doc_id']."'>แก้ไข</a>";
+					$linkdel = "<a href='document_delete.php?doc_id=".$objResult['doc_id']."' OnClick='return chkdel();' title='ลบข้อมูล ชื่อเรื่องและเอกสารทั้งหมด ของเรื่องนี้'>ลบ</a>";
 
 					/*	 }else{
 							 

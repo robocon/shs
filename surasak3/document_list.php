@@ -61,6 +61,10 @@ include("connect.php");
 
 		</table>
 		<?php
+	}else{
+		?>
+		<p class="mt-2"><strong>ยังไม่มีไฟล์อัพโหลด</strong></p>
+		<?php
 	}
 	?>
 	</div>
