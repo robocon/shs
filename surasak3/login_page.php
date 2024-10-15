@@ -1,5 +1,7 @@
 <?php 
 include 'bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 // redirect to where are you from
 $match = preg_match('/login_page/', $_SERVER['HTTP_REFERER']);
