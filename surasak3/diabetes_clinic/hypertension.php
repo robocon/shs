@@ -1,8 +1,46 @@
 <?php
-include '../bootstrap.php';
+require "../connect.php";
+require "../includes/functions.php";
 
 // error_reporting(1);
 // ini_set('display_errors', 1);
+
+$action = sprintf("%s", $_GET['action']);
+if($action==='loadDate'){
+	$hn = sprintf("%s", $_GET['hn']);
+	$sql = sprintf("SELECT thidate,vn,hn,ptname FROM opd WHERE hn = '%s' ORDER BY thidate DESC LIMIT 20", mysql_escape_string($hn));
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q) > 0){
+		?>
+		<style>
+			#loadDateTable td{
+				padding-right:6px;
+			}
+		</style>
+		<table id="loadDateTable">
+			<tr>
+				<th>วันที่</th>
+				<th>VN</th>
+				<th>HN</th>
+			</tr>
+		<?php
+		while ($a = mysql_fetch_assoc($q)) {
+			?>
+			<tr>
+				<td><a href="javascript:void(0);" onclick="document.getElementById('dateEcgCxr').value='<?=substr($a['thidate'],0,10);?>';document.getElementById('landingDateSelected').style.display='none';"><?=$a['thidate'];?></a></td>
+				<td><?=$a['vn'];?></td>
+				<td><?=$a['hn'];?></td>
+			</tr>
+			<?php
+		}
+		?>
+		</table>
+		<?php
+	}
+	exit;
+}
+
+
 
 $web_title = 'หน้าลงทะเบียนผู้ป่วย Hypertension';
 require "header.php";
@@ -290,6 +328,14 @@ mmHg</td>
         <td></td>
       </tr>
 		<tr>
+			
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
 			<td class="tb_font_2">Repeat BP : </td>
 			<td>
 				<input name="bp3" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp3"]; ?>"class="forntsarabun1" />
@@ -297,13 +343,6 @@ mmHg</td>
 				<input name="bp4" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp4"]; ?>"class="forntsarabun1" />
 				mmHg
 			</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -325,41 +364,82 @@ mmHg</td>
 			การวินิจฉัยครั้งแรกประมาณ พ.ศ. <input type="text" name="diag_date" id="diag_date" value="<?=(date('Y')+543).date('-m-d');?>">
 		</td>
 	</tr>
-  <tr>
-    <td align="right" class="tb_font_2">&nbsp;</td>
-    <td colspan="5" align="left" class="forntsarabun1">&nbsp;</td>
-  </tr>
-	  <tr>
-	    <td align="right" class="tb_font_2">โรคร่วม HT :</td>
-	    <td colspan="5" align="left" class="forntsarabun1">
-<input name="joint_disease_dm" type="checkbox"  value="Y" />เบาหวาน 
-<input name="joint_disease_nephritic" type="checkbox"  value="Y" />ไตเรื้อรัง
-<input name="joint_disease_myocardial" type="checkbox"  value="Y" />กล้ามเนื้อหัวใจตาย 
-<input name="joint_disease_paralysis" type="checkbox"  value="Y" />อัมพฤกษ์อัมพาต</td>
-	    </tr>
-	  <tr>
-	    <td align="right" class="tb_font_2">&nbsp;</td>
-	    <td colspan="5" align="left" class="forntsarabun1">&nbsp;</td>
-	    </tr>
-	
-		  <tr>
-           <td align="right"  class="tb_font_2"> ประวัติบุหรี่ : </td>
-		   <td colspan="5">
+	<tr>
+		<td align="right" class="tb_font_2">โรคร่วม HT :</td>
+		<td colspan="5" align="left" class="forntsarabun1">
+			<input name="joint_disease_dm" type="checkbox"  value="Y" />เบาหวาน 
+			<input name="joint_disease_nephritic" type="checkbox"  value="Y" />ไตเรื้อรัง
+			<input name="joint_disease_myocardial" type="checkbox"  value="Y" />กล้ามเนื้อหัวใจตาย 
+			<input name="joint_disease_paralysis" type="checkbox"  value="Y" />อัมพฤกษ์อัมพาต
+		</td>
+	</tr>
+	<tr>
+		<td align="right"  class="tb_font_2"> ประวัติบุหรี่ : </td>
+		<td colspan="5">
 			<INPUT TYPE="radio" NAME="cigarette" value="0" <?php if($cigarette==0){ echo "checked"; }?> >
 			ไม่สูบบุหรี่&nbsp;&nbsp;&nbsp;
 			<INPUT TYPE="radio" NAME="cigarette" value="1" <?php if($cigarette==1){ echo "checked"; }?> >
 			สูบบุหรี่
 			<input type="radio" name="cigarette" value="2" <?php if($cigarette==2){ echo "checked"; }?> />
-			NA</td>
-          </tr>
-	</TABLE>
+			NA
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ ECG หรือ CXR : </strong></td>
+		<td>
+			<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="activeEcgCxrContain(this.value)"> <label for="ecgCxr1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="activeEcgCxrContain(this.value)"><label for="ecgCxr2">ไม่ได้ตรวจ</label>
+		</td>
+	</tr>
+	<tr id="ecgCxrContain" style="display:none;">
+		<td></td>
+		<td>
+			<div style="position:relative;">
+				<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+				<div id="landingDateSelected" style="position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Urine albumin : </strong></td>
+		<td>
+			<input type="radio" name="albumin" id="albumin1" value="1" onclick="activeAlbuminContain(this.value)"> <label for="albumin1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="albumin" id="albumin2" value="0" onclick="activeAlbuminContain(this.value)"><label for="albumin2">ไม่ได้ตรวจ</label>
+		</td>
+	</tr>
+	<tr id="albuminContain" style="display:none;">
+		<td></td>
+		<td>
+			<div style="position:relative;">
+				<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateAlbumin()">เลือกวันที่รับบริการ</a>
+				<div id="landingDateAlbumin" style="position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Serum Cr. : </strong></td>
+		<td>
+		<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="activeEcgCxrContain(this.value)"> <label for="ecgCxr1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="activeEcgCxrContain(this.value)"><label for="ecgCxr2">ไม่ได้ตรวจ</label>
+		</td>
+	</tr>
+	<tr id="ecgCxrContain" style="display:none;">
+		<td></td>
+		<td>
+			<div style="position:relative;">
+				<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+				<div id="landingDateSelected" style="position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+			</div>
+		</td>
+	</tr>
+</TABLE>
 </td>
-	        </tr>
-	      </table></td>
+			
+	      </table>
+		</td>
     </tr>
 	  </table>
-
-	<input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล"  />
+	<div style="margin:8px;">
+		<input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล"  />
+	</div>
+	
 	&nbsp;
    <!-- <input name="submit2" type="submit" class="forntsarabun1" value="ตกลง&amp;สติกเกอร์ OPD" />-->
     <input type="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
@@ -371,7 +451,49 @@ mmHg</td>
 </TABLE>
 <BR>&nbsp;
 </FORM>
+
 <script type="text/javascript">
+	function activeEcgCxrContain(v){
+		if(v==1){
+			document.getElementById('ecgCxrContain').style.display = '';
+		}else{
+			document.getElementById('ecgCxrContain').style.display = 'none';
+		}
+	}
+
+	function showDateSelected(){
+		const url = 'hypertension.php?action=loadDate&hn=<?=$hn;?>';
+		loadContent(url).then((res)=>{
+			document.getElementById('landingDateSelected').innerHTML = res;
+			document.getElementById('landingDateSelected').style.display = '';
+		});
+	}
+
+	async function loadContent(url){
+		const response = await fetch();
+		const body = await response.text();
+		return body;
+	}
+
+
+	/**
+	 * Albumin Uria
+	 */
+	function activeAlbuminContain(v){
+		if(v==1){
+			document.getElementById('albuminContain').style.display = '';
+		}else{
+			document.getElementById('albuminContain').style.display = 'none';
+		}
+	}
+
+	function showDateAlbumin(){
+		const url = 'hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>';
+		loadContent(url).then((res)=>{
+
+		});
+	}
+
 	var popup7;
 	window.onload = function() {
 		popup7 = new Epoch('popup7','popup',document.getElementById('diag_date'),false);
