@@ -324,14 +324,18 @@ if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD
 if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true)
 {
     ?>
-    <br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - อัจฉรา อวดห้าว</a>
-    <br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ธัญญาวดี มูลรัตน์</a>
 	<br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - กัลย์ปภารัศมิ์ กุลชิงชัย</a>
+	<p><strong>ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์</strong></p>
+    <br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">อัจฉรา อวดห้าว</a>
+    <br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ธัญญาวดี มูลรัตน์</a>
 	<br><br>
-    <a target="_blank" href="labtranxnidpt.php?subDoctor=4&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ - ประภัสสร เครืออินทร์</a>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=3&code=<?=$Dgcode;?>">กัลย์ปภารัศมิ์ กุลชิงชัย</a>
+	<br><br>
+    <a target="_blank" href="labtranxnidpt.php?subDoctor=4&code=<?=$Dgcode;?>">ประภัสสร เครืออินทร์</a>
+	<br><br>
+	<a target="_blank" href="labtranxnidpt.php?subDoctor=6&code=<?=$Dgcode;?>">ณัฏฐาพร วงศ์เสนา</a>
 	<br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=5&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทย - พิมพ์ทอง สุระเรืองชัย</a>
     <!--<br><br>
