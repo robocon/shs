@@ -11,6 +11,7 @@
 *.xls
 
 connect*
+replicadb/config.py
 surasak3/med_scan/*
 surasak3/connect*
 surasak3/Connections/config.inc.php
