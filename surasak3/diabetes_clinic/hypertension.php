@@ -2,13 +2,19 @@
 require "../connect.php";
 require "../includes/functions.php";
 
-// error_reporting(1);
-// ini_set('display_errors', 1);
-
 $action = sprintf("%s", $_GET['action']);
 if($action==='loadDate'){
 	$hn = sprintf("%s", $_GET['hn']);
-	$sql = sprintf("SELECT thidate,vn,hn,ptname FROM opd WHERE hn = '%s' ORDER BY thidate DESC LIMIT 20", mysql_escape_string($hn));
+
+	$thaiYear = (date('Y')+543);
+	$sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`ptname`,a.`code`,b.`tvn`
+	FROM `patdata` AS a 
+	LEFT JOIN `depart` AS b ON a.`idno` = b.`row_id` 
+	WHERE ( a.`date` LIKE '$thaiYear%%' AND a.`hn` = '%s' ) 
+	AND ( a.`code` LIKE '41001%%' OR a.`code` LIKE '%%EKG%%') 
+	GROUP BY a.`hn`",
+	mysql_escape_string($hn));
+
 	$q = mysql_query($sql);
 	if(mysql_num_rows($q) > 0){
 		?>
@@ -17,24 +23,152 @@ if($action==='loadDate'){
 				padding-right:6px;
 			}
 		</style>
+		<div style="display: inline-block;width: 100%;background-color: #b8b8b8;text-align: center;">
+			<a href="javascript:void(0);" style="color:#000000; text-decoration:none;" onclick="closeContainer('landingDateSelected')">[ ปิด ]</a>
+		</div>
 		<table id="loadDateTable">
 			<tr>
 				<th>วันที่</th>
 				<th>VN</th>
 				<th>HN</th>
+				<th>Code</th>
 			</tr>
 		<?php
 		while ($a = mysql_fetch_assoc($q)) {
 			?>
 			<tr>
-				<td><a href="javascript:void(0);" onclick="document.getElementById('dateEcgCxr').value='<?=substr($a['thidate'],0,10);?>';document.getElementById('landingDateSelected').style.display='none';"><?=$a['thidate'];?></a></td>
-				<td><?=$a['vn'];?></td>
+				<td><a href="javascript:void(0);" onclick="document.getElementById('dateEcgCxr').value='<?=substr($a['date'],0,10);?>';closeContainer('landingDateSelected');"><?=$a['date'];?></a></td>
+				<td><?=$a['tvn'];?></td>
 				<td><?=$a['hn'];?></td>
+				<td><?=$a['code'];?></td>
 			</tr>
 			<?php
 		}
 		?>
 		</table>
+		<?php
+	}else{
+		?>
+		<div style="display: inline-block;width: 100%;background-color: #b8b8b8;text-align: center;">
+			<a href="javascript:void(0);" style="color:#000000; text-decoration:none;" onclick="closeContainer('landingDateSelected')">[ ปิด ]</a>
+		</div>
+		<p>ไม่พบข้อมูล</p>
+		<?php
+	}
+	exit;
+}elseif ($action==='loadDateAlbumin') {
+	$hn = sprintf("%s", $_GET['hn']);
+	$year = date('Y');
+
+	$sql = sprintf("SELECT b.autonumber,b.orderdate,b.hn,b.patientname,b.profilecode,b.autonumber 
+	FROM (
+		SELECT MAX(autonumber) AS latest_autonumber 
+		FROM resulthead 
+		WHERE orderdate LIKE '$year%%' 
+		AND hn = '%s'
+		AND profilecode IN ('ALB','UMALB') 
+		GROUP BY hn
+	) AS a 
+	LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
+	ORDER BY b.autonumber ASC",
+	mysql_escape_string($hn));
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q) > 0){
+		?>
+		<style>
+			#loadDateTable td{
+				padding-right:6px;
+			}
+		</style>
+		<div style="display: inline-block;width: 100%;background-color: #b8b8b8;text-align: center;">
+			<a href="javascript:void(0);" style="color:#000000; text-decoration:none;" onclick="closeContainer('landingDateAlbumin')">[ ปิด ]</a>
+		</div>
+		<table id="loadDateTable">
+			<tr>
+				<th>วันที่</th>
+				<th>HN</th>
+				<th>ชื่อสกุล</th>
+				<th>Profilecode</th>
+			</tr>
+		<?php
+		while ($a = mysql_fetch_assoc($q)) {
+			?>
+			<tr>
+				<td><a href="javascript:void(0);" onclick="document.getElementById('dateAlbumin').value='<?=substr($a['orderdate'],0,10);?>';document.getElementById('albuminLabnumber').value = '<?=$a['autonumber'];?>';closeContainer('landingDateAlbumin');"><?=$a['orderdate'];?></a></td>
+				<td><?=$a['hn'];?></td>
+				<td><?=$a['patientname'];?></td>
+				<td><?=$a['profilecode'];?></td>
+			</tr>
+			<?php
+		}
+		?>
+		</table>
+		<?php
+	}else{
+		?>
+		<div style="display: inline-block;width: 100%;background-color: #b8b8b8;text-align: center;">
+			<a href="javascript:void(0);" style="color:#000000; text-decoration:none;" onclick="closeContainer('landingDateAlbumin')">[ ปิด ]</a>
+		</div>
+		<p>ไม่พบข้อมูล</p>
+		<?php
+	}
+	exit;
+}elseif ($action==='loadDateCreatinine') {
+
+
+	$hn = sprintf("%s", $_GET['hn']);
+	$year = date('Y');
+
+	$sql = sprintf("SELECT b.autonumber,b.orderdate,b.hn,b.patientname,b.profilecode,b.autonumber 
+	FROM (
+		SELECT MAX(autonumber) AS latest_autonumber 
+		FROM resulthead 
+		WHERE orderdate LIKE '$year%%' 
+		AND hn = '%s'
+		AND profilecode IN ('CREAG') 
+		GROUP BY hn
+	) AS a 
+	LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
+	ORDER BY b.autonumber ASC",
+	mysql_escape_string($hn));
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q) > 0){
+		?>
+		<style>
+			#loadDateTable td{
+				padding-right:6px;
+			}
+		</style>
+		<div style="display: inline-block;width: 100%;background-color: #b8b8b8;text-align: center;">
+			<a href="javascript:void(0);" style="color:#000000; text-decoration:none;" onclick="closeContainer('landingDateCreatinine')">[ ปิด ]</a>
+		</div>
+		<table id="loadDateTable">
+			<tr>
+				<th>วันที่</th>
+				<th>HN</th>
+				<th>ชื่อสกุล</th>
+				<th>Profilecode</th>
+			</tr>
+		<?php
+		while ($a = mysql_fetch_assoc($q)) {
+			?>
+			<tr>
+				<td><a href="javascript:void(0);" onclick="document.getElementById('dateCreatinine').value='<?=substr($a['orderdate'],0,10);?>';document.getElementById('creatinineLabnumber').value = '<?=$a['autonumber'];?>';closeContainer('landingDateCreatinine');"><?=$a['orderdate'];?></a></td>
+				<td><?=$a['hn'];?></td>
+				<td><?=$a['patientname'];?></td>
+				<td><?=$a['profilecode'];?></td>
+			</tr>
+			<?php
+		}
+		?>
+		</table>
+		<?php
+	}else{
+		?>
+		<div style="display: inline-block;width: 100%;background-color: #b8b8b8;text-align: center;">
+			<a href="javascript:void(0);" style="color:#000000; text-decoration:none;" onclick="closeContainer('landingDateCreatinine')">[ ปิด ]</a>
+		</div>
+		<p>ไม่พบข้อมูล</p>
 		<?php
 	}
 	exit;
@@ -112,6 +246,15 @@ $thaidate = (date("Y")+543).date("-m-d");
 .forntsarabun1 {
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
+}
+#landingDateSelected{
+	z-index:1;
+}
+#landingDateAlbumin{
+	z-index:2;
+}
+#landingDateCreatinine{
+	z-index:3;
 }
 </style>
 
@@ -348,7 +491,7 @@ mmHg</td>
 			<td></td>
 		</tr>
     </table>
-<TABLE class="forntsarabun1">
+<TABLE class="forntsarabun1" width="100%">
 	<tr>
 		<td align="right" class="tb_font_2">การวินิจฉัย : </td>
 		<td colspan="5" align="left" class="forntsarabun1">
@@ -395,7 +538,7 @@ mmHg</td>
 		<td>
 			<div style="position:relative;">
 				<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
-				<div id="landingDateSelected" style="position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+				<div id="landingDateSelected" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
 			</div>
 		</td>
 	</tr>
@@ -409,23 +552,25 @@ mmHg</td>
 		<td></td>
 		<td>
 			<div style="position:relative;">
-				<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateAlbumin()">เลือกวันที่รับบริการ</a>
-				<div id="landingDateAlbumin" style="position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+				<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateAlbumin()">เลือกวันที่ตรวจ</a>
+				<input type="hidden" name="albuminLabnumber" id="albuminLabnumber">
+				<div id="landingDateAlbumin" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
 			</div>
 		</td>
 	</tr>
 	<tr>
 		<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Serum Cr. : </strong></td>
 		<td>
-		<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="activeEcgCxrContain(this.value)"> <label for="ecgCxr1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="activeEcgCxrContain(this.value)"><label for="ecgCxr2">ไม่ได้ตรวจ</label>
+		<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="activeCreatinineContain(this.value)"> <label for="creatinine1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="activeCreatinineContain(this.value)"><label for="creatinine2">ไม่ได้ตรวจ</label>
 		</td>
 	</tr>
-	<tr id="ecgCxrContain" style="display:none;">
+	<tr id="creatinineContain" style="display:none;">
 		<td></td>
 		<td>
 			<div style="position:relative;">
-				<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
-				<div id="landingDateSelected" style="position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+				<input type="text" name="dateCreatinine" id="dateCreatinine"> <a href="javascript:void(0);" onclick="showDateCreatinine()">เลือกวันที่รับบริการ</a>
+				<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber">
+				<div id="landingDateCreatinine" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
 			</div>
 		</td>
 	</tr>
@@ -453,11 +598,26 @@ mmHg</td>
 </FORM>
 
 <script type="text/javascript">
+	async function loadContent(url){
+		const response = await fetch(url);
+		const body = await response.text();
+		return body;
+	}
+
+	function closeContainer(idName){
+		document.getElementById(idName).style.display = 'none';
+	}
+
+
+	/**
+	 * ECG + CXR 
+	 */
 	function activeEcgCxrContain(v){
 		if(v==1){
 			document.getElementById('ecgCxrContain').style.display = '';
 		}else{
 			document.getElementById('ecgCxrContain').style.display = 'none';
+			document.getElementById('dateEcgCxr').value = '';
 		}
 	}
 
@@ -469,13 +629,7 @@ mmHg</td>
 		});
 	}
 
-	async function loadContent(url){
-		const response = await fetch();
-		const body = await response.text();
-		return body;
-	}
-
-
+	
 	/**
 	 * Albumin Uria
 	 */
@@ -484,15 +638,40 @@ mmHg</td>
 			document.getElementById('albuminContain').style.display = '';
 		}else{
 			document.getElementById('albuminContain').style.display = 'none';
+			document.getElementById('dateAlbumin').value = '';
+			document.getElementById('albuminLabnumber').value = '';
 		}
 	}
 
 	function showDateAlbumin(){
 		const url = 'hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>';
 		loadContent(url).then((res)=>{
-
+			document.getElementById('landingDateAlbumin').innerHTML = res;
+			document.getElementById('landingDateAlbumin').style.display = '';
 		});
 	}
+
+
+	function activeCreatinineContain(v){
+		if(v==1){
+			document.getElementById('creatinineContain').style.display = '';
+		}else{
+			document.getElementById('creatinineContain').style.display = 'none';
+			document.getElementById('dateCreatinine').value = '';
+			document.getElementById('creatinineLabnumber').value = '';
+		}
+	}
+
+	function showDateCreatinine(){
+		const url = 'hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>';
+		loadContent(url).then((res)=>{
+			document.getElementById('landingDateCreatinine').innerHTML = res;
+			document.getElementById('landingDateCreatinine').style.display = '';
+		});
+	}
+
+
+
 
 	var popup7;
 	window.onload = function() {
@@ -520,9 +699,23 @@ if($_REQUEST['do']=='save'){
 
 	$bp3 = $_POST['bp3'];
 	$bp4 = $_POST['bp4'];
+
+	$ecgCxr = $_POST['ecgCxr'];
+	$dateEcgCxr = $_POST['dateEcgCxr'];
+
+	$albumin = $_POST['albumin'];
+	$dateAlbumin = $_POST['dateAlbumin'];
+	$albuminLabnumber = $_POST['albuminLabnumber'];
+
+	$creatinine = $_POST['creatinine'];
+	$dateCreatinine = $_POST['dateCreatinine'];
+	$creatinineLabnumber = $_POST['creatinineLabnumber'];
+
 	
-	$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str`,`diag_date`,`bp3`,`bp4` )
-	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date','$bp3','$bp4');";
+	$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str`,`diag_date`,`bp3`,`bp4`,
+	`ecgCxr`,`dateEcgCxr`,`albumin`,`dateAlbumin`,`albuminLabnumber`)
+	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date','$bp3','$bp4',
+	'$ecgCxr','$dateEcgCxr','$albumin','$dateAlbumin','$albuminLabnumber');";
 	$objQuery = mysql_query($strSQL);
 	
 	// เพิ่มเข้าไปใน ประวัติผู้ป่วย

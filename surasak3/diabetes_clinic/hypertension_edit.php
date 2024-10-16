@@ -19,6 +19,17 @@ if ($_POST['do'] === 'save') {
 	$bp3 = $_POST['bp3'];
 	$bp4 = $_POST['bp4'];
 
+	$ecgCxr = $_POST['ecgCxr'];
+	$dateEcgCxr = $_POST['dateEcgCxr'];
+
+	$albumin = $_POST['albumin'];
+	$dateAlbumin = $_POST['dateAlbumin'];
+	$albuminLabnumber = $_POST['albuminLabnumber'];
+
+	$creatinine = $_POST['creatinine'];
+	$dateCreatinine = $_POST['dateCreatinine'];
+	$creatinineLabnumber = $_POST['creatinineLabnumber'];
+
 	/*$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date` )
 	   VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."');";
 	   $objQuery = mysql_query($strSQL);*/
@@ -45,7 +56,15 @@ if ($_POST['do'] === 'save') {
 	`officer_edit` = '" . $sOfficer . "',
 	`diag_date` = '$diag_date', 
 	`bp3` = '$bp3', 
-	`bp4` = '$bp4' 
+	`bp4` = '$bp4',
+	`ecgCxr`, = '$ecgCxr',
+	`dateEcgCxr`, = '$dateEcgCxr',
+	`albumin`, = '$albumin',
+	`dateAlbumin`, = '$dateAlbumin',
+	`albuminLabnumber`, = '$albuminLabnumber',
+	`creatinine`, = '$creatinine',
+	`dateCreatinine`, = '$dateCreatinine',
+	`creatinineLabnumber`, = '$creatinineLabnumber' 
 	WHERE `row_id` = '" . $_POST["row_id"] . "' ";
 
 
@@ -170,6 +189,15 @@ $thaidate = (date("Y") + 543) . date("-m-d");
 	.forntsarabun1 {
 		font-family: "TH SarabunPSK";
 		font-size: 22px;
+	}
+	#landingDateSelected{
+		z-index:1;
+	}
+	#landingDateAlbumin{
+		z-index:2;
+	}
+	#landingDateCreatinine{
+		z-index:3;
 	}
 </style>
 
@@ -410,7 +438,7 @@ if (!empty($_POST["p_hn"]) != "") {
 											<td></td>
 										</tr>
 									</table>
-									<TABLE class="forntsarabun1">
+									<TABLE class="forntsarabun1" width="100%">
 										<tr>
 											<td align="right" class="tb_font_2">การวินิจฉัย : </td>
 											<td colspan="5" align="left" class="forntsarabun1">
@@ -480,6 +508,53 @@ if (!empty($_POST["p_hn"]) != "") {
 												NA
 											</td>
 										</tr>
+										<tr>
+											<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ ECG หรือ CXR : </strong></td>
+											<td>
+												<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="activeEcgCxrContain(this.value)"> <label for="ecgCxr1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="activeEcgCxrContain(this.value)"><label for="ecgCxr2">ไม่ได้ตรวจ</label>
+											</td>
+										</tr>
+										<tr id="ecgCxrContain" style="display:none;">
+											<td></td>
+											<td>
+												<div style="position:relative;">
+													<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+													<div id="landingDateSelected" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Urine albumin : </strong></td>
+											<td>
+												<input type="radio" name="albumin" id="albumin1" value="1" onclick="activeAlbuminContain(this.value)"> <label for="albumin1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="albumin" id="albumin2" value="0" onclick="activeAlbuminContain(this.value)"><label for="albumin2">ไม่ได้ตรวจ</label>
+											</td>
+										</tr>
+										<tr id="albuminContain" style="display:none;">
+											<td></td>
+											<td>
+												<div style="position:relative;">
+													<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateAlbumin()">เลือกวันที่ตรวจ</a>
+													<input type="hidden" name="albuminLabnumber" id="albuminLabnumber">
+													<div id="landingDateAlbumin" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Serum Cr. : </strong></td>
+											<td>
+											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="activeCreatinineContain(this.value)"> <label for="creatinine1">ได้รับการตรวจ</label>&nbsp;&nbsp;<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="activeCreatinineContain(this.value)"><label for="creatinine2">ไม่ได้ตรวจ</label>
+											</td>
+										</tr>
+										<tr id="creatinineContain" style="display:none;">
+											<td></td>
+											<td>
+												<div style="position:relative;">
+													<input type="text" name="dateCreatinine" id="dateCreatinine"> <a href="javascript:void(0);" onclick="showDateCreatinine()">เลือกวันที่รับบริการ</a>
+													<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber">
+													<div id="landingDateCreatinine" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
+												</div>
+											</td>
+										</tr>
 									</TABLE>
 								</td>
 							</tr>
@@ -503,6 +578,79 @@ if (!empty($_POST["p_hn"]) != "") {
 			
 		</FORM>
 		<script type="text/javascript">
+			async function loadContent(url){
+				const response = await fetch(url);
+				const body = await response.text();
+				return body;
+			}
+
+			function closeContainer(idName){
+				document.getElementById(idName).style.display = 'none';
+			}
+
+
+			/**
+			 * ECG + CXR 
+			 */
+			function activeEcgCxrContain(v){
+				if(v==1){
+					document.getElementById('ecgCxrContain').style.display = '';
+				}else{
+					document.getElementById('ecgCxrContain').style.display = 'none';
+					document.getElementById('dateEcgCxr').value = '';
+				}
+			}
+
+			function showDateSelected(){
+				const url = 'hypertension.php?action=loadDate&hn=<?=$hn;?>';
+				loadContent(url).then((res)=>{
+					document.getElementById('landingDateSelected').innerHTML = res;
+					document.getElementById('landingDateSelected').style.display = '';
+				});
+			}
+
+			
+			/**
+			 * Albumin Uria
+			 */
+			function activeAlbuminContain(v){
+				if(v==1){
+					document.getElementById('albuminContain').style.display = '';
+				}else{
+					document.getElementById('albuminContain').style.display = 'none';
+					document.getElementById('dateAlbumin').value = '';
+					document.getElementById('albuminLabnumber').value = '';
+				}
+			}
+
+			function showDateAlbumin(){
+				const url = 'hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>';
+				loadContent(url).then((res)=>{
+					document.getElementById('landingDateAlbumin').innerHTML = res;
+					document.getElementById('landingDateAlbumin').style.display = '';
+				});
+			}
+
+
+			function activeCreatinineContain(v){
+				if(v==1){
+					document.getElementById('creatinineContain').style.display = '';
+				}else{
+					document.getElementById('creatinineContain').style.display = 'none';
+					document.getElementById('dateCreatinine').value = '';
+					document.getElementById('creatinineLabnumber').value = '';
+				}
+			}
+
+			function showDateCreatinine(){
+				const url = 'hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>';
+				loadContent(url).then((res)=>{
+					document.getElementById('landingDateCreatinine').innerHTML = res;
+					document.getElementById('landingDateCreatinine').style.display = '';
+				});
+			}
+
+				
 			var popup7;
 			window.onload = function () {
 				popup7 = new Epoch('popup7', 'popup', document.getElementById('diag_date'), false);
