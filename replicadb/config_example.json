@@ -1,0 +1,13 @@
+{
+    "mysql" : {
+        "SOURCE_DB":"database_name",
+        "SOURCE_HOST_DB":"host_name",
+        "SOURCE_USER":"username",
+        "SOURCE_PASS":"password",
+
+        "SINK_DB":"database_name",
+        "SINK_HOST_DB":"host_name",
+        "SINK_USER": "username",
+        "SINK_PASS": "password"
+    }
+}

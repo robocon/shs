@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Python mysql connect
 # https://www.w3schools.com/python/python_mysql_getstarted.asp
 
@@ -14,26 +15,34 @@ import mysql.connector
 import os
 import subprocess
 import sys
-import config as cfg
+import json
 
-SOURCE_HOST_DB = cfg.mysql["SOURCE_HOST_DB"]+"/"+cfg.mysql["SOURCE_DB"]
-SOURCE_USER = cfg.mysql["SOURCE_USER"]
-SOURCE_PASS = cfg.mysql["SOURCE_PASS"]
+json_data_file = open("config.json", "r")
+data = json.load(json_data_file)
+json_data_file.close()
 
-SINK_HOST_DB = cfg.mysql["SINK_HOST_DB"]+"/"+cfg.mysql["SINK_DB"]
-SINK_USER = cfg.mysql["SINK_USER"]
-SINK_PASS = cfg.mysql["SINK_PASS"]
+cfg = data['mysql']
+
+SOURCE_HOST_DB = cfg["SOURCE_HOST_DB"]+"/"+cfg["SOURCE_DB"]
+SOURCE_USER = cfg["SOURCE_USER"]
+SOURCE_PASS = cfg["SOURCE_PASS"]
+
+SINK_HOST_DB = cfg["SINK_HOST_DB"]+"/"+cfg["SINK_DB"]
+SINK_USER = cfg["SINK_USER"]
+SINK_PASS = cfg["SINK_PASS"]
 
 try:
     mydb = mysql.connector.connect(
-        host=cfg.mysql["SINK_DB"],
-        user=cfg.mysql["SINK_USER"],
-        password=cfg.mysql["SINK_PASS"],
-        database=cfg.mysql["SINK_DB"]
+        host=cfg["SINK_HOST_DB"],
+        user=cfg["SINK_USER"],
+        password=cfg["SINK_PASS"],
+        database=cfg["SINK_DB"]
     )
     mycursor = mydb.cursor(dictionary=True) # dictionary=True ตอนเรียกใช้ใน for จะสามารถเรียกเป็นแบบ fieldname ได้
 except mysql.connector.Error as err:
     print("Something went wrong: {}".format(err))
+
+
 
 setGlobal = mycursor.execute("SET GLOBAL local_infile=1")
 print('MYSQL Global : '+str(setGlobal)+'\n')
