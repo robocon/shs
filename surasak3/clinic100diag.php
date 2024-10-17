@@ -237,6 +237,7 @@ while ($a = mysql_fetch_assoc($q)) {
 <option value="200">200 บาท</option>
 <option value="300" <?php if($_SESSION["smenucode"]=="ADMMAINOPD"){ echo "selected";}?>>300 บาท</option> 
 <option value="400" <?php if($_SESSION["smenucode"]=="ADMXR"){ echo "selected";}?>>400 บาท</option>  
+<option value="800">800 บาท</option>
 </select>
 <br /><br />
 <input name="save" type="submit" value="ชื่อถูกต้อง คิดค่าใช้จ่าย" />
