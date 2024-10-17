@@ -3,8 +3,12 @@
 include 'bootstrap.php';
 $db = Mysql::load();
 
-// dump($db);
-// $db->exec("SET NAMES TIS620");
+if(empty($_SESSION['sOfficer'])){
+    ?>
+    <p>Sessionหมดอายุ กรุณา<a href="../nindex.htm">Login</a>เพื่อเข้าสู่ระบบอีกครั้ง</p>
+    <?php
+    exit;
+}
 
 $ward_lists = array(
     42 => 'หอผู้ป่วยอายุรกรรม', 43 => 'หอผู้ป่วยสูติ', 44 => 'หอผู้ป่วยICU', 45 => 'หอผู้ป่วยพิเศษ'
@@ -68,7 +72,6 @@ $items = $db->get_items();
     </tr>
 <?php 
 $i = 1;
-// dump($items);
 foreach ($items as $key => $item) { 
 
     $ward_code = substr($item['bedcode'], 0, 2);
