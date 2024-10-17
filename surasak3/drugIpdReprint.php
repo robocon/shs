@@ -23,6 +23,9 @@ $dbi->query("SET NAMES UTF8");
             font-family: "TH SarabunPSK";
             font-size:20px;
         }
+        nav.navbar{
+            background-color: #198754;
+        }
     </style>
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
@@ -44,20 +47,11 @@ $dbi->query("SET NAMES UTF8");
                 <input type="hidden" name="action" value="search">
             </div>
         </form>
-        <?php 
-        dump($_POST);
+        <?php
         $action = sprintf("%s", $_POST['action']);
         if($action==='search'){ 
-
-            // $opts = array(
-            //     'http'=>array(
-            //       'method'=>"GET",
-            //     )
-            // );
-            // $context = stream_context_create($opts);
             $an = sprintf("%s", $_POST['an']);
-            $file = file_get_contents('http://localhost:8080/sm3dev/surasak3/drugstk2.php?an='.$an);
-            // var_dump($file);
+            $file = file_get_contents(dirname($_SERVER['HTTP_REFERER']).'/drugstk2.php?an='.$an);
             echo $file;
         }
         ?>
