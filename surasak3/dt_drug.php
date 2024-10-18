@@ -2313,17 +2313,21 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 $alphaBlockersItems = array('1CARD  ','1MINI1-C  ','1CARXL    ','1mini2','1PRAZO','1DOXA2','1XAT10    ','1HAR0.4   ','1URIE','1DUOD','1TAMSU');
 
 
-if(isset($_GET["action"]) && $_GET["action"] == "loadAlphaBlocker"){ 
+if(isset($_GET["action"]) && $_GET["action"] == "getTestABOtherDoctor"){ 
 
 	$hn = sprintf("%s", $_GET['hn']);
-	$drugcode = sprintf("%s", $_GET['drugcode']);
+	$drugcode = sprintf("%s", trim($_GET['drugcode']));
 	$thaiDate = (date('Y')+543).date('-m-d');
 	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
 
+	$newItem = array();
+	foreach ($alphaBlockersItems as $al) {
+		$newItem[] = trim($al);
+	}
+
 	// รายการยาที่แพทย์ปัจจุบันสั่ง
 	$list_drugcode = $_SESSION["list_drugcode"];
-
-	
+	$res = array('status'=>200);
 	// รายการยาที่แพทย์ท่านอื่นสั่งในวันนี้ 
 	$sql = "SELECT a.*,b.`drugcode`,b.`tradname` FROM ( 
 		SELECT `row_id`, `doctor` 
@@ -2336,23 +2340,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "loadAlphaBlocker"){
 		ORDER BY `row_id` DESC
 	) AS a LEFT JOIN `ddrugrx` AS b ON a.`row_id` = b.`idno` 
 	WHERE b.`drugcode` IN ('1CARD  ','1MINI1-C  ','1CARXL    ','1mini2','1PRAZO','1DOXA2','1XAT10    ','1HAR0.4   ','1URIE','1DUOD','1TAMSU')";
+	
 	$q = mysql_query($sql);
 	if(mysql_num_rows($q)>0){
 
-		$otherDtDrug = array();
-		while ($a = mysql_fetch_assoc($q)) {
-			$otherDtDrug[] = $a['drugcode'];
-		}
+		// $otherDtDrug = array();
+		// while ($a = mysql_fetch_assoc($q)) {
+		// 	$otherDtDrug[] = trim($a['drugcode']);
+		// }
+		// var_dump($drugcode);
+		// var_dump($newListDrugcode);
 
+		// $newListDrugcode
 		// ถ้ายาที่แพทย์ปัจจุบันสั่งไปซ้ำกับรายการ alpha blocker ที่แพทย์ท่านอื่นสั่ง
-		if(in_array($drugcode, $otherDtDrug)===true){
-			$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยาในกลุ่ม Alpha Blockers ซ้ำซ้อนกับแพทย์ท่านอื่น');
+		if(in_array($drugcode, $newItem)===true){
+			$res = array('status'=>400,'message'=>'!!! คำเตือน !!!'."\n".'ท่านกำลังจ่ายยาในกลุ่ม Alpha Blockers ซ้ำซ้อนกับแพทย์ท่านอื่น');
 		}
-
 	}
-
-	echo $res;
-
+	echo $json->encode($res);
 	exit;
 
 }
@@ -2376,7 +2381,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestAlphaBlocker"){
 	$result = array_intersect($newListDrugcode, $newItem);
 	if(count($result)>0){
 		if(in_array($drugcode, $newItem)==true){
-			$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยากลุ่ม Alpha Blockers ซ้ำซ้อน');
+			$res = array('status'=>400,'message'=>'!!! คำเตือน !!!'."\n".'ท่านกำลังจ่ายยากลุ่ม Alpha Blockers ซ้ำซ้อน');
 		}
 		
 	}
@@ -2945,8 +2950,10 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	});
 
-	alphaBlockersCheck(drugcode.trim()).then((res)=>{
-		console.log(res);
+	alphaBlockersOtherDoctor(drugcode.trim()).then((res)=>{
+		if(res.status==400){
+			alert(res.message);
+		}
 	});
 
 	var doctor_id = document.getElementById('doctor_id').value;
@@ -3040,9 +3047,9 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	rdu6_alert(drugcode.trim(), icd10);
 }
 
-async function alphaBlockersCheck(drugcode){
+async function alphaBlockersOtherDoctor(drugcode){
 	var hn = '<?=$_SESSION['hn_now'];?>';
-	const response = await fetch('dt_drug.php?action=loadAlphaBlocker&hn='+hn+'&drugcode='+drugcode);
+	const response = await fetch('dt_drug.php?action=getTestABOtherDoctor&hn='+encodeURIComponent(hn)+'&drugcode='+encodeURIComponent(drugcode));
 	const data = await response.json();
 	return data;
 }
