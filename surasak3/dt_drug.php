@@ -2344,14 +2344,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestABOtherDoctor"){
 	$q = mysql_query($sql);
 	if(mysql_num_rows($q)>0){
 
-		// $otherDtDrug = array();
-		// while ($a = mysql_fetch_assoc($q)) {
-		// 	$otherDtDrug[] = trim($a['drugcode']);
-		// }
-		// var_dump($drugcode);
-		// var_dump($newListDrugcode);
-
-		// $newListDrugcode
 		// ถ้ายาที่แพทย์ปัจจุบันสั่งไปซ้ำกับรายการ alpha blocker ที่แพทย์ท่านอื่นสั่ง
 		if(in_array($drugcode, $newItem)===true){
 			$res = array('status'=>400,'message'=>'!!! คำเตือน !!!'."\n".'ท่านกำลังจ่ายยาในกลุ่ม Alpha Blockers ซ้ำซ้อนกับแพทย์ท่านอื่น');
