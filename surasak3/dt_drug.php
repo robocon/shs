@@ -67,6 +67,7 @@ if( $_SESSION['sIdname'] == 'md19921' ){
 	include_once 'includes/connect_md013.php';
 }
 
+// ดึงรายการยากลุ่ม NSAID
 function getNSAIDs_List(){
 	global $dbi;
 	$q = $dbi->query("SELECT row_id,drugcode FROM druglst WHERE bcode = 'd1011' AND drugcode != '10H014' ORDER BY drugcode ASC");
@@ -80,11 +81,13 @@ function getNSAIDs_List(){
 }
 
 $pre_nsaids_list = getNSAIDs_List();
-$pre_nsaids_js = '';
+$pre_nsaids_js = array();
 foreach($pre_nsaids_list as $ns){
 	$pre_nsaids_js[] = "'$ns'";
 }
+// เอาไปใช้สำหรับ JavaScript --> var nsaids_list = [$nsaids_for_js];
 $nsaids_for_js = implode(',', $pre_nsaids_js);
+// ดึงรายการยากลุ่ม NSAID
 
 $limit30checkday = 30;
 $limit90checkday = 90;
@@ -317,7 +320,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "check_nsaids"){
 		AND `dr_cancle` IS NULL 
 		ORDER BY `row_id` DESC
 	) AS a LEFT JOIN `ddrugrx` AS b ON a.`row_id` = b.`idno` 
-	WHERE b.`drugcode` IN ( SELECT `drugcode` FROM `druglst` WHERE `bcode` = 'd1011' ORDER BY `drugcode` ASC )";
+	WHERE b.`drugcode` IN ( SELECT `drugcode` FROM `druglst` WHERE `bcode` = 'd1011' AND drugcode != '10H014' ORDER BY `drugcode` ASC )";
 	if(!empty($sessionDrug)){
 		$where = implode(",", $drugForSql);
 		$sql = $sql." AND b.`drugcode` NOT IN ($where)";
@@ -2307,6 +2310,82 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 }
 
 
+$alphaBlockersItems = array('1CARD  ','1MINI1-C  ','1CARXL    ','1mini2','1PRAZO','1DOXA2','1XAT10    ','1HAR0.4   ','1URIE','1DUOD','1TAMSU');
+
+
+if(isset($_GET["action"]) && $_GET["action"] == "loadAlphaBlocker"){ 
+
+	$hn = sprintf("%s", $_GET['hn']);
+	$drugcode = sprintf("%s", $_GET['drugcode']);
+	$thaiDate = (date('Y')+543).date('-m-d');
+	$doctor = sprintf("%s", $_SESSION["dt_doctor"]);
+
+	// รายการยาที่แพทย์ปัจจุบันสั่ง
+	$list_drugcode = $_SESSION["list_drugcode"];
+
+	
+	// รายการยาที่แพทย์ท่านอื่นสั่งในวันนี้ 
+	$sql = "SELECT a.*,b.`drugcode`,b.`tradname` FROM ( 
+		SELECT `row_id`, `doctor` 
+		FROM `dphardep` 
+		WHERE `hn` = '$hn' 
+		AND `whokey` = 'DR' 
+		AND `idname` <> '$doctor' 
+		AND `date` LIKE '$thaiDate%' 
+		AND `dr_cancle` IS NULL 
+		ORDER BY `row_id` DESC
+	) AS a LEFT JOIN `ddrugrx` AS b ON a.`row_id` = b.`idno` 
+	WHERE b.`drugcode` IN ('1CARD  ','1MINI1-C  ','1CARXL    ','1mini2','1PRAZO','1DOXA2','1XAT10    ','1HAR0.4   ','1URIE','1DUOD','1TAMSU')";
+	$q = mysql_query($sql);
+	if(mysql_num_rows($q)>0){
+
+		$otherDtDrug = array();
+		while ($a = mysql_fetch_assoc($q)) {
+			$otherDtDrug[] = $a['drugcode'];
+		}
+
+		// ถ้ายาที่แพทย์ปัจจุบันสั่งไปซ้ำกับรายการ alpha blocker ที่แพทย์ท่านอื่นสั่ง
+		if(in_array($drugcode, $otherDtDrug)===true){
+			$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยาในกลุ่ม Alpha Blockers ซ้ำซ้อนกับแพทย์ท่านอื่น');
+		}
+
+	}
+
+	echo $res;
+
+	exit;
+
+}
+
+// เอา Session list_drugcode มาดูว่าตอนนี้สั่งอะไรไปแล้วบ้าง
+if(isset($_GET["action"]) && $_GET["action"] == "getTestAlphaBlocker"){ 
+	
+	$res = array('status'=>200);
+	$drugcode = sprintf("%s", trim($_GET['drugcode']));
+
+	$newItem = array();
+	foreach ($alphaBlockersItems as $al) {
+		$newItem[] = trim($al);
+	}
+
+	$newListDrugcode = array();
+	foreach ($_SESSION["list_drugcode"] as $d) {
+		$newListDrugcode[] = trim($d);
+	}
+	
+	$result = array_intersect($newListDrugcode, $newItem);
+	if(count($result)>0){
+		if(in_array($drugcode, $newItem)==true){
+			$res = array('status'=>400,'message'=>'ท่านกำลังจ่ายยากลุ่ม Alpha Blockers ซ้ำซ้อน');
+		}
+		
+	}
+	echo $json->encode($res);
+	exit;
+}
+
+
+
 //**********************************************************************************************
 ?>
 <html>
@@ -2852,12 +2931,23 @@ var callback_drugcode; // call back ของ rechallenge แพ้ยา
 
 var returnstr; // ตัวแปรที่เอาไว้เก็บวิธีใช้ยา
 
-var nsaids_list = [<?=$nsaids_for_js;?>];
+// ตอนกดเลือกยาจะเอาสคริปตัวนี้ไปใช้ตรวจสอบ
+var nsaidsListForJs = [<?=$nsaids_for_js;?>];
 
 /**
  * ฟังก์ชั่นถูกเรียกใช้ตอน Double Click เลือกยา
  */
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
+
+	checkAlphaBlocker(drugcode.trim()).then((res)=>{
+		if(res.status==400){
+			alert(res.message);
+		}
+	});
+
+	alphaBlockersCheck(drugcode.trim()).then((res)=>{
+		console.log(res);
+	});
 
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
@@ -2901,8 +2991,8 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	}
 
-	
-	if(nsaids_list.indexOf(drugcode.trim())>=0){ 
+	// แจ้งเตือน NSAIDS ซ้ำซ้อน
+	if(nsaidsListForJs.indexOf(drugcode.trim())>=0){ 
 		var resNsaids = check_nsaids(drugcode.trim());
 		if(resNsaids==false){ 
 			clear_left_form();
@@ -2948,6 +3038,19 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่6
 	rdu6_alert(drugcode.trim(), icd10);
+}
+
+async function alphaBlockersCheck(drugcode){
+	var hn = '<?=$_SESSION['hn_now'];?>';
+	const response = await fetch('dt_drug.php?action=loadAlphaBlocker&hn='+hn+'&drugcode='+drugcode);
+	const data = await response.json();
+	return data;
+}
+
+async function checkAlphaBlocker(drugcode){
+	const response = await fetch('dt_drug.php?action=getTestAlphaBlocker&drugcode='+encodeURIComponent(drugcode));
+	const data = await response.json();
+	return data;
 }
 
 /**
@@ -3161,7 +3264,7 @@ function check_nsaids(drugcode){
 					resNsaids = true;
 				}else if(res.status==400){ 
 					
-					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
+					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกเหตุผลในการสั่งใช้ยา\nคลิก Cancel เพื่อยกเลิก");
 
 					var other_doctor = res.other_doctor ? res.other_doctor : '' ;
 					var other_drug = res.other_drug ? res.other_drug : '' ;
@@ -3491,14 +3594,6 @@ function checkForm1(){
 			return false;
 		}
 	}
-
-	// if(nsaids_list.indexOf(drugTrim)>=0){ 
-	// 	var resNsaids = check_nsaids(drugTrim);
-	// 	if(resNsaids==false){ 
-	// 		clear_left_form();
-	// 		return false;
-	// 	}
-	// }
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);
 	txt = txt.substr(4);
@@ -4482,17 +4577,24 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		while(list($row_id, $doctor) = mysql_fetch_row($result)){
 			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 			$result2 = mysql_query($sql) or die(mysql_error());
-		
+			
+			$ii = 1;
 			while(list($genname,$tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
 
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
-				echo "<TR>";
-					echo "<TD><span title='Drug code: $drugcode'>".$tradname." [".$genname."]</span></TD>";
+
+				$trBgColor = '';
+				if($ii%2==0){
+					$trBgColor = 'background-color: #f1f1f1;';
+				}
+				echo "<TR style='$trBgColor'>";
+					echo "<TD><span title='Drug code: $drugcode'>".$tradname." ( $drugcode ) [ $genname ]</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
 				echo "</TR>";
+				$ii++;
 			}
 		}
 		echo "</Table>";
