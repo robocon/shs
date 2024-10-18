@@ -791,7 +791,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed2"){
           <tr bgcolor="<?php echo $bgcolor;?>">
             <td width="45" align="center">
 			<?php 
-			$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' ";
+			$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$arr["drugcode"]."' AND `advreact` <> '' ";
 	$dgrect = mysql_query($sqlrect);
 	
 			if(mysql_num_rows($dgrect)>0){
@@ -981,7 +981,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
 	INNER JOIN dphardep as c ON a.date=c.date
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
-	GROUP BY a.drugcode, a.slcode
+	GROUP BY a.drugcode, a.slcode, a.part
 	HAVING sum( a.amount ) >0
 	";
 	//echo $sql;
@@ -1066,7 +1066,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
           <tr bgcolor="<?php echo $bgcolor;?>" style="color:<?=$partcolor;?>">
             <td width="45" align="center">
 			<?php 			
-			$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' ";
+			$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' AND `advreact` <> '' ";
 	$dgrect = mysql_query($sqlrect);
 			if(mysql_num_rows($dgrect)>0){
 				echo "<FONT COLOR=\"RED\" >แพ้ยา</FONT>";
@@ -1288,7 +1288,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_sult"){
           <tr bgcolor="<?php echo $bgcolor;?>">
             <td width="75" align="center">
             <?
-	$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' ";
+	$sqlrect = " Select row_id FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$arr["drugcode"]."' AND advreact <> '' ";
 	$dgrect = mysql_query($sqlrect);
 	
 			if(mysql_num_rows($dgrect)>0){
@@ -1969,7 +1969,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 	}
 
 	// เข้าเคสแพ้ยา (เภสัชบันทึก)
-	$sql1 = "Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$search."' ";  //เช็คแพ้ยารายตัว
+	$sql1 = "Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$search."' AND advreact <> '' ";  //เช็คแพ้ยารายตัว
 	$result1 = mysql_query($sql1);
 	if(mysql_num_rows($result1) > 0){
 		$return = "3";
@@ -3162,9 +3162,6 @@ function check_nsaids(drugcode){
 				}else if(res.status==400){ 
 					
 					var nForm = confirm('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+res.message+"\n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-					// console.log('confirm in check_nsaids ==> '+nForm);
-					// console.log(res.other_doctor);
-					// console.log(res.other_drug);
 
 					var other_doctor = res.other_doctor ? res.other_doctor : '' ;
 					var other_drug = res.other_drug ? res.other_drug : '' ;
@@ -3186,7 +3183,6 @@ function check_nsaids(drugcode){
 		}
 	};
 	xmlhttp.send(null);
-	// console.log('(JS) : check_nsaids ==> '+resNsaids);
 	return resNsaids;
 }
 
@@ -3604,7 +3600,7 @@ function checkForm1(){
 	}else if(txt1 == "6" && !alert("คำเตือน!!! ยาขาดคราวจากบริษัท")){
 		document.form1.drug_amount.focus();										
 	}else if(txt2 == "0"){
-		alert("กรุณาใส่วิธีใช้ยา ใหม่");
+		alert("ค้นหาวิธีใช้ยาในระบบไม่พบ กรุณาระบุวิธีใช้ยาใหม่ หรือติดต่อกองเภสัชกรรม");
 		document.form1.drug_slip.focus();
 	}else if(txt7 != "0" && !confirm(txt7)){
 		return false;
@@ -3654,9 +3650,9 @@ function checkForm1(){
 	}else if(document.getElementById('drug_inject_type').style.display == '' && document.form1.drug_inject_type.value==''){
 		alert("กรุณาเลือก แบบในการฉีด");
 		document.form1.drug_inject_type.focus();
-	/*}else if(document.getElementById('reason').style.display == '' && document.form1.reason.value==''){
-		alert("กรุณาระบุเหตุผลในการเลือกใช้ยา NED");
-		document.form1.reason.focus();*/
+	}else if(document.getElementById('reason').style.display == '' && document.form1.reason.value==''){
+		alert("กรุณาระบุเหตุผลในการเลือกใช้ยานอกบัญชียาหลักแห่งชาติ (NED)");
+		document.form1.reason.focus();
 	}else if(document.getElementById('reason').style.display == '' && document.form1.reason2.value==''){
 	//(document.getElementById('reason11').checked==false && document.getElementById('reason22').checked==false)){
 		alert("กรุณาระบุข้อบ่งชี้ในการใช้ยานอก");
@@ -4427,6 +4423,17 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 	</TD>
 </TR>
 </TABLE>
+<div>
+<div style='font-size:18px;'>แจ้งเพื่อทราบ...</div>
+<div style='font-size:16px; margin-left:10px;'><strong style='color:blue;'>ยานอกบัญชียาหลักแห่งชาติ (NED)</strong> แพทย์จำเป็นต้อง</div>
+<div style='font-size:16px;'>ระบุเหตุผลการใช้ยาทุกครั้ง เนื่องจากโรงพยาบาล</div>
+<div style='font-size:16px;'>ไม่สามารถเบิกเงินคืนจากกองทุนได้</div>
+<div style='font-size:16px; margin-left:10px;'>หากแพทย์ไม่ระบุเหตุผลการใช้ยา จะไม่สามารถ</div>
+<div style='font-size:16px;'>ดำเนินการต่อไปได้</div>
+<div style='font-size:18px; margin-left:100px;'>รคส.ผอ.รพ.ค่ายฯ</div>
+</div>
+
+
 <?php 
 $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1 ";
 	$result = Mysql_Query($sql);
