@@ -2346,7 +2346,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestABOtherDoctor"){
 
 		// ถ้ายาที่แพทย์ปัจจุบันสั่งไปซ้ำกับรายการ alpha blocker ที่แพทย์ท่านอื่นสั่ง
 		if(in_array($drugcode, $newItem)===true){
-			$res = array('status'=>400,'message'=>'!!! คำเตือน !!!'."\n".'ท่านกำลังจ่ายยาในกลุ่ม Alpha Blockers ซ้ำซ้อนกับแพทย์ท่านอื่น');
+			$res = array('status'=>400,'message'=>'&gt;&gt;&gt; แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล &lt;&lt;&lt;<br>ท่านกำลังจ่ายยาในกลุ่ม Alpha Blockers ซ้ำซ้อนกับแพทย์ท่านอื่น');
 		}
 	}
 	echo $json->encode($res);
@@ -2373,7 +2373,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestAlphaBlocker"){
 	$result = array_intersect($newListDrugcode, $newItem);
 	if(count($result)>0){
 		if(in_array($drugcode, $newItem)==true){
-			$res = array('status'=>400,'message'=>'!!! คำเตือน !!!'."\n".'ท่านกำลังจ่ายยากลุ่ม Alpha Blockers ซ้ำซ้อน');
+			$res = array('status'=>400,'message'=>'&gt;&gt;&gt; แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล &lt;&lt;&lt;<br>ท่านกำลังจ่ายยากลุ่ม Alpha Blockers ซ้ำซ้อน');
 		}
 		
 	}
@@ -2403,6 +2403,8 @@ body,td,th {
 
 </style>
 
+<script src="js/sweetalert2.all.min.js"></script>
+
 <SCRIPT LANGUAGE="JavaScript">
 /*Fix trim not work on IE8 or under*/
 if(typeof String.prototype.trim !== 'function'){
@@ -2421,8 +2423,6 @@ if(!Array.prototype.indexOf){
 		return -1;
 	}
 }
-
-
 
 var nsaids13_list = ['1CELE200*','1ARCO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','1VOLT-C','1VOL100'];
 var nsaids14_list = ['1CELE200*','2CLOF','2DYNA','1ARCO','4PLAI','4VOLT-C','2KETO','1MOBI-C','1ACEO','1ARCO_60','1LOXO-N','1NAPRO','1VOL-N','1INDO-N','2DICL','1VOLT-C','1VOL100'];
@@ -2938,13 +2938,13 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	checkAlphaBlocker(drugcode.trim()).then((res)=>{
 		if(res.status==400){
-			alert(res.message);
+			Swal.fire(res.message);
 		}
 	});
 
 	alphaBlockersOtherDoctor(drugcode.trim()).then((res)=>{
 		if(res.status==400){
-			alert(res.message);
+			Swal.fire(res.message);
 		}
 	});
 
