@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.inc");
+include("connect.php");
 
 ?>
 <style type="text/css">
@@ -48,19 +48,13 @@ $Thaidate=date("d-m-").(date("Y")+543);
 $n =0;
 $num = "Y";
 $datechk=(date("Y")+543).date("-m-d");
-// งานค้างที่ยังไม่ได้รับผิดชอบ
-/*if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCOM"){
-	$query = "SELECT row,depart,head,datetime,programmer,date,user1 
-FROM com_support 
-WHERE status ='$num'
-ORDER BY row desc";
-}else{*/
-$query = "SELECT row,jobtype,depart,head,datetime,programmer,date,user1 
-FROM com_support 
-WHERE status ='$num' and date >= '2565-01-01 00:00:00'
-ORDER BY row desc";
-//}
-$result = mysql_query($query) or die("Query failed111");
+$query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1` 
+FROM `com_support` 
+WHERE `status` ='$num' AND `date` >= '2565-01-01 00:00:00'
+ORDER BY `row` DESC";
+
+
+$result = mysql_query($query) or die("Query failed111".mysql_error());
 if($num1=mysql_num_rows($result)){
     print"<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
     print"<table class='forntsarabun'  align='center' width='98%'>";
@@ -118,10 +112,10 @@ $Thaidate=date("d-m-").(date("Y")+543);
 $n=0;
 $num = A;
 include("connect.inc");
-$query = "SELECT  row,depart,head,datetime,programmer,date,user 
-FROM com_support 
-WHERE status ='$num' 
-ORDER BY row desc";
+$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user` 
+FROM `com_support` 
+WHERE `status` ='$num' 
+ORDER BY `row` DESC";
 $result = mysql_query($query) or die("Query failed111");
 
    if($num2=mysql_num_rows($result)){
