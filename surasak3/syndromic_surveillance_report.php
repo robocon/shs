@@ -16,76 +16,178 @@ $dbi->query("SET NAMES UTF8");
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
+    <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size: 18px;
+        }
+        table.table th, #NavBar{
+            background-color: #13795b;
+            color: #ffffff;
+        }
+        #NavBar a{
+            color: #ffffff;
+        }
+    </style>
+    <nav class="navbar" id="NavBar">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../index.htm">&#127968; หน้าหลัก</a>
+        </div>
+    </nav>  
     <div class="container">
-        <div>
+        <div class="mt-2">
             <h3>Syndromic Surveillance Report</h3>
         </div>
         <div>
-            <form class="row g-3" action="syndromic_surveillance_report.php" method="post">
-                <div class="col-auto">
-                    <label for="staticEmail2" class="visually-hidden">ค้นหาจากวันที่</label>
-                    <!-- <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="email@example.com"> -->
+            <form class="" action="syndromic_surveillance_report.php" method="post">
+                <div class="mb-3 row">
+                    <label class="col-sm-1 col-form-label" align="right">กลุ่ม</label>
+                    <div class="col-sm-4">
+                        <?php 
+                        $diarrheaList = array(1=>'Acute diarrhea','Viral conjunctivitis','Fever of unknown origin','Acute Flaccid Paralysis อายุน้อยกว่า 15 ปี','Adverse Event Following Immunization ','Viral exanthema','Influenza-like illness');
+                        ?>
+                        <select name="group" id="group" class="form-select">
+                            <?php 
+                            foreach ($diarrheaList as $key => $diarr) { 
+                                $groupSelected = ($key==$_POST['group']) ? 'selected="selected"' : '' ;
+                                ?>
+                                <option value="<?=$key;?>" <?=$groupSelected;?> ><?=$diarr;?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <label for="date" class="visually-hidden">วันที่</label>
-                    <input type="text" class="form-control" id="date" placeholder="">
+                <div class="mb-3 row">
+                    <label class="col-sm-1 col-form-label" align="right">เลือกปี</label>
+                    <div class="col-sm-1">
+                        <?php
+                        $yearRange = range('2019', date('Y'));
+                        $defYear = date('Y');
+                        ?>
+                        <select name="date" id="date" class="form-select">
+                            <?php 
+                            foreach ($yearRange as $year) {
+                                $selected = ($year==$defYear) ? 'selected="selected"' : '' ;
+                                ?>
+                                <option value="<?=$year;?>" <?=$selected;?> %s><?=($year+543);?></option>
+                                <?php
+                            }
+                            ?>
+                            
+                        </select>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                <div class="mb-3 row">
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-5">
+                        <button type="submit" class="btn btn-primary">ค้นหาข้อมูล</button>
+                        <input type="hidden" name="action" value="search">
+                    </div>
                 </div>
             </form>
         </div>
-    <table class="table table-striped table-hover">
-        <tr>
-            <th></th>
-            <th>วัน-เวลา</th>
-            <th>HN</th>
-            <th>ชื่อ-สกุล</th>
-            <th>อายุ</th>
-            <th>สิทธิ์</th>
-            <th>โรค</th>
-            <th>ICD10</th>
-            <th>ปัตร ปชช</th>
-            <th>ที่อยุ่</th>
-            <th>ตำบล</th>
-            <th>อำเภอ</th>
-            <th>จังหวัด</th>
-            <th>โทรศัพท์</th>
-        </tr>
-        <?php 
-        $sql = "SELECT a.`svdate`,a.`hn`,a.`diag`,a.`icd10`,CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`,b.`dbirth`,b.`ptright`,b.`idcard`,b.`address`
-        FROM `diag` AS a 
-        LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-        WHERE a.`icd10` REGEXP '(A04[0-9])$' 
-        OR a.`icd10` REGEXP '(A08[0-5])$' 
-        OR a.`icd10` = 'A090' 
-        OR a.`icd10` = 'A099' 
-        ORDER BY a.`svdate` DESC;";
-        $q = $dbi->query($sql);
-        if($q->num_rows > 0){
-            while ($a = $q->fetch_assoc()) {
+
+    <?php 
+    $action = sprintf($_POST['action']);
+    if($action==='search'){
+    
+        $group = sprintf("%s", $_POST['group']);
+        $dateSelected = sprintf("%s", $_POST['date']+543);
+        ?>
+        <div>
+            <h3>กลุ่ม <?=$diarrheaList[$group];?></h3>
+        </div>
+        <table class="table table-sm table-striped table-hover">
+            <tr>
+                <th></th>
+                <th>วัน-เวลา</th>
+                <th>HN</th>
+                <th>ชื่อ-สกุล</th>
+                <th>อายุ</th>
+                <th>สิทธิ์</th>
+                <th>โรค</th>
+                <th>ICD10</th>
+                <th>ปัตร ปชช</th>
+                <th>ที่อยุ่</th>
+                <th>ตำบล</th>
+                <th>อำเภอ</th>
+                <th>จังหวัด</th>
+                <th>โทรศัพท์</th>
+            </tr>
+            <?php 
+            if($group==1){
+                $whereGroup = "a.`icd10` REGEXP '(A04[0-9])$' 
+                OR a.`icd10` REGEXP '(A08[0-5])$' 
+                OR a.`icd10` = 'A090' 
+                OR a.`icd10` = 'A099'";
+
+            }else if ($group == 2) {
+                $whereGroup = "a.`icd10` REGEXP '(B30[0-3])$ 
+                OR a.`icd10` = 'B308' 
+                OR a.`icd10` = 'B309'";
+
+            }else if ($group == 3) {
+                $whereGroup = "a.`icd10` = 'R508' 
+                OR a.`icd10` = 'R509'";
+
+            }else if ($group == 4) {
+                $whereGroup = "( TIMESTAMPDIFF(year,CONCAT((SUBSTRING(b.`dbirth`,1,4)-543),SUBSTRING(b.`dbirth`,5,6)), now() ) < 15 
+                AND a.`icd10` IN ('A051', 'A80', 'E802', 'G369', 'G373', 'G588', 'G589', 'G610', 'G629', 'G634', 'G700', 'G723', 'G724', 'G75', 'G800', 'G810', 'G820', 'G822', 'G823', 'G825', 'G830','G831','G832','G833', 'G839', 'G959', 'M791', 'M792', 'R53', 'T60') ";
+
+            }else if ($group == 5) {
+                $whereGroup = "a.`icd10` IN ('T805', 'T806', 'T880', 'T881', 'M022')";
+
+            }else if ($group == 6) {
+                $whereGroup = "a.`icd10` = 'B09'";
+                
+            }else if ($group == 7) {
+                $whereGroup = "a.`icd10` IN ('J00', 'J029', 'J09', 'J10', 'J11')";
+                
+            }
+            
+            $sql = sprintf("SELECT a.`svdate`,a.`hn`,a.`diag`,a.`icd10`,CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`,TIMESTAMPDIFF(year,CONCAT((SUBSTRING(b.`dbirth`,1,4)-543),SUBSTRING(b.`dbirth`,5,6)), now() ) AS `age`,b.`ptright`,b.`idcard`,b.`address`,b.`tambol`,b.`ampur`,b.`changwat`,b.`phone` 
+            FROM `diag` AS a 
+            LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+            WHERE a.`svdate` LIKE '%s%%' 
+            AND ( $whereGroup ) 
+            ORDER BY a.`svdate` DESC;",
+            $dbi->real_escape_string($dateSelected)
+            );
+            $q = $dbi->query($sql);
+            if($q->num_rows > 0){
+                while ($a = $q->fetch_assoc()) {
+                    ?>
+                    <tr>
+                        <td></td>
+                        <td><?=$a['svdate'];?></td>
+                        <td><?=$a['hn'];?></td>
+                        <td><?=$a['ptname'];?></td>
+                        <td><?=$a['age'];?></td>
+                        <td><?=$a['ptright'];?></td>
+                        <td><?=$a['diag'];?></td>
+                        <td><?=$a['icd10'];?></td>
+                        <td><?=$a['idcard'];?></td>
+                        <td><?=$a['address'];?></td>
+                        <td><?=$a['tambol'];?></td>
+                        <td><?=$a['ampur'];?></td>
+                        <td><?=$a['changwat'];?></td>
+                        <td><?=$a['phone'];?></td>
+                    </tr>
+                    <?php
+                }
+            }else{
                 ?>
                 <tr>
-                    <td></td>
-                    <td><?=$a['svdate'];?></td>
-                    <td><?=$a['hn'];?></td>
-                    <td><?=$a['ptname'];?></td>
-                    <td>อายุ</td>
-                    <td><?=$a['ptright'];?></td>
-                    <td><?=$a['diag'];?></td>
-                    <td><?=$a['icd10'];?></td>
-                    <td><?=$a['idcard'];?></td>
-                    <td>ที่อยุ่</td>
-                    <td>ตำบล</td>
-                    <td>อำเภอ</td>
-                    <td>จังหวัด</td>
-                    <td>โทรศัพท์</td>
+                    <td colspan="14"><p class="text-center"><strong>ไม่พบข้อมูล</strong></p></td>
                 </tr>
                 <?php
             }
-        }
-        ?>
-    </table>
+            ?>
+        </table>
+    <?php 
+    }
+    ?>
     </div>
 </body>
 </html>
