@@ -28,7 +28,6 @@ VALUES ('',  '" . $_POST['doc_id'] . "',  '" . $_POST['depart'] . "',  '" . $_PO
 		$document_size = $attach['size'][$i]['size'];
 		$document_type = $attach['type'][$i];
 
-
 		if (empty($document)) //ตรวจสอบว่ามีค่าหรือไม่
 		{
 			echo "<CENTER>คุณไม่ได้เลือกไฟล์เอกสารแนบ  หรือ <BR> ขนาดไฟล์ที่คุณทำการ Upload นั้นอาจมีขนาดใหญ่เกินไป . กรุณาเลือกไฟล์ใหม่  </CENTER>";
@@ -42,7 +41,6 @@ VALUES ('',  '" . $_POST['doc_id'] . "',  '" . $_POST['depart'] . "',  '" . $_PO
 
 				copy($document, "$structure/$filename");
 
-
 				$sql = "INSERT  INTO  document_file";
 				$sql .= "(doc_id ,file_name,name_thai,file_type) ";
 				$sql .= "VALUES";
@@ -54,8 +52,7 @@ VALUES ('',  '" . $_POST['doc_id'] . "',  '" . $_POST['depart'] . "',  '" . $_PO
 			} else {
 				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไฟล์ที่คุณเลือก ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .doc .docx .xls .ppt .pdf .rar .zip  </CENTER></B></FONT> ";
 			}
-		}			//ปิดไฟล์แนบ
-
+		}//ปิดไฟล์แนบ
 
 		$n++;
 	} //for
