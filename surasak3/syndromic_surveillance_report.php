@@ -59,23 +59,22 @@ $dbi->query("SET NAMES UTF8");
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <label class="col-sm-1 col-form-label" align="right">เลือกปี</label>
-                    <div class="col-sm-1">
-                        <?php
-                        $yearRange = range('2019', date('Y'));
-                        $defYear = date('Y');
+                    <label class="col-sm-1 col-form-label" align="right">วันที่</label>
+                    <div class="col-sm-2">
+                        <?php 
+                        $defCurrentDate = ((date('Y')+543).date('-m-d'));
+                        $inputDate = empty($_POST['date']) ? $defCurrentDate : sprintf("%s", $_POST['date']) ;
                         ?>
-                        <select name="date" id="date" class="form-select">
-                            <?php 
-                            foreach ($yearRange as $year) {
-                                $selected = ($year==$defYear) ? 'selected="selected"' : '' ;
-                                ?>
-                                <option value="<?=$year;?>" <?=$selected;?> %s><?=($year+543);?></option>
-                                <?php
-                            }
-                            ?>
-                            
-                        </select>
+                        <input type="text" name="date" id="date" class="form-control" value="<?=$inputDate;?>">
+                        <div class="mt-1">
+                            <span class="badge text-bg-primary"><strong>ค้นตามวันที่</strong> เช่น 2567-10-21</span>
+                        </div>
+                        <div class="mt-1">
+                            <span class="badge text-bg-primary"><strong>ค้นตามเดือน</strong> เช่น 2567-10</span>
+                        </div>
+                        <div class="mt-1">
+                            <span class="badge text-bg-primary"><strong>ค้นตามปี</strong> เช่น 2567</span>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -93,12 +92,12 @@ $dbi->query("SET NAMES UTF8");
     if($action==='search'){
     
         $group = sprintf("%s", $_POST['group']);
-        $dateSelected = sprintf("%s", $_POST['date']+543);
+        $dateSelected = sprintf("%s", $_POST['date']);
         ?>
         <div>
             <h3>กลุ่ม <?=$diarrheaList[$group];?></h3>
         </div>
-        <table class="table table-sm table-striped table-hover">
+        <table class="table table-striped table-hover">
             <tr>
                 <th></th>
                 <th>วัน-เวลา</th>
@@ -123,7 +122,7 @@ $dbi->query("SET NAMES UTF8");
                 OR a.`icd10` = 'A099'";
 
             }else if ($group == 2) {
-                $whereGroup = "a.`icd10` REGEXP '(B30[0-3])$ 
+                $whereGroup = "a.`icd10` REGEXP '(B30[0-3])$' 
                 OR a.`icd10` = 'B308' 
                 OR a.`icd10` = 'B309'";
 
@@ -132,7 +131,7 @@ $dbi->query("SET NAMES UTF8");
                 OR a.`icd10` = 'R509'";
 
             }else if ($group == 4) {
-                $whereGroup = "( TIMESTAMPDIFF(year,CONCAT((SUBSTRING(b.`dbirth`,1,4)-543),SUBSTRING(b.`dbirth`,5,6)), now() ) < 15 
+                $whereGroup = " TIMESTAMPDIFF(year,CONCAT((SUBSTRING(b.`dbirth`,1,4)-543),SUBSTRING(b.`dbirth`,5,6)), now() ) < 15 
                 AND a.`icd10` IN ('A051', 'A80', 'E802', 'G369', 'G373', 'G588', 'G589', 'G610', 'G629', 'G634', 'G700', 'G723', 'G724', 'G75', 'G800', 'G810', 'G820', 'G822', 'G823', 'G825', 'G830','G831','G832','G833', 'G839', 'G959', 'M791', 'M792', 'R53', 'T60') ";
 
             }else if ($group == 5) {
