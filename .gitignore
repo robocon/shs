@@ -9,7 +9,7 @@
 *.log
 *.db
 *.xls
-
+config.php
 connect*
 replicadb/config.json
 surasak3/med_scan/*
