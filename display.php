@@ -1,3 +1,8 @@
+<?php 
+session_start();
+// var_dump($_SESSION);
+include("connect.inc");
+?>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -6,6 +11,10 @@
 <title>New Page 5</title>
 <base target="_self">
 <style type="text/css" media="screen">
+	body{
+		font-family: THSarabunPSK;
+		font-size:32px;
+	}	
     @font-face {
         font-family: THSarabunPSK;
         src: url("surasak3/THSarabun.eot")
@@ -16,41 +25,72 @@
         font-family: THSarabunPSK;
         src: url("surasak3/THSarabun.ttf") /* TTF file for CSS3 browsers */
     }
+	th, td {
+		font-family: THSarabunPSK;
+		font-size:20px;		
+		padding:1px;
+	}	
 </style>
 </head>
 
 <body bgcolor="#008080"  text="#ffffff" >
     
     <center>
-        <font size="5"  face="THSarabunPSK" color="#fb042d">
+         <div style="font-family:THSarabunPSK;font-size:36px;color:#fb042d">
             <b>*** ข่าวสาร โรงพยาบาลค่ายสุรศักดิ์มนตรี  ***</b>
-        </font>
+        </div>
     </center>
     
     <MARQUEE>
         <STRONG>
             <SPAN>
-                <font size="1"  face="THSarabunPSK" color="#ffffff">
-                    วิสัยทัศน์ :โรงพยาบาลทหารระดับทุติยะภูมิ 
-                    ที่เป็นเลิศด้านการรักษาพยาบาล และส่งเสริมสุขภาพ ***** พันธกิจ : โรงพยาบาลค่ายสุรศักดิ์มนตรี 
-                    มุ่งมั่นให้บริการรักษาพยาบาลที่มีคุณภาพ ตามมาตรฐานสากลด้วยความ 
-                    ตระหนักและเคารพสิทธิผู้ป่วย และยึดมั่นในจริยธรรม 
-                    เพื่อให้ผู้รับบริการและผู้ให้บริการมีสุขภาพดี 
-                    รวมทั้งปรับปรุงประสิทธิผลอย่างต่อเนื่อง 
-                    และปฏิบัติภารกิจที่ได้รับมอบหมายจากหน่วยเหนือ 
-                    ******
-                </font>
+                <div style="font-family:THSarabunPSK;font-size:24px;color:#ffffff">
+                     วิสัยทัศน์ :โรงพยาบาลทหารชั้นนำ ระดับทุติยภูมิของกองทัพบก ***** ค่านิยม :  เป็นเลิศบริการ มาตรฐานการรักษา ร่วมใจพัฒนา (Service mind-Standard-Teamwork) S.S.T. Culture ******
+                </div>
             </SPAN>
         </STRONG>
     </MARQUEE>
-    
     <br>
     <center>************************************</center>
     <br>
-    
     <?php
-    include("connect.inc");
-    echo "<font color=#00FFFF  face='THSarabunPSK' size='4'>
+    if($_SESSION['smenucode']=='ADMPT'){
+
+        $allow_user = array('เมธาวารินทร์','สุทัศน์','ปุณนาพร','อรรถโกวิทย์771');
+        if(in_array(trim($_SESSION['sIdname']), $allow_user)){
+
+            $today = date('Y-m-d');
+            $tomorrow = date('Y-m-').sprintf("%02d", (date('d')+1));
+
+            $sql = "SELECT *,SUBSTRING(`date`,1,10) AS `shortDate`,SUBSTRING(depcode,1,3) AS `depcodeCode` 
+            FROM `appoint` 
+            WHERE `appdate_en` IN ('$today','$tomorrow') 
+            AND `apptime` != 'ยกเลิกการนัด' 
+            AND `detail` LIKE 'FU10%'
+            AND `depcode` NOT LIKE 'U20%'
+            GROUP BY `doctor`,`hn` 
+            ORDER BY `appdate_en`,`row_id` ASC";
+            $q = mysql_query($sql);
+            $numRow = mysql_num_rows($q);
+            if($numRow > 0){
+            ?>
+            <script src="surasak3/js/sweetalert2.all.min.js"></script>
+            <script>
+                Swal.fire({
+                    title: "มีข้อมูลการนัดเพิ่มเติม"
+                }).then((result)=>{
+                    if (result.isConfirmed) {
+                        window.open("surasak3/appoint_physi.php");
+                    }
+                });
+            </script>
+            <?php
+            }
+        }
+
+    }
+
+    echo "<div style='color:#00FFFF;font-size:24;'>
             **รายชื่อแพทย์ไม่ออกตรวจวันนี้ (".date("d-m-").(date("Y")+543).")**
             <br>";
     
@@ -60,7 +100,7 @@
         $arr = explode(" ",$result[2]);
         echo "แพทย์ ".$arr[1]." ".$arr[2]." , ";
     }
-    echo "</font>";
+    echo "</div>";
     
     $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
     // include("connect.inc");
@@ -82,7 +122,6 @@
         ?>
         <tr>
             <td>
-                <font face="THSarabunPSK" >
                     <br>&nbsp;&nbsp;&nbsp;&nbsp;<IMG height="15" src='new.gif' width="30">&nbsp;***&nbsp;
                     <?=$new;?>
                 
@@ -92,7 +131,6 @@
                     echo "<a href='surasak3/file_news/$file' target='_blank'><font color='#FF00FF'>ดาวน์โหลดไฟล์</font></a>"; 
                 } 
                 ?>
-                </font>
             </td>
         </tr>
         <?php

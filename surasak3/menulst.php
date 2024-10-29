@@ -464,6 +464,8 @@ function to2Digit(i){
 	}
 	return i;
 }
+
+parent.document.getElementById('mainDisplayPage').contentWindow.location.reload();
 </script>
 
 <style>
