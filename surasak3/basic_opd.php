@@ -2138,16 +2138,11 @@ mmHg </td>
 		</tr>
 
 		<tr>
-			<td align="right" >จำนวนปีที่เป็น HT : </td>
+			<td align="right" valign="top">จำนวนปีที่เป็น HT : </td>
 			<td align="left" colspan="5">
 				<?php 
 				$curYear = date('Y-m-d');
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, 
-				TIMESTAMPDIFF(
-					YEAR,
-					CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),
-					'$curYear'
-				) AS `diag_date_year`
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, TIMESTAMPDIFF(YEAR,CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),'$curYear') AS `diag_date_year` 
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
@@ -2158,40 +2153,163 @@ mmHg </td>
 				}
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
-			<?
+				<?php
 				$sql1 = "Select date_active,officer,datetime From screen_ht where hn = '".$cHn."'";
-				//echo $sql1;
 				$query1=mysql_query($sql1);
 				$num1=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
 					$yy = substr($date_active,0,4);
-					$yy=$yy+543;
+					$yy = $yy+543;
 					$mm = substr($date_active,5,2);
 					$dd = substr($date_active,8,2);
 					$date_active="$dd/$mm/$yy";				
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-			?>
+				?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-			<?
+				<?
 				}else{
 					if($age >=35){
-			?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ </strong><span style="margin-left:10px;"><input name="screen_ht" type="radio" value="y"/> ต้องการ  </span><span style="margin-left:10px;"><input name="screen_ht" type="radio" value="n"/> ไม่ต้องการ </span>
-			<?
+					?>
+					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ </strong>
+					<span style="margin-left:10px;"><label for="screen_ht1"><input name="screen_ht" id="screen_ht1" onclick="showFormHt()" type="radio" value="y"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_ht2"><input name="screen_ht" id="screen_ht2" onclick="hideFormHt()" type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<?
 					}
 				}
-			?>				
+				?>
+				<script>
+					function showFormHt(){
+						document.getElementById('formHt').style.display = '';
+					}
+					function hideFormHt(){
+						document.getElementById('formHt').style.display = 'none';
+					}
+				</script>
+				<div id="formHt" style="display:none;">
+					<style>
+						.htDateSelectContainer{
+							position: absolute;
+							top: 28px;
+							right: 0;
+							background-color: #ffffff;
+							border: 2px solid #000000;
+							box-shadow: 5px 10px #888888;
+						}
+					</style>
+					<fieldset>
+						<legend><strong>ฟอร์มความดันเพิ่มเติม</strong></legend>
+						<form action="javascript:void(0)" method="post">
+							<table>
+								<tr>
+									<td align="right"><strong>HT number : </strong></td>
+									<td><input type="text" name="ht_no" id="ht_no"></td>
+								</tr>
+								<ch>
+									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
+									<td>
+										<label for="ht1"><input name="ht" id="ht1" type="radio" value="0"> No</label>
+										<label for="ht2"><input name="ht" id="ht2" type="radio" value="1"> Essential HT</label>
+										<label for="ht3"><input name="ht" id="ht3" type="radio" value="3"> Secondary HT</label>
+										<label for="ht4"><input name="ht" id="ht4" type="radio" value="2"> Uncertain type</label>
+										<div>
+											ปี <input type="text" name="diag_date" id="diag_date">
+										</div>
+									</td>
+								</ch>
+								<tr>
+									<td align="right"><strong>โรคร่วม HT : </strong></td>
+									<td>
+										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="Y"> เบาหวาน</label>
+										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="Y"> ไตเรื้อรัง</label>
+										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="Y"> กล้ามเนื้อหัวใจตาย</label>
+										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="Y"> อัมพฤกษ์อัมพาต</label>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><strong>ประวัติบุหรี่ : </strong></td>
+									<td>
+										<label for="cigarette1">
+											<input type="radio" name="cigarette" id="cigarette1" value="0"> ไม่สูบบุหรี่
+										</label>
+										<label for="cigarette2">
+											<input type="radio" name="cigarette" id="cigarette2" value="1"> สูบบุหรี่
+										</label>
+										<label for="cigarette3">
+											<input type="radio" name="cigarette" id="cigarette3" value="2"> ไม่มีข้อมูล
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td align="right" valign="top"><strong>ได้รับการตรวจ ECG หรือ CXR : </strong></td>
+									<td>
+										<label for="ecgCxr1">
+											<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="document.getElementById('ecgCxrContain').style.display='';"> ได้รับการตรวจ
+										</label>
+										<label for="ecgCxr2">
+											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none';"> ไม่ได้ตรวจ
+										</label>
+										<div style="display:none; position:relative;" id="ecgCxrContain">
+											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDate&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<div id="landingDateSelected" class="htDateSelectContainer" style="display:none;"></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right" valign="top"><strong>ได้รับการตรวจ Urine albumin : </strong></td>
+									<td>
+										<label for="albumin1">
+											<input type="radio" name="albumin" id="albumin1" value="1"> ได้รับการตรวจ
+										</label>
+										<label for="albumin2">
+											<input type="radio" name="albumin" id="albumin2" value="0"> ไม่ได้ตรวจ
+										</label>
+										<div style="display:none;" id="albuminContain">
+											<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+										</div>
+									</td>
+								</tr>
+								
+								<tr>
+									<td align="right" valign="top"><strong>ได้รับการตรวจ Serum Cr. : </strong></td>
+									<td>
+										<label for="creatinine1">
+											<input type="radio" name="creatinine" id="creatinine1" value="1"> ได้รับการตรวจ
+										</label>
+										<label for="creatinine2">
+											<input type="radio" name="creatinine" id="creatinine2" value="0"> ไม่ได้ตรวจ
+										</label>
+										<div style="display:none;" id="ecgCxrContain">
+											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</form>
+						<script>
+							function htDateSelect(divId,url){
+								loadContent(url).then((res)=>{ 
+									document.getElementById(divId).innerHTML = res;
+									document.getElementById(divId).style.display = '';
+								});
+							}
+							function closeContainer(idName){
+								document.getElementById(idName).style.display = 'none';
+							}
+							async function loadContent(url){
+								const response = await fetch(url);
+								const body = await response.text();
+								return body;
+							}
+						</script>
+					</fieldset>
+				</div>
 			</td>
 		</tr>
-
 		<tr>
 			<td align="right" >จำนวนปีที่เป็น DM : </td>
 			<td align="left" colspan="5">
 				<?php 
-				$sql = "SELECT TIMESTAMPDIFF(
-					YEAR,
-					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear'
-				) AS `year_diff`
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear') AS `year_diff`
 				FROM `diabetes_clinic` 
 				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
@@ -2204,9 +2322,8 @@ mmHg </td>
 				}
 				?>
 				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> ปี
-			<?
+				<?
 				$sql1 = "Select date_active,officer,datetime From screen_dm where hn = '".$cHn."'";
-				//echo $sql1;
 				$query1=mysql_query($sql1);
 				$num1=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
@@ -2216,17 +2333,30 @@ mmHg </td>
 					$dd = substr($date_active,8,2);
 					$date_active="$dd/$mm/$yy";					
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-			?>
+					?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-			<?
+					<?
 				}else{
 					if($age >=35){
-			?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong><span style="margin-left:10px;"><input name="screen_dm" type="radio" value="y"/> ต้องการ  </span><span style="margin-left:10px;"><input name="screen_dm" type="radio" value="n"/> ไม่ต้องการ </span>
-			<?
+					?>
+					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong>
+					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" onclick="showFormDm()" type="radio" value="y"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<?
 					}
 				}
-			?>
+				?>
+				<script>
+					function showFormDm(){
+						document.getElementById('formDm').style.display = '';
+					}
+					function hideFormDm(){
+						document.getElementById('formDm').style.display = 'none';
+					}
+				</script>
+				<div id="formDm" style="display:none;">
+					<h1>FORM DM</h1>
+				</div>
 			</td>
 		</tr>
 
