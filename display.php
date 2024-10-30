@@ -12,21 +12,11 @@ include("connect.inc");
 <base target="_self">
 <style type="text/css" media="screen">
 	body{
-		font-family: THSarabunPSK;
+		font-family: "TH SarabunPSK";
 		font-size:32px;
-	}	
-    @font-face {
-        font-family: THSarabunPSK;
-        src: url("surasak3/THSarabun.eot")
-        /*src: url("http://192.168.1.2/sm3/surasak3/THSarabun.eot")*/
-        /* EOT file for IE */
-    }
-    @font-face {
-        font-family: THSarabunPSK;
-        src: url("surasak3/THSarabun.ttf") /* TTF file for CSS3 browsers */
-    }
+	}
 	th, td {
-		font-family: THSarabunPSK;
+		font-family: "TH SarabunPSK";
 		font-size:20px;		
 		padding:1px;
 	}	
@@ -36,7 +26,7 @@ include("connect.inc");
 <body bgcolor="#008080"  text="#ffffff" >
     
     <center>
-         <div style="font-family:THSarabunPSK;font-size:36px;color:#fb042d">
+         <div style="font-family:TH SarabunPSK;font-size:36px;color:#fb042d">
             <b>*** ข่าวสาร โรงพยาบาลค่ายสุรศักดิ์มนตรี  ***</b>
         </div>
     </center>
@@ -44,7 +34,7 @@ include("connect.inc");
     <MARQUEE>
         <STRONG>
             <SPAN>
-                <div style="font-family:THSarabunPSK;font-size:24px;color:#ffffff">
+                <div style="font-family:TH SarabunPSK;font-size:24px;color:#ffffff">
                      วิสัยทัศน์ :โรงพยาบาลทหารชั้นนำ ระดับทุติยภูมิของกองทัพบก ***** ค่านิยม :  เป็นเลิศบริการ มาตรฐานการรักษา ร่วมใจพัฒนา (Service mind-Standard-Teamwork) S.S.T. Culture ******
                 </div>
             </SPAN>
@@ -55,7 +45,6 @@ include("connect.inc");
     <br>
     <?php
     if($_SESSION['smenucode']=='ADMPT'){
-
         $allow_user = array('เมธาวารินทร์','สุทัศน์','ปุณนาพร','อรรถโกวิทย์771');
         if(in_array(trim($_SESSION['sIdname']), $allow_user)==true && empty($_COOKIE['ptDisplayAlert'])){
 
