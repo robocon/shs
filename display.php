@@ -57,37 +57,56 @@ include("connect.inc");
     if($_SESSION['smenucode']=='ADMPT'){
 
         $allow_user = array('เมธาวารินทร์','สุทัศน์','ปุณนาพร','อรรถโกวิทย์771');
-        if(in_array(trim($_SESSION['sIdname']), $allow_user)){
+        if(in_array(trim($_SESSION['sIdname']), $allow_user)==true && empty($_COOKIE['ptDisplayAlert'])){
+
+            $endThisDay = gmdate('D, d M Y 23:59:59');
 
             $today = date('Y-m-d');
             $tomorrow = date('Y-m-').sprintf("%02d", (date('d')+1));
 
-            $sql = "SELECT *,SUBSTRING(`date`,1,10) AS `shortDate`,SUBSTRING(depcode,1,3) AS `depcodeCode` 
+            $sql = "SELECT `depcode`,SUBSTRING(`date`,1,10) AS `shortDate`,SUBSTRING(depcode,1,3) AS `depcodeCode` 
             FROM `appoint` 
             WHERE `appdate_en` IN ('$today','$tomorrow') 
             AND `apptime` != 'ยกเลิกการนัด' 
             AND `detail` LIKE 'FU10%'
             AND `depcode` NOT LIKE 'U20%'
-            GROUP BY `doctor`,`hn` 
+            GROUP BY `depcode` 
             ORDER BY `appdate_en`,`row_id` ASC";
             $q = mysql_query($sql);
             $numRow = mysql_num_rows($q);
             if($numRow > 0){
+                $depcodeItem = array();
+                while ($a = mysql_fetch_assoc($q)) {
+                    $depcodeItem[] = substr($a['depcode'], 4);
+                }
+                $depcodeName = 'แผนก'.implode(',', $depcodeItem);
             ?>
             <script src="surasak3/js/sweetalert2.all.min.js"></script>
             <script>
                 Swal.fire({
-                    title: "มีข้อมูลการนัดเพิ่มเติม"
+                    title: "แจ้งเตือน",
+                    html: `<strong style="font-size:28px;">มีข้อมูลการนัดเพิ่มเติมจาก <?=$depcodeName;?></strong><br>
+                    <br>
+                    <label><input type="checkbox" id="hideAlertDisplay" value="1">ไม่ต้องแสดงข้อความนี้อีกในวันนี้</label>`,
+                    showCancelButton: true,
+                    cancelButtonText: "ปิด",
+                    confirmButtonText: "แสดงรายละเอียด"
                 }).then((result)=>{
                     if (result.isConfirmed) {
                         window.open("surasak3/appoint_physi.php");
                     }
                 });
+                document.getElementById('hideAlertDisplay').onclick = function(){
+                    if(this.checked===true){
+                        document.cookie = "ptDisplayAlert=1; expires=<?=$endThisDay;?>; path=/;";
+                    }else if(this.checked===false){
+                        document.cookie = "ptDisplayAlert=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    }
+                }
             </script>
             <?php
             }
         }
-
     }
 
     echo "<div style='color:#00FFFF;font-size:24;'>
