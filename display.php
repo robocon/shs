@@ -50,17 +50,27 @@ include("connect.inc");
 
             $endThisDay = gmdate('D, d M Y 23:59:59');
 
-            $today = date('Y-m-d');
-            $tomorrow = date('Y-m-').sprintf("%02d", (date('d')+1));
+            $today = (date('Y')+543).date('-m-d');
+            $yesterday = (date('Y', strtotime("-1 day"))+543).date('-m-d', strtotime("-1 day"));
+            // $tomorrow = date('Y-m-').sprintf("%02d", (date('d')+1));
 
             $sql = "SELECT `depcode`,SUBSTRING(`date`,1,10) AS `shortDate`,SUBSTRING(depcode,1,3) AS `depcodeCode` 
             FROM `appoint` 
-            WHERE `appdate_en` IN ('$today','$tomorrow') 
+            WHERE ( `date` LIKE '$today%' OR `date` LIKE '$yesterday%' ) 
             AND `apptime` != 'ยกเลิกการนัด' 
-            AND `detail` LIKE 'FU10%'
+            AND `doctor` LIKE 'MD074%' 
             AND `depcode` NOT LIKE 'U20%'
             GROUP BY `depcode` 
             ORDER BY `appdate_en`,`row_id` ASC";
+            ?>
+            <div style="display:none;">
+                <pre>
+                <?php 
+                var_dump($sql);
+                ?>
+                </pre>
+            </div>
+            <?php
             $q = mysql_query($sql);
             $numRow = mysql_num_rows($q);
             if($numRow > 0){

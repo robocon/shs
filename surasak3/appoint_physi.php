@@ -33,15 +33,15 @@ $dbi->query("SET NAMES UTF8");
     <div class="container">
         <h3 class="mt-4">ผู้ป่วยนัดแผนกกายภาพ</h3>
         <?php 
-        $today = date('Y-m-d');
-        $tomorrow = date('Y-m-').sprintf("%02d", (date('d')+1));
+        $today = (date('Y')+543).date('-m-d');
+        $yesterday = (date('Y', strtotime("-1 day"))+543).date('-m-d', strtotime("-1 day"));
         $sql = "SELECT *,SUBSTRING(`date`,1,10) AS `shortDate`,SUBSTRING(depcode,1,3) AS `depcodeCode` 
         FROM `appoint` 
-        WHERE `appdate_en` IN ('$today','$tomorrow') 
+        WHERE ( `date` LIKE '$today%' OR `date` LIKE '$yesterday%' ) 
         AND `apptime` != 'ยกเลิกการนัด' 
-        AND `detail` LIKE 'FU10%' 
+        AND `doctor` LIKE 'MD074%' 
         GROUP BY `doctor`,`hn` 
-        ORDER BY `appdate_en`,`row_id` ASC ";
+        ORDER BY `date`,`row_id` ASC";
         
         $q = $dbi->query($sql);
         if($q->num_rows>0){
