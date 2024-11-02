@@ -279,7 +279,7 @@ echo "<a  href=\"dxopedit.php? cTdatehn=".urlencode($thdatehn)."&cPtname=".urlen
 <a target="_blank" href="labslip4bc_chkup.php">สติ๊กเกอร์ (C-UP)</a>&nbsp;&nbsp;
 <br><br>
 
-<a target="_blank" href="labslip4out.php">สติ๊กเกอร์ Lab นอก</a>&nbsp;&nbsp;
+<a target="_blank" href="labslip4out.php?hn=<?=$hn;?>">สติ๊กเกอร์ Lab นอก</a>&nbsp;&nbsp;
 <a target="_blank" href="labslip5out.php">สติ๊กเกอร์ Lab นอก NAP</a>
 
 <?php
