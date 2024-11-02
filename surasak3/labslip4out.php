@@ -160,7 +160,10 @@ $nLab2--;*/
 	print "<DIV style='left:70PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'>$labno</span></DIV>";
 	print "<DIV style='left:5PX;top:75PX;width:500PX;height:30PX;'><span class='fc1-1'><b>OUTLAB</b></span></DIV>";
 	//print "<DIV style='left:10PX;top:70PX;width:500PX;height:30PX;'><span class='fc1-7'>$nLab2</span></DIV>";
-	print '<div style="left: 4px;top: 97px;width: auto;height: auto;line-height: 10px; font-size:14px;">'.$info.'</div>';
+	if(!empty($info)){
+		print '<div style="left: 4px;top: 97px;width: auto;height: auto;line-height: 10px; font-size:14px;">'.$info.'</div>';
+	}
+	
 
 	$i = 0;
 	$indexx = 0;
