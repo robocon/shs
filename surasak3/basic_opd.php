@@ -2158,7 +2158,6 @@ mmHg </td>
 						$ht_year = (int) $ht['year_diff'];
 					}
 				}
-				$ht_no = '';
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
 				<?php
