@@ -2204,7 +2204,7 @@ mmHg </td>
 									<td align="right"><strong>HT number : </strong></td>
 									<td><input type="text" name="ht_no" id="ht_no"></td>
 								</tr>
-								<ch>
+								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
 									<td>
 										<label for="ht1"><input name="ht" id="ht1" type="radio" value="0"> No</label>
@@ -2215,7 +2215,7 @@ mmHg </td>
 											ปี <input type="text" name="diag_date" id="diag_date">
 										</div>
 									</td>
-								</ch>
+								</tr>
 								<tr>
 									<td align="right"><strong>โรคร่วม HT : </strong></td>
 									<td>
@@ -2264,7 +2264,8 @@ mmHg </td>
 											<input type="radio" name="albumin" id="albumin2" value="0"> ไม่ได้ตรวจ
 										</label>
 										<div style="display:none;" id="albuminContain">
-											<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+											<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<div id="landingDateAlbumin" class="htDateSelectContainer" style="display:none;"></div>
 										</div>
 									</td>
 								</tr>
@@ -2279,7 +2280,8 @@ mmHg </td>
 											<input type="radio" name="creatinine" id="creatinine2" value="0"> ไม่ได้ตรวจ
 										</label>
 										<div style="display:none;" id="ecgCxrContain">
-											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<div id="landingDateCreatinine" class="htDateSelectContainer" style="display:none;"></div>
 										</div>
 									</td>
 								</tr>
