@@ -101,6 +101,9 @@ if($_SESSION["smenucode"] == "ADMSUR"){
 	background-color: #148F77;
 	color: #ffffff;
 }
+#showDateTxt{
+	font-size:22px;
+}
 #showDateTxt:hover{
 	background-color: #CCFFCC!important;
 }
@@ -183,7 +186,7 @@ if($menucode=='ADM' ){
 }
 ?>
 <tr>
-	<td BGCOLOR='#CCFFCC' align='center' style='color: red;' id="showDateTxt"><strong><font face='THSarabunPSK' size='5'><?=$showdate;?> <div id='divDetail'><?=date('H:i:s');?> น.</div></font></strong></td>
+	<td BGCOLOR='#CCFFCC' align='center' style='color: red;' id="showDateTxt"><strong><?=$showdate;?> <div id='divDetail'><?=date('H:i:s');?> น.</div></strong></td>
 </tr>
 <?php 
 if($menucode != 'ADMDR1'){ 
@@ -465,7 +468,9 @@ function to2Digit(i){
 	return i;
 }
 
+// สั่งให้เมนูด้านขวามือทำการ refresh เพื่ออัพเดทหน้าจอ
 parent.document.getElementById('mainDisplayPage').contentWindow.location.reload();
+
 </script>
 
 <style>
