@@ -2142,15 +2142,23 @@ mmHg </td>
 			<td align="left" colspan="5">
 				<?php 
 				$curYear = date('Y-m-d');
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, TIMESTAMPDIFF(YEAR,CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),'$curYear') AS `diag_date_year` 
+				$sql = "SELECT `ht_no`,TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, TIMESTAMPDIFF(YEAR,CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),'$curYear') AS `diag_date_year` 
 				FROM `hypertension_clinic` 
-				WHERE `hn` = '$cHn'";
+				WHERE `hn` = '$cHn' LIMIT 1";
 				$q = mysql_query($sql) or die( mysql_error() );
 				$ht_year = '';
+				$ht_no = '';
 				if( mysql_num_rows($q) > 0 ){
 					$ht = mysql_fetch_assoc($q);
 					$ht_year = (int)$ht['diag_date_year'];
+					$ht_no = $ht['ht_no'];
+
+					// ถ้าไม่มีปีที่บันทึกจากการลง diag ให้เอาปีที่บันทึกข้อมูล
+					if(empty($ht_year)){
+						$ht_year = (int) $ht['year_diff'];
+					}
 				}
+				$ht_no = '';
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
 				<?php
@@ -2195,6 +2203,9 @@ mmHg </td>
 							border: 2px solid #000000;
 							box-shadow: 5px 10px #888888;
 						}
+						input[readonly]{
+							background-color: #b8b8b8;
+						}
 					</style>
 					<fieldset>
 						<legend><strong>ฟอร์มความดันเพิ่มเติม</strong></legend>
@@ -2202,27 +2213,35 @@ mmHg </td>
 							<table>
 								<tr>
 									<td align="right"><strong>HT number : </strong></td>
-									<td><input type="text" name="ht_no" id="ht_no"></td>
+									<td>
+										<?php 
+										$htNoStyle = '';
+										$htYearNotion = '';
+										if(empty($ht_no)){
+											$htNoStyle = 'readonly="readonly"';
+											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
+										}
+										?>
+										<input type="text" name="ht_no" id="ht_no" value="<?=$ht_no;?>" <?=$htNoStyle;?>> <?=$htYearNotion;?>
+									</td>
 								</tr>
 								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
 									<td>
-										<label for="ht1"><input name="ht" id="ht1" type="radio" value="0"> No</label>
-										<label for="ht2"><input name="ht" id="ht2" type="radio" value="1"> Essential HT</label>
-										<label for="ht3"><input name="ht" id="ht3" type="radio" value="3"> Secondary HT</label>
-										<label for="ht4"><input name="ht" id="ht4" type="radio" value="2"> Uncertain type</label>
-										<div>
-											ปี <input type="text" name="diag_date" id="diag_date">
-										</div>
+										<label for="ht1"><input name="ht" id="ht1" class="htDiag" type="radio" value="0"> No</label>
+										<label for="ht2"><input name="ht" id="ht2" class="htDiag" type="radio" value="1"> Essential HT</label>
+										<label for="ht3"><input name="ht" id="ht3" class="htDiag" type="radio" value="3"> Secondary HT</label>
+										<label for="ht4"><input name="ht" id="ht4" class="htDiag" type="radio" value="2"> Uncertain type</label>
+										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date"></label>
 									</td>
 								</tr>
 								<tr>
 									<td align="right"><strong>โรคร่วม HT : </strong></td>
 									<td>
-										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="Y"> เบาหวาน</label>
-										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="Y"> ไตเรื้อรัง</label>
-										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="Y"> กล้ามเนื้อหัวใจตาย</label>
-										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="Y"> อัมพฤกษ์อัมพาต</label>
+										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="เบาหวาน"> เบาหวาน</label>
+										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="ไตเรื้อรัง"> ไตเรื้อรัง</label>
+										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="กล้ามเนื้อหัวใจตาย"> กล้ามเนื้อหัวใจตาย</label>
+										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="อัมพฤกษ์อัมพาต"> อัมพฤกษ์อัมพาต</label>
 									</td>
 								</tr>
 								<tr>
@@ -2288,6 +2307,16 @@ mmHg </td>
 							</table>
 						</form>
 						<script>
+
+							// ถ้ารายการใน การวินิจฉัย ถูกคลิกให้ทำการเลือกวันที่อัตโนมัติ
+							var htDiagItems = document.getElementsByClassName('htDiag');
+							for (let htDi = 0; htDi < htDiagItems.length; htDi++) {
+								const el = htDiagItems[htDi];
+								el.onclick = function(){
+									document.getElementById('diag_date').focus();
+								}
+							}
+
 							function htDateSelect(divId,url){
 								loadContent(url).then((res)=>{ 
 									document.getElementById(divId).innerHTML = res;
