@@ -261,10 +261,11 @@ if(isset($_GET['id'])){
 	$i=0;
 	if($_POST['pro']=="3" || $_POST['pro']=="4"){
 		//$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' or code='HDL'";  //ค้นหา lab ที่ตรวจ
-		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' status = 'Y' ";  //ค้นหา lab ที่ตรวจ
+		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' and labstatus = 'Y' ";  //ค้นหา lab ที่ตรวจ
 	}else{
-		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' status = 'Y'";  //ค้นหา lab ที่ตรวจ
+		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' and labstatus = 'Y'";  //ค้นหา lab ที่ตรวจ
 	}
+	//echo $sql;
 	$row = mysql_query($sql);
 	while($rep = mysql_fetch_array($row)){
 		$i++;
