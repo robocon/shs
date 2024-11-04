@@ -126,11 +126,11 @@ if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','M
         $doctorcode = "พท.ป. 2252";
     }else if( $subDoctor === 4 ){
         $cDoctor1 = "ประภัสสร เครืออินทร์";
-        $doctorcode = "c. 3011";
+        $doctorcode = "พท.ป. 3011";
     }else if( $subDoctor === 5 ){
         $cDoctor1 = "พิมพ์ทอง สุระเรืองชัย";
         $doctorcode = "พท.ว. 21447";
-    }else if( $subDoctor === 5 ){
+    }else if( $subDoctor === 6 ){
         $cDoctor1 = "ณัฏฐาพร วงศ์เสนา";
         $doctorcode = "พท.ป. 2585";
     }

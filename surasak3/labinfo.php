@@ -321,7 +321,7 @@ if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD
 // MD202 ประภัสสร เครืออินทร์
 // MD212 พิมพ์ทอง สุระเรืองชัย
 // เฉพาะแพทย์แผนไทย
-if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true)
+if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216'))===true)
 {
     ?>
 	<br><br>
