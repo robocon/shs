@@ -3,6 +3,12 @@ include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$uri = explode('/', substr(dirname($_SERVER['PHP_SELF']),1));
+if(isset($_SESSION['sIdname'])){
+	header("Location: ".'http://'.$_SERVER['HTTP_HOST'].'/'.$uri['0'].'/nindex.htm');
+	exit;
+}
+
 // redirect to where are you from
 $match = preg_match('/login_page/', $_SERVER['HTTP_REFERER']);
 if( isset($_SERVER['HTTP_REFERER']) && $match === 0 ){
