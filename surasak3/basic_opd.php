@@ -2178,18 +2178,23 @@ mmHg </td>
 					if($age >=35){
 					?>
 					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ </strong>
-					<span style="margin-left:10px;"><label for="screen_ht1"><input name="screen_ht" id="screen_ht1" onclick="showFormHt()" type="radio" value="y"/> ต้องการ</label></span>
-					<span style="margin-left:10px;"><label for="screen_ht2"><input name="screen_ht" id="screen_ht2" onclick="hideFormHt()" type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_ht1"><input name="screen_ht" id="screen_ht1" type="radio" value="y"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_ht2"><input name="screen_ht" id="screen_ht2" type="radio" value="n"/> ไม่ต้องการ</label></span>
 					<?
 					}
 				}
 				?>
+				<div>
+					<a href="javascript:void(0);" onclick="showFormHt();">ฟอร์มบันทึก Hypertension</a>
+				</div>
 				<script>
 					function showFormHt(){
-						document.getElementById('formHt').style.display = '';
-					}
-					function hideFormHt(){
-						document.getElementById('formHt').style.display = 'none';
+						var el = document.getElementById('formHt');
+						if (el.style.display == 'none') {
+							el.style.display = '';
+						} else {
+							el.style.display = 'none';
+						}
 					}
 				</script>
 				<div id="formHt" style="display:none;">
@@ -2207,21 +2212,25 @@ mmHg </td>
 						}
 					</style>
 					<fieldset>
-						<legend><strong>ฟอร์มความดันเพิ่มเติม</strong></legend>
+						<legend><strong>ฟอร์มบันทึก Hypertension (เพิ่มเติม)</strong></legend>
 						<form action="javascript:void(0)" method="post">
 							<table>
+								<tr>
+									<td align="right"></td>
+									<td>
+										<label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">คลิกเพื่อยืนยันการบันทึกข้อมูล</strong></label>
+									</td>
+								</tr>
 								<tr>
 									<td align="right"><strong>HT number : </strong></td>
 									<td>
 										<?php 
-										$htNoStyle = '';
 										$htYearNotion = '';
 										if(empty($ht_no)){
-											$htNoStyle = 'readonly="readonly"';
 											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
 										}
 										?>
-										<input type="text" name="ht_no" id="ht_no" value="<?=$ht_no;?>" <?=$htNoStyle;?>> <?=$htYearNotion;?>
+										<?=$ht_no;?><?=$htYearNotion;?>
 									</td>
 								</tr>
 								<tr>
@@ -2231,7 +2240,10 @@ mmHg </td>
 										<label for="ht2"><input name="ht" id="ht2" class="htDiag" type="radio" value="1"> Essential HT</label>
 										<label for="ht3"><input name="ht" id="ht3" class="htDiag" type="radio" value="3"> Secondary HT</label>
 										<label for="ht4"><input name="ht" id="ht4" class="htDiag" type="radio" value="2"> Uncertain type</label>
-										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date"></label>
+										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
+										<div id="getYearDiagContainer" class="" style="position:relative; display:none;">
+											<div id="getYearDiag" class="htDateSelectContainer" style="z-index:1;"></div>
+										</div>
 									</td>
 								</tr>
 								<tr>
@@ -2264,11 +2276,11 @@ mmHg </td>
 											<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="document.getElementById('ecgCxrContain').style.display='';"> ได้รับการตรวจ
 										</label>
 										<label for="ecgCxr2">
-											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none';"> ไม่ได้ตรวจ
+											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none'; document.getElementById('dateEcgCxr').value='';"> ไม่ได้ตรวจ
 										</label>
 										<div style="display:none; position:relative;" id="ecgCxrContain">
 											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDate&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<div id="landingDateSelected" class="htDateSelectContainer" style="display:none;"></div>
+											<div id="landingDateSelected" class="htDateSelectContainer" style="display:none; z-index:2;"></div>
 										</div>
 									</td>
 								</tr>
@@ -2276,14 +2288,15 @@ mmHg </td>
 									<td align="right" valign="top"><strong>ได้รับการตรวจ Urine albumin : </strong></td>
 									<td>
 										<label for="albumin1">
-											<input type="radio" name="albumin" id="albumin1" value="1"> ได้รับการตรวจ
+											<input type="radio" name="albumin" id="albumin1" value="1" onclick="document.getElementById('albuminContain').style.display='';"> ได้รับการตรวจ
 										</label>
 										<label for="albumin2">
-											<input type="radio" name="albumin" id="albumin2" value="0"> ไม่ได้ตรวจ
+											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value='';"> ไม่ได้ตรวจ
 										</label>
-										<div style="display:none;" id="albuminContain">
-											<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<div id="landingDateAlbumin" class="htDateSelectContainer" style="display:none;"></div>
+										<div style="display:none; position:relative;" id="albuminContain">
+											<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateAlbumin','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<input type="hidden" name="albuminLabnumber" id="albuminLabnumber">
+											<div id="landingDateAlbumin" class="htDateSelectContainer" style="display:none; z-index:3;"></div>
 										</div>
 									</td>
 								</tr>
@@ -2292,20 +2305,33 @@ mmHg </td>
 									<td align="right" valign="top"><strong>ได้รับการตรวจ Serum Cr. : </strong></td>
 									<td>
 										<label for="creatinine1">
-											<input type="radio" name="creatinine" id="creatinine1" value="1"> ได้รับการตรวจ
+											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="document.getElementById('creatinineContain').style.display='';"> ได้รับการตรวจ
 										</label>
 										<label for="creatinine2">
-											<input type="radio" name="creatinine" id="creatinine2" value="0"> ไม่ได้ตรวจ
+											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value='';"> ไม่ได้ตรวจ
 										</label>
-										<div style="display:none;" id="ecgCxrContain">
-											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<div id="landingDateCreatinine" class="htDateSelectContainer" style="display:none;"></div>
+										<div style="display:none; position:relative;" id="creatinineContain">
+											<input type="text" name="dateCreatinine" id="dateCreatinine"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateCreatinine','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber">
+											<div id="landingDateCreatinine" class="htDateSelectContainer" style="display:none; z-index:4;"></div>
 										</div>
 									</td>
 								</tr>
 							</table>
 						</form>
 						<script>
+							function getYearDiag(){
+								callYearDiag().then((res)=>{
+									console.log(res);
+									document.getElementById('getYearDiag').innerHTML = res;
+									document.getElementById('getYearDiagContainer').style.display = '';
+								});
+							}
+							async function callYearDiag(){
+								const response = await fetch('call/diag.php?action=getDiagFromHn&hn=<?=$hn;?>');
+								const data = await response.text();
+								return data;
+							}
 
 							// ถ้ารายการใน การวินิจฉัย ถูกคลิกให้ทำการเลือกวันที่อัตโนมัติ
 							var htDiagItems = document.getElementsByClassName('htDiag');
