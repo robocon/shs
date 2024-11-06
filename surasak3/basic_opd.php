@@ -1,12 +1,14 @@
 <?php 
 // session_start();
 require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_drugreact.php';
+require_once dirname(__FILE__).'/class_file/class_hypertension.php';
 
-include("connect.inc");
+include("connect.php");
 mysql_query("SET NAMES UTF-8");
 
-require_once dirname(__FILE__).'/class_file/class_drugreact.php';
 $drugreact = new Drugreact();
+$hypertension = new Hypertension();
 
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
@@ -2197,7 +2199,7 @@ mmHg </td>
 						}
 					}
 				</script>
-				<div id="formHt" style="display:none;">
+				<div id="formHt" style="">
 					<style>
 						.htDateSelectContainer{
 							position: absolute;
@@ -2216,15 +2218,11 @@ mmHg </td>
 						<form action="javascript:void(0)" method="post">
 							<table>
 								<tr>
-									<td align="right"></td>
-									<td>
-										<label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">คลิกเพื่อยืนยันการบันทึกข้อมูล</strong></label>
-									</td>
-								</tr>
-								<tr>
 									<td align="right"><strong>HT number : </strong></td>
 									<td>
 										<?php 
+										$htData = $hypertension->getData($hn);
+										
 										$htYearNotion = '';
 										if(empty($ht_no)){
 											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
@@ -2236,11 +2234,16 @@ mmHg </td>
 								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
 									<td>
-										<label for="ht1"><input name="ht" id="ht1" class="htDiag" type="radio" value="0"> No</label>
-										<label for="ht2"><input name="ht" id="ht2" class="htDiag" type="radio" value="1"> Essential HT</label>
-										<label for="ht3"><input name="ht" id="ht3" class="htDiag" type="radio" value="3"> Secondary HT</label>
-										<label for="ht4"><input name="ht" id="ht4" class="htDiag" type="radio" value="2"> Uncertain type</label>
-										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
+										<?php 
+										$htDiagItems = array(0=>'No','Essential HT','Uncertain type','Secondary HT');
+										foreach ($htDiagItems as $k => $v) {
+											$checked = ($k==$htData['ht']) ? 'checked="checked"' : '' ;
+											?>
+											<label for="ht<?=$k;?>"><input name="ht" id="ht<?=$k;?>" class="htDiag" type="radio" value="<?=$k;?>" <?=$checked;?> > <?=$v;?></label>
+											<?php
+										}
+										?>
+										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date" value="<?=$htData['diag_date'];?>"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
 										<div id="getYearDiagContainer" class="" style="position:relative; display:none;">
 											<div id="getYearDiag" class="htDateSelectContainer" style="z-index:1;"></div>
 										</div>
@@ -2249,37 +2252,55 @@ mmHg </td>
 								<tr>
 									<td align="right"><strong>โรคร่วม HT : </strong></td>
 									<td>
-										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="เบาหวาน"> เบาหวาน</label>
-										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="ไตเรื้อรัง"> ไตเรื้อรัง</label>
-										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="กล้ามเนื้อหัวใจตาย"> กล้ามเนื้อหัวใจตาย</label>
-										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="อัมพฤกษ์อัมพาต"> อัมพฤกษ์อัมพาต</label>
+										<?php 
+										$jdd = $htData['joint_disease_dm']=='Y' ? 'checked="checked"' : '' ;
+										$jdn = $htData['joint_disease_nephritic']=='Y' ? 'checked="checked"' : '' ;
+										$jdm = $htData['joint_disease_myocardial']=='Y' ? 'checked="checked"' : '' ;
+										$jdp = $htData['joint_disease_paralysis']=='Y' ? 'checked="checked"' : '' ;
+										?>
+										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="Y" <?=$jdd;?> > เบาหวาน</label>
+										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="Y" <?=$jdn;?> > ไตเรื้อรัง</label>
+										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="Y" <?=$jdm;?> > กล้ามเนื้อหัวใจตาย</label>
+										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="Y" <?=$jdp;?> > อัมพฤกษ์อัมพาต</label>
 									</td>
 								</tr>
 								<tr>
 									<td align="right"><strong>ประวัติบุหรี่ : </strong></td>
 									<td>
-										<label for="cigarette1">
-											<input type="radio" name="cigarette" id="cigarette1" value="0"> ไม่สูบบุหรี่
-										</label>
-										<label for="cigarette2">
-											<input type="radio" name="cigarette" id="cigarette2" value="1"> สูบบุหรี่
-										</label>
-										<label for="cigarette3">
-											<input type="radio" name="cigarette" id="cigarette3" value="2"> ไม่มีข้อมูล
-										</label>
+										<?php 
+										$smokeItems = array(0=>'ไม่สูบบุหรี่','สูบบุหรี่','ไม่มีข้อมูล');
+										foreach ($smokeItems as $k => $v) { 
+											$checked = $k==$htData['smork'] ? 'checked="checked"' : '' ;
+											?>
+											<label for="cigarette<?=$k;?>">
+												<input type="radio" name="cigarette" id="cigarette<?=$k;?>" value="<?=$k;?>" <?=$checked;?> > <?=$v;?>
+											</label>
+											<?php
+										}
+										?>
 									</td>
 								</tr>
 								<tr>
 									<td align="right" valign="top"><strong>ได้รับการตรวจ ECG หรือ CXR : </strong></td>
 									<td>
+										<?php
+										$ecg1 = $htData['ecgCxr'] == '1' ? 'checked="checked"' : '' ;
+										$ecg2 = $htData['ecgCxr'] == '0' ? 'checked="checked"' : '' ;
+										?>
 										<label for="ecgCxr1">
-											<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="document.getElementById('ecgCxrContain').style.display='';"> ได้รับการตรวจ
+											<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="document.getElementById('ecgCxrContain').style.display='';" <?=$ecg1;?> > ได้รับการตรวจ
 										</label>
 										<label for="ecgCxr2">
-											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none'; document.getElementById('dateEcgCxr').value='';"> ไม่ได้ตรวจ
+											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none'; document.getElementById('dateEcgCxr').value='';" <?=$ecg2;?> > ไม่ได้ตรวจ
 										</label>
-										<div style="display:none; position:relative;" id="ecgCxrContain">
-											<input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDate&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+										<?php 
+										$ecgCxrDisplay = 'display:none;';
+										if($htData['ecgCxr'] == '1'){
+											$ecgCxrDisplay = '';
+										}
+										?>
+										<div style="<?=$ecgCxrDisplay;?> position:relative;" id="ecgCxrContain">
+											<input type="text" name="dateEcgCxr" id="dateEcgCxr" value="<?=$htData['dateEcgCxr'];?>"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDate&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
 											<div id="landingDateSelected" class="htDateSelectContainer" style="display:none; z-index:2;"></div>
 										</div>
 									</td>
@@ -2287,15 +2308,25 @@ mmHg </td>
 								<tr>
 									<td align="right" valign="top"><strong>ได้รับการตรวจ Urine albumin : </strong></td>
 									<td>
+										<?php
+										$alb1 = $htData['albumin'] == '1' ? 'checked="checked"' : '' ;
+										$alb2 = $htData['albumin'] == '0' ? 'checked="checked"' : '' ;
+										?>
 										<label for="albumin1">
-											<input type="radio" name="albumin" id="albumin1" value="1" onclick="document.getElementById('albuminContain').style.display='';"> ได้รับการตรวจ
+											<input type="radio" name="albumin" id="albumin1" value="1" onclick="document.getElementById('albuminContain').style.display='';" <?=$alb1;?> > ได้รับการตรวจ
 										</label>
 										<label for="albumin2">
-											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value='';"> ไม่ได้ตรวจ
+											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value='';" <?=$alb2;?> > ไม่ได้ตรวจ
 										</label>
-										<div style="display:none; position:relative;" id="albuminContain">
-											<input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateAlbumin','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<input type="hidden" name="albuminLabnumber" id="albuminLabnumber">
+										<?php 
+										$albDisplay = 'display:none;';
+										if($htData['albumin'] == '1'){
+											$albDisplay = '';
+										}
+										?>
+										<div style="<?=$albDisplay;?> position:relative;" id="albuminContain">
+											<input type="text" name="dateAlbumin" id="dateAlbumin" value="<?=$htData['dateAlbumin'];?>" > <a href="javascript:void(0);" onclick="htDateSelect('landingDateAlbumin','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<input type="hidden" name="albuminLabnumber" id="albuminLabnumber" value="<?=$htData['albuminLabnumber'];?>">
 											<div id="landingDateAlbumin" class="htDateSelectContainer" style="display:none; z-index:3;"></div>
 										</div>
 									</td>
@@ -2304,17 +2335,33 @@ mmHg </td>
 								<tr>
 									<td align="right" valign="top"><strong>ได้รับการตรวจ Serum Cr. : </strong></td>
 									<td>
+										<?php
+										$cre1 = $htData['creatinine'] == '1' ? 'checked="checked"' : '' ;
+										$cre2 = $htData['creatinine'] == '0' ? 'checked="checked"' : '' ;
+										?>
 										<label for="creatinine1">
-											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="document.getElementById('creatinineContain').style.display='';"> ได้รับการตรวจ
+											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="document.getElementById('creatinineContain').style.display='';" <?=$cre1;?> > ได้รับการตรวจ
 										</label>
 										<label for="creatinine2">
-											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value='';"> ไม่ได้ตรวจ
+											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value='';" <?=$cre2;?> > ไม่ได้ตรวจ
 										</label>
-										<div style="display:none; position:relative;" id="creatinineContain">
-											<input type="text" name="dateCreatinine" id="dateCreatinine"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateCreatinine','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber">
+										<?php 
+										$creDisplay = 'display:none;';
+										if($htData['creatinine'] == '1'){
+											$creDisplay = '';
+										}
+										?>
+										<div style="<?=$creDisplay;?> position:relative;" id="creatinineContain">
+											<input type="text" name="dateCreatinine" id="dateCreatinine" value="<?=$htData['dateCreatinine'];?>"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateCreatinine','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber" value="<?=$htData['creatinineLabnumber'];?>">
 											<div id="landingDateCreatinine" class="htDateSelectContainer" style="display:none; z-index:4;"></div>
 										</div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"></td>
+									<td>
+										<label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">ยืนยันการบันทึกข้อมูล Hypertension</strong></label>
 									</td>
 								</tr>
 							</table>

@@ -2,6 +2,14 @@
 require "../connect.php";
 require "../includes/functions.php";
 
+if(empty($_SESSION['sIdname'])){
+	?>
+	<p>Sessionหมดอายุ กรุณาLoginอีกครั้ง</p>
+	<p><a href="../../nindex.htm">เข้าสู่ระบบ</a></p>
+	<?php
+	exit;
+}
+
 $action = sprintf("%s", $_GET['action']);
 if($action==='loadDate'){
 	$hn = sprintf("%s", $_GET['hn']);
