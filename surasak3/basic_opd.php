@@ -75,7 +75,8 @@ if($page=='showdrug')
 	exit;
 }
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -222,18 +223,18 @@ $thidate_now = (date("Y")+543).date("-m-d").date(" H:i:s");
 
 if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "")  || (isset($_POST["print_new_opd"]) && $_POST["print_new_opd"] != "")){
 
-$strSQL1 = "SELECT * FROM doctor WHERE status='y' and row_id= '$_POST[doctor]'";
-$result1 = mysql_query($strSQL1);
-$row1 = mysql_fetch_array($result1);
-$doctorname = $row1['name'];
-//$clinicname = $row1['position'];
-//$roomname = $row1['room'];
+	$strSQL1 = "SELECT * FROM doctor WHERE status='y' and row_id= '$_POST[doctor]'";
+	$result1 = mysql_query($strSQL1);
+	$row1 = mysql_fetch_array($result1);
+	$doctorname = $row1['name'];
+	//$clinicname = $row1['position'];
+	//$roomname = $row1['room'];
 
-if($_POST["cigarette"]=="1"){
-	$_POST["member2"]=$_POST["member2"];
-}else{
-	$_POST["member2"]="";
-}
+	if($_POST["cigarette"]=="1"){
+		// $_POST["member2"]=$_POST["member2"];
+	}else{
+		$_POST["member2"]="";
+	}
 
 	$bp3 = $_POST['bp3'];
 	$bp4 = $_POST['bp4'];
@@ -406,8 +407,8 @@ if($_POST["cigarette"]=="1"){
 					$sbp=$_POST["bp3"];
 				}else{
 					$sbp=$_POST["bp1"];
-				}				
-								
+				}
+				
 				
 				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
 	    		$query1 = mysql_query($sql1) or die("Query failed");
@@ -418,7 +419,7 @@ if($_POST["cigarette"]=="1"){
 				}else{
 					$sex=0;
 				}
-							
+				
 				
 				$waist=$_POST["waist"]*0.39370;
 				$waist=round($waist);
@@ -488,7 +489,38 @@ if($_POST["cigarette"]=="1"){
 		);";
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
+
+		
+
+
 	}
+
+	if($_POST['confirmHt']=='1'){ 
+		
+		$_POST['thidate'] = (date('Y')+543).date('-m-d');
+		$_POST['age_str'] = $rows3["age"];
+		$_POST['ptright'] = $rows3["ptright"];
+		$_POST['diagnosis'] = $rows3["diag"];
+		$_POST['sex'] = $sex;
+		$_POST['joint_disease'] = 0;
+		$_POST['smork'] = $_POST['cigarette'];
+		$_POST['round'] = $_POST['waist'];
+		$_POST['officer'] = $_SESSION['sOfficer'];
+		$_POST['pension_status'] = $rows['pension_status'];
+		if( $_POST['joint_disease_dm'] OR $_POST['joint_disease_nephritic'] OR $_POST['joint_disease_myocardial'] OR $_POST['joint_disease_paralysis'] ){
+			$_POST['joint_disease'] = 1;
+		}
+
+		dump($_SESSION);
+		dump($_POST);
+		$hypertension->setHypertension_clinic($_POST);
+		$hypertension->insert();
+	}
+	
+
+	exit;
+
+
 
 	if(!empty($_POST['display_advice'])){
 		$display_advice = implode('|', $_POST['display_advice']);
@@ -2219,9 +2251,10 @@ mmHg </td>
 							<table>
 								<tr>
 									<td align="right"><strong>HT number : </strong></td>
-									<td>
+									<nput>
 										<?php 
-										$htData = $hypertension->getData($hn);
+										// $htData = $hypertension->getData($hn);
+										$htData = array();
 										
 										$htYearNotion = '';
 										if(empty($ht_no)){
@@ -2229,7 +2262,8 @@ mmHg </td>
 										}
 										?>
 										<?=$ht_no;?><?=$htYearNotion;?>
-									</td>
+										<input type="hidden" name="ht_no" value="<?=$ht_no;?>">
+									</np>
 								</tr>
 								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
@@ -2316,7 +2350,7 @@ mmHg </td>
 											<input type="radio" name="albumin" id="albumin1" value="1" onclick="document.getElementById('albuminContain').style.display='';" <?=$alb1;?> > ได้รับการตรวจ
 										</label>
 										<label for="albumin2">
-											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value='';" <?=$alb2;?> > ไม่ได้ตรวจ
+											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value=''; document.getElementById('albuminLabnumber').value='';" <?=$alb2;?> > ไม่ได้ตรวจ
 										</label>
 										<?php 
 										$albDisplay = 'display:none;';
@@ -2343,7 +2377,7 @@ mmHg </td>
 											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="document.getElementById('creatinineContain').style.display='';" <?=$cre1;?> > ได้รับการตรวจ
 										</label>
 										<label for="creatinine2">
-											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value='';" <?=$cre2;?> > ไม่ได้ตรวจ
+											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value=''; document.getElementById('creatinineLabnumber').value='';" <?=$cre2;?> > ไม่ได้ตรวจ
 										</label>
 										<?php 
 										$creDisplay = 'display:none;';
@@ -2525,10 +2559,10 @@ mmHg </td>
 					<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine2" value="0" <? if($covid19_vaccine=="0"){ echo "checked='checked'";}?>> <label for="covid19_vaccine2">ยังไม่ได้รับการฉีด</label>
 				</span>
 				<strong style="margin-left:20px; color: <?=$vaccinecolor;?>;"><?=$txtvaccine;?></strong>
-				<div>
+				<!-- <div>
 					<button type="button" onclick="moph_check_vaccine('<?=$cIdcard;?>')">ตรวจสอบการได้รับวัคซีนจาก MOPH IC</button>
 					<div id="resVacc"></div>
-				</div>
+				</div> -->
 				<script type="text/javascript">
 
 					function newXmlHttp(){

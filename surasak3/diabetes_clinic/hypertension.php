@@ -1,4 +1,5 @@
 <?php
+session_start();
 require "../connect.php";
 require "../includes/functions.php";
 
@@ -68,17 +69,17 @@ if($action==='loadDate'){
 	$hn = sprintf("%s", $_GET['hn']);
 	$year = date('Y');
 
-	$sql = sprintf("SELECT b.autonumber,b.orderdate,b.hn,b.patientname,b.profilecode,b.autonumber 
+	$sql = sprintf("SELECT b.`autonumber`,CONCAT((SUBSTRING(b.`orderdate`,1,4)+543),SUBSTRING(b.`orderdate`,5,6)) AS `orderdate`,b.`hn`,b.`patientname`,b.`profilecode`,b.`autonumber` 
 	FROM (
-		SELECT MAX(autonumber) AS latest_autonumber 
-		FROM resulthead 
-		WHERE orderdate LIKE '$year%%' 
-		AND hn = '%s'
-		AND profilecode IN ('ALB','UMALB') 
-		GROUP BY hn
+		SELECT MAX(`autonumber`) AS `latest_autonumber` 
+		FROM `resulthead` 
+		WHERE `orderdate` LIKE '$year%%' 
+		AND `hn` = '%s'
+		AND `profilecode` IN ('ALB','UMALB') 
+		GROUP BY `hn`
 	) AS a 
-	LEFT JOIN resulthead AS b ON b.autonumber = a.latest_autonumber
-	ORDER BY b.autonumber ASC",
+	LEFT JOIN `resulthead` AS b ON b.auto`number = a.`latest_autonumber`
+	ORDER BY b.`autonumber` ASC",
 	mysql_escape_string($hn));
 	$q = mysql_query($sql);
 	if(mysql_num_rows($q) > 0){
@@ -127,7 +128,7 @@ if($action==='loadDate'){
 	$hn = sprintf("%s", $_GET['hn']);
 	$year = date('Y');
 
-	$sql = sprintf("SELECT b.autonumber,b.orderdate,b.hn,b.patientname,b.profilecode,b.autonumber 
+	$sql = sprintf("SELECT b.autonumber,CONCAT((SUBSTRING(b.`orderdate`,1,4)+543),SUBSTRING(b.`orderdate`,5,6)) AS `orderdate`,b.hn,b.patientname,b.profilecode,b.autonumber 
 	FROM (
 		SELECT MAX(autonumber) AS latest_autonumber 
 		FROM resulthead 
@@ -720,10 +721,20 @@ if($_REQUEST['do']=='save'){
 	$creatinineLabnumber = $_POST['creatinineLabnumber'];
 
 	
-	$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str`,`diag_date`,`bp3`,`bp4`,
-	`ecgCxr`,`dateEcgCxr`,`albumin`,`dateAlbumin`,`albuminLabnumber`)
-	VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date','$bp3','$bp4',
-	'$ecgCxr','$dateEcgCxr','$albumin','$dateAlbumin','$albuminLabnumber');";
+	$strSQL="INSERT INTO `hypertension_clinic` 
+	( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , 
+	`ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , 
+	`joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , 
+	`round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , 
+	`officer` , `register_date`,pension,`age_str`,`diag_date`,`bp3`, 
+	`bp4`,`ecgCxr`,`dateEcgCxr`,`albumin`,`dateAlbumin`,`albuminLabnumber`)
+	VALUES 
+	('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', 
+	'".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', 
+	'".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', 
+	'".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', 
+	'".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date','$bp3',
+	'$bp4','$ecgCxr','$dateEcgCxr','$albumin','$dateAlbumin','$albuminLabnumber');";
 	$objQuery = mysql_query($strSQL);
 	
 	// เพิ่มเข้าไปใน ประวัติผู้ป่วย
