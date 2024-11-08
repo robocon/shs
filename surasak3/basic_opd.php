@@ -4,6 +4,13 @@ require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/class_file/class_drugreact.php';
 require_once dirname(__FILE__).'/class_file/class_hypertension.php';
 
+/*
+// เอาไว้หาว่าในวันนี้ คนไข้คนไหนที่เข้าเคสเคยมีประวัติ ht บ้าง
+select a.*,b.* from (
+select row_id,hn from opd where thidate like '2567-11-08%'
+) as a left join hypertension_clinic as b on b.hn = a.hn
+where b.row_id is not null
+*/
 include("connect.php");
 mysql_query("SET NAMES UTF-8");
 
@@ -479,7 +486,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		)VALUES (
 			NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
 			'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
-			'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', '".$doctorname."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
+			'".$_POST["congenital_disease"]."', '".$_POST["type"]."', '".htmlspecialchars($_POST["organ"], ENT_QUOTES)."', '".$c."', '".$_SESSION["sOfficer"]."', '".$_POST["vn"]."', 
 			'".$_POST["toborow"]."', '".$_POST["height"]."', '".$_POST["clinic"]."', '".$_POST["cigarette"]."', '".$_POST["alcohol"]."', '".$_POST["member2"]."', 
 			'".$_POST["waist"]."', '".$_POST["typediag"]."', '".$_POST["room"]."', '".$_POST["painscore"]."' ,'".$cAge."','$bp3',
 			'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
@@ -489,39 +496,75 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		);";
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
-
 		
-
-
 	}
 
+	// ยืนยันการบันทึกข้อมูล Hypertension 
 	if($_POST['confirmHt']=='1'){ 
+		if(empty($_POST['ht_no'])){
+			$postData['ht_no'] = $_POST['ht_no'];
+		}else{
+			$htNumber = $hypertension->newHtNumber();
+			$postData['ht_no'] = $htNumber['ht_no'];
+		}
 		
-		$_POST['thidate'] = (date('Y')+543).date('-m-d');
-		$_POST['age_str'] = $rows3["age"];
-		$_POST['ptright'] = $rows3["ptright"];
-		$_POST['diagnosis'] = $rows3["diag"];
-		$_POST['sex'] = $sex;
-		$_POST['joint_disease'] = 0;
-		$_POST['smork'] = $_POST['cigarette'];
-		$_POST['round'] = $_POST['waist'];
-		$_POST['officer'] = $_SESSION['sOfficer'];
-		$_POST['pension_status'] = $rows['pension_status'];
+		$postData['thidate'] = (date('Y')+543).date('-m-d');
+		$postData['hn'] = $_POST["hn"];
+		$postData['doctor'] = $doctorname;
+		$postData['ptname'] = $_POST["ptname"];
+		$postData['ptright'] = $rows3["ptright"];
+		$postData['sex'] = $sex;
+		$postData['diagnosis'] = $rows3["diag"];
+		$postData['ht'] = $_POST['ht'];
+		$postData['joint_disease_dm'] = $_POST['joint_disease_dm'];
+		$postData['joint_disease_nephritic'] = $_POST['joint_disease_nephritic'];
+		$postData['joint_disease_myocardial'] = $_POST['joint_disease_myocardial'];
+		$postData['joint_disease_paralysis'] = $_POST['joint_disease_paralysis'];
+		$postData['smork'] = $_POST['cigarette'];
+		$postData['bmi'] = $_POST['bmi'];
+		$postData['height'] = $_POST['height'];
+		$postData['weight'] = $_POST['weight'];
+		$postData['round'] = $_POST['waist'];
+		$postData['temperature'] = $_POST['temperature'];
+		$postData['pause'] = $_POST['pause'];
+		$postData['rate'] = $_POST['rate'];
+		$postData['bp1'] = $_POST['bp1'];
+		$postData['bp2'] = $_POST['bp2'];
+		$postData['officer'] = $_SESSION['sOfficer'];
+		$postData['officer_edit'] = $_SESSION['sOfficer'];
+		$postData['register_date'] = $_POST['register_date'];
+		$postData['pension'] = $rows['pension_status'];
+		$postData['age_str'] = $rows3["age"];
+		$postData['diag_date'] = $_POST['diag_date'];
+		$postData['bp3'] = $_POST['bp3'];
+		$postData['bp4'] = $_POST['bp4'];
+		$postData['ecgCxr'] = $_POST['ecgCxr'];
+		$postData['dateEcgCxr'] = $_POST['dateEcgCxr'];
+		$postData['albumin'] = $_POST['albumin'];
+		$postData['dateAlbumin'] = $_POST['dateAlbumin'];
+		$postData['albuminLabnumber'] = $_POST['albuminLabnumber'];
+		$postData['creatinine'] = $_POST['creatinine'];
+		$postData['dateCreatinine'] = $_POST['dateCreatinine'];
+		$postData['creatinineLabnumber'] = $_POST['creatinineLabnumber'];
+		
+		$postData['joint_disease'] = 0;
 		if( $_POST['joint_disease_dm'] OR $_POST['joint_disease_nephritic'] OR $_POST['joint_disease_myocardial'] OR $_POST['joint_disease_paralysis'] ){
-			$_POST['joint_disease'] = 1;
+			$postData['joint_disease'] = 1;
+		}
+		
+		$hypertension->setHypertension_clinic($postData);
+
+		if(empty($_POST['hypertension_id'])){
+			$hypertension->insert();
+		}else{
+			$hypertension->setRowId($_POST['hypertension_id']);
+			$hypertension->update();
 		}
 
-		dump($_SESSION);
-		dump($_POST);
-		$hypertension->setHypertension_clinic($_POST);
-		$hypertension->insert();
+		$hypertension->insert_history();
+		
 	}
 	
-
-	exit;
-
-
-
 	if(!empty($_POST['display_advice'])){
 		$display_advice = implode('|', $_POST['display_advice']);
 
@@ -2231,7 +2274,13 @@ mmHg </td>
 						}
 					}
 				</script>
-				<div id="formHt" style="">
+				<?php 
+				$displayFormHt = '';
+				if(empty($ht_no)){
+					$displayFormHt = 'display:none;';
+				}
+				?>
+				<div id="formHt" style="<?=$displayFormHt;?>">
 					<style>
 						.htDateSelectContainer{
 							position: absolute;
@@ -2251,19 +2300,19 @@ mmHg </td>
 							<table>
 								<tr>
 									<td align="right"><strong>HT number : </strong></td>
-									<nput>
+									<td>
 										<?php 
-										// $htData = $hypertension->getData($hn);
-										$htData = array();
+										$htData = $hypertension->getData($hn);
+										if(!empty($htData['error'])){
+											$htData = array();
+										}
 										
 										$htYearNotion = '';
-										if(empty($ht_no)){
-											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
-										}
+										c
 										?>
 										<?=$ht_no;?><?=$htYearNotion;?>
 										<input type="hidden" name="ht_no" value="<?=$ht_no;?>">
-									</np>
+									</td>
 								</tr>
 								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
@@ -2271,7 +2320,7 @@ mmHg </td>
 										<?php 
 										$htDiagItems = array(0=>'No','Essential HT','Uncertain type','Secondary HT');
 										foreach ($htDiagItems as $k => $v) {
-											$checked = ($k==$htData['ht']) ? 'checked="checked"' : '' ;
+											$checked = (!empty($htData['ht']) && $k==$htData['ht']) ? 'checked="checked"' : '' ;
 											?>
 											<label for="ht<?=$k;?>"><input name="ht" id="ht<?=$k;?>" class="htDiag" type="radio" value="<?=$k;?>" <?=$checked;?> > <?=$v;?></label>
 											<?php
@@ -2304,7 +2353,7 @@ mmHg </td>
 										<?php 
 										$smokeItems = array(0=>'ไม่สูบบุหรี่','สูบบุหรี่','ไม่มีข้อมูล');
 										foreach ($smokeItems as $k => $v) { 
-											$checked = $k==$htData['smork'] ? 'checked="checked"' : '' ;
+											$checked = (!empty($htData['smork']) && $k==$htData['smork']) ? 'checked="checked"' : '' ;
 											?>
 											<label for="cigarette<?=$k;?>">
 												<input type="radio" name="cigarette" id="cigarette<?=$k;?>" value="<?=$k;?>" <?=$checked;?> > <?=$v;?>
@@ -2396,6 +2445,7 @@ mmHg </td>
 									<td align="right"></td>
 									<td>
 										<label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">ยืนยันการบันทึกข้อมูล Hypertension</strong></label>
+										<input type="hidden" name="hypertension_id" value="<?=$htData['row_id'];?>">
 									</td>
 								</tr>
 							</table>
@@ -2409,7 +2459,7 @@ mmHg </td>
 								});
 							}
 							async function callYearDiag(){
-								const response = await fetch('call/diag.php?action=getDiagFromHn&hn=<?=$hn;?>');
+								const response = await fetch('call/diag.php?action=getFirstI10FromHn&hn=<?=$hn;?>');
 								const data = await response.text();
 								return data;
 							}

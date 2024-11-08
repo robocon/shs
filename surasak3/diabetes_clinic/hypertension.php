@@ -1,7 +1,11 @@
 <?php
-session_start();
+require_once dirname(__FILE__).'/../bootstrap.php';
+require_once dirname(__FILE__).'/../class_file/class_drugreact.php';
+require_once dirname(__FILE__).'/../class_file/class_hypertension.php';
+
 require "../connect.php";
-require "../includes/functions.php";
+
+$hypertension = new Hypertension();
 
 if(empty($_SESSION['sIdname'])){
 	?>
@@ -9,6 +13,30 @@ if(empty($_SESSION['sIdname'])){
 	<p><a href="../../nindex.htm">เข้าสู่ระบบ</a></p>
 	<?php
 	exit;
+}
+
+function calcage($birth){
+
+	$today=getdate();   
+	$nY=$today['year']; 
+	$nM=$today['mon'] ;
+	$bY=substr($birth,0,4)-543;
+	$bM=substr($birth,5,2);
+	$ageY=$nY-$bY;
+	$ageM=$nM-$bM;
+
+	if ($ageM<0) {
+		$ageY=$ageY-1;
+		$ageM=12+$ageM;
+	}
+
+	if ($ageM==0){
+		$pAge="$ageY ปี";
+	}else{
+		$pAge="$ageY ปี $ageM เดือน";
+	}
+
+	return $pAge;
 }
 
 $action = sprintf("%s", $_GET['action']);
@@ -183,43 +211,9 @@ if($action==='loadDate'){
 	exit;
 }
 
-
-
 $web_title = 'หน้าลงทะเบียนผู้ป่วย Hypertension';
 require "header.php";
-
-// mysql_query("SET NAMES TIS620");
-
-$date_now = date("Y-m-d");
-
-function calcage($birth){
-
-	$today=getdate();   
-	$nY=$today['year']; 
-	$nM=$today['mon'] ;
-	$bY=substr($birth,0,4)-543;
-	$bM=substr($birth,5,2);
-	$ageY=$nY-$bY;
-	$ageM=$nM-$bM;
-
-	if ($ageM<0) {
-		$ageY=$ageY-1;
-		$ageM=12+$ageM;
-	}
-
-	if ($ageM==0){
-		$pAge="$ageY ปี";
-	}else{
-		$pAge="$ageY ปี $ageM เดือน";
-	}
-
-return $pAge;
-}
-
-$thaidate = (date("Y")+543).date("-m-d");
-
 ?>
-
 <style>
 	.font_title{
 		font-family:"TH SarabunPSK"; 
@@ -311,8 +305,8 @@ if(!empty($_POST["p_hn"]) != ""){
 		if($rows){
 		
 			print "<BR><font class='forntsarabun1'> HN  ".$hn." ได้ลงทะเบียนแล้ว </font>";
-			print "<BR><font class='forntsarabun1'> ต้องการ <a href='hypertension_edit.php?p_hn=$hn'>แก้ไข</a> หรือไม่</font>";
-			//print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+			print "<BR><font class='forntsarabun1'> คลิก <a href='hypertension_edit.php?p_hn=$hn'>แก้ไข</a> เพื่อดำเนินการต่อไป</font>";
+			
 		}else{
 	
 			$arr_view = mysql_fetch_assoc($queryht);
@@ -331,8 +325,6 @@ if(!empty($_POST["p_hn"]) != ""){
 			
 			$cigarette=$arr_opd["cigarette"];
 			////////////////////////////////////////
-			
-			$datenow=date("Y-m-d");
 	 
 			$sqlht="select max(ht_no)as htnumber from hypertension_clinic";
 			$queryht=mysql_query($sqlht);

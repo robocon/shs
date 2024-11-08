@@ -73,6 +73,12 @@ class Hypertension extends DbConnect{
         $this->row_id = $this->dbi->real_escape_string($id);
     }
 
+    public function newHtNumber(){
+        $sql = "SELECT  MAX(`ht_no`) AS `ht_no` FROM `hypertension_clinic` LIMIT 1";
+        $res = $this->__singleQuery($sql);
+        return $res;
+    }
+
     public function setHypertension_clinic($a){
         $this->ht_no = $this->dbi->real_escape_string($a['ht_no']);
         $this->thidate = $this->dbi->real_escape_string($a['thidate']);
@@ -138,10 +144,15 @@ class Hypertension extends DbConnect{
             '$this->age_str', '$this->diag_date', '$this->bp3', '$this->bp4', '$this->ecgCxr', '$this->dateEcgCxr', 
             '$this->albumin', '$this->dateAlbumin', '$this->albuminLabnumber', '$this->creatinine', '$this->dateCreatinine', '$this->creatinineLabnumber'
         );";
+        $q = $this->dbi->query($sql);
+        if($this->dbi->error){
+            $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
+            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+        }else{
+            $res = array('hypertension_id' => $q->insert_id);
+        }
 
-        dump($sql);
-        // $q = $this->dbi->query($sql);
-
+        return $res;
 
     }
 
@@ -171,15 +182,55 @@ class Hypertension extends DbConnect{
         `diag_date` = '$this->diag_date', 
         `bp3` = '$this->bp3', 
         `bp4` = '$this->bp4', 
-        `ecgCxr`, = '$this->ecgCxr', 
-        `dateEcgCxr`, = '$this->dateEcgCxr', 
-        `albumin`, = '$this->albumin', 
-        `dateAlbumin`, = '$this->dateAlbumin', 
-        `albuminLabnumber`, = '$this->albuminLabnumber', 
-        `creatinine`, = '$this->creatinine', 
-        `dateCreatinine`, = '$this->dateCreatinine', 
-        `creatinineLabnumber`, = '$this->creatinineLabnumber' 
+        `ecgCxr` = '$this->ecgCxr', 
+        `dateEcgCxr` = '$this->dateEcgCxr', 
+        `albumin` = '$this->albumin', 
+        `dateAlbumin` = '$this->dateAlbumin', 
+        `albuminLabnumber` = '$this->albuminLabnumber', 
+        `creatinine` = '$this->creatinine', 
+        `dateCreatinine` = '$this->dateCreatinine', 
+        `creatinineLabnumber` = '$this->creatinineLabnumber' 
         WHERE `row_id` = '$this->row_id' ";
-        dump($sql);
+        $q = $this->dbi->query($sql);
+        if($this->dbi->error){
+            $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
+            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+        }else{
+            $res = array('status' => 200);
+        }
+        return $res;
+    }
+
+    public function insert_history(){
+
+        $sql = "INSERT INTO `hypertension_history` (
+            `ht_no`, `thidate`, `dateN`, `hn`, `doctor`, 
+            `ptname`, `ptright`, `sex`, `diagnosis`, `ht`, `joint_disease`, 
+            `joint_disease_dm`, `joint_disease_nephritic`, `joint_disease_myocardial`, `joint_disease_paralysis`, `smork`, `bmi`, 
+            `height`, `weight`, `round`, `temperature`, `pause`, `rate`, 
+            `bp1`, `bp2`, `officer`, `officer_edit`, `register_date`, `pension`, 
+            `age_str`, `diag_date`, `bp3`, `bp4`, `ecgCxr`, `dateEcgCxr`, 
+            `albumin`, `dateAlbumin`, `albuminLabnumber`, `creatinine`, `dateCreatinine`, `creatinineLabnumber`
+        ) 
+        VALUES 
+        (
+            '$this->ht_no', '$this->thidate', '$this->dateN', '$this->hn', '$this->doctor', 
+            '$this->ptname', '$this->ptright', '$this->sex', '$this->diagnosis', '$this->ht', '$this->joint_disease', 
+            '$this->joint_disease_dm', '$this->joint_disease_nephritic', '$this->joint_disease_myocardial', '$this->joint_disease_paralysis', '$this->smork', '$this->bmi', 
+            '$this->height', '$this->weight', '$this->round', '$this->temperature', '$this->pause', '$this->rate', 
+            '$this->bp1', '$this->bp2', '$this->officer', '$this->officer_edit', '$this->register_date', '$this->pension', 
+            '$this->age_str', '$this->diag_date', '$this->bp3', '$this->bp4', '$this->ecgCxr', '$this->dateEcgCxr', 
+            '$this->albumin', '$this->dateAlbumin', '$this->albuminLabnumber', '$this->creatinine', '$this->dateCreatinine', '$this->creatinineLabnumber'
+        );";
+
+        $q = $this->dbi->query($sql);
+        if($this->dbi->error){
+            $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
+            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+        }else{
+            $res = array('hypertension_id' => $q->insert_id);
+        }
+        return $res;
+
     }
 }
