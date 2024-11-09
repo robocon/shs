@@ -501,7 +501,8 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 
 	// ยืนยันการบันทึกข้อมูล Hypertension 
 	if($_POST['confirmHt']=='1'){ 
-		if(empty($_POST['ht_no'])){
+
+		if(!empty($_POST['ht_no'])){
 			$postData['ht_no'] = $_POST['ht_no'];
 		}else{
 			$htNumber = $hypertension->newHtNumber();
@@ -561,8 +562,18 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$hypertension->update();
 		}
 
-		$hypertension->insert_history();
-		
+		$res = $hypertension->getHtHistoryThisDay($_POST["hn"]);
+		if($res['error_code']==400){
+
+			/**
+			 * @readme มันยังขาด DateN ถ้าไป insert ใน hypertension_history เลย มันจะได้วันที่เป็นปัจจุบัน แต่จริงๆ ต้องเป็นวันที่ผู้ป่วยลงทะเบียน HT เป็นครั้งแรก(อาจจะดึงจาก hypertension_clinic ปกติ)
+			 */
+			// $hypertension->setDateN()
+			$hypertension->insert_history();
+		}else{
+			$hypertension->setHistoryId($res['id']);
+			$hypertension->update_history();
+		}
 	}
 	
 	if(!empty($_POST['display_advice'])){
@@ -2275,12 +2286,10 @@ mmHg </td>
 					}
 				</script>
 				<?php 
-				$displayFormHt = '';
-				if(empty($ht_no)){
-					$displayFormHt = 'display:none;';
-				}
+				// 
+				$htData = $hypertension->getOneFromHn($_POST['hn']);
 				?>
-				<div id="formHt" style="<?=$displayFormHt;?>">
+				<div id="formHt" style="<?=($htData['error_code']==400 ? 'display:none;' : '' );?>">
 					<style>
 						.htDateSelectContainer{
 							position: absolute;
@@ -2302,25 +2311,34 @@ mmHg </td>
 									<td align="right"><strong>HT number : </strong></td>
 									<td>
 										<?php 
-										$htData = $hypertension->getData($hn);
-										if(!empty($htData['error'])){
+										
+										if($htData['error_code']==400){
 											$htData = array();
 										}
 										
 										$htYearNotion = '';
-										c
+										if(empty($htData['ht_no'])){
+											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
+										}
 										?>
-										<?=$ht_no;?><?=$htYearNotion;?>
-										<input type="hidden" name="ht_no" value="<?=$ht_no;?>">
+										<?=$htData['ht_no'];?><?=$htYearNotion;?>
+										<input type="hidden" name="ht_no" value="<?=$htData['ht_no'];?>">
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+										<?php //dump($htData); ?>
 									</td>
 								</tr>
 								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
 									<td>
 										<?php 
-										$htDiagItems = array(0=>'No','Essential HT','Uncertain type','Secondary HT');
+										
+										$htDiagItems = array(0=>'No',1=>'Essential HT',3=>'Secondary HT',2=>'Uncertain type');
 										foreach ($htDiagItems as $k => $v) {
-											$checked = (!empty($htData['ht']) && $k==$htData['ht']) ? 'checked="checked"' : '' ;
+											$checked = (!is_null($htData['ht']) && $k==$htData['ht']) ? 'checked="checked"' : '' ;
 											?>
 											<label for="ht<?=$k;?>"><input name="ht" id="ht<?=$k;?>" class="htDiag" type="radio" value="<?=$k;?>" <?=$checked;?> > <?=$v;?></label>
 											<?php
@@ -2329,7 +2347,7 @@ mmHg </td>
 										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date" value="<?=$htData['diag_date'];?>"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
 										<div id="getYearDiagContainer" class="" style="position:relative; display:none;">
 											<div id="getYearDiag" class="htDateSelectContainer" style="z-index:1;"></div>
-										</div>
+										tdiv>
 									</td>
 								</tr>
 								<tr>
@@ -2353,7 +2371,7 @@ mmHg </td>
 										<?php 
 										$smokeItems = array(0=>'ไม่สูบบุหรี่','สูบบุหรี่','ไม่มีข้อมูล');
 										foreach ($smokeItems as $k => $v) { 
-											$checked = (!empty($htData['smork']) && $k==$htData['smork']) ? 'checked="checked"' : '' ;
+											$checked = (!is_null($htData['smork']) && $k==$htData['smork']) ? 'checked="checked"' : '' ;
 											?>
 											<label for="cigarette<?=$k;?>">
 												<input type="radio" name="cigarette" id="cigarette<?=$k;?>" value="<?=$k;?>" <?=$checked;?> > <?=$v;?>
