@@ -69,7 +69,7 @@ if($_REQUEST['do']=='save'){
 	$data['officer_edit'] = '';
 
 	$data['ht_no'] = $_POST["ht_no"];
-	$data['thaidate'] = $_POST["thaidate"];
+	$data['thidate'] = $_POST["thaidate"];
 	$data['hn'] = $_POST['hn'];
 	$data['doctor'] = $_POST['doctor'];
 	$data['ptname'] = $_POST['ptname'];
@@ -91,28 +91,21 @@ if($_REQUEST['do']=='save'){
 	$data['bp1'] = $_POST['bp1'];
 	$data['bp2'] = $_POST['bp2'];
 	$data['pension'] = $_POST['pension'];
-	$data['age'] = $_POST['age'];
+	$data['age_str'] = $_POST['age'];
+	$data['smork'] = $_POST['cigarette'];
 	
 	$hypertension->setHypertension_clinic($data);
 	$res = $hypertension->insert();
-	
-	
-	// เพิ่มเข้าไปใน ประวัติผู้ป่วย
-	// $strSQL="INSERT INTO `hypertension_history` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease`, `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date`,pension,`age_str`,`diag_date`,`bp3`,`bp4` )
-	// VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '$joint_disease', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."','".$_POST['pension']."','".$_POST['age']."','$diag_date','$bp3','$bp4');";
-	// $objQuery = mysql_query($strSQL);
+
+	$hypertension->insert_history();
 	
 	if($res['error_code']!=='400')
 	{
 		$msg = "บันทึกข้อมูลเรียบร้อยแล้ว";
-		// echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
-		// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
 	}
 	else
 	{
-		$msg = "ไม่สามารถบันทึกได้ (".mysql_error($Conn).")";
-		// echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกได้ [".mysql_error($Conn)."]</font>";
-		// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension.php'>";
+		$msg = "ไม่สามารถบันทึกได้ ".$res['msg'];
 	}
 	$_SESSION['x_message'] = $msg;
 	header("Location: hypertension.php");

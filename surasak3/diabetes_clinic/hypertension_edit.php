@@ -1,36 +1,90 @@
 <?php
-session_start();
+// session_start();
 
-error_reporting(1);
-ini_set('display_errors', 1);
+// error_reporting(1);
+// ini_set('display_errors', 1);
+require_once dirname(__FILE__).'/../bootstrap.php';
+require_once dirname(__FILE__).'/../class_file/class_hypertension.php';
 
 require "../connect.php";
-require "../includes/functions.php";
+// require "../includes/functions.php";
+
+$hypertension = new Hypertension();
+
 
 if ($_POST['do'] === 'save') {
 
-	$dateN = date("Y-m-d");
-	//$register=date("Y-m-d H:i:s");
+	
+	$data['dateN'] = date("Y-m-d");
+	$data['register_date'] = date("Y-m-d H:i:s");
+	
+	$data['joint_disease'] = 0;
+	if( $_POST['joint_disease_dm'] OR $_POST['joint_disease_nephritic'] OR $_POST['joint_disease_myocardial'] OR $_POST['joint_disease_paralysis'] ){
+		$data['joint_disease'] = 1;
+	}
 
-	$diag_date = $_POST['diag_date'];
+	$data['diag_date'] = $_POST['diag_date'];
 
-	$bp3 = $_POST['bp3'];
-	$bp4 = $_POST['bp4'];
+	$data['bp3'] = $_POST['bp3'];
+	$data['bp4'] = $_POST['bp4'];
 
-	$ecgCxr = $_POST['ecgCxr'];
-	$dateEcgCxr = $_POST['dateEcgCxr'];
+	$data['ecgCxr'] = $_POST['ecgCxr'];
+	$data['dateEcgCxr'] = $_POST['dateEcgCxr'];
 
-	$albumin = $_POST['albumin'];
-	$dateAlbumin = $_POST['dateAlbumin'];
-	$albuminLabnumber = $_POST['albuminLabnumber'];
+	$data['albumin'] = $_POST['albumin'];
+	$data['dateAlbumin'] = $_POST['dateAlbumin'];
+	$data['albuminLabnumber'] = $_POST['albuminLabnumber'];
 
-	$creatinine = $_POST['creatinine'];
-	$dateCreatinine = $_POST['dateCreatinine'];
-	$creatinineLabnumber = $_POST['creatinineLabnumber'];
+	$data['creatinine'] = $_POST['creatinine'];
+	$data['dateCreatinine'] = $_POST['dateCreatinine'];
+	$data['creatinineLabnumber'] = $_POST['creatinineLabnumber'];
+
+	$data['officer'] = $_SESSION['sOfficer'];
+	$data['officer_edit'] = '';
+
+	$data['ht_no'] = $_POST["ht_no"];
+	$data['thidate'] = $_POST["thaidate"];
+	$data['hn'] = $_POST['hn'];
+	$data['doctor'] = $_POST['doctor'];
+	$data['ptname'] = $_POST['ptname'];
+	$data['ptright'] = $_POST['ptright'];
+	$data['sex'] = $_POST['sex'];
+	$data['ht'] = $_POST['ht'];
+	$data['joint_disease_dm'] = $_POST['joint_disease_dm'];
+	$data['joint_disease_nephritic'] = $_POST['joint_disease_nephritic'];
+	$data['joint_disease_myocardial'] = $_POST['joint_disease_myocardial'];
+	$data['joint_disease_paralysis'] = $_POST['joint_disease_paralysis'];
+	$data['cigarette'] = $_POST['cigarette'];
+	$data['bmi'] = $_POST['bmi'];
+	$data['height'] = $_POST['height'];
+	$data['weight'] = $_POST['weight'];
+	$data['round'] = $_POST['round'];
+	$data['temperature'] = $_POST['temperature'];
+	$data['pause'] = $_POST['pause'];
+	$data['rate'] = $_POST['rate'];
+	$data['bp1'] = $_POST['bp1'];
+	$data['bp2'] = $_POST['bp2'];
+	$data['pension'] = $_POST['pension'];
+	$data['age_str'] = $_POST['age'];
+	$data['smork'] = $_POST['cigarette'];
+	// dump($data);
+	// exit;
+
+
+	// dump($_POST);
+	$hypertension->setRowId($_POST['row_id']);
+	$hypertension->setHypertension_clinic($data);
+	$resUpdate = $hypertension->update();
+	// dump($resUpdate);
+
+	$hypertension->setHistoryId($_POST['hypertention_edit_id']);
+	$resHistory = $hypertension->update_history();
+	// dump($resHistory);
 
 	/*$strSQL="INSERT INTO `hypertension_clinic` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , `ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , `joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , `smork` , `bmi` , `height` , `weight` , `round` , `temperature` , `pause` , `rate` , `bp1` , `bp2` , `officer` , `register_date` )
 	   VALUES ('".$_POST["ht_no"]."','".$_POST["thaidate"]."', '".$dateN."', '".$_POST['hn']."', '".$_POST['doctor']."', '".$_POST['ptname']."', '".$_POST['ptright']."', '".$_POST['sex']."', '".$_POST['ht']."', '".$_POST['joint_disease_dm']."', '".$_POST['joint_disease_nephritic']."', '".$_POST['joint_disease_myocardial']."', '".$_POST['joint_disease_paralysis']."', '".$_POST['cigarette']."', '".$_POST['bmi']."', '".$_POST['height']."','".$_POST['weight']."', '".$_POST['round']."', '".$_POST['temperature']."', '".$_POST['pause']."', '".$_POST['rate']."', '".$_POST['bp1']."', '".$_POST['bp2']."', '".$sOfficer."', '".$register."');";
 	   $objQuery = mysql_query($strSQL);*/
+	/*
 	$strSQL = "UPDATE `hypertension_clinic` SET `thidate` = '" . $_POST["thaidate"] . "',
 	`doctor` = '" . $_POST["doctor"] . "',
 	`ptname` = '" . $_POST["ptname"] . "',
@@ -64,18 +118,19 @@ if ($_POST['do'] === 'save') {
 	`dateCreatinine`, = '$dateCreatinine',
 	`creatinineLabnumber`, = '$creatinineLabnumber' 
 	WHERE `row_id` = '" . $_POST["row_id"] . "' ";
-
+	*/
 
 	// $logs = $strSQL."\r\n";
 	// $logs .= "---------------------------\r\n\r\n";
 	// file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
 
-	$objQuery = mysql_query($strSQL) or die(mysql_error($Conn));
+	// $objQuery = mysql_query($strSQL) or die(mysql_error($Conn));
 
 	// เพิ่มเข้าไปใน ประวัติผู้ป่วย
-	$register = date("Y-m-d H:i:s");
-	$pension = isset($_POST['pension']) ? $_POST['pension'] : '';
+	// $register = date("Y-m-d H:i:s");
+	// $pension = isset($_POST['pension']) ? $_POST['pension'] : '';
 
+	/*
 	$strSQL = "INSERT INTO `hypertension_history` ( `ht_no` , `thidate` , `dateN` , `hn` , `doctor` , 
 	`ptname` , `ptright` , `sex` , `ht` , `joint_disease_dm` , 
 	`joint_disease_nephritic` , `joint_disease_myocardial` , `joint_disease_paralysis` , 
@@ -88,24 +143,33 @@ if ($_POST['do'] === 'save') {
 	'" . $_POST['cigarette'] . "', '" . $_POST['bmi'] . "', '" . $_POST['height'] . "','" . $_POST['weight'] . "', '" . $_POST['round'] . "', 
 	'" . $_POST['temperature'] . "', '" . $_POST['pause'] . "', '" . $_POST['rate'] . "', '" . $_POST['bp1'] . "', '" . $_POST['bp2'] . "', 
 	'" . $sOfficer . "', '" . $register . "','" . $pension . "','" . $_POST['age'] . "','$diag_date','$bp3','$bp4');";
-
+	*/
 	// $logs = $strSQL."\r\n";
 	// $logs .= "---------------------------\r\n\r\n";
 	// file_put_contents('../logs/hypertention-edit.log', $logs, FILE_APPEND);
 
 
-	$objQuery = mysql_query($strSQL) or die(mysql_error($Conn));
+	// $objQuery = mysql_query($strSQL) or die(mysql_error($Conn));
 
-	if ($objQuery) {
-		echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
-		print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
+	if ($res['error_code']!=='400') {
+		// echo "<br><font class='forntsarabun1'>บันทึกข้อมูลเรียบร้อยแล้ว</font>";
+		// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
+		$msg = 'บันทึกข้อมูลเรียบร้อยแล้ว';
 	} else {
-		echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกได้ [" . $strSQL . "]</font>";
-		print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
+		// echo "<br><font class='forntsarabun1'>ไม่สามารถบันทึกได้ [" . $strSQL . "]</font>";
+		// print "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=hypertension_edit.php'>";
+		$msg = 'ไม่สามารถบันทึกได้ '.$res['msg'];
 	}
 
 	// include("../unconnect.inc");	 
 	//  }
+
+	$_SESSION['x_message'] = $msg;
+	header("Location: hypertension_edit.php");
+	
+	exit;
+
+
 }
 
 $web_title = 'หน้าอัพเดทข้อมูล Hypertension';
@@ -204,9 +268,8 @@ function calcage($birth)
 						<TD align="center" bgcolor="#0000CC" class="forntsarabun">กรอกหมายเลข HN</TD>
 					</TR>
 					<TR>
-						<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1" id="p_hn"
-								value="<?php echo $_POST["p_hn"]; ?>" />&nbsp;<input name="Submit" type="submit"
-								class="forntsarabun1" value="ตกลง" /></TD>
+						<TD class="tb_font">
+							<input name="p_hn" type="text" class="forntsarabun1" id="p_hn" value="<?php echo $_REQUEST["p_hn"]; ?>" />&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
 					</TR>
 					<TR>
 						<TD></TD>
@@ -228,7 +291,7 @@ if($_SESSION['x_message']){
 $hn = trim($_POST["p_hn"]);
 if (!empty($_POST["p_hn"]) != "") {
 
-	$csql = "SELECT * FROM `hypertension_clinic` WHERE hn='$hn' ";
+	$csql = sprintf("SELECT * FROM `hypertension_clinic` WHERE hn='%s' ",mysql_real_escape_string($hn));
 	$cquery = mysql_query($csql);
 	$crow = mysql_num_rows($cquery);
 	if (!$crow) {
@@ -242,7 +305,7 @@ if (!empty($_POST["p_hn"]) != "") {
 
 		$diag_date = $arr_opd['diag_date'];
 
-		$sqlht = "select *,concat(yot,name,' ',surname)as ptname from opcard where hn='$hn' ";
+		$sqlht = sprintf("select *,concat(yot,name,' ',surname)as ptname from opcard where hn='%s' ",mysql_real_escape_string($hn));
 		$queryht = mysql_query($sqlht);
 		$row = mysql_num_rows($queryht);
 		$arr_view = mysql_fetch_assoc($queryht);
@@ -256,6 +319,11 @@ if (!empty($_POST["p_hn"]) != "") {
 		////////////////////////////////////////
 		$ht_no = $arr_opd['ht_no'];
 		$datenow = date("Y-m-d");
+
+		$sql = "SELECT `id` FROM `hypertension_history` WHERE `thidate` = '$datenow' AND `hn` = '$hn' ";
+		$q = mysql_query($sql);
+		$htEdit = mysql_fetch_assoc($q);
+		$hypertention_edit_id = $htEdit['id'];
 		
 		$do = 'save';
 		$urlCallBack = 'hypertension_edit.php';

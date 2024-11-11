@@ -1,5 +1,5 @@
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM METHOD="post" action="<?=$urlCallBack;?>" name="F1" style="margin-top:8px;">
+<FORM METHOD="post" action="<?=$urlCallBack;?>" name="F1" style="margin-top:8px;" onsubmit="return checkForm()">
     <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" style="min-width:800px;">
         <TR>
             <TD>
@@ -23,7 +23,7 @@
                                     <td align="right" class="tb_font_2">HT number :</td>
                                     <td>
                                         <span class="data_show">
-                                            <input name="ht_no" type="text" class="forntsarabun1" id="ht_no" value="<?=$ht_no; ?>" />
+                                            <input name="ht_no" type="text" class="forntsarabun1" id="ht_no" value="<?=$ht_no; ?>" readonly/>
                                         </span>
                                     </td>
                                     <td align="right"><span class="tb_font_2">HN :</span></td>
@@ -112,51 +112,39 @@
                                 <tr>
                                     <td width="70" align="right" class="tb_font_2">ส่วนสูง : </td>
                                     <td>
-                                        <input name="height" type="text" class="forntsarabun1"
-                                            value="<?php echo $height; ?>" size="3" maxlength="5"
-                                            onBlur="calbmi(this.value,document.F1.weight.value)" /> ซม.
+                                        <input id="height" name="height" type="text" class="forntsarabun1" value="<?php echo $height; ?>" size="3" maxlength="5" onBlur="calbmi(this.value,document.F1.weight.value)" /> ซม.
                                     </td>
                                     <td width="70" align="right" class="tb_font_2">น้ำหนัก : </td>
                                     <td>
-                                        <input name="weight" type="text" class="forntsarabun1"
-                                            value="<?php echo $weight; ?>" size="3" maxlength="5"
-                                            onBlur="calbmi(document.F1.height.value,this.value)" /> กก.
+                                        <input id="weight" name="weight" type="text" class="forntsarabun1" value="<?php echo $weight; ?>" size="3" maxlength="5" onBlur="calbmi(document.F1.height.value,this.value)" /> กก.
                                     </td>
                                     <td width="70" align="right" class="tb_font_2">BMI :</td>
                                     <td width="70" class="tb_font_2">
-                                        <input name="bmi" type="text" size="3" value="<?php echo $bmi; ?>"
-                                            class="forntsarabun1" />
+                                        <input name="bmi" type="text" size="3" value="<?php echo $bmi; ?>" class="forntsarabun1" />
                                     </td>
                                     <td width="70" class="tb_font_2">&nbsp;</td>
                                     <td align="right"><span class="tb_font_2">รอบเอว : </span></td>
                                     <td>
-                                        <input name="round" type="text" class="forntsarabun1" id="round"
-                                            value="<?php echo $arr_opd["round"]; ?>" size="1" maxlength="5" /> ซม.
+                                        <input name="round" type="text" class="forntsarabun1" id="round" value="<?php echo $arr_opd["round"]; ?>" size="1" maxlength="5" /> ซม.
                                     </td>
                                     <td colspan="3">&nbsp;</td>
                                 </tr>
                                 <tr>
                                     <td align="right" class="tb_font_2">T : </td>
                                     <td>
-                                        <input name="temperature" type="text" size="1" maxlength="5"
-                                            value="<?php echo $arr_opd["temperature"]; ?>" class="forntsarabun1" />
-                                        C&deg;
+                                        <input name="temperature" id="temperature" type="text" size="1" maxlength="5" value="<?php echo $arr_opd["temperature"]; ?>" class="forntsarabun1" /> C&deg;
                                     </td>
                                     <td align="right" class="tb_font_2">P : </td>
                                     <td>
-                                        <input name="pause" type="text" size="1" maxlength="3"
-                                            value="<?php echo $arr_opd["pause"]; ?>" class="forntsarabun1" /> ครั้ง/นาที
+                                        <input name="pause" id="pause" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["pause"]; ?>" class="forntsarabun1" /> ครั้ง/นาที
                                     </td>
                                     <td align="right" class="tb_font_2">R :</td>
                                     <td class="" colspan="2">
-                                        <input name="rate" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["rate"]; ?>" class="forntsarabun1" /> ครั้ง/นาที
+                                        <input name="rate" id="rate" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["rate"]; ?>" class="forntsarabun1" /> ครั้ง/นาที
                                     </td>
                                     <td align="right"><span class="tb_font_2">BP :</span></td>
                                     <td>
-                                        <input name="bp1" type="text" size="1" maxlength="3"
-                                            value="<?php echo $arr_opd["bp1"]; ?>" class="forntsarabun1" /> / <input
-                                            name="bp2" type="text" size="1" maxlength="3"
-                                            value="<?php echo $arr_opd["bp2"]; ?>" class="forntsarabun1" /> mmHg
+                                        <input name="bp1" id="bp1" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp1"]; ?>" class="forntsarabun1" /> / <input name="bp2" id="bp2" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp2"]; ?>" class="forntsarabun1" /> mmHg
                                     </td>
                                     <td>&nbsp;</td>
                                     <td class="tb_font_2">&nbsp;</td>
@@ -172,10 +160,7 @@
                                     <td></td>
                                     <td align="right" class="tb_font_2">Repeat BP : </td>
                                     <td>
-                                        <input name="bp3" type="text" size="1" maxlength="3"
-                                            value="<?php echo $arr_opd["bp3"]; ?>" class="forntsarabun1" /> / <input
-                                            name="bp4" type="text" size="1" maxlength="3"
-                                            value="<?php echo $arr_opd["bp4"]; ?>" class="forntsarabun1" /> mmHg
+                                        <input name="bp3" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp3"]; ?>" class="forntsarabun1" /> / <input name="bp4" type="text" size="1" maxlength="3" value="<?php echo $arr_opd["bp4"]; ?>" class="forntsarabun1" /> mmHg
                                     </td>
                                     <td></td>
                                     <td></td>
@@ -265,38 +250,24 @@
                                 <tr>
                                     <td align="right" class="tb_font_2"> ประวัติบุหรี่ : </td>
                                     <td colspan="5">
-                                        <label for="cig1"><input type="radio" id="cig1" name="cigarette" value="0" <?php if ($cigarette == 0) {
-                                            echo "checked";
-                                        } ?>>ไม่สูบบุหรี่</label>
-                                        <label for="cig2"><input type="radio" id="cig2" name="cigarette" value="1" <?php if ($cigarette == 1) {
-                                            echo "checked";
-                                        } ?>>สูบบุหรี่</label>
-                                        <label for="cig3"><input type="radio" id="cig3" name="cigarette" value="2" <?php if ($cigarette == 2) {
-                                            echo "checked";
-                                        } ?>>NA</label>
+                                        <label for="cig1"><input type="radio" id="cig1" name="cigarette" value="0" <?php if ($cigarette == 0) {echo "checked";} ?>>ไม่สูบบุหรี่</label>
+                                        <label for="cig2"><input type="radio" id="cig2" name="cigarette" value="1" <?php if ($cigarette == 1) {echo "checked";} ?>>สูบบุหรี่</label>
+                                        <label for="cig3"><input type="radio" id="cig3" name="cigarette" value="2" <?php if ($cigarette == 2) {echo "checked";} ?>>NA</label>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ ECG หรือ
-                                            CXR : </strong></td>
+                                    <td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ ECG หรือ CXR : </strong></td>
                                     <td>
-                                        <input type="radio" name="ecgCxr" id="ecgCxr1" value="1"
-                                            onclick="activeEcgCxrContain(this.value)"> <label
-                                            for="ecgCxr1">ได้รับการตรวจ</label>&nbsp;&nbsp;
-                                        <input type="radio" name="ecgCxr" id="ecgCxr2" value="0"
-                                            onclick="activeEcgCxrContain(this.value)"><label
-                                            for="ecgCxr2">ไม่ได้ตรวจ</label>
+                                        <input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="activeEcgCxrContain(this.value)"> <label for="ecgCxr1">ได้รับการตรวจ</label>&nbsp;&nbsp;
+                                        <input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="activeEcgCxrContain(this.value)"><label for="ecgCxr2">ไม่ได้ตรวจ</label>
                                     </td>
                                 </tr>
                                 <tr id="ecgCxrContain" style="display:none;">
                                     <td></td>
                                     <td>
                                         <div style="position:relative;">
-                                            <input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a
-                                                href="javascript:void(0);"
-                                                onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
-                                            <div id="landingDateSelected"
-                                                style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
+                                            <input type="text" name="dateEcgCxr" id="dateEcgCxr"> <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+                                            <div id="landingDateSelected" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
                                             </div>
                                         </div>
                                     </td>
@@ -305,24 +276,17 @@
                                     <td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Urine
                                             albumin : </strong></td>
                                     <td>
-                                        <input type="radio" name="albumin" id="albumin1" value="1"
-                                            onclick="activeAlbuminContain(this.value)"> <label
-                                            for="albumin1">ได้รับการตรวจ</label>&nbsp;&nbsp;
-                                        <input type="radio" name="albumin" id="albumin2" value="0"
-                                            onclick="activeAlbuminContain(this.value)"><label
-                                            for="albumin2">ไม่ได้ตรวจ</label>
+                                        <input type="radio" name="albumin" id="albumin1" value="1" onclick="activeAlbuminContain(this.value)"> <label for="albumin1">ได้รับการตรวจ</label>&nbsp;&nbsp;
+                                        <input type="radio" name="albumin" id="albumin2" value="0" onclick="activeAlbuminContain(this.value)"><label for="albumin2">ไม่ได้ตรวจ</label>
                                     </td>
                                 </tr>
                                 <tr id="albuminContain" style="display:none;">
                                     <td></td>
                                     <td>
                                         <div style="position:relative;">
-                                            <input type="text" name="dateAlbumin" id="dateAlbumin"> <a
-                                                href="javascript:void(0);"
-                                                onclick="showDateAlbumin()">เลือกวันที่ตรวจ</a>
+                                            <input type="text" name="dateAlbumin" id="dateAlbumin"> <a href="javascript:void(0);" onclick="showDateAlbumin()">เลือกวันที่ตรวจ</a>
                                             <input type="hidden" name="albuminLabnumber" id="albuminLabnumber">
-                                            <div id="landingDateAlbumin"
-                                                style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
+                                            <div id="landingDateAlbumin" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
                                             </div>
                                         </div>
                                     </td>
@@ -331,24 +295,17 @@
                                     <td align="right" class="tb_font_2"><strong class="tb_font_2">ได้รับการตรวจ Serum
                                             Cr. : </strong></td>
                                     <td>
-                                        <input type="radio" name="creatinine" id="creatinine1" value="1"
-                                            onclick="activeCreatinineContain(this.value)"> <label
-                                            for="creatinine1">ได้รับการตรวจ</label>&nbsp;&nbsp;
-                                        <input type="radio" name="creatinine" id="creatinine2" value="0"
-                                            onclick="activeCreatinineContain(this.value)"><label
-                                            for="creatinine2">ไม่ได้ตรวจ</label>
+                                        <input type="radio" name="creatinine" id="creatinine1" value="1" onclick="activeCreatinineContain(this.value)"> <label for="creatinine1">ได้รับการตรวจ</label>&nbsp;&nbsp;
+                                        <input type="radio" name="creatinine" id="creatinine2" value="0" onclick="activeCreatinineContain(this.value)"><label for="creatinine2">ไม่ได้ตรวจ</label>
                                     </td>
                                 </tr>
                                 <tr id="creatinineContain" style="display:none;">
                                     <td></td>
                                     <td>
                                         <div style="position:relative;">
-                                            <input type="text" name="dateCreatinine" id="dateCreatinine"> <a
-                                                href="javascript:void(0);"
-                                                onclick="showDateCreatinine()">เลือกวันที่รับบริการ</a>
+                                            <input type="text" name="dateCreatinine" id="dateCreatinine"> <a href="javascript:void(0);" onclick="showDateCreatinine()">เลือกวันที่รับบริการ</a>
                                             <input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber">
-                                            <div id="landingDateCreatinine"
-                                                style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
+                                            <div id="landingDateCreatinine" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
                                             </div>
                                         </div>
                                     </td>
@@ -366,12 +323,53 @@
                 <input name="submit" type="submit" class="forntsarabun1" value="บันทึกข้อมูล" style="padding:8px;"/>
                 <input type="hidden" value="<?=$arr_opd["row_id"];?>" name="row_id" />
                 <input type="hidden" name="do" value="<?=$do;?>">
+                <input type="hidden" name="hypertention_edit_id" value="<?=$hypertention_edit_id;?>">
             </td>
         </tr>
     </table>
 </FORM>
 <div style="margin: 8px;">&nbsp;</div>
 <script type="text/javascript">
+
+    function checkForm(){
+        let dt =document.getElementById('doctor').value;
+        let weight = document.getElementById('weight').value;
+        let height = document.getElementById('height').value;
+        let temperature = document.getElementById('temperature').value;
+        let pause = document.getElementById('pause').value;
+        let rate = document.getElementById('rate').value;
+        let bp1 = document.getElementById('bp1').value;
+        let bp2 = document.getElementById('bp2').value;
+        
+        if(dt==''){
+            alert('กรุณาเลือกแพทย์');
+            return false;
+        }else if(weight==''){
+            alert('กรุณาใส่ข้อมูลน้ำหนัก');
+            return false;
+        }else if(height==''){
+            alert('กรุณาใส่ข้อมูลส่วนสูง');
+            return false;
+        }else if(temperature==''){
+            alert('กรุณาใส่ข้อมูลอุณหภูมิ');
+            return false;
+        }else if(pause==''){
+            alert('กรุณาใส่ข้อมูลอัตราการเต้นของหัวใจ');
+            return false;
+        }else if(rate==''){
+            alert('กรุณาใส่ข้อมูลอัตราการหายใจ');
+            return false;
+        }else if(bp1==''){
+            alert('กรุณาใส่ข้อมูลค่าหัวใจบีบตัว');
+            return false;
+        }else if(bp2==''){
+            alert('กรุณาใส่ข้อมูลค่าหัวใจคลายตัว');
+            return false;
+        }
+
+        return true;
+    }
+
     async function loadContent(url) {
         const response = await fetch(url);
         const body = await response.text();
