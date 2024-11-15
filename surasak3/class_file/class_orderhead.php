@@ -1,6 +1,10 @@
 <?php 
 require_once dirname(__FILE__).'/database.php';
-
+/**
+ * Summary of Orderhead
+ * 
+ * 
+ */
 class Orderhead extends DbConnect
 {
     public $dbi = null;
@@ -14,6 +18,7 @@ class Orderhead extends DbConnect
     public $clinicalinfo = null;
     public $sourcename = 'ตรวจสุขภาพภายนอก';
     public $sourcecode = '101';
+    public $is_nhealth = '0';
 
     function __construct()
     {
@@ -21,14 +26,14 @@ class Orderhead extends DbConnect
     }
 
     /**
-     * เพิ่มข้อมูลเข้า orderhead
-     * @param string $data['hn']            HN
-     * @param string $data['patientname']   ชื่อสกุล
-     * @param string $data['sex']           เพศ m, f
-     * @param string $data['dob']           วันเดือนปีเกิด แบบ ค.ศ.
-     * @param string $data['clinicalinfo']  รายละเอียดบ่งบอกว่ามีรายการแลปอะไรบ้าง หรือเป็น ตรวจสุขภาพประจำปี
+     * เพิ่มข้อมูลเข้า orderhead !!! ไม่ต้องสร้าง labnumber !!!
+     * @param string hn            HN
+     * @param string patientname   ชื่อสกุล
+     * @param string sex           เพศ m, f
+     * @param string dob           วันเดือนปีเกิด แบบ ค.ศ.
+     * @param string clinicalinfo  รายละเอียดบ่งบอกว่ามีรายการแลปอะไรบ้าง หรือเป็น ตรวจสุขภาพประจำปี
      * 
-     * @return string labnumber
+     * @return mixed labnumber หรือ error => true
      */
     public function insertOrderhead($data){ 
 
@@ -39,28 +44,29 @@ class Orderhead extends DbConnect
         $this->sex = $data['sex'];
         $this->dob = $data['dob'];
         $this->clinicalinfo = $data['clinicalinfo'];
+        $this->is_nhealth = $data['is_nhealth'];
 
         $orderhead_sql = "INSERT INTO `orderhead` ( 
             `autonumber`, `orderdate`, `labnumber`, `hn`, `patienttype`, `patientname`, 
             `sex`, `dob`, `sourcecode`, `sourcename`, `room`, `cliniciancode`, 
-            `clinicianname`, `priority`, `clinicalinfo` 
+            `clinicianname`, `priority`, `clinicalinfo`, `isquery`, `is_nhealth`
         ) VALUES (
             NULL, NOW(), '$labnumber', '$this->hn', '$this->patienttype', '$this->patientname', 
             '$this->sex', '$this->dob', '$this->sourcecode', '$this->sourcename', '', '', 
-            '$this->clinicianname', 'R', '$this->clinicalinfo'
+            '$this->clinicianname', 'R', '$this->clinicalinfo', '1', '$this->is_nhealth' 
         );";
         $q = $this->dbi->query($orderhead_sql);
-        
         $res = array('error'=>true,'message'=>$this->dbi->error);
         if($q===true){
             $res = array('labnumber'=>$labnumber);
         }
-        
         return $res;
     }
 
     /**
      * เพิ่มข้อมูลเข้า orderdetail
+     * @param string labnumber  labnumber
+     * @param array labitems    รายการแลปที่ตรวจ
      */
     public function insertOrderdetail($data){
         
@@ -71,11 +77,12 @@ class Orderhead extends DbConnect
             $code = $labinfo['code'];
             $oldcode = $labinfo['oldcode'];
             $detail = $labinfo['detail'];
+            $labtype = $labinfo['labtype'];
 
             $orderdetail_sql = "INSERT INTO `orderdetail` ( 
-                `labnumber`,`labcode`,`labcode1`,`labname` 
+                `labnumber`,`labcode`,`labcode1`,`labname`,`type`
             ) VALUES (
-                '$labnumber', '$code', '$oldcode', '$detail'
+                '$labnumber', '$code', '$oldcode', '$detail', '$labtype'
             );";
             $insertOrderdetail = $this->dbi->query($orderdetail_sql);
             if($insertOrderdetail===false){
@@ -113,7 +120,7 @@ class Orderhead extends DbConnect
      */
     public function getLabcare($code=''){
         $labcode = sprintf("%s", $code);
-        $sql = "SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part` FROM `labcare` WHERE `code` = '$labcode' ";
+        $sql = sprintf("SELECT `code`,`oldcode`,`detail`,`price`,`yprice`,`nprice`,`depart`,`part`,`labtype` FROM `labcare` WHERE `code` = '%s' ", $labcode);
         $q = $this->dbi->query($sql);
         if($q->num_rows>0){
             $res = $q->fetch_assoc();
