@@ -2347,7 +2347,7 @@ mmHg </td>
 										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date" value="<?=$htData['diag_date'];?>"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
 										<div id="getYearDiagContainer" class="" style="position:relative; display:none;">
 											<div id="getYearDiag" class="htDateSelectContainer" style="z-index:1;"></div>
-										tdiv>
+										<div>
 									</td>
 								</tr>
 								<tr>
@@ -2471,7 +2471,6 @@ mmHg </td>
 						<script>
 							function getYearDiag(){
 								callYearDiag().then((res)=>{
-									console.log(res);
 									document.getElementById('getYearDiag').innerHTML = res;
 									document.getElementById('getYearDiagContainer').style.display = '';
 								});
