@@ -176,7 +176,7 @@ body,td,th {
 }
 .style1 {color: #FFFFFF}
 </style>
-<script>
+<script type="text/javascript">
 function check(){
 	if(document.dxdrform.normal55.checked == false&document.dxdrform.normal55.checked == false){
 		alert('ยังไม่ได้เลือกค่าความดัน');
@@ -222,6 +222,8 @@ function togglediv2(divid){
 		document.getElementById(divid).style.display = 'none'; 
 	}
 }
+
+
 
 </script>
 </head>
@@ -274,7 +276,7 @@ function togglediv2(divid){
 	$resultvn= mysql_query($sqlvn);
 	$queryvn = mysql_fetch_array($resultvn);
 	
-	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$queryvn['hn']."' limit 0,1";
+	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname,idcard From opcard where  hn = '".$queryvn['hn']."' limit 0,1";
 	//echo $sql;
 	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
 	/*if(mysql_num_rows($result) <= 0){
@@ -294,8 +296,8 @@ $result = Mysql_Query($sql);
 list($weight, $height) = Mysql_fetch_row($result);
 
 
-$sqlvn = "Select vn From dxofyear  where  hn = '".$_POST["p_hn"]."' limit 0,1";
-list($vn) = mysql_fetch_row(mysql_query($sqlvn));
+// $sqlvn = "Select vn From dxofyear  where  hn = '".$_POST["p_hn"]."' limit 0,1";
+// list($vn) = mysql_fetch_row(mysql_query($sqlvn));
 
 //ค้นหาวันเกิดจาก opcard ****************************************************************************************
 	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
@@ -430,6 +432,7 @@ if(empty($arr_dxofyear["bp21"]) && empty($arr_dxofyear["bp22"])){
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_dxofyear["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
 <input name="vn" type="hidden" id="vn"  value="<?php echo $queryvn['vn'];?>" />
+<input name="idcard" type="hidden" id="idcard"  value="<?php echo $arr_view['idcard'];?>" />
 <br />
 <p align="center" class="head_font1"><strong>บันทึกผลการตรวจสุขภาพทหารประจำปี <?=$showyear;?></strong></p>
 <table  width="100%" border="2" cellpadding="2" cellspacing="0" bordercolor="#000000" bgcolor="#FFFFFF">
@@ -1073,7 +1076,7 @@ if($arr_view["age"] >= 35){
 			?>        </td>
 	    <td class="labfont">(<?=$result_dx['bsrange']?>)</td>
 	    <td align="center" class="labfont"><span <? if($result_dx['bsflag']!="N"){ echo "style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['bsflag']?></span></td>
-	    <td class="labfont"><input name='normal47' type='radio' value='ปกติ' onclick="togglediv2('acnormal47');" <?  if($result_dx['bs'] < 106){ echo "checked";}?>/>
+	    <td class="labfont"><input name='normal47' type='radio' value='ปกติ' onclick="togglediv2('acnormal47');" <? if($result_dx['bs'] < 106){ echo "checked";}?>/>
 ปกติ
   		<input name='normal47' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal47');" <? if($result_dx['bs'] >= 106){ echo "checked";}?>/>
             <? 
@@ -1769,7 +1772,11 @@ BPH</span></td>
       <input name="cure_disease" type="text" id="cure_disease" size="80"  />
     </span></td>
     <td width="50%" valign="middle" bgcolor="#FFCCCC"><strong>นัดครั้งต่อไป : </strong><span class="labfont">
-      <input name="appoint" type="text" id="appoint" size="30"  />
+	  <select name="appoint" id="appoint">
+	  <option value="">ไม่มีนัด</option>
+	  <option value="กลุ่มโรคนัดพบแพทย์ 1 เดือน">กลุ่มโรค นัดพบแพทย์ 1 เดือน</option>
+	  <option value="กลุ่มเสี่ยงนัดพบแพทย์ 3 เดือน">กลุ่มเสี่ยง นัดพบแพทย์ 3 เดือน</option>
+	  </select>
     </span></td>
   </tr>
 </table>
