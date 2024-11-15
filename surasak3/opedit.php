@@ -1427,7 +1427,7 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 </td>
   </tr>
 <tr>
-<td colspan="6"><span style='font-size: 24px;'>ตรวจสอบฐานข้อมูลตรวจสุขภาพกองทัพบกประจำปี 2567 (เก็บตก ถึงวันที่ 28 ธ.ค. 66)</span></td>
+<td colspan="6"><span style='font-size: 24px;'>ตรวจสอบฐานข้อมูลตรวจสุขภาพกองทัพบกประจำปี 2568 (เก็บตก ถึงวันที่ 11 ธ.ค. 67)</span></td>
 </tr>
 <?
 
@@ -1466,15 +1466,15 @@ $querychk1=mysql_query($sqlchk1);
 $numchk1=mysql_num_rows($querychk1);
 if($numchk1 > 0){	
 	list($thidate)=mysql_fetch_array($querychk1);	
-	$chkupalert="<div style='color:red;font-size:20px;'>!!! กำลังพลท่านนี้ได้รับการตรวจสุขภาพประจำปี 2567 เรียบร้อยแล้ว เมื่อวันที่ $thidate กรุณาตรวจสอบข้อมูลก่อนดำเนินการใดๆ <a href='report_dxofyear.php' target='_blank' style='color:blue;'>คลิกที่นี่เพื่อตรวจสอบ</a></div>";	
+	$chkupalert="<div style='color:red;font-size:20px;'>!!! กำลังพลท่านนี้ได้รับการตรวจสุขภาพประจำปี $yearcheck เรียบร้อยแล้ว เมื่อวันที่ $thidate กรุณาตรวจสอบข้อมูลก่อนดำเนินการใดๆ <a href='report_dxofyear.php' target='_blank' style='color:blue;'>คลิกที่นี่เพื่อตรวจสอบ</a></div>";	
 }else{
-	$chkupalert="<div style='color:blue;font-size:20px;'>ไม่มีผลการตรวจสุขภาพกองทัพบกประจำปี 2567 ในระบบ</div>";	
+	$chkupalert="<div style='color:blue;font-size:20px;'>ไม่มีผลการตรวจสุขภาพกองทัพบกประจำปี $yearcheck ในระบบ</div>";	
 }
 if($numchk > 0){	
 ?>  
   <tr style="background-color: #A9DFBF">
     <td align="right" class="fonthead" bgcolor="#45B39D"><span style='font-size: 28px;'>พบข้อมูล&nbsp;</span></td>
-    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>ตรวจสอบพบรายชื่อที่ลงทะเบียนตรวจสุขภาพกองทัพบก ประจำปี 2567</span> ให้เลือก <span class="fonthead1">EX26 ตรวจสุขภาพประจำปี</span> สิทธิการรักษาเลือก <span class="fonthead1">R22 ตรวจสุขภาพประจำปีกองทัพบก</span> ***
+    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>ตรวจสอบพบรายชื่อที่ลงทะเบียนตรวจสุขภาพกองทัพบก ประจำปี <?=$yearcheck;?></span> ให้เลือก <span class="fonthead1">EX26 ตรวจสุขภาพประจำปี</span> สิทธิการรักษาเลือก <span class="fonthead1">R22 ตรวจสุขภาพประจำปีกองทัพบก</span> ***
 	<? echo $chkupdetail;?>
 	<? echo $chkupalert;?>
 	</td>
@@ -1483,7 +1483,7 @@ if($numchk > 0){
 <? }else{ ?>
   <tr style="background-color: #F5B7B1">
     <td align="right" class="fonthead" bgcolor="#EC7063"><span style='font-size: 28px;'>ไม่พบข้อมูล&nbsp;</span></td>
-    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>หากกำลังพลมาตรวจสุขภาพกองทัพบก ประจำปี 2567</span> ให้เลือก <span class="fonthead1">EX16 ตรวจสุขภาพ</span> สิทธิการรักษาเลือก <span class="fonthead1">R01 เงินสด</span> ***
+    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>หากกำลังพลมาตรวจสุขภาพกองทัพบก ประจำปี <?=$yearcheck;?></span> ให้เลือก <span class="fonthead1">EX16 ตรวจสุขภาพ</span> สิทธิการรักษาเลือก <span class="fonthead1">R01 เงินสด</span> ***
 	<? echo $chkupalert;?>
 	</td>
     </tr>
