@@ -6,7 +6,7 @@ session_start();
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
+<title>ข้อมูลซักประวัติ</title>
 <style type="text/css">
 .data_show{ 
 	font-family: TH SarabunPSK;
@@ -345,7 +345,7 @@ body,td,th {
         <td width="40" align="center"><?php echo $pause;?></td>
         <td width="40" align="center"><?php echo $rate;?></td>
         <td width="40" align="center"><?php echo $weight;?></td>
-        <td width="40" align="center"><?php echo $bp1.'/'.$bp2;?></td>
+        <td width="40" align="center"><?=(!empty($bp1) && !empty($bp2)) ? $bp1.'/'.$bp2 : '' ;?></td>
 		<td width="40" align="center"><?=(!empty($bp3) && !empty($bp4)) ? $bp3.'/'.$bp4 : '' ;?></td>
 		<td width="40" align="center"><?php echo $painscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore;?></td>
