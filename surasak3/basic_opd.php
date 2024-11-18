@@ -509,7 +509,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$postData['ht_no'] = $htNumber['ht_no'];
 		}
 		
-		$postData['thidate'] = (date('Y')+543).date('-m-d');
+		$postData['thidate'] = date('Y-m-d');
 		$postData['hn'] = $_POST["hn"];
 		$postData['doctor'] = $doctorname;
 		$postData['ptname'] = $_POST["ptname"];

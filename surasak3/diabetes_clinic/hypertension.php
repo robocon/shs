@@ -69,7 +69,7 @@ if($_REQUEST['do']=='save'){
 	$data['officer_edit'] = '';
 
 	$data['ht_no'] = $_POST["ht_no"];
-	$data['thidate'] = $_POST["thaidate"];
+	$data['thidate'] = date('Y-m-d');
 	$data['hn'] = $_POST['hn'];
 	$data['doctor'] = $_POST['doctor'];
 	$data['ptname'] = $_POST['ptname'];
