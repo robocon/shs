@@ -74,23 +74,80 @@ if($action==='delete'){
     }
 
     $hn = sprintf("%s", ($_POST['hn'] ? $_POST['hn'] : ''));
+    $date = sprintf("%s", ($_POST['date'] ? $_POST['date'] : date('Y-m-d')));
     ?>
         <h3>ลบ digital opdcard</h3>
-        <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
-            <div class="col-auto">
-                <label for="hn" class="visually-hidden">HN</label>
-                <input type="input" class="form-control" name="hn" id="hn" placeholder="HN" value="<?=$hn;?>">
+        <div class="row">
+            <div class="col-md-3">
+                <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
+                    <div class="col-auto">
+                        <label for="hn" class="visually-hidden">HN</label>
+                        <input type="input" class="form-control" name="hn" id="hn" placeholder="ค้นหาจาก HN" value="<?=$hn;?>">
+                    </div>
+                        <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                        <input type="hidden" name="page" value="search">
+                    </div>
+                </form>
             </div>
-                <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
-                <input type="hidden" name="page" value="search">
+            <div class="col">
+                <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
+                    <div class="col-auto">
+                        <label for="date" class="col-form-label">วันที่อัพโหลด</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date" class="form-control" name="date" id="date" placeholder="เช่น 2024-11-31" value="<?=$date;?>">
+                    </div>
+                    <div class="col-auto">
+                        <?php 
+                        $sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` <> '' ";
+                        $q = $dbi->query($sql);
+                        ?>
+                        <select name="doctor" id="doctor" class="form-select">
+                            <option value="">แสดงทุกคน</option>
+                            <?php 
+                            while ($a = $q->fetch_assoc()) {
+                                ?>
+                                <option value="<?=$a['row_id'];?>"><?=$a['name'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                        <input type="hidden" name="page" value="search">
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+        
         <?php 
         $page = sprintf("%s", $_POST['page']);
         if($page==='search'){
             $hn = sprintf("%s", $_POST['hn']);
-            $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
+            if(!empty($hn)){
+                $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
+            }
+
+            $date = sprintf("%s", $_POST['date']);
+            if(!empty($date)){
+                
+                $doctor = sprintf("%s", $_POST['doctor']);
+                $sqlDt = '';
+                if(!empty($doctor)){
+                    $sqlDt = " AND `doctor` = '$doctor'";
+                }
+                $items = new stdClass;
+                $sql = "SELECT * FROM `digital_opcard` WHERE `last_update` LIKE '$date%' $sqlDt ";
+                $q = $dbi->query($sql);
+                while ($a = $q->fetch_assoc()) {
+                    $a['original'] = $a['thumbnail'] = 'http://192.168.131.240:8081/storage/'.$a['file_name'];
+                    $a['upload_date'] = $a['last_update'];
+                    $a['type'] = $a['upload_type'];
+                    $items->list[] = (object)$a;
+                }
+            }
             ?>
             <table class="table table-hover">
                 <thead>
