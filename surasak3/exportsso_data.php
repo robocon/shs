@@ -3,7 +3,7 @@ session_start();
 include("connect.inc");
 ?>
 <style type="text/css">
-<!--
+
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 20px;
@@ -12,7 +12,7 @@ body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 20px;
 }
--->
+
 </style>
   <?
   $seldate=date("d");
@@ -72,7 +72,7 @@ body,td,th {
       <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
       <?
 				}
-				echo "<select>";
+				echo "</select>";
 				?>
       <p style="margin-left: 65px;"><input type="submit" value="ส่งออกข้อมูล" name="B1"  class="txt" />&nbsp;&nbsp;&nbsp;<input type="button" value="กลับหน้าหลัก" onclick="window.location.href='../nindex.htm' " class="txt" /></p>
 </form>
