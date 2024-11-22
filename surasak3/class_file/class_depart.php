@@ -1,7 +1,7 @@
 <?php 
-require_once 'class_file/database.php';
-require_once 'class_file/opcard.php';
-require_once 'class_file/opday.php';
+require_once dirname(__FILE__).'/database.php';
+require_once dirname(__FILE__).'/class_opcard.php';
+require_once dirname(__FILE__).'/class_opday.php';
 
 class ClassDepart extends DbConnect{
 
@@ -70,9 +70,9 @@ class ClassDepart extends DbConnect{
             exit;
         }
 
-        $sql = "SELECT * FROM depart WHERE date LIKE '$date%' AND hn = '$hn' ";
+        $sql = sprintf("SELECT * FROM depart WHERE date LIKE '%s%%' AND hn = '%s' ", $this->dbi->real_escape_string($date), $this->dbi->real_escape_string($hn));
         if ($depart!==null) {
-            $sql .= " AND depart = '$depart' ";
+            $sql .= sprintf(" AND depart = '%s' ", $this->dbi->real_escape_string($depart));
         }
 
         $q = $this->dbi->query($sql);

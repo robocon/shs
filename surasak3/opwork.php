@@ -1442,7 +1442,12 @@ if ( mysql_num_rows($qIp) > 0 ) {
 
 <a target=_TOP href="updatevn1.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(มีค่าบริการ/ค่ายา/ค่ารักษาพยาบาลแล้ว)<span></a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(มีเฉพาะค่าบริการ 50 บาท)</span></a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
+<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a><br><br>
+
+<div>
+&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.open('opday_hn.php?hn=<?=$hn;?>','opday_hn','width=800,height=600')">ตรวจสอบค่าใช้จ่าย</a>
+</div>
+
 </div>
 <script>
 function chType(){

@@ -231,7 +231,7 @@ if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทร
 
 			echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน '.$item['user_row'].'คน '.$contactTxt;
 			echo '<br>';
-			echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
+			echo '<a href="javascript:void(0);" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
 			exit;
 		}
 	}

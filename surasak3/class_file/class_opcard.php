@@ -19,6 +19,7 @@ class Opcard extends DbConnect
         $field = '*';
         if(!empty($fields)){
             $field = implode(',', $fields);
+            $field .= ",`yot`,`name`,`surname`,`dbirth`";
         }
         $query = sprintf("SELECT $field FROM `opcard` WHERE `hn`='%s'", $this->dbi->escape_string($hn));
         $result = $this->dbi->query($query);
@@ -26,7 +27,7 @@ class Opcard extends DbConnect
         if($result->num_rows > 0){
             $item = $result->fetch_assoc();
             $item['ptname'] = $item['yot'].$item['name'].' '.$item['surname'];
-            $item['age'] = $this->getAge($item['dbirth']);
+            $item['age'] = (int) $this->getAge($item['dbirth']);
         }
         return $item;
     }
@@ -69,6 +70,9 @@ class Opcard extends DbConnect
         return $hn;
     }
 
+    /**
+     * @param string $dbirth    ปี พ.ศ.
+     */
     public function getAge($dbirth){
         list($y, $m, $d) = explode('-', $dbirth);
         $date2 = date('Y-m-d');
