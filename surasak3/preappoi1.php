@@ -74,7 +74,27 @@ if(isset($idguard)){
  	$cnote=$note;
 	$cidguard=$idguard;
 	$cAge=calcage($cAge);
-	print "<p><font face='Angsana New' size = '5'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";
+	
+	$chkhn=$_GET["chkhn"];
+	$chkidcard=$_GET["chkidcard"];
+	echo "<div style='font-size:16px;color:red;'>ข้อมูลที่ส่งมาตรวจสอบ HN :".$_GET["chkhn"].", ";
+	echo "IDCARD :".$_GET["chkidcard"]."</div>";
+	
+	
+	
+	if($_GET["chkhn"]==$cHn){
+		print "<p><font face='Angsana New' size = '5'>ชื่อ66 $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";	
+	}else{
+		$cHn=$_GET["chkhn"];
+		$queryT="SELECT yot,name,surname,dbirth,phone,idcard FROM opcard where hn='$cHn'";
+		$resultT = mysql_query($queryT);
+		$rowT = mysql_fetch_array($resultT);
+		$cPtname=$rowT["yot"]." ".$rowT["name"]." ".$rowT["surname"];
+		$cAge=calcage($rowT["dbirth"]);
+		
+		print "<p><font face='Angsana New' size = '5'>ชื่อ55 $cPtname  HN: <span style='font-size:28px;'>$cHn</span> อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";
+			
+	}		
 }
 
 function LastDay($m, $y) {
@@ -849,8 +869,11 @@ body,td,th {
   &nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< &#3648;&#3617;&#3609;<span class="t">&#3641;</span></a>&nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a></p>
 
 <input type="hidden" name="doctor_name" id="doctor_name">
-
+<input type="hidden" name="chkhn" id="chkhn" value="<?=$_GET["chkhn"];?>">
+<input type="hidden" name="chkidcard" id="chkidcard" value="<?=$_GET["chkidcard"];?>">
 </form>
+<div style='margin-top:20px; margin-left:20px;color:blue;font-weight:bold;font-size:24px;'>กรุณาตรวจสอบข้อมูลของผู้ป่วยให้ถูกต้อง เพื่อดำเนินการต่อไป...</div>
+
 
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
