@@ -2,28 +2,34 @@
 require_once dirname(__FILE__).'/database.php';
 require_once dirname(__FILE__).'/class_opcard.php';
 require_once dirname(__FILE__).'/class_opday.php';
-
+#https://docs.phpdoc.org/guide/references/phpdoc/index.html#phpdoc-reference
 class ClassDepart extends DbConnect{
 
     public function __construct()
     {
         parent::__construct();
-    }
+    } 
 
     /**
      * รันเลข runno ใน depart เอาไปใช้ในฟิลด์ chktranx
      * 
-     * @return string @chktranx คือหมายเลข ฟิลด์runno ของตารางrunno
+     * @return mixed หมายเลข ฟิลด์runno ของตารางrunno
      */
     public function startRunno(){
-        $q_runno = $this->dbi->query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
+        $q_runno = $this->__query("SELECT `title`,`prefix`,`runno` FROM `runno` WHERE `title` = 'depart'");
         $runno_row = $q_runno->fetch_assoc();
 		$chktranx = $runno_row['runno'];
 		$chktranx++;
-        $this->dbi->query("UPDATE `runno` SET `runno` = '$chktranx' WHERE `title`='depart'");
+        
+        $this->__query("UPDATE `runno` SET `runno` = '$chktranx' WHERE `title`='depart'");
+        
         return $chktranx;
     }
 
+    /**
+     * Summary of getThDateTime
+     * @return string รูปแบบ พ.ศ. Y-m-d H:i:s
+     */
     public function getThDateTime(){
         return (date('Y')+543).date('-m-d H:i:s');
     }
@@ -31,60 +37,67 @@ class ClassDepart extends DbConnect{
     /**
      * ค้นหา depart จาก row_id
      * 
-     * @param string @id คือ row_id ของตาราง
+     * @param string $id คือ row_id ของตาราง
      * 
-     * @return array @res
+     * @return mixed String if error and array if success
      */
     public function getDepartFromId($id=null){
-        if ($id===null) {
-            return "required id";
-            exit;
-        }
-
-        $sql = sprintf("SELECT * FROM depart WHERE row_id = %s LIMIT 1", $id);
-        $q = $this->dbi->query($sql);
-        $res = array();
-        if($q->num_rows>0){
-            $res = $q->fetch_assoc();
-            $q->free_result();
+        if (empty($id)) {
+            $res = "Required id";
         }else{
-            return "not found data";
-            exit;
+            $sql = sprintf("SELECT * FROM `depart` WHERE `row_id` = '%s' LIMIT 1", $this->dbi->real_escape_string($id));
+            $q = $this->__query($sql);
+            if(empty($q->errorNumber)){
+                $res = array();
+                if($q->num_rows>0){
+                    $res = $q->fetch_assoc();
+                    $q->free_result();
+                }else{
+                    $res = "Not found data";
+                }
+            }else{
+                $res = $q->errorMessage;
+            }
         }
         return $res;
-
     }
 
     /**
      * ดึงข้อมูลจากใน depart 
-     * @param string @date รูปแบบวันที่ของไทย
-     * @param string @hn เลขที่ผู้มารับบริการ
-     * @param string @depart (optional) เอาไว้แยกตามประเภท
+     * @param string $date รูปแบบวันที่ของไทย เช่น 2567-11-29
+     * @param string $hn เลขที่ผู้มารับบริการ
+     * @param string $depart (optional) เอาไว้แยกตามประเภท
      * 
-     * @return array @items รายการของ depart
+     * @return mixed รายการของ depart
      */
     public function getDepart($date=null, $hn=null, $depart=null){
-
-        if ($date==null OR $hn===null) {
+        if (empty($date) OR empty($hn)) {
             return "getDepart required date(THAI FORMAT IN YYYY-mm-dd) and HN";
             exit;
-        }
-
-        $sql = sprintf("SELECT * FROM depart WHERE date LIKE '%s%%' AND hn = '%s' ", $this->dbi->real_escape_string($date), $this->dbi->real_escape_string($hn));
-        if ($depart!==null) {
-            $sql .= sprintf(" AND depart = '%s' ", $this->dbi->real_escape_string($depart));
-        }
-
-        $q = $this->dbi->query($sql);
-        $items = false;
-        if($q->num_rows>0){
-            $items = array();
-            while ($a = $q->fetch_assoc()) {
-                $items[] = $a;
+        }else{
+            $sql = sprintf(
+                "SELECT * FROM `depart` WHERE `date` LIKE '%s%%' AND `hn` = '%s' ", 
+                $this->dbi->real_escape_string($date), 
+                $this->dbi->real_escape_string($hn)
+            );
+            if ($depart!==null) {
+                $sql .= sprintf(" AND `depart` = '%s' ", $this->dbi->real_escape_string($depart));
             }
+
+            $q = $this->__query($sql);
+            if(empty($q->errorNumber)){
+                if($q->num_rows>0){
+                    $res = array();
+                    while ($a = $q->fetch_assoc()) {
+                        $res[] = $a;
+                    }
+                }
+            }else{
+                $res = $q->errorMessage;
+            }
+            
         }
-        
-        return $items;
+        return $res;
     }
 
     /**
