@@ -15,17 +15,26 @@ class Opday extends DbConnect
         parent::__construct();
     }
 
+    /**
+     * ค้นหาข้อมูล opday จาก hn ในวันปัจจุบัน
+     * @param string $hn 
+     * @return mixed
+     */
     public function getThisDay($hn=null)
     {
         $sql = sprintf("SELECT * FROM `opday` WHERE `thdatehn` = '%s' ", 
             date('d-m-').(date('Y')+543).$this->dbi->escape_string($hn)
         );
         $q = $this->dbi->query($sql);
-        $opday = false;
-        if($q->num_rows > 0){
-            $opday = $q->fetch_assoc();
+        $res = false;
+        if(!$q->errorNumber){
+            if($q->num_rows > 0){
+                $res = $q->fetch_assoc();
+            }
+        }else{
+            $res = $q->errorMessage;
         }
-        return $opday;
+        return $res;
     }
 
     /**
