@@ -64,6 +64,11 @@ if($action==='delete'){
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 </head>
 <body>
+    <style>
+        label:hover{
+            cursor: pointer;
+        }
+    </style>
     <div class="container">
     <?php 
     if (!empty($_SESSION['x-msg'])) {
@@ -148,10 +153,14 @@ if($action==='delete'){
                     $items->list[] = (object)$a;
                 }
             }
+
+            if(!empty($items->list)){
             ?>
+            <form action="digital_opd_manage2.php" method="post">
             <table class="table table-hover">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>วันที่เข้ารับการรักษา<br>actual_date</th>
                         <th>วันที่บันทึก<br>upload_date</th>
                         <th>clinic</th>
@@ -169,7 +178,10 @@ if($action==='delete'){
                     $row_id = $value->row_id;
                     ?>
                     <tr id="item-<?=$row_id;?>">
-                        <td><?=$value->actual_date;?></td>
+                        <th>
+                            <input type="checkbox" name="id[]" id="id<?=$row_id;?>" value="<?=$row_id;?>">
+                        </th>
+                        <td><label for="id<?=$row_id;?>"><?=$value->actual_date;?></label></td>
                         <td><?=$value->upload_date;?></td>
                         <td><?=$value->clinic;?></td>
                         <th>
@@ -187,7 +199,19 @@ if($action==='delete'){
                 ?>
                 </tbody>
             </table>
+            <div>
+                <button type="submit" class="btn btn-primary mb-3">เปลี่่ยนวันที่เข้ารับการรักษา</button>
+                <input type="hidden" name="date" value="<?=$date;?>" >
+            </div>
+            </form>
             <?php
+            }else{
+                ?>
+                <div>
+                    <p><strong>ไม่พบข้อมูล</strong></p>
+                </div>
+                <?php
+            }
         }
         ?>
     </div>
