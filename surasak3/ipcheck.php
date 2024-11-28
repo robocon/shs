@@ -111,7 +111,11 @@ function calcage($birth)
     return $pAge;
 }
 //
-
+?>
+<div>
+    <a href="javascript:void(0);" onclick="history.back();">&lt;&lt;--- ย้อนกลับ</a>
+</div>
+<?php
 
 ///////
 $query = "SELECT ptname,an FROM bed WHERE an = '$an'";
@@ -131,7 +135,7 @@ if (mysql_num_rows($result)) {
     die("AN: $an  ชื่อ $row->ptname <br>กำลังนอนป่วยอยู่ในโรงพยาบาล  ไม่สามารถรับป่วยใหม่ในเตียงนี้ได้<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=button onclick='history.back()' value='<< กลับไป'>");
 }
 //////
-$query = "SELECT date,an,hn,dcdate,status_log FROM ipcard WHERE an = '$an'";
+$query = "SELECT * FROM ipcard WHERE an = '$an'";
 $result = mysql_query($query) or die("Query failed".mysql_error());
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
     if (!mysql_data_seek($result, $i)) {
@@ -139,19 +143,21 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         continue;
     }
 
-    if (!($row = mysql_fetch_object($result)))
+    if (!($ipcard = mysql_fetch_object($result)))
         continue;
 }
 if ($result) {
-    $cHn = $row->hn;
-    $cAdmitd = $row->date;
-    $cDcmitd = $row->dcdate;
-    $status_log = $row->status_log;
-    if ($cDcmitd == '0000-00-00 00:00:00') {
-    } else {
-        echo "<FONT SIZE='3' COLOR='#FF0000'>คำเตือน ผู้ป่วยได้ทำการจำหน่ายเรียบร้อยแล้ว<BR> กรุณาตรวจสอบ AN ก่อนการ ADMIT </FONT><br>";
+    $cHn = $ipcard->hn;
+    $cAdmitd = $ipcard->date;
+    $cDcmitd = $ipcard->dcdate;
+    $status_log = $ipcard->status_log;
+    if ($cDcmitd != '0000-00-00 00:00:00') {
+        ?>
+        <div>
+            <h3 style="color:red;">คำเตือน!! ผู้ป่วยได้ถูกทำการจำหน่ายกลับบ้านเรียบร้อยแล้ว<br>หากต้องการแก้ไข/เพิ่มเติม กรุณาติดต่อ การเงินผู้ป่วยนอก/ใน เพื่อทำการปลดล็อก</h3>
+        </div>
+        <?php
     }
-    ;
     //
     $query = "SELECT * FROM opcard WHERE hn = '$cHn'";
     $result = mysql_query($query) or die("Query failed".mysql_error());
@@ -175,15 +181,17 @@ if ($result) {
         $cGoup = $row->goup;
         $cCamp = $row->camp;
         $cIdcard = $row->idcard;
-        $cAge = $row->dbirth;
         $cAddress = $row->address;
         $cMuang = "ต. $row->tambol  อ. $row->ampur  จ. $row->changwat";
-        $cAge = calcage($cAge);
-        echo "<h3></h3>";
+        $cAge = calcage($row->dbirth);
+        $cPtname="$cYot $cName $cSurname";
         ?>
         <style>
             .title-size{
                 font-size:22px;
+            }
+            table td{
+                font-size: 22px;
             }
         </style>
         <fieldset style="display:inline-table; width: 50%; border:1px solid #000000;">
@@ -193,20 +201,21 @@ if ($result) {
             <table>
                 <tr>
                     <td align="right"><b class="title-size">HN: </b></td>
-                    <td class="title-size"><?=$cHn;?></td>
+                    <td><?=$cHn;?></td>
                     <td rowspan="2">&nbsp;&nbsp;</td>
                     <td align="right" class="title-size"><b>AN: </b></td>
-                    <td style="color:red;"><b class="title-size"><?=$an;?></b></td>
+                    <td><?=$an;?></td>
                 </tr>
                 <tr>
                     <td align="right"><b class="title-size">ชื่อ-สกุล: </b></td>
-                    <td style="color:red;"><b class="title-size"><?="$cYot   $cName  $cSurname";?></b></td>
+                    <td><?="$cYot   $cName  $cSurname";?></td>
                     <td align="right"><b class="title-size">สิทธิการรักษา: </b></td>
-                    <td style="color:red;"><b class="title-size"><?=$cPtright;?></b></td>
+                    <td><?=$cPtright;?>
+                    </td>
                 </tr>
                 <tr>
                     <td align="right"><b class="title-size">อายุ</b></td>
-                    <td style="color:red;"><b class="title-size"><?=$cAge;?></b></td>
+                    <td><?=$cAge;?></td>
                     <td align="right"></td>
                     <td class="title-size"></td>
                 </tr>				
@@ -229,8 +238,7 @@ if ($result) {
 
 if ($status_log == "จำหน่าย") {
     print "<script>alert('ผู้ป่วย an: $an ได้จำหน่ายออกจากโรงพยาบาลแล้ว เมื่อวันที่ $cDcmitd    หากต้องการเปลี่ยนแปลงค่าใช้จ่ายกรุณาติดต่อส่วนเก็บเงินรายได้')</script>";
-    print "<a target=_self  href='../nindex.htm'><-----ไปเมนู</a>";
-
+    print "<div><a target=_self  href='../nindex.htm'><-----ไปเมนูหลัก</a></div>";
 } else {
 
     ?>
@@ -243,7 +251,9 @@ if ($status_log == "จำหน่าย") {
             var fc1 = document.getElementById('food_container1').checked;
             var fc2 = document.getElementById('food_container2').checked;
             document.getElementById('noti_food_container').style.display = 'none';
-            
+
+            var weight =document.getElementById('weight').value.trim();
+
             if (ff.diag.value == "ระบุโรคเบื้องต้น" || ff.diag.value == "") {
                 stat = false;
                 txt += "- กรุณากรอกชื่อโรคของผู้ป่วย\n";
@@ -282,16 +292,9 @@ if ($status_log == "จำหน่าย") {
 
     </SCRIPT>
     <?php
-    $query11 = "SELECT * FROM ipcard WHERE an = '$an'";
-    $result11 = mysql_query($query11);
-    $rows11 = mysql_num_rows($result11);
-    $arr = mysql_fetch_array($result11);
-
-
-    if ($arr['diag'] == '') {
-        // $diag = "ระบุโรคเบื้องต้น";
-    } else {
-        $diag = $arr['diag'];
+    $diag = '';
+    if(!empty($ipcard->diag)){
+        $diag = $ipcard->diag;
     }
 
     if ($cDcmitd == '0000-00-00 00:00:00') {
@@ -303,12 +306,12 @@ if ($status_log == "จำหน่าย") {
     ?>
 
     <form name="f1" method="POST" action="<?= $action; ?>" onsubmit="return checkForm();">
-        <h2>โปรดลงข้อมูลต่อไปนี้</h2>
+        <h2>โปรดลงข้อมูลต่อไปนี้ให้ครบถ้วน</h2>
         <table id="bed_detail">
             <tr valign="top">
                 <td align="right"><b>น้ำหนักแรกรับ :</b></td>
                 <td>
-                    <input type="text" name="weight" size="30" />&nbsp;&nbsp; ตัวอย่าง 60.00&nbsp;&nbsp;&nbsp;<br><span style="color:#FF0000;">* เด็กแรกเกิดระบุน้ำหนักเป็นทศนิยม 3 ตำแหน่ง เช่น 3.000</span>
+                    <input type="text" id="weight" name="weight" size="30" />&nbsp;&nbsp; ตัวอย่าง 60.00&nbsp;&nbsp;&nbsp;<br><span style="color:#FF0000;">* เด็กแรกเกิดระบุน้ำหนักเป็นทศนิยม 3 ตำแหน่ง เช่น 3.000</span>
                 </td>
             </tr>
             <tr>
@@ -386,7 +389,7 @@ if ($status_log == "จำหน่าย") {
                             <?
                             while ($objResult = mysql_fetch_array($objQuery)) {
                                 ?>
-                                <option value="<?= $objResult["name"]; ?>" <? if ($arr['doctor'] == $objResult["name"]) {
+                                <option value="<?= $objResult["name"]; ?>" <? if ($ipcard->doctor == $objResult["name"]) {
                                     echo "selected";
                                 } ?>>
                                     <?= $objResult["name"]; ?>
@@ -404,7 +407,7 @@ if ($status_log == "จำหน่าย") {
                             <?
                             while ($objResult = mysql_fetch_array($objQuery)) {
                                 ?>
-                                <option value="<?= $objResult["name"]; ?>" <? if ($arr['doctor'] == $objResult["name"]) {
+                                <option value="<?= $objResult["name"]; ?>" <? if ($ipcard->doctor == $objResult["name"]) {
                                     echo "selected";
                                 } ?>>
                                     <?= $objResult["name"]; ?>
@@ -452,6 +455,15 @@ if ($status_log == "จำหน่าย") {
                 <td>
                     <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="reset" value="  &#3649;&#3585;&#3657;&#3652;&#3586;  " name="B2">
+                    <input type="hidden" name="cHn" value="<?=$cHn;?>">
+                    <input type="hidden" name="cAdmitd" value="<?=$cAdmitd;?>">
+                    <input type="hidden" name="cAn" value="<?=$cAn;?>">
+                    <input type="hidden" name="cPtname" value="<?=$cPtname;?>">
+                    <input type="hidden" name="cPtright" value="<?=$cPtright;?>">
+                    <input type="hidden" name="cAge" value="<?=$cAge;?>">
+                    <input type="hidden" name="cCamp" value="<?=$cCamp;?>">
+                    <input type="hidden" name="cGoup" value="<?=$cGoup;?>">
+                    <input type="hidden" name="cIdcard" value="<?=$cIdcard;?>">
                 </td>
             </tr>
         </table>
