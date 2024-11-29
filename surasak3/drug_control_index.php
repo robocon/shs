@@ -80,7 +80,7 @@ if($_SESSION['sOfficer']!=''){
 					</option>
 					<?php
 				}
-				echo "<select>";
+				echo "</select>";
 				?>
 				&nbsp;&nbsp;-&nbsp;&nbsp; วันที่
 				<input type="text" name="rptday2" maxlength="2" size="2" value="<?=date('d')?>"/>
@@ -113,7 +113,7 @@ if($_SESSION['sOfficer']!=''){
 					</option>
 					<?php
 				}
-				echo "<select>";
+				echo "</select>";
 			?>
 			</td>
 		</tr>
