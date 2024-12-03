@@ -7,8 +7,13 @@ if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
     exit;
 }
 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
 $ids = $_POST['id'];
-$date = $_POST['date'];
+$oldDoctor = $_POST['doctor'];
+$q = $dbi->query(sprintf("SELECT `row_id`,`name` FROM `doctor` WHERE `row_id` = '%s' LIMIT 1 ", $oldDoctor));
+$d = $q->fetch_assoc();
 
 ?>
 <!DOCTYPE html>
@@ -33,16 +38,36 @@ $date = $_POST['date'];
         <?php 
         if(!empty($ids)){
         ?>
-        <form action="digital_opd_manage_update.php" method="post">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="new_date" class="form-label"><strong>เลือกวันที่เข้ารับการรักษาใหม่</strong></label>
-                    <input type="date" class="form-control" id="new_date" name="new_date" required>
+        <form action="digital_opd_manage_update_doctor.php" method="post">
+
+            <div class="mb-3 row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">ชื่อแพทย์เดิม</label>
+                <div class="col-sm-4"><?=$d['name'];?><input type="hidden" name="oldDoctor" value="<?=$d['row_id'];?>"></div>
+            </div>
+
+            <div class="mb-3 row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">เลือกแพทย์ใหม่</label>
+                <div class="col-sm-4">
+                    <?php 
+                    $sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` <> '' ";
+                    $q = $dbi->query($sql);
+                    ?>
+                    <select name="doctor" id="doctor" class="form-select">
+                        <option value="">แสดงทุกแพทย์</option>
+                        <?php 
+                        while ($a = $q->fetch_assoc()) { 
+                            ?>
+                            <option value="<?=$a['row_id'];?>"><?=$a['name'];?></option>
+                            <?php
+                        }
+                        ?>
+                    </select>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <button type="submit" class="btn btn-primary mb-3">ดำเนินการเปลี่ยนวันที่</button>
+                    <button type="submit" class="btn btn-primary mb-3">ดำเนินการเปลี่ยนชื่อแพทย์</button>
                     <input type="hidden" name="date" value="<?=$date;?>">
                     <?php 
                     foreach ($ids as $key => $id) {
