@@ -109,7 +109,7 @@ if($num < 1){
             <input type="hidden" name="act" value="show">
             <p style="font-size:24px;"><b>ค้นหาคนไข้ e-OPD จากHN</p>
             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input name="hn" type="text" class="txtsarabun" id="aLink" size="50" height="40">
+                <input name="chkhn" type="text" class="txtsarabun" id="aLink" size="50" height="40">
                 <span style="margin-left: 10px;">หรือ</span>
             </p>
             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ชื่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -145,15 +145,15 @@ if($num < 1){
 
             <?php
             $act = $_POST["act"];
-            $hn = $_POST["hn"];
+            $chkhn = $_POST["chkhn"];
             $name = $_POST["name"];
             $surname = $_POST["surname"];
-            $dthn = date("d-m-") . (date("Y") + 543) . $hn;
+            $dthn = date("d-m-") . (date("Y") + 543) . $chkhn;
             if (!empty($act)) {
 
-                if (!empty($hn)) {
-                    $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
-                    echo "<FONT SIZE='' COLOR='#FF0033'>ผลการค้นหาจาก HN: $hn</FONT>";
+                if (!empty($chkhn)) {
+                    $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$chkhn'";
+                    echo "<FONT SIZE='' COLOR='#FF0033'>ผลการค้นหาจาก HN: $chkhn</FONT>";
                 } else if (!empty($name) && empty($surname)) {
                     $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE name = '$name'";
                     echo "<FONT SIZE='' COLOR='#FF0033'>ผลการค้นหาจาก ชื่อ: $name</FONT>";
@@ -164,7 +164,7 @@ if($num < 1){
                     $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE name LIKE '%$name%' and surname LIKE '%$surname%'";
                     echo "<FONT SIZE='' COLOR='#FF0033'>ผลการค้นหาจาก ชื่อ: $name และ นามสกุล: $surname</FONT>";
                 }
-
+				//echo $query;	
                 $result = mysql_query($query) or die("Query failed");
                 while (list($hn, $yot, $name, $surname, $ptright, $ptright1, $idcard) = mysql_fetch_row($result)) {
 
