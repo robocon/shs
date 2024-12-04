@@ -172,9 +172,9 @@ if ( $action === 'save' ) {
         $_SESSION['line_msg'] = $sMessage;
         $_SESSION['line_type'] = 'ward';
 
-        redirect('med_ward.php','บันทึกข้อมูลเรียบร้อย');
+        redirect('med_ward.php?fill_an='.$an,'บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
-        redirect('med_ward.php','ไฟล์อัพโหลดมีปัญหา '.$err['id'].' ' .$err['msg']);
+        redirect('med_ward.php?fill_an='.$an,'ไฟล์อัพโหลดมีปัญหา '.$err['id'].' ' .$err['msg']);
     }
 
     exit;

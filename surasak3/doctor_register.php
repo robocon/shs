@@ -107,18 +107,18 @@ if($action==='testDoctorId'){
     exit;
 }elseif ($action==='saveDoctorForm') {
 
-    $idcard = sprintf("%s", $_POST['idcard']);
-    $prefix = sprintf("%s", $_POST['prefix']);
-    $prefixDoctorNumber = sprintf("%s", $_POST['prefixDoctorNumber']);
-    $doctorNum = sprintf("%s", $_POST['doctorNum']);
-    $depart = sprintf("%s", $_POST['depart']);
-    $doctorJob = sprintf("%s", $_POST['doctorJob']);
-    $room = sprintf("%s", $_POST['room']);
-    $intern = sprintf("%s", $_POST['intern']);
-    $hem = sprintf("%s", $_POST['hem']);
-    $firstname  = sprintf("%s", $_POST['firstname']);
-    $lastname  = sprintf("%s", $_POST['lastname']);
-    $request_login = sprintf("%s", $_POST['request_login']);
+    $idcard = sprintf("%s", $dbi->real_escape_string($_POST['idcard']));
+    $prefix = sprintf("%s", $dbi->real_escape_string($_POST['prefix']));
+    $prefixDoctorNumber = sprintf("%s", $dbi->real_escape_string($_POST['prefixDoctorNumber']));
+    $doctorNum = sprintf("%s", $dbi->real_escape_string($_POST['doctorNum']));
+    $depart = sprintf("%s", $dbi->real_escape_string($_POST['depart']));
+    $doctorJob = sprintf("%s", $dbi->real_escape_string($_POST['doctorJob']));
+    $room = sprintf("%s", $dbi->real_escape_string($_POST['room']));
+    $intern = sprintf("%s", $dbi->real_escape_string($_POST['intern']));
+    $hem = sprintf("%s", $dbi->real_escape_string($_POST['hem']));
+    $firstname  = sprintf("%s", $dbi->real_escape_string($_POST['firstname']));
+    $lastname  = sprintf("%s", $dbi->real_escape_string($_POST['lastname']));
+    $request_login = sprintf("%s", $dbi->real_escape_string($_POST['request_login']));
 
     $sql = "INSERT INTO `doctor_register` (
         `id`, `date`, `idcard`,`prefix`, `firstname`, `lastname`, `prefix_doctor_number`,`doctor_number`, `depart`, `type`, `room`, `intern`, `hem`, `status`, `officer`, `request_login`
