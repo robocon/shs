@@ -1,5 +1,6 @@
 <?php 
 include 'bootstrap.php';
+require_once 'includes/JSON.php';
 
 if(empty($_SESSION['sOfficer'])){
     header("Location: login_page.php");
@@ -190,6 +191,14 @@ if ( $action === 'save' ) {
         $msg = 'ไม่สามารถดำเนินการได้';
     }
     redirect('med_ward.php',$msg.$err['msg']);
+}elseif ($action==='pushWithCurl') {
+    
+    $json = new Services_JSON();
+    $type = sprintf("%s", $_POST['type']);
+    $msg = sprintf("%s", $_POST['msg']);
+
+    lineMessagePush($json, $type, $msg);
+    exit;
 }
 
 ?>
@@ -270,28 +279,38 @@ if( isset($_SESSION['x-msg']) ){
     if(isset($_SESSION['line_msg'])){
         ?>
         <script>
-            function sendLineNotifyV2(){
+            /**
+             * ปัญหา
+             * 1. server ปัจจุบันไม่รองรับ push message ของ line api
+             * 2. ไม่สามารถ async ข้าม server ได้ เลยต้องใช้ผ่าน curl แทน
+             */
+            sendPushMessage();
+            function sendPushMessage(){
 
-                var line_message = '<?=$_SESSION['line_msg'];?>';
-                var line_type = '<?=$_SESSION['line_type'];?>';
+                const line_message = '<?=$_SESSION['line_msg'];?>';
+                const line_type = '<?=$_SESSION['line_type'];?>';
+
                 var test_str = [];
-                test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
-                test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
+                test_str.push(encodeURIComponent('action')+"="+encodeURIComponent('pushWithCurl'));
+                test_str.push(encodeURIComponent('type')+"="+encodeURIComponent(line_type));
+                test_str.push(encodeURIComponent('msg')+"="+encodeURIComponent(line_message));
                 var data = test_str.join("&");
 
-                var request = new XMLHttpRequest();
-                request.onreadystatechange = function(){
-                    if( request.readyState == 4 && request.status == 200 ){
-                        // console.log(request.responseText);
-                    }
-                };
-                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
-                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                request.send(data); 
-
+                postMessage(data).then((res)=>{
+                    console.log(res);
+                });
             }
-
-            sendLineNotifyV2();
+            async function postMessage(data){
+                const response = await fetch('med_ward.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                    },
+                    body: data
+                });
+                const resData = await response.json();
+                return resData;
+            }
         </script>
         <?php
         unset($_SESSION['line_msg']);

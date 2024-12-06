@@ -482,3 +482,21 @@ function writeLog($msg, $file){
 	$f = file_put_contents($file, $text.PHP_EOL , FILE_APPEND | LOCK_EX);
 	return $f;
 }
+
+function lineMessagePush($json, $type, $msg){
+
+    $json_data = $json->encode(array('type'=>$type,'msg'=>$msg));
+
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, NOTIFY_HOST.'/line/index.php');
+
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $curl );
+    curl_close($curl);
+    echo $result;
+}
