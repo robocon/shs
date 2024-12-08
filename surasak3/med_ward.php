@@ -80,7 +80,7 @@ function set_log($error){
 
 
 
-$action = input('action');
+$action = $_REQUEST['action'];
 if ( $action === 'save' ) {
     
     $files = set_files($_FILES['file']);
@@ -197,7 +197,7 @@ if ( $action === 'save' ) {
     $type = sprintf("%s", $_POST['type']);
     $msg = sprintf("%s", $_POST['msg']);
 
-    lineMessagePush($json, $type, $msg);
+    lineMessagePush($json, NOTIFY_HOST.'/line/index.php', $type, $msg);
     exit;
 }
 
