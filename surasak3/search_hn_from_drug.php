@@ -17,25 +17,34 @@ include 'templates/classic/nav.php';
 				<div class="col">
 					<div class="width-2of5">
 						เลือกปีแสดงผล: 
-					</div>
-					<div>
 						<select name="year" id="year">
-							<option value="2556">2556</option>
-							<option value="2557">2557</option>
-							<option value="2558">2558</option>
-							<option value="2559" selected="selected">2559</option>
-							<option value="2560">2560</option>
-							<option value="2561">2561</option>
-							<option value="2561">2567</option>
+							<?php 
+							$yearRange = range(2556, (date('Y')+543));
+							foreach ($yearRange as $key => $y) { 
+								?>
+								<option value="<?=$y;?>"><?=$y;?></option>
+								<?php
+							}
+							?>
 						</select>
+						<button type="submit">ค้นหาตามปี</button>
+						<input type="hidden" name="search" value="search">
 					</div>
 				</div>
 				<div class="col">
 					<div class="width-2of5"></div>
 					<div>
-						<button type="submit">ค้นหา</button>
-						<input type="hidden" name="search" value="search">
+						
 					</div>
+				</div>
+			</form>
+		</div>
+		<div class="cell">
+			<form action="search_hn_from_drug.php" method="post">
+				<div class="width-2of5">
+					<button type="submit">ค้นหา 6เดือนย้อนหลัง</button>
+					<input type="hidden" name="backSixMonths" value="1">
+					<input type="hidden" name="search" value="search">
 				</div>
 			</form>
 		</div>
@@ -61,22 +70,34 @@ include 'templates/classic/nav.php';
 				</thead>
 				<tbody>
 					<?php
+					$searchBack = sprintf("%s",$_POST['backSixMonths']);
+					if(empty($searchBack)){
+						$sql = "SELECT b.`drugcode`,b.`tradname`,b.`hn`,b.`date` AS `doctor_date`,c.`yot`,c.`name`,c.`surname`
+						FROM `ddrugrx` AS b  
+						LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`
+						LEFT JOIN `dphardep` AS a ON a.`date` = b.`date`
+						WHERE b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
+						AND a.`dr_cancle` IS NULL 
+						AND b.`date` LIKE :year_select 
+						ORDER BY b.`date` ASC";
+						$db->select($sql, array(':year_select' => "$year%"));
+						$items = $db->get_items();
+					}else{
+						$currentDateTh = (date('Y')+543).date('-m-d 00:00:00');
+						$backTime = strtotime("-6 months");
+						$lastSixMonthTh = (date('Y', $backTime)+543).date('-m-01 00:00:00', $backTime);
+						$sql = "SELECT b.`drugcode`,b.`tradname`,b.`hn`,b.`date` AS `doctor_date`,c.`yot`,c.`name`,c.`surname`
+						FROM `ddrugrx` AS b  
+						LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`
+						LEFT JOIN `dphardep` AS a ON a.`date` = b.`date`
+						WHERE b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
+						AND a.`dr_cancle` IS NULL 
+						AND b.`date` >= '$lastSixMonthTh' AND b.`date` <= '$currentDateTh' 
+						ORDER BY b.`date` ASC";
+						$db->select($sql);
+						$items = $db->get_items();
+					}
 					
-					$sql = "SELECT b.`drugcode`,b.`tradname`,b.`hn`,b.`date` AS `doctor_date`,c.`yot`,c.`name`,c.`surname`
-					FROM 
-					`ddrugrx` AS b  
-					LEFT JOIN `opcard` AS c ON c.`hn` = b.`hn`
-					LEFT JOIN `dphardep` AS a ON a.`date` = b.`date`
-					WHERE b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
-					AND a.`dr_cancle` IS NULL 
-					AND b.`date` LIKE :year_select 
-					ORDER BY b.`date` ASC";
-					// $items = DB::select($sql, array(
-					// 	':year_select' => "$year%"
-					// ));
-
-					$db->select($sql, array(':year_select' => "$year%"));
-					$items = $db->get_items();
 
 					$i = 1;
 					$count_drugs = array();

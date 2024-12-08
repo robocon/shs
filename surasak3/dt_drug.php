@@ -1281,7 +1281,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_sult"){
 			$bgcolor="#FFFFFF";
 		
 		if($arr["lock_dr"]!="Y"){
-			$notify_lock="<div style='font-size:12px;color:red;'>ยานัวนี้จะไม่แสดงในรายการสั่งจ่ายยาใหม่ หากต้องการสั่งจ่ายยาให้ผู้ป่วยกรุณาสั่งจ่ายยาตัวใหม่</div>";
+			$notify_lock="<div style='font-size:12px;color:red;'>ยาตัวนี้จะไม่แสดงในรายการสั่งจ่ายยาใหม่ หากต้องการสั่งจ่ายยาให้ผู้ป่วยกรุณาสั่งจ่ายยาตัวใหม่</div>";
 		}else{
 			$notify_lock="";
 		}
@@ -1899,7 +1899,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			*/
 			$limit_row = 30;
 
-			$where_date = " (`date` LIKE '2565%' || `date` LIKE '2566%' ) ";
+			$where_date = " (`date` LIKE '2565%' || `date` LIKE '2566%' || `date` LIKE '2567%') ";
 
 			// สร้าง TEMP จาก drugrx
 			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
@@ -2936,30 +2936,17 @@ var nsaidsListForJs = [<?=$nsaids_for_js;?>];
  */
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
-	// ตัวใหม่เป็น async -> Promise(then) แต่ไม่รองรับ IE หมอเป้มันเดือดร้อน 
-	/*
 	checkAlphaBlocker(drugcode.trim()).then((res)=>{
 		if(res.status==400){
 			Swal.fire(res.message);
 		}
 	});
-	*/
-	var resAl = checkAlphaBlocker(drugcode.trim());
-	if(resAl.status==400){
-		Swal.fire(resAl.message);
-	}
 
-	/*
 	alphaBlockersOtherDoctor(drugcode.trim()).then((res)=>{
 		if(res.status==400){
 			Swal.fire(res.message);
 		}
 	});
-	*/
-	var resAl2 = alphaBlockersOtherDoctor(drugcode.trim());
-	if(resAl2.status==400){
-		Swal.fire(resAl2.message);
-	}
 
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
@@ -3052,64 +3039,16 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	rdu6_alert(drugcode.trim(), icd10);
 }
 
-/*
 async function alphaBlockersOtherDoctor(drugcode){
 	var hn = '<?=$_SESSION['hn_now'];?>';
 	const response = await fetch('dt_drug.php?action=getTestABOtherDoctor&hn='+encodeURIComponent(hn)+'&drugcode='+encodeURIComponent(drugcode));
 	const data = await response.json();
 	return data;
 }
-*/
-function alphaBlockersOtherDoctor(drugcode){
-	var hn = '<?=$_SESSION['hn_now'];?>';
-	let xHttp = newXmlHttp();
-	xHttp.open('GET', 'dt_drug.php?action=getTestABOtherDoctor&hn='+encodeURIComponent(hn)+'&drugcode='+encodeURIComponent(drugcode), false);
-	var data = false;
-	xHttp.onload = function () {
-	if (this.status >= 200 && this.status < 400) {
-		// Success!
-		data = JSON.parse(this.response);
-	} else {
-		// We reached our target server, but it returned an error
-	}
-	};
 
-	xHttp.onerror = function () {
-	// There was a connection error of some sort
-	};
-
-	xHttp.send();
-
-	return data;
-}
-
-/* 
 async function checkAlphaBlocker(drugcode){
 	const response = await fetch('dt_drug.php?action=getTestAlphaBlocker&drugcode='+encodeURIComponent(drugcode));
 	const data = await response.json();
-	return data;
-}
-*/
-function checkAlphaBlocker(drugcode){
-	
-	let xHttp = newXmlHttp();
-	xHttp.open('GET', 'dt_drug.php?action=getTestAlphaBlocker&drugcode='+encodeURIComponent(drugcode), false);
-	var data = false;
-	xHttp.onload = function () {
-	if (this.status >= 200 && this.status < 400) {
-		// Success!
-		data = JSON.parse(this.response);
-	} else {
-		// We reached our target server, but it returned an error
-	}
-	};
-
-	xHttp.onerror = function () {
-	// There was a connection error of some sort
-	};
-
-	xHttp.send();
-
 	return data;
 }
 
@@ -3518,6 +3457,7 @@ function viewlist(){
 function addtolist(drugcode, drugamount, drugslip,addoredit, drug_inject_amount, drug_inject_unit, drug_inject_amount2, drug_inject_unit2, drug_inject_time, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,reason2){
 	
 	xmlhttp = newXmlHttp();
+	
 	url = 'dt_drug.php?action=addtolist&drugcode=' + drugcode+'&drugamount='+drugamount+'&drugslip='+drugslip+'&addoredit='+addoredit+'&drug_inject_amount='+drug_inject_amount+'&drug_inject_unit='+drug_inject_unit+'&drug_inject_amount2='+drug_inject_amount2+'&drug_inject_unit2='+drug_inject_unit2+'&drug_inject_time='+drug_inject_time+'&drug_inject_slip='+drug_inject_slip+'&drug_inject_type='+drug_inject_type+'&drug_inject_etc='+drug_inject_etc+'&reason='+reason+'&reason2='+reason2;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
@@ -3656,10 +3596,6 @@ function checkForm1(){
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);
 	txt = txt.substr(4);
-	if(txt==0){
-		Swal.fire('ไม่พบรหัสยา<br>กรุณาเลือกรหัสยาตามรายการที่กำหนดไว้ด้วยครับ');
-		return false;
-	}
 	
 	txt1 = ajaxcheck("checkdrugamount",document.form1.drug_amount.value,document.form1.drug_code.value);
 	txt1 = txt1.substr(4);	
@@ -3758,7 +3694,7 @@ function checkForm1(){
 	}else if(txt1 == "6" && !alert("คำเตือน!!! ยาขาดคราวจากบริษัท")){
 		document.form1.drug_amount.focus();										
 	}else if(txt2 == "0"){
-		alert("ค้นหาวิธีใช้ยาในระบบไม่พบ กรุณาระบุวิธีใช้ยาใหม่อีกครั้ง หรือติดต่อกองเภสัชกรรมเพื่อตรวจสอบรหัสวิธีใช้ยา");
+		alert("ค้นหาวิธีใช้ยาในระบบไม่พบ กรุณาระบุวิธีใช้ยาใหม่ หรือติดต่อกองเภสัชกรรม");
 		document.form1.drug_slip.focus();
 	}else if(txt7 != "0" && !confirm(txt7)){
 		return false;
@@ -4622,6 +4558,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	<?php 
 		$listinteraction =array();
 		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
+		
 		$result = mysql_query($sql);
 		$rows = mysql_num_rows($result);
 		if($rows > 0){
@@ -4714,7 +4651,6 @@ window.onload = function(){
 <?
 
 ///*********************เตือน *****************///
-include("connect.inc");
 
 /* แจ้งเตือน Warfarin */
 if( !function_exists('ad_to_bc') ){
@@ -4731,39 +4667,78 @@ if( !function_exists('cal_to_bc') ){
 }
 
 $date_end = date('Y-m-d');
-$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-3 months"));
+$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
 
 $date_end = ad_to_bc($date_end);
 $date_start = ad_to_bc($date_start);
 
 $patient_hn = trim($_SESSION["hn_now"]);
-$sql = "SELECT COUNT(`row_id`) AS `rows` 
+
+$sql = "DROP TEMPORARY TABLE IF EXISTS `temp_drugrx`;
+CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
+SELECT `row_id`,`date`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
 FROM `drugrx` 
-WHERE `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
-AND ( `date` >= '$date_start' AND `date` <= '$date_end' ) 
-AND `hn` = '$patient_hn' ";
-$q = mysql_query($sql);
-$item = mysql_fetch_assoc($q);
-$count_wafarin = (int) $item['rows'];
-if( $count_wafarin > 0 ){
-	?>
-	<script type="text/javascript">
-		alert('ผู้ป่วยมีประวัติการใช้ยา Warfarin ในช่วง 3 เดือนย้อนหลัง');
-	</script>
-	<?php
+WHERE `hn` = '$patient_hn' 
+AND `date` >= '$date_start'
+AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+AND `status` = 'Y' AND `amount` > 0 
+ORDER BY `row_id` ASC;";
+$q = $dbi->query($sql);
+
+
+$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
+IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
+FROM (
+	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
+) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
+ORDER BY b.`row_id`";
+$q = $dbi->query($sql);
+$drugrxRows = $q->num_rows;
+if($drugrxRows > 0){
+	$drugrxItem = array();
+
+	$isWarfarin = false;
+	$isNoacs = false;
+	while ($a = $q->fetch_assoc()) {
+		$drugrxItem[] = $a;
+		if($a['type']=='warfarin'){
+			$isWarfarin = true;
+		}
+
+		if($a['type']=='noacs'){
+			$isNoacs = true;
+		}
+	}
+
+	if($isWarfarin===true && $isNoacs===false){
+		?>
+		<script type="text/javascript">
+			Swal.fire('ผู้ป่วยมีประวัติการใช้ยา Warfarin ในช่วง 6 เดือนย้อนหลัง');
+		</script>
+		<?php
+	}
+
+	if($isWarfarin===true && $isNoacs===true){
+		?>
+		<script type="text/javascript">
+			Swal.fire('ผู้ป่วยมีประวัติการใช้ยา Warfarin และ Noacs ในช่วง 6 เดือนย้อนหลัง');
+		</script>
+		<?php
+	}
 }
+
 /* แจ้งเตือน Warfarin */
 
-if ( $patient_hn==='55-8821' OR $patient_hn==='48-4304' OR $patient_hn==='48-4065' OR $patient_hn==='59-5224') { 
+if ( $patient_hn=='55-8821' OR $patient_hn=='48-4304' OR $patient_hn=='48-4065' OR $patient_hn=='59-5224') { 
 
 	$moretxt = "";
 	if($patient_hn==='59-5224')
 	{
-		$moretxt = '\n *** แจ้งเตือน! ให้พบหมอนภสมรเท่านั้น ***';
+		$moretxt = '<br>*** แจ้งเตือน! ให้พบหมอนภสมรเท่านั้น ***';
 	}
 	?>
 	<script>
-	alert('กรุณาตรวจสอบ การจ่ายยา และปริมาณยาในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ<?=$moretxt;?>');
+	Swal.fire('กรุณาตรวจสอบ การจ่ายยา และปริมาณยาในผู้ป่วยรายนี้อย่างละเอียด หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ<?=$moretxt;?>');
 	</script>
 	<?php
 }
@@ -4771,14 +4746,14 @@ elseif ($patient_hn==='50-4904')
 {
 	?>
 	<script>
-	alert('ระวังการจ่ายยา เนื่องจากผู้ป่วยรายนี้เบิกยาเกินความจำเป็น');
+	Swal.fire('ระวังการจ่ายยา เนื่องจากผู้ป่วยรายนี้เบิกยาเกินความจำเป็น');
 	</script>
 	<?php
 }
 elseif ($patient_hn=='49-19589') {
 	?>
 	<script>
-	alert('นางฐิติชญา ขัดชุ่มแสง เคสนี้ ขอพิจารณาการจ่ายยาเป็นกรณีพิเศษ เนื่องจากมีการใช้ยาที่ไม่สมเหตุสมผล ทั้งชนิดและปริมาณ หรือส่งผู้ป่วยพบแพทย์นภสมร');
+	Swal.fire('นางฐิติชญา ขัดชุ่มแสง เคสนี้ ขอพิจารณาการจ่ายยาเป็นกรณีพิเศษ เนื่องจากมีการใช้ยาที่ไม่สมเหตุสมผล ทั้งชนิดและปริมาณ หรือส่งผู้ป่วยพบแพทย์นภสมร');
 	</script>
 	<?php
 }
