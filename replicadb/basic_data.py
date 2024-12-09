@@ -41,6 +41,8 @@ except mysql.connector.Error as err:
 setGlobal = mycursor.execute("SET GLOBAL local_infile=1")
 print('MYSQL Global : '+str(setGlobal)+'\n')
 
+print('\n UPDATE runno opday dphardep phardep ddrugrx drugrx \n')
+
 # runno
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=runno --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=runno"
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
@@ -68,12 +70,32 @@ print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
 
+# phardep
+mycursor.execute("SELECT `row_id` AS latest_id FROM phardep ORDER BY row_id DESC LIMIT 1")
+myresult = mycursor.fetchone()
+latest_id = str(myresult["latest_id"])
+
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=phardep --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=phardep --sink-disable-truncate true"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
 # ddrugrx
 mycursor.execute("SELECT `row_id` AS latest_id FROM ddrugrx ORDER BY row_id DESC LIMIT 1")
 myresult = mycursor.fetchone()
 latest_id = str(myresult["latest_id"])
 
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=ddrugrx --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=ddrugrx --sink-disable-truncate true"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# drugrx
+mycursor.execute("SELECT `row_id` AS latest_id FROM drugrx ORDER BY row_id DESC LIMIT 1")
+myresult = mycursor.fetchone()
+latest_id = str(myresult["latest_id"])
+
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drugrx --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drugrx --sink-disable-truncate true"
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
