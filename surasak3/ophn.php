@@ -133,7 +133,7 @@ font-size:20px;
             }
 
             print (" <tr style='font-size: 18px;'>\n".
-            "  <td BGCOLOR=".$color."><a target=_BLANK onclick=\"checkIpd(this, event, '$hn')\" href=\"opedit.php? cHn=$hn & cName=$name &cSurname=$surname\">$hn</a></td>\n".
+            "  <td BGCOLOR=".$color."><a onclick=\"checkIpd(this, event, '$hn')\" href=\"javascript:void(0);\" oncontextmenu=\"return doNotOpenNewTab(event, '$hn');\" data-url=\"opedit.php?cHn=$hn&cName=$name&cSurname=$surname\">$hn</a></td>\n".
             "  <td BGCOLOR=".$color.">$yot</td>\n".
             "  <td BGCOLOR=".$color.">$name</td>\n".
             "  <td BGCOLOR=".$color.">$surname</td>\n".
@@ -257,7 +257,7 @@ font-size:20px;
             while($dbarr= mysql_fetch_array($result_chkname)){
 				
                 print (" <tr>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\"  href=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
+                "  <td BGCOLOR=".$color."><a onclick=\"checkIpd(this, event, '".$dbarr['hn']."')\" href=\"javascript:void(0);\" oncontextmenu=\"return doNotOpenNewTab(event, '$hn');\" data-url=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['yot']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['name']."</a></td>\n".
                 "  <td BGCOLOR=".$color.">".$dbarr['surname']."</a></td>\n".
@@ -310,7 +310,12 @@ $smctoken = $t['token'];
 
     /* checkIpd */
     function checkIpd(link, ev, hn){
-        
+        ev.preventDefault();
+
+        if (ev.ctrlKey) {
+            return doNotOpenNewTab(ev, hn);
+        }
+
         var newSm = new SmHttp();
         newSm.ajax(
             'templates/regis/checkIpd.php',
@@ -319,24 +324,33 @@ $smctoken = $t['token'];
                 var txt = JSON.parse(res);
                 if( txt.state === 400 ){
                     alert('สถานะของผู้ป่วยยังอยู่ '+txt.msg+' กรุณาติดต่อที่ Ward เพื่อ Discharge');
-                    SmPreventDefault(ev);
+                    
                 }else{
-                    // window.open(link.href, '_blank');
+                    const baseUrl = link.getAttribute('data-url');
+                    window.open(baseUrl, 'registerVn',"width="+screen.width+",height="+screen.height);
                 }
             },
             false // true is Syncronous and false is Assyncronous (Default by true)
         );
         
     }
-    
-    // ออกแบบไว้ก่อน 
-    // document.getElementById('checkPt').addEventListener("click", function(eventHandler){
-    //     document.getElementById('ptrightNotify').style.display = '';
-    // });
 
-    // document.getElementById('ptrightClose').addEventListener("click", function(eventHandler){
-    //     document.getElementById('ptrightNotify').style.display = 'none';
-    // });
+    function doNotOpenNewTab(ev,hn){
+        onSendTab(hn);
+        alert("ห้ามเปิดหน้าลงทะเบียนซ้ำซ้อน");
+        return false;
+    }
+
+    async function onSendTab(hn) {
+        const username = encodeURIComponent('<?=$sOfficer;?>');
+        const tab = encodeURIComponent('ophn จะเปิด tab ใหม่');
+        const response = await fetch('open_tab.php?username='+username+'&tab='+tab+'&hn='+hn);
+
+        if (!response.ok) {
+        }
+
+        const body = await response.text();
+    }
 
 </script>
 </div>

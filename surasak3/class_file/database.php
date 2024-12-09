@@ -14,6 +14,20 @@ class DbConnect{
         $this->dbi->query("SET NAMES UTF8");
     }
 
+    public function __query($sql){
+        $q = false;
+        try {
+            $q = $this->dbi->query($sql);
+            
+            if($q==false){
+                return $this->getError();
+            }
+        } catch (Exception $e) {
+            return $this->getError();
+        }
+        return $q;
+    }
+
     public function dbError(){
         return array("error"=>400, "message"=>"Data not found ".$this->dbi->error);
     }
@@ -30,6 +44,14 @@ class DbConnect{
      */
     public function getOfficer(){
         return $_SESSION['sOfficer'];
+    }
+
+    public function getError(){
+        $e = new stdClass;
+        $e->errorNumber = $this->dbi->errno;
+        $e->errorDetail = $this->dbi->error;
+        $e->errorMessage = "MySQL Error: [{$this->dbi->errno}] {$this->dbi->error}";
+        return $e;
     }
 
 }

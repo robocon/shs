@@ -33,9 +33,22 @@ if($action=='enable'){
 }elseif($action=='delete'){
 
     $id = sprintf("%s", $_GET['id']);
-    $q = $dbi->query("DELETE FROM `inputm` WHERE `row_id` = '$id' LIMIT 1;");
-    if($q !== false){
-        $res = array('status'=>200, 'message'=>'ลบข้อมูลเรียบร้อย');
+    $detail = sprintf("%s", $_GET['detail']);
+    $q = $dbi->query("SELECT `name`,`menucode` FROM `inputm` WHERE `row_id` = '$id' LIMIT 1;");
+    if($q->num_rows>0){
+        $user = $q->fetch_assoc();
+        $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
+        $smenucode = sprintf("%s", $_SESSION['smenucode']);
+
+        $message = "$sOfficer($smenucode) ได้ขอลบผู้ใช้งาน ".$user['name'].'('.$user['menucode'].') เหตุผล: '.$detail;
+        // 'LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL' // ตัวเทสเท่านั้น
+        $lineRes = sendLineNotify($message);
+        if($lineRes===false){
+            $res = array('status'=>400, 'message'=>'ระบบการแจ้งเตือนขัดข้อง กรุณาตรวจสอบอินเตอร์เน็ตว่าสามารถใช้งานได้ตามปกติได้หรือไม่');
+        }else{
+            $res = array('status'=>200, 'message'=>'OK');
+        }
+        
     }else{
         $res = array('status'=>400, 'message'=>$dbi->error);
     }
@@ -70,15 +83,16 @@ if($action=='enable'){
             ?>
             <table class="table table-hover">
             <tr>
-                <th width="10%">ลำดับ</th>
-                <th width="30%">ชื่อ - นามสกุล</th>
+                <th>ลำดับ</th>
+                <th>ชื่อ - นามสกุล</th>
                 <?php 
                 if($getMenucode=='ADM'){
-                    ?><th width="15%">part</th><?php
+                    ?><th>part</th><?php
                 }
                 ?>
-                <th width="15%">ระดับ</th>
-                <th width="30">จัดการข้อมูล</th>
+                <th>ระดับ</th>
+                <th>เข้าใช้งานล่าสุด</th>
+                <th>จัดการข้อมูล</th>
             </tr>
             <?php
             $i = 1;
@@ -97,6 +111,7 @@ if($action=='enable'){
 					}
 					?>
 					<td><?=$a["level"];?></td>
+                    <td><?=$a['last_login'];?></td>
 					<td>
 						<div class="d-grid gap-2 d-md-block">
                             <a href="javascript:void(0);" class="btn btn-success btn-sm" data-id="<?=$a['row_id'];?>" onclick="onEnable('<?=$a['row_id'];?>')">เปิดใช้งาน</a>
@@ -111,6 +126,14 @@ if($action=='enable'){
             </table>
             <script>
                 async function onEnable(row_id){
+
+                    // Ban
+                    if(row_id=='1063'){
+                        Swal.fire({
+                            title: "ผู้ใช้ถูกระงับการใช้งาน เพราะไม่สามารถระบุตัวตนจาก ชื่อ-นามสกุล ที่ใช้งานอยู่ได้ กรุณาติดต่อศูนย์คอมฯ เพื่อยืนยันตัวตน",
+                        });
+                        return false;
+                    }
                     const response = await fetch('disableuser.php?action=enable&id='+row_id);
                     const res = await response.json();
                     if(res.status==200){
@@ -125,48 +148,48 @@ if($action=='enable'){
                     
                 }
 
-                function onDelete(row_id){
+                async function onDelete(row_id){
 
-                    Swal.fire({
+                    const {value:text} = await Swal.fire({
+                        input: "textarea",
                         title: "คุณมั่นใจการลบข้อมูลถาวร?",
-                        text: "การลบข้อมูลครั้งนี้ จะไม่สามารถกู้ข้อมูลคืนได้อีก แน่ใจว่าจะลบข้อมูล",
+                        text: "การลบข้อมูลครั้งนี้ จะไม่สามารถกู้ข้อมูลคืนได้อีก กรุณาระบุเหตุผลในการลบข้อมูล",
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
                         cancelButtonColor: "#d33",
                         confirmButtonText: "ใช่, ฉันต้องการลบ",
-                        cancelButtonText: "ยกเลิก"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-
-                            onDeleteProcess(row_id).then((res)=>{
-                                
-                                if(res.status==200){ 
-                                    document.getElementById('user-'+row_id).remove();
-                                    Swal.fire({
-                                        title: "ลบข้อมูลเรียบร้อย!",
-                                        icon: "success",
-                                        showConfirmButton: false,
-                                        timer: 1200
-                                    });
-                                }else{
-                                    Swal.fire({
-                                        title: "Error!",
-                                        text: res.message,
-                                        icon: "error"
-                                    });
-                                }
-                                
-                            });
-
-                            
+                        cancelButtonText: "ยกเลิก",
+                        inputPlaceholder: "ระบุเหตุผลในช่องนี้",
+                        inputValidator: (value) =>{
+                            if(!value){ return "กรุณาระบุเหตุผล"; }
                         }
                     });
 
+                    if(text){
+                        onDeleteProcess(row_id,text).then((res)=>{
+                                
+                            if(res.status==200){ 
+                                document.getElementById('user-'+row_id).remove();
+                                Swal.fire({
+                                    title: "ดำเนินการแจ้งลบผู้ใช้งานเรียบร้อย ศูนย์คอมพิวเตอร์จะดำเนินการลบข้อมูลภายใน 48ชั่วโมง ขอบคุณครับ",
+                                    icon: "success"
+                                });
+                            }else{
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: res.message,
+                                    icon: "error"
+                                });
+                            }
+                            
+                        });
+                    }
+
                 }
 
-                async function onDeleteProcess(id){
-                    const response = await fetch('disableuser.php?action=delete&id='+id);
+                async function onDeleteProcess(id,text){
+                    const response = await fetch('disableuser.php?action=delete&id='+id+'&detail='+text);
                     const res = await response.json();
                     return res;
                 }

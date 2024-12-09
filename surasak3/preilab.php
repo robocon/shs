@@ -1,4 +1,5 @@
 <?php
+    session_start();
     $x=0;
     $aDgcode = array("รหัส");
     $aTrade  = array("รายการ");
@@ -54,10 +55,14 @@
 
     include("connect.inc");
 //seek $an in bed
+if(empty($an)){
+    echo 'กรุณาใส่หมายเลข AN';
+    exit;
+}
     $query = "SELECT * FROM opday WHERE an = '$an'";
 	// echo $query;
     $result = mysql_query($query)
-        or die("Query failed");
+        or die("Query failed ".mysql_error());
 	$rows_an = mysql_num_rows($result);
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
@@ -68,6 +73,13 @@
         if(!($row = mysql_fetch_object($result)))
             continue;
          }
+
+
+if(mysql_num_rows($result)==0){
+    echo "ไม่พบข้อมูล AN: $an กรุณาตรวจสอบข้อมูลอีกครั้ง";
+    exit;
+}
+
    If ($result){
       $cPtname= $row->ptname;
       $cPtright = $row->ptright;
@@ -76,6 +88,14 @@
    //   $cDiag= $row->diagnos;
     //  $cAccno=$row->accno;
    }
+
+    // 2567-09-10 ถ้าเป็น จนท.กายภาพให้เก็บ Log บันทึกว่าแต่ละหน้าทำอะไรบ้าง
+    $log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+    if($log_smenucode == 'ADMPT'){
+        $log_officer = sprintf("%s", $_SESSION['sOfficer']);
+        $logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'ค้นหา HN', NULL);";
+        mysql_query($logSql);
+    }
 
    $sqlIP = "SELECT `row_id` FROM `ipcard` WHERE `an` = '$an' AND `status_log` = 'จำหน่าย' ";
    $qIP = mysql_query($sqlIP);
@@ -149,24 +169,22 @@
     $nRunno++;
 
     $query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-    $result = mysql_query($query)
-        or die("Query failed");
+    $result = mysql_query($query) or die("Query failed");
 //end  runno  for chktranx
 	$sql = "Select bedcode , left(doctor,5), doctor From bed where an = '".$cAn."' limit 0,1 ";
 	list($bedcode , $doctor_ipd, $doctor_ipd2) = mysql_fetch_row(mysql_query($sql));
 
-      //
-      echo "<FONT SIZE='' COLOR='#FF0000'>โปรดตรวจสอบชื่อเพื่อความถูกต้อง</FONT><br><br>";
-      echo "HN : $cHn <BR> AN : $cAn <BR><FONT SIZE='' COLOR='#FF0066'> ชื่อ: <B>$cPtname</B></FONT><br> ";
-      echo "สิทธิ : $cPtright<br> ";
-      echo "โรค: $cDiag <BR> แพทย์: $cDoctor<br>";
+    //
+    echo "<FONT SIZE='' COLOR='#FF0000'>โปรดตรวจสอบชื่อเพื่อความถูกต้อง</FONT><br><br>";
+    echo "HN : $cHn <BR> AN : $cAn <BR><FONT SIZE='' COLOR='#FF0066'> ชื่อ: <B>$cPtname</B></FONT><br> ";
+    echo "สิทธิ : $cPtright<br> ";
+    echo "โรค: $cDiag <BR> แพทย์: $cDoctor<br>";
 
 
        //
-           }  
-   else {
-      echo "ไม่พบ AN : $an ในข้อมูลผู้ป่วยใน หรือจำหน่ายผู้ป่วยแล้ว ";
-           }  
+}  else {
+    echo "ไม่พบ AN : $an ในข้อมูลผู้ป่วยใน หรือจำหน่ายผู้ป่วยแล้ว ";
+}  
   
 //  include("unconnect.inc");  
   $tvn=$an;

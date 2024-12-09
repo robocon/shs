@@ -32,7 +32,7 @@ function check(){
 }
 </script>
 <?
-function calcage($birth){
+/*function calcage($birth){
 
 	$today = getdate();   
 	$nY  = $today['year']; 
@@ -54,7 +54,53 @@ function calcage($birth){
 	}
 
 return $pAge;
-}
+}*/
+
+
+function CalAge($birth){
+  	$today = date('d-m-Y');
+    list($bday,$bmonth,$byear) = explode('-',$birth);
+    list($tday,$tmonth,$tyear) = explode('-',$today);
+
+    if($byear < 1970){
+      $yearad = 1970 - $byear;
+      $byear = 1970;
+    }else{
+      $yearad = 0;
+    }
+
+    $mbirth = mktime(0,0,0, $bmonth,$bday,$byear);
+    $mtoday = mktime(0,0,0, $tmonth,$tday,$tyear);
+
+    $mage = ($mtoday - $mbirth);
+    $wyear = (date('Y', $mage)-1970+$yearad);
+    $wmonth = (date('m', $mage)-1);
+    $wday = (date('d', $mage)-1);
+
+    $ystr = ($wyear > 1 ? " ปี" : " ปี");
+    $mstr = ($wmonth > 1 ? " เดือน" : " เดือน");
+    $dstr = ($wday > 1 ? " วัน" : " วัน");
+
+    if($wyear > 0 && $wmonth > 0 && $wday > 0) {
+      $agestr = $wyear.$ystr." ".$wmonth.$mstr." ".$wday.$dstr;
+     }else if($wyear == 0 && $wmonth == 0 && $wday > 0) {
+       $agestr = $wday.$dstr;
+     }else if($wyear > 0 && $wmonth > 0 && $wday == 0) {
+       $agestr = $wyear.$ystr." ".$wmonth.$mstr;
+     }else if($wyear == 0 && $wmonth > 0 && $wday > 0) {
+       $agestr = $wmonth.$mstr." ".$wday.$dstr;
+     }else if($wyear > 0 && $wmonth == 0 && $wday > 0) {
+       $agestr = $wyear.$ystr." ".$wday.$dstr;
+     }else if($wyear == 0 && $wmonth > 0 && $wday == 0) {
+       $agestr = $wmonth.$mstr;
+     }else {
+		 //$agestr ="";
+       $agestr =$wyear.$ystr;
+     }
+
+      return $agestr;
+    }
+
 
 if(isset($_GET['id'])){
 	session_register('hn');
@@ -63,9 +109,17 @@ if(isset($_GET['id'])){
 	$rep = mysql_fetch_array($row);
 	echo "<span class='font5'>HN :".$rep['hn']."&nbsp;&nbsp;&nbsp;&nbsp;ชื่อ : ".$rep['yot']." ".$rep['name']." ".$rep['surname']."<br>";
 	$_SESSION['hn']=$rep['hn'];
-	$age = calcage($rep['dbirth']);
+	
+	list($y,$m,$d)=explode("-",$rep['dbirth']);
+	$yy=$y-543;
+	$birthday="$d-$m-$yy";
+	$yyy=$yy+543;	
+	$showbirthday="$d/$m/$yyy";		
+	$age = CalAge($birthday);
+	
 	if($age=="255"){ $age="ไม่ทราบอายุ";}
-	echo "อายุ : ".$age."<br>";
+	echo "วัน/เดือน/ปีเกิด : $showbirthday <br>";
+	echo "<strong>อายุ : ".$age."</strong><br>";
 	echo "โรค : ตรวจสุขภาพ &nbsp;&nbsp;สิทธิ : R22 ตรวจสุขภาพประจำปีกองทัพบก</span>";
 ?>
 <form name="form1" method="post" action="labofyear.php" onsubmit="return check()" >
@@ -182,6 +236,7 @@ if(isset($_GET['id'])){
 	/////////////////////////////////////
 	$_SESSION['aDgcode'] = array();
 	$sqlvn = "select vn from opday WHERE thdatehn= '$thdatehn'";
+	//echo $sqlvn;
 	$rowvn = mysql_query($sqlvn);
 	list($vn_now) = mysql_fetch_array($rowvn);
 	
@@ -190,18 +245,27 @@ if(isset($_GET['id'])){
 	$rep = mysql_fetch_array($row);
 	$_SESSION['hn']=$rep['hn'];
 	echo "<span class='font5'>HN :".$rep['hn']."&nbsp;&nbsp;&nbsp;&nbsp;ชื่อ : ".$rep['yot']." ".$rep['name']." ".$rep['surname']."<br>";
-	$age = calcage($rep['dbirth']);
+	
+	list($y,$m,$d)=explode("-",$rep['dbirth']);
+	$yy=$y-543;
+	$birthday="$d-$m-$yy";
+	$yyy=$yy+543;	
+	$showbirthday="$d/$m/$yyy";	
+	$age = CalAge($birthday);
+	
 	if($age=="255"){ $age="ไม่ทราบอายุ";}
+	echo "วัน/เดือน/ปีเกิด : $showbirthday <br>";
 	echo "อายุ : ".$age."&nbsp;&nbsp;VN :".$vn_now."<br>";
 	echo "โรค : ตรวจสุขภาพ &nbsp;&nbsp;สิทธิ : R22 ตรวจสุขภาพประจำปีกองทัพบก<br><br>";
 	echo "<fieldset><legend><strong>รายการตรวจ</strong></legend>";
 	$i=0;
 	if($_POST['pro']=="3" || $_POST['pro']=="4"){
 		//$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' or code='HDL'";  //ค้นหา lab ที่ตรวจ
-		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%'";  //ค้นหา lab ที่ตรวจ
+		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' and labstatus = 'Y' ";  //ค้นหา lab ที่ตรวจ
 	}else{
-		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%'";  //ค้นหา lab ที่ตรวจ
+		$sql = "select * from labcare where chkup like '%".$_POST['pro']."%' and labstatus = 'Y'";  //ค้นหา lab ที่ตรวจ
 	}
+	//echo $sql;
 	$row = mysql_query($sql);
 	while($rep = mysql_fetch_array($row)){
 		$i++;

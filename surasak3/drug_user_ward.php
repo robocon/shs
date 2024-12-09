@@ -58,6 +58,7 @@ if ( $action === false ) {
 		'ADMLIBRARY' => 'เวชกรรมป้องกัน',
 		'ADMCMS' => 'หน่วยจ่ายกลาง',
 		'ADMNEWCHKUP' => 'ตรวจสุขภาพนอกโรงพยาบาล',
+		'ADMNHSO' => 'ห้องประกันสุขภาพฯ',
 		'ADMCHKUP1' => 'อื่นๆ'
 	);
 	
@@ -199,9 +200,10 @@ if ( $action === false ) {
 			}
 			?>
 			<?php
-			$sql = "SELECT a.`id`,b.`name`,b.`menucode` 
+			$sql = "SELECT a.`id`,b.`name`,b.`menucode`,b.`status` 
 			FROM `drug_user_ward` AS a 
-			LEFT JOIN `inputm` AS b ON b.`row_id` = a.`user_id`";
+			LEFT JOIN `inputm` AS b ON b.`row_id` = a.`user_id` 
+			ORDER BY b.`menucode`";
 			$db->select($sql);
 			?>
 			<div>
@@ -224,8 +226,13 @@ if ( $action === false ) {
 							$i = 1;
 							foreach( $items as $key => $item ){
 								$menucode = trim($item['menucode']);
+								$status = strtolower($item['status']);
+								$color = '';
+								if($status=='n'){
+									$color = 'background-color: red;';
+								}
 								?>
-								<tr>
+								<tr style="$color">
 									<td><?=$i;?></td>
 									<td><?=$item['name'];?></td>
 									<td><?=$checklist[$menucode];?></td>

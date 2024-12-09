@@ -64,7 +64,12 @@ if($action==='delete'){
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
+    <style>
+        label:hover, input[type="checkbox"]:hover{
+            cursor: pointer;
+        }
+    </style>
+    <div class="m-2">
     <?php 
     if (!empty($_SESSION['x-msg'])) {
         ?>
@@ -74,63 +79,196 @@ if($action==='delete'){
     }
 
     $hn = sprintf("%s", ($_POST['hn'] ? $_POST['hn'] : ''));
+    $date = sprintf("%s", ($_POST['date'] ? $_POST['date'] : date('Y-m-d')));
     ?>
         <h3>ลบ digital opdcard</h3>
-        <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
-            <div class="col-auto">
-                <label for="hn" class="visually-hidden">HN</label>
-                <input type="input" class="form-control" name="hn" id="hn" placeholder="HN" value="<?=$hn;?>">
+        <div class="row">
+            <div class="col-md-3">
+                <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
+                    <div class="col-auto">
+                        <label for="hn" class="visually-hidden">HN</label>
+                        <input type="input" class="form-control" name="hn" id="hn" placeholder="ค้นหาจาก HN" value="<?=$hn;?>">
+                    </div>
+                        <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                        <input type="hidden" name="page" value="search">
+                    </div>
+                </form>
             </div>
-                <div class="col-auto">
-                <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
-                <input type="hidden" name="page" value="search">
+            <div class="col">
+                <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
+                    <div class="col-auto">
+                        <label for="date" class="col-form-label">วันที่อัพโหลด</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="date" class="form-control" name="date" id="date" placeholder="เช่น 2024-11-31" value="<?=$date;?>">
+                    </div>
+                    <div class="col-md-2">
+                        <?php 
+                        $sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` <> '' ORDER BY `row_id` ";
+                        $q = $dbi->query($sql);
+                        ?>
+                        <select name="doctor" id="doctor" class="form-select">
+                            <option value="">แสดงทุกแพทย์</option>
+                            <?php 
+                            while ($a = $q->fetch_assoc()) { 
+                                $selected = ($a['row_id']==$_POST['doctor']) ? 'selected="selected"' : '' ;
+                                ?>
+                                <option value="<?=$a['row_id'];?>" <?=$selected;?> ><?=$a['name'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <?php 
+                        $sql = "SELECT * FROM `clinic`";
+                        $q = $dbi->query($sql);
+                        ?>
+                        <select name="clinic" id="clinic" class="form-select">
+                            <option value="">แสดงทุกคลินิก</option>
+                            <?php 
+                            while ($a = $q->fetch_assoc()) { 
+                                $selected = ($a['detail']==$_POST['clinic']) ? 'selected="selected"' : '' ;
+                                ?>
+                                <option value="<?=$a['detail'];?>" <?=$selected;?> ><?=$a['detail'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <?php 
+                        $sql = "SELECT * FROM `sub_clinic` WHERE `status` = 'y' ";
+                        $q = $dbi->query($sql);
+                        ?>
+                        <select name="sub_clinic" id="sub_clinic" class="form-select">
+                            <option value="">แสดงทุกคลินิกย่อย</option>
+                            <?php 
+                            $subClinic = array();
+                            while ($a = $q->fetch_assoc()) {
+                                $key = $a['row_id'];
+                                $subClinic[$key] = $a['clinic_name'];
+
+                                $selected = ($a['row_id']==$_POST['sub_clinic']) ? 'selected="selected"' : '' ;
+                                
+                                ?>
+                                <option value="<?=$a['row_id'];?>" <?=$selected;?> ><?=$a['clinic_name'];?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                        <input type="hidden" name="page" value="search">
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+        
         <?php 
         $page = sprintf("%s", $_POST['page']);
         if($page==='search'){
             $hn = sprintf("%s", $_POST['hn']);
-            $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
-            ?>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>วันที่เข้ารับการรักษา<br>actual_date</th>
-                        <th>วันที่บันทึก<br>upload_date</th>
-                        <th>clinic</th>
-                        <th></th>
-                        <th>doctor</th>
-                        <th>type</th>
-                        <th>officer</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php
-                foreach ($items->list as $key => $value) {
-                    $doctorId = $value->doctor;
-                    $row_id = $value->row_id;
-                    ?>
-                    <tr id="item-<?=$row_id;?>">
-                        <td><?=$value->actual_date;?></td>
-                        <td><?=$value->upload_date;?></td>
-                        <td><?=$value->clinic;?></td>
-                        <th>
-                            <a href="<?=$value->original;?>" target="_blank"><img src="<?=$value->thumbnail;?>" alt="digital opd" height="120"></a>
-                        </th>
-                        <td><?=$doctorList[$doctorId]['name'];?></td>
-                        <td><?=$value->type;?></td>
-                        <td><?=$value->officer;?></td>
-                        <th>
-                            <a href="javascript:void(0);" class="btn btn-primary" onclick="return confirmDelete('<?=$row_id;?>');">ลบ</a>
-                        </th>
-                    </tr>
-                    <?php
+            if(!empty($hn)){
+                $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
+            }
+
+            $date = sprintf("%s", $_POST['date']);
+            if(!empty($date)){
+                
+                $doctor = sprintf("%s", $_POST['doctor']);
+                $clinic = sprintf("%s", $_POST['clinic']);
+                $sub_clinic = sprintf("%s", $_POST['sub_clinic']);
+                $sqlDt = '';
+                if(!empty($doctor)){
+                    $sqlDt .= " AND `doctor` = '$doctor'";
                 }
-                ?>
-                </tbody>
-            </table>
+                if(!empty($clinic)){
+                    $sqlDt .= " AND `clinic` = '$clinic'";
+                }
+                if(!empty($sub_clinic)){
+                    $sqlDt .= " AND `sub_clinic` = '$sub_clinic'";
+                }
+                $items = new stdClass;
+                $sql = "SELECT * FROM `digital_opcard` WHERE `last_update` LIKE '$date%' $sqlDt ";
+                $q = $dbi->query($sql);
+                while ($a = $q->fetch_assoc()) {
+                    $a['thumbnail'] = 'http://192.168.131.240:8081/storage/thumbnail_'.$a['file_name'];
+                    $a['original'] = 'http://192.168.131.240:8081/storage/'.$a['file_name'];
+                    $a['upload_date'] = $a['last_update'];
+                    $a['type'] = $a['upload_type'];
+                    $items->list[] = (object)$a;
+                }
+            }
+
+            if(!empty($items->list)){
+            ?>
+            <form action="javascript:void(0);" method="post" id="formPostEdit">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" name="CheckAllBtn" id="CheckAllBtn" title="เลือกทั้งหมด">
+                            </th>
+                            <th>วันที่เข้ารับการรักษา<br>actual_date</th>
+                            <th>วันที่บันทึก<br>upload_date</th>
+                            <th>clinic</th>
+                            <th></th>
+                            <th>doctor</th>
+                            <th>type</th>
+                            <th>officer</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($items->list as $key => $value) {
+                        $doctorId = $value->doctor;
+                        $row_id = $value->row_id;
+                        ?>
+                        <tr id="item-<?=$row_id;?>">
+                            <th>
+                                <input type="checkbox" class="checkboxItem" name="id[]" id="id<?=$row_id;?>" value="<?=$row_id;?>">
+                            </th>
+                            <td><label for="id<?=$row_id;?>"><?=$value->actual_date;?></label></td>
+                            <td><?=$value->upload_date;?></td>
+                            <td><?=$value->clinic;?><br><?=$subClinic[$value->sub_clinic];?></td>
+                            <th>
+                                <a href="<?=$value->original;?>" target="_blank"><img src="<?=$value->thumbnail;?>" alt="digital opd" height="120"></a>
+                            </th>
+                            <td><?=$doctorList[$doctorId]['name'];?></td>
+                            <td><?=$value->type;?></td>
+                            <td><?=$value->officer;?></td>
+                            <th>
+                                <a href="javascript:void(0);" class="btn btn-primary" onclick="return confirmDelete('<?=$row_id;?>');">ลบ</a>
+                            </th>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary mb-3" id="changeDate">เปลี่่ยนวันที่เข้ารับการรักษา</button>
+                        <button type="button" class="btn btn-primary mb-3" id="changeDoctor">เปลี่ยนชือแพทย์</button>
+                        <input type="hidden" name="date" value="<?=$date;?>" >
+                        <input type="hidden" name="doctor" value="<?=$doctor;?>" >
+                        <input type="hidden" name="clinic" value="<?=$clinic;?>" >
+                        <input type="hidden" name="sub_clinic" value="<?=$sub_clinic;?>" >
+                    </div>
+                </div>
+            </form>
             <?php
+            }else{
+                ?>
+                <div>
+                    <p><strong>ไม่พบข้อมูล</strong></p>
+                </div>
+                <?php
+            }
         }
         ?>
     </div>
@@ -160,6 +298,24 @@ if($action==='delete'){
             }else if(data.status===404){
                 alert(data.message);
             }
+        }
+
+        document.getElementById('CheckAllBtn').onchange = function(){
+            let checkboxItems = document.getElementsByClassName('checkboxItem');
+            for (let index = 0; index < checkboxItems.length; index++) {
+                const element = checkboxItems[index];
+                element.checked = this.checked;
+            }
+        }
+
+        document.getElementById('changeDate').onclick = function(){
+            document.getElementById('formPostEdit').action = 'digital_opd_manage2.php';
+            document.getElementById('formPostEdit').submit();
+        }
+
+        document.getElementById('changeDoctor').onclick = function(){
+            document.getElementById('formPostEdit').action = 'digital_opd_manage_select_doctor.php';
+            document.getElementById('formPostEdit').submit();
         }
     </script>
 </body>

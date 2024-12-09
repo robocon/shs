@@ -91,6 +91,12 @@ class MedSHS extends SHSPdf{
         $get_header_y = $this->GetY();
 
     }
+
+    function footer(){
+        $y = $this->GetY();
+        $this->SetXY(10, $y+2);
+        $this->Cell(193, 6, "ผู้พิมพ์เอกสาร ".iconv("UTF-8", "TIS-620", $_SESSION['sOfficer'])." ".(date('Y')+543).date('-m-d H:i:s'), 0, 1, 'R');
+    }
 }
 
 

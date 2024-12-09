@@ -76,10 +76,17 @@ $result = Mysql_Query($sql);
 list($yot, $name, $surname, $ptright) = Mysql_fetch_row($result);
 $ptname = $yot." ".$name." ".$surname;
 
+// Default $where_date is today date
 $where_date = "$y-$m-$d";
-// $where_date = '2564-11-12';
-$labdepart_sql = "Select row_id, doctor, price, sumnprice, date, ptname, hn From labdepart where hn ='$hn' AND date like '$where_date%' AND depart = 'PATHO' AND price > 0 Order by row_id ASC ";
 
+$getDay = sprintf("%s", $_REQUEST['d']);
+$getMonth = sprintf("%s", $_REQUEST['m']);
+$getYear = sprintf("%s", $_REQUEST['y']);
+if(!empty($getDay) && !empty($getMonth) && !empty($getYear)){
+	$where_date = "$getYear-$getMonth-$getDay";
+}
+
+$labdepart_sql = "Select row_id, doctor, price, sumnprice, date, ptname, hn From labdepart where hn ='$hn' AND date like '$where_date%' AND depart = 'PATHO' AND price > 0 Order by row_id ASC ";
 $result_labdepart = Mysql_Query($labdepart_sql);
 $rows_labdepart = Mysql_num_rows($result_labdepart);
 

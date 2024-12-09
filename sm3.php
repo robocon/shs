@@ -14,6 +14,10 @@ top.window.outerWidth = screen.availWidth;
 </script>
 
 <?php
+include("connect.inc");
+$sRowid=$_GET["user_id"];
+mysql_query("UPDATE `inputm` SET `login_status`=0 WHERE (`row_id`='$sRowid');");
+
     session_start();
     session_destroy();
 
@@ -27,7 +31,7 @@ top.window.outerWidth = screen.availWidth;
     <frame name="contents" target="main" src="banner.htm" marginwidth="0" marginheight="0" scrolling="no" noresize>
     <frame name="contents1" src="surasak3/login.php" marginwidth="0" marginheight="0" scrolling="yes" target="_self">
   </frameset>
-  <frame name="main" src="display.php" marginwidth="0" marginheight="0" scrolling="yes" target="_self">
+  <frame name="main" src="display.php" id="mainDisplayPage" marginwidth="0" marginheight="0" scrolling="yes" target="_self">
   <noframes>
   <body>
 

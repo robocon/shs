@@ -40,12 +40,6 @@ if( $action == 'save' ) {
             $sql = "SELECT `id` FROM `chk_company_list` WHERE `code` = '$company_code'";
             $db->select($sql);
             $chk_row = $db->get_rows();
-
-            // $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
-            $msg = "บันทึกข้อมูลเรียบร้อย";
-
-            // $year = get_year_checkup(true);
-
             if( $chk_row == 0 ){
                 $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
                 VALUES (
@@ -56,6 +50,8 @@ if( $action == 'save' ) {
                 if( $save !== true ){
                     $msg = errorMsg('save', $save['id']);
                 }
+            }else{
+                $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
             }
             
         }
@@ -315,7 +311,7 @@ if ( $views == 'search' ) {
 
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
         // เทศบาลเมืองพิชัย 67
-        $expense_list = array('เทศบาลเมืองเขลางค์นคร 67 ก.ค.');
+        $expense_list = array('เทศบาลนครลำปาง 67 Day 1','เทศบาลนครลำปาง 67 Day 2');
 
         foreach ($items as $key => $item) {
 

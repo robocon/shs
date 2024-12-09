@@ -129,11 +129,14 @@ $list_lab["HBSAG"] = "hbsag";
 $list_lab["HCVAB"] = "hcvab";
 $list_lab["HIV"] = "hiv";
 $list_lab["VDRL"] = "vdrl";
-$list_lab["PARASI"] = "parasi";
+
 $list_lab["GROUPT"] = "groupt";
 $list_lab["RH"] = "rh";
 $list_lab["UPT"] = "upt";
 $list_lab["STOCC"] = "stocc";
+$list_lab["OCCULT"] = "OCCULT";
+$list_lab["PARASI"] = "parasi";
+
 $list_lab["1427"] = "uric";
 $list_lab["ANTIHB"] = "ANTIHB";
 $list_lab["HBA1CC"] = "HBA1C";

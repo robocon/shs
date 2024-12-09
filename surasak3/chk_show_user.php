@@ -14,10 +14,11 @@ if( $page == false ){
     $db->select($sql);
     $company = $db->get_item();
 
-    $sql = "SELECT *, `HN` AS `hn`  
-    FROM `opcardchk` 
-    WHERE `part` = '$part' 
-    ORDER BY `row`";
+    $sql = "SELECT a.`row`,a.`exam_no`,a.`name`,a.`surname`,a.`idcard`,a.`agey`,a.`part`, a.`HN` AS `hn`,b.`ptright`
+    FROM `opcardchk` AS a 
+    LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn` 
+    WHERE a.`part` = '$part' 
+    ORDER BY a.`row`";
     $db->select($sql);
     $items = $db->get_items();
     $rows = $db->get_rows();
@@ -40,6 +41,7 @@ if( $page == false ){
                 <th>ชื่อสกุล</th>
                 <th>เลขบัตรประชาชน</th>
                 <th>อายุ</th>
+                <th>สิทธิ(ในรพ.)</th>
                 <th>ลบ</th>
             </tr>
             <?php
@@ -56,6 +58,7 @@ if( $page == false ){
                     <td><?=$item['name'];?> <?=$item['surname'];?></td>
                     <td><?=$item['idcard'];?></td>
                     <td><?=$item['agey'];?></td>
+                    <td><?=$item['ptright'];?></td>
                     <td align="center"><a href="chk_show_user.php?page=del&id=<?=$item['row'];?>&part=<?=$item['part'];?>" onclick="return confirm_del()">ลบ</a></td>
                 </tr>
                 <?php

@@ -1,5 +1,7 @@
 <?php
 session_start();
+require_once "connect.php";
+
 session_unregister("cHn");
 session_unregister("cPtname");
 session_unregister("cPtright");
@@ -13,284 +15,215 @@ session_unregister("Ptright1");
 //    session_destroy();
 ?>
 <style>
-body {
-	background-color: #FFFFF0;
-    font-family: "TH SarabunPSK";
+    body {
+        background-color: #FFFFF0;
+        font-family: "TH SarabunPSK";
         font-size: 18px;
     }
-.txtsarabun {
-font-family:"TH SarabunPSK";
-font-size:20px;
-}	
-.style2 {
-	font-family:"TH SarabunPSK";
-	font-size: 18;
-	}
+
+    .txtsarabun {
+        font-family: "TH SarabunPSK";
+        font-size: 20px;
+    }
+
+    .style2 {
+        font-family: "TH SarabunPSK";
+        font-size: 18;
+    }
 </style>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
-<script type="text/javascript" src="assets/js/json2.js"></script><body bgcolor="#60c4b8">
-<div style="margin-left:50px; margin-top: 30px;">
-<form method="post" action="ophnfast.php">
-    <p style="font-size:24px;"><b>§ÈπÀ“§π‰¢È®“°&nbsp; HN</p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input name="hn" type="text" class="txtsarabun" id="aLink"  size="50" height="40" autofocus>
-    </p>
-    
-    <p style="margin-left:100px;">
-    <input name="B1" type="submit" class="txtsarabun" value="     §ÈπÀ“     ">
-    &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ¬°‡≈‘°     ">
-    </p>
-</form>
-<script type="text/javascript">
-    document.getElementById('aLink').focus();
-</script>
+<script type="text/javascript" src="assets/js/json2.js"></script>
 
-<table width="83%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
-<tr>
-        <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
-      <th bgcolor=#009688 width="47"><span class="style2">¬»</span></th>
-      <th width="77" bgcolor=#009688><span class="style2">™◊ËÕ</span></th>
-      <th width="69" bgcolor=#009688><span class="style2"> °ÿ≈</span></th>
-	  <th width="100" bgcolor=#009688><span class="style2"> ‘∑∏‘°“√√—°…“</span></th>
-      <th width="100" bgcolor=#009688><span class="style2">¥”‡π‘π°“√</span></th>
-    </tr>
+<body bgcolor="#60c4b8">
+    <div style="margin-left:50px; margin-top: 30px;">
+        <form method="post" action="ophnfast.php">
+            <p style="font-size:24px;"><b>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏Ñ‡∏ô‡πÑ‡∏Ç‡πâ‡∏à‡∏≤‡∏Å&nbsp; HN</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input name="hn" type="text" class="txtsarabun" id="aLink" size="50" height="40" autofocus>
+            </p>
 
-    <?php
-    If (!empty($hn)){
-        include("connect.inc");
-        global $hn;
-        $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
-        $result = mysql_query($query)or die("Query failed");
-        while (list ($hn,$yot,$name,$surname,$ptright,$ptright1,$idcard) = mysql_fetch_row ($result)) {
+            <p style="margin-left:100px;">
+                <input name="B1" type="submit" class="txtsarabun" value="     ‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤     ">
+                &nbsp;&nbsp;&nbsp;&nbsp; <input name="B2" type="reset" class="txtsarabun" value="     ‡∏¢‡∏Å‡πÄ‡∏•‡∏¥‡∏Å     ">
+            </p>
+        </form>
+        <script type="text/javascript">
+            document.getElementById('aLink').focus();
+        </script>
 
-            if(substr($ptright,0,3)=='R07' && !empty($idcard)){
-                $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+        <table width="83%" border="0" cellpadding="10" cellspacing="4" bordercolor="#FFFFFF">
+            <tr>
+                <th width="57" height="22" bgcolor=#009688><span class="style2">HN</span></th>
+                <th bgcolor=#009688 width="47"><span class="style2">‡∏¢‡∏®</span></th>
+                <th width="77" bgcolor=#009688><span class="style2">‡∏ä‡∏∑‡πà‡∏≠</span></th>
+                <th width="69" bgcolor=#009688><span class="style2">‡∏™‡∏Å‡∏∏‡∏•</span></th>
+                <th width="100" bgcolor=#009688><span class="style2">‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</span></th>
+                <th width="100" bgcolor=#009688><span class="style2">‡∏î‡∏≥‡πÄ‡∏ô‡∏¥‡∏ô‡∏Å‡∏≤‡∏£</span></th>
+            </tr>
 
-                if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-                    $color = "#208eb4";
-                }else{
-                    $color = "FF8C8C";
+            <?php
+            if (!empty($hn)) {
+                
+                global $hn;
+                $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
+                $result = mysql_query($query) or die("Query failed");
+                while (list($hn, $yot, $name, $surname, $ptright, $ptright1, $idcard) = mysql_fetch_row($result)) {
+
+                    if (substr($ptright, 0, 3) == 'R07' && !empty($idcard)) {
+                        $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+
+                        if (Mysql_num_rows(Mysql_Query($sql)) > 0) {
+                            $color = "#208eb4";
+                        } else {
+                            $color = "FF8C8C";
+                        }
+                    } else if (substr($ptright, 0, 3) == 'R03') {
+                        $sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
+
+                        if (Mysql_num_rows(Mysql_Query($sql)) > 0) {
+                            $color = "7dcf80";
+                        } else {
+                            $color = "FF8C8C";
+                        }
+                    } else {
+                        $color = "#fdee6e";
+                    }
+
+                    if (!empty($idcard)) {
+                        $sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+                        if (Mysql_num_rows(Mysql_Query($sql)) > 0) {
+                            echo "‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏õ‡∏£‡∏∞‡∏Å‡∏±‡∏ô‡∏™‡∏±‡∏á‡∏Ñ‡∏°";
+                        } else {
+                            $sql1 = "Select Idcard From botdata where Idcard LIKE '$idcard%' limit 1 ";
+                            if (Mysql_num_rows(Mysql_Query($sql1)) > 0) {
+                                echo "‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏ò‡∏ô‡∏≤‡∏Ñ‡∏≤‡∏£‡∏≠‡∏≠‡∏°‡∏™‡∏¥‡∏ô";
+                            } else {
+                                $sql2 = "Select emp_idcard From botdata where emp_idcard LIKE '$idcard%' limit 1 ";
+                                if (Mysql_num_rows(Mysql_Query($sql2)) > 0) {
+                                    echo "‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏ò‡∏ô‡∏≤‡∏Ñ‡∏≤‡∏£‡πÅ‡∏´‡πà‡∏á‡∏õ‡∏£‡∏∞‡πÄ‡∏ó‡∏®‡πÑ‡∏ó‡∏¢";
+                                } else {
+                                    echo "";
+                                }
+                            }
+                        }
+                    } else {
+                        echo "<FONT SIZE='' COLOR='#FF0033'>‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏°‡πà‡∏°‡∏µ‡πÄ‡∏•‡∏Ç‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß‡∏õ‡∏£‡∏∞‡∏ä‡∏≤‡∏ä‡∏ô</FONT>";
+                        ?>
+                        <script type="text/javascript">
+                            alert('‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏°‡πà‡∏°‡∏µ‡πÄ‡∏•‡∏Ç‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ï‡∏±‡∏ß‡∏õ‡∏£‡∏∞‡∏ä‡∏≤‡∏ä‡∏ô');
+                        </script>
+                        <?php
+                    }
+
+                    if (!empty($hn)) {
+                        $sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
+                        if (Mysql_num_rows(Mysql_Query($sql)) > 0) {
+                            echo "<FONT SIZE='' COLOR='#FF0033'>‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏à‡πà‡∏≤‡∏¢‡∏ï‡∏£‡∏á</FONT>";
+                        } else {
+                            echo "";
+                        }
+                    } else {
+                        echo "<FONT SIZE='' COLOR='#FF0033'>‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡πÑ‡∏°‡πà‡∏°‡∏µ HN</FONT>";
+                    }
+
+                    print (" <tr style='font-size: 18px;'>\n" .
+                        "  <td BGCOLOR=" . $color . ">$hn</td>\n" .
+                        "  <td BGCOLOR=" . $color . ">$yot</td>\n" .
+                        "  <td BGCOLOR=" . $color . ">$name</td>\n" .
+                        "  <td BGCOLOR=" . $color . ">$surname</td>\n" .
+                        "  <td BGCOLOR=" . $color . ">$ptright</td>\n" .
+                        "  <td align=\"center\" BGCOLOR=" . $color . "><input type=\"button\" name=\"button\" id=\"button\" value=\"‡∏•‡∏á‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢\" oncontextmenu=\"return doNotOpenNewTab(event, '$hn');\" onclick=\"openNewWindow(event,'$hn')\" class=\"txtsarabun\" /></td>\n" .
+                        " </tr>\n");
+
+                    $_SESSION['hn'] = $hn;
+                    $_SESSION['name'] = $name;
+                    $_SESSION['surname'] = $surname;
+
                 }
-            }else if(substr($ptright,0,3)=='R03'){
-                $sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
 
-                if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-                    $color = "7dcf80";
-                }else{
-                    $color = "FF8C8C";
+                $sql1 = "SELECT  * FROM opcard where name='" . $_SESSION['name'] . "' and surname='" . $_SESSION['surname'] . "' and hn !='" . $_SESSION['hn'] . "' ";
+                $result1 = mysql_query($sql1);
+                $rows1 = mysql_num_rows($result1);
+                if ($rows1) {
+                    echo "<font color='#FF0000'>‡∏ã‡πâ‡∏≥</font>";
                 }
-            }else{
-                $color = "#fdee6e";
+
+                // ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡πÅ‡∏•‡∏∞‡πÄ‡∏õ‡∏•‡∏µ‡πà‡∏¢‡∏ô HN AN ‡∏ï‡∏≠‡∏ô‡∏Ç‡∏∂‡πâ‡∏ô‡∏õ‡∏µ‡πÉ‡∏´‡∏°‡πà
+                $sql = "Select left(prefix,2) From runno where title = 'HN' ";
+                list($title_hn) = Mysql_fetch_row(Mysql_Query($sql));
+                $year_now = substr(date("Y") + 543, 2);
+                if ($title_hn != $year_now) {
+                    $sql = "Update runno set prefix = '" . $year_now . "-', runno = 0 where  title = 'HN' limit 1;";
+                    $result = mysql_Query($sql);
+                }
+
+                $sql = "Select left(prefix,2) From runno where title = 'AN' ";
+                list($title_an) = Mysql_fetch_row(Mysql_Query($sql));
+                $year_now = substr(date("Y") + 543, 2);
+                if ($title_an != $year_now) {
+                    $sql = "Update runno set prefix = '" . $year_now . "/', runno = 0 where  title = 'AN' limit 1;";
+                    $result = mysql_Query($sql);
+                }
+                // END
+                ?>
+            </table>
+            <div style="margin-top: 30px; font-size:18px; font-weight:bold;">
+                <FONT COLOR="#990000">***‡∏Ñ‡∏≥‡∏≠‡∏ò‡∏¥‡∏ö‡∏≤‡∏¢***</FONT> <BR>
+                <FONT COLOR="#fdee6e">‡∏™‡∏µ‡πÄ‡∏´‡∏•‡∏∑‡∏≠‡∏á ‡∏Ñ‡∏∑‡∏≠ ‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡πÑ‡∏î‡πâ‡∏ó‡∏≥‡∏Å‡∏≤‡∏£‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏Å‡∏≤‡∏£‡∏£‡∏±‡∏Å‡∏©‡∏≤</FONT><BR>
+                <FONT COLOR="#208eb4">‡∏™‡∏µ‡∏ô‡πâ‡∏≥‡πÄ‡∏á‡∏¥‡∏ô ‡∏Ñ‡∏∑‡∏≠ ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡πÅ‡∏•‡πâ‡∏ß ‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏õ‡∏£‡∏∞‡∏Å‡∏±‡∏ô‡∏™‡∏±‡∏á‡∏Ñ‡∏°</FONT><BR>
+                <FONT COLOR="#7dcf80">‡∏™‡∏µ‡πÄ‡∏Ç‡∏µ‡∏¢‡∏ß ‡∏Ñ‡∏∑‡∏≠ ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö‡πÅ‡∏•‡πâ‡∏ß ‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥‡∏à‡πà‡∏≤‡∏¢‡∏ï‡∏£‡∏á</FONT><BR>
+                <FONT COLOR="#FF0033">‡∏™‡∏µ‡πÅ‡∏î‡∏á ‡∏Ñ‡∏∑‡∏≠ ‡πÑ‡∏°‡πà‡∏°‡∏µ‡∏™‡∏¥‡∏ó‡∏ò‡∏¥</FONT><BR>
+            </div>
+            <hr />
+
+            <?php
+        }
+            $alert_msg = null;
+            $hn = isset($_POST['hn']) ? $_POST['hn'] : null;
+            if ($hn !== null) {
+
+                $query = mysql_query("select * from ipcard where hn='$hn' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ");
+                if (mysql_num_rows($query) > 0) {
+                    $item = mysql_fetch_assoc($query);
+                    $alert_msg = "‡∏ú‡∏π‡πâ‡∏õ‡πà‡∏ß‡∏¢‡∏£‡∏≤‡∏¢‡∏ô‡∏µ‡πâ‡∏¢‡∏±‡∏áAdmit ‡∏≠‡∏¢‡∏π‡πà‡∏ó‡∏µ‡πà" . $item['my_ward'];
+                    echo "<script>alert('" . $alert_msg . "');</script>";
+                }
+
             }
 
-			if(!empty($idcard)){
-				$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
-				if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-					echo"ºŸÈªË«¬¡’ ‘∑∏‘ª√–°—π —ß§¡";
-				}else{
-					$sql1="Select Idcard From botdata where Idcard LIKE '$idcard%' limit 1 ";
-					if(Mysql_num_rows(Mysql_Query($sql1)) > 0){
-						echo"ºŸÈªË«¬¡’ ‘∑∏‘∏π“§“√ÕÕ¡ ‘π";
-					}else{
-						$sql2="Select emp_idcard From botdata where emp_idcard LIKE '$idcard%' limit 1 ";
-						if(Mysql_num_rows(Mysql_Query($sql2)) > 0){
-							echo"ºŸÈªË«¬¡’ ‘∑∏‘∏π“§“√·ÀËßª√–‡∑»‰∑¬";
-						}else{							
-							echo"";
-						}
-					}
-				}
-            }else{
-                echo"<FONT SIZE='' COLOR='#FF0033'>ºŸÈªË«¬‰¡Ë¡’‡≈¢ª√–®”µ—«ª√–™“™π</FONT>";
+            if (!empty($alert_msg)) {
                 ?>
-                <script type="text/javascript">
-                alert('ºŸÈªË«¬‰¡Ë¡’‡≈¢ª√–®”µ—«ª√–™“™π');
-                </script>
+                <h2 style="color: red;"><u>!!! <?= $alert_msg; ?> !!!</u></h2>
                 <?php
             }
-
-            if(!empty($hn)){
-                $sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
-                if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-                    echo"<FONT SIZE='' COLOR='#FF0033'>ºŸÈªË«¬¡’ ‘∑∏‘®Ë“¬µ√ß</FONT>";
-                }else{
-                    echo"";
-                }
-            }else{
-                echo"<FONT SIZE='' COLOR='#FF0033'>ºŸÈªË«¬‰¡Ë¡’ HN</FONT>";
-            }
-
-            print (" <tr style='font-size: 18px;'>\n".
-            "  <td BGCOLOR=".$color.">$hn</td>\n".
-            "  <td BGCOLOR=".$color.">$yot</td>\n".
-            "  <td BGCOLOR=".$color.">$name</td>\n".
-            "  <td BGCOLOR=".$color.">$surname</td>\n".
-			"  <td BGCOLOR=".$color.">$ptright</td>\n".
-            "  <td align=\"center\" BGCOLOR=".$color."><input type=\"button\" name=\"button\" id=\"button\" value=\"≈ß∑–‡∫’¬πºŸÈªË«¬\" onclick=\"window.open('print_slipdrug.php?hn=$hn')\" class=\"txtsarabun\" /></td>\n".
-            " </tr>\n");
-
-            $_SESSION['hn'] = $hn;
-            $_SESSION['name'] = $name;
-            $_SESSION['surname'] = $surname;
-
-        }
-
-        $sql1="SELECT  * FROM opcard
-        where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn !='". $_SESSION['hn']."' ";
-        $result1 = mysql_query($sql1);
-        $rows1=mysql_num_rows($result1);
-        if($rows1){
-            echo "<font color='#FF0000'>´È”</font>";
-        }
-
-        // µ√«® Õ∫·≈–‡ª≈’Ë¬π HN AN µÕπ¢÷Èπª’„À¡Ë
-        $sql = "Select left(prefix,2) From runno where title = 'HN' ";
-        list($title_hn) = Mysql_fetch_row(Mysql_Query($sql));
-        $year_now = substr(date("Y")+543,2);
-        if($title_hn != $year_now){
-            $sql = "Update runno set prefix = '".$year_now."-', runno = 0 where  title = 'HN' limit 1;";
-            $result = mysql_Query($sql);
-        }
-        
-        $sql = "Select left(prefix,2) From runno where title = 'AN' ";
-        list($title_an) = Mysql_fetch_row(Mysql_Query($sql));
-        $year_now = substr(date("Y")+543,2);
-        if($title_an != $year_now){
-            $sql = "Update runno set prefix = '".$year_now."/', runno = 0 where  title = 'AN' limit 1;";
-            $result = mysql_Query($sql);
-        }
-        // END
-        ?>
-</table>
-<div style="margin-top: 30px; font-size:18px; font-weight:bold;">
-<FONT COLOR="#990000">***§”Õ∏‘∫“¬***</FONT> <BR>
-    <FONT COLOR="#fdee6e"> ’‡À≈◊Õß §◊Õ ¬—ß‰¡Ë‰¥È∑”°“√µ√«® ‘∑∏‘°“√√—°…“</FONT><BR>
-    <FONT COLOR="#208eb4"> ’πÈ”‡ß‘π §◊Õ µ√«® Õ∫·≈È« ¡’ ‘∑∏‘ª√–°—π —ß§¡</FONT><BR>
-    <FONT COLOR="#7dcf80"> ’‡¢’¬« §◊Õ µ√«® Õ∫·≈È« ¡’ ‘∑∏‘®Ë“¬µ√ß</FONT><BR>
-    <FONT COLOR="#FF0033"> ’·¥ß §◊Õ ‰¡Ë¡’ ‘∑∏‘</FONT><BR>
-</div>
-<hr />
-
-    <?php 
-
-    $alert_msg = null;
-    $hn = isset($_POST['hn']) ? $_POST['hn'] : null ;
-    if($hn !== null){
-
-        $query = mysql_query("select * from ipcard where hn='$hn' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ");
-        if (mysql_num_rows($query) > 0) {
-            $item = mysql_fetch_assoc($query);
-            $alert_msg = "ºŸÈªË«¬√“¬π’È¬—ßAdmit Õ¬ŸË∑’Ë".$item['my_ward'];
-            echo "<script>alert('".$alert_msg."');</script>";
-        }
-        
-    }
-
-    if (!empty($alert_msg)) {
-        ?>
-        <h2 style="color: red;"><u>!!! <?=$alert_msg;?> !!!</u></h2>
-        <?php
-    }
-    ?>
-    <?php
-    /////////////
-    $sql_chkname="SELECT  * FROM opcard
-    where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn !='". $_SESSION['hn']."'  limit 5";
-    $result_chkname = mysql_query($sql_chkname);
-    $rows=mysql_num_rows($result_chkname);
-
-    if($rows){
-        ?>
-        <h2><font color="#FF0000">§”‡µ◊Õπ</font></h2>
-        <h3>¡’ºŸÈªË«¬ ¢◊ËÕ  <?= $_SESSION['name']?> <?=$_SESSION['surname'];?>  ´È” „π√–∫∫∑–‡∫’¬π</h3>
-        <h3>°√ÿ≥“µ√«® Õ∫ºŸÈªË«¬</h3>
-        <table>
-            <tr>
-                <th bgcolor=6495ED>HN</th>
-                <th bgcolor=6495ED>¬»</th>
-                <th bgcolor=6495ED>™◊ËÕ</th>
-                <th bgcolor=6495ED> °ÿ≈</th>
-                <th bgcolor=6495ED> ‘∑∏‘</th>
-                <th bgcolor=6495ED>¡“ √æ.</th>
-                <th bgcolor=6495ED>µ√«®πÕπ</th>
-                <th bgcolor=6495ED>„∫µËÕ</th>
-                <th bgcolor=6495ED>„∫¬“πÕ°</th>
-                <th bgcolor=6495ED>„∫ —Ëß¬“</th>
-                <th bgcolor=6495ED>„∫µ√«®‚√§</th>
-            </tr>
-            <?
-            while($dbarr= mysql_fetch_array($result_chkname)){
-
-                print (" <tr>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\"  href=\"opedit.php?cHn=".$dbarr['hn']."&cName=".$dbarr['name']."&cSurname=".$dbarr['surname']."\">".$dbarr['hn']."</a></td>\n".
-                "  <td BGCOLOR=".$color.">".$dbarr['yot']."</a></td>\n".
-                "  <td BGCOLOR=".$color.">".$dbarr['name']."</a></td>\n".
-                "  <td BGCOLOR=".$color.">".$dbarr['surname']."</a></td>\n".
-                "  <td BGCOLOR=".$color.">".$dbarr['ptright']."</a></td>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"hndaycheck.php?hn=".$dbarr['hn']."\">¡“ √æ.</a></td>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"appdaycheck.php?hn=".$dbarr['hn']."\">µ√«®π—¥</a></td>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"opdprint2.php?cHn=".$dbarr['hn']."\">„∫µËÕ</a></td>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"edprint.php?cHn=".$dbarr['hn']."\">„∫¬“πÕ°</a></td>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"rg_appoint.php?cHn=".$dbarr['hn']."\">ºŸÈªË«¬π—¥</a></td>\n".
-                "  <td BGCOLOR=".$color."><a target=\"_BLANK\" href=\"rg_appoint1.php?cHn=".$dbarr['hn']."\">„∫µ√«®‚√§</a></td>\n".
-                " </tr>\n");
-            }
             ?>
-            </table>
-            <?php 
-        }
-        session_unregister("hn");
-        session_unregister("name");
-        session_unregister("surname");
 
-        include("unconnect.inc");
-    } // End if not empty HN
-?>
+        <script type="text/javascript">
 
-<style>
-#ptrightNotify{top: 2%;left: 50%;width:600px;height:400px;margin-top: 1em;margin-left: -300px;border: 1px solid #ccc;background-color: #f3f3f3;position:fixed;}
-#ptnotifyHeader{padding: 6px;background: #636363;text-align: right;}
-#ptrightClose{font-size: 24px;color: #fff;text-decoration: none;}
-#ptnotifyContent{padding: 6px;}
-</style>
-<div id="ptrightNotify" style="display: none;">
-    <div id="ptnotifyHeader">
-        <a href="javascript:void(0);" id="ptrightClose">Close</a>
-    </div>
-    <div style="padding: 6px;" id="ptnotifyContent">testcontent</div>
-</div>
-
-<script type="text/javascript">
-    /* checkIpd */
-    function checkIpd(link, ev, hn){
-        
-        var newSm = new SmHttp();
-        newSm.ajax(
-            'templates/regis/checkIpd.php',
-            { id: hn },
-            function(res){
-                var txt = JSON.parse(res);
-                if( txt.state === 400 ){
-                    alert(' ∂“π–¢ÕßºŸÈªË«¬¬—ßÕ¬ŸË '+txt.msg+' °√ÿ≥“µ‘¥µËÕ∑’Ë Ward ‡æ◊ËÕ Discharge');
-                    SmPreventDefault(ev);
-                }else{
-                    // window.open(link.href, '_blank');
+            function openNewWindow(event, hn){
+                if (event.ctrlKey) {
+                    return doNotOpenNewTab(event, hn);
                 }
-            },
-            false // true is Syncronous and false is Assyncronous (Default by true)
-        );
-        
-    }
-    
-    // ÕÕ°·∫∫‰«È°ËÕπ 
-    // document.getElementById('checkPt').addEventListener("click", function(eventHandler){
-    //     document.getElementById('ptrightNotify').style.display = '';
-    // });
+                window.open('opworkfast.php?hn='+hn, 'registerVn',"width="+screen.width+",height="+screen.height);
+            }
 
-    // document.getElementById('ptrightClose').addEventListener("click", function(eventHandler){
-    //     document.getElementById('ptrightNotify').style.display = 'none';
-    // });
+            function doNotOpenNewTab(event,hn){
+                onSendTab(hn);
+                alert("‡∏´‡πâ‡∏≤‡∏°‡πÄ‡∏õ‡∏¥‡∏î‡∏´‡∏ô‡πâ‡∏≤‡∏•‡∏á‡∏ó‡∏∞‡πÄ‡∏ö‡∏µ‡∏¢‡∏ô‡∏ã‡πâ‡∏≥‡∏ã‡πâ‡∏≠‡∏ô");
+                return false;
+            }
 
-</script>
-</div>
+            async function onSendTab(hn) {
+                const username = encodeURIComponent('<?=$sOfficer;?>');
+                const tab = encodeURIComponent('ophn ‡∏à‡∏∞‡πÄ‡∏õ‡∏¥‡∏î tab ‡πÉ‡∏´‡∏°‡πà');
+                const response = await fetch('open_tab.php?username='+username+'&tab='+tab+'&hn='+hn);
+
+                if (!response.ok) {
+                }
+
+                const body = await response.text();
+            }
+
+        </script>
+    </div>

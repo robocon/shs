@@ -19,7 +19,7 @@ if(isset($_POST["submit"])){
 		echo "
 			<SCRIPT LANGUAGE=\"JavaScript\">
 			
-				alert('����բ����ż����·���ҹ�к�');
+				alert('ไม่มีข้อมูลผู้ป่วยที่ท่านระบุ');
 			
 			</SCRIPT>
 		";
@@ -29,7 +29,7 @@ if(isset($_POST["submit"])){
 				echo "
 			<SCRIPT LANGUAGE=\"JavaScript\">
 			
-				alert('�����¢����ŷ���ҹ�к��բ����ż������ҡ���� 1 ��');
+				alert('ขออภัยข้อมูลที่ท่านระบุมีข้อมูลผู้ป่วยมากกว่า 1 คน');
 			
 			</SCRIPT>
 		";
@@ -118,7 +118,7 @@ var stat = true;
 if(document.f1.type[0].checked == true){
 
 	if(document.f1.hn_value.value == ''){
-		alert("��سҡ�͡ HN ");
+		alert("กรุณากรอก HN ");
 		document.f1.hn_value.focus();
 		stat = false;
 	}
@@ -126,15 +126,15 @@ if(document.f1.type[0].checked == true){
 }else if(document.f1.type[1].checked == true){
 	
 	if(document.f1.firstname.value == '' && document.f1.lastname.value == ''){
-		alert("��سҡ�͡ ���� - ʡ�� ");
+		alert("กรุณากรอก ชื่อ - สกุล ");
 		stat = false;
 		document.f1.firstname.focus();
 	}else	if(document.f1.firstname.value == ''){
-		alert("��سҡ�͡ ���� ");
+		alert("กรุณากรอก ชื่อ ");
 		stat = false;
 		document.f1.firstname.focus();
 	}else if(document.f1.lastname.value == ''){
-		alert("��سҡ�͡ ʡ�� ");
+		alert("กรุณากรอก สกุล ");
 		stat = false;
 		document.f1.lastname.focus();
 	}
@@ -142,7 +142,7 @@ if(document.f1.type[0].checked == true){
 }else if(document.f1.type[2].checked == true){
 
 	if(document.f1.id_value.value == ''){
-		alert("��سҡ�͡ ID ");
+		alert("กรุณากรอก ID ");
 		stat = false;
 		document.f1.id_value.focus();
 	}
@@ -154,7 +154,7 @@ return stat;
 
 </SCRIPT>
 <BR><BR>
-<A HREF="../nindex.htm">&lt;&lt;����</A>�
+<A HREF="../nindex.htm">&lt;&lt;ไปเมน</A>ู
 <FORM Name="f1" METHOD=POST ACTION="" Onsubmit = "return checkForm();">
 	<Table border="0" align="center">
 	<TR>
@@ -168,10 +168,10 @@ return stat;
 <TR>
 	<TD>
 	<input type="radio" name="type" value="name" onclick="readonlyall(document.f1.firstname,document.f1.lastname); document.f1.firstname.focus();">
-	</TD><TD align="right">����&nbsp;:&nbsp;</TD><TD>
+	</TD><TD align="right">ชื่อ&nbsp;:&nbsp;</TD><TD>
 	<input type="textbox" name="firstname" onclick="readonlyall(document.f1.firstname,document.f1.lastname); document.f1.firstname.focus();document.f1.type[1].checked = true;">
 	&nbsp;&nbsp;
-	ʡ��&nbsp;:&nbsp;
+	สกุล&nbsp;:&nbsp;
 	<input type="textbox" name="lastname" onclick="readonlyall(document.f1.firstname,document.f1.lastname); document.f1.type[1].checked = true;" >
 	</TD>
 </TR>
@@ -180,7 +180,7 @@ return stat;
 	<input type="textbox" name="id_value" maxlength="13" onkeypress="return Numberonly(event)" onclick="readonlyall(document.f1.id_value,'');  document.f1.id_value.focus(); document.f1.type[2].checked = true;">
 	</TD></TR>
 	<TR><TD align="center"  colspan="3">
-	<INPUT TYPE="submit" name="submit" value="��ŧ">&nbsp;&nbsp;<INPUT TYPE="reset" value="¡��ԡ">
+	<INPUT TYPE="submit" name="submit" value="ตกลง">&nbsp;&nbsp;<INPUT TYPE="reset" value="ยกเลิก">
 	</TD></TR>
 </Table>
 </FORM>

@@ -2,6 +2,51 @@
 session_start();
 include("connect.inc");  
 if (isset($sOfficer)){} else {die;} //for security
+$case=$_POST['case'];
+function CalAge($birthdate){
+  	$today = date('d-m-Y');
+    list($bday,$bmonth,$byear) = explode('-',$birthdate);
+    list($tday,$tmonth,$tyear) = explode('-',$today);
+
+    if($byear < 1970){
+      $yearad = 1970 - $byear;
+      $byear = 1970;
+    }else{
+      $yearad = 0;
+    }
+
+    $mbirth = mktime(0,0,0, $bmonth,$bday,$byear);
+    $mtoday = mktime(0,0,0, $tmonth,$tday,$tyear);
+
+    $mage = ($mtoday - $mbirth);
+    $wyear = (date('Y', $mage)-1970+$yearad);
+    $wmonth = (date('m', $mage)-1);
+    $wday = (date('d', $mage)-1);
+
+    $ystr = ($wyear > 1 ? " ปี" : " ปี");
+    $mstr = ($wmonth > 1 ? " เดือน" : " เดือน");
+    $dstr = ($wday > 1 ? " วัน" : " วัน");
+
+    if($wyear > 0 && $wmonth > 0 && $wday > 0) {
+      $agestr = $wyear.$ystr." ".$wmonth.$mstr." ".$wday.$dstr;
+     }else if($wyear == 0 && $wmonth == 0 && $wday > 0) {
+       $agestr = $wday.$dstr;
+     }else if($wyear > 0 && $wmonth > 0 && $wday == 0) {
+       $agestr = $wyear.$ystr." ".$wmonth.$mstr;
+     }else if($wyear == 0 && $wmonth > 0 && $wday > 0) {
+       $agestr = $wmonth.$mstr." ".$wday.$dstr;
+     }else if($wyear > 0 && $wmonth == 0 && $wday > 0) {
+       $agestr = $wyear.$ystr." ".$wday.$dstr;
+     }else if($wyear == 0 && $wmonth > 0 && $wday == 0) {
+       $agestr = $wmonth.$mstr;
+     }else {
+       $agestr =$wyear;
+     }
+
+      return $agestr;
+    }
+
+
 
 $thdatehn="";
 $thidate2 = (date("Y")).date("-m-d H:i:s"); 
@@ -186,11 +231,18 @@ If ($result){
 	$cNote=$row->note;
 	$cNote_vip=$row->note_vip;
   	$cIdguard=$row->idguard;
+	$cDbirth=$row->dbirth;
 	
+	list($y,$m,$d)=explode("-",$cDbirth);
+	$yy=$y-543;
+	$birthday="$d-$m-$yy";	
+	$age=Calage($birthday);
  
-	echo "<font face='TH SarabunPSK' size=5>HN : $cHn, ชื่อ-สกุล: $cYot   $cName  $cSurname<br>";  
-	echo "<b>สิทธิการรักษา : $cPtright :<u>$cIdguard</u></b></font><br> ";
-       
+	
+	echo "<font face='TH SarabunPSK' size=5>HN : $cHn, ชื่อ-สกุล: $cYot   $cName  $cSurname</font><br>";  
+	echo "<font face='TH SarabunPSK' size=5><b>อายุ : $age</b></font><br> ";
+	echo "<font face='TH SarabunPSK' size=5><b>สิทธิการรักษา : $cPtright :<u>$cIdguard</u></b></font><br> ";
+    echo "<font face='TH SarabunPSK' size=5><b>การมาโรงพยาบาล : $case</b></font><br> ";   
 	//       echo "หมายเลขบัตร ปชช.: $cIdcard  ";
  
 	//   echo "มาครั้งสุดท้ายเมื่อ $cLastupdate <br> ";
@@ -257,8 +309,9 @@ $q = mysql_query($sql) or die( mysql_error() );
 $test_opday_row = mysql_num_rows($q);
 
 //กรณีขอ vn ใหม่
-If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
-	
+//print_r($_POST)."<br>";
+//If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
+If ( $_POST["new_vn"] == "1"){	
 	//ยังไม่เปลี่ยนวันที่
 	if($today==$dVndate){
 		//print_r($_POST)."<br>";
@@ -1254,39 +1307,39 @@ a:hover, a:active {
 <div style="font-size: 24px; margin-left:20px;">
 
 <br><strong style="font-size: 24px;">1...คิวตรวจโรคทั่วไป</strong>
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (ทหาร/ครอบครัว)" onclick="addQueue()">ตรวจโรคทั่วไป (ทหาร/ครอบครัว) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (ทหาร/ครอบครัว)" onclick="addQueue()">A : ตรวจโรคทั่วไป (ทหาร/ครอบครัว) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (ผู้สูงอายุ)" onclick="addQueue()">ตรวจโรคทั่วไป (ผู้สูงอายุ) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (ผู้สูงอายุ)" onclick="addQueue()">A : ตรวจโรคทั่วไป (ผู้สูงอายุ) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (ขอหนังสือส่งตัว)" onclick="addQueue()">ตรวจโรคทั่วไป (ขอหนังสือส่งตัว) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (ขอหนังสือส่งตัว)" onclick="addQueue()">A : ตรวจโรคทั่วไป (ขอหนังสือส่งตัว) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (เด็ก)" onclick="addQueue()">ตรวจโรคทั่วไป (เด็ก) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (เด็ก)" onclick="addQueue()">A : ตรวจโรคทั่วไป (เด็ก) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;<br><br>
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (สังเกตุอาการ)" onclick="addQueue()">ตรวจโรคทั่วไป (สังเกตุอาการ) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (สังเกตุอาการ)" onclick="addQueue()">A : ตรวจโรคทั่วไป (สังเกตุอาการ) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (งดเว้นเกณฑ์ทหาร)" onclick="addQueue()">ตรวจโรคทั่วไป (งดเว้นเกณฑ์ทหาร) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (งดเว้นเกณฑ์ทหาร)" onclick="addQueue()">A : ตรวจโรคทั่วไป (งดเว้นเกณฑ์ทหาร) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (รถเข็น)" onclick="addQueue()">ตรวจโรคทั่วไป (รถเข็น) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=A&detail=ตรวจโรคทั่วไป (รถเข็น)" onclick="addQueue()">A : ตรวจโรคทั่วไป (รถเข็น) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='A' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=B&detail=ตรวจโรคทั่วไป (บุคคลทั่วไป)" onclick="addQueue()">ตรวจโรคทั่วไป (บุคคลทั่วไป) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='B' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=B&detail=ตรวจโรคทั่วไป (บุคคลทั่วไป)" onclick="addQueue()">B : ตรวจโรคทั่วไป (บุคคลทั่วไป) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='B' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;<br><br>
-&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=C&detail=ตรวจโรคทั่วไป (Consult)" onclick="addQueue()">ตรวจโรคทั่วไป (Consult) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='C' and startdate='".date("Y-m-d")."'";
+&nbsp;&nbsp;&nbsp;<a target="_BLANK" href="kewadd_medical.php?prefix=C&detail=ตรวจโรคทั่วไป (Consult)" onclick="addQueue()">C : ตรวจโรคทั่วไป (Consult) [<?php $sql = "Select runno From queue_runno where title ='MEDICAL' and prefix ='C' and startdate='".date("Y-m-d")."'";
 	$result = Mysql_Query($sql);
 	list($akew) = Mysql_fetch_row($result);
 	echo $akew ;   ?>]</a>&nbsp;&nbsp;&nbsp;	
@@ -1388,9 +1441,14 @@ if ( mysql_num_rows($qIp) > 0 ) {
 	<?php
 }
 ?>
-<a target=_TOP href="updatevn1.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น (มีค่าบริการ/ค่ายา/ค่ารักษาพยาบาลแล้ว)</a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น (ไม่มีค่ารักษาพยาบาล)</a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a>
+<a target=_TOP href="updatevn1.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(โอนค่าบริการ/ค่ารักษาพยาบาล/ค่ายา)<span></a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(โอนเฉพาะค่าบริการ/ค่ารักษาพยาบาล)</span></a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a><br><br>
+
+<div>
+&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="window.open('opday_hn.php?hn=<?=$hn;?>','opday_hn','width=800,height=600')">ตรวจสอบค่าใช้จ่าย</a>
+</div>
+
 </div>
 <script>
 function chType(){

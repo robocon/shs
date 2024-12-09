@@ -82,7 +82,7 @@ require "header.php";
 								<?php 
 							}
 						?>
-						<select>
+						</select>
 						<button type="submit">ทำการค้นหา</button>
 						<input type="hidden" name="search" value="search">
 					</div>

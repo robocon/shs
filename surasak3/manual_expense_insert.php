@@ -42,11 +42,18 @@ if($action==='import'){
                     $ptright = $csv[7];
 
                     if($hn !== null){
-                        $q = $dbi->query("SELECT `row`,`HN` FROM `opcardchk` WHERE `part` = '$part' AND `HN` = '$hn' LIMIT 1 ");
+                        $q = $dbi->query("SELECT `row`,`HN`,`name`,`surname` FROM `opcardchk` WHERE `part` = '$part' AND `HN` = '$hn' LIMIT 1 ");
                         if($q->num_rows > 0 ){
-                            $newPtname = iconv("TIS-620", "UTF-8", $csv[2].' '.$csv[3]);
+                            
+                            if(empty($csv[2]) OR empty($csv[3])){
+                                $opcardchk = $q->fetch_assoc();
+                                $newPtname = $opcardchk['name'].' '.$opcardchk['surname'];
+                            }else{
+                                $newPtname = iconv("TIS-620", "UTF-8", $csv[2].' '.$csv[3]);
+                            }
+                            
                             $newLab = iconv("TIS-620", "UTF-8", $lab);
-
+                            
                             $sql = "INSERT INTO `manual_expense` (
                                 `id`, `labnumber`, `hn`, `ptname`, `age`, `lab_items`, `part`
                             ) VALUES (
@@ -61,7 +68,7 @@ if($action==='import'){
                 }else{
                     $msg = 'บันทึกข้อมูลล้มเหลว ไม่พบข้อมูล';
                 }
-            }
+            } // end while
 
             if (count($errorEmptyHn) > 0) {
                 $msg = 'ไม่พบข้อมูล HN : '.implode(',', $errorEmptyHn);

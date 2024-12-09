@@ -6,7 +6,7 @@ session_start();
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Untitled Document</title>
+<title>ข้อมูลซักประวัติ</title>
 <style type="text/css">
 .data_show{ 
 	font-family: TH SarabunPSK;
@@ -118,6 +118,7 @@ body,td,th {
 		print " <option value='EX02' ".($_POST["case"] =="EX02"?"Selected":"")." >ผู้ป่วยฉุกเฉิน</option>";
 		print " <option value='EX04' ".($_POST["case"] =="EX04"?"Selected":"")." >ผู้ป่วยนัด</option>";
 		print " <option value='EX11' ".($_POST["case"] =="EX11"?"Selected":"")." >รักษาโรคนอกเวลาราชการ</option>";
+		print " <option value='EX25' ".($_POST["case"] =="EX25"?"Selected":"")." >ผู้ป่วยจักษุ</option>";
 		print " <option value='EX50' ".($_POST["case"] =="EX50"?"Selected":"")." >คลินิกโรคทางเดินหายใจ</option>";
 		print " <option value='EX55' ".($_POST["case"] =="EX55"?"Selected":"")." >ผู้ป่วยกรณี OP Self Isolation</option>";
 		print " <option value='EX56' ".($_POST["case"] =="EX56"?"Selected":"")." >ผู้ป่วยกรณี Home Isolation</option>";
@@ -147,6 +148,7 @@ body,td,th {
         <td width="40">R</td>
         <td width="40">นน.</td>
         <td width="40">BP</td>
+		<td width="40">Repeat BP</td>
 		<td width="40">Pain Score</td>
 		<td width="40">CV Risk ไม่มีผลเลือด </td>
 		<td width="40">CV Risk มีผลเลือด</td>
@@ -185,12 +187,12 @@ body,td,th {
 			$where_toborow = " AND toborow like '".$_POST["case"]."%' ";
 		}
 
-			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight, height,  bp1,  bp2 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn,waist,cigarette,cvriskscore,cvriskscore_lab  From opd where thdatehn like '".$search_date."%' $where_doctor  $where_toborow ORDER BY row_id ASC";
+			$sql = "Select thidate, hn, ptname,  temperature,  pause,  rate,  weight, height,  bp1,  bp2 ,  bp3,  bp4 ,  doctor , officer, date_format(thidate,'%d-%m-%Y'), organ, painscore,thdatehn,waist,cigarette,cvriskscore,cvriskscore_lab  From opd where thdatehn like '".$search_date."%' $where_doctor  $where_toborow ORDER BY row_id ASC";
 
 			$result = Mysql_Query($sql);
 			$no=1;
 			$j=1;
-			while(list($thidate,$hn,$ptname,$temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$doctor,$officer,$thidate2,$organ,$painscore,$thdatehn,$waist,$cigarette,$cvriskscore,$cvriskscore_lab) = mysql_fetch_row($result) ){
+			while(list($thidate,$hn,$ptname,$temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$bp3,$bp4,$doctor,$officer,$thidate2,$organ,$painscore,$thdatehn,$waist,$cigarette,$cvriskscore,$cvriskscore_lab) = mysql_fetch_row($result) ){
 
 				if($j==1){
 					$j = 2;
@@ -204,7 +206,12 @@ body,td,th {
 					$smoke=0;
 				}
 				
-				$sbp=$bp1;
+				// if(!empty($bp3) && $bp3 !="....."){
+				// 	$sbp=$bp3;
+				// 	$repeatbp="$bp3/$bp4";
+				// }else{
+				// 	$sbp=$bp1;
+				// }	
 								
 				
 				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$hn."' limit 1";
@@ -338,7 +345,8 @@ body,td,th {
         <td width="40" align="center"><?php echo $pause;?></td>
         <td width="40" align="center"><?php echo $rate;?></td>
         <td width="40" align="center"><?php echo $weight;?></td>
-        <td width="40" align="center"><?php echo $bp1,'/',$bp2;?></td>
+        <td width="40" align="center"><?=(!empty($bp1) && !empty($bp2)) ? $bp1.'/'.$bp2 : '' ;?></td>
+		<td width="40" align="center"><?=(!empty($bp3) && !empty($bp4)) ? $bp3.'/'.$bp4 : '' ;?></td>
 		<td width="40" align="center"><?php echo $painscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore;?></td>
 		<td width="40" align="center"><?php echo $cvriskscore_lab;?></td>

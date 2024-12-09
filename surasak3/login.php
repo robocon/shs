@@ -23,11 +23,11 @@ font, .txt{
       <td width="98%">
 
         <font face="THSarabunPSK"><span><strong>ชื่อผู้ใช้ :</strong></span><br>
-        <input type="text" name="username" class="txt"></font>
+        <input type="text" name="username" class="txt" placeholder="Username"></font>
         <br><br>
 
         <font face="THSarabunPSK"><span><strong>รหัสผ่าน :</strong></span> <br>
-        <input type="password" name="password" class="txt"></font>
+        <input type="password" name="password" class="txt" placeholder="Password"></font>
 
         <p><input type="submit" value="เข้าสู่ระบบ" name="B2" class="txt"></p>
       </td>

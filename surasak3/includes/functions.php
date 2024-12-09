@@ -442,3 +442,61 @@ function findPtAge($birth,$type='f'){
 	
 	return $pAge;
 }
+
+/**
+ * Summary of sendLineNotify
+ * @param mixed $sMessage
+ * @param mixed $token
+ * @return bool|string
+ */
+function sendLineNotify($sMessage, $token=null){ 
+
+	// Default เป็น token ไลน์ศูนย์คอมฯ
+	$sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
+
+	if(!empty($token)){
+		$sToken = $token;
+	}
+	
+	$curl = curl_init();
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
+	curl_setopt( $curl, CURLOPT_POST, 1);
+	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken);
+	curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
+	$result = curl_exec( $curl );
+	curl_close($curl);
+
+	return $result;
+}
+
+/**
+ * Summary of writeLog
+ * @param mixed $msg
+ * @param mixed $file	Path to file text
+ * @return bool|int
+ */
+function writeLog($msg, $file){
+	$text = '['.date('Y-m-d H:i:s').'] : '.$msg;
+	$f = file_put_contents($file, $text.PHP_EOL , FILE_APPEND | LOCK_EX);
+	return $f;
+}
+
+function lineMessagePush($json, $url, $type, $msg){
+
+    $json_data = $json->encode(array('type'=>$type,'msg'=>$msg));
+
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_URL, $url);
+
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); 
+
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec( $curl );
+    curl_close($curl);
+    echo $result;
+}

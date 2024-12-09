@@ -230,7 +230,7 @@ if ($q->num_rows>0) {
         ?>
         <tr bgcolor="#FFFF99">
             <td><?=$a['date'];?></td>
-            <td>
+            <td style="max-width: 100%; line-break: anywhere;">
                 <?=nl2br($a['detail']);?>
                 <?php 
                 $detail_id = $a['id'];

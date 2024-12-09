@@ -201,6 +201,15 @@ if(empty($aDetail)){
 
 // in case of inpatient insert data into ipacc
 
+
+$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+if($log_smenucode == 'ADMPT'){
+	$log_officer = sprintf("%s", $_SESSION['sOfficer']);
+	$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'หมดรายการ/ใบแจ้งหนี้', '');";
+	mysql_query($logSql);
+}
+
+
 if(!empty($cAn)) {
 	$patienttype = "IPD";
 		$sql = "Select bedcode , left(doctor,5), doctor From bed where an = '".$cAn."' limit 0,1 ";
@@ -288,15 +297,24 @@ if(!empty($cAn)) {
 
 if ($cDepart == 'PATHO'){
 	
-	 for ($n=1; $n<=$x; $n++){
+	// สถานะบอกว่าใน orderhead นี้มี OUTLAB
+	$orderhead_is_nhealth = '0';
+	for ($n=1; $n<=$x; $n++){
 
-		 list($olddetail) = mysql_fetch_row(mysql_query("Select oldcode From labcare where code = '".$aDgcode[$n]."' limit 0,1 "));
+		list($olddetail, $labtype) = mysql_fetch_row(mysql_query("Select oldcode,labtype From labcare where code = '".$aDgcode[$n]."' limit 0,1 "));
 
-		$sql = "INSERT INTO `orderdetail` ( `labnumber` , `labcode`, `labcode1` , `labname` ) VALUES ('".date("ymd").sprintf("%03d", $nLab)."', '".$aDgcode[$n]."', '".$olddetail."', '".$aTrade[$n]."');";
-		 $result = mysql_query($sql) or die("Query failed,INSERT orderdetail");
+		// บอกว่า labcode นี้ ที่อยู่ใน orderdetail เป็น OUTLAB นะ
+		$orderdetail_type = '';
+		if($labtype=="OUT"){
+			$orderdetail_type = 'OUT';
+			$orderhead_is_nhealth = '1'; // ถ้ามีตัวใดตัวหนึ่งเป็น OUT ถือว่าใน orderhead มี OUTLAB ทันที
+		}
+		$sql = "INSERT INTO `orderdetail` ( `labnumber` , `labcode`, `labcode1` , `labname`, `type` ) VALUES ('".date("ymd").sprintf("%03d", $nLab)."', '".$aDgcode[$n]."', '".$olddetail."', '".$aTrade[$n]."', '$orderdetail_type');";
+		$result = mysql_query($sql) or die("Query failed,INSERT orderdetail");
 
-		 $clinicalinfo .=$aDgcode[$n]." ,";
-	 }
+		$clinicalinfo .=$aDgcode[$n]." ,";
+		
+	}
 
 ////*runno ตรวจสุขภาพ*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -349,7 +367,7 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
 		$sourcename = 'checkupopd';
 	}
 	
-	$sql = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo`  ) VALUES ('', '".$Thidate2."', '".date("ymd").sprintf("%03d", $nLab)."', '".$cHn."', '".$patienttype."', '".$cPtname."', '".$gender."', '".$dbirth."', '".$_SESSION['sourcecode']."', '".$sourcename."', '".$room."','".$cliniciancode."', '".$clinicianname."', '".$priority."', '".$clinicalinfo."');";
+	$sql = "INSERT INTO `orderhead` ( `autonumber` , `orderdate` , `labnumber` , `hn` , `patienttype` , `patientname` , `sex` , `dob` , `sourcecode` , `sourcename` , `room` , `cliniciancode` , `clinicianname` , `priority` , `clinicalinfo` , `is_nhealth` ) VALUES ('', '".$Thidate2."', '".date("ymd").sprintf("%03d", $nLab)."', '".$cHn."', '".$patienttype."', '".$cPtname."', '".$gender."', '".$dbirth."', '".$_SESSION['sourcecode']."', '".$sourcename."', '".$room."','".$cliniciancode."', '".$clinicianname."', '".$priority."', '".$clinicalinfo."', '$orderhead_is_nhealth');";
 	$result = mysql_query($sql)or die("Query failed,INSERT orderhead ");
 
 
@@ -406,11 +424,19 @@ if($cDepart=="EYE"){
       print "***************************************************<br>";  
 	     print "<B>นำใบแจ้งหนี้ไปชำระเงินที่ห้องเก็บเงิน</B>";  
 //จบใบแจ้งหนี้
+
+
+unset($_COOKIE['labtranxStatus']); 
+setcookie('labtranxStatus', '', -1, "/");
+
+unset($_COOKIE['labtranXAn']); 
+setcookie('labtranXAn', '', -1, "/");
+
 ?>
 
 <style>
 body,td,th {
 	font-family:TH SarabunPSK;
-	font-size: 28px;
+	font-size: 20px;
 }
 </style>

@@ -52,12 +52,14 @@ if($action==='search'){
         $q_pt = $dbi->query("SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`,`idcard`,`ptright`,`sex` FROM `opcard` WHERE `hn` = '$hn' ");
         $pt = $q_pt->fetch_assoc();
 
-        $sql = " SELECT a.*, b.`tradname`
+        $sql = " SELECT a.*, b.`tradname`,b.`genname`, c.`doctor`
         FROM ( 
-            SELECT `row_id` AS `id`,SUBSTRING(`date`,1,10) AS `date`,`slcode`,`drugcode`,`amount` FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$date'
+            SELECT `row_id` AS `id`,SUBSTRING(`date`,1,10) AS `date`,`slcode`,`drugcode`,`amount`,`idno` FROM `drugrx` WHERE `hn` = '$hn' AND `date` >= '$date'
         ) AS a 
+        LEFT JOIN `phardep` AS c ON a.`idno` = c.`row_id` 
         LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode`
         WHERE a.`amount` > 0 
+        AND b.`tradname` IS NOT NULL 
         ORDER BY `date` DESC";
         $q = $dbi->query($sql);
         $a_rows = $q->num_rows;
@@ -229,7 +231,7 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
 <tr>
     <td><button type="button" onclick="preSendForm('{{drug_id}}','{{drug_tradname}}','{{drug_slcode}}','{{drug_amount}}')">เลือกข้อมูล</button></td>
     <td>{{drug_date}}</td>
-    <td>{{drug_tradname}}</td>
+    <td>{{drug_tradname}}<br>{{drug_genname}}<br>{{drug_doctor}}</td>
     <td align="left">{{drug_slcode}}</td>
     <td align="right">{{drug_amount}}</td>
 </tr>
@@ -280,6 +282,10 @@ if (preg_match('~MSIE|Internet Explorer~i', $ua) || (strpos($ua, 'Trident/7.0') 
                     tem = tem.replace(/{{drug_id}}/g, el.id, tem);
                     tem = tem.replace(/{{drug_date}}/g, el.date, tem);
                     tem = tem.replace(/{{drug_tradname}}/g, el.tradname, tem);
+
+                    tem = tem.replace(/{{drug_genname}}/g, el.genname, tem);
+                    tem = tem.replace(/{{drug_doctor}}/g, el.doctor, tem);
+
                     tem = tem.replace(/{{drug_slcode}}/g, el.slcode, tem);
                     tem = tem.replace(/{{drug_amount}}/g, el.amount, tem);
                     i++;

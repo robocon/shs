@@ -105,7 +105,7 @@ $cDoctor2 = substr($cDoctor,0,5);
 $acu = 0;
 $licen = '';
 
-if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true )
+if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216'))===true )
 {
   
     /*
@@ -130,6 +130,9 @@ if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))=
     }else if( $subDoctor === 5 ){
         $cDoctor1 = "พิมพ์ทอง สุระเรืองชัย";
         $doctorcode = "พท.ว. 21447";
+    }else if( $subDoctor === 6 ){
+        $cDoctor1 = "ณัฏฐาพร วงศ์เสนา";
+        $doctorcode = "พท.ป. 2585";
     }
 
     if(preg_match('/(พท\.ป\.)/', $doctorcode, $matchs) > 0){
@@ -232,7 +235,7 @@ if(preg_match('/(พท\.ป\.)/', $doctorcode, $matchs) > 0){
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาทาง".$extra."ด้วยการ $nid_ext ";
 	  
 // ถ้าเป็นแพทย์แผนไทย
-if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212'))===true )
+if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216'))===true )
 {
     
     // $inList = test_diag($cDiag, $diag_list);

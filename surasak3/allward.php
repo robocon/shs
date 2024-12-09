@@ -53,7 +53,7 @@ $sortname="รพ.สนาม";
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="med_record.php?code=<?=$lbedcode;?>">Med Record</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=NOTIFY_HOST;?>/testqrcode/show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=NOTIFY_HOST_CAMERA;?>/testqrcode/show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 <br />
 
@@ -224,7 +224,17 @@ $(document).ready(function(){
             <td class="tablefont"><?=$age;?>&nbsp;&nbsp;&nbsp;</td>
           
             <td class="tablefontt1">สิทธิการรักษา  :</td>
-            <td class="tablefont"><?=$ptright;?></td>
+            <td class="tablefont">
+				<?php 
+				if(!empty($ptright)){
+					echo $ptright;
+				}else{
+					?>
+					<strong style="color:red;"><u>กรุณาติดต่อทะเบียนเพื่ออัพเดทสิทธิ์การรักษา</u></strong>
+					<?php
+				}
+				?>
+			</td>
 			
             <td class="tablefontt1">ประเภท  :</td>
             <td class="tablefont"><u><i><?=$idguard;?></i></u></td>			

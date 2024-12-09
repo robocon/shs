@@ -1,12 +1,21 @@
 <?php 
 // session_start();
 require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_drugreact.php';
+require_once dirname(__FILE__).'/class_file/class_hypertension.php';
 
-include("connect.inc");
+/*
+// เอาไว้หาว่าในวันนี้ คนไข้คนไหนที่เข้าเคสเคยมีประวัติ ht บ้าง
+select a.*,b.* from (
+select row_id,hn from opd where thidate like '2567-11-08%'
+) as a left join hypertension_clinic as b on b.hn = a.hn
+where b.row_id is not null
+*/
+include("connect.php");
 mysql_query("SET NAMES UTF-8");
 
-require_once dirname(__FILE__).'/class_file/class_drugreact.php';
 $drugreact = new Drugreact();
+$hypertension = new Hypertension();
 
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
@@ -73,7 +82,8 @@ if($page=='showdrug')
 	exit;
 }
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -220,18 +230,18 @@ $thidate_now = (date("Y")+543).date("-m-d").date(" H:i:s");
 
 if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["print_basic_opd"]) && $_POST["print_basic_opd"] != "")  || (isset($_POST["print_new_opd"]) && $_POST["print_new_opd"] != "")){
 
-$strSQL1 = "SELECT * FROM doctor WHERE status='y' and row_id= '$_POST[doctor]'";
-$result1 = mysql_query($strSQL1);
-$row1 = mysql_fetch_array($result1);
-$doctorname = $row1['name'];
-//$clinicname = $row1['position'];
-//$roomname = $row1['room'];
+	$strSQL1 = "SELECT * FROM doctor WHERE status='y' and row_id= '$_POST[doctor]'";
+	$result1 = mysql_query($strSQL1);
+	$row1 = mysql_fetch_array($result1);
+	$doctorname = $row1['name'];
+	//$clinicname = $row1['position'];
+	//$roomname = $row1['room'];
 
-if($_POST["cigarette"]=="1"){
-	$_POST["member2"]=$_POST["member2"];
-}else{
-	$_POST["member2"]="";
-}
+	if($_POST["cigarette"]=="1"){
+		// $_POST["member2"]=$_POST["member2"];
+	}else{
+		$_POST["member2"]="";
+	}
 
 	$bp3 = $_POST['bp3'];
 	$bp4 = $_POST['bp4'];
@@ -404,8 +414,8 @@ if($_POST["cigarette"]=="1"){
 					$sbp=$_POST["bp3"];
 				}else{
 					$sbp=$_POST["bp1"];
-				}				
-								
+				}
+				
 				
 				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
 	    		$query1 = mysql_query($sql1) or die("Query failed");
@@ -416,7 +426,7 @@ if($_POST["cigarette"]=="1"){
 				}else{
 					$sex=0;
 				}
-							
+				
 				
 				$waist=$_POST["waist"]*0.39370;
 				$waist=round($waist);
@@ -486,8 +496,86 @@ if($_POST["cigarette"]=="1"){
 		);";
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
+		
 	}
 
+	// ยืนยันการบันทึกข้อมูล Hypertension 
+	if($_POST['confirmHt']=='1'){ 
+
+		if(!empty($_POST['ht_no'])){
+			$postData['ht_no'] = $_POST['ht_no'];
+		}else{
+			$htNumber = $hypertension->newHtNumber();
+			$postData['ht_no'] = $htNumber['ht_no'];
+		}
+		
+		$postData['thidate'] = date('Y-m-d');
+		$postData['hn'] = $_POST["hn"];
+		$postData['doctor'] = $doctorname;
+		$postData['ptname'] = $_POST["ptname"];
+		$postData['ptright'] = $rows3["ptright"];
+		$postData['sex'] = $sex;
+		$postData['diagnosis'] = $rows3["diag"];
+		$postData['ht'] = $_POST['ht'];
+		$postData['joint_disease_dm'] = $_POST['joint_disease_dm'];
+		$postData['joint_disease_nephritic'] = $_POST['joint_disease_nephritic'];
+		$postData['joint_disease_myocardial'] = $_POST['joint_disease_myocardial'];
+		$postData['joint_disease_paralysis'] = $_POST['joint_disease_paralysis'];
+		$postData['smork'] = $_POST['cigarette'];
+		$postData['bmi'] = $_POST['bmi'];
+		$postData['height'] = $_POST['height'];
+		$postData['weight'] = $_POST['weight'];
+		$postData['round'] = $_POST['waist'];
+		$postData['temperature'] = $_POST['temperature'];
+		$postData['pause'] = $_POST['pause'];
+		$postData['rate'] = $_POST['rate'];
+		$postData['bp1'] = $_POST['bp1'];
+		$postData['bp2'] = $_POST['bp2'];
+		$postData['officer'] = $_SESSION['sOfficer'];
+		$postData['officer_edit'] = $_SESSION['sOfficer'];
+		$postData['register_date'] = $_POST['register_date'];
+		$postData['pension'] = $rows['pension_status'];
+		$postData['age_str'] = $rows3["age"];
+		$postData['diag_date'] = $_POST['diag_date'];
+		$postData['bp3'] = $_POST['bp3'];
+		$postData['bp4'] = $_POST['bp4'];
+		$postData['ecgCxr'] = $_POST['ecgCxr'];
+		$postData['dateEcgCxr'] = $_POST['dateEcgCxr'];
+		$postData['albumin'] = $_POST['albumin'];
+		$postData['dateAlbumin'] = $_POST['dateAlbumin'];
+		$postData['albuminLabnumber'] = $_POST['albuminLabnumber'];
+		$postData['creatinine'] = $_POST['creatinine'];
+		$postData['dateCreatinine'] = $_POST['dateCreatinine'];
+		$postData['creatinineLabnumber'] = $_POST['creatinineLabnumber'];
+		
+		$postData['joint_disease'] = 0;
+		if( $_POST['joint_disease_dm'] OR $_POST['joint_disease_nephritic'] OR $_POST['joint_disease_myocardial'] OR $_POST['joint_disease_paralysis'] ){
+			$postData['joint_disease'] = 1;
+		}
+		
+		$hypertension->setHypertension_clinic($postData);
+
+		if(empty($_POST['hypertension_id'])){
+			$hypertension->insert();
+		}else{
+			$hypertension->setRowId($_POST['hypertension_id']);
+			$hypertension->update();
+		}
+
+		$res = $hypertension->getHtHistoryThisDay($_POST["hn"]);
+		if($res['error_code']==400){
+
+			/**
+			 * @readme มันยังขาด DateN ถ้าไป insert ใน hypertension_history เลย มันจะได้วันที่เป็นปัจจุบัน แต่จริงๆ ต้องเป็นวันที่ผู้ป่วยลงทะเบียน HT เป็นครั้งแรก(อาจจะดึงจาก hypertension_clinic ปกติ)
+			 */
+			// $hypertension->setDateN()
+			$hypertension->insert_history();
+		}else{
+			$hypertension->setHistoryId($res['id']);
+			$hypertension->update_history();
+		}
+	}
+	
 	if(!empty($_POST['display_advice'])){
 		$display_advice = implode('|', $_POST['display_advice']);
 
@@ -2138,60 +2226,294 @@ mmHg </td>
 		</tr>
 
 		<tr>
-			<td align="right" >จำนวนปีที่เป็น HT : </td>
+			<td align="right" valign="top">จำนวนปีที่เป็น HT : </td>
 			<td align="left" colspan="5">
 				<?php 
 				$curYear = date('Y-m-d');
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, 
-				TIMESTAMPDIFF(
-					YEAR,
-					CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),
-					'$curYear'
-				) AS `diag_date_year`
+				$sql = "SELECT `ht_no`,TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, TIMESTAMPDIFF(YEAR,CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),'$curYear') AS `diag_date_year` 
 				FROM `hypertension_clinic` 
-				WHERE `hn` = '$cHn'";
+				WHERE `hn` = '$cHn' LIMIT 1";
 				$q = mysql_query($sql) or die( mysql_error() );
 				$ht_year = '';
+				$ht_no = '';
 				if( mysql_num_rows($q) > 0 ){
 					$ht = mysql_fetch_assoc($q);
 					$ht_year = (int)$ht['diag_date_year'];
+					$ht_no = $ht['ht_no'];
+
+					// ถ้าไม่มีปีที่บันทึกจากการลง diag ให้เอาปีที่บันทึกข้อมูล
+					if(empty($ht_year)){
+						$ht_year = (int) $ht['year_diff'];
+					}
 				}
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
-			<?
+				<?php
 				$sql1 = "Select date_active,officer,datetime From screen_ht where hn = '".$cHn."'";
-				//echo $sql1;
 				$query1=mysql_query($sql1);
 				$num1=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
 					$yy = substr($date_active,0,4);
-					$yy=$yy+543;
+					$yy = $yy+543;
 					$mm = substr($date_active,5,2);
 					$dd = substr($date_active,8,2);
 					$date_active="$dd/$mm/$yy";				
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-			?>
+				?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-			<?
+				<?
 				}else{
 					if($age >=35){
-			?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ </strong><span style="margin-left:10px;"><input name="screen_ht" type="radio" value="y"/> ต้องการ  </span><span style="margin-left:10px;"><input name="screen_ht" type="radio" value="n"/> ไม่ต้องการ </span>
-			<?
+					?>
+					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ </strong>
+					<span style="margin-left:10px;"><label for="screen_ht1"><input name="screen_ht" id="screen_ht1" type="radio" value="y"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_ht2"><input name="screen_ht" id="screen_ht2" type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<?
 					}
 				}
-			?>				
+				?>
+				<div>
+					<a href="javascript:void(0);" onclick="showFormHt();">ฟอร์มบันทึก Hypertension</a>
+				</div>
+				<script>
+					function showFormHt(){
+						var el = document.getElementById('formHt');
+						if (el.style.display == 'none') {
+							el.style.display = '';
+						} else {
+							el.style.display = 'none';
+						}
+					}
+				</script>
+				<?php 
+				// 
+				$htData = $hypertension->getOneFromHn($_POST['hn']);
+				?>
+				<div id="formHt" style="<?=($htData['error_code']==400 ? 'display:none;' : '' );?>">
+					<style>
+						.htDateSelectContainer{
+							position: absolute;
+							top: 28px;
+							right: 0;
+							background-color: #ffffff;
+							border: 2px solid #000000;
+							box-shadow: 5px 10px #888888;
+						}
+						input[readonly]{
+							background-color: #b8b8b8;
+						}
+					</style>
+					<fieldset>
+						<legend><strong>ฟอร์มบันทึก Hypertension (เพิ่มเติม)</strong></legend>
+						<form action="javascript:void(0)" method="post">
+							<table>
+								<tr>
+									<td align="right"><strong>HT number : </strong></td>
+									<td>
+										<?php 
+										
+										if($htData['error_code']==400){
+											$htData = array();
+										}
+										
+										$htYearNotion = '';
+										if(empty($htData['ht_no'])){
+											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
+										}
+										?>
+										<?=$htData['ht_no'];?><?=$htYearNotion;?>
+										<input type="hidden" name="ht_no" value="<?=$htData['ht_no'];?>">
+									</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td>
+										<?php //dump($htData); ?>
+									</td>
+								</tr>
+								<tr>
+									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
+									<td>
+										<?php 
+										
+										$htDiagItems = array(0=>'No',1=>'Essential HT',3=>'Secondary HT',2=>'Uncertain type');
+										foreach ($htDiagItems as $k => $v) {
+											$checked = (!is_null($htData['ht']) && $k==$htData['ht']) ? 'checked="checked"' : '' ;
+											?>
+											<label for="ht<?=$k;?>"><input name="ht" id="ht<?=$k;?>" class="htDiag" type="radio" value="<?=$k;?>" <?=$checked;?> > <?=$v;?></label>
+											<?php
+										}
+										?>
+										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date" value="<?=$htData['diag_date'];?>"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
+										<div id="getYearDiagContainer" class="" style="position:relative; display:none;">
+											<div id="getYearDiag" class="htDateSelectContainer" style="z-index:1;"></div>
+										<div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><strong>โรคร่วม HT : </strong></td>
+									<td>
+										<?php 
+										$jdd = $htData['joint_disease_dm']=='Y' ? 'checked="checked"' : '' ;
+										$jdn = $htData['joint_disease_nephritic']=='Y' ? 'checked="checked"' : '' ;
+										$jdm = $htData['joint_disease_myocardial']=='Y' ? 'checked="checked"' : '' ;
+										$jdp = $htData['joint_disease_paralysis']=='Y' ? 'checked="checked"' : '' ;
+										?>
+										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="Y" <?=$jdd;?> > เบาหวาน</label>
+										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="Y" <?=$jdn;?> > ไตเรื้อรัง</label>
+										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="Y" <?=$jdm;?> > กล้ามเนื้อหัวใจตาย</label>
+										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="Y" <?=$jdp;?> > อัมพฤกษ์อัมพาต</label>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"><strong>ประวัติบุหรี่ : </strong></td>
+									<td>
+										<?php 
+										$smokeItems = array(0=>'ไม่สูบบุหรี่','สูบบุหรี่','ไม่มีข้อมูล');
+										foreach ($smokeItems as $k => $v) { 
+											$checked = (!is_null($htData['smork']) && $k==$htData['smork']) ? 'checked="checked"' : '' ;
+											?>
+											<label for="cigarette<?=$k;?>">
+												<input type="radio" name="cigarette" id="cigarette<?=$k;?>" value="<?=$k;?>" <?=$checked;?> > <?=$v;?>
+											</label>
+											<?php
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td align="right" valign="top"><strong>ได้รับการตรวจ ECG หรือ CXR : </strong></td>
+									<td>
+										<?php
+										$ecg1 = $htData['ecgCxr'] == '1' ? 'checked="checked"' : '' ;
+										$ecg2 = $htData['ecgCxr'] == '0' ? 'checked="checked"' : '' ;
+										?>
+										<label for="ecgCxr1">
+											<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="document.getElementById('ecgCxrContain').style.display='';" <?=$ecg1;?> > ได้รับการตรวจ
+										</label>
+										<label for="ecgCxr2">
+											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none'; document.getElementById('dateEcgCxr').value='';" <?=$ecg2;?> > ไม่ได้ตรวจ
+										</label>
+										<?php 
+										$ecgCxrDisplay = 'display:none;';
+										if($htData['ecgCxr'] == '1'){
+											$ecgCxrDisplay = '';
+										}
+										?>
+										<div style="<?=$ecgCxrDisplay;?> position:relative;" id="ecgCxrContain">
+											<input type="text" name="dateEcgCxr" id="dateEcgCxr" value="<?=$htData['dateEcgCxr'];?>"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDate&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<div id="landingDateSelected" class="htDateSelectContainer" style="display:none; z-index:2;"></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right" valign="top"><strong>ได้รับการตรวจ Urine albumin : </strong></td>
+									<td>
+										<?php
+										$alb1 = $htData['albumin'] == '1' ? 'checked="checked"' : '' ;
+										$alb2 = $htData['albumin'] == '0' ? 'checked="checked"' : '' ;
+										?>
+										<label for="albumin1">
+											<input type="radio" name="albumin" id="albumin1" value="1" onclick="document.getElementById('albuminContain').style.display='';" <?=$alb1;?> > ได้รับการตรวจ
+										</label>
+										<label for="albumin2">
+											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value=''; document.getElementById('albuminLabnumber').value='';" <?=$alb2;?> > ไม่ได้ตรวจ
+										</label>
+										<?php 
+										$albDisplay = 'display:none;';
+										if($htData['albumin'] == '1'){
+											$albDisplay = '';
+										}
+										?>
+										<div style="<?=$albDisplay;?> position:relative;" id="albuminContain">
+											<input type="text" name="dateAlbumin" id="dateAlbumin" value="<?=$htData['dateAlbumin'];?>" > <a href="javascript:void(0);" onclick="htDateSelect('landingDateAlbumin','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<input type="hidden" name="albuminLabnumber" id="albuminLabnumber" value="<?=$htData['albuminLabnumber'];?>">
+											<div id="landingDateAlbumin" class="htDateSelectContainer" style="display:none; z-index:3;"></div>
+										</div>
+									</td>
+								</tr>
+								
+								<tr>
+									<td align="right" valign="top"><strong>ได้รับการตรวจ Serum Cr. : </strong></td>
+									<td>
+										<?php
+										$cre1 = $htData['creatinine'] == '1' ? 'checked="checked"' : '' ;
+										$cre2 = $htData['creatinine'] == '0' ? 'checked="checked"' : '' ;
+										?>
+										<label for="creatinine1">
+											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="document.getElementById('creatinineContain').style.display='';" <?=$cre1;?> > ได้รับการตรวจ
+										</label>
+										<label for="creatinine2">
+											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value=''; document.getElementById('creatinineLabnumber').value='';" <?=$cre2;?> > ไม่ได้ตรวจ
+										</label>
+										<?php 
+										$creDisplay = 'display:none;';
+										if($htData['creatinine'] == '1'){
+											$creDisplay = '';
+										}
+										?>
+										<div style="<?=$creDisplay;?> position:relative;" id="creatinineContain">
+											<input type="text" name="dateCreatinine" id="dateCreatinine" value="<?=$htData['dateCreatinine'];?>"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateCreatinine','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
+											<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber" value="<?=$htData['creatinineLabnumber'];?>">
+											<div id="landingDateCreatinine" class="htDateSelectContainer" style="display:none; z-index:4;"></div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td align="right"></td>
+									<td>
+										<label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">ยืนยันการบันทึกข้อมูล Hypertension</strong></label>
+										<input type="hidden" name="hypertension_id" value="<?=$htData['row_id'];?>">
+									</td>
+								</tr>
+							</table>
+						</form>
+						<script>
+							function getYearDiag(){
+								callYearDiag().then((res)=>{
+									document.getElementById('getYearDiag').innerHTML = res;
+									document.getElementById('getYearDiagContainer').style.display = '';
+								});
+							}
+							async function callYearDiag(){
+								const response = await fetch('call/diag.php?action=getFirstI10FromHn&hn=<?=$hn;?>');
+								const data = await response.text();
+								return data;
+							}
+
+							// ถ้ารายการใน การวินิจฉัย ถูกคลิกให้ทำการเลือกวันที่อัตโนมัติ
+							var htDiagItems = document.getElementsByClassName('htDiag');
+							for (let htDi = 0; htDi < htDiagItems.length; htDi++) {
+								const el = htDiagItems[htDi];
+								el.onclick = function(){
+									document.getElementById('diag_date').focus();
+								}
+							}
+
+							function htDateSelect(divId,url){
+								loadContent(url).then((res)=>{ 
+									document.getElementById(divId).innerHTML = res;
+									document.getElementById(divId).style.display = '';
+								});
+							}
+							function closeContainer(idName){
+								document.getElementById(idName).style.display = 'none';
+							}
+							async function loadContent(url){
+								const response = await fetch(url);
+								const body = await response.text();
+								return body;
+							}
+						</script>
+					</fieldset>
+				</div>
 			</td>
 		</tr>
-
 		<tr>
 			<td align="right" >จำนวนปีที่เป็น DM : </td>
 			<td align="left" colspan="5">
 				<?php 
-				$sql = "SELECT TIMESTAMPDIFF(
-					YEAR,
-					CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear'
-				) AS `year_diff`
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear') AS `year_diff`
 				FROM `diabetes_clinic` 
 				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
@@ -2204,9 +2526,8 @@ mmHg </td>
 				}
 				?>
 				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> ปี
-			<?
+				<?
 				$sql1 = "Select date_active,officer,datetime From screen_dm where hn = '".$cHn."'";
-				//echo $sql1;
 				$query1=mysql_query($sql1);
 				$num1=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
@@ -2216,17 +2537,30 @@ mmHg </td>
 					$dd = substr($date_active,8,2);
 					$date_active="$dd/$mm/$yy";					
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-			?>
+					?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-			<?
+					<?
 				}else{
 					if($age >=35){
-			?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong><span style="margin-left:10px;"><input name="screen_dm" type="radio" value="y"/> ต้องการ  </span><span style="margin-left:10px;"><input name="screen_dm" type="radio" value="n"/> ไม่ต้องการ </span>
-			<?
+					?>
+					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong>
+					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" onclick="showFormDm()" type="radio" value="y"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<?
 					}
 				}
-			?>
+				?>
+				<script>
+					function showFormDm(){
+						document.getElementById('formDm').style.display = '';
+					}
+					function hideFormDm(){
+						document.getElementById('formDm').style.display = 'none';
+					}
+				</script>
+				<div id="formDm" style="display:none;">
+					<h1>FORM DM</h1>
+				</div>
 			</td>
 		</tr>
 
@@ -2292,10 +2626,10 @@ mmHg </td>
 					<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine2" value="0" <? if($covid19_vaccine=="0"){ echo "checked='checked'";}?>> <label for="covid19_vaccine2">ยังไม่ได้รับการฉีด</label>
 				</span>
 				<strong style="margin-left:20px; color: <?=$vaccinecolor;?>;"><?=$txtvaccine;?></strong>
-				<div>
+				<!-- <div>
 					<button type="button" onclick="moph_check_vaccine('<?=$cIdcard;?>')">ตรวจสอบการได้รับวัคซีนจาก MOPH IC</button>
 					<div id="resVacc"></div>
-				</div>
+				</div> -->
 				<script type="text/javascript">
 
 					function newXmlHttp(){

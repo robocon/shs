@@ -2,7 +2,9 @@
 session_start();
 include("connect.inc"); 
 
-$query = "SELECT row_id,my_food FROM ipcard where an = '" . $_POST["an"] . "' ";
+$an = sprintf("%s", $_POST['an']);
+
+$query = "SELECT row_id,my_food FROM ipcard where an = '$an' ";
 $result = mysql_query($query);
 $rows = Mysql_num_rows($result);
 
@@ -202,8 +204,14 @@ if ($result) {
                     <td align="right"><b class="title-size">ชื่อ-สกุล: </b></td>
                     <td style="color:red;"><b class="title-size"><?="$cYot   $cName  $cSurname";?></b></td>
                     <td align="right"><b class="title-size">สิทธิการรักษา: </b></td>
-                    <td class="title-size"><?=$cPtright;?></td>
+                    <td style="color:red;"><b class="title-size"><?=$cPtright;?></b></td>
                 </tr>
+                <tr>
+                    <td align="right"><b class="title-size">อายุ</b></td>
+                    <td style="color:red;"><b class="title-size"><?=$cAge;?></b></td>
+                    <td align="right"></td>
+                    <td class="title-size"></td>
+                </tr>				
             </table>
             
         </fieldset>

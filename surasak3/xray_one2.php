@@ -109,7 +109,8 @@ if($action === 'save'){
                     <td colspan="3">
                         <div><h3>ท่าตรวจ</h3></div>
                         <div id="cXraydetail">
-                            <div id="dv1">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('dv1').style.display='none';document.getElementById('dv1').innerHTML='';">CHEST CHECK UP </a><input type="hidden" name="xraydetail[]" value="CHEST CHECK UP "></div>
+                            <div id="dv1">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('dv1').style.display='';">CHEST CHECK UP </a><input type="hidden" name="xraydetail[]" value="CHEST CHECK UP "></div>
+                            <!-- <div id="dv2">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" onclick="document.getElementById('dv2').style.display='';">USWHOLE ABDOMEN</a><input type="hidden" name="xraydetail[]" value="USWHOLE ABDOMEN"></div> -->
                         </div>
                     </td>
                 </tr>
@@ -161,12 +162,17 @@ if($action === 'save'){
             async function showUserInCompany(company){
                 const response = await fetch('xray_one2.php?action=load&company='+company);
                 const res = await response.json();
-                let html = '';
-                for (let  i= 0; i < res.count; i++) {
-                    const item = res.data[i];
-                    html += '<div class="companyUser"><a href="javascript:void(0);" onclick="toLeftSide(\''+item.HN+'\')">'+item.HN+'</a> '+item.ptname+'</div>';
+                if(res.status==400){
+                    document.getElementById('responseCompany').innerHTML = '<div style="color:red;">ไม่พบข้อมูล</div>';
+                }else{
+                    let html = '';
+                    for (let  i= 0; i < res.count; i++) {
+                        const item = res.data[i];
+                        html += '<div class="companyUser"><a href="javascript:void(0);" onclick="toLeftSide(\''+item.HN+'\')">'+item.HN+'</a> '+item.ptname+'</div>';
+                    }
+                    document.getElementById('responseCompany').innerHTML = html;
                 }
-                document.getElementById('responseCompany').innerHTML = html;
+                
             }
             function toLeftSide(hn){
                 var table = document.getElementById("myTable");
@@ -213,7 +219,7 @@ if($action === 'save'){
             var cell3 = row.insertCell(2);
             cell1.innerHTML = "HN : ";
             // onblur="showHnDetail(this.value,this.parentElement)"
-            cell2.innerHTML = '<input type="text" class="hn" style="width:120px;" > <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
+            cell2.innerHTML = '<input type="text" class="hn" style="width:120px;" onblur="showHnDetail(this.value,this.parentElement)" > <a href="javascript:void(0);" title="ลบ" onclick="this.parentElement.parentElement.remove()">[X]</a>';
             cell3.innerHTML = "";
         }
 

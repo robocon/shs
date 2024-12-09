@@ -182,6 +182,11 @@ $ldl_flag = $_POST['ldl_flag'];
 $stocc = $_POST['stocc'];
 $STOCCflag = $_POST['STOCCflag'];
 
+if(empty($stocc)){
+	$stocc = $_POST['OCCULT'];
+	$STOCCflag = $_POST['OCCULTflag'];
+}
+
 $HBA1CC = $_POST['HBA1CC'];
 $HBA1CCrange = $_POST['HBA1CCrange'];
 $HBA1CCflag = $_POST['HBA1CCflag'];

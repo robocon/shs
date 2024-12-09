@@ -1,11 +1,8 @@
 <?php 
-include 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+require_once 'bootstrap.php';
+require_once 'class_file/ReportHt.php';
 
 // รูปแบบไทย
-
-
 $year = sprintf("%s", $_GET['year']);
 $ht_all = sprintf("%s", $_GET['ht_all']);
 $ht_bp = sprintf("%s", $_GET['ht_bp']);
@@ -42,9 +39,23 @@ $ht_bp = sprintf("%s", $_GET['ht_bp']);
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container mt-4">
         <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>2.&#41; ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี &#40; &lt;140/90 &#41; ดึงจากการวัดครั้งที่2 </h5>
+        <?php 
+        $ht = new ReportHt();
+        $yearSelected = $year+543;
+
+        $ht->generateTempOpdXDiag($yearSelected);
+        $qAllOpdXDiag = $ht->getAllOpdXDiag();
+        $ht_all = $qAllOpdXDiag->num_rows;
+        
+        // สร้าง temporary table ระหว่าง opd กับ diag
+        $ht->generateTempOpdXDiag($yearSelected);
+
+        $q = $ht->getBPLess140();
+        $bpLess = $q->num_rows;
+        ?>
         <div class="row">
             <div class="col-sm-6">
                 <table class="table">
@@ -54,76 +65,80 @@ $ht_bp = sprintf("%s", $_GET['ht_bp']);
                     </tr>
                     <tr>
                         <td><?=number_format($ht_all);?></td>
-                        <td><?=number_format($ht_bp);?></td>
+                        <td><?=number_format($bpLess);?></td>
                     </tr>
                 </table>
             </div>
         </div>
         <?php
-        $yearSelected = $year+543;
-
-
-        $sqlTemp = "CREATE TEMPORARY TABLE `tempory_opd` 
-        SELECT y.*,x.`regis_id`,x.`regis_date` FROM 
-        ( 
-            SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` FROM ( 
-                SELECT MAX(`row_id`) AS `latest_row_id`,`thidate` 
-                FROM `opd` 
-                WHERE `thidate` LIKE '$yearSelected%' 
-                AND ( `bp1` <> '' AND `bp2` <> '' AND `bp1` NOT LIKE '...%' ) 
-                GROUP BY `hn` 
-                ORDER BY `row_id` ASC 
-            ) AS a 
-            LEFT JOIN `opd` AS b ON b.`row_id` = a.`latest_row_id`
-        ) AS y 
-        LEFT JOIN (
-            SELECT `row_id` AS `regis_id`,`hn`,`thidate` AS `regis_date` FROM `diabetes_clinic` 
-        ) AS x ON x.`hn` = y.`hn`";
-        $dbi->query($sqlTemp);
-
-
-
-        $sql = "SELECT * FROM 
-        `tempory_opd` 
-        WHERE `regis_id` IS NOT NULL 
-        AND ( `bp3` <> '' AND `bp4` <> '' ) 
-        AND ( `bp3` NOT LIKE '...%' AND `bp4` NOT LIKE '...%' )
-        AND ( `bp3` < 140 AND `bp4` < 90) 
-        ORDER BY `thidate` DESC";
-        $q = $dbi->query($sql);
-        $a = $q->fetch_assoc();
         
+        if($bpLess>0){
+            ?>
+            <div>
+                <h3>ปี <?=$year;?></h3>
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>HN</th>
+                            <th>ชื่อสกุล</th>
+                            <th>SBP</th>
+                            <th>DBP</th>
+                            <th>วันที่รับบริการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                        $i = 1;
+                        while ($a = $q->fetch_assoc()) {
+                        ?>
+                        <tr>
+                            <td><?=$i;?></td>
+                            <td><?=$a['hn'];?></td>
+                            <td><?=$a['ptname'];?></td>
+                            <td><?=$a['bp3'];?></td>
+                            <td><?=$a['bp4'];?></td>
+                            <td><?=$a['thidate'];?></td>
+                        </tr>
+                        <?php 
+                        $i++;
+                        }
+                        
+                        $qLess140 = $ht->getBPMore140();
+                        if($qLess140->num_rows > 0){
+                            ?>
+                            <tr>
+                                <td colspan="6">
+                                    <h3 class="text-danger">BP มากกว่าหรือเท่ากับ 140/90</h3>
+                                </td>
+                            </tr>
+                            <?php
+                            $ii = 1;
+                            while ($b = $qLess140->fetch_assoc()) {
+                                ?>
+                                <tr>
+                                    <td><?=$ii;?></td>
+                                    <td><?=$b['hn'];?></td>
+                                    <td><?=$b['ptname'];?></td>
+                                    <td><?=$b['bp3'];?></td>
+                                    <td><?=$b['bp4'];?></td>
+                                    <td><?=$b['thidate'];?></td>
+                                </tr>
+                                <?php
+                                $ii++;
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php
+        }else{
+            ?>
+            <div><strong>ไม่พบข้อมูล</strong></div>
+            <?php
+        }
         ?>
-        <div>
-            <h3>ปี <?=$year;?></h3>
-            <table class="table table-hover">
-                <thead class="table-dark">
-                    <tr>
-                        <th>HN</th>
-                        <th>ชื่อสกุล</th>
-                        <th>SBP</th>
-                        <th>DBP</th>
-                        <th>วันที่รับบริการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                    while ($a = $q->fetch_assoc()) {
-                    ?>
-                    <tr>
-                        <td><?=$a['hn'];?></td>
-                        <td><?=$a['ptname'];?></td>
-                        <td><?=$a['bp3'];?></td>
-                        <td><?=$a['bp4'];?></td>
-                        <td><?=$a['thidate'];?></td>
-                    </tr>
-                    <?php 
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-    
     </div>
 </body>
 </html>

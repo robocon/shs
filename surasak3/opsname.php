@@ -1,4 +1,7 @@
-<?php
+<?php 
+header("Location: opnameops.php");
+exit;
+
 session_start();
    
 require "includes/functions.php";
@@ -27,25 +30,25 @@ $surname = isset($_POST['surname']) ? trim($_POST['surname']) : null;
 
 ?>
 <form method="post" action="<?php echo $PHP_SELF ?>">
-  <p>§ÈπÀ“§π‰¢È®“°&nbsp; π“¡ °ÿ≈</p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; π“¡ °ÿ≈&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <p>‡∏Ñ‡πâ‡∏ô‡∏´‡∏≤‡∏Ñ‡∏ô‡πÑ‡∏Ç‡πâ‡∏à‡∏≤‡∏Å&nbsp; ‡∏ô‡∏≤‡∏°‡∏™‡∏Å‡∏∏‡∏•</p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ‡∏ô‡∏≤‡∏°‡∏™‡∏Å‡∏∏‡∏•&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="text" name="surname" size="12" id="aLink" value="<?php echo $surname;?>"></p>
 <script type="text/javascript">
 document.getElementById('aLink').focus();
 </script>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="  µ°≈ß  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ≈∫∑‘Èß  " name="B2"></p>
+  <input type="submit" value="  ‡∏ï‡∏Å‡∏•‡∏á  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp; <input type="reset" value="  ‡∏•‡∏ö‡∏ó‡∏¥‡πâ‡∏á  " name="B2"></p>
 </form>
 
 <table>
  <tr>
   <th bgcolor=6495ED>HN</th>
-  <th bgcolor=6495ED>¬»</th>
-  <th bgcolor=6495ED>™◊ËÕ</th>
-  <th bgcolor=6495ED> °ÿ≈</th>
-  <th bgcolor=6495ED>«/¥/ª/‡°‘¥</th>
-  <th bgcolor=6495ED>∫—µ√ ª™™.</th>
-  <th bgcolor=6495ED> ∂“π– ward</th>
+  <th bgcolor=6495ED>‡∏¢‡∏®</th>
+  <th bgcolor=6495ED>‡∏ä‡∏∑‡πà‡∏≠</th>
+  <th bgcolor=6495ED>‡∏™‡∏Å‡∏∏‡∏•</th>
+  <th bgcolor=6495ED>‡∏ß/‡∏î/‡∏õ/‡πÄ‡∏Å‡∏¥‡∏î</th>
+  <th bgcolor=6495ED>‡∏ö‡∏±‡∏ï‡∏£ ‡∏õ‡∏ä‡∏ä.</th>
+  <th bgcolor=6495ED>‡∏™‡∏ñ‡∏≤‡∏ô‡∏∞ ward</th>
  </tr>
 
 <?php

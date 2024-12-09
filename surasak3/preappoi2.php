@@ -10,6 +10,26 @@ global $dt_doctor, $cdoctor, $doctor;
 }
 
 include("connect.inc");   
+Function calcage($birth){
+      $today = getdate();   
+      $nY  = $today['year']; 
+      $nM = $today['mon'] ;
+      $bY=substr($birth,0,4)-543;
+      $bM=substr($birth,5,2);
+      $ageY=$nY-$bY;
+      $ageM=$nM-$bM;
+       if ($ageM<0) {
+           $ageY=$ageY-1;
+           $ageM=12+$ageM;
+                    }
+      if ($ageM==0){
+           $pAge="$ageY ปี";
+             }
+      else{
+            $pAge="$ageY ปี $ageM เดือน";
+                        }
+      return $pAge;
+}
 $action = sprintf("%s", $_GET['action']);
 if(isset($action)  && $action == "viewlist"){
 
@@ -211,7 +231,7 @@ if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทร
 
 			echo 'วัน'.$th_day[$get_day].'ที่ '.$_POST['date_appoint'].' แพทย์ '.substr($item['dr_name'],5).' ได้จำกัดจำนวนผู้ป่วยนัดไม่ให้เกิน '.$item['user_row'].'คน '.$contactTxt;
 			echo '<br>';
-			echo '<a href="#" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
+			echo '<a href="javascript:void(0);" onclick="window.history.back();return false;">คลิกที่นี่</a> เพื่อกลับไปเปลี่ยนวันนัดใหม่';
 			exit;
 		}
 	}
@@ -419,11 +439,32 @@ $_SESSION['lab_lists'] = array();
 ?>
 <div style="display: none;"><?=$dt_doctor;?> <?=$dd['weekday'];?>  </div>
 <?php
-   print "<p><font face='Angsana New' size = '4'>ชื่อ $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B><br>";
-  print "<font face='Angsana New' size = '4'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B></p>";
-   $queryT="SELECT phone FROM opcard where hn='$cHn'";
-   $resultT = mysql_query($queryT);
-   $rowT = mysql_fetch_array($resultT);
+	$chkhn=$_POST["chkhn"];
+	$chkidcard=$_POST["chkidcard"];
+	echo "<div style='font-size:12px;color:red;'>ข้อมูลที่ส่งมาตรวจสอบ HN :".$_POST["chkhn"].", ";
+	echo "IDCARD :".$_POST["chkidcard"]."</div>";
+
+	if($_POST["chkhn"]==$cHn){
+		$queryT="SELECT phone,idcard FROM opcard where hn='$cHn'";
+		$resultT = mysql_query($queryT);
+		$rowT = mysql_fetch_array($resultT);
+		$idcard=$rowT["idcard"];
+		print "<p><font face='Angsana New' size = '6'>HN: $cHn ชื่อ $cPtname  อายุ $cAge &nbsp;<B>สิทธิ:$cptright</font></B><br>";
+		print "<font face='Angsana New' size = '6'>เลขบัตรประชาชน : $idcard</font><br>";
+		print "<font face='Angsana New' size = '6'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B><br>";
+	}else{
+		$cHn=$_POST["chkhn"];
+		$queryT="SELECT yot,name,surname,dbirth,phone,idcard FROM opcard where hn='$cHn'";
+		$resultT = mysql_query($queryT);
+		$rowT = mysql_fetch_array($resultT);
+		$idcard=$rowT["idcard"];
+		$cPtname=$rowT["yot"]." ".$rowT["name"]." ".$rowT["surname"];
+		$cAge=calcage($rowT["dbirth"]);
+		
+		print "<p><font face='Angsana New' size = '6'>HN: $cHn ชื่อ $cPtname  อายุ $cAge &nbsp;<B>สิทธิ:$cptright</font></B><br>";
+		print "<font face='Angsana New' size = '6'>เลขบัตรประชาชน : $idcard</font><br>";
+		print "<font face='Angsana New' size = '6'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B><br>";
+	}	
 
  $appd=$cdate_appoint;
  
@@ -801,7 +842,9 @@ if($date_en < date('Y-m-d')){
     <td width="311"><font face="Angsana New">
       <select size="1" name="detail" onChange="listb(<?=$counter?>)" id="detail">
       <? if($_SESSION["sOfficer"]!="ศุภรัตน์ มิ่งเชื้อ"){ ?>
-      <option value="NA"><<นัดมาเพื่อ>></option>  
+      <option value="NA"><<นัดมาเพื่อ>></option>
+	  <option value="FU51 ติดตามกลุ่มเสี่ยง ตรวจสุขภาพประจำปีกองทัพบก">ติดตามกลุ่มเสี่ยง ตรวจสุขภาพประจำปีกองทัพบก</option>	  
+	  <option value="FU52 ติดตามกลุ่มโรค ตรวจสุขภาพประจำปีกองทัพบก">ติดตามกลุ่มโรค ตรวจสุขภาพประจำปีกองทัพบก</option>  
 	  <? } ?>
 <?
       if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){
@@ -1240,8 +1283,10 @@ if($date_en < date('Y-m-d')){
 </font>
 <br />
 </p>
-
+<div style='margin-top:20px; margin-left:20px;color:blue;font-weight:bold;font-size:24px;'>กรุณาตรวจสอบข้อมูลของผู้ป่วยให้ถูกต้อง เพื่อดำเนินการต่อไป...</div>
 	<input type="hidden" name="appd" value="<?php echo $appd; ?>">
+<input type="hidden" name="chkhn" id="chkhn" value="<?=$_POST["chkhn"];?>">
+<input type="hidden" name="chkidcard" id="chkidcard" value="<?=$_POST["chkidcard"];?>">  
   </form>
 &nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a>
 </TD>

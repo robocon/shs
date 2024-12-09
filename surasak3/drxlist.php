@@ -48,21 +48,21 @@ if(isset($_GET["action"]) && $_GET["action"] =="refresh"){
 //echo "<meta http-equiv='refresh' content='10'> ";  	
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 print ("<table>
- <tr>
-	<th bgcolor=6495ED><font face='Angsana New'>#</th>
-	<th bgcolor=6495ED><font face='Angsana New'>VN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ชื่อ</th>
-	<th bgcolor=6495ED><font face='Angsana New'>HN</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ค่ายา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th>
-	<th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
-	<th bgcolor=6495ED><font face='Angsana New'>ผู้บันทึก</th>
-	<th bgcolor=6495ED><font face='Angsana New'>คิวแพทย์</th>
-	<th bgcolor=6495ED><font face='Angsana New'>คิวห้องยา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>เวลารับใบสั่งยา</th>
-	<th bgcolor=6495ED><font face='Angsana New'>เวลาที่ตัด</th>
-	<th bgcolor=6495ED><font face='Angsana New'>แบบบันทึกการรักษาผู้ป่วยโควิด19</th>
+ <tr style='color:#FFFFFF;font-weight:bold;'>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>#</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>VN</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>เวลา</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>ชื่อ</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>HN</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>ค่ายา</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>สิทธิการรักษา</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>แพทย์</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='5'>ผู้บันทึก</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='4'>คิวแพทย์</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='4'>คิวห้องยา</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='4'>เวลารับใบสั่งยา</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='4'>เวลาที่ตัด</th>
+	<th bgcolor=#17A589><font face='TH SarabunPSK' size='4'>แบบบันทึกการรักษา<br>ผู้ป่วยโควิด19</th>
 	
  </tr>");
 
@@ -73,7 +73,7 @@ print ("<table>
     $result = mysql_query($query) or die("Query failed");
 
 	$num=mysql_num_rows($result);
-	echo "จำนวน $num รายการ";
+	echo "<div style='font-size:20px;'>จำนวน $num รายการ</div>";
     while (list ($tvn,$date,$ptname,$hn,$price,$row_id,$accno,$ptright,$doctor, $stkcutdate,$kew,$kewphar,$pharin,$idname) = mysql_fetch_row ($result)) {
         
 
@@ -97,28 +97,28 @@ print ("<table>
 		}
 
 		if($stkcutdate == "")
-			$bgcolor="#66CDAA";		
+			$bgcolor="#48C9B0";		
 		else
 			$bgcolor="#FFFFFF";
         print " <tr>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$num</td>\n".
-			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$tvn</td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$time</td>\n";
+           "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$num</td>\n".
+			"  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$tvn</td>\n".
+           "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$time</td>\n";
 		if($tvn==""){
-			print "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$ptname</td>\n";
+			print "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$ptname</td>\n";
 		}else{
-       	 	print   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'><a target=_BLANK  href=\"drxdetail.php? sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright&sVn=$tvn\">$ptname</a></td>\n";
+       	 	print   "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'><a target=_BLANK  href=\"drxdetail.php? sDate=$date&nRow_id=$row_id&nAccno=$accno&sPtright=$ptright&sVn=$tvn\">$ptname</a></td>\n";
 		}
-          print "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$hn</td>\n".
-           "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$price</td>\n".
-		   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$ptright</td>\n".
-   		   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$doctor</td>\n".
-			  "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$idname</td>\n".
-			   "  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kew</td>\n".
-			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$kewphar</td>\n".
-			"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$pharin</td>\n".
-			   	"  <td BGCOLOR='".$bgcolor."'><font face='Angsana New'>$stkcutdate</td>\n".
-				   	"  <td BGCOLOR='".$bgcolor."' align='center'><font face='Angsana New'>$opsi</td>\n".
+          print "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$hn</td>\n".
+           "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$price</td>\n".
+		   "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$ptright</td>\n".
+   		   "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$doctor</td>\n".
+			  "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$idname</td>\n".
+			   "  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$kew</td>\n".
+			   	"  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$kewphar</td>\n".
+			"  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$pharin</td>\n".
+			   	"  <td BGCOLOR='".$bgcolor."'><font face='TH SarabunPSK'>$stkcutdate</td>\n".
+				   	"  <td BGCOLOR='".$bgcolor."' align='center'><font face='TH SarabunPSK'>$opsi</td>\n".
 		   " </tr>\n";
 		   $num--;
 		}
@@ -131,22 +131,42 @@ exit();
 
 $today = $_GET["yr"]."-".$_GET["m"]."-".$_GET["d"];
 
-    print "<font face='Angsana New'>วันที่ $today  รายการใบสั่งยาจากแพทย์ ";
+    print "<div style='font-size:24px;'><font face='TH SarabunPSK'>วันที่ $today  รายการใบสั่งยาจากแพทย์ ";
     print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>";
 	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='drx1date.php'>&lt;&lt;เลือกวันที่ใหม่</a>";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlist_not.php'>&lt;&lt;ค้างจ่าย</a>";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_blank  href='drxlist_not.php'>&lt;&lt;ค้างจ่าย</a></div>";
 
 ?>
 <html>
+<title>รายการใบสั่งยาจากแพทย์</title>
 <head>
 </head>
+<style>
+body,td,th {
+	font-family:TH SarabunPSK;
+	font-size: 18px;
+	font-weight:bold;	
+}
+table {
+  border-collapse: collapse;
+  width: 98%;
+}
+
+th, td {
+  text-align: left;
+  padding: 5px;
+}
+.txt {
+	font-family: TH SarabunPSK;
+	font-size: 18px;
+} 
+</style>
 <body>
 <FORM METHOD=GET ACTION="drxlist3.php" target="_blank">
 <TABLE>
 <TR>
-	<TD>VN : </TD>
-	<TD><INPUT TYPE="text" NAME="vn_drx"></TD>
-	<TD><INPUT TYPE="submit" value="ตกลง">&nbsp;</TD>
+	<TD width="4%">VN : </TD>
+	<TD><INPUT TYPE="text" NAME="vn_drx" class="txt" autofocus>&nbsp;&nbsp;<INPUT TYPE="submit" value="ตกลง" class="txt"></TD>
 </TR>
 </TABLE>
 

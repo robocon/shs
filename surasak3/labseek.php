@@ -218,6 +218,14 @@ function searchSuggest(str,len,getto) {
 }
 
 </script>
+<?php 
+$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
+if($log_smenucode == 'ADMPT' && empty($_POST['code'])){
+	$log_officer = sprintf("%s", $_SESSION['sOfficer']);
+	$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'มาจากหน้า preilab ได้เลือก ทำรายการต่อไป', NULL);";
+	mysql_query($logSql);
+}
+?>
 <form method="POST" action="<?php echo $PHP_SELF ?>"> <font face="Angsana New"><a target=_BLANK href="codehlp.php">&#3619;&#3627;&#3633;&#3626;</a><Div id="list" style="left: 9px; top: 121px; position: absolute;"></Div>&nbsp;&nbsp;&nbsp;
 
 	<?php
@@ -374,8 +382,7 @@ if($cDepart  == "PATHO" ){
 	$sql_for_num = "Select code,an,no From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' GROUP BY `no` ORDER BY `no` DESC";
 	$res_num = mysql_query($sql_for_num) or die(mysql_error());
 	$row_num = mysql_num_rows($res_num);
-	if($row_num > 0)
-	{
+	if($row_num > 0){
 		while($num = mysql_fetch_assoc($res_num)){
 			$no = $num['no'];
 
@@ -421,35 +428,39 @@ if($cDepart  == "PATHO" ){
 		//echo $sql;
 		$result = mysql_query($sql) or die(mysql_error());
 		$row_app = mysql_num_rows($result);
-		
 		if($row_app > 0){
-			$query = "SELECT code,detail,amount,price,nprice FROM labpatdata WHERE date like  '$date_n1%' AND hn = '".$cHn."' ";
-		//echo $query;
+			while($rows = mysql_fetch_assoc($result)){
+			$idno=$rows["row_id"];
+			$depart=$rows["depart"];	
+			$query = "SELECT code,detail,amount,price,nprice FROM labpatdata WHERE date like  '$date_n1%' AND hn = '".$cHn."' and idno='$idno' ";
+			//echo $query;
 			$result1 = mysql_query($query) or die(mysql_error());
-			
-			$list_app = array();
-			$code_app = "";
-			while($arr = mysql_fetch_assoc($result1)){
-				array_push($list_app, $arr["code"]);
-				$code_app = $cHn;
-			}
-			$code_app = "HN".$code_app;
+			$row_app1 = mysql_num_rows($result1);	
+				if($row_app1 > 0){
+					$list_app = array();
+					$code_app = "";
+					while($arr = mysql_fetch_assoc($result1)){
+						array_push($list_app, $arr["code"]);
+						$code_app = $cHn;
+					}
+					$code_app = "HN".$code_app;
 
-				echo "<BR><TABLE border='1' bordercolor=\"#330099\">
-				<TR>
-					<TD><table  width='300'>";
-					echo "<tr  bgcolor=\"#000080\">";
-						echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการสั่งจากแพทย์</FONT></td>";
-					echo "</tr>";
-					echo "<tr>";
-						echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
-						echo "<td>",implode("<BR> ",$list_app),"</td>";
-					echo "</tr>";
-				echo "</table></TD>
-				</TR>
-				</TABLE>";
-
+						echo "<BR><TABLE border='1' bordercolor=\"#330099\">
+						<TR>
+							<TD><table  width='300'>";
+							echo "<tr  bgcolor=\"#000080\">";
+								echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการสั่งจากแพทย์</FONT></td>";
+							echo "</tr>";
+							echo "<tr>";
+								echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?labdepart_rowId=$idno&Dgcode=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn\">คิดเงิน</A></td>";
+								echo "<td>",implode("<BR> ",$list_app),"</td>";
+							echo "</tr>";
+						echo "</table></TD>
+						</TR>
+						</TABLE>";
+				}		
 			}
+		}	
 
 ////////////////////////
 

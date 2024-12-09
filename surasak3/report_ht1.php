@@ -1,7 +1,6 @@
 <?php 
-include 'bootstrap.php';
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+require_once 'bootstrap.php';
+require_once 'class_file/ReportHt.php';
 
 // รูปแบบไทย
 $year = sprintf("%s", $_GET['year']);
@@ -44,9 +43,21 @@ $ht = sprintf("%s", $_GET['ht']);
     </style>
 </head>
 <body>
-    <div class="container">
-        <h3 class="mt-4">ตัวชี้วัด Hypertension รายปี</h3>
+    <div class="container mt-4">
+        <h3>ตัวชี้วัด Hypertension รายปี</h3>
         <h5>1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</h5>
+
+        <?php
+        $ht = new ReportHt();
+        $yearSelected = $year+543;
+
+        // สร้าง temporary table ระหว่าง opd กับ diag
+        $ht->generateTempOpdXDiag($yearSelected);
+        $qAllOpdXDiag = $ht->getAllOpdXDiag();
+
+        $qAgeMore35 = $ht->getAgeMoreThan35();
+        ?>
+
         <div class="row">
             <div class="col-sm-6">
                 <table class="table">
@@ -55,40 +66,12 @@ $ht = sprintf("%s", $_GET['ht']);
                         <th>จำนวนที่ผ่านเกณฑ์</th>
                     </tr>
                     <tr>
-                        <td><?=number_format($all);?></td>
-                        <td><?=number_format($ht);?></td>
+                        <td><?=number_format($qAllOpdXDiag->num_rows);?></td>
+                        <td><?=number_format($qAgeMore35->num_rows);?></td>
                     </tr>
                 </table>
             </div>
         </div>
-        <?php
-        $yearSelected = $year+543;
-        $sql = "CREATE TEMPORARY TABLE `tempory_opd` 
-            SELECT y.*,x.`regis_id`,x.`regis_date` FROM 
-            ( 
-                SELECT b.`row_id`,b.`thdatehn`,b.`thidate`,b.`hn`,b.`ptname`,b.`bp1`,b.`bp2`,b.`bp3`,b.`bp4`,SUBSTR(b.`age`,1,2) AS `age`,a.`latest_row_id` FROM ( 
-                    SELECT MAX(`row_id`) AS `latest_row_id`,`thidate` 
-                    FROM `opd` 
-                    WHERE `thidate` LIKE '$yearSelected%' 
-                    AND ( `bp1` <> '' AND `bp2` <> '' AND `bp1` NOT LIKE '...%' ) 
-                    GROUP BY `hn` 
-                    ORDER BY `row_id` ASC 
-                ) AS a 
-                LEFT JOIN `opd` AS b ON b.`row_id` = a.`latest_row_id`
-            ) AS y 
-            LEFT JOIN (
-                SELECT `row_id` AS `regis_id`,`hn`,`thidate` AS `regis_date` FROM `hypertension_clinic` 
-            ) AS x ON x.`hn` = y.`hn`";
-        $qTemp = $dbi->query($sql);
-
-        $sql = "SELECT *,CONCAT((SUBSTRING(`regis_date`,1,4)+543),SUBSTRING(`regis_date`,5,6)) AS `regis_date` FROM `tempory_opd` WHERE `regis_id` IS NOT NULL AND `age` > 35 ORDER BY thidate ASC ";
-        $q = $dbi->query($sql);
-
-        // $sql = "select hn,ptname,thidate from hypertension_clinic";
-        // $qHC = $dbi->query($sql);
-        // $hcRows = $qHC->num_rows;
-        // dump($hcRows);
-        ?>
         <div>
             <h3>ปี <?=$year;?></h3>
             <table class="table table-hover">
@@ -99,14 +82,12 @@ $ht = sprintf("%s", $_GET['ht']);
                         <th>ชื่อสกุล</th>
                         <th>อายุ(ปี)</th>
                         <th>วันที่มารับบริการ</th>
-                        <th>เลขที่ HT</th>
-                        <th>วันที่ลงทะเบียน HT</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php 
                     $i = 1;
-                    while ($a = $q->fetch_assoc()) {
+                    while ($a = $qAgeMore35->fetch_assoc()) {
                     ?>
                     <tr>
                         <td><?=$i;?></td>
@@ -114,9 +95,28 @@ $ht = sprintf("%s", $_GET['ht']);
                         <td><?=$a['ptname'];?></td>
                         <td><?=$a['age'];?></td>
                         <td><?=$a['thidate'];?></td>
-                        <td><?=$a['regis_id'];?></td>
-                        <td><?=$a['regis_date'];?></td>
                     </tr>
+                    <?php 
+                        $i++;
+                    }
+                    ?>
+                    <tr>
+                        <td colspan="5">
+                            <h3 class="text-danger">อายุน้อยกว่า หรือเท่ากับ 35ปี</h3>
+                        </td>
+                    </tr>
+                    <?php 
+                    $qAgeLessThan35 = $ht->getAgeLessThan35();
+                    $i = 1;
+                    while ($a = $qAgeLessThan35->fetch_assoc()) {
+                        ?>
+                        <tr>
+                            <td><?=$i;?></td>
+                            <td><?=$a['hn'];?></td>
+                            <td><?=$a['ptname'];?></td>
+                            <td><?=$a['age'];?></td>
+                            <td><?=$a['thidate'];?></td>
+                        </tr>
                     <?php 
                         $i++;
                     }

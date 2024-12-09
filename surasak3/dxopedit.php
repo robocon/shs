@@ -745,7 +745,8 @@ function radiofocus(){
     
 
     $query = "SELECT * FROM opday WHERE thdatehn = '$cTdatehn' AND vn = '".$_GET["cVn"]."' ";
-    $result = mysql_query($query)
+    //echo $query;
+	$result = mysql_query($query)
         or die("Query failed");
  
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -882,6 +883,7 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 	<TD >คลีนิก</TD>
 	<TD >
 	<?php
+	//print_r($_SESSION);
 						/*
 						print " <select  name='clinic' >";
 						print " <option value='$Cclinic' selected>$Cclinic</option>";
@@ -906,7 +908,10 @@ print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&
 					 */
 			?>
 			<select name="clinic" id="">
-			<?php 
+			<?php
+			if($_SESSION["smenucode"]=="ADMDEN"){
+				$Cclinic="ทันตกรรม";
+			}	
 			$q = mysql_query("SELECT * FROM `clinic` ") or die( mysql_error() );
 			while ($clin = mysql_fetch_assoc($q)) { 
 
@@ -1002,17 +1007,25 @@ $row_lab=mysql_num_rows($objlab);
 if($row_lab){
 ?>
 <TR>
-  <TD colspan="6" align="center" bgcolor="#009966">ตรวจ LAB/อื่นๆ</TD>
+  <TD colspan="5" align="center" bgcolor="#009966">ตรวจ LAB/อื่นๆ</TD>
+  <TD align="center" bgcolor="#009966">ICD9CM</TD>
   </TR>
   <?
   while($arr=mysql_fetch_array($objlab)){
 	  	$query2 = "SELECT * FROM patdata WHERE idno = '".$arr['row_id']."' ";
     	$result2 = mysql_query($query2);
 		$arr2=mysql_fetch_array($result2);
+   
+		$sqllb = "select icd9cm  from labcare where code = '".$arr2['code']."'";
+		//echo $sql3."<br>";
+		$querylb = mysql_query($sqllb);
+		list($icd9cm)=mysql_fetch_array($querylb);
+   
    ?>
 <TR bgcolor="#FFFFFF">
   <TD align="left" style="color:#000000;" ><?=$arr2['code'];?></TD>
-  <TD colspan="5" style="color:#000000;" ><?=$arr2['detail'];?></TD>
+  <TD colspan="4" style="color:#000000;" ><?=$arr2['detail'];?></TD>
+   <TD style="color:#000000;" ><?=$icd9cm;?></TD>
   </TR>
 <?
   }  //close while
@@ -1074,7 +1087,7 @@ if($rs10>0){
     <tr>
       <td width="21%"  align="right" valign="middle">OTHER</td>
       <td width="9%"  valign="middle"><input name="dt_icd10_othera<?=$r?>" type="text" id="dt_icd10_othera<?=$r?>" onkeypress="searchSuggest8(this.value,2,'<?=$r?>');"  onkeydown="if(event.keyCode == 40&amp;&amp;document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="8" value="<?=$rs4['icd10']?>" /></td>
-      <td width="70%"  valign="middle"><input name="dt_diag_othera<?=$r?>" type="text" id="dt_diag_othera<?=$r?>" onkeypress="searchSuggest8(this.value,2,'<?=$r?>');" size="40" value="<?=$rs4['diag']?>" />
+      <td width="70%"  valign="middle"><input name="dt_diag_othera<?=$r?>" type="text" id="dt_diag_othera<?=$r?>" onkeypress="searchSuggest8(this.value,2,'<?=$r?>');" size="70" value="<?=$rs4['diag']?>" />
         <input name="other<?=$r?>" type="hidden" value="<?=$rs4['row_id']?>" />
         <input name="thaiother<?=$r?>" type="hidden" value="<?=$rs4['diag_thai']?>"/></td>
     </tr>
@@ -1088,7 +1101,7 @@ if($rs10>0){
       <tr>
         <td width="21%"  align="right" valign="middle">OTHER</td>
         <td width="9%"  valign="middle"><input name="dt_icd10_other<?=$r?>" type="text" id="dt_icd10_other<?=$r?>"  onkeypress="searchSuggest1(this.value,2,'<?=$r?>');"  onkeydown="if(event.keyCode == 40&amp;&amp;document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="8"  /></td>
-      <td width="70%"  valign="middle"><input name="dt_diag_other<?=$r?>" type="text" id="dt_diag_other<?=$r?>" onkeypress="searchSuggest1(this.value,2,'<?=$r?>');" size="40" />
+      <td width="70%"  valign="middle"><input name="dt_diag_other<?=$r?>" type="text" id="dt_diag_other<?=$r?>" onkeypress="searchSuggest1(this.value,2,'<?=$r?>');" size="70" />
         </tr>
     </table>
     <table border="0" align="center">
@@ -1183,7 +1196,7 @@ if($nump >0){
 	$i=0;
 	while($rows=mysql_fetch_array($rowp)){
 		$i++;
-		echo "<div>รายการที่ [".$i."] รหัสหัตถการ : ".$rows["code"]." รายละเอียด : ".$rows["detail"]."</div>";
+		echo "<div style='color:blue;'>รายการที่ [".$i."] รหัสหัตถการ : ".$rows["code"]." รายละเอียด : ".$rows["detail"]."</div>";
 	}
 }
 ?>      

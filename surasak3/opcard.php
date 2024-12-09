@@ -307,7 +307,9 @@ function searchSuggest2(str,len,getto1) {
 }
 </SCRIPT>
 <?  include("connect.inc"); ?>
-<script type="text/javascript" src="js/ptrightOnline.js"></script>
+
+<div id="alertOpedit" style="display:none; text-align:center; color:red;"><h1>คำเตือน!!!<br>ไม่ควรเปิดหน้า<u>ลงทะเบียน / ทำบัตรตรวจโรค / แก้ไขข้อมูล OPDCARD</u> อย่างใดอย่างหนึ่งพร้อมกัน<br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกันได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
+
 <h3 align="center" class="fonttitle">เวชระเบียน / MEDICAL RECORD</h3>
 <h3 align="center" class="fonttitle">โรงพยาบาลค่ายสุรศักดิ์มนตรี  ลำปาง</h3>
 
@@ -1009,6 +1011,70 @@ function close_res_yot(){
 				
 		});
 		})(jQuery);
+
+const divAlert = document.getElementById('alertOpedit');
+
+if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opdedit')=='1'){
+	divAlert.style.display = '';
+}
+
+const channel = new BroadcastChannel('tab-activity');
+document.addEventListener('DOMContentLoaded', () => {
+
+	// Listen for messages on the channel
+	channel.addEventListener('message', (event) => {
+		switch (event.data) {
+			case 'open-new-tab':
+				
+				if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opdedit')=='1'){
+					divAlert.style.display = '';
+				}
+				break;
+
+			case 'tab-closing':
+				
+				if(localStorage.getItem('register_opedit')===null){
+					divAlert.style.display = 'none';
+				}
+				if(localStorage.getItem('register_opdedit')===null){
+					divAlert.style.display = 'none';
+				}
+				break;
+
+      		case 'window-load':
+        	
+				if(localStorage.getItem('register_opedit')=='1' || localStorage.getItem('register_opdedit')=='1'){
+					divAlert.style.display = '';
+				}else{
+					divAlert.style.display = 'none';
+				}
+				break;
+
+			default:
+				break;
+		}
+	});
+
+	// Send a message to all other tabs when a new tab is opened
+	document.addEventListener('visibilitychange', function() {
+		// if (document.hidden) {
+		// 	channel.postMessage('open-new-tab');
+		// }
+	});
+
+	window.addEventListener('load', function(){
+		channel.postMessage('window-load');
+		localStorage.setItem('register_opcard', '1');
+	});
+
+	// Send a message to all other tabs that this tab is closing
+	window.addEventListener('beforeunload', (event) => {
+		channel.postMessage('tab-closing');
+		localStorage.removeItem('register_opcard');
+	});
+});
+
+
 </script>
 
 <?php include("unconnect.inc"); ?>

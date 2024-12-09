@@ -283,7 +283,7 @@ if( $disabid != '' ){
 
 $sql_ipcard = "SELECT a.`row_id` AS `ipcard_id`, a.`hn`, a.`an`,b.`row_id` AS `bed_id` 
 FROM (
-	SELECT * FROM `ipcard` WHERE `hn` = '$cHn' AND `dcdate` = '0000-00-00 00:00:00' ORDER BY `row_id` DESC LIMIT 1
+	SELECT `row_id`,`hn`,`an` FROM `ipcard` WHERE `hn` = '$cHn' AND `dcdate` = '0000-00-00 00:00:00' ORDER BY `row_id` DESC LIMIT 1
 ) AS a 
 LEFT JOIN `bed` AS b ON a.`hn` = b.`hn` 
 WHERE b.`row_id` IS NOT NULL";
@@ -297,18 +297,28 @@ if($q_ipcard==true)
 		$ipcard_id = $ipd_item['ipcard_id'];
 		$bed_id = $ipd_item['bed_id'];
 
-		$update_sql_ipcard = "UPDATE `ipcard` SET `ptname` = '$ptname',`ptright` = '$ptright' WHERE `row_id` = '$ipcard_id' ";
+		$update_sql_ipcard = "UPDATE `ipcard` SET 
+		`ptname` = '$ptname',
+		`ptright` = '$ptright',
+		`age`='$cAge',
+		`hn`='$cHn' 
+		WHERE `row_id` = '$ipcard_id' ";
 		$q_update_ipcard = mysql_query($update_sql_ipcard);
 		if($q_update_ipcard!=true)
 		{
-			echo '<p><b>Error : </b>'.mysql_error().'</p>';
+			echo '<p><b>Error UPDATE `ipcard` : </b>'.mysql_error().'</p>';
 		}
 
-		$update_sql_bed = "UPDATE `bed` SET `ptname` = '$ptname',`ptright` = '$ptright' WHERE `row_id` = '$bed_id' ";
+		$update_sql_bed = "UPDATE `bed` SET 
+		`ptname` = '$ptname',
+		`ptright` = '$ptright',
+		`age`='$cAge',
+		`hn`='$cHn' 
+		WHERE `row_id` = '$bed_id' ";
 		$q_update_bed = mysql_query($update_sql_bed);
 		if($q_update_bed!=true)
 		{
-			echo '<p><b>Error : </b>'.mysql_error().'</p>';
+			echo '<p><b>Error UPDATE `bed` : </b>'.mysql_error().'</p>';
 		}
 
 		if($q_update_ipcard==true && $q_update_bed==true)
