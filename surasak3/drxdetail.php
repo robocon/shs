@@ -2,6 +2,9 @@
     session_start();
 	include("connect.inc");
 	
+	$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+	$dbi->query("SET NAMES UTF8");
+
 //-------------------------เช็ค druginteraction	
 	$csql = "SELECT a.drugcode FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."'   AND a.date = '".$_GET["sDate"]."' ";
 	//echo $csql;
@@ -174,6 +177,7 @@ if($rnum > 0){
 }
 //----------------------------จบเช็คแพ้ยา
 ?>
+<script src="js/sweetalert2.all.min.js"></script>
 <script>
 
 function chkin(){
@@ -526,26 +530,70 @@ if( !function_exists('cal_to_bc') ){
 }
 
 $date_end = date('Y-m-d');
-$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-3 months"));
+$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
 
 $date_end = ad_to_bc($date_end);
 $date_start = ad_to_bc($date_start);
 
 $patient_hn = trim($sHn);
-$sql = "SELECT COUNT(`row_id`) AS `rows` 
+
+$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
+SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
 FROM `drugrx` 
-WHERE `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2') 
-AND ( `date` >= '$date_start' AND `date` <= '$date_end' ) 
-AND `hn` = '$patient_hn' ";
-$q = mysql_query($sql);
-$item = mysql_fetch_assoc($q);
-$count_wafarin = (int) $item['rows'];
-if( $count_wafarin > 0 ){
-	?>
-	<script type="text/javascript">
-		alert('ผู้ป่วยมีประวัติการใช้ยา Warfarin');
-	</script>
-	<?php
+WHERE `hn` = '$patient_hn' 
+AND `date` >= '$date_start'
+AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+AND `status` = 'Y' AND `amount` > 0 
+ORDER BY `row_id` ASC;";
+$dbi->query($sqlTemp);
+
+$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
+IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
+FROM (
+	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
+) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
+ORDER BY b.`row_id`";
+$qTemp = $dbi->query($sql);
+$drugrxRows = $qTemp->num_rows;
+if($drugrxRows > 0){
+	$drugrxItem = array();
+
+	$isWarfarin = false;
+	$isNoacs = false;
+	while ($a = $qTemp->fetch_assoc()) {
+		$drugrxItem[] = $a;
+		if($a['type']=='warfarin'){
+			$isWarfarin = true;
+		}
+
+		if($a['type']=='noacs'){
+			$isNoacs = true;
+		}
+	}
+
+	if($isWarfarin===true && $isNoacs===false){
+		?>
+		<script type="text/javascript">
+			Swal.fire({title:'ผู้ป่วยมีประวัติการใช้ Warfarin <br>ในช่วง 6 เดือนย้อนหลัง',html:`<a href="javascript:void(0);" onclick="openLink()">คลิกที่นี่เพื่อดูรายละเอียด</a>`});
+
+			function openLink(){
+				window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
+			}
+		</script>
+		<?php
+	}
+
+	if($isWarfarin===true && $isNoacs===true){
+		?>
+		<script type="text/javascript">
+			Swal.fire({title:'ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs <br>ในช่วง 6 เดือนย้อนหลัง',html:`<a href="javascript:void(0);" onclick="openLink()">คลิกที่นี่เพื่อดูรายละเอียด</a>`});
+
+			function openLink(){
+				window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
+			}
+		</script>
+		<?php
+	}
 }
 /* แจ้งเตือน Warfarin */
 

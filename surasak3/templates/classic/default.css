@@ -62,11 +62,11 @@ table {
 body{
 	/*font-family: 'THSarabunNew',Arial, Helvetica, sans-serif;
 	font-size: 12pt;*/
-	font-family: 'THSarabunNew';
+	font-family: 'TH SarabunPSK';
 	font-size: 1.4em;
 }
 input, button, select, textarea{
-	font-family: 'THSarabunNew';
+	font-family: 'TH SarabunPSK';
 	font-size: 1em;
 }
 b{ font-weight: bold; }

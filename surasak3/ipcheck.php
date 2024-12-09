@@ -2,7 +2,9 @@
 session_start();
 include("connect.inc"); 
 
-$query = "SELECT row_id,my_food FROM ipcard where an = '" . $_POST["an"] . "' ";
+$an = sprintf("%s", $_POST['an']);
+
+$query = "SELECT row_id,my_food FROM ipcard where an = '$an' ";
 $result = mysql_query($query);
 $rows = Mysql_num_rows($result);
 

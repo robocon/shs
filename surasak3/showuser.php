@@ -110,7 +110,11 @@ require_once 'com_user_menu.php';
 			<th>จัดการข้อมูล</th>
 		</tr>
 		<?php
-		$sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$sessionMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'Y' ORDER BY `row_id` ASC ";
+		$sql = "SELECT * 
+		FROM `inputm` 
+		WHERE `menucode` LIKE '$sessionMenucode%' 
+		AND `menucode` != 'ADMDR1' AND `status` = 'Y' 
+		ORDER BY `menucode`,`level`,`row_id` ASC ";
 		$q = $dbi->query($sql);
 		$num = $q->num_rows;
 		if ($num > 0) {

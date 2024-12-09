@@ -2,7 +2,7 @@
 session_start();
 include("connect.inc");  
 if (isset($sOfficer)){} else {die;} //for security
-
+$case=$_POST['case'];
 function CalAge($birthdate){
   	$today = date('d-m-Y');
     list($bday,$bmonth,$byear) = explode('-',$birthdate);
@@ -238,10 +238,11 @@ If ($result){
 	$birthday="$d-$m-$yy";	
 	$age=Calage($birthday);
  
+	
 	echo "<font face='TH SarabunPSK' size=5>HN : $cHn, ชื่อ-สกุล: $cYot   $cName  $cSurname</font><br>";  
 	echo "<font face='TH SarabunPSK' size=5><b>อายุ : $age</b></font><br> ";
 	echo "<font face='TH SarabunPSK' size=5><b>สิทธิการรักษา : $cPtright :<u>$cIdguard</u></b></font><br> ";
-       
+    echo "<font face='TH SarabunPSK' size=5><b>การมาโรงพยาบาล : $case</b></font><br> ";   
 	//       echo "หมายเลขบัตร ปชช.: $cIdcard  ";
  
 	//   echo "มาครั้งสุดท้ายเมื่อ $cLastupdate <br> ";
@@ -308,8 +309,9 @@ $q = mysql_query($sql) or die( mysql_error() );
 $test_opday_row = mysql_num_rows($q);
 
 //กรณีขอ vn ใหม่
-If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
-	
+//print_r($_POST)."<br>";
+//If ( $_POST["new_vn"] == "1" && $test_opday_row  == 0 ){
+If ( $_POST["new_vn"] == "1"){	
 	//ยังไม่เปลี่ยนวันที่
 	if($today==$dVndate){
 		//print_r($_POST)."<br>";
@@ -1439,9 +1441,8 @@ if ( mysql_num_rows($qIp) > 0 ) {
 	<?php
 }
 ?>
-
-<a target=_TOP href="updatevn1.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(มีค่าบริการ/ค่ายา/ค่ารักษาพยาบาลแล้ว)<span></a>&nbsp;&nbsp;&nbsp;
-<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(มีเฉพาะค่าบริการ 50 บาท)</span></a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="updatevn1.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(โอนค่าบริการ/ค่ารักษาพยาบาล/ค่ายา)<span></a>&nbsp;&nbsp;&nbsp;
+<a target=_TOP href="updatevn.php">เปลี่ยน VN  กรณี VN ซ้ำเท่านั้น <span style='margin-left:5px;color:red;'>(โอนเฉพาะค่าบริการ/ค่ารักษาพยาบาล)</span></a>&nbsp;&nbsp;&nbsp;
 <a target=_TOP href="otherpage.php">เก็บเงินอื่นๆ</a><br><br>
 
 <div>

@@ -10,10 +10,13 @@ exit();
 }//end if
 
 
-
-$day = $_POST["day1"];
-$month = $_POST["month1"];
-$year_th = $_POST["year1"];
+$hn = $_GET["hn"];
+$vn = $_GET["vn"];
+$runno = $_GET["doc_no"];
+//echo "$hn | $vn | $rowid";
+//$day = $_GET["day1"];
+//$month = $_GET["month1"];
+//$year_th = $_GET["year1"];
 $Txt_DateTime = date("H:m:s");
 //$year_eng = $year_th-543;
 
@@ -25,8 +28,43 @@ $Txt_Datetime_m = date("m");
 $Txt_Datetime_y = date("Y");
 $Txt_Datetime_y = $Txt_Datetime_y + 543;
 
+//-----> sql OPSI
+$sql = "SELECT * FROM opselfisolation_detail WHERE hn = '".$hn."' AND vn = '".$vn."' ";
+//echo $sql;
+$query = mysql_query($sql); 
+$num = mysql_num_rows($query);
+
+if(empty($num)){
+  echo "<h1 align='center'>ไม่พบข้อมูล</h1>";echo "<br>".exit();
+}//end if
+
+while($rows = mysql_fetch_array($query)){
+	$doctor_code = substr($rows["doctor"],0,5);
+	$doctor = substr($rows["doctor"],5); 
+	$doctor_licenses = $rows["doctor_licenses"]; 
+	$ptname = $rows["ptname"]; 
+	$symptom_date_y = substr($rows["symptom_date"],0,4)+543;
+  	$symptom_date_m = substr($rows["symptom_date"],5,2);
+  	$symptom_date_d = substr($rows["symptom_date"],8,2);
+    	$symptom_date = $symptom_date_d."/".$symptom_date_m."/".$symptom_date_y; 
+
+	$dcdate_y = substr($rows["dcdate"],0,4)+543;
+	$dcdate_m = substr($rows["dcdate"],5,2);
+	$dcdate_d = substr($rows["dcdate"],8,2);
+		$dcdate = $dcdate_d."/".$dcdate_m."/".$dcdate_y;
+ 
+	$registerdate_y = substr($rows["registerdate"],0,4)+543;
+	$registerdate_m = substr($rows["registerdate"],5,2);
+	$registerdate_d = substr($rows["registerdate"],8,2);
+		//$Temp_Date = $registerdate_d."/".$registerdate_m."/".$registerdate_y;
+
+  }//end while
+
+
+
 //----> Convert Month
-$selmon = $month;
+//$selmon = $month;
+$selmon = $registerdate_m;
 	if($selmon=="01"){
 		$mon ="มกราคม";
 		$selmon="01";
@@ -64,57 +102,15 @@ $selmon = $month;
 		$mon ="ธันวาคม";
 		$selmon="12";
 	}//end if
-	$Temp_Date = $day." ".$mon." ".$year_th;
-	//////////////////////////
+	//$Temp_Date = $day." ".$mon." ".$year_th;
+	//$Temp_Date = $Txt_Datetime_d." ".$mon." ".$Txt_Datetime_y;
+	$Temp_Date = $registerdate_d." ".$mon." ".$registerdate_y;
+ 
 
-	//----> Convert Month
-$selmon = $Txt_Datetime_m;
-if($selmon=="01"){
-	$mon ="มกราคม";
-	$selmon="01";
-}else if($selmon=="02"){
-	$mon ="กุมภาพันธ์";
-	$selmon="02";
-}else if($selmon=="03"){
-	$mon ="มีนาคม";
-	$selmon="03";
-}else if($selmon=="04"){
-	$mon ="เมษายน";
-	$selmon="04";
-}else if($selmon=="05"){
-	$mon ="พฤษภาคม";
-	$selmon="05";
-}else if($selmon=="06"){
-	$mon ="มิถุนายน";
-	$selmon="06";
-}else if($selmon=="07"){
-	$mon ="กรกฎาคม";
-	$selmon="07";
-}else if($selmon=="08"){
-	$mon ="สิงหาคม";
-	$selmon="08";
-}else if($selmon=="09"){
-	$mon ="กันยายน";
-	$selmon="09";
-}else if($selmon=="10"){
-	$mon ="ตุลาคม";
-	$selmon="10";
-}else if($selmon=="11"){
-	$mon ="พฤศจิกายน";
-	$selmon="11";
-}else if($selmon=="12"){
-	$mon ="ธันวาคม";
-	$selmon="12";
-}//end if
-
-	
-	$Txt_Datetime = $Txt_Datetime_d." ".$mon." ".$Txt_Datetime_y;
-	//echo $Temp_Date;exit();
 ////////////////////////////////////////////////////////////////////
 
-
 //-----> sql หมอ
-$sql = "SELECT row_id, yot , name , doctorcode FROM doctor WHERE status = 'y' AND row_id = '".$_POST['doctor']."' ";
+$sql = "SELECT * FROM doctor WHERE status = 'y' AND name like '%$doctor_code%' ";
 
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
@@ -132,9 +128,7 @@ while($rows = mysql_fetch_array($query)){
 
   }//end while
 
-
-////////////////////////////////////////////////////////////////////
-
+//////////////////////////////////////////////////////////////////
 
 /////////////////// เก็บ Log การพิมพ์ //////////////////////////////
 
@@ -146,9 +140,10 @@ $sql = " INSERT INTO log_ecert (
     HN ,
     Type ,
     Desc_Type , 
-    Code_RowidVn 
+    Code_RowidVn ,
+	Flag_Reprint
     )
-    VALUES ( '','$officer','$Txt_Datetime $Txt_DateTime','".$_POST['hn']."','CO','ใบรับรองแพทย์ Covid-19','".$_POST['runno']."' )";
+    VALUES ( '','$officer','$Txt_Datetime $Txt_DateTime','".$_GET['hn']."','CO','ใบรับรองแพทย์ Covid-19','".$_GET['doc_no']."','Y' )";
 //echo $sql;exit();
 $query = mysql_query($sql);  
 
@@ -160,7 +155,7 @@ if(!$query){
 
 
  
- 
+
 ?>
 <style type="text/css">
 <!--
@@ -238,7 +233,7 @@ font.txt_dotted {
 <table align="right"> 
 	<tr align="right">
 	<td width="80px">เลขที่เอกสาร</td>
-        <td width="200px" align="center"><p><? echo $_POST['runno']; ?></p></td>
+        <td width="200px" align="center"><p><? echo $runno; ?></p></td>
     </tr>   
 </table>
 <br><br>
@@ -259,9 +254,9 @@ font.txt_dotted {
 <table align="left">
     <tr align="left">
         <td width="40px">ข้าพเจ้า</td>
-        <td width="400px" align="center"><p><? echo $Doctor_Yot." ".$Doctor_Name; ?></p></td>
+        <td width="400px" align="center"><p><? echo $Doctor_Yot." ".$doctor; ?></p></td>
 		<td width="200px" align="center"> ใบประกอบวิชาชีพ </td>
-        <td width="100px" align="center"><p><? echo $Doctor_Code; ?></p></td>
+        <td width="100px" align="center"><p><? echo "ว.".substr($doctor_licenses,4); ?></p></td>
     </tr>  
 </table>
 <br> 
@@ -277,9 +272,9 @@ font.txt_dotted {
 <table align="left">
     <tr align="left">
         <td width="180px">ได้ทำการตรวจร่างกายของ </td>
-        <td width="350px" align="center"><p><? echo $_POST['ptname']; ?></p></td>
+        <td width="350px" align="center"><p><? echo $ptname; ?></p></td>
 		<td width="20px">HN </td>
-        <td width="100px" align="center"><p><? echo $_POST['hn']; ?></p></td> 
+        <td width="100px" align="center"><p><? echo $hn; ?></p></td> 
     </tr>  
 </table>
 
@@ -290,7 +285,7 @@ font.txt_dotted {
         <td width="100px">ด้วยโรค </td> 
     </tr>  
 	<tr align="left"> 
-        <td width="800px" height="20px" align="left" ><p ><font class="txt_dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<? echo $_POST['diagnosis']; ?></font></p></td> 
+        <td width="800px" height="20px" align="left" ><p ><font class="txt_dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<? echo "ติดเชื้อเข้าข่ายโควิด - 19 (ATK positive)"; ?></font></p></td> 
     </tr> 
 	<tr align="left"> 
 		<td width="800px" height="7px" align="left" ></td>
@@ -310,7 +305,7 @@ font.txt_dotted {
         <td width="120px">มีความเห็นว่า </td> 
     </tr> 
 	<tr align="left"> 
-	<td width="800px" height="20px" align="left" ><p><font class="txt_dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<? echo $_POST['comment']; ?></font></p></td>
+	<td width="800px" height="20px" align="left" ><p><font class="txt_dotted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<? echo "ได้มาตรวจจริง ให้รักษาแบบผู้ป่วยนอกและแยกกักตัว 5 วัน ($symptom_date ถึง $dcdate)"; ?></font></p></td>
     </tr>
 	<tr align="left"> 
 		<td width="800px" height="7px" align="left" ></td>
@@ -334,7 +329,7 @@ font.txt_dotted {
         <td width="300px">ลงนาม.............................. แพทย์ผู้ตรวจ</td> 
     </tr> 
 	<tr align="center"> 
-        <td width="300px">( <? echo $Doctor_Yot." ".$Doctor_Name; ?> )</td> 
+        <td width="300px">( <? echo $Doctor_Yot." ".$doctor; ?> )</td> 
     </tr> 
 </table>
 <table align="left">
@@ -342,7 +337,7 @@ font.txt_dotted {
         <td  style=" clear: both;
     position: relative;
     height: 1px;
-    margin-top: -200px;"><font size="1px">ผู้พิมพ์รายงาน : <? echo $_POST['officer']; ?></font></td> 
+    margin-top: -200px;"><font size="1px">ผู้พิมพ์รายงาน : <? echo $officer; ?><br>เอกสาร Re-Print</font></td> 
     </tr>  
 </table>
  

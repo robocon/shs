@@ -224,7 +224,17 @@ $(document).ready(function(){
             <td class="tablefont"><?=$age;?>&nbsp;&nbsp;&nbsp;</td>
           
             <td class="tablefontt1">สิทธิการรักษา  :</td>
-            <td class="tablefont"><?=$ptright;?></td>
+            <td class="tablefont">
+				<?php 
+				if(!empty($ptright)){
+					echo $ptright;
+				}else{
+					?>
+					<strong style="color:red;"><u>กรุณาติดต่อทะเบียนเพื่ออัพเดทสิทธิ์การรักษา</u></strong>
+					<?php
+				}
+				?>
+			</td>
 			
             <td class="tablefontt1">ประเภท  :</td>
             <td class="tablefont"><u><i><?=$idguard;?></i></u></td>			
