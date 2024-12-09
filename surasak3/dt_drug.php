@@ -4674,17 +4674,15 @@ $date_start = ad_to_bc($date_start);
 
 $patient_hn = trim($_SESSION["hn_now"]);
 
-$sql = "DROP TEMPORARY TABLE IF EXISTS `temp_drugrx`;
-CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
-SELECT `row_id`,`date`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
+$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
+SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
 FROM `drugrx` 
 WHERE `hn` = '$patient_hn' 
 AND `date` >= '$date_start'
 AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
 AND `status` = 'Y' AND `amount` > 0 
 ORDER BY `row_id` ASC;";
-$q = $dbi->query($sql);
-
+$dbi->query($sqlTemp);
 
 $sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
 IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
@@ -4692,14 +4690,14 @@ FROM (
 	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
 ) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
 ORDER BY b.`row_id`";
-$q = $dbi->query($sql);
-$drugrxRows = $q->num_rows;
+$qTemp = $dbi->query($sql);
+$drugrxRows = $qTemp->num_rows;
 if($drugrxRows > 0){
 	$drugrxItem = array();
 
 	$isWarfarin = false;
 	$isNoacs = false;
-	while ($a = $q->fetch_assoc()) {
+	while ($a = $qTemp->fetch_assoc()) {
 		$drugrxItem[] = $a;
 		if($a['type']=='warfarin'){
 			$isWarfarin = true;
@@ -4713,7 +4711,11 @@ if($drugrxRows > 0){
 	if($isWarfarin===true && $isNoacs===false){
 		?>
 		<script type="text/javascript">
-			Swal.fire('ผู้ป่วยมีประวัติการใช้ยา Warfarin ในช่วง 6 เดือนย้อนหลัง');
+			Swal.fire({title:'ผู้ป่วยมีประวัติการใช้ Warfarin <br>ในช่วง 6 เดือนย้อนหลัง',html:`<a href="javascript:void(0);" onclick="openLink()">คลิกที่นี่เพื่อดูรายละเอียด</a>`});
+
+			function openLink(){
+				window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
+			}
 		</script>
 		<?php
 	}
@@ -4721,7 +4723,11 @@ if($drugrxRows > 0){
 	if($isWarfarin===true && $isNoacs===true){
 		?>
 		<script type="text/javascript">
-			Swal.fire('ผู้ป่วยมีประวัติการใช้ยา Warfarin และ Noacs ในช่วง 6 เดือนย้อนหลัง');
+			Swal.fire({title:'ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs <br>ในช่วง 6 เดือนย้อนหลัง',html:`<a href="javascript:void(0);" onclick="openLink()">คลิกที่นี่เพื่อดูรายละเอียด</a>`});
+
+			function openLink(){
+				window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
+			}
 		</script>
 		<?php
 	}
