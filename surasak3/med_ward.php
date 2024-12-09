@@ -279,12 +279,37 @@ if( isset($_SESSION['x-msg']) ){
     if(isset($_SESSION['line_msg'])){
         ?>
         <script>
+
+            function sendLineNotifyV2(){
+
+            var line_message = '<?=$_SESSION['line_msg'];?>';
+            var line_type = '<?=$_SESSION['line_type'];?>';
+            var test_str = [];
+            test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
+            test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
+            var data = test_str.join("&");
+
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function(){
+                if( request.readyState == 4 && request.status == 200 ){
+                    // console.log(request.responseText);
+                }
+            };
+            request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
+            request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+            request.send(data); 
+
+            }
+
+            sendLineNotifyV2();
+
+
             /**
              * ปัญหา
              * 1. server ปัจจุบันไม่รองรับ push message ของ line api
              * 2. ไม่สามารถ async ข้าม server ได้ เลยต้องใช้ผ่าน curl แทน
              */
-            sendPushMessage();
+            // sendPushMessage();
             function sendPushMessage(){
 
                 const line_message = '<?=$_SESSION['line_msg'];?>';
