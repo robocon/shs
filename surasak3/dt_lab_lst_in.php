@@ -5,19 +5,15 @@ if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-
-
 ?>
 <html>
 <head>
 <title>ผล LAB Online</title>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 24px;
 }
-
 .tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
 .tb_head2 {background-color: #0C5A2F; color:#B9F2F7; font-weight: bold; text-align:center;  }
 .tb_head3 {background-color:#CCFFFF; color:#003300; font-size:25px; font-weight: bold;font-family:"Angsana New"; text-align:right;  }
@@ -26,11 +22,8 @@ body,td,th {
 .tb_head3_1 {color:#990000; font-size:20px; font-family:"Angsana New";  height:30px;  }
 .tb_head4 {background-color: #99FFCC; color:#000099; font-size:33px;   font-family:"Angsana New";}
 .tb_head4_1 {background-color: #99FFCC; color:#FF0033; font-size:30px;  font-weight: bold; font-family:"Angsana New";}
-
-
 .tb_detail {background-color: #FFFFC1;  }
 .tb_menu {background-color: #FFFFC1;  }
--->
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -67,8 +60,9 @@ include("connect.inc");
 	$resultr = mysql_query($sqlr);
 	$rep = mysql_fetch_array($resultr);
 ?>
+<div style="text-align: center;">
 
-<TABLE width="900">
+<TABLE width="900" align="center">
   <TR>
     <TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย</TD>
   </TR>
@@ -83,6 +77,7 @@ include("connect.inc");
     <TD><?php echo $rep['ptright'];?></TD>
   </TR>
 </TABLE>
+</div>
 <BR>
 <!--<a target=_blank  href="comparelab_in.php?hn_now=<?=$rep['hn']?>&an=<?=$rep['an']?>" class='tablefont'>เปรียบเทียบผล LAB</a>
 --><TABLE  border="1" align="center" cellpadding="2" cellspacing="0" bordercolor="#0046D7">
@@ -97,12 +92,19 @@ include("connect.inc");
 </TR>
 <?php
 $i=0;
-	$sql = "Select distinct date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d-%m-%Y') as dateresult2,labnumber From resulthead where hn = '$hn_now'  order by orderdate DESC";
+	$sql = "Select distinct date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d-%m-%Y') as dateresult2, date_format(`orderdate`,'%H:%i:%s') as `timeResult`,labnumber 
+	From resulthead 
+	where hn = '$hn_now'  order by orderdate DESC";
 	//echo $sql;
 	$result = mysql_query($sql);
 	while($arr = mysql_fetch_assoc($result)){
+
+		$timeResult = $arr['timeResult'];
+
+		$resulthead_labnumber = $arr['labnumber'];
+
 		$list_lab = array();
-		$sql = "Select distinct profilecode From resulthead where hn = '$hn_now' AND orderdate like '".$arr["dateresult"]."%' ";
+		$sql = "Select distinct profilecode From resulthead where hn = '$hn_now' AND orderdate like '".$arr["dateresult"]."%' and `labnumber` = '$resulthead_labnumber' ";
 		
 		$result2 = mysql_query($sql);
 		while($arr2 = mysql_fetch_assoc($result2)){
@@ -122,7 +124,7 @@ $result2 = Mysql_Query($sql);
 list($sourcename,$clinicianname) = Mysql_fetch_row($result2);		
 ?>
 <TR bgcolor="<?php echo $bgcolor;?>">
-	<TD align="center" ><?php echo $arr["dateresult2"];?></TD>
+	<TD align="center" ><?php echo $arr["dateresult2"];?>&nbsp;<?=$timeResult;?></TD>
 	<TD><?php echo implode(", ",$list_lab);?></TD>
 	<TD align="center"><A HREF="dt_lab_lst_in1.php?lab_date=<?php echo urlencode($arr["dateresult"]);?>&hn_now=<?php echo $hn_now;?>" target="_blank">ดูข้อมูล</A></TD>
     <TD align="center"><A HREF="lab_lst_print_opd1new.php?hn=<?php echo $hn_now;?>&lab_date=<?php echo urlencode($arr["dateresult"]);?>&labnumber=<?=$arr['labnumber'];?>&listlab=<?php echo implode(", ",$list_lab);?>&depart=<?php echo $sourcename;?>&doctor=<?php echo $clinicianname;?>" target="_blank" >พิมพ์</A></TD>

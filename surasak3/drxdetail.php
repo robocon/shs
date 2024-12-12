@@ -312,7 +312,84 @@ if ($count_drugreact>0) {
 </script>
 <?php 
 } // end ถ้ามี drugreact
+
+
+/* แจ้งเตือน Warfarin */
+// เตือนว่าในช่วง 3เดือนย้อนหลังผู้ป่วยมีการใช้งานยาในกลุ่มนี้รึป่าว
+if( !function_exists('ad_to_bc') ){
+	function ad_to_bc($time = null){
+		$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
+		return $time;
+	}
+}
+
+if( !function_exists('cal_to_bc') ){
+	function cal_to_bc($match){
+		return ( $match['0'] + 543 );
+	}
+}
+
+$date_end = date('Y-m-d');
+$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
+
+$date_end = ad_to_bc($date_end);
+$date_start = ad_to_bc($date_start);
+
+$patient_hn = trim($sHn);
+
+$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
+SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
+FROM `drugrx` 
+WHERE `hn` = '$patient_hn' 
+AND ( `date` >= '$date_start' AND `date` < '$date_end' ) 
+AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+AND `status` = 'Y' AND `amount` > 0 
+ORDER BY `row_id` ASC;";
+$dbi->query($sqlTemp);
+
+$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
+IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
+FROM (
+	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
+) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
+ORDER BY b.`row_id`";
+$qTemp = $dbi->query($sql);
+$drugrxRows = $qTemp->num_rows;
+if($drugrxRows > 0){
+	$drugrxItem = array();
+
+	$isWarfarin = false;
+	$isNoacs = false;
+	while ($a = $qTemp->fetch_assoc()) {
+		$drugrxItem[] = $a;
+		if($a['type']=='warfarin'){
+			$isWarfarin = true;
+		}
+
+		if($a['type']=='noacs'){
+			$isNoacs = true;
+		}
+	}
+
+	if($isWarfarin===true && $isNoacs===false){
+		?>
+		<p style="font-size:18px;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin ในช่วง 6 เดือนย้อนหลัง</u> <a href="javascript:void(0);" onclick="openLink()">(ดูรายละเอียด)</a></p>
+		<?php
+	}
+
+	if($isWarfarin===true && $isNoacs===true){
+		?>
+		<p style="font-size:18px;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs ในช่วง 6 เดือนย้อนหลัง</u> <a href="javascript:void(0);" onclick="openLink()">(ดูรายละเอียด)</a></p>
+		<?php
+	}
+}
+/* แจ้งเตือน Warfarin */
 ?>
+<script type="text/javascript">
+	function openLink(){
+		window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
+	}
+</script>
 <p style="margin-bottom:0;"><b>รายการสั่งยาจากแพทย์</b></p>
 <table>
  <tr >
@@ -494,108 +571,25 @@ echo "<table><tr>";
 	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a></p>
  </div>
 <?php
-	$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
-	$strresult = mysql_query($strsql);
-	$strrow=mysql_num_rows($strresult);
-	
-	if($strrow>0){
-		echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
-		//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
+$strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
+$strresult = mysql_query($strsql);
+$strrow=mysql_num_rows($strresult);
 
-	}
+if($strrow>0){
+	echo "<script>alert('ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้') </script>";
+	//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
+
+}
 
 
 $today1=(date("Y")+543).date("-m-d");	
 $sql = "Select hn,ptname From dphardep WHERE hn = '".$sHn."' AND  date LIKE '$today1%'  and dr_cancle is null ";
-	$result = Mysql_Query($sql);
+$result = Mysql_Query($sql);
 
-	if(Mysql_num_rows($result) > 1){
-		list($hn,$ptname) = Mysql_fetch_row($result);
-		echo "<br><br><font face='Angsana New' size='5' color='#FF0066'><center>***ผู้ป่วยมีใบรายยามากกว่า 1 ใบ*** </center></FONT>";
-	}
-
-/* แจ้งเตือน Warfarin */
-// เตือนว่าในช่วง 3เดือนย้อนหลังผู้ป่วยมีการใช้งานยาในกลุ่มนี้รึป่าว
-if( !function_exists('ad_to_bc') ){
-	function ad_to_bc($time = null){
-		$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
-		return $time;
-	}
+if(Mysql_num_rows($result) > 1){
+	list($hn,$ptname) = Mysql_fetch_row($result);
+	echo "<br><br><font face='Angsana New' size='5' color='#FF0066'><center>***ผู้ป่วยมีใบรายยามากกว่า 1 ใบ*** </center></FONT>";
 }
-
-if( !function_exists('cal_to_bc') ){
-	function cal_to_bc($match){
-		return ( $match['0'] + 543 );
-	}
-}
-
-$date_end = date('Y-m-d');
-$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
-
-$date_end = ad_to_bc($date_end);
-$date_start = ad_to_bc($date_start);
-
-$patient_hn = trim($sHn);
-
-$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
-FROM `drugrx` 
-WHERE `hn` = '$patient_hn' 
-AND `date` >= '$date_start'
-AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
-AND `status` = 'Y' AND `amount` > 0 
-ORDER BY `row_id` ASC;";
-$dbi->query($sqlTemp);
-
-$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
-IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
-FROM (
-	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
-) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
-ORDER BY b.`row_id`";
-$qTemp = $dbi->query($sql);
-$drugrxRows = $qTemp->num_rows;
-if($drugrxRows > 0){
-	$drugrxItem = array();
-
-	$isWarfarin = false;
-	$isNoacs = false;
-	while ($a = $qTemp->fetch_assoc()) {
-		$drugrxItem[] = $a;
-		if($a['type']=='warfarin'){
-			$isWarfarin = true;
-		}
-
-		if($a['type']=='noacs'){
-			$isNoacs = true;
-		}
-	}
-
-	if($isWarfarin===true && $isNoacs===false){
-		?>
-		<script type="text/javascript">
-			Swal.fire({title:'ผู้ป่วยมีประวัติการใช้ Warfarin <br>ในช่วง 6 เดือนย้อนหลัง',html:`<a href="javascript:void(0);" onclick="openLink()">คลิกที่นี่เพื่อดูรายละเอียด</a>`});
-
-			function openLink(){
-				window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
-			}
-		</script>
-		<?php
-	}
-
-	if($isWarfarin===true && $isNoacs===true){
-		?>
-		<script type="text/javascript">
-			Swal.fire({title:'ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs <br>ในช่วง 6 เดือนย้อนหลัง',html:`<a href="javascript:void(0);" onclick="openLink()">คลิกที่นี่เพื่อดูรายละเอียด</a>`});
-
-			function openLink(){
-				window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
-			}
-		</script>
-		<?php
-	}
-}
-/* แจ้งเตือน Warfarin */
 
 include("unconnect.inc");
 ?>

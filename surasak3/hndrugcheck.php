@@ -24,7 +24,7 @@ session_start();
         padding: 0 8px;
     }
     </style>
-<?
+<?php
 include 'includes/connect.php';
 global $hn;
 $ward_lists = array(
@@ -52,6 +52,11 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
     ORDER BY `row_id` DESC 
     LIMIT 1";
     $q = mysql_query($sql) or die( mysql_error() );
+    $rowIpcard = mysql_num_rows($q);
+    if($rowIpcard==0){
+        echo '<p>ไม่พบประวัติข้อมูลผู้ป่วยใน</p>';
+        exit;
+    }
     $user = mysql_fetch_assoc($q);
 
     $ward_name = $ward_lists[$user['ward_code']];
@@ -68,12 +73,14 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 
 
     $id_lists = "'".implode("','", $ids)."'";
-    $sql = "SELECT a.`tradname`,a.`genname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
+    $sql = "SELECT a.`tradname`,c.`genname`,a.`amount`,a.`date`,b.`detail1`,b.`detail2`,b.`detail3`
     FROM `drugrx` AS a 
+    LEFT JOIN `druglst` AS c ON a.`drugcode` = c.`drugcode` 
     LEFT JOIN `drugslip` AS b ON b.`slcode` = a.`slcode` 
     WHERE a.`row_id` IN ($id_lists)";
     $q = mysql_query($sql) or die( mysql_error() );
-
+    $rows = mysql_num_rows($q);
+    if($rows>0){
     ?>
     <h3 style="text-align: center;">ยาเดิมของผู้ป่วย รพ.ค่ายสุรศักดิ์มนตรี ลำปาง</h3>
     <table>
@@ -179,7 +186,7 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
                 </table>            </td>
         </tr>
     </table>
-<div class="noPrint">
+    <div class="noPrint">
         <button onclick="println()">พิมพ์ใบ</button>
     </div>
     <script type="text/javascript">
@@ -188,6 +195,11 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
         }
     </script>
     <?php
+    }else{
+        ?>
+        <p><strong>ไม่พบข้อมูล</strong></p>
+        <?php
+    }
     exit;
 }else if( $action == 'print' && $type=='mr'){
     $ids = $_POST['rows_id'];
@@ -201,7 +213,7 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 	}else{
 		$type_txt ="MR";
 	}
-//echo $type_txt;    
+
     $sql = "SELECT *, SUBSTRING(`bedcode`, 1, 2) AS `ward_code`
     FROM `ipcard` 
     WHERE `hn` = '$hn' 
@@ -458,9 +470,9 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 </style>
 
 <form method="post" action="<?php echo $PHP_SELF ?>">
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตรวจสอบการใช้ยาตาม HN</p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="text" name="hn" size="12"></p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตรวจสอบการใช้ยาตาม HN หรือ เลขบัตรประชาชน</p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN หรือ เลขบัตรประชาชน:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <input type="text" name="hn" size="18" value="<?=$_POST['hn'];?>"></p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'>&larr;ไปเมนู</a></p>
 </form>
@@ -471,7 +483,7 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
         <button type="submit" value="dc" onclick="add_type('dc')">พิมพ์ใบ D/C</button>
         <button type="submit" value="mr" onclick="add_type('mr')">พิมพ์ใบ MR</button>
         
-<input type="hidden" name="type" id="type">
+        <input type="hidden" name="type" id="type">
         <input type="hidden" name="hn" value="<?=$hn;?>">
         <input type="hidden" name="action" value="print">
     </div>
@@ -499,9 +511,20 @@ if( $action == 'print' && ($type=='admit' || $type=='dc')){
 $b1 = trim($_POST['B1']);
 if(!empty($b1)){
 
-    $q_op = mysql_query("SELECT * FROM `opcard` WHERE `hn` = '$hn' ");
+    $hn = sprintf("%s", mysql_real_escape_string($_POST['hn']));
+
+    $hnLen = strlen($hn);
+    if($hnLen==13){
+        $where = "`idcard` = '$hn' ";
+    }else{
+        $where = "`hn` = '$hn' ";
+    }
+
+    $q_op = mysql_query("SELECT * FROM `opcard` WHERE $where ");
     if(mysql_num_rows($q_op)>0){ 
         $user = mysql_fetch_assoc($q_op);
+
+        $hn = $user['hn'];
 
         $q_rea = mysql_query("SELECT * FROM `drugreact` WHERE `hn` = '$hn'");
         $react_txt = "ไม่แพ้ยา";
@@ -521,11 +544,10 @@ if(!empty($b1)){
         </div>
         <?php
     }else{
-        echo "ไม่พบ HN กรุณาตรวจสอบข้อมูลอีกครั้ง";
+        echo "ไม่พบ HN หรือ เลขบัตรประชาชน \"$hn\" กรุณาตรวจสอบข้อมูลอีกครั้ง";
         exit;
     }
-}
-?>
+    ?>
     <script type="template/javascript" id="drug_template">
         <tr bgcolor="F5DEB3">
             <td></td>
@@ -671,3 +693,5 @@ if(!empty($b1)){
             ?>
         </tbody>
     </table>
+<?php
+}

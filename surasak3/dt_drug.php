@@ -2300,9 +2300,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 			}
 
 			if($arr["status"]=="popup"){
-				echo "1เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n ท่านยังต้องการจ่ายยาหรือไม่? ";
+				echo "1เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n [ Yes/OK ] เพื่อยกเลิก  [ No/Cancel ] เพื่อสั่งใช้ยาต่อไป";
 			}else if($arr["status"]=="lock"){
-				echo "2เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n";
+				echo "2เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n [ Yes/OK ] เพื่อยกเลิก  [ No/Cancel ] เพื่อสั่งใช้ยาต่อไป";
 			}
 		}
 	
