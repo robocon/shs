@@ -1640,7 +1640,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		echo "<Div style=\"position: absolute;text-align: center; width:760px; height:320px; overflow:auto; \">";
 
 		
-		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
+		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"drugListItem\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"30\"><font style=\"color: #FFFFFF\"></font></td>
 			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>รหัส</strong></font></td>
@@ -1695,7 +1695,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 							$extra_obj = '<br><span style="padding: 0 4px; background-color: yellow; color: red; font-size: 16px;">ผู้ป่วย สปสช แนะนำให้ใช้ VERO RABIES</span>';
 						}
 
-						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \">";
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \" title=\"ดับเบิ้ลคลิกเพื่อเลือกรายการยาตัวนี้\" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \">";
 						$alert="";
 					}
 				}
@@ -2381,7 +2381,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestAlphaBlocker"){
 	exit;
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ 
+	
+	$res = array('status'=>200);
+	$drugcode = sprintf("%s", trim($_GET['drugcode']));
+	$hn = sprintf("%s", $_GET['hn']);
 
+	
+	เอา drugslip.amount เป็นตัวบอกว่าต่อวันจะกินกี่เม็ด ---> b
+	หายาใน drugrx ครั้งล่าสุด โดยไม่นับวันนี้ ---> a
+	a.amount / b.amount = จำนวนวันที่กินได้
+
+	ทั้งหมดเป็นต้วตั้งของวันที่กินได้ 
+
+	จากนั้นหา date_diff(NOW(), a.date) 
+	
+	echo $json->encode($res);
+	exit;
+}
 
 //**********************************************************************************************
 ?>
@@ -2401,6 +2418,9 @@ body,td,th {
 .tb_detail3 {background-color: #F9E79F;  }
 .tb_menu {background-color: #FFFFC1;  }
 
+#drugListItem input[type="radio"]:hover{
+	cursor: pointer;
+}
 </style>
 
 <script src="js/sweetalert2.all.min.js"></script>
@@ -2936,6 +2956,12 @@ var nsaidsListForJs = [<?=$nsaids_for_js;?>];
  */
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
+	drugLeftOver(drugcode.trim()).then((res)=>{
+		console.log(res);
+	});
+
+	return false;
+
 	checkAlphaBlocker(drugcode.trim()).then((res)=>{
 		if(res.status==400){
 			Swal.fire(res.message);
@@ -3037,6 +3063,13 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่6
 	rdu6_alert(drugcode.trim(), icd10);
+}
+
+async function drugLeftOver(drugcode) {
+	var hn = '<?=$_SESSION['hn_now'];?>';
+	const response = await fetch('dt_drug.php?action=drugLeftOver&hn='+encodeURIComponent(hn)+'&drugcode='+encodeURIComponent(drugcode));
+	const data = await response.json();
+	return data;
 }
 
 async function alphaBlockersOtherDoctor(drugcode){
