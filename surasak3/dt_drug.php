@@ -15,6 +15,8 @@ if(isset($_GET["action"])){
 include("connect.inc");
 //include("checklogin.php");
 
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
 include_once 'includes/JSON.php';
 $json = new Services_JSON();
 
@@ -2387,14 +2389,47 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){
 	$drugcode = sprintf("%s", trim($_GET['drugcode']));
 	$hn = sprintf("%s", $_GET['hn']);
 
-	
-	เอา drugslip.amount เป็นตัวบอกว่าต่อวันจะกินกี่เม็ด ---> b
-	หายาใน drugrx ครั้งล่าสุด โดยไม่นับวันนี้ ---> a
-	a.amount / b.amount = จำนวนวันที่กินได้
+	$date = (date('Y')+543).date('-m-d');
 
-	ทั้งหมดเป็นต้วตั้งของวันที่กินได้ 
+	$sql = sprintf("SELECT a.*,b.`amount` AS `amount_per_day`,
+	(a.`amount`/b.`amount`) AS `day_averrage`,
+	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
+	CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail` 
+	FROM (
+		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode` 
+		FROM `drugrx` 
+		WHERE `date` < '$date' AND `hn` = '%s' AND `drugcode` = '%s' 
+		ORDER BY `row_id` DESC LIMIT 1 
+	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode`",
+	$dbi->real_escape_string($hn),
+	$dbi->real_escape_string($drugcode)
+	);
 
-	จากนั้นหา date_diff(NOW(), a.date) 
+	$sqlDruglst = sprintf("SELECT `genname` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
+	$qDruglst = $dbi->query($sqlDruglst);
+	$genname = '';
+	if($qDruglst->num_rows > 0){
+		$b = $qDruglst->fetch_assoc();
+		$genname = '('.$b['genname'].')';
+	}
+
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
+		$a = $q->fetch_assoc();
+		if($a['day_diff'] < $a['day_averrage']){
+			$tradname = $a['tradname'];
+			$detail = $a['detail'];
+			$amount = $a['amount'];
+			
+			list($dateDrugrx, $timeDrugrx) = explode(' ', $a['date']);
+			list($year, $month, $day) = explode('-', $dateDrugrx);
+			
+			$fullDateTh = "$day ".$def_fullm_th[$month]." ".($year);
+
+			$res['status'] = 400;
+			$res['msg'] = "<div style=\"font-size:20px;\">วันที่ $fullDateTh<br>มีการจ่ายยา $tradname $genname<br>วิธีใช้: $detail<br>จำนวน $amount<br><strong>ระบบคำนวณแล้วว่ายาของผู้ป่วยน่าจะเหลืออยู่</strong><br><strong>เพื่อความมั่นใจ กรุณาสอบถามถึงยาที่เหลือของผู้ป่วยด้วยครับ</strong></div>";
+		}
+	}
 	
 	echo $json->encode($res);
 	exit;
@@ -2957,10 +2992,14 @@ var nsaidsListForJs = [<?=$nsaids_for_js;?>];
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	drugLeftOver(drugcode.trim()).then((res)=>{
-		console.log(res);
+		if(res.status==400){
+			Swal.fire({
+				title: 'แจ้งเตือน', 
+				html: res.msg, 
+				// width: 800
+			});
+		}
 	});
-
-	return false;
 
 	checkAlphaBlocker(drugcode.trim()).then((res)=>{
 		if(res.status==400){
