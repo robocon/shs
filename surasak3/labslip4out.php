@@ -24,10 +24,7 @@
 		if (!($row = mysql_fetch_object($result)))
 			continue;
 	}
-
-	//  	    $cTitle=$row->title;  //=VN
-/*$nLab2=$row->runno;
-$nLab2--;*/
+	
 	if($_GET['hn']){
 		$cHn = sprintf("%s", $_GET['hn']);
 	}
@@ -89,6 +86,14 @@ $nLab2--;*/
 
 	}
 
+	$sql = sprintf("SELECT TIMESTAMPDIFF(YEAR,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)), NOW()) AS age FROM `opcard` WHERE `hn` = '%s' LIMIT 1", $hn);
+	$q = mysql_query($sql);
+	$rowAge = mysql_num_rows($q);
+	$age = '';
+	if($rowAge>0){
+		$a = mysql_fetch_assoc($q);
+		$age = $a['age'];
+	}
 	print "<HTML>";
 
 	print "<script>";
@@ -153,7 +158,7 @@ $nLab2--;*/
 	print "<DIV style='left:0PX;top:15PX;width:200PX;height:30PX;'><span class='fc1-6'><b>HN:</b>$cHn&nbsp;<b></b>($tvn)&nbsp;$Thaidate</span></DIV>";
 	//print "<DIV style='left:0PX;top:25PX;width:200PX;height:30PX;'><span class='fc1-6'>$Thaidate</span></DIV>";
 	print "<DIV style='left:0PX;top:30PX;width:500PX;height:30PX;'><span class='fc1-3'>$cPtname</span></DIV>";
-	print "<DIV style='left:0PX;top:47PX;width:500PX;height:30PX;'><span class='fc1-5'>$cPtright</span></DIV>";
+	print "<DIV style='left:0PX;top:47PX;width:500PX;height:30PX;'><span class='fc1-5'>$cPtright".(!empty($age) ? ' อายุ:'.$age.'ปี' : '' )."</span></DIV>";
 	$nLab21 = sprintf("%03d", $nLab2);
 	$labno = substr(date("Y"), 2, 2) . date("md") . $nLab21 . "02";
 	//print "<DIV style='left:65PX;top:55PX;width:200PX;height:10PX;'><span class='fc1-0'><img src = \"barcode/labstk.php?cLabno=$labno\"></span></DIV>";

@@ -15,6 +15,8 @@ if(isset($_GET["action"])){
 include("connect.inc");
 //include("checklogin.php");
 
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+
 include_once 'includes/JSON.php';
 $json = new Services_JSON();
 
@@ -1640,7 +1642,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		echo "<Div style=\"position: absolute;text-align: center; width:760px; height:320px; overflow:auto; \">";
 
 		
-		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
+		echo "<table bgcolor=\"#FFFFCC\" width=\"740\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"drugListItem\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"30\"><font style=\"color: #FFFFFF\"></font></td>
 			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>รหัส</strong></font></td>
@@ -1695,7 +1697,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 							$extra_obj = '<br><span style="padding: 0 4px; background-color: yellow; color: red; font-size: 16px;">ผู้ป่วย สปสช แนะนำให้ใช้ VERO RABIES</span>';
 						}
 
-						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \">";
+						$obj = "<INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" style=\"width:20px; height:20px;\" onkeypress=\"if(event.keyCode==13)add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \" title=\"ดับเบิ้ลคลิกเพื่อเลือกรายการยาตัวนี้\" ondblclick=\"add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname'); \">";
 						$alert="";
 					}
 				}
@@ -2381,7 +2383,57 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestAlphaBlocker"){
 	exit;
 }
 
+if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ 
+	
+	$res = array('status'=>200);
+	$drugcode = sprintf("%s", trim($_GET['drugcode']));
+	$hn = sprintf("%s", $_GET['hn']);
 
+	$date = (date('Y')+543).date('-m-d');
+
+	$sql = sprintf("SELECT a.*,b.`amount` AS `amount_per_day`,
+	(a.`amount`/b.`amount`) AS `day_averrage`,
+	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
+	CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail` 
+	FROM (
+		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode` 
+		FROM `drugrx` 
+		WHERE `date` < '$date' AND `hn` = '%s' AND `drugcode` = '%s' 
+		ORDER BY `row_id` DESC LIMIT 1 
+	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode`",
+	$dbi->real_escape_string($hn),
+	$dbi->real_escape_string($drugcode)
+	);
+
+	$sqlDruglst = sprintf("SELECT `genname` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
+	$qDruglst = $dbi->query($sqlDruglst);
+	$genname = '';
+	if($qDruglst->num_rows > 0){
+		$b = $qDruglst->fetch_assoc();
+		$genname = '('.$b['genname'].')';
+	}
+
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
+		$a = $q->fetch_assoc();
+		if($a['day_diff'] < $a['day_averrage']){
+			$tradname = $a['tradname'];
+			$detail = $a['detail'];
+			$amount = $a['amount'];
+			
+			list($dateDrugrx, $timeDrugrx) = explode(' ', $a['date']);
+			list($year, $month, $day) = explode('-', $dateDrugrx);
+			
+			$fullDateTh = "$day ".$def_fullm_th[$month]." ".($year);
+
+			$res['status'] = 400;
+			$res['msg'] = "<div style=\"font-size:20px;\">วันที่ $fullDateTh<br>มีการจ่ายยา $tradname $genname<br>วิธีใช้: $detail<br>จำนวน $amount<br><strong>ระบบคำนวณแล้วว่ายาของผู้ป่วยน่าจะเหลืออยู่</strong><br><strong>เพื่อความมั่นใจ กรุณาสอบถามถึงยาที่เหลือของผู้ป่วยด้วยครับ</strong></div>";
+		}
+	}
+	
+	echo $json->encode($res);
+	exit;
+}
 
 //**********************************************************************************************
 ?>
@@ -2401,6 +2453,9 @@ body,td,th {
 .tb_detail3 {background-color: #F9E79F;  }
 .tb_menu {background-color: #FFFFC1;  }
 
+#drugListItem input[type="radio"]:hover{
+	cursor: pointer;
+}
 </style>
 
 <script src="js/sweetalert2.all.min.js"></script>
@@ -2936,6 +2991,16 @@ var nsaidsListForJs = [<?=$nsaids_for_js;?>];
  */
 function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
+	drugLeftOver(drugcode.trim()).then((res)=>{
+		if(res.status==400){
+			Swal.fire({
+				title: 'แจ้งเตือน', 
+				html: res.msg, 
+				// width: 800
+			});
+		}
+	});
+
 	checkAlphaBlocker(drugcode.trim()).then((res)=>{
 		if(res.status==400){
 			Swal.fire(res.message);
@@ -3037,6 +3102,13 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่6
 	rdu6_alert(drugcode.trim(), icd10);
+}
+
+async function drugLeftOver(drugcode) {
+	var hn = '<?=$_SESSION['hn_now'];?>';
+	const response = await fetch('dt_drug.php?action=drugLeftOver&hn='+encodeURIComponent(hn)+'&drugcode='+encodeURIComponent(drugcode));
+	const data = await response.json();
+	return data;
 }
 
 async function alphaBlockersOtherDoctor(drugcode){
