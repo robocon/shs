@@ -217,8 +217,8 @@ $_GET['y'] = $_GET['y']-543;
 		(date('Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num+$j,$_GET['y']))+543);
 		echo "<TR>";
 			echo "<TD>";
-			echo "วันที่ &nbsp;&nbsp; <INPUT TYPE=\"text\" NAME=\"calendar_date".$i."\" value=\"".$date_appo."\" readonly>&nbsp;&nbsp;";
-			echo "<input type=\"button\" name=\"calendar_button\" value=\".....\" onClick=\"document.f1.calendar_date".$i.".value='';showCalendar('calendar_date".$i."','DD-MM-YYYY')\">";
+			echo "วันที่ &nbsp;&nbsp; <INPUT TYPE=\"text\" id=\"calendar_date".$i."\" NAME=\"calendar_date".$i."\" value=\"".$date_appo."\" readonly>&nbsp;&nbsp;";
+			echo "<input type=\"button\" name=\"calendar_button\" value=\"เลือกวันที่\" onClick=\"document.f1.calendar_date".$i.".value='';showCalendar('calendar_date".$i."','DD-MM-YYYY')\">";
 
 			echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เวลา : ";
 			echo "<select size=\"1\" name=\"calendar_time".$i."\">

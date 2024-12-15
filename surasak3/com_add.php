@@ -94,17 +94,17 @@ label:hover{cursor: pointer;}
 		<div class="forntsarabun" id="notiContent">
 			<ol>
 				<li>
-					<div style="font-weight:bold;"><u style="color:red;">การแจ้งลบ</u> ใบตรวจโรคอิเล็กทรอนิกส์
-					</div>
-					<div>กรุณาให้เหตุผลในการลบข้อมูลด้วยทุกครั้ง</div>
+					<div><strong><u style="color:red;">การแจ้งลบ</u> ใบตรวจโรคอิเล็กทรอนิกส์</strong> กรุณาให้เหตุผลในการลบข้อมูลด้วยทุกครั้ง</div>
 				</li>
 				<li>
 					<div style="font-weight:bold;">หากต้องการ <u style="color:red;">ลบ/แก้ไข</u> ค่าใช้จ่าย</div>
 					<div>กรุณาให้ข้อมูลที่ครบถ้วนเพื่อง่ายต่อการแก้ไข เช่น HN วันที่ รหัส ราคา และเหตุผลในการแก้ไข</div>
 				</li>
 				<li>
-					<div style="font-weight:bold;">หากมีเจ้าหน้าที่มาปฏิบัติงานใหม่</div>
-					<div>ขอความกรุณาแจ้ง ชื่อ-สกุล แผนกที่ปฏิบัติงาน ก่อน<u style="color:red;">อย่างน้อย 1วัน</u></div>
+					<div><strong>การขอผู้ใช้งานใหม่ <a href="news_detail.php?id=58" target="_blank">คลิกที่นี่เพื่ออ่านการใช้งาน</a></strong></div>
+				</li>
+				<li>
+					<div style="color:red;"><strong>ศูนย์คอมฯ <u>ไม่รับ</u>คีย์ค่าใช้จ่ายย้อนหลังทุกกรณี</strong></div>
 				</li>
 			</ol>
 			<p style="color:red;"><b>กรณีที่ ต้องการแจ้งแก้ไขปรับปรุงโปรแกรม<u>มากกว่า 1 เรื่อง ให้แยกใบงาน</u>เนื่องจากแต่ละงานใช้ระยะเวลาดำเนินการที่แตกต่างกัน ใบงานของท่านอาจจะค้างในระบบเป็นเวลานาน</b></p>

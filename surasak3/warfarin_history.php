@@ -21,6 +21,16 @@ $opcard = new Opcard();
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
+    <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size:18px;
+        }
+        table.table th{
+            background-color: #13795b; 
+            color: #ffffff;
+        }
+    </style>
     <div class="container">
         <h3>ประวัติการรับยา Warfarin และยากลุ่ม NOACs ในช่วง 6เดือนย้อนหลัง</h3>
     <?php 
@@ -52,10 +62,10 @@ $opcard = new Opcard();
             </div>
             <table class="table table-hover">
                 <tr>
-                    <td>วันที่จ่ายยา</td>
-                    <td>แพทย์ผู้สั่ง</td>
-                    <td>ยา</td>
-                    <td>จำนวน</td>
+                    <th>วันที่จ่ายยา</th>
+                    <th>แพทย์ผู้สั่ง</th>
+                    <th>ยา</th>
+                    <th>จำนวน</th>
                 </tr>
                 <?php 
                 while ($a = $q->fetch_assoc()) {
