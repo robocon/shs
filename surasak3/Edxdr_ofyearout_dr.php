@@ -37,6 +37,7 @@ return $pAge;
 }
 
 $thaidate = (date("Y")+543).date("-m-d");
+$tmp_today = (date("Y")).date("-m-d");
 
 $list_ua["COLOR"] =  "ua_color"; 
 $list_ua["APPEAR"] =  "ua_appear"; 
@@ -397,7 +398,7 @@ $query = mysql_query($sql);
 $num = mysql_num_rows($query); 
 
 if(empty($num)){
-	echo "<h1 align='center'>ไม่พบสรุปข้อมูลประเภทใบรับรองแพทย์อิเล็กทรอนิกส์</h1>";echo "<br>".exit();
+	echo "<h1 align='center'>ไม่พบสรุปข้อมูลประเภทใบรับรองแพทย์อิเล็กทรอนิกส์</h1>";echo "<br>";exit();
 }//end if
 
 while($rows = mysql_fetch_array($query)){
@@ -1678,7 +1679,7 @@ if(!empty($result_dx["antihb"]))
 	      </div></td>
 	    </tr>
 	  <tr>
-	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ :</td>
+	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ 1 :</td>
 	    <td class="labfont"><input name="other1" type="text" size="20" /></td>
 	    <td class="labfont"><input name='normal53' type='radio' value='ปกติ' onclick="togglediv2('acnormal53')"/>
 ปกติ
@@ -1690,7 +1691,7 @@ if(!empty($result_dx["antihb"]))
 	    </tr>
 
 	  <tr>
-	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ :</td>
+	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ 2 :</td>
 	    <td class="labfont"><input name="other2" type="text" size="20" /></td>
 	    <td class="labfont"><input name='normal54' type='radio' value='ปกติ' onclick="togglediv2('acnormal54')"/>
 ปกติ
@@ -1698,6 +1699,42 @@ if(!empty($result_dx["antihb"]))
 ผิดปกติ </td>
 	    <td colspan="2"><div id="acnormal54" style='display: none;'>
 	      <input name="ch54" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+	      </div></td>
+	    </tr>
+
+ <tr>
+	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ 3 :</td>
+	    <td class="labfont"><input name="other3" type="text" size="20" /></td>
+	    <td class="labfont"><input name='normal55' type='radio' value='ปกติ' onclick="togglediv2('acnormal55')"/>
+ปกติ
+  <input name='normal55' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal55')"/>
+ผิดปกติ </td>
+	    <td colspan="2"><div id="acnormal55" style='display: none;'>
+	      <input name="ch55" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+	      </div></td>
+	    </tr>
+
+	<tr>
+	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ 4 :</td>
+	    <td class="labfont"><input name="other4" type="text" size="20" /></td>
+	    <td class="labfont"><input name='normal56' type='radio' value='ปกติ' onclick="togglediv2('acnormal56')"/>
+ปกติ
+  <input name='normal56' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal56')"/>
+ผิดปกติ </td>
+	    <td colspan="2"><div id="acnormal56" style='display: none;'>
+	      <input name="ch56" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
+	      </div></td>
+	    </tr>
+
+	<tr>
+	    <td align="right" class="tb_font_2">ตรวจพิเศษอื่นๆ 5 :</td>
+	    <td class="labfont"><input name="other5" type="text" size="20" /></td>
+	    <td class="labfont"><input name='normal57' type='radio' value='ปกติ' onclick="togglediv2('acnormal57')"/>
+ปกติ
+  <input name='normal57' type='radio' value='ผิดปกติ' onclick="togglediv1('acnormal57')"/>
+ผิดปกติ </td>
+	    <td colspan="2"><div id="acnormal57" style='display: none;'>
+	      <input name="ch57" type="text" size="50" value="พบความผิดปกติ.......ควรพบแพทย์ เพื่อตรวจหาสาเหตุ" />
 	      </div></td>
 	    </tr>
 
