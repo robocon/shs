@@ -735,6 +735,7 @@ while($rows = mysql_fetch_array($query)){
               <option value='เม็ดเลือดขาวในปัสสาวะสูงเกินปกติ'>เม็ดเลือดขาวในปัสสาวะสูงเกินปกติ</option>
               <option value='มีไข่ขาวรั่วในปัสสาวะ'>มีโปรตีนรั่วในปัสสาวะ</option>
               <option value='ค่ากรด - ด่าง'>ค่ากรด - ด่าง</option>
+			  <option value='น้ำตาลในปัสสาวะสูงเกินปกติ'>น้ำตาลในปัสสาวะสูงเกินปกติ</option>
             </select></div></td>
         </tr>
     <?
