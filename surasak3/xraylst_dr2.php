@@ -27,30 +27,77 @@ session_start();
 		.tb_menu {
 			background-color: #FFFFC1;
 		}
+
+		.xray-item:hover{
+			background-color: #04AA6D;
+		}
+		.xray-item:hover a{
+			color: #ffffff!important;
+		}
+		
+		#xray-header a.activeTab{
+			background-color: #04AA6D;
+			color: #ffffff!important;
+		}
+		#xray-header a:hover{
+			text-decoration: underline;
+			background-color: #04AA6D;
+			color: #ffffff!important;
+		}
+		#xray-header a{
+			text-decoration: none;
+			border-left: 6px solid #ccc !important;
+			padding: 0 4px;
+		}
 	</style>
 	<SCRIPT LANGUAGE="JavaScript">
 		var inum = 1;
 		function display_page(xx) {
-			if (xx == '2') {
-				document.getElementById('display_ly1').style.display = 'none';
-				document.getElementById('display_ly2').style.display = '';
-				document.getElementById('display_ly3').style.display = 'none';
-				document.getElementById('display_ly4').style.display = 'none';
-			} else if(xx=='1') {
+			if(xx=='1') {
 				document.getElementById('display_ly1').style.display = '';
 				document.getElementById('display_ly2').style.display = 'none';
 				document.getElementById('display_ly3').style.display = 'none';
 				document.getElementById('display_ly4').style.display = 'none';
-			}else if(xx=='3') {
+
+				document.getElementById('xray').classList.add('activeTab');
+				document.getElementById('upper').classList.remove('activeTab');
+				document.getElementById('lower').classList.remove('activeTab');
+				document.getElementById('ultrasound').classList.remove('activeTab');
+
+			} else if (xx == '2') {
+				document.getElementById('display_ly1').style.display = 'none';
+				document.getElementById('display_ly2').style.display = '';
+				document.getElementById('display_ly3').style.display = 'none';
+				document.getElementById('display_ly4').style.display = 'none';
+
+				document.getElementById('xray').classList.remove('activeTab');
+				document.getElementById('upper').classList.add('activeTab');
+				document.getElementById('lower').classList.remove('activeTab');
+				document.getElementById('ultrasound').classList.remove('activeTab');
+
+
+			} else if(xx=='3') {
 				document.getElementById('display_ly1').style.display = 'none';
 				document.getElementById('display_ly2').style.display = 'none';
 				document.getElementById('display_ly3').style.display = '';
 				document.getElementById('display_ly4').style.display = 'none';
+
+				document.getElementById('xray').classList.remove('activeTab');
+				document.getElementById('upper').classList.remove('activeTab');
+				document.getElementById('lower').classList.add('activeTab');
+				document.getElementById('ultrasound').classList.remove('activeTab');
+
+
 			}else if(xx=='4') {
 				document.getElementById('display_ly1').style.display = 'none';
 				document.getElementById('display_ly2').style.display = 'none';
 				document.getElementById('display_ly3').style.display = 'none';
 				document.getElementById('display_ly4').style.display = '';
+
+				document.getElementById('xray').classList.remove('activeTab');
+				document.getElementById('upper').classList.remove('activeTab');
+				document.getElementById('lower').classList.remove('activeTab');
+				document.getElementById('ultrasound').classList.add('activeTab');
 			}
 		}
 		function OnClick_add_xray(xxx) {
@@ -65,38 +112,38 @@ session_start();
 </HEAD>
 
 <BODY>
-	<table cellpadding="2" cellspacing="0">
+	<table cellpadding="2" cellspacing="0" id="xray-header">
 		<tr>
-			<td bgcolor="#005500" style="color:#00FFFF;">
-				<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('1');">First Page</A>
-			</td>
-			<td>&nbsp;</td>
-			<td bgcolor="#004080" style="color:#00FFFF;">
-				<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('2');">EXTREMITIES</A>
-			</td>
-			<td>&nbsp;</td>
-			<td bgcolor="#004080" style="color:#00FFFF;">
-				<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('3');">LOWER EXTREMITY</A>
-			</td>
-			<td>&nbsp;</td>
-			<td bgcolor="#004080" style="color:#00FFFF;">
-				<A HREF="javascript:void(0);" style="color:#00FFFF;" Onclick="display_page('4');">ULTRASOUND</A>
+			<td border="1" bordercolor="#004080">
+				<a href="javascript:void(0);" onclick="display_page('1');" id="xray">X-RAY</a>
 			</td>
 			<td>&nbsp;</td>
 			<td>
-				<? if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
+				<a href="javascript:void(0);" onclick="display_page('2');" id="upper">UPPER EXTREMITY</a>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<a href="javascript:void(0);" onclick="display_page('3');" id="lower">LOWER EXTREMITY</a>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<a href="javascript:void(0);" onclick="display_page('4');" id="ultrasound">ULTRASOUND</a>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<?php if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){?>
 				Other : <INPUT id="idother" TYPE="text" NAME="" size="10" value="BMD">
-				<? }else{ ?>
+				<?php }else{ ?>
 				Other : <INPUT id="idother" TYPE="text" NAME="" size="10">
-				<? } ?>
-				<INPUT TYPE="button" value="Add" Onclick="OnClick_add_xray(document.getElementById('idother').value);">
+				<?php } ?>
+				<INPUT TYPE="button" value="Add" onclick="OnClick_add_xray(document.getElementById('idother').value);">
 			</td>
 		</tr>
 	</table>
 	<?php
 	include("connect.php");
 	?>
-	<table id="display_ly1" width="100%" style="display:none" border="1" bordercolor="#004080" cellpadding="4" cellspacing="0">
+	<table id="display_ly1" width="100%" style="" border="1" bordercolor="#004080" cellpadding="4" cellspacing="0">
 		<?php
 		$sql = "SELECT * FROM `xraylist` WHERE `page` = '1' ORDER BY `sort` ASC";
 		$q = mysql_query($sql);
@@ -104,7 +151,7 @@ session_start();
 			while ($a = mysql_fetch_assoc($q)) {
 				?>
 				<tr>
-					<td style="background-color: #95FF95;">
+					<td style="" class="xray-item">
 						<a href="javascript:void(0);" onclick="OnClick_add_xray('<?=$a['xraycode'];?>');" style="text-decoration:none; color:#000099;"><?=$a['xraycode'];?></a>
 					</td>
 				</tr>
@@ -122,7 +169,7 @@ session_start();
 			while ($a = mysql_fetch_assoc($q)) {
 				?>
 				<tr>
-					<td style="background-color: #95FF95;">
+					<td style="" class="xray-item">
 						<a href="javascript:void(0);" onclick="OnClick_add_xray('<?=$a['xraycode'];?>');" style="text-decoration:none; color:#000099;"><?=$a['xraycode'];?></a>
 					</td>
 				</tr>
@@ -139,7 +186,7 @@ session_start();
 			while ($a = mysql_fetch_assoc($q)) {
 				?>
 				<tr>
-					<td style="background-color: #95FF95;">
+					<td style="" class="xray-item">
 						<a href="javascript:void(0);" onclick="OnClick_add_xray('<?=$a['xraycode'];?>');" style="text-decoration:none; color:#000099;"><?=$a['xraycode'];?></a>
 					</td>
 				</tr>
@@ -156,7 +203,7 @@ session_start();
 			while ($a = mysql_fetch_assoc($q)) {
 				?>
 				<tr>
-					<td style="background-color: #95FF95;">
+					<td style="" class="xray-item">
 						<a href="javascript:void(0);" onclick="OnClick_add_xray('<?=$a['xraycode'];?>');" style="text-decoration:none; color:#000099;"><?=$a['xraycode'];?></a>
 					</td>
 				</tr>
