@@ -14,7 +14,7 @@ $depart=$_POST["depart"];
 $head=htmlspecialchars($_POST["head"], ENT_QUOTES);
 
 // remove all html tags
-$detail_for_line = strip_tags(html_entity_decode($_POST["detail"]));
+$detail_for_line = strip_tags(html_entity_decode($_POST["detail"]),'');
 
 $detail=htmlspecialchars($_POST["detail"], ENT_QUOTES);
 $datetime=$_POST["datetime"];

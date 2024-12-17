@@ -32,12 +32,14 @@ if ($_REQUEST['do'] == 'edit') {
 		curl_close($chOne);
 
 		$_SESSION['supportMessage'] = "เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว";
-		header("Location: com_support.php");
+		
 	} else {
 
 		$_SESSION['supportMessage'] = "ไม่สามารถเลือกผู้รับผิดชอบงานได้";
-		header("Location: com_support.php");
+		
 	}
+
+	header("Location: com_support.php");
 	exit;
 }
 ?>
@@ -78,7 +80,7 @@ if ($_REQUEST['do'] == 'edit') {
 				<td height="48" colspan="4" bgcolor="#66CC99"><span class="style2">ระบบแจ้ง เพิ่มแก้ไข/ปรับปรุง เพิ่มเติม โปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</span></td>
 			</tr>
 			<tr>
-				<td width="121" bgcolor="#66CCCC"><strong>แผนก</strong></td>
+				<td width="121" bgcolor="#66CCCC" align="right"><strong>แผนก : </strong></td>
 				<td colspan="4" bgcolor="#66CCCC"><!--<input name="depart" type="text" class="forntsarabun" size="20">-->
 					<select name="depart" id="depart" class="forntsarabun">
 						<option value="0">==&gt;&nbsp;เลือกแผนก&nbsp;&lt;==</option>
@@ -97,7 +99,7 @@ if ($_REQUEST['do'] == 'edit') {
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="#66CCCC"><strong>ประเภทงาน</strong></td>
+				<td bgcolor="#66CCCC" align="right"><strong>ประเภทงาน : </strong></td>
 				<td colspan="3" bgcolor="#66CCCC">
 					<?php 
 					$jobType = array('hardware'=>'งานซ่อมอุปกรณ์คอมพิวเตอร์/ระบบเครือข่าย', 'software'=>'งานแก้ไขโปรแกรม/พัฒนาระบบสารสนเทศ');
@@ -116,15 +118,15 @@ if ($_REQUEST['do'] == 'edit') {
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="#66CCCC"><strong>หัวข้อ</strong></td>
+				<td bgcolor="#66CCCC" align="right"><strong>หัวข้อ : </strong></td>
 				<td colspan="3" bgcolor="#66CCCC"><input name="head" type="text" class="forntsarabun" value="<?= $dbarr['head']; ?>" size="60" readonly></td>
 			</tr>
 			<tr>
-				<td bgcolor="#66CCCC"><strong>วัน-เวลาที่แจ้ง</strong></td>
-				<td colspan="3" bgcolor="#66CCCC"><p><?=$dbarr['date'];?></p></td>
+				<td bgcolor="#66CCCC" align="right"><strong>วัน-เวลาที่แจ้ง : </strong></td>
+				<td colspan="3" bgcolor="#66CCCC"> <p><?=$dbarr['date'];?></p></td>
 			</tr>
 			<tr>
-				<td valign="top" bgcolor="#66CCCC"><strong>รายละเอียด</strong></td>
+				<td valign="top" bgcolor="#66CCCC" align="right"><strong>รายละเอียด : </strong></td>
 				<td colspan="3" bgcolor="#66CCCC">
 					<script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 					<script>
@@ -140,13 +142,13 @@ if ($_REQUEST['do'] == 'edit') {
 				</td>
 			</tr>
 			<tr>
-				<td bgcolor="#66CCCC"><strong>ผู้แจ้ง</strong></td>
+				<td bgcolor="#66CCCC" align="right"><strong>ผู้แจ้ง : </strong></td>
 				<td width="160" bgcolor="#66CCCC"><input name="user" type="text" class="forntsarabun" value="<?= $dbarr['user']; ?>" size="20" readonly></td>
-				<td width="96" bgcolor="#66CCCC">โทรศัพท์ภายใน</td>
+				<td width="96" bgcolor="#66CCCC" align="right"><strong>โทรศัพท์ภายใน</strong></td>
 				<td width="520" bgcolor="#66CCCC"><input name="phone" type="text" class="forntsarabun" value="<?= $dbarr['phone']; ?>" size="20" readonly></td>
 			</tr>
 			<tr>
-				<td bgcolor="#66CCCC"><strong>ผู้รับผิดชอบ</strong></td>
+				<td bgcolor="#66CCCC" align="right"><strong>ผู้รับผิดชอบ : </strong></td>
 				<td colspan="3" bgcolor="#66CCCC">
 					<?php 
 					$programmerList = array('เทวิน  ศรีแก้ว','กฤษณะศักดิ์  กันธรส','ชาญวิทย์  ตากาบุตร','จักรพันธ์  รุ่งเรืองศรี','ฐานพัฒน์  นิลคำ');
@@ -176,7 +178,7 @@ if ($_REQUEST['do'] == 'edit') {
 			)
 			?>
 			<tr style="<?=$swTypeDisplay;?>" id="swTypeContain">
-				<td bgcolor="#66CCCC"><b>ประเภทงานพัฒนา</b></td>
+				<td bgcolor="#66CCCC"><b>ประเภทงานพัฒนา : </b></td>
 				<td colspan="3" bgcolor="#66CCCC">
 					<?php 
 					foreach ($softwareTypeList as $swKey => $swType) {
