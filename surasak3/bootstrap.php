@@ -7,17 +7,7 @@ session_start();
 require_once 'includes/config.php';
 require_once "includes/functions.php";
 
-// ถ้าไม่มีการประกาศ NEW_SITE ให้โหลดคอนฟิกตัวเดิมมาใช้งาน
-if(!defined('NEW_SITE')){
-	
-	if( $_SERVER['SERVER_ADDR'] !== '192.168.1.2' ){
-		// header('Content-Type: text/html; charset=UTF-8');
-	}
-	
-	// include 'includes/connect.php';
-	
-}else{
-	
+if(empty($Conn)){
 	header('Content-Type: text/html; charset=utf-8');
 	$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
 	mysql_select_db(DB, $Conn) or die( mysql_error() );
@@ -467,4 +457,22 @@ define('DOMAIN_PATH', DOMAIN.dirname(WEB_REQUEST));
 // E.g. http://localhost/sub_folder/file.php
 define('DOMAIN_REQUEST', DOMAIN.WEB_REQUEST);
 
+if($_COOKIE['shsLogin']==='1'){
+	list($userTxt, $idTxt) = explode(',', $_COOKIE['shsLoginUser']);
+	list($xx, $user) = explode('=', $userTxt);
+	$sql = sprintf("SELECT * FROM `inputm` WHERE `idname` = '%s' AND `status` = 'y' LIMIT 1;", $dbi->real_escape_string($user));
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
+		$a = $q->fetch_assoc();
 
+		ini_set('session.gc_maxlifetime', 60*60*24);
+		
+		$_SESSION['sIdname'] = $a['idname'];
+		$_SESSION['sPword'] = $a['pword'];
+		$_SESSION['smenucode'] = $a['menucode'];
+		$_SESSION['sOfficer'] = $a['name'];
+		$_SESSION['sRowid'] = $a['row_id'];
+		$_SESSION['sLevel'] = $a['level'];
+
+	}
+}

@@ -22,6 +22,7 @@ if( $action === 'login' ){
 
 	$username = sprintf("%s", trim($_POST['username']));
 	$password = sprintf("%s", trim($_POST['password']));
+	$remember = sprintf("%s", trim($_POST['remember']));
 
 	if(in_array($password, array('1234','123456','12345678'))===true){
 		$_SESSION['x-msg'] = 'ไม่อนุญาตให้ใช้รหัสผ่าน 1234, 123456 หรือ 12345678 กรุณาติดต่อ Admin ประจำแผนกเพื่อแก้ไขรหัสผ่าน';
@@ -29,7 +30,10 @@ if( $action === 'login' ){
 		exit;
 	}
 	
-	$sql = sprintf("SELECT * FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' AND `status` = 'y' LIMIT 1;", $username, $password);
+	$sql = sprintf("SELECT * FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' AND `status` = 'y' LIMIT 1;", 
+	$dbi->real_escape_string($username), 
+	$dbi->real_escape_string($password)
+	);
 	$q = $dbi->query($sql);
 	if( $q->num_rows > 0 ){
 		
@@ -46,6 +50,11 @@ if( $action === 'login' ){
 		
 		$qUpdate = sprintf("UPDATE `inputm` SET `last_login`=NOW() WHERE (`row_id`='%s');", $item['row_id']);
 		$dbi->query($qUpdate);
+
+		if(!empty($remember)){
+			setcookie('shsLogin','1',strtotime("+1 day"),'/');
+			setcookie('shsLoginUser','name='.$sIdname.',id='.$item['row_id'],strtotime("+1 day"),'/');
+		}
 
 		$sqlLogInputm = sprintf("INSERT INTO `log_inputm` 
 		(`id`, `log_date`, `user_id`, `name`, `menucode`, `login_date`) 
@@ -109,7 +118,6 @@ $title = 'เข้าสู่ระบบอินทราเน็ต รพ
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 	}
-	
 </style>
 <div class="container">
 	<div style="background-color:#ffffff; max-width:600px;" class="p-3 w-100 m-auto rounded-4">
@@ -135,8 +143,10 @@ $title = 'เข้าสู่ระบบอินทราเน็ต รพ
 				<input type="password" class="form-control" id="password" name="password" placeholder="Password">
 				<label for="password">รหัสผ่าน</label>
 			</div>
-
-				
+			<div class="mb-2">
+				<input type="checkbox" name="remember" class="form-check-input" id="remember" value="1">
+				<label class="form-check-label" for="remember">Remember</label>
+			</div>
 			<div class="mb-2">
 				<button type="submit" class="btn btn-primary w-100 py-2">เข้าสู่ระบบ</button>
 				<input type="hidden" name="action" value="login">
