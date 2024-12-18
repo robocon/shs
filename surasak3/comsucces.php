@@ -1,10 +1,7 @@
 <?php
-session_start();
-include("connect.php");
-?>
-<script src="sweetalert/jquery-3.6.0.js"></script>
-<script src="sweetalert/sweetalert2@11.js"></script>
-<?php
+include 'connect.php';
+include 'bootstrap.php';
+
 function send_line_noti($sMessage, $sToken)
 {
 	$curl = curl_init();
@@ -55,45 +52,25 @@ if ($_REQUEST['do'] == 'edit') {
 
 		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
 		$sMessage = "สรุปปิดงาน\nลำดับแจ้ง: $row\nเรื่อง: $head\nผู้แจ้ง: $user\nดำเนินการเรียบร้อยโดย $programmer";
-		send_line_noti($sMessage, $sToken);
+		// send_line_noti($sMessage, $sToken);
 
 		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		send_line_noti($sMessage, $tokenTwo);
+		// send_line_noti($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
-		echo "<script>
-				$(document).ready(function() {
-				Swal.fire({
-					title: 'บันทึกข้อมูล',
-					text: 'ระบบบันทึกข้อมูลเรียบร้อย !',
-					icon: 'success',
-					timer: 5000,
-					showConfirmButton: false
-					});
-				})
-			</script>";
-		header("refresh:2; url=com_support.php");
+		$location = ' com_support.php';
+
 	} else {
 
 		$_SESSION['supportMessage'] = "ไม่สามารถเพิ่มข้อมูลได้";
-		echo "<script>
-				$(document).ready(function() {
-				Swal.fire({
-					title: 'ผิดพลาด',
-					text: 'ระบบบันทึกข้อมูลไม่สำเร็จ !',
-					icon: 'error',
-					timer: 5000,
-					showConfirmButton: false
-					});
-				})
-			</script>";
-		header("refresh:2; url=com_support.php?row=$row");
+		$location = 'com_support.php?row='.$row;
 	}
-
+	header("Location: $location");
 	exit;
 }
-
 ?>
+<script src="sweetalert/jquery-3.6.0.js"></script>
+<script src="sweetalert/sweetalert2@11.js"></script>
 <style type="text/css">
 	.forntsarabun {
 		font-family: "TH SarabunPSK";
@@ -112,7 +89,6 @@ if ($_REQUEST['do'] == 'edit') {
 		cursor: pointer;
 	}
 </style>
-
 <body bgcolor="#FFFFFF">
 	<script language="javascript">
 		function fncSubmit() {
@@ -233,7 +209,7 @@ if ($_REQUEST['do'] == 'edit') {
 					foreach ($softwareTypeList as $swKey => $swType) {
 						$selected = $swType===$dbarr['software_type'] ? 'checked="checked"' : '' ;
 						?>
-						<input type="radio" name="software_type" id="<?=$swKey;?>" value="<?=$swType;?>" <?=$selected;?> ><label for="<?=$swKey;?>"><?=$swType;?></label>
+						<input type="radio" name="software_type" id="<?=$swKey;?>" value="<?=$swType;?>" <?=$selected;?> >&nbsp;<label for="<?=$swKey;?>"><?=$swType;?></label>
 						<?php
 					}
 					?>
@@ -263,7 +239,7 @@ if ($_REQUEST['do'] == 'edit') {
 				<strong>Serial Number :</strong>  <input name="asset_serial" type="text" class="forntsarabun" value="<?= $dbarr['asset_serial']; ?>" size="30">
 				</span>	
 				</td>
-			</tr>						
+			</tr>
 			<tr>
 				<td valign="top" bgcolor="#FF99CC" align="right"><strong>ผลการดำเนินงาน :</strong></td>
 				<td colspan="3" bgcolor="#FF99CC"><textarea name="p_edit" rows="5" class="forntsarabun" style="width:100%;"></textarea></td>
@@ -292,9 +268,19 @@ if ($_REQUEST['do'] == 'edit') {
 				if(this.value=='software'){
 					document.getElementById('swTypeContain').style.display = '';
 					document.getElementById('swTypeContain1').style.display = 'none';
+
+					// ล้างค่า hardware
+					document.getElementById('asset_type').value = '';
+					document.getElementById('asset_name').value = '';
+					document.getElementById('asset_serial').value = '';
+
 				}else if(this.value=='hardware'){
 					document.getElementById('swTypeContain').style.display = 'none';
 					document.getElementById('swTypeContain1').style.display = '';
+
+					// ล้างค่า checkbox
+					document.getElementById('software_type1').checked = false;
+					document.getElementById('software_type2').checked = false;
 				}
 			}
 		</script>
