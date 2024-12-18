@@ -31,10 +31,10 @@ if ($_REQUEST['do'] == 'edit') {
 	if ($query) {
 		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
 		$sMessage = "เรื่อง: $head\nกำลังดำเนินการโดย $owner";
-		send_line_noti($sMessage, $sToken);
+		sendLineNotify($sMessage, $sToken);
 
 		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		send_line_noti($sMessage, $tokenTwo);
+		sendLineNotify($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว";
 	} else {
