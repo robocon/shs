@@ -8,7 +8,6 @@ require_once 'includes/config.php';
 require_once "includes/functions.php";
 
 if(empty($Conn)){
-	header('Content-Type: text/html; charset=utf-8');
 	$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
 	mysql_select_db(DB, $Conn) or die( mysql_error() );
 	mysql_query("SET NAMES UTF8", $Conn);
