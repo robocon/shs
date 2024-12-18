@@ -35,11 +35,11 @@ if($_POST["act"]=="add")
 		// Lineกลุ่มห้องคอมฯ
 		$sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
 		$sMessage = "ใบงานใหม่\nลำดับ: $row_id\nผู้แจ้ง: $user\nแผนก: $depart\nติดต่อ: $phone\nหัวข้อ: $head\nรายละเอียด: $detail_for_line";
-		// send_line_noti($sMessage, $sToken);
+		send_line_noti($sMessage, $sToken);
 
 		// ติดตามงาน IT
 		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		// send_line_noti($sMessage, $tokenTwo);
+		send_line_noti($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "ทำการเพิ่มข้อมูลเรียบร้อยแล้ว";
 	}

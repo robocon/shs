@@ -2,19 +2,6 @@
 include 'connect.php';
 include 'bootstrap.php';
 
-function send_line_noti($sMessage, $sToken)
-{
-	$curl = curl_init();
-	curl_setopt($curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php");
-	curl_setopt($curl, CURLOPT_POST, 1);
-	curl_setopt($curl, CURLOPT_POSTFIELDS, "message=" . $sMessage . "&token=" . $sToken);
-	$headers = array('Content-type: application/x-www-form-urlencoded');
-	curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-	$result = curl_exec($curl);
-	curl_close($curl);
-}
-
 if ($_REQUEST['do'] == 'edit') {
 
 	function DateDiff($strDate1, $strDate2)
@@ -52,10 +39,10 @@ if ($_REQUEST['do'] == 'edit') {
 
 		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
 		$sMessage = "สรุปปิดงาน\nลำดับแจ้ง: $row\nเรื่อง: $head\nผู้แจ้ง: $user\nดำเนินการเรียบร้อยโดย $programmer";
-		// send_line_noti($sMessage, $sToken);
+		send_line_noti($sMessage, $sToken);
 
 		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		// send_line_noti($sMessage, $tokenTwo);
+		send_line_noti($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
 		$location = ' com_support.php';
