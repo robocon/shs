@@ -2400,21 +2400,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){
 		FROM `drugrx` 
 		WHERE `date` < '$date' AND `hn` = '%s' AND `drugcode` = '%s' 
 		ORDER BY `row_id` DESC LIMIT 1 
-	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode`",
+	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
+	WHERE b. ",
 	$dbi->real_escape_string($hn),
 	$dbi->real_escape_string($drugcode)
 	);
 
-	$sqlDruglst = sprintf("SELECT `genname` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
+	$sqlDruglst = sprintf("SELECT `genname`,`unit` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
 	$qDruglst = $dbi->query($sqlDruglst);
 	$genname = '';
+	$unit = '';
 	if($qDruglst->num_rows > 0){
 		$b = $qDruglst->fetch_assoc();
 		$genname = '('.$b['genname'].')';
+		$unit = strtolower(trim($b['unit']));
 	}
 
 	$q = $dbi->query($sql);
-	if($q->num_rows>0){
+	if($q->num_rows>0 && ($unit=='tablet' OR $unit=='capsule')){
 		$a = $q->fetch_assoc();
 		if($a['day_diff'] < $a['day_averrage']){
 			$tradname = $a['tradname'];

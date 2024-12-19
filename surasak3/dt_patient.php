@@ -119,8 +119,14 @@ if($style_menu==2){?>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
 	<TD><FONT COLOR="#FF0000"><?php echo $ptright;?></FONT></TD>
 	<td rowspan="6">
-		<IMG SRC="../image_patient/<?php echo $_SESSION["idcard_now"];?>.jpg" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">
-		</td>
+		<?php 
+		$imgPath = '../image_patient/'.$_SESSION["idcard_now"].'.jpg';
+		if(is_file($imgPath)==false){
+			$imgPath = '../image_patient/NoPicture.jpg';
+		}
+		?>
+		<IMG SRC="<?=$imgPath;?>" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">
+	</td>
 </TR>
 <TR>
 	<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
@@ -130,26 +136,26 @@ if($style_menu==2){?>
 	<TD colspan='6'>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" >
            <tr>
-             <td  width="8" align="right" bgcolor='#C1FFD6'>T : </td>
+             <td  width="" align="right" bgcolor='#C1FFD6'>T : </td>
              <td  align="left"><?php echo $_SESSION["temperature"];?> 
              C&deg; </td>
-             <td  width="8" align="right" bgcolor='#C1FFD6'>P : </td>
+             <td  width="" align="right" bgcolor='#C1FFD6'>P : </td>
              <td  align="left"><?php echo $_SESSION["pause"];?> 
              ครั้ง/นาที</td>
-             <td  width="8" align="right" bgcolor='#C1FFD6'>R : </td>
+             <td  width="" align="right" bgcolor='#C1FFD6'>R : </td>
              <td align="left"><?php echo $_SESSION["rate"];?>  
               ครั้ง/นาที</td>
-			  <td  width="8" align="right" bgcolor='#C1FFD6'>BP : </td>
+			  <td  width="" align="right" bgcolor='#C1FFD6'>BP : </td>
              <td align="left"><?php echo $_SESSION["bp"];?> 
              mmHg </td>
-			  <td  width="35" align="right" bgcolor='#C1FFD6'>นน. : </td>
+			  <td  width="" align="right" bgcolor='#C1FFD6'>นน. : </td>
              <td align="left"><?php echo $_SESSION["weight"];?> 
              กก. </td>
-			 <td  width="60" align="right" bgcolor='#C1FFD6'>ส่วนสูง. : </td>
+			 <td  width="" align="right" bgcolor='#C1FFD6'>ส่วนสูง. : </td>
              <td align="left"><?php echo $_SESSION["height"];?> 
              ซม. </td>
              
-			 <td  width="8" align="right" bgcolor='#C1FFD6'>BMI : </td>
+			 <td  width="" align="right" bgcolor='#C1FFD6'>BMI : </td>
 			 <td align="left"><?php if($_SESSION["height"] != "" && $_SESSION["height"] > 0){
 				 $ht = $_SESSION["height"]/100;
 				echo number_format(($_SESSION["weight"]/($ht*$ht)),2);

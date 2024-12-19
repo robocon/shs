@@ -26,11 +26,16 @@ $sql = "Select a.name From doctor as a INNER JOIN inputm as b ON a.doctorcode = 
 list($doctorname) = Mysql_fetch_row(Mysql_Query($sql));
 
 $thidate = date("d-m-").(date("Y")+543);
-$sql = "Select vn, hn, ptname, toborow,thidate  From opd where thdatehn like '".$thidate."%' AND doctor = '".$doctorname."' AND dc_diag is NULL Order by vn ASC ";
+if($doctorname=="MD065 พิศาล ศิริชีพชัยยันต์" || $doctorname=="MD089  เลอปรัชญ์ มังกรกนกพงศ์"){
+	$sql = "Select vn, hn, ptname, toborow,thidate,officer  From opd where thdatehn like '".$thidate."%' AND (doctor = '".$doctorname."' OR doctor ='MD204 จักษุแพทย์') AND dc_diag is NULL Order by vn ASC ";
+}else{
+	$sql = "Select vn, hn, ptname, toborow,thidate,officer  From opd where thdatehn like '".$thidate."%' AND doctor = '".$doctorname."' AND dc_diag is NULL Order by vn ASC ";	
+}
+//echo $sql;
 $result_list_pt = Mysql_Query($sql);
 $num_list_pt = Mysql_num_rows($result_list_pt );
 
-$sql = "Select vn, hn, ptname, toborow ,thidate 
+$sql = "Select vn, hn, ptname, toborow ,thidate ,officer
 From opd 
 where thdatehn like '".$thidate."%' 
 AND room like 'ห้อง%' 
@@ -51,8 +56,8 @@ body,td,th {
 	font-size: 20px;
 }
 
-.tb_head {background-color: #0046D7; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #FFFFC1;  }
+.tb_head {background-color: #45B39D; color: #FFFFCA; font-weight: bold; text-align:center;  }
+.tb_detail {background-color: #A3E4D7;  }
 .tb_detail2 {background-color: #FFFFFF;  }
 a{
 	text-decoration:none;
@@ -167,10 +172,11 @@ $depart1=Y;
 	<TD>HN</TD>
 	<TD>ชื่อ - สกุล</TD>
 	<TD>สถานะ</TD>
+	<TD>ผู้ซักประวัติ</TD>
 </TR>
 <?php
 
-while(list($vn, $hn, $ptname, $toborow,$thidate) = Mysql_fetch_row($result_list_pt)){
+while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row($result_list_pt)){
 
 	if(substr($toborow,-4) == "EX04"){
 		$class = "tb_detail2";
@@ -184,6 +190,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate) = Mysql_fetch_row($result_list_
 	<TD><?php echo $hn;?></TD>
 	<TD><?php echo $ptname;?></TD>
 	<TD><?php echo $toborow;?></TD>
+	<TD><?php echo $officer_opd;?></TD>
 </TR>
 <?php }?>
 </TABLE>
@@ -198,10 +205,11 @@ while(list($vn, $hn, $ptname, $toborow,$thidate) = Mysql_fetch_row($result_list_
 	<TD>HN</TD>
 	<TD>ชื่อ - สกุล</TD>
 	<TD>สถานะ</TD>
+	<TD>ผู้ซักประวัติ</TD>
 </TR>
 <?php
 
-while(list($vn, $hn, $ptname, $toborow,$thidate) = Mysql_fetch_row($result_list_pt2)){
+while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row($result_list_pt2)){
 
 	if(substr($toborow,-4) == "EX04"){
 		$class = "tb_detail2";
@@ -216,6 +224,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate) = Mysql_fetch_row($result_list_
 	<TD><?php echo $hn;?></TD>
 	<TD><?php echo $ptname;?></TD>
 	<TD><?php echo $toborow;?></TD>
+	<TD><?php echo $officer_opd;?></TD>
 </TR>
 <?php }?>
 </TABLE>
