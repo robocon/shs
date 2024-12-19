@@ -1,8 +1,7 @@
 <?php
 session_start();
 include "bootstrap.php";
-$dbi = new mysqli(HOST, USER, PASS, DB);
-$dbi->query("SET NAMES UTF8");
+
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -35,6 +34,9 @@ $dbi->query("SET NAMES UTF8");
                 font-family: "TH SarabunPSK";
                 font-size: 22px;
             }
+            img{
+                max-width: 600px;
+            }
         </style>
         <div class="w3-container">
             <a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;
@@ -49,7 +51,7 @@ $dbi->query("SET NAMES UTF8");
         </div>
         <form method="post" id="userForm" action="ot_programmer.php" class="w3-container" >
             <?php 
-            $yRange = range(2022,date('Y'));
+            $yRange = range(2023,date('Y'));
             ?>
             <div class="w3-row-padding">
                 <div class="w3-col s2">
@@ -136,6 +138,23 @@ $dbi->query("SET NAMES UTF8");
                 )
             ) 
 			order by dateend asc";						
+		}else if($chkdate == "2565-10"){
+		   $sql = "SELECT *,TIME(`date`) AS `date_time` 
+            FROM `com_support` 
+            WHERE `dateend` LIKE '$year-$month%' 
+            AND `programmer` LIKE '$comUser%'
+			AND `status` = 'n'
+            AND 
+            ( 
+                ( TIME(`date`) >= '16:30:00' OR TIME(`date`) <= '08:30:00' )
+				OR
+				( TIME(`dateend`) >= '16:30:00' OR TIME(dateend) <= '08:30:00' )
+                OR ( 
+                    DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 0 
+                    OR DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 6 
+                )
+            ) 
+			order by dateend asc";				
 		}else{
 		   $sql = "SELECT *,TIME(`date`) AS `date_time` 
             FROM `com_support` 
@@ -151,8 +170,12 @@ $dbi->query("SET NAMES UTF8");
                     DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 0 
                     OR DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 6 
                 )
+				OR ( 
+                    DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 0 
+                    OR DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 6 
+                )				
             ) 
-			order by dateend asc";				
+			order by dateend desc";				
 		}
 		//echo $sql;
             $q = $dbi->query($sql);
@@ -190,7 +213,7 @@ $dbi->query("SET NAMES UTF8");
                     <tr>
 						<td><?=$i;?></td>
                         <td><?=$date;?></td>
-                        <td><?=$item['row'].":".$item['detail'];?></td>
+                        <td><?=$item['row'].":".htmlspecialchars_decode($item['detail']);?></td>
                         <td><?=$user;?></td>
                         <td><?=$item['depart'];?></td>
                         <td><?=$item['programmer'];?></td>

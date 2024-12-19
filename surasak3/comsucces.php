@@ -33,7 +33,18 @@ if ($_REQUEST['do'] == 'edit') {
 		$software_type = sprintf("%s", $_POST['software_type']);
 	}
 	
-	$update = "UPDATE com_support SET `status`='n', `p_edit`='$p_edit' ,`dateend`='$thidate' , `programmer`='$programmer', hold='$hold', `software_type`='$software_type', `asset_type`='".$_POST['asset_type']."', `asset_name`='".$_POST['asset_name']."', `asset_serial`='".$_POST['asset_serial']."' WHERE `row`='$row' ";
+	$update = "UPDATE com_support SET 
+	`status`='n', 
+	`p_edit`='$p_edit', 
+	`dateend`='$thidate', 
+	`jobtype` = '$jobType', 
+	`programmer`='$programmer', 
+	`hold`='$hold', 
+	`software_type`='$software_type', 
+	`asset_type`='".$_POST['asset_type']."', 
+	`asset_name`='".$_POST['asset_name']."', 
+	`asset_serial`='".$_POST['asset_serial']."' 
+	WHERE `row`='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
 

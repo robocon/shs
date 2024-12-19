@@ -267,6 +267,14 @@ if ($countAllItem>0) {
     foreach ($items as $k => $v) {
 
         $row = $v['row'];
+
+        $sqlDetail = sprintf("SELECT `id` FROM `com_support_details` WHERE `com_id` = '%s' ", $row);
+        $qDetail = $dbi->query($sqlDetail);
+        $icon = '';
+        if($qDetail->num_rows>0){
+            $icon = '<img src="images/comment-64.png" width="32" height="32">';
+        }
+
         $depart = $v['depart'];
         $head = $v['head'];
         $p_edit = $v['p_edit'];
@@ -276,7 +284,7 @@ if ($countAllItem>0) {
         print (" <tr>\n" .
             "  <td BGCOLOR=#D5F5E3  align='center'>$row</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$depart</td>\n" .
-            "  <td BGCOLOR=#D5F5E3><a target=_TOP href=\"comdetail.php? row=$row\">$head</a></td>\n" .
+            "  <td BGCOLOR=#D5F5E3><a target=_TOP href=\"comdetail.php?row=$row\">$head</a>$icon</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$p_edit</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$programmer</td>\n" .
             "  <td BGCOLOR=#D5F5E3 align='center'>$dateend</td>\n" .

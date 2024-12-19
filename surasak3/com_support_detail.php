@@ -172,6 +172,9 @@ $item = $q->fetch_assoc();
         clear: both;
         display: table;
     }
+    img{
+        max-width: 600px;
+    }
 </style>
 <table width="100%" style="table-layout: fixed;">
     <tr bgcolor="#FFCC00">
