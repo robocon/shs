@@ -1,10 +1,12 @@
 <?php 
 
 include 'bootstrap.php';
+require_once 'includes/JSON.php';
 
-$dbi = new mysqli(HOST, USER, PASS, DB);
-$dbi->query("SET NAMES UTF8");
-
+if(empty($_SESSION['sOfficer'])){
+    header("Location: login_page.php");
+    exit;
+}
 
 $action = sprintf("%s", $_REQUEST['action']);
 $page = sprintf("%s", $_REQUEST['page']);
@@ -47,7 +49,8 @@ if ($action === 'active') {
     $sql = "UPDATE `med_scan` SET 
     `lastupdate`=NOW(), 
     `confirm`='y', 
-    `lasteditor`='$confirm' 
+    `lasteditor`='$confirm',
+    `confirm_date`=NOW() 
     WHERE (`id`='$id');";
     $q = $dbi->query($sql);
     if( $q !== false ){ 
@@ -76,7 +79,6 @@ if ($action === 'active') {
             display: none;
         }
     }
-    
     </style>
     <div class="no-print">
         <button type="button" onclick="print_img()" >พิมพ์</button> | <a href="med_phar.php">กลับหน้ารายการ</a>
@@ -122,7 +124,7 @@ if ($action === 'active') {
                 };
                 request.send(dataPost); 
             }
-            sendLineNotifyV2();
+            // sendLineNotifyV2();
 
             <?php
             unset($_SESSION['line_msg']);
@@ -153,10 +155,21 @@ if ($action === 'active') {
         redirect('med_phar.php','ยกเลิกรายการเรียบร้อย');
     }
     exit;
+}elseif ($action==='findNotify'){
+    $json = new Services_JSON();
+
+    $today = date('Y-m-d');
+    $sql = "SELECT * FROM `med_scan` WHERE `date` LIKE '$today%' AND `status` = 'y' AND `confirm` IS NULL AND ( `confirm_date` IS NULL OR `confirm_date` = '')  ";
+    $q = $dbi->query($sql);
+    $res = array('status'=>400, 'message'=>'fail');
+    if($q->num_rows>0){
+        $items = array();
+        $res = array('status'=>200, 'message'=>'success', 'data'=>'1');
+    }
+    echo $json->encode($res);
+    exit;
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,33 +179,24 @@ if ($action === 'active') {
     <title>นำร่องอายุรกรรม</title>
 </head>
 <body>
-
 <style>
-*{
-    font-family: "TH SarabunPSK","TH Sarabun New";
-    font-size: 16pt;
-}
-p{
-    margin: 0;
-}
+*{font-family: "TH SarabunPSK","TH Sarabun New";font-size: 16pt;}
+h1{font-size: 32px;}
+p{margin: 0;}
 .chk_table{
     border-collapse: collapse;
 }
-
 .chk_table, th, td{
     border: 1px solid black;
     font-size: 16pt;
 }
-
 .chk_table th,
 .chk_table td{
     padding: 3px;
 }
-
 tr{
     vertical-align: top;
 }
-
 #imgContainer{
     position: absolute;
     top: 2%;
@@ -207,7 +211,6 @@ tr{
 #imgBtnClose:hover{
     cursor: pointer;
 }
-
 .btnActive{
     padding: 3px;
     color: #000000;
@@ -215,7 +218,6 @@ tr{
     margin: 2px;
     text-decoration: none;
 }
-
 .clearfix::after {
   content: "";
   clear: both;
@@ -223,7 +225,7 @@ tr{
 }
 </style>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a>  <?=($_SESSION['smenucode']=='ADM' ? ' | <a href="med_ward.php">Upload Doctor Order</a>' : '' );?></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
@@ -231,8 +233,11 @@ if( isset($_SESSION['x-msg']) ){
     unset($_SESSION['x-msg']);
 }
 ?>
-<div>
-    <h3>Doctor Order</h3>
+<div class="clearfix">
+    <h1>Doctor Order</h1>
+    <div class="clearfix" id="notifyContainer" style="display:none; margin-bottom: 8px;">
+        <div style="float: left;padding: 4px 8px;background-color: red;border-radius: 8px;color: #ffffff;font-weight: bold;">มี Order แพทย์มาใหม่ กรุณารีเฟรชหน้าจอเพื่ออัพเดทรายการอีกครั้ง</div>
+    </div>
 </div>
 
 <div style="display: none;"><?=var_dump($_SERVER['HTTP_USER_AGENT']);?></div>
@@ -259,7 +264,7 @@ if( $_SESSION['fix_an'] ){
 $sql = "SELECT a.*,b.`bedcode` 
 FROM `med_scan` AS a 
 LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
-WHERE a.`confirm` IS NULL 
+WHERE ( a.`confirm` IS NULL OR a.`confirm` = '' )
 $where 
 AND a.`status` = 'y' 
 ORDER BY a.`id` DESC";
@@ -468,13 +473,21 @@ if ( $page === 'searchFile' ) {
     <div id="imgBtnClose">[Close]</div>
     <div><img src="" alt="" id="imgContent" style="max-width:210mm;"></div>
 </div>
+
+<audio id="myAudio" autoplay="true">
+  <source src="<?=DOMAIN_PATH;?>/sounds/smooth-completed-notify-starting-alert-274739.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<button id="activateSoundBtn" onclick="playSound();" style="display:none;">activateSound</button>
+
 <script>
-    
+    var x = document.getElementById("myAudio");
+    var a = document.getElementById("activateSound");
+
     // open popup
     var imgs = document.querySelectorAll('.showImg');
     for (var index = 0; index < imgs.length; index++) {
         var item = imgs[index];
-        
         item.addEventListener('click', function(event) {
             document.getElementById('imgContent').setAttribute('src', this.getAttribute('src'));
             document.getElementById('imgContainer').style.display = ''; // show
@@ -483,7 +496,6 @@ if ( $page === 'searchFile' ) {
             var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
             document.getElementById('imgContainer').setAttribute('style', 'top: '+top+'px;');
         });
-        
     }
 
     // close button
@@ -491,6 +503,28 @@ if ( $page === 'searchFile' ) {
     imgBtn[0].addEventListener('click', function(event){
         document.getElementById('imgContainer').style.display = 'none';
     });
+
+    window.onload = function(){
+        setInterval(function () {
+            loadNotify().then((res)=>{
+                if(res.status==200){
+                    document.getElementById('activateSoundBtn').click();
+                    document.getElementById('notifyContainer').style.display = '';
+                }else{
+                    document.getElementById('notifyContainer').style.display = 'none';
+                }
+            });
+        }, 5000);
+    }
+    async function loadNotify(){
+        const response = await fetch('med_phar.php?action=findNotify');
+        const body = await response.json();
+        return body;
+    }
+
+    function playSound(){
+        x.play();
+    }
     
 </script>
 

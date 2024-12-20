@@ -212,7 +212,7 @@ if ( $action === 'save' ) {
     <title>อัพโหลดไฟล์ Doctor Order</title>
 </head>
 <body>
-
+<script src="js/sweetalert2.all.min.js"></script>
 <style>
 *{
     font-family: "TH SarabunPSK","TH Sarabun New";
@@ -263,10 +263,15 @@ tr{
     margin: 2px;
     text-decoration: none;
 }
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
 </style>
 <?php 
 $PharLink = '';
-if ($_SESSION['sLevel'] == "admin") {
+if ($_SESSION['smenucode'] == "ADM") {
     $PharLink = ' | <a href="med_phar.php">หน้าเภสัชฯ</a>';
 }
 ?>
@@ -301,7 +306,7 @@ if( isset($_SESSION['x-msg']) ){
 
             }
 
-            sendLineNotifyV2();
+            // sendLineNotifyV2();
 
 
             /**
@@ -354,38 +359,40 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
     <div>Scan Order<br>Tablet/Mobile</div>
 </div> -->
 <div>
-<h3>อัพโหลดไฟล์ Doctor Order</h3>
+    <h3>อัพโหลดไฟล์ Doctor Order</h3>
 </div>
-<fieldset style="width:80%;">
-    <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
-    <form action="med_ward.php" method="post">
-        <div>
-            AN: <input type="text" name="an" value="<?=$default_an;?>">
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="search_an">
-        </div>
-    </form>
-</fieldset>
-<fieldset style="width:80%;">
-    <legend>ค้นหาเอกสารด้วย AN</legend>
-    <form action="med_ward.php" method="post">
-        <div>
-            AN: <input type="text" name="an" value="<?=$default_an;?>">
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="searchFile">
-        </div>
-    </form>
-</fieldset>
+<div class="clearfix">
+    <fieldset style="width:30%; float:left;">
+        <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
+        <form action="med_ward.php" method="post">
+            <div>
+                AN: <input type="text" name="an" value="<?=$default_an;?>">
+            </div>
+            <div>
+                <button type="submit">ค้นหา</button>
+                <input type="hidden" name="page" value="search_an">
+            </div>
+        </form>
+    </fieldset>
+    <fieldset style="width:30%; float:left;">
+        <legend>ค้นหาเอกสารด้วย AN</legend>
+        <form action="med_ward.php" method="post">
+            <div>
+                AN: <input type="text" name="an" value="<?=$default_an;?>">
+            </div>
+            <div>
+                <button type="submit">ค้นหา</button>
+                <input type="hidden" name="page" value="searchFile">
+            </div>
+        </form>
+    </fieldset>
+</div>
 <?php 
 $page = input('page');
 if ( $page === 'search_an' ) {
     
     $an = input('an');
-    $sql = "SELECT a.`an`,a.`hn`,a.`ptname`,a.`doctor`,a.`bedcode`,b.`idcard` 
+    $sql = "SELECT a.`an`,a.`hn`,a.`ptname`,a.`doctor`,a.`bedcode`,b.`idcard`,a.`ptright`, a.`dcdate`
     FROM `ipcard` AS a 
     LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
     WHERE a.`an` = '$an' ";
@@ -399,21 +406,30 @@ if ( $page === 'search_an' ) {
         $ptname = $ipt['ptname'];
         $idcard = $ipt['idcard'];
         $bedcode = $ipt['bedcode'];
-
+        if(empty($ipt['ptname']) OR empty($ipt['ptright'])){
+            ?>
+            <div style="color:red;"><strong>สถานะของผู้ป่วยยังไม่ผ่านส่วนเก็บเงินรายได้ กรุณาตรวจสอบข้อมูลอีกครั้ง</strong></div>
+            <?php
+        }
+        if($ipt['dcdate']!='0000-00-00 00:00:00'){
+            ?>
+            <div style="color:red;"><strong>ผู้ป่วยได้ทำการ Discharge ไปเรียบร้อยแล้ว</strong></div>
+            <?php
+        }
         ?>
         <fieldset>
             <legend>ข้อมูลผู้ป่วย</legend>
-            <form action="med_ward.php" method="post" enctype="multipart/form-data">
+            <form action="med_ward.php" method="post" enctype="multipart/form-data" onsubmit="return testBeforeSubmit()">
                 <div>
                     <b>AN:</b> <?=$ipt['an'];?><br>
-                    <b>HN:</b> <?=$ipt['hn'];?><br>
+                    <b>HN:</b> <?=$ipt['hn'];?> <b>สิทธิ:</b> <?=$ipt['ptright'];?><br>
                     <b>ชื่อสกุล:</b> <?=$ipt['ptname'];?><br>
                     <b>แพทย์:</b> <?=$ipt['doctor'];?>
                 </div>
                 <div>
-                    เลือกไฟล์ <input type="file" name="file[]" multiple>
+                    <strong>เลือกไฟล์:</strong> <input type="file" id="file" name="file[]" multiple>
                 </div>
-                <div><u>* อนุญาตให้ใช้ไฟล์นามสกุล .jpg, .jpeg และ .png เท่านั้น</u></div>
+                <div style="color:red;"><u>* อนุญาตให้ใช้ไฟล์นามสกุล .jpg, .jpeg และ .png เท่านั้น</u></div>
                 <div>
                     <button type="submit">บันทึกข้อมูล</button>
                     <input type="hidden" name="action" value="save">
@@ -424,6 +440,25 @@ if ( $page === 'search_an' ) {
                     <input type="hidden" name="bedCode" value="<?=$bedcode;?>">
                 </div>
             </form>
+            <script>
+                function testBeforeSubmit(){
+
+                    var fileLength =document.getElementById('file').files.length;
+
+                    let ptright = '<?=$ipt['ptright'];?>';
+                    if(ptright==''){ 
+                        Swal.fire({
+                            title: 'สถานะของผู้ป่วยยังไม่ผ่านส่วนเก็บเงินรายได้<br>กรุณาตรวจสอบข้อมูลอีกครั้ง'
+                        });
+                        return false;
+                    }
+
+                    if(fileLength==0){
+                        Swal.fire("กรุณาเลือกไฟล์แนบ");
+                        return false;
+                    }
+                }
+            </script>
         </fieldset>
         <?php
     }else{
