@@ -466,12 +466,15 @@ if($_COOKIE['shsLogin']==='1'){
 
 		ini_set('session.gc_maxlifetime', 60*60*24);
 		
-		$_SESSION['sIdname'] = $a['idname'];
+		$sIdname = $_SESSION['sIdname'] = $a['idname'];
 		$_SESSION['sPword'] = $a['pword'];
 		$_SESSION['smenucode'] = $a['menucode'];
 		$_SESSION['sOfficer'] = $a['name'];
 		$_SESSION['sRowid'] = $a['row_id'];
 		$_SESSION['sLevel'] = $a['level'];
+
+		setcookie('shsLogin','1',strtotime("+1 day"),'/');
+		setcookie('shsLoginUser','name='.$sIdname.',id='.$a['row_id'],strtotime("+1 day"),'/');
 
 	}
 }
