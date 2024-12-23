@@ -368,6 +368,48 @@
             return false;
         }
 
+        let ecgCxrChecked = document.getElementById('ecgCxr1').checked;
+        if(ecgCxrChecked==true){
+            
+            let dateEcgCxr = document.getElementById('dateEcgCxr');
+            if(dateEcgCxr.value==''){
+                Swal.fire({title: "กรุณาระบุวันที่ในการตรวจ ECG/CXR ด้วยครับ", didClose: handleOnFocus('dateEcgCxr')});
+                return false;
+            }
+        }
+
+        let ecgCxrChecked = document.getElementById('ecgCxr1').checked;
+        if(ecgCxrChecked==true){
+            
+            let dateEcgCxr = document.getElementById('dateEcgCxr');
+            if(dateEcgCxr.value==''){
+                Swal.fire({title: "กรุณาระบุวันที่ในการตรวจ ECG/CXR ด้วยครับ", didClose: handleOnFocus('dateEcgCxr')});
+                return false;
+            }
+        }
+
+        function handleOnFocus(idName){
+            document.getElementById(idName).focus();
+        }
+
+
+        let albuminChecked = document.getElementById('albumin1').checked;
+        if(albuminChecked==true){
+            let dateAlbumin = document.getElementById('dateAlbumin');
+            if(dateAlbumin.value==''){
+                Swal.fire("กรุณาระบุวันที่ในการตรวจ Albumin ด้วยครับ");
+                return false;
+            }
+        }
+
+        let cretinineChecked = document.getElementById('cretinine1').checked;
+        if(cretinineChecked==true){
+            let dateCretinine = document.getElementById('dateCretinine');
+            if(dateCretinine.value==''){
+                Swal.fire("กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ");
+                return false;
+            }
+        }
         return true;
     }
 
