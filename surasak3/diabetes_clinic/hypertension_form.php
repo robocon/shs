@@ -378,16 +378,6 @@
             }
         }
 
-        let ecgCxrChecked = document.getElementById('ecgCxr1').checked;
-        if(ecgCxrChecked==true){
-            
-            let dateEcgCxr = document.getElementById('dateEcgCxr');
-            if(dateEcgCxr.value==''){
-                Swal.fire({title: "กรุณาระบุวันที่ในการตรวจ ECG/CXR ด้วยครับ", didClose: handleOnFocus('dateEcgCxr')});
-                return false;
-            }
-        }
-
         function handleOnFocus(idName){
             document.getElementById(idName).focus();
         }
@@ -397,7 +387,7 @@
         if(albuminChecked==true){
             let dateAlbumin = document.getElementById('dateAlbumin');
             if(dateAlbumin.value==''){
-                Swal.fire("กรุณาระบุวันที่ในการตรวจ Albumin ด้วยครับ");
+                Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Albumin ด้วยครับ", didClose: handleOnFocus('dateAlbumin')});
                 return false;
             }
         }
@@ -406,7 +396,7 @@
         if(cretinineChecked==true){
             let dateCretinine = document.getElementById('dateCretinine');
             if(dateCretinine.value==''){
-                Swal.fire("กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ");
+                Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ", didClose: handleOnFocus('dateCretinine')});
                 return false;
             }
         }
