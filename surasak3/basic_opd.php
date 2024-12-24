@@ -1684,6 +1684,41 @@ function checkList(){
 
 
 function checkForm(){
+	let formHt = document.getElementById('formHt');
+	if(formHt.style.display == ''){
+		
+		let ecgCxrChecked = document.getElementById('ecgCxr1').checked;
+        if(ecgCxrChecked==true){
+            
+            let dateEcgCxr = document.getElementById('dateEcgCxr');
+            if(dateEcgCxr.value==''){
+                Swal.fire({title: "กรุณาระบุวันที่ในการตรวจ ECG/CXR ด้วยครับ", didClose: handleOnFocus('dateEcgCxr')});
+                return false;
+            }
+        }
+
+        function handleOnFocus(idName){
+            document.getElementById(idName).focus();
+        }
+
+        let albuminChecked = document.getElementById('albumin1').checked;
+        if(albuminChecked==true){
+            let dateAlbumin = document.getElementById('dateAlbumin');
+            if(dateAlbumin.value==''){
+                Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Albumin ด้วยครับ", didClose: handleOnFocus('dateAlbumin')});
+                return false;
+            }
+        }
+
+        let cretinineChecked = document.getElementById('cretinine1').checked;
+        if(cretinineChecked==true){
+            let dateCretinine = document.getElementById('dateCreatinine');
+            if(dateCretinine.value==''){
+                Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ", didClose: handleOnFocus('dateCretinine')});
+                return false;
+            }
+        }
+	}
 	if(document.form2.doctor.value == "" || document.form2.doctor.value == 0){
 		alert('กรุณาเลือก แพทย์ด้วยครับ');
 		return false;
@@ -1700,9 +1735,13 @@ function checkForm(){
 	}else if(document.form2.opdtype1.checked == false && document.form2.opdtype2.checked == false && document.form2.opdtype3.checked == false && document.form2.opdtype4.checked == false){
 		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
 		return false;	
-	}else{
-		return true;
 	}
+
+	
+	console.log(formHt);
+	return false;
+	// return true;
+	
 }
 
 function clear_textbox(){
