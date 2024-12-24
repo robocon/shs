@@ -246,7 +246,7 @@
                                     <td></td>
                                     <td>
                                         <div style="position:relative;">
-                                            <input type="text" name="dateEcgCxr" id="dateEcgCxr" value="<?=$arr_opd['dateEcgCxr'];?>" > <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่รับบริการ</a>
+                                            <input type="text" name="dateEcgCxr" id="dateEcgCxr" value="<?=$arr_opd['dateEcgCxr'];?>" > <a href="javascript:void(0);" onclick="showDateSelected()">เลือกวันที่ตรวจ</a>
                                             <div id="landingDateSelected" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;"></div>
                                         </div>
                                     </td>
@@ -299,7 +299,7 @@
                                     <td></td>
                                     <td>
                                         <div style="position:relative;">
-                                            <input type="text" name="dateCreatinine" id="dateCreatinine" value="<?=$arr_opd['dateCreatinine'];?>"> <a href="javascript:void(0);" onclick="showDateCreatinine()">เลือกวันที่รับบริการ</a>
+                                            <input type="text" name="dateCreatinine" id="dateCreatinine" value="<?=$arr_opd['dateCreatinine'];?>"> <a href="javascript:void(0);" onclick="showDateCreatinine()">เลือกวันที่ตรวจ</a>
                                             <input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber">
                                             <div id="landingDateCreatinine" style="display:none;position: absolute;top: 28px;right: 0;background-color: #ffffff;border: 2px solid #000000;box-shadow: 5px 10px #888888;">
                                             </div>
@@ -392,9 +392,9 @@
             }
         }
 
-        let cretinineChecked = document.getElementById('cretinine1').checked;
+        let cretinineChecked = document.getElementById('creatinine1').checked;
         if(cretinineChecked==true){
-            let dateCretinine = document.getElementById('dateCretinine');
+            let dateCretinine = document.getElementById('dateCreatinine');
             if(dateCretinine.value==''){
                 Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ", didClose: handleOnFocus('dateCretinine')});
                 return false;

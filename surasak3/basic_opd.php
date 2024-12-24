@@ -1689,7 +1689,6 @@ function checkForm(){
 		
 		let ecgCxrChecked = document.getElementById('ecgCxr1').checked;
         if(ecgCxrChecked==true){
-            
             let dateEcgCxr = document.getElementById('dateEcgCxr');
             if(dateEcgCxr.value==''){
                 Swal.fire({title: "กรุณาระบุวันที่ในการตรวจ ECG/CXR ด้วยครับ", didClose: handleOnFocus('dateEcgCxr')});
@@ -1710,11 +1709,11 @@ function checkForm(){
             }
         }
 
-        let cretinineChecked = document.getElementById('cretinine1').checked;
+        let cretinineChecked = document.getElementById('creatinine1').checked;
         if(cretinineChecked==true){
             let dateCretinine = document.getElementById('dateCreatinine');
             if(dateCretinine.value==''){
-                Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ", didClose: handleOnFocus('dateCretinine')});
+                Swal.fire({title:"กรุณาระบุวันที่ในการตรวจ Cretinine ด้วยครับ", didClose: handleOnFocus('dateCreatinine')});
                 return false;
             }
         }
@@ -1736,11 +1735,8 @@ function checkForm(){
 		alert('กรุณาเลือกประเภทผู้มารับบริการด้วยครับ');
 		return false;	
 	}
-
 	
-	console.log(formHt);
-	return false;
-	// return true;
+	return true;
 	
 }
 
