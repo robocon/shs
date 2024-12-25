@@ -1996,42 +1996,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
 	echo $return;
 	exit;
-	
-	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";  //เช็คแพ้ยารายตัว
-	$result1 = mysql_query($sql1);
-
-	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
-			echo "3";	//lock ยารายตัว		
-	}else if($arr["amountcode"] > 0){  //มียานั้นๆ อยู่ในระบบ
-		$sql2 = "Select drugcode,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."'  and groupname !='' limit 0,1";  //เช็คแพ้ยาตามกลุ่ม
-		$result2 = mysql_query($sql2);
-		$arr2 = mysql_fetch_assoc($result2);
-		if(Mysql_num_rows($result2) > 0){  //ถ้ามีแพ้ยาตามกลุ่ม
-			if(!empty($arr2["drugcode"])){  //ถ้ามียาในกลุ่มที่แพ้	
-				echo "55";
-			}else{
-				$sql3="SELECT drugcode,drugreact_group FROM `drugreact_group_list` where drugcode='".$_GET["search"]."'";  //เช็คก่อนว่ามียาที่คีย์มาในกลุ่มที่แพ้หรือไม่	
-				$query3=mysql_query($sql3);
-				$num3=mysql_num_rows($query3);
-				list($drugcode,$drugreact_group)=mysql_fetch_array($query3);
-				if($num3 > 0){  //ถ้ามีอยู่ในกลุ่มที่แพ้ ให้เช็คต่ออีกว่าได้ระบุการแพ้ยาตามกลุ่มไปหรือยัง
-					if($drugcode==$arr2["drugcode"]){
-						echo "55";  //lock ยาตามกลุ่ม
-					}else{
-						echo "66";  //alert
-					}		
-				}else{			
-						echo "1";
-				}		
-			}
-		}else{
-			echo "1";
-		}		
-	}else{
-		echo "0";  //ใส่รหัสยาใหม่
-	}
-
-	exit();
 }
 
 //*********************************** ตรวจสอบการlockจ่ายยา *****************************

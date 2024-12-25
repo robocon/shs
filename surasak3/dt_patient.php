@@ -83,10 +83,16 @@ if($style_menu==2){?>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
 	<TD><?php echo $ptright;?></TD>
 </TR>
-<TR>
-	<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
-	<TD colspan="6"><?php echo $hospcode;?></TD>
-</TR>
+<?php 
+if(!empty($hospcode)){
+	?>
+	<TR>
+		<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
+		<TD colspan="6"><?php echo $hospcode;?></TD>
+	</TR>
+	<?php
+}
+?>
 </TABLE>
 </TD>
 </TR>
@@ -118,7 +124,7 @@ if($style_menu==2){?>
 	<TD><?php echo $_SESSION["idcard_now"];?></TD>
 	<TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
 	<TD><FONT COLOR="#FF0000"><?php echo $ptright;?></FONT></TD>
-	<td rowspan="6">
+	<td rowspan="3">
 		<?php 
 		$imgPath = '../image_patient/'.$_SESSION["idcard_now"].'.jpg';
 		if(is_file($imgPath)==false){
@@ -128,10 +134,16 @@ if($style_menu==2){?>
 		<IMG SRC="<?=$imgPath;?>" WIDTH="100" HEIGHT="150" BORDER="0" ALT="">
 	</td>
 </TR>
-<TR>
-	<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
-	<TD colspan="6"><FONT COLOR="#FF0000"><?php echo $hospcode;?></FONT></TD>
-</TR>
+<?php 
+if(!empty($hospcode)){
+	?>
+	<TR>
+		<TD align="right" class="tb_detail">รพ.ต้นสังกัด : </TD>
+		<TD colspan="6"><FONT COLOR="#FF0000"><?php echo $hospcode;?></FONT></TD>
+	</TR>
+	<?php
+}
+?>
 <TR>
 	<TD colspan='6'>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" >
@@ -167,18 +179,17 @@ if($style_menu==2){?>
              <td align="left" colspan="14">จำนวนที่สูบบุหรี่ :  <B><?php echo $smokeshow;?></B> (ซอง/ปี) </td>
            </tr>
 		   <? } ?>			   
-		   <? if(!empty($cvriskscore)){ ?>
-           <tr>
-             <td align="left" colspan="14">CV risk score (ไม่ใช้ผลเลือด) :  <B><?php echo $cvriskscore;?></B></td>
-           </tr>
-		   <? } ?>	   
-		   <? if(!empty($cvriskscore_lab)){ ?>
-           <tr>
-             <td align="left" colspan="14">CV risk score (ใช้ผลเลือด) :  <B><?php echo $cvriskscore_lab;?></B></td>
-           </tr>
-		   <? } ?>		   
-           <tr>
-             <td align="left" colspan="14">Repeat BP : <b><?=$_SESSION['repeat_bp'];?></b> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B> , โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
+		   <tr>
+             <td align="left" colspan="14">
+				<?php 
+				if(!empty($cvriskscore)){
+					?>CV risk score (ไม่ใช้ผลเลือด) : <B><?php echo $cvriskscore;?></B>, <?php
+				}
+				if(!empty($cvriskscore_lab)){
+					?>CV risk score (ใช้ผลเลือด) : <B><?php echo $cvriskscore_lab;?></B>, <?php
+				}
+				?>
+				Repeat BP : <b><?=$_SESSION['repeat_bp'];?></b> mmHg, สภาพ : <B><?php echo $_SESSION["type"];?></B>, โรคประจำตัว : <B><?php echo $_SESSION["congenital_disease"];?></B>
 			&nbsp;&nbsp;&nbsp;&nbsp;, อาการ : <B><?php echo $_SESSION["organ"];?></B>
              </td>
            </tr>
@@ -208,11 +219,11 @@ GROUP BY `drugcode` ";
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
 if($rows > 0){ 
-		$txt = "";
-		$i=1;
-		$txt2 = array();
+	$txt = "";
+	$i=1;
+	$txt2 = array();
 	
-	echo "<tr><td colspan='6'>";
+	echo "<tr><td colspan='7'>";
 	?>
 	<style>
 		.patient_drugreact{
@@ -228,7 +239,7 @@ if($rows > 0){
 	</style>
 	<table width="100%">
 		<tr>
-			<td valign="top" width="5%">
+			<td valign="top">
 				<b style="color:red;"><a href="javascript:void(0);" onclick="show_drugreact_hn('<?=$_SESSION['hn_now'];?>')">แพ้ยา</a>:</b>
 				<script>
 					// เปิด popup หน้าแพ้ยา
@@ -236,9 +247,7 @@ if($rows > 0){
 						window.open('show_drugreact_hn.php?hn='+hn, "WindowShowDrugreact","width=800,height=600");
 					}
 				</script>
-			</td>
-			<td>
-			<table width="100%" class="patient_drugreact">
+				<!-- <table width="100%" class="patient_drugreact"> -->
 	<?php
 	$test_i = 1;
 	$item_per_line = 2;
@@ -248,25 +257,26 @@ if($rows > 0){
 		$txt2[$i-1] = $arr["tradname"]." ".$arr["genname"];
 		// if($i%3==0) $txt .="<BR>"; else $txt.=",";
 
-		if($test_i%$item_per_line===1){
-			echo "<tr>";
-		}
+		// if($test_i%$item_per_line===1){
+		// 	echo "<tr>";
+		// }
 
 		$row_span='';
 		if($test_i===$rows){
 			$row_span='colspan="2"';
 		}
 
-		echo "<td $row_span>".$i.".) <b>".$arr['drugcode']."</b> : <span style='font-size:20px;'>".$arr["tradname"]." [".$arr["genname"]."]</span></td>";
-		if($test_i%$item_per_line===0 OR $test_i===$rows){
-			echo "</tr>";
-		}
+		// echo "<td $row_span>".$i.".) <b>".$arr['drugcode']."</b> : <span style='font-size:20px;'>".$arr["tradname"]." [".$arr["genname"]."]</span></td>";
+		echo $i.".) <b>".$arr['drugcode']."</b> : <span style='font-size:20px; color: red;'>".$arr["tradname"]." [".$arr["genname"]."]</span>&nbsp;&nbsp;&nbsp;";
+		// if($test_i%$item_per_line===0 OR $test_i===$rows){
+		// 	echo "</tr>";
+		// }
 
 		$i++;
 		$test_i++;
 	}
 	?>
-			</table>
+			<!-- </table> -->
 			</td>
 		</tr>
 	</table>
@@ -286,7 +296,7 @@ if($rows > 0){
 		$adv = mysql_fetch_assoc($resultAdv);
 		?>
 		<tr>
-			<td colspan="6"><b>อาการ:</b> <?=$adv['advreact'];?></td>
+			<td colspan="7"><b>อาการ:</b> <?=$adv['advreact'];?></td>
 		</tr>
 		<?php
 	}
@@ -322,7 +332,7 @@ if($rows1 > 0){
 	}
 	$_SESSION["list_drugreact"] = implode(", ",$txt21);
 
-	echo "<TR><TD colspan='6'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt1,"</B></FONT></TD></TR>"; 
+	echo "<TR><TD colspan='7'><FONT COLOR=\"red\"><B>กลุ่มยาที่แพ้ : ",$txt1,"</B></FONT></TD></TR>"; 
 
 }else{
 	//echo $sql;
@@ -771,11 +781,6 @@ if($row_diabet > 0){
 			
 		});
 	});
-	</script>
-
-	<script type="text/javascript">
-
-		
 	</script>
 	<?php
 	}

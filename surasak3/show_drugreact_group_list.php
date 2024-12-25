@@ -49,7 +49,7 @@ if(!empty($id) && $id>0){
         </div>
         <div id="groupAllItem">
             <table class="table table-striped table-hover">
-                <tr>
+                <tr class="table-warning">
                     <th>รหัสยา</th>
                     <th>ชื่อการค้า</th>
                     <th>ชื่อสามัญ</th>
