@@ -72,6 +72,11 @@ if ($action === 'active') {
     $id = sprintf("%s", $_REQUEST['id']);
     $q = $dbi->query("SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ");
     $item = $q->fetch_assoc();
+
+    if(!is_file($item['path'])){
+        echo 'ไม่พบไฟล์แนบ กรุณาติดต่อหอผู้ป่วยเพื่ออัพโหลดไฟล์เข้ามาใหม่';
+        exit;
+    }
     ?>
     <style>
     @media print{
@@ -292,9 +297,8 @@ if ( $q->num_rows > 0 ) {
                 <p><?=$item['date'];?></p>
             </td>
             <td>
-                <p>HN: <?=$item['hn'];?></p>
-                <p>AN: <?=$item['an'];?></p>
-                <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
+                <p>HN: <?=$item['hn'];?> AN: <?=$item['an'];?></p>
+                <p></p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                 <p><?=$fullWardName;?></p>
                 <p>ผู้บันทึก: <?=$item['editor'];?></p>
             </td>
@@ -335,44 +339,43 @@ if ( $q->num_rows > 0 ) {
     <?php
 }
 ?>
-
-<fieldset>
-    <legend>ค้นหาเอกสารด้วย AN</legend>
-    <form action="med_phar.php" method="post">
-        <div>
-            AN: <input type="text" name="an" id="" value="<?=( isset($_SESSION['fix_an']) ? $_SESSION['fix_an'] : '' );?>">
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="searchFile">
-            <input type="hidden" name="typeSearch" value="an">
-        </div>
-    </form>
-</fieldset>
-
-<?php 
-$dateSelected = input('days',date('d'));
-$monthSelected = input('months',date('m'));
-$yearSelected = input('years',date('Y'));
-
-$yearRange = range('2019', date('Y'));
-?>
-<fieldset>
-    <legend>ค้นหาเอกสารจากวันที่</legend>
-    <form action="med_phar.php" method="post">
-        <div>
-            วัน <?=getDateList('days',$dateSelected);?>
-            เดือน <?=getMonthList('months', $monthSelected);?>
-            ปี <?=getYearList('years',fase, $yearSelected,$yearRange);?>
-        </div>
-        <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="searchFile">
-            <input type="hidden" name="typeSearch" value="date">
-        </div>
-    </form>
-</fieldset>
-
+<div class="clearfix">
+    <fieldset style="width:30%; float:left;">
+        <legend>ค้นหาเอกสารด้วย AN</legend>
+        <form action="med_phar.php" method="post">
+            <div>
+                AN: <input type="text" name="an" id="" value="<?=( isset($_SESSION['fix_an']) ? $_SESSION['fix_an'] : '' );?>">
+            </div>
+            <div>
+                <button type="submit">ค้นหา</button>
+                <input type="hidden" name="page" value="searchFile">
+                <input type="hidden" name="typeSearch" value="an">
+            </div>
+        </form>
+    </fieldset>
+    <?php 
+    $dateSelected = input('days',date('d'));
+    $monthSelected = input('months',date('m'));
+    $yearSelected = input('years',date('Y'));
+    $yearRange = range('2019', date('Y'));
+    ?>
+    <fieldset style="width:30%; float:left;">
+        <legend>ค้นหาเอกสารจากวันที่</legend>
+        <form action="med_phar.php" method="post">
+            <div>
+                วัน <?=getDateList('days',$dateSelected);?>
+                เดือน <?=getMonthList('months', $monthSelected);?>
+                ปี <?=getYearList('years',false, $yearSelected,$yearRange);?>
+            </div>
+            <div>
+                <button type="submit">ค้นหา</button>
+                <input type="hidden" name="page" value="searchFile">
+                <input type="hidden" name="typeSearch" value="date">
+            </div>
+        </form>
+    </fieldset>
+</div>
+<div>&nbsp;</div>
 <?php 
 if ( $page === 'searchFile' ) {
     
@@ -406,7 +409,7 @@ if ( $page === 'searchFile' ) {
         ?>
         <table class="chk_table" style="margin-top:6px;">
             <tr>
-                <th>วันที่บันทึกข้อมูล</th>
+                <th>วันที่เวลาที่ส่ง Order</th>
                 <th>ข้อมูล</th>
                 <th>ไฟล์</th>
                 <th>Re-Print</th>
@@ -423,8 +426,7 @@ if ( $page === 'searchFile' ) {
                     <p><?=$item['date'];?></p>
                 </td>
                 <td>
-                    <p>HN: <?=$item['hn'];?></p>
-                    <p>AN: <?=$item['an'];?></p>
+                    <p><strong>HN:</strong> <?=$item['hn'];?> <strong>AN:</strong> <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                     <p><?=$fullWardName;?></p>
                     <p>ผู้สั่งพิมพ์: <?=$item['lasteditor'];?></p>

@@ -182,6 +182,7 @@ if ( $action === 'save' ) {
 }elseif ($action === 'delete') {
     
     $id = input_get('id');
+    $an = sprintf("%s", $_GET['fill_an']);
     $sql = "UPDATE `med_scan` SET `status` = 'n' WHERE `id` = '$id' ";
     $q = mysql_query($sql);
     $msg = 'ดำเนินการเรียบร้อย';
@@ -190,7 +191,7 @@ if ( $action === 'save' ) {
         $err = set_log(mysql_error());
         $msg = 'ไม่สามารถดำเนินการได้';
     }
-    redirect('med_ward.php',$msg.$err['msg']);
+    redirect('med_ward.php?fill_an='.$an,$msg.$err['msg']);
 }elseif ($action==='pushWithCurl') {
     
     $json = new Services_JSON();
@@ -287,26 +288,25 @@ if( isset($_SESSION['x-msg']) ){
 
             function sendLineNotifyV2(){
 
-            var line_message = '<?=$_SESSION['line_msg'];?>';
-            var line_type = '<?=$_SESSION['line_type'];?>';
-            var test_str = [];
-            test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
-            test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
-            var data = test_str.join("&");
+                var line_message = '<?=$_SESSION['line_msg'];?>';
+                var line_type = '<?=$_SESSION['line_type'];?>';
+                var test_str = [];
+                test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
+                test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
+                var data = test_str.join("&");
 
-            var request = new XMLHttpRequest();
-            request.onreadystatechange = function(){
-                if( request.readyState == 4 && request.status == 200 ){
-                    // console.log(request.responseText);
-                }
-            };
-            request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
-            request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-            request.send(data); 
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function(){
+                    if( request.readyState == 4 && request.status == 200 ){
+                        // console.log(request.responseText);
+                    }
+                };
+                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
+                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+                request.send(data); 
 
             }
-
-            // sendLineNotifyV2();
+            sendLineNotifyV2();
 
 
             /**
@@ -363,7 +363,7 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
 </div>
 <div class="clearfix">
     <fieldset style="width:30%; float:left;">
-        <legend>ค้นหาและบันทึกข้อมูลผู้ป่วย</legend>
+        <legend>ค้นหาและบันทึก Order แพทย์</legend>
         <form action="med_ward.php" method="post">
             <div>
                 AN: <input type="text" name="an" value="<?=$default_an;?>">
@@ -375,7 +375,7 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
         </form>
     </fieldset>
     <fieldset style="width:30%; float:left;">
-        <legend>ค้นหาเอกสารด้วย AN</legend>
+        <legend>ค้นหาเอกสารจาก AN</legend>
         <form action="med_ward.php" method="post">
             <div>
                 AN: <input type="text" name="an" value="<?=$default_an;?>">
@@ -387,6 +387,7 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
         </form>
     </fieldset>
 </div>
+<div>&nbsp;</div>
 <?php 
 $page = input('page');
 if ( $page === 'search_an' ) {
@@ -443,8 +444,7 @@ if ( $page === 'search_an' ) {
             <script>
                 function testBeforeSubmit(){
 
-                    var fileLength =document.getElementById('file').files.length;
-
+                    let f = document.getElementById('file').files;
                     let ptright = '<?=$ipt['ptright'];?>';
                     if(ptright==''){ 
                         Swal.fire({
@@ -453,16 +453,21 @@ if ( $page === 'search_an' ) {
                         return false;
                     }
 
-                    if(fileLength==0){
+                    if(f.length==0){
                         Swal.fire("กรุณาเลือกไฟล์แนบ");
                         return false;
+                    }else{
+                        if(f[0].type!='image/png' && f[0].type!='image/jpeg'){
+                            Swal.fire("อนุญาตให้ใช้ไฟล์นามสกุล .jpg, .jpeg และ .png เท่านั้น");
+                            return false;
+                        }
                     }
-                }
+               }
             </script>
         </fieldset>
         <?php
     }else{
-        echo "ไม่พบข้อมูล $an";
+        echo "ไม่พบข้อมูล $an ในระบบผู้ป่วยใน กรุณาตรวจสอบข้อมูลอีกครั้ง";
     }
 }elseif ( $page === 'searchFile' ) {
     
@@ -495,17 +500,24 @@ if ( $page === 'search_an' ) {
                     <p><?=$item['date'];?></p>
                 </td>
                 <td>
-                    <p>HN: <?=$item['hn'];?></p>
-                    <p>AN: <?=$item['an'];?></p>
+                    <p><strong>HN:</strong> <?=$item['hn'];?> <strong>AN:</strong> <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
-                    <p><?=$fullWardName;?></p>
+                    <p><strong><?=$fullWardName;?></strong></p>
                     <p>ผู้บันทึก: <?=$item['editor'];?></p>
                 </td>
                 <td>
-                    <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>
-                </td>
+                    <?php 
+                    if(is_file($item['path'])){
+                        ?>
+                        <a href="javascript:void(0)"><img src="<?=$item['path'];?>" alt="" class="showImg" width="200px;"></a>
+                        <?php
+                    }else{
+                        ?><p>ไม่พบไฟล์</p><?php
+                    }
+                    ?>
+                    </td>
                 <td>
-                    <a href="med_ward.php?action=delete&id=<?=$id;?>" onclick="return confirmDelete();" class="btnActive">ลบ</a>
+                    <a href="javascript:void(0);" onclick="confirmDelete();" class="btnActive">ลบ 🗑️</a>
                 </td>
             </tr>
             <?php
@@ -514,19 +526,25 @@ if ( $page === 'search_an' ) {
         </table>
         <script>
             function confirmDelete(){
-                var c=confirm('ยืนยันที่จะลบข้อมูล');
-                if( c === true ){
-                    return true;
-                }
-                return false;
+                Swal.fire({
+                    title: "ยืนยันทึ่จะลบข้อมูล",
+                    showCancelButton: true,
+                    confirmButtonText: 'ยืนยันการลบ',
+                    confirmButtonColor: '#d33'
+                }).then((result)=>{
+                    if(result.isConfirmed){
+                        // return true;
+                        window.location.href = 'med_ward.php?action=delete&id=<?=$id;?>&fill_an=<?=$an;?>';
+                    }else{
+                        return false;
+                    }
+                });
             }
         </script>
         <?php
     }else{
-        echo "ไม่พบข้อมูล $an";
+        echo "ไม่พบข้อมูล $an ในการบันทึก Order แพทย์";
     }
-
-
 }
 ?>
 <div id="imgContainer" style="display: none;">
@@ -556,8 +574,6 @@ if ( $page === 'search_an' ) {
     imgBtn[0].addEventListener('click', function(event){
         document.getElementById('imgContainer').style.display = 'none';
     });
-    
 </script>
-
 </body>
 </html>
