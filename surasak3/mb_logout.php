@@ -3,6 +3,7 @@ session_start();
 $_SESSION = array();
 
 session_destroy();
-
-header("Location: login_mobile.php");
+setcookie('shsLogin', '', -1, '/'); 
+setcookie('shsLoginUser', '', -1, '/'); 
+header("Location: login_page.php");
 ?>
