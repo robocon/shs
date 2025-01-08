@@ -145,7 +145,7 @@ class printvn{
 		
 //		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
 
-		print "<font  style='line-height:24px;' face='Angsana New' size= 4 >".$this->noteall."<BR>";
+		print "<font  style='line-height:24px;' face='Angsana New' size=5 ><u>".$this->noteall."</u><BR>";
 		//print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
 		print "<img src = \"printQrCode.php?hn=".$this->hn."&size=4&level=2&margin=1\"><BR>";
 		if($this->clinic != "")
