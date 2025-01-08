@@ -16,9 +16,9 @@ include("connect.inc");
 			}
 
 			if ($ageM==0){
-				$pAge="$ageY »Õ";
+				$pAge="$ageY à¸›à¸µ";
 			}else{
-				$pAge="$ageY »Õ $ageM à´×Í¹";
+				$pAge="$ageY à¸›à¸µ $ageM à¹€à¸”à¸·à¸­à¸™";
 			}
 		return $pAge;
 	}
@@ -47,14 +47,14 @@ include("connect.inc");
 	
 $cptname=$cyot.''.$cname.''.$csurname;
 	
-$cbedname='äµà·ÕÂÁ';
+$cbedname='à¹„à¸•à¹€à¸—à¸µà¸¢à¸¡';
 
 $cdoctor = calcage($cdbirth);
 		
 
 
 ////
-///po97 ãº·Õè 1
+///po97 à¹ƒà¸šà¸—à¸µà¹ˆ 1
 
 print "<HTML>";
 print "<script>";
@@ -87,75 +87,75 @@ print "<DIV style='z-index:0'> &nbsp; </div>";
 print "<DIV style='left:0PX;top:0PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:20PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:0PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:0PX;top:130PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:150PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:0PX;top:170PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:0PX;top:270PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:290PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:0PX;top:310PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:0PX;top:400PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:420PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:0PX;top:440PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:0PX;top:540PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:560PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:0PX;top:580PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:0PX;top:680PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:700PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:0PX;top:720PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 
 print "<DIV style='left:320PX;top:0PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:320PX;top:20PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:320PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:320PX;top:130PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:320PX;top:150PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:320PX;top:170PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:320PX;top:270PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:320PX;top:290PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:320PX;top:310PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:320PX;top:400PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:320PX;top:420PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:320PX;top:440PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:320PX;top:540PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:320PX;top:560PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:320PX;top:580PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 print "<DIV style='left:320PX;top:680PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:320PX;top:700PX;width:306PX;height:30PX;'><span class='fc1-0'>$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
 print "<DIV style='left:320PX;top:720PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;ÊÔ·¸Ô&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>ÍÒÂØ&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>&nbsp;$cdiagnos &nbsp;à¸ªà¸´à¸—à¸˜à¸´&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>à¸­à¸²à¸¢à¸¸&nbsp;$cdoctor</span></DIV>";
 
 
 
