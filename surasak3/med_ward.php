@@ -219,13 +219,15 @@ if ( $action === 'save' ) {
     font-family: "TH SarabunPSK","TH Sarabun New";
     font-size: 16pt;
 }
+label{
+    cursor: pointer;
+}
 p{
     margin: 0;
 }
 .chk_table{
     border-collapse: collapse;
 }
-
 .chk_table, th, td{
     border: 1px solid black;
     font-size: 16pt;
@@ -268,6 +270,11 @@ tr{
   content: "";
   clear: both;
   display: table;
+}
+.flexContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
 <?php 
@@ -388,6 +395,45 @@ $default_an = (!empty($_GET['fill_an'])) ? $_GET['fill_an'] : $_POST['an'] ;
     </fieldset>
 </div>
 <div>&nbsp;</div>
+<?php 
+$style = '';
+if($_COOKIE['medWardNotify'] == 1){
+    $style = 'display: none;';
+}
+?>
+<div id="flexContainer" class="flexContainer" style="border: 2px solid #000; padding: 8px; text-align: center; <?=$style;?>">
+    <div class="flexCenter">
+        <div>
+            <img src="images/close-notify.png" width="600px">
+        </div>
+        <div>
+            <input type="checkbox" name="medWardNotify" id="medWardNotify" value="1" onclick="doNotDisplayNotify(this)"> <label for="medWardNotify">ไม่ต้องแสดงข้อความนี้อีก เป็นเวลา 30 วัน</label>
+        </div>
+        <div>
+            <button type="button" onclick="closeContainer()">ปิด</button>
+        </div>
+    </div>
+</div>
+<script>
+    function doNotDisplayNotify(t){
+        if(t.checked==true){
+            setCookie('medWardNotify', '1', 30);
+        }else{
+            setCookie('medWardNotify', '0', 0);
+        }
+    }
+
+    function closeContainer(){
+        document.getElementById('flexContainer').style.display = 'none';
+    }
+
+    function setCookie(cname, cvalue, exdays) {
+		const d = new Date();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		let expires = "expires="+d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+</script>
 <?php 
 $page = input('page');
 if ( $page === 'search_an' ) {
