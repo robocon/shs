@@ -57,10 +57,25 @@ if ($action === 'active') {
         $_SESSION['line_msg'] = null;
         $_SESSION['line_type'] = null;
         
-        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย บันทึกโดย: $confirm");
+        $sMessage = "ห้องยา: ยืนยันการรับข้อมูล AN:$an เรียบร้อย บันทึกโดย: $confirm";
+
+        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',$sMessage);
         $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
+
+        $curl = curl_init(); 
+        curl_setopt( $curl, CURLOPT_URL, "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".TELEGRAM_CHATID_WARD_NOTIFY."&text=".urlencode($sMessage)); 
+        curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt( $curl, CURLOPT_SSLVERSION, 6);
+        curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+        $result = curl_exec( $curl );
+        if($result===false){
+            echo curl_error($curl);
+        }
+        curl_close($curl);
+
     }else{
         $err = set_log($dbi->error);
         $msg = 'ไม่สามารถบันทึกข้อมูลได้'.$err['id'].' ' .$err['msg'];
@@ -339,17 +354,17 @@ if ( $q->num_rows > 0 ) {
     <?php
 }
 $style = '';
-if($_COOKIE['medPharNotify'] == 1){
+if($_COOKIE['medPharNotify2'] == 1){
     $style = 'display: none;';
 }
 ?>
 <div id="flexContainer" class="flexContainer" style="border: 2px solid #000; padding: 8px; text-align: center; <?=$style;?>">
     <div class="flexCenter">
         <div>
-            <img src="images/close-notify.png" width="600px">
+            <img src="images/close-notify.png" width="600px"> <img src="images/join-telegram.png" alt="" width="600px">
         </div>
         <div>
-            <input type="checkbox" name="medPharNotify" id="medPharNotify" value="1" onclick="doNotDisplayNotify(this)"> <label for="medPharNotify">ไม่ต้องแสดงข้อความนี้อีก เป็นเวลา 30 วัน</label>
+            <input type="checkbox" name="medPharNotify2" id="medPharNotify2" value="1" onclick="doNotDisplayNotify(this)"> <label for="medPharNotify2">ไม่ต้องแสดงข้อความนี้อีก เป็นเวลา 5 วัน</label>
         </div>
         <div>
             <button type="button" onclick="closeContainer()">ปิด</button>
@@ -359,9 +374,9 @@ if($_COOKIE['medPharNotify'] == 1){
 <script>
     function doNotDisplayNotify(t){
         if(t.checked==true){
-            setCookie('medPharNotify', '1', 30);
+            setCookie('medPharNotify2', '1', 5);
         }else{
-            setCookie('medPharNotify', '0', 0);
+            setCookie('medPharNotify2', '0', 0);
         }
     }
 
