@@ -58,23 +58,11 @@ if ($action === 'active') {
         $_SESSION['line_type'] = null;
         
         $sMessage = "ห้องยา: ยืนยันการรับข้อมูล AN:$an เรียบร้อย บันทึกโดย: $confirm";
-
+        $_SESSION['telegram_msg'] = "💊ห้องยา: ยืนยันการรับข้อมูล AN:$an เรียบร้อย บันทึกโดย: $confirm";
         $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',$sMessage);
         $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
-
-        $curl = curl_init(); 
-        curl_setopt( $curl, CURLOPT_URL, "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".TELEGRAM_CHATID_WARD_NOTIFY."&text=".urlencode($sMessage)); 
-        curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt( $curl, CURLOPT_SSLVERSION, 6);
-        curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec( $curl );
-        if($result===false){
-            echo curl_error($curl);
-        }
-        curl_close($curl);
 
     }else{
         $err = set_log($dbi->error);
@@ -146,7 +134,25 @@ if ($action === 'active') {
             }
             sendLineNotifyV2();
 
+            function sendTelegram(){
+                const telegram_message = '<?=$_SESSION['telegram_msg'];?>';
+                var test_str = [];
+                test_str.push(encodeURIComponent('sMessage')+"="+encodeURIComponent(telegram_message));
+                var data = test_str.join("&");
+
+                postMessage(data).then((res)=>{
+                    console.log(res);
+                });
+            }
+
+            async function postMessage(data){
+                const response = await fetch('<?=NOTIFY_HOST;?>/telegram/index.php?'+data);
+                const resData = await response.json();
+                return resData;
+            }
+
             <?php
+            unset($_SESSION['telegram_msg']);
             unset($_SESSION['line_msg']);
             unset($_SESSION['line_type']);
         }
@@ -156,6 +162,7 @@ if ($action === 'active') {
         }
 
         window.onload = function(){
+            sendTelegram();
             window.print();
         };
     </script>

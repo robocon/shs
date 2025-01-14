@@ -169,20 +169,9 @@ if ( $action === 'save' ) {
         // $sToken = "XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5"; // test
 		$sMessage = "Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn.' บันทึกโดย: '.$editor;
 		
+        $_SESSION['telegram_msg'] = "👩‍⚕️ Orderแพทย์ จาก: $fullWardName AN: $an ชื่อ-สกุล: $ptname".$newAn.' บันทึกโดย: '.$editor;
         $_SESSION['line_msg'] = $sMessage;
         $_SESSION['line_type'] = 'ward';
-
-        $curl = curl_init(); 
-        curl_setopt( $curl, CURLOPT_URL, "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".TELEGRAM_CHATID_WARD_NOTIFY."&text=".urlencode($sMessage)); 
-        curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt( $curl, CURLOPT_SSLVERSION, 6);
-        curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-        $result = curl_exec( $curl );
-        if($result===false){
-            echo curl_error($curl);
-        }
-        curl_close($curl);
 
         redirect('med_ward.php?fill_an='.$an,'บันทึกข้อมูลเรียบร้อย');
     }elseif ( $uploadOk === 0 ) {
@@ -327,40 +316,29 @@ if( isset($_SESSION['x-msg']) ){
             sendLineNotifyV2();
 
 
-            /**
-             * ปัญหา
-             * 1. server ปัจจุบันไม่รองรับ push message ของ line api
-             * 2. ไม่สามารถ async ข้าม server ได้ เลยต้องใช้ผ่าน curl แทน
-             */
-            // sendPushMessage();
-            function sendPushMessage(){
+            window.onload = function(){
+                sendTelegram();
+            }
 
-                const line_message = '<?=$_SESSION['line_msg'];?>';
-                const line_type = '<?=$_SESSION['line_type'];?>';
-
+            function sendTelegram(){
+                const telegram_msg = '<?=$_SESSION['telegram_msg'];?>';
                 var test_str = [];
-                test_str.push(encodeURIComponent('action')+"="+encodeURIComponent('pushWithCurl'));
-                test_str.push(encodeURIComponent('type')+"="+encodeURIComponent(line_type));
-                test_str.push(encodeURIComponent('msg')+"="+encodeURIComponent(line_message));
+                test_str.push(encodeURIComponent('sMessage')+"="+encodeURIComponent(telegram_msg));
                 var data = test_str.join("&");
 
                 postMessage(data).then((res)=>{
                     console.log(res);
                 });
             }
+
             async function postMessage(data){
-                const response = await fetch('med_ward.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                    },
-                    body: data
-                });
+                const response = await fetch('<?=NOTIFY_HOST;?>/telegram/index.php?'+data);
                 const resData = await response.json();
                 return resData;
             }
         </script>
         <?php
+        unset($_SESSION['telegram_msg']);
         unset($_SESSION['line_msg']);
         unset($_SESSION['line_type']);
     }
