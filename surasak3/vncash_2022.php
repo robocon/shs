@@ -1,6 +1,11 @@
+<style type="text/css">	
+.sarabun {	font-family: TH SarabunPSK;
+	font-size: 22px;
+}
+
+</style>
 <?php
     session_start();
-
 	include("connect.inc");
     if (isset($sIdname)){} else {die;} //for security
 
@@ -37,14 +42,12 @@ function check(){
 <?
     print "<p><font face='Angsana New'>ต้องการดูรายการตรวจด้วย VN (ผู้ป่วยนอก) หรือ AN (ผู้ป่วยใน) ?&nbsp;&nbsp;</font></p>";
     print "<p><font face='Angsana New'>วันที่&nbsp;&nbsp; ";
-    print "<input type='text' name='d' size='2' value=$d>&nbsp;&nbsp;";
-    print "เดือน&nbsp; <input type='text' name='m' size='2' value=$m>&nbsp;&nbsp;&nbsp;";
-    print "พ.ศ. <input type='text' name='yr' size='8' value=$yr></font></p>";
+    print "<input type='text' name='d' size='2' value='$d' class='sarabun'>&nbsp;&nbsp;";
+    print "เดือน&nbsp; <input type='text' name='m' size='2' value='$m' class='sarabun'>&nbsp;&nbsp;&nbsp;";
+    print "พ.ศ. <input type='text' name='yr' size='8' value='$yr' class='sarabun'></font></p>";
    // print "<p><font face='Angsana New'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
   print "<p><font face='Angsana New' >VN หรือ AN&nbsp;&nbsp; ";
-    print "<input type='text' name='vn' size='10'  id='aLink' ><script type='text/javascript'>";
-   print "document.getElementById('aLink').focus();";
-  print "</script>&nbsp;&nbsp;";
+    print "<input type='text' name='vn' size='14' id='aLink' class='sarabun' placeholder='   กรุณาระบุ VN' autofocus>";
   print "<font face='Angsana New'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     print "<input type='radio' value='1' name='op' id='chkop1'> คิดค่าใบรับรองแพทย์ 20 บาท &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
 	print "<input type='radio' value='2' name='op' id='chkop2'> คิดค่าใบรับรองแพทย์ 50 บาท &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;<br>";
@@ -55,7 +58,7 @@ function check(){
 	print "<input type='radio' value='4' name='ncal' id='ncal4'> 4 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
 	print "<input type='radio' value='5' name='ncal' id='ncal5'> 5 &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
   print "<p><font face='Angsana New'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    print "<input type='submit' value='          ตกลง          ' name='B1'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
+    print "<input type='submit' value='          ตกลง          ' name='B1' class='sarabun'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
 //    print "<input type='reset' value='ลบทิ้ง' name='B2'>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;";
     print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
 	print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='../surasak3/check_cash.php' target='_blank'><<รายการค้างจ่ายย้อนหลัง</a>"; print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='../surasak3/rprecipthn.php' target='_blank' ><<ค่าใช้จ่ายย้อนหลัง</a>"; print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp;<a href='report_approvecode.php' target='_blank' >ข้อมูล Approve Code สิทธิเบิกจ่ายตรง</a>";
@@ -98,8 +101,10 @@ $sql="Select * from opacc Where date like '$start_date%' and credit =''  ";
 	
 ///////////////////////////
 
-$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','เงินสด','อื่นๆ','นอนโรงพยาบาล')" ;
+//$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','เงินสด','อื่นๆ','นอนโรงพยาบาล')" ;
+	$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM แ WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','อื่นๆ','นอนโรงพยาบาล')" ;  //ตัดลูกหนี้เงินสดออก รคส.พี่ปู จัดเก็บรายได้ 16/8/2566
 //echo $query."<br>";
+
     $result = mysql_query($query) or die("Query failed,opday1");
 	
 	$chksql="Select * from opacc1";
@@ -146,7 +151,15 @@ $query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$sta
 }		 
 ?>
 รายชื่อ ผู้ป่วยที่ยังไม่ได้ชำระเงินหรือโอนข้อมูลเข้าสู่ระบบ<BR>
-
+<div style="margin-left:50px; margin-top: 30px;">
+<form method="post" action="vncash_2022.php">
+<input type="hidden" name="search" value="show">
+    <p style="font-size:24px;"><b>ค้นหาจาก&nbsp;HN&nbsp;&nbsp;&nbsp;
+    <input name="hn" type="text" class="sarabun" id="aLink"  size="25" height="40">
+    <input name="B1" type="submit" class="sarabun" value="     ค้นหา     ">
+    </p>
+</form>
+</div>
 <TABLE width='100%' border="1" cellpadding="0" cellspacing="0" bordercolor="#CC3333">
 <TR align="center" bgcolor=#2980B9>
 	<TD colspan='11' bgcolor="#F5CBA7"><B>เวชภัณฑ์ PT</B></TD>
@@ -168,7 +181,11 @@ $query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$sta
 $null='NULL';
 $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
 
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From dphardep_pt where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
+	if($_POST["search"]=="show"){
+		$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From dphardep_pt where hn='".$_POST["hn"]."' AND date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
+	}else{
+		$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From dphardep_pt where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
+	}	
 	$nows = date("H.i");
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
@@ -228,8 +245,11 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีน
 <?php 
 $null='NULL';
 $mon = array('','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From phardep where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
+	if($_POST["search"]=="show"){
+		$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From phardep where hn='".$_POST["hn"]."' AND date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
+	}else{
+		$sql = "Select tvn, hn, ptname, ptright, price,an,date,idname,nessdn,dpn,dsn From phardep where date like '$yr-$m-$d%' AND  (cashok = '' OR cashok is Null ) AND (an is Null OR an = '') AND `borrow` is NULL AND price > 0  ORDER BY ptright,tvn,date ";
+	}	
 	$nows = date("H.i");
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
@@ -288,8 +308,12 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีน
 	<TD bgcolor="#2980B9"><font size='1'>ออก OPCARD</font></TD>
     <TD bgcolor="#2980B9"><font size='2'>นัดมาเพื่อ</font></TD>
 </TR>
-<?php 
-	$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND (an = '' OR an is Null) AND `status` = 'Y' AND price > 0 ORDER BY ptright,tvn,date ";
+<?php
+	if($_POST["search"]=="show"){
+		$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where hn='".$_POST["hn"]."' AND date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND (an = '' OR an is Null) AND `status` = 'Y' AND price > 0 ORDER BY ptright,tvn,date ";
+	}else{
+		$sql = "Select tvn, hn, ptname, ptright, price,an,date,depart,idname,sumnprice From depart  where date like '$yr-$m-$d%' AND    (cashok = '' OR cashok is Null ) AND (an = '' OR an is Null) AND `status` = 'Y' AND price > 0 ORDER BY ptright,tvn,date ";
+	}	
 	//echo $sql;
 	$result  = Mysql_Query($sql);
 	while($arr = Mysql_fetch_assoc($result)){
@@ -315,6 +339,12 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีน
 		$sqlf = "select toborow,an from opday where hn='".$arr['hn']."' and thidate like '$yr-$m-$d%' ";
 		list($toborow,$Tan) = mysql_fetch_array(mysql_query($sqlf));
 //$toborow=substr($toborow,0,20);
+
+if($arr['sumnprice']==""){
+	$arr['sumnprice']="0.00";
+}else{
+	$arr['sumnprice']=$arr['sumnprice'];
+}	
 ?>
 <TR BGCOLOR=66CDAA >
 	<TD BGCOLOR="<?php echo $color ?>"><font size='3'><a href="opcashvn_2022.php?a=<?=$d?>&b=<?=$m?>&c=<?=$yr?>&vn=<?=$arr["tvn"]?>" ><?php echo $arr["tvn"];?></a></TD>
@@ -324,7 +354,7 @@ $mon = array('','มกราคม','กุมภาพันธ์','มีน
 	<TD BGCOLOR="<?php echo $color ?>"><font size='3'><?php echo $arr["ptname"];?></TD>
 	<TD BGCOLOR="<?php echo $color ?>"><font size='3'><?php echo $arr["ptright"];?></TD>
 	<TD  align="right" BGCOLOR="<?php echo $color ?>"><?php echo number_format($arr["price"],2);?></TD>
-	<TD  align="right" <? if($arr['sumnprice']!='0.00'){ echo "BGCOLOR='#CC0033'"; }else{ echo "BGCOLOR='$color'";}?>><?=number_format($arr['sumnprice'],2);?></TD>
+	<TD  align="right" <? if($arr['sumnprice']!='0.00'){  echo "BGCOLOR='#CC0033'"; }else{ echo "BGCOLOR='$color'";}?>><?=number_format($arr['sumnprice'],2);?></TD>
 		<TD BGCOLOR="<?php echo $color ?>"><font size='2'><?php echo $arr["depart"];?></TD>
 			<TD BGCOLOR="<?php echo $color ?>"><font size='1'><?php  echo $arr["idname"];?></TD>
 	<TD BGCOLOR="<?php echo $color ?>"  ><font size='1'><?=$toborow?></TD>
