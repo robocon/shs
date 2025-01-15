@@ -173,6 +173,7 @@ if ($_POST["act"] == "add") {
 						<option value="ธนบุรี-แลป">ธนบุรี-แลป</option>
 						<option value="กรุงเทพ-พยาธิ">กรุงเทพ-พยาธิ</option>
 						<option value="เมดสตาร์-แลป">เมดสตาร์-แลป</option>
+						<option value="N-Health">N-Health</option>
 					</select></div>
 			</td>
 		</tr>
