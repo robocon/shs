@@ -17,16 +17,16 @@ if(empty($_POST['id']) OR empty($_POST['new_date'])){
 
 $items = array();
 foreach ($_POST['id'] as $key => $id) {
-    $items[] = "'".$id."'";
+    $items[] = "'".($dbi->real_escape_string($id))."'";
 }
 
 $newItems = implode(',', $items);
 $newDate = $_POST['new_date'];
 
-$sql = sprintf("SELECT `row_id`,`actual_date` FROM `digital_opcard` WHERE `row_id` IN (%s)", $dbi->real_escape_string($newItems));
+$sql = sprintf("SELECT `row_id`,`actual_date` FROM `digital_opcard` WHERE `row_id` IN (%s)", $newItems);
 $q = $dbi->query($sql);
 if($q->num_rows>0){
-
+    $error = '';
     while ($a = $q->fetch_assoc()) {
         
         $row_id = $a['row_id'];
@@ -36,7 +36,14 @@ if($q->num_rows>0){
         $newActualDate = sprintf("%s $actualTime", $dbi->real_escape_string($newDate));
 
         $sqlUpdate = "UPDATE `digital_opcard` SET `actual_date` = '$newActualDate' WHERE `row_id` = '$row_id' ";
-        $dbi->query($sqlUpdate);
+        $qUpdate = $dbi->query($sqlUpdate);
+        if($qUpdate!==true){
+            $error = $dbi->error;
+        }
+    }
+    $msg = 'ดำเนินการแก้ไขเรียบร้อย';
+    if(!empty($error)){
+        $msg = $error;
     }
 }
 
@@ -60,7 +67,7 @@ if($q->num_rows>0){
         </div>
     </nav>
     <div class="container mt-4">
-        <h3>ดำเนินการแก้ไขเรียบร้อย</h3>
+        <h3><?=$msg;?></h3>
         <div>
             <a href="digital_opd_manage.php" class="btn btn-primary">กลับหน้าหลัก</a>
         </div>
