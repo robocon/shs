@@ -21,7 +21,8 @@ if ($_REQUEST['do'] == 'edit') {
 	`head` = '$head',
 	`detail` = '$detail',
 	`status`='a', 
-	`programmer`='$owner', 
+	`programmer`='$owner',
+	`jobtype` = '$jobType',
 	`software_type`='$software_type',
 	`asset_type` = '$asset_type',
 	`asset_name` = '$asset_name',
@@ -44,26 +45,39 @@ if ($_REQUEST['do'] == 'edit') {
 	header("Location: com_support.php");
 	exit;
 }
+
+$row = sprintf("%s", $_GET['row']);
+$query = "SELECT * FROM `com_support` WHERE `row` ='$row'";
+$result = mysql_query($query) or die("Query failed ".mysql_error());
+$dbarr = mysql_fetch_array($result);
+
+
 ?>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- อัพเดท เวอร์ชั่นใหม่ๆ ได้ที่ https://github.com/sweetalert2/sweetalert2/releases -->
-<script src="js/sweetalert2.all.min.js"></script>
-<style type="text/css">
-	.forntsarabun {font-family: "TH SarabunPSK";font-size: 22px;}
-	.style2 {font-family: "TH SarabunPSK";font-size: 24px;font-weight: bold;color: #FFFFFF;}
-	#admForm tr td{padding: 4px;}
-	label:hover{cursor: pointer;}
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>รับงาน:<?=$dbarr['row'];?> <?=$dbarr['head'];?></title>
+
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- อัพเดท เวอร์ชั่นใหม่ๆ ได้ที่ https://github.com/sweetalert2/sweetalert2/releases -->
+	<script src="js/sweetalert2.all.min.js"></script>
+	<style type="text/css">
+		.forntsarabun {font-family: "TH SarabunPSK";font-size: 22px;}
+		.style2 {font-family: "TH SarabunPSK";font-size: 24px;font-weight: bold;color: #FFFFFF;}
+		#admForm tr td{padding: 4px;}
+		label:hover{cursor: pointer;}
+		p{
+			margin:0;
+			padding:0;
+		}
+	</style>
+</head>
 <body bgcolor="#FFFFFF">
 	<a target="_self"  href="com_support.php" class="forntsarabun" style="text-decoration:none;">&lt;&lt;&nbsp;กลับหน้าเมนูแจ้งซ่อม</a>
 	<hr>
-	<?php
-	$row = sprintf("%s", $_GET['row']);
-	$query = "SELECT * FROM `com_support` WHERE `row` ='$row'";
-	$result = mysql_query($query) or die("Query failed ".mysql_error());
-	$dbarr = mysql_fetch_array($result);
-	?>
 	<form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
 		<table align="center" cellpadding="0" cellspacing="0" class="forntsarabun" id="admForm" style="background-color: #66CCCC;">
 			<tr>
@@ -219,32 +233,33 @@ if ($_REQUEST['do'] == 'edit') {
 			</tr>
 		</table>
 	</form>
+	<script type="text/javascript">
+		function jobTypeChange(v){
+			if(v==='software'){
+				document.getElementById('swTypeContain').style.display = '';
+				document.getElementById('swTypeContain1').style.display = 'none';
+
+				// ล้างค่า hardware
+				document.getElementById('asset_type').value = '';
+				document.getElementById('asset_name').value = '';
+				document.getElementById('asset_serial').value = '';
+			}else{
+				document.getElementById('swTypeContain').style.display = 'none';
+				document.getElementById('swTypeContain1').style.display = '';
+
+				// ล้างค่า checkbox
+				document.getElementById('software_type1').checked = false;
+				document.getElementById('software_type2').checked = false;
+			}
+		}
+		function fncSubmit() {
+			if (document.edit.programmer.selectedIndex == 0) {
+				alert('กรุณาเลือกผู้รับผิดชอบ');
+				document.edit.programmer.focus();
+				return false;
+			}
+			document.edit.submit();
+		}
+	</script>
 </body>
-<script type="text/javascript">
-	function jobTypeChange(v){
-		if(v==='software'){
-			document.getElementById('swTypeContain').style.display = '';
-			document.getElementById('swTypeContain1').style.display = 'none';
-
-			// ล้างค่า hardware
-			document.getElementById('asset_type').value = '';
-			document.getElementById('asset_name').value = '';
-			document.getElementById('asset_serial').value = '';
-		}else{
-			document.getElementById('swTypeContain').style.display = 'none';
-			document.getElementById('swTypeContain1').style.display = '';
-
-			// ล้างค่า checkbox
-			document.getElementById('software_type1').checked = false;
-			document.getElementById('software_type2').checked = false;
-		}
-	}
-	function fncSubmit() {
-		if (document.edit.programmer.selectedIndex == 0) {
-			alert('กรุณาเลือกผู้รับผิดชอบ');
-			document.edit.programmer.focus();
-			return false;
-		}
-		document.edit.submit();
-	}
-</script>
+</html>

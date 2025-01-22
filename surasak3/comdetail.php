@@ -1,5 +1,10 @@
 <?php 
-include("connect.inc");
+include("connect.php");
+
+$row = $_GET['row'];
+$sql = "SELECT `row`,`head` FROM com_support WHERE `row`= '$row' ";
+$res = mysql_query($sql) or die( mysql_error() );
+$item = mysql_fetch_assoc($res);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +12,7 @@ include("connect.inc");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
-    <title>รายละเอียดงาน</title>
+    <title>รายละเอียดงาน:<?=$item['row'];?> <?=$item['head'];?></title>
 </head>
 <body>
 <style type="text/css">
@@ -95,7 +100,6 @@ if (mysql_num_rows($q) > 0) {
     <?php
     }
 }
-include("unconnect.inc");
 ?>
 </body>
 </html>

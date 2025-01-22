@@ -108,7 +108,7 @@ echo "<hr />";
 <?php
 $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
-$num = A;
+$num = 'A';
 
 $query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user` 
 FROM `com_support` 

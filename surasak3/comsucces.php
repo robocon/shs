@@ -66,27 +66,39 @@ if ($_REQUEST['do'] == 'edit') {
 	header("Location: $location");
 	exit;
 }
-?>
-<script src="sweetalert/jquery-3.6.0.js"></script>
-<script src="sweetalert/sweetalert2@11.js"></script>
-<style type="text/css">
-	.forntsarabun {
-		font-family: "TH SarabunPSK";
-		font-size: 22px;
-	}
 
-	.style2 {
-		font-family: "TH SarabunPSK";
-		font-size: 24px;
-		color: #FFFFFF;
-	}
-	input[readonly], textarea[readonly] {
-		background-color: #e8e8e8;
-	}
-	label:hover{
-		cursor: pointer;
-	}
-</style>
+$query = sprintf("SELECT * FROM `com_support` WHERE `row` ='%s'", $_GET['row']);
+$result = mysql_query($query) or die("Query failed");
+$dbarr = mysql_fetch_array($result);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ปิดงาน:<?=$dbarr['row'];?> <?=$dbarr['head'];?></title>
+	<script src="sweetalert/jquery-3.6.0.js"></script>
+	<script src="sweetalert/sweetalert2@11.js"></script>
+	<style type="text/css">
+		.forntsarabun {
+			font-family: "TH SarabunPSK";
+			font-size: 22px;
+		}
+
+		.style2 {
+			font-family: "TH SarabunPSK";
+			font-size: 24px;
+			color: #FFFFFF;
+		}
+		input[readonly], textarea[readonly] {
+			background-color: #e8e8e8;
+		}
+		label:hover{
+			cursor: pointer;
+		}
+	</style>
+
+</head>
 <body bgcolor="#FFFFFF">
 	<script language="javascript">
 		function fncSubmit() {
@@ -99,11 +111,6 @@ if ($_REQUEST['do'] == 'edit') {
 			document.edit.submit();
 		}
 	</script>
-	<?php
-	$query = sprintf("SELECT * FROM `com_support` WHERE `row` ='%s'", $_GET['row']);
-	$result = mysql_query($query) or die("Query failed");
-	$dbarr = mysql_fetch_array($result);
-	?>
 	<a target="_self" href="com_support.php" class="forntsarabun" style="text-decoration:none;">&lt;&lt;&nbsp;กลับหน้าเมนูแจ้งซ่อม</a>
 	<hr>
 	<form method="POST" action="?do=edit" onSubmit="JavaScript:return fncSubmit();" name="edit">
@@ -284,3 +291,4 @@ if ($_REQUEST['do'] == 'edit') {
 		</script>
 	</form>
 </body>
+</html>
