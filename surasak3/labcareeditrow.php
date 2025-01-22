@@ -234,6 +234,7 @@ $dbarr=mysql_fetch_array($query);
       <option value="อินเตอร์-แลป" <?php if($dbarr['outlab_name']=="อินเตอร์-แลป"){ echo "selected"; }?>>อินเตอร์-แลป</option>
       <option value="ธนบุรี-แลป" <?php if($dbarr['outlab_name']=="ธนบุรี-แลป"){ echo "selected"; }?>>ธนบุรี-แลป</option>	  <option value="กรุงเทพ-พยาธิ" <?php if($dbarr['outlab_name']=="กรุงเทพ-พยาธิ"){ echo "selected"; }?>>กรุงเทพ-พยาธิ</option>
       <option value="เมดสตาร์-แลป" <?php if($dbarr['outlab_name']=="เมดสตาร์-แลป"){ echo "selected"; }?>>เมดสตาร์-แลป</option>
+	  <option value="N-Health" <?php if($dbarr['outlab_name']=="N-Health"){ echo "selected"; }?>>N-Health</option>
     </select></div></td>
   </tr>
 

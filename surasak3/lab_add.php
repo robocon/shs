@@ -2,7 +2,8 @@
 include("connect.inc");
 if ($_POST["act"] == "add") { 
 
-	if(empty($_POST["code"]) OR empty($_POST["detail"]) OR empty($_POST['price']) OR empty($_POST['yprice']) OR empty($_POST['nprice'])){
+	
+	if(empty($_POST["code"]) OR empty($_POST["detail"]) OR empty($_POST['price']) OR $_POST['yprice']=='' OR $_POST['nprice']=='' ){
 		?>
 		<p>กรุณากรอก รหัสคิดเงิน รายละเอียด ราคา ราคาเบิกได้ และ ราคาเบิกไม่ได้ ให้ครบถ้วน</p>
 		<p><a href="javascript:void(0);" onclick="history.back();">ย้อนกลับ</a></p>
