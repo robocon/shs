@@ -101,9 +101,8 @@ $item2=0;
 			$totalpay=$netfree+$netpay;
 
 	$sql = "INSERT INTO phardep(chktranx,date,ptname,hn,an,price,doctor,item, idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,accno)VALUES('".$_SESSION["nRunno"]."','".$Thidate."','".$_POST["Ptname"]."','".$_POST["Hn"]."','".$_POST["An"]."', '".$total_price."','".$_POST["Doctor"]."','".$item2."','".$_SESSION["sOfficer"]."','".$_POST["Diag"]."','".$pricetype["DDL"]."','".$pricetype["DDY"]."','".$pricetype["DDN"]."','".$pricetype["DPY"]."','".$pricetype["DPN"]."','".$pricetype["DSY"]."','".$pricetype["DSN"]."','".$_POST["Bedcode"]."','".$_POST["Ptright"]."','".$cAccno."');";
-	//echo $sql;
 
-	$result = Mysql_Query($sql) or die("ไม่สามารถบันทึกรายการได้ ท่านอาจเคยทำการบันทึกไปแล้ว");
+	$result = Mysql_Query($sql) or die("ไม่สามารถบันทึกรายการได้ ท่านอาจเคยทำการบันทึกไปแล้ว (Error: ".mysql_error().")");
 	$idno=mysql_insert_id(); # ********** Cretae $idno ************
 
 	$sql = "Update bed set last_drug = '".(date("Y")+543)."".date("-m-d H:i:s")."' where an = '".$_POST["An"]."' ";
@@ -121,19 +120,21 @@ $k21=$k11+180;
 $k31=$k21+50;
 
 	for($i=0;$i<$item;$i++){
-		If (($_POST["Statcon"][$i] != "OLD" && $_POST["Amount"][$i] > 0) || $_POST["Statcon"][$i] == "OLD" ){
+		// If (($_POST["Statcon"][$i] != "OLD" && $_POST["Amount"][$i] > 0) || $_POST["Statcon"][$i] == "OLD" ){
 				
-				if($_POST["Statcon"][$i] == "OLD")
-					$_POST["Amount"][$i] = 0;
+			if($_POST["Statcon"][$i] == "OLD"){
+				$_POST["Amount"][$i] = 0;
+			}
+			
 			#*************************************************** ตัดสต็อกยา ***************************************************
 			$sql ="UPDATE druglst SET stock = stock-".$_POST["Amount"][$i].",rxaccum = rxaccum + ".$_POST["Amount"][$i].",rx1day   = rx1day +".$_POST["Amount"][$i].",totalstk = stock + mainstk WHERE drugcode= '".$_POST["Drugcode"][$i]."' ";
 			$result = mysql_query($sql) or die("Query failed,update druglst in case of  IPD");
 			#*************************************************** จบตัดสต็อกยา ***************************************************
-		$sql = "Select stock,mainstk From druglst where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 ";
-		 $result = Mysql_Query($sql);
-		 $arr = Mysql_fetch_assoc($result);
-		 $stock = $arr["stock"];
-		 $mainstk = $arr["mainstk"];
+			$sql = "Select stock,mainstk From druglst where drugcode = '".$_POST["Drugcode"][$i]."' limit 0,1 ";
+			$result = Mysql_Query($sql);
+			$arr = Mysql_fetch_assoc($result);
+			$stock = $arr["stock"];
+			$mainstk = $arr["mainstk"];
 			#*************************************************** บันทึกการจ่ายยา ***************************************************
 
 			if($_POST["Part"][$i] == "DPY"){
@@ -405,9 +406,9 @@ $k31=$k21+50;
 				
 			}
 			#******************************* จบ Session ทำสลากยาใหม่ ***************************************				
-		$j++;
-	}# end if
-}# end for
+			$j++;
+		// }# end if
+	}# end for
 	
 
 for($i=0;$i<$item;$i++){

@@ -26,15 +26,16 @@
 
 
 		$_SESSION["num_list"] = 0;
-		$sql = "SELECT drugcode, tradname, amount, slcode, statcon, row_id,part 
+		$sql = "SELECT row_id,drugcode,tradname,amount,slcode,statcon,part,onoff 
 		FROM dgprofile 
 		WHERE an = '".$_GET["an"]."' 
 		AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') 
 		AND 
 		(
-			(
-				onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')
-			) 
+			#(
+			#	onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')
+			#) 
+			(statcon = 'CONT' OR statcon = 'OLD')
 			OR 
 			(
 				`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') 
@@ -59,7 +60,7 @@
 			$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
 			$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $arr["amount"];
 			$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
-
+			$_SESSION["list_druglst"]["onoff"][$_SESSION["num_list"]] = $arr["onoff"];
 
 			$_SESSION["num_list"]++;
 		}
@@ -86,7 +87,7 @@ font-size: 20px;
 }
 p,ol{
 	margin:0;
-	padding;0;
+	padding:0;
 }
 #pharDivideDrug td{
 	padding-bottom: 8px;
@@ -266,6 +267,7 @@ if($_SESSION["num_list"] > 0)
 	<TD width="5%">วิธีใช้</TD>
     <TD width="5%">ประเภท</TD>
 	<TD width="5%">จำนวน</TD>
+	<td></td>
 	<TD width="5%">สถานะ</TD>
 	<TD colspan="3" width="12%">จ่ายยาย้อนหลัง 3 วัน</TD>
 	<TD width="10%">สติกเกอร์ติด Tube</TD>
@@ -278,19 +280,22 @@ if($_SESSION["num_list"] > 0)
 for($j=0;$j<$_SESSION["num_list"];$j++){
 
 	if($_SESSION["list_druglst"]["statcon"][$j] == "CONT")
-		$bgcolor = "#99FFFF";
+		$bgcolor = "#00CC99";
 	else
 		$bgcolor = "#FFFFCC";
 	
 
 	$sql = "Select count(row_id) as row_id From ipacc02 where code = '".$_SESSION["list_druglst"]["drugcode"][$j]."'  limit  0,1";
-	
 	$result = Mysql_Query($sql) ;
 	echo mysql_error();
 	list($rows) = Mysql_fetch_row($result);
 	if($rows > 0 ){
 		$bgcolor = "#FFCC00";
 		$_SESSION["list_druglst"]["amount"][$j] = 0;
+	}
+
+	if($_SESSION["list_druglst"]["onoff"][$j]=="OFF"){
+		$bgcolor = "#ea868f";
 	}
 
 
@@ -314,6 +319,7 @@ echo "
 	<TD align=\"center\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้','".$resultsl['detail1']." ".$resultsl['detail2']." ".$resultsl['detail3']."','left',-200,0);\" OnmouseOut = \"hid_tooltip();\">",$_SESSION["list_druglst"]["slcode"][$j],"</span></TD>
 	<TD align=\"center\">",$_SESSION["list_druglst"]["part"][$j],"</TD>
 	<TD align=\"center\"><INPUT TYPE=\"text\" Name=\"Amount[]\" Value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>
+	<td>".$_SESSION["list_druglst"]["onoff"][$j]."</td>
 	<TD align=\"center\">",$list_status_drug[$_SESSION["list_druglst"]["statcon"][$j]],"";
 	
 	echo "</TD>
