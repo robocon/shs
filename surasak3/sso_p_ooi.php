@@ -2,7 +2,7 @@
 
 include 'bootstrap.php';
 
-$db = Mysql::load($shs_configs);
+$db = Mysql::load();
 
 $camp = 'อินทราเซรามิค62';
 if( empty($camp) ){

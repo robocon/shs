@@ -3,7 +3,7 @@
 include 'bootstrap.php';
 
 
-$db = Mysql::load($shs_configs);
+$db = Mysql::load();
 
 $sql = "SELECT * 
 FROM `opcardchk` 

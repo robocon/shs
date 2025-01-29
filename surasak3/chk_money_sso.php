@@ -1,15 +1,5 @@
 <?php 
-
 include 'bootstrap.php';
-
-// $shs_configs = array(
-//     'host' => '192.168.1.13',
-//     'port' => '3306',
-//     'dbname' => 'smdb',
-//     'user' => 'remoteuser',
-//     'pass' => ''
-// );
-
 $db = Mysql::load();
 
 include 'chk_menu.php'; 
