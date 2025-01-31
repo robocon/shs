@@ -410,7 +410,7 @@ return stat;
 	<TD align="right">ยา : </TD><TD colspan="7">
 		<SELECT ID="drug_inj" NAME="drug_inj"  Onchange="view_inj();">
 			<Option value="">-- เลือกยา --</Option>
-			<!--<Option value="Tetanus Toxoid">Tetanus Toxoid</Option>-->
+			<Option value="Tetanus Toxoid">Diphtheria and Tetanus vaccine</Option>
 			<option value="Adsorbed Td">Adsorbed Td</option>
 			<Option value="VERO RABIES 2">VERO RABIES 2 เข็ม</Option>
 			<Option value="VERO RABIES 3">VERO RABIES 3 เข็ม</Option>
