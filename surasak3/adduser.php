@@ -91,13 +91,17 @@ if ($act == "add") {
         (NULL, NOW(), '$txtname', '$idcard', '$age', '$department', '$position', '$perform', '$txtuser', '$email', '$password1', '$eopdStatus', 'H', NULL, '$sOfficer');";
         $q = $dbi->query($sql);
         if ($q!==false) { 
-
             
             $sMessage = "$sOfficer ได้ทำการร้องขอผู้ใช้งาน $txtname($txtuser) $department $position $perform";
-
-            // $result = sendLineNotify($sMessage, $sToken);
-            lineMessagePush($json, 'sunkhom', $sMessage);
-            // $lineRes = $json->decode($result);
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, SURASAK_DOCKER."/telegram/index.php");
+            curl_setopt( $curl, CURLOPT_POST, 1);
+            curl_setopt( $curl, CURLOPT_POSTFIELDS, "sMessage=".$sMessage."&type=user_register_request");
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
+            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
+            $result = curl_exec( $curl );
+            curl_close($curl);
 
             $res = array('status'=>200, 'message'=>'ทำการร้องขอผู้ใช้งานในระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ', 'id'=>$dbi->insert_id, 'res'=>$lineRes);
 
