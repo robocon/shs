@@ -1560,7 +1560,7 @@ $list_month["12"] ="ธันวาคม";
 
 $today2 = date("d")." ".$list_month[date("m")]." ".(date("Y")+543); 
 
-$sql = "SELECT a.*
+$sql = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`doctor`,a.`appdate`,a.`apptime`
 FROM `appoint` AS a
 RIGHT JOIN (
 	SELECT MAX(`row_id`) AS `row_id` 
