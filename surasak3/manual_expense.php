@@ -1,17 +1,17 @@
 <?php 
-require_once 'bootstrap.php';
-require_once 'class_file/class_depart.php';
-require_once 'class_file/class_patdata.php';
-require_once 'class_file/class_opacc.php';
-require_once 'class_file/class_resulthead.php';
-require_once 'class_file/opday.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_depart.php';
+require_once dirname(__FILE__).'/class_file/class_patdata2.php';
+require_once dirname(__FILE__).'/class_file/class_opacc2.php';
+require_once dirname(__FILE__).'/class_file/class_resulthead2.php';
+require_once dirname(__FILE__).'/class_file/class_opday.php';
 
-require_once 'includes/JSON.php';
+require_once dirname(__FILE__).'/includes/JSON.php';
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$part = sprintf("%s", $_GET['part']);
+$part = sprintf("%s", urldecode($_GET['part']));
 $q = $dbi->query("SELECT `id`,`code` FROM `chk_company_list` WHERE `code` = '$part' LIMIT 1 ");
 if($q->num_rows == 0){
     echo 'ไม่พบข้อมูลบริษัท <a href="chk_company.php">ย้อนหลับไปหน้าหลัก</a>';
@@ -196,7 +196,7 @@ if(!empty($dateSelect)){
                                 $urlLab .= "&moneyOfficer=".rawurldecode($config['money']);
                                 $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                 $urlLab .= "&companyPart=".rawurldecode($companyPart);
-                                if($ptRightCode=='R33' OR $ptRightCode=='R21'){
+                                if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){
                                     ?>
                                     <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
@@ -211,7 +211,7 @@ if(!empty($dateSelect)){
                                 $url .= "&moneyOfficer=".rawurldecode($config['money']);
                                 $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
                                 $url .= "&companyPart=".rawurldecode($companyPart);
-                                if($ptRightCode=='R33' OR $ptRightCode=='R21'){ 
+                                if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
                                     ?>
                                     <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
