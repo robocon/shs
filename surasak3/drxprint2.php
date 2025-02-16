@@ -1,0 +1,538 @@
+<?php
+session_start();
+include("connect.inc");
+
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
+
+Function calcage($birth){
+
+	$today = getdate();   
+	$nY  = $today['year']; 
+	$nM = $today['mon'] ;
+	$bY = substr($birth,0,4)-543;
+	$bM = substr($birth,5,2);
+	$ageY = $nY-$bY;
+	$ageM = $nM-$bM;
+
+	if ($ageM<0) {
+		$ageY=$ageY-1;
+		$ageM=12+$ageM;
+	}
+
+	if ($ageM==0){
+		$pAge="$ageY ปี";
+	}else{
+		$pAge="$ageY ปี $ageM เดือน";
+	}
+
+	return $pAge;
+}
+
+$query = "SELECT * FROM dphardep WHERE row_id = '$sRow_id' "; 
+$result = mysql_query($query) or die("Query failed");
+
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
+
+	if(!($row = mysql_fetch_object($result)))
+		continue;
+}
+
+$dRxdate=$row->date;
+$rxHn=$row->hn;
+$rxPtname=$row->ptname;
+$rxDoctor=$row->doctor;
+$rxNetprice=$row->price;
+$rxDiag=$row->diag;
+$rxPtright=$row->ptright;
+$cStkcutdate=$row->stkcutdate;
+$rxvn=$row->tvn;
+$rxpharin=$row->pharin;
+$whokey = $row->whokey;
+
+$phakew=$row->kew;
+$kewphar=$row->kewphar;
+$Essd   =$row->essd;  //รวมเงินค่ายาในบัญชียาหลักแห่งชาติ
+$Nessdy =$row->nessdy;     //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกได้
+$Nessdn =$row->nessdn;    //รวมเงินค่ายานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้
+$DSY     =$row->dsy;   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกได้
+$DSN    =$row->dsn;   //รวมเงินค่าเวชภัณฑ์ ส่วนที่เบิกไม่ได้  
+$DPY    =$row->dpy;   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกได้
+$DPN     =$row->dpn;   //รวมเงินค่าอุปกรณ์ ส่วนที่เบิกไม่ได้  
+
+$netfree=$Essd+$Nessdy+$DPY+$DSY;
+$netpay=$Nessdn+ $DSN+$DPN;
+$total=$Essd+$Nessdy+$DSY+$DPY+$Nessdn+$DSN+$DPN;
+
+
+$d=substr($dRxdate,8,2);
+$m=substr($dRxdate,5,2);
+$y=substr($dRxdate,0,4);
+
+$t=substr($dRxdate,11,8);
+
+$sdate=substr($dRxdate,0,10);
+
+$sql = "Select dbirth,idcard From opcard where hn='$rxHn' limit 1";
+list($dbirth,$idcard) = Mysql_fetch_row(Mysql_Query($sql));
+
+$age = calcage($dbirth);
+
+$yy = substr($dbirth,0,4);
+$mm = substr($dbirth,5,2);
+$dd = substr($dbirth,8,2);
+$birthday="$dd/$mm/$yy";
+	
+if(!empty($cStkcutdate)) { 
+
+	$thdatevn2 = $d.'-'.$m.'-'.$y.$rxvn;
+	$sql = "SELECT time1,thidate,thdatehn FROM opday WHERE  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
+	list($timestd,$opday_thidate,$thdatehn) = mysql_fetch_row(Mysql_Query($sql));
+	
+	
+	$sqlopd = "SELECT weight,height FROM opd WHERE  thdatehn = '".$thdatehn."' Order by row_id DESC limit 1";
+	//echo $sqlopd;
+	list($weight,$height) = mysql_fetch_row(Mysql_Query($sqlopd));	
+	
+	$subWhokey = substr($whokey,0,2);
+	$hdExtra = "";
+	if($subWhokey=="HD")
+	{
+		$hd_name_list = array('FU18'=>'ไตเทียม1','FU39'=>'ไตเทียม2');
+
+		$appdate_en = ($y-543)."-$m-$d";
+		$sqlAppoint = "SELECT `hn`, SUBSTRING(`detail`,1,4) AS `code` 
+		FROM `appoint` 
+		WHERE `appdate_en` = '$appdate_en' 
+		AND `hn` = '$rxHn' 
+		AND (`detail` LIKE 'FU18%' OR `detail` LIKE 'FU39%' )";
+		$qa = mysql_query($sqlAppoint);
+		if(mysql_num_rows($qa) > 0){
+			$itemAppoint = mysql_fetch_assoc($qa);
+			$appointCode = $itemAppoint['code'];
+			$hdExtra = ' ( '.$hd_name_list[$appointCode].' ) ';
+		}
+		
+	}
+
+
+
+	?>
+	<!-- window.print(); -->
+	<body>
+	<!-- Onload="window.print();" -->
+	<!-- <script type="text/javascript">
+		function CloseWindowsInTime(t){
+			t = t*1000;
+			setTimeout("window.close()",t);
+		}
+		CloseWindowsInTime(2); 
+	</script> -->
+	<?php
+	print "<u><br><font face='TH SarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='TH SarabunPSK' size= 4 ><b>VN:$rxvn </b>&nbsp;<b>$rxPtright</b>$hdExtra</font></u><font face='TH SarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\"></font>&nbsp;<font face='TH SarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
+	print "<font face='TH SarabunPSK'>วัน/เดือน/ปี : $d/$m/$y&nbsp;$t</font>";
+	print "<font face='TH SarabunPSK'>&nbsp;HN : $rxHn&nbsp;&nbsp;</font>";
+	print "<font face='TH SarabunPSK'>&nbsp;CID : $idcard&nbsp;&nbsp;</font>";
+	print "<font face='TH SarabunPSK'>&nbsp;วัน/เดือน/ปีเกิด : $birthday&nbsp;&nbsp;</font>";
+	print "<font face='TH SarabunPSK'>&nbsp;<b>อายุ : $age</b>&nbsp;&nbsp;</font><br>";
+	
+	print "<font face='TH SarabunPSK'>น้ำหนัก : $weight กก.</font>";
+	print "<font face='TH SarabunPSK'>&nbsp;ส่วนสูง : $height ซม.</font><br>";
+	
+	// โรค: $rxDiag&nbsp;&nbsp
+	print "<font face='TH SarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;</b><font face='TH SarabunPSK' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br></font></font>";
+	
+	$visit_date = substr($dRxdate, 0, 10);
+	$sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$rxHn' ";
+	$res = mysql_query($sqlDiag);
+	if( mysql_num_rows($res) > 0 ){
+		$drI = 1;
+		echo "<font size=''>Diag จากแพทย์ : </font>";
+		while ($list = mysql_fetch_assoc($res)) { 
+
+			$drDiag = $list['diag'];
+			if( $list['diag_thai'] ){
+				$drDiag .= ' ( '.$list['diag_thai'].' ) ';
+			}
+			echo "<font size=''>".$drI.') '.$drDiag.'</font>&nbsp';
+			$drI++;
+			
+		}
+		echo "<br>";
+	}
+	
+	$num1='0';
+	$query = "SELECT genname,tradname,advreact,asses,sideeffects 
+	FROM drugreact 
+	WHERE  hn = '$rxHn' 
+	and ( drugcode !='' or tradname!='' or genname!='') and advreact !='' ";
+	$result = mysql_query($query) or die("Query drugreact failed");
+
+	if(mysql_num_rows($result)){
+
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=5><b><u>ประวัติการแพ้ยา</b></u></font>";
+		while (list ($genname,$tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result)) {
+			$num1++;
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b><u>$num1)</u></b></font ></td>\n".
+			" </tr>\n");
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b><u>$tradname...($genname)...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
+			" </tr>\n");
+		} // End while
+
+		//print "</div>";
+
+	}
+	
+	//แพ้ยาเป็นกลุ่ม
+	$num2='0';
+	$query2 = "SELECT distinct(groupname) as groupname, advreact, asses FROM drugreact WHERE  hn = '$rxHn' and groupname!='' and sideeffects=''";
+	$result2 = mysql_query($query2) or die("Query drugreact failed");
+
+	if(mysql_num_rows($result2)){
+
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=5><b><u>แพ้ยาในกลุ่ม </b></u>";
+		while (list ($groupname,$advreact,$asses) = mysql_fetch_row ($result2)) {
+			$num2++;
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=3><b>$num2)</b></font ></td>\n".
+			" </tr>\n");
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b>$groupname...$advreact($asses)</b></font >&nbsp;&nbsp;</td>\n".
+			" </tr>\n");
+		} // End while
+
+		//print "</div>";
+	}	
+	
+	$num3='0';
+	$query3 = "SELECT tradname,advreact,asses,sideeffects FROM drugreact WHERE  hn = '$rxHn' and sideeffects !='' ";
+	$result3 = mysql_query($query3) or die("Query drugreact failed");
+
+	if(mysql_num_rows($result3)){
+
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=5><b><u>ผลข้างเคียงจากการใช้ยา</b></u></font>";
+		while (list ($tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result3)) {
+			$num3++;
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=3><b><u>$num3)</u></b></font ></td>\n".
+			" </tr>\n");
+			print (" <tr>\n".
+			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b><u>$tradname...$sideeffects</u></b></font >&nbsp;&nbsp;</td>\n".
+			" </tr>\n");
+		} // End while
+
+		//print "</div>";
+
+	}	
+	
+	
+
+	/* แจ้งเตือน Warfarin */
+	if( !function_exists('ad_to_bc') ){
+		function ad_to_bc($time = null){
+			$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
+			return $time;
+		}
+	}
+
+	if( !function_exists('cal_to_bc') ){
+		function cal_to_bc($match){
+			return ( $match['0'] + 543 );
+		}
+	}
+
+	$date_end = date('Y-m-d');
+	$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
+
+	$date_end = ad_to_bc($date_end);
+	$date_start = ad_to_bc($date_start);
+
+	$patient_hn = trim($rxHn);
+	$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
+	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
+	FROM `drugrx` 
+	WHERE `hn` = '$patient_hn' 
+	AND ( `date` >= '$date_start' AND `date` < '$date_end' ) 
+	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+	AND `status` = 'Y' AND `amount` > 0 
+	ORDER BY `row_id` ASC;";
+	$dbi->query($sqlTemp);
+
+	$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
+	IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
+	FROM (
+		SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
+	) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
+	ORDER BY b.`row_id`";
+	$qTemp = $dbi->query($sql);
+	$drugrxRows = $qTemp->num_rows;
+	if($drugrxRows > 0){
+		$drugrxItem = array();
+
+		$isWarfarin = false;
+		$isNoacs = false;
+		while ($a = $qTemp->fetch_assoc()) {
+			$drugrxItem[] = $a;
+			if($a['type']=='warfarin'){
+				$isWarfarin = true;
+			}
+
+			if($a['type']=='noacs'){
+				$isNoacs = true;
+			}
+		}
+
+		if($isWarfarin===true && $isNoacs===false){
+			?>
+			<p>ผู้ป่วยมีประวัติการใช้ Warfarin ในช่วง 6 เดือนย้อนหลัง</p>
+			<?php
+		}
+
+		if($isWarfarin===true && $isNoacs===true){
+			?>
+			<p>ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs ในช่วง 6 เดือนย้อนหลัง</p>
+			<?php
+		}
+	}
+	/* แจ้งเตือน Warfarin */
+
+
+
+?>
+
+<table>
+	<tr>
+		</tr>
+<?php
+// แพ้ยารุนแรง
+// เอา date_save บวกเพิ่มไปอีก 2 เดือนเพื่อหาวันสิ้นสุด
+$sql = "SELECT `date_save`,`drug_code`, DATE_ADD(`date_save`, INTERVAL 6 MONTH) AS `end_date` 
+FROM `phar_allergic` 
+WHERE `hn` = '$rxHn'";
+$query = mysql_query($sql);
+$drug_allergics = array();
+$allergics_time = array();
+while ($item = mysql_fetch_assoc($query)) {
+	$drug_allergics[] = $item['drug_code'];
+
+	$key = md5($item['drug_code']);
+	// ทำเป็น int แล้วเอาไปเปรียบเทียบกับวันปัจจุบันเพื่อแสดง new, old
+	$allergics_time[$key] = strtotime($item['end_date']);
+}
+
+$current_date = strtotime(date('Y-m-d H:i:s'));
+// แพ้ยารุนแรง
+
+$num = '0';
+$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode, a.drugcode, a.part, b.detail1, b.detail2, b.detail3, 
+b.detail4, a.drug_inject_amount, a.drug_inject_unit, a.drug_inject_amount2, a.drug_inject_unit2, a.drug_inject_time, 
+a.drug_inject_slip, a.drug_inject_type, a.drug_inject_etc, a.office, c.unit, a.reason 
+FROM ddrugrx as a, 
+drugslip as b, 
+druglst as c 
+WHERE a.slcode = b.slcode 
+AND a.idno = '$sRow_id' 
+AND a.date = '$dRxdate' 
+AND a.drugcode = c.drugcode ";
+$result = mysql_query($query) or die("Query failed");
+while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1, $detail2, $detail3, $detail4,$dia,$diu,$dia2,$diu2,$dtime,$dis,$dit,$die,$office,$unit,$reason) = mysql_fetch_row($result) ){
+	$num++;
+		
+	if($amount!=0){
+		$year=date("Y")+543;
+		$day=date("m-d");
+		$daynow=$year.'-'.$day;
+		
+		$chkstatus="SELECT drug_status FROM  drugrx  WHERE date like '$daynow%' and drugcode='$drugcode' and hn='$rxHn' ";
+		$objquery = mysql_query($chkstatus);
+		//$num=mysql_num_rows($objquery);
+		list($drug_status) = mysql_fetch_row($objquery);
+		
+		if($drug_status!=""){
+			$status = "( $drug_status )";
+		}else{
+			$status = " ";
+		}
+		$c1 = substr($drugcode,0,1);
+		$c2 = substr($drugcode,0,2);
+		$reason1 = substr($reason,0,1);
+
+		// เช็กก่อนว่ามียาในรายการแพ้ยารุนแรงรึป่าว
+		$allergics_txt = ''; // default
+		$drug_code = trim($drugcode);
+		if( array_search($drug_code, $drug_allergics) !== false ){
+			$dkey = md5($drug_code);
+
+			$drug_end = strtotime($allergics_time[$dkey]);
+
+			// ถ้าวันปัจจุบันน้อยกว่าวันสิ้นสุดจะแสดงเป็น old
+			$allergics_txt = '(new)';
+			if( $current_date < $drug_end ){
+				$allergics_txt = '(old)';
+			}
+		}
+
+		// น้องเนมบอกไม่เอาแบ๊ว เปลี่ยนไปใช้ทางขวาเหมือนเดิมเลยต้องไปปรับใน drxstkcut แทน
+		$allergics_txt = '';
+
+		echo " <tr style='line-height:18px;'>\n".
+		"  <td><font face='TH SarabunPSK'>$num.</td>\n".
+		"  <td><font face='TH SarabunPSK' size=''>$drugcode</td>\n".
+		"  <td><font face='TH SarabunPSK' size=''><b>$tradname</b>&nbsp;[$unit] $allergics_txt</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'>&nbsp;<b>(&nbsp;$amount&nbsp;)</b></td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  >&nbsp;$price</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  size=''>&nbsp;$part</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  size=''>&nbsp;<B>(&nbsp;$reason1&nbsp;)</B></td>\n";
+		if($c2!='20'&&($c1=='2'||$c1=='0')){
+			if($dis=="2ins"){
+				echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$dia&nbsp;$diu&nbsp;$dia2&nbsp;$diu2&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
+			}elseif($dis=="1ins"){
+				echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
+			}else{
+				echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;$dis&nbsp;$dit&nbsp;$die &nbsp";	  
+			}
+		}else{
+			echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$detail1 &nbsp; $detail2 &nbsp; $detail3 &nbsp; $detail4&nbsp;";
+		}
+
+		echo "$office &nbsp;&nbsp;&nbsp;$status</td>\n".
+		" </tr>\n";
+	//	   if($reason!=''){
+		//   	print ("<tr style='line-height:10px;'><td colspan='7'><font face='TH SarabunPSK' size=''>$reason</td></tr>");}
+
+		if($num == 11){
+			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
+
+		}else if($num == 21){
+			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
+		}
+	}
+}
+?>
+</table>
+
+
+<?php
+
+function datediff ( $start, $end ) {
+
+   $datediff = strtotime(dateform($end)) - strtotime(dateform($start));
+   return floor($datediff / (60 * 60 * 24));
+}
+
+function dateform($date){
+
+   $d = explode('-',$date);
+   return $d[2].'-'.$d[1].'-'.$d[0];
+}
+
+
+
+	$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$rxHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
+	//echo $sqlopday;
+	$res2= mysql_query($sqlopday2) or die("Query failed");
+	list($datekey,$appdate,$end) = mysql_fetch_row($res2);
+	
+	$yy = substr($datekey,0,4);
+	$yy=$yy-543;
+	$mm = substr($datekey,5,2);
+	$dd = substr($datekey,8,2);
+	$start="$yy-$mm-$dd";	
+	
+	if(!empty($appdate)){
+		$appdate=$appdate;
+	}else{
+		$appdate="ไม่มีนัด";
+	}
+
+
+print "<font face='TH SarabunPSK' size=''>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
+print "<font face='TH SarabunPSK' size=''>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
+print "<font face='TH SarabunPSK'>(<b>เบิกได้&nbsp;$netfree&nbsp;บาท</b>&nbsp;&nbsp;&nbsp;เบิกไม่ได้&nbsp;$netpay  &nbsp;บาท)&nbsp;&nbsp; <font face='TH SarabunPSK' size='4'>รวมเงิน  $rxNetprice  บาท</font><br>";
+print "<font face='TH SarabunPSK' size=''>บัญชียาหลัก เบิกได้&nbsp;$Essd &nbsp;</font>";
+print "<font face='TH SarabunPSK' size=''>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
+print "<font face='TH SarabunPSK' size=''>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
+print "<font face='TH SarabunPSK' size=''>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
+
+
+
+
+print "<font face='TH SarabunPSK' size=''></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
+print "<font face='TH SarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................<br>";
+
+
+$thdatevn1 = $d.'-'.$m.'-'.$y.$rxHn;
+$thdatevn2 = $d.'-'.$m.'-'.$y.$rxvn;
+$thdatevn3 = $y.'-'.$m.'-'.$d;
+
+
+
+$timedate = date("H:i:s"); 
+$sql = "SELECT time1 FROM opday WHERE  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
+
+list($timestd) = mysql_fetch_row(Mysql_Query($sql));
+
+
+print "<font face='TH SarabunPSK' size=''>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................<BR>";
+$sql = "Select PHAR , xray,  patho , emer , surg , physi , denta , other   From opday where  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
+list($PHAR , $xray,  $patho , $emer , $surg , $physi , $denta , $other) = mysql_fetch_row(Mysql_Query($sql));
+print "<font face='TH SarabunPSK' size=''><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER>";
+if($PHAR>0){print "<font face='TH SarabunPSK' size=''><B>ยา</B> : $PHAR";}
+if($xray>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>XRAY</B> : $xray";}
+if($patho>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>LAB</B> : $patho";}
+if($emer>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>ER</B> : $emer";}
+if($surg>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>OR</B> : $surg";}
+if($physi>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>PT</B>: $physi ";}
+if($denta>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>DEN</B> : $denta";}
+$other -=50;
+if($other>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>OTHER</B> : $other";}
+print "<font face='TH SarabunPSK' size=''>&nbsp;<B>SERVICE</B>:50.00 ";
+//print "<font face='TH SarabunPSK' size=''>ยา : $PHAR ,&nbsp;X-ray : $xray ,&nbsp;LAB : $patho ,&nbsp;ER : $emer ,&nbsp;ผ่าตัด : $surg ,&nbsp;กายภาพ : $physi ,&nbsp;ทันตกรรม : $denta ,&nbsp;อื่นๆ : $other,&nbsp;ค่าบริการ:50 ";
+$summary = $PHAR+$xray+$patho+$emer+$surg+$physi+$denta+$other+50 ;
+$summary = number_format($summary,2);
+print "<font face='TH SarabunPSK' size=''><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
+
+
+print "<font face='TH SarabunPSK' size=''><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
+
+$nnnn=$Nessdn+$DSN+$DPN;
+
+if($nnnn>0 ){
+	echo "<br><font face='TH SarabunPSK' size='5'><center>***ผู้ป่วยมีส่วนเกิน....$nnnn..บาท............*** </center></FONT>";
+};
+	
+	 
+
+
+	 
+
+$today1=(date("Y")+543).date("-m-d");	
+$sql = "SELECT @n := @n +1 AS 'NO', row_id,hn,ptname From dphardep, (
+SELECT @n :=0
+) AS R  WHERE hn = '".$rxHn."' AND  date LIKE '$today1%' and dr_cancle is null ";
+$result = Mysql_Query($sql);
+$num=Mysql_num_rows($result);
+	if($num > 1){
+		while(list($n,$rowid,$hn,$ptname) = Mysql_fetch_row($result)){
+			if($rowid==$sRow_id){
+				echo "<br><font face='TH SarabunPSK' size='5'><center>***ผู้ป่วยมีใบรายการยามากกว่า 1 ใบ ($n/$num)*** </center></FONT>";
+			}
+		}
+	}
+}else{ 
+	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";
+}
+include("unconnect.inc");
+
+if(substr($rxPtright,0,3)=="R03" || substr($rxPtright,0,3)=="R33"){
+	echo "<div style='page-break-before: always;'></div>";
+	$hn=$rxHn;
+	$date=$y.'-'.$m.'-'.$d;
+	include("reportcash1.php");
+}
