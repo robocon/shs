@@ -11,10 +11,11 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $ids = $_POST['id'];
+
 $doctor = $_POST['doctor'];
 $oldDoctor = $_POST['oldDoctor'];
 
-if(empty($ids) OR empty($doctor ) OR empty($oldDoctor)){
+if(count($ids)==0 OR empty($doctor ) OR empty($oldDoctor)){
     echo "กรุณาระบุ ID และ แพทย์";
     exit;
 }

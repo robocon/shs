@@ -23,18 +23,16 @@ SOURCE_HOST_DB = cfg["SOURCE_HOST_DB"]+"/"+cfg["SOURCE_DB"]
 SOURCE_USER = cfg["SOURCE_USER"]
 SOURCE_PASS = cfg["SOURCE_PASS"]
 
-SINK_HOST_DB = cfg["SINK_HOST_DB"]+":"+cfg["SINK_PORT"]+"/"+cfg["SINK_DB"]
+SINK_HOST_DB = cfg["SINK_HOST_DB"]+"/"+cfg["SINK_DB"]
 SINK_USER = cfg["SINK_USER"]
 SINK_PASS = cfg["SINK_PASS"]
-SINK_PORT = cfg["SINK_PORT"]
 
 try:
     mydb = mysql.connector.connect(
         host=cfg["SINK_HOST_DB"],
         user=cfg["SINK_USER"],
         password=cfg["SINK_PASS"],
-        database=cfg["SINK_DB"],
-        port=cfg["SINK_PORT"]
+        database=cfg["SINK_DB"]
     )
     mycursor = mydb.cursor(dictionary=True) # dictionary=True ตอนเรียกใช้ใน for จะสามารถเรียกเป็นแบบ fieldname ได้
 except mysql.connector.Error as err:
@@ -43,14 +41,12 @@ except mysql.connector.Error as err:
 setGlobal = mycursor.execute("SET GLOBAL local_infile=1")
 print('MYSQL Global : '+str(setGlobal)+'\n')
 
-
-# digital_opcard
-mycursor.execute("SELECT `row_id` AS latest_id FROM digital_opcard ORDER BY row_id DESC LIMIT 1")
+# ipcard
+mycursor.execute("SELECT `row_id` AS latest_id FROM ipcard ORDER BY row_id DESC LIMIT 1")
 myresult = mycursor.fetchone()
 latest_id = str(myresult["latest_id"])
 
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=digital_opcard --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=digital_opcard --sink-disable-truncate true"
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=ipcard --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=ipcard --sink-disable-truncate true"
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
-

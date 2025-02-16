@@ -37,25 +37,49 @@ $d = $q->fetch_assoc();
     <div class="container mt-4">
         <?php 
         if(!empty($ids)){
+            $sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` <> '' ";
+            $q = $dbi->query($sql);
+
+            $doctorList = array();
+            while ($a = $q->fetch_assoc()) { 
+                $doctorList[] = $a;
+            }
         ?>
         <form action="digital_opd_manage_update_doctor.php" method="post">
 
             <div class="mb-3 row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">ชื่อแพทย์เดิม</label>
-                <div class="col-sm-4"><?=$d['name'];?><input type="hidden" name="oldDoctor" value="<?=$d['row_id'];?>"></div>
+                <div class="col-sm-4">
+                    <?php 
+                    if(empty($oldDoctor)){
+                        ?>
+                        <select name="doctor" id="doctor" class="form-select">
+                        <option value="">แสดงทุกแพทย์</option>
+                        <?php 
+                        foreach($doctorList as $a){
+                            ?>
+                            <option value="<?=$a['row_id'];?>"><?=$a['name'];?></option>
+                            <?php
+                        }
+                        ?>
+                    </select>
+                        <?php
+                    }else{
+                        ?>
+                        <?=$d['name'];?><input type="hidden" name="oldDoctor" value="<?=$d['row_id'];?>">
+                        <?php
+                    }
+                    ?>
+                </div>
             </div>
 
             <div class="mb-3 row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">เลือกแพทย์ใหม่</label>
                 <div class="col-sm-4">
-                    <?php 
-                    $sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` <> '' ";
-                    $q = $dbi->query($sql);
-                    ?>
                     <select name="doctor" id="doctor" class="form-select">
                         <option value="">แสดงทุกแพทย์</option>
                         <?php 
-                        while ($a = $q->fetch_assoc()) { 
+                        foreach($doctorList as $a){
                             ?>
                             <option value="<?=$a['row_id'];?>"><?=$a['name'];?></option>
                             <?php
