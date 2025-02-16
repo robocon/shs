@@ -62,6 +62,7 @@ if(!empty($reprint_date)){
 	$newReprintDate = "Reprint $reD/$reM/$reY";
 }
 
+
 $sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' order by row_id desc,thidate desc limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
 $num=mysql_num_rows($result_dt_hn);
@@ -281,10 +282,17 @@ p.text {
 <script language="javascript">
 //window.opener.location.reload();
 //window.opener.location.reload(true);
+
 window.print();
-	setTimeout(function(){ 
-            window.close();
-	}, 1000);
+
+// setTimeout(function(){ 
+// 		window.close();
+// }, 1000);
+
+window.onafterprint = function(){
+	window.close();
+}
+
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
 <div class="narrowWaisted">
@@ -375,7 +383,8 @@ window.print();
 	<tr>
 		<td>บุหรี่ : <?=$cigarette;?>, สุรา : <?=$alcohol;?> , bmi : <?=$bmi;?>, PS : <?=$painscore;?></td>
 	</tr>
-	<?php 
+	<?php
+if($_GET["type"]!="checkup"){	
 	if ( !empty($mens) ) { 
 
 		$mens_lists = array(1=>'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
@@ -463,7 +472,6 @@ window.print();
 		</tr>
 		<?php 
 	}
-
 	if ( !empty($hpi) ) {
 		
 		?>
@@ -472,6 +480,7 @@ window.print();
 		</tr>
 		<?php
 	}
+	
 	if ( !empty($cvriskscore) ) {
 		?>
 		<tr>
@@ -493,7 +502,14 @@ window.print();
 		</tr>
 		<?php
 	}	
+}else{ //else if type!=checkup	
 	?>
+		<tr>
+			<td><p class="text">อาการ : <?=trim($organ);?></p></td>
+		</tr>
+<?php
+}	//close if type!=checkup	
+?>	
 </table>
 
 
@@ -501,6 +517,8 @@ window.print();
 
 
 <?php
+if($_GET["type"]!="checkup"){  //ถ้าไม่ใช่ตรวจสุขภาพทหาร
+	
 if(!empty($_GET['show_advice'])){
 $show_advice = $_GET['show_advice'];
 }else{
@@ -967,6 +985,7 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 }
 
 }
+}  //close if checkup
 ?>
 </div>
 <div class="iBannerFix">
