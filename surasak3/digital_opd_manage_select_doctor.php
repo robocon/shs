@@ -1,5 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
 if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
@@ -12,8 +12,6 @@ $dbi->query("SET NAMES UTF8");
 
 $ids = $_POST['id'];
 $oldDoctor = $_POST['doctor'];
-$q = $dbi->query(sprintf("SELECT `row_id`,`name` FROM `doctor` WHERE `row_id` = '%s' LIMIT 1 ", $oldDoctor));
-$d = $q->fetch_assoc();
 
 ?>
 <!DOCTYPE html>
@@ -51,22 +49,16 @@ $d = $q->fetch_assoc();
                 <label for="staticEmail" class="col-sm-2 col-form-label">ชื่อแพทย์เดิม</label>
                 <div class="col-sm-4">
                     <?php 
-                    if(empty($oldDoctor)){
+                    $statement = sprintf("SELECT `row_id`,`name` FROM `doctor` WHERE `row_id` = '%s' LIMIT 1 ", $dbi->real_escape_string($oldDoctor));
+                    $q = $dbi->query($statement);
+                    if($q->num_rows>0){
+                        $d = $q->fetch_assoc();
                         ?>
-                        <select name="doctor" id="doctor" class="form-select">
-                        <option value="">แสดงทุกแพทย์</option>
-                        <?php 
-                        foreach($doctorList as $a){
-                            ?>
-                            <option value="<?=$a['row_id'];?>"><?=$a['name'];?></option>
-                            <?php
-                        }
-                        ?>
-                    </select>
+                        <?=$d['name'];?><input type="hidden" name="oldDoctor" value="<?=$d['row_id'];?>">
                         <?php
                     }else{
                         ?>
-                        <?=$d['name'];?><input type="hidden" name="oldDoctor" value="<?=$d['row_id'];?>">
+                        <input type="hidden" name="oldDoctor" value="">
                         <?php
                     }
                     ?>
