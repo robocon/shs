@@ -4,7 +4,7 @@ include("connect.inc");
 
 if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
 {
-    //header("content-type: application/x-javascript; charset=TIS-620");
+    //header("content-type: application/x-javascript; charset=UTF-8");
     
     $sql = "Select CONCAT(yot,' ',name,' ',surname) as full_name, ptright, dbirth From opcard where hn = '".$_GET["hn"]."' limit 1 ";
     list($ptname,$ptright, $dbirth) = Mysql_fetch_row(Mysql_Query($sql));
@@ -14,7 +14,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
     <TD>
     <table width=\"100%\" border=\"0\" align=\"center\">
     <tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
-    <td >�׹�ѹ��éմ��</td>
+    <td >ยืนยันการฉีดยา</td>
     </tr>
     <tr>
     <td >";
@@ -22,19 +22,15 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
     if($ptname != "")
     {
         echo "HN : ".$_GET["hn"]."<BR>";
-        echo "����-ʡ�� : ".$ptname."<BR>";
-        echo "�Է��� : ".$ptright."<BR>";
+        echo "ชื่อ-สกุล : ".$ptname."<BR>";
+        echo "สิทธิ์ : ".$ptright."<BR>";
     
         $sql = "CREATE TEMPORARY TABLE drugrx_now  Select  right(date,8) as time2, date,  slcode, tradname, drugcode, drug_inject_slip, drug_inject_amount, drug_inject_type, drug_inject_etc, row_id, amount From drugrx  where date like '".((date("Y")+543).date("-m-d"))."%' AND hn = '".$_GET["hn"]."' AND left(drugcode,1) in ('2','0')  AND right(left(drugcode,2),1) not in ('0','1','2','3','4','5','6','7','8','9') AND drugcode not in ('2SYNV*@','2GOON','2HYRU') AND (an is null OR an = '' ) ";
         $result = Mysql_Query($sql) or die(Mysql_Error());
-
         $sql = "Select date ,  slcode, tradname, drugcode, drug_inject_slip, drug_inject_amount, drug_inject_type, drug_inject_etc, row_id, amount From drugrx_now group by drugcode, slcode Having sum(amount) > 0 ";
-        //echo $sql;
-    
         $result = Mysql_Query($sql) or die(Mysql_Error());
         while(list(   $date,  $slcode, $tradname, $drugcode, $drug_inject_slip, $drug_inject_amount, $drug_inject_type, $drug_inject_etc, $row_id, $amount) = Mysql_fetch_row($result))
         {
-            
             $IV="";
             $IM="";
             $SC="";
@@ -48,9 +44,9 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
                 case "SC": $SC="Selected"; break;
             }
             
-            echo "<B>�� </B>".$tradname;
+            echo "<B>ยา </B>".$tradname;
 
-            echo "&nbsp;&nbsp;<B>������</B> 
+            echo "&nbsp;&nbsp;<B>เข็มที่</B> 
                 <SELECT NAME=\"number[]\">
                     <Option value=\"1\" >1</Option>
                     <Option value=\"2\" >2</Option>
@@ -59,22 +55,22 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
                     <Option value=\"5\" >5</Option>
                 </SELECT>";
 
-            echo "&nbsp;&nbsp;<B>�Ըթմ</B> 
+            echo "&nbsp;&nbsp;<B>วิธีฉีด</B> 
                 <SELECT NAME=\"type[]\">
                     <Option value=\"V\" ".$IV.">V</Option>
                     <Option value=\"M\" ".$IM.">M</Option>
                     <Option value=\"SC\" ".$SC.">SC</Option>
-                    <Option value=\"NO\" >���Ѻ</Option>
+                    <Option value=\"NO\" >ไม่นับ</Option>
                 </SELECT>";
             echo "<BR><BR>";
 
             $sql = "Select unit From druglst where drugcode = '".$drugcode."' limit 1 ";
             list($unit) = mysql_fetch_row(mysql_query($sql));
 
-            echo "&nbsp;&nbsp;<B>�ӹǹ���մ</B> : ".$drug_inject_amount;
-            echo "&nbsp;&nbsp;<B>�մẺ</B> : ".$drug_inject_type;
-            echo "&nbsp;&nbsp;<B>�ӹǹ������</B> : ".$amount." ".$unit;
-            echo "&nbsp;&nbsp;<B>����</B> : ".$drug_inject_etc;
+            echo "&nbsp;&nbsp;<B>จำนวนที่ฉีด</B> : ".$drug_inject_amount;
+            echo "&nbsp;&nbsp;<B>ฉีดแบบ</B> : ".$drug_inject_type;
+            echo "&nbsp;&nbsp;<B>จำนวนที่สั่ง</B> : ".$amount." ".$unit;
+            echo "&nbsp;&nbsp;<B>อื่นๆ</B> : ".$drug_inject_etc;
             echo "<HR><BR><INPUT TYPE=\"hidden\" value=\"".$date."\" name=\"date[]\">";
             
             echo "<INPUT TYPE=\"hidden\" value=\"".$drugcode."\" name=\"drugcode[]\">";
@@ -87,19 +83,21 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
         echo "<INPUT TYPE=\"hidden\" value=\"".$dbirth."\" name=\"dbirth\">";
         echo "<INPUT TYPE=\"hidden\" value=\"".$ptright."\" name=\"ptright\">";
 
-        if($_SESSION['smenucode']=="ADMMAINOPD")
+        if($_SESSION['smenucode']=="ADMMAINOPD" OR $_SESSION['smenucode']=="ADM")
         {
             ?>
+            <br>
             <label for="isOpd">
-                <input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPD�մ�� 
+                <input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPD ฉีดยา 
             </label>
+            <p>ระบบจะทำการคิดค่าฉีดยาอัตโนมัติ</p>
             <?php
         }
-        $submit_button = "<INPUT TYPE=\"submit\" value=\" ��ŧ \" >";
+        $submit_button = "<INPUT TYPE=\"submit\" value=\" ตกลง \" >";
     }
     else
     {
-        echo "����������Ţ HN : ".$_GET["hn"]."";
+        echo "ไม่มีหมายเลข HN : ".$_GET["hn"]."";
         $submit_button = "";
     }
 
@@ -107,7 +105,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
     </tr>
     <tr>
     <td >
-    ".$submit_button."&nbsp;<INPUT TYPE=\"button\" value=\"¡��ԡ\" onclick=\"view_confirm_inj('reconfirm_inj',document.form_confirn_inject.hn.value);\">
+    ".$submit_button."&nbsp;<INPUT TYPE=\"button\" value=\"ยกเลิก\" onclick=\"view_confirm_inj('reconfirm_inj',document.form_confirn_inject.hn.value);\">
     </td>
     </tr>
     </table>
@@ -120,7 +118,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
 
 if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
 {
-    //header("content-type: application/x-javascript; charset=TIS-620");
+    //header("content-type: application/x-javascript; charset=UTF-8");
     
     $sql = "Select CONCAT(yot,' ',name,' ',surname) as full_name, ptright, dbirth From opcard where hn = '".$_GET["hn"]."' limit 1 ";
     list($ptname,$ptright, $dbirth) = Mysql_fetch_row(Mysql_Query($sql));
@@ -130,7 +128,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
                     <TD>
                         <table width=\"100%\" border=\"0\" align=\"center\">
                       <tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
-                        <td >�׹�ѹ��÷���</td>
+                        <td >ยืนยันการทำแผล</td>
                       </tr>
                       <tr>
                         <td >";
@@ -138,20 +136,20 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
                         if($ptname != "")
                         {
                             echo "HN : ".$_GET["hn"]."<BR>";
-                            echo "����-ʡ�� : ".$ptname."<BR>";
-                            echo "�Է��� : ".$ptright."<br>";
+                            echo "ชื่อ-สกุล : ".$ptname."<BR>";
+                            echo "สิทธิ์ : ".$ptright."<br>";
                             if($_SESSION['smenucode']=="ADMMAINOPD")
                             {
                                 ?>
                                 <label for="isOpd">
-                                    <input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPD����
+                                    <input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPDทำแผล
                                 </label>
                                 <br>
                                 <?php
                             }
-                            $submit_button = "<INPUT TYPE=\"submit\" value=\" ��ŧ \" >";
+                            $submit_button = "<INPUT TYPE=\"submit\" value=\" ตกลง \" >";
                         }else{
-                            echo "����������Ţ HN : ".$_GET["hn"]."";
+                            echo "ไม่มีหมายเลข HN : ".$_GET["hn"]."";
                             $submit_button = "";
                         }
 
@@ -160,7 +158,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
                       </tr>
                       <tr>
                         <td >
-                        ".$submit_button."&nbsp;<INPUT TYPE=\"button\" value=\"¡��ԡ\" onclick=\"view_confirm_ds('reconfirm_ds',document.form_confirn_ds.hn.value);\">
+                        ".$submit_button."&nbsp;<INPUT TYPE=\"button\" value=\"ยกเลิก\" onclick=\"view_confirm_ds('reconfirm_ds',document.form_confirn_ds.hn.value);\">
                         </td>
                       </tr>
                       </table>
@@ -174,7 +172,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
 
 if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj")
 {
-    //header("content-type: application/x-javascript; charset=TIS-620");
+    //header("content-type: application/x-javascript; charset=UTF-8");
     
 
 
@@ -183,7 +181,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj")
                     <TD>
                         <table width=\"100%\" border=\"0\" align=\"center\">
                       <tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
-                        <td >�׹�ѹ��éմ��</td>
+                        <td >ยืนยันการฉีดยา</td>
                       </tr>
                       <tr>
                         <td >
@@ -192,7 +190,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj")
                       </tr>
                       <tr>
                         <td >
-                        <INPUT TYPE=\"button\" value=\" ��ŧ \" onclick=\"view_confirm_inj('confirm_inj',document.getElementById('form_confirn_inject_hn').value);\">
+                        <INPUT TYPE=\"button\" value=\" ตกลง \" onclick=\"view_confirm_inj('confirm_inj',document.getElementById('form_confirn_inject_hn').value);\">
                         </td>
                       </tr>
                       </table>
@@ -205,14 +203,14 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_inj")
 
 if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
 {
-    //header("content-type: application/x-javascript; charset=TIS-620");
+    //header("content-type: application/x-javascript; charset=UTF-8");
     
     echo "<TABLE  width=\"100%\"  border=\"1\" bordercolor=\"#3366FF\">
                 <TR>
                     <TD>
                         <table width=\"100%\" border=\"0\" align=\"center\">
                       <tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
-                        <td >�׹�ѹ��÷���</td>
+                        <td >ยืนยันการทำแผล</td>
                       </tr>
                       <tr>
                         <td >
@@ -221,7 +219,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
                       </tr>
                       <tr>
                         <td >
-                        <INPUT TYPE=\"button\" value=\" ��ŧ \" onclick=\"view_confirm_ds('confirm_ds',document.form_confirn_ds.hn.value);\">
+                        <INPUT TYPE=\"button\" value=\" ตกลง \" onclick=\"view_confirm_ds('confirm_ds',document.form_confirn_ds.hn.value);\">
                         </td>
                       </tr>
                       </table>
@@ -233,6 +231,16 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
 }
 
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทำแผล/ฉีดยา OPD</title>
+</head>
+<body>
+    
 <style>
     .clearfix::after {
         content: "";
@@ -256,14 +264,14 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
 </style>
 <div class="menu_container clearfix">
     <ul>
-        <li><a href="../nindex.htm">&lt;&lt;&nbsp;����</a></li>
-        <li><a href="confirn_ds.php" target="_blank">�׹�ѹ��÷���</a></li>
-        <li><a href="confirn_inject.php" target="_blank">�׹�ѹ��éմ��</a></li>
-        <li><a href="concisely_trun_opd.php" target="_blank">��§ҹ��ػ�ʹ���</a></li>
+        <li><a href="../nindex.htm">&lt;&lt;&nbsp;เมนู</a></li>
+        <li><a href="confirn_ds.php" target="_blank">ยืนยันการทำแผล</a></li>
+        <li><a href="confirn_inject.php" target="_blank">ยืนยันการฉีดยา</a></li>
+        <li><a href="concisely_trun_opd.php" target="_blank">รายงานสรุปยอดเวร</a></li>
     </ul>
 </div>
 <div>
-    <h3>����/�մ�� OPD</h3>
+    <h3>ทำแผล/ฉีดยา OPD</h3>
 </div>
 <table>
     <tr>
@@ -275,7 +283,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
                             <TD>
                                 <table width="100%" border="0" align="center">
                                     <tr align="center" bgcolor="#3366FF" class="font_title">
-                                        <td >�׹�ѹ��éմ��</td>
+                                        <td >ยืนยันการฉีดยา</td>
                                     </tr>
                                     <tr>
                                         <td >
@@ -284,7 +292,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
                                     </tr>
                                     <tr>
                                         <td >
-                                            <INPUT TYPE="button" value=" ��ŧ " onClick="view_confirm_inj('confirm_inj',document.form_confirn_inject.hn.value);">
+                                            <INPUT TYPE="button" value=" ตกลง " onClick="view_confirm_inj('confirm_inj',document.form_confirn_inject.hn.value);">
                                         </td>
                                     </tr>
                                 </table>
@@ -302,7 +310,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
                             <TD>
                                 <table width="100%" border="0" align="center">
                                     <tr align="center" bgcolor="#3366FF" class="font_title">
-                                        <td >�׹�ѹ��÷���</td>
+                                        <td >ยืนยันการทำแผล</td>
                                     </tr>
                                     <tr>
                                         <td >
@@ -311,7 +319,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
                                     </tr>
                                     <tr>
                                         <td >
-                                            <INPUT TYPE="button" value=" ��ŧ " onClick="view_confirm_ds('confirm_ds',document.form_confirn_ds.hn.value);">
+                                            <INPUT TYPE="button" value=" ตกลง " onClick="view_confirm_ds('confirm_ds',document.form_confirn_ds.hn.value);">
                                         </td>
                                     </tr>
                                 </table>
@@ -370,3 +378,5 @@ function rediv(xx){
 }
 
 </script>
+</body>
+</html>
