@@ -123,42 +123,47 @@ if(!empty($cStkcutdate)) {
 
 	?>
 	<!-- window.print(); -->
-	<body>
-	<!-- Onload="window.print();" -->
-	<!-- <script type="text/javascript">
-		function CloseWindowsInTime(t){
-			t = t*1000;
-			setTimeout("window.close()",t);
+	<body Onload="">
+	<script type="text/javascript">
+		// function CloseWindowsInTime(t){
+		// 	t = t*1000;
+		// 	setTimeout("window.close()",t);
+		// }
+		// CloseWindowsInTime(2);
+		window.onload = function(){
+			window.print();
+			window.onafterprint = function(){
+				window.close();
+			}
 		}
-		CloseWindowsInTime(2); 
-	</script> -->
+	</script>
 	<?php
 	print "<u><br><font face='TH SarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='TH SarabunPSK' size= 4 ><b>VN:$rxvn </b>&nbsp;<b>$rxPtright</b>$hdExtra</font></u><font face='TH SarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\"></font>&nbsp;<font face='TH SarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
-	print "<font face='TH SarabunPSK'>วัน/เดือน/ปี : $d/$m/$y&nbsp;$t</font>";
-	print "<font face='TH SarabunPSK'>&nbsp;HN : $rxHn&nbsp;&nbsp;</font>";
-	print "<font face='TH SarabunPSK'>&nbsp;CID : $idcard&nbsp;&nbsp;</font>";
-	print "<font face='TH SarabunPSK'>&nbsp;วัน/เดือน/ปีเกิด : $birthday&nbsp;&nbsp;</font>";
-	print "<font face='TH SarabunPSK'>&nbsp;<b>อายุ : $age</b>&nbsp;&nbsp;</font><br>";
+	print "<font face='cordia New'>วัน/เดือน/ปี : $d/$m/$y&nbsp;$t</font>";
+	print "<font face='cordia New'>&nbsp;HN : $rxHn&nbsp;&nbsp;</font>";
+	print "<font face='cordia New'>&nbsp;CID : $idcard&nbsp;&nbsp;</font>";
+	print "<font face='cordia New'>&nbsp;วัน/เดือน/ปีเกิด : $birthday&nbsp;&nbsp;</font>";
+	print "<font face='cordia New'>&nbsp;<b>อายุ : $age</b>&nbsp;&nbsp;</font><br>";
 	
-	print "<font face='TH SarabunPSK'>น้ำหนัก : $weight กก.</font>";
-	print "<font face='TH SarabunPSK'>&nbsp;ส่วนสูง : $height ซม.</font><br>";
+	print "<font face='cordia New'>น้ำหนัก : $weight กก.</font>";
+	print "<font face='cordia New'>&nbsp;ส่วนสูง : $height ซม.</font><br>";
 	
 	// โรค: $rxDiag&nbsp;&nbsp
-	print "<font face='TH SarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;</b><font face='TH SarabunPSK' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br></font></font>";
+	print "<font face='TH SarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;</b><font face='TH SarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br></font></font>";
 	
 	$visit_date = substr($dRxdate, 0, 10);
 	$sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$rxHn' ";
 	$res = mysql_query($sqlDiag);
 	if( mysql_num_rows($res) > 0 ){
 		$drI = 1;
-		echo "<font size=''>Diag จากแพทย์ : </font>";
+		echo "<font size='2'>Diag จากแพทย์ : </font>";
 		while ($list = mysql_fetch_assoc($res)) { 
 
 			$drDiag = $list['diag'];
 			if( $list['diag_thai'] ){
 				$drDiag .= ' ( '.$list['diag_thai'].' ) ';
 			}
-			echo "<font size=''>".$drI.') '.$drDiag.'</font>&nbsp';
+			echo "<font size='2'>".$drI.') '.$drDiag.'</font>&nbsp';
 			$drI++;
 			
 		}
@@ -174,14 +179,14 @@ if(!empty($cStkcutdate)) {
 
 	if(mysql_num_rows($result)){
 
-		print"<tr>	<td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=5><b><u>ประวัติการแพ้ยา</b></u></font>";
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>ประวัติการแพ้ยา</b></u></font>";
 		while (list ($genname,$tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result)) {
 			$num1++;
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b><u>$num1)</u></b></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$num1)</u></b></font ></td>\n".
 			" </tr>\n");
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b><u>$tradname...($genname)...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...($genname)...$advreact($asses)</u></b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
@@ -196,14 +201,14 @@ if(!empty($cStkcutdate)) {
 
 	if(mysql_num_rows($result2)){
 
-		print"<tr>	<td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=5><b><u>แพ้ยาในกลุ่ม </b></u>";
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>แพ้ยาในกลุ่ม </b></u>";
 		while (list ($groupname,$advreact,$asses) = mysql_fetch_row ($result2)) {
 			$num2++;
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=3><b>$num2)</b></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b>$num2)</b></font ></td>\n".
 			" </tr>\n");
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b>$groupname...$advreact($asses)</b></font >&nbsp;&nbsp;</td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b>$groupname...$advreact($asses)</b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
@@ -216,14 +221,14 @@ if(!empty($cStkcutdate)) {
 
 	if(mysql_num_rows($result3)){
 
-		print"<tr>	<td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=5><b><u>ผลข้างเคียงจากการใช้ยา</b></u></font>";
+		print"<tr>	<td BGCOLOR=F5DEB3><font face='cordia New' size=5><b><u>ผลข้างเคียงจากการใช้ยา</b></u></font>";
 		while (list ($tradname,$advreact,$asses,$sideeffects) = mysql_fetch_row ($result3)) {
 			$num3++;
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=3><b><u>$num3)</u></b></font ></td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=3><b><u>$num3)</u></b></font ></td>\n".
 			" </tr>\n");
 			print (" <tr>\n".
-			"  <td BGCOLOR=F5DEB3><font face='TH SarabunPSK' size=4><b><u>$tradname...$sideeffects</u></b></font >&nbsp;&nbsp;</td>\n".
+			"  <td BGCOLOR=F5DEB3><font face='cordia New' size=4><b><u>$tradname...$sideeffects</u></b></font >&nbsp;&nbsp;</td>\n".
 			" </tr>\n");
 		} // End while
 
@@ -383,28 +388,28 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 
 		echo " <tr style='line-height:18px;'>\n".
 		"  <td><font face='TH SarabunPSK'>$num.</td>\n".
-		"  <td><font face='TH SarabunPSK' size=''>$drugcode</td>\n".
-		"  <td><font face='TH SarabunPSK' size=''><b>$tradname</b>&nbsp;[$unit] $allergics_txt</td>\n".
+		"  <td><font face='TH SarabunPSK' size='1'>$drugcode</td>\n".
+		"  <td><font face='TH SarabunPSK' size='2'><b>$tradname</b>&nbsp;[$unit] $allergics_txt</td>\n".
 		"  <td align='right'><font face='TH SarabunPSK'>&nbsp;<b>(&nbsp;$amount&nbsp;)</b></td>\n".
 		"  <td align='right'><font face='TH SarabunPSK'  >&nbsp;$price</td>\n".
-		"  <td align='right'><font face='TH SarabunPSK'  size=''>&nbsp;$part</td>\n".
-		"  <td align='right'><font face='TH SarabunPSK'  size=''>&nbsp;<B>(&nbsp;$reason1&nbsp;)</B></td>\n";
+		"  <td align='right'><font face='TH SarabunPSK'  size='1'>&nbsp;$part</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  size='1'>&nbsp;<B>(&nbsp;$reason1&nbsp;)</B></td>\n";
 		if($c2!='20'&&($c1=='2'||$c1=='0')){
 			if($dis=="2ins"){
-				echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$dia&nbsp;$diu&nbsp;$dia2&nbsp;$diu2&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
+				echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;$dia2&nbsp;$diu2&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
 			}elseif($dis=="1ins"){
-				echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
+				echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
 			}else{
-				echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;$dis&nbsp;$dit&nbsp;$die &nbsp";	  
+				echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;$dis&nbsp;$dit&nbsp;$die &nbsp";	  
 			}
 		}else{
-			echo "<td><font face='TH SarabunPSK' size=''>&nbsp;$detail1 &nbsp; $detail2 &nbsp; $detail3 &nbsp; $detail4&nbsp;";
+			echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$detail1 &nbsp; $detail2 &nbsp; $detail3 &nbsp; $detail4&nbsp;";
 		}
 
 		echo "$office &nbsp;&nbsp;&nbsp;$status</td>\n".
 		" </tr>\n";
 	//	   if($reason!=''){
-		//   	print ("<tr style='line-height:10px;'><td colspan='7'><font face='TH SarabunPSK' size=''>$reason</td></tr>");}
+		//   	print ("<tr style='line-height:10px;'><td colspan='7'><font face='TH SarabunPSK' size='1'>$reason</td></tr>");}
 
 		if($num == 11){
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
@@ -452,18 +457,18 @@ function dateform($date){
 	}
 
 
-print "<font face='TH SarabunPSK' size=''>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
-print "<font face='TH SarabunPSK' size=''>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
+print "<font face='TH SarabunPSK' size='2'>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
+print "<font face='TH SarabunPSK' size='2'>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
 print "<font face='TH SarabunPSK'>(<b>เบิกได้&nbsp;$netfree&nbsp;บาท</b>&nbsp;&nbsp;&nbsp;เบิกไม่ได้&nbsp;$netpay  &nbsp;บาท)&nbsp;&nbsp; <font face='TH SarabunPSK' size='4'>รวมเงิน  $rxNetprice  บาท</font><br>";
-print "<font face='TH SarabunPSK' size=''>บัญชียาหลัก เบิกได้&nbsp;$Essd &nbsp;</font>";
-print "<font face='TH SarabunPSK' size=''>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
-print "<font face='TH SarabunPSK' size=''>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
-print "<font face='TH SarabunPSK' size=''>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
+print "<font face='TH SarabunPSK' size='1'>บัญชียาหลัก เบิกได้&nbsp;$Essd &nbsp;</font>";
+print "<font face='TH SarabunPSK' size='1'>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
+print "<font face='TH SarabunPSK' size='1'>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
+print "<font face='TH SarabunPSK' size='1'>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
 
 
 
 
-print "<font face='TH SarabunPSK' size=''></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
+print "<font face='TH SarabunPSK' size='2'></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
 print "<font face='TH SarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................<br>";
 
 
@@ -479,27 +484,27 @@ $sql = "SELECT time1 FROM opday WHERE  thdatevn = '".$thdatevn2."' Order by row_
 list($timestd) = mysql_fetch_row(Mysql_Query($sql));
 
 
-print "<font face='TH SarabunPSK' size=''>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................<BR>";
+print "<font face='TH SarabunPSK' size='2'>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................<BR>";
 $sql = "Select PHAR , xray,  patho , emer , surg , physi , denta , other   From opday where  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
 list($PHAR , $xray,  $patho , $emer , $surg , $physi , $denta , $other) = mysql_fetch_row(Mysql_Query($sql));
-print "<font face='TH SarabunPSK' size=''><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER>";
-if($PHAR>0){print "<font face='TH SarabunPSK' size=''><B>ยา</B> : $PHAR";}
-if($xray>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>XRAY</B> : $xray";}
-if($patho>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>LAB</B> : $patho";}
-if($emer>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>ER</B> : $emer";}
-if($surg>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>OR</B> : $surg";}
-if($physi>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>PT</B>: $physi ";}
-if($denta>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>DEN</B> : $denta";}
+print "<font face='TH SarabunPSK' size='3'><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER>";
+if($PHAR>0){print "<font face='TH SarabunPSK' size='2'><B>ยา</B> : $PHAR";}
+if($xray>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>XRAY</B> : $xray";}
+if($patho>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>LAB</B> : $patho";}
+if($emer>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>ER</B> : $emer";}
+if($surg>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OR</B> : $surg";}
+if($physi>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>PT</B>: $physi ";}
+if($denta>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>DEN</B> : $denta";}
 $other -=50;
-if($other>0){print "<font face='TH SarabunPSK' size=''>&nbsp;<B>OTHER</B> : $other";}
-print "<font face='TH SarabunPSK' size=''>&nbsp;<B>SERVICE</B>:50.00 ";
-//print "<font face='TH SarabunPSK' size=''>ยา : $PHAR ,&nbsp;X-ray : $xray ,&nbsp;LAB : $patho ,&nbsp;ER : $emer ,&nbsp;ผ่าตัด : $surg ,&nbsp;กายภาพ : $physi ,&nbsp;ทันตกรรม : $denta ,&nbsp;อื่นๆ : $other,&nbsp;ค่าบริการ:50 ";
+if($other>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OTHER</B> : $other";}
+print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>SERVICE</B>:50.00 ";
+//print "<font face='TH SarabunPSK' size='2'>ยา : $PHAR ,&nbsp;X-ray : $xray ,&nbsp;LAB : $patho ,&nbsp;ER : $emer ,&nbsp;ผ่าตัด : $surg ,&nbsp;กายภาพ : $physi ,&nbsp;ทันตกรรม : $denta ,&nbsp;อื่นๆ : $other,&nbsp;ค่าบริการ:50 ";
 $summary = $PHAR+$xray+$patho+$emer+$surg+$physi+$denta+$other+50 ;
 $summary = number_format($summary,2);
-print "<font face='TH SarabunPSK' size=''><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
+print "<font face='TH SarabunPSK' size='2'><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
 
 
-print "<font face='TH SarabunPSK' size=''><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
+print "<font face='TH SarabunPSK' size='2'><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
 
 $nnnn=$Nessdn+$DSN+$DPN;
 
