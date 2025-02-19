@@ -1,6 +1,7 @@
 <?php
     session_start();
 	include("connect.inc");
+	require_once dirname(__FILE__).'/bootstrap.php';
 	
 	$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 	$dbi->query("SET NAMES UTF8");
@@ -329,59 +330,57 @@ if( !function_exists('cal_to_bc') ){
 	}
 }
 
-$date_end = date('Y-m-d');
-$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
-
-$date_end = ad_to_bc($date_end);
-$date_start = ad_to_bc($date_start);
-
 $patient_hn = trim($sHn);
-
-$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
-FROM `drugrx` 
-WHERE `hn` = '$patient_hn' 
-AND ( `date` >= '$date_start' AND `date` <= '$date_end' ) 
-AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
-AND `status` = 'Y' AND `amount` > 0 
-ORDER BY `row_id` ASC;";
-$dbi->query($sqlTemp);
-
-$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
-IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
-FROM (
-	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
-) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
-ORDER BY b.`row_id`";
-$qTemp = $dbi->query($sql);
-$drugrxRows = $qTemp->num_rows;
-if($drugrxRows > 0){
-	$drugrxItem = array();
-
-	$isWarfarin = false;
-	$isNoacs = false;
-	while ($a = $qTemp->fetch_assoc()) {
-		$drugrxItem[] = $a;
-		if($a['type']=='warfarin'){
-			$isWarfarin = true;
-		}
-
-		if($a['type']=='noacs'){
-			$isNoacs = true;
-		}
-	}
-
-	if($isWarfarin===true && $isNoacs===false){
-		?>
-		<p style="font-size:18px;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin ในช่วง 6 เดือนย้อนหลัง</u> <a href="javascript:void(0);" onclick="openLink()">(ดูรายละเอียด)</a></p>
-		<?php
-	}
-
-	if($isWarfarin===true && $isNoacs===true){
-		?>
-		<p style="font-size:18px;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs ในช่วง 6 เดือนย้อนหลัง</u> <a href="javascript:void(0);" onclick="openLink()">(ดูรายละเอียด)</a></p>
-		<?php
-	}
+$sixMonthsLater = strtotime("-6 Months");
+$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
+$currentDayTH = (date('Y')+543).date('-m-d');
+$sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
+	FROM `drugrx` 
+	WHERE `hn` = '%s' 
+	AND ( `date` >= '$sixMonthsTH' AND `date` < '$currentDayTH' ) 
+	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+	AND (`status` = 'Y' AND `amount` > 0)
+	ORDER BY `row_id` DESC
+) AS a LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
+ORDER BY a.`date` DESC LIMIT 1",
+	$dbi->real_escape_string($patient_hn)
+);
+$q = $dbi->query($sql);
+if($q->num_rows>0){
+	?>
+	<div style="display: block;">
+		<fieldset style="display:inline;">
+			<legend>
+				<p style="font-size:18px; font-weight:bold; margin:0; padding:0;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin / NOACs ในช่วง 6 เดือนย้อนหลัง</u> </p>
+			</legend>
+			<table>
+				<tr style="background-color: #73C6B6;">
+					<th>วันที่จ่ายยา</th>
+					<th>แพทย์ผู้สั่ง</th>
+					<th>ยา</th>
+					<th>วิธีใช้</th>
+					<th>จำนวน</th>
+				</tr>
+			<?php
+			while ($a = $q->fetch_assoc()) {
+				?>
+				<tr valign="top" style="background-color: #D5F5E3;">
+					<td><?=$a['date'];?></td>
+					<td><?=$a['doctor'];?></td>
+					<td><?=$a['tradname'];?> [<?=$a['drugcode'];?>]<br><?=$a['genname'];?></td>
+					<td><?=$a['slcode'];?><br><?=$a['drug_detail'];?></td>
+					<td align="center"><?=$a['amount'];?></td>
+				</tr>
+				<?php
+			}
+			?>
+			</table>
+		</fieldset>
+	</div>
+	<?php
 }
 /* แจ้งเตือน Warfarin */
 ?>

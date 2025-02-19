@@ -41,8 +41,8 @@ $opcard = new Opcard();
 
         $op = $opcard->getByHn($hn);
 
-        $sql = sprintf("SELECT a.*,b.`doctor`,c.`genname` FROM (
-            SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno` 
+        $sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+            SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
             FROM `drugrx` 
             WHERE `hn` = '%s' 
             AND `date` >= '$sixMonthsTH'
@@ -50,7 +50,8 @@ $opcard = new Opcard();
             AND (`status` = 'Y' AND `amount` > 0)
             ORDER BY `row_id` DESC
         ) AS a LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
-        LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`",
+        LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode` 
+        LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` ",
             $dbi->real_escape_string($hn)
         );
         $q = $dbi->query($sql);
@@ -65,15 +66,17 @@ $opcard = new Opcard();
                     <th>วันที่จ่ายยา</th>
                     <th>แพทย์ผู้สั่ง</th>
                     <th>ยา</th>
+                    <th>วิธีใช้</th>
                     <th>จำนวน</th>
                 </tr>
                 <?php 
-                while ($a = $q->fetch_assoc()) {
+                while ($a = $q->fetch_assoc()) { 
                     ?>
                     <tr>
                         <td><?=$a['date'];?></td>
                         <td><?=$a['doctor'];?></td>
                         <td><?=$a['tradname'];?> [<?=$a['drugcode'];?>]<br><?=$a['genname'];?></td>
+                        <td><?=$a['slcode'];?><br><?=$a['drug_detail'];?></td>
                         <td><?=$a['amount'];?></td>
                     </tr>
                     <?php
