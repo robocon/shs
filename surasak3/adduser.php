@@ -299,7 +299,8 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         <tr>
                             <td align="right"><strong>อีเมล์ : </strong></td>
                             <td>
-                                <input name="email" type="text" class="form-control" id="email">
+                                <input name="email" type="email" class="form-control" id="email" required>
+                                <span class="badge text-bg-warning">กรุณาระบุอีเมล์จริงของท่าน เพื่อใช้ยืนยันกรณีต้องการเปลี่ยนรหัสผ่าน</span>
                             </td>
                         </tr>
                         <tr>
