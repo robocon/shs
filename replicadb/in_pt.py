@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 import json
+from subprocess import Popen
 
 json_data_file = open("config.json", "r")
 data = json.load(json_data_file)
@@ -22,10 +23,15 @@ cfg = data['mysql']
 SOURCE_HOST_DB = cfg["SOURCE_HOST_DB"]+"/"+cfg["SOURCE_DB"]
 SOURCE_USER = cfg["SOURCE_USER"]
 SOURCE_PASS = cfg["SOURCE_PASS"]
+SOURCE_HOST = cfg["SOURCE_HOST_DB"]
+SOURCE_DB = cfg["SOURCE_DB"]
 
 SINK_HOST_DB = cfg["SINK_HOST_DB"]+":"+cfg["SINK_PORT"]+"/"+cfg["SINK_DB"]
 SINK_USER = cfg["SINK_USER"]
 SINK_PASS = cfg["SINK_PASS"]
+SINK_HOST = cfg["SINK_HOST_DB"]
+SINK_DB  = cfg["SINK_DB"]
+SINK_PORT = cfg["SINK_PORT"]
 
 try:
     mydb = mysql.connector.connect(
@@ -70,7 +76,7 @@ mycursor.execute("SELECT `row_id` AS latest_id FROM dgprofile ORDER BY row_id DE
 myresult = mycursor.fetchone()
 latest_id = str(myresult["latest_id"])
 
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile"
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile --sink-disable-truncate true"
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
@@ -94,10 +100,11 @@ returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code 
 print('returned value:', returned_value,'\n')
 
 # druglst
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=druglst --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=druglst"
-print("  REPLICADB COMMAND : ", str(cmd),'\n')
-returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-print('returned value:', returned_value,'\n')
+p = Popen("download_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+stdout, stderr = p.communicate()
+
+p = Popen("import_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+stdout, stderr = p.communicate()
 
 # drug_interaction
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drug_interaction --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drug_interaction"

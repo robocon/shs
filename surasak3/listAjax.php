@@ -3,13 +3,10 @@ session_start();
 //print_r($_SESSION);
 header("content-type: application/x-javascript; charset=UTF-8");
 include("connect.inc");
+?>
 
-function dump($t){
-	echo "<pre>";
-	var_dump($t);
-	echo "</pre>";
-}
 
+<?
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
 
 
@@ -342,10 +339,9 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 /******* แก้ไขข้อมูลใน SESSION ********************************************************************/
 
 $sql = "Select row_id From drugslip where slcode = '".$_GET["slcode"]."' limit 1";
-var_dump($sql);
 $result = Mysql_Query($sql);
 $count = Mysql_num_rows($result);
-var_dump($_GET["rowid"]);
+
 if($count ==0){
 echo "
 			<div  id=\"msgalert\" align = \"center\" style=\"position: absolute;text-align: center; overflow:auto; \">
@@ -375,7 +371,6 @@ echo "
 }else	if(isset($_GET["rowid"]) && $_GET["rowid"] != ""){
 		
 		$sql = "Select count(statcon) as count_dg,statcon From dgprofile where row_id = '".$_GET["rowid"]."' ";
-		var_dump($sql);
 		$result = Mysql_Query($sql);
 		$arr = Mysql_fetch_assoc($result);
 		$Thidate = (date("Y")+543).date("-m-d H:i:s");
@@ -391,7 +386,7 @@ echo "
 				
 				$sql2= "INSERT INTO dgprofile(date,an,drugcode,tradname,unit,salepri,freepri,amount,price,slcode,part,statcon,onoff,dateoff,officer )VALUES ('".$Thidate."','".$_GET["an"]."','".$_SESSION["list_druglst"]["drugcode"][$_GET["delnum"]]."','".$tradname."','".$unit."','".$salepri."','".$freepri."', '".$_SESSION["list_druglst"]["amount"][$_GET["delnum"]]."','".($salepri * $_SESSION["list_druglst"]["amount"][$_GET["delnum"]])."','".$_SESSION["list_druglst"]["slcode"][$_GET["delnum"]]."','".$part."','".$_GET["statcon"]."','ON','','".$_SESSION["sOfficer"]."') ";
 				$result2 = Mysql_Query($sql2);
-				var_dump($result2);
+				
 	
 			}else{
 				$sql = "Update dgprofile set slcode = '".$_GET["slcode"]."', amount = '".$_GET["amount"]."' where row_id = '".$_GET["rowid"]."' limit 1 ";
@@ -427,9 +422,8 @@ echo "<TABLE  id=\"layer1\"  border = 1 bordercolor=\"#3300FF\"  cellpadding=\"0
 	<TD width=\"50\"><FONT COLOR=\"#FFFFFF\"><B>จำนวน</B></FONT></TD>
 	<TD width=\"50\"><FONT COLOR=\"#FFFFFF\"><B>ON</B></FONT></TD>
 </TR>";
-// ตัด AND (onoff = 'OFF' AND statcon = 'CONT') 
-$sql = "Select distinct drugcode, unit, tradname, slcode, amount,part,statcon From dgprofile where an = '".$_GET["an"]."' Order by date DESC limit 0,1";
-var_dump($sql);
+
+$sql = "Select distinct drugcode, unit, tradname, slcode, amount,part,statcon From dgprofile where an = '".$_GET["an"]."' AND (onoff = 'OFF' AND statcon = 'CONT')  ";
 $result = Mysql_Query($sql);
 while($arr = Mysql_fetch_assoc($result)){
 
@@ -454,13 +448,7 @@ echo "</TABLE>
 
 function restart_session($an){
 	
-	$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' 
-	# AND (
-	# 	(onoff = 'ON' AND statcon = 'CONT') 
-	# 	OR 
-	# 	(`date` like '".(date("Y")+543).date("-m-d")."%' AND statcon <> 'CONT' ) 
-	# )
-	";
+	$sql = "Select drugcode, tradname, amount, slcode, statcon, row_id,part From dgprofile where an = '".$_GET["an"]."' AND ((onoff = 'ON' AND statcon = 'CONT') OR  (`date` like '".(date("Y")+543).date("-m-d")."%' AND statcon <> 'CONT' ) ) ";
 
 	$result = Mysql_Query($sql);
 	$i=0;
@@ -505,7 +493,7 @@ echo "<TABLE align=\"center\"  border=\"1\" bordercolor=\"#3300FF\" cellspacing=
 <TR>
 	<TD>
 <TABLE width=\"100%\">
-<TR bgcolor=\"#009688\" class=\"font_title\" align=\"center\">
+<TR bgcolor=\"#3300FF\" class=\"font_title\" align=\"center\">
 	<TD>รหัสยา</TD>
 	<TD>ชื่อยา</TD>
 	<TD>ประเภท</TD>
@@ -524,7 +512,7 @@ $list_status_drug["OLD"] = "ยาเดิม";
 for($j=0;$j<$_SESSION["num_list"];$j++){
 
 	if($_SESSION["list_druglst"]["statcon"][$j] == "CONT")
-		$bgcolor = "#00CC99";
+		$bgcolor = "#99FFFF";
 	else
 		$bgcolor = "#FFFFCC";
 
