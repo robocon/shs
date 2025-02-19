@@ -381,35 +381,6 @@ while ($arr = Mysql_fetch_assoc($result)) {
 							echo "<INPUT TYPE=\"hidden\" NAME=\"Tradname[]\" value=\"" . htmlspecialchars($_SESSION["list_druglst"]["tradname"][$j]) . "\">";
 							echo "<INPUT TYPE=\"hidden\" NAME=\"Slipcode[]\" value=\"" . htmlspecialchars($_SESSION["list_druglst"]["slcode"][$j]) . "\">";
 
-<<<<<<< HEAD
-?>
-</TABLE>
-</TD>
-</TR>
-</TABLE>
-<BR>
-	<CENTER>
-		โปรดเลือก&nbsp;:&nbsp;
-		<INPUT TYPE='radio' NAME='status' VALUE='รับใหม่'>รับใหม่&nbsp;
-		<INPUT TYPE='radio' NAME='status' VALUE='เบิกยาประจำวัน' checked>เบิกยาประจำวัน&nbsp;
-		<INPUT TYPE='radio' NAME='status' VALUE='จำหน่าย'>จำหน่าย
-	</CENTER>
-	<div>
-		<?php
-		if($_SESSION["num_list"] > 0){
-		?>
-		<CENTER>
-			<input type="submit" name="Save_dgprofile" value="   จ่ายยา   " style="padding: 8px;">&nbsp;&nbsp;
-			<button type="button" onclick="reprint()" style="padding: 8px;">รีปริ้น พิมพ์สลากยา</button>
-			<button type="button" onclick="reprintQrCode()" style="padding: 8px;">รีปริ้น พิมพ์สลากยา QR Code</button>
-		</CENTER>
-		<?php
-		}
-		?>
-	</div>
-</FORM>
-</div>
-=======
 							$sql = "Select salepri, part, unit,freepri  From druglst where drugcode = '" . $_SESSION["list_druglst"]["drugcode"][$j] . "' limit 0,1 ";
 							list($Salepri, $Part, $Unit, $freepri) = Mysql_fetch_row(Mysql_Query($sql));
 
@@ -442,7 +413,6 @@ while ($arr = Mysql_fetch_assoc($result)) {
 	</FORM>";
 		?>
 	</div>
->>>>>>> development
 
 <div id="hiddenPost" style="display:none;"></div>
 <script>
