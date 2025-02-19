@@ -35,9 +35,12 @@ body {
 //window.opener.location.reload();
 //window.opener.location.reload(true);
 window.print();
-	setTimeout(function(){ 
-            window.close();
-	}, 5000);
+	// setTimeout(function(){ 
+    //         window.close();
+	// }, 5000);
+window.onafterprint = function(){
+	window.close();
+}
 </script>
 <?php 
 
