@@ -49,3 +49,5 @@ testsmdb/**
 tests/*
 vendor/*
 nbproject/*
+
+replicadb/config.py

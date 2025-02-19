@@ -9,9 +9,6 @@ if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
     exit;
 }
 
-define('API_HOST', 'http://192.168.131.240:8081/api');
-// define('API_HOST', 'http://127.0.0.1:8000/api');
-
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -172,7 +169,7 @@ if($action==='delete'){
         if($page==='search'){
             $hn = sprintf("%s", $_POST['hn']);
             if(!empty($hn)){
-                $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
+                $items = getDigitalOpcard(LARAVEL_API_HOST.'/getopcard?opcard_id='.$hn);
             }
 
             $date = sprintf("%s", $_POST['date']);
@@ -192,7 +189,11 @@ if($action==='delete'){
                     $sqlDt .= " AND `sub_clinic` = '$sub_clinic'";
                 }
                 $items = new stdClass;
-                $sql = "SELECT * FROM `digital_opcard` WHERE `last_update` LIKE '$date%' $sqlDt ";
+                $sql = "SELECT a.*,b.`hn`,CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname` FROM ( 
+                    SELECT * FROM `digital_opcard` WHERE `last_update` LIKE '$date%' $sqlDt 
+                ) AS a 
+                LEFT JOIN `opcard` AS b ON a.`opcard_id` = b.`row_id`
+                ";
                 $q = $dbi->query($sql);
                 while ($a = $q->fetch_assoc()) {
                     $a['thumbnail'] = 'http://192.168.131.240:8081/storage/thumbnail_'.$a['file_name'];
@@ -213,6 +214,7 @@ if($action==='delete'){
                                 <input type="checkbox" name="CheckAllBtn" id="CheckAllBtn" title="เลือกทั้งหมด">
                             </th>
                             <th>วันที่เข้ารับการรักษา<br>actual_date</th>
+                            <th>HN</th>
                             <th>วันที่บันทึก<br>upload_date</th>
                             <th>clinic</th>
                             <th></th>
@@ -224,26 +226,27 @@ if($action==='delete'){
                     </thead>
                     <tbody>
                     <?php
-                    foreach ($items->list as $key => $value) {
-                        $doctorId = $value->doctor;
-                        $row_id = $value->row_id;
+                    foreach ($items->list as $key => $v) {
+                        $doctorId = $v->doctor;
+                        $row_id = $v->row_id;
                         ?>
                         <tr id="item-<?=$row_id;?>">
-                            <th>
+                            <td>
                                 <input type="checkbox" class="checkboxItem" name="id[]" id="id<?=$row_id;?>" value="<?=$row_id;?>">
-                            </th>
-                            <td><label for="id<?=$row_id;?>"><?=$value->actual_date;?></label></td>
-                            <td><?=$value->upload_date;?></td>
-                            <td><?=$value->clinic;?><br><?=$subClinic[$value->sub_clinic];?></td>
-                            <th>
-                                <a href="<?=$value->original;?>" target="_blank"><img src="<?=$value->thumbnail;?>" alt="digital opd" height="120"></a>
-                            </th>
+                            </td>
+                            <td><label for="id<?=$row_id;?>"><?=$v->actual_date;?></label></td>
+                            <td><?=$v->hn;?><br><?=$v->ptname;?></td>
+                            <td><?=$v->upload_date;?></td>
+                            <td><?=$v->clinic;?><br><?=$subClinic[$v->sub_clinic];?></td>
+                            <td>
+                                <a href="<?=$v->original;?>" target="_blank"><img src="<?=$v->thumbnail;?>" alt="digital opd" height="120"></a>
+                            </td>
                             <td><?=$doctorList[$doctorId]['name'];?></td>
-                            <td><?=$value->type;?></td>
-                            <td><?=$value->officer;?></td>
-                            <th>
+                            <td><?=$v->type;?></td>
+                            <td><?=$v->officer;?></td>
+                            <td>
                                 <a href="javascript:void(0);" class="btn btn-primary" onclick="return confirmDelete('<?=$row_id;?>');">ลบ</a>
-                            </th>
+                            </td>
                         </tr>
                         <?php
                     }
@@ -277,7 +280,7 @@ if($action==='delete'){
         window.onload=function(){
             document.getElementById('hn').focus();
         }
-        var apiHost = '<?=API_HOST;?>';
+        var apiHost = '<?=LARAVEL_API_HOST;?>';
         function confirmDelete(row_id){
             var c = confirm("ยืนยันที่จะลบข้อมูล?");
             if (c===true) {

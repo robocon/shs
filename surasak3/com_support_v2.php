@@ -339,7 +339,9 @@ if($form_action==='edit'){
                 selector: 'textarea#detail',
                 toolbar: false, // ปิดใช้งาน toolbar
                 menubar: false, // ปิดใช้งาน menubar
-                forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+                forced_root_block : '', // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+                paste_as_text: true,
+                width: 1024
             });
         </script>
 

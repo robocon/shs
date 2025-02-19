@@ -341,7 +341,7 @@ $sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
 FROM `drugrx` 
 WHERE `hn` = '$patient_hn' 
-AND ( `date` >= '$date_start' AND `date` < '$date_end' ) 
+AND ( `date` >= '$date_start' AND `date` <= '$date_end' ) 
 AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
 AND `status` = 'Y' AND `amount` > 0 
 ORDER BY `row_id` ASC;";
@@ -568,7 +568,7 @@ echo "<table><tr>";
 	<td><a target="_blank"  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
  </tr></table>
  <div>
-	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a></p>
+	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a> | <a target="_blank" href="drxprint2.php"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a> </p>
  </div>
 <?php
 $strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";

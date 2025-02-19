@@ -4,6 +4,16 @@ include 'bootstrap.php';
 
 $action = input('action');
 $db = Mysql::load();
+$db->select("SET NAMES 'utf8'");
+
+function removeBomUtf8($s){
+    if(substr($s,0,3)==chr(hexdec('EF')).chr(hexdec('BB')).chr(hexdec('BF'))){
+        return substr($s,3);
+    }else{
+        return $s;
+    }
+}
+
 
 $def_month_en = array('January' => '01','February' => '02','March' => '03','April' => '04','May' => '05','June' => '06','July' => '07','August' => '08','September' => '09','October' => '10','November' => '11','December' => '12' );
 $def_month_th = array('มกราคม' => '01','กุมภาพันธ์' => '02','มีนาคม' => '03','เมษายน' => '04','พฤษภาคม' => '05','มิถุนายน' => '06','กรกฎาคม' => '07','สิงหาคม' => '08','กันยายน' => '09','ตุลาคม' => '10','พฤศจิกายน' => '11','ธันวาคม' => '12' );
@@ -174,9 +184,8 @@ if( $action == false ){
     
     // นับ digi เพื่อเอาไปใช้ใน sprintf ทีหลัง เพราะบางบริษัทมีหลักร้อยหรือหลักพันไม่เท่ากัน
     $number_digi = strlen($pre_bs_number);
-    
-    if( $content !== false ){
 
+    if( $content !== false ){
         $items = explode("\r\n", $content);
         
         $i = 0;
@@ -185,16 +194,16 @@ if( $action == false ){
             $msg = 'บันทึกข้อมูลเรียบร้อย <a href="chk_lab_sticker.php?part='.$part.'" target="_blank">คลิกที่นี่เพื่อพิมพ์สติกเกอร์แลป</a>';
 
             if( $i > 0 && !empty($item) ){
-                // dump($item);
+
                 list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
 
                 $dob = set_date($dob);
                 
-                $name = iconv('TIS620', 'UTF8', $name);
-                $surname = iconv('TIS620', 'UTF8', $surname);
+                // $name = iconv('TIS-620', 'UTF-8', $name);
+                // $surname = iconv('TIS-620', 'UTF-8', $surname);
 
                 $ptname = $name.' '.$surname;
-                $lab_sso = iconv("TIS-620", "UTF-8", $lab_sso);
+                // $lab_sso = iconv("TIS-620", "UTF-8", $lab_sso);
 
                 $search = array('"',',,,');
                 $lab_sso = strtolower(str_replace($search, '', $lab_sso));
@@ -223,6 +232,7 @@ if( $action == false ){
                 ) VALUES (
                     NULL, '$hn', '$ptname', '$labnumber', '$lab_sso', '$part', '$dob', '$sex'
                 );";
+                // dump($sql_chk_lab_items);
                 $insert = $db->insert($sql_chk_lab_items);
                 if( $insert !== true ){
                     $msg = errorMsg(NULL, $insert['id']);

@@ -779,12 +779,12 @@ function del_session(delnum,rowid){
 
 		url = 'listAjax.php?action='+action+'&delnum='+delnum+'&an='+an+rowid;
 
-				xmlhttp = newXmlHttp();
-				xmlhttp.open("GET", url, false);
-				xmlhttp.send(null);
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
 
-				document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
-				list_off();
+		document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
+		list_off();
 	}
 }
 
@@ -832,11 +832,11 @@ function list_off(){
 
 		url = 'listAjax.php?action='+action+'&an=<?php echo $_GET["an"];?>&stat='+hidd;
 
-				xmlhttp = newXmlHttp();
-				xmlhttp.open("GET", url, false);
-				xmlhttp.send(null);
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
 
-				document.getElementById("div_listoff").innerHTML = xmlhttp.responseText;
+		document.getElementById("div_listoff").innerHTML = xmlhttp.responseText;
 
 }
 

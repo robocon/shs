@@ -1,5 +1,7 @@
 <?php
 session_start();
+include("connect.php");
+
 session_unregister("cHn");
 session_unregister("cPtname");
 session_unregister("cPtright");
@@ -68,11 +70,13 @@ font-size:20px;
     </tr>
 
     <?php
+    $hn = $_POST['hn'];
     If (!empty($hn)){
-        include("connect.inc");
-        global $hn;
         $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
         $result = mysql_query($query)or die("Query failed");
+
+        $check_hn = $check_name = $check_surname = '';
+
         while (list ($hn,$yot,$name,$surname,$ptright,$ptright1,$idcard) = mysql_fetch_row ($result)) {
 
             if(substr($ptright,0,3)=='R07' && !empty($idcard)){
@@ -164,20 +168,24 @@ font-size:20px;
             </td>".*/
             " </tr>\n");
 
-            $_SESSION['hn'] = $hn;
-            $_SESSION['name'] = $name;
-            $_SESSION['surname'] = $surname;
+            // $_SESSION['hn'] = $hn;
+            // $_SESSION['name'] = $name;
+            // $_SESSION['surname'] = $surname;
+            $check_hn = $hn;
+            $check_name = $name;
+            $check_surname = $surname;
 
         }
 
-        $sql1="SELECT  * FROM opcard
-        where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn !='". $_SESSION['hn']."' ";
-        $result1 = mysql_query($sql1);
-        $rows1=mysql_num_rows($result1);
-        if($rows1){
-            echo "<font color='#FF0000'>ซ้ำ</font>";
+        if(!empty($check_name) && !empty($check_surname) && !empty($check_hn)){
+            $sql1="SELECT row_id FROM opcard where name='$check_name' and surname='$check_surname' and hn !='$check_hn' ";
+            $result1 = mysql_query($sql1);
+            $rows1=mysql_num_rows($result1);
+            if($rows1){
+                echo "<font color='#FF0000'>ซ้ำ</font>";
+            }
         }
-
+        
         // ตรวจสอบและเปลี่ยน HN AN ตอนขึ้นปีใหม่
         $sql = "Select left(prefix,2) From runno where title = 'HN' ";
         list($title_hn) = Mysql_fetch_row(Mysql_Query($sql));
@@ -212,7 +220,7 @@ font-size:20px;
     $hn = isset($_POST['hn']) ? $_POST['hn'] : null ;
     if($hn !== null){
 
-        $query = mysql_query("select * from ipcard where hn='$hn' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ");
+        $query = mysql_query("select `my_ward` from ipcard where hn='$hn' and ( dcdate='0000-00-00 00:00:00' AND bedcode <> '' ) ");
         if (mysql_num_rows($query) > 0) {
             $item = mysql_fetch_assoc($query);
             $alert_msg = "ผู้ป่วยรายนี้ยังAdmit อยู่ที่".$item['my_ward'];

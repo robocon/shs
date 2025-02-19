@@ -1,6 +1,5 @@
 <?php
 session_start();
-// set_time_limit(5);
 include("connect.php");
 
 function dump($str){
@@ -245,7 +244,7 @@ $chkquery=mysql_query($chkopcard);
 $chkrows=mysql_fetch_array($chkquery);
 // echo "==>$hn.<br>";
 		?>
-		<tr style="background-color: #<?=$bgcolor;?>;">
+		<tr style="background-color: #<?=$bgcolor;?>;" valign="top">
 			<td><?=$i;?></td>
 			<td><a href="opdcard_vnprintday.php?act=show1&hn=<?=$hn;?>&nat=<?=$appd;?>&detail=<?=$dc;?>&doctor" target="_blank"><?=$hn;?></a></td>
 			<td><?=$ptname;?></td>

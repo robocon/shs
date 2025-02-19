@@ -65,13 +65,19 @@ if ($_POST['do'] === 'save') {
 	$hypertension->setHypertension_clinic($data);
 	$resUpdate = $hypertension->update();
 
-	$hypertension->setHistoryId($_POST['hypertention_edit_id']);
-	$resHistory = $hypertension->update_history();
-
-	if ($res['error_code']!=='400') {
+	$hypertention_edit_id = sprintf("%s", $_POST['hypertention_edit_it']);
+	$test = $hypertension->getHtHistoryThisDay($hn);
+	if($test['error'] == true){
+		$resHistory = $hypertension->insert_history();
+	}else{
+		$hypertension->setHistoryId($_POST['hypertention_edit_id']);
+		$resHistory = $hypertension->update_history();
+	}
+	
+	if ($resUpdate['error_code']!=='400') {
 		$msg = 'บันทึกข้อมูลเรียบร้อยแล้ว';
 	} else {
-		$msg = 'ไม่สามารถบันทึกได้ '.$res['msg'];
+		$msg = 'ไม่สามารถบันทึกได้ '.$resUpdate['msg'];
 	}
 	$_SESSION['x_message'] = $msg;
 	header("Location: hypertension_edit.php");

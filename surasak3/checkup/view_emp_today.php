@@ -9,15 +9,7 @@ include '../bootstrap.php';
  * - แพทย์
  */
 
-$shs_configs = array(
-    'host' => '192.168.131.240',
-    'port' => '3306',
-    'dbname' => 'sm3db-utf8',
-    'user' => 'sm3db_user',
-    'pass' => 'sm3dbPassword'
-);
-
-$db = Mysql::load($shs_configs);
+$db = Mysql::load();
 // $db->exec("SET NAMES UTF8");
 
 $sql = "SELECT z.`HN` AS `pre_hn`, CONCAT(z.`name`,' ',z.`surname`) AS `pre_name`, 

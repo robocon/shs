@@ -21,7 +21,7 @@ function calcage($birth){
 
 $action = input_post('action');
 if( $action == 'import' ){
-    $db = Mysql::load($shs_configs);
+    $db = Mysql::load();
     $file = $_FILES['file'];
     $content = file_get_contents($file['tmp_name']);
     $items = explode("\r\n", $content);
@@ -50,7 +50,7 @@ if( $action == 'import' ){
         // dump($idcard);
         // dump($age);
 
-        preg_match('/(¹Ò§|¹.Ê.|¹ÒÂ)\s?(.+)\s+(.+)/',$name, $matchs);
+        preg_match('/(ï¿½Ò§|ï¿½.ï¿½.|ï¿½ï¿½ï¿½)\s?(.+)\s+(.+)/',$name, $matchs);
         // dump($matchs);
 
         $yot = $matchs['1'];
@@ -94,10 +94,10 @@ if( $action == 'import' ){
 
 <form action="clean_file_data.php" method="post" enctype="multipart/form-data">
     <div>
-        ä¿Åì¹Óà¢éÒ : <input type="file" name="file">
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ : <input type="file" name="file">
     </div>
     <div>
-        <button type="submit">¹Óà¢éÒ</button>
+        <button type="submit">ï¿½ï¿½ï¿½ï¿½ï¿½</button>
         <input type="hidden" name="action" value="import">
     </div>
 </form>

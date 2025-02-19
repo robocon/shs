@@ -1,10 +1,10 @@
 <?php 
-require_once 'bootstrap.php';
-require_once 'class_file/class_depart.php';
-require_once 'class_file/class_patdata.php';
-require_once 'class_file/class_opacc.php';
-require_once 'class_file/class_resulthead.php';
-require_once 'class_file/opday.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_depart.php';
+require_once dirname(__FILE__).'/class_file/class_patdata2.php';
+require_once dirname(__FILE__).'/class_file/class_opacc2.php';
+require_once dirname(__FILE__).'/class_file/class_resulthead2.php';
+require_once dirname(__FILE__).'/class_file/class_opday.php';
 
 // require_once 'manual_expense_config.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);

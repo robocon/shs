@@ -149,7 +149,12 @@ echo "<FONT SIZE='5' COLOR='#0000FF'><CENTER>ชื่อผู้ป่วย&n
 <?php
 $i=0;
 
-	$sql = "Select autonumber,date_format(orderdate,'%Y-%m-%d') as dateresult, date_format(orderdate,'%d') as dateresult2, date_format(orderdate,'%m') as dateresult4, date_format(orderdate,'%Y') as dateresult3,labnumber,sourcename,clinicianname From resulthead where hn = '".$_POST["search_hn"]."' Group by labnumber order by orderdate DESC";
+	$sql = "Select autonumber,date_format(orderdate,'%Y-%m-%d') as dateresult, 
+	date_format(orderdate,'%d') as dateresult2, 
+	date_format(orderdate,'%m') as dateresult4, 
+	date_format(orderdate,'%Y') as dateresult3, 
+	date_format(orderdate,'%H:%i') as orderdate_time, 
+	labnumber,sourcename,clinicianname From resulthead where hn = '".$_POST["search_hn"]."' Group by labnumber order by orderdate DESC";
 
 	$result = mysql_query($sql);
 	while($arr = mysql_fetch_assoc($result)){
@@ -179,7 +184,7 @@ $i=0;
 		
 ?>
 <tr >
-	<td align="center" ><?php echo $arr["dateresult2"];?>&nbsp;<?php echo $month[$arr["dateresult4"]];?>&nbsp;<?php echo $arr["dateresult3"]+543;?></td>
+	<td align="left" >&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $arr["dateresult2"];?>&nbsp;<?php echo $month[$arr["dateresult4"]];?>&nbsp;<?php echo $arr["dateresult3"]+543;?>&nbsp;<?=$arr['orderdate_time'];?>น.</td>
 	<td align="center" ><?=$arr['labnumber'];?></td>
 	<td><?php echo implode(", ",$list_lab);?></td>
 	<td align="center" ><?php echo $sourcename;?></td>

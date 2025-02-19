@@ -1,21 +1,16 @@
 <?php
-session_start();
-include 'connect.inc';
+include 'connect.php';
 include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
-
 if($_SESSION["sOfficer"] == ""){
-	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 	exit();
 }
-
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
 $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,64 +19,61 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 	<title>ระบบแจ้งซ่อมระบบคอมพิวเตอร์</title>
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-
 	<!-- อัพเดท เวอร์ชั่นใหม่ๆ ได้ที่ https://github.com/sweetalert2/sweetalert2/releases -->
 	<script src="js/sweetalert2.all.min.js"></script>
-	
 </head>
-
 <body bgcolor="#FFFFFF">
-
 <style type="text/css">
-*{font-family: "TH SarabunPSK";}
-.forntsarabun { font-size: 20px;}
-.style2 {font-size: 24px;font-weight: bold;color: #FFFFFF;}
-a:link {text-decoration: none;}
-a:visited {text-decoration: none;}
-a:hover {text-decoration: none;}
-a:active {text-decoration: none;}
-ol {margin: 0;padding: 0;}
-ol li {margin-bottom: 12px;}
-#closeBtn:hover {
-	cursor: pointer;
-	text-decoration: underline;
-}
-.com_menu a:hover{
-	text-decoration: underline;
-}
-#notiContent > ol{
-	margin: 0 0.5em;
-	padding: 0.5em 1em;
-}
-#notiBackground{
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 8;
-	background-color: white;
-}
-label:hover{cursor: pointer;}
-#notiContainer{
-	position:absolute;
-	left:0;
-	right:0;
-	top:0;
-	bottom:0;
-	margin: auto;
-	background-color:white;
-	border:2px solid #997404;
-	padding:4px;
-	box-shadow: 4px 4px 8px;
-	width: 720px;
-	height: 480px;
-	z-index: 9;
-}
-#f1 table td{
-	padding-bottom: 8px;
-    vertical-align: top;
-}
+	body{margin:8px;}
+	*{font-family: "TH SarabunPSK";}
+	.forntsarabun { font-size: 22px;}
+	.style2 {font-size: 24px;font-weight: bold;color: #FFFFFF;}
+	a:link {text-decoration: none;}
+	a:visited {text-decoration: none;}
+	a:hover {text-decoration: none;}
+	a:active {text-decoration: none;}
+	ol {margin: 0;padding: 0;}
+	ol li {margin-bottom: 12px;}
+	#closeBtn:hover {
+		cursor: pointer;
+		text-decoration: underline;
+	}
+	.com_menu a:hover{
+		text-decoration: underline;
+	}
+	#notiContent > ol{
+		margin: 0 0.5em;
+		padding: 0.5em 1em;
+	}
+	#notiBackground{
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 8;
+		background-color: white;
+	}
+	label:hover{cursor: pointer;}
+	#notiContainer{
+		position:absolute;
+		left:0;
+		right:0;
+		top:0;
+		bottom:0;
+		margin: auto;
+		background-color:white;
+		border:2px solid #997404;
+		padding:4px;
+		box-shadow: 4px 4px 8px;
+		width: 720px;
+		height: 480px;
+		z-index: 9;
+	}
+	#f1 table td{
+		padding-bottom: 8px;
+		vertical-align: top;
+	}
 </style>
 <!-- POPUP ให้ผู้ใช้รับทราบ ก่อนการบันทึกข้อมูล -->
 <div id="notiBackground"></div>
@@ -175,7 +167,7 @@ if($q->num_rows>0){
 ?>
 <form method="POST" action="comadd1.php" name="f1" id="f1">
 	<input name="act" type="hidden" value="add">
-	<table width="1053" align="center" bgcolor="#66CCCC" class="forntsarabun">
+	<table width="90%" align="center" bgcolor="#66CCCC" class="forntsarabun">
 		<tr>
 			<td height="48" colspan="4" bgcolor="#0099CC">
 				<span class="style2">ระบบแจ้งซ่อมระบบคอมพิวเตอร์ปรับปรุงและพัฒนาโปรแกรมโรงพยาบาลค่ายสุรศักดิ์มนตรี</span>
@@ -236,7 +228,9 @@ if($q->num_rows>0){
 						selector: 'textarea#detail',
 						toolbar: false, // ปิดใช้งาน toolbar
 						menubar: false, // ปิดใช้งาน menubar
-						forced_root_block : '' // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+						forced_root_block : '', // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
+						paste_as_text: true,
+						width: 1024
 					});
 				</script>
 				<TEXTAREA NAME="detail" id="detail" COLS="100" ROWS="10" class="forntsarabun"></TEXTAREA>

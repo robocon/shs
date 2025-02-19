@@ -959,6 +959,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
             <td align="center" >รายการยา OPD</td>
 			<td align="center" >วิธีใช้</td>
             <td align="center" >ประเภท</td>
+			<td align="center" >จำนวน/กล่อง</td>
 			<td align="center" width="70" >จำนวนยา</td>
 			<td align="center" >จำนวนที่ฉีด</td>
 			<td align="center" >วิธีฉีด</td>
@@ -983,7 +984,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	$sql = "
 	SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
 	FROM ddrugrx as a 
-	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
+	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso`,`quantity_box` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
 	INNER JOIN dphardep as c ON a.date=c.date
 	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode, a.part
@@ -1139,6 +1140,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
             <td >&nbsp;<?php echo $arr["tradname"].' ['.$arr["genname"].']'.$notify_lock;?></td>
 			<td align="center">&nbsp;<?php echo $arr["slcode"];?></td>
             <td align="center">&nbsp;<?php echo $arr["part"];?></td>
+			<td align="center" >&nbsp;<?php echo $arr["quantity_box"];?></td>
 			<td align="center" >&nbsp;<?php echo $arr["amount"];?></td>
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_amount"];?></td>
 			<td align="center">&nbsp;<?php echo $arr["drug_inject_slip"];?></td>
@@ -1628,11 +1630,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	
 	if($chkptright=="R07" || $chkptright=="R20" || $chkptright=="R27" || $chkptright=="R28" || $chkptright=="R40" || $chkptright=="R43" || $chkptright=="R46" || $chkptright=="R50"){
-		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." drugcode NOT LIKE '30%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern,quantity_box From druglst where ".$where." drugcode NOT LIKE '30%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
 	}else if($chkptright=="R09" || $chkptright=="R10" || $chkptright=="R11" || $chkptright=="R12" || $chkptright=="R13" || $chkptright=="R14" || $chkptright=="R36" || $chkptright=="R44"){
-		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." drugcode NOT LIKE '20%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern,quantity_box From druglst where ".$where." drugcode NOT LIKE '20%' AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
 	}else{
-		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern From druglst where ".$where." (drugcode NOT LIKE '20%' AND drugcode NOT LIKE '30%') AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
+		$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr, drug_lockintern,quantity_box From druglst where ".$where." (drugcode NOT LIKE '20%' AND drugcode NOT LIKE '30%') AND (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') AND drug_active='y' Order by drugcode ASC";
 	}	
 	
 	//echo $sql;
@@ -1646,7 +1648,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"30\"><font style=\"color: #FFFFFF\"></font></td>
 			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>รหัส</strong></font></td>
-			<td width=\"381\"><font style=\"color: #FFFFFF\"><strong>ชื่อยา</strong></font></td>
+			<td width=\"381\"><font style=\"color: #FFFFFF\"><strong>ชื่อยาการค้า/สามัญ</strong></font></td>
+			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>จำนวน/กล่อง</strong></font></td>
 			<td width=\"100\"><font style=\"color: #FFFFFF\"><strong>หน่วย</strong></font></td>
 			<td width=\"50\"><font style=\"color: #FFFFFF\"><strong>ราคา</strong></font></td>
 			<td width=\"5\" colspan=\"2\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><img src=\"images\icon-close.png\" alt=\"ปิดหน้าต่าง\" width=\"26\" height=\"26\"></A></strong></font></td>
@@ -1735,6 +1738,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					<td rowspan=\"3\" align=\"center\">".$obj."</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["drugcode"],"</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\">",$arr["tradname"]," [",$arr["genname"],"] $react_txt $extra_obj</td>
+					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["quantity_box"],"</td>
 					<td valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\" align=\"center\">",$arr["unit"],"</td>
 					<td align=\"right\" valign='top' rowspan=\"2\" bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 					<td align=\"left\" bgcolor=\"$bgcolor\"></td>
@@ -1992,42 +1996,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
 	echo $return;
 	exit;
-	
-	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";  //เช็คแพ้ยารายตัว
-	$result1 = mysql_query($sql1);
-
-	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
-			echo "3";	//lock ยารายตัว		
-	}else if($arr["amountcode"] > 0){  //มียานั้นๆ อยู่ในระบบ
-		$sql2 = "Select drugcode,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."'  and groupname !='' limit 0,1";  //เช็คแพ้ยาตามกลุ่ม
-		$result2 = mysql_query($sql2);
-		$arr2 = mysql_fetch_assoc($result2);
-		if(Mysql_num_rows($result2) > 0){  //ถ้ามีแพ้ยาตามกลุ่ม
-			if(!empty($arr2["drugcode"])){  //ถ้ามียาในกลุ่มที่แพ้	
-				echo "55";
-			}else{
-				$sql3="SELECT drugcode,drugreact_group FROM `drugreact_group_list` where drugcode='".$_GET["search"]."'";  //เช็คก่อนว่ามียาที่คีย์มาในกลุ่มที่แพ้หรือไม่	
-				$query3=mysql_query($sql3);
-				$num3=mysql_num_rows($query3);
-				list($drugcode,$drugreact_group)=mysql_fetch_array($query3);
-				if($num3 > 0){  //ถ้ามีอยู่ในกลุ่มที่แพ้ ให้เช็คต่ออีกว่าได้ระบุการแพ้ยาตามกลุ่มไปหรือยัง
-					if($drugcode==$arr2["drugcode"]){
-						echo "55";  //lock ยาตามกลุ่ม
-					}else{
-						echo "66";  //alert
-					}		
-				}else{			
-						echo "1";
-				}		
-			}
-		}else{
-			echo "1";
-		}		
-	}else{
-		echo "0";  //ใส่รหัสยาใหม่
-	}
-
-	exit();
 }
 
 //*********************************** ตรวจสอบการlockจ่ายยา *****************************
@@ -2400,21 +2368,24 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){
 		FROM `drugrx` 
 		WHERE `date` < '$date' AND `hn` = '%s' AND `drugcode` = '%s' 
 		ORDER BY `row_id` DESC LIMIT 1 
-	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode`",
+	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
+	WHERE b. ",
 	$dbi->real_escape_string($hn),
 	$dbi->real_escape_string($drugcode)
 	);
 
-	$sqlDruglst = sprintf("SELECT `genname` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
+	$sqlDruglst = sprintf("SELECT `genname`,`unit` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
 	$qDruglst = $dbi->query($sqlDruglst);
 	$genname = '';
+	$unit = '';
 	if($qDruglst->num_rows > 0){
 		$b = $qDruglst->fetch_assoc();
 		$genname = '('.$b['genname'].')';
+		$unit = strtolower(trim($b['unit']));
 	}
 
 	$q = $dbi->query($sql);
-	if($q->num_rows>0){
+	if($q->num_rows>0 && ($unit=='tablet' OR $unit=='capsule')){
 		$a = $q->fetch_assoc();
 		if($a['day_diff'] < $a['day_averrage']){
 			$tradname = $a['tradname'];

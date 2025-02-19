@@ -541,6 +541,7 @@ $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]");
 	  
 	?>
 	<font face="Angsana New"><A HREF="xraylst_dr.php" target="right">ตรวจ(ท่า)</A> : <BR>
+	<font face="Angsana New"><A HREF="xraylst_dr2.php" target="right">ตรวจ(ท่า) ใหม่</A> : <BR>
 	<div id="cXraydetail">
 	<?php
 	/*

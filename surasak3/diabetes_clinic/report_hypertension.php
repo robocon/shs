@@ -4,31 +4,32 @@ require "../includes/functions.php";
 
 // Verify user before load content
 if(!authen()) die('หมดระยะเวลาการใช้งาน <a href="login.php">คลิกที่นี่</a> เพื่อเข้าสู่ระบบอีกครั้ง');
-
+$web_title = 'สถิติ Hypertension';
 require "header.php";
 ?>
-<div><h3>สถิติ HT</h3></div>
+<div><h3><?=$web_title;?></h3></div>
 <div id="no_print" >
 	<form name="f1" action="report_hypertension.php" method="post">
-		<table  border="0" cellpadding="3" cellspacing="3">
+		<table border="0" cellpadding="3" cellspacing="3">
 			<tr class="forntsarabun">
 				<td  align="right">
 					เลือกปีในการค้นหา
 					<select name="y_start" class="forntsarabun">
 					<?php 
-						$Y = date("Y")+543;
-						$date = date("Y")+543+5;
-						$dates = range(2547,$date);
+					$Y = date("Y")+543;
+					$date = date("Y")+543+5;
+					$dates = range(2547,$date);
 
-						foreach($dates as $i){
-							if(isset($_POST['y_start'])){
-								$select = ($i == $_POST['y_start']) ? 'selected' : '' ;
-							}else{
-								$select = ($i == $Y) ? 'selected' : '' ;
-							}
-							?>
-							<option value="<?=$i?>" <?php echo $select; ?>><?=$i;?></option>
-							<?php 						}
+					foreach($dates as $i){
+						if(isset($_POST['y_start'])){
+							$select = ($i == $_POST['y_start']) ? 'selected' : '' ;
+						}else{
+							$select = ($i == $Y) ? 'selected' : '' ;
+						}
+						?>
+						<option value="<?=$i?>" <?php echo $select; ?>><?=$i;?></option>
+						<?php
+					}
 					?>
 					</select>
 					<button type="submit">ทำการค้นหา</button>
@@ -46,28 +47,22 @@ if(isset($_POST['y_start'])){
 }
 
 // temp สำหรับแสดงผลรายเดือน (ภายใน 1 ปี ผู้ป่วยมาตรวจกี่ครั้งก็จะนับไปตามจำนวนนั้น)
-$sql_temp = "
-CREATE TEMPORARY TABLE hyper_temp 
+$sql_temp = "CREATE TEMPORARY TABLE hyper_temp 
 ( thidate DATE NOT NULL ) 
 SELECT * 
 FROM hypertension_history 
-WHERE thidate LIKE '$date1%';
-";
-//echo $sql_temp;
+WHERE thidate LIKE '$date1%';";
 mysql_query($sql_temp);
 
 // จำนวนผู้ป่วย HT ทั้งหมดที่ไม่สนใจเคสต่างๆ
-$sql = "
-SELECT COUNT(`hn`) AS `rows`, DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`
+$sql = "SELECT COUNT(`hn`) AS `rows`, DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`
 FROM hyper_temp
-GROUP BY MONTH(`thidate`)
-";
+GROUP BY MONTH(`thidate`)";
 $q = mysql_query($sql);
 $all_year = array();
 while($item = mysql_fetch_assoc($q)){
 	$all_year[$item['thidate']] = $item['rows'];
 }
-
 
 if(isset($_POST['search']) && $_POST['search'] == 'search'){
     
@@ -150,7 +145,7 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 				<?php 
 			}
 			?>
-		<tr/>
+		</tr>
 		<tr>
 			<td>ที่มีโรคร่วมทั้งหมด</td>
 			<td></td>
@@ -191,12 +186,12 @@ if(isset($_POST['search']) && $_POST['search'] == 'search'){
 			<td></td>
 			<?php 
 			$sql = "SELECT COUNT( hn ) AS rows,DATE_FORMAT( `thidate`, '%Y-%m' ) AS `thidate`,`bp1`,`bp2`
-FROM hyper_temp
-WHERE (`bp1` != '' OR `bp2` != '') 
-AND bp1 < 140 
-AND bp2 < 90 
-AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '')
-GROUP BY MONTH( thidate );";
+			FROM hyper_temp
+			WHERE (`bp1` != '' OR `bp2` != '') 
+			AND bp1 < 140 
+			AND bp2 < 90 
+			AND (joint_disease_dm = '' AND joint_disease_nephritic = '' AND joint_disease_myocardial = '' AND joint_disease_paralysis = '')
+			GROUP BY MONTH( thidate );";
 			$q = mysql_query($sql);
 			$lists = array();
 			while($item = mysql_fetch_assoc($q)){
@@ -219,7 +214,7 @@ GROUP BY MONTH( thidate );";
 				<?php 
 				}
 			?>
-		<tr/>
+		</tr>
 		<tr>
 			<td>ที่ไม่มีโรคร่วมทั้งหมด</td>
 			<td></td>

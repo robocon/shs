@@ -1,10 +1,12 @@
 <?php 
 
 include 'bootstrap.php';
+require_once 'includes/JSON.php';
 
-$dbi = new mysqli(HOST, USER, PASS, DB);
-$dbi->query("SET NAMES UTF8");
-
+if(empty($_SESSION['sOfficer'])){
+    header("Location: login_page.php");
+    exit;
+}
 
 $action = sprintf("%s", $_REQUEST['action']);
 $page = sprintf("%s", $_REQUEST['page']);
@@ -47,17 +49,21 @@ if ($action === 'active') {
     $sql = "UPDATE `med_scan` SET 
     `lastupdate`=NOW(), 
     `confirm`='y', 
-    `lasteditor`='$confirm' 
+    `lasteditor`='$confirm',
+    `confirm_date`=NOW() 
     WHERE (`id`='$id');";
     $q = $dbi->query($sql);
     if( $q !== false ){ 
         $_SESSION['line_msg'] = null;
         $_SESSION['line_type'] = null;
         
-        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',"ห้องยา $an Active เรียบร้อย บันทึกโดย: $confirm");
+        $sMessage = "ห้องยา: ยืนยันการรับข้อมูล AN:$an เรียบร้อย บันทึกโดย: $confirm";
+        $_SESSION['telegram_msg'] = "💊ห้องยา: ยืนยันการรับข้อมูล AN:$an เรียบร้อย บันทึกโดย: $confirm";
+        $_SESSION['line_msg'] = iconv('UTF-8','UTF-8',$sMessage);
         $_SESSION['line_type'] = 'ward';
         
         $msg = 'บันทึกข้อมูลเรียบร้อย '.$extra_txt;
+
     }else{
         $err = set_log($dbi->error);
         $msg = 'ไม่สามารถบันทึกข้อมูลได้'.$err['id'].' ' .$err['msg'];
@@ -69,6 +75,11 @@ if ($action === 'active') {
     $id = sprintf("%s", $_REQUEST['id']);
     $q = $dbi->query("SELECT * FROM `med_scan` WHERE `id` = '$id' AND `status` = 'y' ");
     $item = $q->fetch_assoc();
+
+    if(!is_file($item['path'])){
+        echo 'ไม่พบไฟล์แนบ กรุณาติดต่อหอผู้ป่วยเพื่ออัพโหลดไฟล์เข้ามาใหม่';
+        exit;
+    }
     ?>
     <style>
     @media print{
@@ -76,7 +87,6 @@ if ($action === 'active') {
             display: none;
         }
     }
-    
     </style>
     <div class="no-print">
         <button type="button" onclick="print_img()" >พิมพ์</button> | <a href="med_phar.php">กลับหน้ารายการ</a>
@@ -124,7 +134,25 @@ if ($action === 'active') {
             }
             sendLineNotifyV2();
 
+            function sendTelegram(){
+                const telegram_message = '<?=$_SESSION['telegram_msg'];?>';
+                var test_str = [];
+                test_str.push(encodeURIComponent('sMessage')+"="+encodeURIComponent(telegram_message));
+                var data = test_str.join("&");
+
+                postMessage(data).then((res)=>{
+                    console.log(res);
+                });
+            }
+
+            async function postMessage(data){
+                const response = await fetch('<?=NOTIFY_HOST;?>/telegram/index.php?'+data);
+                const resData = await response.json();
+                return resData;
+            }
+
             <?php
+            unset($_SESSION['telegram_msg']);
             unset($_SESSION['line_msg']);
             unset($_SESSION['line_type']);
         }
@@ -134,6 +162,7 @@ if ($action === 'active') {
         }
 
         window.onload = function(){
+            sendTelegram();
             window.print();
         };
     </script>
@@ -153,10 +182,21 @@ if ($action === 'active') {
         redirect('med_phar.php','ยกเลิกรายการเรียบร้อย');
     }
     exit;
+}elseif ($action==='findNotify'){
+    $json = new Services_JSON();
+
+    $today = date('Y-m-d');
+    $sql = "SELECT * FROM `med_scan` WHERE `date` LIKE '$today%' AND `status` = 'y' AND `confirm` IS NULL AND ( `confirm_date` IS NULL OR `confirm_date` = '')  ";
+    $q = $dbi->query($sql);
+    $res = array('status'=>400, 'message'=>'fail');
+    if($q->num_rows>0){
+        $items = array();
+        $res = array('status'=>200, 'message'=>'success', 'data'=>'1');
+    }
+    echo $json->encode($res);
+    exit;
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -166,33 +206,24 @@ if ($action === 'active') {
     <title>นำร่องอายุรกรรม</title>
 </head>
 <body>
-
 <style>
-*{
-    font-family: "TH SarabunPSK","TH Sarabun New";
-    font-size: 16pt;
-}
-p{
-    margin: 0;
-}
+*{font-family: "TH SarabunPSK","TH Sarabun New";font-size: 16pt;}
+h1{font-size: 32px;}
+p{margin: 0;}
 .chk_table{
     border-collapse: collapse;
 }
-
 .chk_table, th, td{
     border: 1px solid black;
     font-size: 16pt;
 }
-
 .chk_table th,
 .chk_table td{
     padding: 3px;
 }
-
 tr{
     vertical-align: top;
 }
-
 #imgContainer{
     position: absolute;
     top: 2%;
@@ -207,7 +238,6 @@ tr{
 #imgBtnClose:hover{
     cursor: pointer;
 }
-
 .btnActive{
     padding: 3px;
     color: #000000;
@@ -215,7 +245,6 @@ tr{
     margin: 2px;
     text-decoration: none;
 }
-
 .clearfix::after {
   content: "";
   clear: both;
@@ -223,7 +252,7 @@ tr{
 }
 </style>
 <div>
-    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a></p>
+    <p><a href="../nindex.htm">&lt;&lt;&nbsp;หน้าหลัก</a>  <?=($_SESSION['smenucode']=='ADM' ? ' | <a href="med_ward.php">Upload Doctor Order</a>' : '' );?></p>
 </div>
 <?php
 if( isset($_SESSION['x-msg']) ){
@@ -231,8 +260,11 @@ if( isset($_SESSION['x-msg']) ){
     unset($_SESSION['x-msg']);
 }
 ?>
-<div>
-    <h3>Doctor Order</h3>
+<div class="clearfix">
+    <h1>Doctor Order</h1>
+    <div class="clearfix" id="notifyContainer" style="display:none; margin-bottom: 8px;">
+        <div style="float: left;padding: 4px 8px;background-color: red;border-radius: 8px;color: #ffffff;font-weight: bold;">มี Order แพทย์มาใหม่ กรุณารีเฟรชหน้าจอเพื่ออัพเดทรายการอีกครั้ง</div>
+    </div>
 </div>
 
 <div style="display: none;"><?=var_dump($_SERVER['HTTP_USER_AGENT']);?></div>
@@ -259,7 +291,7 @@ if( $_SESSION['fix_an'] ){
 $sql = "SELECT a.*,b.`bedcode` 
 FROM `med_scan` AS a 
 LEFT JOIN `ipcard` AS b ON b.`an`= a.`an` 
-WHERE a.`confirm` IS NULL 
+WHERE ( a.`confirm` IS NULL OR a.`confirm` = '' )
 $where 
 AND a.`status` = 'y' 
 ORDER BY a.`id` DESC";
@@ -287,9 +319,8 @@ if ( $q->num_rows > 0 ) {
                 <p><?=$item['date'];?></p>
             </td>
             <td>
-                <p>HN: <?=$item['hn'];?></p>
-                <p>AN: <?=$item['an'];?></p>
-                <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
+                <p>HN: <?=$item['hn'];?> AN: <?=$item['an'];?></p>
+                <p></p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                 <p><?=$fullWardName;?></p>
                 <p>ผู้บันทึก: <?=$item['editor'];?></p>
             </td>
@@ -329,45 +360,81 @@ if ( $q->num_rows > 0 ) {
     </table>
     <?php
 }
+$style = '';
+if($_COOKIE['medPharNotify2'] == 1){
+    $style = 'display: none;';
+}
 ?>
-
-<fieldset>
-    <legend>ค้นหาเอกสารด้วย AN</legend>
-    <form action="med_phar.php" method="post">
+<div id="flexContainer" class="flexContainer" style="border: 2px solid #000; padding: 8px; text-align: center; <?=$style;?>">
+    <div class="flexCenter">
         <div>
-            AN: <input type="text" name="an" id="" value="<?=( isset($_SESSION['fix_an']) ? $_SESSION['fix_an'] : '' );?>">
+            <img src="images/close-notify.png" width="600px"> <img src="images/join-telegram.png" alt="" width="600px">
         </div>
         <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="searchFile">
-            <input type="hidden" name="typeSearch" value="an">
-        </div>
-    </form>
-</fieldset>
-
-<?php 
-$dateSelected = input('days',date('d'));
-$monthSelected = input('months',date('m'));
-$yearSelected = input('years',date('Y'));
-
-$yearRange = range('2019', date('Y'));
-?>
-<fieldset>
-    <legend>ค้นหาเอกสารจากวันที่</legend>
-    <form action="med_phar.php" method="post">
-        <div>
-            วัน <?=getDateList('days',$dateSelected);?>
-            เดือน <?=getMonthList('months', $monthSelected);?>
-            ปี <?=getYearList('years',fase, $yearSelected,$yearRange);?>
+            <input type="checkbox" name="medPharNotify2" id="medPharNotify2" value="1" onclick="doNotDisplayNotify(this)"> <label for="medPharNotify2">ไม่ต้องแสดงข้อความนี้อีก เป็นเวลา 5 วัน</label>
         </div>
         <div>
-            <button type="submit">ค้นหา</button>
-            <input type="hidden" name="page" value="searchFile">
-            <input type="hidden" name="typeSearch" value="date">
+            <button type="button" onclick="closeContainer()">ปิด</button>
         </div>
-    </form>
-</fieldset>
+    </div>
+</div>
+<script>
+    function doNotDisplayNotify(t){
+        if(t.checked==true){
+            setCookie('medPharNotify2', '1', 5);
+        }else{
+            setCookie('medPharNotify2', '0', 0);
+        }
+    }
 
+    function closeContainer(){
+        document.getElementById('flexContainer').style.display = 'none';
+    }
+
+    function setCookie(cname, cvalue, exdays) {
+		const d = new Date();
+		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+		let expires = "expires="+d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+</script>
+<div class="clearfix">
+    <fieldset style="width:30%; float:left;">
+        <legend>ค้นหาเอกสารด้วย AN</legend>
+        <form action="med_phar.php" method="post">
+            <div>
+                AN: <input type="text" name="an" id="" value="<?=( isset($_SESSION['fix_an']) ? $_SESSION['fix_an'] : '' );?>">
+            </div>
+            <div>
+                <button type="submit">ค้นหา</button>
+                <input type="hidden" name="page" value="searchFile">
+                <input type="hidden" name="typeSearch" value="an">
+            </div>
+        </form>
+    </fieldset>
+    <?php 
+    $dateSelected = input('days',date('d'));
+    $monthSelected = input('months',date('m'));
+    $yearSelected = input('years',date('Y'));
+    $yearRange = range('2019', date('Y'));
+    ?>
+    <fieldset style="width:30%; float:left;">
+        <legend>ค้นหาเอกสารจากวันที่</legend>
+        <form action="med_phar.php" method="post">
+            <div>
+                วัน <?=getDateList('days',$dateSelected);?>
+                เดือน <?=getMonthList('months', $monthSelected);?>
+                ปี <?=getYearList('years',false, $yearSelected,$yearRange);?>
+            </div>
+            <div>
+                <button type="submit">ค้นหา</button>
+                <input type="hidden" name="page" value="searchFile">
+                <input type="hidden" name="typeSearch" value="date">
+            </div>
+        </form>
+    </fieldset>
+</div>
+<div>&nbsp;</div>
 <?php 
 if ( $page === 'searchFile' ) {
     
@@ -401,7 +468,7 @@ if ( $page === 'searchFile' ) {
         ?>
         <table class="chk_table" style="margin-top:6px;">
             <tr>
-                <th>วันที่บันทึกข้อมูล</th>
+                <th>วันที่เวลาที่ส่ง Order</th>
                 <th>ข้อมูล</th>
                 <th>ไฟล์</th>
                 <th>Re-Print</th>
@@ -418,8 +485,7 @@ if ( $page === 'searchFile' ) {
                     <p><?=$item['date'];?></p>
                 </td>
                 <td>
-                    <p>HN: <?=$item['hn'];?></p>
-                    <p>AN: <?=$item['an'];?></p>
+                    <p><strong>HN:</strong> <?=$item['hn'];?> <strong>AN:</strong> <?=$item['an'];?></p>
                     <p>ชื่อ-สกุล: <?=$item['ptname'];?></p>
                     <p><?=$fullWardName;?></p>
                     <p>ผู้สั่งพิมพ์: <?=$item['lasteditor'];?></p>
@@ -468,13 +534,21 @@ if ( $page === 'searchFile' ) {
     <div id="imgBtnClose">[Close]</div>
     <div><img src="" alt="" id="imgContent" style="max-width:210mm;"></div>
 </div>
+
+<audio id="myAudio" autoplay="true">
+  <source src="<?=DOMAIN_PATH;?>/sounds/smooth-completed-notify-starting-alert-274739.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+<button id="activateSoundBtn" onclick="playSound();" style="display:none;">activateSound</button>
+
 <script>
-    
+    var x = document.getElementById("myAudio");
+    var a = document.getElementById("activateSound");
+
     // open popup
     var imgs = document.querySelectorAll('.showImg');
     for (var index = 0; index < imgs.length; index++) {
         var item = imgs[index];
-        
         item.addEventListener('click', function(event) {
             document.getElementById('imgContent').setAttribute('src', this.getAttribute('src'));
             document.getElementById('imgContainer').style.display = ''; // show
@@ -483,7 +557,6 @@ if ( $page === 'searchFile' ) {
             var top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
             document.getElementById('imgContainer').setAttribute('style', 'top: '+top+'px;');
         });
-        
     }
 
     // close button
@@ -491,6 +564,28 @@ if ( $page === 'searchFile' ) {
     imgBtn[0].addEventListener('click', function(event){
         document.getElementById('imgContainer').style.display = 'none';
     });
+
+    window.onload = function(){
+        setInterval(function () {
+            loadNotify().then((res)=>{
+                if(res.status==200){
+                    document.getElementById('activateSoundBtn').click();
+                    document.getElementById('notifyContainer').style.display = '';
+                }else{
+                    document.getElementById('notifyContainer').style.display = 'none';
+                }
+            });
+        }, 5000);
+    }
+    async function loadNotify(){
+        const response = await fetch('med_phar.php?action=findNotify');
+        const body = await response.json();
+        return body;
+    }
+
+    function playSound(){
+        x.play();
+    }
     
 </script>
 

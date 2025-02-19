@@ -5,7 +5,7 @@ $action = input_post('action');
 
 if ( $action == 'clear_data' ) {
 
-    $db = Mysql::load($shs_configs);
+    $db = Mysql::load();
 
     $db->exec("SET NAMES TIS620");
 

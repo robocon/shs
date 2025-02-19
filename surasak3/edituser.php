@@ -110,6 +110,9 @@ require_once 'com_user_menu.php';
 		font-family: "TH SarabunPSK";
 		font-size: 20px;
 	}
+	label:hover{
+		cursor: pointer;
+	}
 </style>
 <div class="container mt-4">
 	<h3>แก้ไขข้อมูลผู้ใช้งานระบบ</h3>
@@ -162,9 +165,9 @@ require_once 'com_user_menu.php';
 		</div>
 		<div class="mb-3 row">
 			<label for="password2" class="col-sm-2 col-form-label">ยืนยันรหัสผ่าน : </label>
-			<div class="col-sm-6 col-md-4">
+			<div class="col-sm-6 col-md-ุ">
 				<input type="password" class="form-control" id="password2" name="password2">
-				<input type="checkbox" name="" id="showPass" onclick="showPassword(this.checked)"> <label for="showPass"><strong>แสดงรหัสผ่าน</strong></label>
+				<input type="checkbox" name="" id="showPass" onclick="showPassword(this.checked)"> <label for="showPass"><strong>แสดงรหัสผ่าน</strong> &lt;&lt; ไม่แน่ใจว่าตั้งรหัสผ่านถูกต้องรึป่าว กดดูได้ครับ</label>
 			</div>
 		</div>
 		<div class="mb-3 row">
@@ -192,17 +195,20 @@ require_once 'com_user_menu.php';
 			if (p1 == '' || p2 == '') {
 				Swal.fire("รหัสผ่านไม่ควรเป็นค่าว่าง");
 				res = false;
-			}else if (p1 != p2) {
-				Swal.fire("รหัสผ่านไม่ตรงกัน");
-				res = false;
 			}else if(p1.length<8 || p2.length<8){
 				Swal.fire("ความยาวรหัสผ่านไม่ควรน้อยกว่า 8 ตัวอักษร");
 				res = false;
+			}else if (p1 != p2) {
+				Swal.fire("รหัสผ่านไม่ตรงกัน");
+				res = false;
+			}else if(p1=='12345678'){
+				Swal.fire("เปลี่ยนรหัสเป็นตัวอื่นเถอะจ้า IT Audit มาตรวจแล้วบอกปวดหัว<br>ไม่คิดรักษาความปลอดภัยในข้อมูลตัวเองเลยหรอ?");
+				res = false;
 			}
-
-			if(res===true){
-				formUpdatePassword();
-			}
+			console.log(res);
+			// if(res===true){
+			// 	formUpdatePassword();
+			// }
 
 			return false;
 		}

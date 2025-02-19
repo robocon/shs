@@ -51,9 +51,9 @@ class printvn{
 			}
 
 			if ($ageM==0){
-				$pAge="$ageY ��";
+				$pAge="$ageY ปี";
 			}else{
-				$pAge="$ageY �� $ageM ��͹";
+				$pAge="$ageY ปี $ageM เดือน";
 			}
 		return $pAge;
 	}
@@ -67,43 +67,43 @@ class printvn{
 		$result = Mysql_Query($sql);
 		list($this->vn, $this->kew, $this->toborow, $this->clinic, $this->doctor) = Mysql_fetch_row($result);
 		
-		$sql = "Select yot, name, surname, idcard, ptright, dbirth, idguard, inrxform, note, ptrcode, hospcode  From opcard where hn = '".$this->hn."'  limit 0,1";
-		list($yot, $name, $surname,$this->idcard,$this->ptright, $dbirth, $this->idguard, $this->inrxform, $this->note,$this->ptrcode,$this->hospcode) = Mysql_fetch_row(Mysql_Query($sql));
+		$sql = "Select yot, name, surname, idcard, ptright, dbirth, idguard, inrxform, note, ptrcode, hospcode, congenital_disease  From opcard where hn = '".$this->hn."'  limit 0,1";
+		list($yot, $name, $surname,$this->idcard,$this->ptright, $dbirth, $this->idguard, $this->inrxform, $this->note,$this->ptrcode,$this->hospcode,$this->congenital_disease) = Mysql_fetch_row(Mysql_Query($sql));
 		$this->ptname = $yot." ".$name." ".$surname;
 		$this->noteall = $this->note." ".$this->ptrcode." ".$this->hospcode;
 		$this->age = $this->calcage($dbirth);
 		
 		if( $this->inrxform != ""){
 			
-			if($this->inrxform == "�����¡��������§��ͧ���Ѻ��éմ�Ѥ�չ��ͧ�ѹ�ä����Ѵ�˭�(���)")
+			if($this->inrxform == "ผู้ป่วยกลุ่มเสี่ยงต้องได้รับการฉีดวัคซีนป้องกันโรคไข้หวัดใหญ่(ฟรี)")
 				$this->inrxform .= "<BR>Influza Vaccine 0.5 ml. IM";
 
 			$this->inrxform = "<table width='210' border='0'><TR><TD align='center'>".$this->inrxform;
 			$this->inrxform .= "<TD></TR></Table>";
 		}
-		//�����繵��
+		//แพ้ยาเป็นตัว
 		$sql = "Select tradname, advreact  From drugreact where hn = '".$this->hn."' and groupname =''";
 		//echo $sql;
 		$result = Mysql_Query($sql);
 		
 		if(Mysql_num_rows($result) > 0){
 		
-			$this->drugreact = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>����</B></U></TD></TR>";
+			$this->drugreact = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>แพ้ยา</B></U></TD></TR>";
 				while($arr = Mysql_fetch_assoc($result)){
 				
-					$this->drugreact .= "<TR><TD>��:".$arr["tradname"]."<BR>�ҡ��:".$arr["advreact"]."</TD></TR>";
+					$this->drugreact .= "<TR><TD>ยา:".$arr["tradname"]."<BR>อาการ:".$arr["advreact"]."</TD></TR>";
 				}
 			$this->drugreact .= "</Table>";
 			}
 		
-		//�����繡����	
+		//แพ้ยาเป็นกลุ่ม	
 		$sql2= "Select distinct(groupname) as groupname, advreact  From drugreact where hn = '".$this->hn."' and groupname !=''";
 		$result2 = Mysql_Query($sql2);
 		
 		if(Mysql_num_rows($result2) > 0){
-			$this->drugreact2 = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>���ҵ�������</B></U></TD></TR>";
+			$this->drugreact2 = "<Table width='210' border='0'><TR><TD colspan='2'><U><B>แพ้ยาตามกลุ่ม</B></U></TD></TR>";
 				while($arr = Mysql_fetch_assoc($result2)){
-					$this->drugreact2 .= "<TR><TD>����������:".$arr["groupname"]."<BR>�ҡ��:".$arr["advreact"]."</TD></TR>";
+					$this->drugreact2 .= "<TR><TD>กลุ่มที่แพ้:".$arr["groupname"]."<BR>อาการ:".$arr["advreact"]."</TD></TR>";
 				}
 			$this->drugreact2 .= "</Table>";
 			}			
@@ -125,42 +125,43 @@ class printvn{
 
 
 		print "<center>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 2 >㺵�Ǩ�ä �ç��Һ�Ť�������ѡ��������<br>";
-			print "<font style='line-height:24px;' face='Angsana New' size= 3 ><center>".date("d-m-").(date("Y")+543)." ����  ".date("G:i:s")."<br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 2 >ใบตรวจโรค โรงพยาบาลค่ายสุรศักดิ์มนตรี<br>";
+			print "<font style='line-height:24px;' face='Angsana New' size= 3 ><center>".date("d-m-").(date("Y")+543)." เวลา  ".date("G:i:s")."<br>";
 				print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b><u>".$this->toborow."</b></u><br>";
 		print "<font style='line-height:24px;' face='Angsana New' size= 6 ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp; ".$this->kew."";
 		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><br>";
-		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>����&nbsp;".$this->ptname."</b><br>";
+		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>ชื่อ&nbsp;".$this->ptname."</b><br>";
 		print "<font style='line-height:24px;' face='Angsana New' size= 5 ><b>HN: &nbsp;".$this->hn."</b><br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 4 >���� &nbsp; ".$this->age."<br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 4 >อายุ &nbsp; ".$this->age."<br>";
 		if(trim($this->idguard) != "") 
 	    print "<font style='line-height:24px;' face='Angsana New' size= 4 >".$this->idguard."<br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 4 ><b>�Է�� :&nbsp; ".$this->ptright."</b><br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 4 ><b>สิทธิ :&nbsp; ".$this->ptright."</b><br>";
 		
-		print "<font style='line-height:24px;' face='Angsana New' size= 4 >�ѵ� ���: &nbsp; ".$this->idcard."<br>";
-		
-		
+		print "<font style='line-height:24px;' face='Angsana New' size= 4 >บัตร ปชช: &nbsp; ".$this->idcard."<br>";
 		
 		
 		
-//		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>�ӴѺ���&nbsp;".$this->kew."</b><BR>";
+		
+		
+//		print "<font  style='line-height:24px;' face='Angsana New' size= 4 ><b>ลำดับที่&nbsp;".$this->kew."</b><BR>";
 
-		print "<font  style='line-height:24px;' face='Angsana New' size= 4 >".$this->noteall."<BR>";
-		print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
+		print "<font  style='line-height:24px;' face='Angsana New' size=5 ><u>".$this->noteall."</u><BR>";
+		//print "<img src = \"printbcpha.php?cHn=".$this->hn."\"><BR>";
+		print "<img src = \"printQrCode.php?hn=".$this->hn."&size=4&level=2&margin=1\"><BR>";
 		if($this->clinic != "")
-		print "<font face='Angsana New' size= 3 >��Թԡ : ".$this->clinic."<BR>";
+		print "<font face='Angsana New' size= 3 >คลินิก : ".$this->clinic."<BR>";
 		if($this->doctor != "")
-		print "<font face='Angsana New' size= 3 >ᾷ�� : ".$this->doctor."<BR>";
+		print "<font face='Angsana New' size= 3 >แพทย์ : ".$this->doctor."<BR>";
 		if($this->room != "")
-		print "<font face='Angsana New' size= 3 >��ͧ��Ǩ : ".$this->room."<BR>";		
+		print "<font face='Angsana New' size= 3 >ห้องตรวจ : ".$this->room."<BR>";		
 print "<font face='Angsana New' size= 3 >".$this->inrxform."&nbsp;&nbsp;".$this->drugreact."&nbsp;&nbsp;".$this->drugreact2."<BR>";
-//print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ᾷ������Ҽ�ҹ�к����<BR>";
-print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 >ᾷ��..............................................<BR>";
-print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> �Ѻ����蹷���ͧ�����Ţ 6</u><BR>";
+//print "<font <font  style='line-height:24px;' face='Angsana New' size= 2 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพทย์จ่ายยาผ่านระบบคอม<BR>";
+print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 >แพทย์..............................................<BR>";
+print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><INPUT TYPE=\"checkbox\" NAME=\"\" readonly> รับยายื่นที่ช่องหมายเลข 6</u><BR>";
 
-	//print "<font style='line-height:24px;' face='Angsana New' size= 2>��س���¹�ӹǹ�Թ������<BR>";
+	//print "<font style='line-height:24px;' face='Angsana New' size= 2>กรุณาเขียนจำนวนเงินทั้งหมด<BR>";
 		//print "<font face='Angsana New' size= 3 ><b>XRAY</b><BR>";
-	//	print "<font style='line-height:24px;' face='Angsana New' size= 4><B>㺷��ѵ����</B><br>";
+	//	print "<font style='line-height:24px;' face='Angsana New' size= 4><B>ใบทำหัตถการ</B><br>";
 //print "<font style='line-height:24px;' face='Angsana New' size= 4 ><b>VN:&nbsp; ".$this->vn." </b>&nbsp;&nbsp;HN: &nbsp;".$this->hn."";
 		print "
 			
@@ -179,7 +180,7 @@ print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><IN
 			</TR>
 						<TR>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
-				<TD>�ѧ���...............</TD>
+				<TD>ฝังเข็ม...............</TD>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
 				<TD colspan='4'>PT................</TD>
 			</TR>
@@ -188,7 +189,7 @@ print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><IN
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
 				<TD>EKG.............</TD>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
-				<TD colspan='4'>����................</TD>
+				<TD colspan='4'>อื่นๆ................</TD>
 			</TR>
 			<TR>
 				<TD align='right' ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly></TD>
@@ -201,7 +202,9 @@ print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 ><u><IN
 		
 	//	print $this->inrxform;
 	//	print $this->drugreact;
-
+if($this->toborow == "EX26 ตรวจสุขภาพประจำปี"){
+print "<font <font  style='line-height:24px;' face='Angsana New' size= 4 >โรคประจำตัว : ".$this->congenital_disease."<BR>";
+}
 		print "</center>";
 	
 	}
@@ -224,15 +227,15 @@ class printkew extends printvn{
 
 
 		print "<center>";
-		print "<font face='Angsana New' size= 3 ><B>��� ".$this->kew."</B><br>";
-		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>����&nbsp;".$this->ptname."&nbsp;&nbsp;HN: &nbsp;".$this->hn."</b><br>";
-		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><b>�Է�� :&nbsp; ".substr($this->ptright,3)."</b><br>";
+		print "<font face='Angsana New' size= 3 ><B>คิว ".$this->kew."</B><br>";
+		print "<font style='line-height:35px;' face='Angsana New' size= 4 ><b>ชื่อ&nbsp;".$this->ptname."&nbsp;&nbsp;HN: &nbsp;".$this->hn."</b><br>";
+		print "<font style='line-height:24px;' face='Angsana New' size= 3 ><b>สิทธิ :&nbsp; ".substr($this->ptright,3)."</b><br>";
 		if($this->clinic != "")
-			print "<font face='Angsana New' size= 3 >��Թԡ : ".substr($this->clinic,3)."<BR>";
+			print "<font face='Angsana New' size= 3 >คลินิก : ".substr($this->clinic,3)."<BR>";
 		if($this->doctor != "")
-			print "<font face='Angsana New' size= 3 >ᾷ�� : ".substr($this->doctor,5)."<BR>";
+			print "<font face='Angsana New' size= 3 >แพทย์ : ".substr($this->doctor,5)."<BR>";
 		if($this->room != "")
-			print "<font face='Angsana New' size= 3 >��ͧ��Ǩ : ".substr($this->doctor,5)."<BR>";			
+			print "<font face='Angsana New' size= 3 >ห้องตรวจ : ".substr($this->doctor,5)."<BR>";			
 
 
 	}

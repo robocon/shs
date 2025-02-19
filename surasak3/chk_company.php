@@ -311,7 +311,7 @@ if ( $views == 'search' ) {
 
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
         // เทศบาลเมืองพิชัย 67
-        $expense_list = array('เทศบาลนครลำปาง 67 Day 1','เทศบาลนครลำปาง 67 Day 2');
+        $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
 
         foreach ($items as $key => $item) {
 
