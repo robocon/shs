@@ -148,39 +148,9 @@ $datejel=$rowsj["date"];
 if($numj > 0){
 	echo "<script>alert('ผู้ป่วย HN : $sHn ได้รับยา 10H014 ฟรีประจำเดือน $chkDate ไปแล้ว เมื่อวันที่ $datejel');</script>";
 }
-
-
-
-//----------------------------เช็คแพ้ยา
-$rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
-$rquery = mysql_query($rsql);
-$rnum=mysql_num_rows($rquery);		
-if($rnum > 0){
-	// echo "<script>alert('ผู้ป่วย HN : $sHn มีประวัติแพ้ยาดังต่อไปนี้ ";
-	$drugreact_txt = '';
-	$i = 1;
-	while($rrows= mysql_fetch_array($rquery)){
-			$tradname=$rrows["tradname"];
-			$advreact=$rrows["advreact"];
-			$asses=$rrows["asses"];
-			$drugreact_txt .= $i.') '.$tradname.'...'.$advreact.'('.$asses.')\n ';
-			$i++;
-	}
-	// echo $drugreact_txt;
-	// echo "');</script>";
-	?>
-	<script type="text/javascript">
-		alert("ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้\n <?=$drugreact_txt;?>");
-	</script>
-	<?php	
-}else{
-	//echo "<script>alert('ผู้ป่วย HN : $sHn ไม่มีประวัติแพ้ยา');";  
-}
-//----------------------------จบเช็คแพ้ยา
 ?>
 <script src="js/sweetalert2.all.min.js"></script>
 <script>
-
 function chkin(){
 	if(document.getElementById('cut2').style.display=='none'){
 		document.getElementById('cut2').style.display='block';
@@ -193,6 +163,36 @@ function chkin(){
 }
 </script>
 <?php 
+
+//----------------------------เช็คแพ้ยา
+$rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '$sHn' ";
+$rquery = mysql_query($rsql);
+$rnum=mysql_num_rows($rquery);		
+if($rnum > 0){
+	$drugreact_txt = '';
+	$i = 1;
+	while($rrows= mysql_fetch_array($rquery)){
+			$tradname=$rrows["tradname"];
+			$advreact=$rrows["advreact"];
+			$asses=$rrows["asses"];
+			$drugreact_txt .= $i.') '.$tradname.'...'.$advreact.'('.$asses.')\n';
+			$i++;
+	}
+	?>
+	<script type="text/javascript">
+		alert("ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้\n <?=$drugreact_txt;?>");
+		// ไม่มี body เลยใช้ swal.fire ไม่ได้
+		// Swal.fire({
+		// 	title: "ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้",
+		// 	text: "<?=$drugreact_txt;?>",
+		// 	icon: "Warning"
+		// })
+	</script>
+	<?php	
+}
+//----------------------------จบเช็คแพ้ยา
+
+
 $visit_date = substr($_GET['sDate'], 0, 10);
 $sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$sHn' ";
 $res = mysql_query($sqlDiag);
@@ -334,20 +334,27 @@ $patient_hn = trim($sHn);
 $sixMonthsLater = strtotime("-6 Months");
 $sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 $currentDayTH = (date('Y')+543).date('-m-d');
-$sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
-	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
+/*
+1. (แทนค่า x) หาใน drugrx ก่อนว่าในช่วง 6 เดือนย้อนหลังมียาตัวไหนเข้าเกณฑ์กลุ่ม warfarin/noacs บ้างโดยเอาแค่ idno ตัวล่าสุดมาตัวเดียว
+2. เอา x ที่ได้กลับมา left join ตัวมันเองเพื่อแสดงรายการในวันนั้นๆ ก็จะได้รายการแค่ตัวล่าสุดตัวเดียว
+*/
+$sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`drugcode`,a.`tradname`,a.`amount`,a.`idno`,a.`slcode`,a.`idno`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+	SELECT `idno` AS `phardep_id` 
 	FROM `drugrx` 
 	WHERE `hn` = '%s' 
 	AND ( `date` >= '$sixMonthsTH' AND `date` < '$currentDayTH' ) 
 	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
 	AND (`status` = 'Y' AND `amount` > 0)
-	ORDER BY `row_id` DESC
-) AS a LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+	GROUP BY `idno` DESC 
+	LIMIT 1
+) AS x LEFT JOIN `drugrx` AS a ON x.`phardep_id` = a.`idno` 
+LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
 LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
 LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
-ORDER BY a.`date` DESC LIMIT 1",
+WHERE a.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') ",
 	$dbi->real_escape_string($patient_hn)
 );
+
 $q = $dbi->query($sql);
 if($q->num_rows>0){
 	?>

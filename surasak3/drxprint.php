@@ -239,18 +239,20 @@ if(!empty($cStkcutdate)) {
 	$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 	$currentDayTH = (date('Y')+543).date('-m-d');
 
-	$sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
-		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
+	$sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`drugcode`,a.`tradname`,a.`amount`,a.`idno`,a.`slcode`,a.`idno`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+		SELECT `idno` AS `phardep_id` 
 		FROM `drugrx` 
 		WHERE `hn` = '%s' 
 		AND ( `date` >= '$sixMonthsTH' AND `date` < '$currentDayTH' ) 
 		AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
 		AND (`status` = 'Y' AND `amount` > 0)
-		ORDER BY `row_id` DESC
-	) AS a LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+		GROUP BY `idno` DESC 
+		LIMIT 1
+	) AS x LEFT JOIN `drugrx` AS a ON x.`phardep_id` = a.`idno` 
+	LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
 	LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
 	LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
-	ORDER BY a.`date` DESC LIMIT 1",
+	WHERE a.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') ",
 		$dbi->real_escape_string($patient_hn)
 	);
 	$q = $dbi->query($sql);
