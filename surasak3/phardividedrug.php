@@ -288,6 +288,7 @@ while ($arr = Mysql_fetch_assoc($result)) {
 				<TD>
 					<TABLE width="100%" id="pharDivideDrug">
 						<TR bgcolor="#3300FF" class="font_title" align="center">
+							<td>#</td>
 							<TD width="5%">รหัสยา</TD>
 							<TD>ชื่อยา</TD>
 							<TD width="5%">วิธีใช้</TD>
@@ -304,14 +305,13 @@ while ($arr = Mysql_fetch_assoc($result)) {
 
 						for ($j = 0; $j < $_SESSION["num_list"]; $j++) {
 
-							if ($_SESSION["list_druglst"]["statcon"][$j] == "CONT")
+							if ($_SESSION["list_druglst"]["statcon"][$j] == "CONT"){
 								$bgcolor = "#99FFFF";
-							else
+							}else{
 								$bgcolor = "#FFFFCC";
-
-
+							}
+							
 							$sql = "Select count(row_id) as row_id From ipacc02 where code = '" . $_SESSION["list_druglst"]["drugcode"][$j] . "'  limit  0,1";
-
 							$result = Mysql_Query($sql);
 							echo mysql_error();
 							list($rows) = Mysql_fetch_row($result);
@@ -320,6 +320,7 @@ while ($arr = Mysql_fetch_assoc($result)) {
 								$_SESSION["list_druglst"]["amount"][$j] = 0;
 							}
 
+							$number = $j + 1;
 
 							$list_status_drug["STAT1"] = "Stat";
 							$list_status_drug["STAT"] = "One day";
@@ -334,19 +335,16 @@ while ($arr = Mysql_fetch_assoc($result)) {
 								echo "<script>alert('ผู้ป่วยรับประทานยาวันเว้นวัน โปรดใช้ความระมัดระวังในการตัดจ่ายยา');</script>";
 							}
 							//<br><font size='2'>(".$resultsl['detail1']." ".$resultsl['detail2']." ".$resultsl['detail3'].")</font>
-							echo "
-<TR bgcolor=\"", $bgcolor, "\">
-	<TD>", $_SESSION["list_druglst"]["drugcode"][$j], "</TD>
-	<TD><b>", $_SESSION["list_druglst"]["tradname"][$j], "</b><br>", $_SESSION["list_druglst"]["genname"][$j], "<br></TD>
-	<TD align=\"center\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้','" . $resultsl['detail1'] . " " . $resultsl['detail2'] . " " . $resultsl['detail3'] . "','left',-200,0);\" OnmouseOut = \"hid_tooltip();\">", $_SESSION["list_druglst"]["slcode"][$j], "</span></TD>
-	<TD align=\"center\">", $_SESSION["list_druglst"]["part"][$j], "</TD>
-	<TD align=\"center\"><INPUT TYPE=\"text\" Name=\"Amount[]\" Value=\"", $_SESSION["list_druglst"]["amount"][$j], "\" size=\"3\"></TD>
-	<TD align=\"center\">", $list_status_drug[$_SESSION["list_druglst"]["statcon"][$j]], "";
+							echo "<TR bgcolor=\"", $bgcolor, "\">
+							<td>$number</td>
+							<TD>", $_SESSION["list_druglst"]["drugcode"][$j], "</TD>
+							<TD><b>", $_SESSION["list_druglst"]["tradname"][$j], "</b><br>", $_SESSION["list_druglst"]["genname"][$j], "<br></TD>
+							<TD align=\"center\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้','" . $resultsl['detail1'] . " " . $resultsl['detail2'] . " " . $resultsl['detail3'] . "','left',-200,0);\" OnmouseOut = \"hid_tooltip();\">", $_SESSION["list_druglst"]["slcode"][$j], "</span></TD>
+							<TD align=\"center\">", $_SESSION["list_druglst"]["part"][$j], "</TD>
+							<TD align=\"center\"><INPUT TYPE=\"text\" Name=\"Amount[]\" Value=\"", $_SESSION["list_druglst"]["amount"][$j], "\" size=\"3\"></TD>
+							<TD align=\"center\">", $list_status_drug[$_SESSION["list_druglst"]["statcon"][$j]], "";
 
-							echo "</TD>
-
-
-";
+							echo "</TD>";
 
 							$sql = "Select date_format(date,'%d-%m-%Y') as date2, sum(amount) as samount From drugrx where hn='" . $arr["hn"] . "' AND drugcode = '" . $_SESSION["list_druglst"]["drugcode"][$j] . "' AND date < '" . (date("Y") + 543) . date("-m-d ") . "00:00:00" . "'  Group by date2 Order by row_id DESC LIMIT 3 ";
 							$result = Mysql_Query($sql);
@@ -417,9 +415,6 @@ while ($arr = Mysql_fetch_assoc($result)) {
 <div id="hiddenPost" style="display:none;"></div>
 <script>
 	async function reprint(){
-		
-		// let prePost = [];
-
 
 		var mapForm = document.createElement("form");
 		mapForm.target = "_blank";
@@ -429,7 +424,6 @@ while ($arr = Mysql_fetch_assoc($result)) {
 
 		const formElements = document.querySelectorAll('#pharDivideDrug input');
 		let data = Array.from(formElements).map(function(element){
-			// return encodeURIComponent(element.name)+'='+encodeURIComponent(element.value);
 
 			var mapInput = document.createElement("input");
 			mapInput.type = "text";
@@ -445,20 +439,8 @@ while ($arr = Mysql_fetch_assoc($result)) {
 		mapInput.value = '<?=$arr["an"];?>';
 		mapForm.appendChild(mapInput);
 		
-
-		// document.body.appendChild(mapForm);
 		document.getElementById('hiddenPost').appendChild(mapForm);
 		mapForm.submit();
-
-		// let dataPost = data.join("&");
-		// let response = await fetch('reprint_phardividedrug.php', {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-		// 	},
-		// 	body: dataPost
-		// });
-		// const body = await response.json();
 		
 	}
 
