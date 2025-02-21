@@ -1,13 +1,24 @@
 <?php 
 session_start();
 include("connect.php");
+require_once dirname(__FILE__).'/bootstrap.php';
+
 if(empty($_SESSION['sIdname'])){
     echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
     exit;
 }
+function sendText($text){
+	$curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
+	curl_setopt( $curl, CURLOPT_HEADER, 0);
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
+}
+$Dgcode = $_GET['Dgcode'];
+sendText($_SESSION['sIdname'].' ได้เข้าใช้งานฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
 ?>
 <style type="text/css">
-<!--
 body{ font-family:"TH SarabunPSK"; 
 font-size:18px;
 background-color:#F8F9F9;
@@ -28,7 +39,6 @@ background-color:#F8F9F9;
 	font-size: 28px;
 	font-weight: bold;
 }
--->
 </style>
 <?php
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
@@ -98,6 +108,7 @@ background-color:#F8F9F9;
 		$active = $row->drug_active;
 		$had = $row->had;
 		$ised = $row->ised;
+		$cQuantity_box = $row->quantity_box;
 
         $preg_type = $lac_type = '';
         $preg_id = 0;
@@ -524,6 +535,10 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
             }
         </script>
     </td>
+</tr>
+<tr>
+	<td></td>
+	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
 </tr>
 <tr align="center">
 <td  width='7%' height='76'></td>

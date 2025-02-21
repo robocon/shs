@@ -1,28 +1,52 @@
-<style type="text/css">
-<!--
-.txt {	font-family: TH SarabunPSK;
-	font-size: 18px;
-}
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 18px;
-}
--->
-</style>
 <?php
 session_start();
 
-$user_code = $_SESSION['smenucode'];
-$user_id = trim($_SESSION['sIdname']);
+require_once 'connect.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 
+$user_id = trim($_SESSION['sIdname']);
+if(empty($user_id)){
+    echo '<a href="../nindex.htm">คลิกที่นี่</a> เพื่อเข้าสู่ระบบ';
+    exit;
+}
+
+function sendText($text){
+
+    $curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
+    curl_setopt( $curl, CURLOPT_HEADER, 0);
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
+
+}
+
+if(empty($_COOKIE['dglst'])){
+    setcookie('dglst','1',strtotime("+15 min"),'/');
+
+    $sMessage = '👾 '.$_SESSION['sIdname'].' ได้เข้าใช้งานเมนู ::PHAR- แก้ไขข้อมูลยา ';
+    sendText($sMessage);
+    
+}
+?>
+<style type="text/css">
+.txt {	font-family: "TH SarabunPSK";
+	font-size: 18px;
+}
+body,td,th {
+	font-family: "TH SarabunPSK";
+	font-size: 18px;
+}
+</style>
+<?php
+$user_code = $_SESSION['smenucode'];
 if( $user_code !== 'ADM' ){
- 
     
     // ตรวจสอบชื่อ และ menucode ว่าอยู่ในรายการหรือไม่
     $check_level = in_array($user_code, array('ADMPH', 'ADMPHA', 'ADMPURCHASE'));
     //$check_user = in_array($user_id, array('อรัญญา', 'วนิดาดา', 'พรทิพา','จีราภรณ์4','สงคราม','รุ่งทิวา','อมรรัตน์'));
     //$check_user = in_array($user_id, array('พรทิพา','วนิดาดา','สงคราม','รุ่งทิวา','อมรรัตน์','ภูมิพัฒน์','ภัททิยา','กฤตย์ตนันต์','รัฐปริญญ์','ศิวาพร'));  //รับคำสั่ง หน.กองเภสัชกรรม วันที่ 27/12/60 // เพิ่ม ภัททิยา 2563-05-14
-    $check_user = in_array($user_id, array('วนิดาดา','สงคราม','รุ่งทิวา','อมรรัตน์','ภูมิพัฒน์','กฤตย์ตนันต์','รัฐปริญญ์','ศิวาพร','ณัชชา','พิมผกา'));  //รับคำสั่ง หน.คลังยา วันที่ 17/03/65 // เพิ่ม ศิวาพร,ณัชชา 2563-05-14
+    $check_user = in_array($user_id, array('วนิดาดา','รุ่งทิวา','อมรรัตน์','ภูมิพัฒน์','กฤตย์ตนันต์','รัฐปริญญ์','พิมผกา','ปภาวิน','พชร','จีรอาภา','ตรัณ'));  //รับคำสั่ง หน.คลังยา วันที่ 17/03/65 // เพิ่ม ศิวาพร,ณัชชา 2563-05-14
     if( $check_level === false OR $check_user === false ){
         ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขข้อมูลยา กรุณาติดต่อ</p>
@@ -32,13 +56,14 @@ if( $user_code !== 'ADM' ){
             <li>พ.อ.หญิง วนิดา โล่ห์สุวรรณ</li>
 			<li>พ.ท. ภูมิพัฒน์ สมิทธนโชติ</li>			
             <li>รุ่งทิวา  ใจเดียว</li>
-            <li>อมรรัตน์  นันทะวงค์</li>
-            <li>สงคราม  ไหวดี</li>			
+            <li>อมรรัตน์  นันทะวงค์</li>			
 			<li>กฤตย์ตนันต์ หมูแสนทอง</li>
 			<li>รัฐปริญญ์ มิ่งเชื้อ</li>
-			<li>ศิวาพร จันทนประยูร</li>
-			<li>ณัชชา บุญสิริมงคล</li>
 			<li>พิมผกา อายะชู</li>
+			<li>ปภาวิน จันทร์มณี</li>
+			<li>พชร วงศ์ศิริอำนวย</li>
+			<li>จีรอาภา ใจจินา</li>
+			<li>ตรัณ วิญญา</li>
         </ol>
         <p>เพื่อทำการแก้ไขข้อมูลยา</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
@@ -49,7 +74,6 @@ if( $user_code !== 'ADM' ){
 
   print "รายการยาเวชภัณฑ์ <br> ";
 if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
-include("connect.inc");
 	
 	$sql = "Select drugcode,tradname from druglst  where  drugcode like '%".$_GET["search1"]."%' limit 10 ";
 	$result = Mysql_Query($sql)or die(Mysql_error());
@@ -91,29 +115,24 @@ function newXmlHttp(){
 	return xmlhttp;
 }
 function searchSuggest(str,len,getto) {
-	
-		str = str+String.fromCharCode(event.keyCode);
-
-		if(str.length >= len){
-
-			url = 'dglst.php?action=drugcode&search1=' + str+'&getto=' + getto;
-
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
-
-			document.getElementById("list").innerHTML = xmlhttp.responseText;
-		}
+    str = str+String.fromCharCode(event.keyCode);
+    if(str.length >= len){
+        url = 'dglst.php?action=drugcode&search1=' + str+'&getto=' + getto;
+        xmlhttp = newXmlHttp();
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send(null);
+        document.getElementById("list").innerHTML = xmlhttp.responseText;
+    }
 }
 </script>
 <body onLoad="document.getElementById('drugcode').focus();">
 <form method="post" action="<?php echo $PHP_SELF ?>">
-<font face="Angsana New">
-<Div id="list" style="left:150PX;top:70PX;position:absolute;"></Div>
-<a target='right' href="drugcode.php">รหัสยา ?</a>&nbsp;&nbsp;
-<input type="text" name="drugcode" size="10" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode');">&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="submit" value="  ตกลง  " name="B1">
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></font></p>
+    <font face="Angsana New">
+    <Div id="list" style="left:150PX;top:70PX;position:absolute;"></Div>
+    <a target='right' href="drugcode.php">รหัสยา ?</a>&nbsp;&nbsp;
+    <input type="text" name="drugcode" size="10" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode');">&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="submit" value="  ตกลง  " name="B1">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></font></p>
 </form>
 <table width="100%">
  <tr>
@@ -158,6 +177,9 @@ function searchSuggest(str,len,getto) {
 */
 If (!empty($drugcode)){
     include("connect.inc");
+
+    $searchText = $_SESSION['sIdname'].' 🕵🏻 ได้ทำการค้นหายา '.$drugcode;
+    sendText($searchText);
 
     $query = "SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec FROM druglst WHERE drugcode LIKE '$drugcode%' ";
     $result = mysql_query($query)

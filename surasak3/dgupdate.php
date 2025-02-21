@@ -1,5 +1,7 @@
 <?php 
 session_start();
+include("connect.inc");
+require_once dirname(__FILE__).'/bootstrap.php';
 ?>
 <html>
 <head>
@@ -11,8 +13,15 @@ session_start();
 
 
 <?php
-    include("connect.inc");
+function sendText($text){
+	$curl = curl_init(); 
+	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
+	curl_setopt( $curl, CURLOPT_HEADER, 0);
+	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	$result = curl_exec( $curl ); 
+	curl_close($curl); 
 
+}
 //update data in druglst
 /*       $query ="update druglst SET comcode='$comcode', 
   		drugcode = '$drugcode ',
@@ -247,7 +256,8 @@ packpri_vat= '$packpri_vat ',
 		drug_active = '".$_POST["active"]."',
 		ised = '".$_POST["ised"]."',
 		had = '".$_POST["had"]."',
-		drug_innovation =  '".$_POST['drug_innovation']."' 	
+		drug_innovation =  '".$_POST['drug_innovation']."',
+		quantity_box =  '".$_POST['quantity_box']."'		
         WHERE drugcode='$drugcode' limit 1";
 //echo $query;
         $result = mysql_query($query)
@@ -257,14 +267,17 @@ packpri_vat= '$packpri_vat ',
 
 		
 
-   If(!$result){
-        echo "insert into druglst fail";
-        }else{
-	   $date=date("Y-m-d H:i:s");
-	   $sql = "INSERT INTO `drug_edit_log` (`id` ,`update_code`,`date_edit`,`user_edit`) VALUES (NULL , '".mysql_real_escape_string($query)."', '$date', '".$_SESSION["sIdname"]."');";
-	   $query = mysql_query($sql);   
-        echo "บันทึกแก้ไขข้อมูลเรียบร้อย";
-          }
+If(!$result){
+	echo "insert into druglst fail";
+}else{
+	$date=date("Y-m-d H:i:s");
+	$sql = "INSERT INTO `drug_edit_log` (`id` ,`update_code`,`date_edit`,`user_edit`) VALUES (NULL , '".mysql_real_escape_string($query)."', '$date', '".$_SESSION["sIdname"]."');";
+	$query = mysql_query($sql);   
+	echo "บันทึกแก้ไขข้อมูลเรียบร้อย";
+
+	sendText('✏️ '.$_SESSION['sIdname'].' ได้แก้ไขข้อมูลยา/เวชภัณฑ์ ('.$drugcode.')');
+
+}
 include("unconnect.inc");
 ?>
 
