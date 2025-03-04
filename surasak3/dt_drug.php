@@ -2408,9 +2408,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){
 
 //**********************************************************************************************
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title><?php echo $_SESSION["dt_doctor"];?></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>จ่ายยา - <?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
 
 body,td,th {
@@ -2949,6 +2952,21 @@ function clear_left_form(){
 	document.getElementById('list').innerHTML='';
 }
 
+function resetLeftForm(){
+	document.getElementById('drug_inject_amount').style.display = 'none';
+	document.getElementById('drug_inject_amount2').style.display = 'none';
+	document.getElementById('drug_inject_time').style.display = 'none';
+	document.getElementById('drug_inject_slip').style.display = 'none';
+	document.getElementById('drug_inject_type').style.display = 'none';
+	document.getElementById('drug_inject_etc').style.display = 'none';
+	document.getElementById('reason').style.display = 'none';
+	document.getElementById('slip_detail').style.display = '';
+	document.form1.drug_code.value = "";
+	document.form1.drug_amount.value = "";
+	document.form1.drug_slip.value = "";
+	document.form1.addoredit.value = "E";
+}
+
 var callback_myWindow; // call back ของ rechallenge แพ้ยา
 var callback_drugcode; // call back ของ rechallenge แพ้ยา
 
@@ -3054,7 +3072,11 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	xmlhttp.send(null);
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
-	check_drugreact(drugcode, returnstr);
+	let resCheckDrugreact = check_drugreact(drugcode, returnstr);
+	// if(resCheckDrugreact==false){
+	// 	// return false;
+	// 	clear_left_form();
+	// }
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
@@ -3163,6 +3185,7 @@ function check_drugreact(drugcode, returnstr){
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=checkdrugcode&search='+encodeURIComponent(drugcode);
 	xmlhttp.open("GET", url, false);
+
 	xmlhttp.onreadystatechange = function () {
 		if (xmlhttp.readyState === 4) {
 			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
@@ -3173,16 +3196,31 @@ function check_drugreact(drugcode, returnstr){
 				if(resCode==3){
 
 					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
-					var resConfirm = confirm("!!! คำเตือน !!! \n\n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-					if (resConfirm===true) {
-						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
-						url += '&drugcode='+encodeURIComponent(drugcode);
-						url += '&returnstr='+encodeURIComponent(returnstr);
-						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+					Swal.fire({
+						title: "!คำเตือน ผู้ป่วยมีการแพ้ยาตัวนี้",
+						text: "กรุณากรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป",
+						icon: "warning",
+						allowOutsideClick: false,
+						showCancelButton: true,
+						confirmButtonColor: "#3085d6",
+						confirmButtonText: "ตกลง",
+						cancelButtonColor: "#d33",
+						cancelButtonText: "ยกเลิก"
+					}).then((result) => { 
+						
+						if (result.isConfirmed) { // OK
 
-						window.open(url,"myWindow","width=600,height=300,left=100,top=100");
-
-					}
+							var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+							url += '&drugcode='+encodeURIComponent(drugcode);
+							url += '&returnstr='+encodeURIComponent(returnstr);
+							url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+							window.open(url,"myWindow","width=600,height=300,left=100,top=100");
+							
+						}
+						else if(result.isDismissed){ // Cancel
+							resetLeftForm();
+						}
+					});
 
 					// เคลียร์ค่า ออกไปก่อน จนว่าจะยืนยันฟอร์ม rechallenge
 					document.getElementById('drug_code').value='';
@@ -3198,7 +3236,7 @@ function check_drugreact(drugcode, returnstr){
 		}
 	};
 	xmlhttp.send(null);
-
+	// return false;
 }
 
 function glibenclamide_alert(drugcode){
