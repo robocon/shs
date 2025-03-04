@@ -53,3 +53,4 @@ nbproject/*
 replicadb/config.py
 replicadb/download_default_data.bat
 replicadb/import_default_data.bat
+replicadb/__pycache__/*
