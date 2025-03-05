@@ -2430,6 +2430,10 @@ body,td,th {
 #drugListItem input[type="radio"]:hover{
 	cursor: pointer;
 }
+#swal2-html-container{
+	font-family: "TH SarabunPSK";
+	font-size: 20px;
+}
 </style>
 
 <script src="js/sweetalert2.all.min.js"></script>
@@ -3197,7 +3201,7 @@ function check_drugreact(drugcode, returnstr){
 
 					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
 					Swal.fire({
-						title: "!คำเตือน ผู้ป่วยมีการแพ้ยาตัวนี้",
+						title: "! คำเตือน ผู้ป่วยมีการแพ้ยาตัวนี้",
 						text: "กรุณากรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป",
 						icon: "warning",
 						allowOutsideClick: false,

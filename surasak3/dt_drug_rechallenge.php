@@ -183,14 +183,20 @@ $op = $q_opday->fetch_assoc();
 
                 window.onload = function(){
                     document.getElementById('reason').focus();
-                }
 
-                window.onunload = function(){
-                    parent.window.opener.resetLeftForm;
-                }
+                    // ทำงานหลังจาก window.onload
+                    window.onbeforeunload = function(){ 
 
-                window.onbeforeunload = function(){
-                    parent.window.opener.resetLeftForm;
+                        var reason = document.getElementById('reason');
+                        var dt_code = document.getElementById('dt_code');
+
+                        // ถ้า reason + dt_code เป็นค่าว่างจะทำการ reset ฟอร์มด้านซ้ายมือ
+                        if(reason.value=='' && dt_code.value==''){
+                            parent.window.opener.resetLeftForm();
+                            return 'ข้อมูลที่คุณกรอกอาจจะไม่ถูกบันทึก คุณแน่ใจที่จะออกหน้านี้?';
+                        }
+
+                    }
                 }
             </script>
         </div>
