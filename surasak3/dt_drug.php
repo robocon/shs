@@ -999,7 +999,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 	while($arr = Mysql_fetch_assoc($result)){
 	
 			//// เช็คจำนวนยา Surasak Balm ถ้าเคยสั่งเกิน 10 หลอดให้ Remed ได้แค่ 10 หลอด  8/11/64
-			if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL"){
+			if($arr["drugcode"]=="4MET25" || $arr["drugcode"]=="4ANAL" || $arr["drugcode"]=="10H014"){
 					if($arr["amount"] > 10){
 						$arr["amount"]=10;
 					}else{
@@ -3077,10 +3077,6 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
 	let resCheckDrugreact = check_drugreact(drugcode, returnstr);
-	// if(resCheckDrugreact==false){
-	// 	// return false;
-	// 	clear_left_form();
-	// }
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
@@ -3844,6 +3840,9 @@ function checkForm1(){
 	}else if(document.form1.drug_code.value == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
 		document.form1.drug_amount.focus();	
+	}else if(document.form1.drug_code.value == "10H014" && eval(document.form1.drug_amount.value) >=11){
+		alert("ผิดพลาด!!! ยา 10H014 สั่งได้ไม่เกิน 10 หลอด");
+		document.form1.drug_amount.focus();			
 	}else if(document.form1.drug_code.value == "4ANAL" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4ANAL สั่งได้ไม่เกิน 10 หลอด");
 		document.form1.drug_amount.focus();			
@@ -4222,31 +4221,6 @@ function viatch(ing,code){
 </SCRIPT>
 </head>
 <body>
-
-<?php 
-$hnNow = sprintf("%s", $_SESSION["hn_now"]);
-$vnNow = sprintf("%s", $_SESSION["vn_now"]);
-$thdatehn = date('d-m-').(date('Y')+543).$hnNow;
-$sql = "SELECT `ptright`,`toborow` FROM `opday` WHERE `thdatehn`='$thdatehn' AND `vn` = '$vnNow' ";
-$q = $dbi->query($sql);
-
-$toborowBanItem = array('EX16','EX26','EX40','EX45','EX46','EX47');
-$ptrightBanItem = array('R01','R04');
-if($q->num_rows>0){
-	$opdayData = $q->fetch_assoc();
-	$ptrightCode = substr($opdayData['ptright'],0,3);
-	$toborowCode = substr($opdayData['toborow'],0,4);
-	// ถ้ามาตรวจสุขภาพแล้วไม่ใช่เงินสดหรือรัฐวิสาหกิจ ให้แจ้งเตือนการเปลี่ยน EX
-	if(in_array($toborowCode, $toborowBanItem) && !in_array($ptrightCode, $ptrightBanItem)){
-		echo "ผู้ป่วยมารับบริการด้วยสถานะ <b>EX16 ตรวจสุขภาพ</b><u>ไม่สามารถสั่งยาได้</u> กรุณาติดต่อห้องทะเบียนเพื่อออก VN ใหม่";
-		?>
-		<p></p>
-		<p><a href="javascript:void(0);" onclick="history.back()">คลิกที่นี่เพื่อ ย้อนกลับ</a></p>
-		<?php
-		exit;
-	}
-}
-?>
 
 <!-- <a href='../nindex.htm'>&lt;&lt;ไปเมนู</a><BR>
 <A HREF="dt_index.php">&lt;&lt; เลือกผู้ป่วยใหม่</A> -->
