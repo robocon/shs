@@ -161,7 +161,7 @@ $thip_items = array(
     array(
         'name' => '[THIP] PCT Sx', 
         'link' => 'https://docs.google.com/spreadsheets/d/1FMQ8GAARMhfP45KbelR1t9d5r4N8UPtjODMGi8YbBJs/edit?usp=sharing', 
-        'allow'=>array('วราภรณ์2'/* วราภรณ์ ชัยวณิชยา */,'นันท์นภัส')
+        'allow'=>array('วราภรณ์2'/* วราภรณ์ ชัยวณิชยา */,'นันท์นภัส','นฤมล')
     ),
     array(
         'name' => '[THIP] PCT QMR / HRD / PTC', 
