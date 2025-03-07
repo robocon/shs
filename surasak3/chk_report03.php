@@ -1618,6 +1618,21 @@ if ( $group2_rows > 0 ) {
 					</tr>
 					<?php
 				}
+
+				if( !empty($result['eye_vision']) ){ 
+					$eye_vision_detail = '';
+					if(!empty($result['eye_vision_detail'])){
+						$eye_vision_detail = " (".$result['eye_vision_detail'].")";
+					}
+					?>
+					<tr>
+						<td><strong class="text" style="font-size:18px"> <u>ผลตรวจลานสายตา</u> </strong> </td>
+						<td><strong class="text" style="margin-left: 9px;"> : <?=$result['eye_vision'].$eye_vision_detail;?></strong> </td>
+					</tr>
+					<?php
+				}
+
+				
 				?>
           </table>
           </td>
