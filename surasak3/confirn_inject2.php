@@ -50,6 +50,14 @@ body,td,th {font-family:  MS Sans Serif;font-size: 14 px;}
 			$THDate = (date('Y')+543).date("-m-d");
 			$Thidate = $THDate.date(" H:i:s");
 
+			$thdatehn = date('d-m-').(date('Y')+543).$dep_hn;
+			$sqlOpday = "SELECT `vn`,`ptright` FROM `opday` WHERE `thdatehn` = '$thdatehn' ";
+			$q = mysql_query($sqlOpday);
+			if(mysql_num_rows($q)==0){
+				echo "ไม่พบการออก VN ในวันนี้ กรุณาติดต่อแผนกทะเบียน";
+				exit;
+			}
+
 			$sql = "SELECT row_id FROM `patdata` WHERE `date` LIKE '$THDate%' AND `hn` ='$dep_hn' AND `code` = 'INJ' ";
 			$qPat = mysql_query($sql);
 			if(mysql_num_rows($qPat) == 0){
@@ -73,13 +81,6 @@ body,td,th {font-family:  MS Sans Serif;font-size: 14 px;}
 				$injectno = 1;
 				$sOfficer = $_SESSION['sOfficer'];
 				
-				$thdatehn = date('d-m-').(date('Y')+543).$dep_hn;
-				$sqlOpday = "SELECT `vn`,`ptright` FROM `opday` WHERE `thdatehn` = '$thdatehn' ";
-				$q = mysql_query($sqlOpday);
-				if(mysql_num_rows($q)==0){
-					echo "ไม่พบการออก VN ในวันนี้ กรุณาติดต่อแผนกทะเบียน";
-					exit;
-				}
 				$opday = mysql_fetch_assoc($q);
 				$dep_vn = $opday['vn'];
 				$dep_ptright = $opday['ptright'];

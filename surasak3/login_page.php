@@ -124,7 +124,7 @@ $title = 'เข้าสู่ระบบอินทราเน็ต รพ
 		
 	<div class="row">
 		<div class="col-md-3 text-center">
-			<img src="images/LogoFSH.jpg" alt="" width="120">
+			<img src="images/LogoFSH_mini.jpg" alt="" width="120">
 		</div>
 		<div class="col-md">
 			<div class="text-center"><h3><?=$title;?></h3></div>

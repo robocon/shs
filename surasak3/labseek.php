@@ -19,7 +19,7 @@
 if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
 	
-	$sql = "Select  code,detail,price,depart from labcare  where  labstatus ='Y' AND code !='12723-sso' and code like '%".$_GET["search1"]."%' or detail 	 like '%".$_GET["search1"]."%' or codex like '%".$_GET["search1"]."%' or icd9cm like '%".$_GET["search1"]."%' and version !='OLD' limit 10 ";
+	$sql = "Select  code,detail,price,depart,icd9cm from labcare  where  labstatus ='Y' AND code !='12723-sso' and code like '%".$_GET["search1"]."%' or detail like '%".$_GET["search1"]."%' or codex like '%".$_GET["search1"]."%' or icd9cm like '%".$_GET["search1"]."%' and version !='OLD' limit 0,20 ";
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -38,11 +38,18 @@ if(isset($_GET["action"]) && $_GET["action"] == "code"){
 
 		$i=1;
 		while($se = Mysql_fetch_assoc($result)){
-		echo "<tr>
-		<td valign=\"top\"></td>
-		<td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value='",trim($se["code"]),"';document.getElementById('list').innerHTML ='';\">",$se["code"],"</A></td><td>".$se['detail']."</td><td>".$se['price']."</td><td>&nbsp;</td></tr>";
+			if($_SESSION['smenucode']=="ADM" || $_SESSION['smenucode']=="ADMSUR"){
+				echo "<tr>
+				<td valign=\"top\"></td>
+				<td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value='",trim($se["code"]),"';document.getElementById('list').innerHTML ='';\">",$se["code"],"</A></td><td>".$se['detail']." [".$se['icd9cm']."]</td><td>".$se['price']."</td><td>&nbsp;</td>";
+				echo "</tr>";
+			}else{
+				echo "<tr>
+				<td valign=\"top\"></td>
+				<td><A HREF=\"javascript:void(0);\" Onclick=\"document.getElementById('".$_GET["getto"]."').value='",trim($se["code"]),"';document.getElementById('list').innerHTML ='';\">",$se["code"],"</A></td><td>".$se['detail']."</td><td>".$se['price']."</td><td>&nbsp;</td>";
+				echo "</tr>";			
+			}	
 		}
-		
 		echo "</TABLE></Div>";
 	}
 
@@ -266,7 +273,7 @@ document.getElementById('aLink').focus();
   <?php } ?>
   </font>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font face="Angsana New" >
-  <input type="submit" value="ตกลง" name="B1" style="height:40px; width:110px; font-size:16px;"></font></p>
+  <input type="submit" value="ค้นหา" name="B1" style="height:40px; width:110px; font-size:16px;"></font></p>
 </form><? //echo "==>$cDiag---->$aDetail";?>
 *พื้น<FONT COLOR="#FF6464">สีแดง</FONT>หมายถึงเคยคิดค่าใช้จ่ายแล้ว
 <? //echo "==>".print_r($_POST);
@@ -288,16 +295,16 @@ document.getElementById('aLink').focus();
  If (!empty($_POST["code"])){
 
 	if($_POST["code"]=="12723" && $_POST["amount"]=="2500" && $_SESSION["cPtright"]=="R07 ประกันสังคม"){
-    $query = "SELECT code,depart,detail,price,yprice,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '12723-sso') AND labstatus ='Y'";	
+    $query = "SELECT code,depart,detail,price,yprice,nprice,icd9cm FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '12723-sso') AND labstatus ='Y'";	
 	}else if($_POST["code"]=="12723"){
-    $query = "SELECT code,depart,detail,price,yprice,nprice FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
+    $query = "SELECT code,depart,detail,price,yprice,nprice,icd9cm FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
 	}else{ 
-		$query = "SELECT `code`,`depart`,`detail`,`price`,`yprice`,`nprice` FROM `labcare` WHERE ( `code` LIKE '".$_POST["code"]."%' OR `codelab` LIKE '".$_POST["code"]."%' ) AND `labstatus` ='Y' AND `version` !='OLD'";
+		$query = "SELECT `code`,`depart`,`detail`,`price`,`yprice`,`nprice`,`icd9cm` FROM `labcare` WHERE ( `code` LIKE '".$_POST["code"]."%' OR `codelab` LIKE '".$_POST["code"]."%' ) AND `labstatus` ='Y' AND `version` !='OLD'";
 	}
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($code,$depart,$detail,$price,$yprice,$nprice) = mysql_fetch_row ($result)) {
+    while (list ($code,$depart,$detail,$price,$yprice,$nprice,$icd9cm) = mysql_fetch_row ($result)) {
 		if(isset($_SESSION["list_codeed"][$code])){
 			$color = "#FF6464";
 		}else{
@@ -307,7 +314,11 @@ document.getElementById('aLink').focus();
         print (" <tr>\n".
            "  <td BGCOLOR='$color'><a target='right'  href=\"labinfo.php? Dgcode=$code & Depart=$depart & Amount=$amount &Trade=".urlencode($detail)." & nPrice=$price&tvn=$tvn&films=".urlencode($film_size)."\">$code</a></td>\n".
            "  <td BGCOLOR='$color'>");
-		   print $detail;
+		   if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMSUR"){
+			print $detail."[".$icd9cm."]";
+		   }else{
+			print $detail;
+		   }   
 $priceall1=$price*$amount;
 $ypriceall1=$yprice*$amount;
 $npriceall1=$nprice*$amount;

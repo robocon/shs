@@ -601,6 +601,15 @@ if ($_GET["act"] == "print") {
 															class="pdxhead" <? if ($arrchk['pt_detail'] == "ผิดปกติมาก") {
 																echo "checked='checked'";
 															} ?> /> ผิดปกติมาก</label>
+
+														<a href="javascript:void(0);" onclick="clear_ptDetail()">[ยกเลิก]</a>
+														<script>
+															function clear_ptDetail(){
+																document.getElementById('pt_detail1').checked=false;
+																document.getElementById('pt_detail2').checked=false;
+																document.getElementById('pt_detail3').checked=false;
+															}
+														</script>
 													</div>
 												</td>
 											</tr>
