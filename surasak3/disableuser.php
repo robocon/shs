@@ -1,9 +1,9 @@
 <?php
-include 'bootstrap.php';
+include dirname(__FILE__).'/bootstrap.php';
 $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
-require_once 'includes/JSON.php';
+require_once dirname(__FILE__).'/includes/JSON.php';
 $json = new Services_JSON();
 
 $sLevel = sprintf("%s", $_SESSION['sLevel']);
@@ -40,10 +40,19 @@ if($action=='enable'){
         $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
         $smenucode = sprintf("%s", $_SESSION['smenucode']);
 
-        $message = "$sOfficer($smenucode) ได้ขอลบผู้ใช้งาน ".$user['name'].'('.$user['menucode'].') เหตุผล: '.$detail;
-        // 'LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL' // ตัวเทสเท่านั้น
-        $lineRes = sendLineNotify($message);
-        if($lineRes===false){
+        $sMessage = "$sOfficer($smenucode) ได้ขอลบผู้ใช้งาน ".$user['name'].'('.$user['menucode'].') เหตุผล: '.$detail;
+
+        $curl = curl_init();
+        curl_setopt( $curl, CURLOPT_URL, SURASAK_DOCKER."/telegram/index.php");
+        curl_setopt( $curl, CURLOPT_POST, 1);
+        curl_setopt( $curl, CURLOPT_POSTFIELDS, "sMessage=".$sMessage."&type=user_register_request");
+        curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
+        curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
+        $result = curl_exec( $curl );
+        curl_close($curl);
+        
+        if($result===false){
             $res = array('status'=>400, 'message'=>'ระบบการแจ้งเตือนขัดข้อง กรุณาตรวจสอบอินเตอร์เน็ตว่าสามารถใช้งานได้ตามปกติได้หรือไม่');
         }else{
             $res = array('status'=>200, 'message'=>'OK');
@@ -55,6 +64,43 @@ if($action=='enable'){
     echo $json->encode($res);
     exit;
 
+}elseif ($action=='confirmdelete') {
+    
+    $username = sprintf("%s", $_GET['username']);
+    $password = sprintf("%s", $_GET['password']);
+    $id = sprintf("%s", $_GET['id']);
+
+    $qInputm = $dbi->query(sprintf("SELECT `name`,`menucode` FROM `inputm` WHERE `row_id` = '%s' LIMIT 1;", $dbi->real_escape_string($id)));
+    if($qInputm->num_rows){
+        $inputm = $qInputm->fetch_assoc();
+        $nameTxt = 'ลบข้อมูล '.$inputm['name'].' ('.$inputm['menucode'].') ออกจากระบบเรียบร้อย';
+    }
+
+    $qConfirm = $dbi->query(sprintf("SELECT `row_id` FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' ", $dbi->real_escape_string($username), $dbi->real_escape_string($password)));
+    if($qConfirm->num_rows>0){
+
+        $qDelete = $dbi->query(sprintf("DELETE FROM `inputm` WHERE `row_id` = '%s' LIMIT 1;", $dbi->real_escape_string($id)));
+        if($qDelete===true){
+
+            $curl = curl_init();
+            curl_setopt( $curl, CURLOPT_URL, SURASAK_DOCKER."/telegram/index.php");
+            curl_setopt( $curl, CURLOPT_POST, 1);
+            curl_setopt( $curl, CURLOPT_POSTFIELDS, "sMessage=".urlencode($nameTxt)."&type=user_register_request");
+            curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
+            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
+            $result = curl_exec( $curl );
+            curl_close($curl);
+
+            $res = array('status'=>200, 'message'=>'ลบข้อมูลเรียบร้อย');
+        }else{
+            $res = array('status'=>400, 'message'=>'ไม่สามารถลบข้อมูลได้ ( '.$dbi->error.' )');
+        }
+    }else{
+        $res = array('status'=>400, 'message'=>'การยืนยันรหัสผ่านไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
+    }
+    echo $json->encode($res);
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -76,7 +122,7 @@ if($action=='enable'){
     <div class="container mt-2">
         <h3>รายชื่อปิดการใช้งาน</h3>
         <?php 
-        $sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'N' ORDER BY `row_id` ASC ";
+        $sql = "SELECT * FROM `inputm` WHERE `menucode` LIKE '$getMenucode%' AND `menucode` != 'ADMDR1' AND `status` = 'N' ORDER BY `menucode` ASC,`row_id` ASC ";
 		$q = $dbi->query($sql);
 		$num = $q->num_rows;
         if($num>0){
@@ -115,7 +161,14 @@ if($action=='enable'){
 					<td>
 						<div class="d-grid gap-2 d-md-block">
                             <a href="javascript:void(0);" class="btn btn-success btn-sm" data-id="<?=$a['row_id'];?>" onclick="onEnable('<?=$a['row_id'];?>')">เปิดใช้งาน</a>
-                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-id="<?=$a['row_id'];?>" onclick="onDelete('<?=$a['row_id'];?>')">ลบถาวร</a>
+                            <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-id="<?=$a['row_id'];?>" onclick="onDelete('<?=$a['row_id'];?>')">ลบข้อมูล</a>
+                            <?php 
+                            if($getMenucode=='ADM'){
+                                ?>
+                                <a href="javascript:void(0);" class="btn btn-sm" data-id="<?=$a['row_id'];?>" onclick="onConfirmDelete('<?=$a['row_id'];?>')">🗑️</a>
+                                <?php
+                            }
+                            ?>
 						</div>
 					</td>
 				</tr>
@@ -150,7 +203,7 @@ if($action=='enable'){
 
                 async function onDelete(row_id){
 
-                    const {value:text} = await Swal.fire({
+                    const {value:textValue} = await Swal.fire({
                         input: "textarea",
                         title: "คุณมั่นใจการลบข้อมูลถาวร?",
                         text: "การลบข้อมูลครั้งนี้ จะไม่สามารถกู้ข้อมูลคืนได้อีก กรุณาระบุเหตุผลในการลบข้อมูล",
@@ -166,8 +219,8 @@ if($action=='enable'){
                         }
                     });
 
-                    if(text){
-                        onDeleteProcess(row_id,text).then((res)=>{
+                    if(textValue){
+                        onDeleteProcess(row_id,textValue).then((res)=>{
                                 
                             if(res.status==200){ 
                                 document.getElementById('user-'+row_id).remove();
@@ -190,6 +243,47 @@ if($action=='enable'){
 
                 async function onDeleteProcess(id,text){
                     const response = await fetch('disableuser.php?action=delete&id='+id+'&detail='+text);
+                    const res = await response.json();
+                    return res;
+                }
+
+                async function onConfirmDelete(id){
+                    const { value: confirmPassword } = await Swal.fire({
+                        title: "ยืนยันการลบข้อมูล",
+                        input: "password",
+                        inputLabel: "ใส่รหัสผ่านเพื่อยืนยันการลบข้อมูล",
+                        showCancelButton: true,
+                        confirmButtonText: "ใช่, ฉันต้องการลบ",
+                        cancelButtonText: "ยกเลิก",
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return "กรุณาใส่รหัสผ่าน";
+                            }
+                        }
+                    });
+
+                    if(confirmPassword){
+                        let username = '<?=$_SESSION['sIdname'];?>';
+                        onConfirmDeleteProcess(id,username,confirmPassword).then((res)=>{
+                            if(res.status==200){
+                                document.getElementById('user-'+id).remove();
+                                Swal.fire({
+                                    title: "ดำเนินการลบข้อมูลเรียบร้อย",
+                                    icon: "success"
+                                });
+                            }else{
+                                Swal.fire({
+                                    title: "Error!",
+                                    text: res.message,
+                                    icon: "error"
+                                });
+                            }
+                        });
+                    }
+                }
+
+                async function onConfirmDeleteProcess(id,username,password){
+                    const response = await fetch('disableuser.php?action=confirmdelete&id='+id+'&username='+username+'&password='+password);
                     const res = await response.json();
                     return res;
                 }
