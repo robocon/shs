@@ -27,7 +27,7 @@ $result = Mysql_Query($sql);
 $bed = Mysql_fetch_assoc($result);
 if(!$bed){
 	?>
-	<h1 style="color:red;">คำเตือน ไม่พบข้อมูล AN: <?=$my_an;?> กรุณาตรวจสอบ AN อีกครั้ง</h1>
+	<h1 style="color:red;">คำเตือน ไม่พบข้อมูล AN: <?=$my_an;?> ในหอผู้ป่วย กรุณาตรวจสอบ AN อีกครั้ง</h1>
 	<?php
 }
 
@@ -229,7 +229,14 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 if(isset($_POST["action"]) && $_POST["action"] == "changeSession"){ 
 	$i = sprintf("%s", $_POST['i']);
 	$value = sprintf("%s", $_POST['value']);
-	$sql = "UPDATE `dgprofile` SET `statcon`='$value' WHERE `row_id` = '$i' ";
+	
+	$set = '';
+	// $date = (date("Y")+543).date("-m-d H:i:s");
+	// if($value=='STAT1' OR $value=='STAT'){
+	// 	$set = ", `date` = '$date'";
+	// }
+
+	$sql = "UPDATE `dgprofile` SET `statcon`='$value' $set WHERE `row_id` = '$i' ";
 	$q = mysql_query($sql);
 	if($q===true){
 		echo $value;
@@ -237,9 +244,7 @@ if(isset($_POST["action"]) && $_POST["action"] == "changeSession"){
 		echo mysql_error();
 	}
 	exit;
-}
-
-if(isset($_POST["action"]) && $_POST["action"] == "changeAmount"){ 
+}elseif(isset($_POST["action"]) && $_POST["action"] == "changeAmount"){ 
 	
 	$amount = $_POST['value'];
 	$i = $_POST['i'];
@@ -256,6 +261,40 @@ if(isset($_POST["action"]) && $_POST["action"] == "changeAmount"){
 		$msg = $dbi->error;
 	}
 	echo $json->encode(array('code'=>$code, 'message'=>$msg));
+	exit;
+}elseif(isset($_GET["action"]) && $_GET["action"] == "findSlCode"){ 
+	$code = $_GET['slcode'];
+	$sql = sprintf("SELECT * FROM `drugslip` WHERE `slcode` LIKE '%s%%' ", $dbi->real_escape_string($code));
+	$q = $dbi->query($sql);
+	$res = array('status'=>400, 'items'=>'');
+	if($q->num_rows > 0){
+		$items = array();
+		?>
+		<table>
+			<tr>
+				<th>#</th>
+				<th>code</th>
+				<th>detail</th>
+			</tr>
+		<?php 
+		$ii = 1;
+		while ($a = $q->fetch_assoc()) {
+			// $items[] = $a;
+			?>
+			<tr>
+				<td><input type="radio" name="" id="<?=$ii;?>"></td>
+				<td><?=$a['slcode'];?></td>
+				<td><?=$a['detail1'];?></td>
+			</tr>
+			<?php
+			$ii++;
+		}
+		?>
+		</table>
+		<?php
+		// $res = array('status'=>200, 'items'=>$items);
+	}
+	// echo $json->encode($res);
 	exit;
 }
 
@@ -358,7 +397,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_alert"){
 	exit();
 }
 
-	$build = array("42"=>"หอผู้ป่วยหญิง","44"=>"หอผู้ป่วย ICU","43"=>"หอผู้ป่วยสูติ","45"=>"หอผู้ป่วยพิเศษ");
+$build = array("42"=>"หอผู้ป่วยรวม","43"=>"หอผู้ป่วยสูติ","44"=>"หอผู้ป่วย ICU","45"=>"หอผู้ป่วยพิเศษ");
 
 function jschars($str)
 {
@@ -443,43 +482,59 @@ session_unregister($num_list);
 session_register($list_druglst);
 session_register($num_list);
 
-$_SESSION["num_list"] = 0;
+$_SESSION["list_druglst"] = array();
 
-$sql = "SELECT `row_id`,`drugcode`, `tradname`, `amount`, `slcode`, `statcon`, `row_id`, `part` 
+$_SESSION["num_list"] = 0;
+$thaidateYmd = (date("Y")+543).date("-m-d");
+$AN = sprintf("%s", $_GET["an"]);
+
+/*
+STAT1 ==> STAT
+STAT ==> จ่ายวันเดียว
+CONT ==> ยา continue
+OLD ==> ยาเดิม
+*/
+
+$sql = sprintf("SELECT `row_id`,`drugcode`, `tradname`, `amount`, `slcode`, `statcon`, `row_id`, `part` 
 FROM `dgprofile` 
-WHERE `an` = '".$_GET["an"]."' 
+WHERE `an` = '%s' 
 AND LEFT( `drugcode`, 1 ) IN ('0','1','2','3','4','5','6','7','8','9','O') 
 AND (
 	(`onoff` = 'ON' AND (`statcon` = 'CONT' OR `statcon` = 'OLD')) 
 	OR 
-	(`date` LIKE '".(date("Y")+543).date("-m-d")."%' AND (`statcon` = 'STAT' OR `statcon` = 'STAT1') ) 
+	( `date` LIKE '$thaidateYmd%%' AND ( `statcon` = 'STAT' OR `statcon` = 'STAT1' ) ) 
 ) 
-ORDER BY `row_id` ASC ";
-$result = Mysql_Query($sql);
-while($arr = Mysql_fetch_assoc($result)){
+ORDER BY `row_id` ASC ", $AN);
+// dump($sql);
+$result = $dbi->query($sql);
+// dump($result);
+if($result->num_rows>0){
+	while ($arr = $result->fetch_assoc()) {
+		
+		$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
+		$_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]] = $arr["drugcode"];
+		$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $arr["tradname"];
+		$_SESSION["list_druglst"]["part"][$_SESSION["num_list"]] = $arr["part"];
+		$_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]] = $arr["slcode"];
+		$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
+		$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $arr["amount"];
+		$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
+		$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $arr["firstdate"];
+		$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $arr["enddate"];
 	
-	$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
-	$_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]] = $arr["drugcode"];
-	$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $arr["tradname"];
-	$_SESSION["list_druglst"]["part"][$_SESSION["num_list"]] = $arr["part"];
-	$_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]] = $arr["slcode"];
-	$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
-	$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $arr["amount"];
-	$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
-	$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $arr["firstdate"];
-	$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $arr["enddate"];
-
-	$sqlDruglst = "SELECT genname FROM druglst WHERE drugcode = '".$arr["drugcode"]."' ";
-	$qDruglst = $dbi->query($sqlDruglst);
-	if($qDruglst->num_rows>0){
-		$druglst = $qDruglst->fetch_assoc();
-		$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = $druglst['genname'];
-	}else{
-		$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = '';
+		$sqlDruglst = "SELECT genname FROM druglst WHERE drugcode = '".$arr["drugcode"]."' ";
+		$qDruglst = $dbi->query($sqlDruglst);
+		if($qDruglst->num_rows>0){
+			$druglst = $qDruglst->fetch_assoc();
+			$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = $druglst['genname'];
+		}else{
+			$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = '';
+		}
+	
+		$_SESSION["num_list"]++;
 	}
-
-	$_SESSION["num_list"]++;
 }
+
 // ***** จบ กำหนด Session *****
 
 ?>
@@ -786,6 +841,8 @@ function del_session(delnum,rowid){
 		action = "del";
 		an = '<?php echo $_GET["an"];?>';
 
+		// ถ้าเป็นยา CONT ปรับสถานะ onoff = 'OFF' แล้วอัพเดทวันที่ dateoff 
+		// แต่ถ้าเป็นยาตัวอื่น คือลบไปเลย
 		url = 'listAjax.php?action='+action+'&delnum='+delnum+'&an='+an+rowid;
 
 		xmlhttp = newXmlHttp();
@@ -1351,7 +1408,7 @@ $list_status_drug["STAT1"] = "Stat";
 $list_status_drug["STAT"] = "One day";
 $list_status_drug["CONT"] = "Continue";
 $list_status_drug["OLD"] = "ยาเดิม";
-
+// dump($_SESSION['list_druglst']);
 for($j=0;$j<$_SESSION["num_list"];$j++){
 
 	if($_SESSION["list_druglst"]["statcon"][$j] == "CONT"){
@@ -1360,10 +1417,15 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 		$bgcolor = "#FFFFCC";
 	}
 	
-	$sql = "SELECT an,drugcode,tradname,firstdate,enddate  FROM `dgprofile`  where an='".$_GET["an"]."' and statcon = 'CONT' and onoff='ON' and enddate='".date("Y-m-d")."' and drugcode='".$_SESSION["list_druglst"]["drugcode"][$j]."'";
-	$result = mysql_query($sql);
-	$num = mysql_num_rows($result);
-	$rows = mysql_fetch_array($result);
+	// $sql = "SELECT an,drugcode,tradname,firstdate,enddate  FROM `dgprofile` 
+	// where an='".$_GET["an"]."' 
+	// and statcon = 'CONT' 
+	// and onoff='ON' 
+	// and enddate='".date("Y-m-d")."' 
+	// and drugcode='".$_SESSION["list_druglst"]["drugcode"][$j]."'";
+	// $result = mysql_query($sql);
+	// $num = mysql_num_rows($result);
+	// $rows = mysql_fetch_array($result);
 	$row_id = $_SESSION["list_druglst"]["row_id"][$j];
 	$genname = ''.$_SESSION["list_druglst"]["genname"][$j].'';
 
@@ -1374,7 +1436,7 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
 	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b><br>",$genname,"</TD>
 	<TD>",$_SESSION["list_druglst"]["part"][$j],"</TD>
-	<TD><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
+	<TD><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" onkeyup=\"updateSlCode(this.value)\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"12\"></TD>
 	<TD ><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" onkeyup=\"updateAmount('$j','$row_id',this.value)\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";
 	?>
 	<TD align="center">
@@ -1400,6 +1462,26 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 ?>
 </TABLE>
 <script type="text/javascript">
+
+	function updateSlCode(v){
+		// console.log(v);
+
+		findSlCode(v).then((data) => {
+			// if(data == '0'){
+			// 	alert('ไม่พบข้อมูล');
+			// }
+			console.log(data);
+		});
+	}
+
+	async function findSlCode(v){
+		const response = await fetch('add_drug.php?action=findSlCode&slcode='+v);
+		const data = await response.text();
+		return data;
+	}
+
+
+
 	function updateAmount(i, row_id, v){
 
 		var test_str = [];
