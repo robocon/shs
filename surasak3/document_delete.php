@@ -1,42 +1,27 @@
-<html>
-<head>
-<title>ลบข้อมูลเอกสาร</title>
-</head>
-<body>
-<?
+<?php 
+require_once dirname(__FILE__) . '/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
-include("connect.inc");
+$doc_id = $dbi->real_escape_string($_GET["doc_id"]);
 
-$sql="SELECT * FROM document_file WHERE doc_id = '".$_GET["doc_id"]."'";	
-$objQuery = mysql_query($sql);
-while($objResult = mysql_fetch_array($objQuery)){
-
-$strSQL2  ="DELETE  FROM document_file ";
-$strSQL2 .="WHERE doc_id='".$objResult["doc_id"]."' ";
-$objQuery2 = mysql_query($strSQL2) or die (mysql_error());
-
-$structure = 'document_file/'.$objResult['file_name'];
-
-
-@unlink($structure);
-
+$sql = sprintf("SELECT `row_id`,`file_name` FROM `document_file` WHERE `doc_id` = '%s'", $dbi->real_escape_string($doc_id));	
+$objQuery = $dbi->query($sql);
+while($objResult = $objQuery->fetch_assoc()){
+	$strSQL2 = sprintf("DELETE FROM `document_file` WHERE `row_id`='%s'", $dbi->real_escape_string($objResult['row_id']));
+	$delResult = $dbi->query($strSQL2);
+	if($delResult){
+		@unlink('document_file/'.$objResult['file_name']);
+	}
 }
 
-$strSQL1 = "DELETE FROM document ";
-$strSQL1 .="WHERE doc_id = '".$_GET["doc_id"]."' ";
-$objQuery1 = mysql_query($strSQL1);
-
-
-
+$strSQL1 = sprintf("DELETE FROM `document` WHERE `doc_id` = '%s'", $dbi->real_escape_string($doc_id));
+$objQuery1 = $dbi->query($strSQL1);
 if($objQuery1)
 {
-	echo "ระบบทำการ ลบ ข้อมูลเรียบร้อยแล้วครับ";
-	echo "<meta http-equiv=refresh content=4;URL=document_list.php>";
+	echo "เธ—เธณเธเธฒเธฃเธฅเธเธเนเธญเธกเธนเธฅเน€เธฃเธตเธขเธเธฃเนเธญเธข";
 }
 else
 {
 	echo "Error Delete [".$strSQL1."]";
 }
-?>
-</body>
-</html>

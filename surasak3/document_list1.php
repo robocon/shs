@@ -1,7 +1,5 @@
 <?php
-session_start();
-include "connect.php";
-
+require_once dirname(__FILE__) . '/bootstrap.php';
 $depart1 = sprintf("%s", $_GET['depart']);
 ?>
 <!DOCTYPE html>
@@ -20,7 +18,7 @@ $depart1 = sprintf("%s", $_GET['depart']);
 	<style>
 		body {
 			font-family: "TH SarabunPSK";
-			font-size: 18px;
+			font-size: 20px;
 		}
 	</style>
 	<div class="container">
@@ -30,17 +28,7 @@ $depart1 = sprintf("%s", $_GET['depart']);
 			<a href="document_list.php" class="btn btn-primary">เอกสารตามแผนก</a>
 			<a href="document_add.php"><span class="btn btn-primary">เพิ่มเอกสารใหม่</span></a>
 		</div>
-		<script language="JavaScript">
-			function chkdel() {
-				if (confirm('  กรุณายืนยันการลบอีกครั้ง !!! ')) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		</script>
 		<?php
-		
 		$strSQL = "SELECT count(b.doc_id) as count ,a.doc_name,a.doc_id,a.row_id,a. post_name 
 		FROM document as a ,document_file as b  
 		where a.doc_id=b.doc_id 
@@ -57,27 +45,17 @@ $depart1 = sprintf("%s", $_GET['depart']);
 					<th>ชื่อเรื่อง</th>
 					<th>จำนวนไฟล์แนบ</th>
 					<th>ดำเนินการ</th>
-					<!--<th>ลบ</th>-->
 				</tr>
-				<?
+				<?php
+				$all = 0;
 				while ($objResult = mysql_fetch_assoc($objQuery)) {
-					
-					/*if($_SESSION['sOfficer']==$objResult['post_name'] || $_SESSION['sOfficer']=="เพลิงพายุ อุปนันท์"){ */
-
-					$link = "<a href='document_edit.php?doc_id=".$objResult['doc_id']."'>แก้ไข</a>";
-					$linkdel = "<a href='document_delete.php?doc_id=".$objResult['doc_id']."' OnClick='return chkdel();' title='ลบข้อมูล ชื่อเรื่องและเอกสารทั้งหมด ของเรื่องนี้'>ลบ</a>";
-
-					/*	 }else{
-							 
-						$link="แก้ไข";
-						$linkdel="ลบ";
-					}*/
+					$link = '<a href="document_edit.php?doc_id='.$objResult['doc_id'].'" title="แก้ไข">✏️</a>';
+					$linkdel = '<a href="document_delete.php?doc_id='.$objResult['doc_id'].'" onclick="chkdel(event, this.href, '.$objResult['doc_id'].');" title="ลบเอกสาร">🗑️</a>';
 					?>
-					<tr>
-						<td><a href="javascript:MM_openBrWindow('document_download.php?doc_id=<?= $objResult['doc_id']; ?>','','width=500,height=500')"><?= $objResult["doc_name"]; ?></a></td>
+					<tr id="doc-<?=$objResult['doc_id'];?>">
+						<td><a href="javascript:MM_openBrWindow('document_download.php?doc_id=<?=$objResult['doc_id'];?>','','width=500,height=500')"><?=$objResult["doc_name"];?></a></td>
 						<td><?= $objResult["count"]; ?></td>
 						<td><?= $link; ?>&nbsp;&nbsp; <?= $linkdel; ?></td>
-						<!-- <td><a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='document_delete.php?doc_id=<?//=$objResult["doc_id"]; ?>';}">Delete</a></td>-->
 					</tr>
 					<?php
 					$all += $objResult["count"];
@@ -87,12 +65,33 @@ $depart1 = sprintf("%s", $_GET['depart']);
 					<td colspan="3" align="center" class="forntsarabun">รวม <?= $all; ?> ไฟล์</td>
 				</tr>
 			</table>
-		<?
+		<?php
 		}
 		?>
 	</div>
 
 	<script>
+		function chkdel(e, link, id) {
+			e.preventDefault();
+			
+			Swal.fire({
+				title: "ยืนยันที่จะลบข้อมูล",
+				icon: "warning",
+				showCancelButton: true,
+				cancelButtonText: "ยกเลิก",
+				cancelButtonColor: "#d33",
+				confirmButtonText: "ยืนยันการลบ",
+				confirmButtonColor: "#3085d6",
+			}).then((result)=>{
+				if(result.isConfirmed){
+					window.open(link,"MsgWindow","width=250,height=100");
+					document.getElementById('doc-'+id).remove();
+				}else{
+					return false;
+				}
+			});
+			
+		}
 		function MM_openBrWindow(theURL, winName, features) { //v2.0
 			window.open(theURL, winName, features);
 		}

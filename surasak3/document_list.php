@@ -7,7 +7,7 @@ include("connect.php");
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>ระบบจัดเก็บองค์ความรู้</title>
+	<title>KM - แยกตามแผนก</title>
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -19,7 +19,7 @@ include("connect.php");
 <style>
 	body {
 		font-family: "TH SarabunPSK";
-		font-size: 18px;
+		font-size: 20px;
 	}
 </style>
 	<div class="container">
@@ -33,7 +33,7 @@ include("connect.php");
 	$strSQL = "SELECT count(depart)as count,depart FROM document Group by depart order by count desc";
 	$objQuery = mysql_query($strSQL) or die("Error Query [" . $strSQL . "]");
 	$rows = mysql_num_rows($objQuery);
-	if ($rows) {
+	if ($rows>0) {
 		?>
 		<table class="table table-striped table-hover mt-4">
 			<tr>
@@ -42,11 +42,9 @@ include("connect.php");
 			</tr>
 			<?php
 			while ($objResult = mysql_fetch_array($objQuery)) {
-
 				?>
 				<tr>
-					<td><a
-							href="document_list1.php?depart=<?= $objResult["depart"]; ?>"><?= $objResult["depart"]; ?></a></td>
+					<td><a href="document_list1.php?depart=<?= $objResult["depart"]; ?>"><?= $objResult["depart"]; ?></a></td>
 					<td><?= $objResult["count"]; ?></td>
 					<!-- <td align="center"><a href="JavaScript:if(confirm('Confirm Delete?')==true){window.location='document_delete.php?doc_id=<?//=$objResult["doc_id"]; ?>';}">Delete</a></td>-->
 				</tr>
@@ -63,7 +61,7 @@ include("connect.php");
 		<?php
 	}else{
 		?>
-		<p class="mt-2"><strong>ยังไม่มีไฟล์อัพโหลด</strong></p>
+		<div class="alert alert-warning mt-4" role="alert">ยังไม่มีเอกสาร</div>
 		<?php
 	}
 	?>
