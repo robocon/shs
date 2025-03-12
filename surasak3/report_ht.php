@@ -26,19 +26,19 @@ if($action==='create_report'){
     $year = sprintf("%s", $_GET['year']);
     $month = sprintf("%s", $_GET['month']);
 
+    if(empty($month)){
+        $yearSelected = $year+543;
+        $yearLab = $year;
+    }else{
+        $yearSelected = ($year+543).'-'.$month;
+        $yearLab = $year.'-'.$month;
+    }
+
     $report_ht = $json->decode($_COOKIE['report_ht']);
 
-    if($report_ht->$year!==null){
-        $res = $report_ht->$year;
+    if($report_ht->$yearLab!==null){
+        $res = $report_ht->$yearLab;
     }else{
-
-        if(empty($month)){
-            $yearSelected = $year+543;
-            $yearLab = $year;
-        }else{
-            $yearSelected = ($year+543).'-'.$month;
-            $yearLab = $year.'-'.$month;
-        }
         
         $ht = new ReportHt();
         $q = $ht->generateTempOpdXDiag($yearSelected);
@@ -88,20 +88,28 @@ if($action==='create_report'){
             'report5'=> $report5,
         );
 
-        $res[$year] = $data;
+        $res[$yearLab] = $data;
 
-        $report_ht->$year = $json->decode($json->encode($data));
+        $report_ht->$yearLab = $json->decode($json->encode($data));
         
         setcookie('report_ht', $json->encode($report_ht), $setCookieTime, "/");
     }
     
-    echo $json->encode($res[$year]);
+    echo $json->encode($res[$yearLab]);
     exit;
 }elseif ($action==='clear_cookie') {
     
     $year = sprintf("%s", $_GET['year']);
+    $month = sprintf("%s", $_GET['month']);
+
+    if(empty($month)){
+        $yearLab = $year;
+    }else{
+        $yearLab = $year.'-'.$month;
+    }
+
     $report_ht = $json->decode($_COOKIE['report_ht']);
-    unset($report_ht->$year);
+    unset($report_ht->$yearLab);
     setcookie('report_ht', $json->encode($report_ht), $setCookieTime, "/");
     echo $json->encode(array('status'=>200));
     exit;
