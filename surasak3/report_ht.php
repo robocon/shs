@@ -205,10 +205,12 @@ if($action==='create_report'){
         if($page==='show'){
 
             $yearSelected = $year+543;
-            
+            $yearKey = $year;
+
             $monthTxt = '';
             if(!empty($month)){
                 $monthTxt = ' เดือน '.$def_fullm_th[$month];
+                $yearKey = $year.'-'.$month;
             }
 
             $report_ht = $json->decode($_COOKIE['report_ht']);
@@ -218,9 +220,9 @@ if($action==='create_report'){
                 <div class="d-flex justify-content-between">
                     <div class="col-md"><h3><a href="javascript:void(0);" target="_blank">ปี <?=$year;?><?=$monthTxt;?></a></h3></div>
                     <?php 
-                    if(!empty($report_ht->$year)){
+                    if(!empty($report_ht->$yearKey)){
                         ?>
-                        <div class="col-md"><a href="javascript:void(0);" class="btn btn-warning float-end" onclick="clearCookie('<?=$year;?>')">ล้างค่าความจำ</a></div>
+                        <div class="col-md"><a href="javascript:void(0);" class="btn btn-warning float-end" onclick="clearCookie('<?=$yearKey;?>')">ล้างค่าความจำ</a></div>
                         <?php
                     }
                     ?>
