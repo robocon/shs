@@ -49,6 +49,7 @@ if($action==='create_report'){
         // ตัวชี้วัดที่ 1
         $qAgeMore35 = $ht->getAgeMoreThan35();
         $age35 = $qAgeMore35->num_rows;
+        
         $report1 = round(($age35*100/$allCount),2);
         $report1 = is_nan($report1) ? 0 : $report1 ;
 
@@ -201,6 +202,7 @@ if($action==='create_report'){
             </form>
         </div>
         <?php
+        
         $page = sprintf("%s", $_POST['page']);
         if($page==='show'){
 
@@ -218,7 +220,7 @@ if($action==='create_report'){
             ?>
             <div class="col-md-8 mt-2">
                 <div class="d-flex justify-content-between">
-                    <div class="col-md"><h3><a href="javascript:void(0);" target="_blank">ปี <?=$year;?><?=$monthTxt;?></a></h3></div>
+                    <div class="col-md"><h3><a href="javascript:void(0);">ปี <?=$year;?><?=$monthTxt;?></a></h3></div>
                     <?php 
                     if(!empty($report_ht->$yearKey)){
                         ?>
@@ -302,9 +304,12 @@ if($action==='create_report'){
                     return "";
                 }
 
+                // !! เป็น onload ที่อยู่ภายใต้เงื่อนไข page===show จะทำงานต่อเมื่อกด แสดงข้อมูล
                 window.onload = function(){
+                    
                     document.getElementById('loading').style.display = '';
                     let report_ht = getCookie('report_ht');
+                    
                     let yearSelected = document.getElementById('yearSelected').value;
                     let monthSelected = document.getElementById('monthSelected').value;
                     if(report_ht===''){
@@ -317,7 +322,12 @@ if($action==='create_report'){
                         let yearText = yearSelected.toString();
                         let monthText = monthSelected.toString();
 
-                        if(json[yearText]===undefined){
+                        let keyYear = yearText;
+                        if(monthText!==''){
+                            keyYear = yearText+'-'+monthText;
+                        }
+                        
+                        if(json[keyYear]===undefined){
                             preLoadData(yearSelected, monthSelected);
                         }else{
 
@@ -326,11 +336,11 @@ if($action==='create_report'){
                                 monthUrl = '&month='+monthText;
                             }
 
-                            document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+yearText+monthUrl+'" target="_blank">'+json[yearText].report1+'</a>';
-                            document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+yearText+monthUrl+'" target="_blank">'+json[yearText].report2+'</a>';
-                            document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+yearText+monthUrl+'" target="_blank">'+json[yearText].report3+'</a>';
-                            document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+yearText+monthUrl+'" target="_blank">'+json[yearText].report4+'</a>';
-                            document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+yearText+monthUrl+'" target="_blank">'+json[yearText].report5+'</a>';
+                            document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report1+'</a>';
+                            document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report2+'</a>';
+                            document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report3+'</a>';
+                            document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report4+'</a>';
+                            document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report5+'</a>';
                             document.getElementById('loading').style.display = 'none';
                         }
                     }
@@ -380,8 +390,8 @@ if($action==='create_report'){
                     return data;
                 }
 
-                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+                // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                // const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
             </script>
             <?php 
         }

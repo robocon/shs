@@ -56,8 +56,6 @@ $ht = sprintf("%s", $_GET['ht']);
 
         <?php
         $ht = new ReportHt();
-        $yearSelected = $year+543;
-
         if(empty($month)){
             $yearSelected = $year+543;
         }else{

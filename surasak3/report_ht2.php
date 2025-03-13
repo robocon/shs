@@ -51,8 +51,6 @@ $ht_bp = sprintf("%s", $_GET['ht_bp']);
         <h5>2.&#41; ร้อยละผู้ป่วยที่ควบคุมความดันโลหิตได้ดี &#40; &lt;140/90 &#41; ดึงจากการวัดครั้งที่2 </h5>
         <?php 
         $ht = new ReportHt();
-        $yearSelected = $year+543;
-
         if(empty($month)){
             $yearSelected = $year+543;
         }else{
