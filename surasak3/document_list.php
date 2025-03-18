@@ -1,5 +1,7 @@
 <?php
-include("connect.php");
+require_once dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,13 +25,9 @@ include("connect.php");
 	}
 </style>
 	<div class="container">
-	<h2 class="mt-2" align="center">ระบบจัดเก็บองค์ความรู้</h2>
-	<div class="mt-4">
-		<a href="../nindex.htm" class="btn btn-primary">กลับเมนูหลัก </a>
-		<a href="document_Search2.php" class="btn btn-primary">ค้นหาเอกสารทั้งหมด</a>
-		<a href="document_add.php"><span class="btn btn-primary">เพิ่มเอกสารใหม่</span></a>
-	</div>
 	<?php
+	require_once dirname(__FILE__).'/document_title.php';
+	
 	$strSQL = "SELECT count(depart)as count,depart FROM document Group by depart order by count desc";
 	$objQuery = mysql_query($strSQL) or die("Error Query [" . $strSQL . "]");
 	$rows = mysql_num_rows($objQuery);
