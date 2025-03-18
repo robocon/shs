@@ -1,5 +1,12 @@
 <?php
 session_start();
+// error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+
+error_reporting(1);
+ini_set('display_errors', 1);
+
+
 include("connect.inc");  
 if (isset($sOfficer)){} else {die;} //for security
 $case=$_POST['case'];
@@ -121,59 +128,120 @@ return $pAge;
 $dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
 $cAge=calcage($dbirth);
 
+$idcard = sprintf("%s", trim($_POST['idcard']));
+
 //ตรวจสอบเลขบัตรประชาชน
 $sql = "Select hn From opcard where idcard='$idcard' AND hn<>'$cHn' limit 0,1 ";
 $result = mysql_query($sql);
-	if(mysql_num_rows($result) > 0 && strlen(trim($idcard)) == 13){
-		list($chk_idcard) = mysql_fetch_row($result);
-		echo "<SCRIPT LANGUAGE=\"JavaScript\">
-
-		alert('เลขบัตรประชาชน $idcard ถูกใช้โดย HN : $chk_idcard กรุณาตรวจสอบว่าเป็นคนๆเดียวกันหรือไม่');
-
-		</SCRIPT>";
+if(mysql_num_rows($result) > 0 && strlen(trim($idcard)) == 13){
+	list($chk_idcard) = mysql_fetch_row($result);
+	echo "<SCRIPT LANGUAGE=\"JavaScript\">
+	alert('เลขบัตรประชาชน $idcard ถูกใช้โดย HN : $chk_idcard กรุณาตรวจสอบว่าเป็นคนๆเดียวกันหรือไม่');
+	</SCRIPT>";
+	exit;
 }
-$where4="";
+
+$wherePtright = "";
 if($_POST['lockptright5']=="lock"){
-	$where4 = ",ptright2='".$_POST['ptright']."' ";
+	$wherePtright = ",ptright2='".$_POST['ptright']."' ";
 }else{
-	$where4 = ",ptright2='' ";
+	$wherePtright = ",ptright2='' ";
 }
+
 //update opdcard table
-	$hospcode=$_POST['hospcode'];
-	$ptrcode=$_POST['rdo1'];
-	$typearea = $_POST['typearea'];
+$yot = trim($_POST['yot']);
+$name = trim($_POST['name']);
+$surname = trim($_POST['surname']);
+$sex = trim($_POST['sex']);
 
-	$vstatus = (int)$_POST['vstatus'];
-	$father_id = $_POST['father_id'];
-	$mother_id = $_POST['mother_id'];
-	$couple_id = $_POST['couple_id'];
+$education = trim($_POST['education']);
+$goup = trim($_POST['goup']);
+$married = trim($_POST['married']);
 
-	$name = $_POST['name'];
-	$surname = $_POST['surname'];
+$guardian = trim($_POST['guardian']);
+$idguard = trim($_POST['idguard']);
 
-	if(empty($name) OR empty($surname)){ 
-		echo "ข้อมูลไม่ครบถ้วนกรุณาตรวจสอบข้อมูลอีกครั้ง";
-		exit;
-	}
+$nation = trim($_POST['nation']);
+$religion = trim($_POST['religion']);
+$career = trim($_POST['career']);
+$ptright = trim($_POST['ptright']);
+$ptright1 = trim($_POST['ptright1']);
+$ptrightdetail = trim($_POST['ptrightdetail']);
+$address = trim($_POST['address']);
+$tambol = trim($_POST['tambol']);
+$ampur = trim($_POST['ampur']);
+$changwat = trim($_POST['changwat']);
+$hphone = trim($_POST['hphone']);
 
-	//$note=$_POST['note'].'/'.$hospcode;
+$phone = trim($_POST['phone']);
+$father = trim($_POST['father']);
+$mother = trim($_POST['mother']);
+$couple = trim($_POST['couple']);
+$note = trim($_POST['note']);
+
+$camp = trim($_POST['camp']);
+$race = trim($_POST['race']);
+$ptf = trim($_POST['ptf']);
+$ptfadd = trim($_POST['ptfadd']);
+$ptffone = trim($_POST['ptffone']);
+$ptfmon = trim($_POST['ptfmon']);
+$blood = trim($_POST['blood']);
+
+$hospcode = trim($_POST['hospcode']);
+$ptrcode = trim($_POST['rdo1']);
+$opcardstatus =  trim($_POST['opcardstatus']);
+$typearea =  trim($_POST['typearea']);
+$vstatus = (int)$_POST['vstatus'];
+
+$father_id = trim($_POST['father_id']);
+$mother_id = trim($_POST['mother_id']);
+$couple_id = trim($_POST['couple_id']);
+
+$card_address = trim($_POST['card_address']);
+$card_moo = trim($_POST['card_moo']);
+$card_tambol = trim($_POST['card_tambol']);
+$card_amphur = trim($_POST['card_amphur']);
+$card_province = trim($_POST['card_province']);
+
+$address_eng = trim($_POST['address_eng']);
+$address_moo = trim($_POST['address_moo']);
+$address_soi = trim($_POST['address_soi']);
+$address_road = trim($_POST['address_road']);
+$tambol_eng = trim($_POST['tambol_eng']);
+$ampur_eng = trim($_POST['ampur_eng']);
+$changwat_eng = trim($_POST['changwat_eng']);
+
+if(empty($name) OR empty($surname)){ 
+	echo "ข้อมูลไม่ครบถ้วนกรุณาตรวจสอบข้อมูลอีกครั้ง";
+	exit;
+}
+
 $employee = ( isset($_POST['employee']) && $_POST['employee'] === 'y' ) ? 'y' : 'n' ;
+$sOfficer = sprintf("%s", $_SESSION["sOfficer"]);
 
-$sql = "UPDATE opcard SET idcard='$idcard',mid='$mid',hn='$cHn',
-yot='$yot',name='$name',surname='$surname',education='$education',goup='$goup',married='$married',
-dbirth='$dbirth',guardian='$guardian',idguard='$idguard',
-nation='$nation',religion='$religion',career='$career',ptright='$ptright',ptright1='$ptright1',ptrightdetail='$ptrightdetail',address='$address',
-tambol='$tambol',ampur='$ampur',changwat='$changwat',hphone='$hphone',
-phone='$phone',father='$father',mother='$mother',couple='$couple',
-note='$note',sex='$sex',camp='$camp',race='$race' ,ptf='$ptf',ptfadd='$ptfadd',
-ptffone='$ptffone',ptfmon='$ptfmon',lastupdate='$thidate', blood='$blood',drugreact='$drugreact',  
-officer ='".$_SESSION["sOfficer"]."' , hospcode='".$hospcode."', ptrcode ='$ptrcode',
-employee='$employee', opcardstatus='$opcardstatus',`typearea` = '$typearea',`vstatus`='$vstatus',
-`father_id`='$father_id',`mother_id`='$mother_id',`couple_id`='$couple_id',`note_vip`='$note_vip',`allergy`='$allergy' $where4 WHERE hn='$cHn' ";
+$drugreact = trim($_POST['drugreact']);
 
+$prename = trim($_POST['prename']);
+$name_eng = trim($_POST['name_eng']);
+$surname_eng = trim($_POST['surname_eng']);
 
+$sql = "UPDATE `opcard` SET `idcard`='$idcard',`mid`='$mid',
+`yot`='$yot',`name`='$name',`surname`='$surname',`education`='$education',`goup`='$goup',`married`='$married',
+`dbirth`='$dbirth',`guardian`='$guardian',`idguard`='$idguard',
+`nation`='$nation',`religion`='$religion',`career`='$career',`ptright`='$ptright',`ptright1`='$ptright1',`ptrightdetail`='$ptrightdetail',`address`='$address',
+`tambol`='$tambol',`ampur`='$ampur',`changwat`='$changwat',`hphone`='$hphone',
+`phone`='$phone',`father`='$father',`mother`='$mother',`couple`='$couple',
+`note`='$note',`sex`='$sex',`camp`='$camp',`race`='$race' ,`ptf`='$ptf',`ptfadd`='$ptfadd',
+`ptffone`='$ptffone',`ptfmon`='$ptfmon',`lastupdate`='$thidate', `blood`='$blood',`drugreact`='$drugreact',
+`officer`='$sOfficer' , `hospcode`='$hospcode', `ptrcode`='$ptrcode',
+`employee`='$employee', `opcardstatus`='$opcardstatus',`typearea`='$typearea',`vstatus`='$vstatus',
+`father_id`='$father_id',`mother_id`='$mother_id',`couple_id`='$couple_id',`note_vip`='$note_vip',`allergy`='$allergy',
+`prename`='$prename',`name_eng`='$name_eng',`surname_eng`='$surname_eng',`house_no` = '$address_eng',`address_moo` = '$address_moo',
+`address_soi` = '$address_soi',`address_road` = '$address_road',`tambol_eng` = '$tambol_eng',`ampur_eng` = '$ampur_eng',`changwat_eng` = '$changwat_eng',
+`card_address`='$card_address',`card_moo`='$card_moo',`card_tambol`='$card_tambol',`card_amphur`='$card_amphur',`card_province`='$card_province' 
+$wherePtright 
+WHERE hn='$cHn' ";
 $result = mysql_query($sql) or die("Query failed ipcard".mysql_error());
-
 If (!$result){
 	echo "update opcard fail";
 	echo mysql_errno() . ": " . mysql_error(). "\n";
@@ -299,10 +367,7 @@ $nVn=$row->runno;
 $dVndate=$row->startday;
 $dVndate=substr($dVndate,0,10);
 $today = date("Y-m-d");  
-//print "$today<br>";
-//print "$dVndate<br>";
-//print "$nVn.'A'<br>";
-// 
+
 $test_dayHn = date('d-m-').(date('Y')+543).$cHn;
 $sql = "SELECT `row_id` FROM `opday` WHERE `thdatehn` = '$test_dayHn'";
 $q = mysql_query($sql) or die( mysql_error() );
@@ -314,8 +379,6 @@ $test_opday_row = mysql_num_rows($q);
 If ( $_POST["new_vn"] == "1"){	
 	//ยังไม่เปลี่ยนวันที่
 	if($today==$dVndate){
-		//print_r($_POST)."<br>";
-		//print_r($_GET)."<br>";
 		$nVn++;
 		$thdatevn=$d.'-'.$m.'-'.$yr.$nVn;
 		$query ="UPDATE runno SET runno = $nVn WHERE title='VN'";
