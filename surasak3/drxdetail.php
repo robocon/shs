@@ -1,10 +1,10 @@
 <?php
-    session_start();
-	include("connect.inc");
-	require_once dirname(__FILE__).'/bootstrap.php';
+session_start();
+include("connect.inc");
+require_once dirname(__FILE__).'/bootstrap.php';
 	
-	$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-	$dbi->query("SET NAMES UTF8");
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
 
 //-------------------------เช็ค druginteraction	
 	$csql = "SELECT a.drugcode FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."'   AND a.date = '".$_GET["sDate"]."' ";
@@ -227,10 +227,10 @@ $sdate=substr($_GET["sDate"],0,10);
 list($y1,$m1,$d1)=explode("-",$sdate);
 $chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
 
-$sqlopday = "select toborow,diag,age from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+$sqlopday = "select toborow,diag,age,thidate from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
 //echo $sqlopday;
 $res= mysql_query($sqlopday) or die("Query failed");
-list($toborow,$diagnosis,$age) = mysql_fetch_row($res);
+list($toborow,$diagnosis,$age,$opdayThidate) = mysql_fetch_row($res);
 $tob = substr($toborow,0,4);
 
 $sqlopday1 = "select idcard,dbirth from opcard where hn='$sHn'";
@@ -330,10 +330,14 @@ if( !function_exists('cal_to_bc') ){
 	}
 }
 
+$EnOpdayThidate = (substr($opdayThidate,0,4)-543).substr($opdayThidate,4,6);
+
+
 $patient_hn = trim($sHn);
-$sixMonthsLater = strtotime("-6 Months");
+$sixMonthsLater = strtotime("-6 Months", strtotime($EnOpdayThidate));
 $sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
-$currentDayTH = (date('Y')+543).date('-m-d');
+// $currentDayTH = (date('Y')+543).date('-m-d');
+
 /*
 1. (แทนค่า x) หาใน drugrx ก่อนว่าในช่วง 6 เดือนย้อนหลังมียาตัวไหนเข้าเกณฑ์กลุ่ม warfarin/noacs บ้างโดยเอาแค่ idno ตัวล่าสุดมาตัวเดียว
 2. เอา x ที่ได้กลับมา left join ตัวมันเองเพื่อแสดงรายการในวันนั้นๆ ก็จะได้รายการแค่ตัวล่าสุดตัวเดียว
@@ -342,7 +346,7 @@ $sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`drugcode`,a.`tradname`,a.`a
 	SELECT `idno` AS `phardep_id` 
 	FROM `drugrx` 
 	WHERE `hn` = '%s' 
-	AND ( `date` >= '$sixMonthsTH' AND `date` < '$currentDayTH' ) 
+	AND ( `date` >= '$sixMonthsTH' AND `date` < '$opdayThidate' ) 
 	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
 	AND (`status` = 'Y' AND `amount` > 0)
 	GROUP BY `idno` DESC 
