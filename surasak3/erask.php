@@ -9,6 +9,7 @@ print "VN:$tvn<br>";
 print "$cPtname<br>";*/
 
 ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
+
 $strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
 $strresult = mysql_query($strsql);
 $strrow=mysql_num_rows($strresult);
@@ -23,10 +24,16 @@ if($strrow>0){
 
 }
 
-$sqlage = "select idcard,dbirth,ptright from opcard where hn ='".$cHn."'";
+$sqlage = "select idcard,dbirth,ptright,idguard from opcard where hn ='".$cHn."'";
 $arr_age = mysql_fetch_array(mysql_query($sqlage));
 
 $idcard=$arr_age['idcard'];
+$idguardCode=substr($arr_age['idguard'],0,4);
+if($idguardCode=='MX07'){
+	?>
+	<h3 style="color:red;"><u>ผู้ป่วยมีสถานะทำลายประวัติ กรุณาประสานแผนกทะเบียนเพื่อตรวจสอบข้อมูล ก่อนดำเนินการต่อไป ขอบคุณครับ</u></h3>
+	<?php
+}
 
 if($idcard=="" || $idcard=="-"){
 	$img=$cHn.'.jpg';
@@ -59,7 +66,21 @@ if(!empty($accruedTxt)){
 <?php
 }
 ?>
-
+<?php
+	// ตรวจสอบ VN ซ้ำซ้อน**************************************************
+	$chkdate = (date("Y")+543).date("-m-d");
+	$sqlvn = "Select count(vn) From opday where thidate LIKE '".$chkdate."%' AND vn = '$tvn'";
+	//echo $sqlvn;
+	list($vn_row) = mysql_fetch_row(mysql_query($sqlvn));
+	if($vn_row > 1){
+		echo "<div align='center' style='font-size:24px;color:red;font-weight:bold;margin-top:20px;margin-bottom:20px;'>
+		<div><img src='images/warning-1.png' width='96px;' height='96px;'></div>
+		<div>แจ้งเตือนข้อมูลการลงทะเบียน VN $tvn ซ้ำซ้อน<br>
+		<span style='font-size:16px;'>กรุณาตรวจสอบข้อมูลและทบทวน VN ของผู้ป่วยกับห้องทะเบียนก่อนครับ</span>
+		</div>
+		</div>";
+	}
+?>
 <table  border="0">
 	<tr>
 		<td>ผู้ป่วยนอก</td>
@@ -78,8 +99,8 @@ if(!empty($accruedTxt)){
 	</tr>
 </table>
 <?php
-if(substr($cPtright,0,3)=='R12' || substr($cPtright,0,3)=='R13' || substr($cPtright,0,3)=='R14' || substr($cPtright,0,3)=='R35'){
-	echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+if(substr($cPtright,0,3)=='R12' || substr($cPtright,0,3)=='R13' || substr($cPtright,0,3)=='R14' || substr($cPtright,0,3)=='R35' || substr($cPtright,0,3)=='R36'){
+	echo "<div style=\"background-color: #FF0000;font-size:28px;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>รพ.เบิกเงินจากต้นสังกัดได้ไม่เกิน 700 บาท</div>";
 }
 ?>
 <script type="text/javascript">
@@ -130,7 +151,7 @@ $smctoken = $t['token'];
 	</select>
 
 	<div id="nhso">
-		<br><span style="color: blue;">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+		<br><span style="color: blue;"><img src="images/Spinner-1s-28px.gif" alt="">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
 	</div>
 	
 	<style type="text/css">
