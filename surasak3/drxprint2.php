@@ -231,19 +231,19 @@ if(!empty($cStkcutdate)) {
 
 	}	
 	
-	
+	$EnOpdayThidate = (substr($opday_thidate,0,4)-543).substr($opday_thidate,4,6);
 
 	/* แจ้งเตือน Warfarin */
 	$patient_hn = trim($rxHn);
-	$sixMonthsLater = strtotime("-6 Months");
+	$sixMonthsLater = strtotime("-6 Months", strtotime($EnOpdayThidate));
 	$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
-	$currentDayTH = (date('Y')+543).date('-m-d');
+	// $currentDayTH = (date('Y')+543).date('-m-d');
 
 	$sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
 		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
 		FROM `drugrx` 
 		WHERE `hn` = '%s' 
-		AND ( `date` >= '$sixMonthsTH' AND `date` < '$currentDayTH' ) 
+		AND ( `date` >= '$sixMonthsTH' AND `date` < '$opday_thidate' ) 
 		AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
 		AND (`status` = 'Y' AND `amount` > 0)
 		ORDER BY `row_id` DESC
