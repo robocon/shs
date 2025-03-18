@@ -18,12 +18,6 @@ $dbi->query("SET NAMES UTF8");
 </head>
 
 <body>
-<style>
-	body {
-		font-family: "TH SarabunPSK";
-		font-size: 20px;
-	}
-</style>
 	<div class="container">
 	<?php
 	require_once dirname(__FILE__).'/document_title.php';

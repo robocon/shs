@@ -38,13 +38,12 @@ $depart1 = sprintf("%s", $_GET['depart']);
 	</style>
 	<button onclick="topFunction()" id="myBtn" title="Go to top">🔝</button>
 	<div class="container">
-		<h2 class="mt-2" align="center">ระบบจัดเก็บเอกสาร (<?= $depart1; ?>)</h2>
-		<div class="mt-4">
-			<a href="../nindex.htm" class="btn btn-primary">กลับเมนูหลัก </a>
-			<a href="document_list.php" class="btn btn-primary">เอกสารตามแผนก</a>
-			<a href="document_add.php"><span class="btn btn-primary">เพิ่มเอกสารใหม่</span></a>
-		</div>
+		<?php 
+		require_once dirname(__FILE__).'/document_title.php';
+		?>
+		<h2 class="mt-2" align="center"><?=$depart1;?></h2>
 		<?php
+
 		$strSQL = "SELECT count(b.doc_id) as count ,a.doc_name,a.doc_id,a.row_id,a. post_name 
 		FROM document as a ,document_file as b  
 		where a.doc_id=b.doc_id 

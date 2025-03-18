@@ -14,28 +14,10 @@ include "connect.php";
 	<script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
-<style>
-	body {
-		font-family: "TH SarabunPSK";
-		font-size: 18px;
-	}
-</style>
+
 <div class="container">
 <?php 
 require_once dirname(__FILE__).'/document_title.php';
-?>
-
-<form name="frmSearch" method="get" action="<?= $_SERVER['SCRIPT_NAME']; ?>" class="mt-4 col-6">
-	<div class="mb-3">
-		<label for="basic-url" class="form-label">ค้นหาจากชื่อ</label>
-		<div class="input-group">
-			<input type="text" class="form-control" id="basic-url" name="txtKeyword" id="txtKeyword" value="<?= $_GET["txtKeyword"]; ?>">
-			<button type="submit" class="btn btn-primary">ค้นหา</button>
-		</div>
-	</div>
-</form>
-
-<?php
 
 if ($_GET["txtKeyword"] != "") {
 	$strSearch = $_GET["txtKeyword"];
