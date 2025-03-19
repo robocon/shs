@@ -43,6 +43,12 @@ $depart1 = sprintf("%s", $_GET['depart']);
 		?>
 		<h2 class="mt-2" align="center"><?=$depart1;?></h2>
 		<?php
+		if($_SESSION['x-msg']){
+			?>
+			<div class="alert alert-warning" role="alert"><?=$_SESSION['x-msg'];?></div>
+			<?php
+			unset($_SESSION['x-msg']);
+		}
 
 		$strSQL = "SELECT count(b.doc_id) as count ,a.doc_name,a.doc_id,a.row_id,a. post_name 
 		FROM document as a ,document_file as b  

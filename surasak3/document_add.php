@@ -1,228 +1,31 @@
 <?php
-require_once dirname(__FILE__) . '/bootstrap.php';
-?>
-<style>
-	.style2 {
-		color: #0033FF;
-		font-size: 12px;
-	}
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_runno.php';
 
-	.style3 {
-		font-weight: bold;
-		font-size: 14px;
-		color: #336600;
-	}
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
-	.style4 {
-		color: #FFFFFF
-	}
-
-	.style5 {
-		font-size: 14px;
-		font: Tahoma;
-
-	}
-
-	.style6 {
-		color: #0033FF;
-		font-size: 12px;
-	}
-
-	.style7 {
-		color: #333333
-	}
-
-	.style12 {
-		font-size: 12
-	}
-
-	.style13 {
-		color: #0066FF;
-		font-weight: bold;
-	}
-
-	.style14 {
-		font-size: 12px;
-	}
-
-	.style51 {
-		font-size: 12px;
-		color: #0000FF;
-	}
-
-	.style61 {
-		color: #999900
-	}
-
-	.menu {
-		color: #F00;
-		font-size: 12px;
-
-	}
-</style>
-
-<script>
-	var cnt = 0;
-	var tbl = null;
-
-	function init() {
-		tbl = document.getElementById('tbl');
-	}
-
-	function addRow() {
-		cnt++;
-		var tr = tbl.insertRow(tbl.rows.length - 2);
-		tr.id = 'tr_' + cnt;
-		var td = tr.insertCell(0);
-		var s = '<div class="style51"> ไฟล์เอกสาร : <input name="attach[]" type="file" id="attach_' + cnt + '" size="50" /> ';
-		s += ' <a href="#" onclick="return removeRow(' + cnt + ')">ลบออก</a></div>';
-		td.innerHTML = s;
-
-		return false;
-	}
-
-	function removeRow(id) {
-		var o = document.getElementById('tr_' + id);
-		tbl.deleteRow(o.rowIndex);
-		return false;
-	}
-
-	////// เช็คค่าว่าง
-	function fncSubmit() {
-
-		var fn = document.f1;
-
-		if (fn.depart.selectedIndex == 0) {
-			alert('กรุณาระบุแผนกด้วยครับ');
-			fn.depart.focus();
-			return false;
-
-		}
-		if (fn.doc_name.value == "") {
-			alert('กรุณาระบุชื่อเอกสารด้วยครับ');
-			fn.doc_name.focus();
-			return false;
-		}
-
-		if (fn.attach_0.value == "") {
-			alert('อัพโหลดเอกสารด้วยครับ');
-			fn.attach_0.focus();
-			return false;
-		}
-		if (fn.post_name.value == "") {
-			alert('กรุณาระบุชื่อผู้อัพโหลดด้วยครับ');
-			fn.post_name.focus();
-			return false;
-		}
-		fn.submit();
-	}
-</script>
-<?
-
-
-$sql = "select * from document order by row_id desc";
-$result = mysql_query($sql);
-$num_result  = mysql_num_rows($result);
-$dbarr = mysql_fetch_row($result);
-$id_max = $dbarr[0] + 1; // นำค่า id มาเพิ่มให้กับค่ารหัสครั้งละ1
-
-?>
-<form action="" method="post" enctype="multipart/form-data" name="f1" id="f1" onSubmit="JavaScript:return fncSubmit()">
-	<table width="765" border="0" align="center" class="fontthai" bgcolor="#FFFFCC">
-		<tr>
-			<td colspan="2" align="center" class="style13">ระบบจัดเก็บองค์ความรู้</td>
-		</tr>
-		<tr>
-			<td class="style51">แผนก :</td>
-			<td><select name="depart" size="1" class="style5">
-					<option value="0">- - เลือก - - </option>
-					<option value="คลังยา-กองเภสัชกรรม">คลังยา-กองเภสัชกรรม</option>
-					<option value="เวชระเบียนอิเล็กทรอนิกส์">เวชระเบียนอิเล็กทรอนิกส์</option>
-					<?
-					$sql = "select * From departments  where status='y' order by id  asc";
-					$result = mysql_query($sql);
-					while ($row = mysql_fetch_array($result)) {
-						$name = $row["name"];
-
-						echo "<option value='$name'>$name</option>";
-					}
-					?>
-				</select></td>
-		</tr>
-		<tr class="style51">
-			<td>เลขที่เอกสาร :</td>
-			<td><input name="doc_id" type="text" id="doc_id" size="30" maxlength="100" readonly="readonly" value="<?= $id_max; ?>" /></td>
-		</tr>
-		<tr class="style51">
-			<td width="14%">ชื่อเอกสาร :</td>
-			<td width="86%"><input name="doc_name" type="text" id="doc_name" size="70" maxlength="100" />
-				*</td>
-		</tr>
-		<tr class="style51">
-			<td colspan="2">
-				<hr>
-			</td>
-		</tr>
-		<tr class="style51">
-			<td colspan="2">
-
-				<table width="100%" border="0" cellspacing="0" cellpadding="0" id="tbl" onclick="init()" align="center" valign='top' bgcolor="#FFFFCC">
-					<tr>
-						<td class="style51" bgcolor="#FFFFCC" width="100%">ไฟล์เอกสาร : <input type="file" name="attach[]" id="attach_0" size="50" />
-							<a href="#" onclick="return addRow()">+ เพิ่มรายการอัพโหลด</a><span class="menu">//เลือกไฟล์ช่องนี้ก่อน</span>
-						</td>
-					</tr>
-					<tr>
-						<td width="100%" align="center" class="style51"><a href="#" onclick="return addRow()"></a></td>
-					</tr>
-				</table>
-
-			</td>
-		</tr>
-		<tr class="style51">
-			<td colspan="2">
-				<hr>
-			</td>
-		</tr>
-		<tr class="style51">
-			<td>ผู้จัดเก็บเอกสาร :</td>
-			<td><input name="post_name" type="text" class="style5" id="post_name" size="30" maxlength="100" /></td>
-		</tr>
-		<tr class="style5">
-			<td align="right">&nbsp;</td>
-			<td></td>
-		</tr>
-		<tr>
-			<td align="right">&nbsp;</td>
-			<td><input name="Submit" type="submit" class="style13" value="บันทึกข้อมูล" />
-				<input name="Reset" type="reset" class="style13" value="Reset" />
-				<div align="center"><a href="../nindex.htm" class="forntsarabun">กลับเมนูหลัก </a> &nbsp;&nbsp; <a href="document_Search2.php" class="forntsarabun">ค้นหาเอกสาร </a> || <a href="document_list.php">เอกสารตามแผนก</a></div>
-			</td>
-		</tr>
-	</table>
-</form>
-
-<?php
-if (isset($_POST['Submit'])) {
-
-	include("connect.inc");
+$action = $_POST['action'];
+if ($action=='submit') {
 
 	$id = $_POST['doc_id'];
 
-	$sql = "INSERT INTO  `document` (  `row_id` ,  `doc_id` ,  `depart` ,  `doc_name` ,  `post_name` ,  `doc_date` ) 
-VALUES ('',  '" . $_POST['doc_id'] . "',  '" . $_POST['depart'] . "',  '" . $_POST['doc_name'] . "',  '" . $_POST['post_name'] . "',  '" . date("Y-m-d H:i:s") . "')";
-	$sql_query = mysql_query($sql) or die(mysql_error());
+	$depart = $dbi->real_escape_string($_POST['depart']);
 
-	//echo $sql;
+	$sql = sprintf("INSERT INTO  `document` (  `row_id` ,  `doc_id` ,  `depart` ,  `doc_name` ,  `post_name` ,  `doc_date` ) 
+	VALUES (NULL,  '%s',  '%s',  '%s',  '%s', NOW() )",
+	$dbi->real_escape_string($_POST['doc_id']),
+	$depart,
+	$dbi->real_escape_string($_POST['doc_name']),
+	$dbi->real_escape_string($_POST['post_name'])
+	);
+	$sql_query = $dbi->query($sql);
+	
 	/////////////
 	$structure = 'document_file/';
-
 	$attach = $_FILES['attach'];
-
-	/*if (!mkdir($structure, 0777, true)) {
-		die('Failed to create folders...');
-}*/
 	////////////
+
 	$n = 1;
 	for ($i = 0; $i < count($attach['name']); $i++) {
 
@@ -231,39 +34,181 @@ VALUES ('',  '" . $_POST['doc_id'] . "',  '" . $_POST['depart'] . "',  '" . $_PO
 		$document_size = $attach['size'][$i]['size'];
 		$document_type = $attach['type'][$i];
 
-
 		if (empty($document)) //ตรวจสอบว่ามีค่าหรือไม่
 		{
 			echo "<CENTER>คุณไม่ได้เลือกไฟล์เอกสารแนบ  หรือ <BR> ขนาดไฟล์ที่คุณทำการ Upload นั้นอาจมีขนาดใหญ่เกินไป . กรุณาเลือกไฟล์ใหม่  </CENTER>";
 		} else {
-			$thai = explode('.', $document_name);
+			list($fileName, $ext) = explode('.', $document_name);
+			$ext = strtolower($ext);
+			$files_allow = array('rar','zip','doc','xls','xlsx','pdf','ppt','pptx','docx','jpg','jpg');
+			if (in_array($ext, $files_allow)) {
 
-			$ext = strtolower(end(explode('.', $document_name)));
-			if ($ext == "rar" or $ext == "zip" or $ext == "doc" or $ext == "xls" or $ext == "xlsx" or $ext == "pdf" or $ext == "ppt" or $ext == "pptx" or $ext == "docx" or $ext == "JPG" or $ext == "jpg") {
+				$newFileName = $id . '_' . $n . "." . $ext;
 
-				$filename = $id . '_' . $n . "." . $ext;
+				copy($document, "$structure/$newFileName");
 
-				copy($document, "$structure/$filename");
-
-				$sql = "INSERT  INTO  document_file";
-				$sql .= "(doc_id ,file_name,name_thai,file_type) ";
-				$sql .= "VALUES";
-				$sql .= "('" . $_POST['doc_id'] . "','" . $filename . "','" . $thai[0] . "','" . $ext . "')";
-				$sql_query1 = mysql_query($sql) or die("Error Query [" . $sql . "]");
-
-				//echo $sql;
+				$sql = sprintf("INSERT INTO `document_file` (`doc_id`,`file_name`,`name_thai`,`file_type`) VALUES 
+				('%s','%s','%s','%s')",
+				$dbi->real_escape_string($_POST['doc_id']),
+				$dbi->real_escape_string($newFileName),
+				$dbi->real_escape_string($thai[0]),
+				$dbi->real_escape_string($ext)
+				);
+				$sql_query1 = $dbi->query($sql);
 			} else {
-				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไฟล์ที่คุณเลือก ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .doc .docx .xls .ppt .pdf .rar .zip  </CENTER></B></FONT> ";
+				echo "<FONT SIZE=\"\" COLOR=\"#CC0000\"><B><CENTER>ไฟล์ที่คุณเลือก ไม่สามารถ Upload ได้ กรุณาเลือกไฟล์ที่มีนามสกุลดังนี้  .rar, .zip, .doc, .xls, .xlsx, .pdf, .ppt, .pptx, .docx, .jpg, .jpg  </CENTER></B></FONT> ";
 			}
-		}			//ปิดไฟล์แนบ
-
-
+		}//ปิดไฟล์แนบ
 		$n++;
 	} //for
 
 	if ($sql_query && $sql_query1) {
-		echo "<meta http-equiv=refresh content=5;URL=document_Search2.php>";
-		echo "<br><CENTER><B><FONT SIZE=\"+1\" COLOR=\"#CC0000\">อัพโหลดเอกสารเรียบร้อยแล้ว<BR> กรุณารอสักครู่เพื่อไปยังหน้าดาวน์โหลดไฟล์.......</FONT></B></CENTER><br>";
+		$_SESSION['x-msg'] = 'อัพโหลดเอกสารเรียบร้อย';
+		header('Location: document_list1.php?depart='.urlencode($depart));
 	}
+	exit;
 } //if 
+
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>KM เพิ่มเอกสาร</title>
+	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="js/sweetalert2.all.min.js"></script>
+</head>
+<body>
+	<style>
+		input[readonly]{
+			background-color: #d7d7d7;
+		}
+		button{
+			font-size:20px;
+		}
+	</style>
+<div class="container">
+<?php
+require_once dirname(__FILE__).'/document_title.php';
+
+$r = new Runno();
+$id_max = $r->getRunno('document');
+
+?>
+<form action="document_add.php" method="post" enctype="multipart/form-data" name="f1" id="f1" onSubmit="fncSubmit(event)">
+	<table width="" border="0" align="center" class="">
+		<tr class="mb-2">
+			<td class="mb-2" align="right">แผนก :</td>
+			<td>
+				<select name="depart" size="1" class="">
+					<option value="0">- - เลือก - - </option>
+					<option value="คลังยา-กองเภสัชกรรม">คลังยา-กองเภสัชกรรม</option>
+					<option value="เวชระเบียนอิเล็กทรอนิกส์">เวชระเบียนอิเล็กทรอนิกส์</option>
+					<?php
+					$sql = "SELECT * FROM `departments` WHERE `status`='y' ORDER BY `id` ASC";
+					$result = mysql_query($sql);
+					while ($row = mysql_fetch_array($result)) {
+						$name = $row["name"];
+						?><option value="<?=$name;?>"><?=$name;?></option><?php
+					}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr class="">
+			<td align="right">เลขที่เอกสาร :</td>
+			<td><input name="doc_id" type="text" id="doc_id" size="30" maxlength="100" readonly="readonly" value="<?= $id_max; ?>" /></td>
+		</tr>
+		<tr class="">
+			<td align="right">ชื่อเอกสาร :</td>
+			<td><input name="doc_name" type="text" id="doc_name" size="70" maxlength="100" /></td>
+		</tr>
+		<tr class="">
+			<td align="right" valign="top" >ไฟล์เอกสาร :</td>
+			<td>
+				<div>
+					<input type="file" name="attach[]" id="attach_0" size="50" />
+					<button type="button" class="btn btn-secondary" onclick="addRow()">➕เพิ่มรายการ</button>
+				</div>
+				<div>
+					อนุญาตให้อัพโหลดไฟล์ .rar, .zip, .doc, .xls, .xlsx, .pdf, .ppt, .pptx, .docx, .jpg, .jpg เท่านั้น
+				</div>
+				<div id="moreFile"></div>
+			</td>
+		</tr>
+		<tr class="">
+			<td align="right">ผู้จัดเก็บเอกสาร :</td>
+			<td><input name="post_name" type="text" class="" id="post_name" size="30" maxlength="100" value="<?=$_SESSION['sOfficer'];?>" readonly/></td>
+		</tr>
+		<tr>
+			<td align="right">&nbsp;</td>
+			<td>
+				<input name="Submit" type="submit" class="btn btn-primary" value="บันทึกข้อมูล" />
+				<input type="hidden" name="action" value="submit">
+			</td>
+		</tr>
+	</table>
+</form>
+</div>
+<script>
+	var cnt = 1;
+
+	window.onload = function(){
+		
+	}
+
+	function addRow() {
+		let itemId = cnt++;
+
+		let f = document.getElementById('moreFile');
+		
+		let div = document.createElement("div");
+		div.id = 'row'+itemId;
+
+		let input = document.createElement("input");
+		input.type = 'file';
+		input.name = 'attach[]';
+
+		let a = document.createElement("a");
+		a.href = 'javascript:void(0);';
+		a.innerText = '➖ ลบ';
+		a.setAttribute('style', 'text-decoration: none;');
+		a.setAttribute('onclick', 'this.parentElement.remove()');
+
+		div.append(input);
+		div.append(a);
+
+		f.append(div);
+	}
+
+	////// เช็คค่าว่าง
+	function fncSubmit(e) {
+		e.preventDefault();
+		var fn = document.f1;
+		let form = true;
+		if (fn.depart.selectedIndex == 0) {
+			Swal.fire('กรุณาระบุแผนกด้วยครับ');
+			form = false;
+		}else if (fn.doc_name.value == "") {
+			Swal.fire('กรุณาระบุชื่อเอกสารด้วยครับ');
+			form = false;
+		}else if (fn.attach_0.value == "") {
+			Swal.fire('กรุณาแนบเอกสารอย่างน้อย 1ฉบับ');
+			form = false;
+		}else if (fn.post_name.value == "") {
+			Swal.fire('กรุณาระบุชื่อผู้อัพโหลดด้วยครับ');
+			form = false;
+		}
+
+		if(form===true){
+			fn.submit();
+		}
+	}
+</script>
+
+</body>
+</html>
