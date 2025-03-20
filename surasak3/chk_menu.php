@@ -115,6 +115,9 @@ label:hover{
     font-weight: bold;
     text-align: right;
 }
+legend{
+    font-weight: bold;
+}
 </style>
 <?php
 
