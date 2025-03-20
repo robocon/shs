@@ -142,7 +142,7 @@ if( $action == 'save' ) {
 include 'chk_menu.php';
 
 $id = input_get('id', 0);
-$company = $company_code = $date_checkup = '';
+$company = $company_code = $date_checkup = $job_date_run = '';
 $read_only = false;
 if( $id > 0 ){
     $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
@@ -152,8 +152,11 @@ if( $id > 0 ){
     $name = $item['name'];
     $code = $item['code'];
     $date_checkup = $item['date_checkup'];
+    $job_date_run = $item['job_date_run'];
     
     $read_only = 'readonly="readonly"';
+
+    dump($item);
 
     $db->select("SELECT `row` FROM `opcardchk` WHERE `part` = '$code' ");
     $user_rows = $db->get_rows();
@@ -239,12 +242,21 @@ ol > li {
                     </table>
                 </td>
                 <td valign="top" >
-                    <input type="checkbox" id="genVn" name="genVn" value="1"><label for="genVn">ออก VN อัตโนมัติ</label>
-                    <table id="genVnContainer" style="display:none;">
+                    <?php 
+                    $jobStyle = 'display:none;';
+                    $jobChecked = '';
+                    if(!empty($job_date_run)){
+                        $jobStyle = '';
+                        $jobChecked = 'checked="checked"';
+                    }
+                    ?>
+                    <input type="checkbox" id="genVn" name="genVn" value="1" <?=$jobChecked;?> ><label for="genVn">ออก VN อัตโนมัติ</label>
+                    
+                    <table id="genVnContainer" style="<?=$jobStyle;?>">
                         <tr >
                             <td align="right" valign="top">เลือกวันที่ : </td>
                             <td>
-                                <input type="date" name="job_date_run" id="job_date_run">
+                                <input type="date" name="job_date_run" id="job_date_run" value="<?=$job_date_run;?>">
                                 <div>* ระบบจะทำการสร้าง VN ในเวลา 00:05น. ของวันที่ได้เลือกไว้</div>
                             </td>
                         </tr>
