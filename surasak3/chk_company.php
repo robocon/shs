@@ -297,7 +297,7 @@ ol > li {
         <legend>ค้นหาจากชื่อบริษัท</legend>
         <form action="chk_company.php" method="post">
             <div>
-                ค้นหาจากชื่อบริษัท <input type="text" name="company_name" id="company_name">
+                ค้นหาจากชื่อบริษัท <input type="text" name="company_name" id="company_name" required>
             </div>
             <div>
                 <button type="submit">แสดงผล</button>
