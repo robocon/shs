@@ -6,76 +6,7 @@ include 'includes/JSON.php';
 $action = input('action');
 $db = Mysql::load();
 
-if( $action == 'save' ) {
-    
-    $company = input_post('company');
-    $id = input_post('id');
-    $company_code = input_post('company_code');
-    $date_checkup = input_post('date_checkup');
-    $yearchk = sprintf("%d", $_POST['yearchk']);
-    $typeReport = $_REQUEST['typeReport'];
-
-    $officer = $_SESSION['sOfficer'];
-    $genVn = intval($_POST['genVn']);
-
-    $job_status = '';
-    $job_date_run = '';
-    if($genVn===1){
-        $job_status = 'r'; // ready
-        $job_date_run = $_POST['job_date_run'];
-    }
-    
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-
-    if( empty($company) OR empty($company_code) ){
-        $msg = 'กรุณาใส่ข้อมูล ชื่อบริษัท และ รหัสบริษัทให้ถูกต้อง';
-    }else{
-
-        if( $id > 0 ){
-            $sql = "UPDATE `chk_company_list`
-            SET
-            `name` = '$company', 
-            `code` = '$company_code', 
-            `date_checkup` = '$date_checkup', 
-            `yearchk` = '$yearchk',
-            `job_status` = '$job_status',
-            `job_date_edit` = NOW(),
-            `job_date_run` = '$job_date_run',
-            `officer_edit` = '$officer'
-            WHERE `id` = '$id';";
-            $save = $db->update($sql);
-
-            if( $save !== true ){
-                $msg = errorMsg('save', $save['id']);
-            }
-
-        }else{
-
-            $sql = "SELECT `id` FROM `chk_company_list` WHERE `code` = '$company_code'";
-            $db->select($sql);
-            $chk_row = $db->get_rows();
-            if( $chk_row == 0 ){
-                $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report`,`job_status`,`job_date_add`,`job_date_run`,`officer_add`) 
-                VALUES (
-                    NULL,'$company','$company_code','$date_checkup','$yearchk','1','$typeReport','$job_status',NOW(),'$job_date_run','$officer'
-                );";
-                $save = $db->insert($sql);
-
-                if( $save !== true ){
-                    $msg = errorMsg('save', $save['id']);
-                }
-            }else{
-                $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
-            }
-            
-        }
-
-    }
-
-    redirect('chk_company.php', $msg);
-    exit;
-
-}elseif ($action == 'del') {
+if ($action == 'del') {
     
     if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
 
@@ -138,134 +69,57 @@ if( $action == 'save' ) {
 </head>
 <body>
 <?php
-
 include 'chk_menu.php';
 
-$id = input_get('id', 0);
-$company = $company_code = $date_checkup = $job_date_run = '';
-$read_only = false;
-if( $id > 0 ){
-    $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
-    $db->select($sql);
-    $item = $db->get_item();
-
-    $name = $item['name'];
-    $code = $item['code'];
-    $date_checkup = $item['date_checkup'];
-    $job_date_run = $item['job_date_run'];
-    
-    $read_only = 'readonly="readonly"';
-
-    dump($item);
-
-    $db->select("SELECT `row` FROM `opcardchk` WHERE `part` = '$code' ");
-    $user_rows = $db->get_rows();
-    $del_txt = 'chk_company.php?action=del&id='.$id;
-    if( $user_rows > 0 ){
-        // ถ้ายังมี user จะลบไม่ได้
-        $del_txt = 'javascript: void(0); alert(\'กรุณาลบรายชื่อผู้ตรวจสุขภาพก่อนลบบริษัท\');';
-    }
-    
-}
 ?>
 <style>
 ol > li {
     margin-bottom: 6px;
 }
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+#myModalContainer{
+    width: 90%;
+    background: #fff;
+    padding: 1em;
+    margin:0 auto;
+}
 </style>
-<fieldset>
-    <legend>เพิ่มบริษัทใหม่</legend>
-    <form action="chk_company.php" method="post" id="formAddCompany" onsubmit="formSubmit()">
-        <table>
-            <tr>
-                <td valign="top">
-                    <table>
-                        <tr>
-                            <td align="right">ชื่อบริษัท : </td>
-                            <td><input type="text" name="company" id="company" value="<?=$name;?>" style="width:200px;"></td>
-                        </tr>
-                        <tr>
-                            <td align="right">รหัสบริษัท : </td>
-                            <td>
-                                <input type="text" name="company_code" id="company_code" value="<?=$code;?>" <?=$read_only;?> style="width:200px;">
-                                <button type="button" id="checkCompany">ตรวจสอบ</button>
-                                <div id="resCheckCompany"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right" valign="top">วันที่ตรวจ : </td>
-                            <td>
-                                <input type="text" name="date_checkup" id="date_checkup" value="<?=$date_checkup;?>"> 
-                                <div style="color: red;"><u>* แสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">เลือกรายงาน : </td>
-                            <td>
-                                <select name="typeReport" id="typeReport">
-                                    <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
-                                    <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">รอบปีงบประมาณ : </td>
-                            <td>
-                                <?php 
-                                $year_checkup = get_year_checkup(true);
-                                $year_list = range($year_checkup, $year_checkup+1);
-                                ?>
-                                <select name="yearchk" id="yearchk">
-                                    <?php 
-                                    foreach ($year_list as $key => $value) {
-                                        ?>
-                                        <option value="<?=$value;?>"><?=$value;?></option>
-                                        <?php
-                                    }
-                                    ?>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                <button type="submit">บันทึกข้อมูล</button>&nbsp; 
-                                <?php 
-                                if( $id > 0 ){
-                                    ?><a href="<?=$del_txt;?>" onclick="return confirm('ยืนยันที่จะลบข้อมูล?')">🗑️ ลบข้อมูล</a><?php
-                                }
-                                ?>
-                                <input type="hidden" name="action" value="save">
-                                <input type="hidden" name="id" value="<?=$id;?>">
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td valign="top" >
-                    <?php 
-                    $jobStyle = 'display:none;';
-                    $jobChecked = '';
-                    if(!empty($job_date_run)){
-                        $jobStyle = '';
-                        $jobChecked = 'checked="checked"';
-                    }
-                    ?>
-                    <input type="checkbox" id="genVn" name="genVn" value="1" <?=$jobChecked;?> ><label for="genVn">ออก VN อัตโนมัติ</label>
-                    
-                    <table id="genVnContainer" style="<?=$jobStyle;?>">
-                        <tr >
-                            <td align="right" valign="top">เลือกวันที่ : </td>
-                            <td>
-                                <input type="date" name="job_date_run" id="job_date_run" value="<?=$job_date_run;?>">
-                                <div>* ระบบจะทำการสร้าง VN ในเวลา 00:05น. ของวันที่ได้เลือกไว้</div>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </form>
-</fieldset>
+
+<button onclick="formAddCompany()">+ เพิ่มบริษัท</button>
+
+<div id="myModal" class="modal" style="display:none;">
+    <div id="myModalContainer">
+        <div class="clearfix">
+            <div id="myModalHeader"><a href="javascript:void(0);" onclick="closeFormAdd()"><span class="close">&times; ปิด</span></a></div>
+        </div>
+        <div id="resFormAddCompany"></div>
+    </div>
+</div>
+
 <br>
 <div class="clearfix">
     <fieldset style="float:left;">
@@ -319,6 +173,24 @@ ol > li {
     </fieldset>
 </div>
 <script>
+
+    function formAddCompany(){
+        loadFormAddCompany().then((res)=>{ 
+            document.getElementById('resFormAddCompany').innerHTML = res;
+            document.getElementById('myModal').style.display = '';
+        });
+    }
+
+    async function loadFormAddCompany(){
+        const response = await fetch('chk_form_company.php');
+        const body = await response.text();
+        return body;
+    }
+
+    function closeFormAdd(){
+        document.getElementById('myModal').style.display = 'none';
+    }
+
     function getCompany(){
         let yearSelected = document.getElementById('year_selected').value;
         getComapnyAsync(yearSelected).then((response)=>{
@@ -345,16 +217,17 @@ ol > li {
         return body;
     }
 
-    document.getElementById('genVn').addEventListener('change', function(){
-        if(this.checked===true){
+    function showGenVn(){
+        let genVnChecked = document.getElementById('genVn');
+        if(genVnChecked.checked===true){
             document.getElementById('genVnContainer').style.display = '';
         }else{
             document.getElementById('genVnContainer').style.display = 'none';
             document.getElementById('job_date_run').value = '';
         }
-    });
-
-    function formSubmit(){
+    }
+    
+    function formAddCompanySubmit(){
         event.preventDefault();
 
         let company = document.getElementById('company').value.trim();
@@ -381,21 +254,55 @@ ol > li {
                 const dateNow = new Date("<?=date('Y-m-d');?>");
 
                 if(jobDate.getTime() <= dateNow.getTime()){
-                    Swal.fire("กรุณาเลือกวันที่ของงานที่จะเกิดขึ้นในอนาคต");
+                    Swal.fire({
+                        title: "กรุณาเลือกวันที่ของงานที่จะเกิดขึ้นในอนาคต",
+                        icon: "warning"
+                    });
                     formValue = false;
-                }else{
-
                 }
-                
             }
         }
 
         if(formValue===true){
-            document.getElementById('formAddCompany').submit();
+            
+            let form = document.getElementById('formAddCompany');
+            let formData = {};
+            for (let index = 0; index < form.elements.length; index++) {
+                const element = form.elements[index];
+                if(element.type!=="submit" && element.value !== ''){
+                    formData[element.name] = element.value;
+                }
+            }
+            doSaveForm(formData).then((res)=>{
+                if(res.status===200){
+                    Swal.fire("บันทึกข้อมูลเรียบร้อย").then((fResult)=>{
+                        location.reload();
+                    });
+                }else{
+                    Swal.fire(res.message);
+                }
+            });
         }
     }
 
-    document.getElementById('checkCompany').addEventListener('click', function(){
+    async function doSaveForm(formData){
+        console.log(formData);
+        let response = await fetch('chk_subapi.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const res = await response.json();
+        return res;
+    }
+
+    /**
+     * ปุ่มตรวจสอบ รหัสบริษัท
+     */
+    function onCheckCompany(){
         let company_code = document.getElementById('company_code').value.trim();
         if(company_code==''){
             Swal.fire("กรุณากรอก รหัสบริษัท ก่อนที่จะตรวจสอบ");
@@ -414,8 +321,7 @@ ol > li {
                 }
             });
         }
-        
-    });
+    }
 
     async function doCheckCompany(name){
         const response = await fetch('chk_company.php?action=check_company&name='+name);
