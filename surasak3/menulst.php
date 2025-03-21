@@ -228,7 +228,7 @@ if($menucode != 'ADMDR1'){
 	<td BGCOLOR='#148F77'><a target='main' href="newpw.php"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>
 </tr>
 <?php 
-if($sOfficer=='อรรณพ ธรรมลักษมี (ว.16633)'){
+if($sOfficer=='วรินทร ทานาค (ว.22067)'){
 	?>
 	<tr>
 		<td BGCOLOR='#148F77'>
@@ -281,6 +281,9 @@ if($menucode!=='ADMDR1'){
 	?>
 	<tr>
 		<td BGCOLOR='#148F77'><a target='_blank' href="ha_index.php"><font face='THSarabunPSK' size='5'>KPI Center (แบบบันทึกตัวชี้วัด)</font></a></td>
+	</tr>
+	<tr>
+		<td BGCOLOR='#148F77'><a target="_blank" href="https://pex.ha.or.th/qrcode/admin/eb160de1de89d9058fcb0b968dbbbd68"><font face='THSarabunPSK' size='5'>บันทึกความพึงพอใจผู้ป่วย</font></a></td>
 	</tr>
 	<?php
 }

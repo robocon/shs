@@ -327,6 +327,9 @@ require_once 'com_user_menu.php';
 			}else if(fullname.length < 4){
 				Swal.fire("ความยาวชื่อ-นามสกุล อย่างน้อยควรมากกว่า 4ตัวอักษร");
 				return false;
+			}else if(fullname.match(/admin/gi)){
+				Swal.fire("admin ไม่ใช่ชื่อจริง กรุณาใส่ชื่อจริง");
+				return false;
 			}
 
 			let data = [];

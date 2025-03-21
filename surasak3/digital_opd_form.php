@@ -55,56 +55,58 @@ function calcage($birth){
 	return $pAge;
 }
 
-$sql = "Select thidate, vn, hn, ptname , temperature , pause , rate , weight , height , bp1 , bp2 , drugreact , congenital_disease , type , organ , doctor, clinic, cigarette,alcohol,painscore,age,bp3,bp4,waist,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`,`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab` From opd where thdatehn = '".$_GET["dthn"]."' order by row_id desc limit 1 ";
-
+$sql = "Select thidate, vn, hn, ptname  From opday where thdatehn = '".$_GET["dthn"]."' order by row_id desc limit 1 ";
 $result_dt_hn = Mysql_Query($sql);
 $num=mysql_num_rows($result_dt_hn);
-list($thidate, $vn, $hn, $ptname , $temperature , $pause , $rate , $weight , $height , $bp1 , $bp2 , $drugreact , $congenital_disease , $type , $organ , $doctor, $clinic, $cigarette, $alcohol,$painscore,$age,$bp3,$bp4,$waist,$mens,$mens_date,$vaccine,$parent_smoke,$parent_smoke_amount,$parent_drink,$parent_drink_amount,$smoke_amount,$drink_amount,$ht_amount,$dm_amount,$hpi,$grade,$mind,$the_pill,$cvriskscore,$cvriskscore_lab) = Mysql_fetch_row($result_dt_hn);
+list($thidate, $vn, $hn, $ptname) = Mysql_fetch_row($result_dt_hn);
 $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4)." ".substr($thidate,10);
-if($cigarette==0){$cigarette='ไม่สูบ';}
-else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';}
-else {$cigarette='เคยสูบ';};
 
-if($alcohol==0){
-	$alcohol='ไม่ดื่ม';
-}else if($alcohol==1){
 
-	if(intval($drink_amount)===0){
-		$alcohol='ดื่ม '.$drink_amount.' แก้ว/สัปดาห์';
+	//////// แพ้ยา ////////
+	$list1 = array();
+	$sql = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and advreact !=''";
+	//echo $sql;
+	$result = Mysql_Query($sql);
+	$drugreact_rows = mysql_num_rows($result);
+	if($drugreact_rows>0){
+		while($arr = Mysql_fetch_assoc($result)){
+			array_push($list1 ,$arr["tradname"]);
+		}
+		$list_drug1 = implode(", ",$list1);
+		$drugreact_disease .= $list_drug1;
 	}else{
-		$alcohol='ไม่ดื่ม';
+		$drugreact_disease ="ปฎิเสธการแพ้ยา";
 	}
 	
-}else{
-	$alcohol='เคยดื่ม';
-}
+		
 
-if($drugreact == 0){
-	$drugreact_disease .="ปฎิเสธการแพ้ยา";
-}else{
-	$i=0;
-	$list = array();
-	$sql = "Select  tradname From drugreact  where hn = '".$hn."' ";
-	$result = Mysql_Query($sql);
-	while($arr = Mysql_fetch_assoc($result)){
-		array_push($list ,$arr["tradname"]);
+	//////// อาการข้างเคียง ////////
+	$list2 = array();
+	$sql2 = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and sideeffects !=''";
+	$result2 = Mysql_Query($sql2);
+	$drugreact_rows2 = mysql_num_rows($result2);
+	//echo $sql2;
+	if($drugreact_rows2>0){
+		while($arr2 = Mysql_fetch_assoc($result2)){
+			array_push($list2 ,$arr2["tradname"]);
+				
+		}
+		$list_drug2 = implode(", ",$list2);
+		$sideeffects_disease .= $list_drug2;
+	}else{
+		$sideeffects_disease ="ไม่มีประวัติ";
 	}
-	$list_drug = implode(", ",$list);
-	$drugreact_disease .= "แพ้ยา : ".$list_drug;
-}
 
 
-	$ht = $height/100;
-	$bmi=number_format($weight /($ht*$ht),2);
 	
 	$sql112 = "Select hn,vn,ptname,ptright From opday where thdatehn = '".$_GET["dthn"]."' order by row_id desc limit 1 ";
 	$result112 = Mysql_Query($sql112);
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease,allergy From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood,$congenital_disease) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood,$congenital_disease,$allergy) = Mysql_fetch_row($result111);
 	
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
@@ -115,6 +117,10 @@ if($drugreact == 0){
 	$dbirth="$dy-$dm-$dd";
 	//echo $dbirth;
 	$birthday=DateThai($dbirth);
+	
+	if(empty($allergy)){
+		$allergy="ไม่มีประวัติ";
+	}	
 	
 if($congenital_disease == ""){
 	$congenital_disease="ปฎิเสธ";
@@ -197,9 +203,12 @@ p.text {
 //window.opener.location.reload();
 //window.opener.location.reload(true);
 window.print();
-	setTimeout(function(){ 
-            window.close();
-	}, 1000);
+	// setTimeout(function(){ 
+    //         window.close();
+	// }, 1000);
+	window.onafterprint = function(){
+		window.close();
+	}
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
 <div class="narrowWaisted">
@@ -248,7 +257,15 @@ window.print();
 	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?php echo $drugreact_disease;?></span>
 	</div>
 	</td>
-  </tr>  
+  </tr>
+  <tr >
+    <td><div align="center">&nbsp;</div></td>
+    <td colspan="2"><div>
+	<span><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?php echo $allergy;?></span>
+	<span style="margin-left:20px;"><strong>ผลข้างเคียงจากยา : </strong><?php echo $sideeffects_disease;?></span>
+	</div>
+	</td>
+  </tr>   
 </table>
 <hr>
 <div align="left" style="font-size:24px;"><strong>วัน/เดือน/ปี : <?php echo date("d/m/").(date("Y")+543);?></strong><strong style="margin-left:20px;">VN : <?php echo $vn;?></strong></div>

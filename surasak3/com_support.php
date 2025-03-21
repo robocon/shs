@@ -11,6 +11,12 @@ include 'bootstrap.php';
     a:hover {text-decoration: none;}
     a:active {text-decoration: none;}
     body {background-color: #FFFFFF;}
+    .clearfix::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
 </style>
 <?php
 if ($_SESSION["smenucode"] == "ADM" || $_SESSION["smenucode"] == "ADMCOM") {
@@ -18,6 +24,8 @@ if ($_SESSION["smenucode"] == "ADM" || $_SESSION["smenucode"] == "ADMCOM") {
 } else {
     print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
 }
+?>&nbsp;&nbsp;||&nbsp;&nbsp;<a href="work_order.php" class="forntsarabun" target="_blank">พิมพ์ใบซ่อม</a>
+<?php
 print "<hr>";
 
 if ($_SESSION['supportMessage']) {
@@ -35,13 +43,21 @@ if ($_SESSION['supportMessage']) {
     <?php
     $_SESSION['supportMessage'] = NULL;
 }
+?>
+<div class="">
+    <div style="">
+        <div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>
+        <div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong><?=$sOfficer;?></strong> เข้าสู่ระบบ</font></div>
+        <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> และนายชาญวิทย์  ตากาบุตร<b>....โทร. 8500</b></font></div>
+        <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>
+    </div>
+    <div style="">
+        <div align='center' class='forntsarabun'><strong>แจ้งซ่อมในระบบแล้ว กรุณาติดตามสถานะงานด้วยครับ [งานใหม่ : กำลังดำเนินการ : ปิดงาน]</strong></div><BR>
+        <div align='center' class='forntsarabun'>แสกน QR Code เพื่อเข้ากลุ่มติดตามงาน IT<br><img src='images/it-job.jpg' width='180' height='180'></div>
+    </div>
+</div>
 
-print "<br><div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>";
-print "<div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong>$sOfficer</strong> เข้าสู่ระบบ</font></div>";
-echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> และนายชาญวิทย์  ตากาบุตร<b>....โทร. 8500</b></font></div>";
-echo "<div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>";
-print "<div align='center' class='forntsarabun'><strong>แจ้งซ่อมในระบบแล้ว กรุณาติดตามสถานะงานด้วยครับ [งานใหม่ : กำลังดำเนินการ : ปิดงาน]</strong></div><BR>";
-print "<div align='center' class='forntsarabun'>แสกน QR Code เพื่อเข้ากลุ่มติดตามงาน IT<br><img src='images/it-job.jpg' width='180' height='180'></div>";
+<?php
 $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
 $num = "Y";

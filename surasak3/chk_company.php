@@ -6,62 +6,7 @@ include 'includes/JSON.php';
 $action = input('action');
 $db = Mysql::load();
 
-if( $action == 'save' ) {
-    
-    $company = input_post('company');
-    $id = input_post('id');
-    $company_code = input_post('company_code');
-    $date_checkup = input_post('date_checkup');
-    $yearchk = sprintf("%d", $_POST['yearchk']);
-    $typeReport = $_REQUEST['typeReport'];
-
-    $msg = 'บันทึกข้อมูลเรียบร้อย';
-
-    if( empty($company) OR empty($company_code) ){
-        $msg = 'กรุณาใส่ข้อมูล ชื่อบริษัท และ รหัสบริษัทให้ถูกต้อง';
-    }else{
-
-        if( $id > 0 ){
-            $sql = "UPDATE `chk_company_list`
-            SET
-            `name` = '$company', 
-            `code` = '$company_code', 
-            `date_checkup` = '$date_checkup', 
-            `yearchk` = '$yearchk' 
-            WHERE `id` = '$id';";
-            $save = $db->update($sql);
-
-            if( $save !== true ){
-                $msg = errorMsg('save', $save['id']);
-            }
-
-        }else{
-
-            $sql = "SELECT `id` FROM `chk_company_list` WHERE `code` = '$company_code'";
-            $db->select($sql);
-            $chk_row = $db->get_rows();
-            if( $chk_row == 0 ){
-                $sql = "INSERT INTO `chk_company_list` ( `id`,`name`,`code`,`date_checkup`,`yearchk`,`status`,`report` ) 
-                VALUES (
-                    NULL,'$company','$company_code','$date_checkup','$yearchk','1','$typeReport'
-                );";
-                $save = $db->insert($sql);
-
-                if( $save !== true ){
-                    $msg = errorMsg('save', $save['id']);
-                }
-            }else{
-                $msg = "รหัสบริษัทซ้ำซ้อนไม่สามารถบันทึกข้อมูลได้";
-            }
-            
-        }
-
-    }
-
-    redirect('chk_company.php', $msg);
-    exit;
-
-}elseif ($action == 'del') {
+if ($action == 'del') {
     
     if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
 
@@ -97,6 +42,19 @@ if( $action == 'save' ) {
 
     echo $json->encode($res);
     exit;
+}elseif($action==='check_company'){
+    $json = new Services_JSON();
+    $code = $_GET['name'];
+
+    $db->select("SELECT id FROM `chk_company_list` WHERE `code` = '$code' LIMIT 1");
+    $row = $db->get_rows();
+    if($row > 0){
+        $res = array('status' => 400);
+    }else{
+        $res = array('status' => 200);
+    }
+    echo $json->encode($res);
+    exit;
 }
 
 ?>
@@ -105,149 +63,134 @@ if( $action == 'save' ) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <title>ระบบจัดการข้อมูล ตรวจสุขภาพ</title>
+    <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
 <?php
-
 include 'chk_menu.php';
 
-$id = input_get('id', 0);
-$company = $company_code = $date_checkup = '';
-$read_only = false;
-if( $id > 0 ){
-    $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
-    $db->select($sql);
-    $item = $db->get_item();
-
-    $name = $item['name'];
-    $code = $item['code'];
-    $date_checkup = $item['date_checkup'];
-    
-    $read_only = 'readonly="readonly"';
-
-    $db->select("SELECT `row` FROM `opcardchk` WHERE `part` = '$code' ");
-    $user_rows = $db->get_rows();
-    $del_txt = 'chk_company.php?action=del&id='.$id;
-    if( $user_rows > 0 ){
-        // ถ้ายังมี user จะลบไม่ได้
-        $del_txt = 'javascript: void(0); alert(\'กรุณาลบรายชื่อผู้ตรวจสุขภาพก่อนลบบริษัท\');';
-    }
-    
-}
 ?>
 <style>
 ol > li {
     margin-bottom: 6px;
 }
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+#myModalContainer{
+    width: 90%;
+    background: #fff;
+    padding: 1em;
+    margin:0 auto;
+}
 </style>
-<fieldset>
-    <legend>เพิ่มบริษัทใหม่</legend>
-    <form action="chk_company.php" method="post">
-        <table>
-            <tr>
-                <td align="right">ชื่อบริษัท : </td>
-                <td><input type="text" name="company" value="<?=$name;?>" style="width: 40%; "></td>
-            </tr>
-            <tr>
-                <td align="right">รหัสบริษัท : </td>
-                <td><input type="text" name="company_code" value="<?=$code;?>" <?=$read_only;?>></td>
-            </tr>
-            <tr>
-                <td align="right">วันที่ตรวจ : </td>
-                <td>
-                    <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
-                    <span style="color: red;"><u>* ใช้ในการแสดงผลในใบพิมพ์ผลตรวจสุขภาพประจำปี</u> ตัวอย่างเช่น 5-20 ตุลาคม 2560</span>
-                </td>
-            </tr>
-            <tr>
-                <td align="right">เลือกรายงาน : </td>
-                <td>
-                    <select name="typeReport" id="">
-                        <option value="chk_report04.php">ผู้ป่วย walk-in เอง</option>
-                        <option value="chk_report03.php">มีการกำหนด Lab Number เอง</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td align="right">รอบปีงบประมาณ : </td>
-                <td>
-                    <?php 
-                    $year_checkup = get_year_checkup(true);
-                    $year_list = range($year_checkup, $year_checkup+1);
-                    ?>
-                    <select name="yearchk" id="yearchk">
-                        <?php 
-                        foreach ($year_list as $key => $value) {
-                            ?>
-                            <option value="<?=$value;?>"><?=$value;?></option>
-                            <?php
-                        }
-                        ?>
-                        
-                    </select>
-                </td>
-            </tr>
-            <?php 
-            if( $id > 0 ){
-                ?>
-                <tr>
-                    <td colspan="2">
-                        <a href="<?=$del_txt;?>">ลบข้อมูลบริษัท</a>
-                    </td>
-                </tr>
-                <?php 
-            }
-            ?>
-            <tr>
-                <td colspan="2">
-                    <button type="submit">บันทึกข้อมูล</button>
-                    <input type="hidden" name="action" value="save">
-                    <input type="hidden" name="id" value="<?=$id;?>">
-                </td>
-            </tr>
-        </table>
-    </form>
-</fieldset>
+
+<button onclick="formAddCompany()">+ เพิ่มบริษัท</button>
+
+<div id="myModal" class="modal" style="display:none;">
+    <div id="myModalContainer">
+        <div class="clearfix">
+            <div id="myModalHeader"><a href="javascript:void(0);" onclick="closeFormAdd()"><span class="close">&times; ปิด</span></a></div>
+        </div>
+        <div id="resFormAddCompany"></div>
+    </div>
+</div>
+
 <br>
-<fieldset>
-    <legend>ค้นหาตามปีงบประมาณ</legend>
-    <form action="chk_company.php" method="post">
-        <div> เลือกปี : 
-            <?php 
-            $year_selected = input_post('year_selected', date('Y') );
-            $year_range = range('2018',get_year_checkup(true, true)+1);
-            getYearList('year_selected', true, $year_selected, $year_range,false, 'getCompany');
-            ?>
-        </div>
-        <div>
-            <span>เลือกบริษัท : </span>
-            <?php 
-            $db->select("SELECT `id`,`name`,`code` FROM `chk_company_list` WHERE `yearchk` = '".($year_selected+543)."' AND `status` = '1' ORDER BY `id` DESC ");
-            if($db->get_rows()>0){
+<div class="clearfix">
+    <fieldset style="float:left;">
+        <legend>ค้นหาตามปีงบประมาณ</legend>
+        <form action="chk_company.php" method="post">
+            <div> เลือกปี : 
+                <?php 
+                $year_selected = input_post('year_selected', date('Y') );
+                $year_range = range('2018',get_year_checkup(true, true)+1);
+                getYearList('year_selected', true, $year_selected, $year_range,false, 'getCompany');
                 ?>
-                <span id="selectYearResponse">
-                    <select name="companySelected" id="companySelected">
-                        <option value="">-- แสดงทั้งหมด --</option>
-                        <?php 
-                        $companyItems = $db->get_items();
-                        foreach ($companyItems as $companyItem) {
-                            ?><option value="<?=$companyItem['id'];?>"><?=$companyItem['code'];?></option><?php
-                        }
-                        ?>
-                    </select>
-                </span>
-                <?php
-            }
-            ?>
-        </div>
-        <div>
-            <button type="submit">แสดงผล</button>
-            <input type="hidden" name="views" value="search">
-        </div>
-    </form>
-</fieldset>
+            </div>
+            <div>
+                <span>เลือกบริษัท : </span>
+                <?php 
+                $db->select("SELECT `id`,`name`,`code` FROM `chk_company_list` WHERE `yearchk` = '".($year_selected+543)."' AND `status` = '1' ORDER BY `id` DESC ");
+                if($db->get_rows()>0){
+                    ?>
+                    <span id="selectYearResponse">
+                        <select name="companySelected" id="companySelected">
+                            <option value="">-- แสดงทั้งหมด --</option>
+                            <?php 
+                            $companyItems = $db->get_items();
+                            foreach ($companyItems as $companyItem) {
+                                ?><option value="<?=$companyItem['id'];?>"><?=$companyItem['code'];?></option><?php
+                            }
+                            ?>
+                        </select>
+                    </span>
+                    <?php
+                }
+                ?>
+            </div>
+            <div>
+                <button type="submit">แสดงผล</button>
+                <input type="hidden" name="views" value="search">
+            </div>
+        </form>
+    </fieldset>
+    <fieldset style="float:left;">
+        <legend>ค้นหาจากชื่อบริษัท</legend>
+        <form action="chk_company.php" method="post">
+            <div>
+                ค้นหาจากชื่อบริษัท <input type="text" name="company_name" id="company_name" required>
+            </div>
+            <div>
+                <button type="submit">แสดงผล</button>
+                <input type="hidden" name="views" value="search">
+            </div>
+        </form>
+    </fieldset>
+</div>
 <script>
+
+    function formAddCompany(){
+        loadFormAddCompany().then((res)=>{ 
+            document.getElementById('resFormAddCompany').innerHTML = res;
+            document.getElementById('myModal').style.display = '';
+        });
+    }
+
+    async function loadFormAddCompany(){
+        const response = await fetch('chk_form_company.php');
+        const body = await response.text();
+        return body;
+    }
+
+    function closeFormAdd(){
+        document.getElementById('myModal').style.display = 'none';
+    }
+
     function getCompany(){
         let yearSelected = document.getElementById('year_selected').value;
         getComapnyAsync(yearSelected).then((response)=>{
@@ -273,6 +216,118 @@ ol > li {
         const body = await response.text();
         return body;
     }
+
+    function showGenVn(){
+        let genVnChecked = document.getElementById('genVn');
+        if(genVnChecked.checked===true){
+            document.getElementById('genVnContainer').style.display = '';
+        }else{
+            document.getElementById('genVnContainer').style.display = 'none';
+            document.getElementById('job_date_run').value = '';
+        }
+    }
+    
+    function formAddCompanySubmit(){
+        event.preventDefault();
+
+        let company = document.getElementById('company').value.trim();
+        let company_code = document.getElementById('company_code').value.trim();
+
+        let genVn = document.getElementById('genVn').checked;
+        let job_date_run = document.getElementById('job_date_run').value;
+
+        let formValue = true;
+        if(company==''){
+            Swal.fire("กรุณากรอก ชื่อบริษัท");
+            formValue = false;
+        }else if(company_code==''){
+            Swal.fire("กรุณากรอก รหัสบริษัท");
+            formValue = false;
+        }else if(genVn===true){
+            
+            if(job_date_run==''){
+                Swal.fire("กรุณาเลือกวันที่ในการออก VN");
+                formValue = false;
+            }else{
+
+                const jobDate = new Date(job_date_run);
+                const dateNow = new Date("<?=date('Y-m-d');?>");
+
+                if(jobDate.getTime() <= dateNow.getTime()){
+                    Swal.fire({
+                        title: "กรุณาเลือกวันที่ของงานที่จะเกิดขึ้นในอนาคต",
+                        icon: "warning"
+                    });
+                    formValue = false;
+                }
+            }
+        }
+
+        if(formValue===true){
+            
+            let form = document.getElementById('formAddCompany');
+            let formData = {};
+            for (let index = 0; index < form.elements.length; index++) {
+                const element = form.elements[index];
+                if(element.type!=="submit" && element.value !== ''){
+                    formData[element.name] = element.value;
+                }
+            }
+            doSaveForm(formData).then((res)=>{
+                if(res.status===200){
+                    Swal.fire("บันทึกข้อมูลเรียบร้อย").then((fResult)=>{
+                        location.reload();
+                    });
+                }else{
+                    Swal.fire(res.message);
+                }
+            });
+        }
+    }
+
+    async function doSaveForm(formData){
+        console.log(formData);
+        let response = await fetch('chk_subapi.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const res = await response.json();
+        return res;
+    }
+
+    /**
+     * ปุ่มตรวจสอบ รหัสบริษัท
+     */
+    function onCheckCompany(){
+        let company_code = document.getElementById('company_code').value.trim();
+        if(company_code==''){
+            Swal.fire("กรุณากรอก รหัสบริษัท ก่อนที่จะตรวจสอบ");
+        }else{
+            doCheckCompany(company_code).then((res)=>{
+                if(res.status==400){
+                    Swal.fire({
+                        title: "มีการใช้รหัสบริษัทนี้ไปแล้ว กรุณาเปลี่ยนใหม่อีกครั้ง",
+                        icon: "warning"
+                    });
+                }else if(res.status==200){
+                    Swal.fire({
+                        title: "สามารถใช้รหัสนี้ได้",
+                        icon: "success"
+                    });
+                }
+            });
+        }
+    }
+
+    async function doCheckCompany(name){
+        const response = await fetch('chk_company.php?action=check_company&name='+name);
+        const data = await response.json();
+        return data;
+    }
 </script>
 <?php 
 $views = input_post('views');
@@ -280,7 +335,8 @@ if ( $views == 'search' ) {
 ?>
 <div>
     <?php 
-    
+    $company_name = $_POST['company_name'];
+
     $year_selected += 543; 
 
     $companySelected = sprintf($_POST['companySelected']);
@@ -289,9 +345,14 @@ if ( $views == 'search' ) {
         $whereCompany = "AND `id` = '$companySelected' ";
     }
 
-    $sql = "SELECT * FROM `chk_company_list` 
-    WHERE `yearchk` = '$year_selected' $whereCompany AND `status` = '1' 
-    ORDER BY `id` ASC";
+    if(empty($company_name)){
+        $sql = "SELECT * FROM `chk_company_list` 
+        WHERE `yearchk` = '$year_selected' $whereCompany AND `status` = '1' 
+        ORDER BY `id` ASC";
+    }else{
+        $sql = "SELECT * FROM `chk_company_list` WHERE `name` LIKE '%$company_name%' ";
+    }
+    
     $db->select($sql);
     $items = $db->get_items();
     ?>

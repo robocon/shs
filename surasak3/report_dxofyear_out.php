@@ -531,13 +531,13 @@ C ํ</span></td>
 			}else if($objResult["labcode"]=="NEU"){
 				$labmean="(การติดเชื้อแบคทีเรีย)";
 			}else if($objResult["labcode"]=="LYMP"){
-				$labmean="(การติดเชื้อไวรัส หรือมะเร็งเม็ดเลือด)";
+				$labmean="(การติดเชื้อไวรัส)";
 			}else if($objResult["labcode"]=="MONO"){
-				$labmean="(โรคเกี่ยวกับการแพ้ หรือมะเร็งเม็ดเลือด)";
+				$labmean="(โรคเกี่ยวกับการแพ้)";
 			}else if($objResult["labcode"]=="EOS"){
 				$labmean="(อาการของโรคภูมแพ้ หรือพยาธิ)";
 			}else if($objResult["labcode"]=="BASO"){
-				$labmean="(กลุ่มโรคมะเร็งเม็ดเลือดขาว)";
+				$labmean="(เม็ดเลือดขาวชนิดบาโซฟิล)";
 			}else if($objResult["labcode"]=="ATYP"){
 				$labmean="(***)";
 			}else if($objResult["labcode"]=="BAND"){

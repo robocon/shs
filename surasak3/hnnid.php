@@ -56,6 +56,16 @@ if (!empty($hn)) {
 
 	include("connect.inc");
 
+	$sql = "SELECT `idguard` FROM `opcard` WHERE `hn` = '$hn' ORDER BY `row_id` DESC LIMIT 1";
+	list($idguard) = mysql_fetch_row(Mysql_Query($sql));
+	$idguardCode=substr($idguard,0,4);
+	if($idguardCode=='MX07'){
+		?>
+		<h3 style="color:red;"><u>ผู้ป่วยมีสถานะทำลายประวัติ กรุณาประสานแผนกทะเบียนเพื่อตรวจสอบข้อมูล ก่อนดำเนินการต่อไป ขอบคุณครับ</u></h3>
+		<?php
+		exit;
+	}
+	
 	$vnlab = 'EX92 ออก VN โดย ฝังเข็ม';
 	$today = date("d-m-Y");
 	$d = substr($today, 0, 2);
@@ -149,12 +159,9 @@ if (!empty($hn)) {
 		}
 		</script>
 		<?php
-
-		$sql = "SELECT idguard FROM opcard WHERE hn = '" . $cHn . "' Order by row_id DESC limit 1";
-		list($idguard) = mysql_fetch_row(Mysql_Query($sql));
-
+		
 		print "ประเภท : $idguard";
-
+		
 		if (substr($cPtright, 0, 3) == 'R12' || substr($cPtright, 0, 3) == 'R13' || substr($cPtright, 0, 3) == 'R14' || substr($cPtright, 0, 3) == 'R35') {
 			echo "<div style=\"background-color: #FF0000;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>เบิกต้นสังกัดได้ไม่เกิน 700 บาท</div>";
 		}

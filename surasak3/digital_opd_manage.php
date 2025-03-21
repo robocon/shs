@@ -9,9 +9,6 @@ if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
     exit;
 }
 
-define('API_HOST', 'http://192.168.131.240:8081/api');
-// define('API_HOST', 'http://127.0.0.1:8000/api');
-
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -172,7 +169,7 @@ if($action==='delete'){
         if($page==='search'){
             $hn = sprintf("%s", $_POST['hn']);
             if(!empty($hn)){
-                $items = getDigitalOpcard(API_HOST.'/getopcard?opcard_id='.$hn);
+                $items = getDigitalOpcard(LARAVEL_API_HOST.'/getopcard?opcard_id='.$hn);
             }
 
             $date = sprintf("%s", $_POST['date']);
@@ -283,7 +280,7 @@ if($action==='delete'){
         window.onload=function(){
             document.getElementById('hn').focus();
         }
-        var apiHost = '<?=API_HOST;?>';
+        var apiHost = '<?=LARAVEL_API_HOST;?>';
         function confirmDelete(row_id){
             var c = confirm("ยืนยันที่จะลบข้อมูล?");
             if (c===true) {

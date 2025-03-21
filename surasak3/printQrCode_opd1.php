@@ -37,9 +37,12 @@ div {
 </style>	
 <script language="javascript">    
 	window.print();
-	setTimeout(function(){ 
-            window.close();
-	}, 1000);
+	// setTimeout(function(){ 
+    //         window.close();
+	// }, 1000);
+	window.onafterprint = function(){
+		window.close();
+	}
 </script>
 <?php 
 $hn = $_GET['hn'];
