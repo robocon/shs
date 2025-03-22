@@ -102,7 +102,7 @@ $sql="Select * from opacc Where date like '$start_date%' and credit =''  ";
 ///////////////////////////
 
 //$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','เงินสด','อื่นๆ','นอนโรงพยาบาล')" ;
-	$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM แ WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','อื่นๆ','นอนโรงพยาบาล')" ;  //ตัดลูกหนี้เงินสดออก รคส.พี่ปู จัดเก็บรายได้ 16/8/2566
+	$query="CREATE TEMPORARY TABLE opacc1 SELECT * FROM opacc WHERE date  LIKE '$start_date%' and credit  not in ('ยกเลิก','อื่นๆ','นอนโรงพยาบาล')" ;  //ตัดลูกหนี้เงินสดออก รคส.พี่ปู จัดเก็บรายได้ 16/8/2566
 //echo $query."<br>";
 
     $result = mysql_query($query) or die("Query failed,opday1");
