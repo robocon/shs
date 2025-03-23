@@ -292,7 +292,7 @@ if($action==='delete'){
 
         async function deleteDigitalOpcard(id){
             // 192.168.131.240:8081
-            const response = await fetch(apiHost+'/deleteDigitalOpcard/'+id,{method:'DELETE'});
+            const response = await fetch(apiHost+'deleteDigitalOpcard/'+id,{method:'DELETE'});
             // const response = await fetch('digital_opd_manage.php?action=delete&row_id='+id);
             const data = await response.json();
             if(data.status===200){ 
