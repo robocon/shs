@@ -124,11 +124,12 @@ $query51 = "SELECT  date,hn,an,depart,detail,price,paid,idname,credit,ptright,bi
 //echo $query51;   
 $result51 = mysql_query($query51) or die("Query failed");
 while (list ($date,$hn,$an,$depart,$detail,$price,$paid,$idname,$credit,$ptright,$billno,$paidcscd,$credit_detail,$idname,$opacc_vn) = mysql_fetch_row ($result51)) {
-	print ("<tr BGCOLOR='#fadbd8'>\n".
+	print ("<tr BGCOLOR='#fadbd8' width='90%'>\n".
 	"  <td ><font face='TH SarabunPSK'font size='2'>$date</td>\n".
 	"  <td ><font face='TH SarabunPSK'font size='2'>$opacc_vn</td>\n".
 	"  <td ><font face='TH SarabunPSK'font size='2'>$hn</td>\n".
 	"  <td ><font face='TH SarabunPSK'font size='2'>$depart</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='3'><b>$detail</b></td>\n".
 	"  <td ><font face='TH SarabunPSK'font size='3'><b>$paid</b></td>\n".
 	"  <td ><font face='TH SarabunPSK'font size='2' color='red'><b>$credit</b></td>\n".
 	"  <td ><font face='TH SarabunPSK'font size='2' color='red'><b>$credit_detail</b></td>\n".

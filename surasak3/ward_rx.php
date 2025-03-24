@@ -1,10 +1,10 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	// header("content-type: application/x-javascript; charset=TIS-620");
 }
 
-include 'connect.inc';
+include 'connect.php';
 
 $limit30checkday = 30;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 

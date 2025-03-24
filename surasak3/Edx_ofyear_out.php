@@ -449,6 +449,22 @@ while($arr = Mysql_fetch_assoc($result)){
 			?>
             </select>
 		  </span></td>
+</tr>
+		<tr>
+		  <td align="right"><span class="tb_font_2">ที่อยู่ : </span></td>
+
+		  <td align="left">
+		  		<?php
+		  
+		  			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
+		  			$query_run = mysql_query($sql_address);
+		  			while($result_address = mysql_fetch_array($query_run)){ 
+		  				 
+		  				echo $result_address['address']." ต.".$result_address['tambol']." อ.".$result_address['ampur']." จ.".$result_address['changwat'];
+		  			}//end while
+
+		  		?>
+		  </td>
 		  </tr>
 	</table>
 	<hr />

@@ -1,7 +1,7 @@
-<form method="POST" action="preustk.php">
+Ôªø<form method="POST" action="preustk.php">
     <p><font face="Angsana New">&nbsp;</font>&nbsp;&nbsp;&nbsp; <b>&#3592;&#3656;&#3634;&#3618;&#3618;&#3634;&#3648;&#3623;&#3594;&#3616;&#3633;&#3603;&#3601;&#3660;&#3651;&#3627;&#3657;&#3627;&#3609;&#3656;&#3623;&#3618;&nbsp;</b>&nbsp;&nbsp;</p>
     <p><font face="Angsana New">
-    ÀπË«¬‡∫‘°
+    ‡∏´‡∏ô‡πà‡∏ß‡∏¢‡πÄ‡∏ö‡∏¥‡∏Å
     <?php
     include("connect.inc");
     $q = mysql_query("SELECT `id`,`name` FROM `departments` WHERE `phar` = 'y' ");
@@ -24,7 +24,7 @@
 $sql = "Select * From bring Order by row_id DESC limit 10";
 $result = Mysql_Query($sql) or die(Mysql_Error());
 
-echo "‡≈¢∑’Ë„∫‡∫‘° : <Select id='bring_id' name='bring_id' >";
+echo "‡πÄ‡∏•‡∏Ç‡∏ó‡∏µ‡πà‡πÉ‡∏ö‡πÄ‡∏ö‡∏¥‡∏Å : <Select id='bring_id' name='bring_id' >";
 
 while($arr = Mysql_fetch_assoc($result)){
 echo "<Option value='".$arr["row_id"]."'>".$arr["bring_no"]."</Option>";
@@ -33,7 +33,7 @@ echo "<Option value='".$arr["row_id"]."'>".$arr["bring_no"]."</Option>";
 echo "</Select>&nbsp;";
 
 include("unconnect.inc");
-?><INPUT TYPE="button" value="‡√’¬°¢ÈÕ¡Ÿ≈" Onclick="window.location.href='stkufrm2.php?id='+document.getElementById('bring_id').value;">
+?><INPUT TYPE="button" value="‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•" Onclick="window.location.href='stkufrm2.php?id='+document.getElementById('bring_id').value;">
 
 <BR>
-<a target=_top  href="../nindex.htm">&lt;&lt; ‰ª‡¡πŸ</a></font></p>
+<a target=_top  href="../nindex.htm">&lt;&lt; ‡πÑ‡∏õ‡πÄ‡∏°‡∏ô‡∏π</a></font></p>

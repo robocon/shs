@@ -17,15 +17,15 @@ window.open(theURL,winName,features);
 <form id="form1" name="form1" method="post" action="">
   <table width="70%" border="0" align="center">
     <tr>
-      <td colspan="2" align="center">����ѵԡ��Ѻ�ҡ�Ѻ��ҹ </td>
+      <td colspan="2" align="center">ประวัติการับยากลับบ้าน </td>
     </tr>
     <tr>
-      <td align="right">�к� HN :</td>
+      <td align="right">ระบุ HN :</td>
       <td><input type="text" name="hn" id="hn" class="fontsara1" /></td>
     </tr>
     <tr>
       <td align="right">&nbsp;</td>
-      <td><input name="button" type="submit" class="fontsara1" id="button" value="��ŧ" /> <a  class="fontsara" target="_top" href="../nindex.htm">&lt;&lt;�����</a></td>
+      <td><input name="button" type="submit" class="fontsara1" id="button" value="ตกลง" /> <a  class="fontsara" target="_top" href="../nindex.htm">&lt;&lt;ไปเมนู</a></td>
     </tr>
   </table>
 </form>
@@ -48,13 +48,13 @@ $arr2=mysql_fetch_assoc($queryopd);
 ?>
 <table  border="0">
   <tr>
-    <td>����-ʡ�� : </td>
+    <td>ชื่อ-สกุล : </td>
     <td><strong><?=$arr2['ptname'];?></strong></td>
     <td>HN :</td>
     <td><strong><?=$arr2['hn'];?></strong></td>
   </tr>
   <tr>
-    <td>�Է�� :</td>
+    <td>สิทธิ :</td>
     <td><strong><?=$arr2['ptright'];?></strong></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
@@ -63,9 +63,9 @@ $arr2=mysql_fetch_assoc($queryopd);
 
 <table border="1" cellpadding="2" cellspacing="2">
   <tr>
-    <td align="center">�ӴѺ</td>
-    <td align="center">�ѹ����� þ.</td>
-    <td align="center">ᾷ�� </td>
+    <td align="center">ลำดับ</td>
+    <td align="center">วันที่มา รพ.</td>
+    <td align="center">แพทย์ </td>
     <td align="center">Diag</td>
   </tr>
 <?

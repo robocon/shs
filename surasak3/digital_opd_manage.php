@@ -169,7 +169,8 @@ if($action==='delete'){
         if($page==='search'){
             $hn = sprintf("%s", $_POST['hn']);
             if(!empty($hn)){
-                $items = getDigitalOpcard(LARAVEL_API_HOST.'/getopcard?opcard_id='.$hn);
+                $content = file_get_contents(LARAVEL_API_HOST.'getopcard?opcard_id='.$hn);
+                $items = json_decode($content);
             }
 
             $date = sprintf("%s", $_POST['date']);

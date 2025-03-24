@@ -1,3 +1,7 @@
+<?php
+session_start();
+if (isset($sIdname)){} else {die;} //for security
+?>
 <body Onload="window.print();">
 <style type="text/css">
 @media print{
@@ -22,9 +26,6 @@ body,td,th {
 -->
 </style>
 <?php
-session_start();
-if (isset($sIdname)){} else {die;} //for security
-
 if ($paid<>$sNetprice){
            die("จ่ายเงินไม่เท่ากับราคารวม ออกใบเสร็จรับเงินไม่ได้");
                                     }
@@ -205,7 +206,7 @@ if (empty($credit) ){
 			$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "กทม" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "เช็ค")){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "กรุงไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "กทม" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "เช็ค")){
 
 if($_POST["credit"] == "จ่ายตรง" ){
 	$name_f = "billcscd";
@@ -317,7 +318,7 @@ else {
 */
 
     $cbaht=baht($paid);
-if($credit=='ทหารไทย'){$credit1='บัตรเครดิต';}else {$credit1=$credit;};
+if($credit=='กรุงไทย'){$credit1='บัตรเครดิต';}else {$credit1=$credit;};
 
 //print recieve
 print "<div align='left'>";

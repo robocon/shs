@@ -101,6 +101,7 @@ $drug_name = $_POST['drug_name'];
                 <option value="OR">OR</option>
                 <option value="หอผู้ป่วยสูตินรีเวชกรรม">หอผู้ป่วยสูตินรีเวชกรรม</option>
                 <option value="หอผู้ป่วยรวม">หอผู้ป่วยรวม</option> 
+                <option value="หอผู้ป่วยศัลยกรรมพิเศษ">หอผู้ป่วยศัลยกรรมพิเศษ</option>
             </select>
         </td> 
       </tr>

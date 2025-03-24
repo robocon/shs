@@ -272,8 +272,8 @@
 		 	<TD>เงินสด</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
 		 	<TD>เช็ค</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงไทย' onclick=\"document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
+		 	<TD>บัตรเครดิด ธ.กรุงไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';checkptring(this.value);\"></TD>
 		 	<TD>จ่ายตรง</TD>
 		 	
@@ -345,8 +345,8 @@ include("unconnect.inc");
 		 	<TD>เงินสด</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
 		 	<TD>เช็ค</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
+		 	<TD>บัตรเครดิด ธ.กรุงไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
 		 	<TD>จ่ายตรง</TD>
 		 	
@@ -422,8 +422,8 @@ include("unconnect.inc");
 		 	<TD>เงินสด</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงเทพ' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
 		 	<TD>บัตรเครดิด ธ.กรุงเทพ</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
+		 	<TD>บัตรเครดิด ธ.กรุงไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
 		 	<TD>จ่ายตรง</TD>
 		 	

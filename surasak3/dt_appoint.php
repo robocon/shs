@@ -1227,7 +1227,7 @@ include("dt_patient.php");
 		|| $_SESSION["sIdname"] == "md67005" // intern
 		|| $_SESSION["sIdname"] == "md67020" // intern
 		|| $_SESSION["sIdname"] == "md67054" // intern
-		|| $_SESSION["sIdname"] == "md43724" // หมอรวิดา
+		|| $_SESSION["sIdname"] == "md43724" // หมอวิรดา
 		|| $_SESSION["sIdname"] == "md55807" // ปริณดา กิตติดนัยรักษ์ (ว.55807)
 		|| $_SESSION["sIdname"] == "md58058" // เมนัญชญา  พงษ์ไพรเจริญ
 		
