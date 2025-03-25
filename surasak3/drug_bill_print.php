@@ -1,23 +1,21 @@
 <?php
 # รายการยาที่เคยเบิกไปแล้ว
-include 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 $id = (int) input_get('id');
-$db = Mysql::load();
-$sql = "SELECT `thidate`,`drugcode`,`tradname`,`dispense`,`amountrx` 
+$q = sprintf("SELECT `thidate`,`drugcode`,`tradname`,`dispense`,`amountrx` 
 FROM `drugimport` 
-WHERE `idno` = '$id' ";
-$db->select($sql);
-$items = $db->get_items();
-
+WHERE `idno` = '%s' ", $dbi->real_escape_string($id));
+$q = $dbi->query($q);
 $full_items = array();
-$rows = count($items);
+$rows = $q->num_rows;
 $set_i = 0;
 $thidate = '';
-for ($i=0; $i < $rows ; $i++) { 
-    $item = $items[$i];
-    ++$set_i;
-    $full_items[$set_i] = array(
+$i = 1;
+while($item = $q->fetch_assoc()) {
+    $full_items[$i] = array(
         'drugcode' => $item['drugcode'],
         'tradename' => $item['tradname'],
         'rxdrug' => $item['dispense'],
@@ -25,6 +23,7 @@ for ($i=0; $i < $rows ; $i++) {
     );
     
     $thidate = substr($item['thidate'], 0, 10);
+    $i++;
 }
 
 // ตั้งวันที่ในหัวกระดาษ
