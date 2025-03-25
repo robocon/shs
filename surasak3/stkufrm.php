@@ -1,4 +1,25 @@
-﻿<form method="POST" action="preustk.php">
+<SCRIPT LANGUAGE="JavaScript">
+
+function checkForm(){
+
+var txt ;
+var stat;
+ txt = "";
+ stat = true;
+	if(document.f1.depcode.value==""){
+		txt = txt + " กรุณาเลือกข้อมูลหน่วยเบิก ด้วยครับ \n";
+		stat = false;
+	}
+
+if(stat == false)
+	alert(txt);
+
+return stat;
+
+}
+
+</SCRIPT>
+<form name="f1" method="POST" action="preustk.php" Onsubmit="return checkForm();">
     <p><font face="Angsana New">&nbsp;</font>&nbsp;&nbsp;&nbsp; <b>&#3592;&#3656;&#3634;&#3618;&#3618;&#3634;&#3648;&#3623;&#3594;&#3616;&#3633;&#3603;&#3601;&#3660;&#3651;&#3627;&#3657;&#3627;&#3609;&#3656;&#3623;&#3618;&nbsp;</b>&nbsp;&nbsp;</p>
     <p><font face="Angsana New">
     หน่วยเบิก
@@ -7,6 +28,7 @@
     $q = mysql_query("SELECT `id`,`name` FROM `departments` WHERE `phar` = 'y' ");
     ?>
     <select size="1" name="depcode">
+	<option value="">---------- เลือก ----------</option>
         <?php while($item = mysql_fetch_assoc($q)){ ?>
         <option value="<?php echo $item['name'];?>"><?php echo $item['name'];?></option>
         <?php } ?>

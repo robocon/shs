@@ -1,14 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+๏ปฟ<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-874" />
-<title>ให้รหัสโรคด้วย AN</title>
+<title>เนเธซเนเธฃเธซเธฑเธชเนเธฃเธเธ”เนเธงเธข AN</title>
 </head>
 <script language="javascript">
 function fncSubmit(){
 	if(document.form1.cAn.value==""){
 		
-		alert("กรุณาระบุ AN ด้วยครับ");
+		alert("เธเธฃเธธเธ“เธฒเธฃเธฐเธเธธ AN เธ”เนเธงเธขเธเธฃเธฑเธ");
 		document.form1.cAn.focus();
 		return false;
 	}
@@ -19,7 +19,7 @@ function fncSubmit(){
 <body>
 
 
-<fieldset style="width:50%"><legend>ให้รหัสโรค  ระบุ AN</legend>
+<fieldset style="width:50%"><legend>เนเธซเนเธฃเธซเธฑเธชเนเธฃเธ  เธฃเธฐเธเธธ AN</legend>
   <form id="form1" name="form1" method="get" action="dxipedit.php" onSubmit="JavaScript:return fncSubmit();">
   <table border="0" align="center">
     <tr>
@@ -28,7 +28,7 @@ function fncSubmit(){
       <input type="text" name="cAn" id="cAn" /></td>
     </tr>
     <tr>
-      <td colspan="2" align="center"><input type="submit" name="button" id="button" value="ตกลง" /><a target=_self  href='../nindex.htm'> ไปเมนู</a></td>
+      <td colspan="2" align="center"><input type="submit" name="button" id="button" value="เธ•เธเธฅเธ" /><a target=_self  href='../nindex.htm'> เนเธเน€เธกเธเธน</a></td>
     </tr>
   </table>
 </form>

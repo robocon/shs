@@ -98,6 +98,7 @@ background-color:#F8F9F9;
 		$active = $row->drug_active;
 		$had = $row->had;
 		$ised = $row->ised;
+		$cQuantity_box = $row->quantity_box;
 
         $preg_type = $lac_type = '';
         $preg_id = 0;
@@ -524,6 +525,10 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
             }
         </script>
     </td>
+</tr>
+<tr>
+	<td></td>
+	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
 </tr>
 <tr align="center">
 <td  width='7%' height='76'></td>
