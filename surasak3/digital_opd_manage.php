@@ -258,6 +258,7 @@ if($action==='delete'){
                     <div class="col">
                         <button type="button" class="btn btn-primary mb-3" id="changeDate">เปลี่่ยนวันที่เข้ารับการรักษา</button>
                         <button type="button" class="btn btn-primary mb-3" id="changeDoctor">เปลี่ยนชือแพทย์</button>
+                        <button type="button" class="btn btn-primary mb-3" id="changeClinic">เปลี่ยนคลินิก</button>
                         <input type="hidden" name="date" value="<?=$date;?>" >
                         <input type="hidden" name="doctor" value="<?=$doctor;?>" >
                         <input type="hidden" name="clinic" value="<?=$clinic;?>" >
@@ -319,6 +320,11 @@ if($action==='delete'){
 
         document.getElementById('changeDoctor').onclick = function(){
             document.getElementById('formPostEdit').action = 'digital_opd_manage_select_doctor.php';
+            document.getElementById('formPostEdit').submit();
+        }
+
+        document.getElementById('changeClinic').onclick = function(){
+            document.getElementById('formPostEdit').action = 'digital_opd_select_clinic.php';
             document.getElementById('formPostEdit').submit();
         }
     </script>
