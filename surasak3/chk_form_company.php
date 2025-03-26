@@ -3,13 +3,13 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$id = input_get('id', 0);
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
 $company = $company_code = $date_checkup = $job_date_run = '';
 $read_only = false;
 if( $id > 0 ){
-    $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
-    $db->select($sql);
-    $item = $db->get_item();
+    $sql = sprintf("SELECT * FROM `chk_company_list` WHERE `id` = '%s' ", $dbi->real_escape_string($id));
+    $q = $dbi->query($sql);
+    $item = $q->fetch_assoc();
 
     $name = $item['name'];
     $code = $item['code'];
@@ -18,8 +18,9 @@ if( $id > 0 ){
     
     $read_only = 'readonly="readonly"';
 
-    $db->select("SELECT `row` FROM `opcardchk` WHERE `part` = '$code' ");
-    $user_rows = $db->get_rows();
+    $sqlOpcardchk = sprintf("SELECT `row` FROM `opcardchk` WHERE `part` = '%s' ", $dbi->real_escape_string($code));
+    $qOpcardchk = $dbi->query($sqlOpcardchk);
+    $user_rows = $qOpcardchk->num_rows;
     $del_txt = 'chk_company.php?action=del&id='.$id;
     if( $user_rows > 0 ){
         // ถ้ายังมี user จะลบไม่ได้

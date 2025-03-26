@@ -107,6 +107,9 @@ ol > li {
     padding: 1em;
     margin:0 auto;
 }
+input[readonly]{
+    background-color: #c8c8c8;
+}
 </style>
 
 <button onclick="formAddCompany()">+ เพิ่มบริษัท</button>
@@ -181,10 +184,17 @@ ol > li {
         });
     }
 
-    async function loadFormAddCompany(){
-        const response = await fetch('chk_form_company.php');
+    async function loadFormAddCompany(id=0){
+        const response = await fetch('chk_form_company.php?id='+id);
         const body = await response.text();
         return body;
+    }
+
+    function btnEditCompany(id){
+        loadFormAddCompany(id).then((res)=>{ 
+            document.getElementById('resFormAddCompany').innerHTML = res;
+            document.getElementById('myModal').style.display = '';
+        });
     }
 
     function closeFormAdd(){
@@ -252,7 +262,8 @@ ol > li {
 
                 const jobDate = new Date(job_date_run);
                 const dateNow = new Date("<?=date('Y-m-d');?>");
-
+                console.log(jobDate);
+                console.log(dateNow);
                 if(jobDate.getTime() <= dateNow.getTime()){
                     Swal.fire({
                         title: "กรุณาเลือกวันที่ของงานที่จะเกิดขึ้นในอนาคต",
@@ -390,7 +401,11 @@ if ( $views == 'search' ) {
             <tr style="vertical-align:top;">
                 <td><?=$i;?></td>
                 <td><a href="chk_show_user.php?part=<?=urlencode($item['code']);?>" target="_blank" title="ดูรายชื่อทั้งหมด"><?=$item['name'];?></a></td>
-                <td><?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
+                <td>
+                    <?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br>
+                    <!-- chk_company.php?id=<?=$item['id'];?> -->
+                    <a href="javascript:void(0);" onclick="btnEditCompany('<?=$item['id'];?>')">✏️ แก้ไขชื่อบริษัท</a>
+                </td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>
                 <td style="vertical-align: top;">
