@@ -383,8 +383,8 @@ if ( $views == 'search' ) {
 
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
         // เทศบาลเมืองพิชัย 67
-        $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
-
+        // $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
+        $expense_list = array('');
         foreach ($items as $key => $item) {
 
             $companyCode = $item['code']; 

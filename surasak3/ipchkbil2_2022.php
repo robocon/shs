@@ -1,3 +1,15 @@
+<style type="text/css">
+<!--
+.txt {	font-family: TH SarabunPSK;
+	font-size: 22px;
+}
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 22px;
+}
+-->
+</style>
+
 <script language="JavaScript1.2">
 <!--
 window.moveTo(0,0);
@@ -11,92 +23,7 @@ top.window.outerWidth = screen.availWidth;
 }
 }
 //-->
-
 </script>
-<SCRIPT LANGUAGE="JavaScript">
-function checkptring(opt){
-		
-		var pt = '<?php echo substr($sPtright,0,3);?>';
-		var pt2 = '<?php echo substr($sPtright,3);?>';
-
-			if( (pt == "R01" || pt == "R02" || pt == "R04" || pt == "R05" || pt == "R06" || pt == "R16" || pt == "R20" || pt == "R021" || pt == "R15" ) && opt != "เงินสด"){
-				
-				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
-			}else if( pt == "R03"  && opt != 'จ่ายตรง' ){
-
-				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
-			}else if(  pt == "R07" && opt != 'ประกันสังคม' ){
-
-				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
-			}else if(  (pt == "R09" || pt == "R13" || pt == "R11" || pt == "R10" || pt == "R17") && opt != '30บาท' ){
-
-				alert("สิทธิ์ของผู้ป่วยคือ "+pt2);
-
-			}
-
-	}
-
-	function checkformf1(){
-
-		if(document.f1.billno.value == ""){
-
-		alert("กรุณา กรอกเลขที่ใบเสร็จด้วยครับ");
-		return false;
-	}else{
-		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false){
-			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
-			return false;
-		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
-			alert("กรณี ที่ชำระเงินด้วย บัตรเครดิต ให้กรอกข้อมูล หมายเลขเลขบัตรเครดิต ด้วยครับ");
-			document.f1.detail_1.focus();
-			return false;
-		}else if(document.f1.credit[7].checked == true && document.f1.detail_1.value == ''){
-			alert("กรณีที่เลือก อื่นๆ ให้กรอกข้อมูล เพิ่มเติม ด้วยครับ");
-			document.f1.detail_1.focus();
-			return false;
-		}
-
-	}
-	}
-	function checkformf2(){
-		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false){
-			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
-			return false;
-		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
-			alert("กรณี ที่ชำระเงินด้วย บัตรเครดิต ให้กรอกข้อมูล หมายเลขเลขบัตรเครดิต ด้วยครับ");
-			document.f2.detail_1.focus();
-			return false;
-		}else if(document.f2.credit[7].checked == true && document.f2.detail_1.value == ''){
-			alert("กรณีที่เลือก อื่นๆ ให้กรอกข้อมูล เพิ่มเติม ด้วยครับ");
-			document.f2.detail_1.focus();
-			return false;
-		}else if(document.f2.credit[8].checked == true){
-			
-			var checkvar = document.f2.elements['detail_2[]'];
-			var r_check = false;
-			var j=0;
-			for(var i=0;i<checkvar.length;i++){
-				if(checkvar[i].checked==true){
-					r_check = true;
-					j++
-				}
-			}
-			
-			if(r_check == false){
-				alert("กรณีที่เลือก สวัสดิการทันตกรรม ให้เช็คเครื่องหมายถูกหน้าประเภทการตรวจ เพิ่มเติม ด้วยครับ");
-				return false;
-			}else if(j >=3){
-				alert("ไม่สามารถเลือกประเภทการตรวจฟัน 3 รายการได้ครับ กรุณาเลือกเพียง 2 รายการเนื่องจาก  ระบบยังไม่รองรับ ");
-				return false;
-			}
-		}
-	}
-</SCRIPT>
 
 <?php
     session_start();
@@ -173,6 +100,7 @@ function checkptring(opt){
     session_unregister("aPhysin");
     session_unregister("aStxn");
     session_unregister("aMcn");
+
 //  session_unregister("sDiscdate");
     session_unregister("aDEssd");
     session_unregister("aDNessdy");
@@ -185,7 +113,7 @@ function checkptring(opt){
     session_unregister("aBEssd");
     session_unregister("aBNessdy");
     session_unregister("aBNessdn");
-	  session_unregister("aBEssd1");
+	session_unregister("aBEssd1");
     session_unregister("aBNessdy1");
     session_unregister("aBNessdn1");
     session_unregister("aBDDL");
@@ -231,7 +159,7 @@ function checkptring(opt){
     session_unregister("aBStxn");
     session_unregister("aBMcn");
 	
-	 session_unregister("abillno");
+	session_unregister("abillno");
 
     $cAdmit="";
     $cDcdate="";
@@ -247,22 +175,22 @@ function checkptring(opt){
     $Netpri  ="";   
     $Netpaid   ="";
     $aDep   =array("depart");
-    $aDtail  = array("detail");
-    $aAmt  = array("amount");
-    $aPri    =array("price");
-    $aPaid  = array("paid");
-    $aPart  = array("part");
-    $aDay  =array("date");
+    $aDtail    = array("detail");
+    $aAmt      =array("amount");
+    $aPri      =array("price");
+    $aPaid       = array("paid");
+    $aPart       = array("part");
+    $aDay        =array("date");
 
-    $aBFY  = array("BFY");
-    $aBFN = array("BFN");
-    $aBBFY = array("BFY");
-    $aBBFN  = array("BFN");
+    $aBFY       = array("BFY");
+    $aBFN       = array("BFN");
+    $aBBFY       = array("BFY");
+    $aBBFN       = array("BFN");
 
-    $aEssd  =array("DDL");
+    $aEssd      =array("DDL");
     $aNessdy  =array("DDY");
     $aNessdn  =array("DDN");
-	$aEssd1   =array("DDL");
+	  $aEssd1      =array("DDL");
     $aNessdy1  =array("DDY");
     $aNessdn1  =array("DDN");
     $aDPY       =array("DPY");
@@ -332,7 +260,7 @@ function checkptring(opt){
     $aBPhysi       =array("PT");
     $aBStx            = array("STX");
     $aBMc            = array("MC");
-	
+
 	$aBBloody     = array("BLOODY");
     $aBLaboy         =array("LABOY");
     $aBXrayy         =array("XRAYY");
@@ -356,7 +284,7 @@ function checkptring(opt){
     $aBPhysin       =array("PTN");
     $aBStxn            = array("STXN");
     $aBMcn            = array("MCN");
-
+	
     $aBDEssd      =array("DDL");
     $aBDNessdy  =array("DDY");
     $aBDNessdn  =array("DDN");
@@ -474,7 +402,7 @@ function checkptring(opt){
     session_register("aBPhysi");
     session_register("aBStx");
     session_register("aBMc");
-
+	
 	session_register("aBBloody");
     session_register("aBLaboy");
     session_register("aBXrayy");
@@ -511,24 +439,23 @@ function checkptring(opt){
 	$cPtname = $vPtname;
 	$cPtright =$vPtright;
 	$cDiag=$vDiag;
-
+/*
+ipmonrep table:
+  date
+  admit
+  dcdate
+  days
+  an
+  hn 
+  ptname
+  ptright 
+*/
 
    include("connect.inc");
-   
-for($n=1;$n<=$_POST["max"];$n++){
-	if($_POST['check'.$n]!=""){
-		$a.="part = '".$_POST['check'.$n]."' or ";
-	}
-}
-$a .= " part=1";
+    $query = "SELECT * FROM ipacc WHERE an = '$vAn'  ";
+    $result = mysql_query($query)
+        or die("Query failed ipacc");
 
-
-$part=$a;
-   
-    $query = "SELECT * FROM ipacc WHERE an = '$vAn' and ( ".$a." ) ";
-    $result = mysql_query($query)or die("Query failed ipacc");
-	
-//echo $query;
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
             echo "Cannot seek to row $i\n";
@@ -711,6 +638,20 @@ if ($row->part=="NCAREN"){
             array_push($aNcaren,$row->price);
             array_push($aBNcaren,$row->price-$row->paid);
             } 
+
+if ($row->part=="OTHER"){
+    array_push($aNcare,$row->price);
+    array_push($aBNcare,$row->price-$row->paid);
+} 
+if ($row->part=="OTHERY"){
+    array_push($aNcarey,$row->price);
+    array_push($aBNcarey,$row->price-$row->paid);
+} 
+if ($row->part=="OTHERN"){
+    array_push($aNcaren,$row->price);
+    array_push($aBNcaren,$row->price-$row->paid);
+} 
+
 //13. ค่าบริการทางทันตกรรม			
 if ($row->part=="DENTA"){
             array_push($aDent,$row->price);  
@@ -839,34 +780,29 @@ $item++;
 	$Mcy            = array_sum($aMcy);
 	$Mcn            = array_sum($aMcn);
 //
-print "<table border='0'><tr valign='top'><td><font face='Angsana New'>ผู้ป่วย $cPtname<br>";
-print "HN: $cHn  AN: $cAn $DDLDDY1<br>";
-print "สิทธิการรักษา :$cPtright<br>";
-print "โรค: $cDiag<br>";
+  // print "<table border='0'>
+			//	<tr valign='top'><td>ผู้ป่วย $cPtname<br>";
+ //  print "HN: $cHn  AN: $cAn $DDLDDY1<br>";
+ //  print "สิทธิการรักษา :$cPtright<br>";
+ //  print "โรค: $cDiag<br>";
 //   print "แพทย์: $cDoctor<br>";
-print "สรุปค่ารักษาพยาบาลรวมทั้งหมดในการเจ็บป่วยครั้งนี้<br>";
-print "วันที่รับป่วย&nbsp;&nbsp; $vDate<br>";
-print "วันที่จำหน่าย &nbsp;&nbsp;$sDiscdate<br>";
-print "<font face='Angsana New'>จำนวนทั้งสิ้น $item รายการ ดังนี้<br></td><td>";
-print "<td><font  color = '#FF0000' face='Angsana New'>";
+/*
+   print "สรุปค่ารักษาพยาบาลรวมทั้งหมดในการเจ็บป่วยครั้งนี้<BR> ณ วันที่จำหน่าย $sDiscdate<br>";
+   print "จำนวนทั้งสิ้น $item รายการ ดังนี้<br></td><td>";
 
-$sql = "Select my_confirmbk, my_earnest, my_office ,my_food,my_cure From ipcard where an = '".$_GET["vAn"]."' AND hn = '".$_GET["vHn"]."' limit 1 ";
-$result = mysql_query($sql);
-list($my_confirmbk, $my_earnest, $my_office,$my_food,$my_cure ) = mysql_fetch_row($result);
+   print "<td>";
+$sql = "Select my_confirmbk, my_earnest, my_office  From ipcard where an = '".$_GET["vAn"]."' AND hn = '".$_GET["vHn"]."' limit 1 ";
+$result = Mysql_Query($sql);
+list($my_confirmbk, $my_earnest, $my_office ) = Mysql_fetch_row($result);
 if($my_confirmbk != ""){
 	
 	print "หนังสือรับรองสิทธิ์ : ".$my_confirmbk."<BR>";
 	print "เงินมัดจำ : ".$my_earnest." บาท <BR>";
-	print "ค่าห้องอาหาร : ".$my_food." บาท <BR>";
-	print "วงเงินรักษา : ".$my_cure." บาท <BR>";
 	print "ผู้บันทึก : ".$my_office." ";
-}
-print "</font></td>";
-print "</tr></table>";
-?>
-<BR />
-	<?
 
+}
+   print "</td>";
+      print "</tr></table>";
 //
 print "<table>";
 print " <tr>";
@@ -883,10 +819,11 @@ print "  <th bgcolor=6495ED>จนท.</th>";
 print "  <th bgcolor=6495ED>เวลาเข้า</th>";
 print "  <th bgcolor=6495ED>เวลาออก</th>";
 print " </tr>";
-
+*/
 ////
-$query = "SELECT date,depart,detail,amount,price,paid,part,idname,billno,startdatetime,enddatetime FROM ipacc WHERE an = '$cAn' and ( ".$a." ) ORDER BY date ASC ";
-$result = mysql_query($query)or die("Query failed ipacc");
+$query = "SELECT date,depart,detail,amount,price,paid,part,idname,billno,startdatetime,enddatetime FROM ipacc WHERE an = '$cAn'  ORDER BY date ASC ";
+    $result = mysql_query($query)
+        or die("Query failed ipacc");
     $num=0;
     while (list ($date,$depart,$detail,$amount,$price,$paid,$part,$idname,$billno,$startdatetime, $enddatetime) = mysql_fetch_row ($result)) {
 	    $num++;
@@ -929,20 +866,20 @@ if($enddatetime  == Null){
 		$out_surg = "".$edd."/".$emm."/".$eyy." ".$emi.":".$ese."";
 }
 
-		print("<tr>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$date</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$depart</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$detail</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$amount</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$price</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$paid</td>\n".  
-			    "<td bgcolor=F5DEB3><font face='Angsana New'>$billno</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$part</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$idname</td>\n".
-				"<td bgcolor=F5DEB3><font face='Angsana New'>$in_surg</td>\n".  
-				"<td bgcolor=F5DEB3><font face='Angsana New'>$out_surg</td>\n".  
-                " </tr>\n");
+	//	print("<tr>\n".
+         //       "<td bgcolor=F5DEB3>$num</td>\n".
+         //       "<td bgcolor=F5DEB3>$date</td>\n".
+         //       "<td bgcolor=F5DEB3>$depart</td>\n".
+           //     "<td bgcolor=F5DEB3>$detail</td>\n".  
+          //      "<td bgcolor=F5DEB3>$amount</td>\n".  
+        //        "<td bgcolor=F5DEB3>$price</td>\n".  
+         //       "<td bgcolor=F5DEB3>$paid</td>\n".  
+//			    "<td bgcolor=F5DEB3>$billno</td>\n".  
+        //        "<td bgcolor=F5DEB3>$part</td>\n".  
+       //         "<td bgcolor=F5DEB3>$idname</td>\n".
+//				"<td bgcolor=F5DEB3>$in_surg</td>\n".  
+//				"<td bgcolor=F5DEB3>$out_surg</td>\n".  
+    //            " </tr>\n");
 		      }
 
 
@@ -955,15 +892,15 @@ list($pricedc,$status) = Mysql_fetch_row($result2);
    for ($n=$item; $n>=1; $n--){
 //        $time=substr($aDay[$n],0,8);
         print("<tr>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aDay[$n]</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aDep[$n]</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aDtail[$n]</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aAmt[$n]</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aPri[$n]</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aPaid[$n]</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aPart[$n]</td>\n".  
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$aIdname[$n]</td>\n".  
+                "<td bgcolor=F5DEB3>$num</td>\n".
+                "<td bgcolor=F5DEB3>$aDay[$n]</td>\n".
+                "<td bgcolor=F5DEB3>$aDep[$n]</td>\n".
+                "<td bgcolor=F5DEB3>$aDtail[$n]</td>\n".  
+                "<td bgcolor=F5DEB3>$aAmt[$n]</td>\n".  
+                "<td bgcolor=F5DEB3>$aPri[$n]</td>\n".  
+                "<td bgcolor=F5DEB3>$aPaid[$n]</td>\n".  
+                "<td bgcolor=F5DEB3>$aPart[$n]</td>\n".  
+                "<td bgcolor=F5DEB3>$aIdname[$n]</td>\n".  
                 " </tr>\n");
        $num++;
         }
@@ -971,17 +908,17 @@ list($pricedc,$status) = Mysql_fetch_row($result2);
 print "</table>";
 //
 
-/* $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx;
+ /*$nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx;
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc;*/
  $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
  
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc+$Bloodn+$Labon+$Xrayn+$Sinvn+$Tooln+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Mcn+$Mcy;
-
+/*
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='5%'></td>";
-print "      <td width='55%'><font face='Angsana New'>สรุปค่ารักษาพยาบาล:<br>";
+print "      <td width='55%'>สรุปค่ารักษาพยาบาล:<br>";
 print "รายการ<br>";
 print "1. ค่าห้อง/ค่าอาหาร<br>";	
 print "   .......ค่าห้อง/ค่าอาหาร(ส่วนเกิน)<br>";	
@@ -1001,10 +938,10 @@ print "14. ค่าบริการทางกายภาพบำบัด
 print "15. ค่าบริการฝังเข็ม/การบำบัดของผู้ประกอบโรคศิลปะอื่นๆ<br>";
 print "16. ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา<br>";
 
-print "<b> ...........................รวมเงินย่อย.........(เบิกได้  -  เบิกไม่ได้)...........</b></font></td>";//add
+print "<b> ...........................รวมเงินย่อย.........(เบิกได้  -  เบิกไม่ได้)...........</b></td>";//add
 
 
-print "      <td width='16%' valign='middle'><font face='Angsana New'>รายการ<br>";
+print "      <td width='16%' valign='middle'>รายการ<br>";
 print "        เบิกได้<br>";
 print "        $BFY<br>";
 print "        ...<br>";
@@ -1014,32 +951,21 @@ print "        $DDLDDY<br>";
 $pricedc=number_format($pricedc,0);
 print "        $pricedc<br>";//4. ยาที่นำไปใช้ต่อที่บ้านเบิกได้
 print "        $DSY<br>";
-$Blood+=$Bloody;
 print "        $Blood<br>";
-$Labo+=$Laboy;
 print "        $Labo<br>";
-$Xray+=$Xrayy;
 print "        $Xray<br>";
-$Sinv+=$Sinvy;
 print "        $Sinv<br>"; // 9.ค่าตรวจวินิจฉัยโดยวิธีพิเศษอื่นๆ
-$Tool+=$Tooly;
 print "        $Tool<br>"; //10.ค่าใช้เครื่องมือทางการแพทย์
-$Surg+=$Surgy;
 print "        $Surg<br>";
-$Ncare+=$Ncarey;
 print "        $Ncare<br>";
-$Dent+=$Denty;
 print "        $Dent<br>";
-$Physi+=$Physiy;
 print "        $Physi<br>";
-$Stx+=$Stxy;
 print "        $Stx<br>";
 print "        ...<br>";
 
+print "       <b> $nYprice</b></td>"; //add
 
-print "       <b> $nYprice</b></font></td>"; //add
-
-print "      <td width='24%'><font face='Angsana New'>รายการ<br>";
+print "      <td width='24%'>รายการ<br>";
 print "        เบิกไม่ได้<br>";
 print "        ...<br>";
 print "        $BFN<br>";
@@ -1047,20 +973,19 @@ print "        $DPN<br>";
 print "        $Nessdn<br>";
 print "        $DNessdn<br>"; //4. ยาที่นำไปใช้ต่อที่บ้าน เบิกไม่ได้
 print "        $DSN<br>";
-print "        $Bloodn<br>";
-print "        $Labon<br>";
-print "        $Xrayn<br>";
-print "        $Sinvn<br>";
-print "        $Tooln<br>";
-print "        $Surgn<br>";
-print "        $Ncaren<br>";
-print "        $Dentn<br>";
-print "        $Physin<br>";
-print "        $Stxn<br>";
-$Mc=$Mcy+$Mcn+$Mc;
+print "       ...<br>";
+print "        ....<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
+print "        ...<br>";
 print "        $Mc<br>";
 
-print "        <b>$nNprice</b></font></td>";
+print "        <b>$nNprice</b></td>";
 
 print "    </tr>";
 print "  </table>";
@@ -1074,6 +999,7 @@ $debt=$Netpri-$Netpaid;
 $debt=number_format($debt,2,'.',''); //เพิ่มจุดทศนิยม
 print "ค้างจ่าย $debt บาท<br>";
 //print "จนท. $sOfficer วันที่ $Thaidate<br>";
+*/
 /*
     print "<form method='POST' action='ipbill.php'>";
     print "เก็บเงิน&nbsp;&nbsp;&nbsp; <input type='text' name='paid' size='10' value=$debt>&nbsp;&nbsp;บาท<br>";
@@ -1138,27 +1064,35 @@ print "ค้างจ่าย $debt บาท<br>";
 	$Mcy            = array_sum($aBMcy);
 	$Mcn            = array_sum($aBMcn);
 //
-   print "======================<br>";
+//   print "======================<br>";
 
  /*$nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx;
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc;*/
-  $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
+ $nYprice=$BFY+$DPY+ $DDLDDY+$DDgy+$DSY+$Blood+$Labo+$Xray+$Sinv+$Tool+$Surg+$Ncare+$Dent+$Physi+$Stx+$Bloody+$Laboy+$Xrayy+$Sinvy+$Tooly+$Surgy+$Ncarey+$Denty+$Physiy+$Stxy;
  
  $nNprice=$BFN+$DPN+$Nessdn+$DNessdn+$DSN+$Mc+$Bloodn+$Labon+$Xrayn+$Sinvn+$Tooln+$Surgn+$Ncaren+$Dentn+$Physin+$Stxn+$Mcn+$Mcy;
 
-   print "<b><center>สรุปค่ารักษาพยาบาล(ค้างจ่าย) ณ วันที่จำหน่าย $sDiscdate </b></center><br>";
-   print "ผู้ป่วย $cPtname<br>";
-   print "HN: $cHn  AN: $cAn<br>";
-   print "สิทธิการรักษา :$cPtright<br>";
-   print "โรค: $cDiag<br>";
+   print "<b><center>แจ้งชำระค่ารักษาพยาบาล(ระหว่างรักษาพยาบาล) <br>โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง<BR>ณ วันที่  $Thaidate </b><br>";
+
+   print "ผู้ป่วย <B>$cPtname</B>&nbsp;&nbsp;";
+$vbedcode1=substr($vbedcode,0,2);
+if($vbedcode1=='42'){$wardname='หอผู้ป่วยรวม';}else 
+if($vbedcode1=='43'){$wardname='หอผู้ป่วยสูติ';}else 
+if($vbedcode1=='44'){$wardname='หอผู้ป่วยICU';}else 
+if($vbedcode1=='45'){$wardname='หอผู้ป่วยพิเศษ';}else 
+{$wardname='หอผู้ป่วยรวม';};
+
+   print "HN: $cHn &nbsp;&nbsp; AN: $cAn&nbsp;<br><B>$wardname&nbsp;&nbsp;ห้อง/เตียง...$vbedcode...</B><br>";
+   print "&nbsp;&nbsp;สิทธิการรักษา :$cPtright";
+   print "&nbsp;&nbsp;โรค: $cDiag</center>";
 //
 
 print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='5%'></td>";
-print "      <td width='55%'><font face='Angsana New'>สรุปค่ารักษาพยาบาล:<br>";
-print "รายการ<br>";
+//print "      <td width='55%'>ค่ารักษาพยาบาล:<br>";
+print "<td width='55%'>รายการ<br>";
 print "1. ค่าห้อง/ค่าอาหาร<br>";	
 print "   .......ค่าห้อง/ค่าอาหาร(ส่วนเกิน)<br>";	
 print "2. อวัยวะเทียม/อุปกรณ์ในการบำบัดรักษา<br>";	
@@ -1177,10 +1111,10 @@ print "14. ค่าบริการทางกายภาพบำบัด
 print "15. ค่าบริการฝังเข็ม/การบำบัดของผู้ประกอบโรคศิลปะอื่นๆ<br>";
 print "16. ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา<br>";
 
-print "<b> ...........................รวมเงินย่อย.........(เบิกได้  -  เบิกไม่ได้)...........</b></font></td>";//add
+print "<b> ...........................รวมเงินย่อย.........(เบิกได้  -  เบิกไม่ได้)...........</b></td>";//add
 
-print "      <td width='16%' valign='middle'><font face='Angsana New'>รายการ<br>";
-print "        เบิกได้<br>";
+//print "      <td width='16%' valign='middle'>รายการ<br>";
+print "       <td width='16%' valign='middle'> เบิกได้<br>";
 print "        $BFY<br>";
 print "        ...<br>";
 print "        $DPY<br>";
@@ -1210,10 +1144,10 @@ print "        $Stx<br>";
 print "        ...<br>";
 
 
-print "       <b> $nYprice</b></font></td>"; //add
+print "       <b> $nYprice</b></td>"; //add
 
-print "      <td width='24%'><font face='Angsana New'>รายการ<br>";
-print "        เบิกไม่ได้<br>";
+//print "      <td width='24%'>รายการ<br>";
+print "        <td width='24%'>เบิกไม่ได้<br>";
 print "        ...<br>";
 print "        $BFN<br>";
 print "        $DPN<br>";
@@ -1233,7 +1167,7 @@ print "        $Stxn<br>";
 $Mc=$Mcy+$Mcn+$Mc;
 print "        $Mc<br>";
 
-print "        <b>$nNprice</b></font></td>";
+print "        <b>$nNprice</b></td>";
 
 print "    </tr>";
 print "  </table>";
@@ -1244,103 +1178,151 @@ print "</table>";
 //print "จ่ายแล้ว $Netpaid บาท<br>";
 $debt=$Netpri-$Netpaid;
 $debt=number_format($debt,2,'.',''); //เพิ่มจุดทศนิยม
-print "<b>ค้างจ่ายทั้งหมด $debt บาท</b><br>";
-//print "จนท. $sOfficer วันที่ $Thaidate<br>";
+function baht($nArabic){
+    $cTarget = Ltrim($nArabic);
+    $cLtnum="";
+    $x=0;
+    while (substr($cTarget,$x,1) <> "."){
+            $cLtnum=$cLtnum.substr($cTarget,$x,1);
+            $x++;
+	}
+   $cRtnum=substr($cTarget,$x+1,2);
+   $nUnit=$x;
+   $nNum=$nUnit;
+   $cRead  = "**";
 
-    print "<form name='f1'  method='POST'  action='ipbill_part.php' Onsubmit='return checkformf1()' >";
-    print "เก็บเงินทั้งหมด&nbsp;&nbsp;&nbsp; <input type='text' name='paid' size='10' value=$debt>&nbsp;&nbsp;บาท&nbsp;&nbsp;ใบเสร็จเลขที่&nbsp;<input type='text' name='billno' size='10'   ><br>";
-	          print "<font face='Angsana New' size='3'>ใช้บัตรเครดิต ? &nbsp;&nbsp;&nbsp;";
-		  print "<TABLE>
-		 <TR>
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินสด' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-		 	<TD>เงินสด</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ต้นสังกัด' onclick=\"document.getElementById('detail2').innerHTML='หน่วยงาน'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>ต้นสังกัด</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เครดิด' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>บัตรเครดิต ธ.ทหารไทย</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-		 	<TD>จ่ายตรง</TD>
-				<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='พรบ' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-		 	<TD>พรบ</TD>
-		 	
-		 </TR>
-		 <TR>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคม' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-		 	<TD>ประกันสังคม</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='30บาท' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-		 	<TD>30บาท</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='HD' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-		 	<TD>HD</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='อื่นๆ' onclick=\"document.getElementById('detail2').innerHTML='ข้อมูลเพิ่มเติม'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>อื่นๆ</TD>
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ค้างจ่าย'\"></TD>
-		 	<TD>ค้างจ่าย</TD>
-		 </TR>
-         <tr>
-            <TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอน' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
-            <td>เงินโอน</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-         </tr>
-		 </TABLE>";
-		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";
+include("connect.inc");
+ 
+ IF ($cLtnum <> "0"){
+  $count=0;
+  For ($i = 0;$i<=$nNum;$i++){
+    $cNo   = Substr($cLtnum,$count,1);
+     $count++;
+//อ่านหลัก
+    IF ($cNo <>0 and $cNo != "-"){
+      If ($nUnit <> 1){  
 
-print "   </select>";
-    print "<input type='submit' value='เก็บเงิน  ออกใบเสร็จ' name='B1'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
+          $query = "SELECT * FROM thaibaht WHERE fld1 = '$nUnit' ";
+          $result = mysql_query($query) or die("Query 1 failed");
 
-?>
-   <input type='hidden' value="<?=$a;?>" name='part'>
-  <?
+          for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+          if (!mysql_data_seek($result, $i)) {
+              echo "Cannot seek to row $i\n";
+              continue;
+          }
+
+           if(!($row = mysql_fetch_object($result)))
+               continue;
+         }
+
+        $cVarU = $row->fld4;  //อ่านหลัก
+                }
+      Else {
+        $cVarU = "";
+              }
+
+//อ่านเลข
+          $query = "SELECT * FROM thaibaht WHERE fld1 = '$cNo' ";
+          $result = mysql_query($query) or die("Query 2 failed");
+
+          for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+          if (!mysql_data_seek($result, $i)) {
+              echo "Cannot seek to row $i\n";
+              continue;
+          }
+
+           if(!($row = mysql_fetch_object($result)))
+               continue;
+         }
+
+      $cVar1 = $row->fld2; //อ่านตัวเลข
+///           
+if ($nUnit =='2' && $cNo =='2'):
+   $cVar1 = "ยี่";
+elseif ($nUnit == '2' && $cNo=='1'):
+         $cVar1 =  "";
+elseif ($nUnit =='1' && $cNo =='1' && $nNum <> 1 ):
+          $cVar1 = "เอ็ด";
+else:
+   echo "";
+endif; 
+
+      $cRead  = $cRead.$cVar1.$cVarU;
+        }
+      $nUnit--;
+            }
+$cRead = $cRead."บาท";
+	}
+////Stang////  
+  IF ($cRtnum <> "00"){
+    $nUnit = 2;
+    $count=0;
+    For ($i = 0;$i<=2;$i++){  
+      $cNo = Substr($cRtnum,$count,1);
+      $count++;
+      If ($cNo != "0"){
+
+          $query = "SELECT * FROM thaibaht WHERE fld1 = '$cNo' ";
+          $result = mysql_query($query) or die("Query failed");
+
+          for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+          if (!mysql_data_seek($result, $i)) {
+              echo "Cannot seek to row $i\n";
+              continue;
+          }
+
+           if(!($row = mysql_fetch_object($result)))
+               continue;
+         }
+
+         $cVar1 = $row->fld2 ;
+         /////
+         If ($nUnit == '2' && $cNo == '2'){
+            $cVar1 = "ยี่";
+            }
+         if ($nUnit == '2' && $cNo == '1'){
+            $cVar1 = "" ;
+             }   
+         if ($nUnit == '1' && $cNo =='1'){
+              $cVar1 = "เอ็ด";
+            }            
+         If (Substr($cRtnum,0,1) == '0' && $cNo == '1'){
+            $cVar1 = "หนึ่ง";
+            }
+         ///////
+         If ($nUnit != '1'){ 
+           $cRead = $cRead.$cVar1."สิบ";
+                 }
+         Else{
+           $cRead = $cRead.$cVar1;
+                }
+      }   
+         $nUnit--;
+             }
+    $cRead = $cRead."สตางค์**"  ;
+	}    
+    else{
+           $cRead = $cRead."ถ้วน**" ;
+           }  
+    include("connect.inc");
+
+   return $cRead;
+}
+///end function baht
+$cbaht=baht($debt);
+$debt=number_format($debt,2);
+print "<b><center>ค้างจ่ายทั้งหมดประมาณ $debt บาท&nbsp;&nbsp;(&nbsp;$cbaht&nbsp;)</b><br>";
+print "<U><B>ให้ติดต่อส่วนเก็บเงินรายได้เพื่อชำระค่ายาและค่าบริการ</B></U><br>";
+print "***ยอดทั้งหมดเป็นยอดประมาณการอาจมีรายการเพิ่มเติม***</center><br>";
+print "<CENTER>ผู้แจ้ง................................................เจ้าหน้าที่เก็บเงิน.........................................เล่มที่/เลขที่...........................</CENTER>";
+
+print "<BR><BR>***เอกสารนี้ออกจากส่วนเก็บเงินรายได้ มีปัญหาหรือข้อสงสัยติดต่อที่ส่วนเก็บเงินรายได้ โทร 054-839305 ต่อ 6302";
+
+   // print "<form method='POST'  action='ipbill.php'>";
+ //   print "เก็บเงินทั้งหมด&nbsp;&nbsp;&nbsp; <input type='text' name='paid' size='10' value=$debt>&nbsp;&nbsp;บาท&nbsp;&nbsp;ใบเสร็จเลขที่&nbsp;<input type='text' name='billno' size='10' ><br>";
+  //  print "<input type='submit' value='เก็บเงิน  ออกใบเสร็จ' name='B1'>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;";
+//    print "<input type='reset' value='ลบทิ้ง' name='B2'>";
     print "</form>";
-
-	//////////
-print "<br><b>หมายเหตุ</b><br>";
-print "<b>1.ค่าห้อง/ค่าอาหาร</b><br>";
-print "....BFY ส่วนที่เบิกได้, BFN ส่วนเกินเบิกไม่ได้<br>";	
-print "<b>2.อวัยวะเทียม/อุปกรณ์ในการบำบัดรักษา</b><br>";
-print "....DPY=อุปกรณ์ ที่เบิกได้(เบิกได้ทั้งหมดหรือบางส่วน),DPN=อุปกรณ์ ที่เบิกไม่ได้<br>";
-print "<b>3.ยาและสารอาหารทางเส้นเลือดที่ใช้ในโรงพยาบาล</b><br>";
-print "....DDL=ยาในบัญชียาหลักแห่งชาติ เบิกได้<br>";
-print "....DDY=ยานอกบัญชียาหลักแห่งชาติ เบิกได้  , DDN=ยานอกบัญชียาหลักแห่งชาติ เบิกไม่ได้<br>";
-print "<b>4.ยาที่นำไปใช้ต่อที่บ้าน</b><br>";
-print "....DDL,DDY,DDN ในข้อ 3 ที่จ่ายในวันกลับบ้าน;  DSY,DSN ในข้อ 5 ที่จ่ายในวันกลับบ้า น<br>";
-print "<b>5.เวชภัณฑ์ที่ไม่ใช่ยา</b><br>";
-print "....DSY=เวชภัณฑ์ เบิกไม่ได้ ,DSN=เวชภัณฑ์ เบิกไม่ได้<br>";
-print "<b>6.ค่าบริการโลหิตและส่วนประกอบของโลหิต</b><br>";
-print "....BLOOD<br>";
-print "<b>7.ค่าตรวจวินิจฉัยทางเทคนิคการแพทย์และพยาธิวิทยา</b><br>";
-print "....LABO<br>"; 
-print "<b>8.ค่าตรวจวินิจฉัยและรักษาทางรังสีวิทยา</b><br>";
-print "....XRAY<br>";
-print "<b>9.ค่าตรวจวินิจฉัยโดยวิธีพิเศษอื่นๆ</b><br>";
-print "....SINV<br>"; 
-print "<b>10.ค่าอุปกรณ์ของใช้และเครื่องมือทางการแพทย์</b><br>"; 
-print "....TOOL<br>";
-print "<b>11.ค่าผ่าตัด  ทำคลอด  ทำหัตถการและบริการวิสัญญี</b><br>";	
-print "....SURG<br>"; 
-print "<b>12.ค่าบริการทางการพยาบาลทั่วไป</b><br>";
-print "....NCARE<br>"; 
-print "<b>13.ค่าบริการทางทันตกรรม</b><br>";
-print "....DENT<br>";
-print "<b>14.ค่าบริการทางกายภาพบำบัดและเวชกรรมฟื้นฟู</b><br>";
-print "....PHYSI<br>";
-print "<b>15.ค่าบริการฝังเข็ม/การบำบัดของผู้ประกอบโรคศิลปะอื่นๆ</b><br>";
-print "....STX<br>"; 
-print "<b>16.ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา</b><br>";
-print "....MC<br><br>";
-print "<b>แผนก</b><br>";
-print "DENTA = แผนกทันตกรรม<br>"; 
-print "PATHO=  พยาธิ<br>"; 
-print "PHAR = เภสัชกรรม<br>"; 
-print "PHYSI = กายภาพบำบัด<br>"; 
-print "SURG = ผ่าตัด  ทำคลอด  ทำหัตถการและบริการวิสัญญี<br>"; 
-print "WARD = หอผู้ป่วย<br>"; 
-print "XRAY = แผนกรังสี <br>"; 
-print "---------------------------------<br>";
 
 
 ?>

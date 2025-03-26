@@ -145,7 +145,6 @@ if(empty($id)){
 $sql = "SELECT * FROM `com_support` WHERE `row` = '$id'";
 $q = $dbi->query($sql);
 $item = $q->fetch_assoc();
-// var_dump(html_entity_decode($item['detail']));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -295,7 +294,7 @@ if ($q->num_rows>0) {
                 body: formData,
             };
 
-            fetch("com_support_detail.php", fetchOptions).then((res){
+            fetch("com_support_detail.php", fetchOptions).then((res)=>{
                 location.reload();
             });
             
