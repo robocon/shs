@@ -108,7 +108,7 @@ ol.itemMenu{
 ol.itemMenu li:hover{
     background-color: #e3e3e3;
 }
-label:hover{
+button:hover, label:hover{
     cursor: pointer;
 }
 .tb_title{

@@ -18,13 +18,13 @@ if( $id > 0 ){
     
     $read_only = 'readonly="readonly"';
 
+    // ถ้ายังมี user จะลบไม่ได้
     $sqlOpcardchk = sprintf("SELECT `row` FROM `opcardchk` WHERE `part` = '%s' ", $dbi->real_escape_string($code));
     $qOpcardchk = $dbi->query($sqlOpcardchk);
-    $user_rows = $qOpcardchk->num_rows;
-    $del_txt = 'chk_company.php?action=del&id='.$id;
-    if( $user_rows > 0 ){
-        // ถ้ายังมี user จะลบไม่ได้
-        $del_txt = 'javascript: void(0); alert(\'กรุณาลบรายชื่อผู้ตรวจสุขภาพก่อนลบบริษัท\');';
+    $opcardchk_rows = $qOpcardchk->num_rows;
+    $companyId = $item['id'];
+    if( $opcardchk_rows > 0 ){
+        $companyId = '';
     }
     
 }
@@ -86,9 +86,11 @@ if( $id > 0 ){
                             <td></td>
                             <td>
                                 <button type="submit">💾 บันทึกข้อมูล</button>&nbsp; 
-                                <?php 
-                                if( $id > 0 ){
-                                    ?><a href="<?=$del_txt;?>" onclick="return confirm('ยืนยันที่จะลบข้อมูล?')">🗑️ ลบข้อมูล</a><?php
+                                <?php
+                                if($opcardchk_rows > 0){
+                                    ?><a href="javascript:void(0);" onclick="Swal.fire({title:'กรุณาลบรายชื่อก่อน ถึงจะลบข้อมูลบริษัทได้'})" style="color: #dc3545;">🗑️ ลบข้อมูล</a><?
+                                }else{
+                                    ?><a href="javascript:void(0);" onclick="confirmDelCompany('<?=$companyId;?>')" style="color: #dc3545;">🗑️ ลบข้อมูล</a><?php
                                 }
                                 ?>
                                 <input type="hidden" name="action" value="save">

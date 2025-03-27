@@ -50,7 +50,7 @@ if( $action == 'save' ) {
         );
         $save = $dbi->query($sql);
         if( $save !== true ){
-            $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error());
+            $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
         }
 
     }else{
@@ -74,7 +74,7 @@ if( $action == 'save' ) {
             $save = $dbi->query($sql);
 
             if( $save !== true ){
-                $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error());
+                $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
             }
         }else{
             $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ รหัสบริษัทซ้ำซ้อน');
@@ -82,6 +82,23 @@ if( $action == 'save' ) {
 
     }
     
+    echo $json->encode($res);
+    exit;
+}elseif ( $action == 'delCompany' ) {
+
+    if(empty($data->id)){
+        $res = array('status'=>400, 'message'=>'ไม่พบรหัสบริษัท');
+        echo $json->encode($res);
+        exit;
+    }
+
+    $sql = sprintf("DELETE FROM `chk_company_list` WHERE `id` = '%s' LIMIT 1", $dbi->real_escape_string($data->id));
+    $q = $dbi->query($sql);
+    if($q!==false){
+        $res = array('status'=>200, 'message'=>'ลบเรียบร้อย');
+    }else{
+        $res = array('status'=>400, 'message'=>'ไม่สามารถลบได้ '.$dbi->error);
+    }
     echo $json->encode($res);
     exit;
 }

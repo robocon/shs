@@ -6,19 +6,7 @@ include 'includes/JSON.php';
 $action = input('action');
 $db = Mysql::load();
 
-if ($action == 'del') {
-    
-    if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
-
-    $id = input_get('id');
-    $del = $db->exec("DELETE FROM `chk_company_list` WHERE `id` = '$id' ");
-    $msg = 'ดำเนินการเรียบร้อย';
-    if( $del !== true ){
-        $msg = errorMsg('delete', $del['id']);
-    }
-    redirect('chk_company.php', $msg);
-    exit;
-}elseif ($action==='findWithYear') {
+if ($action==='findWithYear') {
 
     $year = sprintf("%s", $_GET['year'])+543;
     $json = new Services_JSON();
@@ -70,7 +58,6 @@ if ($action == 'del') {
 <body>
 <?php
 include 'chk_menu.php';
-
 ?>
 <style>
 ol > li {
@@ -109,6 +96,29 @@ ol > li {
 }
 input[readonly]{
     background-color: #c8c8c8;
+}
+
+#myBtn {
+  display: none; /* Hidden by default */
+  position: fixed; /* Fixed/sticky position */
+  bottom: 20px; /* Place the button at the bottom of the page */
+  right: 30px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+  border: none; /* Remove borders */
+  outline: none; /* Remove outline */
+  background-color: red; /* Set a background color */
+  color: white; /* Text color */
+  cursor: pointer; /* Add a mouse pointer on hover */
+  padding: 15px; /* Some padding */
+  border-radius: 10px; /* Rounded corners */
+  font-size: 18px; /* Increase font size */
+}
+
+#myBtn:hover {
+  background-color: #555; /* Add a dark-grey background on hover */
+}
+html {
+  scroll-behavior: smooth;
 }
 </style>
 
@@ -153,6 +163,8 @@ input[readonly]{
                         </select>
                     </span>
                     <?php
+                }else{
+                    ?><div>ไม่มีข้อมูลในตาราง chk_company_list</div><?php
                 }
                 ?>
             </div>
@@ -165,13 +177,21 @@ input[readonly]{
     <fieldset style="float:left;">
         <legend>ค้นหาจากชื่อบริษัท</legend>
         <form action="chk_company.php" method="post">
-            <div>
-                ค้นหาจากชื่อบริษัท <input type="text" name="company_name" id="company_name" required>
-            </div>
-            <div>
-                <button type="submit">แสดงผล</button>
-                <input type="hidden" name="views" value="search">
-            </div>
+            <table>
+                <tr>
+                    <td><strong>ชื่อ :</strong></td>
+                    <td>
+                        <input type="text" name="company_name" id="company_name" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit">แสดงผล</button>
+                        <input type="hidden" name="views" value="search">
+                    </td>
+                </tr>
+            </table>
         </form>
     </fieldset>
 </div>
@@ -262,8 +282,6 @@ input[readonly]{
 
                 const jobDate = new Date(job_date_run);
                 const dateNow = new Date("<?=date('Y-m-d');?>");
-                console.log(jobDate);
-                console.log(dateNow);
                 if(jobDate.getTime() <= dateNow.getTime()){
                     Swal.fire({
                         title: "กรุณาเลือกวันที่ของงานที่จะเกิดขึ้นในอนาคต",
@@ -297,7 +315,6 @@ input[readonly]{
     }
 
     async function doSaveForm(formData){
-        console.log(formData);
         let response = await fetch('chk_subapi.php', {
             method: 'POST',
             headers: {
@@ -339,6 +356,54 @@ input[readonly]{
         const data = await response.json();
         return data;
     }
+
+    function confirmDelCompany(companyId){
+        Swal.fire({
+            title: "คุณมั่นใจที่จะลบข้อมูล",
+            text: "การลบข้อมูลนี้จะไม่สามารถกู้ข้อมูลคืนมาได้อีก",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "ใช่ ลบข้อมูลได้เลย",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                doDelCompany(companyId).then((res)=>{
+                    if(res.status==400){
+                        Swal.fire({
+                            title: "ไม่สามารถลบข้อมูลได้",
+                            text: res.message,
+                            icon: "warning"
+                        });
+                    }else if(res.status==200){
+                        Swal.fire({
+                            title: "ลบข้อมูลเรียบร้อย",
+                            icon: "success"
+                        }).then((fResult)=>{
+                            window.location = 'chk_company.php';
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    async function doDelCompany(companyId){
+        let formData = {
+            "id": companyId,
+            "action": "delCompany"
+        };
+        let response = await fetch('chk_subapi.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        const res = await response.json();
+        return res;
+    }
 </script>
 <?php 
 $views = input_post('views');
@@ -366,6 +431,7 @@ if ( $views == 'search' ) {
     
     $db->select($sql);
     $items = $db->get_items();
+    if(count($items)>0){
     ?>
     <h3>รายชื่อบริษัท</h3>
     <table class="chk_table">
@@ -445,8 +511,33 @@ if ( $views == 'search' ) {
         ?>
     </table>
     <?php
+    }else{
+        ?><div><p><strong>ไม่พบข้อมูล</strong></p></div><?php
+    }
     ?>
 </div>
+<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+<script>
+    // Get the button:
+    let mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
 <?php
 }
 ?>

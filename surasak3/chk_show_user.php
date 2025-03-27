@@ -4,9 +4,20 @@ include 'bootstrap.php';
 
 $page = input('page');
 $db = Mysql::load();
-
-if( $page == false ){
-    include 'chk_menu.php';
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+    <title>รายชื่อผู้ตรวจสุขภาพ</title>
+    <script src="js/sweetalert2.all.min.js"></script>
+</head>
+<body>
+<?php 
+include 'chk_menu.php';
 
     $part = input_get('part');
 
@@ -88,19 +99,7 @@ if( $page == false ){
             }
         </script>
 
-        <script src="js/vendor/jquery-1.11.2.min.js"></script>
-        <script>
-            jQuery.noConflict();
-            (function( $ ) {
-            $(function() {
 
-                $(document).on('click', "#selected_all", function(){
-                    $("input:checkbox").not(this).prop("checked", this.checked);
-                });
-                
-            });
-            })(jQuery);
-        </script>
         <?php
 
     }else{
@@ -109,7 +108,72 @@ if( $page == false ){
         <?php
     }
 
-}elseif ( $page === 'del' ) {
+?>
+
+
+<div id="myModal" class="modal" style="display:none;">
+    <div id="myModalContainer">
+        <div class="clearfix">
+            <div id="myModalHeader"><a href="javascript:void(0);" onclick="closeFormAdd()"><span class="close">&times; ปิด</span></a></div>
+        </div>
+        <div id="resFormAddCompany">
+
+        </div>
+    </div>
+</div>
+
+
+<div>
+<form action="chk_user.php" method="post">
+        <div>
+            HN : <input type="text" name="hn" id="" value="<?=$user['hn'];?>">
+        </div>
+        <div>
+            ชื่อ : <input type="text" name="name" id="" value="<?=$user['name'];?>">
+        </div>
+        <div>
+            สกุล : <input type="text" name="surname" id="" value="<?=$user['surname'];?>">
+        </div>
+        <div>
+            บัตรประชาชน : <input type="text" name="idcard" id="" value="<?=$user['idcard'];?>">
+        </div>
+        <div>
+            อายุ : <input type="text" name="agey" id="" value="<?=$user['agey'];?>">
+        </div>
+        <div>
+            บริษัท : <select name="part" id="">
+                <?php
+                foreach ($companys as $key => $item) {
+                    $selected = ( $item['code'] == $user['part'] ) ? 'selected="selected"' : '' ;
+                    ?>
+                    <option value="<?=$item['code'];?>" <?=$selected;?>><?=$item['name'];?></option>
+                    <?php
+                }
+                ?>
+            </select>
+        </div>
+        <div>
+            โปรแกรมตรวจ : <input type="text" name="course" id="" value="<?=$user['course'];?>">
+        </div>
+        <div>
+            วันที่ตรวจ : <input type="text" name="datechkup" id="" value="<?=$user['datechkup'];?>">
+        </div>
+        <div>
+            <button type="submit">บันทึก</button> <a href="chk_show_user.php?part=<?=$user['part'];?>">กลับไปหน้ารายชื่อ</a>
+            <input type="hidden" name="action" value="save">
+            <input type="hidden" name="id" value="<?=$user['row'];?>">
+        </div>
+    </form>
+</div>
+
+
+
+
+</body>
+</html>
+<?php
+
+if ( $page === 'del' ) {
 
     $id = input_get('id');
 
