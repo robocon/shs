@@ -58,12 +58,26 @@ if($action==='delete'){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ลบ digital opdcard</title>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+    <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
     <style>
         label:hover, input[type="checkbox"]:hover{
             cursor: pointer;
+        }
+        #myBtn {
+            position: fixed; /* Fixed/sticky position */
+            bottom: 20px; /* Place the button at the bottom of the page */
+            right: 30px; /* Place the button 30px from the right */
+            z-index: 9; /* Make sure it does not overlap */
+            
+            cursor: pointer; /* Add a mouse pointer on hover */
+
+            font-size: 18px; /* Increase font size */
         }
     </style>
     <div class="m-2">
@@ -277,8 +291,31 @@ if($action==='delete'){
         }
         ?>
     </div>
+    <div>
+        <button onclick="topFunction()" id="myBtn" title="Go to top" class="btn btn-sm btn-outline-primary" style="font-size:28px;"><i class="bi bi-arrow-up-square-fill"></i></button>
+    </div>
     <script src="bootstrap/js/bootstrap.bundle.js"></script>
     <script>
+        // Get the button:
+        let mybutton = document.getElementById("myBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+
         window.onload=function(){
             document.getElementById('hn').focus();
         }
