@@ -1,12 +1,11 @@
 <?php
 require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/includes/JSON.php';
+require_once dirname(__FILE__).'/class_file/class_opcard.php';
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$json = new Services_JSON();
-
-$data = $json->decode(file_get_contents('php://input'), true);
+$data = json_decode(file_get_contents('php://input'));
 
 $action = $data->action;
 
@@ -82,13 +81,13 @@ if( $action == 'save' ) {
 
     }
     
-    echo $json->encode($res);
+    echo json_encode($res);
     exit;
 }elseif ( $action == 'delCompany' ) {
 
     if(empty($data->id)){
         $res = array('status'=>400, 'message'=>'ไม่พบรหัสบริษัท');
-        echo $json->encode($res);
+        echo json_encode($res);
         exit;
     }
 
@@ -99,6 +98,101 @@ if( $action == 'save' ) {
     }else{
         $res = array('status'=>400, 'message'=>'ไม่สามารถลบได้ '.$dbi->error);
     }
-    echo $json->encode($res);
+    echo json_encode($res);
+    exit;
+}elseif ($action=='getUser') {
+
+    $hn = $data->hn;
+    if(empty($hn)){
+        $res = array('status'=>400, 'message'=>'กรุณากรอก HN');
+        echo json_encode($res);
+        exit;
+    }
+
+    $opcard = new Opcard();
+    $user = $opcard->getByHn($hn,array('idcard'));
+    if($user===false){
+        $res = array('status'=>400, 'message'=>'ไม่พบ HN');
+    }else{
+        $res = array('status'=>200, 'data'=>$user);
+    }
+    
+    echo json_encode($res);
+    exit;
+}elseif ($action==='saveUser') {
+
+    $row = $data->id;
+    $pid = $data->pid;
+    $userType = $data->userType;
+    $exam_no = $data->exam_no;
+    $hn = $data->hn;
+    $idcard = $data->idcard;
+    $name = $data->name;
+    $surname = $data->surname;
+    $part = $data->part;
+    $course = $data->course;
+    $datechkup = $data->datechkup;
+    $agey = $data->agey;
+    $dbirth = $data->dbirth;
+
+    if($userType==='new'){
+
+        $sql = sprintf("SELECT `row` FROM `opcardchk` WHERE `HN` = '%s' AND `part` = '%s' ",
+        $dbi->real_escape_string($hn),
+        $dbi->real_escape_string($part));
+
+        $q = $dbi->query($sql);
+        if($q->num_rows>0){
+            echo json_encode(array('status'=>400, 'message'=>'HN '.$hn.' ซ้ำซ้อนใน '.$part));
+            exit;
+        }
+
+        $sql = sprintf("INSERT INTO `opcardchk`
+        (
+        `HN`,`row`,`exam_no`,`pid`,`idcard`,
+        `name`,`surname`,`dbirth`,`agey`,`part`,
+        `branch`,`course`,`datechkup`,`active`
+        )
+        VALUES (
+        '%s','%s','%s','%s','%s',
+        '%s','%s','%s','%s','%s',
+        '','%s','%s','y'
+        );",
+        $dbi->real_escape_string($hn),
+        $dbi->real_escape_string($row),
+        $dbi->real_escape_string($exam_no),
+        $dbi->real_escape_string($pid),
+        $dbi->real_escape_string($idcard),
+        $dbi->real_escape_string($name),
+        $dbi->real_escape_string($surname),
+        $dbi->real_escape_string($dbirth),
+        $dbi->real_escape_string($agey),
+        $dbi->real_escape_string($part),
+        $dbi->real_escape_string($course),
+        $dbi->real_escape_string($datechkup));
+
+        $q = $dbi->query($sql);
+        dump($q);
+
+    }else{
+        $sql = sprintf("UPDATE `opcardchk` SET 
+        `idcard` = '%s', 
+        `name` = '%s', 
+        `surname` = '%s', 
+        `agey` = '%s', 
+        `part` = '%s', 
+        `course` = '%s', 
+        `datechkup` = '%s' 
+        WHERE `row` = '%s' ",
+        $dbi->real_escape_string($hn));
+    }
+
+    
+    
+
+
+
+
+    
     exit;
 }

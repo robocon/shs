@@ -19,7 +19,7 @@ class Opcard extends DbConnect
         $field = '*';
         if(!empty($fields)){
             $field = implode(',', $fields);
-            $field .= ",`yot`,`name`,`surname`,`dbirth`";
+            $field .= ",`yot`,`name`,`surname`,`dbirth`,TIMESTAMPDIFF(YEAR,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)),NOW()) AS `age`,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)) AS `dbirth_en`";
         }
         $query = sprintf("SELECT $field FROM `opcard` WHERE `hn`='%s'", $this->dbi->escape_string($hn));
         $result = $this->dbi->query($query);
