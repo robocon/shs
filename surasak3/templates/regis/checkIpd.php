@@ -2,7 +2,7 @@
 
 include '../../bootstrap.php';
 
-$hn = $_GET['id'];
+$hn = $_REQUEST['id'];
 if( $hn != false ){
     DB::load();
 
