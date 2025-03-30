@@ -119,6 +119,7 @@ if( $action == 'save' ) {
     
     echo json_encode($res);
     exit;
+    
 }elseif ($action==='saveUser') {
 
     $row = $data->id;
@@ -172,27 +173,56 @@ if( $action == 'save' ) {
         $dbi->real_escape_string($datechkup));
 
         $q = $dbi->query($sql);
-        dump($q);
 
     }else{
         $sql = sprintf("UPDATE `opcardchk` SET 
         `idcard` = '%s', 
         `name` = '%s', 
         `surname` = '%s', 
+        `dbirth` = '%s',
         `agey` = '%s', 
         `part` = '%s', 
         `course` = '%s', 
         `datechkup` = '%s' 
         WHERE `row` = '%s' ",
-        $dbi->real_escape_string($hn));
+        $dbi->real_escape_string($idcard),
+        $dbi->real_escape_string($name),
+        $dbi->real_escape_string($surname),
+        $dbi->real_escape_string($dbirth),
+        $dbi->real_escape_string($agey),
+        $dbi->real_escape_string($part),
+        $dbi->real_escape_string($course),
+        $dbi->real_escape_string($datechkup),
+        $dbi->real_escape_string($row)
+        );
+        $q = $dbi->query($sql);
     }
 
-    
-    
+    if($q !== false){
+        $res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย');
+    }else{
+        $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
+    }
 
-
-
-
-    
+    echo json_encode($res);
     exit;
+}elseif ($action==='delUser') { 
+
+    $row = $data->id;
+    if(empty($row)){
+        echo json_encode(array('status'=>400, 'message'=>'ไม่พบข้อมูล'));
+        exit;
+    }
+    
+    $sql = sprintf("DELETE FROM `opcardchk` WHERE `row` = '%s' ", $dbi->real_escape_string($row));
+    $del = $dbi->query($sql);
+    if($del!==false){
+        $res = array('status'=>200, 'message'=>'ลบข้อมูลเรียบร้อย');
+    }else{  
+        $res = array('status'=>400, 'message'=>'ไม่สามารถลบข้อมูลได้ '.$dbi->error);
+    }
+
+    echo json_encode($res);
+    exit;
+
 }

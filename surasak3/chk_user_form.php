@@ -17,7 +17,7 @@ $userId = $_GET['user_id'];
 
 if(empty($userId)){
     $userType='new';
-    $examNoReadonly = '';
+    $readOnly = '';
     
     $qRow = $dbi->query("SELECT `row` FROM `opcardchk` ORDER BY `row` DESC LIMIT 1;");
     $chkRow = $qRow->fetch_assoc();
@@ -28,7 +28,7 @@ if(empty($userId)){
     $pid = $chkPid['pid']+1;
 
 }else{
-    $examNoReadonly = 'readonly';
+    $readOnly = 'readonly';
     $userType='old';
     $sql = sprintf("SELECT `exam_no`,`row`,`pid`,`HN` AS `hn`,`yot`,`name`,`surname`,`idcard`,`agey`,SUBSTRING(`dbirth`,1,10) AS `dbirth`,`datechkup`,`course` FROM `opcardchk` WHERE `row` = '%s' LIMIT 1;", $dbi->real_escape_string($userId));
     $qOpcardchk = $dbi->query($sql);
@@ -38,7 +38,9 @@ if(empty($userId)){
 }
 
 ?>
-<h3>ฟอร์มรายชื่อ : <?=$com['name'];?></h3>
+<div class="" style="display:flex; align-items: center;">
+    <h3 style="margin:0; padding:0;">ฟอร์มรายชื่อ<?=($userType=='new' ? '(เพิ่ม)' : '(แก้ไข)' );?>&nbsp;:&nbsp;</h3>&nbsp;<div><?=$com['name'];?></div>
+</div>
 <form action="javascript:void(0);" method="post" id="chkUserForm" onsubmit="chkUserFormSubmit()">
     <table>
         <tr>
@@ -49,13 +51,13 @@ if(empty($userId)){
             </td>
             <td align="right">Lab Number : </td>
             <td>
-                <input type="text" name="exam_no" id="exam_no" value="<?=$user['exam_no'];?>" <?=$examNoReadonly;?> >*
+                <input type="text" name="exam_no" id="exam_no" value="<?=$user['exam_no'];?>" <?=$readOnly;?> >*
             </td>
         </tr>
         <tr>
             <td align="right">HN : </td>
             <td>
-                <input type="text" name="hn" id="hn" value="<?=$user['hn'];?>">*<button type="button" onclick="checkUser()">🕵ดึงข้อมูล</button>
+                <input type="text" name="hn" id="hn" value="<?=$user['hn'];?>" <?=$readOnly;?> >*<button type="button" onclick="checkUser()">🕵ดึงข้อมูล</button>
             </td>
             <td align="right">ชื่อ : </td>
             <td><input type="text" name="name" id="name" value="<?=$user['name'];?>">*</td>
@@ -68,8 +70,8 @@ if(empty($userId)){
             <td><input type="text" name="idcard" id="idcard" value="<?=$user['idcard'];?>">*</td>
         </tr>
         <tr>
-            <td align="right">วดป.เกิด</td>
-            <td><input type="text" name="dbirth" id="dbirth" value="<?=$user['dbirth'];?>"></td>
+            <td align="right">วดป.เกิด : </td>
+            <td><input type="date" name="dbirth" id="dbirth" value="<?=$user['dbirth'];?>"></td>
             <td align="right">อายุ : </td>
             <td><input type="text" name="agey" id="agey" value="<?=$user['agey'];?>">*</td>
             
