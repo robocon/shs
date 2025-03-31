@@ -1,6 +1,7 @@
 <?php
-
-include 'bootstrap.php';
+include dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 $page = input('page');
 $db = Mysql::load();
@@ -25,7 +26,7 @@ $sql = "SELECT `id`,`name`,`code` FROM `chk_company_list` WHERE `code` = '$part'
 $db->select($sql);
 $company = $db->get_item();
 
-$sql = "SELECT a.`row`,a.`exam_no`,a.`name`,a.`surname`,a.`idcard`,a.`agey`,a.`part`, a.`HN` AS `hn`,b.`ptright`
+$sql = "SELECT a.`row`,a.`exam_no`,a.`name`,a.`surname`,a.`idcard`,a.`agey`,a.`part`, a.`HN` AS `hn`,b.`ptright`,a.`dbirth`
 FROM `opcardchk` AS a 
 LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn` 
 WHERE a.`part` = '$part' 
@@ -40,57 +41,105 @@ if( $rows > 0 ){
             cursor: pointer;
         }
     </style>
-    <h3>รายชื่อผู้ตรวจสุขภาพ - <?=$company['name'];?>(<?=$company['code'];?>)</h3>
+    <div class="" style="display:flex; align-items: center;">
+        <h3 style="margin:0; padding:0;">รายชื่อผู้ตรวจสุขภาพ&nbsp;:&nbsp;<?=$company['name'];?></h3>&nbsp;<div>[<?=$company['code'];?>]</div>
+    </div>
     <div style="margin-bottom: 8px;">
         <button type="button" onclick="addUser('<?=$company['id'];?>','0')">+ เพิ่มรายชื่อ</button>
     </div>
     <form action="chk_show_user.php" method="post">
-    <table class="chk_table">
-        <tr>
-            <th>เลือก</th>
-            <th>#</th>
-            <th>Lab Number</th>
-            <th>HN</th>
-            <th>ชื่อสกุล</th>
-            <th>เลขบัตรประชาชน</th>
-            <th>อายุ</th>
-            <th>สิทธิ(ในรพ.)</th>
-            <th>ลบ</th>
-        </tr>
-        <?php
-        $i = 1;
-        foreach ($items as $key => $item) {
-            ?>
+        <table class="chk_table">
             <tr>
-                <td style="text-align: center;">
-                    <input type="checkbox" name="ids[]" class="id" value="<?=$item['row'];?>">
-                </td>
-                <td><?=$i;?></td>
-                <td><a href="chk_lab.php?page=form&id=<?=$item['row'];?>" title="แก้ไขผลแลป"><?=$item['exam_no'];?></a></td>
-                <td><a href="javascript:void(0);" onclick="editUser('<?=$company['id'];?>','<?=$item['row'];?>')" title="แก้ไขรายละเอียด"><?=$item['hn'];?></a></td>
-                <td><?=$item['name'];?> <?=$item['surname'];?></td>
-                <td><?=$item['idcard'];?></td>
-                <td><?=$item['agey'];?></td>
-                <td><?=$item['ptright'];?></td>
-                <td align="center"><a href="chk_show_user.php?page=del&id=<?=$item['row'];?>&part=<?=$item['part'];?>" onclick="return confirm_del()">ลบ</a></td>
+                <th><input type="checkbox" id="selected_all" onclick="selectAllCheckbox()"> <label for="selected_all">เลือก</label></th>
+                <th>#</th>
+                <th>Lab Number</th>
+                <th>HN</th>
+                <th>ชื่อสกุล</th>
+                <th>เลขบัตรประชาชน</th>
+                <th>วดป.เกิด</th>
+                <th>อายุ</th>
+                <th>สิทธิ(ในรพ.)</th>
+                <th>ลบ</th>
             </tr>
             <?php
-            $i++;
-        }
-        ?>
-        <tr>
-            <td>
-                <label for="selected_all"><input type="checkbox" name="" id="selected_all"> เลือกทั้งหมด</label>
-            </td>
-            <td colspan="10" align="center">
-                <button type="submit">ลบทั้งหมดที่เลือก</button>
-                <input type="hidden" name="page" value="del_multiple">
-                <input type="hidden" name="part" value="<?=$part;?>">
-            </td>
-        </tr>
-    </table>
+            $i = 1;
+            foreach ($items as $key => $item) {
+                ?>
+                <tr id="user<?=$item['row'];?>">
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="ids[]" class="chkSelected" id="chk<?=$item['row'];?>" value="<?=$item['row'];?>">
+                    </td>
+                    <td><?=$i;?></td>
+                    <td><a href="chk_lab.php?page=form&id=<?=$item['row'];?>" title="แก้ไขผลแลป"><?=$item['exam_no'];?></a></td>
+                    <td><a href="javascript:void(0);" onclick="editUser('<?=$company['id'];?>','<?=$item['row'];?>')" title="แก้ไขรายละเอียด"><?=$item['hn'];?></a></td>
+                    <td>
+                        <label for="chk<?=$item['row'];?>"><?=$item['name'];?> <?=$item['surname'];?></label>
+                    </td>
+                    <td><?=$item['idcard'];?></td>
+                    <td><?=$item['dbirth'];?></td>
+                    <td><?=$item['agey'];?></td>
+                    <td><?=$item['ptright'];?></td>
+                    <td align="center"><a href="javascript:void(0);" onclick="confirm_del('<?=$item['row'];?>')">🚮</a></td>
+                </tr>
+                <?php
+                $i++;
+            }
+            ?>
+        </table>
+        <div style="margin-top:4px;">
+            <button type="button" onclick="delFromCheckbox()">🚮 ลบทั้งหมดที่เลือก</button>
+            <input type="hidden" name="page" value="del_multiple">
+            <input type="hidden" name="part" value="<?=$part;?>">
+        </div>
     </form>
     <script type="text/javascript">
+
+        /**
+         * @description ปุ่ม Check all
+         */
+        function selectAllCheckbox(){
+            const items = document.getElementsByClassName('chkSelected');
+            const selectAllBtn = document.getElementById('selected_all');
+            
+            for (let index = 0; index < items.length; index++) {
+                items[index].checked = selectAllBtn.checked;
+            }
+        }
+
+        function delFromCheckbox(){
+            const items = document.getElementsByClassName('chkSelected');
+            let countChecked = 0;
+            for (let index = 0; index < items.length; index++) {
+                const el = items[index];
+                if(el.checked){
+                    countChecked++;
+                }
+            }
+
+            if(countChecked===0){
+                Swal.fire('กรุณาเลือกรายการที่ต้องการลบอย่างน้อย 1 รายการ');
+                return false;
+            }else{
+                Swal.fire({
+                    title: "คุณมั่นใจที่จะลบข้อมูล?",
+                    text: "เมื่อลบไปแล้วจะไม่สามารถกู้คืนข้อมูลได้อีก",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "ยืนยันการลบ",
+                    cancelButtonText: "ยกเลิก"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        
+                        // เลือกข้อมูลที่ Checkbox เอาไว้แล้วส่งเป็น POST ids[]
+
+                    }
+                });
+            }
+            
+        }
+
         function editUser(companyId,user_id){
             loadAddUserForm(companyId, user_id).then((res)=>{
                 document.getElementById('resFormContent').innerHTML = res;
@@ -98,13 +147,45 @@ if( $rows > 0 ){
             });
         }
 
-        function confirm_del(){
-            var c = confirm('คุณยืนยันที่จะลบข้อมูล?'+"\n"+'เมื่อลบไปแล้วจะไม่สามารถกู้คืนข้อมูลได้อีก');
-            var status = true;
-            if( c === false ){
-                status = false;
-            }
-            return status;
+        function confirm_del(rowId){
+            Swal.fire({
+                title: "คุณมั่นใจที่จะลบข้อมูล?",
+                text: "เมื่อลบไปแล้วจะไม่สามารถกู้คืนข้อมูลได้อีก",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "ยืนยันการลบ",
+                cancelButtonText: "ยกเลิก"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    doDelUser(rowId).then((res)=>{
+                        if(res.status===200){
+                            Swal.fire("ลบข้อมูลเรียบร้อย").then(()=>{
+                                location.reload();
+                            });
+                        }else{      
+                            Swal.fire(res.message);
+                        }
+                    });
+                }
+            });
+        }
+
+        async function doDelUser(rowId){
+            const formData = {
+                "id": rowId,
+                "action": "delUser"
+            };
+            let response = await fetch('chk_subapi.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+            const res = await response.json();
+            return res;
         }
 
         function addUser(companyId, user_id){
@@ -148,11 +229,11 @@ if( $rows > 0 ){
                 }
             }
 
-            console.log(formData);
             doSaveUser(formData).then((res)=>{
-                console.log(res);
                 if(res.status===200){
-
+                    Swal.fire("บันทึกข้อมูลเรียบร้อย").then(()=>{
+                        location.reload();
+                    })
                 }else{
                     Swal.fire(res.message);
                 }
@@ -160,6 +241,11 @@ if( $rows > 0 ){
         }
 
         async function doSaveUser(formData){
+            Swal.fire({
+                title: "กำลังบันทึกข้อมูล...",
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
             let response = await fetch('chk_subapi.php', {
                 method: 'POST',
                 headers: {
@@ -232,29 +318,7 @@ if( $rows > 0 ){
 </html>
 <?php
 /*
-if ( $page === 'del' ) {
-
-    $id = input_get('id');
-
-    if( $id === false ){
-        echo "ไม่พบข้อมูล";
-        exit;
-    }
-
-    $part = input_get('part');
-    
-    $sql = "DELETE FROM `opcardchk` WHERE `row` = '$id' ";
-    $delete = $db->delete($sql);
-
-    $msg = 'ลบข้อมูลเรียบร้อย';
-    if( $delete !== true ){
-		$msg = errorMsg('delete', $delete['id']);
-    }
-
-    redirect('chk_show_user.php?part='.$part, $msg);
-    exit;
-    
-}elseif ( $page === 'del_multiple' ) {
+if ( $page === 'del_multiple' ) {
 
     $items = $_POST['ids'];
     $part = input_post('part');

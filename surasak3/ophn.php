@@ -70,13 +70,12 @@ font-size:20px;
     </tr>
 
     <?php
+    $check_hn = $check_name = $check_surname = '';
     $hn = $_POST['hn'];
     If (!empty($hn)){
         $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE hn = '$hn'";
         $result = mysql_query($query)or die("Query failed");
-
-        $check_hn = $check_name = $check_surname = '';
-
+        
         while (list ($hn,$yot,$name,$surname,$ptright,$ptright1,$idcard) = mysql_fetch_row ($result)) {
 
             if(substr($ptright,0,3)=='R07' && !empty($idcard)){
@@ -237,15 +236,16 @@ font-size:20px;
     ?>
     <?php
     /////////////
+
     $sql_chkname="SELECT  * FROM opcard
-    where name='".$_SESSION['name']."' and surname='".$_SESSION['surname']."' and hn !='". $_SESSION['hn']."'  limit 5";
+    where name='$check_name' and surname='$check_surname' and hn !='$check_hn'  limit 5";
     $result_chkname = mysql_query($sql_chkname);
     $rows=mysql_num_rows($result_chkname);
 
     if($rows){
         ?>
         <h2><font color="#FF0000">คำเตือน</font></h2>
-        <h3>มีผู้ป่วย ขื่อ  <?= $_SESSION['name']?> <?=$_SESSION['surname'];?>  ซ้ำ ในระบบทะเบียน</h3>
+        <h3>มีผู้ป่วย ขื่อ  <?=$check_name;?> <?=$check_surname;?>  ซ้ำ ในระบบทะเบียน</h3>
         <h3>กรุณาตรวจสอบผู้ป่วย</h3>
         <table>
             <tr>
