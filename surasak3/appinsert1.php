@@ -1,5 +1,22 @@
 <?php
 session_start();
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}	
+
+if($_POST["chkhn"]!=$cHn){
+	$cHn=$_POST["chkhn"];
+}
+
+if($cHn == "" || $cPtname=="" || $cAge==""){
+	
+	echo "<center><font color='#000000' >ข้อมูลไม่ครบถ้วน กรุณาลงข้อมูลใหม่อีกครั้งครับ</font><br />";
+	echo "<a href=\"hnappoi1.php\" target=\"_top\">กลับหน้าออกใบนัด</a></center>";
+	exit();
+}
 ?>
 
 <html>
