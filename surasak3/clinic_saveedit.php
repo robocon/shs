@@ -1,26 +1,21 @@
-<html>
-<head>
+<?php
+require_once dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
-</head>
-<body>
-<?
-include("connect.inc");
-
-	$strSQL = "UPDATE clinic_vip  SET ";
-	$strSQL .="hn = '".$_POST["thn"]."' ";
-	$strSQL .=",ptname = '".$_POST["tptname"]."' ";
-	$strSQL .=",an = '".$_POST["ttan"]."' ";
-	$strSQL .="WHERE row_id = '".$_GET["row_id"]."' ";
-	$objQuery = mysql_query($strSQL);
-	if($objQuery)
-	{
-		echo "<center>�ѹ�֡�����.</center>";
-	}
-	else
-	{
-		echo "<center>Error Save [".$strSQL."]</center>";
-	}
-
-?>
-</body>
-</html>
+$sql = sprintf("UPDATE `clinic_vip` SET 
+`hn` = '%s', 
+`ptname` = '%s', 
+`an` = '%s'
+WHERE `row_id` = '%s'",
+$dbi->real_escape_string($_POST['hn']),
+$dbi->real_escape_string($_POST['ptname']),
+$dbi->real_escape_string($_POST['an']),
+$dbi->real_escape_string($_POST['row_id']));
+$q = $dbi->query($sql);
+if($q!==false){
+	$res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย');
+}else{
+	$res = array('status'=>400,'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
+}
+echo json_encode($res);
