@@ -1,0 +1,413 @@
+<?php 
+include 'bootstrap.php';
+if(authen() === false ){ die('Session หมดอายุ <a href="login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
+
+define('_SURVEY', 1);
+
+// Load Databse
+DB::load();
+
+$db = Mysql::load();
+// $db->set_charset('UTF8');
+
+$task = isset($_REQUEST['task']) ? trim($_REQUEST['task']) : false ;
+$action = isset($_REQUEST['action']) ? trim($_REQUEST['action']) : false ;
+$id = isset($_REQUEST['id']) ? intval($_REQUEST['id']) : false ;
+$hn = isset($_REQUEST['hn']) ? trim($_REQUEST['hn']) : false ;
+$th_date = ( date('Y')+543 ).date('-m-d');
+// $full_months = array("มกราคม" => "01" ,"กุมภาพันธ์" => "02", "มีนาคม" => "03" , "เมษายน" => "04" ,"พฤษภาคม" => "05" ,"มิถุนายน" => "06" , "กรกฎาคม" => "07" , "สิงหาคม" => "08" , "กันยายน" => "09" , "ตุลาคม"  => "10" , "พฤศจิกายน" => "11" ,  "ธันวาคม" => "12" );
+
+$full_months = array(
+	"01" => "มกราคม",
+	"02" => "กุมภาพันธ์",
+	"03" => "มีนาคม",
+	"04" => "เมษายน",
+	"05" => "พฤษภาคม",
+	"06" => "มิถุนายน",
+	"07" => "กรกฏาคม",
+	"08" => "สิงหาคม",
+	"09" => "กันยายน",
+	"10" => "ตุลาคม",
+	"11" => "พฤศจิกายน",
+	"12" => "ธันวาคม"
+);
+
+// จัดการข้อมูล Checkbox และหาค่าสูงสุด
+function serialize_and_setmax($mouth_detail){
+
+	$details_filter = array(
+		'1_1' => 1,
+		'2_1' => 1,
+		'2_2' => 1,
+		'2_2_detail' => $mouth_detail['2_2_detail'],
+		'3_1' => 1,
+		'3_2' => 1,
+		'3_3' => 1,
+		'3_4' => 1,
+		'3_5' => 1,
+		'3_5_detail' => $mouth_detail['3_5_detail'],
+		'4_1' => 1,
+		'4_2' => 1,
+		'4_3' => 1,
+		'4_4' => 1,
+		'4_5' => 1,
+		'4_6' => 1,
+		'4_6_detail' => $mouth_detail['4_6_detail']
+	);
+	
+	$test_max_value = 0;
+	
+	$mouth_list = array();
+	foreach($details_filter as $key => $val){
+		
+		// คีย์ตัวไหนไม่ถูกส่งมาจะถูกเซ็ตเป็น 0
+		// เงื่อนไขใน preg_match จะเป็นของ xxx_detail ซึ่งเป็น string 
+		$mouth_list[$key] = isset($mouth_detail[$key]) ? ( preg_match('/\d/', $val) === true ? intval($val) : $val ) : 0 ;
+		
+		// หาค่าสูงสุดของ ระดับสภาวะสุขภาพช่องปาก
+		// เช่น user xxx ติ๊กช่อง E,E,F จะถือว่าความรุนแรงอยู่ในระดับ 4
+		preg_match('/^\d{1,}/', $key, $match);
+		if( !empty($match['0']) && $mouth_list[$key] == 1 ){
+			$test_max_value = $match['0'];
+		}
+	}
+	
+	$lists = array(
+		'details' => serialize($mouth_list),
+		'max' => $test_max_value
+	);
+	
+	return $lists;
+}
+
+if($action === 'save'){
+	
+	$year_checkup = get_year_checkup();
+	$sql = "SELECT `id`,`hn` FROM `survey_oral_patient` WHERE `hn` = :hn AND `yearcheck` = '$year_checkup';";
+	// DB::select($sql, array(':hn' => $_POST['hn']));
+	$db->select($sql, array(':hn' => $_POST['hn']));
+	$item = $db->get_item();
+	$rows = count($item);
+
+	// $rows = DB::rows();
+	if( $rows > 0 ){
+		// redirect('survey_oral_patient.php', 'HN: '.$_POST['hn'].' เคยบันทึกข้อมูลไปเรียบร้อยแล้วในรอบปีงบประมาณ '.$year_checkup);
+		// exit;
+	}
+	
+	$item = serialize_and_setmax($_POST['mouth_detail']);
+
+	// dump($_POST);
+	// dump($item);
+	// exit;
+
+	$lists = $item['details'];
+	$test_max_value = $item['max'];
+	
+	$sql = "INSERT INTO `survey_oral_patient` (
+		`id` ,
+		`hn` ,
+		`date` ,
+		`section` ,
+		`fullname` ,
+		`age` ,
+		`id_card` ,
+		`etc` ,
+		`den_health`, 
+		`officer` ,
+		`mouth_detail` ,
+		`date_add` ,
+		`date_edit` ,
+		`status`,
+		`max_status`,
+		`yearcheck`
+	)
+	VALUES (
+		NULL , :hn, :date, :section, :fullname, :age, :id_card, :etc, :den_health, :officer, :mouth_detail, NOW(), NULL, '1', :max_status, :yearcheck
+	);";
+	
+	$data = array(
+		':hn' => $_POST['hn'],
+		':date' => $_POST['date'],
+		':section' => trim($_POST['section']),
+		':fullname' => trim($_POST['prefix']).' '.trim($_POST['firstname']).' '.trim($_POST['lastname']),
+		':age' => $_POST['age'],
+		':id_card' => $_POST['id_card'],
+		':etc' => $_POST['etc'],
+		':den_health' => $_POST['den_health'],
+		':officer' => $_POST['officer'],
+		':mouth_detail' => $lists,
+		':max_status' => $test_max_value,
+		':yearcheck' => $year_checkup
+	);
+	
+	$insert = $db->insert($sql, $data);
+	// $insert = DB::exec($sql, $data);
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $insert['error'] ){
+		$msg = errorMsg(false, $insert['id']);
+	}
+	
+	// $last_id = DB::get_lastId();
+	$last_id = $db->get_last_id();
+	redirect('survey_oral_patient.php?task=fulldetail&id='.$last_id.'&print=yes', $msg);
+	exit;
+} else if( $action === 'save_edit' ){
+	
+	$item = serialize_and_setmax($_POST['mouth_detail']);
+	$list = $item['details'];
+	$test_max_value = $item['max'];
+
+	// dump($_POST);
+	// dump($item);
+	// exit;
+
+	$sql = "UPDATE `survey_oral_patient` SET 
+	`date`=:date,
+	`section`=:section,
+	`mouth_detail`=:mouth_detail,
+	`etc`=:etc, 
+	`den_health`=:den_health, 
+	`officer`=:officer,
+	`date_edit`=:date_edit,
+	`max_status`=:max_status,
+	`add_by`=:add_by 
+	WHERE  `id` = :id;";
+
+	$data = array(
+		'date' => $_POST['date'],
+		'section' => $_POST['section'],
+		'mouth_detail' => $list,
+		'etc' => $_POST['etc'],
+		'den_health' => $_POST['den_health'],
+		'officer' => $_POST['officer'],
+		'date_edit' => date('Y-m-d H:i:s'),
+		'max_status' => $test_max_value,
+		'add_by' => $_POST['add_by'],
+		'id' => $_POST['id'],
+	);
+
+	$update = $db->update($sql, $data);
+	// $update = DB::exec($sql, $data);
+	
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $update['error'] ){
+		$msg = errorMsg('update', $update['id']);
+	}
+	
+	redirect('survey_oral_patient.php?task=fulldetail&id='.$_POST['id'].'&print=yes', $msg);
+	exit;
+	
+} else if( $action === 'delete' ){
+	
+	if( $id === false ){
+		echo "ข้อมูลไม่ถูกต้อง";
+		exit;
+	}
+	
+	$sql = "DELETE FROM `survey_oral_patient` WHERE `survey_oral_patient`.`id` = :id LIMIT 1";
+	$delete = $db->delete( $sql, array(':id' => $id) );
+	// $delete = DB::exec($sql, array(':id' => $id) );
+	$msg = 'ลบข้อมูลเรียบร้อย';
+	if( $delete['error'] ){
+		$msg = errorMsg('delete', $delete['id']);
+	}
+	
+	redirect('survey_oral_patient.php', $msg);
+	exit;
+} else if( $action === 'section_form_save' ){
+	
+	$name = isset($_POST['section']) ? trim($_POST['section']) : false ;
+	
+	$sql = "INSERT INTO `smdb`.`survey_oral_patient_category` (`id` ,`name` ,`date_add` ,`date_edit` )
+	VALUES (
+	NULL , :name, NOW(), NULL
+	);";
+	$insert = $db->insert($sql, array(':name' => $name));
+	
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $insert['error'] ){
+		$msg = errorMsg(NULL, $insert['id']);
+	}
+	
+	redirect('survey_oral_patient.php?task=category_form', $msg);
+	exit;
+} else if( $action === 'section_form_edit' ){
+	
+	$name = isset($_POST['section']) ? trim($_POST['section']) : '' ;
+	$sql = "UPDATE `survey_oral_patient_category` SET 
+	`name`=:name,
+	`date_edit`=NOW()
+	WHERE `id` = :id;";
+	$update = $db->update($sql, array(':name' => $name, ':id' => $id));
+	
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	if( $update['error'] ){
+		$msg = errorMsg('update', $update['id']);
+	}
+	redirect('survey_oral_patient.php?task=category_form', $msg);
+	exit;
+	
+} else if( $action === 'delete_category' ){
+	
+	if( $id === false ){
+		redirect('survey_oral_patient.php?task=category_form', 'ข้อมูลไม่ถูกต้อง กรุณาตรวจสอบใหม่');
+		exit;
+	}
+	
+	$sql = "DELETE FROM `survey_oral_patient_category` 
+	WHERE `id` = :id LIMIT 1";
+	$delete = $db->delete($sql, array(':id' => $id));
+	
+	$msg = 'ลบข้อมูลเรียบร้อย';
+	if( $delete['error'] ){
+		$msg = errorMsg('delete', $delete['id']);
+	}
+	
+	redirect('survey_oral_patient.php?task=category_form', 'ลบข้อมูลเรียบร้อย');
+	exit;
+}
+
+define('CHARSET', 'UTF-8');
+include 'templates/classic/header.php';
+include 'templates/classic/nav.php';
+?>
+<style type="text/css">
+@media print {
+	body{
+		background-color: #ffffff;
+		font-size: 14px;
+	}
+	.site-center,
+	.site-body panel{
+		width: 100%!important;
+		height: 100%!important;
+		margin: 0!important;
+		border: 0 solid #ffffff!important;
+	}
+	.panel,
+	.panel .body,
+	.col,
+	.cell{
+		margin: 0!important;
+		border: 0 solid #ffffff!important;
+		box-shadow: 0 rgba(0, 0, 0, 0);
+		border-width: 0;
+	}
+	.nav-menu-col,
+	.page-header-col{
+		display: none!important;
+	}
+	#print_btn,
+	.site-header-fixture{
+		display: none;
+	}
+	#detail_header_print{
+		font-size: 16px;
+		text-align: center;
+	}
+	#officer-print{
+		text-align: right;
+	}
+}
+
+.input_form{
+	display: inline;
+	margin-bottom: 0.5em;
+}
+.input_form label{
+	font-weight: bold;
+}
+.align-center{
+	text-align: center;
+	vertical-align: middle;
+}
+.align-right{
+	text-align: right;
+}
+.align-left{
+	text-align: left;
+	vertical-align: middle;
+}
+
+.custom-table table{
+	margin: 0;
+}
+
+</style>
+<link type="text/css" href="diabetes_clinic/epoch_styles.css" rel="stylesheet" />
+<script type="text/javascript" src="diabetes_clinic/epoch_classes.js"></script>
+<script type="text/javascript">
+	var popup1;
+	window.onload = function() {
+		popup1 = new Epoch('popup1','popup',document.getElementById('date'),false);
+	};
+</script>
+
+<div class="site-center">
+    <div class="site-body panel">
+        <div class="body">
+            <div class="cell">
+                
+				<?php include 'templates/dental/nav.php'; ?>
+				
+				<?php 
+				if( $task === false ){ // หน้าแรก
+				
+					$by = isset($_POST['by']) ? trim($_POST['by']) : false ;
+					include 'templates/dental/survey_home.php';
+					
+				} elseif( $task === 'form' ){ //หน้าฟอร์มเพิ่มข้อมูล
+					include 'templates/dental/survey_form.php';
+					
+				} elseif( $task === 'fulldetail' ){ //หน้าแสดงรายละเอียดพร้อมปริ้นท์
+					include 'templates/dental/fulldetail.php';
+					
+				} else if( $task === 'category_form' ) { // หน้าเพิ่มหมวดหมู่
+					include 'templates/dental/category_form.php';
+				
+				} else if( $task === 'category_edit' ) { //แก้ไขหมวดหมู่
+					$id = ( isset($_GET['id']) ) ? intval(trim($_GET['id'])) : false ;
+					
+					if( $id !== false ){
+						$sql = "SELECT * FROM `survey_oral_patient_category` WHERE `id` = :id;";
+						$db->select($sql, array(':id' => $id));
+						$item = $db->get_item();
+					}
+					
+					include 'templates/dental/category_form.php'; 
+					
+				}else if( $task === 'report' ) { // รายงานผลการสำรวจ
+					include 'templates/dental/survey_report.php';
+				
+				} elseif( $task === 'report_mouth' ){ // รายงานสภาวะช่องปากและระดับ
+					include 'templates/dental/report_mouth.php';
+					
+				} elseif( $task === 'hn_lists' ){ // รายชื่อ hn ของระดับความรุนแรง
+					include 'templates/dental/hn_lists.php';
+					
+				} // End task
+				?>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+jQuery.noConflict();
+(function( $ ) {
+$(function() {
+	
+	if( $('.survey_remove').length > 0 ){
+		$(document).on('click', '.survey_remove', function(){
+			var c = confirm('ยืนยันที่จะลบข้อมูล?');
+			if( c == false ){
+				return false;
+			}
+		});
+	}
+	
+});
+})(jQuery);
+</script>
+<?php
+include 'templates/classic/footer.php';
