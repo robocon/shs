@@ -30,12 +30,21 @@ if ($_REQUEST['do'] == 'edit') {
 	WHERE `row`='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
-		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
-		$sMessage = "เรื่อง: $head\nกำลังดำเนินการโดย $owner";
-		sendLineNotify($sMessage, $sToken);
+		// $sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
+		$sMessage = "เรื่อง: $head กำลังดำเนินการโดย $owner";
+		// sendLineNotify($sMessage, $sToken);
 
-		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		sendLineNotify($sMessage, $tokenTwo);
+		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
+		// sendLineNotify($sMessage, $tokenTwo);
+
+		$dir = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+		$url = 'http://'.$_SERVER['SERVER_ADDR'].':8056'.$dir."send_telegram_notify.php?type=jobit&sMessage=".urlencode($sMessage);
+
+		$curl = curl_init(); 
+		curl_setopt( $curl, CURLOPT_URL, $url);
+		curl_setopt( $curl, CURLOPT_RETURNTRANSFER, false);
+		$result = curl_exec( $curl );
+		curl_close($curl);
 
 		$_SESSION['supportMessage'] = "เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว";
 	} else {

@@ -1,19 +1,20 @@
-<?php 
-include 'bootstrap.php'; 
+<?php
+require_once dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 if(empty($_SESSION['sOfficer'])){
     echo "Login หลุดจ้า";
     exit;
 }
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
 
-$action = sprintf("%s", $_POST['action']);
-if($action==='save'){
+
+$action = sprintf("%s", !empty($_POST['action']) ? $_POST['action'] : '' );
+if($action=='save'){
 
     $com_id = sprintf("%s", $_POST['com_id']);
 	$head = sprintf("%s", $_POST['head']);
@@ -70,35 +71,28 @@ if($action==='save'){
         exit;
     }
 
-    $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-    $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nเรื่อง: $head \nรายละเอียด: $detail\n";
-    $curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
-	curl_setopt( $curl, CURLOPT_POST, 1); 
-	curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
-	$headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
-	curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
-	$result = curl_exec( $curl ); 
-	curl_close($curl); 
+    // $sToken = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
+    // $sMessage = "ความคืบหน้างานลำดับที่: $com_id \nเรื่อง: $head \nรายละเอียด: $detail\n";
+    // $curl = curl_init(); 
+	// curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
+	// curl_setopt( $curl, CURLOPT_POST, 1); 
+	// curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".$sMessage."&token=".$sToken); 
+	// $headers = array( 'Content-type: application/x-www-form-urlencoded' ); 
+	// curl_setopt( $curl, CURLOPT_HTTPHEADER, $headers); 
+	// curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
+	// $result = curl_exec( $curl ); 
+	// curl_close($curl); 
 
     ?>
-    <script src="sweetalert/sweetalert2@11.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
     <script>
         window.onload = function(){
-            var obj = JSON.parse('<?=$result;?>');
-            if(obj.status===200){
-                Swal.fire({
-                    title: "บันทึกข้อมูลเรียบร้อย",
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-                setTimeout(function(){
-                    window.location.href = "com_support_detail.php?id=<?=$com_id;?>";
-                }, 2000);
-            }
+            Swal.fire({
+                title: "บันทึกข้อมูลเรียบร้อย",
+                icon: "success"
+            }).then((res)=>{
+                window.location.href = "com_support_detail.php?id=<?=$com_id;?>";
+            });
         }
     </script>
     <?php
