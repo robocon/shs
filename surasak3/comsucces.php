@@ -49,20 +49,11 @@ if ($_REQUEST['do'] == 'edit') {
 	if ($query) {
 
 		// $sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
-		$sMessage = "สรุปปิดงาน ลำดับแจ้ง: $row เรื่อง: $head ผู้แจ้ง: $user ดำเนินการเรียบร้อยโดย $programmer";
+		$_SESSION['telegram_msg'] = "สรุปปิดงาน ลำดับแจ้ง: $row เรื่อง: $head ผู้แจ้ง: $user ดำเนินการเรียบร้อยโดย $programmer";
 		// sendLineNotify($sMessage, $sToken);
 
 		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
 		// sendLineNotify($sMessage, $tokenTwo);
-
-		$dir = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-		$url = 'http://'.$_SERVER['SERVER_ADDR'].':8056'.$dir."send_telegram_notify.php?type=jobit&sMessage=".urlencode($sMessage);
-
-		$curl = curl_init(); 
-		curl_setopt( $curl, CURLOPT_URL, $url);
-		curl_setopt( $curl, CURLOPT_RETURNTRANSFER, false);
-		$result = curl_exec( $curl );
-		curl_close($curl);
 
 		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
 		$location = 'com_support.php';

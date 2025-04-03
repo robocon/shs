@@ -31,6 +31,7 @@ print "<hr>";
 if ($_SESSION['supportMessage']) {
     ?>
     <script>
+        
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 title: '<?=$_SESSION['supportMessage'];?>',
@@ -38,10 +39,31 @@ if ($_SESSION['supportMessage']) {
                 timer: 2000,
                 showConfirmButton: false
             });
+
+            <?php 
+            if($_SESSION['telegram_msg']){
+                ?>
+                async function postMessage(data){
+                    const response = await fetch('<?=NOTIFY_HOST;?>/telegram/jobit.php?'+data);
+                    const resData = await response.json();
+                    return resData;
+                }
+
+                const telegram_msg = '<?=$_SESSION['telegram_msg'];?>';
+                var test_str = [];
+                test_str.push(encodeURIComponent('sMessage')+"="+encodeURIComponent(telegram_msg));
+                var data = test_str.join("&");
+                postMessage(data).then((res)=>{
+                    console.log(res);
+                });
+                <?php
+            }
+            ?>
         }, false);
     </script>
     <?php
     $_SESSION['supportMessage'] = NULL;
+    $_SESSION['notify_message'] = null;
 }
 ?>
 <div class="">
@@ -62,7 +84,7 @@ $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
 $num = "Y";
 $datechk = (date("Y") + 543) . date("-m-d");
-$query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1` 
+$query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1`,`phone`
 FROM `com_support` 
 WHERE `status` ='$num' AND `date` >= '2565-01-01 00:00:00'
 ORDER BY `row` DESC";
@@ -73,15 +95,16 @@ if ($num1 = mysql_num_rows($result)) {
     print "<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
     print "<table class='forntsarabun'  align='center' width='98%'>";
     print " <tr>";
-    print "  <th bgcolor=#EC7063>ลำดับแจ้ง</th>";
+    print "  <th bgcolor=#EC7063>ใบงาน</th>";
     print "  <th bgcolor=#EC7063>แผนก</th>";
+    print "  <th bgcolor=#EC7063>เบอร์แผนก</th>";
     print "  <th bgcolor=#EC7063>หัวข้อ</th>";
     print "  <th bgcolor=#EC7063>ผู้ที่ร้องขอ</th>";
     print "  <th bgcolor=#EC7063>วันที่ร้องขอ</th>";
     print "  <th bgcolor=#EC7063>ผู้รับผิดชอบ</th>";
     print "  <th bgcolor=#EC7063>พิมพ์</th>";
     print " </tr>";
-    while (list($row, $jobtype, $depart, $head, $datetime, $programmer, $date, $user1) = mysql_fetch_row($result)) {
+    while (list($row, $jobtype, $depart, $head, $datetime, $programmer, $date, $user1, $phone) = mysql_fetch_row($result)) {
         $n++;
         $date_key = substr($date, 0, 10);
         //echo $date_key;
@@ -100,16 +123,18 @@ if ($num1 = mysql_num_rows($result)) {
 
         $color = "#F5B7B1";
         list($dateTh, $time) = explode(' ', $date);
+        list($hour,$min,$sec) = explode(':', $time);
         list($y, $m, $d) = explode('-', $dateTh);
         $shortYear = substr($y, 2);
-        $thSortDate = $d.' '.$def_month_th[$m].' '.$shortYear.' '.$time;
+        $thSortDate = $d.' '.$def_month_th[$m].' '.$shortYear.' '.$hour.':'.$min;
 
         print (" <tr>\n" .
         "<td BGCOLOR=$color align='center'>$row</td>\n" .
         "<td BGCOLOR=$color>$depart</td>\n" .
+        "<td BGCOLOR=$color>$phone</td>\n" .
         "<td BGCOLOR=$color><a target=_TOP href=\"comdetail.php? row=$row\">$head</a> <span style='margin-left:5px;'>$new</span></td>\n" .
         "<td BGCOLOR=$color>$user1</td>\n" .
-        "<td BGCOLOR=$color>$thSortDate</td>\n" .
+        "<td BGCOLOR=$color>$thSortDate น.</td>\n" .
         "<td BGCOLOR=$color>$where</td>\n" .
         "<td BGCOLOR=$color align='center'><a target='_blank' href=\"com_form.php?row=$row\"><img src='images/printer.png' width='16'></a></td>\n" .
         "</tr>\n");

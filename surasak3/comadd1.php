@@ -33,13 +33,13 @@ if($_POST["act"]=="add")
 		$row_id = mysql_insert_id();
 
 		// Lineกลุ่มห้องคอมฯ
-		$sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
-		$sMessage = "ใบงานใหม่\nลำดับ: $row_id\nผู้แจ้ง: $user\nแผนก: $depart\nติดต่อ: $phone\nหัวข้อ: $head\nรายละเอียด: $detail_for_line";
-		sendLineNotify($sMessage, $sToken);
+		// $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
+		$_SESSION['telegram_msg']  = "ใบงานใหม่ ลำดับ: $row_id ผู้แจ้ง: $user แผนก: $depart ติดต่อ: $phone หัวข้อ: $head รายละเอียด: $detail_for_line";
+		// sendLineNotify($sMessage, $sToken);
 
 		// ติดตามงาน IT
-		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		sendLineNotify($sMessage, $tokenTwo);
+		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
+		// sendLineNotify($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "ทำการเพิ่มข้อมูลเรียบร้อยแล้ว";
 	}
