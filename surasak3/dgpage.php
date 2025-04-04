@@ -35,7 +35,7 @@ If (!empty($cPage)){
         print (" <tr>\n".
            "  <td BGCOLOR=66CDAA>$num</td>\n".
            "  <td BGCOLOR=66CDAA>$drugcode</td>\n".
-           "  <td BGCOLOR=66CDAA><a target=_BLANK  href=\"dgitem.php? Dgcode=$drugcode\">$tradname</a></td>\n".
+           "  <td BGCOLOR=66CDAA><a target=_BLANK  href=\"javascript:void(0);\">$tradname</a></td>\n".
            "  <td BGCOLOR=66CDAA>$genname</td>\n".
            "  <td BGCOLOR=66CDAA>$unit</td>\n".
            "  <td BGCOLOR=66CDAA>$salepri</td>\n".

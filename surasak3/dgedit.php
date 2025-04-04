@@ -5,9 +5,21 @@ if(empty($_SESSION['sIdname'])){
     echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
     exit;
 }
+
+$dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
+$dbi->query("SET NAMES UTF8");
+
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขยา</title>
+    <script src="js/sweetalert2.all.min.js"></script>
+</head>
+<body>
 <style type="text/css">
-<!--
 body{ font-family:"TH SarabunPSK"; 
 font-size:18px;
 background-color:#F8F9F9;
@@ -28,11 +40,9 @@ background-color:#F8F9F9;
 	font-size: 28px;
 	font-weight: bold;
 }
--->
 </style>
 <?php
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
-	//echo $query;
     $result = mysql_query($query)
         or die("Query failed");
  
@@ -296,34 +306,92 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
           <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
           <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
-<?php
-print "    <br><b>กลุ่มยาที่มีโอกาสแพ้</b>&nbsp;&nbsp;&nbsp;";
-$sql1="select * from drugreact_group";
-//echo $sql1;
-$query1=mysql_query($sql1);
-$n=0;
-$num=mysql_num_rows($query1);
-//echo "==>$num";
-while($result1=mysql_fetch_array($query1)){
-$n++;
-$id=$result1["id"];	
-$name=$result1["name"];
 
-	$sql2="select * from drugreact_group_list where drugcode='$cDrugcode' and drugreact_group='$id'";
-	$query2=mysql_query($sql2);
-	$result2=mysql_fetch_array($query2);
-	$drugreact_group=$result2["drugreact_group"];
-	if($id==$drugreact_group){
-?>		
-	<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' checked > <?=$name;?></div>
-<?
-	}else{	
-?>
-<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' > <?=$name;?></div>
-<?
-	}
-}
-?>
+<br>
+    <table>
+        <tr>
+            <td valign="top">
+                <strong>กลุ่มยาที่มีโอกาสแพ้ : </strong>
+                <div><a href="javascript:void(0);" onclick="manageReactGroup()">จัดการกลุ่ม</a></div>
+            </td>
+            <td>
+                <?php 
+                $sql2 = sprintf("SELECT * FROM `drugreact_group_list` WHERE `drugcode`='%s'", $dbi->real_escape_string($cDrugcode));
+                $q2 = $dbi->query($sql2);
+                $groupItems = array();
+                $groupItemsShow = array();
+
+                while ($b = $q2->fetch_assoc()) {
+                    $groupItems[] = $b['drugreact_group'];
+                    $groupItemsShow[] = $b;
+                }
+
+                $q = $dbi->query("SELECT * FROM `drugreact_group` WHERE `status` = 'y' ");
+                ?>
+                <select name="drugreact_group" id="drugreact_group" style="width: 300px;">
+                    <option value="">ไม่มีกลุ่ม</option>
+                <?php
+                $groupList = array();
+                while ($a = $q->fetch_assoc()) {
+                    $key = $a['id'];
+                    $groupList[$key] = $a['name'];
+                    $selected = (in_array($a['id'], $groupItems)) ? 'selected' : '';
+
+                    $optionBgColor = '';
+                    if(!empty($selected)){
+                        $optionBgColor = 'background-color:#75b798';
+                    }
+                    ?>
+                    <option value="<?=$a['id'];?>" <?=$selected;?> style="<?=$optionBgColor;?>"><?=$a['name'];?></option>
+                    <?php
+                }
+                ?>
+                </select>
+                <?php 
+                // แจ้งเตือนกรณีที่เคยบันทึกซ้ำซ้อน
+                if(count($groupItems)>1){
+                    ?>
+                    <p style="color:red;"><strong>ยาตัวนี้เคยบันทึกมากกว่า1กลุ่ม</strong></p>
+                    <?php
+                    foreach ($groupItemsShow as $g) {
+                        $id = $g['id'];
+                        $key = $g['drugreact_group'];
+                        ?>
+                        <p><strong><?=$groupList[$key];?></strong> ( โดย <?=$g['officer'];?> เมื่อ <?=$g['last_update'];?> ) <a href="javascript:void(0);" title="ลบ" onclick="delReactGroupItem('<?=$id;?>')">[ X ]</a></p>
+                        <?php
+                    }
+                    ?>
+                    <?php
+                }
+                ?>
+            </td>
+        </tr>
+    </table>
+    <script>
+        function manageReactGroup(){
+            alert('กำลังพัฒนาใจเย็นๆ');
+        }
+        function delReactGroupItem(id){
+            Swal.fire({
+                title: 'แน่ใจว่าต้องการลบข้อมูล?',
+                text: 'การลบข้อมูลจะไม่สามารถกู้คืนได้อีก',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก",
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "กำลังพัฒนาต่อ ใจเย็นๆ",
+                        showConfirmButton: false
+                    });
+                }
+            });
+        }
+    </script>
+
 <style>
 p{
     margin: 0;
@@ -543,10 +611,5 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
     </td>
   </tr>
 </table>
-<?
-include("unconnect.inc");
-?>
-
-
-
-    
+</body>
+</html>
