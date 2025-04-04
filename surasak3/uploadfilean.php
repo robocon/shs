@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include("connect.inc");
+include("connect.php");
 include("class_file/class_upload.php");
 
 $obj = new class_upload();
