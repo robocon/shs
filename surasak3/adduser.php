@@ -65,21 +65,23 @@ if($action==='checkuser'){
 
 $act = sprintf("%s", (!empty($_POST["act"]) ? $_POST["act"] : '' ));
 if ($act == "add") {
-    if (!empty($_POST["txtuser"])) {
 
+    $txtname = sprintf("%s", $_POST["txtname"]);
+    $txtuser = sprintf("%s", $_POST["txtuser"]);
+    $password1 = sprintf("%s", $_POST["password1"]);
+    $idcard = sprintf("%s", $_POST["idcard"]);
+    $age = sprintf("%s", $_POST["age"]);
+    $email = sprintf("%s", $_POST["email"]);
+    $eopd = sprintf("%s", $_POST["eopd"]);
+    $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
+    $department = sprintf("%s", $_POST['department']);
+    $position = sprintf("%s", $_POST['position']);
+    $perform = sprintf("%s", $_POST['perform']);
 
-        $txtname = sprintf("%s", $_POST["txtname"]);
-        $txtuser = sprintf("%s", $_POST["txtuser"]);
-        $password1 = sprintf("%s", $_POST["password1"]);
-        $idcard = sprintf("%s", $_POST["idcard"]);
-        $age = sprintf("%s", $_POST["age"]);
-        $email = sprintf("%s", $_POST["email"]);
-        $eopd = sprintf("%s", $_POST["eopd"]);
-        $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
-        $department = sprintf("%s", $_POST['department']);
-        $position = sprintf("%s", $_POST['position']);
-        $perform = sprintf("%s", $_POST['perform']);
-        
+    if(empty($txtname) || empty($txtuser) || empty($password1) || empty($idcard) || empty($age) || empty($email) || empty($department) || empty($position) || empty($perform) || empty($sOfficer) ){
+        $res = array('status'=>400, 'message'=>'กรุณากรอกข้อมูลให้ครบถ้วน');
+    }else{
+
         $eopdStatus = 'n';
         if($eopd=='1'){
             $eopdStatus = 'y';
@@ -115,10 +117,12 @@ if ($act == "add") {
             
             $res = array('status'=>400, 'message'=>$errorMsg);
         }
-
-        echo $json->encode($res);
-        exit;
+        
     }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($res);
+    exit;
 }
 ?>
 
@@ -519,10 +523,10 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
                         return false;
                     }
-                    // console.log(stat);
+                    
                     if(stat===true){
                         checkuser(username.value).then((res)=>{ 
-                            // console.log(res);
+                            
                             if(res.status===400){
                                 Swal.fire("กรุณากด \"ตรวจสอบผู้ใช้งาน\" อีกครั้ง");
                             }else{
