@@ -1,14 +1,16 @@
 <?php
 session_start();
 include 'connect.php';
+
+if(empty($_SESSION['sIdname'])){
+    
+    echo 'SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง <br><a href="dglst.php">คลิกที่นี่ เพื่อกลับไป Login</a>'; 
+    exit;
+}
 ?>
 <style type="text/css">
-    .txt {
-        font-family: TH SarabunPSK;
-        font-size: 18px;
-    }
-    body,td,th {
-        font-family: TH SarabunPSK;
+    body,td,th,.txt{
+        font-family: "TH SarabunPSK";
         font-size: 18px;
     }
 </style>
@@ -25,8 +27,6 @@ if ($user_code !== 'ADM') {
     ?>
         <p>คุณไม่มีสิทธิ์ในการแก้ไขข้อมูลยา กรุณาติดต่อ</p>
         <ol>
-            <!--<li>พ.อ.หญิง พรทิพา จันทร์ณรงค์</li>-->
-            <!--<li>พ.อ.หญิง อรัญญา ชาวไชย</li>-->
             <li>พ.อ.หญิง วนิดา โล่ห์สุวรรณ</li>
             <li>พ.ท. ภูมิพัฒน์ สมิทธนโชติ</li>
             <li>รุ่งทิวา ใจเดียว</li>
@@ -101,8 +101,7 @@ if (isset($_GET["action"]) && $_GET["action"] == "drugcode") {
             <a target='right' href="drugcode.php">รหัสยา ?</a>&nbsp;&nbsp;
             <input type="text" name="drugcode" size="10" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode');">&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="submit" value="  ตกลง  " name="B1">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>
-                <<ไปเมนู< /a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self href='../nindex.htm'>&lt;&lt;&nbsp;ไปเมน</a>
         </font>
         </p>
     </form>

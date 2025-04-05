@@ -1,13 +1,36 @@
-<?php 
+<?php
+/**
+ * @README
+ * drugreact                เป็นตารางที่บอกว่า คนไข้แพ้ยาตัวไหนบ้าง และยาที่แพ้อยู่ในกลุ่มไหน
+ * drugreact_group          เป็นตารางที่บอกว่า รายการกลุ่มยาที่แพ้
+ * drugreact_group_list     เป็นตารางที่บอกว่า ใน drugreact_group มียาอะไรบ้าง
+ * 
+ * ตัวอย่างเช่น 
+ * drugreact_group
+ * มี 2 กลุ่ม Sulfonamide
+ * 
+ * drugreact_group_list
+ * มี 2BACT-C และ 1COTR4 อยู่ในกลุ่ม Sulfonamide
+ * 
+ * drugreact
+ * คนไข้ 47-1 แพ้ยา 1COTR4 ที่อยู่ในกลุ่ม Sulfonamide
+ * 
+ * ทีนี้พอแพทย์สั่งจ่ายยา 2BACT-C เราก็สามารถทำแจ้งเตือนได้ว่า อาจจะมีโอกาศแพ้ยาได้นะเพราะเป็นยาที่อยู่ในกลุ่มเดียวกัน
+ */
 session_start();
 include("connect.php");
 if(empty($_SESSION['sIdname'])){
-    echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
+    echo 'SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง <br><a href="dglst.php">คลิกที่นี่ เพื่อกลับไป Login</a>'; 
     exit;
 }
 
 $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
 $dbi->query("SET NAMES UTF8");
+
+if(empty($Dgcode)){
+    echo '<p>กรุณาใส่ข้อมูลยาให้ถูกต้อง <a href="dglst.php">คลิกที่นี่</a> เพื่อย้อนกลับ</p>';
+    exit;
+}
 
 ?>
 <!DOCTYPE html>
@@ -303,8 +326,8 @@ $edpri_from_list = array(
 print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
 ?>
 <select name="had">
-          <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
-          <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
+    <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
+    <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
 
 <br>
@@ -312,9 +335,9 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
         <tr>
             <td valign="top">
                 <strong>กลุ่มยาที่มีโอกาสแพ้ : </strong>
-                <div><a href="javascript:void(0);" onclick="manageReactGroup()">จัดการกลุ่ม</a></div>
+                <div><a href="dgmanage.php" target="_blank">จัดการกลุ่ม</a></div>
             </td>
-            <td>
+            <td valign="top">
                 <?php 
                 $sql2 = sprintf("SELECT * FROM `drugreact_group_list` WHERE `drugcode`='%s'", $dbi->real_escape_string($cDrugcode));
                 $q2 = $dbi->query($sql2);
@@ -353,12 +376,14 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
                     ?>
                     <p style="color:red;"><strong>ยาตัวนี้เคยบันทึกมากกว่า1กลุ่ม</strong></p>
                     <?php
+                    $i = 1;
                     foreach ($groupItemsShow as $g) {
                         $id = $g['id'];
                         $key = $g['drugreact_group'];
                         ?>
-                        <p><strong><?=$groupList[$key];?></strong> ( โดย <?=$g['officer'];?> เมื่อ <?=$g['last_update'];?> ) <a href="javascript:void(0);" title="ลบ" onclick="delReactGroupItem('<?=$id;?>')">[ X ]</a></p>
+                        <p><strong><?=$i.') '.$groupList[$key];?></strong> ( โดย <?=$g['officer'];?> เมื่อ <?=$g['last_update'];?> ) <a href="javascript:void(0);" title="ลบ" onclick="delReactGroupItem('<?=$id;?>')">[ X ]</a></p>
                         <?php
+                        $i++;
                     }
                     ?>
                     <?php
@@ -368,9 +393,6 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
         </tr>
     </table>
     <script>
-        function manageReactGroup(){
-            alert('กำลังพัฒนาใจเย็นๆ');
-        }
         function delReactGroupItem(id){
             Swal.fire({
                 title: 'แน่ใจว่าต้องการลบข้อมูล?',
@@ -383,12 +405,41 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
                 cancelButtonText: "ยกเลิก",
             }).then((result)=>{
                 if (result.isConfirmed) {
-                    Swal.fire({
-                        title: "กำลังพัฒนาต่อ ใจเย็นๆ",
-                        showConfirmButton: false
+                    doDelReactItem(id).then((res)=>{
+                        if(res.status===200){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'ลบข้อมูลเรียบร้อย'
+                            }).then(()=>{
+                                location.reload();
+                            });
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: res.message,
+                            });
+                        }
                     });
                 }
             });
+        }
+
+        async function doDelReactItem(id){
+            let data = [];
+            data.push(encodeURIComponent('id')+"="+encodeURIComponent(id));
+            data.push(encodeURIComponent('action')+"="+encodeURIComponent('del'));
+            let dataPost = data.join("&");
+
+            const result = await fetch('dgitem.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: dataPost
+            });
+            const response = await result.json();
+            return response;
         }
     </script>
 
