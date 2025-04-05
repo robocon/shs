@@ -1,11 +1,7 @@
 <?php 
-include_once 'bootstrap.php';
-// include_once 'includes/JSON.php';
-// $json = new Services_JSON();
-
-// $dbi=new mysqli(HOST,USER,PASS,DB);
-// $dbi->set_charset('utf8');
-// $dbi->query("SET NAMES UTF8");
+include dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 $action = $_REQUEST['action'];
 if ($action === 'search_user') {
@@ -82,7 +78,7 @@ if ($action === 'search_user') {
     }
     redirect("com_support_v2.php", $msg);
     exit;
-}
+}else
 
 
 $page = $_REQUEST['page'];
@@ -231,7 +227,7 @@ if($page==='load25page'){
 <div>
     <ul class="nav">
         <li>
-            <a href="javascript:void(0)" onclick="get25Page()">50 รายการล่าสุด</a>
+            <a href="com_support_edit_time.php" target="_blank">รายการประจำเดือน</a>
         </li>
         <li>
             <a href="javascript:void(0)" onclick="getOrderPage()">ORDER</a>
