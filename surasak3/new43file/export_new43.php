@@ -7,8 +7,9 @@ require_once '../bootstrap.php';
 
 header('Content-Type: text/html; charset=utf-8');
 $dbi = new mysqli(HOST, USER, PASS, DB);
-$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+$dbi->query("SET NAMES UTF8");
 
+$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
 mysql_select_db(DB, $Conn) or die( mysql_error() );
 mysql_query("SET NAMES UTF8", $Conn);
 
