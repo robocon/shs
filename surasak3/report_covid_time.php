@@ -35,7 +35,7 @@ $dbi->query("SET NAMES UTF8");
             <div class="col-auto">
                 <?php
                 $defYear = date('Y');
-                $defMonth = sprintf("%02d", date('m'));;
+                $defMonth = sprintf("%02d", date('m'));
                 $defDay = sprintf("%02d", date('d'));
 
                 $ranges = range(2020, $defYear);
