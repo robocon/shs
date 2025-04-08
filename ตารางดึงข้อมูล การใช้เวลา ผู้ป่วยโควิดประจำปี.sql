@@ -1,11 +1,13 @@
 DROP TEMPORARY TABLE IF EXISTS `tmp_opday`;
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_opday`
+(INDEX `thdatehn`(`thdatehn`))
 SELECT `thdatehn`,SUBSTRING(`thidate`,12,8) AS `register_time`,CONCAT((SUBSTRING(`thidate`,1,4)-543),SUBSTRING(`thidate`,5,15)) AS `regisOfficeDateTime`
 FROM `opday` WHERE ( `thidate` >= '2568-01-01' AND `thidate` <= '2568-12-31' )
 GROUP BY `thdatehn`;
 
 DROP TEMPORARY TABLE IF EXISTS `tmp_diag`;
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag`
+(INDEX `thdatehn`(`thdatehn`))
 SELECT `hn`,`icd10`,`svdate_en`,CONCAT(SUBSTRING(`svdate`,9,2),'-',SUBSTRING(`svdate`,6,2),'-',SUBSTRING(`svdate`,1,4),`hn`) AS `thdatehn`,SUBSTRING(`svdate`,12,8) AS `dt_time`
 FROM `diag` 
 WHERE ( `svdate_en` >= '2025-01-01' AND `svdate_en` <= '2025-12-31' ) 
@@ -15,6 +17,7 @@ GROUP BY CONCAT(SUBSTRING(`svdate`,1,10),`hn`);
 
 DROP TEMPORARY TABLE IF EXISTS `tmp_opselfisolation`;
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_opselfisolation`
+(INDEX `thdatehn`(`thdatehn`))
 SELECT `registerdate`,`row_id` AS `id`,`thdatehn`,`hn`,`vn`,`ptname`,`officer_date`,SUBSTRING(`officer_date`,12,8) AS `opd_time` 
 FROM `opselfisolation` 
 WHERE (`registerdate` >= '2025-01-01' AND `registerdate` <= '2025-12-31') 
@@ -24,6 +27,7 @@ ORDER BY `row_id` ASC;
 
 DROP TEMPORARY TABLE IF EXISTS `tmp_dphardep`;
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_dphardep`
+(INDEX `thdatehn`(`thdatehn`))
 SELECT SUBSTRING(`date`,12,8) AS `phar_time`,`hn`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn`
 FROM `dphardep` 
 WHERE ( `date` >= '2568-01-01' AND `date` <= '2568-12-31' )
@@ -32,6 +36,7 @@ GROUP BY CONCAT(SUBSTRING(`date`,1,10),`hn`);
 
 DROP TEMPORARY TABLE IF EXISTS `tmp_opacc`;
 CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_opacc`
+(INDEX `thdatehn`(`thdatehn`))
 SELECT CONCAT((SUBSTRING(`date`,1,4)-543),SUBSTRING(`date`,5,15)) AS `opaccDate`,SUBSTRING(`date`,12,8) AS `money_time`,`hn`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn`
 FROM `opacc` 
 WHERE ( `date` >= '2568-01-01' AND `date` <= '2568-12-31' )
