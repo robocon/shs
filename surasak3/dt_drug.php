@@ -1996,42 +1996,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
 	echo $return;
 	exit;
-	
-	$sql1 = " Select row_id,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."' ";  //เช็คแพ้ยารายตัว
-	$result1 = mysql_query($sql1);
-
-	if(Mysql_num_rows($result1) > 0){  //ถ้ามียาที่แพ้อยู่
-			echo "3";	//lock ยารายตัว		
-	}else if($arr["amountcode"] > 0){  //มียานั้นๆ อยู่ในระบบ
-		$sql2 = "Select drugcode,genname FROM drugreact WHERE  hn = '".$_SESSION["hn_now"]."'  AND drugcode = '".$_GET["search"]."'  and groupname !='' limit 0,1";  //เช็คแพ้ยาตามกลุ่ม
-		$result2 = mysql_query($sql2);
-		$arr2 = mysql_fetch_assoc($result2);
-		if(Mysql_num_rows($result2) > 0){  //ถ้ามีแพ้ยาตามกลุ่ม
-			if(!empty($arr2["drugcode"])){  //ถ้ามียาในกลุ่มที่แพ้	
-				echo "55";
-			}else{
-				$sql3="SELECT drugcode,drugreact_group FROM `drugreact_group_list` where drugcode='".$_GET["search"]."'";  //เช็คก่อนว่ามียาที่คีย์มาในกลุ่มที่แพ้หรือไม่	
-				$query3=mysql_query($sql3);
-				$num3=mysql_num_rows($query3);
-				list($drugcode,$drugreact_group)=mysql_fetch_array($query3);
-				if($num3 > 0){  //ถ้ามีอยู่ในกลุ่มที่แพ้ ให้เช็คต่ออีกว่าได้ระบุการแพ้ยาตามกลุ่มไปหรือยัง
-					if($drugcode==$arr2["drugcode"]){
-						echo "55";  //lock ยาตามกลุ่ม
-					}else{
-						echo "66";  //alert
-					}		
-				}else{			
-						echo "1";
-				}		
-			}
-		}else{
-			echo "1";
-		}		
-	}else{
-		echo "0";  //ใส่รหัสยาใหม่
-	}
-
-	exit();
 }
 
 //*********************************** ตรวจสอบการlockจ่ายยา *****************************
@@ -2444,9 +2408,12 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){
 
 //**********************************************************************************************
 ?>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title><?php echo $_SESSION["dt_doctor"];?></title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>จ่ายยา - <?php echo $_SESSION["dt_doctor"];?></title>
 <style type="text/css">
 
 body,td,th {
@@ -2462,6 +2429,10 @@ body,td,th {
 
 #drugListItem input[type="radio"]:hover{
 	cursor: pointer;
+}
+#swal2-html-container{
+	font-family: "TH SarabunPSK";
+	font-size: 20px;
 }
 </style>
 
@@ -2562,7 +2533,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>"56"){
+				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -2585,6 +2556,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 							return true;
 						}else{
+							//alert(agep);
 							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
 							return false;
 /*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
@@ -2708,10 +2680,12 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		}//สิทธิ์		
 	}else if(drug_cc=='5VIAT-N' || drug_cc=='1VIAT500' || drug_cc=='1VIAT500  '){ //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
+		
 		sit = sit.substring(0,3);
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
+				
 				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
@@ -2735,6 +2709,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 							return true;
 						}else{
+							//alert('อายุ');
 							alert("ผู้ป่วยอายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
 							return false;
 /*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
@@ -2985,6 +2960,21 @@ function clear_left_form(){
 	document.getElementById('list').innerHTML='';
 }
 
+function resetLeftForm(){
+	document.getElementById('drug_inject_amount').style.display = 'none';
+	document.getElementById('drug_inject_amount2').style.display = 'none';
+	document.getElementById('drug_inject_time').style.display = 'none';
+	document.getElementById('drug_inject_slip').style.display = 'none';
+	document.getElementById('drug_inject_type').style.display = 'none';
+	document.getElementById('drug_inject_etc').style.display = 'none';
+	document.getElementById('reason').style.display = 'none';
+	document.getElementById('slip_detail').style.display = '';
+	document.form1.drug_code.value = "";
+	document.form1.drug_amount.value = "";
+	document.form1.drug_slip.value = "";
+	document.form1.addoredit.value = "E";
+}
+
 var callback_myWindow; // call back ของ rechallenge แพ้ยา
 var callback_drugcode; // call back ของ rechallenge แพ้ยา
 
@@ -3037,7 +3027,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	// วิธีใช้ยา
 	xmlhttp = newXmlHttp();
 	document.getElementById("drug_code").value = drugcode;
-	url = 'dt_drug.php?action=addamount&search=' + drugcode;
+	url = 'dt_drug.php?action=addamount&search='+drugcode;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	
@@ -3090,7 +3080,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	xmlhttp.send(null);
 
 	// popup แบบฟอร์ม rechallenge แพ้ยา
-	check_drugreact(drugcode, returnstr);
+	let resCheckDrugreact = check_drugreact(drugcode, returnstr);
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่11
 	glibenclamide_alert(drugcode.trim());
@@ -3138,7 +3128,7 @@ async function checkAlphaBlocker(drugcode){
 function do_add_drug(returnstr, drugcode){
 	var vl = returnstr.split(",");
 	document.getElementById("drug_amount").value = vl[0];
-	document.getElementById("drug_slip").value = vl[1];
+	document.getElementById("drug_slip").value = vl[1].trim();
 	document.getElementById('list').innerHTML='';
 	document.getElementById("drug_amount").select();
 	
@@ -3199,6 +3189,7 @@ function check_drugreact(drugcode, returnstr){
 	xmlhttp = newXmlHttp();
 	url = 'dt_drug.php?action=checkdrugcode&search='+encodeURIComponent(drugcode);
 	xmlhttp.open("GET", url, false);
+
 	xmlhttp.onreadystatechange = function () {
 		if (xmlhttp.readyState === 4) {
 			if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
@@ -3209,16 +3200,31 @@ function check_drugreact(drugcode, returnstr){
 				if(resCode==3){
 
 					// แจ้งเตือนก่อนว่าผู้ป่วยมีอาการแพ้ยาตัวนี้ ถ้า OK จะทำการ rechallenge แต่ถ้า Cancel จะยกเลิกไป
-					var resConfirm = confirm("!!! คำเตือน !!! \n\n >>> ผู้ป่วยมีการแพ้ยาตัวนี้ <<< \n\nคลิก OK เพื่อกรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป\nคลิก Cancel เพื่อยกเลิก");
-					if (resConfirm===true) {
-						var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
-						url += '&drugcode='+encodeURIComponent(drugcode);
-						url += '&returnstr='+encodeURIComponent(returnstr);
-						url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+					Swal.fire({
+						title: "! คำเตือน ผู้ป่วยมีการแพ้ยาตัวนี้",
+						text: "กรุณากรอกแบบฟอร์ม Rechallenge หากต้องการสั่งยาต่อไป",
+						icon: "warning",
+						allowOutsideClick: false,
+						showCancelButton: true,
+						confirmButtonColor: "#3085d6",
+						confirmButtonText: "ตกลง",
+						cancelButtonColor: "#d33",
+						cancelButtonText: "ยกเลิก"
+					}).then((result) => { 
+						
+						if (result.isConfirmed) { // OK
 
-						window.open(url,"myWindow","width=600,height=300,left=100,top=100");
-
-					}
+							var url = 'dt_drug_rechallenge.php?hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+							url += '&drugcode='+encodeURIComponent(drugcode);
+							url += '&returnstr='+encodeURIComponent(returnstr);
+							url += '&doctor='+encodeURIComponent('<?=$_SESSION['dt_doctor'];?>');
+							window.open(url,"myWindow","width=600,height=300,left=100,top=100");
+							
+						}
+						else if(result.isDismissed){ // Cancel
+							resetLeftForm();
+						}
+					});
 
 					// เคลียร์ค่า ออกไปก่อน จนว่าจะยืนยันฟอร์ม rechallenge
 					document.getElementById('drug_code').value='';
@@ -3234,7 +3240,7 @@ function check_drugreact(drugcode, returnstr){
 		}
 	};
 	xmlhttp.send(null);
-
+	// return false;
 }
 
 function glibenclamide_alert(drugcode){
