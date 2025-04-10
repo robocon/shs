@@ -16,7 +16,7 @@
             <a class="btn btn-primary" href="https://pex.ha.or.th/qrcode/admin/eb160de1de89d9058fcb0b968dbbbd68" target="_blank">แบบบันทึกความพึงพอใจ</a>
         </div>
         <div class="mb-3">
-            <a class="btn btn-primary" href="https://docs.google.com/spreadsheets/d/1o9gGstmiFxVKBFqrzjOcS1_at19GJIBXz6yAPA2sXVU/edit?gid=0#gid=0" target="_blank">ผลการประเมินความพึงพอใจ (กองการพยาบาล)</a>
+            <a class="btn btn-primary" href="https://docs.google.com/spreadsheets/d/1o9gGstmiFxVKBFqrzjOcS1_at19GJIBXz6yAPA2sXVU/edit?gid=0#gid=0" target="_blank">ผลการประเมินความพึงพอใจ</a>
         </div>
     </div>
 </body>
