@@ -23,7 +23,7 @@ $dbi->query("SET NAMES UTF8");
         font-size: 20px;
     }
 </style>
-<div class="container">
+<div class="container-fluid">
 
     <h3 class="mt-2">ระยะเวลารอคอยผู้ป่วย ARI Clinic</h3>
 
@@ -71,6 +71,7 @@ if($page){
     $yTh = $y + 543;
 
     $whereOpday = " ( `thidate` >= '$yTh-01-01' AND `thidate` <= '$yTh-12-31' )";
+    $whereOpd = " ( `thidate` >= '$yTh-01-01' AND `thidate` <= '$yTh-12-31' )";
     $whereDiag = " ( `svdate_en` >= '$y-01-01' AND `svdate_en` <= '$y-12-31' )";
     $whereOpself = " ( `registerdate` >= '$y-01-01' AND `registerdate` <= '$y-12-31' )";
     $whereDate = " ( `date` >= '$yTh-01-01' AND `date` <= '$yTh-12-31' )";
@@ -84,6 +85,7 @@ if($page){
             $dateLikeEn = "$y-$m-$d%";
         }
         $whereOpday = " `thidate` LIKE '$dateLikeTh' ";
+        $whereOpd = " `thidate` LIKE '$dateLikeTh' ";
         $whereDiag = " `svdate_en` LIKE '$dateLikeEn' ";
         $whereOpself = " `registerdate` LIKE '$dateLikeEn' ";
         $whereDate = " `date` LIKE '$dateLikeTh' ";
@@ -92,7 +94,7 @@ if($page){
 
     $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_opday`
     (INDEX `thdatehn`(`thdatehn`))
-    SELECT `thdatehn`,SUBSTRING(`thidate`,12,8) AS `register_time`,CONCAT((SUBSTRING(`thidate`,1,4)-543),SUBSTRING(`thidate`,5,15)) AS `regisOfficeDateTime`
+    SELECT `ptname`,`thdatehn`,SUBSTRING(`thidate`,1,10) AS `registerdate`,SUBSTRING(`thidate`,12,8) AS `register_time`,CONCAT((SUBSTRING(`thidate`,1,4)-543),SUBSTRING(`thidate`,5,15)) AS `regisOfficeDateTime`
     FROM `opday` WHERE $whereOpday 
     GROUP BY `thdatehn`;";
     $q = $dbi->query($sql);
@@ -102,8 +104,8 @@ if($page){
 
     $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag`
     (INDEX `thdatehn`(`thdatehn`))
-    SELECT `hn`,`icd10`,`svdate_en`,CONCAT(SUBSTRING(`svdate`,9,2),'-',SUBSTRING(`svdate`,6,2),'-',SUBSTRING(`svdate`,1,4),`hn`) AS `thdatehn`,SUBSTRING(`svdate`,12,8) AS `dt_time`
-    FROM `diag` WHERE $whereDiag 
+    SELECT `hn`,`an` AS `vn`,GROUP_CONCAT(DISTINCT `icd10` SEPARATOR '<br>') AS `icd10`,GROUP_CONCAT(DISTINCT `diag` SEPARATOR '<br>') AS `diag`, `svdate_en`,CONCAT(SUBSTRING(`svdate`,9,2),'-',SUBSTRING(`svdate`,6,2),'-',SUBSTRING(`svdate`,1,4),`hn`) AS `thdatehn`,SUBSTRING(`svdate`,12,8) AS `dt_time`
+    FROM `diag` WHERE $whereDiag AND `icd10` IN ('U071','J00','J101')
     AND `hn` <> '' 
     AND `icd10` <> '' 
     GROUP BY CONCAT(SUBSTRING(`svdate`,1,10),`hn`);";
@@ -119,10 +121,22 @@ if($page){
     AND `hn` <> '' 
     GROUP BY `thdatehn` 
     ORDER BY `row_id` ASC;";
+    // $q = $dbi->query($sql);
+    // if($q===false){
+    //     echo $dbi->error;
+    // }
+
+    $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_opd`
+    (INDEX `thdatehn`(`thdatehn`))
+    SELECT `ptname`,`vn`,`thdatehn`,SUBSTRING(`thidate`,12,8) AS `opd_time`
+    FROM `opd` WHERE $whereOpd 
+    GROUP BY `thdatehn`;";
     $q = $dbi->query($sql);
     if($q===false){
         echo $dbi->error;
     }
+
+
     
     $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_dphardep`
     (INDEX `thdatehn`(`thdatehn`))
@@ -145,14 +159,14 @@ if($page){
         echo $dbi->error;
     }
 
-    $sql = "SELECT a.`registerdate`,a.`hn`,a.`vn`,a.`ptname`,b.`register_time`,a.`opd_time`,c.`dt_time`,d.`phar_time`,e.`money_time`
+    $sql = "SELECT b.`registerdate`,c.`hn`,c.`vn`,b.`ptname`,b.`register_time`,c.`dt_time`,d.`phar_time`,e.`money_time`,f.`opd_time`
     ,MOD(HOUR(TIMEDIFF(b.`regisOfficeDateTime`,e.`opaccDate`)),24) AS `hour`
-    ,MINUTE(TIMEDIFF(b.`regisOfficeDateTime`,e.`opaccDate`)) AS `minute`
-    FROM `tmp_opselfisolation` AS a 
-    LEFT JOIN `tmp_opday` AS b ON a.`thdatehn` = b.`thdatehn`
-    LEFT JOIN `tmp_diag` AS c ON c.`thdatehn` = a.`thdatehn`
-    LEFT JOIN `tmp_dphardep` AS d ON d.`thdatehn` = a.`thdatehn`
-    LEFT JOIN `tmp_opacc` AS e ON e.`thdatehn` = a.`thdatehn`
+    ,MINUTE(TIMEDIFF(b.`regisOfficeDateTime`,e.`opaccDate`)) AS `minute`,c.`diag`,c.`icd10`
+    FROM `tmp_diag` AS c
+    LEFT JOIN `tmp_opday` AS b ON c.`thdatehn` = b.`thdatehn`
+    LEFT JOIN `tmp_opd` AS f ON c.`thdatehn` = f.`thdatehn`
+    LEFT JOIN `tmp_dphardep` AS d ON d.`thdatehn` = c.`thdatehn`
+    LEFT JOIN `tmp_opacc` AS e ON e.`thdatehn` = c.`thdatehn`
     WHERE ( b.`register_time` IS NOT NULL AND e.`money_time` IS NOT NULL )";
     $q = $dbi->query($sql);
     if($q->num_rows>0){
@@ -163,6 +177,8 @@ if($page){
                 <th>HN</th>
                 <th>VN</th>
                 <th>ชื่อ-สกุล</th>
+                <th>icd10</th>
+                <th>Diag</th>
                 <th>ลงทะเบียน</th>
                 <th>OPD</th>
                 <th>พบแพทย์</th>
@@ -175,10 +191,12 @@ if($page){
         while ($a = $q->fetch_assoc()) {
             ?>
             <tr>
-                <td><?=ad_to_bc($a['registerdate']);?></td>
+                <td><?=$a['registerdate'];?></td>
                 <td><?=$a['hn'];?></td>
                 <td><?=$a['vn'];?></td>
                 <td><?=$a['ptname'];?></td>
+                <td><?=$a['icd10'];?></td>
+                <td><?=$a['diag'];?></td>
                 <td><?=$a['register_time'];?></td>
                 <td><?=$a['opd_time'];?></td>
                 <td><?=$a['dt_time'];?></td>
