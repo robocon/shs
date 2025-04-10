@@ -535,7 +535,8 @@ ORDER BY lab_list ASC";
 	</TR>
 	<TR>
 	";
-		if($_SESSION["sIdname"]=="md16633"){
+	
+		if($_SESSION["sIdname"]=="md16633" OR $_SESSION["sIdname"]=="HDอรรณพ"){
 			$sql = "Select code, detail From labcare where code ='DR@FU1' || code='DR@FU2' ";
 			$result = Mysql_Query($sql);
 			if(Mysql_num_rows($result) > 0){
@@ -544,7 +545,7 @@ ORDER BY lab_list ASC";
 				$i=0;
 				$list = array();
 				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
-				//echo $sql2;
+				
 				$result2 = Mysql_Query($sql2);
 				while($arr2 = Mysql_fetch_assoc($result2)){
 					$list[$i] = $arr2["code"];
