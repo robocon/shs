@@ -5,6 +5,30 @@ $dbi->query("SET NAMES UTF8");
 
 $page = input('page');
 $db = Mysql::load();
+
+if ( $page === 'del_multiple' ) {
+
+    $items = $_POST['ids'];
+    $part = input_post('part');
+    foreach ($items as $key => $id) {
+        
+        $sql = "DELETE FROM `opcardchk` WHERE `row` = '$id' LIMIT 1";
+        $delete = $db->delete($sql);
+
+    }
+
+    $msg = 'ลบข้อมูลเรียบร้อย';
+    if( $delete !== true ){
+		$msg = errorMsg('delete', $delete['id']);
+    }
+
+    redirect('chk_show_user.php?part='.$part, $msg);
+
+    exit;
+
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +71,7 @@ if( $rows > 0 ){
     <div style="margin-bottom: 8px;">
         <button type="button" onclick="addUser('<?=$company['id'];?>','0')">+ เพิ่มรายชื่อ</button>
     </div>
-    <form action="chk_show_user.php" method="post">
+    <form action="chk_show_user.php" method="post" id="formUserList">
         <table class="chk_table">
             <tr>
                 <th><input type="checkbox" id="selected_all" onclick="selectAllCheckbox()"> <label for="selected_all">เลือก</label></th>
@@ -133,7 +157,8 @@ if( $rows > 0 ){
                     if (result.isConfirmed) {
                         
                         // เลือกข้อมูลที่ Checkbox เอาไว้แล้วส่งเป็น POST ids[]
-
+                        document.getElementById('formUserList').submit();
+                        
                     }
                 });
             }
@@ -316,27 +341,3 @@ if( $rows > 0 ){
 
 </body>
 </html>
-<?php
-/*
-if ( $page === 'del_multiple' ) {
-
-    $items = $_POST['ids'];
-    $part = input_post('part');
-    foreach ($items as $key => $id) {
-        
-        $sql = "DELETE FROM `opcardchk` WHERE `row` = '$id' LIMIT 1";
-        $delete = $db->delete($sql);
-
-    }
-
-    $msg = 'ลบข้อมูลเรียบร้อย';
-    if( $delete !== true ){
-		$msg = errorMsg('delete', $delete['id']);
-    }
-
-    redirect('chk_show_user.php?part='.$part, $msg);
-
-    exit;
-
-}
-*/
