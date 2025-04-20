@@ -168,19 +168,35 @@ $thip_items = array(
         'link' => 'https://docs.google.com/spreadsheets/d/1lnTLYxmZe_oGsxbB1rLr3Ck6I6aG5MX7NzjocWHiYsw/edit?usp=sharing', 
         'allow'=>array('ภัทรียา','ปภาวิน','ภูมิพัฒน์')
     ),
+    array(
+        'name' => 'ตัวชี้วัดทีม PCT Med', 
+        'link' => 'https://docs.google.com/spreadsheets/d/1FdSjRkHcyqVrNnOPefSg5eBJ6bZuwS3-/edit?gid=1498424793#gid=1498424793', 
+        'allow'=>array('ภิรมภรณ์','พูนทรัพย์','ปิยาภรณ์','จีราภรณ์2','ตรัณ','วรางคณา','ณัฐชนน','สุวพันธ์3')
+    ),
 );
+$countItem = count($thip_items);
 ?>
 <div style="margin-top:8px;">
     <div style="display:inline-block;">
         <div class="list-item-thip">
             <?php 
+            $i =1;
             foreach ($thip_items as $thip) {
                 
                 if(in_array($_SESSION['sIdname'], $thip['allow'])==true || $_SESSION['smenucode']=='ADM' || in_array($_SESSION['sIdname'], array('สุมีนา','นิธิวดี'))==true ){
+
+
+                    $styleColor = '';
+                    if($i==$countItem){
+                        $styleColor = 'background-color: #ff5252; border: 1px solid red;';
+                    }
+
                     ?>
-                    <a href="<?=$thip['link'];?>" target="_blank"><?=$thip['name'];?></a>
+                    <a href="<?=$thip['link'];?>" style="<?=$styleColor;?>" target="_blank"><?=$thip['name'];?></a>
                     <?php 
+                    
                 }
+                $i++;
             }
             ?>
         </div>

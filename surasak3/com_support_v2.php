@@ -84,8 +84,12 @@ if ($action === 'search_user') {
 $page = $_REQUEST['page'];
 if($page==='load25page'){ 
 
-    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 100";
+    $latestMonth = strtotime("-1 month");
+    $dateEnd = (date("Y",$latestMonth)+543).date("-m", $latestMonth);
+
+    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' AND `dateend` LIKE '$dateEnd%' ORDER BY `dateend` ASC";
     $q = $dbi->query($sql);
+    
     $items = array();
     while ($item = $q->fetch_assoc()) {
         $id = $item['row_id'];
@@ -95,30 +99,30 @@ if($page==='load25page'){
 
     }
 
-    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 100 ";
-    $q_sub = $dbi->query($sql_sub);
-    if($q_sub->num_rows > 0){
-        while ($s = $q_sub->fetch_assoc()) { 
-            $id = $s['com_id'];
+    // $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 100 ";
+    // $q_sub = $dbi->query($sql_sub);
+    // if($q_sub->num_rows > 0){
+    //     while ($s = $q_sub->fetch_assoc()) { 
+    //         $id = $s['com_id'];
 
-            $sql = "SELECT * FROM `com_support` WHERE `row` = '$id' ";
-            $q = $dbi->query($sql);
-            $i = $q->fetch_assoc();
+    //         $sql = "SELECT * FROM `com_support` WHERE `row` = '$id' ";
+    //         $q = $dbi->query($sql);
+    //         $i = $q->fetch_assoc();
 
-            $is['row'] = $i['row'];
-            $is['depart'] = $i['depart'];
-            $is['head'] = $i['head'];
-            $is['detail'] = strip_tags(html_entity_decode($s['detail']));
+    //         $is['row'] = $i['row'];
+    //         $is['depart'] = $i['depart'];
+    //         $is['head'] = $i['head'];
+    //         $is['detail'] = strip_tags(html_entity_decode($s['detail']));
 
-            $is['user'] = $i['user'];
-            $is['programmer'] = $i['programmer'];
-            $is['user1'] = $i['user1'];
-            $is['p_edit'] = '';
-            $is['date'] = $i['date'];
-            $is['dateend'] = $i['dateend'];
-            $items[] = $is;
-        }
-    }
+    //         $is['user'] = $i['user'];
+    //         $is['programmer'] = $i['programmer'];
+    //         $is['user1'] = $i['user1'];
+    //         $is['p_edit'] = '';
+    //         $is['date'] = $i['date'];
+    //         $is['dateend'] = $i['dateend'];
+    //         $items[] = $is;
+    //     }
+    // }
 
     echo json_encode($items);
     exit;
@@ -228,6 +232,9 @@ if($page==='load25page'){
     <ul class="nav">
         <li>
             <a href="com_support_edit_time.php" target="_blank">รายการประจำเดือน</a>
+        </li>
+        <li>
+            <a href="javascript:void(0)" onclick="get25Page()">50 รายการล่าสุด</a>
         </li>
         <li>
             <a href="javascript:void(0)" onclick="getOrderPage()">ORDER</a>

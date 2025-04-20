@@ -73,39 +73,35 @@ if ($action==='udpateTime') {
     $latestMonth = strtotime("-1 month");
     $dateEnd = (date("Y",$latestMonth)+543).date("-m", $latestMonth);
     ?>
-    <div class="container">
+    <div class="">
         <h3>รายการ ณ <?=$def_fullm_th[(date('m', $latestMonth))].' '.(date("Y",$latestMonth)+543);?></h3>
     <?php 
-    $sql = "SELECT `row`,`depart`,`head`,`detail`,`user`,`dateend` FROM `com_support` WHERE `dateend` LIKE '$dateEnd%' AND `status` = 'n' AND `programmer` = 'กฤษณะศักดิ์  กันธรส' ORDER BY `dateend` ASC";
+    $sql = "SELECT `row`,`depart`,`head`,`detail`,`user`,`dateend`,`programmer` FROM `com_support` WHERE `dateend` LIKE '$dateEnd%' AND `status` = 'n' AND `programmer` = 'กฤษณะศักดิ์  กันธรส' ORDER BY `dateend` ASC";
     $q = $dbi->query($sql);
     if($q->num_rows>0){
         ?>
         <table class="table">
             <tr>
-                <th>ใบงาน</th>
-                <th>แผนก/หัวข้อ</th>
-                <th>ผู้แจ้ง</th>
                 <th>วันที่ปิดงาน</th>
+                <th>หัวข้อ</th>
+                <th>รายละเอียด</th>
+                <th>ผู้แจ้ง</th>
+                <th>แผนก</th>
+                <th>ผู้ปฏิบัติ</th>
             </tr>
         <?php
         while($a = $q->fetch_assoc()){
             $id = $a['row'];
+            list($date, $time) = explode(' ', $a['dateend']);
+            $detail = html_entity_decode($a['detail']);
             ?>
             <tr>
-                <td>
-                    <?=$a['row'];?>
-                </td>
-                <td>
-                    <div>
-                        <?php 
-                        list($date, $time) = explode(' ', $a['dateend']);
-                        ?>
-                        <a href="javascript:void(0);" onclick="loadContent('<?=$id;?>')"><strong><?=$a['depart'];?></strong></a>
-                    </div>
-                    <div><?=$a['head'];?></div>
-                </td>
-                <td><?=$a['user'];?></td>
                 <td><a href="javascript:void(0);" onclick="editDateTime('<?=$id;?>','<?=$date;?>','<?=$time;?>')"><?=$a['dateend'];?></a></td>
+                <td><a href="javascript:void(0);" onclick="loadContent('<?=$id;?>')"><strong><?=$a['head'];?></strong></a>    </td>
+                <td><?=preg_replace('#<br />(\s*<br />)+#', '<br />', $detail);?></td>
+                <td><?=$a['user'];?></td>
+                <td><?=$a['depart'];?></td>
+                <td><?=$a['programmer'];?></td>
             </tr>
             <?php
         }

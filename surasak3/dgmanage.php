@@ -5,7 +5,6 @@ $dbi->query("SET NAMES UTF8");
 
 $input = file_get_contents('php://input');
 $json = json_decode($input, true);
-
 $action = $json['action'];
 if($action==='add'){
     $name = $json['name'];
@@ -43,12 +42,17 @@ if($action==='add'){
         $dbi->real_escape_string($id)
     );
     $q = $dbi->query($sql);
-    if($q->num_rows>0){
-        $a = $q->fetch_assoc();
-        $res = array('status'=>200, 'message'=>$a['name']);
-    }else{ 
-        $res = array('status'=>400, 'message'=>'Error: '.$dbi->error);
+    if($q!==false){
+        if($q->num_rows>0){
+            $a = $q->fetch_assoc();
+            $res = array('status'=>200, 'message'=>$a['name']);
+        }else{ 
+            $res = array('status'=>400, 'message'=>'ไม่พบข้อมูล');
+        }
+    }else{
+        $res = array('status'=>400, 'message'=>'Not Found Data Error: '.$dbi->error);
     }
+    
     header('Content-Type: application/json; charset=UTF-8');
     echo json_encode($res);
     exit;
@@ -56,12 +60,21 @@ if($action==='add'){
 }elseif($action==='update'){
     $id = $json['id'];
     $name = $json['name'];
+    $oldName = $json['oldName'];
+    
     $sql = sprintf("UPDATE `drugreact_group` SET `name` = '%s' WHERE `id` = '%s'", 
         $dbi->real_escape_string($name),
         $dbi->real_escape_string($id)
     );
-    $q = $dbi->query($sql);
-    if($q===true){
+    $qReactGroup = $dbi->query($sql);
+    
+    $sqlUpdate = sprintf("UPDATE `drugreact` SET `groupname` = '%s' WHERE `groupname` = '%s' ;",
+        $dbi->real_escape_string($name),
+        $dbi->real_escape_string($oldName)
+    );
+    $dbi->query($sqlUpdate);
+    
+    if($qReactGroup!==false){
         $res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย');
     }else{
         $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ Error: '.$dbi->error);
@@ -70,6 +83,57 @@ if($action==='add'){
     echo json_encode($res);
     exit;
 
+}elseif ($action==='checkDrugreact') {
+    $id = $json['id'];
+    $name = $json['name'];
+
+    $res = array('status'=>200,'userReactRows'=>0,'groupReactRows'=>0);
+    $sql = sprintf("SELECT * FROM `drugreact` WHERE `groupname` = '%s'; ", $dbi->real_escape_string($name));
+    $q = $dbi->query($sql);
+    if($q!==false){
+        $userReactRows = $q->num_rows;
+        if($userReactRows>0){
+            $res['userReactRows'] = $userReactRows;
+        }
+    }else{
+        $res = array('status'=>400,'message'=>'Error: '.$dbi->error);
+    }
+    
+    $sql = sprintf("SELECT * FROM `drugreact_group_list` WHERE `drugreact_group` = '%s' ", $dbi->real_escape_string($id));
+    $q = $dbi->query($sql);
+    if($q!==false){
+        $groupReactRows = $q->num_rows;
+        if($groupReactRows>0){
+            $res['groupReactRows'] = $groupReactRows;
+        }
+    }else{
+        $res = array('status'=>400,'message'=>'Error: '.$dbi->error);
+    }
+    
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode($res);
+    exit;
+}elseif ($action=='checkPass') {
+    
+    $user = $_SESSION['sIdname'];
+    $pass = $json['pass'];
+
+    $sql = sprintf("SELECT `row_id` FROM `inputm` WHERE `idname` = '%s' AND `pword` = '%s' AND `status` = 'y' LIMIT 1", 
+    $dbi->real_escape_string($user),
+    $dbi->real_escape_string($pass));
+    $q = $dbi->query($sql);
+    if($q!==false){
+        if($q->num_rows>0){
+            $res = array('status'=>200);
+        }else{
+            $res = array('status'=>400);
+        }
+    }else{
+        $res = array('status'=>400);
+    }
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode($res);
+    exit;
 }
 
 ?>
@@ -113,10 +177,10 @@ if($action==='add'){
                     <td><?=$i;?></td>
                     <td id="item-id-<?=$a['id'];?>"><?=$a['name'];?></td>
                     <td>
-                        <a href="javascript:void(0);<?=$a['id'];?>" title="แก้ไข" onclick="editReactGroup('<?=$a['id'];?>')">✏️</a>
+                        <a href="javascript:void(0);" title="แก้ไข" onclick="editReactGroup('<?=$a['id'];?>')">✏️</a>
                     </td>
                     <td>
-                        <a href="javascript:void(0);<?=$a['id'];?>" title="ลบ" onclick="delReactGroup('<?=$a['id'];?>')">🗑️</a>
+                        <a href="javascript:void(0);" title="ลบ" onclick="delReactGroup('<?=$a['id'];?>')">🗑️</a>
                     </td>
                 </tr>
                 <?php
@@ -127,46 +191,89 @@ if($action==='add'){
         <script>
 
             // ลบ/ปรับสถานะเป็น n
-            function delReactGroup(id){
+            async function delReactGroup(id){
+                
+                const response = await fetch('dgmanage.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({"action":"getFromId","id":id})
+                });
+                const content = await response.json();
+                
+                const reactName = content.message;
+                const result = await sendPostJson({"action": "checkDrugreact","name":reactName, "id":id}).then((res)=>{
+                    return res;
+                });
 
-                Swal.fire("เพิ่มการแจ้งเตือนก่อนที่จะลบ ว่ายังมีข้อมุูลยาที่เกี่ยว่ข้องอยู่ คุณแน่ใจว่าจะลบจริงหรอ?");
-                /*
-                Swal.fire({
+                if(result.userReactRows > 0 || result.groupReactRows > 0){
+                    confirmDelGroup1(id);
+                    
+                }else{
+                    console.log("Do Delete");
+                    doDeleteGroup(id);
+                }
+            }
+
+            async function confirmDelGroup1(id){
+                const { value: userPass } = await Swal.fire({
                     title: 'คุณต้องการลบข้อมูลนี้หรือไม่?',
-                    text: 'หากลบแล้วจะไม่สามารถกู้คืนได้',
+                    html: `การลบข้อมูลนี้จะทำให้รายการยาที่เคยผูกไว้กับกลุ่มยานี้หายไปทั้งหมด<br>และจะไม่สามารถกู้คืนข้อมูลได้อีก`,
                     icon: 'warning',
+                    input: "password",
+                    inputLabel: "กรุณากรอกรหัสผ่านเพื่อยืนยันการลบ",
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'ใช่, ลบเลย!',
-                    cancelButtonText: 'ยกเลิก'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Perform the delete action here
-                        let objData = {
-                            "action": 'delete',
-                            "id": id
-                        };
-                        sendPostJson(objData).then((res)=>{
-                            if(res.status==200){
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'ลบข้อมูลเรียบร้อย'
-                                }).then((res)=>{
-                                    document.getElementById('item-tr-'+id).remove();
-                                });
-                            }else{
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'ไม่สามารถลบข้อมูลได้',
-                                    text: res.message
-                                });
-                            }
+                    confirmButtonText: 'ยืนยันการลบ',
+                    cancelButtonText: 'ยกเลิก',
+                    inputValidator: (value) => {
+                        if (!value) {
+                            return "กรุณากรอกข้อมูล";
+                        }
+                    }
+                });
+                
+                if(userPass){
+                    const response = await fetch('dgmanage.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({"action":"checkPass","pass":userPass})
+                    });
+                    const content = await response.json();
+                    if(content.status===200){
+                        console.log("Do Delete");
+                        doDeleteGroup(id)
+                    }else{
+                        Swal.fire({icon: 'warning', title:"รหัสผ่านไม่ถูกต้อง"});
+                    }
+                }
+            }
+
+            async function doDeleteGroup(id){
+                let objData = {
+                    "action": 'delete',
+                    "id": id
+                };
+                sendPostJson(objData).then((res)=>{
+                    if(res.status==200){
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'ลบข้อมูลเรียบร้อย'
+                        }).then((res)=>{
+                            document.getElementById('item-tr-'+id).remove();
+                        });
+                    }else{
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'ไม่สามารถลบข้อมูลได้',
+                            text: res.message
                         });
                     }
                 });
-                */
-
             }
 
             async function editReactGroup(id){
@@ -185,7 +292,7 @@ if($action==='add'){
                     input: "text",
                     inputValue,
                     showCancelButton: true,
-                    confirmButtonText: 'ใช่, ลบเลย!',
+                    confirmButtonText: 'แก้ไขได้เลย',
                     cancelButtonText: 'ยกเลิก',
                     inputValidator: (value) => {
                         if (!value) {
@@ -198,6 +305,7 @@ if($action==='add'){
                 if (inputName) {
                     let objData = {
                         "action": 'update',
+                        "oldName": inputValue,
                         "name": inputName,
                         "id": id
                     };
@@ -225,7 +333,7 @@ if($action==='add'){
                     title: "เพิ่มชื่อกลุ่มยา",
                     input: "text",
                     showCancelButton: true,
-                    confirmButtonText: 'ใช่, ลบเลย!',
+                    confirmButtonText: 'เพิ่ม',
                     cancelButtonText: 'ยกเลิก',
                     inputValidator: (value) => {
                         if (!value) {
