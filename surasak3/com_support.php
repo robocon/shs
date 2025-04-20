@@ -16,7 +16,21 @@ include 'bootstrap.php';
         clear: both;
         display: table;
     }
-
+    p{
+        margin:0;
+        padding:0;
+    }
+    @media screen and (max-width: 1110px) {
+        #title-group{
+            width: 100%;
+            float: left;
+        }
+        #icon-telegram{
+            float: left;
+            position: relative !important;
+            width: 100%;
+        }
+    }
 </style>
 <?php
 if ($_SESSION["smenucode"] == "ADM" || $_SESSION["smenucode"] == "ADMCOM") {
@@ -66,16 +80,18 @@ if ($_SESSION['supportMessage']) {
     $_SESSION['notify_message'] = null;
 }
 ?>
-<div class="">
-    <div style="">
+<div class="clearfix" style="position:relative;">
+    <div id="title-group">
         <div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>
         <div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong><?=$sOfficer;?></strong> เข้าสู่ระบบ</font></div>
         <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> และนายชาญวิทย์  ตากาบุตร<b>....โทร. 8500</b></font></div>
         <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>
-    </div>
-    <div style="">
         <div align='center' class='forntsarabun'><strong>แจ้งซ่อมในระบบแล้ว กรุณาติดตามสถานะงานด้วยครับ [งานใหม่ : กำลังดำเนินการ : ปิดงาน]</strong></div><BR>
-        <div align='center' class='forntsarabun'>แสกน QR Code เพื่อเข้ากลุ่มติดตามงาน IT<br><img src='images/it-job.jpg' width='180' height='180'></div>
+    </div>
+    <div align='center' id="icon-telegram" class='forntsarabun' style="position:absolute; top:0; right:1em;">
+        <img src='images/it-job.jpg' width='180' height='180'>
+        <p><strong>กลุ่มติดตามงาน IT</strong></p>
+        <p>(กลุ่มใหม่ Telegram)</p>
     </div>
 </div>
 
@@ -94,16 +110,17 @@ $result = mysql_query($query) or die("Query failed111" . mysql_error());
 if ($num1 = mysql_num_rows($result)) {
     print "<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
     print "<table class='forntsarabun'  align='center' width='98%'>";
-    print " <tr>";
-    print "  <th bgcolor=#EC7063>ใบงาน</th>";
-    print "  <th bgcolor=#EC7063>แผนก</th>";
-    print "  <th bgcolor=#EC7063>เบอร์แผนก</th>";
-    print "  <th bgcolor=#EC7063>หัวข้อ</th>";
-    print "  <th bgcolor=#EC7063>ผู้ที่ร้องขอ</th>";
-    print "  <th bgcolor=#EC7063>วันที่ร้องขอ</th>";
-    print "  <th bgcolor=#EC7063>ผู้รับผิดชอบ</th>";
-    print "  <th bgcolor=#EC7063>พิมพ์</th>";
-    print " </tr>";
+    ?>
+    <tr bgcolor="#EC7063">
+        <th>ใบงาน</th>
+        <th>แผนก</th>
+        <th>หัวข้อ</th>
+        <th>ผู้ที่ร้องขอ</th>
+        <th>วันที่ร้องขอ</th>
+        <th>ผู้รับผิดชอบ</th>
+        <th>พิมพ์</th>
+    </tr>
+    <?php
     while (list($row, $jobtype, $depart, $head, $datetime, $programmer, $date, $user1, $phone) = mysql_fetch_row($result)) {
         $n++;
         $date_key = substr($date, 0, 10);
@@ -130,8 +147,7 @@ if ($num1 = mysql_num_rows($result)) {
 
         print (" <tr>\n" .
         "<td BGCOLOR=$color align='center'>$row</td>\n" .
-        "<td BGCOLOR=$color>$depart</td>\n" .
-        "<td BGCOLOR=$color>$phone</td>\n" .
+        "<td BGCOLOR=$color>$depart ( $phone )</td>\n" .
         "<td BGCOLOR=$color><a target=_TOP href=\"comdetail.php? row=$row\">$head</a> <span style='margin-left:5px;'>$new</span></td>\n" .
         "<td BGCOLOR=$color>$user1</td>\n" .
         "<td BGCOLOR=$color>$thSortDate น.</td>\n" .
@@ -151,7 +167,7 @@ $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
 $num = 'A';
 
-$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user` 
+$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user`,`phone`
 FROM `com_support` 
 WHERE `status` ='$num' 
 ORDER BY `row` DESC";
@@ -161,7 +177,7 @@ if ($num2 = mysql_num_rows($result)) {
     print "<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการ จำนวน $num2 รายการ</strong></div>";
     print "<table class='forntsarabun'  align='center' width='98%'>";
     print " <tr>";
-    print "  <th bgcolor=#FAD7A0>ลำดับแจ้ง</th>";
+    print "  <th bgcolor=#FAD7A0>ใบงาน</th>";
     print "  <th bgcolor=#FAD7A0>แผนก</th>";
     print "  <th bgcolor=#FAD7A0>หัวข้อ</th>";
     print "  <th bgcolor=#FAD7A0>วันที่ร้องขอ</th>";
@@ -174,7 +190,7 @@ if ($num2 = mysql_num_rows($result)) {
 
 
     print " </tr>";
-    while (list($row, $depart, $head, $datetime, $programmer, $date, $user) = mysql_fetch_row($result)) {
+    while (list($row, $depart, $head, $datetime, $programmer, $date, $user, $phone) = mysql_fetch_row($result)) {
         $n++;
         $sql_detail = "SELECT * FROM `com_support_details` WHERE `com_id` = '$row' ORDER BY `id` DESC";
         //echo $sql_detail."<br>";
@@ -199,7 +215,7 @@ if ($num2 = mysql_num_rows($result)) {
 
         print (" <tr>\n" .
             "  <td BGCOLOR=#FCF3CF align='center'>$row</td>\n" .
-            "  <td BGCOLOR=#FCF3CF>$depart</td>\n" .
+            "  <td BGCOLOR=#FCF3CF>$depart ( $phone )</td>\n" .
             "  <td BGCOLOR=#FCF3CF><a target=_TOP href=\"comdetail.php? row=$row\">$head</a><span style='margin-left:5px;'>$comment</span></td>\n" .
             "  <td BGCOLOR=#FCF3CF>$date</td>\n" .
             "  <td BGCOLOR=#FCF3CF>$where</td>\n" .
@@ -296,7 +312,7 @@ if ($countAllItem>0) {
     
     print "<table class='forntsarabun' align='center' width='98%'>";
     print " <tr>";
-    print "  <th bgcolor=#73C6B6>ลำดับแจ้ง</th>";
+    print "  <th bgcolor=#73C6B6>ใบงาน</th>";
     print "  <th bgcolor=#73C6B6>แผนก</th>";
     print "  <th bgcolor=#73C6B6>หัวข้อ</th>";
     print "  <th bgcolor=#73C6B6>การดำเนิการ</th>";
