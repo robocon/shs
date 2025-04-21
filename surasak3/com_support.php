@@ -1,6 +1,12 @@
 <?php
 include 'connect.php';
 include 'bootstrap.php';
+if(empty($_SESSION['sIdname'])){
+    ?>
+    <p>Session หมดอายุ กรุณา <a href="../nindex.htm">Login</a> อีกครั้ง</p>
+    <?php
+    exit;
+}
 ?>
 <!-- อัพเดท เวอร์ชั่นใหม่ๆ ได้ที่ https://github.com/sweetalert2/sweetalert2/releases -->
 <script src="js/sweetalert2.all.min.js"></script>
@@ -108,17 +114,17 @@ ORDER BY `row` DESC";
 
 $result = mysql_query($query) or die("Query failed111" . mysql_error());
 if ($num1 = mysql_num_rows($result)) {
-    print "<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
-    print "<table class='forntsarabun'  align='center' width='98%'>";
     ?>
+    <div align="center" class="forntsarabun"><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน <?=$num1;?> รายการ</strong></div>
+    <table class="forntsarabun"  align="center" width="98%">
     <tr bgcolor="#EC7063">
-        <th>ใบงาน</th>
-        <th>แผนก</th>
+        <th width="3%">ใบงาน</th>
+        <th width="10%">แผนก</th>
         <th>หัวข้อ</th>
-        <th>ผู้ที่ร้องขอ</th>
-        <th>วันที่ร้องขอ</th>
-        <th>ผู้รับผิดชอบ</th>
-        <th>พิมพ์</th>
+        <th width="10%">ผู้ที่ร้องขอ</th>
+        <th width="8%">วันที่ร้องขอ</th>
+        <th width="8%">ผู้รับผิดชอบ</th>
+        <th width="3%">พิมพ์</th>
     </tr>
     <?php
     while (list($row, $jobtype, $depart, $head, $datetime, $programmer, $date, $user1, $phone) = mysql_fetch_row($result)) {
@@ -167,33 +173,36 @@ $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
 $num = 'A';
 
-$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user`,`phone`
+$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user`,`phone`,`user1`
 FROM `com_support` 
 WHERE `status` ='$num' 
 ORDER BY `row` DESC";
 $result = mysql_query($query) or die("Query failed111");
 
 if ($num2 = mysql_num_rows($result)) {
-    print "<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการ จำนวน $num2 รายการ</strong></div>";
-    print "<table class='forntsarabun'  align='center' width='98%'>";
-    print " <tr>";
-    print "  <th bgcolor=#FAD7A0>ใบงาน</th>";
-    print "  <th bgcolor=#FAD7A0>แผนก</th>";
-    print "  <th bgcolor=#FAD7A0>หัวข้อ</th>";
-    print "  <th bgcolor=#FAD7A0>วันที่ร้องขอ</th>";
-    print "  <th bgcolor=#FAD7A0>ผู้รับผิดชอบ</th>";
-    print "  <th bgcolor=#FAD7A0>พิมพ์</th>";
-    //print"  <th bgcolor=#FAD7A0>การทำงาน</th>";
-    if ($_SESSION['smenucode'] == 'ADM' or $_SESSION['smenucode'] == 'ADMCOM') {
-        print "  <th bgcolor=#FAD7A0>เพิ่มรายละเอียด</th>";
-    }
-
-
-    print " </tr>";
-    while (list($row, $depart, $head, $datetime, $programmer, $date, $user, $phone) = mysql_fetch_row($result)) {
+    ?>
+    <div align="center" class="forntsarabun"><strong>งานที่กำลังดำเนินการ จำนวน <?=$num2;?> รายการ</strong></div>
+    <table class="forntsarabun"  align="center" width="98%">
+        <tr bgcolor="#FAD7A">
+            <th width="3%">ใบงาน</th>
+            <th width="10%">แผนก</th>
+            <th>หัวข้อ</th>
+            <th width="8%">วันที่ร้องขอ</th>
+            <th width="8%">ผู้รับผิดชอบ</th>
+            <th width="3%">พิมพ์</th>
+            <?php 
+            if ($_SESSION['smenucode'] == 'ADM' or $_SESSION['smenucode'] == 'ADMCOM') {
+                ?><th width="3%">เพิ่มรายละเอียด</th><?php
+            }
+            ?>
+            
+        </tr>
+    
+    <?php
+    while (list($row, $depart, $head, $datetime, $programmer, $date, $user, $phone, $user1) = mysql_fetch_row($result)) {
         $n++;
         $sql_detail = "SELECT * FROM `com_support_details` WHERE `com_id` = '$row' ORDER BY `id` DESC";
-        //echo $sql_detail."<br>";
+        
         $q = mysql_query($sql_detail);
         if (mysql_num_rows($q) > 0) {
             $comment = "<img src='images/comment-64.png' width='32' height='32'>";
@@ -217,7 +226,7 @@ if ($num2 = mysql_num_rows($result)) {
             "  <td BGCOLOR=#FCF3CF align='center'>$row</td>\n" .
             "  <td BGCOLOR=#FCF3CF>$depart ( $phone )</td>\n" .
             "  <td BGCOLOR=#FCF3CF><a target=_TOP href=\"comdetail.php? row=$row\">$head</a><span style='margin-left:5px;'>$comment</span></td>\n" .
-            "  <td BGCOLOR=#FCF3CF>$date</td>\n" .
+            "  <td BGCOLOR=#FCF3CF title=\"$user1\">$date</td>\n" .
             "  <td BGCOLOR=#FCF3CF>$where</td>\n" .
             "  <td BGCOLOR=#FCF3CF align='center'><a target='_blank' href=\"com_form.php?row=$row\"><img src='images/printer.png' width='16'></a></td>\n");
         // "  <td BGCOLOR=#FCF3CF align='center'>$add</td>\n".
@@ -247,7 +256,7 @@ $q = mysql_query($sql);
 $a = mysql_fetch_assoc($q);
 $countAllItem = $a['count'];
 
-$query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`p_edit`,`dateend`
+$query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`p_edit`,`dateend`,`phone`
 FROM `com_support` 
 WHERE `status` ='n' 
 ORDER BY `dateend` DESC ";
@@ -308,22 +317,21 @@ if ($countAllItem>0) {
             </select>
         </div>
     </div>
+    <table class="forntsarabun" align="center" width="98%">
+        <tr bgcolor="#73C6B6">
+            <th width="3%">ใบงาน</th>
+            <th width="10%">แผนก</th>
+            <th width="30%">หัวข้อ</th>
+            <th>การดำเนิการ</th>
+            <th width="8%">ผู้รับผิดชอบ</th>
+            <th width="8%">วันเวลาที่ดำเนินการ</th>
+            <th>พิมพ์</th>
+        </tr>
     <?php
-    
-    print "<table class='forntsarabun' align='center' width='98%'>";
-    print " <tr>";
-    print "  <th bgcolor=#73C6B6>ใบงาน</th>";
-    print "  <th bgcolor=#73C6B6>แผนก</th>";
-    print "  <th bgcolor=#73C6B6>หัวข้อ</th>";
-    print "  <th bgcolor=#73C6B6>การดำเนิการ</th>";
-    print "  <th bgcolor=#73C6B6 width='10%'>ผู้รับผิดชอบ</th>";
-    print "  <th bgcolor=#73C6B6 width='8%'>วันเวลาที่ดำเนินการ</th>";
-    print "  <th bgcolor=#73C6B6>พิมพ์</th>";
-    print " </tr>";
-    
     foreach ($items as $k => $v) {
 
         $row = $v['row'];
+        $phone = $v['phone'];
 
         $sqlDetail = sprintf("SELECT `id` FROM `com_support_details` WHERE `com_id` = '%s' ", $row);
         $qDetail = $dbi->query($sqlDetail);
@@ -340,7 +348,7 @@ if ($countAllItem>0) {
 
         print (" <tr>\n" .
             "  <td BGCOLOR=#D5F5E3  align='center'>$row</td>\n" .
-            "  <td BGCOLOR=#D5F5E3>$depart</td>\n" .
+            "  <td BGCOLOR=#D5F5E3>$depart ( $phone )</td>\n" .
             "  <td BGCOLOR=#D5F5E3><a target=_TOP href=\"comdetail.php?row=$row\">$head</a>$icon</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$p_edit</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$programmer</td>\n" .
