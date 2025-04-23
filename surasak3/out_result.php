@@ -704,19 +704,14 @@ if ($_GET["act"] == "print") {
 													} ?>
 													<span id="eyePresDiv" style="display: none;" class="pdx">
 														ระบุความผิดปกติ :
-														<input name="eye_pressure_detail" type="text" class="pdxhead"
-															size="50" id="eye_pressure_detail"
-															value="<?= $arrchk['eye_pressure_detail'] ?>" />
+														<input name="eye_pressure_detail" type="text" class="pdxhead" size="50" id="eye_pressure_detail" value="<?= $arrchk['eye_pressure_detail'] ?>" />
 													</span>
-
-													<a href="javascript: void(0);"
-														onclick="return cancelEyePres()">[ยกเลิก]</a>
+													<a href="javascript: void(0);" onclick="cancelEyePres()">[ยกเลิก]</a>
 													<script>
 														function cancelEyePres() {
 															document.getElementById('eyePresDiv').style.display = "none";
 															document.getElementById('eye_pressure1').checked = false;
 															document.getElementById('eye_pressure2').checked = false;
-															return false;
 														}
 													</script>
 												</td>
@@ -750,9 +745,9 @@ if ($_GET["act"] == "print") {
 													</span>
 
 													<a href="javascript: void(0);"
-														onclick="return cancelEyePres()">[ยกเลิก]</a>
+														onclick="return cancelEyeVision()">[ยกเลิก]</a>
 													<script>
-														function cancelEyePres() {
+														function cancelEyeVision() {
 															document.getElementById('eyeVisionDiv').style.display = "none";
 															document.getElementById('eye_vision1').checked = false;
 															document.getElementById('eye_vision2').checked = false;

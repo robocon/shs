@@ -118,11 +118,11 @@ if ($num1 = mysql_num_rows($result)) {
     <div align="center" class="forntsarabun"><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน <?=$num1;?> รายการ</strong></div>
     <table class="forntsarabun"  align="center" width="98%">
     <tr bgcolor="#EC7063">
-        <th width="3%">ใบงาน</th>
-        <th width="10%">แผนก</th>
+        <th width="5%">ใบงาน</th>
+        <th width="15%">แผนก</th>
         <th>หัวข้อ</th>
-        <th width="10%">ผู้ที่ร้องขอ</th>
-        <th width="8%">วันที่ร้องขอ</th>
+        <th width="12%">ผู้ที่ร้องขอ</th>
+        <th width="12%">วันที่ร้องขอ</th>
         <th width="8%">ผู้รับผิดชอบ</th>
         <th width="3%">พิมพ์</th>
     </tr>
@@ -184,15 +184,15 @@ if ($num2 = mysql_num_rows($result)) {
     <div align="center" class="forntsarabun"><strong>งานที่กำลังดำเนินการ จำนวน <?=$num2;?> รายการ</strong></div>
     <table class="forntsarabun"  align="center" width="98%">
         <tr bgcolor="#FAD7A">
-            <th width="3%">ใบงาน</th>
-            <th width="10%">แผนก</th>
+            <th width="5%">ใบงาน</th>
+            <th width="15%">แผนก</th>
             <th>หัวข้อ</th>
-            <th width="8%">วันที่ร้องขอ</th>
-            <th width="8%">ผู้รับผิดชอบ</th>
+            <th width="12%">วันที่ร้องขอ</th>
+            <th width="12%">ผู้รับผิดชอบ</th>
             <th width="3%">พิมพ์</th>
             <?php 
             if ($_SESSION['smenucode'] == 'ADM' or $_SESSION['smenucode'] == 'ADMCOM') {
-                ?><th width="3%">เพิ่มรายละเอียด</th><?php
+                ?><th width="5%">เพิ่มรายละเอียด</th><?php
             }
             ?>
             
@@ -319,13 +319,13 @@ if ($countAllItem>0) {
     </div>
     <table class="forntsarabun" align="center" width="98%">
         <tr bgcolor="#73C6B6">
-            <th width="3%">ใบงาน</th>
-            <th width="10%">แผนก</th>
-            <th width="30%">หัวข้อ</th>
-            <th>การดำเนิการ</th>
-            <th width="8%">ผู้รับผิดชอบ</th>
-            <th width="8%">วันเวลาที่ดำเนินการ</th>
-            <th>พิมพ์</th>
+            <th width="5%">ใบงาน</th>
+            <th width="15%">แผนก</th>
+            <th width="">หัวข้อ</th>
+            <th width="8%">การดำเนิการ</th>
+            <th width="10%">ผู้รับผิดชอบ</th>
+            <th width="12%">วันเวลาที่ดำเนินการ</th>
+            <th width="3%">พิมพ์</th>
         </tr>
     <?php
     foreach ($items as $k => $v) {
