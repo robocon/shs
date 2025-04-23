@@ -5,9 +5,28 @@
     $xRow_id=$nRow_id;
     session_register("xRow_id");
     include("connect.inc");
-
+?>
+<link rel="stylesheet" type="text/css" href="epoch_styles.css" />
+<script type="text/javascript" src="diabetes_clinic/epoch_classes.js"></script>
+<script type="text/javascript">
+	var popup1, popup2, popup3, popup4, popup5, popup6, popup7, popup8, popup9, popup10;
+	window.onload = function() {
+		popup1 = new Epoch('popup1','popup',document.getElementById('departdate'),false);
+		popup2 = new Epoch('popup2','popup',document.getElementById('prepodate'),false);
+		popup3 = new Epoch('popup3','popup',document.getElementById('podate'),false);
+		popup4 = new Epoch('popup4','popup',document.getElementById('bounddate'),false);
+		popup5 = new Epoch('popup5','popup',document.getElementById('chkindate'),false);
+		popup6 = new Epoch('popup6','popup',document.getElementById('senddate'),false);
+		popup7 = new Epoch('popup7','popup',document.getElementById('borrowdate'),false);
+		popup8 = new Epoch('popup8','popup',document.getElementById('pobilldate'),false);
+		popup9 = new Epoch('popup9','popup',document.getElementById('fixdate'),false);
+		popup10 = new Epoch('popup10','popup',document.getElementById('reportdate'),false);		
+	};
+</script>
+<?
     $query = "SELECT * FROM pocompany WHERE row_id = '$nRow_id'";
-    $result = mysql_query($query)
+    //echo $query;
+	$result = mysql_query($query)
         or die("Query failed");
  
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -25,20 +44,21 @@
 	$cComname=$row->comname;
 	$cDepart=$row->depart;
     $cDepartno=$row->departno;
-    $cDepartdate=$row->departdate;
-
+    $cDepartdate=$row->departdate;  //calendar1
+	$cNetprice=$row->netprice;
 	$cPrepono=$row->prepono;
-	$cPrepodate=$row->prepodate;
+	$cPrepodate=$row->prepodate; //calendar2
 	$cPono=$row->pono;
-	$cPodate=$row->podate;
-	$cBounddate=$row->bounddate;
-	$cChkindate=$row->chkindate;
-	$cSenddate=$row->senddate;
-	$cBorrowdate=$row->borrowdate;
+	$cPodate=$row->podate;  //calendar3
+	$cBounddate=$row->bounddate; //calendar4
+	$cChkindate=$row->chkindate;  //calendar5
+	$cSenddate=$row->senddate;  //calendar6
+	$cBorrowdate=$row->borrowdate;  //calendar7
 	$cPonoyear=$row->ponoyear;
 	$cPobillno=$row->pobillno;
-	$cPobilldate=$row->pobilldate;	
-	$cFixdate=$row->fixdate;
+	$cPobilldate=$row->pobilldate;	//calendar8
+	$cFixdate=$row->fixdate;  //calendar9
+	$cReportdate=$row->reportdate;  //calendar10
                   }  
    else {
                 echo "ไม่พบ รหัส : $cTdatehn";
@@ -51,29 +71,32 @@ print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "  <b><font face='Angsana New'>การเสนอความต้องการจาก กอง / แผนก</b>";
 print "  <br>สำหรับใช้ใน กอง / แผนก <input type='text' name='depart' size='30' value='$cDepart'>";
 print "  <br>ที่  (ของ  กอง / แผนก)........ <input type='text' name='departno' size='30' value='$cDepartno'>";
-print "  <br>ลงวันที่ .............................<input type='text' name='departdate' size='30' value='$cDepartdate'><br>";
+print "  <br>ลงวันที่ .............................<input type='text' name='departdate' id='departdate' size='30' value=''> $cDepartdate<br>";
 print " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "<hr>";
 print "  <b>ใบสั่งซื้อชั่วคราว</b>";
 print "  <br>ที่ กห ใบสั่งซื้อชั่วคราว <input type='text' name='prepono' size='30' value='$cPrepono'><br>";
-print "  วันที่ใบสั่งซื้อชั่วคราว&nbsp;&nbsp;&nbsp;<input type='text' name='prepodate' size='30' value='$cPrepodate'><br>";
+print "  วันที่ใบสั่งซื้อชั่วคราว&nbsp;&nbsp;&nbsp;<input type='text' name='prepodate' id='prepodate' size='30' value=''> $cPrepodate<br>";
+print "  ยอดเงินสั่งซื้อ&nbsp;&nbsp;&nbsp;<input type='text' name='prenetprice' size='30' value='$cNetprice'><br>";
 print " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "<hr>";
 print "  <b> ใบสั่งซื้อจริง</b>";
 print "  <br>";
 print "  ที่ กห ใบสั่งซื้อจริง&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='pono' size='30' value='$cPono'>ปี&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='ponoyear' size='5' value='$cPonoyear'><br>";
 print "  วันที่รายงานขอซื้อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='podate' size='30' value='$cPodate'><br>";
-print "  วันที่อนุมัติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='bounddate' size='30' value='$cBounddate'><br>";
+print "  <input type='text' name='podate' id='podate' size='30' value=''> $cPodate<br>";
 print "  วันที่รับของ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='chkindate' size='30' value='$cChkindate'><br>";
+print "  <input type='text' name='bounddate' id='bounddate' size='30' value=''> $cBounddate<br>";
+print "  วันที่อนุมัติ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "  <input type='text' name='chkindate' id='chkindate' size='30' value=''> $cChkindate<br>";
 print "  วันที่สั่งซื้อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='senddate' size='30' value='$cSenddate'><br>";
+print "  <input type='text' name='senddate' id='senddate' size='30' value=''> $cSenddate<br>";
 print "  วันที่เบิกเงิน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='borrowdate' size='30' value='$cBorrowdate'><br>";
+print "  <input type='text' name='borrowdate' id='borrowdate' size='30' value=''> $cBorrowdate<br>";
 print "  วันที่กำหนดส่งมอบ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='text' name='fixdate' size='30' value='$cFixdate'><br>";
+print "  <input type='text' name='fixdate' id='fixdate' size='30' value=''> $cFixdate<br>";
+print "  วันที่รายงานผลการจัดหา&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "  <input type='text' name='reportdate' id='reportdate' size='30' value=''> $cReportdate<br>";
 print " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "<hr>";
 print "  <b> บริษัทที่สั่งซื้อยา/เวชภัณฑ์</b>";
@@ -82,11 +105,11 @@ print "บริษัท : ($cComcode) $cComname <br>";
 print "ใบเสนอราคา เลขที่&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "<input type='text' name='pobillno' size='30' value='$cPobillno'><br>";
 print "ใบเสนอราคา ลงวันที่&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "<input type='text' name='pobilldate' size='30' value='$cPobilldate'><br>";
+print "<input type='text' name='pobilldate' id='pobilldate' size='30' value=''> $cPobilldate<br>";
 print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "  <input type='submit' value='        &#3610;&#3633;&#3609;&#3607;&#3638;&#3585;        ' name='B1'></p>";
+print "  <input type='submit' value='        บันทึก        ' name='B1'></p>";
 print "</form>";
 print "</body>";
 ?>

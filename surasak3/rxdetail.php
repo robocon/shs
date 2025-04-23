@@ -29,6 +29,7 @@
     include("connect.inc");
   
     $query = "SELECT * FROM phardep WHERE row_id = '$nRow_id' "; 
+	//echo $query;
     $result = mysql_query($query)
         or die("Query failed");
 
@@ -43,6 +44,7 @@
          }
     $sHn=$row->hn;
     $sAn=$row->an;
+	$sVn=$row->tvn;
     $sPtname=$row->ptname;
     $sDoctor=$row->doctor;
     $sEssd=$row->essd;
@@ -65,20 +67,24 @@
  </tr>
 
 <?php
-    $query = "SELECT tradname,amount,price,slcode,drugcode FROM drugrx WHERE idno = '$nRow_id' AND date = '".$_GET["sDate"]."' ";
+    $query1 = "SELECT tradname,amount,price,slcode,drugcode FROM drugrx WHERE idno = '$nRow_id' AND date = '".$_GET["sDate"]."' ";
 
-    $result = mysql_query($query)
+    $result1 = mysql_query($query1)
         or die("Query failed");
 
     $d=substr($dDate,8,2);
     $m=substr($dDate,5,2);
     $y=substr($dDate,0,4);
     print "วันที่ $d/$m/$y<br>";
-    print "$sPtname, HN: $sHn<br> ";
+	if(!empty($sAn)){
+    print "$sPtname, HN: $sHn  AN: $sAn<br> ";
+	}else{
+	print "$sPtname, HN: $sHn  VN: $sVn<br> ";	
+	}	
     print "โรค: $sDiag<br>";
 //    print "แพทย์ :$sDoctor<br><br>";
 
-    while (list ($tradname,$amount,$price,$slcode,$drugcode) = mysql_fetch_row ($result)) {
+    while (list ($tradname,$amount,$price,$slcode,$drugcode) = mysql_fetch_row ($result1)) {
         $x++;
         $aDgcode[$x]=$drugcode;
         $aTrade[$x]=$tradname;
@@ -99,8 +105,24 @@
     print "รวมงิน  $sNetprice บาท<br>";
     print "แพทย์ :$sDoctor<br><br>";
 ?>
-    <a target=_BLANK href="slipsprn.php">พิมพ์สลากยาทั้งหมด</a><br><br><a target=_BLANK href="slipsprn1.php">พิมพ์สลากยารุ่นใหม่ทั้งหมด</a>
-	<br><a target=_BLANK href="slipsprn1.1.php">พิมพ์สลากยาผู้ป่วยใน(ฉลากเล็ก)</a>
-	<BR><BR><A HREF="drugbill.php?hn=<?php echo $sHn;?>&row_id=<?php echo $_GET["nRow_id"]?>" target="_blank">พิมพ์ใบสั่งยา</A>
-
-
+    <!--<a target=_BLANK href="slipsprn.php">พิมพ์สลากยาทั้งหมด</a><br>-->
+    <a target=_BLANK href="slipsprn_new.php">พิมพ์สลากยาแบบใหม่</a><br>
+    
+    <!--<a target=_BLANK href="slipsprn1.php">พิมพ์สลากยารุ่นใหม่ทั้งหมด</a><br>-->
+    <a target=_BLANK href="slipsprn1.1.php">พิมพ์สลากยาผู้ป่วยใน(ฉลากเล็ก)</a><BR><BR>
+    <A HREF="drugbill.php?hn=<?php echo $sHn;?>&row_id=<?php echo $_GET["nRow_id"]?>" target="_blank">พิมพ์ใบสั่งยา</A>
+<hr>
+<div>กำลังอยู่ในช่วงทดลอง.... (19/05/66)</div>
+<?
+if(!empty($sAn)){
+?>
+<a target=_BLANK href="slipsprn_new_qrcode.php?an=<?=$sAn;?>">พิมพ์สลากยาใหญ่  มี QR Code</a><br>
+<a target=_BLANK href="slipsprn1.1_qrcode.php?an=<?=$sAn;?>">พิมพ์สลากยาเล็ก มี QR Code</a>
+<?
+}else{
+?>
+<a target=_BLANK href="slipsprn_new_qrcode.php?vn=<?=$sVn;?>">พิมพ์สลากยาใหญ่  มี QR Code</a><br>
+<a target=_BLANK href="slipsprn1.1_qrcode.php?vn=<?=$sVn;?>">พิมพ์สลากยาเล็ก มี QR Code</a>
+<?
+}
+?>	

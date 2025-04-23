@@ -21,29 +21,26 @@
 echo "รหัสยาเวชภัณฑ์";
 ?>
 <table>
-    <thead>
-        <tr>
-            <th bgcolor=CC9900>
-                <font face='Angsana New'>รหัส
-            </th>
-            <th bgcolor=CC9900>
-                <font face='Angsana New'>ชื่อการค้า
-            </th>
-            <th bgcolor=CC9900>
-                <font face='Angsana New'>ทุน
-            </th>
-            <th bgcolor=CC9900>
-                <font face='Angsana New'>ขาย
-            </th>
-            <th bgcolor=CC9900>
-                <font face='Angsana New'>กำไร(%)
-            </th>
-            <th bgcolor=CC9900>
-                <font face='Angsana New'>เบิกได้?
-            </th>
-        </tr>
-    </thead>
-    <tbody>
+    <tr>
+        <th bgcolor=CC9900>
+            <font face='Angsana New'>รหัส
+        </th>
+        <th bgcolor=CC9900>
+            <font face='Angsana New'>ชื่อการค้า
+        </th>
+        <th bgcolor=CC9900>
+            <font face='Angsana New'>ทุน
+        </th>
+        <th bgcolor=CC9900>
+            <font face='Angsana New'>ขาย
+        </th>
+        <th bgcolor=CC9900>
+            <font face='Angsana New'>กำไร(%)
+        </th>
+        <th bgcolor=CC9900>
+            <font face='Angsana New'>เบิกได้?
+        </th>
+    </tr>
     <?php
     include("connect.inc");
     $query = "SELECT drugcode,tradname,unitpri,salepri,part FROM druglst ORDER BY drugcode ASC";
@@ -70,7 +67,6 @@ echo "รหัสยาเวชภัณฑ์";
             " </tr>\n");
     }
     ?>
-    </tbody>
 </table>
 </body>
 </html>

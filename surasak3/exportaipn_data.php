@@ -123,7 +123,7 @@ if($rows["claimaipn"]=="s"){  //กำลังส่งข้อมูล
 	|| $rows["an"]=="66/2510" || $rows["an"]=="67/608" || $rows["an"]=="67/659" || $rows["an"]=="67/843" || $rows["an"]=="67/894"
 	|| $rows["an"]=="67/1010" || $rows["an"]=="67/959" || $rows["an"]=="67/1246" || $rows["an"]=="67/1216" || $rows["an"]=="67/1142"
 	|| $rows["an"]=="67/1291" || $rows["an"]=="67/1290" || $rows["an"]=="67/1360" || $rows["an"]=="67/1442" || $rows["an"]=="67/2196"
-	|| $chkan=="67/2084"){
+	|| $chkan=="67/2084" || $chkan=="68/268"){
 	?>
     <td align="center"><? if($rows["claimaipn"]!="y"){ ?><a href="dataaipn/exportdataaipn_other.php?an=<?=$rows["an"];?>">ดาวน์โหลดไฟล์</a><? } ?></td>
 	<?php

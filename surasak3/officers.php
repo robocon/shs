@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     $aMancode=array("aMancode"); 
 	$aMancode[1]='director';
 	$aMancode[2]='pharmacy';
@@ -13,13 +13,21 @@
 	$aMancode[11]='headmony';
 	$aMancode[12]='headmonysub';
 	$aMancode[13]='headmony2';
+	$aMancode[14]='headtor';
+	$aMancode[15]='bordtor1';
+	$aMancode[16]='bordtor2';
+	$aMancode[17]='bordtor3';
+	$aMancode[18]='headpharmacy';
+	$aMancode[19]='pharmacy1';			
+	
 
 	include("connect.inc");
 
 	print"<b>รายชื่อเจ้าหน้าที่เดิม</b><br>";
-	for ($n=1; $n<=13; $n++){
+	for ($n=1; $n<=19; $n++){
 
 		$query = "SELECT * FROM officers WHERE mancode = '$aMancode[$n]'";
+		//echo $query;
 		$result = mysql_query($query)
 			or die("Query failed");
 
@@ -73,6 +81,10 @@ CREATE TABLE officers (
 		  <input type='text' name='fname2'size='20' value='$aFname[2]'>
 		  <input type='text' name='post2' size='25' value='$aPost[2]'>
 		  <input type='text' name='post22'size='25' value='$aPost2[2]'><br>";
+    print"<input type='text' name='yot19' size='8' value='$aYot[19]'>
+		  <input type='text' name='fname19'size='20' value='$aFname[19]'>
+		  <input type='text' name='post19' size='25' value='$aPost[19]'>
+		  <input type='text' name='post219' size='25' value='$aPost2[19]'><br>";		  
     print"<b>หัวหน้าแผนกส่งกำลังและบริการ</b><br>";
     print"<input type='text' name='yot3' size='8' value='$aYot[3]'>
 		  <input type='text' name='fname3'size='20' value='$aFname[3]'>
@@ -127,7 +139,34 @@ CREATE TABLE officers (
 		  <input type='text' name='post10' size='25' value='$aPost[10]'>
 		  <input type='text' name='post210'size='25' value='$aPost2[10]'><br>";
 
-		
+//เพิ่มใหม่วันที่ 27/01/2561
+	print"<b>ผู้ร่างขอบเขตของงาน</b><br>";
+    print"<input type='text' name='yot14' size='8' value='$aYot[14]'>
+		  <input type='text' name='fname14'size='20' value='$aFname[14]'>
+		  <input type='text' name='post14' size='25' value='$aPost[14]'>
+		  <input type='text' name='post214'size='25' value='$aPost2[14]'><br>";
+	print"<b>คณะกรรมการร่างขอบเขตของงาน</b><br>";
+    print"<input type='text' name='yot15' size='8' value='$aYot[15]'>
+		  <input type='text' name='fname15'size='20' value='$aFname[15]'>
+		  <input type='text' name='post15' size='25' value='$aPost[15]'>
+		  <input type='text' name='post215'size='25' value='$aPost2[15]'><br>";
+
+    print"<input type='text' name='yot16' size='8' value='$aYot[16]'>
+		  <input type='text' name='fname16'size='20' value='$aFname[16]'>
+		  <input type='text' name='post16' size='25' value='$aPost[16]'>
+		  <input type='text' name='post216'size='25' value='$aPost2[16]'><br>";
+
+    print"<input type='text' name='yot17' size='8' value='$aYot[17]'>
+		  <input type='text' name='fname17'size='20' value='$aFname[17]'>
+		  <input type='text' name='post17' size='25' value='$aPost[17]'>
+		  <input type='text' name='post217'size='25' value='$aPost2[17]'><br>";
+
+//เพิ่มใหม่วันที่ 18/11/2563
+	print"<b>หัวหน้ากองเภสัชกรรม</b><br>";		  
+    print"<input type='text' name='yot18' size='8' value='$aYot[18]'>
+		  <input type='text' name='fname18'size='20' value='$aFname[18]'>
+		  <input type='text' name='post18' size='25' value='$aPost[18]'>
+		  <input type='text' name='post218'size='25' value='$aPost2[18]'><br>";		
 
 
 

@@ -1,17 +1,15 @@
 <?php
-session_start();
-include("connect.php");
+    session_start();
+    session_unregister("cRow_id");
+    session_unregister("cDrugcode");
 
-session_unregister("cRow_id");
-session_unregister("cDrugcode");
-session_register("cRow_id");
-session_register("cDrugcode");
-
-$sRow_id=$_GET['sRow_id'];
-$cDrugcode=$_GET['sDrugcode'];
+    $cRow_id=$sRow_id;
+    $cDrugcode='$sDrugcode';
+    session_register("cRow_id");
+    session_register("cDrugcode");
 
     //print"sRow_id=$sRow_id<br>";
-    
+    include("connect.inc");
     $query = "SELECT * FROM poitems WHERE row_id = '$sRow_id' ";
     $result = mysql_query($query)
         or die("Query failed");
@@ -40,6 +38,8 @@ $cDrugcode=$_GET['sDrugcode'];
 
     session_register("sPrice");
 
+    include("unconnect.inc");
+
     print"<font face='Angsana New'><b>การแก้ไขข้อมูล  จะแก้ไขที่ฐานข้อมูลด้วย</b><br>";
     print"รหัส: $cDrugcode,   ชื่อการค้า: $cTradname<br>";
 
@@ -48,7 +48,7 @@ $cDrugcode=$_GET['sDrugcode'];
     print"ขนาดบรรจุ...................<input type='text' name='pack' size='20' value='$cPack'><br>";
     print"จำนวนวางระดับ.........<input type='text' name='minimum' size='20' value='$nMinimum'><br>";
     print"จำนวนคงคลัง............ $nTotalstk หน่วย<br>";    
-    print"ราคา(ไม่รวมVAT)........<input type='text' name='packpri' size='20' value='$nPackpri'><br>";
+    print"ราคา (รวมVAT)........<input type='text' name='packpri' size='20' value='$nPackpri'><br>";
     print"จำนวนสั่ง.....................<input type='text' name='amount' size='20' value='$nAmount'><br>";
     print"ราคารวมทั้งสิ้น............$sPrice บาท<br>";
     print"แถม................................<input type='text' name='free' size='20' value='$nFree'><br>";

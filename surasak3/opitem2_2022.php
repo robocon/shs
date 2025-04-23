@@ -364,12 +364,8 @@ $sVn=$_POST['vnnow'];
 		}
 		
 	}		
-		
-		
-		
-		print ", แพทย์ :$sDoctor</b></font><br>";
-		
-		//print_r($_SESSION);
+	
+	print ", แพทย์ :$sDoctor</b></font><br>";
 ?>
 <font face='Angsana New' size="5"><A HREF="drxadddiag.php?sDate=<?php echo urlencode($pdate);?>&nRow_id=<?php echo urlencode($sRowid);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >แก้ไขชื่อโรค</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิที่ต้องนำไปเบิกต้นสังกัดเท่านั้น)</font><br>
 <font face='Angsana New' size="5"><A HREF="company_payment.php?sDate=<?php echo urlencode($pdate);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >เพิ่มชื่อบริษัท</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิประกันสังคม กรณี กท44 เท่านั้น)</font>

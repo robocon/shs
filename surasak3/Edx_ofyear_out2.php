@@ -395,7 +395,7 @@ while($arr = Mysql_fetch_assoc($result)){
 ?>
 
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
-<FORM METHOD=POST ACTION="Edx_ofyear_out_save.php" target="_blank" <?php //if($arr_view["vn"] ==""){echo "Onsubmit=\"alert('ผู้ป่วยยังไม่ได้ทำการลงทะเบียน');return false;\"";}?>>
+<FORM METHOD=POST ACTION="Edx_ofyear_out_save2.php" target="_blank" <?php //if($arr_view["vn"] ==""){echo "Onsubmit=\"alert('ผู้ป่วยยังไม่ได้ทำการลงทะเบียน');return false;\"";}?>>
 
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
 <input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
@@ -460,7 +460,7 @@ while($arr = Mysql_fetch_assoc($result)){
 		  			$query_run = mysql_query($sql_address);
 		  			while($result_address = mysql_fetch_array($query_run)){ 
 		  				 
-		  				echo $result_address['address']." ต.".$result_address['tambol']." อ.".$result_address['amphur']." จ.".$result_address['changwat'];
+		  				echo $result_address['address']." ต.".$result_address['tambol']." อ.".$result_address['ampur']." จ.".$result_address['changwat'];
 		  			}//end while
 
 		  		?>
@@ -476,20 +476,20 @@ while($arr = Mysql_fetch_assoc($result)){
 		  			$query_run = mysql_query($sql_address);
 		  			while($result_address = mysql_fetch_array($query_run)){ 
 		  				 
-		  				echo $result_address['card_address']." ".$result_address['card_moo']." ต.".$result_address['card_tambol']." อ.".$result_address['card_ampur']." จ.".$result_address['card_province'];
+		  				echo $result_address['card_address']." ".$result_address['card_moo']." ต.".$result_address['card_tambol']." อ.".$result_address['card_amphur']." จ.".$result_address['card_province'];
 		  			}//end while
 
 		  		?>
 		  		 [ <input type="radio" name="flag_address_use" value="card" title="ใช้ข้อมูลที่อยู่นี้"> ]
 		  </td>
 		  </tr>
-		  <tr>
+		  <!--tr>
 		  <td align="right" width="400"><span class="tb_font_2">ที่อยู่(อื่นๆ) : </span></td>
 		  <td align="left" width="700">
 		  		<input type="text" name="address_use" size="50">
 		  		 [ <input type="radio" name="flag_address_use" value="etc" title="ใช้ข้อมูลที่อยู่นี้"> ] <font size='3' color='blue' ><i>*ใช้แสดงผลในใบรับรองแพทย์เท่านั้น*</i></font>
 		  </td>
-		  </tr>
+		  </tr-->
 	</table>
 	<hr />
 	<table width="854" border="0" class="tb_font">

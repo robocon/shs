@@ -25,7 +25,7 @@ $Txt_Datetime_Full = date("d-m-Y H:m:s");
 if(isset($_POST['pt_name'])){
 
 
-    //-----> start insert ข้อมูล
+    //-----> start insert ข้อมูลba
     $sql = " INSERT INTO `bacteria_resistant`(`Id`, `Pt_Name`, `Ward`, `Date_Send`, `Company_Name`, `Bacteria_Name`, `Bacteria_Source`, `Drug_Name`, `Officer_Name`, `Last_Update`, `Flag_Use`) 
             VALUES ('','".$_POST['pt_name']."','".$_POST['ward']."','".$_POST['date_send']."','','".$_POST['bacteria_name']."','".$_POST['bacteria_source']."','".$_POST['drug_name']."','".$officer."','".$Txt_Datetime_Full."','Y')";
     //echo $sql;exit();
@@ -47,11 +47,12 @@ $bacteria_source = $_POST['bacteria_source'];
 $drug_name = $_POST['drug_name'];
  
         echo "<h1 align='center' style='color:white;background-color:green'>บันทึกสำเร็จ!</h1>";
-        //header('refresh: 2; url=Form_bacteria_resistant.php'); 
-        header('refresh: 1; url=https://surasakhospital.ap.ngrok.io/alert/mdr.php?pt_name='.rawurlencode($pt_name).'&ward='.rawurlencode($ward).'&date_send='.rawurlencode($date_send).'&bacteria_name='.rawurlencode($bacteria_name).'&bacteria_source='.rawurlencode($bacteria_source).'&drug_name='.rawurlencode($drug_name));   
+        echo "<h2 align='center' style='color:blue;'><a href='Form_bacteria_resistant.php'>[ ดำเนินการต่อ ]</a></h2>";
+        header('refresh: 2; url=Form_bacteria_resistant.php'); 
+        //header('refresh: 1; url=https://surasakhospital.ap.ngrok.io/alert/mdr.php?pt_name='.rawurlencode($pt_name).'&ward='.rawurlencode($ward).'&date_send='.rawurlencode($date_send).'&bacteria_name='.rawurlencode($bacteria_name).'&bacteria_source='.rawurlencode($bacteria_source).'&drug_name='.rawurlencode($drug_name));   
        exit(); 
     }//end if
-    //-----> start insert ข้อมูล
+    //-----> end insert ข้อมูล
 
 
 }//end if isset PT_name
