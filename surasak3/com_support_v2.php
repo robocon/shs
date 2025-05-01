@@ -87,7 +87,7 @@ if($page==='load25page'){
     $latestMonth = strtotime("-1 month");
     $dateEnd = (date("Y",$latestMonth)+543).date("-m", $latestMonth);
 
-    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' `dateend` LIKE '$dateEnd%'";
+    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' AND `dateend` LIKE '$dateEnd%' ORDER BY `dateend` ASC";
     $q = $dbi->query($sql);
     $items = array();
     while ($item = $q->fetch_assoc()) {

@@ -82,7 +82,7 @@ if ($action==='udpateTime') {
         ?>
         <table class="table">
             <tr>
-                <th>วันที่ปิดงาน</th>
+                <th width="10%">วันที่ปิดงาน</th>
                 <th>หัวข้อ</th>
                 <th>รายละเอียด</th>
                 <th>ผู้แจ้ง</th>
