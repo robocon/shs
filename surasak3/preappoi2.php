@@ -12,6 +12,8 @@ session_register("appd");
 
 global $dt_doctor, $cdoctor, $doctor;
 
+$doctor = $_POST['doctor'];
+
  if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
@@ -458,7 +460,7 @@ $_SESSION['lab_lists'] = array();
 		$idcard=$rowT["idcard"];
 		print "<p><font face='Angsana New' size = '6'>HN: $cHn ชื่อ $cPtname  อายุ $cAge &nbsp;<B>สิทธิ:$cptright</font></B><br>";
 		print "<font face='Angsana New' size = '6'>เลขบัตรประชาชน : $idcard</font><br>";
-		print "<font face='Angsana New' size = '6'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B><br>";
+		print "<font face='Angsana New' size = '6'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font><br>";
 	}else{
 		$cHn=$_POST["chkhn"];
 		$queryT="SELECT yot,name,surname,dbirth,phone,idcard FROM opcard where hn='$cHn'";
@@ -470,7 +472,7 @@ $_SESSION['lab_lists'] = array();
 		
 		print "<p><font face='Angsana New' size = '6'>HN: $cHn ชื่อ $cPtname  อายุ $cAge &nbsp;<B>สิทธิ:$cptright</font></B><br>";
 		print "<font face='Angsana New' size = '6'>เลขบัตรประชาชน : $idcard</font><br>";
-		print "<font face='Angsana New' size = '6'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font></B><br>";
+		print "<font face='Angsana New' size = '6'>แพทย์ $cdoctor วันที่: $cdate_appoint&nbsp; </font><br>";
 	}	
 
  $appd=$cdate_appoint;
@@ -497,25 +499,26 @@ if($OjbRow>0){
  
 
   
-    $query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' and doctor = '$cdoctor' ";
-    $result = mysql_query($query) or die("Query failed,app");
-   $query="SELECT  apptime,COUNT(*) AS duplicate FROM appoint1 GROUP BY apptime HAVING duplicate > 0 ORDER BY apptime";
-   $result = mysql_query($query);
-     $n=0;
- while (list ($apptime,$duplicate) = mysql_fetch_row ($result)) {
-            $n++;
-$num= $duplicate+$num;
-            print (" <tr>\n".
-           //  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
-              "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'><b>$apptime</b>&nbsp;&nbsp;</a></td>\n".
- 
-//    "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '4'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
-             //  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
-        "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
-               " </tr>\n&nbsp;");
-               }
- print "<br><font face='Angsana New' size = '5'><b>จำนวนผู้ป่วยทั้งหมด&nbsp;&nbsp; $num&nbsp;&nbsp;คน</b></a> ";
-  
+$query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' and doctor = '$cdoctor' ";
+$result = mysql_query($query) or die("Query failed,app");
+$query="SELECT  apptime,COUNT(*) AS duplicate FROM appoint1 GROUP BY apptime HAVING duplicate > 0 ORDER BY apptime";
+$result = mysql_query($query);
+$n=0;
+$num = 0;
+while (list ($apptime,$duplicate) = mysql_fetch_row ($result)) {
+	$n++;
+	$num = $duplicate+$num;
+	print (" <tr>\n".
+	//  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
+	"  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'><b>$apptime</b>&nbsp;&nbsp;</a></td>\n".
+
+	//    "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '4'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
+	//  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
+	"  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
+	" </tr>\n&nbsp;");
+}
+print "<br><font face='Angsana New' size = '5'><b>จำนวนผู้ป่วยทั้งหมด&nbsp;&nbsp; $num&nbsp;&nbsp;คน</b></a> ";
+
 ?>
 
 <script type="text/javascript">
@@ -853,7 +856,7 @@ if($date_en < date('Y-m-d')){
 	  <option value="FU51 ติดตามกลุ่มเสี่ยง ตรวจสุขภาพประจำปีกองทัพบก">ติดตามกลุ่มเสี่ยง ตรวจสุขภาพประจำปีกองทัพบก</option>	  
 	  <option value="FU52 ติดตามกลุ่มโรค ตรวจสุขภาพประจำปีกองทัพบก">ติดตามกลุ่มโรค ตรวจสุขภาพประจำปีกองทัพบก</option>  
 	  <? } ?>
-<?
+<?php
       if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){
 	  $app = "select * from applist where status='Y' and applist ='มวลกระดูก'";
 	  }else{
@@ -951,6 +954,14 @@ if($date_en < date('Y-m-d')){
 					<option value="นำใบนัดยื่นที่ห้องพยาธิเวลา 07.00น. เจาะเลือดแล้วรับประทานอาหารให้เรียบร้อย ก่อนพบแพทย์">นำใบนัดยื่นที่ห้องพยาธิเวลา 07.00น. เจาะเลือดแล้วรับประทานอาหารให้เรียบร้อย ก่อนพบแพทย์</option>
 					<option value="นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือดก่อนพบแพทย์">นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือดก่อนพบแพทย์</option>
 					<option value="นัดฉีดเข่า เบิกยาแล้ว">นัดฉีดเข่า เบิกยาแล้ว</option>
+					<option value="นัดติดตามอาการ (ถ้าอาการไม่ดีขึ้น)">นัดติดตามอาการ (ถ้าอาการไม่ดีขึ้น)</option>
+					<option value="นัดติดตามอาการ (ถ้าอาการไม่ดีขึ้น) พร้อมฟังผลX-ray, Lab, BMD, CT, MRI, ฝังเข็ม, ติดตามผลคัดกรองผู้สูงอายุ (มีค่าบริการนอกเวลาราชการ 300 บาท เบิกไม่ได้)">นัดติดตามอาการ (ถ้าอาการไม่ดีขึ้น) พร้อมฟังผลX-ray, Lab, BMD, CT, MRI, ฝังเข็ม, ติดตามผลคัดกรองผู้สูงอายุ (มีค่าบริการนอกเวลาราชการ 300 บาท เบิกไม่ได้)</option>
+					<option value="นัดคัดกรองผู้สูงอายุ">นัดคัดกรองผู้สูงอายุ</option>
+					<option value="นัดตรวจคลื่นไฟฟ้าวินิจฉัย EMG จาก พ. ">นัดตรวจคลื่นไฟฟ้าวินิจฉัย EMG จาก พ. </option>
+					<option value="ส่งปรึกษาRehab จาก พ.">ส่งปรึกษาRehab จาก พ.</option>
+					<option value="นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือด+ทำมวลกระดูก ก่อนพบแพทย์">นัดให้ยากระดูกพรุนครั้งที่  เจาะเลือด+ทำมวลกระดูก ก่อนพบแพทย์</option>
+					<option value="นัดติดตามอาการหลังให้ยากระดุกพรุนครั้งที่ ">นัดติดตามอาการหลังให้ยากระดุกพรุนครั้งที่ </option>
+					<option value="ผู้ป่วยไม่สามารถมาได้ ให้ญาติติดต่อขอรับยาแทน (ติดต่อขอใบรับยาแทนที่ห้องทะเบียนก่อนพบแพทย์)">ผู้ป่วยไม่สามารถมาได้ ให้ญาติติดต่อขอรับยาแทน (ติดต่อขอใบรับยาแทนที่ห้องทะเบียนก่อนพบแพทย์)</option>
 				</select>
 				<script type="text/javascript">
 					function addToDetail2(){
