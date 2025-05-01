@@ -90,6 +90,40 @@ if(!$query){
 //////////////////////////////////////////////////////////////////
 
 
+//-----> sql ¢éÍÁÙÅ«Ñ¡»ÃÐÇÑµÔ
+
+//$sql = "SELECT * FROM `opd` WHERE hn = '$hn'  "; //AND thidate like '%$Txt_Datetime2%' ORDER BY row_id ASC 
+$sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn'  ";
+//echo $sql;exit();
+$query = mysql_query($sql); 
+$num = mysql_num_rows($query);
+
+if(empty($num)){
+    echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติคนไข้</h1>";echo "<br>".exit();
+}//end if
+
+while($rows = mysql_fetch_array($query)){
+
+    $Txt_Temp = $rows["temperature"];
+    $Txt_Pause = $rows["pause"];
+    $Txt_Rate = $rows["rate"];
+    $Txt_Weight = $rows["weight"];
+    $Txt_Height = $rows["height"];
+    $Txt_Bp1 = $rows["bp1"];
+    $Txt_Bp2 = $rows["bp2"];
+    $Txt_Congenital_disease = $rows["congenital_disease"]; // âÃ¤»ÃÐ¨ÓµÑÇ
+    $Txt_Accident_Surgery = $rows["accident_surgery"]; // ÍØºÑµÔàËµØáÅÐ¼èÒµÑ´
+    $Txt_Treat_Hospital = $rows["treat_hospital"]; // à¤Âà¢éÒÃÑº¡ÒÃÃÑ¡ÉÒã¹âÃ§¾ÂÒºÒÅ
+    $Txt_Epilepsy = $rows["epilepsy"]; // âÃ¤ÅÁªÑ¡
+    $Txt_Treat_other = $rows["treat_other"]; // Í×è¹æ·ÕèÊÓ¤Ñ­
+    //$Txt_Doctor_Ans= $rows["doctor_ans"]; // ÊÃØ»¤ÇÒÁ¤Ô´àËç¹áÅÐ¢éÍá¹Ð¹Ó¢Í§á¾·Âì
+    $Txt_Flag_Address_Use = $rows["address_use"];
+
+
+}//end while
+
+/////////////////////////////////////////////////////////////////
+
 //////////////////////////////////////////////////////////////////
 
 //-----> sql ข้อมูลคนไข้
@@ -108,13 +142,35 @@ while($rows = mysql_fetch_array($query)){
     $Txt_Name = $rows["name"];
     $Txt_Surname = $rows["surname"];
     $Txt_Idcard = $rows["idcard"];
-    $Txt_Address1 = $rows["address"];
-    $Txt_Address2 = "ตำบล ".$rows["tambol"];
-    $Txt_Address3 = "อำเภอ ".$rows["ampur"];
-    $Txt_Address4 = "จังหวัด ".$rows["changwat"];
-    // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+     
     $Txt_Phone = $rows["phone"];
     $Txt_Dbirth = $rows["dbirth"];
+
+    if($Txt_Flag_Address_Use == "hospital"){
+        
+        $Txt_Address1 = $rows["address"];
+        $Txt_Address2 = "ตำบล ".$rows["tambol"];
+        $Txt_Address3 = "อำเภอ ".$rows["ampur"];
+        $Txt_Address4 = "จังหวัด ".$rows["changwat"];
+        // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+
+    }else if($Txt_Flag_Address_Use == "card"){
+
+        $Txt_Address1 = $rows["card_address"]." ".$rows["card_moo"];
+        $Txt_Address2 = "ตำบล ".$rows["card_tambol"];
+        $Txt_Address3 = "อำเภอ ".$rows["card_amphur"];
+        $Txt_Address4 = "จังหวัด ".$rows["card_province"];
+        // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+
+    }else{
+
+        $Txt_Address1 = $rows["address"];
+        $Txt_Address2 = "ตำบล ".$rows["tambol"];
+        $Txt_Address3 = "อำเภอ ".$rows["ampur"];
+        $Txt_Address4 = "จังหวัด ".$rows["changwat"];
+        // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+
+    }//end if
 
     //----->เริ่ม หาอายุ จากวันเกิด 
         $birthday = $Txt_Dbirth; 
@@ -164,38 +220,6 @@ while($rows = mysql_fetch_array($query)){
 /////////////////////////////////////////////////////////////////
 
 
-//-----> sql ¢éÍÁÙÅ«Ñ¡»ÃÐÇÑµÔ
-
-//$sql = "SELECT * FROM `opd` WHERE hn = '$hn'  "; //AND thidate like '%$Txt_Datetime2%' ORDER BY row_id ASC 
-$sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn'  ";
-//echo $sql;exit();
-$query = mysql_query($sql); 
-$num = mysql_num_rows($query);
-
-if(empty($num)){
-	echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติคนไข้</h1>";echo "<br>".exit();
-}//end if
-
-while($rows = mysql_fetch_array($query)){
-
-	$Txt_Temp = $rows["temperature"];
-    $Txt_Pause = $rows["pause"];
-    $Txt_Rate = $rows["rate"];
-    $Txt_Weight = $rows["weight"];
-    $Txt_Height = $rows["height"];
-    $Txt_Bp1 = $rows["bp1"];
-    $Txt_Bp2 = $rows["bp2"];
-    $Txt_Congenital_disease = $rows["congenital_disease"]; // âÃ¤»ÃÐ¨ÓµÑÇ
-    $Txt_Accident_Surgery = $rows["accident_surgery"]; // ÍØºÑµÔàËµØáÅÐ¼èÒµÑ´
-    $Txt_Treat_Hospital = $rows["treat_hospital"]; // à¤Âà¢éÒÃÑº¡ÒÃÃÑ¡ÉÒã¹âÃ§¾ÂÒºÒÅ
-    $Txt_Epilepsy = $rows["epilepsy"]; // âÃ¤ÅÁªÑ¡
-    $Txt_Treat_other = $rows["treat_other"]; // Í×è¹æ·ÕèÊÓ¤Ñ­
-    //$Txt_Doctor_Ans= $rows["doctor_ans"]; // ÊÃØ»¤ÇÒÁ¤Ô´àËç¹áÅÐ¢éÍá¹Ð¹Ó¢Í§á¾·Âì
-
-
-}//end while
-
-/////////////////////////////////////////////////////////////////
 
 //-----> ¢éÍÁÙÅ dx áÅÐ doctor_ans ¨Ò¡ËÁÍ
  

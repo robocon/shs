@@ -409,18 +409,18 @@ while($arr = Mysql_fetch_assoc($result)){
 		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</TD>
 	</TR>
 	<TR>
-		<TD>
-	<table width="528" border="0" class="tb_font">
+		<TD style="background-color:pink">
+	<table width="700" border="0" class="tb_font">
 		<tr>
-			<td width="88" align="right"><span class="tb_font_2">VN :</span></td>
-			<td width="225"><?php echo $arr_view["vn"];?></td>
-			<td align="right"><span class="tb_font_2">HN :</span></td>
-			<td width="148"><?php echo $arr_view["hn"];?></td>
+			<td width="400" align="right"><span class="tb_font_2">VN :</span></td>
+			<td width="400"><?php echo $arr_view["vn"];?></td>
+			<td align="left"><span class="tb_font_2">HN :</span></td>
+			<td width="400"><?php echo $arr_view["hn"];?></td>
 			</tr>
 		<tr>
-			<td width="88" align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
+			<td width="400" align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
 			<td><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
-			<td width="49" align="right"><span class="tb_font_2">อายุ :</span> </td>
+			<td width="400" align="left"><span class="tb_font_2">อายุ :</span> </td>
 			<td align="left"><?php echo $arr_view["age"];?></td>
 			</tr>
 		<tr>
@@ -451,9 +451,9 @@ while($arr = Mysql_fetch_assoc($result)){
 		  </span></td>
 </tr>
 		<tr>
-		  <td align="right"><span class="tb_font_2">ที่อยู่ : </span></td>
+		  <td align="right" width="400"><span class="tb_font_2">ที่อยู่ตามข้อมูล รพ. : </span></td>
 
-		  <td align="left">
+		  <td align="left" width="700">
 		  		<?php
 		  
 		  			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
@@ -464,8 +464,32 @@ while($arr = Mysql_fetch_assoc($result)){
 		  			}//end while
 
 		  		?>
+		  		 [ <input type="radio" name="flag_address_use" value="hospital" checked title="ใช้ข้อมูลที่อยู่นี้"> ]
+		  </td>
+		</tr>
+		<tr>
+		  <td align="right" width="400"><span class="tb_font_2">ที่อยู่ตามบัตรประชาชน : </span></td>
+		  <td align="left" width="700">
+		  		<?php
+		  
+		  			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
+		  			$query_run = mysql_query($sql_address);
+		  			while($result_address = mysql_fetch_array($query_run)){ 
+		  				 
+		  				echo $result_address['card_address']." ".$result_address['card_moo']." ต.".$result_address['card_tambol']." อ.".$result_address['card_amphur']." จ.".$result_address['card_province'];
+		  			}//end while
+
+		  		?>
+		  		 [ <input type="radio" name="flag_address_use" value="card" title="ใช้ข้อมูลที่อยู่นี้"> ]
 		  </td>
 		  </tr>
+		  <!--tr>
+		  <td align="right" width="400"><span class="tb_font_2">ที่อยู่(อื่นๆ) : </span></td>
+		  <td align="left" width="700">
+		  		<input type="text" name="address_use" size="50">
+		  		 [ <input type="radio" name="flag_address_use" value="etc" title="ใช้ข้อมูลที่อยู่นี้"> ] <font size='3' color='blue' ><i>*ใช้แสดงผลในใบรับรองแพทย์เท่านั้น*</i></font>
+		  </td>
+		  </tr-->
 	</table>
 	<hr />
 	<table width="854" border="0" class="tb_font">
