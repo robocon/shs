@@ -104,9 +104,9 @@ $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease,allergy From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease,allergy,hospcode From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood,$congenital_disease,$allergy) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood,$congenital_disease,$allergy,$hospcode) = Mysql_fetch_row($result111);
 	
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
@@ -200,14 +200,11 @@ p.text {
 }
 </style>
 <script language="javascript">
-//window.opener.location.reload();
-//window.opener.location.reload(true);
-window.print();
-	// setTimeout(function(){ 
-    //         window.close();
-	// }, 1000);
-	window.onafterprint = function(){
-		window.close();
+	window.onload = function(){
+		window.print();
+		window.onafterprint = function(){
+			window.close();
+		}
 	}
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
@@ -220,56 +217,65 @@ window.print();
 	<div style="font-size:36px; font-weight:bold;" align="center">โรงพยาบาลค่ายสุรศักดิ์มนตรี</div>
 	<div style="font-size:32px; font-weight:bold;" align="center">ใบตรวจโรคผู้ป่วยนอก</div></th>
 	<th width="20%" valign="top">
-	<img src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1">
-	<div align="center"><?=$hn;?></div>
+		<img src="printQrCode.php?hn=<?=$hn;?>&size=5&level=2&margin=1">
+		<div align="center"><?=$hn;?></div>
 	</th>
   </tr>
-  <tr >
-    <td></td>
-    <td colspan="2"><div>
-	<span><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?></span>
-	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?php echo $idcard;?></span>
-	
-	</div>
+  <tr>
+  	<td>&nbsp;</td>
+    <td colspan="2">
+		<div>
+			<span><strong>ชื่อ- นามสกุล : </strong><?=$ptname;?></span>
+			<span style="margin-left:10px;"><strong>เลขบัตรประชาชน : </strong><?=$idcard;?></span>
+		</div>
+	</td>
+  </tr>
+  <tr>
+  	<td>&nbsp;</td>
+    <td colspan="2">
+		<div>
+			<span><strong>กรุ๊ปเลือด : </strong><?=$blood;?></span>
+			<span style="margin-left:20px;"><strong>วัน/เดือน/ปีเกิด : </strong><?=$birthday;?></span>
+			<span style="margin-left:20px;"><strong>อายุ : </strong><?=$cAge;?></span>
+		</div>
 	</td>
   </tr>
   <tr >
-    <td><div align="center">&nbsp;</div></td>
-    <td colspan="2"><div>
-	<span><strong>กรุ๊ปเลือด : </strong><?php echo $blood;?></span>
-	<span style="margin-left:20px;"><strong>วัน/เดือน/ปีเกิด : </strong><?php echo $birthday;?></span>
-	<span style="margin-left:20px;"><strong>อายุ : </strong><?php echo $cAge;?></span>
-	</div>
-	</td>
-  </tr>
-  <tr >
-    <td><div align="center">&nbsp;</div></td>
-    <td colspan="2"><div>
-	<span><strong>สิทธิการรักษา : </strong><?php echo $ptright;?></span>
-	<span style="margin-left:20px;"><strong>หมายเลขโทรศัพท์ : </strong><?php echo $phone;?></span>
-	</div>
+    <td>&nbsp;</td>
+    <td colspan="2">
+		<div>
+			<span><strong>สิทธิการรักษา : </strong><?=$ptright;?></span>
+			<?php 
+			$stylePhone = 'margin-left:20px;';
+			if(!empty($hospcode)){
+				?><span><strong>รพ.หลัก : </strong><?=$hospcode;?></span><br><?php
+				$stylePhone = '';
+			}
+			?>
+			<span style="<?=$stylePhone;?>"><strong>หมายเลขโทรศัพท์ : </strong><?=$phone;?></span>
+		</div>
 	</td>
   </tr>  
   <tr >
-    <td><div align="center">&nbsp;</div></td>
+    <td>&nbsp;</td>
     <td colspan="2"><div>
-	<span><strong>โรคประจำตัว : </strong><?php echo $congenital_disease;?></span>
-	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?php echo $drugreact_disease;?></span>
+	<span><strong>โรคประจำตัว : </strong><?=$congenital_disease;?></span>
+	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?=$drugreact_disease;?></span>
 	</div>
 	</td>
   </tr>
   <tr >
-    <td><div align="center">&nbsp;</div></td>
+    <td>&nbsp;</td>
     <td colspan="2"><div>
-	<span><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?php echo $allergy;?></span>
-	<span style="margin-left:20px;"><strong>ผลข้างเคียงจากยา : </strong><?php echo $sideeffects_disease;?></span>
+	<span><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?=$allergy;?></span>
+	<span style="margin-left:20px;"><strong>ผลข้างเคียงจากยา : </strong><?=$sideeffects_disease;?></span>
 	</div>
 	</td>
   </tr>   
 </table>
 <hr>
-<div align="left" style="font-size:24px;"><strong>วัน/เดือน/ปี : <?php echo date("d/m/").(date("Y")+543);?></strong><strong style="margin-left:20px;">VN : <?php echo $vn;?></strong></div>
+<div align="left" style="font-size:24px;"><strong>วัน/เดือน/ปี : <?=date("d/m/").(date("Y")+543);?></strong><strong style="margin-left:20px;">VN : <?=$vn;?></strong></div>
 </div>
 <div class="iBannerFix">
-<p align="center">ผู้พิมพ์เอกสาร : <?php echo $_SESSION["sOfficer"];?><span style="margin-left:80px;">วัน/เดือน/ปี ที่พิมพ์ : <?php echo date("d/m/").(date("Y")+543)." ".date("H:i:s");?></span></p>
+<p align="center">ผู้พิมพ์เอกสาร : <?=$_SESSION["sOfficer"];?><span style="margin-left:80px;">วัน/เดือน/ปี ที่พิมพ์ : <?=date("d/m/").(date("Y")+543)." ".date("H:i:s");?></span></p>
 </div>
