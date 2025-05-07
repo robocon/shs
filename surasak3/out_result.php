@@ -35,6 +35,11 @@ if (isset($_POST['okhn2']) && isset($_POST['form_status'])) {
 
 	$waist = sprintf("%s", $_POST['waist']);
 
+	$congenital_disease = sprintf("%s", $_POST['congenital_disease']);
+	$accidents_surgery = sprintf("%s", $_POST['accidents_surgery']);
+	$treatment = sprintf("%s", $_POST['treatment']);
+	$record = sprintf("%s", $_POST['record']);
+
 	if ($data1 == "update") {
 
 		if ($_POST['eye'] == "ปกติ") {
@@ -103,7 +108,11 @@ if (isset($_POST['okhn2']) && isset($_POST['form_status'])) {
 		`eye_pressure` = '$eye_pressure',
 		`eye_pressure_detail` = '$eye_pressure_detail',
 		`eye_vision` = '$eye_vision',
-		`eye_vision_detail` = '$eye_vision_detail'
+		`eye_vision_detail` = '$eye_vision_detail',
+		`congenital_disease` = '$congenital_disease', 
+		`accidents_surgery` = '$accidents_surgery', 
+		`treatment` = '$treatment', 
+		`record` = '$record'
 
 		WHERE `row_id` ='" . $_POST['row_id'] . "';";
 	} else if ($data1 == "insert") {
@@ -171,7 +180,11 @@ if (isset($_POST['okhn2']) && isset($_POST['form_status'])) {
 		`eye_pressure` = '$eye_pressure',
 		`eye_pressure_detail` = '$eye_pressure_detail',
 		`eye_vision` = '$eye_vision',
-		`eye_vision_detail` = '$eye_vision_detail' ";
+		`eye_vision_detail` = '$eye_vision_detail',
+		`congenital_disease` = '$congenital_disease', 
+		`accidents_surgery` = '$accidents_surgery', 
+		`treatment` = '$treatment', 
+		`record` = '$record' ";
 
 	}
 
@@ -883,6 +896,22 @@ if ($_GET["act"] == "print") {
 												<td class="pdx">สรุปผลการตรวจ PSA</td>
 												<td colspan="2"><input name="outPsaResult" type="text" class="pdxhead"
 														size="50" value="<?= $arrchk['outPsaResult'] ?>" /></td>
+											</tr>
+											<tr>
+												<td class="pdx">โรคประจำตัว</td>
+												<td colspan="2"><input name="congenital_disease" type="text" class="pdxhead" size="50" value="<?= $arrchk['congenital_disease'] ?>" /></td>
+											</tr>
+											<tr>
+												<td class="pdx">อุบัติเหตุและผ่าตัด</td>
+												<td colspan="2"><input name="accidents_surgery" type="text" class="pdxhead" size="50" value="<?= $arrchk['accidents_surgery'] ?>" /></td>
+											</tr>
+											<tr>
+												<td class="pdx">เคยเข้ารับการรักษาในโรงพยาบาล</td>
+												<td colspan="2"><input name="treatment" type="text" class="pdxhead" size="50" value="<?= $arrchk['treatment'] ?>" /></td>
+											</tr>
+											<tr>
+												<td class="pdx">ประวัติอื่นที่สำคัญ</td>
+												<td colspan="2"><input name="record" type="text" class="pdxhead" size="50" value="<?= $arrchk['record'] ?>" /></td>
 											</tr>
 
 											<!--

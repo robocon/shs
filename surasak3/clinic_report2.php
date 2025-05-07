@@ -179,90 +179,54 @@ $dbi->query("SET NAMES UTF8");
 						<td>ค้นหาจาก วันที่</td>
 						<td>ระบุ</td>
 						<td>
+							<?php 
+							$basic_d = date("d");
+							$d_start = !empty($_POST['d_start']) ? $_POST['d_start'] : $basic_d ;
+							?>
+							<!-- วัน -->
 							<select name='d_start' class="font1">
 								<?php
-								$dd = date("d");
 								for ($d = 1; $d <= 31; $d++) {
-
-									if ($d <= 9) {
-										$d = "0" . $d;
-									}
-									if ($dd == $d) {
-								?>
-
-										<option value="<?= $d; ?>" selected><?= $d; ?></option>
-									<?php
-									} else {
-									?>
-										<option value="<?= $d; ?>"><?= $d; ?></option>
-								<?php
-									}
+									$newD = sprintf("%02d", $d);
+									$selected = ($newD===$d_start) ? 'selected' : '';
+									?><option value="<?=$newD;?>" <?=$selected;?> ><?=$newD;?></option><?php
 								}
-
 								?>
 							</select>
-							<?php $m = date('m'); ?>
-							<select name="m_start" class="font1">
-								<option value="01" <? if ($m == '01') {
-														echo "selected";
-													} ?>>มกราคม</option>
-								<option value="02" <? if ($m == '02') {
-														echo "selected";
-													} ?>>กุมภาพันธ์</option>
-								<option value="03" <? if ($m == '03') {
-														echo "selected";
-													} ?>>มีนาคม</option>
-								<option value="04" <? if ($m == '04') {
-														echo "selected";
-													} ?>>เมษายน</option>
-								<option value="05" <? if ($m == '05') {
-														echo "selected";
-													} ?>>พฤษภาคม</option>
-								<option value="06" <? if ($m == '06') {
-														echo "selected";
-													} ?>>มิถุนายน</option>
-								<option value="07" <? if ($m == '07') {
-														echo "selected";
-													} ?>>กรกฎาคม</option>
-								<option value="08" <? if ($m == '08') {
-														echo "selected";
-													} ?>>สิงหาคม</option>
-								<option value="09" <? if ($m == '09') {
-														echo "selected";
-													} ?>>กันยายน</option>
-								<option value="10" <? if ($m == '10') {
-														echo "selected";
-													} ?>>ตุลาคม</option>
-								<option value="11" <? if ($m == '11') {
-														echo "selected";
-													} ?>>พฤศจิกายน</option>
-								<option value="12" <? if ($m == '12') {
-														echo "selected";
-													} ?>>ธันวาคม</option>
-							</select><?php
-										$Y = date("Y") + 543;
-										$date = date("Y") + 543 + 5;
-
-										$dates = range(2547, $date);
-										echo "<select name='y_start' class='font1'>";
-										foreach ($dates as $i) {
-										?>
-
-								<option value='<?= $i ?>' <? if ($Y == $i) {
-															echo "selected";
-														} ?>><?= $i; ?></option>
+							<!-- เดือน -->
+							<select class="font1" name="m_start" id="m_start">
+							<?php 
+							$m = date('m');
+							foreach ($def_fullm_th as $mNum => $mTxt) {
+								$selected = ($mNum===$m) ? 'selected' : '';
+								?><option value="<?=$mNum;?>" <?=$selected;?> ><?=$mTxt;?></option><?php
+							}
+							?>
+							</select>
+							<!-- ปี -->
 							<?php
-										}
-										echo "</select>";
+							$Y = date("Y") + 543;
+							$yearRange = range(2565, $Y);
+							?>
+							<select name="y_start" id="y_start">
+								<?php
+								foreach ($yearRange as $year) {
+									$selected = ($year==$_POST['y_start']) ? 'selected' : '';
+									?><option value="<?=$year;?>" <?=$selected;?> ><?=$year;?></option><?php
+								}
+								?>
+							</select>
+							<?php
+							$timeRange = Array('08.00-12.00','08.00-16.00','09.00-15.00','10.30-14.00','16.00-20.00','17.00-20.00');
 							?>
 							ช่วงเวลา
 							<select name='time' class="font1">
-								<option value="08.00-12.00">08.00-12.00</option>
-								<option value="08.00-16.00">08.00-16.00</option>
-								<option value="09.00-15.00">09.00-15.00</option>
-								<option value="10.30-14.00">10.30-14.00</option>
-								<option value="16.00-20.00">16.00-20.00</option>
-								<option value="17.00-20.00">17.00-20.00</option>
+								<?php
+								foreach ($timeRange as $time) {
+									$selected = ($time==$_POST['time']) ? 'selected' : '';
+									?><option value="<?=$time;?>" <?=$selected;?> ><?=$time;?></option><?php
+								}
+								?>
 							</select>
 						</td>
 					</tr>
@@ -276,8 +240,8 @@ $dbi->query("SET NAMES UTF8");
 								$sql = "Select name From doctor where status = 'y' ";
 								$result = mysql_query($sql);
 								while (list($name) = mysql_fetch_row($result)) {
-
-									echo "<option value='" . $name . "' >" . $name . "</option>";
+									$selected = ($name==$_POST['doctor']) ? 'selected' : '';
+									echo "<option value='" . $name . "' $selected>" . $name . "</option>";
 								}
 								?>
 							</select>
