@@ -225,7 +225,7 @@ $page=1;
 		$datestart=$_POST["y_start"]."-".$_POST["mon1"]."-".$_POST["day1"];
 		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  
 		FROM stktranx  
-		WHERE drugcode = '$drugcode' 
+		WHERE drugcode = '$drugcode' and status = 'Y'
 		and ( 
 			getdate < '$datestart'
 		) ORDER BY getdate desc, row_id desc
@@ -241,6 +241,7 @@ $page=1;
 			FROM stktranx  
 			WHERE drugcode ='$drugcode'  
 			and getdate < '".$_POST['y_start']."-".$_POST['mon1']."-01' 
+			and status = 'Y'
 			ORDER BY getdate DESC, row_id DESC limit 1";
 			//echo $query;
 			$result = mysql_query($query) or die("Query failed");
@@ -274,7 +275,7 @@ $page=1;
 
 		}
 				if($stkcut > 0){
-					$querya1 = "SELECT unitpri  FROM stktranx  WHERE drugcode = '$drugcode' and stkcut ='0' order by row_id desc limit 1";
+					$querya1 = "SELECT unitpri  FROM stktranx  WHERE drugcode = '$drugcode' and stkcut ='0' and status = 'Y' order by row_id desc limit 1";
 					$resulta1 = mysql_query($querya1) or die("Query failed");
 					list($inunitpri) = mysql_fetch_row($resulta1);
 					$unitpri=$inunitpri;
@@ -302,7 +303,7 @@ $page=1;
 		   
 		//$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '$drugcode' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."')  AND (stkcut >0 OR amount >0) ORDER BY getdate asc, row_id asc";
 		
-		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '".$_GET['dg']."' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."')  ORDER BY getdate asc, row_id asc";		//พี่วาให้เอาข้อมูลติดลบออกมาแสดงข้อมูลด้วย
+		$query = "SELECT getdate,billno,drugcode,lotno,department,unitpri,amount,stkcut,netlotno,mainstk,stock,totalstk  FROM stktranx  WHERE drugcode = '".$_GET['dg']."' and (getdate between '".$_POST['y_start']."-".$_POST['mon1']."-".$_POST['day1']."' and '".$_POST['y_end']."-".$_POST['mon2']."-".$_POST['day2']."') and status = 'Y'  ORDER BY getdate asc, row_id asc";		//พี่วาให้เอาข้อมูลติดลบออกมาแสดงข้อมูลด้วย
 		//echo $query."<br>";
 		$result = mysql_query($query) or die("Query failed");
     	$num=0;
