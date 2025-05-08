@@ -292,12 +292,15 @@ while ($a = $q2->fetch_assoc()) {
 while($value = $q->fetch_assoc()){
 
     $hn = $value['log_hn'];
-    $item = $items[$hn];
+    $item = $items[$hn];//<<--- จาก opacc
+
+    $time = substr($item['date'],11,5);
 
     ?>
     <tr bgcolor="F5DEB3">
         <td><?=$i;?></td>
-        <td>10:00</td>
+        <!-- <td>10:00</td> -->
+        <td><?=$time;?></td>
         <td><?=$hn;?></td>
         <td><?=$value['log_ptname'];?></td>
         <td><?=$item['detail'];?></td>
