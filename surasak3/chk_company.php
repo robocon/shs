@@ -429,7 +429,19 @@ if ( $views == 'search' ) {
                         <?php 
                         if(in_array($item['code'], $expense_list)===true){
                             ?>
-                            <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank" style="border: 1px solid #1e8958; background-color: #0a3622; border-radius: 4px; padding: 0 2px; color: #ffffff;">&#128073; บันทึกค่าใช้จ่าย อปท.</a>
+                            <li>
+                                <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank" style="border: 1px solid #1e8958; background-color: #0a3622; border-radius: 4px; padding: 0 2px; color: #ffffff;">&#128073; บันทึกค่าใช้จ่าย อปท.</a>
+                            </li>
+                            <?php
+                        }
+                        if(preg_match('/(ตำรวจ)/',$item['code'])!==false){
+                            ?>
+                            <li>
+                                <a href="checkup/PoliceCbcUa.php?part=<?=$item['code'];?>" target="_blank">ผลตรวจห้องปฏิบัติการ</a>
+                            </li>
+                            <li>
+                                <a href="checkup/PoliceEtc.php?part=<?=$item['code'];?>" target="_blank">ผลการตรวจร่างกายทั่วไป</a>
+                            </li>
                             <?php
                         }
                         ?>
