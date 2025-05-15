@@ -1,10 +1,12 @@
 <?
 session_start();
 include("connect.inc"); 
-
+//print_r($_POST);
 $an = $_REQUEST['an'];
-$date_current = (date('Y')+543).date('-m-d');
+//$date_current = (date('Y')+543).date('-m-d');
+$date_current = (date('Y')+543).date('-m-d').date(" H:i:s");
 $sql_ipcard = "SELECT `hn`,`an`,`date`,SUBSTRING(`date`,1,10) AS `admit_date` FROM `ipcard` WHERE `an` = '$an' ";
+//echo $sql_ipcard."<br>";
 $q_ipcard = mysql_query($sql_ipcard);
 if($q_ipcard !== false)
 {
@@ -51,6 +53,7 @@ if(isset($_POST['d1'])){
 	$list_amount = array();
 	$list_row = array();
 	$return = "select * from drug_return where an='".$_POST['an']."' and status = 'N' and txtdate = '".$_POST['txt']."'";
+	//echo $return."<br>";
 	$query = mysql_query($return);
 	while(list($row_id,$Thn,$Tan,$camp,$age,$indate,$dcdate,$txtdate,$phardate,$rowref,$tradename,$slcode,$unit,$amount,$price,$doctor,$my_ward,$bed,$officer,$status) = mysql_fetch_array($query)){
 			$item++;
@@ -383,7 +386,7 @@ if(isset($_GET['do'])){
 		}
 	?>
 	<input name="an" value="<?=$an?>" type="hidden" />
-    <tr><td colspan="6" align="center"><input name="d1" type="submit" value="      บันทึก     " /></td></tr>
+    <tr><td colspan="6" align="center"><input name="d1" type="submit" value="  ยืนยันการคืนยา  " /></td></tr>
 </table>
 </form>
 <?
