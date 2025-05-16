@@ -1,6 +1,9 @@
 <?php
-require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/class_file/class_opcard.php';
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/class_file/class_opcard.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+
+$json = new Services_JSON();
 
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
@@ -81,13 +84,13 @@ if( $action == 'save' ) {
 
     }
     
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }elseif ( $action == 'delCompany' ) {
 
     if(empty($data->id)){
         $res = array('status'=>400, 'message'=>'ไม่พบรหัสบริษัท');
-        echo json_encode($res);
+        echo $json->encode($res);
         exit;
     }
 
@@ -98,14 +101,14 @@ if( $action == 'save' ) {
     }else{
         $res = array('status'=>400, 'message'=>'ไม่สามารถลบได้ '.$dbi->error);
     }
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }elseif ($action=='getUser') {
 
     $hn = $data->hn;
     if(empty($hn)){
         $res = array('status'=>400, 'message'=>'กรุณากรอก HN');
-        echo json_encode($res);
+        echo $json->encode($res);
         exit;
     }
 
@@ -117,7 +120,7 @@ if( $action == 'save' ) {
         $res = array('status'=>200, 'data'=>$user);
     }
     
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
     
 }elseif ($action==='saveUser') {
@@ -144,7 +147,7 @@ if( $action == 'save' ) {
 
         $q = $dbi->query($sql);
         if($q->num_rows>0){
-            echo json_encode(array('status'=>400, 'message'=>'HN '.$hn.' ซ้ำซ้อนใน '.$part));
+            echo $json->encode(array('status'=>400, 'message'=>'HN '.$hn.' ซ้ำซ้อนใน '.$part));
             exit;
         }
 
@@ -204,13 +207,13 @@ if( $action == 'save' ) {
         $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
     }
 
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }elseif ($action==='delUser') { 
 
     $row = $data->id;
     if(empty($row)){
-        echo json_encode(array('status'=>400, 'message'=>'ไม่พบข้อมูล'));
+        echo $json->encode(array('status'=>400, 'message'=>'ไม่พบข้อมูล'));
         exit;
     }
     
@@ -222,7 +225,7 @@ if( $action == 'save' ) {
         $res = array('status'=>400, 'message'=>'ไม่สามารถลบข้อมูลได้ '.$dbi->error);
     }
 
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 
 }

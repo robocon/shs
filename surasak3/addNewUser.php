@@ -1,8 +1,7 @@
 <?php 
-include_once __DIR__.'/bootstrap.php';
-// include_once __DIR__.'/includes/JSON.php';
-
-// $json = new Services_JSON();
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+$json = new Services_JSON();
 
 if($_SESSION['sIdname']!=='krit')
 {
@@ -50,7 +49,7 @@ if($action==='save'){
     }else{
         $data = array('rows' => 0);
     }
-    echo json_encode($data);
+    echo $json->encode($data);
     exit;
 }
 ?>

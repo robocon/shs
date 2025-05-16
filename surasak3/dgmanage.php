@@ -1,5 +1,8 @@
 <?php
-include dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+$json = new Services_JSON();
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -18,7 +21,7 @@ if($action==='add'){
         $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ Error: '.$dbi->error);
     }
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 
 }elseif($action==='delete'){
@@ -33,7 +36,7 @@ if($action==='add'){
         $res = array('status'=>400, 'message'=>'ไม่สามารถลบข้อมูลได้ Error: '.$dbi->error);
     }
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 
 }elseif($action==='getFromId'){
@@ -54,7 +57,7 @@ if($action==='add'){
     }
     
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 
 }elseif($action==='update'){
@@ -80,7 +83,7 @@ if($action==='add'){
         $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ Error: '.$dbi->error);
     }
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 
 }elseif ($action==='checkDrugreact') {
@@ -111,7 +114,7 @@ if($action==='add'){
     }
     
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }elseif ($action=='checkPass') {
     
@@ -132,7 +135,7 @@ if($action==='add'){
         $res = array('status'=>400);
     }
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }
 

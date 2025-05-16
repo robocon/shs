@@ -1,5 +1,8 @@
 <?php
 require_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+$json = new Services_JSON();
+
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -23,6 +26,6 @@ if($action==='del'){
     }
     
     header("Content-Type: application/json; charset=UTF-8");
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }

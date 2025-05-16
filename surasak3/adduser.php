@@ -1,8 +1,6 @@
 <?php
-// session_start();
-// include_once 'connect.php';
-require_once 'bootstrap.php';
-include_once 'includes/JSON.php';
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -121,7 +119,7 @@ if ($act == "add") {
     }
 
     header('Content-Type: application/json; charset=utf-8');
-    echo json_encode($res);
+    echo $json->encode($res);
     exit;
 }
 ?>
