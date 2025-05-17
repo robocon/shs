@@ -1,7 +1,4 @@
 <?php
-// require("fpdf/fpdf.php");
-// require("fpdf/pdf.php");
-
 include 'fpdf_thai/fpdf_thai.php';
 include 'includes/connect.php';
 
@@ -17,7 +14,6 @@ if(!function_exists('dump'))
 $page = $_GET['page'];
 if($page=='print')
 {
-	// header("Content-type:application/pdf;charset=Windows-874;");
 	$date = $_GET['date'];
 	$hn = $_GET['hn'];
 	$ptname = urldecode($_GET['ptname']);
@@ -43,11 +39,11 @@ if($page=='print')
 			$pdf->SetXY($x_line, $y_line+1);
 		}
 
-		$pdf->Cell(80,5,iconv('UTF8','TIS620',"วันที่ ".$date)."  Hn: ".$hn, 0);
+		$pdf->Cell(80,5,iconv('UTF-8','TIS-620', "วันที่ ").$date." Hn: ".$hn, 0);
 		$pdf->Ln();
-		$pdf->Cell(80,5,iconv('UTF8', 'TIS620', "ชื่อ: ".$ptname), 0); 
+		$pdf->Cell(80,5,iconv('UTF-8','TIS-620', "ชื่อ: ".$ptname), 0); 
 		$pdf->Ln();
-		$pdf->MultiCell(80,5, "LAB: ".$lab, 0);
+		$pdf->MultiCell(80,5,"LAB: ".$lab, 0);
 		
 
 		// ขีดเส้นกั้นเมื่อจบชุดข้อความแรก
@@ -60,8 +56,6 @@ if($page=='print')
 
 	}
 	$pdf->Output();
-
-
 	exit;
 }
 
@@ -71,7 +65,7 @@ $m = date("m");
 $y = date("Y")+543;
 $hn = trim($_REQUEST["hn"]);
 
-$sql = "Select yot, name, surname, ptright From opcard where hn = '$hn' limit 1 ";
+$sql = "Select yot, name, surname, ptright From opcard where hn = '$hn'";
 $result = Mysql_Query($sql);
 list($yot, $name, $surname, $ptright) = Mysql_fetch_row($result);
 $ptname = $yot." ".$name." ".$surname;
@@ -138,8 +132,8 @@ while ($labdepart = mysql_fetch_assoc($result_labdepart)) {
 
 	$data_url = "hd_sticker_item.php";
 	$data_url .= "?page=print";
-	$data_url .= "&date=".$labdepart['date'];
-	$data_url .= "&hn=".$labdepart['hn'];
+	$data_url .= "&date=".urlencode($labdepart['date']);
+	$data_url .= "&hn=".urlencode($labdepart['hn']);
 	$data_url .= "&ptname=".urlencode($labdepart['ptname']);
 	$data_url .= "&lab=".urlencode($txt_list_lab);
 	?>
@@ -151,7 +145,6 @@ while ($labdepart = mysql_fetch_assoc($result_labdepart)) {
 		<td><a href="<?=$data_url;?>" target="_blank">พิมพ์</a></td>
 	</tr>
 	<?php
-
 }
 
 ?>

@@ -2533,7 +2533,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
-				if(agep>"56"){
+				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
 						return false;
@@ -2556,6 +2556,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 							return true;
 						}else{
+							//alert(agep);
 							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
 							return false;
 /*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
@@ -2679,10 +2680,12 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 		}//สิทธิ์		
 	}else if(drug_cc=='5VIAT-N' || drug_cc=='1VIAT500' || drug_cc=='1VIAT500  '){ //ยาไวอาทิล
 		var sit = '<?=$_SESSION["ptright_now"]?>';
+		
 		sit = sit.substring(0,3);
 		if(sit=="R02" || sit=="R03"){
 				var agep = '<?=$_SESSION["age_now"]?>';
 				agep = agep.substring(0,2);
+				
 				if(agep>="56"){
 					if(count==1|count==2){
 						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
@@ -2706,6 +2709,7 @@ window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
 						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
 							return true;
 						}else{
+							//alert('อายุ');
 							alert("ผู้ป่วยอายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
 							return false;
 /*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
@@ -3023,7 +3027,7 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	// วิธีใช้ยา
 	xmlhttp = newXmlHttp();
 	document.getElementById("drug_code").value = drugcode;
-	url = 'dt_drug.php?action=addamount&search=' + drugcode;
+	url = 'dt_drug.php?action=addamount&search='+drugcode;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	
@@ -3124,7 +3128,7 @@ async function checkAlphaBlocker(drugcode){
 function do_add_drug(returnstr, drugcode){
 	var vl = returnstr.split(",");
 	document.getElementById("drug_amount").value = vl[0];
-	document.getElementById("drug_slip").value = vl[1];
+	document.getElementById("drug_slip").value = vl[1].trim();
 	document.getElementById('list').innerHTML='';
 	document.getElementById("drug_amount").select();
 	
@@ -4844,6 +4848,17 @@ elseif ($patient_hn=='49-19589') {
 	?>
 	<script>
 	Swal.fire('นางฐิติชญา ขัดชุ่มแสง เคสนี้ ขอพิจารณาการจ่ายยาเป็นกรณีพิเศษ เนื่องจากมีการใช้ยาที่ไม่สมเหตุสมผล ทั้งชนิดและปริมาณ หรือส่งผู้ป่วยพบแพทย์นภสมร');
+	</script>
+	<?php
+}elseif ($patient_hn=='49-981') {
+	?>
+	<script>
+	Swal.fire({
+		html:`<h3 style="color:red;">งดจ่ายยา Eliquis ผู้ป่วยท่านนี้<u>นอกเวลาราชการ</u></h3>
+		<p><b>รหัสยา : </b>1ELI5</p>
+		<p><b>ชื่อทางการค้า : </b> Eliquis 5 mg.</p>
+		<p><b>ชื่อสามัญ : </b>Apixaban 5 mg</p>`
+	});
 	</script>
 	<?php
 }

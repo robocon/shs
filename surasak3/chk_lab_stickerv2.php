@@ -56,7 +56,7 @@ if ( $action == 'print' ) {
         $ptname = iconv("UTF-8", "TIS-620", $ptname);
 
 
-        // $code_exam = $a['exam_no'];
+        $code_exam = $a['exam_no'];
         // if( empty($code_exam) ){
         //     $code_exam = (date('y') + 43).date('md').sprintf('%03d', $a['pid']);
         // }

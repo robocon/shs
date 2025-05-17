@@ -1,59 +1,69 @@
 <?php
-    session_start();
-	$_SESSION["send_order"] = true;
+session_start();
+$_SESSION["send_order"] = true;
 
-    if (empty($sIdname)){die;} 
-	
-?>
-   ËÍ¼Ùé»èÇÂ¾ÔàÈÉ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp  <a target=_self  href="../nindex.htm">ä»àÁ¹Ù</a>
-<FORM METHOD=POST ACTION="uploaddcordervip2.php" enctype="multipart/form-data">
-<table>
- <tr>
-  <th bgcolor=6495ED><font face='Angsana New'>àµÕÂ§</th>
- <th bgcolor=6495ED><font face='Angsana New'>ÇÑ¹ÃÑº»èÇÂ</th>
- <th bgcolor=6495ED><font face='Angsana New'>ª×èÍ¼Ùé»èÇÂ</th>
- <th bgcolor=6495ED><font face='Angsana New'>AN</th>
- <th bgcolor=6495ED><font face='Angsana New'>HN</th>
- <th bgcolor=6495ED><font face='Angsana New'>&nbsp;</th>
- </tr>
-<?php
-    include("connect.inc");
- 
-    $query = "SELECT bed,date_format(date,'%d-%m-%Y'),ptname,an,hn,diagnos,food,
-                    doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,status,diag1 FROM bed WHERE ptname <> '' AND bedcode LIKE '45%' ORDER BY bed ASC ";
-  
-    $result = mysql_query($query) or die("Query failed");
-
-$i=0;
-
-    while (list ($bed,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,
-                      $bedcode,$hn,$status,$diag1) = mysql_fetch_row ($result)) {
-$status2 = substr($status,0,3);
-
-if($i%2==0){
-	$color="#66CDAA"; 
-}else{
-	$color="#FFCC66"; 
-
+if (empty($sIdname)) {
+    die;
 }
-        print (" <tr>\n".
-					"  <td BGCOLOR='".$color."'><font face='Angsana New'>$bed</td>\n".
-					"  <td BGCOLOR='".$color."'><font face='Angsana New'><font face='Angsana New'>$date</td>\n".
-					"  <td BGCOLOR='".$color."'><font face='Angsana New'>$ptname</td>\n".
-					"  <td BGCOLOR='".$color."'><font face='Angsana New'>$an</td>\n".
-					"  <td BGCOLOR='".$color."'><font face='Angsana New'>$hn</td>\n".
-					"  <td BGCOLOR='".$color."'><font face='Angsana New'><INPUT TYPE=\"file\" NAME=\"upload_file".$i."\"><INPUT TYPE=\"hidden\" name=\"an".$i."\" value=\"".$an."\"></td>\n".
-		           " </tr>\n");
-	$i++;
+
+?>
+à¸«à¸­à¸œà¸¹à¹‰à¸›à¹ˆà¸§à¸¢à¸žà¸´à¹€à¸¨à¸©&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp <a target=_self href="../nindex.htm">à¹„à¸›à¹€à¸¡à¸™à¸¹</a>
+<FORM METHOD=POST ACTION="uploaddcordervip2.php" enctype="multipart/form-data">
+    <table>
+        <tr>
+            <th bgcolor=6495ED>
+                <font face='Angsana New'>à¹€à¸•à¸µà¸¢à¸‡
+            </th>
+            <th bgcolor=6495ED>
+                <font face='Angsana New'>à¸§à¸±à¸™à¸£à¸±à¸šà¸›à¹ˆà¸§à¸¢
+            </th>
+            <th bgcolor=6495ED>
+                <font face='Angsana New'>à¸Šà¸·à¹ˆà¸­à¸œà¸¹à¹‰à¸›à¹ˆà¸§à¸¢
+            </th>
+            <th bgcolor=6495ED>
+                <font face='Angsana New'>AN
+            </th>
+            <th bgcolor=6495ED>
+                <font face='Angsana New'>HN
+            </th>
+            <th bgcolor=6495ED>
+                <font face='Angsana New'>&nbsp;
+            </th>
+        </tr>
+        <?php
+        include("connect.inc");
+
+        $query = "SELECT bed,date_format(date,'%d-%m-%Y'),ptname,an,hn,diagnos,food,
+                    doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,status,diag1 FROM bed WHERE ptname <> '' AND bedcode LIKE '45%' ORDER BY bed ASC ";
+
+        $result = mysql_query($query) or die("Query failed");
+
+        $i = 0;
+
+        while (list($bed,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$status,$diag1) = mysql_fetch_row($result)) {
+            $status2 = substr($status, 0, 3);
+
+            if ($i % 2 == 0) {
+                $color = "#66CDAA";
+            } else {
+                $color = "#FFCC66";
+            }
+            print(" <tr>\n" .
+                "  <td BGCOLOR='" . $color . "'><font face='Angsana New'>$bed</td>\n" .
+                "  <td BGCOLOR='" . $color . "'><font face='Angsana New'><font face='Angsana New'>$date</td>\n" .
+                "  <td BGCOLOR='" . $color . "'><font face='Angsana New'>$ptname</td>\n" .
+                "  <td BGCOLOR='" . $color . "'><font face='Angsana New'>$an</td>\n" .
+                "  <td BGCOLOR='" . $color . "'><font face='Angsana New'>$hn</td>\n" .
+                "  <td BGCOLOR='" . $color . "'><font face='Angsana New'><INPUT TYPE=\"file\" NAME=\"upload_file" . $i . "\"><INPUT TYPE=\"hidden\" name=\"an" . $i . "\" value=\"" . $an . "\"></td>\n" .
+                " </tr>\n");
+            $i++;
         }
 
-		 print (" <tr>\n".
-					"  <td colspan=\"6\" align=\"center\"><INPUT TYPE=\"submit\" value=\" µ¡Å§ \"><INPUT TYPE=\"hidden\" name=\"count\" value=\"".$i."\"></td>\n".
-		           " </tr>\n");
-    include("unconnect.inc");
-?>
-</table>
+        print(" <tr>\n" .
+            "  <td colspan=\"6\" align=\"center\"><INPUT TYPE=\"submit\" value=\" à¸•à¸à¸¥à¸‡ \"><INPUT TYPE=\"hidden\" name=\"count\" value=\"" . $i . "\"></td>\n" .
+            " </tr>\n");
+        include("unconnect.inc");
+        ?>
+    </table>
 </FORM>
-
-

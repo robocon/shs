@@ -1,10 +1,36 @@
-<?php 
+<?php
+/**
+ * @README
+ * drugreact                เป็นตารางที่บอกว่า คนไข้แพ้ยาตัวไหนบ้าง และยาที่แพ้อยู่ในกลุ่มไหน
+ * drugreact_group          เป็นตารางที่บอกว่า รายการกลุ่มยาที่แพ้
+ * drugreact_group_list     เป็นตารางที่บอกว่า ใน drugreact_group มียาอะไรบ้าง
+ * 
+ * ตัวอย่างเช่น 
+ * drugreact_group
+ * มี 2 กลุ่ม Sulfonamide
+ * 
+ * drugreact_group_list
+ * มี 2BACT-C และ 1COTR4 อยู่ในกลุ่ม Sulfonamide
+ * 
+ * drugreact
+ * คนไข้ 47-1 แพ้ยา 1COTR4 ที่อยู่ในกลุ่ม Sulfonamide
+ * 
+ * ทีนี้พอแพทย์สั่งจ่ายยา 2BACT-C เราก็สามารถทำแจ้งเตือนได้ว่า อาจจะมีโอกาศแพ้ยาได้นะเพราะเป็นยาที่อยู่ในกลุ่มเดียวกัน
+ */
 session_start();
 include("connect.php");
 require_once dirname(__FILE__).'/bootstrap.php';
 
 if(empty($_SESSION['sIdname'])){
-    echo "SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง"; 
+    echo 'SESSION หมดอายุ กรุณาทำการ Login ใหม่อีกครั้ง <br><a href="dglst.php">คลิกที่นี่ เพื่อกลับไป Login</a>'; 
+    exit;
+}
+
+$dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
+$dbi->query("SET NAMES UTF8");
+
+if(empty($Dgcode)){
+    echo '<p>กรุณาใส่ข้อมูลยาให้ถูกต้อง <a href="dglst.php">คลิกที่นี่</a> เพื่อย้อนกลับ</p>';
     exit;
 }
 function sendText($text){
@@ -18,6 +44,15 @@ function sendText($text){
 $Dgcode = $_GET['Dgcode'];
 sendText($_SESSION['sIdname'].' ได้เข้าใช้งานฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขยา</title>
+    <script src="js/sweetalert2.all.min.js"></script>
+</head>
+<body>
 <style type="text/css">
 body{ font-family:"TH SarabunPSK"; 
 font-size:18px;
@@ -42,7 +77,6 @@ background-color:#F8F9F9;
 </style>
 <?php
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
-	//echo $query;
     $result = mysql_query($query)
         or die("Query failed");
  
@@ -108,6 +142,7 @@ background-color:#F8F9F9;
 		$active = $row->drug_active;
 		$had = $row->had;
 		$ised = $row->ised;
+		$cQuantity_box = $row->quantity_box;
 		$cQuantity_box = $row->quantity_box;
 
         $preg_type = $lac_type = '';
@@ -303,37 +338,123 @@ $edpri_from_list = array(
 print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
 ?>
 <select name="had">
-          <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
-          <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
+    <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
+    <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
-<?php
-print "    <br><b>กลุ่มยาที่มีโอกาสแพ้</b>&nbsp;&nbsp;&nbsp;";
-$sql1="select * from drugreact_group";
-//echo $sql1;
-$query1=mysql_query($sql1);
-$n=0;
-$num=mysql_num_rows($query1);
-//echo "==>$num";
-while($result1=mysql_fetch_array($query1)){
-$n++;
-$id=$result1["id"];	
-$name=$result1["name"];
 
-	$sql2="select * from drugreact_group_list where drugcode='$cDrugcode' and drugreact_group='$id'";
-	$query2=mysql_query($sql2);
-	$result2=mysql_fetch_array($query2);
-	$drugreact_group=$result2["drugreact_group"];
-	if($id==$drugreact_group){
-?>		
-	<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' checked > <?=$name;?></div>
-<?
-	}else{	
-?>
-<div> <input name='drugreact_group<?=$n?>' id='drugreact_group<?=$n?>' type='checkbox'  value='<?=$id;?>' > <?=$name;?></div>
-<?
-	}
-}
-?>
+<br>
+    <table>
+        <tr>
+            <td valign="top">
+                <strong>กลุ่มยาที่มีโอกาสแพ้ : </strong>
+                <div><a href="dgmanage.php" target="_blank">จัดการกลุ่ม</a></div>
+            </td>
+            <td valign="top">
+                <?php 
+                $sql2 = sprintf("SELECT * FROM `drugreact_group_list` WHERE `drugcode`='%s'", $dbi->real_escape_string($cDrugcode));
+                $q2 = $dbi->query($sql2);
+                $groupItems = array();
+                $groupItemsShow = array();
+
+                while ($b = $q2->fetch_assoc()) {
+                    $groupItems[] = $b['drugreact_group'];
+                    $groupItemsShow[] = $b;
+                }
+
+                $q = $dbi->query("SELECT * FROM `drugreact_group` WHERE `status` = 'y' ");
+                ?>
+                <select name="drugreact_group" id="drugreact_group" style="width: 300px;">
+                    <option value="">ไม่มีกลุ่ม</option>
+                <?php
+                $groupList = array();
+                while ($a = $q->fetch_assoc()) {
+                    $key = $a['id'];
+                    $groupList[$key] = $a['name'];
+                    $selected = (in_array($a['id'], $groupItems)) ? 'selected' : '';
+
+                    $optionBgColor = '';
+                    if(!empty($selected)){
+                        $optionBgColor = 'background-color:#75b798';
+                    }
+                    ?>
+                    <option value="<?=$a['id'];?>" <?=$selected;?> style="<?=$optionBgColor;?>"><?=$a['name'];?></option>
+                    <?php
+                }
+                ?>
+                </select>
+                <?php 
+                // แจ้งเตือนกรณีที่เคยบันทึกซ้ำซ้อน
+                if(count($groupItems)>1){
+                    ?>
+                    <p style="color:red;"><strong>ยาตัวนี้เคยบันทึกมากกว่า1กลุ่ม</strong></p>
+                    <?php
+                    $i = 1;
+                    foreach ($groupItemsShow as $g) {
+                        $id = $g['id'];
+                        $key = $g['drugreact_group'];
+                        ?>
+                        <p><strong><?=$i.') '.$groupList[$key];?></strong> ( โดย <?=$g['officer'];?> เมื่อ <?=$g['last_update'];?> ) <a href="javascript:void(0);" title="ลบ" onclick="delReactGroupItem('<?=$id;?>')">[ X ]</a></p>
+                        <?php
+                        $i++;
+                    }
+                    ?>
+                    <?php
+                }
+                ?>
+            </td>
+        </tr>
+    </table>
+    <script>
+        function delReactGroupItem(id){
+            Swal.fire({
+                title: 'แน่ใจว่าต้องการลบข้อมูล?',
+                text: 'การลบข้อมูลจะไม่สามารถกู้คืนได้อีก',
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "ยืนยัน",
+                cancelButtonText: "ยกเลิก",
+            }).then((result)=>{
+                if (result.isConfirmed) {
+                    doDelReactItem(id).then((res)=>{
+                        if(res.status===200){
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'ลบข้อมูลเรียบร้อย'
+                            }).then(()=>{
+                                location.reload();
+                            });
+                        }else{
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'เกิดข้อผิดพลาด',
+                                text: res.message,
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        async function doDelReactItem(id){
+            let data = [];
+            data.push(encodeURIComponent('id')+"="+encodeURIComponent(id));
+            data.push(encodeURIComponent('action')+"="+encodeURIComponent('del'));
+            let dataPost = data.join("&");
+
+            const result = await fetch('dgitem.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: dataPost
+            });
+            const response = await result.json();
+            return response;
+        }
+    </script>
+
 <style>
 p{
     margin: 0;
@@ -540,6 +661,10 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
 	<td></td>
 	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
 </tr>
+<tr>
+	<td></td>
+	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
+</tr>
 <tr align="center">
 <td  width='7%' height='76'></td>
 <td colspan="2" width='93%' height='76'>
@@ -553,10 +678,5 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
     </td>
   </tr>
 </table>
-<?
-include("unconnect.inc");
-?>
-
-
-
-    
+</body>
+</html>

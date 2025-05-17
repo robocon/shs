@@ -1,7 +1,7 @@
 <?php
 session_start();
-include 'Connections/config.php';
-include 'Connections/all_function.php';
+require_once dirname(__FILE__).'/Connections/config.php';
+require_once dirname(__FILE__).'/Connections/all_function.php';
 
 $action = $_POST['action'];
 if( $action === 'save' ){
@@ -304,7 +304,7 @@ function fncSubmit()
 
 </script>
 
-<form action="" method="post" name="form1" id="form1" onSubmit="JavaScript:return ch_null();">
+<form action="service.php" method="post" name="form1" id="form1" onSubmit="JavaScript:return ch_null();">
 <table width="285" border="0" align="center">
         <tr>
           <td colspan="3" class="forntsarabun"><h2 align="center">รับบริการวัคซีน</h2></td>
@@ -343,10 +343,9 @@ function fncSubmit()
 	
 		
 	$sql1 = "select *  from opcard Where  hn = '$hn' ";
-	$result1 = mysql_query($sql1);
+	$result1 = mysql_query($sql1, $link);
 	$numrows=mysql_num_rows($result1);
 	$fetch= mysql_fetch_array($result1);
-
 	
 	if($numrows>0){
 	$dbirth=$fetch[dbirth];

@@ -141,9 +141,9 @@ if($alcohol==0){
 	list($hn,$vn,$ptname,$ptright) = Mysql_fetch_row($result112);	
 
 
-	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease,allergy From opcard where hn='".$hn."' ";
+	$sql111 = "Select dbirth,idcard,phone,blood,congenital_disease,allergy,hospcode From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($dbirth,$idcard,$phone,$blood,$opcard_congenital_disease,$allergy) = Mysql_fetch_row($result111);
+	list($dbirth,$idcard,$phone,$blood,$opcard_congenital_disease,$allergy,$hospcode) = Mysql_fetch_row($result111);
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
 	
@@ -222,11 +222,11 @@ if($type=="นั่งรถเข็น"){
 <style type="text/css">
 
 body,td,th {
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 20px;
 }
 .txtsarabun{
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
   .narrowWaisted {
@@ -280,19 +280,12 @@ p.text {
 }
 </style>
 <script language="javascript">
-//window.opener.location.reload();
-//window.opener.location.reload(true);
-
-window.print();
-
-// setTimeout(function(){ 
-// 		window.close();
-// }, 1000);
-
-window.onafterprint = function(){
-	window.close();
+window.onload = function(){
+	window.print();
+	window.onafterprint = function(){
+		window.close();
+	}
 }
-
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
 <div class="narrowWaisted">
@@ -304,13 +297,13 @@ window.onafterprint = function(){
 	<div style="font-size:36px; font-weight:bold;" align="center">โรงพยาบาลค่ายสุรศักดิ์มนตรี</div>
 	<div style="font-size:32px; font-weight:bold;" align="center">ใบตรวจโรคผู้ป่วยนอก</div></th>
 	<th width="20%" valign="top">
-	<img src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1">
+	<img src="printQrCode.php?hn=<?=$hn;?>&size=5&level=2&margin=1">
 	<div align="center"><?=$hn;?></div>
 	</th>
   </tr>
   <tr >
     <td colspan="2"><div>
-	<span><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?></span>
+	<span><strong>ชื่อ- นามสกุล : </strong><?=$ptname;?></span>
 	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?=$idcard;?></span>
 	</div>
 	</td>
@@ -318,30 +311,37 @@ window.onafterprint = function(){
   </tr>
   <tr >
     <td colspan="2"><div>
-	<span><strong>กรุ๊ปเลือด : </strong><?php echo $blood;?></span>
-	<span style="margin-left:20px;"><strong>วัน/เดือน/ปีเกิด : </strong><?php echo $birthday;?></span>
-	<span style="margin-left:20px;"><strong>อายุ : </strong><?php echo $cAge;?></span>
+	<span><strong>กรุ๊ปเลือด : </strong><?=$blood;?></span>
+	<span style="margin-left:20px;"><strong>วัน/เดือน/ปีเกิด : </strong><?=$birthday;?></span>
+	<span style="margin-left:20px;"><strong>อายุ : </strong><?=$cAge;?></span>
 	</div>
 	</td>
   </tr>
   <tr >
     <td colspan="2"><div>
-	<span><strong>สิทธิการรักษา : </strong><?php echo $ptright;?></span>
-	<span style="margin-left:20px;"><strong>หมายเลขโทรศัพท์ : </strong><?php echo $phone;?></span>
+	<span><strong>สิทธิการรักษา : </strong><?=$ptright;?></span>
+	<?php 
+	$stylePhone = 'margin-left:20px;';
+	if(!empty($hospcode)){
+		?><span><strong>รพ.หลัก : </strong><?=$hospcode;?></span><br><?php
+		$stylePhone = '';
+	}
+	?>
+	<span style="<?=$stylePhone;?>"><strong>หมายเลขโทรศัพท์ : </strong><?=$phone;?></span>
 	</div>
 	</td>
   </tr>  
   <tr >
     <td colspan="2"><div>
-	<span><strong>โรคประจำตัว : </strong><?php echo $congenital_disease;?></span>
-	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?php echo $drugreact_disease;?></span>
+	<span><strong>โรคประจำตัว : </strong><?=$congenital_disease;?></span>
+	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?=$drugreact_disease;?></span>
 	</div>
 	</td>
   </tr>
   <tr >
     <td colspan="2"><div>
-	<span><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?php echo $allergy;?></span>
-	<span style="margin-left:20px;"><strong>ผลข้างเคียงจากยา : </strong><?php echo $sideeffects_disease;?></span>
+	<span><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?=$allergy;?></span>
+	<span style="margin-left:20px;"><strong>ผลข้างเคียงจากยา : </strong><?=$sideeffects_disease;?></span>
 	</div>
 	</td>
   </tr>  
@@ -556,7 +556,7 @@ if(!empty($show_advice)){
 		<div style="font-size:16px;">
 			<div><b>คำแนะนำผู้ป่วยถ่ายอุจจาระเหลว</b></div>
 			<div>&#9744; แนะนำให้ทานอาหารอ่อนย่อยง่าย งดอาหารที่มีกากใย</div>
-			<div>&#9744; งดดื่มนมตัวหรือผลิตภัณฑ์จากวัว</div>
+			<div>&#9744; งดดื่มนมวัวหรือผลิตภัณฑ์จากวัว</div>
 			<div>&#9744; พักผ่อนให้เพียงพอ อย่างน้อย 6-8 ชั่วโมง</div>
 			<div>&#9744; แนะนำรับประทานยาตามแผนการรักษาของแพทย์</div>
 			<div>&#9744; อาการผิดปกติที่ต้องกลับมาพบแพทย์ เช่น ถ่ายอุจจาระเหลวมากขึ้น ไข้ อ่อนเพลีย อาเจียน หน้ามืดคล้ายจะเป็นลม</div>

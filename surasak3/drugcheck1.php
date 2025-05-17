@@ -9,7 +9,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugcode"){
 	if(Mysql_num_rows($result) > 0){
 		echo "<Div style=\"position: absolute;text-align: center; width:500px; height:430px; overflow:auto; \">";
 
-		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\"><tr align=\"center\" bgcolor=\"#333333\"><td ><strong>&nbsp;</strong></td><td ><font style=\"color: #FFFFFF;\"><strong>รหัสยา</strong></font></td><td ><font style=\"color: #FFFFFF;\"><strong>ชื่อยา(การค้า)</strong></font></td><td ><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">ปิด</font></A></strong></td></tr>";
+		echo "<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" bgcolor=\"#FF99CC\"><tr align=\"center\" bgcolor=\"#333333\"><td ><strong>&nbsp;</strong></td><td ><font style=\"color: #FFFFFF;\"><strong>เธฃเธซเธฑเธชเธขเธฒ</strong></font></td><td ><font style=\"color: #FFFFFF;\"><strong>เธเธทเนเธญเธขเธฒ(เธเธฒเธฃเธเนเธฒ)</strong></font></td><td ><strong>&nbsp;&nbsp;<A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\"><font style=\"color: #FFFF99;\">เธเธดเธ”</font></A></strong></td></tr>";
 
 
 		$i=1;
@@ -61,25 +61,25 @@ function searchSuggest(str,len,getto) {
 </script>
 <form method="post" action="<?php echo $PHP_SELF ?>">
 <Div id="list" style="left:270PX;top:50PX;position:absolute;"></Div>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ตรวจสอบการใช้ยาตาม รหัสยา (ช่วงเวลา)</p>
-  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target=_BLANK href="dgcodechk.php">รหัสยา</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เธ•เธฃเธงเธเธชเธญเธเธเธฒเธฃเนเธเนเธขเธฒเธ•เธฒเธก เธฃเธซเธฑเธชเธขเธฒ (เธเนเธงเธเน€เธงเธฅเธฒ)</p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a target=_BLANK href="dgcodechk.php">เธฃเธซเธฑเธชเธขเธฒ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <input type="text" name="drugcode" size="20" id='drugcode' onKeyPress="searchSuggest(this.value,2,'drugcode')";></p>
  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- วันที่ <INPUT TYPE="text" NAME="rptday" maxlength="2" size="2" value="<?=$rptday?>">
+ เธงเธฑเธเธ—เธตเน <INPUT TYPE="text" NAME="rptday" maxlength="2" size="2" value="<?=$rptday?>">
  &#3648;&#3604;&#3639;&#3629;&#3609;&nbsp;<? $m=date('m'); ?>
   <select size="1" name="rptmo">
-    <option value="01" <? if($rptmo=='01'){ echo "selected"; }?>>มกราคม</option>
-        <option value="02" <? if($rptmo=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
-        <option value="03" <? if($rptmo=='03'){ echo "selected"; }?>>มีนาคม</option>
-        <option value="04" <? if($rptmo=='04'){ echo "selected"; }?>>เมษายน</option>
-        <option value="05" <? if($rptmo=='05'){ echo "selected"; }?>>พฤษภาคม</option>
-        <option value="06" <? if($rptmo=='06'){ echo "selected"; }?>>มิถุนายน</option>
-        <option value="07" <? if($rptmo=='07'){ echo "selected"; }?>>กรกฎาคม</option>
-        <option value="08" <? if($rptmo=='08'){ echo "selected"; }?>>สิงหาคม</option>
-        <option value="09" <? if($rptmo=='09'){ echo "selected"; }?>>กันยายน</option>
-        <option value="10" <? if($rptmo=='10'){ echo "selected"; }?>>ตุลาคม</option>
-        <option value="11" <? if($rptmo=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
-        <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
+    <option value="01" <? if($rptmo=='01'){ echo "selected"; }?>>เธกเธเธฃเธฒเธเธก</option>
+        <option value="02" <? if($rptmo=='02'){ echo "selected"; }?>>เธเธธเธกเธ เธฒเธเธฑเธเธเน</option>
+        <option value="03" <? if($rptmo=='03'){ echo "selected"; }?>>เธกเธตเธเธฒเธเธก</option>
+        <option value="04" <? if($rptmo=='04'){ echo "selected"; }?>>เน€เธกเธฉเธฒเธขเธ</option>
+        <option value="05" <? if($rptmo=='05'){ echo "selected"; }?>>เธเธคเธฉเธ เธฒเธเธก</option>
+        <option value="06" <? if($rptmo=='06'){ echo "selected"; }?>>เธกเธดเธ–เธธเธเธฒเธขเธ</option>
+        <option value="07" <? if($rptmo=='07'){ echo "selected"; }?>>เธเธฃเธเธเธฒเธเธก</option>
+        <option value="08" <? if($rptmo=='08'){ echo "selected"; }?>>เธชเธดเธเธซเธฒเธเธก</option>
+        <option value="09" <? if($rptmo=='09'){ echo "selected"; }?>>เธเธฑเธเธขเธฒเธขเธ</option>
+        <option value="10" <? if($rptmo=='10'){ echo "selected"; }?>>เธ•เธธเธฅเธฒเธเธก</option>
+        <option value="11" <? if($rptmo=='11'){ echo "selected"; }?>>เธเธคเธจเธเธดเธเธฒเธขเธ</option>
+        <option value="12" <? if($m=='12'){ echo "selected"; }?>>เธเธฑเธเธงเธฒเธเธก</option>
   </select><? 
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
@@ -95,23 +95,23 @@ function searchSuggest(str,len,getto) {
 				}
 				echo "<select>";
 				?>
-      &nbsp;&nbsp;-&nbsp;&nbsp; วันที่
+      &nbsp;&nbsp;-&nbsp;&nbsp; เธงเธฑเธเธ—เธตเน
       <input type="text" name="rptday2" maxlength="2" size="2" value="<?=$rptday2?>"/>
 &#3648;&#3604;&#3639;&#3629;&#3609;&nbsp;
 <? $m=date('m'); ?>
 <select size="1" name="rptmo2">
-  <option value="01" <? if($rptmo2=='01'){ echo "selected"; }?>>มกราคม</option>
-  <option value="02" <? if($rptmo2=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
-  <option value="03" <? if($rptmo2=='03'){ echo "selected"; }?>>มีนาคม</option>
-  <option value="04" <? if($rptmo2=='04'){ echo "selected"; }?>>เมษายน</option>
-  <option value="05" <? if($rptmo2=='05'){ echo "selected"; }?>>พฤษภาคม</option>
-  <option value="06" <? if($rptmo2=='06'){ echo "selected"; }?>>มิถุนายน</option>
-  <option value="07" <? if($rptmo2=='07'){ echo "selected"; }?>>กรกฎาคม</option>
-  <option value="08" <? if($rptmo2=='08'){ echo "selected"; }?>>สิงหาคม</option>
-  <option value="09" <? if($rptmo2=='09'){ echo "selected"; }?>>กันยายน</option>
-  <option value="10" <? if($rptmo2=='10'){ echo "selected"; }?>>ตุลาคม</option>
-  <option value="11" <? if($rptmo2=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
-  <option value="12" <? if($rptmo2=='12'){ echo "selected"; }?>>ธันวาคม</option>
+  <option value="01" <? if($rptmo2=='01'){ echo "selected"; }?>>เธกเธเธฃเธฒเธเธก</option>
+  <option value="02" <? if($rptmo2=='02'){ echo "selected"; }?>>เธเธธเธกเธ เธฒเธเธฑเธเธเน</option>
+  <option value="03" <? if($rptmo2=='03'){ echo "selected"; }?>>เธกเธตเธเธฒเธเธก</option>
+  <option value="04" <? if($rptmo2=='04'){ echo "selected"; }?>>เน€เธกเธฉเธฒเธขเธ</option>
+  <option value="05" <? if($rptmo2=='05'){ echo "selected"; }?>>เธเธคเธฉเธ เธฒเธเธก</option>
+  <option value="06" <? if($rptmo2=='06'){ echo "selected"; }?>>เธกเธดเธ–เธธเธเธฒเธขเธ</option>
+  <option value="07" <? if($rptmo2=='07'){ echo "selected"; }?>>เธเธฃเธเธเธฒเธเธก</option>
+  <option value="08" <? if($rptmo2=='08'){ echo "selected"; }?>>เธชเธดเธเธซเธฒเธเธก</option>
+  <option value="09" <? if($rptmo2=='09'){ echo "selected"; }?>>เธเธฑเธเธขเธฒเธขเธ</option>
+  <option value="10" <? if($rptmo2=='10'){ echo "selected"; }?>>เธ•เธธเธฅเธฒเธเธก</option>
+  <option value="11" <? if($rptmo2=='11'){ echo "selected"; }?>>เธเธคเธจเธเธดเธเธฒเธขเธ</option>
+  <option value="12" <? if($rptmo2=='12'){ echo "selected"; }?>>เธเธฑเธเธงเธฒเธเธก</option>
 </select>
 <? 
 			   $Y=date("Y")+543;
@@ -131,21 +131,21 @@ function searchSuggest(str,len,getto) {
 				?>
  </p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <input type="submit" value="      ตกลง      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
+  <input type="submit" value="      เธ•เธเธฅเธ      " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<เนเธเน€เธกเธเธน</a></p>
 </form>
-<a href="drugcheck1.php?new">ล้างข้อมูล</a>
+<a href="drugcheck1.php?new">เธฅเนเธฒเธเธเนเธญเธกเธนเธฅ</a>
 <table>
  <tr>
 
-  <th bgcolor=CD853F>รหัสยา</th>
+  <th bgcolor=CD853F>เธฃเธซเธฑเธชเธขเธฒ</th>
 
-  <th bgcolor=CD853F>ชื่อสามัญ</th>
+  <th bgcolor=CD853F>เธเธทเนเธญเธชเธฒเธกเธฑเธ</th>
  
-<th bgcolor=CD853F>ชื่อการค้า</th>
- <th bgcolor=CD853F>จำนวนจ่ายรวม</th>
-<th bgcolor=CD853F>คงเหลือในห้องจ่าย</th>
- <th bgcolor=CD853F>คงเหลือในคลังยา</th>
- <th bgcolor=CD853F>เวลารายงาน</th>
+<th bgcolor=CD853F>เธเธทเนเธญเธเธฒเธฃเธเนเธฒ</th>
+ <th bgcolor=CD853F>เธเธณเธเธงเธเธเนเธฒเธขเธฃเธงเธก</th>
+<th bgcolor=CD853F>เธเธเน€เธซเธฅเธทเธญเนเธเธซเนเธญเธเธเนเธฒเธข</th>
+ <th bgcolor=CD853F>เธเธเน€เธซเธฅเธทเธญเนเธเธเธฅเธฑเธเธขเธฒ</th>
+ <th bgcolor=CD853F>เน€เธงเธฅเธฒเธฃเธฒเธขเธเธฒเธ</th>
   </tr>
 
 
@@ -198,10 +198,10 @@ if(!empty($drugcode)){
 	}
 
 
-//print "จ่ายยา$tradname รวมทั้งหมดเท่ากับ  $Total หน่วย |";
-//print "&nbsp;&nbsp;&nbsp;&nbsp;ผู้ป่วย ".count($list_peoper)." คน |";
-//print "&nbsp;&nbsp;&nbsp;&nbsp; $j รายการ |";
-//print "&nbsp;&nbsp;&nbsp;&nbsp;ราคา $sal_price บาท";
+//print "เธเนเธฒเธขเธขเธฒ$tradname เธฃเธงเธกเธ—เธฑเนเธเธซเธกเธ”เน€เธ—เนเธฒเธเธฑเธ  $Total เธซเธเนเธงเธข |";
+//print "&nbsp;&nbsp;&nbsp;&nbsp;เธเธนเนเธเนเธงเธข ".count($list_peoper)." เธเธ |";
+//print "&nbsp;&nbsp;&nbsp;&nbsp; $j เธฃเธฒเธขเธเธฒเธฃ |";
+//print "&nbsp;&nbsp;&nbsp;&nbsp;เธฃเธฒเธเธฒ $sal_price เธเธฒเธ—";
 //echo "<!-- ('".implode("','",$list_hn)."') -->";
 include("unconnect.inc");
        }

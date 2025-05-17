@@ -175,6 +175,7 @@ $thip_items = array(
     ),
     
 );
+$countItem = count($thip_items);
 ?>
 <div style="margin-top:8px;">
     <div style="display:inline-block;">
@@ -190,6 +191,7 @@ $thip_items = array(
                     ?>
                     <a href="<?=$thip['link'];?>" style="<?=$style;?>" target="_blank"><?=$thip['name'];?></a>
                     <?php 
+                    
                 }
                 $ii++;
             }

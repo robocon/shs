@@ -20,7 +20,7 @@
     session_unregister("nRunno");
 ////
  $cDepart = 'PHAR';
-// $aDetail='¤èÒÂÒ';
+// $aDetail='à¸„à¹ˆà¸²à¸¢à¸²';
  session_register("cDepart");
 // session_register("aDetail");
 ?>

@@ -3,13 +3,13 @@ session_start();
 ?>
 <table>
  <tr>
-  <th bgcolor=CD853F><font face='Angsana New'>ź</th>
+  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>
   <th bgcolor=CD853F><font face='Angsana New'>#</th>
-  <th bgcolor=CD853F><font face='Angsana New'>����</th>
-  <th bgcolor=CD853F><font face='Angsana New'>��¡��</th>
-  <th bgcolor=CD853F><font face='Angsana New'>�Ҥ�</th>
-  <th bgcolor=CD853F><font face='Angsana New'>�ӹǹ</th>
-  <th bgcolor=CD853F><font face='Angsana New'>����Թ</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
+  <th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
+  <th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
+  <th bgcolor=CD853F><font face='Angsana New'>รวมเงิน</th>
  </tr>
 
 <?php
@@ -29,7 +29,7 @@ session_start();
             continue;
          }
 
-  //  echo "<BR> �͡  array  $row->drugcode, $row->tradname, �Ҥ������  $row->salepri �ҷ, <br />\n";
+  //  echo "<BR> นอก  array  $row->drugcode, $row->tradname, ราคาเม็ดละ  $row->salepri บาท, <br />\n";
 
     $x++;
     $aDgcode[$x]=$row->drugcode;
@@ -46,7 +46,7 @@ session_start();
 
    for ($n=1; $n<=$x; $n++){
         print("<tr>\n".
-                "<td bgcolor=F5DEB3><a target='right'  href=\"itemdele.php? Delrow=$n\"><font face='Angsana New'>ź</td>\n".
+                "<td bgcolor=F5DEB3><a target='right'  href=\"itemdele.php? Delrow=$n\"><font face='Angsana New'>ลบ</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n".
                 "<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n]</td>\n".
@@ -59,9 +59,9 @@ session_start();
 ?>
 </table>
 <?php
-     echo " �Ҥ����  $Netprice �ҷ ";
+     echo " ราคารวม  $Netprice บาท ";
 ?>
-    <br><a target=_BLANK href="rxutranx.php">�Ѵʵ�͡/���§ҹ</a>
-   &nbsp;&nbsp;&nbsp;<a target=_BLANK href="notrxu.php">(¡��ԡ������)</a>
+    <br><a target=_BLANK href="rxutranx.php">ตัดสต๊อก/ใบรายงาน</a>
+   &nbsp;&nbsp;&nbsp;<a target=_BLANK href="notrxu.php">(ยกเลิกทั้งหมด)</a>
 
 

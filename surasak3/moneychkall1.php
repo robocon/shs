@@ -52,10 +52,10 @@ while (list ($credit,$duplicate) = mysql_fetch_row ($result)) {
  * 1.) กำหนด $appd1 ให้ตรงกับวันที่ต้องการออกรายงาน
  * 2.) กำหนด $part ให้ตรงกับ code ในตาราง chk_company_list 
  */
-if( $appd1 == '2567-05-16' ){
+if( $appd1 == '2568-05-26' ){
 
   $log_datechk = ($thiyr-543).'-'.$appmo.'-'.$appdate;;
-  $part = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67';
+  $part = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 68';
 
   $sql = "SELECT `log_datechk`,`type`,COUNT(`log_id`) AS `log_count`
   FROM `log_opcardchk` 

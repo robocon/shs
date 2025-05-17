@@ -224,11 +224,11 @@ $doctor='ตรวจสุขภาพ';
  * สอบตำรวจ63 กับ สอบตำรวจ63_02
  */
 $part = urldecode($_GET['part']);
-if( $part == 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67' ){ 
+if( $part == 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 68' ){ 
 
     $sql = "SELECT * 
     FROM `log_opcardchk` 
-    WHERE `log_part` = 'ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 67' 
+    WHERE `log_part` = '$part' 
     AND `type` = '$type' 
     GROUP BY `log_hn` 
     ORDER BY `log_id` ASC";
@@ -279,7 +279,6 @@ list($d,$m,$y) = explode(' ', $repdate);
 $date_like = $y.'-'.$m.'-'.$d;
 $i = 1;
 
-$hn = $value['log_hn'];
 $sql = "SELECT * FROM `opacc` WHERE `date` LIKE '$date_like%' AND `credit` = 'ตรวจสุขภาพตำรวจ'";
 $q2 = $dbi->query($sql);
 $items = array();
@@ -289,15 +288,18 @@ while ($a = $q2->fetch_assoc()) {
 
 }
 
-while($value = $q->fetch_assoc()){
+while($value = $q->fetch_assoc()){ // <<-- จาก log_opcardchk
 
     $hn = $value['log_hn'];
-    $item = $items[$hn];
+    $item = $items[$hn];//<<--- จาก opacc
+
+    $time = substr($item['date'],11,5);
 
     ?>
     <tr bgcolor="F5DEB3">
         <td><?=$i;?></td>
-        <td>10:00</td>
+        <!-- <td>10:00</td> -->
+        <td><?=$time;?></td>
         <td><?=$hn;?></td>
         <td><?=$value['log_ptname'];?></td>
         <td><?=$item['detail'];?></td>

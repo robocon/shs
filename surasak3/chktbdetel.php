@@ -6,14 +6,14 @@ $ex_code = urldecode($_GET["toborow"]);
 $sql = "Select hn, ptname, idcard, ptright From opday where thidate like '".$_GET["today"]."%' AND toborow = '".$ex_code."' ";
 $result = Mysql_Query($sql);
 ?>
-<a target=_self  href='../nindex.htm'>&lt;&lt;ไปเมนู</a>
+<a target=_self  href='../nindex.htm'>&lt;&lt;เนเธเน€เธกเธเธน</a>
 <TABLE>
 <TR align="center" bgcolor=6495ED>
 	<TD><font face='Angsana New'>No.</font></TD>
 	<TD><font face='Angsana New'>HN</font></TD>
-	<TD><font face='Angsana New'>ชื่อ</font></TD>
+	<TD><font face='Angsana New'>เธเธทเนเธญ</font></TD>
 	<TD><font face='Angsana New'>ID</font></TD>
-	<TD><font face='Angsana New'>สิทธิ์</font></TD>
+	<TD><font face='Angsana New'>เธชเธดเธ—เธเธดเน</font></TD>
 </TR>
 
 <?php

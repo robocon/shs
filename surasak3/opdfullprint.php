@@ -26,9 +26,9 @@ function calcage($birth){
 	}
 
 	if ($ageM==0){
-		$pAge="$ageY ��";
+		$pAge="$ageY ปี";
 	}else{
-		$pAge="$ageY �� $ageM ��͹";
+		$pAge="$ageY ปี $ageM เดือน";
 	}
 
 return $pAge;
@@ -77,7 +77,7 @@ return $pAge;
   <table width="1143" border="0">
     <tr>
       <td width="132" rowspan="3"><div align="right"><img src="images/logoopdcardfull.jpg" width="128" height="128" /></div></td>
-      <td width="535"><div align="center" class="style14">�ç��Һ�Ť�������ѡ��������</div></td>
+      <td width="535"><div align="center" class="style14">โรงพยาบาลค่ายสุรศักดิ์มนตรี</div></td>
       <td width="462" rowspan="3">
         <div align="center">
           <table width="300" border="1">
@@ -89,10 +89,10 @@ return $pAge;
                     </table>
         </div></td></tr>
     <tr>
-      <td><div align="center" class="style18">���.32 �.�ӻҧ �� (054)839305 </div></td>
+      <td><div align="center" class="style18">มทบ.32 จ.ลำปาง โทร (054)839305 </div></td>
     </tr>
     <tr>
-      <td><div align="center" class="style18">�Ǫ����¹ / <font style="font-size: 18px;">MEDICAL RECORD </font></div></td>
+      <td><div align="center" class="style18">เวชระเบียน / <font style="font-size: 18px;">MEDICAL RECORD </font></div></td>
     </tr>
   </table>
 </div>
@@ -101,16 +101,16 @@ return $pAge;
     <td width="1141" class="style13">
   <table width="1141" border="1" cellspacing="0">
   <tr>
-    <td colspan="4" class="style9"  style="border-right-style:none; border-left-style:none"><strong>�Ţ���ѵû�ЪҪ�</strong><span class="style13" style="border-right-style:none; border-left-style:none">
+    <td colspan="4" class="style9"  style="border-right-style:none; border-left-style:none"><strong>เลขที่บัตรประชาชน</strong><span class="style13" style="border-right-style:none; border-left-style:none">
       <strong><?=$show['idcard'];?>
    </strong> </span></td>
-    <td width="174" class="style9" style="border-right-style:none; border-left-style:none"><strong>�ѹŧ����¹</strong></td>
+    <td width="174" class="style9" style="border-right-style:none; border-left-style:none"><strong>วันลงทะเบียน</strong></td>
     <td colspan="3" class="style9" style="border-right-style:none; border-left-style:none"><div align="center">
       <?=$show['regisdate'];?>
     </div></td>
   </tr>
   <tr>
-    <td width="157" height="67" class="style9"style="border-right-style:none; border-left-style:none; border-bottom-style:none; "><strong>����-ʡ��</strong></td>
+    <td width="157" height="67" class="style9"style="border-right-style:none; border-left-style:none; border-bottom-style:none; "><strong>ชื่อ-สกุล</strong></td>
     <td colspan="5" class="style9"style="border-right-style:none; border-left-style:none; border-bottom-style:none"><strong><font style="font-size: 16px;"><?=$show['yot'];?>
       <?=$show['name'];?>    
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?=$show['surname'];?>
@@ -119,118 +119,118 @@ return $pAge;
     <td width="95" class="style11"><strong>XN</strong></td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�ѹ ��͹ ���Դ</strong></td>
-    <td width="141" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><? $a1 = array( "","���Ҥ�", "����Ҿѹ��", "�չҤ�", "����¹", "����Ҥ�", "�Զع�¹", "�á�Ҥ�", "�ԧ�Ҥ�", "�ѹ��¹", "���Ҥ�", "��Ȩԡ�¹", "�ѹ�Ҥ�" );?> <?=substr($show['dbirth'],8,2)."&nbsp;".$a1[substr($show['dbirth'],5,2)+0]."&nbsp;".substr($show['dbirth'],0,4);?></td>
-    <td width="160" class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>��</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>วัน เดือน ปีเกิด</strong></td>
+    <td width="141" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><? $a1 = array( "","มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม" );?> <?=substr($show['dbirth'],8,2)."&nbsp;".$a1[substr($show['dbirth'],5,2)+0]."&nbsp;".substr($show['dbirth'],0,4);?></td>
+    <td width="160" class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>เพศ</strong></td>
  <td width="107" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none">
- <? if($show['sex'] != "�") { echo "���";  }else{   echo "˭ԧ"; } ?> </td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>����</strong></td>
+ <? if($show['sex'] != "ญ") { echo "ชาย";  }else{   echo "หญิง"; } ?> </td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>อายุ</strong></td>
     <td width="177" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=calcage($show['dbirth'])?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>��ʹ�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>ศาสนา</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['religion'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>���ͪҵ�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>เชื้อชาติ</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['race'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�ѭ�ҵ�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>สัญชาติ</strong></td>
     <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['nation'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�Դ�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>บิดา</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['father'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>��ô�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>มารดา</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['mother'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�������</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>คู่สมรส</strong></td>
     <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['couple'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�Ҫվ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>อาชีพ</strong></td>
     <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><span class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><span class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['career'];?>
     </span></span></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>����֡��</strong></td>
-    <td colspan="3" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><? if($show['education'] ==0) { echo"������֡��/������زԡ���֡��"; } elseif   ($show['education'] ==1)  { echo "��͹��ж��֡��" ; } elseif  ($show['education'] ==2) { echo "��ж��֡��" ;} elseif ($show['education'] ==3) { echo "�Ѹ���֡��"; } elseif($show['education'] ==4) { echo "͹ػ�ԭ��"; } elseif($show['education'] ==5) { echo "��ԭ�ҵ��"; } elseif($show['education'] ==6) { echo "�٧���һ�ԭ�ҵ��";} else { echo "����к�/����Һ";}?></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>การศึกษา</strong></td>
+    <td colspan="3" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><? if($show['education'] ==0) { echo"ไม่ได้ศึกษา/ไม่มีวุฒิการศึกษา"; } elseif   ($show['education'] ==1)  { echo "ก่อนประถมศึกษา" ; } elseif  ($show['education'] ==2) { echo "ประถมศึกษา" ;} elseif ($show['education'] ==3) { echo "มัธยมศึกษา"; } elseif($show['education'] ==4) { echo "อนุปริญญา"; } elseif($show['education'] ==5) { echo "ปริญญาตรี"; } elseif($show['education'] ==6) { echo "สูงกว่าปริญญาตรี";} else { echo "ไม่ระบุ/ไม่ทราบ";}?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�������Ѩ�غѹ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>ที่อยู่ปัจจุบัน</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['address'];?> &nbsp;</td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�Ӻ�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>ตำบล</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['tambol'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�����</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>อำเภอ</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['ampur'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�ѧ��Ѵ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>จังหวัด</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['changwat'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong><span class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none">���Ѿ�</span>�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong><span class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none">โทรศัพท</span>์</strong></td>
     <td colspan="3" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['phone'];?>&nbsp;</td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>���ͼ��Դ���</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>ชื่อผู้ติดต่อ</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['ptf'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>����Ǣ�ͧ��</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>เกี่ยวข้องเป็น</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['ptfadd'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>���Ѿ����Դ���</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>โทรศัพท์ผู้ติดต่อ</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['ptffone'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none"><strong>�Է�ԡ���ѡ��</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none"><strong>สิทธิการรักษา</strong></td>
     <td colspan="5" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none"><?=$show['ptright'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>������</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>ประเภท</strong></td>
     <td colspan="5" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['goup'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�ѧ�Ѵ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>สังกัด</strong></td>
     <td colspan="5" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['camp'];?>&nbsp;</td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�ԡ�ҡ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>เบิกจาก</strong></td>
     <td colspan="5" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['ptfmon'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>˹��§ҹ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>หน่วยงาน</strong></td>
     <td colspan="5" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['guardian'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td colspan="6" class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; font-weight: bold;">*�����˵�</td>
+    <td colspan="6" class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; font-weight: bold;">*หมายเหตุ</td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�������ʹ</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>กรุ๊ปเลือด</strong></td>
     <td class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['blood'];?></td>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>����</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>แพ้ยา</strong></td>
     <td colspan="3" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['drugreact'];?></td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>
   </tr>
   <tr>
-    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>�����˵�</strong></td>
+    <td class="style9" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><strong>หมายเหตุ</strong></td>
     <td colspan="5" class="style13" style="border-right-style:none; border-left-style:none; border-bottom-style:none; border-top-style:none"><?=$show['idguard2'];?> </td>
     <td class="style9">&nbsp;</td>
     <td class="style9">&nbsp;</td>

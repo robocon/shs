@@ -43,7 +43,7 @@ $cbedname = rawurldecode($_GET['cbedname']);
 ?>
 </style>
 <body>
-<table width="50%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#000000" >
+<!-- <table width="50%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#000000" >
   <tr>
     <td colspan="2" align="center">เลือกรูปแบบ Sticker ติดเอกสาร</td>
   </tr>
@@ -52,10 +52,10 @@ $cbedname = rawurldecode($_GET['cbedname']);
     <td align="center"><a href="ipbed1a2.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>" class="thumbnail">แบบที่ 2<span><img src="images/stk2.JPG" /  title="ตัวอย่าง"><br /> ตัวอย่างรูปแบบ 2</span></a></td>
   </tr>
 </table>
-<br>
+<br> -->
 <table width="50%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#000000" >
   <tr>
-    <td colspan="2" align="center">กรณีที่ปริ้นแบบ PDF ด้านบนไม่ได้</td>
+    <td colspan="2" align="center">เลือกรูปแบบ Sticker ติดเอกสาร</td>
   </tr>
   <tr>
     <td align="center"><a href="ipbed1a_basic.php?cAn=<?=$cAn;?>&cbedname=<?=$cbedname;?>&type_sticker=1" target="_blank">แบบที่ 1</a></td>

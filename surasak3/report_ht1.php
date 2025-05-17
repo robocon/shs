@@ -4,6 +4,7 @@ require_once 'class_file/ReportHt.php';
 
 // รูปแบบไทย
 $year = sprintf("%s", $_GET['year']);
+$month = sprintf("%s", $_GET['month']);
 $all = sprintf("%s", $_GET['all']);
 $ht = sprintf("%s", $_GET['ht']);
 /*
@@ -44,12 +45,22 @@ $ht = sprintf("%s", $_GET['ht']);
 </head>
 <body>
     <div class="container mt-4">
-        <h3>ตัวชี้วัด Hypertension รายปี</h3>
+        <?php 
+        $header = 'ตัวชี้วัด Hypertension รายปี';
+        if(!empty($month)){
+            $header = 'ตัวชี้วัด Hypertension เดือน '.$def_fullm_th[$month];
+        }
+        ?>
+        <h3><?=$header;?></h3>
         <h5>1.&#41; ร้อยละประชากรอายุ 35 ปีขึ้นไป ที่ได้รับการตรวจคัดกรองความดันโลหิตสูง</h5>
 
         <?php
         $ht = new ReportHt();
-        $yearSelected = $year+543;
+        if(empty($month)){
+            $yearSelected = $year+543;
+        }else{
+            $yearSelected = ($year+543).'-'.$month;
+        }
 
         // สร้าง temporary table ระหว่าง opd กับ diag
         $ht->generateTempOpdXDiag($yearSelected);

@@ -5,7 +5,7 @@
 }
 </style>
 <?php
-print "<h1 class='font1'>หนังสือ ยา เวชภัณฑ์ ของโรงพยาบาล&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-print "<input type=button onclick='history.back()' value='<<< สารบัญ'  class='font1'>";
-//print "..........<<< <a target=_top  href='../nindex.htm'>ไปเมนู</a>";
+print "<h1 class='font1'>::PHAR- เธเธฑเธเธเธตเธขเธฒเน€เธงเธเธ เธฑเธ“เธ‘เน&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "<input type=button onclick='history.back()' value='เธขเนเธญเธเธเธฅเธฑเธ'  class='font1'>";
+//print "..........<<< <a target=_top  href='../nindex.htm'>๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ๏ฟฝ</a>";
 ?>

@@ -1,4 +1,4 @@
-<?php
+Ôªø<?php
 session_start();
 include("connect.inc");
 $_POST["start_year"]="$start_year";
@@ -12,7 +12,7 @@ $_POST["end_day"]="$end_day";
 //$date2 ="$date-$rptmo-$thiyr";
 $date1 ="$start_year-$start_month";
 $date3 ="$start_month-$start_year";
-$sql = "Select  a.depart, sum(a.paidcscd),sum(a.price) From opacc as a where a.date LIKE '$date1%'  AND a.credit ='30∫“∑' group by  a.depart   ORDER by a.date";
+$sql = "Select  a.depart, sum(a.paidcscd),sum(a.price) From opacc as a where a.date LIKE '$date1%'  AND a.credit ='30‡∏ö‡∏≤‡∏ó' group by  a.depart   ORDER by a.date";
 
 $result = mysql_Query($sql) or die(mysql_error());
  //$count =mysql_num_rows($result);
@@ -81,7 +81,7 @@ include("connect.inc");
   For ($i = 0;$i<=$nNum;$i++){
     $cNo   = Substr($cLtnum,$count,1);
      $count++;
-//ÕË“πÀ≈—°
+//‡∏≠‡πà‡∏≤‡∏ô‡∏´‡∏•‡∏±‡∏Å
     IF ($cNo <>0 and $cNo != "-"){
       If ($nUnit <> 1){  
 
@@ -98,13 +98,13 @@ include("connect.inc");
                continue;
          }
 
-        $cVarU = $row->fld4;  //ÕË“πÀ≈—°
+        $cVarU = $row->fld4;  //‡∏≠‡πà‡∏≤‡∏ô‡∏´‡∏•‡∏±‡∏Å
                 }
       Else {
         $cVarU = "";
               }
 
-//ÕË“π‡≈¢
+//‡∏≠‡πà‡∏≤‡∏ô‡πÄ‡∏•‡∏Ç
           $query = "SELECT * FROM thaibaht WHERE fld1 = '$cNo' limit 1 ";
           $result = mysql_query($query) or die("Query 2 failed");
 
@@ -118,14 +118,14 @@ include("connect.inc");
                continue;
          }
 
-      $cVar1 = $row->fld2; //ÕË“πµ—«‡≈¢
+      $cVar1 = $row->fld2; //‡∏≠‡πà‡∏≤‡∏ô‡∏ï‡∏±‡∏ß‡πÄ‡∏•‡∏Ç
 ///           
 if ($nUnit =='2' && $cNo =='2'):
-   $cVar1 = "¬’Ë";
+   $cVar1 = "‡∏¢‡∏µ‡πà";
 elseif ($nUnit == '2' && $cNo=='1'):
     $cVar1 =  "";
 elseif ($nUnit =='1' && $cNo =='1' && $nNum <> 1 ):
-    $cVar1 = "‡ÕÁ¥";
+    $cVar1 = "‡πÄ‡∏≠‡πá‡∏î";
 else:
    echo "";
 endif; 
@@ -135,7 +135,7 @@ endif;
       $nUnit--;
             }
 if($until =="T")
-	$cRead = $cRead."∫“∑";
+	$cRead = $cRead."‡∏ö‡∏≤‡∏ó";
 	}
 ////Stang////  
   IF ($cRtnum <> "00"){
@@ -162,20 +162,20 @@ if($until =="T")
          $cVar1 = $row->fld2 ;
          /////
          If ($nUnit == '2' && $cNo == '2'){
-            $cVar1 = "¬’Ë";
+            $cVar1 = "‡∏¢‡∏µ‡πà";
             }
          if ($nUnit == '2' && $cNo == '1'){
             $cVar1 = "" ;
              }   
          if ($nUnit == '1' && $cNo =='1'){
-              $cVar1 = "‡ÕÁ¥";
+              $cVar1 = "‡πÄ‡∏≠‡πá‡∏î";
             }            
          If (Substr($cRtnum,0,1) == '0' && $cNo == '1'){
-            $cVar1 = "Àπ÷Ëß";
+            $cVar1 = "‡∏´‡∏ô‡∏∂‡πà‡∏á";
             }
          ///////
          If ($nUnit != '1'){ 
-           $cRead = $cRead.$cVar1." ‘∫";
+           $cRead = $cRead.$cVar1."‡∏™‡∏¥‡∏ö";
                  }
          Else{
            $cRead = $cRead.$cVar1;
@@ -184,11 +184,11 @@ if($until =="T")
          $nUnit--;
              }
 	if($until =="T")
-    $cRead = $cRead." µ“ß§Ï**"  ;
+    $cRead = $cRead."‡∏™‡∏ï‡∏≤‡∏á‡∏Ñ‡πå**"  ;
 	}    
     else{
 		if($until =="T")
-           $cRead = $cRead."∂È«π**" ;
+           $cRead = $cRead."‡∏ñ‡πâ‡∏ß‡∏ô**" ;
            }  
     include("connect.inc");
 
@@ -211,7 +211,7 @@ $sum=number_format($sum,2,".","");
 
 if(strlen($sum) > 10){
 
-	$cbaht="** ‘∫".baht(substr($sum,-10),"T");
+	$cbaht="**‡∏™‡∏¥‡∏ö".baht(substr($sum,-10),"T");
 }else{
 	$cbaht="**".baht($sum,"T");
 }
@@ -223,23 +223,23 @@ $sum=number_format($sum,2);
 
 
 /*
-echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>√«¡∑—ÈßÀ¡¥</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$NID."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
+echo "<tr><b><td>&nbsp;</td><td>&nbsp;</td><td><b><font face='Angsana New' size ='2'><center>‡∏£‡∏ß‡∏°‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</td><td>&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>".$NID."</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
 
 echo "</table>";
 
 
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
 			*/
-echo "<font face='Angsana New' size ='5'><br><br><center> <b> √ÿª≈Ÿ°Àπ’ÈÀ≈—°ª√–°—π ÿ¢¿“æª√–®”‡¥◊Õπ &nbsp;$date3 <br></b> ";
-echo "<font face='Angsana New' size ='5'> ‚√ßæ¬“∫“≈§Ë“¬ ÿ√»—°¥‘Ï¡πµ√’ ≈”ª“ß <br>";
+echo "<font face='Angsana New' size ='5'><br><br><center> <b>‡∏™‡∏£‡∏∏‡∏õ‡∏•‡∏π‡∏Å‡∏´‡∏ô‡∏µ‡πâ‡∏´‡∏•‡∏±‡∏Å‡∏õ‡∏£‡∏∞‡∏Å‡∏±‡∏ô‡∏™‡∏∏‡∏Ç‡∏†‡∏≤‡∏û‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡πÄ‡∏î‡∏∑‡∏≠‡∏ô &nbsp;$date3 <br></b> ";
+echo "<font face='Angsana New' size ='5'> ‡πÇ‡∏£‡∏á‡∏û‡∏¢‡∏≤‡∏ö‡∏≤‡∏•‡∏Ñ‡πà‡∏≤‡∏¢‡∏™‡∏∏‡∏£‡∏®‡∏±‡∏Å‡∏î‡∏¥‡πå‡∏°‡∏ô‡∏ï‡∏£‡∏µ ‡∏•‡∏≥‡∏õ‡∏≤‡∏á <br>";
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("G:i:s");
-echo "<font face='Angsana New' size ='4'> √“¬ß“π‡¡◊ËÕ«—π∑’Ë  $Thaidate </center>";
-//echo "<font face='Angsana New' size ='4'>®”π«π &nbsp;$count &nbsp;·∂« </center>";
+echo "<font face='Angsana New' size ='4'> ‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà  $Thaidate </center>";
+//echo "<font face='Angsana New' size ='4'>‡∏à‡∏≥‡∏ô‡∏ß‡∏ô &nbsp;$count &nbsp;‡πÅ‡∏ñ‡∏ß </center>";
 
 echo "<table  border ='1'  align='center' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";
-echo "<tr><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡¥◊Õπ&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;¬“&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;æ¬“∏‘&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡Õ°‡√¬Ï&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;∑—πµ°√√¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;°“¬¿“æ&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;∫√‘°“√&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;ºË“µ—¥&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;Ω—ß‡¢Á¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‰µ‡∑’¬¡&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;µ√«®Õ◊ËπÊ&nbsp;&nbsp;</td><td>&nbsp;&nbsp;***&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;√«¡&nbsp;&nbsp;</td></tr>";
+echo "<tr><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÄ‡∏î‡∏∑‡∏≠‡∏ô&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;‡∏¢‡∏≤&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏û‡∏¢‡∏≤‡∏ò‡∏¥&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÄ‡∏≠‡∏Å‡πÄ‡∏£‡∏¢‡πå&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ó‡∏±‡∏ô‡∏ï‡∏Å‡∏£‡∏£‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏Å‡∏≤‡∏¢‡∏†‡∏≤‡∏û&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ú‡πà‡∏≤‡∏ï‡∏±‡∏î&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡∏ù‡∏±‡∏á‡πÄ‡∏Ç‡πá‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b>&nbsp;&nbsp;‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°&nbsp;&nbsp;&nbsp;</td><td><font face='Angsana New' size ='2'><center> <b><center> <b>&nbsp;&nbsp;‡∏ï‡∏£‡∏ß‡∏à‡∏≠‡∏∑‡πà‡∏ô‡πÜ&nbsp;&nbsp;</td><td>&nbsp;&nbsp;***&nbsp;&nbsp;</td><td><center> <b>&nbsp;&nbsp;‡∏£‡∏ß‡∏°&nbsp;&nbsp;</td></tr>";
 
-echo "<tr><td><b><font face='Angsana New' size ='3'>&nbsp;&nbsp;$date3&nbsp; </td><td><b><font face='Angsana New' size ='2'><center>√«¡∑—ÈßÀ¡¥</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$NID."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$HEMO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
+echo "<tr><td><b><font face='Angsana New' size ='3'>&nbsp;&nbsp;$date3&nbsp; </td><td><b><font face='Angsana New' size ='2'><center>‡∏£‡∏ß‡∏°‡∏ó‡∏±‡πâ‡∏á‡∏´‡∏°‡∏î</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHAR."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PATHO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$XRAY."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$DENTA."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$PHYSI."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$EMER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$SURG."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$NID."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$HEMO."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='2'><b>&nbsp;&nbsp;".$OTHER2."&nbsp;&nbsp;</td><td align='right'><font face='Angsana New' size ='3'><b>&nbsp;&nbsp;".$sum."&nbsp;&nbsp;</td></b></tr></FONT>";
 echo "</table>";
 
 print "<div align='left'>";
@@ -272,7 +272,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='50%'></td>";
-print "      <td width='50%'><center><font face='Angsana New'>ºŸÈµ√«® Õ∫</font></td>";
+print "      <td width='50%'><center><font face='Angsana New'>‡∏ú‡∏π‡πâ‡∏ï‡∏£‡∏ß‡∏à‡∏™‡∏≠‡∏ö</font></td>";
 print "    </tr>";
 print "  </table>";
 print "<div align='left'>";
@@ -301,7 +301,7 @@ print "<div align='left'>";
 print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
 print "    <tr>";
 print "      <td width='50%'></td>";
-print "      <td width='50%'><center><font face='Angsana New'>ºŸÈ∫—π∑÷°</font></td>";
+print "      <td width='50%'><center><font face='Angsana New'>‡∏ú‡∏π‡πâ‡∏ö‡∏±‡∏ô‡∏ó‡∏∂‡∏Å</font></td>";
 print "    </tr>";
 print "  </table>";
 print "<div align='left'>";
@@ -317,7 +317,7 @@ $list = array();
 $title_date = $start_day."-".$start_month."-".$start_year;
 $date1 ="$start_year-$start_month";
 
-$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price) From opacc as a where  a.date LIKE '$date1%'   AND a.credit ='30∫“∑' group by date2, a.depart   ORDER by date";
+$sql = "Select date_format( a.date, '%d-%m-%Y' ) AS date2, a.depart, sum(a.paidcscd), sum(a.price) From opacc as a where  a.date LIKE '$date1%'   AND a.credit ='30‡∏ö‡∏≤‡∏ó' group by date2, a.depart   ORDER by date";
 $result = Mysql_Query($sql) or die(Mysql_Error());
 
 while(list($date, $depart, $paidcscd,$price) = Mysql_fetch_row($result)){
@@ -339,25 +339,25 @@ $row='0';
 	
 }
 
-echo "<BR><CENTER>√“¬≈–‡Õ’¬¥≈Ÿ°Àπ’Èª√–®”«—π<BR>";
+echo "<BR><CENTER>‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î‡∏•‡∏π‡∏Å‡∏´‡∏ô‡∏µ‡πâ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ß‡∏±‡∏ô<BR>";
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("G:i:s");
-echo "<font face='Angsana New' size ='2'> √“¬ß“π‡¡◊ËÕ«—π∑’Ë  $Thaidate </center></font>";
+echo "<font face='Angsana New' size ='2'> ‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà  $Thaidate </center></font>";
 echo "<table width='90%' align='center' border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>
 				<tr align='center'>
-				<td>«—π∑’Ë</td>
+				<td>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</td>
 				<td>&nbsp;</td>
-				<td>¬“</td>
-				<td>æ¬“∏‘</td>
-				<td>‡Õ°‡√¬Ï</td>
-				<td>∑—πµ°√√¡</td>
-				<td>°“¬¿“æ</td>
-				<td>∫√‘°“√</td>
-				<td>ºË“µ—¥</td>
-				<td>Ω—ß‡¢Á¡</td>
-				<td>‰µ‡∑’¬¡</td>
-				<td>µ√«®Õ◊ËπÊ</td>
+				<td>‡∏¢‡∏≤</td>
+				<td>‡∏û‡∏¢‡∏≤‡∏ò‡∏¥</td>
+				<td>‡πÄ‡∏≠‡∏Å‡πÄ‡∏£‡∏¢‡πå</td>
+				<td>‡∏ó‡∏±‡∏ô‡∏ï‡∏Å‡∏£‡∏£‡∏°</td>
+				<td>‡∏Å‡∏≤‡∏¢‡∏†‡∏≤‡∏û</td>
+				<td>‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£</td>
+				<td>‡∏ú‡πà‡∏≤‡∏ï‡∏±‡∏î</td>
+				<td>‡∏ù‡∏±‡∏á‡πÄ‡∏Ç‡πá‡∏°</td>
+				<td>‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°</td>
+				<td>‡∏ï‡∏£‡∏ß‡∏à‡∏≠‡∏∑‡πà‡∏ô‡πÜ</td>
 				<td>***</td>
-				<td>√«¡</td>
+				<td>‡∏£‡∏ß‡∏°</td>
 				</tr>
 					";
 $sum = 0;
@@ -366,7 +366,7 @@ foreach($list as $key => $value){
 $row++;
 	echo "<tr align=\"right\">
 					<td>".$key."</td>
-					<td>√«¡µËÕ«—π</td>
+					<td>‡∏£‡∏ß‡∏°‡∏ï‡πà‡∏≠‡∏ß‡∏±‡∏ô</td>
 					<td>".number_format($list[$key]['PHAR'],2)."</td>
 					<td>".number_format($list[$key]['PATHO'],2)."</td>
 					<td>".number_format($list[$key]['XRAY'],2)."</td>
@@ -385,25 +385,25 @@ $row++;
 if($row == '15'){
 		echo "</table>";
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
-echo "<BR><CENTER>√“¬≈–‡Õ’¬¥≈Ÿ°Àπ’Èª√–®”«—π<BR></font>";
+echo "<BR><CENTER>‡∏£‡∏≤‡∏¢‡∏•‡∏∞‡πÄ‡∏≠‡∏µ‡∏¢‡∏î‡∏•‡∏π‡∏Å‡∏´‡∏ô‡∏µ‡πâ‡∏õ‡∏£‡∏∞‡∏à‡∏≥‡∏ß‡∏±‡∏ô<BR></font>";
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("G:i:s");
-echo "<font face='Angsana New' size ='2'> √“¬ß“π‡¡◊ËÕ«—π∑’Ë  $Thaidate </center>";
+echo "<font face='Angsana New' size ='2'> ‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà  $Thaidate </center>";
 echo "<table width='90%' align='center' border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>
 				<tr align='center'>
-				<td>«—π∑’Ë</td>
+				<td>‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà</td>
 				<td>&nbsp;</td>
-				<td>¬“</td>
-				<td>æ¬“∏‘</td>
-				<td>‡Õ°‡√¬Ï</td>
-				<td>∑—πµ°√√¡</td>
-				<td>°“¬¿“æ</td>
-				<td>∫√‘°“√</td>
-				<td>ºË“µ—¥</td>
-				<td>Ω—ß‡¢Á¡</td>
-				<td>‰µ‡∑’¬¡</td>
-				<td>µ√«®Õ◊ËπÊ</td>
+				<td>‡∏¢‡∏≤</td>
+				<td>‡∏û‡∏¢‡∏≤‡∏ò‡∏¥</td>
+				<td>‡πÄ‡∏≠‡∏Å‡πÄ‡∏£‡∏¢‡πå</td>
+				<td>‡∏ó‡∏±‡∏ô‡∏ï‡∏Å‡∏£‡∏£‡∏°</td>
+				<td>‡∏Å‡∏≤‡∏¢‡∏†‡∏≤‡∏û</td>
+				<td>‡∏ö‡∏£‡∏¥‡∏Å‡∏≤‡∏£</td>
+				<td>‡∏ú‡πà‡∏≤‡∏ï‡∏±‡∏î</td>
+				<td>‡∏ù‡∏±‡∏á‡πÄ‡∏Ç‡πá‡∏°</td>
+				<td>‡πÑ‡∏ï‡πÄ‡∏ó‡∏µ‡∏¢‡∏°</td>
+				<td>‡∏ï‡∏£‡∏ß‡∏à‡∏≠‡∏∑‡πà‡∏ô‡πÜ</td>
 				<td>***</td>
-				<td>√«¡</td>
+				<td>‡∏£‡∏ß‡∏°</td>
 				</tr>
 					";
 
@@ -417,7 +417,7 @@ $sum = $sum + ($list[$key]['PHAR']+$list[$key]['PATHO']+$list[$key]['XRAY']+$lis
 }
 
 echo "<tr align=\"right\">
-					<td colspan=\"13\" align='center'>√«¡</td>
+					<td colspan=\"13\" align='center'>‡∏£‡∏ß‡∏°</td>
 					<td><B>".(number_format($sum,2))."</B></td>
 				</tr>";
 

@@ -1,8 +1,6 @@
 <?php
-require("fpdf/fpdf.php");
-require("fpdf/pdf.php");
-
-include("connect.php");
+include 'fpdf_thai/fpdf_thai.php';
+include 'includes/connect.php';
 // For testing direct to this file 
 // http://192.168.131.250/sm3/surasak3/hd_stiker_lab.php?hn=59-5796&p1=y&p2=y
 // replace hn from table: labdepart
@@ -11,20 +9,21 @@ $d = date("d");
 $m = date("m");
 $y = date("Y")+543;
 
+function toTIS620($t){
+	return iconv('UTF-8','TIS-620',$t);
+}
 
-$sql = "Select yot, name, surname, ptright From opcard where hn = '".$_GET["hn"]."' limit 1 ";
+$sql = "Select yot, name, surname, ptright From opcard where hn = '".$_GET["hn"]."'";
 $result = Mysql_Query($sql);
 list($yot, $name, $surname, $ptright) = Mysql_fetch_row($result);
 $ptname = $yot." ".$name." ".$surname;
 $hn = $_GET["hn"];
 
 $sql = "Select row_id, doctor, price , sumnprice  From labdepart  where hn ='".$_GET["hn"]."' AND date like '".$y."-".$m."-".$d."%' AND depart = 'PATHO' AND price > 0 Order by row_id DESC limit 1 ";
-
 $result = Mysql_Query($sql);
 $rows = Mysql_num_rows($result);
-
 if($rows <=0 ){
-	echo "<CENTER>ขออภัยผู้ป่วยไม่มีรายการตรวจ Lab วันนี้</CENTER>";
+	echo "<CENTER>เธเธญเธญเธ เธฑเธขเธเธนเนเธเนเธงเธขเนเธกเนเธกเธตเธฃเธฒเธขเธเธฒเธฃเธ•เธฃเธงเธ Lab เธงเธฑเธเธเธตเน</CENTER>";
 	exit();
 }
 list($rowid, $doctor, $price , $sumnprice) = Mysql_fetch_row($result);
@@ -69,45 +68,48 @@ if($count2>18){
 	$txt_text1 = implode(", ",$text1);
 }
 
-include("unconnect.php");
-
 if(isset($_GET["land"])){
 	$ll = "L";
 }else{
 	$ll = "P";
 }
-$pdf = new PDF($ll,'mm',array( 80,50 ));
-$pdf->SetThaiFont();
+
+$pdf = new FPDF("L",'mm',array( 80,50 ));
+$pdf->AddFont('AngsanaNew','','angsa.php');
+$pdf->AddFont('AngsanaNew','B','angsab.php');
+$pdf->SetAutoPageBreak(true,0);
+$pdf->SetMargins(0, 0);
+$pdf->SetFont('AngsanaNew', '', 12);
 $pdf->SetAutoPageBreak(false,0);
 $pdf->SetMargins(0, 0);
 
 if(isset($_GET["p1"])){
-$pdf->AddPage();
+	$pdf->AddPage();
 
-$pdf->SetFont('AngsanaNew', '', 12);
+	$pdf->SetFont('AngsanaNew', '', 12);
 
-$pdf->Cell(0,3,"",0);
-$pdf->Ln();
-$pdf->Cell(0,5,"Lab ผู้ป่วยใน ".$d."-".$m."-".$y." ".date("H:i:s")." ",0,0,'C');
-$pdf->Ln();
-$pdf->SetFont('AngsanaNew', '', 14);
-$pdf->Cell(0,5, iconv('UTF8', 'TIS620', $ptname)." Hn ".$hn,0,0,'C');
-$pdf->Ln();
-$pdf->SetFont('AngsanaNew', '', 13);
-$pdf->Cell(0,5,"แพทย์ ".iconv('UTF8', 'TIS620', $doctor),0,0,'C');
-$pdf->Ln();
+	$pdf->Cell(0,3,"",0);
+	$pdf->Ln();
+	$pdf->Cell(0,5,toTIS620("Lab เธเธนเนเธเนเธงเธขเนเธ ").$d."-".$m."-".$y." ".date("H:i:s")." ",0,0,'C');
+	$pdf->Ln();
+	$pdf->SetFont('AngsanaNew', '', 14);
+	$pdf->Cell(0,5, toTIS620($ptname)." Hn ".$hn,0,0,'C');
+	$pdf->Ln();
+	$pdf->SetFont('AngsanaNew', '', 13);
+	$pdf->Cell(0,5,toTIS620("เนเธเธ—เธขเน ".$doctor),0,0,'C');
+	$pdf->Ln();
 
-$pdf->Cell(0,5,"สิทธิ์ ".iconv('UTF8', 'TIS620', $ptright),0,0,'C');
-$pdf->Ln();
-$pdf->SetFont('AngsanaNew', '', 12);
-$pdf->Cell(0,5,"ยื่นที่ห้อง Lab",0,0,'C');
-$pdf->Ln();
+	$pdf->Cell(0,5,toTIS620("เธชเธดเธ—เธเธดเน ".$ptright),0,0,'C');
+	$pdf->Ln();
+	$pdf->SetFont('AngsanaNew', '', 12);
+	$pdf->Cell(0,5,toTIS620("เธขเธทเนเธเธ—เธตเนเธซเนเธญเธ Lab"),0,0,'C');
+	$pdf->Ln();
 
-$pdf->Cell(0,5,"ราคา ".$price." บาท เบิกไม่ได้ ".$sumnprice." บาท",0,0,'C');
-$pdf->Ln();
+	$pdf->Cell(0,5,toTIS620("เธฃเธฒเธเธฒ ".$price." เธเธฒเธ— เน€เธเธดเธเนเธกเนเนเธ”เน ".$sumnprice." เธเธฒเธ—"),0,0,'C');
+	$pdf->Ln();
 
-$pdf->Cell(0,5,"Lab : ".$txt_list_lab,0,0,'C');
-$pdf->Ln();
+	$pdf->Cell(0,5,"Lab : ".$txt_list_lab,0,0,'C');
+	$pdf->Ln();
 
 }
 
@@ -117,9 +119,9 @@ $pdf->AddPage();
 $pdf->SetFont('AngsanaNew', '', 12);
 
 
-$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."  Hn: ".$hn,0);
+$pdf->Cell(25,5,toTIS620("เธงเธฑเธเธ—เธตเน ".$d."-".$m."-".$y."  Hn: ".$hn),0);
 $pdf->Ln();
-$pdf->Cell(20,5,"ชื่อ: ".iconv('UTF8', 'TIS620', $ptname),0); 
+$pdf->Cell(20,5,toTIS620("เธเธทเนเธญ: ".$ptname),0); 
 $pdf->Ln();
 $pdf->Cell(0,4,"Lab:".$txt_text1,0); 
 $pdf->Ln();
@@ -139,9 +141,9 @@ $pdf->Ln();
 $pdf->Cell(0,1,"",0);
 $pdf->Ln();
 
-$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."  Hn: ".$hn,0);
+$pdf->Cell(25,5,toTIS620("เธงเธฑเธเธ—เธตเน ".$d."-".$m."-".$y."  Hn: ".$hn),0);
 $pdf->Ln();
-$pdf->Cell(20,5,"ชื่อ: ".iconv('UTF8', 'TIS620', $ptname),0); 
+$pdf->Cell(20,5,toTIS620("เธเธทเนเธญ: ".$ptname),0); 
 $pdf->Ln();
 $pdf->Cell(0,4,"Lab:".$txt_text1,0); 
 $pdf->Ln();

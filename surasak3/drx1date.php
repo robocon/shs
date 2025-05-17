@@ -1,4 +1,4 @@
-<?php
+﻿<?php
     $today = date("d-m-Y");   
     $d=substr($today,0,2);
     $m=substr($today,3,2);

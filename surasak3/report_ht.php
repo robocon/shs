@@ -24,15 +24,22 @@ $action = sprintf("%s", $_GET['action']);
 if($action==='create_report'){
 
     $year = sprintf("%s", $_GET['year']);
+    $month = sprintf("%s", $_GET['month']);
+
+    if(empty($month)){
+        $yearSelected = $year+543;
+        $yearLab = $year;
+    }else{
+        $yearSelected = ($year+543).'-'.$month;
+        $yearLab = $year.'-'.$month;
+    }
 
     $report_ht = $json->decode($_COOKIE['report_ht']);
 
-    if($report_ht->$year!==null){
-        $res = $report_ht->$year;
+    if($report_ht->$yearLab!==null){
+        $res = $report_ht->$yearLab;
     }else{
-
-        $yearSelected = $year+543;
-
+        
         $ht = new ReportHt();
         $q = $ht->generateTempOpdXDiag($yearSelected);
 
@@ -42,6 +49,7 @@ if($action==='create_report'){
         // ตัวชี้วัดที่ 1
         $qAgeMore35 = $ht->getAgeMoreThan35();
         $age35 = $qAgeMore35->num_rows;
+        
         $report1 = round(($age35*100/$allCount),2);
         $report1 = is_nan($report1) ? 0 : $report1 ;
 
@@ -58,7 +66,7 @@ if($action==='create_report'){
         $report3 = is_nan($report3) ? 0 : $report3 ;
         
         // สร้าง temporary ของ resulthead
-        $qResulthead = $ht->generateTempResulthead($year);
+        $qResulthead = $ht->generateTempResulthead($yearLab);
 
         // ตัวชี้วัดที่ 4 ALB + UMALB
         $alb = $ht->getAlbumin();
@@ -81,20 +89,28 @@ if($action==='create_report'){
             'report5'=> $report5,
         );
 
-        $res[$year] = $data;
+        $res[$yearLab] = $data;
 
-        $report_ht->$year = $json->decode($json->encode($data));
+        $report_ht->$yearLab = $json->decode($json->encode($data));
         
         setcookie('report_ht', $json->encode($report_ht), $setCookieTime, "/");
     }
     
-    echo $json->encode($res[$year]);
+    echo $json->encode($res[$yearLab]);
     exit;
 }elseif ($action==='clear_cookie') {
     
     $year = sprintf("%s", $_GET['year']);
+    $month = sprintf("%s", $_GET['month']);
+
+    if(empty($month)){
+        $yearLab = $year;
+    }else{
+        $yearLab = $year.'-'.$month;
+    }
+
     $report_ht = $json->decode($_COOKIE['report_ht']);
-    unset($report_ht->$year);
+    unset($report_ht->$yearLab);
     setcookie('report_ht', $json->encode($report_ht), $setCookieTime, "/");
     echo $json->encode(array('status'=>200));
     exit;
@@ -139,6 +155,7 @@ if($action==='create_report'){
         <div>
             <?php 
             $year = sprintf("%s", (!empty($_POST['year']) ? $_POST['year'] : date('Y') ));
+            $month = sprintf("%s", (!empty($_POST['month']) ? $_POST['month'] : '' ));
             $yearRange = range('2013', date('Y'));
             $yearRange = array_reverse($yearRange);
             ?>
@@ -152,6 +169,18 @@ if($action==='create_report'){
                             foreach ($yearRange as $y) { 
                                 $selected = ($y==$year) ? 'selected="selected"' : '' ;
                                 ?><option value="<?=$y;?>" <?=$selected;?> ><?=$y+543;?></option><?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <label for="staticEmail" class="col-md-1 col-form-label">เลือกเดือน</label>
+                    <div class="col-md-2">
+                        <select class="form-select" name="month" id="monthSelected">
+                            <option value="">เลือกเดือน</option>
+                            <?php 
+                            foreach ($def_month_th as $m => $mTxt) { 
+                                $selected = ($m==$month) ? 'selected="selected"' : '' ;
+                                ?><option value="<?=$m;?>" <?=$selected;?> ><?=$mTxt;?></option><?php
                             }
                             ?>
                         </select>
@@ -173,21 +202,29 @@ if($action==='create_report'){
             </form>
         </div>
         <?php
+        
         $page = sprintf("%s", $_POST['page']);
         if($page==='show'){
 
             $yearSelected = $year+543;
+            $yearKey = $year;
+
+            $monthTxt = '';
+            if(!empty($month)){
+                $monthTxt = ' เดือน '.$def_fullm_th[$month];
+                $yearKey = $year.'-'.$month;
+            }
 
             $report_ht = $json->decode($_COOKIE['report_ht']);
 
             ?>
             <div class="col-md-8 mt-2">
                 <div class="d-flex justify-content-between">
-                    <div class="col-md"><h3><a href="javascript:void(0);" target="_blank">ปี <?=$year;?></a></h3></div>
+                    <div class="col-md"><h3><a href="javascript:void(0);">ปี <?=$year;?><?=$monthTxt;?></a></h3></div>
                     <?php 
-                    if(!empty($report_ht->$year)){
+                    if(!empty($report_ht->$yearKey)){
                         ?>
-                        <div class="col-md"><a href="javascript:void(0);" class="btn btn-warning float-end" onclick="clearCookie('<?=$year;?>')">ล้างค่าความจำ</a></div>
+                        <div class="col-md"><a href="javascript:void(0);" class="btn btn-warning float-end" onclick="clearCookie('<?=$yearKey;?>')">ล้างค่าความจำ</a></div>
                         <?php
                     }
                     ?>
@@ -267,45 +304,67 @@ if($action==='create_report'){
                     return "";
                 }
 
+                // !! เป็น onload ที่อยู่ภายใต้เงื่อนไข page===show จะทำงานต่อเมื่อกด แสดงข้อมูล
                 window.onload = function(){
+                    
                     document.getElementById('loading').style.display = '';
                     let report_ht = getCookie('report_ht');
+                    
                     let yearSelected = document.getElementById('yearSelected').value;
+                    let monthSelected = document.getElementById('monthSelected').value;
                     if(report_ht===''){
 
-                        preLoadData(yearSelected);
+                        preLoadData(yearSelected, monthSelected);
 
                     }else{ 
                         
                         let json = JSON.parse(report_ht);
                         let yearText = yearSelected.toString();
+                        let monthText = monthSelected.toString();
 
-                        if(json[yearText]===undefined){
-                            preLoadData(yearSelected);
+                        let keyYear = yearText;
+                        if(monthText!==''){
+                            keyYear = yearText+'-'+monthText;
+                        }
+                        
+                        if(json[keyYear]===undefined){
+                            preLoadData(yearSelected, monthSelected);
                         }else{
-                            document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+yearText+'" target="_blank">'+json[yearText].report1+'</a>';
-                            document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+yearText+'" target="_blank">'+json[yearText].report2+'</a>';
-                            document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+yearText+'" target="_blank">'+json[yearText].report3+'</a>';
-                            document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+yearText+'" target="_blank">'+json[yearText].report4+'</a>';
-                            document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+yearText+'" target="_blank">'+json[yearText].report5+'</a>';
+
+                            let monthUrl = '';
+                            if(monthSelected!==''){
+                                monthUrl = '&month='+monthText;
+                            }
+
+                            document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report1+'</a>';
+                            document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report2+'</a>';
+                            document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report3+'</a>';
+                            document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report4+'</a>';
+                            document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+yearText+monthUrl+'" target="_blank">'+json[keyYear].report5+'</a>';
                             document.getElementById('loading').style.display = 'none';
                         }
                     }
                 }
 
-                function preLoadData(yearSelected){
-                    onLoadingData(yearSelected).then((data)=>{
-                        document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+year+'" target="_blank">'+data.report1+'</a>';
-                        document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+year+'" target="_blank">'+data.report2+'</a>';
-                        document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+year+'" target="_blank">'+data.report3+'</a>';
-                        document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+year+'" target="_blank">'+data.report4+'</a>';
-                        document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+year+'" target="_blank">'+data.report5+'</a>';
+                function preLoadData(yearSelected, monthSelected){
+                    onLoadingData(yearSelected, monthSelected).then((data)=>{
+
+                        let monthUrl = '';
+                        if(monthSelected!==''){
+                            monthUrl = '&month='+monthSelected;
+                        }
+
+                        document.getElementById('resReport1').innerHTML = '<a href="report_ht1.php?year='+yearSelected+monthUrl+'" target="_blank">'+data.report1+'</a>';
+                        document.getElementById('resReport2').innerHTML = '<a href="report_ht2.php?year='+yearSelected+monthUrl+'" target="_blank">'+data.report2+'</a>';
+                        document.getElementById('resReport3').innerHTML = '<a href="report_ht3.php?year='+yearSelected+monthUrl+'" target="_blank">'+data.report3+'</a>';
+                        document.getElementById('resReport4').innerHTML = '<a href="report_ht4.php?year='+yearSelected+monthUrl+'" target="_blank">'+data.report4+'</a>';
+                        document.getElementById('resReport5').innerHTML = '<a href="report_ht5.php?year='+yearSelected+monthUrl+'" target="_blank">'+data.report5+'</a>';
                         document.getElementById('loading').style.display = 'none';
                     });
                 }
 
-                async function onLoadingData(year){ 
-                    const response = await fetch('report_ht.php?action=create_report&year='+year);
+                async function onLoadingData(year, month){ 
+                    const response = await fetch('report_ht.php?action=create_report&year='+year+'&month='+month);
                     if (!response.ok) {
                     }
                     const data = await response.json();
@@ -331,8 +390,8 @@ if($action==='create_report'){
                     return data;
                 }
 
-                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+                // const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                // const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
             </script>
             <?php 
         }

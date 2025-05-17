@@ -261,7 +261,13 @@ echo "<tr bgcolor=\"$bgcolor\" >
 		$cTambol_eng =$row->tambol_eng;
 		$cAmpur_eng =$row->ampur_eng;
 		$cChangwat_eng =$row->changwat_eng;
+
 		
+		$card_address = $row->card_address;
+		$card_moo = $row->card_moo;
+		$card_tambol = $row->card_tambol;
+		$card_amphur = $row->card_amphur;
+		$card_province = $row->card_province;
 		
 		//echo substr($cPtright,1,3);
 		if(substr($cPtright,0,3)=="R12"){  //ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
@@ -467,7 +473,11 @@ return $pAge;
 		$showscan="<p align='right' style='color:blue; font-size:24px;'><strong>ยังไม่ได้เริ่มสแกนเอกสาร</strong></p>";
 	}	
 ?>
-
+<style>
+	label:hover{
+		cursor: pointer;
+	}
+</style>
 <div id="alertOpcard" style="display:none; text-align:center; color:red;"><h1>คำเตือน!!!<br>ไม่ควรเปิดหน้า<u>ลงทะเบียน / ทำบัตรตรวจโรค / แก้ไขข้อมูล OPDCARD</u> อย่างใดอย่างหนึ่งพร้อมกัน<br>จะทำให้ข้อมูลผู้ป่วยทับซ้อนกันได้ ต้องบันทึกใหม่เท่านั้น</h1></div>
 
 <body bgcolor='<?=$color;?>' text='#3300FF' link='#00FFFF' vlink='#00FFFF' alink='#00FF00'>
@@ -714,7 +724,7 @@ return $pAge;
 </fieldset>
 <BR>
 <fieldset>
-    <legend>ข้อมูลการติดต่อ:</legend>
+    <legend>ข้อมูลการติดต่อ(ที่อยู่ปัจจุบัน):</legend>
         
 <table border="0" align="center">
   <tr>
@@ -862,7 +872,6 @@ return $pAge;
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
-  <?php /* ?>
   <tr>
     <td align="right" class="fonthead">เลขที่บัตรประชาชนบิดา:</td>
     <td> 
@@ -879,7 +888,6 @@ return $pAge;
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
-  <?php */ ?>
   <tr>
     <td align="right" class="fonthead">ผู้ที่สามารถติดต่อได้:</td>
     <td>
@@ -925,34 +933,50 @@ return $pAge;
   </tr>
 </table>    
 </fieldset>
+<br>
+<fieldset>
+    <legend>ที่อยู่ตามบัตรประชาชน:</legend>
+	<table align="center">
+		<tr>
+			<td><input type="checkbox" id="follow" onclick="copyAddress();"></td>
+			<td class="fonthead"><label for="follow">ใช้ข้อมูลตามที่อยู่ปัจจุบัน</label></td>
+			<td class="fonthead">ที่อยู่</td>
+			<td><input type="text" name="card_address" id="card_address" value="<?=$card_address;?>"></td>
+			<td class="fonthead">หมู่ที่</td>
+			<td><input type="text" name="card_moo" id="card_moo" value="<?=$card_moo;?>"></td>
+		</tr>
+		<tr>
+			<td class="fonthead">ตำบล</td>
+			<td><input type="text" name="card_tambol" id="card_tambol" value="<?=$card_tambol;?>"></td>
+			<td class="fonthead">อำเภอ</td>
+			<td><input type="text" name="card_amphur" id="card_amphur" value="<?=$card_amphur;?>"></td>
+			<td class="fonthead">จังหวัด</td>
+			<td><input type="text" name="card_province" id="card_province" value="<?=$card_province;?>"></td>
+		</tr>
+	</table>
+	<script>
+		function copyAddress(){
+
+			let address = document.f1.address.value.replace(/\s+/g,' ');
+			let data = address.split(" ");
+			document.getElementById('card_address').value = data[0];
+			if(data[1]){
+				document.getElementById('card_moo').value = data[1];
+			}
+			document.getElementById('card_tambol').value = document.f1.tambol.value;
+			document.getElementById('card_amphur').value = document.f1.ampur.value;
+			document.getElementById('card_province').value = document.f1.changwat.value;
+
+		}
+	</script>
+</fieldset>
 <BR>
 <fieldset>
     <legend>ข้อมูลสิทธิการรักษา:</legend>
     <table  border="0" align="center">
   <tr>
     <td align="right" class="fonthead">ประเภท:</td>
-    <td><!--<select size="1" name="goup" id="goup">
-<option value="<?//=$cGoup;?>" selected><?//=$cGoup;?></option>
-<option value="G11 ก.1 นายทหารประจำการ">G11 ก.1 นายทหารประจำการ</option>
-<option value="G12 ก.2 นายสิบ  พลทหารประจำการ">G12 ก.2 นายสิบ  พลทหารประจำการ</option>
-<option value="G13 ก.3 ข้าราชการกลาโหมพลเรือน">G13 ก.3 ข้าราชการกลาโหมพลเรือน</option>
-<option value="G14 ก.4 ลูกจ้างประจำ">G14 ก.4 ลูกจ้างประจำ</option>
-<option value="G15 ก.5 ลูกจ้างชั่วคราว">G15 ก.5 ลูกจ้างชั่วคราว</option>
-<option value="G21 ข.1 สิบตรี พลทหารกองประจำการ">G21 ข.1 สิบตรี พลทหารกองประจำการ</option>
-<option value="G22 ข.2 นักเรียนทหาร">G22 ข.2 นักเรียนทหาร</option>
-<option value="G23 ข.3 อาสาสมัครทหารพราน">G23 ข.3 อาสาสมัครทหารพราน</option>
-<option value="G24 ข.4 นักโทษทหาร">G24 ข.4 นักโทษทหาร</option>
-<option value="G31 ค.1 ครอบครัวทหาร">G31 ค.1 ครอบครัวทหาร</option>
-<option value="G32 ค.2 ทหารนอกประจำการ">G32 ค.2 ทหารนอกประจำการ
-<option value="G33 ค.3 นักศึกษาวิชาทหาร(รด)">G33 ค.3 นักศึกษาวิชาทหาร(รด)</option>
-<option value="G34 ค.4 วิวัฒน์พลเมือง">G34 ค.4 วิวัฒน์พลเมือง</option>
-<option value="G35 ค.5 บัตรประกันสังคม">G35 ค.5 บัตรประกันสังคม
-<option value="G36 ค.6 บัตรทอง30บาท">G36 ค.6 บัตรทอง30บาท</option>
-<option value="G37 ค.7 ข้าราชการพลเรือน(เบิกต้นสังกัด)">G37 ค.7 ข้าราชการพลเรือน(เบิกต้นสังกัด)</option>
-<option value="G38 ค.8 พลเรือน(ไม่เบิกต้นสังกัด)">G38 ค.8 พลเรือน(ไม่เบิกต้นสังกัด)</option>
-<option value="G39 ค.9 อื่นๆไม่ระบุ">G39 ค.9 อื่นๆไม่ระบุ
-</select>-->
-
+    <td>
      <select name="goup" id="goup">
         <option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
         <?

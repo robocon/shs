@@ -3,7 +3,7 @@ require 'bootstrap.php';
 require_once 'fpdf_thai/shspdf.php';
 
 function toUTF($txt){
-    return iconv('UTF8', 'TIS620', $txt);
+    return iconv('UTF-8', 'TIS-620', $txt);
 }
 
 $dbi = new mysqli(HOST, USER, PASS, DB);

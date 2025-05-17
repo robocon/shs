@@ -25,7 +25,10 @@ CREATE TABLE officers (
 	$aMancode[11]='headmony';
 	$aMancode[12]='headmonysub';
 	$aMancode[13]='headmony2';
-
+	$aMancode[14]='headtor';
+	$aMancode[15]='bordtor1';
+	$aMancode[16]='bordtor2';
+	$aMancode[17]='bordtor3';	
 //1
 	$query ="UPDATE officers SET 
 				position='$post1',position2='$post21',	
@@ -109,10 +112,40 @@ $query ="UPDATE officers SET
 				yot='$yot13',fullname='$fname13'
              WHERE  mancode='$aMancode[13]'";
 	$result = mysql_query($query)or die("Query failed,update officers");
+	
+//เพิ่มใหม่วันที่ 27/01/2561
+//14		 
+$query ="UPDATE officers SET 
+				position='$post14',position2='$post214',	
+				yot='$yot14',fullname='$fname14'
+             WHERE  mancode='$aMancode[14]'";	 
+	$result = mysql_query($query)or die("Query failed,update officers");
+
+//15		 
+$query ="UPDATE officers SET 
+				position='$post15',position2='$post215',	
+				yot='$yot15',fullname='$fname15'
+             WHERE  mancode='$aMancode[15]'";
+	$result = mysql_query($query)or die("Query failed,update officers");
+
+//16		 
+$query ="UPDATE officers SET 
+				position='$post16',position2='$post216',	
+				yot='$yot16',fullname='$fname16'
+             WHERE  mancode='$aMancode[16]'";
+	$result = mysql_query($query)or die("Query failed,update officers");
+
+//17		 
+$query ="UPDATE officers SET 
+				position='$post17',position2='$post217',	
+				yot='$yot17',fullname='$fname17'
+             WHERE  mancode='$aMancode[17]'";
+	$result = mysql_query($query)or die("Query failed,update officers");	
 
 
 	//echo mysql_errno() . ": " . mysql_error(). "\n";
 	//echo "<br>";
 
-	print "...............�ѹ�֡���������º����<br>";
+	print "...............บันทึกข้อมูลเรียบร้อย<br>";
+	
 ?>

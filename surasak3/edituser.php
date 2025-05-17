@@ -205,10 +205,10 @@ require_once 'com_user_menu.php';
 				Swal.fire("เปลี่ยนรหัสเป็นตัวอื่นเถอะจ้า IT Audit มาตรวจแล้วบอกปวดหัว<br>ไม่คิดรักษาความปลอดภัยในข้อมูลตัวเองเลยหรอ?");
 				res = false;
 			}
-			console.log(res);
-			// if(res===true){
-			// 	formUpdatePassword();
-			// }
+			
+			if(res===true){
+				formUpdatePassword();
+			}
 
 			return false;
 		}

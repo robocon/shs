@@ -3,13 +3,8 @@ session_start();
 //print_r($_SESSION);
 header("content-type: application/x-javascript; charset=UTF-8");
 include("connect.inc");
-?>
 
-
-<?
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
-
-
 
 $sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 list($pass_drug) = mysql_fetch_row(mysql_query($sql));
@@ -286,11 +281,16 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 		}
 
 			show_session();
-}else if($_GET["action"] == "del"){
+
+
+}else if($_GET["action"] == "del"){ // get from add_drug.php --> js function del_session()
 
 /******* ลบข้อมูลใน SESSION ********************************************************************/
 	if(isset($_GET["rowid"]) && $_GET["rowid"] != ""){
 		
+		/**
+		 * ถ้าเป็นยา CONT จะปรับสถานะเป็น OFF ถ้าเป็นตัวอื่นคือลบไปเลย
+		 */
 		$sql = "Select statcon From dgprofile where row_id = '".$_GET["rowid"]."' ";
 		$result = Mysql_Query($sql);
 		$arr = Mysql_fetch_assoc($result);
@@ -318,21 +318,20 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			$_SESSION["list_druglst"]["firstdate"][$j] = $_SESSION["list_druglst"]["firstdate"][$j+1];
 			$_SESSION["list_druglst"]["enddate"][$j] = $_SESSION["list_druglst"]["enddate"][$j+1];			
 			
-
 		}
 
-			$_SESSION["num_list"]--;
-			unset($_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["part"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]]);
-			unset($_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]]);			
+		$_SESSION["num_list"]--;
+		unset($_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["part"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]]);
+		unset($_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]]);			
 	}
-		show_session();
+	// show_session();
 
 }else if($_GET["action"] == "edit"){
 
@@ -482,7 +481,6 @@ function restart_session($an){
 	session_register("list_druglst");
 	$_SESSION["list_druglst"] = $w;
 	$_SESSION["num_list"] = $i;
-
 	
 }
 
