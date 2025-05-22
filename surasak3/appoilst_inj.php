@@ -197,25 +197,24 @@ $_GET['y'] = $_GET['y']-543;
 		
 	echo "</TABLE>";
 
-	}else if($_GET["druginj"] == "Engerix-B" || $_GET["druginj"] == "Hepavax" || $_GET["druginj"] == "(30HBV)Euvax B" || $_GET["druginj"] == "Hepatitis B Vaccine" || $_GET["druginj"] == "Euvax 4" ){
+	}else if($_GET["druginj"] == "Engerix-B" || $_GET["druginj"] == "Hepavax" || $_GET["druginj"] == "(30HBV)Euvax B" || $_GET["druginj"] == "Hepatitis B Vaccine" || $_GET["druginj"] == "Euvax 3" || $_GET["druginj"] == "Euvax 4" ){
 
 		echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
 			<TD>วันที่นัดฉีด</TD>
 		</TR>";
 
-	if($_GET["druginj"]=="Euvax 4"){
-		$num[0] = 0;
-		$num[1] = 1;
-		$num[2] = 2;
-		$num[3] = 6;
-	}else{
-		$num[0] = 0;
-		$num[1] = 1;
-		$num[2] = 6;
-	}
-	
-
+		if($_GET["druginj"]=="Euvax 4"){
+			$num[0] = 0;
+			$num[1] = 1;
+			$num[2] = 2;
+			$num[3] = 6;
+		}else{
+			$num[0] = 0;
+			$num[1] = 1;
+			$num[2] = 6;
+		}
+		
 	for($i=0;$i<count($num);$i++){
 		
 		echo "<TR><TD align='center'>";
@@ -466,6 +465,7 @@ return stat;
 			<Option value="SPEEDA 3">SPEEDA 3 เข็ม</Option>
 			<Option value="SPEEDA 4">SPEEDA 4 เข็ม</Option>
 			<Option value="SPEEDA 5">SPEEDA 5 เข็ม</Option>
+			<Option value="Euvax 3">Euvax 3 เข็ม</Option>
 			<Option value="Euvax 4">Euvax 4 เข็ม</Option>
 			<Option value="Engerix-B">Engerix-B</Option>
 			<Option value="Hepavax">Hepavax</Option>

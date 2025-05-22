@@ -91,6 +91,8 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "0HB1.0";
 }else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
 	$dgcode = "30HBV";
+}else if($_POST["drug_inj"] == "Euvax 3"){
+	$dgcode = "0EB1.0";
 }else if($_POST["drug_inj"] == "Euvax 4"){
 	$dgcode = "0EB1.0";
 }else if($_POST["drug_inj"] == "Hepatitis B Vaccine"){
@@ -138,6 +140,8 @@ if($rows_drugrx > 0){
 		$dgcode = "0HB1.0";
 	}else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
 		$dgcode = "30HBV";
+	}else if($_POST["drug_inj"] == "Euvax 3"){
+		$dgcode = "0EB1.0";
 	}else if($_POST["drug_inj"] == "Euvax 4"){
 		$dgcode = "0EB1.0";
 	}else if($_POST["drug_inj"] == "Hepatitis B Vaccin"){
