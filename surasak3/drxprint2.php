@@ -239,20 +239,38 @@ if(!empty($cStkcutdate)) {
 	$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 	// $currentDayTH = (date('Y')+543).date('-m-d');
 
-	$sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
-		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
+	// $sql = sprintf("SELECT a.*,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+	// 	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`
+	// 	FROM `drugrx` 
+	// 	WHERE `hn` = '%s' 
+	// 	AND ( `date` >= '$sixMonthsTH' AND `date` < '$opday_thidate' ) 
+	// 	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+	// 	AND (`status` = 'Y' AND `amount` > 0)
+	// 	ORDER BY `row_id` DESC
+	// ) AS a LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+	// LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+	// LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
+	// ORDER BY a.`date` DESC LIMIT 1",
+	// 	$dbi->real_escape_string($patient_hn)
+	// );
+
+	$sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
+		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`
 		FROM `drugrx` 
 		WHERE `hn` = '%s' 
-		AND ( `date` >= '$sixMonthsTH' AND `date` < '$opday_thidate' ) 
+		AND ( `date` >= '$sixMonthsTH' AND `date` <= '$opday_thidate' ) 
 		AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
-		AND (`status` = 'Y' AND `amount` > 0)
+		AND `status` = 'Y' AND `amount` > 0 
 		ORDER BY `row_id` DESC
-	) AS a LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+	) AS a
+	LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
 	LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
-	LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
-	ORDER BY a.`date` DESC LIMIT 1",
-		$dbi->real_escape_string($patient_hn)
+	LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode`
+	GROUP BY a.`type`",
+	$dbi->real_escape_string($patient_hn)
 	);
+
+
 	$q = $dbi->query($sql);
 	if($q->num_rows>0){
 		?>
@@ -264,8 +282,10 @@ if(!empty($cStkcutdate)) {
 				<table>
 					<tr style="background-color: #73C6B6;">
 						<th>วันที่จ่ายยา</th>
+						<th>VN/AN</th>
 						<th>แพทย์ผู้สั่ง</th>
 						<th>ยา</th>
+						<th></th>
 						<th>วิธีใช้</th>
 						<th>จำนวน</th>
 					</tr>
@@ -274,8 +294,18 @@ if(!empty($cStkcutdate)) {
 					?>
 					<tr valign="top" style="background-color: #D5F5E3;">
 						<td><?=$a['date'];?></td>
+						<td>
+							<?php
+							$ptNumber = $a['tvn'];
+							if(!empty($a['an'])){
+								$ptNumber = $a['an'];
+							}
+							echo $ptNumber;
+							?>
+						</td>
 						<td><?=$a['doctor'];?></td>
-						<td><?=$a['tradname'];?> [<?=$a['drugcode'];?>]<br><?=$a['genname'];?></td>
+						<td><strong><?=$a['genname'];?></strong> [<?=$a['drugcode'];?>]<br><?=$a['tradname'];?></td>
+						<td><?=$a['type'];?></td>
 						<td><?=$a['slcode'];?><br><?=$a['drug_detail'];?></td>
 						<td align="right"><?=$a['amount'];?></td>
 					</tr>

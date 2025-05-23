@@ -166,7 +166,7 @@ $thip_items = array(
     array(
         'name' => '[THIP] PCT QMR / HRD / PTC', 
         'link' => 'https://docs.google.com/spreadsheets/d/1lnTLYxmZe_oGsxbB1rLr3Ck6I6aG5MX7NzjocWHiYsw/edit?usp=sharing', 
-        'allow'=>array('ภัทรียา','ปภาวิน','ภูมิพัฒน์')
+        'allow'=>array('ภัทรียา','ปภาวิน','ภูมิพัฒน์','ตรัณ')
     ),
     array(
         'name' => 'ตัวชี้วัดทีม PCT Med', 
