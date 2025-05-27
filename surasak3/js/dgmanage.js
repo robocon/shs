@@ -111,6 +111,15 @@ async function editReactGroup(id){
         }
     });
     if (inputName) {
+
+        Swal.fire({
+            title: 'กำลังบันทึกข้อมูล',
+            allowOutsideClick: false,
+            didOpen:()=>{
+                Swal.showLoading();
+            }
+        });
+
         let objData = {
             "action": 'update',
             "oldName": inputValue,
