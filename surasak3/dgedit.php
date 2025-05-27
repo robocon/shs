@@ -330,10 +330,8 @@ $edpri_from_list = array(
     }
     ?>
 </select>
-<?php
-print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
-?>
-<select name="had">
+<br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;
+<select name="had" class="txtsarabun">
     <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
     <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
@@ -359,7 +357,7 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
 
                 $q = $dbi->query("SELECT * FROM `drugreact_group` WHERE `status` = 'y' ");
                 ?>
-                <select name="drugreact_group" id="drugreact_group" style="width: 300px;">
+                <select name="drugreact_group" id="drugreact_group" style="width: 300px;" class="txtsarabun">
                     <option value="">ไม่มีกลุ่ม</option>
                 <?php
                 $groupList = array();

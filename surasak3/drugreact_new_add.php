@@ -696,26 +696,17 @@ if ( $page == 'search' ) {
 					<?php 
 					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
 					$i = 1;
+					?>
+					<select name="drugreact_group" id="drugreact_group" class="fontsarabun">
+						<option value="">ไม่มีกลุ่ม</option>
+					<?php
 					while ($a = $q->fetch_assoc()) {
 						?>
-						<label for="<?=$a['id'];?>">
-							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>"> <?=$i.') '.$a['name'];?><br>
-						</label>
+						<option value="<?=$a['id'];?>"><?=$a['name'];?></option>
 						<?php
-						$i++;
 					}
 					?>
-					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
-					<script>
-						function clearGroup(){
-							var groupLists = document.getElementsByClassName('groupItem');
-							for (var index = 0; index < groupLists.length; index++) {
-								var element = groupLists[index];
-								element.checked = false;
-								
-							}
-						}
-					</script>
+					</select>
 				</td>
 			</tr>
 			<tr>
@@ -1133,10 +1124,24 @@ if(!in_array($last_array, $advreact_lists)){
 			<tr valign="top">
 				<td align="right"><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
 				<td colspan="4">
-					<?php 
-					
+					<?php
 					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
 					$i = 1;
+					?>
+					<select name="drugreact_group" id="drugreact_group" class="fontsarabun">
+						<option value="">ไม่มีกลุ่ม</option>
+						<?php
+						while ($a = $q->fetch_assoc()) { 
+
+							$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
+							
+							?>
+							<option value="<?=$a['id'];?>" <?=$checked;?>><?=$a['name'];?></option>
+							<?php
+						}
+						?>
+					</select>
+					<?php
 					while ($a = $q->fetch_assoc()) { 
 						
 						$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
@@ -1149,17 +1154,7 @@ if(!in_array($last_array, $advreact_lists)){
 						$i++;
 					}
 					?>
-					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
-					<script>
-						function clearGroup(){
-							var groupLists = document.getElementsByClassName('groupItem');
-							for (var index = 0; index < groupLists.length; index++) {
-								var element = groupLists[index];
-								element.checked = false;
-								
-							}
-						}
-					</script>
+					
 				</td>
 			</tr>
 			<tr>
