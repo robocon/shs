@@ -35,8 +35,10 @@ if(empty($Dgcode)){
 }
 
 $Dgcode = $_GET['Dgcode'];
-sendTelgramMsg("❗❗❗ ".$_SESSION['sIdname'].' ❗❗❗ ได้เข้าใช้งาน ฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
 
+if(DEV === false){
+    sendTelgramMsg("❗❗❗ ".$_SESSION['sIdname'].' ❗❗❗ ได้เข้าใช้งาน ฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

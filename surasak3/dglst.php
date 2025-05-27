@@ -64,7 +64,9 @@ print "รายการยาเวชภัณฑ์ <br> ";
 
 // แสดงรายการยา ตอนคีย์ค้นหาจากรหัสยา (aJax)
 if (isset($_GET["action"]) && $_GET["action"] == "drugcode" && !empty($_GET["search1"]) ) {
+
     $sql = "Select drugcode,tradname from druglst  where  drugcode like '%" . $_GET["search1"] . "%' limit 10 ";
+    
     $result = Mysql_Query($sql) or die(Mysql_error());
     if (Mysql_num_rows($result) > 0) {
         echo "<Div style=\"position: absolute;text-align: center; width:300px; height:430px; overflow:auto; \">";
@@ -142,12 +144,13 @@ function searchSuggest(str,len,getto) {
         $drugcodeSearch = $_POST['drugcode'];
         if (!empty($drugcodeSearch)) {
 
-            sendTelgramMsg('👾 '.$_SESSION['sIdname'].' ได้ค้นหายา '.$drugcodeSearch.' ในเมนู ::PHAR- แก้ไขข้อมูลยา ');
-
+            if(DEV === false){
+                sendTelgramMsg('👾 '.$_SESSION['sIdname'].' ได้ค้นหายา '.$drugcodeSearch.' ในเมนู ::PHAR- แก้ไขข้อมูลยา ');
+            }
+            
             $query = sprintf("SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec 
             FROM druglst 
-            WHERE drugcode LIKE '%%s' ", mysql_real_escape_string($drugcodeSearch));
-
+            WHERE drugcode LIKE '%s%%' ", mysql_real_escape_string($drugcodeSearch));
             $result = mysql_query($query) or die("Query failed");
             while (list($drugcode, $tradname, $genname, $salepri, $part, $stock, $mainstk, $totalstk, $pack, $packpri_vat, $comcode, $comname, $unitpri, $code24, $edpri, $spec) = mysql_fetch_row($result)) {
                 print(" <tr>\n" .
