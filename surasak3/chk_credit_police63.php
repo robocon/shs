@@ -268,7 +268,7 @@ $rows = $q->num_rows;
         <!-- <th>ชำระ</th> -->
         <th>เลขที่</th>
         <th>จนท.</th>
-        <th>เบิกได้</th>
+        <!-- <th>เบิกได้</th> -->
         <th>ประเภท</th>
     </tr>
 
@@ -307,7 +307,7 @@ while($value = $q->fetch_assoc()){ // <<-- จาก log_opcardchk
         <!-- <td><?=$item['credit'];?></td> -->
         <td><?=$item['billno'];?></td>
         <td><?=$item['idname'];?>.</td>
-        <td>0.00</td>
+        <!-- <td>0.00</td> -->
         <td><?=$item['depart'];?></td>
     </tr>
     <?php 
