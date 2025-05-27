@@ -16,3 +16,5 @@ define('USER', 'user');
 define('PASS', 'pass');
 
 define('TOKEN_KEY', 'token');
+
+define('DEV', false);

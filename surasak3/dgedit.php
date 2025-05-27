@@ -18,7 +18,7 @@
  * ทีนี้พอแพทย์สั่งจ่ายยา 2BACT-C เราก็สามารถทำแจ้งเตือนได้ว่า อาจจะมีโอกาศแพ้ยาได้นะเพราะเป็นยาที่อยู่ในกลุ่มเดียวกัน
  */
 session_start();
-include("connect.php");
+require_once dirname(__FILE__).'/connect.php';
 require_once dirname(__FILE__).'/bootstrap.php';
 
 if(empty($_SESSION['sIdname'])){
@@ -33,16 +33,10 @@ if(empty($Dgcode)){
     echo '<p>กรุณาใส่ข้อมูลยาให้ถูกต้อง <a href="dglst.php">คลิกที่นี่</a> เพื่อย้อนกลับ</p>';
     exit;
 }
-function sendText($text){
-	$curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
-	curl_setopt( $curl, CURLOPT_HEADER, 0);
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
-	$result = curl_exec( $curl ); 
-	curl_close($curl); 
-}
+
 $Dgcode = $_GET['Dgcode'];
-sendText($_SESSION['sIdname'].' ได้เข้าใช้งานฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
+sendTelgramMsg("❗❗❗ ".$_SESSION['sIdname'].' ❗❗❗ ได้เข้าใช้งาน ฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -347,7 +341,7 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
         <tr>
             <td valign="top">
                 <strong>กลุ่มยาที่มีโอกาสแพ้ : </strong>
-                <div><a href="dgmanage.php" target="_blank">จัดการกลุ่ม</a></div>
+                <div><a href="javascript:void(0);" onclick="window.open('dgmanage.php','manageDrugGroup','width=800,height=600');">จัดการกลุ่ม</a></div>
             </td>
             <td valign="top">
                 <?php 
