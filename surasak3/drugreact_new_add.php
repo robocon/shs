@@ -1126,35 +1126,18 @@ if(!in_array($last_array, $advreact_lists)){
 				<td colspan="4">
 					<?php
 					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
-					$i = 1;
 					?>
 					<select name="drugreact_group" id="drugreact_group" class="fontsarabun">
 						<option value="">ไม่มีกลุ่ม</option>
 						<?php
 						while ($a = $q->fetch_assoc()) { 
-
-							$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
-							
+							$selected = ( $a['name']== $dresult["groupname"] ) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$a['id'];?>" <?=$checked;?>><?=$a['name'];?></option>
+							<option value="<?=$a['id'];?>" <?=$selected;?>><?=$a['name'];?></option>
 							<?php
 						}
 						?>
 					</select>
-					<?php
-					while ($a = $q->fetch_assoc()) { 
-						
-						$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
-
-						?>
-						<label for="<?=$a['id'];?>">
-							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>" <?=$checked;?> > <?=$i.') '.$a['name'];?><br>
-						</label>
-						<?php
-						$i++;
-					}
-					?>
-					
 				</td>
 			</tr>
 			<tr>

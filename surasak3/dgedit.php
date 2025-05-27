@@ -70,6 +70,42 @@ background-color:#F8F9F9;
 	font-size: 28px;
 	font-weight: bold;
 }
+
+/* Model */
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 1em; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+#myModalContainer{
+    width: 90%;
+    background: #fff;
+    padding: 1em;
+    margin:0 auto;
+}
+/* Model */
+
+
 </style>
 <?php
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
@@ -336,12 +372,45 @@ $edpri_from_list = array(
     <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
 
+<div id="myModal" class="modal" style="display:none;">
+    <div id="myModalContainer">
+        <div class="clearfix">
+            <div id="myModalHeader"><a href="javascript:void(0);" onclick="closeFormAdd()"><span class="close">&times; ปิด</span></a></div>
+        </div>
+        <div id="resContent"></div>
+    </div>
+</div>
+
 <br>
     <table>
         <tr>
             <td valign="top">
+                
+                <script src="js/dgmanage.js" type="text/javascript"></script>
+
                 <strong>กลุ่มยาที่มีโอกาสแพ้ : </strong>
-                <div><a href="javascript:void(0);" onclick="window.open('dgmanage.php','manageDrugGroup','width=800,height=600');">จัดการกลุ่ม</a></div>
+                <!-- window.open('dgmanage.php','manageDrugGroup','width=800,height=600'); -->
+                <div><a href="javascript:void(0);" onclick="loadDgmanage()">จัดการกลุ่ม</a></div>
+                <script>
+                    async function loadDgmanage(){
+                        const test = await fetch('dgmanage_page.php', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            }
+                        });
+                        document.getElementById('resContent').innerHTML = await test.text();
+                        showContent();
+                    }
+
+                    function closeFormAdd(){
+                        document.getElementById('myModal').style.display = 'none';
+                    }
+
+                    function showContent(){
+                        document.getElementById('myModal').style.display = '';
+                    }
+                </script>
             </td>
             <td valign="top">
                 <?php 
