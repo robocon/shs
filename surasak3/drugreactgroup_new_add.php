@@ -1,7 +1,6 @@
 <?php 
 session_start();
 include("connect.inc");
-
 ?>
 <style type="text/css">
 body{
@@ -34,31 +33,30 @@ body{
 <span style="margin-left: 35px;"><input type="button" name="button" id="button" value="บันทึกแพ้ยา" onclick="window.location='drugreact_new_add.php' " class="fontsarabun" /></span>
 <span style="margin-left: 50px;"><input type="button" name="button" id="button" value="รายชื่อผู้ป่วยแพ้ยา" onclick="window.open('list_drugreact.php') " class="fontsarabun" /></span>
 </h3>
-
-<?
+<?php
 if( $_GET["page"] == 'first' ) {
 	$sql = "SELECT * FROM `drugreact_group`";
 	$query=mysql_query($sql);
-?>
-        <table class="chk_table" width="60%" bgcolor="#FFFFFF">
-            <tr>
-                <th>กลุ่ม</th>
-                <th>รายการ</th>
-                <th >ดำเนินการ</th>
-            </tr>
-            <?php
-            while($item = mysql_fetch_array($query)){
-                ?>
-                <tr>
-                    <td align="center"><?=$item['id'];?></td>
-                    <td><?=$item['name'];?></td>
-					<td align="center"><a href="drugreactgroup_new_add.php?page=show&group=<?=$item['id'];?>&hn=<?=$_GET['hn'];?>">บันทึก</a></td>
-                </tr>
-                <?php
-            }
-            ?>
-        </table>		
-<?		
+	?>
+	<table class="chk_table" width="60%" bgcolor="#FFFFFF">
+		<tr>
+			<th>กลุ่ม</th>
+			<th>รายการ</th>
+			<th >ดำเนินการ</th>
+		</tr>
+		<?php
+		while($item = mysql_fetch_array($query)){
+			?>
+			<tr>
+				<td align="center"><?=$item['id'];?></td>
+				<td><?=$item['name'];?></td>
+				<td align="center"><a href="drugreactgroup_new_add.php?page=show&group=<?=$item['id'];?>&hn=<?=$_GET['hn'];?>">บันทึก</a></td>
+			</tr>
+			<?php
+		}
+		?>
+	</table>
+<?php
 }else if( $_GET["page"] == 'show' ) {	
 	$group = $_GET['group'];
 	$hn = $_GET['hn'];

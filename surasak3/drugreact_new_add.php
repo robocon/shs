@@ -255,7 +255,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 ?>
 <style type="text/css">
 body{
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 16px;
 	background-color:#F4F6F6;
 }
@@ -363,7 +363,7 @@ function checkList(){
 <?php 
 if($_SESSION['x-msg']){
 	?>
-	<div style="    border: 2px solid #004f4f; background-color: #008080; color: #ffffff; text-align: center; margin: 8px; font-size: 20px;">
+	<div style="border: 2px solid #004f4f; background-color: #008080; color: #ffffff; text-align: center; margin: 8px; font-size: 20px;">
 		<?=$_SESSION['x-msg'];?>
 	</div>
 	<?php 
@@ -394,7 +394,6 @@ if ( $page == 'search' ) {
     $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
     $query=mysql_query($sql);
 	$num=mysql_num_rows($query);
-	
     if ( $num > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
