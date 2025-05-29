@@ -72,6 +72,23 @@ if($action === 'getDrugList'){
     
     header("Location: drugreact_group_item.php?id=".$_POST['group']);
     exit;
+}elseif ($action==='delDrug') {
+    
+    $sql = sprintf("DELETE FROM `drugreact_group_list` WHERE `id`='%s'", $dbi->real_escape_string($_POST['id']));
+    $q = $dbi->query($sql);
+    if($q!==false){
+        $res = array(
+            'status' => 200,
+            'message' => 'ลบรายการยาเรียบร้อยแล้ว'
+        );
+    }else{
+        $res = array(
+            'status' => 400,
+            'message' => 'ไม่สามารถลบรายการได้ ('.$dbi->error.')'
+        );
+    }
+    echo $json->encode($res);
+    exit;
 }
 
 $id = $_GET['id'];
@@ -81,7 +98,7 @@ $id = $_GET['id'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITLE</title>
+    <title>จัดการข้อมูลยาในกลุ่ม</title>
     <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
@@ -91,44 +108,12 @@ $id = $_GET['id'];
             font-family: "TH SarabunPSK", sans-serif;
             font-size: 20px;
         }
-
-        /* Model */
-        .modal {
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            padding-top: 1em; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-        .close {
-            color: #aaaaaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        #myModalContainer{
-            width: 90%;
-            background: #fff;
-            padding: 1em;
-            margin:0 auto;
-        }
+        
         .clearfix::after {
             content: "";
             clear: both;
             display: table;
         }
-        /* Model */
 
         /* ตาราง */
         .chk_table{
@@ -199,7 +184,7 @@ $id = $_GET['id'];
                         <table>
                             <tr>
                                 <td>Drugcode</td>
-                                <td><input type="text" name="drugcode" id="drugcode" onkeyup="onSearchDrug();"></td>
+                                <td><input type="text" name="drugcode" id="drugcode" onkeyup="onSearchDrug();" autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td></td>
@@ -220,7 +205,7 @@ $id = $_GET['id'];
                 </div>
             </div>
             
-            <table class="chk_table mt-1">
+            <table class="chk_table mt-1" style="min-width: 600px;">
                 <tr>
                     <th>#</th>
                     <th>ชื่อยา</th>
@@ -238,7 +223,7 @@ $id = $_GET['id'];
                     <td><?=$a['officer'];?></td>
                     <td><?=$a['last_update'];?></td>
                     <td>
-                        <a href="javascript:void(0);">🚮</a>
+                        <a href="javascript:void(0);" onclick="onDel('<?=$a['id'];?>')">🚮</a>
                     </td>
                 </tr>
                 <?php
@@ -255,24 +240,6 @@ $id = $_GET['id'];
         ?>
     </div>
 
-<div id="myModal" class="modal" style="display:none;">
-    <div id="myModalContainer">
-        <div class="clearfix">
-            <div id="myModalHeader"><a href="javascript:void(0);" onclick="closeFormAdd()"><span class="close">&times; ปิด</span></a></div>
-        </div>
-        <div id="resContent">
-            <div>
-                <table>
-                    <tr>
-                        <td>Drugcode</td>
-                        <td><input type="text" name="" id=""></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
 
     function closeContainer(){
@@ -287,23 +254,64 @@ $id = $_GET['id'];
 
     async function onSearchDrug(){
         let name = document.getElementById('drugcode').value.trim();
+        if(name.length >= 2){
 
-        var data = [];
-		data.push(encodeURIComponent('action')+"="+encodeURIComponent('getDrugList'));
-		data.push(encodeURIComponent('drugcode')+"="+encodeURIComponent(name));
-		var dataPost = data.join("&");
+            var data = [];
+            data.push(encodeURIComponent('action')+"="+encodeURIComponent('getDrugList'));
+            data.push(encodeURIComponent('drugcode')+"="+encodeURIComponent(name));
+            var dataPost = data.join("&");
 
-        const response = await fetch('drugreact_group_item.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-            },
-            body: dataPost
+            const response = await fetch('drugreact_group_item.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: dataPost
+            });
+            const res = await response.text();
+
+            document.getElementById('resContent').innerHTML = res;
+            document.getElementById('drugContainerList').style.display='';
+
+        }else{
+            document.getElementById('drugContainerList').style.display='none';
+        }
+
+    }
+
+    async function onDel(id){
+        const result = await Swal.fire({
+            title: 'คุณแน่ใจหรือไม่?',
+            text: "คุณต้องการลบรายการนี้หรือไม่?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
         });
-        const res = await response.text();
 
-        document.getElementById('resContent').innerHTML = res;
-        document.getElementById('drugContainerList').style.display='';
+        if (result.isConfirmed) {
+            var data = [];
+            data.push(encodeURIComponent('action')+"="+encodeURIComponent('delDrug'));
+            data.push(encodeURIComponent('id')+"="+encodeURIComponent(id));
+            var dataPost = data.join("&");
+
+            const res = await sendPost('drugreact_group_item.php', dataPost);
+            if(res.status === 200){
+                Swal.fire(
+                    'สำเร็จ!',
+                    res.message,
+                    'success'
+                ).then(() => {
+                    location.reload();
+                });
+            }else{
+                Swal.fire(
+                    'ผิดพลาด!',
+                    res.message,
+                    'error'
+                );
+            }
+        }
 
     }
 

@@ -42,14 +42,24 @@ if( $_GET["page"] == 'first' ) {
 		<tr>
 			<th>กลุ่ม</th>
 			<th>รายการ</th>
+			<th>จำนวนยา</th>
 			<th >ดำเนินการ</th>
 		</tr>
 		<?php
 		while($item = mysql_fetch_array($query)){
+
+			$sql = "SELECT COUNT(*) AS cnt FROM `drugreact_group_list` WHERE drugreact_group = '".$item['id']."'";
+			$q = mysql_query($sql);
+			$group = mysql_fetch_assoc($q);
+			$groupRows = $group['cnt'];
+
 			?>
 			<tr>
 				<td align="center"><?=$item['id'];?></td>
-				<td><?=$item['name'];?></td>
+				<td><a href="drugreact_group_item.php?id=<?=$item['id'];?>" target="_blank"><?=$item['name'];?></a></td>
+				<td>
+					<?=$groupRows;?>
+				</td>
 				<td align="center"><a href="drugreactgroup_new_add.php?page=show&group=<?=$item['id'];?>&hn=<?=$_GET['hn'];?>">บันทึก</a></td>
 			</tr>
 			<?php

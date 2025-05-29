@@ -29,7 +29,7 @@ $dbi->query("SET NAMES UTF8");
             ?>
             <tr id="item-tr-<?=$a['id'];?>">
                 <td><?=$i;?></td>
-                <td id="item-id-<?=$a['id'];?>"><?=$a['name'];?></td>
+                <td id="item-id-<?=$a['id'];?>"> <a href="drugreact_group_item.php?id=<?=$a['id'];?>" target="_blank"><?=$a['name'];?></a></td>
                 <td><?=$a['cnt'];?></td>
                 <td>
                     <a href="javascript:void(0);" title="แก้ไข" onclick="editReactGroup('<?=$a['id'];?>')">✏️</a>
