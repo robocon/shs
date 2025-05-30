@@ -724,10 +724,6 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
 	<td></td>
 	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
 </tr>
-<tr>
-	<td></td>
-	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
-</tr>
 <tr align="center">
 <td  width='7%' height='76'></td>
 <td colspan="2" width='93%' height='76'>
