@@ -30,13 +30,13 @@ if ($_REQUEST['do'] == 'edit') {
 	WHERE `row`='$row' ";
 	$query = mysql_query($update);
 	if ($query) {
-		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
-		$sMessage = "เรื่อง: $head\nกำลังดำเนินการโดย $owner";
-		sendLineNotify($sMessage, $sToken);
+		// $sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
+		$_SESSION['telegram_msg'] = "เรื่อง: $head กำลังดำเนินการโดย $owner";
+		// sendLineNotify($sMessage, $sToken);
 
-		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		sendLineNotify($sMessage, $tokenTwo);
-
+		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
+		// sendLineNotify($sMessage, $tokenTwo);
+		
 		$_SESSION['supportMessage'] = "เลือกผู้รับผิดชอบงานเรียบร้อยแล้ว";
 	} else {
 		$_SESSION['supportMessage'] = "ไม่สามารถเลือกผู้รับผิดชอบงานได้";

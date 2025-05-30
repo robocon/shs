@@ -1,5 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
 if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
@@ -11,10 +11,11 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $ids = $_POST['id'];
+
 $doctor = $_POST['doctor'];
 $oldDoctor = $_POST['oldDoctor'];
 
-if(empty($ids) OR empty($doctor ) OR empty($oldDoctor)){
+if(count($ids)==0 OR empty($doctor )){
     echo "กรุณาระบุ ID และ แพทย์";
     exit;
 }

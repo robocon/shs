@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.inc");
+include("connect.php");
 
 // เช็กก่อนว่ารายการไหนใส่ตัวเลขมาจริงๆ แล้วบ้าง
 // อนุญาตให้ใช้ 0
@@ -20,12 +20,10 @@ if( $test_real_item === 0 ){
 
 ?>
 <style type="text/css">
-<!--
 .font2 {
 	font-family: AngsanaUPC;
 	font-size:20px;
 }
--->
 </style>
 <span class="font2">
 <strong>รายการยาที่เบิก <br>

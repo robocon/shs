@@ -23,10 +23,10 @@ include "bootstrap.php";
         <![endif]-->
         <style>
             @media print{
-                #userForm{
+                #userForm, #top_menu{
                     display: none;
                 }
-                .{
+                *{
                     font-size:14px;
                 }
             }
@@ -38,7 +38,7 @@ include "bootstrap.php";
                 max-width: 600px;
             }
         </style>
-        <div class="w3-container">
+        <div class="w3-container" id="top_menu">
             <a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;
 			||&nbsp;&nbsp;<a  href='com_support.php'><font size='4' class='forntsarabun'>ดูข้อมูลแจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;
             ||&nbsp;&nbsp;<a  href='com_add.php'><font size='4' class='forntsarabun'>แจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;
@@ -88,75 +88,10 @@ include "bootstrap.php";
             $year = $_POST['years']+543;
             $comUser = $_POST['comUser'];
 			$chkdate="$year-$month";
-            /*$sql = "SELECT *,TIME(`date`) AS `date_time` 
-            FROM `com_support` 
-            WHERE `date` LIKE '$year-$month%' 
-            AND `programmer` LIKE '$comUser%'
-            AND 
-            ( 
-                ( TIME(`date`) >= '16:30:00' OR TIME(`date`) <= '08:30:00' )
-                OR ( 
-                    DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 0 
-                    OR DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 6 
-                )
-            ) 
-            OR `ignore` = 'y' order by datetime asc";*/
 			
-		$chkdate="$year-$month";
-		//echo $chkdate;
-		if($chkdate == "2565-01" || $chkdate == "2565-02" || $chkdate == "2565-03" || $chkdate == "2565-04"){   
-		   $sql = "SELECT *,TIME(`date`) AS `date_time` 
-            FROM `com_support` 
-            WHERE `date` LIKE '$year-$month%' 
-            AND `programmer` LIKE '$comUser%'
-			AND `status` = 'n'
-            AND 
-            ( 
-                ( TIME(`date`) >= '16:30:00' OR TIME(`date`) <= '08:30:00' )
-                OR ( 
-                    DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 0 
-                    OR DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 6 
-                )
-            ) 
-			order by date asc";	
-		}else if($chkdate == "2565-07"){
-		   $sql = "SELECT *,TIME(`date`) AS `date_time` 
-            FROM `com_support` 
-            WHERE `dateend` LIKE '$year-$month%' 
-            AND `programmer` LIKE '$comUser%'
-			AND `status` = 'n'
-            AND 
-            ( 
-                ( TIME(`date`) >= '16:30:00' OR TIME(`date`) <= '08:30:00' )
-				OR
-				( TIME(`dateend`) >= '16:30:00' OR TIME(dateend) <= '08:30:00' )
-                OR
-				(date >= '25615-07-13' and date <='2565-07-17')
-				OR ( 
-                    DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 0 
-                    OR DATE_FORMAT(CONCAT(SUBSTRING(`date`,1,4)-543, SUBSTRING(`date`,5,6)), '%w') = 6 
-                )
-            ) 
-			order by dateend asc";						
-		}else if($chkdate == "2565-10"){
-		   $sql = "SELECT *,TIME(`date`) AS `date_time` 
-            FROM `com_support` 
-            WHERE `dateend` LIKE '$year-$month%' 
-            AND `programmer` LIKE '$comUser%'
-			AND `status` = 'n'
-            AND 
-            ( 
-                ( TIME(`date`) >= '16:30:00' OR TIME(`date`) <= '08:30:00' )
-				OR
-				( TIME(`dateend`) >= '16:30:00' OR TIME(dateend) <= '08:30:00' )
-                OR ( 
-                    DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 0 
-                    OR DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 6 
-                )
-            ) 
-			order by dateend asc";				
-		}else{
-		   $sql = "SELECT *,TIME(`date`) AS `date_time` 
+		    $chkdate="$year-$month";
+
+            $sql = "SELECT *,TIME(`date`) AS `date_time` 
             FROM `com_support` 
             WHERE `dateend` LIKE '$year-$month%' 
             AND `programmer` LIKE '$comUser%'
@@ -175,9 +110,7 @@ include "bootstrap.php";
                     OR DATE_FORMAT(CONCAT(SUBSTRING(`dateend`,1,4)-543, SUBSTRING(`dateend`,5,6)), '%w') = 6 
                 )				
             ) 
-			order by dateend desc";				
-		}
-		//echo $sql;
+			order by dateend desc";
             $q = $dbi->query($sql);
             if($q->num_rows > 0)
             {

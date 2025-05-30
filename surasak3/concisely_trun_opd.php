@@ -5,7 +5,7 @@ $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
 ?>
 <html>
 <head>
-<title>√“¬ß“π √ÿª¬Õ¥‡«√</title>
+<title>‡∏£‡∏≤‡∏¢‡∏á‡∏≤‡∏ô‡∏™‡∏£‡∏∏‡∏õ‡∏¢‡∏≠‡∏î‡πÄ‡∏ß‡∏£</title>
 <style type="text/css">
 a:link {color:#FF0000; text-decoration:underline;}
 a:visited {color:#FF0000; text-decoration:underline;}
@@ -34,16 +34,16 @@ else
 $_SESSION["name_trauma_word"] = "concisely_trun".$day_now.$month_now.$year_now;
 ?>
 <div>
-	<h3> √ÿª¬Õ¥‡«√ ∑”·º≈/©’¥¬“ OPD</h3>
+	<h3>‡∏™‡∏£‡∏∏‡∏õ‡∏¢‡∏≠‡∏î‡πÄ‡∏ß‡∏£ ‡∏ó‡∏≥‡πÅ‡∏ú‡∏•/‡∏â‡∏µ‡∏î‡∏¢‡∏≤ OPD</h3>
 </div>
 <TABLE>
 	<TR>
 		<TD>
 			<form method="POST" action="concisely_trun_opd.php">
-				«—π∑’Ë&nbsp;<input type='text' name='d' size='4' value='<?php echo $day_now;?>'>&nbsp;&nbsp;
-				‡¥◊Õπ&nbsp;<input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;
-				æ.».&nbsp;<input type='text' name='yr' size='8' value='<?php echo $year_now;?>'><br>
-				<input type='submit' name="submit" value='     µ°≈ß     ' >
+				‡∏ß‡∏±‡∏ô‡∏ó‡∏µ‡πà&nbsp;<input type='text' name='d' size='4' value='<?php echo $day_now;?>'>&nbsp;&nbsp;
+				‡πÄ‡∏î‡∏∑‡∏≠‡∏ô&nbsp;<input type='text' name='m' size='4' value='<?php echo $month_now;?>'>&nbsp;&nbsp;
+				‡∏û.‡∏®.&nbsp;<input type='text' name='yr' size='8' value='<?php echo $year_now;?>'><br>
+				<input type='submit' name="submit" value='     ‡∏ï‡∏Å‡∏•‡∏á     ' >
 			</form>
 		</TD>
 	</TR>
@@ -117,8 +117,8 @@ while ($item = $q->fetch_assoc())
 </style>
 <table class="chk_table">
 	<tr>
-		<th>√“¬°“√</th>
-		<th>√«¡</th>
+		<th>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</th>
+		<th>‡∏£‡∏ß‡∏°</th>
 	</tr>
 	<tr>
 		<td>D/S</td>
@@ -142,11 +142,11 @@ while ($item = $q->fetch_assoc())
 <br>
 <table class="chk_table">
 	<tr>
-		<th>√“¬°“√</th>
-		<th>√«¡</th>
+		<th>‡∏£‡∏≤‡∏¢‡∏Å‡∏≤‡∏£</th>
+		<th>‡∏£‡∏ß‡∏°</th>
 	</tr>
 	<tr>
-		<td>©’¥¬“ V</td>
+		<td>‡∏â‡∏µ‡∏î‡∏¢‡∏≤ V</td>
 		<td>
 		<?php 
 		if (!empty($injGroup['V']))
@@ -157,7 +157,7 @@ while ($item = $q->fetch_assoc())
 		</td>
 	</tr>
 	<tr>
-		<td>©’¥¬“ M</td>
+		<td>‡∏â‡∏µ‡∏î‡∏¢‡∏≤ M</td>
 		<td>
 		<?php 
 		if (!empty($injGroup['M']))
@@ -168,7 +168,7 @@ while ($item = $q->fetch_assoc())
 		</td>
 	</tr>
 	<tr>
-		<td>©’¥¬“ SC</td>
+		<td>‡∏â‡∏µ‡∏î‡∏¢‡∏≤ SC</td>
 		<td>
 		<?php 
 		if (!empty($injGroup['SC']))

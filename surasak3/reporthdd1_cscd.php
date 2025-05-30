@@ -170,7 +170,7 @@ foreach ($list2 as $key => $value) {
 	if($i == '20'){
 		$p++;
 		echo "</table>";
-		print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
+		print ("<div style=\"page-break-before: always;\"></div>");
 		echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้โครงการHDประจำวันที่ $date2 <br></b> ";
 		echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แผ่นที่&nbsp;$p</center>";
 		echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";
@@ -231,7 +231,8 @@ echo "</table>";
 
 // แยกไตเทียม2 ออกมาแสดงผลต่างหาก
 $PHAR = $PATHO = $XRAY = $DENTA = $PHYSI = $EMER = $NID = $OTHER = $HEMO = $OTHER2 = $sum = 0;
-
+$i = 0;
+echo "<div style=\"page-break-before: always;\"></div>";
 echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้โครงการHD เบิกจ่ายตรง ประจำวันที่ $date2 <br></b> ";
 echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แผ่นที่&nbsp;$p</center>";
 echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";
@@ -322,7 +323,7 @@ foreach ($hemo_room2 as $key => $value) {
 	if($i == '20'){
 		$p++;
 		echo "</table>";
-		print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
+		print ("<div style=\"page-break-before: always;\"></div>");
 		echo "<font face='Angsana New' size ='4'><center> <b>ลูกหนี้โครงการHDประจำวันที่ $date2 <br></b> ";
 		echo "<font face='Angsana New' size ='3'> โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แผ่นที่&nbsp;$p</center>";
 		echo "<table  border ='1' bordercolor='#000000' cellspacing='0' cellpadding='0' style='BORDER-COLLAPSE: collapse'>";

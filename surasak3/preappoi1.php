@@ -1,16 +1,22 @@
 <?php 
-
 /**
  * แก้วันที่ 29/06/61
  * - ปิดจำกัดนัด แพทย์เวชปฎิบัติ
  */
-
 session_start();
 header('Content-Type: text/html; charset=utf-8;');
-
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
+
+
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
+
 
 session_register("cAge");
 session_register("cHn");  
@@ -83,7 +89,7 @@ if(isset($idguard)){
 	
 	
 	if($_GET["chkhn"]==$cHn){
-		print "<p><font face='Angsana New' size = '5'>ชื่อ66 $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";	
+		print "<p><font face='Angsana New' size = '5'>ชื่อ-นามสกุล $cPtname  HN: $cHn อายุ $cAge &nbsp;<B>สิทธิ:$cptright:$idguard</font></B></p>";	
 	}else{
 		$cHn=$_GET["chkhn"];
 		$queryT="SELECT yot,name,surname,dbirth,phone,idcard FROM opcard where hn='$cHn'";

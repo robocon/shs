@@ -241,10 +241,15 @@ function getMonthValue($keyMatch){
 	return $val;
 }
 
-function getDateList($name = 'days', $match = null){
+function getDateList($name = 'days', $match = null, $class_name = '', $extra = false){
 	$def_day = range(1, 31);
 	?>
-	<select name="<?=$name;?>" id="<?=$name;?>">
+	<select name="<?=$name;?>" id="<?=$name;?>" class="<?=$class_name;?>">
+		<?php 
+		if($extra !== false){
+			?><option value="">เลือกวันที่</option><?php
+		}
+		?>
 		<?php foreach($def_day as $key => $day): ?>
 		<?php $select = ( $match == $day ) ? 'selected="selected"' : '' ; ?>
 		<option value="<?=sprintf('%02d',$day);?>" <?=$select;?>><?=$day;?></option>
@@ -258,7 +263,7 @@ function getDateList($name = 'days', $match = null){
  * $name string ชื่อของตัวแปร
  * $match string ค่าที่จับคู่ใน value
  */
-function getMonthList($name = 'months', $match = null, $class_name = false){
+function getMonthList($name = 'months', $match = null, $class_name = false, $extra){
 	global $def_month_th;
 	if( empty($def_month_th) ){
 		echo 'กรุณาเปิด global variable ใน php.ini';
@@ -266,6 +271,11 @@ function getMonthList($name = 'months', $match = null, $class_name = false){
 	}
 	?>
 	<select name="<?=$name;?>" class="<?=$class_name;?>" id="<?=$name;?>">
+		<?php 
+		if($extra !== false){
+			?><option value="">เลือกเดือน</option><?php
+		}
+		?>
 		<?php foreach($def_month_th as $key => $month): ?>
 		<?php $select = ( $match == $key ) ? 'selected="selected"' : '' ; ?>
 		<option value="<?=$key;?>" <?=$select;?>><?=$month;?></option>
@@ -286,14 +296,18 @@ function getMonthList($name = 'months', $match = null, $class_name = false){
  * @example getYearList('new_name', true, 2558, array(2556,2557,2558,2559));
  * เป็นการตั้งชื่อ input ชื่อ new_name แสดงเป็นปี พศ และแสดงปี 2558 เป็นค่าเริ่มต้นโดยมีช่วงการแสดงผลตั้งแต่ปี 2556 ถึง 2559
  */
-function getYearList($name = 'years', $thai = false, $year = null, $range = array(), $class_name = false, $function = false){ 
+function getYearList($name = 'years', $thai = false, $year = null, $range = array(), $class_name = false, $function = false, $extra = false){ 
 	$selectCallFunction = '';
 	if(!empty($function)){
-		$selectCallFunction = 'onChange="'.$function.'()"';
+		$selectCallFunction = 'onchange="'.$function.'()"';
 	}
 	?>
 	<select name="<?=$name;?>" class="<?=$class_name;?>" id="<?=$name;?>" <?=$selectCallFunction;?> >
-		<?php
+		<?php 
+		if($extra !== false){
+			?><option value="">เลือกปี</option><?php
+		}
+		
 		if( !empty($range) ){
 			$y_min = min($range);
 			$y_max = max($range);
@@ -499,4 +513,20 @@ function lineMessagePush($json, $url, $type, $msg){
     $result = curl_exec( $curl );
     curl_close($curl);
     echo $result;
+}
+
+function sendTelgramMsg($text){
+
+    $curl = curl_init();
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
+	curl_setopt($curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT_MS, 400); // set timeout เอาไว้ ถ้าส่งข้อมูลไม่ได้ให้ตัด connection ทิ้งไป
+	$result = curl_exec($curl);
+	if (curl_errno($curl)) {
+		$result = curl_error($curl);
+	}
+	curl_close($curl);
+    return $result;
 }

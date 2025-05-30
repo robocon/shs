@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 import json
+from subprocess import Popen
 
 json_data_file = open("config.json", "r")
 data = json.load(json_data_file)
@@ -22,10 +23,15 @@ cfg = data['mysql']
 SOURCE_HOST_DB = cfg["SOURCE_HOST_DB"]+"/"+cfg["SOURCE_DB"]
 SOURCE_USER = cfg["SOURCE_USER"]
 SOURCE_PASS = cfg["SOURCE_PASS"]
+SOURCE_HOST = cfg["SOURCE_HOST_DB"]
+SOURCE_DB = cfg["SOURCE_DB"]
 
 SINK_HOST_DB = cfg["SINK_HOST_DB"]+":"+cfg["SINK_PORT"]+"/"+cfg["SINK_DB"]
 SINK_USER = cfg["SINK_USER"]
 SINK_PASS = cfg["SINK_PASS"]
+SINK_HOST = cfg["SINK_HOST_DB"]
+SINK_DB  = cfg["SINK_DB"]
+SINK_PORT = cfg["SINK_PORT"]
 
 try:
     mydb = mysql.connector.connect(
@@ -61,6 +67,63 @@ myresult = mycursor.fetchone()
 latest_id = str(myresult["latest_id"])
 
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=ipcard --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=ipcard --sink-disable-truncate true"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# dgprofile
+mycursor.execute("SELECT `row_id` AS latest_id FROM dgprofile ORDER BY row_id DESC LIMIT 1")
+myresult = mycursor.fetchone()
+latest_id = str(myresult["latest_id"])
+
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile --sink-disable-truncate true"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# drugreact
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drugreact --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drugreact"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# drugreact_group
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drugreact_group --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drugreact_group"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# drugreact_group_list
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drugreact_group_list --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drugreact_group_list"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# druglst
+p = Popen("download_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+stdout, stderr = p.communicate()
+
+p = Popen("import_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+stdout, stderr = p.communicate()
+
+# drug_interaction
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drug_interaction --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drug_interaction"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# dt_rechallenge
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dt_rechallenge --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dt_rechallenge"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# opcard
+mycursor.execute("SELECT `row_id` AS latest_id FROM opcard ORDER BY row_id DESC LIMIT 1")
+myresult = mycursor.fetchone()
+latest_id = str(myresult["latest_id"])
+
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=opcard --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=opcard --sink-disable-truncate true"
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')

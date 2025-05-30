@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-    session_start();//for security
+session_start();//for security
+	include("connect.inc");
     //if (isset($sIdname)){} else {die;} //for security
 	if($sIdname == ""){
 		
@@ -15,12 +16,6 @@ header('Content-Type: text/html; charset=utf-8');
 		$today = $_GET['a']."-".$_GET['b']."-".$_GET['c'];
 	}
    print "<font face='Angsana New'><b>วันที่ $today: เก็บเงินผู้ป่วยที่ยังไม่ได้  'จ่ายเงิน' , *กรณีเบิกตรงให้เก็บเงินส่วนที่ 'เบิกไม่ได้' &nbsp;<U>ถ้าเป็นสีแดงแสดงว่าสิทธิการรักษามีปัญหา</U></b><br>";
-    print "<br><strong>รายการตรวจวิเคราะห์โรคหรือทำหัตถการ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp<a target=_self  href='../nindex.htm'>ไปเมนู</a>";
-// print "VN= $vn";
- //  print "&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
-   
-print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash_2022.php'>รายต่อไป</a>&nbsp&nbsp;";
-//print  $acc;
 
 
   $today="$yr-$m-$d";
@@ -33,11 +28,10 @@ print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash_20
 	if($vn==""){
 		$vn = $_POST['vn'];
 	}
-	include("connect.inc");
 		
-	$query = "select hn,ptname from opday where vn='$vn' and thidate like '$dateid%' ";
+	$query = "select hn,ptname,idcard from opday where vn='$vn' and thidate like '$dateid%' ";
 	$result = mysql_query($query) or die("Query failed");
-	list($hn,$cPtname) = mysql_fetch_row($result);
+	list($hn,$cPtname,$cIdcard) = mysql_fetch_row($result);
 	$hn_opday = $hn;
 
 	if($hn!=''){
@@ -119,95 +113,122 @@ print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash_20
 				window.location.href="vncash_2022.php";
             </script>
 			<?
-		} 
+	} 
 
+
+print "<div style='font-weight:bold;'>รายการที่เข้าบัญชีไปแล้ว </div>"; 
+print "<table width='60%' cellpadding='5'>";
+//print_r($_POST);
+$chkdate="$yr-$m-$d";
+$query51 = "SELECT  date,hn,an,depart,detail,price,paid,idname,credit,ptright,billno,paidcscd,credit_detail,idname,vn FROM opacc WHERE date LIKE '$chkdate%' and hn='$hn'  ";
+//echo $query51;   
+$result51 = mysql_query($query51) or die("Query failed");
+while (list ($date,$hn,$an,$depart,$detail,$price,$paid,$idname,$credit,$ptright,$billno,$paidcscd,$credit_detail,$idname,$opacc_vn) = mysql_fetch_row ($result51)) {
+	print ("<tr BGCOLOR='#fadbd8' width='90%'>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$date</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$opacc_vn</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$hn</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$depart</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='3'><b>$detail</b></td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='3'><b>$paid</b></td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2' color='red'><b>$credit</b></td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2' color='red'><b>$credit_detail</b></td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$paidcscd</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$ptright</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$billno</td>\n".
+	"  <td ><font face='TH SarabunPSK'font size='2'>$idname</td>\n".
+	" </tr>\n");
+}
+print "</table>";
+
+print "<br><strong>รายการตรวจวิเคราะห์โรคหรือทำหัตถการ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp<a target=_self  href='../nindex.htm'>ไปเมนู</a>";
+print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash_2022.php'>รายต่อไป</a>&nbsp&nbsp;";
 ?>
-
 <form name="from3" method="post" action="opitem2_2022.php" target="_blank">
 <table>
- <tr>
-  <th bgcolor=6495ED>เก็บเงิน</th>
-  <th bgcolor=6495ED>#</th>
-  <th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ&เก็บเงินส่วนเกิน</th>
-  <th bgcolor=6495ED><font face='Angsana New'>HN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>AN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>VN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>แผนก</th>
-  <th bgcolor=6495ED><font face='Angsana New'>รายการ</th>
-  <th bgcolor=6495ED><font face='Angsana New'>รวมเงิน</th>
-  <th bgcolor=F08080><font face='Angsana New'>เบิกไม่ได้</th>
-  <th bgcolor=#99FF99><font face='Angsana New'>จ่ายเงิน</th>
-   <th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th> 
-	<th bgcolor=#CC0000><font face='Angsana New'>ชำระโดย</th>
-    <th bgcolor=6495ED><font face='Angsana New' size='1'>ออกopcard</th>
-    <th bgcolor=6495ED><font face='Angsana New' size='1'>เจ้าหน้าที่</th>
-  </tr>
-
+	<tr>
+		<th bgcolor=6495ED>เก็บเงิน</th>
+		<th bgcolor=6495ED>#</th>
+		<th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
+		<th bgcolor=6495ED><font face='Angsana New'>ชื่อ&เก็บเงินส่วนเกิน</th>
+		<th bgcolor=6495ED><font face='Angsana New'>HN</th>
+		<th bgcolor=6495ED><font face='Angsana New'>AN</th>
+		<th bgcolor=6495ED><font face='Angsana New'>VN</th>
+		<th bgcolor=6495ED><font face='Angsana New'>แผนก</th>
+		<th bgcolor=6495ED><font face='Angsana New'>รายการ</th>
+		<th bgcolor=6495ED><font face='Angsana New'>รวมเงิน</th>
+		<th bgcolor=F08080><font face='Angsana New'>เบิกไม่ได้</th>
+		<th bgcolor=#99FF99><font face='Angsana New'>จ่ายเงิน</th>
+		<th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th> 
+		<th bgcolor=#CC0000><font face='Angsana New'>ชำระโดย</th>
+		<th bgcolor=6495ED><font face='Angsana New' size='1'>ออกopcard</th>
+		<th bgcolor=6495ED><font face='Angsana New' size='1'>เจ้าหน้าที่</th>
+	</tr>
 <?php
 //    $detail="ค่ายา";
-    $num=0;
-    include("connect.inc");
-  
-    $query = "SELECT date,ptname,hn,an,depart,detail,price,sumnprice,paid,row_id,accno,tvn,ptright,idname FROM depart WHERE date LIKE '$today%' AND `hn` = '$hn_opday' and tvn='$vn' ";
-	//echo $query;
-    $result = mysql_query($query)
-        or die("Query failed");
+$num=0;
 
-    while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$sumnprice,$paid,$row_id,$accno,$tvn,$ptright,$idname) = mysql_fetch_row ($result)) {
-        $num++;
-        $time=substr($date,11);
- $totalpri1=$totalpri1+$price;
- $totalpri11=$totalpri11+$paid;
+$sqlf = "select toborow,ptright from opday where hn='$hn_opday' and thidate like '$today%' ";
+list($toborow,$ptrightmain) = mysql_fetch_array(mysql_query($sqlf));
+
+$query = "SELECT date,ptname,hn,an,depart,detail,price,sumnprice,paid,row_id,accno,tvn,ptright,idname FROM depart WHERE date LIKE '$today%' AND `hn` = '$hn_opday' and tvn='$vn' ";
+// echo $query;
+$result = mysql_query($query) or die("Query failed ".mysql_error());
+
+while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$sumnprice,$paid,$row_id,$accno,$tvn,$ptright,$idname) = mysql_fetch_row ($result)) {
+	$num++;
+	// echo "-->".$num."<br>";
+	$time=substr($date,11);
+	$totalpri1=$totalpri1+$price;
+	$totalpri11=$totalpri11+$paid;
 	
 	$query4= "SELECT * FROM patdata WHERE idno ='$row_id' ";
-    $result4 = mysql_query($query4) or die("Query failed");
+    $result4 = mysql_query($query4) or die("Query failed".mysql_error());
 	$cunt = mysql_num_rows($result4);
-
- if(substr($ptright,0,3)=='R07'){
-			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
-
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				$color = "#CCFF00";
-			}else{
-				$color = "FF8C8C";
-			}
-		}else if(substr($ptright,0,3)=='R03'){
-			$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
-
-			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
-				$color = "99CC00";
-			}else{
-				$color = "FF8C8C";
-			}
+	
+ 	if(substr($ptright,0,3)=='R07'){
+		$sqlSsoData = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
+		if(Mysql_num_rows(Mysql_Query($sqlSsoData)) > 0){
+			$color = "#CCFF00";
 		}else{
-			$color = "66CDAA";
+			$color = "FF8C8C";
 		}
+	}else if(substr($ptright,0,3)=='R03'){
+		$sql = "Select hn, status From cscddata where hn = '$hn' AND ( status like '%U%' OR status = '\r' OR status like '%V%')  limit 1 ";
+		if(Mysql_num_rows(Mysql_Query($sql)) > 0){
+			$color = "99CC00";
+		}else{
+			$color = "FF8C8C";
+		}
+	}else{
+		$color = "66CDAA";
+	}
 
-$sql = "Select credit,billno From opacc where txdate = '$date' and hn= '$hn' and price='$price' order by row_id desc limit 1";
-$result2 = Mysql_Query($sql);
-list($credit,$billno) = Mysql_fetch_row($result2);
-//echo $sql."<br>";
-if($credit=='เงินสด'){$color3='#CC0000';}
-else if($credit=='ทหารไทย'){$color3='#CC0000';}
-else {$color3='#00CC99';}
-$hnid = $hn;
-		$sqlf = "select toborow,ptright from opday where hn='".$hn."' and thidate like '$today%' ";
-		list($toborow,$ptrightmain) = mysql_fetch_array(mysql_query($sqlf));
-$totalpaid1=$sumnprice;
+	$credit = '';
+	$billno = '';
+	$color3='#00CC99';
+	$sql = "Select credit,billno From opacc where txdate = '$date' and hn= '$hn' and price='$price' limit 1";
+	$result2 = Mysql_Query($sql) or die("Query failed ".mysql_error());
+	if(mysql_num_rows($result2)>0){
+		list($credit,$billno) = Mysql_fetch_row($result2);
+		if($credit=='เงินสด'){$color3='#CC0000';}
+		else if($credit=='กรุงไทย'){$color3='#CC0000';}
+	}
+	
+	$hnid = $hn;
 
+	$totalpaid1=$sumnprice;
 
-
-        print " <tr>\n".
+	print " <tr>\n".
            "  <td BGCOLOR=$color><font face='Angsana New' size='1' ><input name='ch$num' type='checkbox' value='$row_id'><font color='#CC0000'><B>$credit</B></font></td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$num</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n";
-		   if($sumnprice>0&$sumnprice!=$price||$cunt>15){
-		   		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"opitem_2022.php?sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
-		   }else{
-				print "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</td>\n";
-		   }
-	 print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"printcscd1.php?sDate=$date&nRow_id=$row_id&nAccno=$accno\">$hn</td>\n".
+	if($sumnprice>0&$sumnprice!=$price||$cunt>15){
+		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"opitem_2022.php?sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
+	}else{
+		print "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</td>\n";
+	}
+	print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"printcscd1.php?sDate=$date&nRow_id=$row_id&nAccno=$accno\">$hn</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$an</td>\n".
     	   "  <td BGCOLOR=$color><font face='Angsana New'>$tvn</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New' size='1'>$depart</td>\n".
@@ -220,17 +241,15 @@ $totalpaid1=$sumnprice;
 		   "  <td BGCOLOR=$color3><font face='Angsana New' size='1'>$toborow</td>\n".
 		    "  <td BGCOLOR=$color3><font face='Angsana New' size='1'>$idname</td>\n".
            " </tr>\n";
-		echo "<input name='sDate$num' value='$date' type='hidden' />";
-		echo "<input name='nhn' value='$hn' type='hidden' />";
-		echo "<input name='nAccno$num' value='$accno' type='hidden' />";
-       }
-    	include("unconnect.inc");
+	echo "<input name='sDate$num' value='$date' type='hidden' />";
+	echo "<input name='nhn' value='$hn' type='hidden' />";
+	echo "<input name='nAccno$num' value='$accno' type='hidden' />";
+}
 ?>
-
-
+</table>
+<hr>
 
 <?php
-    session_start();//for security
     if (isset($sIdname)){} else {die;} //for security
      $today="$d-$m-$yr"; 
 	 if($today=="--"){
@@ -269,14 +288,13 @@ $date="";
     $detail="ค่ายา";
    // $num=0;
    $k=0;
-    include("connect.inc");
+    
   
     // $query = "SELECT date,ptname,hn,an,price,paid,essd,nessdy,nessdn,dsy,dpy,dsn,dpn,row_id,accno,tvn,ptright FROM phardep WHERE (datedr LIKE '$today%' or (datedr LIKE '$today%' and price <=0)) and tvn='$vn' ";
 	//echo $query;
 	$query = "SELECT `date`,`ptname`,`hn`,`an`,`price`,`paid`,`essd`,`nessdy`,`nessdn`,`dsy`,`dpy`,`dsn`,`dpn`,`row_id`,`accno`,`tvn`,`ptright` FROM `phardep` WHERE `datedr` LIKE '$today%' AND `hn` = '$hn_opday' AND `tvn`='$vn' ORDER BY row_id ASC";
-    //echo $query;
-	$result = mysql_query($query)
-        or die("Query failed");
+    // echo $query;
+	$result = mysql_query($query) or die("Query failed");
 
     while (list ($date, $ptname,$hn,$an,$price,$paid,$essd,$nessdy,$nessdn,$dsy,$dpy,$dsn,$dpn,$row_id,$accno,$tvn,$ptright) = mysql_fetch_row ($result)) {
     $num++;
@@ -313,7 +331,7 @@ if (!empty($an)){
 	}
 $totalpaid2=$topay;
  if(substr($ptright,0,3)=='R07'){
-			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+			$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 				$color = "#CCFF00";
@@ -333,13 +351,13 @@ $totalpaid2=$topay;
 			$color = "66CDAA";
 		}
 $credit="";
-$sql = "Select credit,billno From opacc where txdate = '$date' and $paid1 > '0' and hn='$hn' order by row_id desc limit 1";
-//echo $sql;
+$sql = "Select credit,billno From opacc where txdate = '$date' and $paid1 > '0' and hn='$hn' and depart='PHAR' order by row_id desc limit 1";
+//echo $sql."<br>";
 $result2 = Mysql_Query($sql);
 list($credit,$billno) = Mysql_fetch_row($result2);
 
 if($credit=='เงินสด'){$color3='#CC0000';}
-else if($credit=='ทหารไทย'){$color3='#CC0000';}
+else if($credit=='กรุงไทย'){$color3='#CC0000';}
 else {$color3='#00CC99';}
 $hnid = $hn;
 
@@ -401,7 +419,7 @@ $totaltopay1=$totalpaid1+$totalpaid2;
 <form name="from3" method="post" action="opitem2_pt.php" target="_blank">
 
 <?php
-    session_start();//for security
+    //for security
     if (isset($sIdname)){} else {die;} //for security
      $today="$d-$m-$yr"; 
 	 if($today=="--"){
@@ -420,7 +438,7 @@ $totaltopay1=$totalpaid1+$totalpaid2;
  <th bgcolor=6495ED>เก็บเงิน</th>
   <th bgcolor=6495ED>#</th>
   <th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ&เก็บเงินส่วนเกิน</th>
+  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ&เก็บเงินส่วนเกิน (ยา/เวชภัณฑ์)</th>
   <th bgcolor=6495ED><font face='Angsana New'>HN</th>
   <th bgcolor=6495ED><font face='Angsana New'>AN</th>
  <th bgcolor=6495ED><font face='Angsana New'>VN</th>
@@ -439,7 +457,7 @@ $date="";
     $detail="ค่ายา";
    // $num=0;
    $k=0;
-    include("connect.inc");
+    
   
     $query = "SELECT date,ptname,hn,an,price,paid,essd,nessdy,nessdn,dsy,dpy,dsn,dpn,row_id,accno,tvn,ptright FROM dphardep_pt WHERE (date LIKE '$today%' or (date LIKE '$today%' and price <=0)) and tvn='$vn' ";
 	//echo $query;
@@ -478,7 +496,7 @@ if (!empty($an)){
 	}
 $totalpaid2=$topay;
  if(substr($ptright,0,3)=='R07'){
-			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
+			$sql = "Select id From ssodata where id LIKE '$cIdcard%' limit 1 ";
 
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 				$color = "#CCFF00";
@@ -498,13 +516,13 @@ $totalpaid2=$topay;
 			$color = "66CDAA";
 		}
 $credit="";
-$sql = "Select credit,billno From opacc where txdate = '$date' and $paid1 > '0' and hn='$hn' order by row_id desc limit 1";  
+$sql = "Select credit,billno From opacc where date = '$txdate' and $paid1 > '0' and hn='$hn' order by row_id desc limit 1";  
 //echo $sql;
 $result2 = Mysql_Query($sql);
 list($credit,$billno) = Mysql_fetch_row($result2);
 
 if($credit=='เงินสด'){$color3='#CC0000';}
-else if($credit=='ทหารไทย'){$color3='#CC0000';}
+else if($credit=='กรุงไทย'){$color3='#CC0000';}
 else {$color3='#00CC99';}
 $hnid = $hn;
 
@@ -711,5 +729,19 @@ if(mysql_num_rows($q_lastvisit) > 0)
 
 }
 
-    include("unconnect.inc");
+
+$opsql="SELECT `vn` 
+FROM `opday` 
+WHERE (`thidate` like '$dateid%' ) 
+AND `hn` = '$hnid' and `vn` !='$vn'";
+//echo $opsql;
+$opquery = mysql_query($opsql);
+if(mysql_num_rows($opquery) > 0)
+{
+	while($oprows = mysql_fetch_array($opquery)){
+		$repeatvn=$oprows["vn"];
+		echo "<script>alert('ผู้ป่วยมีการออก VN ซ้ำ  คือ $repeatvn');</script>";
+		
+	}	
+}	
 ?>

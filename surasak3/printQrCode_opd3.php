@@ -39,9 +39,12 @@ div {
 //window.opener.location.reload();
 //window.opener.location.reload(true);
 window.print();
-	setTimeout(function(){ 
-            window.close();
-	}, 1000);
+	// setTimeout(function(){ 
+    //         window.close();
+	// }, 1000);
+	window.onafterprint = function(){
+		window.close();
+	}
 </script>
 <?php 
 
@@ -68,15 +71,6 @@ $hn = $_GET['hn'];
 	}else{
 		$sex="ไม่ระบุเพศ";
 	}	
-
-	// $sql = "SELECT `an` FROM `bed` WHERE `hn` = '$hn' ";
-	$bed = '';
-	$q = mysql_query("SELECT `an` FROM `bed` WHERE `hn` = '$hn' ");
-	if (mysql_num_rows($q) > 0) {
-		$a = mysql_fetch_assoc($q);
-		$bed = '<div style="font-size:12px;"><b>AN: </b>'.$a['an'].'</div>';
-		# code...
-	}
 ?>
 
 <!--stiker เล็ก 50*30 -->
@@ -94,7 +88,6 @@ $hn = $_GET['hn'];
 	<div style="font-size:12px;"><?php echo $ptright;?></div>
 	<div style="font-size:12px;"><?php echo $toborow;?></div>
 	<!-- <div><strong style="font-size:12px;"><?php echo $svdate;?></strong></div> -->
-	<?=$bed;?>
 	</th>
   </tr>
 </table>

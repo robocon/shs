@@ -1,10 +1,10 @@
 <?php
-//Update 31 ��. 53 bbm
+//Update 31 พค. 53 bbm
 session_start();
 
 /** Ajax Response Start **/
 if(isset($_GET["action"]) && $_GET["action"] != ""){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	// header("content-type: application/x-javascript; charset=TIS-620");
 }
 
 include 'connect.inc';
@@ -34,7 +34,7 @@ if(isset($_POST["actiondc"]) && $_POST["actiondc"] != ""){
 
 	$an = trim($_POST["actiondc"]);
 
-	// AN ����ѧ������˹��� �ʴ���� dcdate �ѧ�� 0000-00-00 00:00:00
+	// AN นี้ยังไม่ได้จำหน่าย แสดงว่า dcdate ยังเป็น 0000-00-00 00:00:00
 	$sql = "SELECT `date`,`an`,`hn`,`dcdate`,`dcnumber`,`ptname`,`my_ward` 
 	FROM `ipcard` 
 	WHERE `an` = '$an' 
@@ -44,7 +44,7 @@ if(isset($_POST["actiondc"]) && $_POST["actiondc"] != ""){
 
 	if( $item === false ){
 		
-		$txt = '{"state":400,"msg":"��辺�����ż����� AN: '.$an.'"}';
+		$txt = '{"state":400,"msg":"ไม่พบข้อมูลผู้ป่วย AN: '.$an.'"}';
 
 	}else if( $item['dcdate'] === '0000-00-00 00:00:00' ){
 
@@ -53,22 +53,22 @@ if(isset($_POST["actiondc"]) && $_POST["actiondc"] != ""){
 			$ward = '('.$item['my_ward'].')';
 		}
 		
-		$message = '�����Ţ AN '.$item['an'].' ����ѧ������˹��� ��سҨ�˹��¡�͹'.$ward;
+		$message = 'หมายเลข AN '.$item['an'].' นี้ยังไม่ได้จำหน่าย กรุณาจำหน่ายก่อน'.$ward;
 		$txt = '{"state":400,"msg":"'.$message.'","dcnumber":200}';
 
 	}else if( empty($item['dcnumber']) ){
 
-		$message = '�����Ţ AN '.$item['an'].' ����ѧ���������Ţ��è�˹���';
+		$message = 'หมายเลข AN '.$item['an'].' นี้ยังไม่ได้ให้เลขการจำหน่าย';
 		$txt = '{"state":400,"msg":"'.$message.'","dcnumber":400}';
 	
 	}else{
 
-		// �ء���ҧ�������� �������... ������� �ը�����
+		// ทุกอย่างโอเครรรรร ดีใจมั้ย... เอ้าาาา ดีจาาาาย
 		$txt = '{"state":200,"an":"'.$item['an'].'","ptname":"'.$item['ptname'].'","dcnumber":"'.$item['dcnumber'].'"}';
 
 	}
 	
-    header('Content-Type:text/html; charset=tis-620');
+    // header('Content-Type:text/html; charset=tis-620');
     echo $txt;
 	exit;
 }
@@ -77,7 +77,7 @@ if(isset($_POST["actiondc"]) && $_POST["actiondc"] != ""){
 ?>
 <html>
 <head>
-<title>�ѹ�֡ʶҹл���ѵԼ������</title>
+<title>บันทึกสถานะประวัติผู้ป่วยใน</title>
 <style type="text/css">
 a:link {color:#FF0000; text-decoration:underline;}
 a:visited {color:#FF0000; text-decoration:underline;}
@@ -203,8 +203,8 @@ function add_an(){
 </SCRIPT>
 </head>
 <body>
-&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; ����</a>
-&nbsp;&nbsp;<a target=_top  href="../surasak3/anchkstatus.php">&lt;&lt; ��Ǩ�ͺʶҹ�</a>
+&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm">&lt;&lt; เมนู</a>
+&nbsp;&nbsp;<a target=_top  href="../surasak3/anchkstatus.php">&lt;&lt; ตรวจสอบสถานะ</a>
 
 <TABLE width="100%" align="center">
 	<TR valign="top">
@@ -222,7 +222,7 @@ function add_an(){
 								</TR>
 								<TR>
 									<TD colspan="2" align="center">
-										<button type="button" onclick="return add_an()">��ŧ</button>
+										<button type="button" onclick="return add_an()">ตกลง</button>
 									</TD>
 								</TR>
 							</TABLE>
@@ -240,10 +240,10 @@ function add_an(){
 		var stat = true;
 		
 		if(document.getElementById('list_an').innerHTML == ""){
-			alert("��سҡ�͡ AN ");
+			alert("กรุณากรอก AN ");
 			stat = false;
 		}else if(document.f1.status.value == ""){
-			alert("��س��к�ʶҹ�");
+			alert("กรุณาระบุสถานะ");
 			stat = false;
 		}
 
@@ -252,7 +252,7 @@ function add_an(){
 	}
 	
 	function statuschange(){
-		if(document.getElementById('status').value=="������ͷ��ǹ"){
+		if(document.getElementById('status').value=="ยืมเพื่อทบทวน"){
 			document.getElementById('status2').style.display="block";
 		}else{
 			document.getElementById('status2').style.display="none";
@@ -266,7 +266,7 @@ function add_an(){
 $back = isset($_REQUEST['back']) ? $_REQUEST['back'] : false ;
 $an = isset($_REQUEST['an']) ? ( is_array($an) ? $an : array($an) ) : false ;
 
-// ���ҧ input �����ʴ� checkbox
+// สร้าง input เพื่อแสดง checkbox
 $an_txt = '';
 if( $an !== false ){
 	
@@ -288,7 +288,7 @@ if( $an !== false ){
 			<TD>
 				<TABLE>
 					<TR bgcolor="#3366FF">
-						<TD colspan="2" align="center" class="font_title">�к��ѹ�֡ʶҹл���ѵԼ������</TD>
+						<TD colspan="2" align="center" class="font_title">ระบบบันทึกสถานะประวัติผู้ป่วยใน</TD>
 					</TR>
 					<TR valign="top">
 						<TD align="right">AN : </TD>
@@ -297,7 +297,7 @@ if( $an !== false ){
 						</TD>
 					</TR>
 					<TR>
-						<TD align="right">ʶҹ�</TD>
+						<TD align="right">สถานะ</TD>
 						<TD>
 							<? 
 							$strSQL = "SELECT name FROM departments where statusdc='y' order by name"; 
@@ -311,23 +311,23 @@ if( $an !== false ){
 									<? 
 								} 
 								?> 
-								<option value='���'>���</option>
-								<option value='������ͷ��ǹ'>������ͷ��ǹ</option>
+								<option value='ยืม'>ยืม</option>
+								<option value='ยืมเพื่อทบทวน'>ยืมเพื่อทบทวน</option>
 							</select>
    						</TD>
  						<TD>
 							<INPUT TYPE="text" NAME="status1" id="status1">
 							<select name="status2"  id="status2" style="display:none">
-								<option>���ǹ Case �Ԩ��/�鹤���</option>
-								<option>���ǹ Dead</option>
-								<option>���ǹ Refer</option>
-								<option>���ǹ�óտ�ͧ��ͧ/���</option>
+								<option>ทบทวน Case วิจัย/ค้นคว้า</option>
+								<option>ทบทวน Dead</option>
+								<option>ทบทวน Refer</option>
+								<option>ทบทวนกรณีฟ้องร้อง/คดี</option>
 							</select>
 						</TD>
 					</TR>
 					<TR>
 						<TD colspan="3" align="center">
-							<INPUT TYPE="submit" value="  ��ŧ  ">
+							<INPUT TYPE="submit" value="  ตกลง  ">
 							<input type="hidden" name="back" value="<?php echo $back;?>">
 						</TD>
 					</TR>

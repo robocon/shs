@@ -1,9 +1,11 @@
 <?php
-    session_start();
-	include("connect.inc");
+session_start();
+
+require_once dirname(__FILE__).'/connect.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 	
-	$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-	$dbi->query("SET NAMES UTF8");
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->query("SET NAMES UTF8");
 
 //-------------------------เช็ค druginteraction	
 	$csql = "SELECT a.drugcode FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."'   AND a.date = '".$_GET["sDate"]."' ";
@@ -147,39 +149,9 @@ $datejel=$rowsj["date"];
 if($numj > 0){
 	echo "<script>alert('ผู้ป่วย HN : $sHn ได้รับยา 10H014 ฟรีประจำเดือน $chkDate ไปแล้ว เมื่อวันที่ $datejel');</script>";
 }
-
-
-
-//----------------------------เช็คแพ้ยา
-$rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '".$sHn."' ";
-$rquery = mysql_query($rsql);
-$rnum=mysql_num_rows($rquery);		
-if($rnum > 0){
-	// echo "<script>alert('ผู้ป่วย HN : $sHn มีประวัติแพ้ยาดังต่อไปนี้ ";
-	$drugreact_txt = '';
-	$i = 1;
-	while($rrows= mysql_fetch_array($rquery)){
-			$tradname=$rrows["tradname"];
-			$advreact=$rrows["advreact"];
-			$asses=$rrows["asses"];
-			$drugreact_txt .= $i.') '.$tradname.'...'.$advreact.'('.$asses.')\n ';
-			$i++;
-	}
-	// echo $drugreact_txt;
-	// echo "');</script>";
-	?>
-	<script type="text/javascript">
-		alert("ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้\n <?=$drugreact_txt;?>");
-	</script>
-	<?php	
-}else{
-	//echo "<script>alert('ผู้ป่วย HN : $sHn ไม่มีประวัติแพ้ยา');";  
-}
-//----------------------------จบเช็คแพ้ยา
 ?>
 <script src="js/sweetalert2.all.min.js"></script>
 <script>
-
 function chkin(){
 	if(document.getElementById('cut2').style.display=='none'){
 		document.getElementById('cut2').style.display='block';
@@ -192,6 +164,36 @@ function chkin(){
 }
 </script>
 <?php 
+
+//----------------------------เช็คแพ้ยา
+$rsql= "SELECT tradname,advreact,asses FROM drugreact WHERE hn = '$sHn' ";
+$rquery = mysql_query($rsql);
+$rnum=mysql_num_rows($rquery);		
+if($rnum > 0){
+	$drugreact_txt = '';
+	$i = 1;
+	while($rrows= mysql_fetch_array($rquery)){
+			$tradname=$rrows["tradname"];
+			$advreact=$rrows["advreact"];
+			$asses=$rrows["asses"];
+			$drugreact_txt .= $i.') '.$tradname.'...'.$advreact.'('.$asses.')\n';
+			$i++;
+	}
+	?>
+	<script type="text/javascript">
+		alert("ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้\n <?=$drugreact_txt;?>");
+		// ไม่มี body เลยใช้ swal.fire ไม่ได้
+		// Swal.fire({
+		// 	title: "ผู้ป่วย HN : <?=$sHn;?> มีประวัติแพ้ยาดังต่อไปนี้",
+		// 	text: "<?=$drugreact_txt;?>",
+		// 	icon: "Warning"
+		// })
+	</script>
+	<?php	
+}
+//----------------------------จบเช็คแพ้ยา
+
+
 $visit_date = substr($_GET['sDate'], 0, 10);
 $sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$sHn' ";
 $res = mysql_query($sqlDiag);
@@ -226,10 +228,10 @@ $sdate=substr($_GET["sDate"],0,10);
 list($y1,$m1,$d1)=explode("-",$sdate);
 $chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
 
-$sqlopday = "select toborow,diag,age from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+$sqlopday = "select toborow,diag,age,thidate from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
 //echo $sqlopday;
 $res= mysql_query($sqlopday) or die("Query failed");
-list($toborow,$diagnosis,$age) = mysql_fetch_row($res);
+list($toborow,$diagnosis,$age,$opdayThidate) = mysql_fetch_row($res);
 $tob = substr($toborow,0,4);
 
 $sqlopday1 = "select idcard,dbirth from opcard where hn='$sHn'";
@@ -329,59 +331,96 @@ if( !function_exists('cal_to_bc') ){
 	}
 }
 
-$date_end = date('Y-m-d');
-$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
+$EnOpdayThidate = (substr($opdayThidate,0,4)-543).substr($opdayThidate,4,6);
 
-$date_end = ad_to_bc($date_end);
-$date_start = ad_to_bc($date_start);
 
 $patient_hn = trim($sHn);
+$sixMonthsLater = strtotime("-6 Months", strtotime($EnOpdayThidate));
+$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
+// $currentDayTH = (date('Y')+543).date('-m-d');
 
-$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
-FROM `drugrx` 
-WHERE `hn` = '$patient_hn' 
-AND ( `date` >= '$date_start' AND `date` < '$date_end' ) 
-AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
-AND `status` = 'Y' AND `amount` > 0 
-ORDER BY `row_id` ASC;";
-$dbi->query($sqlTemp);
+/*
+1. (แทนค่า x) หาใน drugrx ก่อนว่าในช่วง 6 เดือนย้อนหลังมียาตัวไหนเข้าเกณฑ์กลุ่ม warfarin/noacs บ้างโดยเอาแค่ idno ตัวล่าสุดมาตัวเดียว
+2. เอา x ที่ได้กลับมา left join ตัวมันเองเพื่อแสดงรายการในวันนั้นๆ ก็จะได้รายการแค่ตัวล่าสุดตัวเดียว
+*/
+// $sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`drugcode`,a.`tradname`,a.`amount`,a.`idno`,a.`slcode`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+// 	SELECT `idno` AS `phardep_id` 
+// 	FROM `drugrx` 
+// 	WHERE `hn` = '%s' 
+// 	AND ( `date` >= '$sixMonthsTH' AND `date` < '$opdayThidate' ) 
+// 	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+// 	AND (`status` = 'Y' AND `amount` > 0)
+// 	GROUP BY `idno` DESC 
+// 	LIMIT 1
+// ) AS x LEFT JOIN `drugrx` AS a ON x.`phardep_id` = a.`idno` 
+// LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+// LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+// LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
+// WHERE a.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') ",
+// 	$dbi->real_escape_string($patient_hn)
+// );
 
-$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
-IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
-FROM (
-	SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
-) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
-ORDER BY b.`row_id`";
-$qTemp = $dbi->query($sql);
-$drugrxRows = $qTemp->num_rows;
-if($drugrxRows > 0){
-	$drugrxItem = array();
-
-	$isWarfarin = false;
-	$isNoacs = false;
-	while ($a = $qTemp->fetch_assoc()) {
-		$drugrxItem[] = $a;
-		if($a['type']=='warfarin'){
-			$isWarfarin = true;
-		}
-
-		if($a['type']=='noacs'){
-			$isNoacs = true;
-		}
-	}
-
-	if($isWarfarin===true && $isNoacs===false){
-		?>
-		<p style="font-size:18px;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin ในช่วง 6 เดือนย้อนหลัง</u> <a href="javascript:void(0);" onclick="openLink()">(ดูรายละเอียด)</a></p>
-		<?php
-	}
-
-	if($isWarfarin===true && $isNoacs===true){
-		?>
-		<p style="font-size:18px;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs ในช่วง 6 เดือนย้อนหลัง</u> <a href="javascript:void(0);" onclick="openLink()">(ดูรายละเอียด)</a></p>
-		<?php
-	}
+$sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
+	SELECT `row_id`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`,
+	SUBSTRING(`date`, 1, 10) AS `date`
+	FROM `drugrx` 
+	WHERE `hn` = '%s' 
+	AND ( `date` >= '$sixMonthsTH' AND `date` <= '$opdayThidate' ) 
+	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+	AND `status` = 'Y' AND `amount` > 0 
+	ORDER BY `row_id` DESC
+) AS a
+LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode`
+ORDER BY a.`date` DESC LIMIT 2",
+$dbi->real_escape_string($patient_hn)
+);
+$q = $dbi->query($sql);
+if($q->num_rows>0){
+	?>
+	<div style="display: block;">
+		<fieldset style="display:inline;">
+			<legend>
+				<p style="font-size:18px; font-weight:bold; margin:0; padding:0;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin / NOACs ในช่วง 6 เดือนย้อนหลัง</u> </p>
+			</legend>
+			<table>
+				<tr style="background-color: #73C6B6;">
+					<th>วันที่จ่ายยา</th>
+					<th>VN/AN</th>
+					<th>แพทย์ผู้สั่ง</th>
+					<th>ยา</th>
+					<th></th>
+					<th>วิธีใช้</th>
+					<th>จำนวน</th>
+				</tr>
+			<?php
+			while ($a = $q->fetch_assoc()) {
+				?>
+				<tr valign="top" style="background-color: #D5F5E3;">
+					<td><?=$a['date'];?></td>
+					<td>
+						<?php
+						$ptNumber = $a['tvn'];
+						if(!empty($a['an'])){
+							$ptNumber = $a['an'];
+						}
+						echo $ptNumber;
+						?>
+					</td>
+					<td><?=$a['doctor'];?></td>
+					<td><strong><?=$a['genname'];?></strong> [<?=$a['drugcode'];?>]<br><?=$a['tradname'];?></td>
+					<td><?=$a['type'];?></td>
+					<td><?=$a['slcode'];?><br><?=$a['drug_detail'];?></td>
+					<td align="center"><?=$a['amount'];?></td>
+				</tr>
+				<?php
+			}
+			?>
+			</table>
+		</fieldset>
+	</div>
+	<?php
 }
 /* แจ้งเตือน Warfarin */
 ?>
@@ -568,7 +607,7 @@ echo "<table><tr>";
 	<td><a target="_blank"  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
  </tr></table>
  <div>
-	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a></p>
+	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a> | <a target="_blank" href="drxprint2.php"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a> </p>
  </div>
 <?php
 $strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";

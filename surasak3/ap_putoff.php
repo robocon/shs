@@ -1,6 +1,24 @@
 <?php
-session_start();
-include("connect.inc");
+// session_start();
+// include("connect.inc");
+
+require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/class_file/class_appoint.php';
+require_once dirname(__FILE__).'/class_file/class_doctor.php';
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
+// $app = new Appoint();
+// $items = $app->getDisAppoint($thDate);
+$app = new Appoint();
+$dt = new Doctor();
+// $date = '2566-10-10';
+// $date = '';
+// $res = $app->getDisAppoint($date);
+
+
+
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
@@ -280,6 +298,9 @@ echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d'
 echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\',\''.$doctor.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
 echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\',\''.$doctor.'\')">&gt;&gt; นัด 3เดือน</a>';
 echo '<br>';
+echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\',\''.$doctor.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
+echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\',\''.$doctor.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
+echo '<br>';
 
 echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
 <tr class=\"norm\"><td width=\"50\" align=\"center\">
@@ -442,245 +463,337 @@ for ($j=0; $j<=4; $j++) {
 echo "</table></TD>
 </TR>
 </TABLE>";
+
+// หาตารางออกตรวจของแพทย์
+$all_days_exam = array();
+$days_exam = array();
+$resDt = $dt->getDoctorFromMdName($_GET['dr']);
+$doctorcode = $resDt['doctorcode'];
+$items = $dt->getExamTableFromDoctorId($doctorcode);
+
+if(!$items['error'] && $items['error']!=400){
+	foreach ($items as $item) { 
+		$days_exam[] = $item;
+		$day_explode = explode(',', $item['day']);
+		foreach ($day_explode as $b) {
+			$all_days_exam[$b] = $b;
+		}
+	}
+	ksort($all_days_exam);
+}
+
+?>
+<!-- ตารางออกตรวจ -->
+<div style="float:left; margin-left:8px;">
+    <?php 
+    if(count($days_exam)>0){
+        ?>
+        <p style="margin:0;padding:0;"><b>วัน-เวลาออกตรวจ</b></p>
+        <table class="chk_table">
+            <tr style="background-color: #13795b; color: #ffffff;">
+                <th>#</th>
+                <th>วัน</th>
+                <th>เวลา</th>
+            </tr>
+            <?php 
+            $th_days = array(0 => 'อาทิตย์',1 => 'จันทร์',2 => 'อังคาร',3 => 'พุธ',4 => 'พฤหัสบดี',5 => 'ศุกร์',6 => 'เสาร์');
+            $ex_i = 1;
+            foreach ($days_exam as $d) { 
+                $dList = explode(',', $d['day']);
+                
+                ?>
+                <tr valign="top">
+                    <td><?=$ex_i;?></td>
+                    <td>
+                        <?php 
+                        $dlItem = array(); 
+                        foreach ($dList as $dl) {
+                            $dlItem[] = $th_days[$dl];
+                        }
+                        echo implode(', ', $dlItem);
+                        ?>
+                    </td>
+                    <td><?=$d['time_start'];?>-<?=$d['time_end'];?></td>
+                </tr>
+                <?php
+                $ex_i++;
+            }
+            ?>
+        </table>
+        <?php
+    }else{
+        ?>ไม่พบตารางออกตรวจของแพทย์ <br>ท่านสามารถเพิ่มข้อมูลได้ที่ <a target="_blank"  href="exam_doctor.php">จัดการตารางออกตรวจของแพทย์</a> <?php
+    }
+    ?>
+</div>
+<?php
 exit();
 
 }
 ?>
 <script>
-<!-- 
-function newXmlHttp(){
-	var xmlhttp = false;
+	function newXmlHttp(){
+		var xmlhttp = false;
 
-		try{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}catch(e){
-		try{
-			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			try{
+				xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
 			}catch(e){
-				xmlhttp = false;
+			try{
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+				}catch(e){
+					xmlhttp = false;
+				}
 			}
-		}
 
-		if(!xmlhttp && document.createElement){
-			xmlhttp = new XMLHttpRequest();
-		}
-	return xmlhttp;
-}
+			if(!xmlhttp && document.createElement){
+				xmlhttp = new XMLHttpRequest();
+			}
+		return xmlhttp;
+	}
 
-function show_carlendar(xxx,doctor){
+	function show_carlendar(xxx,doctor){
+		xmlhttp = newXmlHttp();
+		url = 'ap_putoff.php?action=carlendar' + xxx + '&dr='+encodeURIComponent(doctor);
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
+		
+		document.getElementById("div_right_list").innerHTML = xmlhttp.responseText;
 
-	xmlhttp = newXmlHttp();
-	
-	url = 'ap_putoff.php?action=carlendar' + xxx + '&dr='+encodeURIComponent(doctor);
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-	document.getElementById("div_right_list").innerHTML = xmlhttp.responseText;
-
-}
-
-//-->
+	}
 </script>
-<body onLoad="show_carlendar('','<?=$_POST['dr'];?>');">
+<body>
+	<style>
+		#formDate{
+			padding:8px;
+		}
+		#formDate td{
+			padding-bottom: 4px;
+		}
+		.clearfix::after {
+			content: "";
+			clear: both;
+			display: table;
+		}
+		#div_right_list{
+			
+		}
+		#div_right_list table{
+			float: left;
+		}
+		label:hover{
+			cursor:pointer;
+		}
+	</style>
 <div id="no_print" >
 <center><span class="font3"><strong>โปรแกรมเลื่อนนัด</strong></span></center>
 <a target=_top  href="../nindex.htm"><< ไปเมนู </a><br />
-<form action="ap_putoff.php" method="post" class="font1" name="form11">
-<table width="38%" border="1" cellpadding="0" cellspacing="0">
-<tr>
-  <td>
-	<table width="100%">
-  <tr>
-    <td>วันที่
-      <select name="d">
-        <option value="0">-</option>
-        <?
-		for($a=1;$a<=31;$a++){
-		if($a<10) $ss = "0";
-		else $ss='';
-	?>
-        <option value="<?=$ss?><?=$a?>">
-          <?=$a?>
-          </option>
-        <?
+<form action="ap_putoff.php" method="post" class="font1" name="form11" id="formDate">
+	<table width="38%" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td align="right">วันที่ : </td>
+			<td>
+				<select name="d">
+					<option value="0">-</option>
+					<?php
+					for($a=1;$a<=31;$a++){
+						if($a<10) $ss = "0";
+						else $ss='';
+						?><option value="<?=$ss?><?=$a?>"><?=$a?></option><?
+					}
+					?>
+				</select>
+				<?php 
+				$month = $_POST['m'];
+				?>
+				เดือน
+				<select name="m">
+					<?php
+					$months = array('1'=>'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
+					foreach($months as $key => $a){
+						$select = ($month == $a) ? 'selected="selected"' : '' ;
+						?><option value="<?=$a?>" <?=$select;?> ><?=$a?></option><?
+					}
+					?>
+				</select>
+
+				พ.ศ.
+				<select name="yr">
+				<?php
+				$year = date("Y")+543;
+				for($a=($year-5);$a<($year+5);$a++){
+					?><option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>><?=$a?></option><?php
+				}
+				?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">แพทย์ : </td>
+			<td>
+				<?php
+				$dr = $_POST['dr'];
+				$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
+				$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+				?>
+				<select name="dr">
+					<option value="">-- กรุณาเลือกแพทย์ --</option>
+					<?php
+					while($objResult = mysql_fetch_array($objQuery)){
+						$select = ($dr == $objResult["name"]) ? 'selected="selected"' : '' ;
+						?>
+						<option value="<?=$objResult["name"];?>" <?=$select;?> ><?=$objResult["name"];?></option>
+						<?php
+					}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">นัดมาเพื่อ : </td>
+			<td>
+				<select name="detail">
+					<option value="">-- เลือกทั้งหมด --</option>
+					<?php
+					$strSQL ="select * from applist where status='Y' ";
+					$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
+					while($objResult = mysql_fetch_array($objQuery)){
+						?><option value="<?=$objResult["appvalue"];?>"><?=$objResult["applist"];?></option><?php
+					}
+					?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td align="center"><input name="okbtn" type="submit" value="  ตกลง  " class="font1"/></td>
+		</tr>
+	</table>
+</form>
+
+</div>
+<?php
+if(isset($_POST['okbtn'])){
+	$_SESSION["dt_doctor"]=$_POST['dr'];
+
+	if($_POST['detail']!=""){
+		$where = "and detail = '".$_POST['detail']."' ";
+	}else{
+		$where = "";
 	}
-	?>
-        </select>
-      เดือน
-      <select name="m">
-        <?
-	$month = array('0','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม');
-	for($a=1;$a<13;$a++){
-	?>
-        <option value="<?=$month[$a]?>">
-          <?=$month[$a]?>
-          </option>
-        <?
+
+	if(!$_POST['dr']){
+		echo "กรุณาเลือกแพทย์";
+		exit;
 	}
-	?>
-        </select>
-      พ.ศ.
-      <select name="yr">
-        <?
-	$year = date("Y")+543;
-	for($a=($year-5);$a<($year+5);$a++){
-	?>
-        <option value="<?=$ss?><?=$a?>" <? if($year==$a) echo "selected='selected'";?>>
-          <?=$a?>
-          </option>
-        <?
-	}
-	?>
-      </select></td>
-    </tr>
-  <tr>
-    <td>แพทย์
-      <select name="dr">
-        <?
+
+	$sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor ='".$_POST['dr']."' and apptime !='ยกเลิกการนัด' $where";
+	$row = mysql_query($sql);
+	$num1 = mysql_num_rows($row);
+	if($num1>0){
+		echo "<form action='ap_putoff.php' method='post' class='font1' name='form12'>";
+		echo "<strong>วันที่ ".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."</strong>";
+		echo "<table border='1' class='font1' style='border-collapse:collapse' width='100%'><tr><strong><td align='center'>เลือก </td><td align='center'>HN</td><td align='center'>ชื่อ-สกุล</td><td align='center'>ที่อยู่</td><td align='center'>เบอร์โทร.</td><td align='center'>อายุ</td><td align='center'>นัดมาเพื่อ</td><td align='center'>วันที่</td><td align='center'>เวลา</td></strong>";
+		//<input name='chch' type='checkbox' onclick=CheckAll();>
+		$i=0;
+		while($result = mysql_fetch_array($row)){
+			$sql3 = "select concat(address,' ',tambol,' ',ampur,' ',changwat) as address,phone from opcard where hn='".$result['hn']."'";
+			$row3 = mysql_query($sql3);
+			$num3 = mysql_fetch_array($row3);
+			$doctor= $result['doctor'];
+			$i++;
+			echo "<tr><td align='center'><input name='ch".$i."' id='ch".$i."' type='checkbox' value='".$result['row_id']."' ></td>";
+			echo "<td><label for=\"ch".$i."\">".$result['hn']."</label></td>";
+			echo "<td>".$result['ptname']."</td>";
+			echo "<td>".$num3['address']."</td>";
+			echo "<td>".$num3['phone']."</td>";
+			echo "<td>".$result['age']."</td>";
+			echo "<td>".$result['detail']."</td>";
+			echo "<td>".$result['appdate']."</td>";
+			echo "<td>".$result['apptime']."</td></tr>";
+		}?>
+		</table><br />
+		<script>
+			window.onload = function(){
+				show_carlendar('','<?=$_POST['dr'];?>');
+			}
+		</script>
+		<!-- div_right_list เป็นตารางเลื่อนนัด -->
+		<div id="div_right_list" class="clearfix"></div><br>
+		เลื่อนนัดเป็นวันที่ <input name="datenew" type="text"  size="15" id="datenew"/>
+		เวลา
+		<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
+		if(empty($_COOKIE["until"])){
+			@setcookie("until", "ฝังเข็ม", time()+(3600*12));
+		}
+		?>
+			<select size="1" name="capptime">
+				<option value="07:30 น. - 08:00 น.">07:30 น. - 08:00 น.</option>
+				<option value="08:30 น. - 09:00 น.">08:30 น. - 09:00 น.</option>
+				<option value="09:30 น. - 10:00 น.">09:30 น. - 10:00 น.</option>
+				<option value="10:30 น. - 11:00 น.">10:30 น. - 11:00 น.</option>
+				<option value="11:30 น. - 12:00 น.">11:30 น. - 12:00 น.</option>
+				<option value="12:30 น. - 13:00 น.">12:30 น. - 13:00 น.</option>
+				<option value="15:30 น. - 16:00 น.">15:30 น. - 16:00 น.</option>
+				<option value="16:30 น. - 17:00 น.">16:30 น. - 17:00 น.</option>
+				<option value="17:30 น. - 18:00 น.">17:30 น. - 18:00 น.</option>
+				<option value="18:30 น. - 19:00 น.">18:30 น. - 19:00 น.</option>
+			</select>
+		<?php
+		}else{
+		?>
+			<select size="1" name="capptime">
+				<option selected>&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3648;&#3623;&#3621;&#3634;&#3609;&#3633;&#3604;&gt;</option>
+				<option selected>08:00 &#3609;. - 10.30 &#3609;.</option>
+				<option>06:00 &#3609;.</option>
+				<option>07:00 &#3609;.</option>
+				<option>07:30 &#3609;.</option>
+				<option>08:00 &#3609;.</option>
+				<option>08:30 &#3609;.</option>
+				<option>09:00 &#3609;.</option>
+				<option>09:30 &#3609;.</option>
+				<option>10:00 &#3609;.</option>
+				<option>10:30 &#3609;.</option>
+				<option>11:00 &#3609;.</option>
+				<option>11:30 &#3609;.</option>
+				<option>13:00 &#3609;.</option>
+				<option>13:30 &#3609;.</option>
+				<option>14:00 &#3609;.</option>
+				<option>14:30 &#3609;.</option>
+				<option>15:00 &#3609;.</option>
+				<option>15:30 &#3609;.</option>
+				<option>16:00 &#3609;.</option>
+				<option>16:30 &#3609;.</option>
+				<option>17:00 &#3609;.</option>
+				<option>17:30 &#3609;.</option>
+				<option>18:00 &#3609;.</option>
+				<option>18:30 &#3609;.</option>
+				<option>19:00 &#3609;.</option>
+				<option>19:30 &#3609;.</option>
+				<option>20:00 &#3609;.</option>
+				<option>21:00 &#3609;.</option>
+			</select>
+		<?php
+		}
+?><br>
+
+<label for="changeDoctor">
+	<input name="chdr" type="checkbox" id="changeDoctor" value="1" onClick="if(document.getElementById('dr2').style.display=='none'){document.getElementById('dr2').style.display='';}else{document.getElementById('dr2').style.display='none'}"/>ต้องการเปลี่ยนแพทย์ 
+</label>
+
+<select name="dr2" id="dr2" style="display:none">
+	<?php
 	$strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
 	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 	while($objResult = mysql_fetch_array($objQuery)){
-	?>
-        <option value="<?=$objResult["name"];?>">
-          <?=$objResult["name"];?>
-          </option>
-        <?
+		?><option value="<?=$objResult["name"];?>" <? if($doctor==$objResult["name"]) echo "selected";?>><?=$objResult["name"];?></option><?php
 	}
 	?>
-      </select></td>
-    </tr>
-    <tr>
-    <td>นัดมาเพื่อ 
-      <select name="detail">
-      <option value="">--เลือกทั้งหมด--</option>
-        <?
-	$strSQL ="select * from applist where status='Y' ";
-	$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-	while($objResult = mysql_fetch_array($objQuery)){
-	?>
-        <option value="<?=$objResult["appvalue"];?>"><?=$objResult["applist"];?></option>
-        <?
-	}
-	?>
-      </select></td>
-  </tr>
-  <tr>
-    <td align="center"><input name="okbtn" type="submit" value="  ตกลง  " class="font1"/></td>
-    </tr></table></td></tr>
-</table>
-</form><br />
-</a>
-</div>
-<?
-if(isset($_POST['okbtn'])){
-		$_SESSION["dt_doctor"]=$_POST['dr'];
-		if($_POST['detail']!=""){
-			$where = "and detail = '".$_POST['detail']."' ";
-		}else{
-			$where = "";
-		}
-		$sql = "select * from appoint where appdate LIKE '".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."%' and doctor ='".$_POST['dr']."' and apptime !='ยกเลิกการนัด' $where";
-		//echo $sql;
-		$row = mysql_query($sql);
-		$num1 = mysql_num_rows($row);
-		if($num1>0){
-			echo "<form action='ap_putoff.php' method='post' class='font1' name='form12'>";
-			echo "<strong>วันที่ ".$_POST['d']." ".$_POST['m']." ".$_POST['yr']."</strong>";
-			echo "<table border='1' class='font1' style='border-collapse:collapse' width='100%'><tr><strong><td align='center'>เลือก </td><td align='center'>HN</td><td align='center'>ชื่อ-สกุล</td><td align='center'>ที่อยู่</td><td align='center'>เบอร์โทร.</td><td align='center'>อายุ</td><td align='center'>นัดมาเพื่อ</td><td align='center'>วันที่</td><td align='center'>เวลา</td></strong>";
-			//<input name='chch' type='checkbox' onclick=CheckAll();>
-			$i=0;
-			while($result = mysql_fetch_array($row)){
-				$sql3 = "select concat(address,' ',tambol,' ',ampur,' ',changwat) as address,phone from opcard where hn='".$result['hn']."'";
-				$row3 = mysql_query($sql3);
-				$num3 = mysql_fetch_array($row3);
-				$doctor= $result['doctor'];
-				$i++;
-				echo "<tr><td align='center'><input name='ch".$i."' id='ch".$i."' type='checkbox' value='".$result['row_id']."' ></td>";
-				echo "<td>".$result['hn']."</td>";
-				echo "<td>".$result['ptname']."</td>";
-				echo "<td>".$num3['address']."</td>";
-				echo "<td>".$num3['phone']."</td>";
-				echo "<td>".$result['age']."</td>";
-				echo "<td>".$result['detail']."</td>";
-				echo "<td>".$result['appdate']."</td>";
-				echo "<td>".$result['apptime']."</td></tr>";
-			}?>
-			</table><br />
-            <div id="div_right_list" ></div><br>
-			เลื่อนนัดเป็นวันที่ <input name="datenew" type="text"  size="15" id="datenew"/>
-            
-เวลา
-<?php if($_SESSION["sIdname"]== 'ฝังเข็ม' || $_COOKIE["until"] == "ฝังเข็ม"){
-		   
-		   if(empty($_COOKIE["until"])){
-			 @setcookie("until", "ฝังเข็ม", time()+(3600*12));
-		   }
-	
-		   ?>
-<select size="1" name="capptime">
-		<option value="07:30 น. - 08:00 น.">07:30 น. - 08:00 น.</option>
-			<option value="08:30 น. - 09:00 น.">08:30 น. - 09:00 น.</option>
-			<option value="09:30 น. - 10:00 น.">09:30 น. - 10:00 น.</option>
-			<option value="10:30 น. - 11:00 น.">10:30 น. - 11:00 น.</option>
-			<option value="11:30 น. - 12:00 น.">11:30 น. - 12:00 น.</option>
-			<option value="12:30 น. - 13:00 น.">12:30 น. - 13:00 น.</option>
-			<option value="15:30 น. - 16:00 น.">15:30 น. - 16:00 น.</option>
-			<option value="16:30 น. - 17:00 น.">16:30 น. - 17:00 น.</option>
-			<option value="17:30 น. - 18:00 น.">17:30 น. - 18:00 น.</option>
-			<option value="18:30 น. - 19:00 น.">18:30 น. - 19:00 น.</option>
-	
-	</select>
-	
-	   <?php }else{ ?>
-		<select size="1" name="capptime">
-		<option selected>&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3648;&#3623;&#3621;&#3634;&#3609;&#3633;&#3604;&gt;</option>
-		<option selected>08:00 &#3609;. - 10.30 &#3609;.</option>
-		<option>06:00 &#3609;.</option>
-		<option>07:00 &#3609;.</option>
-		<option>07:30 &#3609;.</option>
-		<option>08:00 &#3609;.</option>
-		<option>08:30 &#3609;.</option>
-		<option>09:00 &#3609;.</option>
-		<option>09:30 &#3609;.</option>
-		<option>10:00 &#3609;.</option>
-		<option>10:30 &#3609;.</option>
-		<option>11:00 &#3609;.</option>
-		<option>11:30 &#3609;.</option>
-		<option>13:00 &#3609;.</option>
-		<option>13:30 &#3609;.</option>
-		<option>14:00 &#3609;.</option>
-		<option>14:30 &#3609;.</option>
-		<option>15:00 &#3609;.</option>
-		<option>15:30 &#3609;.</option>
-		<option>16:00 &#3609;.</option>
-		<option>16:30 &#3609;.</option>
-		<option>17:00 &#3609;.</option>
-		<option>17:30 &#3609;.</option>
-		<option>18:00 &#3609;.</option>
-		<option>18:30 &#3609;.</option>
-		<option>19:00 &#3609;.</option>
-		<option>19:30 &#3609;.</option>
-		<option>20:00 &#3609;.</option>
-		<option>21:00 &#3609;.</option>
-		</select>
-		<?php 
-		} 
-		?><br><br>
-      <input name="chdr" type="checkbox" value="1" onClick="if(document.getElementById('dr2').style.display=='none'){document.getElementById('dr2').style.display='';}else{document.getElementById('dr2').style.display='none'}"/>ต้องการเปลี่ยนแพทย์ 
-        <select name="dr2" id="dr2" style="display:none">
-          <?
-            $strSQL = "SELECT name FROM doctor where status='y'  order by name"; 
-            $objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
-            while($objResult = mysql_fetch_array($objQuery)){
-            ?>
-          <option value="<?=$objResult["name"];?>" <? if($doctor==$objResult["name"]) echo "selected";?>><?=$objResult["name"];?>
-          </option>
-          <?
-            }
-            ?>
-        </select><br><br>
+</select>
+
+		<br>
 		<input name="count" type="hidden" value="<?=$i?>" />
-		<input type="submit" name="ok2" value="ตกลงเลื่อนนัด"  />
-		<?
+		<input type="submit" name="ok2" value="ตกลงเลื่อนนัด" style="padding: 6px 8px;" />
+		<?php
         echo "</form>";		
 		}else{
 		echo "ไม่มีข้อมูลการนัด";
@@ -689,15 +802,10 @@ if(isset($_POST['okbtn'])){
 	
 if(isset($_POST['ok2'])){
 	$dateadd = (date("Y")+543).date("-m-d H:i:s");
-	//$_POST['datenew']=($_POST['datenew']+0);
-	//if($_POST['datenew']<10) $_POST['datenew']= "0".$_POST['datenew'];
-	//echo $_POST['datenew'];
-	//$newdate = $_POST['datenew']." ".$_POST['monnew']." ".$_POST['yrnew'];
 	$newdate = $_POST['datenew'];
-
 	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
-					'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
-					'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+	'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
+	'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
     list($th_d, $th_m, $th_y) = explode(' ', $newdate);
 	$appdate_en = ($th_y-543).'-'.array_search($th_m, $def_fullm_th).'-'.$th_d;
@@ -729,22 +837,19 @@ if(isset($_POST['ok2'])){
 				?>
                 <div style="page-break-after:always;"></div>
                 <?
-			 }
+			}
 			 else
-			 {
-				 echo mysql_error();
-			 }
-		 }
+			{
+				echo mysql_error();
+			}
+		}
 	}
 	if($re){
-		?>
-			<script>
-                  alert("บันทึกข้อมูลเรียบร้อยแล้ว");
-            </script>
-            <!--<a href="ap_putoffprint.php" target="_blank" style="font-family:AngsanaUPC; font-size:24px;">พิมพ์ใบนัด</a><br /><br />
-
-			<a href="ap_putoffprint2.php" target="_blank" style="font-family:AngsanaUPC; font-size:24px;">พิมพ์ไปรษณียบัตร</a>-->
-		<?
+	?>
+	<script>
+		alert("บันทึกข้อมูลเรียบร้อยแล้ว");
+	</script>
+	<?
 	}
 }
 ?>

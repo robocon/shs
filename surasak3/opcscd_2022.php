@@ -294,7 +294,7 @@ echo "insert opacc query fail";
 //print recieve
 print "<div align='left'>";
 	print "<table border='0' cellpadding='0' cellspacing='0' width='100%'>";
-	print "<br><br><br><br>";
+	print "<br><br><br>";
 	print "<tr>";
 	//print "<td width='100%'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$credit1&nbsp;&nbsp;จาก&nbsp;<b>$sPtname</b>&nbsp;&nbsp;&nbsp;&nbsp;HN:$sHn&nbsp;VN:&nbsp;(".$_SESSION["sVn"].")&nbsp;&nbsp;วันที่&nbsp;<b>$Thdate</b> &nbsp;&nbsp;เวลา&nbsp;$billtime</td>";
 	
@@ -337,10 +337,12 @@ print "<br><br>";
         $Items++;
 					if($code=="58004"){
 					//$detail = substr($detail,0,37);		
-					$detail=iconv_substr($detail,0,37,'UTF-8');
+					//$detail=iconv_substr($detail,0,37,'UTF-8');
+					$detail=iconv_substr($detail,0,41,'UTF-8');
 					}else{
 					//$detail = substr($detail,0,30);
-					$detail=iconv_substr($detail,0,40,'UTF-8');
+					//$detail=iconv_substr($detail,0,40,'UTF-8');
+					$detail=iconv_substr($detail,0,41,'UTF-8');
 					}
     print "<div align='left'>";
     print "  <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
@@ -389,7 +391,8 @@ if($Items <='3'){
 
 
 if($Items <='3'){
-	print "<div align='left' style='margin-top: -3px;'>";
+	//print "<div align='left' style='margin-top: -3px;'>";
+	print "<div align='left' style='margin-top: -1px;'>";
 }else if($Items >'3' && $Items <'18'){
 	print "<div align='left' style='margin-top: 2px;'>";		
 }else{

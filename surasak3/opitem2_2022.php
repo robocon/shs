@@ -139,6 +139,8 @@
   <th bgcolor=9999CC>เบิกได้</th>
   <th bgcolor=9999CC>เบิกไม่ได้</th>
   <th bgcolor=9999CC>ประเภท</th>
+  <th bgcolor=9999CC>ประเภทยา</th>
+  <th bgcolor=9999CC>เหตุผลการใช้ยา</th>
  </tr>
 <?
 
@@ -362,12 +364,8 @@ $sVn=$_POST['vnnow'];
 		}
 		
 	}		
-		
-		
-		
-		print ", แพทย์ :$sDoctor</b></font><br>";
-		
-		//print_r($_SESSION);
+	
+	print ", แพทย์ :$sDoctor</b></font><br>";
 ?>
 <font face='Angsana New' size="5"><A HREF="drxadddiag.php?sDate=<?php echo urlencode($pdate);?>&nRow_id=<?php echo urlencode($sRowid);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >แก้ไขชื่อโรค</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิที่ต้องนำไปเบิกต้นสังกัดเท่านั้น)</font><br>
 <font face='Angsana New' size="5"><A HREF="company_payment.php?sDate=<?php echo urlencode($pdate);?>&aVn=<?=$showvn;?>&aHn=<?=$nhn;?>" target="_blank" >เพิ่มชื่อบริษัท</A></font>&nbsp;&nbsp;<font face='Angsana New' style="color:#FF0000; size:2;">(เฉพาะสิทธิประกันสังคม กรณี กท44 เท่านั้น)</font>
@@ -446,14 +444,14 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	
 	for($r=0;$r<count($_SESSION['idnumber']);$r++){
 
-			$query = "SELECT a.drugcode,a.tradname,a.amount,a.price,a.part,a.dpy,a.dpn FROM drugrx as a,phardep as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn = '$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id order by a.part";
+			$query = "SELECT a.drugcode,a.tradname,a.amount,a.price,a.part,a.dpy,a.dpn,a.reason FROM drugrx as a,phardep as b WHERE a.idno = '".$_SESSION['idnumber'][$r]."' and a.hn = '$sHn' and b.tvn='".$_SESSION["sVn"]."' AND a.idno = b.row_id order by a.part";
 
 			$result = mysql_query($query) or die("Query failed");
 		
 			$dpyaa=array();
 			session_register("dpyaa");
 			$drugs = 0;
-			while (list ($drugcode,$tradname,$amount, $price,$part,$cdpy,$cdpn) = mysql_fetch_row ($result)) {
+			while (list ($drugcode,$tradname,$amount, $price,$part,$cdpy,$cdpn,$reason) = mysql_fetch_row ($result)) {
 	//        array_push($aPrice,$price);
 	//        $x++;
 				$items++;
@@ -506,6 +504,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 				
 				
 				if($part=="DSY"){
+					
 					if($medical_sup_free==0){  //ถ้าเป็นเวชภัณฑ์ผู้ป่วยนอกเบิกไม่ได้
 						$dyprice=$dpy;
 						$dnprice=$price;
@@ -540,8 +539,15 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 						$bgcolor="F5DEB3";
 					}
 
-
-					
+				if($part=="DDL"){
+					$type="ยาในบัญชียาหลักแห่งชาติ (ED)";
+				}else if($part=="DDY"){
+					$type="ยานอกบัญชียาหลักแห่งชาติเบิกได้ (NED)";		
+				}else if($part=="DDN"){
+					$type="ยานอกบัญชียาหลักแห่งชาติเบิกไม่ได้ (NED)";			
+				}else{
+					$type="";
+				}		
 				print (" <tr>\n".
 				   "  <td BGCOLOR=$bgcolor><font face='Angsana New'>$items.($drugcode)$tradname  $dpy_code</td>\n".
 				   "  <td align=center BGCOLOR=$bgcolor>$amount</td>\n".
@@ -549,6 +555,8 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 				   "  <td align=right BGCOLOR=$bgcolor>$dyprice</td>\n".
 				   "  <td align=right BGCOLOR=$bgcolor>$dnprice</td>\n".
 				   "  <td align=center BGCOLOR=$bgcolor>$part</td>\n".
+				   "  <td align=left BGCOLOR=$bgcolor>$type</td>\n".				  
+				  "  <td align=left BGCOLOR=$bgcolor><span style='color:blue;'>$reason</span></td>\n".
 				   " </tr>\n");
 			}
 
@@ -673,8 +681,8 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 		 	<TD>เงินสด</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เช็ค' onclick=\"document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
 		 	<TD>เช็ค</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงไทย' onclick=\"document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();checkptring(this.value);\"></TD>
+		 	<TD>บัตรเครดิด ธ.กรุงไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';checkptring(this.value);\"></TD>
 		 	<TD>จ่ายตรง</TD>
 		 	
@@ -737,8 +745,8 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 	<TD>เงินสด</TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินโอน' onclick=\"document.getElementById('detail2').innerHTML='';detailhead2.style.display='none';document.getElementById('detail4').innerHTML='ระบุจำนวนเงินที่รับ';detailhead4.style.display='';document.f2.detail_3.focus();\"></TD>
 		 	<TD>เงินโอน</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>บัตรเครดิต ธ.ทหารไทย</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
+		 	<TD>บัตรเครดิต ธ.กรุงไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML='เลข Approve Code '; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>จ่ายตรง <a href='inputpharkew_cscd.php?cTdatehn=$sHn' target='_blank'>พิมพ์คิวรับยา</a></TD>
 		 	
@@ -926,8 +934,8 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 	<TD>เงินสด</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงเทพ' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>บัตรเครดิด ธ.กรุงเทพ</TD>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทหารไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
-		 	<TD>บัตรเครดิด ธ.ทหารไทย</TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กรุงไทย' onclick=\"document.getElementById('detail2').innerHTML='หมายเลขบัตรเครดิต'; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
+		 	<TD>บัตรเครดิด ธ.กรุงไทย</TD>
 		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='จ่ายตรง' onclick=\"document.getElementById('detail2').innerHTML='เลข Approve Code '; detailhead2.style.display='';document.f2.detail_1.focus();checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>จ่ายตรง <a href='inputpharkew.php' target='_blank'>ออกคิวรับยา</a></TD>
 		 	

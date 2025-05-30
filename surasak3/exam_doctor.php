@@ -3,6 +3,11 @@ require_once dirname(__FILE__).'/bootstrap.php';
 include_once dirname(__FILE__).'/includes/JSON.php';
 require_once dirname(__FILE__).'/class_file/class_doctor.php';
 
+if(empty($_SESSION['sIdname'])){
+    header('Location: login_page.php');
+    exit;
+}
+
 $dt = new Doctor();
 $json = new Services_JSON();
 
@@ -203,12 +208,18 @@ if($page==='form'){
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
             <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="exam_doctor.php">Home</a>
+                <a class="nav-link active" aria-current="page" href="exam_doctor.php">Home</a>
             </li>
-            <li class="nav-item">
-                <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
-            <a class="nav-link" href="javascript:void(0);" onclick="loadModal()">ฟอร์มบันทึก</a>
-            </li>
+            <?php 
+            if($_SESSION['sLevel']=='admin'){
+                ?>
+                <li class="nav-item">
+                    <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
+                    <a class="nav-link" href="javascript:void(0);" onclick="loadModal()">ฟอร์มบันทึก</a>
+                </li>
+                <?php
+            }
+            ?>
         </ul>
         </div>
     </div>
@@ -217,7 +228,7 @@ if($page==='form'){
     <div class="container">
         <h3>ตารางออกตรวจของแพทย์</h3>
         <?php 
-        $examTables = $dt->getExamTable();
+        $examTables = $dt->getExamTable(null,'ORDER BY `doctor_id` ASC, `id` ASC');
         if(!$examTables['error']){
         ?>
         <table class="table">
@@ -239,7 +250,13 @@ if($page==='form'){
                 <tr id="rowId<?=$id;?>">
                     <td><?=$i;?></td>
                     <td>
-                        <a href="javascript:void(0);" onclick="loadModal(<?=$exam['id'];?>);"><?=$exam['name'];?></a>
+                        <?php 
+                        $modelEdit = '';
+                        if($_SESSION['sLevel']=='admin'){
+                            $modelEdit = 'onclick="loadModal('.$exam['id'].');"';
+                        }
+                        ?>
+                        <a href="javascript:void(0);" <?=$modelEdit;?> ><?=$exam['name'];?></a>
                     </td>
                     <td>
                         <?php 
@@ -254,7 +271,13 @@ if($page==='form'){
                     <td><?=$exam['time_end'];?></td>
                     <td><?=$exam['clinic'];?></td>
                     <td>
-                        <a href="javascript:void(0);" class="btn btn-danger" title="ลบข้อมูล" onclick="removeTable(<?=$id;?>)"><i class="bi bi-trash"></i></a>
+                        <?php 
+                        if($_SESSION['sLevel']=='admin'){
+                            ?>
+                            <a href="javascript:void(0);" class="btn btn-danger" title="ลบข้อมูล" onclick="removeTable(<?=$id;?>)"><i class="bi bi-trash"></i></a>
+                            <?php 
+                        }
+                        ?>
                     </td>
                 </tr>
                 <?php 

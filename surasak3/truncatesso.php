@@ -1,4 +1,8 @@
-<?php $file = file_get_contents('/var/www/html/sm3/surasak3/dataupdate/h1252002.txt', true);
+<?php 
+
+$basePath = dirname(__FILE__);
+$filePath = $basePath.'/dataupdate/h1252002.txt';
+$file = file_get_contents($filePath, true);
 
 session_start();
 
@@ -6,35 +10,37 @@ if($_GET['okbtn']=="true"){
 	include("connect.inc");
 	$trunc = "TRUNCATE TABLE ssodata";
 	$result = mysql_query($trunc);
-
-	
 	
 	if($result){
 		$dd = mktime(0,0,0,date("m"),date("d")+3,date("Y"));
 		$end_date=(date("Y")+543).date("-m-d",$dd);
 	
-		$file = str_replace(" ","",iconv("UTF-8","UTF-8",file_get_contents('/var/www/html/sm3/surasak3/dataupdate/h1252002.txt', FALSE)));
+		//$file = str_replace(" ","",iconv("UTF-8","UTF-8",file_get_contents('/var/www/html/sm3/surasak3/dataupdate/h1252002.txt', FALSE)));
+		$file = str_replace(" ","",iconv("TIS-620", "UTF-8", file_get_contents($filePath, FALSE)));
 		$arrFile = explode("\n", $file);
 		//$insert = "LOAD DATA INFILE '/var/www/html/sm3/surasak3/dataupdate/hospdbon.TXT' replace INTO TABLE ssodata   FIELDS TERMINATED BY ''  ";
-		if(is_array($arrFile)){
-			$DataArr = array();
-			$dateToday = date("Y-m-d H:i:s");
-			$lastOut = count($arrFile);
-			foreach($arrFile as $key=>$value){
-				//print_r($value);
-				//echo $key."####".substr($value,0,10)."<br />";
-				$fieldVal1 = $value;
-				$fieldVal2 = substr($value,26,80);
-				$fieldVal3 = $dateToday;
-			   
-				$DataArr[] = "('$fieldVal1', '$fieldVal2' ,'$fieldVal3')";
-				if($key%1000==0 || $key == ($lastOut-1)){
-					$sql = "INSERT INTO ssodata (id, textname, lastupdate) values ";
-					$sql .= implode(',', $DataArr);
-					$result2 = mysql_query($sql) or die (mysql_error());
-					$DataArr = array();
-				}
-			}
+if(is_array($arrFile)){
+    $DataArr = array();
+    $dateToday = date("Y-m-d H:i:s");
+    $lastOut = count($arrFile);
+
+    foreach($arrFile as $key => $value){
+        $fieldVal1 = mysql_real_escape_string($value);
+        $fieldVal2 = mysql_real_escape_string(substr($value,26,80));
+        $fieldVal3 = $dateToday;
+
+        $DataArr[] = "('$fieldVal1', '$fieldVal2' ,'$fieldVal3')";
+
+        // insert ทุก 100 records หรือรอบสุดท้าย
+        if(($key+1)%100 == 0 || $key == ($lastOut-1)){
+            $sql = "INSERT INTO ssodata (id, textname, lastupdate) values ";
+            $sql .= implode(',', $DataArr);
+            echo "<pre>SQL: $sql</pre>"; // ดูคำสั่ง SQL
+            $result2 = mysql_query($sql) or die (mysql_error());
+            $DataArr = array();
+        }
+    }
+
 			
 		
 			if($result2){

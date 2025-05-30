@@ -255,7 +255,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugreact"){
 ?>
 <style type="text/css">
 body{
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 16px;
 	background-color:#F4F6F6;
 }
@@ -363,7 +363,7 @@ function checkList(){
 <?php 
 if($_SESSION['x-msg']){
 	?>
-	<div style="    border: 2px solid #004f4f; background-color: #008080; color: #ffffff; text-align: center; margin: 8px; font-size: 20px;">
+	<div style="border: 2px solid #004f4f; background-color: #008080; color: #ffffff; text-align: center; margin: 8px; font-size: 20px;">
 		<?=$_SESSION['x-msg'];?>
 	</div>
 	<?php 
@@ -394,7 +394,6 @@ if ( $page == 'search' ) {
     $sql = "SELECT * FROM `opcard` WHERE `hn` = '$hn'";
     $query=mysql_query($sql);
 	$num=mysql_num_rows($query);
-	
     if ( $num > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
@@ -696,26 +695,17 @@ if ( $page == 'search' ) {
 					<?php 
 					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
 					$i = 1;
+					?>
+					<select name="drugreact_group" id="drugreact_group" class="fontsarabun">
+						<option value="">ไม่มีกลุ่ม</option>
+					<?php
 					while ($a = $q->fetch_assoc()) {
 						?>
-						<label for="<?=$a['id'];?>">
-							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>"> <?=$i.') '.$a['name'];?><br>
-						</label>
+						<option value="<?=$a['id'];?>"><?=$a['name'];?></option>
 						<?php
-						$i++;
 					}
 					?>
-					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
-					<script>
-						function clearGroup(){
-							var groupLists = document.getElementsByClassName('groupItem');
-							for (var index = 0; index < groupLists.length; index++) {
-								var element = groupLists[index];
-								element.checked = false;
-								
-							}
-						}
-					</script>
+					</select>
 				</td>
 			</tr>
 			<tr>
@@ -1133,33 +1123,20 @@ if(!in_array($last_array, $advreact_lists)){
 			<tr valign="top">
 				<td align="right"><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
 				<td colspan="4">
-					<?php 
-					
+					<?php
 					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
-					$i = 1;
-					while ($a = $q->fetch_assoc()) { 
-						
-						$checked = ( $a['name']== $dresult["groupname"] ) ? 'checked="checked"' : '' ;
-
-						?>
-						<label for="<?=$a['id'];?>">
-							<input type="radio" name="drugreact_group" class="groupItem" id="<?=$a['id'];?>" value="<?=$a['id'];?>" <?=$checked;?> > <?=$i.') '.$a['name'];?><br>
-						</label>
-						<?php
-						$i++;
-					}
 					?>
-					<a href="javascript:void(0)" onclick="clearGroup()">[ล้างค่าตัวเลือก]</a>
-					<script>
-						function clearGroup(){
-							var groupLists = document.getElementsByClassName('groupItem');
-							for (var index = 0; index < groupLists.length; index++) {
-								var element = groupLists[index];
-								element.checked = false;
-								
-							}
+					<select name="drugreact_group" id="drugreact_group" class="fontsarabun">
+						<option value="">ไม่มีกลุ่ม</option>
+						<?php
+						while ($a = $q->fetch_assoc()) { 
+							$selected = ( $a['name']== $dresult["groupname"] ) ? 'selected="selected"' : '' ;
+							?>
+							<option value="<?=$a['id'];?>" <?=$selected;?>><?=$a['name'];?></option>
+							<?php
 						}
-					</script>
+						?>
+					</select>
 				</td>
 			</tr>
 			<tr>

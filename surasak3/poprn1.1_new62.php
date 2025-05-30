@@ -911,7 +911,13 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 					$snspec="<br>(หมายเลขสิ่งอุปกรณ์".$snspec.")";
 				}else{
 					$snspec="&nbsp;";
-				}	*/			
+				}	*/		
+
+				if(empty($aX[$ii])){
+					$showfrom="&nbsp;";
+				}else{
+					$showfrom=$from;
+				}				
 				?>
 				<tr>
 					<td align="center"><?=( !empty($aX[$ii]) ? $aX[$ii] : '&nbsp;' );?></td>
@@ -920,7 +926,7 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 					<td align="center"><?=( !empty($aPack[$ii]) ? $aPack[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aAmount[$ii]) ? $aAmount[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=$cost;?></td>
-					<td align="center"><?=$from;?></td>
+					<td align="center"><?=$showfrom;?></td>
 					<td align="right"><?=( !empty($aPackpri[$ii]) ? $aPackpri[$ii] : '&nbsp;' );?></td>
 					<td align="right"><?=( !empty($aPrice[$ii]) ? $aPrice[$ii] : '&nbsp;' );?></td>
 					<td class="last_child" align="center"><?=( !empty($aSpecno[$ii]) ? $aSpecno[$ii] : '&nbsp;' );?></td>

@@ -1,7 +1,8 @@
 <?php 
-// include 'bootstrap.php';
-error_reporting(E_ALL);
+require_once '../includes/config.php';
+error_reporting(1);
 ini_set('display_errors', 1);
+ini_set('max_execution_time', 0);
 
 function dump($txt)
 {
@@ -10,15 +11,15 @@ function dump($txt)
     echo "</pre>";
 }
 
-$mysqli = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$mysqli = new mysqli(HOST,USER,PASS,DB);
 if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
 
-$camp = $_GET["camp"];
-// $camp = "สอบตำรวจ63_02";
+$mysqli->query("SET NAMES UTF8");
+$part = urldecode($_GET["part"]);
 ?>
 
 <!DOCTYPE html>
@@ -43,26 +44,25 @@ $camp = $_GET["camp"];
     border: 1px solid black;
 }
 </style>
-<?php 
-
-$sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` FROM `chk_company_list` WHERE `code` = '$camp' ";
+<?php
+$sql = "SELECT `date_checkup`,`yearchk` FROM `chk_company_list` WHERE `code` = '$part' LIMIT 1 ";
 $q = $mysqli->query($sql);
-$company = $q->fetch_assoc();
-$company_name = $company['company_name'];
-$show_date = $company['show_date'];
+$item = $q->fetch_assoc();
+$date_checkup = $item['date_checkup'];
+$yearchk = $item['yearchk'];
 
 $sql = "SELECT a.*,b.`exam_no` 
-FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a 
-LEFT JOIN ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b ON b.`HN` = a.`hn` 
+FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$part' ) AS a 
+LEFT JOIN ( SELECT * FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ASC ) AS b ON b.`HN` = a.`hn` 
 ORDER BY b.`row` ASC";
 $q = $mysqli->query($sql);
 if($q->num_rows > 0 )
 {
     
     ?>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเข้าเป็นนักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2564 ( ผลการตรวจร่างกายทั่วไป )</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเข้าเป็นนักเรียนนายสิบตำรวจ ประจำปีงบประมาณ <?=$yearchk;?> ( ผลการตรวจร่างกายทั่วไป )</h3>
     <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
+    <h3 style="font-size: 22px; padding: 0; margin: 0; text-align:center;">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ <?=$date_checkup;?></h3>
     <table width="100%" class="chk_table">
         <thead>
         <tr style="text-align: center;">
@@ -125,6 +125,11 @@ if($q->num_rows > 0 )
         ?>
         </tbody>
     </table>
+    <?php
+}else{
+    ?>
+    <p><strong>ไม่พบข้อมูล</strong></p>
+    <p><strong><?=$mysqli->error;?></strong></p>
     <?php
 }
 

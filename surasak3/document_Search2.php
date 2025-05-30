@@ -14,39 +14,10 @@ include "connect.php";
 	<script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
-<style>
-	body {
-		font-family: "TH SarabunPSK";
-		font-size: 18px;
-	}
-</style>
+
 <div class="container">
-
-<h2 class="mt-2" align="center">ระบบจัดเก็บองค์ความรู้</h2>
-
-<div class="mt-4">
-	<a href="../nindex.htm" class="btn btn-primary">กลับเมนูหลัก </a>
-	<a href="document_list.php" class="btn btn-primary">เอกสารตามแผนก</a>
-	<a href="document_add.php"><span class="btn btn-primary">เพิ่มเอกสารใหม่</span></a>
-</div>
-
-<form name="frmSearch" method="get" action="<?= $_SERVER['SCRIPT_NAME']; ?>">
-	<table class="forntsarabun" align="center">
-		<tr>
-			<th>
-				<div class="mb-3">
-					<label for="basic-url" class="form-label">ค้นหาจากชื่อ</label>
-					<div class="input-group">
-						<input type="text" class="form-control" id="basic-url" name="txtKeyword" id="txtKeyword" value="<?= $_GET["txtKeyword"]; ?>">
-						<button type="submit" class="btn btn-primary">ค้นหา</button>
-					</div>
-				</div>
-			</th>
-		</tr>
-	</table>
-</form>
-
-<?php
+<?php 
+require_once dirname(__FILE__).'/document_title.php';
 
 if ($_GET["txtKeyword"] != "") {
 	$strSearch = $_GET["txtKeyword"];

@@ -29,18 +29,48 @@ for($min_y; $min_y < $max_y; $min_y++){
 
 if(isset($_GET["action"]) && $_GET["action"] == "view"){
 	
-	$sql = "Select concat(yot,' ',name,' ',surname) as fullname, ptright, idcard, dbirth  From opcard where hn = '".$_GET["hn"]."' limit 1 ";
+	$sql = "Select concat(yot,' ',name,' ',surname) as fullname, ptright, idcard, dbirth,`idguard` From opcard where hn = '".$_GET["hn"]."' limit 1 ";
 	$result = Mysql_Query($sql);
-	list($fullname, $ptright,$idcard,$dbirth) = Mysql_fetch_row($result);
-	echo $fullname,"&nbsp;&nbsp;", $ptright;
-	echo "<INPUT TYPE=\"hidden\" Name=\"fullname\" Value=\"".$fullname."\"><INPUT TYPE=\"hidden\" Name=\"ptright\" value=\"".$ptright."\"><INPUT TYPE=\"hidden\" Name=\"idcard\" value=\"".$idcard."\"><INPUT TYPE=\"hidden\" Name=\"dbirth\" value=\"".$dbirth."\">";
+	list($fullname, $ptright,$idcard,$dbirth,$idguard) = Mysql_fetch_row($result);
+
+	$idguardCode = substr($idguard,0,4);
+	?>
+	<table>
+		<?php 
+		if($idguardCode=='MX07' || $idguardCode=='MX04'){
+			?>
+			<tr style="color: red;">
+				<td algin="right"><strong>สถานะ: </strong></td>
+				<td> &gt;&gt; <u><?=$idguard;?></u> &lt;&lt;</td>
+			</tr>
+			<?php
+		}
+		?>
+		<tr>
+			<td algin="right"><strong>ชื่อ-สกุล: </strong></td>
+			<td><?=$fullname;?></td>
+		</tr>
+		<tr>
+			<td algin="right"><strong>สิทธิ์: </strong></td>
+			<td>
+				<?=$ptright;?>
+				<INPUT TYPE="hidden" Name="fullname" Value="<?=$fullname;?>">
+				<INPUT TYPE="hidden" Name="ptright" value="<?=$ptright;?>">
+				<INPUT TYPE="hidden" Name="idcard" value="<?=$idcard;?>">
+				<INPUT TYPE="hidden" Name="dbirth" value="<?=$dbirth;?>">
+			</td>
+		</tr>
+	</table>
+	<?php
 	exit();
 }
 
 if(isset($_GET["action"]) && $_GET["action"] == "view_inj"){
 $_GET['y'] = $_GET['y']-543;
 
-	if($_GET["druginj"] == "VERORAB 2" || $_GET["druginj"] == "VERORAB 3" || $_GET["druginj"] == "VERORAB 5" || $_GET["druginj"] == "VERO RABIES 2" || $_GET["druginj"] == "VERO RABIES 3" || $_GET["druginj"] == "VERO RABIES 5" || $_GET["druginj"] == "SPEEDA 2" || $_GET["druginj"] == "SPEEDA 3" || $_GET["druginj"] == "SPEEDA 5"){
+	$druginjAllow = array('VERORAB 2','VERORAB 3','VERORAB 5','VERO RABIES 2','VERO RABIES 3','VERO RABIES 5','SPEEDA 2','SPEEDA 3','SPEEDA 4','SPEEDA 5');
+
+	if(in_array($_GET["druginj"], $druginjAllow)){
 	echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
 			<TD>วันที่นัดฉีด</TD>
@@ -53,6 +83,10 @@ $_GET['y'] = $_GET['y']-543;
 	$num[4] = 30;
 	$num[5] = 90;
 
+	if($_GET["druginj"]=='SPEEDA 4'){
+		$num[3] = 28;
+	}
+
 	switch($_GET["druginj"]){
 		case "VERORAB 2" : $count = 2; break;
 		case "VERORAB 3" : $count = 3; break;
@@ -62,6 +96,7 @@ $_GET['y'] = $_GET['y']-543;
 		case "VERO RABIES 5" : $count = 5; break;
 		case "SPEEDA 2" : $count = 2; break;
 		case "SPEEDA 3" : $count = 3; break;
+		case "SPEEDA 4" : $count = 4; break;
 		case "SPEEDA 5" : $count = 5; break;
 	}
 
@@ -162,18 +197,25 @@ $_GET['y'] = $_GET['y']-543;
 		
 	echo "</TABLE>";
 
-	}else if($_GET["druginj"] == "Engerix-B" || $_GET["druginj"] == "Hepavax" || $_GET["druginj"] == "(30HBV)Euvax B" || $_GET["druginj"] == "Hepatitis B Vaccine" || $_GET["druginj"] == "Euvax 3" ){
+	}else if($_GET["druginj"] == "Engerix-B" || $_GET["druginj"] == "Hepavax" || $_GET["druginj"] == "(30HBV)Euvax B" || $_GET["druginj"] == "Hepatitis B Vaccine" || $_GET["druginj"] == "Euvax 3" || $_GET["druginj"] == "Euvax 4" ){
 
 		echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
 			<TD>วันที่นัดฉีด</TD>
 		</TR>";
 
-	$num[0] = 0;
-	$num[1] = 1;
-	$num[2] = 6;
-
-	for($i=0;$i<3;$i++){
+		if($_GET["druginj"]=="Euvax 4"){
+			$num[0] = 0;
+			$num[1] = 1;
+			$num[2] = 2;
+			$num[3] = 6;
+		}else{
+			$num[0] = 0;
+			$num[1] = 1;
+			$num[2] = 6;
+		}
+		
+	for($i=0;$i<count($num);$i++){
 		
 		echo "<TR><TD align='center'>";
 		/*
@@ -299,17 +341,17 @@ body,td,th {
 
 function viewdetail(action,hn) {
 	var stat;
-		if(document.getElementById("hn").value != ""){
-			url = 'appoilst_inj.php?action='+action+'&hn=' + hn;
-			xmlhttp = newXmlHttp();
-			xmlhttp.open("GET", url, false);
-			xmlhttp.send(null);
+	if(document.getElementById("hn").value != ""){
+		url = 'appoilst_inj.php?action='+action+'&hn=' + hn;
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
 
-			stat = xmlhttp.responseText;
-			stat = stat.substr(4);
+		stat = xmlhttp.responseText;
+		stat = stat.substr(4);
 
-			document.getElementById("div_viewdetail").innerHTML = stat;
-		}
+		document.getElementById("div_viewdetail").innerHTML = stat;
+	}
 }
 
 function view_inj(){
@@ -367,9 +409,10 @@ return stat;
 	<TD align="center"  bgcolor="#3366FF" class="font_title" colspan ="8">นัดฉีดยา</TD>
 </TR>
 <TR>
-	<TD align="right">Hn : </TD><TD colspan="7"><!--$arr["hn"]-->
-	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?=$Thn?>">&nbsp;<INPUT TYPE="button" value="View" Onclick="viewdetail('view',document.getElementById('hn').value);">&nbsp;
-	<span id="div_viewdetail"></span>
+	<TD align="right" valign="top">HN : </TD>
+	<TD colspan="7"><!--$arr["hn"]-->
+	<INPUT TYPE="text" ID="hn" NAME="hn" size="6" value="<?=$Thn?>">&nbsp;<INPUT TYPE="button" value="ดูชื่อ-สกุล สิทธิ์การรักษา" Onclick="viewdetail('view',document.getElementById('hn').value);">&nbsp;
+	<div id="div_viewdetail"></div>
 	</TD>
 </TR>
 <TR>
@@ -410,7 +453,7 @@ return stat;
 	<TD align="right">ยา : </TD><TD colspan="7">
 		<SELECT ID="drug_inj" NAME="drug_inj"  Onchange="view_inj();">
 			<Option value="">-- เลือกยา --</Option>
-			<!--<Option value="Tetanus Toxoid">Tetanus Toxoid</Option>-->
+			<Option value="Tetanus Toxoid">Diphtheria and Tetanus vaccine</Option>
 			<option value="Adsorbed Td">Adsorbed Td</option>
 			<Option value="VERO RABIES 2">VERO RABIES 2 เข็ม</Option>
 			<Option value="VERO RABIES 3">VERO RABIES 3 เข็ม</Option>
@@ -420,8 +463,10 @@ return stat;
 			<Option value="VERORAB 5">VERORAB 5 เข็ม</Option>
 			<Option value="SPEEDA 2">SPEEDA 2 เข็ม</Option>
 			<Option value="SPEEDA 3">SPEEDA 3 เข็ม</Option>
+			<Option value="SPEEDA 4">SPEEDA 4 เข็ม</Option>
 			<Option value="SPEEDA 5">SPEEDA 5 เข็ม</Option>
 			<Option value="Euvax 3">Euvax 3 เข็ม</Option>
+			<Option value="Euvax 4">Euvax 4 เข็ม</Option>
 			<Option value="Engerix-B">Engerix-B</Option>
 			<Option value="Hepavax">Hepavax</Option>
 			<Option value="(30HBV)Euvax B">(30HBV)Euvax B</Option>
@@ -450,9 +495,7 @@ return stat;
 </TR>
 <TR>
 	<TD  align="right" valign="top">วันนัด : </TD><TD>
-	<div id="detail_date">
-		
-	</div>
+	<div id="detail_date"></div>
 	</TD>
 </TR>
 <TR>

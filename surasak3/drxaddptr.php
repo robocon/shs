@@ -43,16 +43,16 @@ font-size:20px;
 </style>
 <div align="center" style="margin-top:50px;" >
 <h1><strong>เปลี่ยนสิทธิการรักษาผู้ป่วย</strong></h1>
-<h2>สิทธิการรักษาเดิม  : <?php echo $ptright;?></h2>
+<h2>สิทธิการรักษาเดิม  : <span style="color:red;"><?php echo $ptright;?></span></h2>
 <FORM METHOD=POST ACTION="drxaddptr.php?action=add&sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>">
 <TABLE align="center" clsss="txt">
 <TR>
-	<TD><strong class="txt">สิทธิการรักษา : </strong></TD>
+	<TD><strong class="txt">เปลี่ยนสิทธิการรักษาเป็น : </strong></TD>
 	<TD>
 	<select size="1" name="ptright" class="txt">
 	<?php
 						
-		$sql="select * from ptright where name like '%HD%' order by code asc";
+		$sql="select * from ptright where name like '%HD%' OR code = 'R01' OR code = 'R07' order by code asc";
 		$query=mysql_query($sql);
 		while($rows=mysql_fetch_array($query)){	
 			$ptrightname=$rows["code"]." ".$rows["name"];

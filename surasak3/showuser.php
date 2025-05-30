@@ -46,7 +46,8 @@ $departments = array(
     'ADMEYE' => 'ห้องตรวจตา',
     'ADMFOD' => 'โภชนาการ',
     'ADMNEWCHKUP' => 'ตรวจสุขภาพ',
-    'ADMLIBRARY'=>'ส่งเสริมสุขภาพ'
+    'ADMLIBRARY'=>'ส่งเสริมสุขภาพ',
+	'ADMCT' => 'XRAY คอมพิวเตอร์'
 );
 
 $officerName = sprintf("%s", $_SESSION['sOfficer']);
@@ -134,7 +135,13 @@ require_once 'com_user_menu.php';
 					</td>
 					<?php 
 					if($sessionMenucode=='ADM'){
-						?><td><?=$rows["menucode"]; ?></td><?php
+						$menuCode = $rows["menucode"];
+						?>
+						<td>
+							<?=$rows["menucode"];?><br>
+							<span class="badge text-bg-info"><?=$departments[$menuCode];?></span>
+						</td>
+						<?php
 					}
 					?>
 					<td><?=$rows["level"];?></td>

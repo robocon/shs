@@ -400,32 +400,26 @@ $query1 = mysql_query($sql1);
   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" width="100%" >
   <tr><td>
   <table width="100%" class="text1">
-    <tr><td width="15%" valign="top" class="text3"><strong>HN :</strong>    <?=$result['hn']?></td>
-  <td colspan="3" valign="top" class="text3"><strong>ชื่อ :</strong>    <span style=""><strong><?=$result['ptname']?></strong></span></td>
-  <td valign="top" class="text3"><strong>อายุ :</strong>
-    <?=$result['age']?></td>
-  <td valign="top" class="text3"><strong>สังกัด : </strong>
-    <span style="font-size:18px"><strong><?=$result['camp'];?></strong></span>  </td>
+    <tr><td width="15%" valign="top" class="text3"><strong>HN:</strong> <?=$result['hn']?></td>
+  <td colspan="3" valign="top" class="text3"><strong>ชื่อ:</strong> <span style=""><strong><?=$result['ptname']?></strong></span></td>
+  <td valign="top" class="text3"><strong>อายุ:</strong> <?=$result['age']?></td>
+  <td valign="top" class="text3"><strong>สังกัด:</strong> <span style="font-size:18px"><strong><?=$result['camp'];?></strong></span>  </td>
   </tr>
 <tr>
-  <td valign="top"><span class="text3"><strong>น้ำหนัก: </strong>
-  <?=$result['weight']?>กก.</span></td>
-  <td width="14%" valign="top"><span class="text3"><strong>ส่วนสูง:</strong>
-    <?=$result['height']?>
-ซม.</span></td>
-  <td width="10%" valign="top"><span class="text3"><strong>BMI: </strong>
-    <u><?=$result['bmi']?></u>
-  </span></td>
+  <td valign="top"><span class="text3"><strong>น้ำหนัก:</strong> <?=$result['weight']?>กก.</span></td>
+  <td width="14%" valign="top"><span class="text3"><strong>ส่วนสูง:</strong> <?=$result['height']?>ซม.</span></td>
+  <td width="10%" valign="top"><span class="text3"><strong>BMI:</strong> <u><?=$result['bmi']?></u></span></td>
   <td width="14%" valign="top">
-	<span class="text3"><strong>รอบเอว:</strong><?=(!empty($result['round_']) ? $result['round_'].'ซม.' : '<b style="color:red;"> - </b>' );?></span>
+	<span class="text3"><strong>รอบเอว:</strong> <?=(!empty($result['round_']) ? $result['round_'].'ซม.' : '<b style="color:red;">- </b>' );?></span>
 </td>
   <td width="19%" valign="top"><span class="text3"><strong>แพ้ยา:</strong> 
-    <? if($result['drugreact']=="0" || $result['drugreact']==""){ echo "ไม่แพ้ยา"; }else{
+    <?php
+	if($result['drugreact']=="0" || $result['drugreact']==""){ echo "ไม่แพ้ยา"; }else{
 		$sql55 = "Select  drugreact From opcard  where hn = '".$result['hn']."' ";
 		$result55 = mysql_query($sql55);
 		$arr55 = mysql_fetch_array($result55);
 			echo $arr55["drugreact"];
-		}	
+	}
 	?>
   </span></td>
   <td width="28%" valign="top"><span class="text3"><strong>โรคประจำตัว:
@@ -462,10 +456,11 @@ C ํ</span></td>
 		<strong class="text3">ค่าความดัน : </strong><?=$result['stat_pressure']?><? if($result['stat_pressure']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_pressure']."...";?>
 		&nbsp; <strong class="text3">ค่า BMI : </strong><?=$result['stat_bmi']?><? if($result['stat_bmi']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_bmi']."...";?>
 		<?php 
-		$sql = "SELECT sex FROM opcard WHERE hn = '$hn' LIMIT 1";
+		$sql = "SELECT sex,SUBSTRING(`ptright`,0,3) AS `ptCode` FROM opcard WHERE hn = '$hn' LIMIT 1";
 		$q = $dbi->query($sql);
 		$opcard = $q->fetch_assoc();
 		$sex = ($opcard['sex']==='ช') ? 1 : 0 ;
+		$ptCode = $opcard['ptCode'];
 		
 		$sql = "SELECT row_id FROM diabetes_clinic WHERE hn = '$hn' LIMIT 1";
 		$q = $dbi->query($sql);
@@ -531,13 +526,13 @@ C ํ</span></td>
 			}else if($objResult["labcode"]=="NEU"){
 				$labmean="(การติดเชื้อแบคทีเรีย)";
 			}else if($objResult["labcode"]=="LYMP"){
-				$labmean="(การติดเชื้อไวรัส หรือมะเร็งเม็ดเลือด)";
+				$labmean="(การติดเชื้อไวรัส)";
 			}else if($objResult["labcode"]=="MONO"){
-				$labmean="(โรคเกี่ยวกับการแพ้ หรือมะเร็งเม็ดเลือด)";
+				$labmean="(โรคเกี่ยวกับการแพ้)";
 			}else if($objResult["labcode"]=="EOS"){
 				$labmean="(อาการของโรคภูมแพ้ หรือพยาธิ)";
 			}else if($objResult["labcode"]=="BASO"){
-				$labmean="(กลุ่มโรคมะเร็งเม็ดเลือดขาว)";
+				$labmean="(เม็ดเลือดขาวชนิดบาโซฟิล)";
 			}else if($objResult["labcode"]=="ATYP"){
 				$labmean="(***)";
 			}else if($objResult["labcode"]=="BAND"){
@@ -1101,7 +1096,7 @@ C ํ</span></td>
 		<? 
 	}
 	
-	if(!empty($result['ldlc']))
+	if(!empty($result['ldlc']) && $ptCode == 'R01')
 	{
 		// $result['ldlc_range'] = '0 - 100';
 		?>

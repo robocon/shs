@@ -123,16 +123,17 @@ if(!empty($cStkcutdate)) {
 
 	?>
 	<!-- window.print(); -->
-	<body Onload="window.print();">
+	<body Onload="">
 	<script type="text/javascript">
-		function CloseWindowsInTime(t){
-			t = t*1000;
-			setTimeout("window.close()",t);
+		window.onload = function(){
+			window.print();
+			window.onafterprint = function(){
+				window.close();
+			}
 		}
-		CloseWindowsInTime(2); 
 	</script>
 	<?php
-	print "<u><br><font face='THSarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='THSarabunPSK' size= 4 ><b>VN:$rxvn </b>&nbsp;<b>$rxPtright</b>$hdExtra</font></u><font face='THSarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\"></font>&nbsp;<font face='THSarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
+	print "<u><br><font face='TH SarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='TH SarabunPSK' size= 4 ><b>VN:$rxvn </b>&nbsp;<b>$rxPtright</b>$hdExtra</font></u><font face='TH SarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\"></font>&nbsp;<font face='TH SarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
 	print "<font face='cordia New'>วัน/เดือน/ปี : $d/$m/$y&nbsp;$t</font>";
 	print "<font face='cordia New'>&nbsp;HN : $rxHn&nbsp;&nbsp;</font>";
 	print "<font face='cordia New'>&nbsp;CID : $idcard&nbsp;&nbsp;</font>";
@@ -143,7 +144,7 @@ if(!empty($cStkcutdate)) {
 	print "<font face='cordia New'>&nbsp;ส่วนสูง : $height ซม.</font><br>";
 	
 	// โรค: $rxDiag&nbsp;&nbsp
-	print "<font face='THSarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;</b><font face='THSarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br></font></font>";
+	print "<font face='TH SarabunPSK'><b>คิว พ.:&nbsp;$phakew&nbsp;</b><font face='TH SarabunPSK' size= 1 ><INPUT TYPE=\"checkbox\" NAME=\"\" readonly>ไม่แพ้ยา&nbsp;&nbsp;<INPUT TYPE=\"checkbox\" NAME=\"\" readonly>แพ้ยา.....................<br></font></font>";
 	
 	$visit_date = substr($dRxdate, 0, 10);
 	$sqlDiag = "SELECT `diag`,`type`,`diag_thai` FROM `diag` WHERE `regisdate` LIKE '$visit_date%' AND `hn` = '$rxHn' ";
@@ -230,74 +231,96 @@ if(!empty($cStkcutdate)) {
 
 	}	
 	
+	$EnOpdayThidate = (substr($opday_thidate,0,4)-543).substr($opday_thidate,4,6);
 	
 
 	/* แจ้งเตือน Warfarin */
-	if( !function_exists('ad_to_bc') ){
-		function ad_to_bc($time = null){
-			$time = preg_replace_callback('/^\d{4,}/', 'cal_to_bc', $time);
-			return $time;
-		}
-	}
-
-	if( !function_exists('cal_to_bc') ){
-		function cal_to_bc($match){
-			return ( $match['0'] + 543 );
-		}
-	}
-
-	$date_end = date('Y-m-d');
-	$date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
-
-	$date_end = ad_to_bc($date_end);
-	$date_start = ad_to_bc($date_start);
-
 	$patient_hn = trim($rxHn);
-	$sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
-	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
-	FROM `drugrx` 
-	WHERE `hn` = '$patient_hn' 
-	AND ( `date` >= '$date_start' AND `date` < '$date_end' ) 
-	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
-	AND `status` = 'Y' AND `amount` > 0 
-	ORDER BY `row_id` ASC;";
-	$dbi->query($sqlTemp);
+	$sixMonthsLater = strtotime("-6 Months", strtotime($EnOpdayThidate));
+	$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
+	// $currentDayTH = (date('Y')+543).date('-m-d');
 
-	$sql = "SELECT b.`row_id`,b.`date`,b.`drugcode`,b.`tradname`,
-	IF(b.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type` 
-	FROM (
-		SELECT MAX(`row_id`) AS `latest_id` FROM `temp_drugrx` GROUP BY `type`
-	) AS a LEFT JOIN `drugrx` AS b ON a.`latest_id` = b.`row_id`
-	ORDER BY b.`row_id`";
-	$qTemp = $dbi->query($sql);
-	$drugrxRows = $qTemp->num_rows;
-	if($drugrxRows > 0){
-		$drugrxItem = array();
+	// $sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`drugcode`,a.`tradname`,a.`amount`,a.`idno`,a.`slcode`,a.`idno`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+	// 	SELECT `idno` AS `phardep_id` 
+	// 	FROM `drugrx` 
+	// 	WHERE `hn` = '%s' 
+	// 	AND ( `date` >= '$sixMonthsTH' AND `date` < '$opday_thidate' ) 
+	// 	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+	// 	AND (`status` = 'Y' AND `amount` > 0)
+	// 	GROUP BY `idno` DESC 
+	// 	LIMIT 1
+	// ) AS x LEFT JOIN `drugrx` AS a ON x.`phardep_id` = a.`idno` 
+	// LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+	// LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+	// LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
+	// WHERE a.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') ",
+	// 	$dbi->real_escape_string($patient_hn)
+	// );
+	
 
-		$isWarfarin = false;
-		$isNoacs = false;
-		while ($a = $qTemp->fetch_assoc()) {
-			$drugrxItem[] = $a;
-			if($a['type']=='warfarin'){
-				$isWarfarin = true;
-			}
+	$sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
+		SELECT `row_id`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`,
+		SUBSTRING(`date`, 1, 10) AS `date`
+		FROM `drugrx` 
+		WHERE `hn` = '%s' 
+		AND ( `date` >= '$sixMonthsTH' AND `date` <= '$opday_thidate' ) 
+		AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+		AND `status` = 'Y' AND `amount` > 0 
+		ORDER BY `row_id` DESC
+	) AS a
+	LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+	LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+	LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode`
+	ORDER BY a.`date` DESC LIMIT 2",
+	$dbi->real_escape_string($patient_hn)
+	);
 
-			if($a['type']=='noacs'){
-				$isNoacs = true;
-			}
-		}
+	$q = $dbi->query($sql);
 
-		if($isWarfarin===true && $isNoacs===false){
-			?>
-			<p>ผู้ป่วยมีประวัติการใช้ Warfarin ในช่วง 6 เดือนย้อนหลัง</p>
-			<?php
-		}
-
-		if($isWarfarin===true && $isNoacs===true){
-			?>
-			<p>ผู้ป่วยมีประวัติการใช้ Warfarin และยากลุ่ม NOACs ในช่วง 6 เดือนย้อนหลัง</p>
-			<?php
-		}
+	if($q->num_rows>0){
+		?>
+		<div style="display: block;">
+			<fieldset style="display:inline; font-family: TH SarabunPSK;">
+				<legend>
+					<p style="font-size:18px; font-weight:bold; margin:0; padding:0;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin / NOACs ในช่วง 6 เดือนย้อนหลัง</u> </p>
+				</legend>
+				<table>
+					<tr style="background-color: #73C6B6;">
+						<th>วันที่จ่ายยา</th>
+						<th>VN/AN</th>
+						<th>แพทย์ผู้สั่ง</th>
+						<th>ยา</th>
+						<th></th>
+						<th>วิธีใช้</th>
+						<th>จำนวน</th>
+					</tr>
+				<?php
+				while ($a = $q->fetch_assoc()) {
+					?>
+					<tr valign="top" style="background-color: #D5F5E3;">
+						<td><?=$a['date'];?></td>
+						<td>
+							<?php
+							$ptNumber = $a['tvn'];
+							if(!empty($a['an'])){
+								$ptNumber = $a['an'];
+							}
+							echo $ptNumber;
+							?>
+						</td>
+						<td><?=$a['doctor'];?></td>
+						<td><strong><?=$a['genname'];?></strong> [<?=$a['drugcode'];?>]<br><?=$a['tradname'];?></td>
+						<td><?=$a['type'];?></td>
+						<td><?=$a['slcode'];?><br><?=$a['drug_detail'];?></td>
+						<td align="right"><?=$a['amount'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+				</table>
+			</fieldset>
+		</div>
+		<?php
 	}
 	/* แจ้งเตือน Warfarin */
 
@@ -381,29 +404,29 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 		$allergics_txt = '';
 
 		echo " <tr style='line-height:18px;'>\n".
-		"  <td><font face='THSarabunPSK'>$num.</td>\n".
-		"  <td><font face='THSarabunPSK' size='1'>$drugcode</td>\n".
-		"  <td><font face='THSarabunPSK' size='2'><b>$tradname</b>&nbsp;[$unit] $allergics_txt</td>\n".
-		"  <td align='right'><font face='THSarabunPSK'>&nbsp;<b>(&nbsp;$amount&nbsp;)</b></td>\n".
-		"  <td align='right'><font face='THSarabunPSK'  >&nbsp;$price</td>\n".
-		"  <td align='right'><font face='THSarabunPSK'  size='1'>&nbsp;$part</td>\n".
-		"  <td align='right'><font face='THSarabunPSK'  size='1'>&nbsp;<B>(&nbsp;$reason1&nbsp;)</B></td>\n";
+		"  <td><font face='TH SarabunPSK'>$num.</td>\n".
+		"  <td><font face='TH SarabunPSK' size='1'>$drugcode</td>\n".
+		"  <td><font face='TH SarabunPSK' size='2'><b>$tradname</b>&nbsp;[$unit] $allergics_txt</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'>&nbsp;<b>(&nbsp;$amount&nbsp;)</b></td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  >&nbsp;$price</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  size='1'>&nbsp;$part</td>\n".
+		"  <td align='right'><font face='TH SarabunPSK'  size='1'>&nbsp;<B>(&nbsp;$reason1&nbsp;)</B></td>\n";
 		if($c2!='20'&&($c1=='2'||$c1=='0')){
 			if($dis=="2ins"){
-				echo "<td><font face='THSarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;$dia2&nbsp;$diu2&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
+				echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;$dia2&nbsp;$diu2&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
 			}elseif($dis=="1ins"){
-				echo "<td><font face='THSarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
+				echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;เข้าใต้ผิวหนัง&nbsp;$dit&nbsp;$die &nbsp";	  
 			}else{
-				echo "<td><font face='THSarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;$dis&nbsp;$dit&nbsp;$die &nbsp";	  
+				echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$dia&nbsp;$diu&nbsp;วิธีฉีด&nbsp;$dis&nbsp;$dit&nbsp;$die &nbsp";	  
 			}
 		}else{
-			echo "<td><font face='THSarabunPSK' size='1'>&nbsp;$detail1 &nbsp; $detail2 &nbsp; $detail3 &nbsp; $detail4&nbsp;";
+			echo "<td><font face='TH SarabunPSK' size='1'>&nbsp;$detail1 &nbsp; $detail2 &nbsp; $detail3 &nbsp; $detail4&nbsp;";
 		}
 
 		echo "$office &nbsp;&nbsp;&nbsp;$status</td>\n".
 		" </tr>\n";
 	//	   if($reason!=''){
-		//   	print ("<tr style='line-height:10px;'><td colspan='7'><font face='THSarabunPSK' size='1'>$reason</td></tr>");}
+		//   	print ("<tr style='line-height:10px;'><td colspan='7'><font face='TH SarabunPSK' size='1'>$reason</td></tr>");}
 
 		if($num == 11){
 			print ("<tr><td><div style=\"page-break-before: always;\"></div></td></tr>");
@@ -451,19 +474,19 @@ function dateform($date){
 	}
 
 
-print "<font face='THSarabunPSK' size='2'>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
-print "<font face='THSarabunPSK' size='2'>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
-print "<font face='THSarabunPSK'>(<b>เบิกได้&nbsp;$netfree&nbsp;บาท</b>&nbsp;&nbsp;&nbsp;เบิกไม่ได้&nbsp;$netpay  &nbsp;บาท)&nbsp;&nbsp; <font face='THSarabunPSK' size='4'>รวมเงิน  $rxNetprice  บาท</font><br>";
-print "<font face='THSarabunPSK' size='1'>บัญชียาหลัก เบิกได้&nbsp;$Essd &nbsp;</font>";
-print "<font face='THSarabunPSK' size='1'>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
-print "<font face='THSarabunPSK' size='1'>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
-print "<font face='THSarabunPSK' size='1'>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
+print "<font face='TH SarabunPSK' size='2'>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
+print "<font face='TH SarabunPSK' size='2'>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
+print "<font face='TH SarabunPSK'>(<b>เบิกได้&nbsp;$netfree&nbsp;บาท</b>&nbsp;&nbsp;&nbsp;เบิกไม่ได้&nbsp;$netpay  &nbsp;บาท)&nbsp;&nbsp; <font face='TH SarabunPSK' size='4'>รวมเงิน  $rxNetprice  บาท</font><br>";
+print "<font face='TH SarabunPSK' size='1'>บัญชียาหลัก เบิกได้&nbsp;$Essd &nbsp;</font>";
+print "<font face='TH SarabunPSK' size='1'>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
+print "<font face='TH SarabunPSK' size='1'>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
+print "<font face='TH SarabunPSK' size='1'>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
 
 
 
 
-print "<font face='THSarabunPSK' size='2'></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
-print "<font face='THSarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................<br>";
+print "<font face='TH SarabunPSK' size='2'></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
+print "<font face='TH SarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................<br>";
 
 
 $thdatevn1 = $d.'-'.$m.'-'.$y.$rxHn;
@@ -478,32 +501,32 @@ $sql = "SELECT time1 FROM opday WHERE  thdatevn = '".$thdatevn2."' Order by row_
 list($timestd) = mysql_fetch_row(Mysql_Query($sql));
 
 
-print "<font face='THSarabunPSK' size='2'>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................<BR>";
+print "<font face='TH SarabunPSK' size='2'>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................<BR>";
 $sql = "Select PHAR , xray,  patho , emer , surg , physi , denta , other   From opday where  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
 list($PHAR , $xray,  $patho , $emer , $surg , $physi , $denta , $other) = mysql_fetch_row(Mysql_Query($sql));
-print "<font face='THSarabunPSK' size='3'><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER>";
-if($PHAR>0){print "<font face='THSarabunPSK' size='2'><B>ยา</B> : $PHAR";}
-if($xray>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>XRAY</B> : $xray";}
-if($patho>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>LAB</B> : $patho";}
-if($emer>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>ER</B> : $emer";}
-if($surg>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>OR</B> : $surg";}
-if($physi>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>PT</B>: $physi ";}
-if($denta>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>DEN</B> : $denta";}
+print "<font face='TH SarabunPSK' size='3'><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER>";
+if($PHAR>0){print "<font face='TH SarabunPSK' size='2'><B>ยา</B> : $PHAR";}
+if($xray>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>XRAY</B> : $xray";}
+if($patho>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>LAB</B> : $patho";}
+if($emer>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>ER</B> : $emer";}
+if($surg>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OR</B> : $surg";}
+if($physi>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>PT</B>: $physi ";}
+if($denta>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>DEN</B> : $denta";}
 $other -=50;
-if($other>0){print "<font face='THSarabunPSK' size='2'>&nbsp;<B>OTHER</B> : $other";}
-print "<font face='THSarabunPSK' size='2'>&nbsp;<B>SERVICE</B>:50.00 ";
-//print "<font face='THSarabunPSK' size='2'>ยา : $PHAR ,&nbsp;X-ray : $xray ,&nbsp;LAB : $patho ,&nbsp;ER : $emer ,&nbsp;ผ่าตัด : $surg ,&nbsp;กายภาพ : $physi ,&nbsp;ทันตกรรม : $denta ,&nbsp;อื่นๆ : $other,&nbsp;ค่าบริการ:50 ";
+if($other>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OTHER</B> : $other";}
+print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>SERVICE</B>:50.00 ";
+//print "<font face='TH SarabunPSK' size='2'>ยา : $PHAR ,&nbsp;X-ray : $xray ,&nbsp;LAB : $patho ,&nbsp;ER : $emer ,&nbsp;ผ่าตัด : $surg ,&nbsp;กายภาพ : $physi ,&nbsp;ทันตกรรม : $denta ,&nbsp;อื่นๆ : $other,&nbsp;ค่าบริการ:50 ";
 $summary = $PHAR+$xray+$patho+$emer+$surg+$physi+$denta+$other+50 ;
 $summary = number_format($summary,2);
-print "<font face='THSarabunPSK' size='2'><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
+print "<font face='TH SarabunPSK' size='2'><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
 
 
-print "<font face='THSarabunPSK' size='2'><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
+print "<font face='TH SarabunPSK' size='2'><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
 
 $nnnn=$Nessdn+$DSN+$DPN;
 
 if($nnnn>0 ){
-	echo "<br><font face='THSarabunPSK' size='5'><center>***ผู้ป่วยมีส่วนเกิน....$nnnn..บาท............*** </center></FONT>";
+	echo "<br><font face='TH SarabunPSK' size='5'><center>***ผู้ป่วยมีส่วนเกิน....$nnnn..บาท............*** </center></FONT>";
 };
 	
 	 
@@ -520,7 +543,7 @@ $num=Mysql_num_rows($result);
 	if($num > 1){
 		while(list($n,$rowid,$hn,$ptname) = Mysql_fetch_row($result)){
 			if($rowid==$sRow_id){
-				echo "<br><font face='THSarabunPSK' size='5'><center>***ผู้ป่วยมีใบรายการยามากกว่า 1 ใบ ($n/$num)*** </center></FONT>";
+				echo "<br><font face='TH SarabunPSK' size='5'><center>***ผู้ป่วยมีใบรายการยามากกว่า 1 ใบ ($n/$num)*** </center></FONT>";
 			}
 		}
 	}

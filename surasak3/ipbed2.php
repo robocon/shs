@@ -57,11 +57,11 @@ body,td,th {
 </style>
 <div><?="$cbedname&nbsp;&nbsp;$cBed1";?></div>
 <div><?="AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;";?></div>
-<div><?="$cptname&nbsp;&nbsp;Õ“¬ÿ&nbsp;$cage";?></div>
-<div><?="‚√§&nbsp;$cdiagnos &nbsp; ‘∑∏‘&nbsp;$cptright &nbsp;&nbsp;";?></div>
-<div><?="·æ∑¬Ï&nbsp;$cdoctor";?></div>
+<div><?="$cptname&nbsp;&nbsp;‡∏≠‡∏≤‡∏¢‡∏∏&nbsp;$cage";?></div>
+<div><?="‡πÇ‡∏£‡∏Ñ&nbsp;$cdiagnos &nbsp;‡∏™‡∏¥‡∏ó‡∏ò‡∏¥&nbsp;$cptright &nbsp;&nbsp;";?></div>
+<div><?="‡πÅ‡∏û‡∏ó‡∏¢‡πå&nbsp;$cdoctor";?></div>
 <div style="left: 0; top: 100px;" id="no_print">
-	<button onclick="printOut()" style="font-size:18px; font-family:'TH SarabunPSK';">æ‘¡æÏ µ‘Í°‡°Õ√Ï</button>
+	<button onclick="printOut()" style="font-size:18px; font-family:'TH SarabunPSK';">‡∏û‡∏¥‡∏°‡∏û‡πå‡∏™‡∏ï‡∏¥‡πä‡∏Å‡πÄ‡∏Å‡∏≠‡∏£‡πå</button>
 </div>
 
 <script type="text/javascript">

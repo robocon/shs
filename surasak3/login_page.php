@@ -89,7 +89,7 @@ $title = 'เข้าสู่ระบบอินทราเน็ต รพ
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ขอเพิ่มชื่อแพทย์</title>
+    <title>เข้าสู่ระบบ รพ.ค่ายสรุศักดิ์ฯ</title>
     <link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="bootstrap/bootstrap-icons-1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -124,7 +124,7 @@ $title = 'เข้าสู่ระบบอินทราเน็ต รพ
 		
 	<div class="row">
 		<div class="col-md-3 text-center">
-			<img src="images/LogoFSH.jpg" alt="" width="120">
+			<img src="images/LogoFSH_mini.jpg" alt="" width="120">
 		</div>
 		<div class="col-md">
 			<div class="text-center"><h3><?=$title;?></h3></div>

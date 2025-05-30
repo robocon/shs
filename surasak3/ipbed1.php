@@ -74,7 +74,7 @@ include("connect.inc");
 
 ////
 
-///po97 㺷�� 1
+///po97 ใบที่ 1
 
 
 print "<HTML>";
@@ -136,9 +136,9 @@ print "<form name='f1' action='ipbed_select.php?cbedname=$cbedname' method='post
 /// 1
 print "<DIV style='left:0PX;top:0PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 print "<DIV style='left:0PX;top:20PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:0PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:0PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:230PX;top:0PX;width:306PX;height:30PX;'><input type='checkbox' name='chk1' value=1></DIV>";
@@ -148,9 +148,9 @@ print "</div>";
 print "<DIV style='left:0PX;top:130PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:0PX;top:150PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:0PX;top:170PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:170PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:0PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:230PX;top:130PX;width:306PX;height:30PX;'><input type='checkbox' name='chk2' value=1></DIV>";
@@ -160,9 +160,9 @@ print "</div";
 print "<DIV style='left:0PX;top:270PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:0PX;top:290PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:0PX;top:310PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:310PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:0PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:230PX;top:270PX;width:306PX;height:30PX;'><input type='checkbox' name='chk3' value=1></DIV>";
@@ -172,9 +172,9 @@ print "</div>";
 print "<DIV style='left:0PX;top:400PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:0PX;top:420PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:0PX;top:440PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:440PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:0PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:230PX;top:400PX;width:306PX;height:30PX;'><input type='checkbox' name='chk4' value=1></DIV>";
@@ -184,9 +184,9 @@ print "</div>";
 print "<DIV style='left:0PX;top:540PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:0PX;top:560PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:0PX;top:580PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:580PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:0PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:230PX;top:540PX;width:306PX;height:30PX;'><input type='checkbox' name='chk5' value=1></DIV>";
@@ -196,9 +196,9 @@ print "</div>";
 print "<DIV style='left:0PX;top:680PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:0PX;top:700PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:0PX;top:720PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:0PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:0PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:0PX;top:720PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:0PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:0PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:230PX;top:680PX;width:306PX;height:30PX;'><input type='checkbox' name='chk6' value=1></DIV>";
@@ -207,9 +207,9 @@ print "</div>";
 print "<DIV style='left:320PX;top:0PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:320PX;top:20PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:320PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:320PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:550PX;top:0PX;width:306PX;height:30PX;'><input type='checkbox' name='chk7' value=1></DIV>";
@@ -218,9 +218,9 @@ print "</div>";
 print "<DIV style='left:320PX;top:130PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:320PX;top:150PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:320PX;top:170PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:170PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:320PX;top:190PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:210PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:550PX;top:130PX;width:306PX;height:30PX;'><input type='checkbox' name='chk8' value=1></DIV>";
@@ -229,9 +229,9 @@ print "</div>";
 print "<DIV style='left:320PX;top:270PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:320PX;top:290PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:320PX;top:310PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:310PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:320PX;top:330PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:350PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:550PX;top:270PX;width:306PX;height:30PX;'><input type='checkbox' name='chk9' value=1></DIV>";
@@ -240,9 +240,9 @@ print "</div>";
 print "<DIV style='left:320PX;top:400PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:320PX;top:420PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:320PX;top:440PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:440PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:320PX;top:460PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:480PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:550PX;top:400PX;width:306PX;height:30PX;'><input type='checkbox' name='chk10' value=1></DIV>";
@@ -251,9 +251,9 @@ print "</div>";
 print "<DIV style='left:320PX;top:540PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:320PX;top:560PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:320PX;top:580PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:580PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:320PX;top:600PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:620PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:550PX;top:540PX;width:306PX;height:30PX;'><input type='checkbox' name='chk11' value=1></DIV>";
@@ -262,16 +262,16 @@ print "</div>";
 print "<DIV style='left:320PX;top:680PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed1</span></DIV>";
 
 print "<DIV style='left:320PX;top:700PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
-print "<DIV style='left:320PX;top:720PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;����&nbsp;$cage</span></DIV>";
-print "<DIV style='left:320PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>�ä&nbsp;$cdiagnos &nbsp;�Է��&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
-print "<DIV style='left:320PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>ᾷ��&nbsp;$cdoctor</span></DIV>";
+print "<DIV style='left:320PX;top:720PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
+print "<DIV style='left:320PX;top:740PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
+print "<DIV style='left:320PX;top:760PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
 
 print "<div id='no_print'>";
 print "<DIV style='left:550PX;top:680PX;width:306PX;height:30PX;'><input type='checkbox' name='chk12' value=1></DIV>";
 
 print "<DIV style='left:300PX;top:780PX;width:306PX;height:30PX;'><input type='hidden' name='can' value='$can'></DIV>";
 
-print "<DIV style='left:280PX;top:780PX;width:306PX;height:30PX;'><input type='submit' name='submit' value='��ŧ'></DIV>";
+print "<DIV style='left:280PX;top:780PX;width:306PX;height:30PX;'><input type='submit' name='submit' value='ตกลง'></DIV>";
 print "</form>";
 
 print "</div>";

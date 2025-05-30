@@ -87,14 +87,20 @@ if( empty($action) ){
     <?php
 } else if ( $action === 'import' ) {
     $file = $_FILES['file'];
-    $content = file_get_contents($file['tmp_name']);
-    $part = input_post('part');
+
+    $handle = fopen($file['tmp_name'], "r");
+    $items = array();
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        $items[] = $data;
+    }
+    fclose($handle);
+    
+    $part = sprintf("%s", $_POST['part']);
     $msg = 'ไม่พบข้อมูลนำเข้า หรือไม่เลือกชื่อบริษัท';
 
-	if( $content !== false && $part !== false ){
+	if( !empty($part) && count($items)>0 ){
 	
-        $items = explode("\r\n", $content);
-
+        
         $sql = "SELECT MAX(`row`) AS `lastrow` FROM `opcardchk` LIMIT 1";
 		$db->select($sql);
 		$chk = $db->get_item();
@@ -108,16 +114,25 @@ if( empty($action) ){
             ++$i;
             ++$last_id;
 
-            list($pid, $exam_no, $hn, $idcard, $fname, $lname, $age, $date_birth, $course, $date_chkup, $branch ) = explode(',', $item);
-
+            $pid = $item[0];
+            $exam_no = $item[1];
+            $hn = $item[2];
+            $idcard = $item[3];
+            $fname = $item[4];
+            $lname = $item[5];
+            $age = $item[6];
+            $date_birth = $item[7];
+            $course = $item[9];
+            $date_chkup = $item[10];
+            $branch = $item[11];
 
             if( !empty($pid) ){ 
 
-                $fname = iconv('TIS620', 'UTF8', $fname);
-                $lname = iconv('TIS620', 'UTF8', $lname);
-                $branch = iconv('TIS620', 'UTF8', $branch);
-                $date_chkup = iconv('TIS620', 'UTF8', $date_chkup);
-                $course = iconv('TIS620', 'UTF8', $course);
+                $fname = iconv('TIS-620', 'UTF-8', $fname);
+                $lname = iconv('TIS-620', 'UTF-8', $lname);
+                $branch = iconv('TIS-620', 'UTF-8', $branch);
+                $date_chkup = iconv('TIS-620', 'UTF-8', $date_chkup);
+                $course = iconv('TIS-620', 'UTF-8', $course);
 
                 $dob = trim($date_birth);
                 $hn = trim($hn);
@@ -213,7 +228,7 @@ if( empty($action) ){
                 '$course',
                 '$date_chkup',
                 'y');";
-
+                // dump($sql);
                 $insert = $db->insert($sql);
 
             }

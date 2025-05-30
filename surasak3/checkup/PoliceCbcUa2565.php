@@ -4,7 +4,7 @@ error_reporting(1);
 ini_set('display_errors', 1);
 ini_set('max_execution_time', 0);
 
-$mysqli = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
+$mysqli = new mysqli();
 if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;

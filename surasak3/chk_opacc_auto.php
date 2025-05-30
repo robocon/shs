@@ -35,7 +35,8 @@ foreach ($items as $key => $value) {
     list($hour, $min, $sec) = explode('-', $time);
 
     // $Thidate2 = (date('Y')+543).substr($value['log_datechk'],4);
-    $Thidate2 = ($year+543)."-$month-$day 10:00:00";
+    // $Thidate2 = ($year+543)."-$month-$day 10:00:00";
+    $Thidate2 = ($year+543)."-$month-$day $hour:$min:$sec";
     
     $sqlOpacc = "INSERT INTO `opacc` ( 
         `date` , `txdate` , `hn` , `depart` , `detail` , 

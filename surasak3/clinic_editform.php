@@ -1,106 +1,46 @@
-<html>
-<head>
-<title>��䢢�����</title>
-<style type="text/css">
-.font1 {	font-family: "TH Niramit AS";
-	font-size:20px;
+<?php 
+require_once dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
+$sql = sprintf("SELECT * FROM `clinic_vip` WHERE `row_id` = '%s' ", $dbi->real_escape_string($_GET["row_id"]));
+$q = $dbi->query($sql);
+if ($q->num_rows === 0) {
+	echo "Not found row_id=" . $_GET["row_id"];
+	exit;
 }
-</style>
-</head>
-<script language="JavaScript">
-	   var HttPRequest = false;
-
-	   function doCallAjax(thn,tptname) {
-		  HttPRequest = false;
-		  if (window.XMLHttpRequest) { // Mozilla, Safari,...
-			 HttPRequest = new XMLHttpRequest();
-			 if (HttPRequest.overrideMimeType) {
-				HttPRequest.overrideMimeType('text/html');
-			 }
-		  } else if (window.ActiveXObject) { // IE
-			 try {
-				HttPRequest = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-				try {
-				   HttPRequest = new ActiveXObject("Microsoft.XMLHTTP");
-				} catch (e) {}
-			 }
-		  } 
-		  
-		  if (!HttPRequest) {
-			 alert('Cannot create XMLHTTP instance');
-			 return false;
-		  }
-
-		  var url = 'clinic_vipgetfill.php';
-		  var pmeters = "strHn=" + encodeURI( document.getElementById(thn).value);
-		  
-		 
-
-			HttPRequest.open('POST',url,true);
-
-			HttPRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			HttPRequest.setRequestHeader("Content-length", pmeters.length);
-			HttPRequest.setRequestHeader("Connection", "close");
-			HttPRequest.send(pmeters);
-			
-			
-			HttPRequest.onreadystatechange = function()
-			{
-
-				//if(HttPRequest.readyState == 3)  // Loading Request
-				//{
-					//document.getElementById(fProductName).innerHTML = "..";
-				//}
-
-				if(HttPRequest.readyState == 4) // Return Request
-				{
-					var myProduct = HttPRequest.responseText;
-					if(myProduct != "")
-					{
-						var myArr = myProduct.split("|");
-						document.getElementById(tptname).value = myArr[0];
-						<!--document.getElementById(ttan).value = myArr[1];-->
-					}
-				}
-				
-			}
-
-	   }
-	   
-	</script>
-<body>
-<form action="clinic_saveedit.php?row_id=<?=$_GET["row_id"];?>" name="frmEdit" method="post">
-<?
-include("connect.inc");
-
-$strSQL = "SELECT * FROM  clinic_vip   WHERE row_id = '".$_GET["row_id"]."' ";
-$objQuery = mysql_query($strSQL);
-$objResult = mysql_fetch_array($objQuery);
-if(!$objResult)
-{
-	echo "Not found row_id=".$_GET["row_id"];
-}
-else
-{
+$a = $q->fetch_assoc();
 ?>
-<table width="100%"  border="1" align="center">
-  <tr>
-    <th> <div align="center">HN</div></th>
-    <th> <div align="center">���� - ʡ��</div></th>
-    <th><div align="center">AN</div></th>
-  </tr>
-  <tr>
-    <td align="center"><input name="thn" type="text" class="font1" id="thn" value="<?=$objResult["hn"];?>" size="20" OnChange="JavaScript:doCallAjax('thn','tptname');"></td>
-    <td align="center"><input name="tptname" type="text" class="font1" id="tptname" value="<?=$objResult["ptname"];?>" size="20"></td>
-    <td align="center"><input name="ttan" type="text" class="font1" id="ttan"  value="<?=$objResult["an"];?>"/></td>
-  </tr>
-  </table>
-  <input type="submit" name="submit" value="submit">
-  <?
-  }
-
-  ?>
-  </form>
-</body>
-</html>
+<form action="javascript:void(0);" name="frmEdit" id="frmEdit" method="post" onsubmit="saveFormEdit()">
+	<table>
+		<tr>
+			<td align="right">HN : </td>	
+			<td>
+				<input name="hn" type="text" id="hn" value="<?=$a['hn'];?>" size="20" ><button type="button" onclick="checkPtright()">ตรวจสอบ</button>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">ชื่อ-สกุล : </td>
+			<td>
+				<input name="ptname" type="text" id="ptname" value="<?=$a['ptname']; ?>" size="20">
+			</td>
+		</tr>
+		<tr>
+			<td align="right">AN : </td>
+			<td>
+				<input name="an" type="text" id="an" value="<?=$a['an']; ?>" />
+			</td>
+		</tr>
+		<tr>
+			<td align="right">สิทธิ์ : </td>
+			<td id="resPtright"></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<button type="submit">บันทึก</button>
+				<input type="hidden" name="row_id" id="row_id" value="<?=$a['row_id']; ?>">
+			</td>
+		</tr>
+	</table>
+</form>

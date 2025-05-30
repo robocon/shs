@@ -82,32 +82,31 @@ if($_POST["act"]=="show"){
 	$year=substr($_POST["year1"],2);
 	$year1=$_POST["year1"];
 	if($_POST["camp"]=="all"){
-	$result="select * from dxofyear where yearchk='$year' group by hn";
+	$result="select * from register_chkup_soldier where yearcheck='".$_POST["year1"]."' and active='y'";
 	}else{
-	$result="select * from dxofyear where yearchk='$year' and camp='$_POST[camp]' group by hn";
+	$result="select * from condxofyear_so where yearcheck='".$_POST["year1"]."' and camp='$_POST[camp]'";
 	}
-	//echo $result;
-	$object=mysql_query($result) or die("Query chkup_solider Error");
+	echo $result;
+	$object=mysql_query($result) or die("Query register_chkup_soldier Error");
 	$numtotal=mysql_num_rows($object);
+
 
 	$sqlhos=mysql_query("select pcuname from mainhospital where pcuid='1'");
 	list($pcuname)=mysql_fetch_array($sqlhos);
 	
 	if($_POST["camp"]=="all"){
 		$showcamp="ทุกหน่วย";
-		$sql="CREATE  TEMPORARY  TABLE report_armychkup SELECT * FROM condxofyear_so where yearcheck = '$year1' group by hn";
-		//echo $sql;
+		$sql="SELECT a.*,b.* FROM register_chkup_soldier as a inner join condxofyear_so as b on a.idcard=b.idcard where a.yearcheck = '$year1' and a.active='y' group by b.hn order by b.row_id desc";
 		$query=mysql_query($sql);
 		
 	}else{
 		$showcamp=substr($_POST["camp"],4);
-		$sql="CREATE  TEMPORARY  TABLE report_armychkup SELECT * FROM condxofyear_so where yearcheck = '$year1' AND camp = '$_POST[camp]' group by hn";
-		//echo $sql;
+		$sql="SELECT a.*,b.* FROM register_chkup_soldier as a inner join condxofyear_so as b on a.idcard=b.idcard where a.yearcheck = '$year1' AND b.camp = '$_POST[camp]' group by b.hn order by b.row_id desc";
 		$query=mysql_query($sql);	
 	}
-	$chksql=mysql_query("select * from report_armychkup");
-	
-	$numchkup=mysql_num_rows($chksql);
+	echo $sql;
+	$numchkup=mysql_num_rows($query);
+	echo "-->".$numchkup;
 	$numchunyot1=0;
 	$numchunyot2=0;
 	$numchunyot3=0;
@@ -243,7 +242,7 @@ if($_POST["act"]=="show"){
 	while($chkrows=mysql_fetch_array($chksql)){
 
 	$opsql="select hn,yot,name,surname,idcard,sex, DAY(dbirth) as bday,MONTH(dbirth) as bmonth,(YEAR(dbirth)) as byear from opcard where hn='$chkrows[hn]'";
-	//echo $opsql."<br>";
+	echo $opsql."<br>";
 	$opquery=mysql_query($opsql);
 	list($hn,$yot,$name,$surname,$idcard,$gender,$bday,$bmonth,$byear)=mysql_fetch_row($opquery);	
 	

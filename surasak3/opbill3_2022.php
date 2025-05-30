@@ -248,7 +248,7 @@ if(empty($credit) ){
 	$credit="";
 }
 
-if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม" || $_POST["credit"] == "กสทช" || $_POST["credit"] == "กฟผ" )){
+if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "กรุงไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "สวัสดิการทันตกรรม" || $_POST["credit"] == "จ่ายตรง อปท."  || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม" || $_POST["credit"] == "กสทช" || $_POST["credit"] == "กฟผ" )){
 
 	if($_POST["credit"] == "จ่ายตรง" ){
 		$name_f = "billcscd";
@@ -303,10 +303,9 @@ if($sNetprice >=0 && ($_POST["credit"] == "เงินสด" || $_POST["credit
 	$billno = $title.$billno;
 	$field_plus = ", billno, vn, paidcscd";
 	$values_plus = " ,'$billno','".$_SESSION["sVn"]."','". $sSumYprice."' ";
-}
-else{
-	$field_plus = ",paidcscd";
-	$values_plus = ",'". $sSumYprice."' ";
+}else{
+	$field_plus = ",vn, paidcscd";
+	$values_plus = ",'".$_SESSION["sVn"]."','". $sSumYprice."' ";
 }
 
 for($r=0;$r<count($_SESSION['idnumber']);$r++){
@@ -349,8 +348,8 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 		$values_plus = " ,'$billno','".$_SESSION["sVn"]."','".$sSumYprice."' ";
 	}
 	else{
-		$field_plus = ",paidcscd";
-		$values_plus = ",'". $sSumYprice."' ";
+		$field_plus = ",vn, paidcscd";
+		$values_plus = ",'".$_SESSION["sVn"]."','". $sSumYprice."' ";		
 	}
 	
 	if($_POST["credit"] == "สวัสดิการทันตกรรม"){
@@ -386,7 +385,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 	}	
 }
 /////ยา////
-/*if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค")){
+/*if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "กรุงไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค")){
 
 if($_POST["credit"] == "จ่ายตรง" ){
 	$name_f = "billcscd";
@@ -489,7 +488,7 @@ for($r=0;$r<count($_SESSION['idnumber']);$r++){
 			$aSumy = $aSumy+$sEssd+$sNessdy+$sDPY+$sDSY;
 			$aSumn = $aSumn+$sNessdn+$sDPN+$sDSN;
 			
-			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "ทหารไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม"  || $_POST["credit"] == "กสทช" || $_POST["credit"] == "กฟผ")){
+			if($sNetprice >= 0 && ($_POST["credit"] == "เงินสด" || $_POST["credit"] == "เงินโอน" || $_POST["credit"] == "กรุงเทพ" || $_POST["credit"] == "กรุงไทย" || $_POST["credit"] == "ประกันสังคม" || $_POST["credit"] == "ประกันสังคมทุพพลภาพ" || $_POST["credit"] == "จ่ายตรง" || $_POST["credit"] == "เช็ค" || $_POST["credit"] == "อื่นๆ" || $_POST["credit"] == "จ่ายตรง อปท." || $_POST["credit"] == "ตรวจสุขภาพ" || $_POST["credit"] == "จ่ายตรง อปท. (HD)" || $_POST["credit"] == "กทม"  || $_POST["credit"] == "กสทช" || $_POST["credit"] == "กฟผ")){
 
 	/*	if($_POST["credit"] == "จ่ายตรง" ){
 			$name_f = "billcscd";
@@ -528,8 +527,8 @@ if($_POST["credit"] == "จ่ายตรง" ){
 		$values_plus = " ,'$billno','".$_SESSION["sVn"]."','".$netfree1."' ";
 
 		}else{
-			$field_plus = ", paidcscd";
-			$values_plus = ",'".$netfree1."'";
+			$field_plus = ", vn, paidcscd";
+			$values_plus = ",'".$_SESSION["sVn"]."','".$netfree1."'";
 		}
 		
 		
@@ -606,7 +605,7 @@ if(!$result){
 else{
 
 	$cbaht=baht($paid);
-	if($credit=='ทหารไทย'){
+	if($credit=='กรุงไทย'){
 		$credit1='บัตรเครดิต';
 	}
 	else{
@@ -829,7 +828,11 @@ echo "&nbsp;&nbsp;&nbsp;$company_payment</td>";
 							if($code=="doctor80"){
 								$detail=iconv_substr($detail,0,47,'UTF-8');	
 							}else{
-								$detail=iconv_substr($detail,0,40,'UTF-8');	
+								$chksql1="select codex from labcare where code='".$code."'";
+								//echo $chksql1;
+								$chkquery1=mysql_query($chksql1);
+								list($codex)=mysql_fetch_array($chkquery1);							
+								$detail="(".$codex.")".iconv_substr($detail,0,40,'UTF-8');	
 							}
 						}
 					}
@@ -889,8 +892,11 @@ echo "&nbsp;&nbsp;&nbsp;$company_payment</td>";
 							//$detail = "(".$code.")".substr($detail,0,40);	
 							$detail="(".$code.")".iconv_substr($detail,0,40,'UTF-8');
 						}else{
-							//$detail = substr($detail,0,40);
-							$detail=iconv_substr($detail,0,40,'UTF-8');							
+							$chksql1="select codex from labcare where code='".$code."'";
+							//echo $chksql1;
+							$chkquery1=mysql_query($chksql1);
+							list($codex)=mysql_fetch_array($chkquery1);							
+							$detail="(".$codex.")".iconv_substr($detail,0,40,'UTF-8');							
 						}
 					}
 					print "<div align='left'>";

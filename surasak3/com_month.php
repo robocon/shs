@@ -257,7 +257,7 @@ if(isset($_POST['search'])){
 		  <td valign="top" class="font1">
 	      <?=$result['head']?>		  </td>
 		  <td valign="top" class="font1">
-	      <?=nl2br($result['detail'])?>		  </td>
+	      <?=html_entity_decode($result['detail'])?>		  </td>
 		  <td valign="top" class="font1">
 	      <?=$result['p_edit']?>		  </td>
 		  <td valign="top" class="font1">

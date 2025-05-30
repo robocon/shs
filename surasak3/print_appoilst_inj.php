@@ -93,13 +93,11 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "30HBV";
 }else if($_POST["drug_inj"] == "Euvax 3"){
 	$dgcode = "0EB1.0";
+}else if($_POST["drug_inj"] == "Euvax 4"){
+	$dgcode = "0EB1.0";
 }else if($_POST["drug_inj"] == "Hepatitis B Vaccine"){
 	$dgcode = "0HB1";
 }
-// var_dump($dgcode);
-// var_dump($_POST);
-// exit;
-
 
 //$sql = "Select inputm.name From inputm where mdcode = '".substr($_POST["doctor"],0,5)."' limit 1 ";
 //list($name_doctor) = mysql_fetch_row(mysql_query($sql));
@@ -111,8 +109,8 @@ $result = mysql_query($sql);
 $rows_drugrx = mysql_num_rows($result);
 if($rows_drugrx==0){
 	echo "ไม่สามารถออกใบนัดได้ เนื่องจากยังไม่มีการตัดยาในวันนี้ <br>กรุณาตัดยาก่อนการออกใบนัด";
+	exit;
 }
-//$rows_drugrx = 1;
 
 if($rows_drugrx > 0){
 	list($idno) = mysql_fetch_row($result);
@@ -123,8 +121,11 @@ if($rows_drugrx > 0){
 
 	$sql_ddrugrx = "INSERT INTO ddrugrx(date,hn,drugcode,tradname,amount,price,item,slcode,part,idno, salepri, freepri, drug_inject_amount, drug_inject_slip, drug_inject_type, drug_inject_etc,reason,injno) VALUES";
 	
+	$drugName = $_POST["drug_inj"];
+
 	if($_POST["drug_inj"] == "Tetanus Toxoid"){
 		$dgcode = "0DT";//0TT
+		$drugName = 'Diphtheria and Tetanus vaccine';
 	}else if($_POST["drug_inj"] == "Adsorbed Td"){
 		$dgcode = "0DT-N";
 	}else if($_POST["drug_inj"] == "VERORAB"){
@@ -140,6 +141,8 @@ if($rows_drugrx > 0){
 	}else if($_POST["drug_inj"] == "(30HBV)Euvax B"){
 		$dgcode = "30HBV";
 	}else if($_POST["drug_inj"] == "Euvax 3"){
+		$dgcode = "0EB1.0";
+	}else if($_POST["drug_inj"] == "Euvax 4"){
 		$dgcode = "0EB1.0";
 	}else if($_POST["drug_inj"] == "Hepatitis B Vaccin"){
 		$dgcode = "0HB1";
@@ -245,7 +248,7 @@ for($i=0;$i<$count;$i++){
 
 	//******************************* บันทึกข้อมูล  การนัด**************************************************************
 	$sql = "INSERT INTO appoint(date,officer,hn,ptname,age,doctor,appdate,apptime,room,detail,detail2,advice,patho,xray,other,depcode,injno,detail_etc,appdate_en)VALUES
-	('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 น. - 11.00 น.','แผนกทะเบียน','FU22 นัดฉีดยา','นัดฉีดยา ".$_POST["drug_inj"]."','','','','นัดฉีดยา ".$_POST["drug_inj"]."','U22 ห้องจ่ายยา','เข็มที่ ".($i+1)."','".$_POST['detail_etc']."','$appdate_en');";
+	('$Thidate','$sOfficer','".$_POST['hn']."','".$_POST['fullname']."','".calcage($_POST["dbirth"])."','".$_POST['doctor']."','".$_POST["list_date"][$i]."','08:00 น. - 11.00 น.','แผนกทะเบียน','FU22 นัดฉีดยา','นัดฉีดยา ".$drugName."','','','','นัดฉีดยา ".$drugName."','U22 ห้องจ่ายยา','เข็มที่ ".($i+1)."','".$_POST['detail_etc']."','$appdate_en');";
 	
 	$result = Mysql_Query($sql);
 	
@@ -339,7 +342,7 @@ body,td,th {
 			<TABLE border="1" bordercolor="#000000" cellspacing="0" cellpadding="0">
 			<TR>
 				<TD style="font-family: Angsana New; font-size: 24px;" align="center">
-				<B>&nbsp;&nbsp;<?php echo $_POST["drug_inj"];?>&nbsp;&nbsp;</B>
+				<B>&nbsp;&nbsp;<?php echo $drugName;?>&nbsp;&nbsp;</B>
 				</TD>
 			</TR>
 			</TABLE>

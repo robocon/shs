@@ -43,17 +43,8 @@ LEFT JOIN (
     SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC 
 ) AS b ON b.`HN` = a.`hn` 
 ORDER BY b.`row` ASC";
-
-// $out_result_sql = mysql_query($sql) or die ( mysql_error() );
-// $num = mysql_num_rows($out_result_sql);
-
 $qOutResultChkup = $dbi->query($sql);
 $num = $qOutResultChkup->num_rows;
-
-// $q = mysql_query("SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
-// FROM `chk_company_list` 
-// WHERE `code` = '$camp' ") or die ( mysql_error() );
-// $company = mysql_fetch_assoc($q);
 
 $sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` 
 FROM `chk_company_list` 
@@ -65,75 +56,81 @@ $company = $q->fetch_assoc();
 <body>
 <div align="center"><strong>ผลการตรวจสุขภาพเจ้าหน้าที่ <?=$company['company_name'];?>  บริการตรวจสุขภาพ ณ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div>
 <div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?> จำนวน <?=$num;?> ราย</strong></div>
-<table width="200%" class="chk_table">
-  <tr>
+<table width="400%" class="chk_table">
+  <tr valign="middle">
     <th width="3%" rowspan="2" align="center">ลำดับ</th>
     <th width="5%" rowspan="2" align="center">HN</th>
-    <th width="15%" rowspan="2" align="center">ชื่อ - สกุล</th>
-    <th width="4%" rowspan="2" align="center">อายุ</th>
+    <th width="10%" rowspan="2" align="center">ชื่อ - สกุล</th>
+    <th width="5%" rowspan="2" align="center">อายุ</th>
     <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
     <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
     <th width="5%" rowspan="2" align="center">BP</th>
-    <th width="5%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th colspan="44" align="center">รายการตรวจ</th>
-    <th width="8%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
-    <th colspan="4" align="center">สรุปผลการตรวจ</th>
+    <th width="5%" rowspan="2" align="center">Pulse</th>
+    <th width="5%" rowspan="2" align="center">Rate</th>
+    <th width="5%" rowspan="2" align="center">Temp</th>
+    <th width="10%" rowspan="2" align="center">โรคประจำตัว</th>
+    <th width="250%" colspan="48" align="center">รายการตรวจ</th>
+    <th width="10%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
+    <th width="40%" colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
 
-  <tr>
-    <th width="3%" align="center">PE</th>
-    <th width="7%" align="center">X-RAY</th>
-    <th width="5%" align="center">CBC</th>
-    <th width="5%" align="center">UA</th>
-    <th width="5%" align="center">BS</th>
-    <th width="6%" align="center">CHOL</th>
-    <th width="6%" align="center">TRIG</th>
-    <th width="5%" align="center">HDL</th>
-    <th width="5%" align="center">LDL</th>
-    <th width="5%" align="center">BUN</th>
-    <th width="3%" align="center">CR</th>
-    <th width="3%" align="center">eGFR</th>
-    <th width="6%" align="center">URIC</th>
-    <th width="7%" align="center">SGOT</th>
-    <th width="6%" align="center">SGPT</th>
-    <th width="4%" align="center">ALK</th>
-    <th width="7%" align="center">HBsAg</th>
+  <tr valign="middle">
+    <th>PE</th>
+    <th>X-RAY</th>
+    <th>CBC</th>
+    <th>UA</th>
+    <th>BS</th>
+    <th>CHOL</th>
+    <th>TRIG</th>
+    <th>HDL</th>
+    <th>LDL</th>
+    <th>BUN</th>
+    <th>CR</th>
+    <th>eGFR</th>
+    <th>URIC</th>
+    <th>SGOT</th>
+    <th>SGPT</th>
+    <th>ALK</th>
+    <th>HBsAg</th>
+    <th>Anti HCV</th>
+    <th>Anti-HIV</th>
+    <th>HBA1C</th>
+    <th>Anti-HBs</th>
+    <th>FOBT</th>
+    <th>AFP</th>
+    <th>CEA</th>
+    <th>PSA</th>
+    <th>Anti-HAV IgG</th>
+    <th>Anti HAV IgM</th>
+    <th>Stool Exam</th>
+    <th>Stool Culture</th>
+    <th>Stool Occult</th>
+    <th>METAMP</th>
+    <th>ABOC</th>
+    <th>EKG</th>
+    <th>V/A</th>
+    <th width="12%" align="center">สายตา</th>
+    <th width="12%" align="center">สมรรถภาพปอด</th>
+    <th width="12%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
+    <th width="12%" align="center">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</th>
+    <th width="12%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
+    <th width="12%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
+    <th width="12%" align="center">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</th>
+    <th width="12%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th width="12%" align="center">ความดันตา</th>
+    <th width="12%" align="center">ลานสายตา</th>
 
-    <th width="7%" align="center">Anti HCV</th>
-    <th width="7%" align="center">Anti-HIV</th>
-    <th width="6%" align="center">HBA1C</th>
-    <th width="6%" align="center">Anti-HBs</th>
+    <th width="12%" align="center">โรคประจำตัว</th>
+    <th width="12%" align="center">อุบัติเหตุและผ่าตัด</th>
+    <th width="12%" align="center">เคยเข้ารับการรักษาในโรงพยาบาล</th>
+    <th width="12%" align="center">ประวัติอื่นที่สำคัญ</th>
 
-    <th width="6%" align="center">FOBT</th>
-    <th width="6%" align="center">AFP</th>
-    <th width="6%" align="center">CEA</th>
-    <th width="6%" align="center">PSA</th>
-    <th width="6%" align="center">Anti-HAV IgG</th>
-    <th width="6%" align="center">Anti HAV IgM</th>
-    
-    
-    <th width="6%" align="center">Stool Exam</th>
-    <th width="6%" align="center">Stool Culture</th>
-    <th width="6%" align="center">Stool Occult</th>
-
-    <th width="6%" align="center">METAMP</th>
-    <th width="5%" align="center">ABOC</th>
-    <th width="6%" align="center">EKG</th>
-    <th width="6%" align="center">V/A</th>
-    <th width="6%" align="center">สายตา</th>
-    <th width="6%" align="center">สมรรถภาพปอด</th>
-    <th width="6%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
-    <th width="6%" align="center">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</th>
-    <th width="6%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
-    <th width="6%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
-    <th align="center">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</th>
-    <th width="6%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
-    <th width="7%">ความดันตา</th>
-    <th width="7%">ลานสายตา</th>
-    <th width="7%">ผลการได้ยิน</th>
-    <th width="7%">แมมโมแกรม</th>
-    <th width="5%" align="center">พบแพทย์</th>
-    <th width="6%" align="center">ไม่พบแพทย์</th>
+    <!-- สรุปผลการตรวจ -->
+    <th width="10%" align="center">ผลการได้ยิน</th>
+    <th width="10%" align="center">แมมโมแกรม</th>
+    <th width="10%" align="center">พบแพทย์</th>
+    <th width="10%" align="center">ไม่พบแพทย์</th>
+    <!-- สรุปผลการตรวจ -->
   </tr>
 <?php
 $i=0;
@@ -147,29 +144,26 @@ while($result = $qOutResultChkup->fetch_assoc()){
     $exam_no = $result["exam_no"];
     $hearing = $result['hearing'];
 
+    $pulse = $result['p'];
+    $rate = $result['rate'];
+    $temp = $result['temp'];
+
     if(empty($result["HN"])){
         $result["HN"] = $result["hn"];
     }
 
-    // $sql2 = "select * from out_result_chkup where hn='$pt_hn' AND `part` = '$camp'";
-    // $query2 = mysql_query($sql2);
-    // $result2 = mysql_fetch_array($query2);
     $result2 = $result;
     $prawat = $result2['prawat'];
     if(empty($age)){
         $age=$result2["age"];
     }
-
     
     // กรณีที่มี labnumber จากใน chk_lab_items
     $defLabNumber = "AND `labnumber` = '$exam_no'";
     $sqlLab = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = '$camp' AND `hn` = '$pt_hn' ";
-    // $q = mysql_query($sqlLab) or die(mysql_error());
-    // if (mysql_num_rows($q) > 0) {
     $qLab = $dbi->query($sqlLab);
     if($qLab->num_rows>0){
         $labItemList = array();
-        // while ($labChk = mysql_fetch_assoc($q)) { 
         while($labChk = $qLab->fetch_assoc()){
             $testLabnumber = $labChk['labnumber'];
             $labItemList[] = " `labnumber` = '$testLabnumber' ";
@@ -201,9 +195,6 @@ while($result = $qOutResultChkup->fetch_assoc()){
     WHERE `hn` = '".$result['HN']."' 
     AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
     order by autonumber desc";  //โชว์ข้อมูล
-	
-    // $objQuery11 = mysql_l_query($strSQL11);
-    // list($orderdate)=mysqfetch_array($objQuery11);
     $q11 = $dbi->query($strSQL11);
     $itemQ11 = $q11->fetch_assoc();
     $orderdate = $itemQ11['orderdate2'];
@@ -213,14 +204,17 @@ while($result = $qOutResultChkup->fetch_assoc()){
 	$showdate="$d/$m/$yy";
 	$dateekg="$yy-$m";	
 ?>  
-  <tr>
-    <td align="center"><?=$i;?></td>
+  <tr valign="top">
+    <td align="right"><?=$i;?></td>
     <td><?=$result["HN"];?></td>
-    <td><?=$ptname;//."->".$result2["part"];?></td>
-    <td align="center"><?=$age;?></td>
-    <td align="center"><?=$result2["weight"];?></td>
-    <td align="center"><?=$result2["height"];?></td>
-    <td align="center"><?=$bp;?></td>
+    <td><?=$ptname;?></td>
+    <td align="right"><?=$age;?></td>
+    <td align="right"><?=$result2["weight"];?></td>
+    <td align="right"><?=$result2["height"];?></td>
+    <td align="right"><?=$bp;?></td>
+    <td align="right"><?=$pulse;?></td>
+    <td align="right"><?=$rate;?></td>
+    <td align="right"><?=$temp;?></td>
     <td><?=$prawat;?></td>
     <td>&nbsp;</td>
     <td align="left">
@@ -236,9 +230,7 @@ while($result = $qOutResultChkup->fetch_assoc()){
 <?php 
 
 $stat_cbc = $stat_ua = '';
-// $queryStat = mysql_query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
 $qDxOfYear = $dbi->query("SELECT `stat_cbc`,`stat_ua` FROM `condxofyear_out` WHERE `hn` = '$pt_hn' ORDER BY `row_id` DESC LIMIT 1");
-// $dxStat = mysql_fetch_assoc($queryStat);
 $dxStat = $qDxOfYear->fetch_assoc();
 $stat_cbc = $dxStat['stat_cbc'];
 $stat_ua = $dxStat['stat_ua'];
@@ -249,8 +241,6 @@ WHERE profilecode = 'CBC'
 AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY `profilecode` ";
-// $query18=mysql_query($sql18);
-// $numcbc=mysql_num_rows($query18);
 $q18 = $dbi->query($sql18);
 $numcbc = $q18->num_rows;
 if($numcbc > 0){
@@ -271,9 +261,6 @@ $sql19="SELECT *
 FROM resulthead WHERE profilecode = 'UA' AND hn = '$pt_hn' 
 AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
 GROUP BY `profilecode` ";
-//echo $sql19;
-// $query19=mysql_query($sql19);
-// $numua=mysql_num_rows($query19);
 $q19 = $dbi->query($sql19);
 $numua = $q19->num_rows;
 if($numua > 0){
@@ -290,13 +277,6 @@ if($numua > 0){
 </td>
 <td align="center">
 <?php
-// $sql1="SELECT b.result, b.flag 
-// FROM resulthead AS a
-// INNER JOIN resultdetail AS b ON a.autonumber = b.autonumber
-// WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
-// AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-// GROUP BY a.`profilecode` ";
-
 $sql1 = "SELECT b.result, b.flag 
 FROM ( 
 
@@ -311,8 +291,6 @@ FROM (
 INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'GLU' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 GROUP BY a.`profilecode`"; 
-
-//echo $sql1;
 $query1=mysql_query($sql1);
 list($glu,$flag)=mysql_fetch_array($query1);
 if($flag=="N" || $flag=="L"){
@@ -1147,6 +1125,12 @@ if($flag=="N"){
     }
     ?>
     </td>
+    
+    <td width="12%"><?=!empty($result2['congenital_disease']) ? $result2['congenital_disease'] : '' ; ?></td>
+    <td width="12%"><?=!empty($result2['accidents_surgery']) ? $result2['accidents_surgery'] : '' ; ?></td>
+    <td width="12%"><?=!empty($result2['treatment']) ? $result2['treatment'] : '' ; ?></td>
+    <td width="12%"><?=!empty($result2['record']) ? $result2['record'] : '' ; ?></td>
+
     <td>
         <!-- ภาวะสุขภาพโดยรวม -->
     </td>
