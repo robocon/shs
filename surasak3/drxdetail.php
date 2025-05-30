@@ -1,6 +1,7 @@
 <?php
 session_start();
-include("connect.inc");
+
+require_once dirname(__FILE__).'/connect.php';
 require_once dirname(__FILE__).'/bootstrap.php';
 	
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
@@ -360,7 +361,8 @@ $sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 // );
 
 $sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
-	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`
+	SELECT `row_id`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`,
+	SUBSTRING(`date`, 1, 10) AS `date`
 	FROM `drugrx` 
 	WHERE `hn` = '%s' 
 	AND ( `date` >= '$sixMonthsTH' AND `date` <= '$opdayThidate' ) 
@@ -371,7 +373,7 @@ $sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`deta
 LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
 LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
 LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode`
-GROUP BY a.`type`",
+ORDER BY a.`date` DESC LIMIT 2",
 $dbi->real_escape_string($patient_hn)
 );
 $q = $dbi->query($sql);
