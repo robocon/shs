@@ -60,7 +60,7 @@ $sql = "SELECT `date_checkup`,`yearchk` FROM `chk_company_list` WHERE `code` = '
 $q = $mysqli->query($sql);
 $item = $q->fetch_assoc();
 $date_checkup = $item['date_checkup'];
-$yearchk = $item['yearchk'];
+$yearchk = $item['yearchk']-1;
 
 $sql = "SELECT a.*,b.`exam_no` 
 FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ASC ) AS b 
@@ -74,7 +74,7 @@ if($q->num_rows > 0 )
     <h3 class="headerExtra">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเป็นเข้านักเรียนนายสิบตำรวจ ประจำปีงบประมาณ <?=$yearchk;?></h3>
     <h3 class="headerExtra">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
     <h3 class="headerExtra">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ <?=$date_checkup;?></h3>
-    <h3 class="headerExtra">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน.3226) ผู้รับผิดชอบผลการตรวจเอกซเรย์ทรวงอก ร.อ.ณัฐนนท์ จันทร์รัตน์(ว.58017)</h3>
+    <h3 class="headerExtra">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน.3226) ผู้รับผิดชอบผลการตรวจเอกซเรย์ทรวงอก พ.ต.ณัฐนนท์ จันทร์รัตน์(ว.58017)</h3>
     <h3></h3>
     <table width="100%" class="chk_table">
         <thead>
