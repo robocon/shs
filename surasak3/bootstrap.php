@@ -7,8 +7,8 @@ session_start();
 require_once 'includes/config.php';
 require_once "includes/functions.php";
 
-if(PHP_VERSION_ID<50329 OR empty($Conn)){
-	$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+if(PHP_VERSION_ID<=50329 OR empty($Conn)){
+	$Conn = mysql_connect(HOST, USER, PASS) or die( 'Error Connection : '.mysql_error().' HOST:'.HOST );
 	mysql_select_db(DB, $Conn) or die( mysql_error() );
 	mysql_query("SET NAMES UTF8", $Conn);
 }
