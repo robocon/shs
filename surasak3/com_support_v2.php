@@ -92,37 +92,9 @@ if($page==='load25page'){
     $items = array();
     while ($item = $q->fetch_assoc()) {
         $id = $item['row_id'];
-
-        $item['detail'] = strip_tags(html_entity_decode($item['detail']));
+        $item['detail'] = strip_tags(htmlspecialchars_decode($item['detail'],ENT_QUOTES));
         $items[] = $item;
-
     }
-
-    // $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 100 ";
-    // $q_sub = $dbi->query($sql_sub);
-    // if($q_sub->num_rows > 0){
-    //     while ($s = $q_sub->fetch_assoc()) { 
-    //         $id = $s['com_id'];
-
-    //         $sql = "SELECT * FROM `com_support` WHERE `row` = '$id' ";
-    //         $q = $dbi->query($sql);
-    //         $i = $q->fetch_assoc();
-
-    //         $is['row'] = $i['row'];
-    //         $is['depart'] = $i['depart'];
-    //         $is['head'] = $i['head'];
-    //         $is['detail'] = strip_tags(html_entity_decode($s['detail']));
-
-    //         $is['user'] = $i['user'];
-    //         $is['programmer'] = $i['programmer'];
-    //         $is['user1'] = $i['user1'];
-    //         $is['p_edit'] = '';
-    //         $is['date'] = $i['date'];
-    //         $is['dateend'] = $i['dateend'];
-    //         $items[] = $is;
-    //     }
-    // }
-
     echo json_encode($items);
     exit;
 }elseif ($page==='loadOrderPage') {
