@@ -10,23 +10,6 @@
     session_register("cPtright");
     session_register("tvn");
 ?>
-<!-- display:none; -->
-<div id="resOpenTab" style="color: red; text-align: center; display:none;">
-	<h1>!!! คำเตือน !!!<br>ท่านกำลังเปิด Tab ซ้ำซ้อน อาจทำให้การลงทะเบียนมีปัญหา VN ซ้ำกัน</h1>
-	<br>
-</div>
-<form name="form3" method="POST" action="<?php echo $PHP_SELF ?>" onsubmit="return checkType();">
-	<p>ผู้ป่วยนอก HN (ได้จากเวชระเบียน)</p>
-	<p>&nbsp;&nbsp;HN&nbsp;&nbsp;<input type="text" name="hn" size="12">
-		<br />
-		<br />
-		<input type="radio" value="1" name="servicd" id="servicd1" /> คิดค่าบริการ 50 บาท
-		<br />
-		<input type="radio" value="0" name="servicd" id="servicd2" />
-		ไม่คิดค่าบริการ 50 บาท
-	</p>
-	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="        ตกลง        " name="B1"></p>
-</form>
 <script>
 function checkType(){
 	if(document.form3.servicd1.checked==false&&document.form3.servicd2.checked==false){
@@ -37,42 +20,20 @@ function checkType(){
 		return true;
 	}
 }
-
-/**
- * README : https://meetzaveri.medium.com/track-or-detect-number-of-tabs-open-for-same-website-in-react-f03406ae744b
- */
-// คำสั่งล้างค่า
-// localStorage.clear();
-
-// ถ้า tabsOpen เป็น Null ให้ตั้งค่าเป็น 1 แต่ถ้าเคยมีค่าแล้วให้ +1
-let tabsOpen = localStorage.getItem('tabsOpen');
-
-if(tabsOpen < 0){
-	localStorage.clear();
-}
-
-if(tabsOpen == null){
-	localStorage.setItem('tabsOpen', 1);
-}else{
-	localStorage.setItem('tabsOpen', parseInt(tabsOpen) + 1);
-}
-
-// ถ้ามีการรีเฟรชหรือปิดหน้าจอให้ -1
-window.onunload = function(e){
-	const newTabCount = localStorage.getItem('tabsOpen');
-	if (newTabCount !== null ) { 
-		localStorage.setItem('tabsOpen', parseInt(newTabCount) - 1);
-	}
-
-	if(tabsOpen < 0){
-		localStorage.clear();
-	}
-};
-
-if(tabsOpen > 0){
-	document.getElementById('resOpenTab').style.display = '';
-}
 </script>
+<form name="form3" method="POST" action="<?php echo $PHP_SELF ?>" onsubmit="return checkType();">
+  <p>ผู้ป่วยนอก  HN (ได้จากเวชระเบียน)</p>
+  <p>&nbsp;&nbsp;HN&nbsp;&nbsp;<input type="text" name="hn" size="12">
+  <br />
+    <br />
+  <input type="radio" value="1" name="servicd" id="servicd1"  /> คิดค่าบริการ 50 บาท
+  <br />
+  <input type="radio" value="0" name="servicd" id="servicd2" /> 
+  ไม่คิดค่าบริการ 50 บาท
+  </p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="        ตกลง        " name="B1"></p>
+</form>
+
 <?php
 if(!empty($hn)){
 	//$tvn=$vn;
@@ -163,11 +124,32 @@ $result = mysql_query($query)or die("Query failed,opday");
    	    print "$cPtname<br>";
    	    print "สิทธิการรักษา :$cPtright<br>";
 
-		$sql = "SELECT idguard FROM opcard WHERE hn = '".$cHn."' Order by row_id DESC limit 1";
-    	list($idguard) = mysql_fetch_row(Mysql_Query($sql));
+		$sql = "SELECT idguard,idcard FROM opcard WHERE hn = '".$cHn."' Order by row_id DESC limit 1";
+    	list($idguard,$ccc) = mysql_fetch_row(Mysql_Query($sql));
+?> 
+<?php 
+	$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());
+	$t = mysql_fetch_array($qToken);
+	$person_id = preg_replace('/\D/','', $t['cid']);
+	$smctoken = $t['token'];
+?>
+	<div id="nhso">
+		<br><span style="color: blue;"> <img src="images/Spinner-1s-28px.gif" alt=""> กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
+	</div>
+
+<script type="text/javascript" src="js/nhso.js"></script>
+<script>
+	window.onload = function(){
+		checksit('nhso','<?=$ccc;?>','<?=$person_id;?>','<?=$smctoken;?>');
+	}
+</script>  
   
-    	print "ประเภท : $idguard";
-   	    print "<br><a href='erask.php'>!ชื่อถูกต้อง ทำรายการต่อไป</a>";
+<?php  
+    	print "<div style='font-size:28px;'>ประเภท : $idguard</div>";
+		if(substr($cPtright,0,3)=='R12' || substr($cPtright,0,3)=='R13' || substr($cPtright,0,3)=='R14' || substr($cPtright,0,3)=='R35' || substr($cPtright,0,3)=='R36'){
+			echo "<div style=\"background-color: #FF0000;font-size:28px;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>รพ.เบิกเงินจากต้นสังกัดได้ไม่เกิน 700 บาท</div>";
+		}		
+   	    print "<br><div style='font-size:28px;'><a href='erask.php'><img src='images/check-mark.png' width='28px;' height='28px;'>ชื่อถูกต้อง ทำรายการต่อไป...</a></div>";
 	}else{
 //หาข้อมูลจาก opcard ของ $cHn เพื่อใช้ทั้งในกรณีลงทะเบียนแล้ว หรือยังไม่ลง
 		$query = "SELECT * FROM opcard WHERE hn = '$hn'";

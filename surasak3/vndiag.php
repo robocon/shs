@@ -8,52 +8,13 @@
     session_register("cPtname");
     session_register("cPtright");
 ?>
-<div id="resOpenTab" style="color: red; text-align: center; display:none;">
-	<h1>!!! คำเตือน !!!<br>ท่านกำลังเปิด Tab ซ้ำซ้อน อาจทำให้การลงทะเบียนมีปัญหา VN ซ้ำกัน</h1>
-	<br>
-</div>
 <form method="POST" action="<?php echo $PHP_SELF ?>">
-  <p>ผู้ป่วยนอก หมายเลข VN (ได้จากแผนกเวชระเบียน)</p>
+  <p>ผู้ป่วยนอก  หมายเลข VN (ได้จากแผนกเวชระเบียน)</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;VN&nbsp;&nbsp;<input type="text" name="vn" size="8"></p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="   ตกลง   " name="B1"></p>
     <p><B>แจ้ง กอง/แผนก ให้เริ่มทดลองการไม่พิมพ์ใบแจ้งหนี้ลดการใช้งานกระดาษ</B> <B>ในกรณีที่มีใบตรวจโรค</B> ให้เขียนราคาในใบตรวจโรค แล้วนำใบตรวจโรคมาชำระเงินหรือมารับยา <B>ในกรณีที่ไม่ได้ชำระเงิน</B> ระบบคอมจะให้เวลาในการแก้ไขข้อมูล 2 ชั่วโมง จากการคีข้อมูลแล้วจะนำเอาข้อมูลเข้าระบบ <B>ในกรณีที่ไม่มีใบตรวจโรคและต้องชำระเงิน</B> ให้พิมพ์ใบแจ้งหนี้ในระยะแรกก่อนถ้าไม่ชำระไม่ต้องพิมพ์ <B>ในกรณีที่มีใบรับรองแพทย์บนใบแจ้งหนี้ </B>ให้พิมพ์เหมือนเดิม</p>
 </form>
-<script>
-/**
- * README : https://meetzaveri.medium.com/track-or-detect-number-of-tabs-open-for-same-website-in-react-f03406ae744b
- */
-// คำสั่งล้างค่า
-// localStorage.clear();
 
-// ถ้า tabsOpen เป็น Null ให้ตั้งค่าเป็น 1 แต่ถ้าเคยมีค่าแล้วให้ +1
-let tabsOpen = localStorage.getItem('tabsOpen');
-
-if(tabsOpen < 0){
-	localStorage.clear();
-}
-
-if(tabsOpen == null){
-	localStorage.setItem('tabsOpen', 1);
-}else{
-	localStorage.setItem('tabsOpen', parseInt(tabsOpen) + 1);
-}
-
-// ถ้ามีการรีเฟรชหรือปิดหน้าจอให้ -1
-window.onunload = function(e){
-	const newTabCount = localStorage.getItem('tabsOpen');
-	if (newTabCount !== null ) { 
-		localStorage.setItem('tabsOpen', parseInt(newTabCount) - 1);
-	}
-
-	if(tabsOpen < 0){
-		localStorage.clear();
-	}
-};
-
-if(tabsOpen > 0){
-	document.getElementById('resOpenTab').style.display = '';
-}
-</script>
 <?php
    $tvn="$vn";
     session_register("tvn");

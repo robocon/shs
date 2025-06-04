@@ -82,6 +82,7 @@ if ($action==='udpateTime') {
         ?>
         <table class="table">
             <tr>
+                <th>#</th>
                 <th width="10%">วันที่ปิดงาน</th>
                 <th>หัวข้อ</th>
                 <th>รายละเอียด</th>
@@ -96,6 +97,7 @@ if ($action==='udpateTime') {
             $detail = html_entity_decode($a['detail']);
             ?>
             <tr>
+                <td><a href="javascript:void(0);"><?=$id;?></a></td>
                 <td><a href="javascript:void(0);" onclick="editDateTime('<?=$id;?>','<?=$date;?>','<?=$time;?>')"><?=$a['dateend'];?></a></td>
                 <td><a href="javascript:void(0);" onclick="loadContent('<?=$id;?>')"><strong><?=$a['head'];?></strong></a>    </td>
                 <td><?=preg_replace('#<br />(\s*<br />)+#', '<br />', $detail);?></td>
