@@ -410,6 +410,8 @@ if($q->num_rows > 0 )
                         elseif ($labItems['GLUU']['result'] == 'Positive') 
                         {
                             echo "P";
+                        }else{
+                            echo $labItems['GLUU']['result'];
                         }
                     }
                     ?>
