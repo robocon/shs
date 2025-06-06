@@ -34,7 +34,7 @@ if($_POST["act"]=="add")
 
 		// Lineกลุ่มห้องคอมฯ
 		// $sToken = "VNOr3viB2SShjl9UTqHy9H6Rksclxyhq1dAQXbAB3FZ";
-		$_SESSION['telegram_msg']  = "ใบงานใหม่ ลำดับ: $row_id ผู้แจ้ง: $user แผนก: $depart ติดต่อ: $phone หัวข้อ: $head รายละเอียด: $detail_for_line";
+		$_SESSION['telegram_msg']  = "💡 ใบงานใหม่ *ลำดับ*: $row_id \n*ผู้แจ้ง*: $user \n*แผนก*: $depart \n*ติดต่อ*: $phone \n*หัวข้อ*: $head \n*รายละเอียด*: $detail_for_line";
 		// sendLineNotify($sMessage, $sToken);
 
 		// ติดตามงาน IT

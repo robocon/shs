@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once 'connect.php';
+require_once dirname(__FILE__).'/connect.php';
 require_once dirname(__FILE__).'/bootstrap.php';
 
 $user_id = trim($_SESSION['sIdname']);
@@ -10,22 +10,12 @@ if(empty($user_id)){
     exit;
 }
 
-function sendText($text){
-
-    $curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
-    curl_setopt( $curl, CURLOPT_HEADER, 0);
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
-	$result = curl_exec( $curl ); 
-	curl_close($curl); 
-
-}
-
+// ถ้ายังไม่มี cookie 'dglst' ให้สร้าง cookie ใหม่ และส่งข้อความแจ้งเตือนว่ามีคนเข้าใช้งาน
 if(empty($_COOKIE['dglst'])){
     setcookie('dglst','1',strtotime("+15 min"),'/');
 
-    $sMessage = '👾 '.$_SESSION['sIdname'].' ได้เข้าใช้งานเมนู ::PHAR- แก้ไขข้อมูลยา ';
-    sendText($sMessage);
+    // $sMessage = '👾 '.$_SESSION['sIdname'].' ได้เข้าใช้งานเมนู ::PHAR- แก้ไขข้อมูลยา ';
+    // sendText($sMessage);
     
 }
 ?>
@@ -71,8 +61,12 @@ if ($user_code !== 'ADM') {
 }
 
 print "รายการยาเวชภัณฑ์ <br> ";
-if (isset($_GET["action"]) && $_GET["action"] == "drugcode") {
+
+// แสดงรายการยา ตอนคีย์ค้นหาจากรหัสยา (aJax)
+if (isset($_GET["action"]) && $_GET["action"] == "drugcode" && !empty($_GET["search1"]) ) {
+
     $sql = "Select drugcode,tradname from druglst  where  drugcode like '%" . $_GET["search1"] . "%' limit 10 ";
+    
     $result = Mysql_Query($sql) or die(Mysql_error());
     if (Mysql_num_rows($result) > 0) {
         echo "<Div style=\"position: absolute;text-align: center; width:300px; height:430px; overflow:auto; \">";
@@ -117,7 +111,7 @@ function searchSuggest(str,len,getto) {
 </script>
 
 <body onLoad="document.getElementById('drugcode').focus();">
-    <form method="post" action="<?php echo $PHP_SELF ?>">
+    <form method="post" action="dglst.php">
         <font face="Angsana New">
             <Div id="list" style="left:150PX;top:70PX;position:absolute;"></Div>
             <a target='right' href="drugcode.php">รหัสยา ?</a>&nbsp;&nbsp;
@@ -146,9 +140,17 @@ function searchSuggest(str,len,getto) {
             <th bgcolor=45B39D>รหัส 24 หลัก</th>
             <th bgcolor=45B39D>สป<br>สายแพทย์</th>
         </tr>
-        <?php
-        if (!empty($drugcode)) {
-            $query = "SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec FROM druglst WHERE drugcode LIKE '$drugcode%' ";
+        <?php 
+        $drugcodeSearch = $_POST['drugcode'];
+        if (!empty($drugcodeSearch)) {
+
+            if(DEV === false){
+                sendTelgramMsg('👾 '.$_SESSION['sIdname'].' ได้ค้นหายา '.$drugcodeSearch.' ในเมนู ::PHAR- แก้ไขข้อมูลยา ');
+            }
+            
+            $query = sprintf("SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec 
+            FROM druglst 
+            WHERE drugcode LIKE '%s%%' ", mysql_real_escape_string($drugcodeSearch));
             $result = mysql_query($query) or die("Query failed");
             while (list($drugcode, $tradname, $genname, $salepri, $part, $stock, $mainstk, $totalstk, $pack, $packpri_vat, $comcode, $comname, $unitpri, $code24, $edpri, $spec) = mysql_fetch_row($result)) {
                 print(" <tr>\n" .

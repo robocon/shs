@@ -514,3 +514,19 @@ function lineMessagePush($json, $url, $type, $msg){
     curl_close($curl);
     echo $result;
 }
+
+function sendTelgramMsg($text){
+
+    $curl = curl_init();
+	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
+	curl_setopt($curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
+    curl_setopt($curl, CURLOPT_HEADER, 0);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT_MS, 400); // set timeout เอาไว้ ถ้าส่งข้อมูลไม่ได้ให้ตัด connection ทิ้งไป
+	$result = curl_exec($curl);
+	if (curl_errno($curl)) {
+		$result = curl_error($curl);
+	}
+	curl_close($curl);
+    return $result;
+}

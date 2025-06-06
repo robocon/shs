@@ -1731,8 +1731,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 					$style = "";
 				}
 
-				$arr["genname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["genname"]);
-				$arr["tradname"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["tradname"]);
+				$arr["genname"] = preg_replace('/('.$_GET["search"].')/i',"<span style=\"background:#FFC1C1;\">".($_GET["search"])."</span>",$arr["genname"]);
+				$arr["tradname"] = preg_replace('/('.$_GET["search"].')/i',"<span style=\"background:#FFC1C1;\">".($_GET["search"])."</span>",$arr["tradname"]);
 			//แสดงรายการยาที่ค้นหา
 			echo "<tr bgcolor=\"$bgcolor\" ".$style.">
 					<td rowspan=\"3\" align=\"center\">".$obj."</td>

@@ -8,7 +8,7 @@ $json = new Services_JSON();
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$data = json_decode(file_get_contents('php://input'));
+$data = $json->decode(file_get_contents('php://input'));
 
 $action = $data->action;
 

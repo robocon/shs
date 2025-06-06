@@ -49,7 +49,7 @@ $sql = "SELECT `date_checkup`,`yearchk` FROM `chk_company_list` WHERE `code` = '
 $q = $mysqli->query($sql);
 $item = $q->fetch_assoc();
 $date_checkup = $item['date_checkup'];
-$yearchk = $item['yearchk'];
+$yearchk = $item['yearchk']-1;
 
 $sql = "SELECT a.*,b.`exam_no` 
 FROM ( SELECT * FROM `out_result_chkup` WHERE `part` = '$part' ) AS a 

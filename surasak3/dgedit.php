@@ -18,7 +18,7 @@
  * ทีนี้พอแพทย์สั่งจ่ายยา 2BACT-C เราก็สามารถทำแจ้งเตือนได้ว่า อาจจะมีโอกาศแพ้ยาได้นะเพราะเป็นยาที่อยู่ในกลุ่มเดียวกัน
  */
 session_start();
-include("connect.php");
+require_once dirname(__FILE__).'/connect.php';
 require_once dirname(__FILE__).'/bootstrap.php';
 
 if(empty($_SESSION['sIdname'])){
@@ -33,16 +33,12 @@ if(empty($Dgcode)){
     echo '<p>กรุณาใส่ข้อมูลยาให้ถูกต้อง <a href="dglst.php">คลิกที่นี่</a> เพื่อย้อนกลับ</p>';
     exit;
 }
-function sendText($text){
-	$curl = curl_init(); 
-	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php?sMessage=".urlencode($text).'&type=phar');
-	curl_setopt( $curl, CURLOPT_HEADER, 0);
-	curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1); 
-	$result = curl_exec( $curl ); 
-	curl_close($curl); 
-}
+
 $Dgcode = $_GET['Dgcode'];
-sendText($_SESSION['sIdname'].' ได้เข้าใช้งานฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
+
+if(DEV === false){
+    sendTelgramMsg("❗❗❗ ".$_SESSION['sIdname'].' ❗❗❗ ได้เข้าใช้งาน ฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -74,6 +70,42 @@ background-color:#F8F9F9;
 	font-size: 28px;
 	font-weight: bold;
 }
+
+/* Model */
+.modal {
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 1em; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+#myModalContainer{
+    width: 90%;
+    background: #fff;
+    padding: 1em;
+    margin:0 auto;
+}
+/* Model */
+
+
 </style>
 <?php
     $query = "SELECT * FROM druglst WHERE drugcode = '$Dgcode'";
@@ -334,20 +366,51 @@ $edpri_from_list = array(
     }
     ?>
 </select>
-<?php
-print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
-?>
-<select name="had">
+<br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;
+<select name="had" class="txtsarabun">
     <option value='' <? if($had==''){ echo "selected"; } ?>>ไม่ใช่</option>
     <option value='Y' <? if($had=='Y' || $had=='y'){ echo "selected"; } ?>>ใช่</option>
 </select>
+
+<div id="myModal" class="modal" style="display:none;">
+    <div id="myModalContainer">
+        <div class="clearfix">
+            <div id="myModalHeader"><a href="javascript:void(0);" onclick="closeFormAdd()"><span class="close">&times; ปิด</span></a></div>
+        </div>
+        <div id="resContent"></div>
+    </div>
+</div>
 
 <br>
     <table>
         <tr>
             <td valign="top">
+                
+                <script src="js/dgmanage.js" type="text/javascript"></script>
+
                 <strong>กลุ่มยาที่มีโอกาสแพ้ : </strong>
-                <div><a href="dgmanage.php" target="_blank">จัดการกลุ่ม</a></div>
+                <!-- window.open('dgmanage.php','manageDrugGroup','width=800,height=600'); -->
+                <div><a href="javascript:void(0);" onclick="loadDgmanage()">จัดการกลุ่ม</a></div>
+                <script>
+                    async function loadDgmanage(){
+                        const test = await fetch('dgmanage_page.php', {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                            }
+                        });
+                        document.getElementById('resContent').innerHTML = await test.text();
+                        showContent();
+                    }
+
+                    function closeFormAdd(){
+                        document.getElementById('myModal').style.display = 'none';
+                    }
+
+                    function showContent(){
+                        document.getElementById('myModal').style.display = '';
+                    }
+                </script>
             </td>
             <td valign="top">
                 <?php 
@@ -363,7 +426,7 @@ print "    <br>ยา High Alert Drug&nbsp;&nbsp;&nbsp;";
 
                 $q = $dbi->query("SELECT * FROM `drugreact_group` WHERE `status` = 'y' ");
                 ?>
-                <select name="drugreact_group" id="drugreact_group" style="width: 300px;">
+                <select name="drugreact_group" id="drugreact_group" style="width: 300px;" class="txtsarabun">
                     <option value="">ไม่มีกลุ่ม</option>
                 <?php
                 $groupList = array();
@@ -656,10 +719,6 @@ $l2= ($lac_type=='block') ? 'checked="checked"' : '' ;
             }
         </script>
     </td>
-</tr>
-<tr>
-	<td></td>
-	<td colspan='2'>จำนวน/กล่อง  : <input class='txtsarabun'  type='text' name='quantity_box' size='10' tabindex='13' value='<?=$cQuantity_box;?>'></td>
 </tr>
 <tr>
 	<td></td>
