@@ -49,7 +49,7 @@ if ($_REQUEST['do'] == 'edit') {
 	if ($query) {
 
 		// $sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
-		$_SESSION['telegram_msg'] = "สรุปปิดงาน ลำดับแจ้ง: $row เรื่อง: $head ผู้แจ้ง: $user ดำเนินการเรียบร้อยโดย $programmer";
+		$_SESSION['telegram_msg'] = "🎉 สรุปปิดงาน \\n*ลำดับแจ้ง*: $row \\n*เรื่อง*: $head \\n*ผู้แจ้ง*: $user \\nดำเนินการเรียบร้อยโดย $programmer";
 		// sendLineNotify($sMessage, $sToken);
 
 		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
