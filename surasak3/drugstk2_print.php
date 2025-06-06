@@ -33,7 +33,8 @@ $dbi->query("SET NAMES UTF8");
             $statement = "SELECT a.*,b.`unit`
             FROM `drugrx` AS a 
             LEFT JOIN `druglst` AS b ON a.`drugcode` = b.`drugcode`
-            WHERE a.`idno` = '%s' ";
+            WHERE a.`idno` = '%s' 
+            AND a.`amount` > 0";
             $sql = sprintf( $statement, $dbi->real_escape_string($row_id));
             $q = $dbi->query($sql);
             if($q->num_rows>0){

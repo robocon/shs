@@ -17,4 +17,7 @@ define('PASS', 'pass');
 
 define('TOKEN_KEY', 'token');
 
+define('IC_BOT_TOKEN_GROUP', 'api_token');
+define('IC_CHAT_GROUP', 'chat_group');
+
 define('DEV', false);
