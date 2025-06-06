@@ -71,7 +71,7 @@ if ($_SESSION['supportMessage']) {
 
                 const telegram_msg = '<?=$_SESSION['telegram_msg'];?>';
                 var test_str = [];
-                test_str.push(encodeURIComponent('sMessage')+"="+encodeURIComponent(telegram_msg));
+                test_str.push(encodeURIComponent('sMessage')+"="+telegram_msg);
                 var data = test_str.join("&");
                 postMessage(data).then((res)=>{
                     console.log(res);
