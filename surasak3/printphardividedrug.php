@@ -232,18 +232,15 @@ for($i=0;$i<$item;$i++){
 			}
 			
 			// สติกเกอร์ติด OPD
-			if($_POST["Amount"][$i] > 0){
-			
-				$_SESSION["drugstk"] .="<DIV style='left:".$k11."PX;top:".$j1."PX;width:306PX;height:30PX; position:absolute'>
-					<font style=\"font-family:'MS Sans Serif'; font-size:12px\"> ".$_POST["Tradname"][$i]."&nbsp;(".$_POST["Unit"][$i].")
-				</DIV>
-				<DIV style='left:".$k21."px;top:".$j1."PX;width:306PX;height:30PX;position:absolute'>
-					<font style=\"font-family:'MS Sans Serif'; font-size:12px\" >&nbsp;&nbsp;&nbsp;&nbsp;".$_POST["Slipcode"][$i]."
-				</DIV>
-				<DIV style='left:".$k31."px;top:".$j1."PX;width:306PX;height:30PX;position:absolute'>
-					<font style=\"font-family:'MS Sans Serif'; font-size:12px\">&nbsp;".$_POST["Amount"][$i]."
-				</DIV>";
-			}
+			$_SESSION["drugstk"] .="<DIV style='left:".$k11."PX;top:".$j1."PX;width:306PX;height:30PX; position:absolute'>
+				<font style=\"font-family:'MS Sans Serif'; font-size:12px\"> ".$_POST["Tradname"][$i]."&nbsp;(".$_POST["Unit"][$i].")
+			</DIV>
+			<DIV style='left:".$k21."px;top:".$j1."PX;width:306PX;height:30PX;position:absolute'>
+				<font style=\"font-family:'MS Sans Serif'; font-size:12px\" >&nbsp;&nbsp;&nbsp;&nbsp;".$_POST["Slipcode"][$i]."
+			</DIV>
+			<DIV style='left:".$k31."px;top:".$j1."PX;width:306PX;height:30PX;position:absolute'>
+				<font style=\"font-family:'MS Sans Serif'; font-size:12px\">&nbsp;".$_POST["Amount"][$i]."
+			</DIV>";
 			// สติกเกอร์ติด OPD
 
 			$i1++;
@@ -261,17 +258,15 @@ for($i=0;$i<$item;$i++){
 			}
 
 			// พิมพ์ใบกลับบ้าน
-			if($_POST["Amount"][$i] > 0){
-				$_SESSION["drughome"] .= "<tr><td>".$j."</td>
-					<td><font face='Angsana New'>".$_POST["Drugcode"][$i]."</td>
-					<td><font face='Angsana New'>".$_POST["Tradname"][$i]."</td>
-					<td><font face='Angsana New'>".$detail1." ".$detail2." ".$detail3." ".$detail4."</td>
-				</tr>";
-			}
+			$_SESSION["drughome"] .= "<tr><td>".$j."</td>
+				<td><font face='Angsana New'>".$_POST["Drugcode"][$i]."</td>
+				<td><font face='Angsana New'>".$_POST["Tradname"][$i]."</td>
+				<td><font face='Angsana New'>".$detail1." ".$detail2." ".$detail3." ".$detail4."</td>
+			</tr>";
 			// พิมพ์ใบกลับบ้าน
 
 			#******************************* Session ทำสลากยา ***************************************
-			if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot"]) && $_POST["Amount"][$i] > 0 ){
+			if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot"]) ){
 
 				if($dlot == false){
 					$_SESSION["druglot"] .= "<div style=\"page-break-before: always;\"></div>";
@@ -312,7 +307,7 @@ for($i=0;$i<$item;$i++){
 			
 			
 			#******************************* Session ทำสลากยาใหม่ ***************************************
-			if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_new"]) && $_POST["Amount"][$i] > 0 ){
+			if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_new"]) ){
 				
 				if($dlot_new == false){
 					$_SESSION["druglot_new"] .= "<div style=\"page-break-before: always;\"></div>";
@@ -360,7 +355,7 @@ for($i=0;$i<$item;$i++){
 			
 			
 			#******************************* Session ทำสลากยาใหม่ มี qrcode ***************************************
-			if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_qrcode"]) && $_POST["Amount"][$i] > 0 ){
+			if($_POST["Drugcode"] != "INJ" && isset($_SESSION["druglot_qrcode"]) ){
 				
 				if($dlot_qrcode == false){
 					$_SESSION["druglot_qrcode"] .= "<div style=\"page-break-before: always;\"></div>";
