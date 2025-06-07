@@ -31,7 +31,7 @@ if ($_REQUEST['do'] == 'edit') {
 	$query = mysql_query($update);
 	if ($query) {
 		// $sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // real
-		$_SESSION['telegram_msg'] = "*เรื่อง*: $head \\nกำลังดำเนินการโดย $owner";
+		$_SESSION['telegram_msg'] = "🏃🏽‍♀️ *เรื่อง*: $head \\nกำลังดำเนินการโดย $owner";
 		// sendLineNotify($sMessage, $sToken);
 
 		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";

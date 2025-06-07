@@ -33,7 +33,7 @@ if($_POST["act"]=="add")
 		$row_id = mysql_insert_id();
 		
 		// ใส่ \\ เพื่อ escape เวลาเอาไปแสดงใน js แต่ถ้าโดยปกติไม่ต้องทำแบบนี้
-		$_SESSION['telegram_msg']  = "💡 ใบงานใหม่ *ลำดับ*: $row_id \\n*ผู้แจ้ง*: $user \\n*แผนก*: $depart \\n*ติดต่อ*: $phone \\n*หัวข้อ*: $head \\n*รายละเอียด*: $detail_for_line";
+		$_SESSION['telegram_msg']  = "🔔 ใบงานใหม่ *ลำดับ*: $row_id \\n*ผู้แจ้ง*: $user \\n*แผนก*: $depart \\n*ติดต่อ*: $phone \\n*หัวข้อ*: $head \\n*รายละเอียด*: $detail_for_line";
 		$_SESSION['supportMessage'] = "ทำการเพิ่มข้อมูลเรียบร้อยแล้ว";
 	}
 	else
