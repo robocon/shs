@@ -20,4 +20,9 @@ define('TOKEN_KEY', 'token');
 define('IC_BOT_TOKEN_GROUP', 'api_token');
 define('IC_CHAT_GROUP', 'chat_group');
 
+define('TELEGRAM_BOT_TOKEN', 'api_token');
+define('UPDATE_JOB_IT', 'chat_group');
+
+define('FORM_REGISTER', 'chat_group');
+
 define('DEV', false);
