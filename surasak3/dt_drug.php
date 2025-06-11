@@ -3113,14 +3113,16 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 function checkMRA(drugcode){ // 1FINE
 	let aaa = getCookie(mraCookieName);
-	console.log('Cookie[mraCookieName] : '+aaa);
-
+	
 	const htmlTxt = `<div>
-		<p><input type="checkbox" class="inputMRA" id="inputMRA1" name="inputMRA[inputMRA1]" value="1"><label for="inputMRA1">CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)</label></p>
-		<p><input type="checkbox" class="inputMRA" id="inputMRA2" name="inputMRA[inputMRA2]" value="1"><label for="inputMRA2">มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L</label></p>
-		<p><input type="checkbox" class="inputMRA" id="inputMRA3" name="inputMRA[inputMRA3]" value="1"><label for="inputMRA3">ไม่มีภาวะ adrenal insufficiency</label></p>
-		<p><input type="checkbox" class="inputMRA" id="inputMRA4" name="inputMRA[inputMRA4]" value="1"><label for="inputMRA4">ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup></label></p>
-		<p><button type="button" onclick="confirmMRA()">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelMRA()">ยกเลิก</button></p>
+		<p><input type="checkbox" class="inputMRA" id="inputMRA1" name="inputMRA[inputMRA1]" value="CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)"><label for="inputMRA1">CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)</label></p>
+		<p><input type="checkbox" class="inputMRA" id="inputMRA2" name="inputMRA[inputMRA2]" value="มีระดับ k+ ไม่เกิน 5 mEq/L"><label for="inputMRA2">มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L</label></p>
+		<p><input type="checkbox" class="inputMRA" id="inputMRA3" name="inputMRA[inputMRA3]" value="ไม่มีภาวะ adrenal insufficiency"><label for="inputMRA3">ไม่มีภาวะ adrenal insufficiency</label></p>
+		<p><input type="checkbox" class="inputMRA" id="inputMRA4" name="inputMRA[inputMRA4]" value="ระดับ eGFR > 25 ml/min/1.73m3"><label for="inputMRA4">ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup></label></p>
+		<p>
+			<button type="button" onclick="confirmMRA('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelMRA()" class="button cancel">ยกเลิก</button>
+			<input type="hidden" name="criteria" id="criteria" value="Mineralocorticoid receptor antagonist (MRA)">
+		</p>
 	</div>`;
 	
 	document.getElementById("pregHeader").innerHTML = 'เหตุผลการสั่งใช้ยา Firialta 20 mg. tab. (Finerenone 20 mg.)';
@@ -3132,7 +3134,7 @@ function checkMRA(drugcode){ // 1FINE
 
 }
 
-function confirmMRA(){
+function confirmMRA(drugcode){
 	const mraItems = document.querySelectorAll('.inputMRA');
 	let mraCount = 0;
 	for (let i = 0; i < mraItems.length; i++) {
@@ -3145,10 +3147,46 @@ function confirmMRA(){
 		Swal.fire({
 			title: 'แจ้งเตือน',
 			text: 'กรุณาเลือกเหตุผลการสั่งใช้ยาให้ครบ 4 ข้อ',
-			icon: 'warning'
+			icon: 'warning',
+			allowOutsideClick: false
 		});
 		return false;
 	}else{
+
+		const doctor = '<?=$_SESSION["dt_doctor"];?>';
+		const hn = '<?=$_SESSION["hn_now"];?>';
+
+		let formData = new FormData();
+		formData.append("action", 'save');
+		formData.append("criteria", 'Mineralocorticoid receptor antagonist (MRA)');
+		formData.append("drugcode", drugcode);
+		formData.append("hn", hn);
+		formData.append("doctor", doctor);
+		formData.append("detail[]", 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)');
+		formData.append("detail[]", 'มีระดับ k+ ไม่เกิน 5 mEq/L');
+		formData.append("detail[]", 'ไม่มีภาวะ adrenal insufficiency');
+		formData.append("detail[]", 'ระดับ eGFR > 25 ml/min/1.73m3');
+
+		const postData = new URLSearchParams(formData).toString();
+		
+		sendForm('doctor_medical.php',postData).then((res)=>{
+			if(res.status === 200){
+				Swal.fire({
+					title: 'สำเร็จ',
+					text: res.message,
+					icon: 'success',
+					allowOutsideClick: false
+				});
+			}else{
+				Swal.fire({
+					title: 'แจ้งเตือน',
+					text: res.message,
+					icon: 'warning',
+					allowOutsideClick: false
+				});
+			}
+		});
+
 		setCookie(mraCookieName, '1'); // บันทึก cookie ว่าได้ทำการยืนยัน MRA แล้ว
 		closePreg();
 	}
@@ -3157,6 +3195,18 @@ function confirmMRA(){
 function cancelMRA(){
 	resetLeftForm();
 	closePreg();
+}
+
+async function sendForm(url, dataPost){
+	let response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+		},
+		body: dataPost
+	});
+	const body = await response.json();
+	return body;
 }
 
 async function drugLeftOver(drugcode) {
@@ -4337,6 +4387,29 @@ function viatch(ing,code){
 #closeAlert{
 	background-color: #a8ab00;
     color: black;
+}
+
+.button{
+	background-color: #04AA6D; /* Green */
+	border: none;
+	border-radius: 4px;
+	color: white;
+	padding: 8px 16px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	transition-duration: 0.4s;
+	cursor: pointer;
+}
+
+.cancel{
+	background-color: #f44336;
+}
+
+.button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
 </style>
