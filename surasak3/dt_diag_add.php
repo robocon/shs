@@ -53,10 +53,10 @@ function jschars($str)
 		$thai=$thai;
 	}
 	
-	$sql = "Update opday set history='".$_SESSION["dt_diag_detail"]."' , diag='".jschars($_SESSION["dt_diag"])."', diag_eng='".$detail."', diag_thai='".$thai."', icd10 = '".$_SESSION["dt_icd10"]."' , `diag_other` = '".$_SESSION["dt_diag_other"]."',`icd10_other` = '".$_SESSION["dt_icd10_other"]."' where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' limit 1";
+	$sql = "Update opday set history='".htmlspecialchars($_SESSION["dt_diag_detail"], ENT_QUOTES)."' , diag='".htmlspecialchars($_SESSION["dt_diag"], ENT_QUOTES)."', diag_eng='".htmlspecialchars($detail, ENT_QUOTES)."', diag_thai='".$thai."', icd10 = '".$_SESSION["dt_icd10"]."' , `diag_other` = '".$_SESSION["dt_diag_other"]."',`icd10_other` = '".$_SESSION["dt_icd10_other"]."' where thdatevn = '".date("d-m-").(date("Y")+543).$_SESSION["vn_now"]."' limit 1";
 	$result = Mysql_Query($sql);
 
-$sql = "Update dxofyear  set dx='".$_SESSION["dt_diag_detail"]."' where thdatevn = '".(date("Y").date("-m-d")).$_SESSION["vn_now"]."' limit 1";
+$sql = "Update dxofyear  set dx='".htmlspecialchars($_SESSION["dt_diag_detail"], ENT_QUOTES)."' where thdatevn = '".(date("Y").date("-m-d")).$_SESSION["vn_now"]."' limit 1";
 $result = Mysql_Query($sql);
 	
 		$regisdate_en = $svdate_en = date('Y-m-d');

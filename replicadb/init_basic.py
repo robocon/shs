@@ -12,6 +12,7 @@ import os
 import subprocess
 import sys
 import json
+from subprocess import Popen
 
 json_data_file = open("config.json", "r")
 data = json.load(json_data_file)
@@ -74,10 +75,11 @@ returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code 
 print('returned value:', returned_value,'\n')
 
 # druglst
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=druglst --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=druglst"
-print("  REPLICADB COMMAND : ", str(cmd),'\n')
-returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-print('returned value:', returned_value,'\n')
+p = Popen("download_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+stdout, stderr = p.communicate()
+
+p = Popen("import_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+stdout, stderr = p.communicate()
 
 # labcare
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=labcare --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=labcare"
