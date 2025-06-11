@@ -46,7 +46,6 @@ if (isset($_POST['pt_name'])) {
 
   $sql = " INSERT INTO `bacteria_resistant`(`Id`, `HN`,`Pt_Name`, `Ward`, `Date_Send`, `Company_Name`, `Bacteria_Name`, `Bacteria_Source`, `Drug_Name`, `Officer_Name`, `Last_Update`, `Flag_Use`) 
             VALUES (NULL, '".$_POST['hnSearch']."','" . $_POST['pt_name'] . "','" . $_POST['ward'] . "','" . $_POST['date_send'] . "','','" . $_POST['bacteria_name'] . "','" . $_POST['bacteria_source'] . "','" . $_POST['drug_name'] . "','" . $officer . "','" . $Txt_Datetime_Full . "','Y')";
-  // $query = mysql_query($sql);
   $query = $dbi->query($sql);
   if ($query) {
     $pt_name = $_POST['pt_name'];
@@ -64,24 +63,30 @@ if (isset($_POST['pt_name'])) {
 
     // แจ้งเตือน Telegram
     $thaiDate = $tmp_d.' '.$def_fullm_th[$tmp_m].' '.$tmp_y;
-    $msgTelegram = "🦠 MDR Alert : ข้อมูลเชื้อดื้อยาใหม่ ❗ \n*ชื่อ-สกุล* : $pt_name \n*หอผู้ป่วย* : $ward \n*วันที่ส่งแลป* : $thaiDate \n*เชื้อที่พบ* : $bacteria_name \n*แหล่งกำเนิดเชื้อ* : $bacteria_source";
-    $url = "https://api.telegram.org/bot".IC_BOT_TOKEN_GROUP."/sendMessage?chat_id=".IC_CHAT_GROUP."&text=".urlencode($msgTelegram)."&parse_mode=markdown";
-    $curl = curl_init();
-    curl_setopt( $curl, CURLOPT_URL, $url);
-    curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt( $curl, CURLOPT_SSLVERSION, 6);
-    curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-    $result = curl_exec( $curl );
-    if($result===false){
-        $error = curl_error($curl);
-    }
-    curl_close($curl);
+    $msgTelegram = "🦠 MDR Alert : ข้อมูลเชื้อดื้อยาใหม่ ❗ \\n*ชื่อ-สกุล* : $pt_name \\n*หอผู้ป่วย* : $ward \\n*วันที่ส่งแลป* : $thaiDate \\n*เชื้อที่พบ* : $bacteria_name \\n*แหล่งกำเนิดเชื้อ* : $bacteria_source";
+    ?>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        async function postMessage(data){
+            const response = await fetch('<?=NOTIFY_HOST;?>/telegram/ic.php?'+data);
+            const resData = await response.json();
+            return resData;
+        }
+        var test_str = [];
+        test_str.push(encodeURIComponent('type')+"="+encodeURIComponent('ic'));
+        test_str.push(encodeURIComponent('sMessage')+"="+encodeURIComponent('<?=$msgTelegram;?>'));
+        var data = test_str.join("&");
+        postMessage(data).then((res)=>{
+            console.log(res);
+        });
+      });
+    </script>
+    <?php
     // แจ้งเตือน Telegram
     
     echo "<h1 align='center' style='color:white;background-color:green'>บันทึกสำเร็จ!</h1>";
     echo "<h2 align='center' style='color:blue;'><a href='Form_bacteria_resistant.php'>[ ดำเนินการต่อ ]</a></h2>";
-    header('refresh: 2; url=Form_bacteria_resistant.php');
+    header('refresh: 3; url=Form_bacteria_resistant.php');
     //header('refresh: 1; url=https://surasakhospital.ap.ngrok.io/alert/mdr.php?pt_name='.rawurlencode($pt_name).'&ward='.rawurlencode($ward).'&date_send='.rawurlencode($date_send).'&bacteria_name='.rawurlencode($bacteria_name).'&bacteria_source='.rawurlencode($bacteria_source).'&drug_name='.rawurlencode($drug_name));   
     exit();
   } //end if

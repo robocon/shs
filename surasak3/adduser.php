@@ -93,18 +93,22 @@ if ($act == "add") {
         if ($q!==false) { 
             
             $msgTelegram = "🙋🏽‍♀️ $sOfficer \nได้ทำการร้องขอผู้ใช้งาน \nชื่อ-สกุล:$txtname \nชื่อผู้ใช้:$txtuser \nแผนก:$department \nตำแหน่ง:$position \nปฏิบัติหน้าที่:$perform";
-            $url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".FORM_REGISTER."&text=".urlencode($msgTelegram)."&parse_mode=markdown";
-            $curl = curl_init();
-            curl_setopt( $curl, CURLOPT_URL, $url);
-            curl_setopt( $curl, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt( $curl, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt( $curl, CURLOPT_SSLVERSION, 6);
-            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-            $result = curl_exec( $curl );
+            $ch = curl_init();
+            curl_setopt( $ch, CURLOPT_URL, NOTIFY_HOST."/telegram/register.php");
+            curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt( $ch, CURLOPT_SSLVERSION, 6);
+            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $ch, CURLOPT_POST, 1);
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, "sMessage=".$msgTelegram); 
+            $headers = array( 'Content-type: application/x-www-form-urlencoded' );
+            curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+
+            $result = curl_exec( $ch );
             if($result===false){
-                $error = curl_error($curl);
+                $error = curl_error($ch);
             }
-            curl_close($curl);
+            curl_close($ch);
 
             $res = array('status'=>200, 'message'=>'ทำการร้องขอผู้ใช้งานในระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ', 'id'=>$dbi->insert_id, 'res'=>$lineRes);
 
