@@ -3015,6 +3015,8 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	});
 
+	// ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
+	// Mineralocorticoid receptor antagonist (MRA)
 	const mraCookieValue = getCookie(mraCookieName);
 	if( drugcode.trim() === '1FINE' && mraCookieValue === '' ){
 		checkMRA(drugcode.trim());
@@ -3125,7 +3127,7 @@ function checkMRA(drugcode){ // 1FINE
 		</p>
 	</div>`;
 	
-	document.getElementById("pregHeader").innerHTML = 'เหตุผลการสั่งใช้ยา Firialta 20 mg. tab. (Finerenone 20 mg.)';
+	document.getElementById("pregHeader").innerHTML = 'RDU - เหตุผลการสั่งใช้ยา Firialta 20 mg. tab. (Finerenone 20 mg.)';
 	document.getElementById("pregContent").innerHTML = htmlTxt;
 	
 	document.getElementById("pregCloseBtn").style.display = "none";// ซ่อนปุ่มเอาไว้ก่อน

@@ -4,6 +4,9 @@ session_start();
 include("connect.inc");
 require_once 'includes/config.php';
 
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
 function send_line_noti($sMessage, $sToken){
 	$curl = curl_init(); 
 	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
@@ -728,6 +731,35 @@ $_SESSION["dt_drugstk"] .= "<BR>".nl2br($arr["detail_all"]);
 
 }
 $_SESSION["dt_drugstk"] .="</TABLE>";
+
+
+$datehn = date('Y-m-d').$_SESSION["hn_now"];
+$sql = sprintf("SELECT a.*,b.`tradname`,b.`genname` FROM `doctor_medical` AS a LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode` WHERE a.`datehn` = '%s' LIMIT 1;", 
+	$dbi->real_escape_string($datehn)
+);
+$q = $dbi->query($sql);
+if($q->num_rows>0){
+
+	$_SESSION["dt_drugstk"] .= '<div style="page-break-after:always;"></div>';
+
+	while ($a = $q->fetch_assoc()) {
+
+		$_SESSION["dt_drugstk"] .= '<div style="font-family: MS Sans Serif; font-size:12px;">[RDU-MBR] เหตุผลการใช้ยา '.$a['genname'].'('.$a['drugcode'].')<br>';
+		$_SESSION["dt_drugstk"] .= ''.$a['tradname'].'<br>';
+
+		$sqlDetail = "SELECT `detail` FROM `doctor_medical_detail` WHERE `doctor_medical_id` = '".$a['id']."' ; ";
+		$qD = $dbi->query($sqlDetail);
+		if($qD->num_rows>0){
+			while ($d = $qD->fetch_assoc()) {
+				$_SESSION["dt_drugstk"] .= '- '.$d['detail'].'<br>';
+			}
+			?>
+			<?php
+		}
+		$_SESSION["dt_drugstk"] .= '</div>';
+
+	}
+}
 
 
 	 if($insert1 == true && $count > 0)

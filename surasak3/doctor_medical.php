@@ -25,6 +25,7 @@ if($action==='save'){
 
         $items = $_POST['detail'];
         $sqlList = array();
+        // $detail = '';
         foreach ($items as $item) {
             $sqlList[] = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`) 
             VALUES 
@@ -33,11 +34,23 @@ if($action==='save'){
                 $dbi->real_escape_string($doctor_medical_id),
                 $dbi->real_escape_string($item)
             );
+            // $detail = '- '.$item.'<br>';
         }
         $sqlItem = implode("\n", $sqlList);
         $q = $dbi->multi_query($sqlItem);
         if($q === false) {
             $error[] = 'Error `doctor_medical` : ' . $dbi->error;
+        }else{
+
+            // $drugcode = sprintf("%s", $_POST['drugcode']);
+            // if(!empty($_SESSION["dt_drugstk"])){
+            //     $_SESSION["dt_drugstk"] .= '<div style="page-break-after:always;"></div>';
+            //     $_SESSION["dt_drugstk"] .= '<div>
+            //     เหตุผลการใช้ยา '.$drugcode.'<br>
+            //     '.$detail.'
+            //     </div>';
+            // }
+            
         }
     }
 
