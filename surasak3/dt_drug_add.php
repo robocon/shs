@@ -741,12 +741,9 @@ $q = $dbi->query($sql);
 if($q->num_rows>0){
 
 	$_SESSION["dt_drugstk"] .= '<div style="page-break-after:always;"></div>';
-
+	$_SESSION["dt_drugstk"] .= '<div style="font-family: MS Sans Serif; font-size:12px;">';
 	while ($a = $q->fetch_assoc()) {
-
-		$_SESSION["dt_drugstk"] .= '<div style="font-family: MS Sans Serif; font-size:12px;">[RDU-MBR] เหตุผลการใช้ยา '.$a['genname'].'('.$a['drugcode'].')<br>';
-		$_SESSION["dt_drugstk"] .= ''.$a['tradname'].'<br>';
-
+		$_SESSION["dt_drugstk"] .= '[RDU] '.$a['criteria'].'<br>';
 		$sqlDetail = "SELECT `detail` FROM `doctor_medical_detail` WHERE `doctor_medical_id` = '".$a['id']."' ; ";
 		$qD = $dbi->query($sqlDetail);
 		if($qD->num_rows>0){
@@ -756,9 +753,8 @@ if($q->num_rows>0){
 			?>
 			<?php
 		}
-		$_SESSION["dt_drugstk"] .= '</div>';
-
 	}
+	$_SESSION["dt_drugstk"] .= '</div>';
 }
 
 
