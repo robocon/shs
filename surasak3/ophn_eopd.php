@@ -200,7 +200,7 @@ if($num < 1){
                     $allow_depart = array('ADM', 'ADMCOM', 'ADMNHSO', 'ADMMAINOPD', 'ADMNEWCHKUP');
                     $test_depart = in_array($_SESSION["smenucode"], $allow_depart);
 
-                    $allow_user = array('วฤณดา นฤวรากรณ์', 'วิจิตรา บุญเพิ่ม', 'บุษบง ใหม่แก้ว', 'ขัตติยาณี วงค์อ๊อด', 'อาทิตยา อากรปรุ');
+                    $allow_user = array('วฤณดา นฤวรากรณ์', 'วิจิตรา บุญเพิ่ม', 'บุษบง ใหม่แก้ว', 'ขัตติยาณี วงค์อ๊อด', 'อาทิตยา อากรปรุ', 'สุวพันธ์ ชมวงษ์');
                     $test_user = in_array($_SESSION["sOfficer"], $allow_user);
 
 
