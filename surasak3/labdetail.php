@@ -31,7 +31,9 @@
         if(!($row = mysql_fetch_object($result)))
             continue;
          }
-    $sHn=$row->hn;
+    $sDate=$row->date;
+	$sTime=substr($sDate,11);
+	$sHn=$row->hn;
     $sAn=$row->an;
     $sPtname=$row->ptname;
     $sDoctor=$row->doctor;
@@ -49,17 +51,33 @@
     $sNetprice=$row->price;
     $sDiag=$row->diag;
     $cPaid=$sNetprice;
-
-    print "&nbsp;&nbsp;&nbsp;<a target=_BLANK href='labturn.php'>ยกเลิกทุกรายการ</a>";
 ?>
+<style>
+body,td,th {
+	font-family: TH SarabunPSK;
+	font-size: 20px;
+}
+table {
+  border-collapse: collapse;
+  width: 60%;
+}
 
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #FDEDEC;
+}  
+</style>
 <table>
  <tr>
-  <th bgcolor=CD853F>รายการ</th>
-  <th bgcolor=CD853F>จำนวน</th>
-  <th bgcolor=CD853F>ราคา</th>
-  <th bgcolor=CD853F>เบิกได้</th>
-  <th bgcolor=CD853F>เบิกไม่ได้</th>
+  <th bgcolor=#EC7063>รายการ</th>
+  <th bgcolor=#EC7063>จำนวน</th>
+  <th bgcolor=#EC7063>ราคา</th>
+  <th bgcolor=#EC7063>เบิกได้</th>
+  <th bgcolor=#EC7063>เบิกไม่ได้</th>
  </tr>
 
 <?php
@@ -70,8 +88,9 @@
     $d=substr($dDate,8,2);
     $m=substr($dDate,5,2);
     $y=substr($dDate,0,4);
-    print "วันที่ $d/$m/$y<br>";
-    print "$sPtname, HN: $sHn<br> ";
+    print "<strong style='font-size:28px;'>วันที่ $d/$m/$y</strong><strong style='margin-left:20px;color:red;font-size:28px;'>เวลา  &nbsp;$sTime</strong><strong style='margin-left:20px;'><a target=_BLANK href='labturn.php' onclick=\"return confirm('คุณต้องการยกเลิกทุกรายการใช่หรือไม่?')\">ยกเลิกทุกรายการ</a></strong><br>";
+    print "<div style='margin-left:5px;color:red;font-size:16px;'>*** กรณียกเลิกข้ามวัน ให้ทำในช่วงเวลาหลังจากที่บันทึกข้อมูลของวันนั้นๆ เช่นวันที่ต้องการยกเลิกคีย์มาเวลา 08.00 น. ควรยกเลิกหลังเวลา 08.00 น. เป็นต้น ***</div>";
+	print "$sPtname, HN: $sHn<br> ";
     print "โรค: $sDiag<br>";
 //    print "แพทย์ :$sDoctor<br><br>";
 
