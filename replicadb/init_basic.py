@@ -86,3 +86,15 @@ cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
+
+# icdthai
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=icdthai --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=icdthai"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
+# icd10
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=icd10 --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=icd10"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
