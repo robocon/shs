@@ -24,15 +24,17 @@ if($action==='save'){
         $doctor_medical_id = $dbi->insert_id;
 
         $items = $_POST['detail'];
+        $sub_detail = $json->encode($_POST['sub_detail']);
         $sqlList = array();
         
         foreach ($items as $item) {
-            $sqlList[] = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`) 
+            $sqlList[] = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`, `sub_detail`) 
             VALUES 
-            (NULL, '%s', '%s', '%s');",
+            (NULL, '%s', '%s', '%s', '%s');",
                 $dbi->real_escape_string(date('Y-m-d')),
                 $dbi->real_escape_string($doctor_medical_id),
-                $dbi->real_escape_string($item)
+                $dbi->real_escape_string($item),
+                $dbi->real_escape_string($sub_detail)
             );
             
         }

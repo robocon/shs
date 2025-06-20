@@ -2993,16 +2993,18 @@ var mraCookieName = '';
 var lipicCookieName = '';
 var adrenoCookieName = '';
 var diabetesCookieName = '';
+var inclisiranCookieName = '';
 /**
  * ฟังก์ชั่นถูกเรียกใช้ตอน Double Click เลือกยา
  */
-function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
+async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	const dateHnDrug = '<?=date('Y-m-d').$_SESSION["hn_now"];?>'+drugcode;
 	mraCookieName = 'MRA'+dateHnDrug;
 	lipicCookieName = 'LIPID'+dateHnDrug;
 	adrenoCookieName = 'Adreno'+dateHnDrug;
 	diabetesCookieName = 'Diabetes'+dateHnDrug;
+	inclisiranCookieName = 'INCLISIRAN'+dateHnDrug;
 	
 	// คำนวณยาผู้ป่วย ถ้ายังเหลือจะทำการแจ้งเตือน
 	drugLeftOver(drugcode.trim()).then((res)=>{
@@ -3047,6 +3049,11 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && diabetesCookieValue === '' ){
 		checkDiabetes(drugcode.trim());
 	}
+
+	const inclisiranCookieValue = getCookie(inclisiranCookieName);
+	if( drugcode.trim() === '2INC' && inclisiranCookieValue === '' ){
+		checkInclisiran(drugcode.trim());
+	}
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
 
 	var doctor_id = document.getElementById('doctor_id').value;
@@ -3077,7 +3084,12 @@ function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		var res_1feb = check_1FEBU();
 		if(res_1feb==true){ 
 			clear_left_form();
-			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด');
+			Swal.fire({
+				icon: 'warning',
+				allowOutsideClick: false,
+				title:"แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล",
+				text:"ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด"
+			});
 			return false;
 		}
 	}
@@ -4769,6 +4781,12 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		border:1px solid #000000;
 		box-shadow: black 0.1em 0.1em 0.2em;
 	}
+	#pregContent ul{
+		margin: 0;
+	}
+	#pregContent ul li{
+		list-style-type: none;
+	}
 	#pregCloseBtn:hover{
 		cursor: pointer;
 	}
@@ -4790,7 +4808,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 </style>
 <div id="pregBackground" style="display:none;"></div>
 <div style="display:none;" id="pregContainer">
-	<div style="width:600px; position:relative;">
+	<div style="min-width:680px; max-width:1024px; position:relative;">
 		<div style="position:absolute;top:0;right:0;" id="pregCloseBtn"><img src="images\icon-close.png" alt="ปิดหน้าต่าง" width="26" height="26" onclick="closePreg()"></div>
 		<div style="" id="pregHeader">ทดสอบหัวข้อ</div>
 		<div style="" id="pregContent">ทดสอบรายละเอียด</div>
