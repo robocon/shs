@@ -11,7 +11,6 @@
 *.xls
 config.php
 connect*
-!replicadb/config.py
 replicadb/config.json
 surasak3/med_scan/*
 surasak3/connect*
@@ -51,7 +50,6 @@ tests/*
 vendor/*
 nbproject/*
 
-replicadb/config.py
 replicadb/download_default_data.bat
 replicadb/import_default_data.bat
 replicadb/__pycache__/*
