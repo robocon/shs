@@ -2,10 +2,28 @@
 require_once dirname(__FILE__).'/bootstrap.php';
 include_once dirname(__FILE__).'/includes/JSON.php';
 
-$json = new Services_JSON();
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $action = isset($_POST['action']) ? $_POST['action'] : '';
 
 if($action==='save'){
+
+    $cookieName = date('Y-m-d').sprintf("%s", $_POST['hn']);
+    $key = $_POST['criteriaCode'];
+
+    if($_COOKIE[$cookieName]){
+        $res = $json->decode($_COOKIE[$cookieName]);
+    }
+    
+    $res[$key] = array(
+        'criteria'=>$_POST['criteria'],
+        'drugcode'=>$_POST['drugcode'],
+        'doctor'=>$_POST['doctor'],
+        'detail'=>$_POST['detail']
+    );
+
+    setcookie($cookieName, $json->encode($res));
+
+    /*
     $error = array();
     $sql = sprintf("INSERT INTO `doctor_medical` (`id`, `date`, `hn`, `datehn`, `drugcode`, `criteria`, `doctor`) 
     VALUES 
@@ -24,7 +42,8 @@ if($action==='save'){
         $doctor_medical_id = $dbi->insert_id;
 
         $items = $_POST['detail'];
-        $sub_detail = $json->encode($_POST['sub_detail']);
+
+        $sub_detail = $json->encode((!empty($_POST['sub_detail']) ? $_POST['sub_detail'] : '' ));
         $sqlList = array();
         
         foreach ($items as $item) {
@@ -52,12 +71,15 @@ if($action==='save'){
             'error' => implode("\n", $error)
         );
     }else{
-        $res = array(
-            'status' => 200,
-            'message' => 'บันทึกข้อมูลเรียบร้อย',
-            'id' => $doctor_medical_id
-        );
+        
     }
+    */
+
+    $res = array(
+        'status' => 200,
+        'message' => 'บันทึกข้อมูลเรียบร้อย'
+    );
+    
     header('Content-Type: application/json');
     echo $json->encode($res);
     exit;

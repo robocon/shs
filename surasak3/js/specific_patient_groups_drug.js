@@ -60,6 +60,7 @@ async function confirmMRA(drugcode){
 		let formData = new FormData();
 		formData.append("action", 'save');
 		formData.append("criteria", 'Mineralocorticoid receptor antagonist (MRA)');
+		formData.append("criteriaCode", 'MRA');
 		formData.append("drugcode", drugcode);
 		formData.append("hn", hn);
 		formData.append("doctor", doctor);
@@ -140,6 +141,7 @@ async function confirmLipidDrug(drugcode){
 
 	formData.append("action", 'save');
 	formData.append("criteria", 'Other lipid-regulating drug');
+	formData.append("criteriaCode", 'LIPID');
 	formData.append("drugcode", drugcode);
 	formData.append("hn", hn);
 	formData.append("doctor", doctor);
@@ -210,6 +212,7 @@ function confirmAdreno(drugcode){
     let formData = new FormData();
     formData.append("action", 'save');
     formData.append("criteria", 'Adrenoceptor agonists');
+	formData.append("criteriaCode", 'ADRENO');
     formData.append("drugcode", drugcode);
     formData.append("hn", hn);
     formData.append("doctor", doctor);
@@ -285,6 +288,7 @@ async function confirmDiabetes(drugcode){
 
     formData.append("action", 'save');
 	formData.append("criteria", 'Drug use in diabetes');
+	formData.append("criteriaCode", 'DIABETES');
 	formData.append("drugcode", drugcode);
 	formData.append("hn", hn);
 	formData.append("doctor", doctor);
@@ -403,6 +407,7 @@ function confirmInclisiran(drugcode){
 
 	formData.append("action", 'save');
 	formData.append("criteria", 'Inclisiran (Sybrava 284 mg)');
+	formData.append("criteriaCode", 'INCLISIRAN');
 	formData.append("drugcode", drugcode);
 	formData.append("hn", hn);
 	formData.append("doctor", doctor);

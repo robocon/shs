@@ -222,7 +222,12 @@ $count = count($_SESSION["list_drugcode"]);
 	$sql = "INSERT INTO dphardep(chktranx,date,ptname,hn,price,doctor,item,idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,whokey,kew)VALUES('".$nRunno."','".$Thidate."','".$Ptname."','".$_SESSION["hn_now"]."','".$Netprice."','".$_SESSION["dt_doctor"]."','".$_POST["totalitem"]."','".$_SESSION["sOfficer"]."','".jschars($_SESSION["dt_diag"])."','".$pricetype["DDL1"]."','".$pricetype["DDY1"]."','".$pricetype["DDN1"]."','".$pricetype["DPY1"]."','".$pricetype["DPN1"]."','".$pricetype["DSY1"]."','".$pricetype["DSN1"]."','".$_SESSION["vn_now"]."','".$_SESSION["ptright_now"]."','DR','".$kew."');";
 	//echo "<!-- ".$sql." -->";
 	$result = Mysql_Query($sql);
-	if($result){ $insert1 = true; $idno=mysql_insert_id();}else{ $insert1 = false; }
+	if($result){ 
+		$insert1 = true; 
+		$idno=mysql_insert_id();
+	}else{ 
+		$insert1 = false; 
+	}
 	
 
 	$commar = "";
@@ -736,73 +741,76 @@ $_SESSION["dt_drugstk"] .= "<BR>".nl2br($arr["detail_all"]);
 $_SESSION["dt_drugstk"] .="</TABLE>";
 
 // ถ้ามีการยืนยันเหตุผลในการใช้ยา
+if($insert1===true){
+	$datehn = date('Y-m-d').$_SESSION["hn_now"];
+	$sql = "UPDATE `doctor_medical` SET `dphardep_id` = '$idno' WHERE `datehn` = '$datehn' ";
+	$q = $dbi->query($sql);
 
-$detailList = array(
-	'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
-	'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
-	'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
-	'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
-	'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
-	'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
-	'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-	'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
-	'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
-	'DIABETES1' => 'คนไข้ DM มี BMI &gt; ',
-	'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
-	'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
-	'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
-	'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-	'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-	'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
-);
+	$detailList = array(
+		'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
+		'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
+		'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
+		'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
+		'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
+		'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
+		'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+		'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
+		'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
+		'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
+		'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
+		'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
+		'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
+		'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+		'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+		'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
+	);
 
-$subDetailList = array(
-'INCIL1_1' => 'Target organ damage',
-'INCIL1_2' => 'เป็นมานาน ≥10ปี',
-'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี'
-);
+	$subDetailList = array(
+	'INCIL1_1' => 'Target organ damage',
+	'INCIL1_2' => 'เป็นมานาน ≥10ปี',
+	'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี'
+	);
 
+	$sql = sprintf("SELECT a.*,b.`tradname`,b.`genname` FROM `doctor_medical` AS a LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode` WHERE a.`datehn` = '%s';", 
+		$dbi->real_escape_string($datehn)
+	);
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
 
-$datehn = date('Y-m-d').$_SESSION["hn_now"];
-$sql = sprintf("SELECT a.*,b.`tradname`,b.`genname` FROM `doctor_medical` AS a LEFT JOIN `druglst` AS b ON b.`drugcode` = a.`drugcode` WHERE a.`datehn` = '%s';", 
-	$dbi->real_escape_string($datehn)
-);
-$q = $dbi->query($sql);
-if($q->num_rows>0){
+		$_SESSION["dt_drugstk"] .= '<div style="page-break-after:always;"></div>';
+		$_SESSION["dt_drugstk"] .= '<div style="font-family: MS Sans Serif; font-size:12px;">';
+		$i_title = 1;
+		while ($a = $q->fetch_assoc()) {
 
-	$_SESSION["dt_drugstk"] .= '<div style="page-break-after:always;"></div>';
-	$_SESSION["dt_drugstk"] .= '<div style="font-family: MS Sans Serif; font-size:12px;">';
-	$i_title = 1;
-	while ($a = $q->fetch_assoc()) {
-
-		$brTitle = '';
-		if($i_title>1){
-			$brTitle = '<br>';
-		}
-
-		$_SESSION["dt_drugstk"] .= $brTitle.'<b>[RDU] '.$a['criteria'].'</b><br>';
-		$sqlDetail = "SELECT `detail`,`sub_detail` FROM `doctor_medical_detail` WHERE `doctor_medical_id` = '".$a['id']."' ; ";
-		
-		$qD = $dbi->query($sqlDetail);
-		if($qD->num_rows>0){
-			while ($d = $qD->fetch_assoc()){
-
-				$key = $d['detail'];
-				$subDetail = '';
-				if($key=='INCIL1'){
-					$subDetailJson = $json->decode($d['sub_detail']);
-					foreach ($subDetailJson as $sub) {
-						$subDetail .= '&nbsp;&nbsp;- '.$subDetailList[$sub].'<br>';
-					}
-				}
-				
-				$_SESSION["dt_drugstk"] .= '- '.$detailList[$key].'<br>'.$subDetail;
+			$brTitle = '';
+			if($i_title>1){
+				$brTitle = '<br>';
 			}
-		}// end if num_rows > 0
 
-		$i_title++;
+			$_SESSION["dt_drugstk"] .= $brTitle.'<b>[RDU] '.$a['criteria'].'</b><br>';
+			$sqlDetail = "SELECT `detail`,`sub_detail` FROM `doctor_medical_detail` WHERE `doctor_medical_id` = '".$a['id']."' ; ";
+			
+			$qD = $dbi->query($sqlDetail);
+			if($qD->num_rows>0){
+				while ($d = $qD->fetch_assoc()){
+
+					$key = $d['detail'];
+					$subDetail = '';
+					if($key=='INCIL1'){
+						$subDetailJson = $json->decode($d['sub_detail']);
+						foreach ($subDetailJson as $sub) {
+							$subDetail .= '&nbsp;&nbsp;- '.$subDetailList[$sub].'<br>';
+						}
+					}
+					
+					$_SESSION["dt_drugstk"] .= '- '.$detailList[$key].'<br>'.$subDetail;
+				}
+			}// end if num_rows > 0
+
+			$i_title++;
+		}
+		$_SESSION["dt_drugstk"] .= '</div>';
 	}
-	$_SESSION["dt_drugstk"] .= '</div>';
 }
 // ถ้ามีการยืนยันเหตุผลในการใช้ยา
 

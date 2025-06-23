@@ -2999,12 +2999,26 @@ var inclisiranCookieName = '';
  */
 async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
+	const dateHn = '<?=date('Y-m-d').$_SESSION["hn_now"];?>';
+	let dataDateHn = [];
+
 	const dateHnDrug = '<?=date('Y-m-d').$_SESSION["hn_now"];?>'+drugcode;
+
 	mraCookieName = 'MRA'+dateHnDrug;
 	lipicCookieName = 'LIPID'+dateHnDrug;
-	adrenoCookieName = 'Adreno'+dateHnDrug;
-	diabetesCookieName = 'Diabetes'+dateHnDrug;
+	adrenoCookieName = 'ADRENO'+dateHnDrug;
+	diabetesCookieName = 'DIABETES'+dateHnDrug;
 	inclisiranCookieName = 'INCLISIRAN'+dateHnDrug;
+
+	const cookieDateHn = getCookie(dateHn);
+	// console.log(cookieDateHn);
+	
+	if(cookieDateHn!==''){
+		dataDateHn = JSON.parse(decodeURIComponent(cookieDateHn));
+		console.log(dataDateHn);
+		// console.log(dataDateHn.keys);
+	}
+	
 	
 	// คำนวณยาผู้ป่วย ถ้ายังเหลือจะทำการแจ้งเตือน
 	drugLeftOver(drugcode.trim()).then((res)=>{
@@ -3028,33 +3042,37 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	});
 
-	// START ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
-	// Mineralocorticoid receptor antagonist (MRA)
-	const mraCookieValue = getCookie(mraCookieName);
-	if( drugcode.trim() === '1FINE' && mraCookieValue === '' ){
-		checkMRA(drugcode.trim());
-	}
+	// if(dataDateHn!==''){
 
-	const lipidCookieValue = getCookie(lipicCookieName);
-	if( ( drugcode.trim() === '1EPAD' || drugcode.trim() === '1SEMA' ) && lipidCookieValue === '' ){
-		checkLipidDrug(drugcode.trim());
-	}
+	
+		// START ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
+		// Mineralocorticoid receptor antagonist (MRA)
+		// const mraCookieValue = getCookie(mraCookieName);
+		if( drugcode.trim() === '1FINE' && typeof dataDateHn.MRA === 'undefined'){
+			checkMRA(drugcode.trim());
+		}
 
-	const adrenoCookieValue = getCookie(adrenoCookieName);
-	if( drugcode.trim() === '7BREZ' && adrenoCookieValue === '' ){
-		checkAdreno(drugcode.trim());
-	}
+		// const lipidCookieValue = getCookie(lipicCookieName);
+		if( ( drugcode.trim() === '1EPAD' || drugcode.trim() === '1SEMA' ) ){
+			checkLipidDrug(drugcode.trim());
+		}
 
-	const diabetesCookieValue = getCookie(diabetesCookieName);
-	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && diabetesCookieValue === '' ){
-		checkDiabetes(drugcode.trim());
-	}
+		const adrenoCookieValue = getCookie(adrenoCookieName);
+		if( drugcode.trim() === '7BREZ' && adrenoCookieValue === '' ){
+			checkAdreno(drugcode.trim());
+		}
 
-	const inclisiranCookieValue = getCookie(inclisiranCookieName);
-	if( drugcode.trim() === '2INC' && inclisiranCookieValue === '' ){
-		checkInclisiran(drugcode.trim());
-	}
-	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
+		const diabetesCookieValue = getCookie(diabetesCookieName);
+		if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && diabetesCookieValue === '' ){
+			checkDiabetes(drugcode.trim());
+		}
+
+		const inclisiranCookieValue = getCookie(inclisiranCookieName);
+		if( drugcode.trim() === '2INC' && inclisiranCookieValue === '' ){
+			checkInclisiran(drugcode.trim());
+		}
+		// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
+	// }
 
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
