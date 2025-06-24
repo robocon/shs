@@ -1546,26 +1546,51 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 //************************** ลบยา ออกจาก SESSION ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	
+	$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 	$count = count($_SESSION["list_drugcode"]);
 
+	### หา drugcode ที่จะลบจาก session ตัวเดิม
+	$keyNumber = sprintf("%s", $_GET['number']);
+	$drugCodeDel = $_SESSION["list_drugcode"][$keyNumber];
+	###
+
+	### เอา drugcode ที่ไม่ใช่มาสร้างเป็นตัวใหม่แล้วเขียนทับ cookie เก่าไปเลย
+	$cookieName = date('Y-m-d').sprintf("%s", $_SESSION["hn_now"]); // ชื่อ Cookie
+	$cookieItems = $json->decode($_COOKIE[$cookieName]);
+	$newCookie = array();
+	foreach ($cookieItems as $key => $item) {
+		if($item['drugcode']!==$drugCodeDel){
+			$newCookie[$key] = $item;
+		}
+	}
+
+	// ตอนลบถ้าเป็น array ว่างให้ปรับค่าเป็น empty string
+	if(empty($newCookie)){
+		$newCookie = '';
+	}else{
+		$newCookie = $json->encode($newCookie);
+	}
+	setcookie($cookieName, $newCookie, strtotime(date('Y-m-d 23:59:59')), '/');
+
+	
 	for($i=$_GET["number"];$i<$count-1;$i++){
 		
-			$_SESSION["list_drugcode"][$i] = $_SESSION["list_drugcode"][$i+1];
-			$_SESSION["list_drugamount"][$i] = $_SESSION["list_drugamount"][$i+1];
-			$_SESSION["list_drugslip"][$i] = $_SESSION["list_drugslip"][$i+1];
+		$_SESSION["list_drugcode"][$i] = $_SESSION["list_drugcode"][$i+1];
+		$_SESSION["list_drugamount"][$i] = $_SESSION["list_drugamount"][$i+1];
+		$_SESSION["list_drugslip"][$i] = $_SESSION["list_drugslip"][$i+1];
 
-			$_SESSION["list_drug_inject_amount"][$i] = $_SESSION["list_drug_inject_amount"][$i+1];
-			$_SESSION["list_drug_inject_unit"][$i] = $_SESSION["list_drug_inject_unit"][$i+1];
-			$_SESSION["list_drug_inject_amount2"][$i] = $_SESSION["list_drug_inject_amount2"][$i+1];
-			$_SESSION["list_drug_inject_unit2"][$i] = $_SESSION["list_drug_inject_unit2"][$i+1];
-			$_SESSION["list_drug_inject_time"][$i] = $_SESSION["list_drug_inject_time"][$i+1];
-			$_SESSION["list_drug_inject_slip"][$i] = $_SESSION["list_drug_inject_slip"][$i+1];
-			$_SESSION["list_drug_inject_type"][$i] = $_SESSION["list_drug_inject_type"][$i+1];
-			$_SESSION["list_drug_inject_etc"][$i] = $_SESSION["list_drug_inject_etc"][$i+1];
-			$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
-			
-			$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
-			$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
+		$_SESSION["list_drug_inject_amount"][$i] = $_SESSION["list_drug_inject_amount"][$i+1];
+		$_SESSION["list_drug_inject_unit"][$i] = $_SESSION["list_drug_inject_unit"][$i+1];
+		$_SESSION["list_drug_inject_amount2"][$i] = $_SESSION["list_drug_inject_amount2"][$i+1];
+		$_SESSION["list_drug_inject_unit2"][$i] = $_SESSION["list_drug_inject_unit2"][$i+1];
+		$_SESSION["list_drug_inject_time"][$i] = $_SESSION["list_drug_inject_time"][$i+1];
+		$_SESSION["list_drug_inject_slip"][$i] = $_SESSION["list_drug_inject_slip"][$i+1];
+		$_SESSION["list_drug_inject_type"][$i] = $_SESSION["list_drug_inject_type"][$i+1];
+		$_SESSION["list_drug_inject_etc"][$i] = $_SESSION["list_drug_inject_etc"][$i+1];
+		$_SESSION["list_drug_reason"][$i] = $_SESSION["list_drug_reason"][$i+1];
+		
+		$_SESSION["list_drug_reason2"][$i] = $_SESSION["list_drug_reason2"][$i+1];
+		$_SESSION["list_drug_part"][$i] = $_SESSION["list_drug_part"][$i+1];
 		
 	}
 
@@ -1583,6 +1608,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	unset($_SESSION["list_drug_reason"][$count-1]);
 	unset($_SESSION["list_drug_reason2"][$count-1]);
 	unset($_SESSION["list_drug_part"][$count-1]);
+	
 	exit();
 }
 
@@ -2989,11 +3015,7 @@ var nsaidsListForJs = [<?=$nsaids_for_js;?>];
 
 var hn = '<?=$_SESSION["hn_now"];?>';
 var doctor = '<?=$_SESSION["dt_doctor"];?>';
-var mraCookieName = '';
-var lipicCookieName = '';
-var adrenoCookieName = '';
-var diabetesCookieName = '';
-var inclisiranCookieName = '';
+
 /**
  * ฟังก์ชั่นถูกเรียกใช้ตอน Double Click เลือกยา
  */
@@ -3003,22 +3025,11 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	let dataDateHn = [];
 
 	const dateHnDrug = '<?=date('Y-m-d').$_SESSION["hn_now"];?>'+drugcode;
-
-	mraCookieName = 'MRA'+dateHnDrug;
-	lipicCookieName = 'LIPID'+dateHnDrug;
-	adrenoCookieName = 'ADRENO'+dateHnDrug;
-	diabetesCookieName = 'DIABETES'+dateHnDrug;
-	inclisiranCookieName = 'INCLISIRAN'+dateHnDrug;
-
 	const cookieDateHn = getCookie(dateHn);
-	// console.log(cookieDateHn);
 	
 	if(cookieDateHn!==''){
 		dataDateHn = JSON.parse(decodeURIComponent(cookieDateHn));
-		console.log(dataDateHn);
-		// console.log(dataDateHn.keys);
 	}
-	
 	
 	// คำนวณยาผู้ป่วย ถ้ายังเหลือจะทำการแจ้งเตือน
 	drugLeftOver(drugcode.trim()).then((res)=>{
@@ -3042,37 +3053,28 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	});
 
-	// if(dataDateHn!==''){
+	// START ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
+	// Mineralocorticoid receptor antagonist (MRA)
+	if( drugcode.trim() === '1FINE' && typeof dataDateHn.MRA === 'undefined'){
+		checkMRA(drugcode.trim());
+	}
 
-	
-		// START ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
-		// Mineralocorticoid receptor antagonist (MRA)
-		// const mraCookieValue = getCookie(mraCookieName);
-		if( drugcode.trim() === '1FINE' && typeof dataDateHn.MRA === 'undefined'){
-			checkMRA(drugcode.trim());
-		}
+	if( ( drugcode.trim() === '1EPAD' || drugcode.trim() === '1SEMA' ) && typeof dataDateHn.LIPID === 'undefined' ){
+		checkLipidDrug(drugcode.trim());
+	}
 
-		// const lipidCookieValue = getCookie(lipicCookieName);
-		if( ( drugcode.trim() === '1EPAD' || drugcode.trim() === '1SEMA' ) ){
-			checkLipidDrug(drugcode.trim());
-		}
+	if( drugcode.trim() === '7BREZ' && typeof dataDateHn.ADRENO === 'undefined' ){
+		checkAdreno(drugcode.trim());
+	}
 
-		const adrenoCookieValue = getCookie(adrenoCookieName);
-		if( drugcode.trim() === '7BREZ' && adrenoCookieValue === '' ){
-			checkAdreno(drugcode.trim());
-		}
+	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && typeof dataDateHn.DIABETES === 'undefined' ){
+		checkDiabetes(drugcode.trim());
+	}
 
-		const diabetesCookieValue = getCookie(diabetesCookieName);
-		if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && diabetesCookieValue === '' ){
-			checkDiabetes(drugcode.trim());
-		}
-
-		const inclisiranCookieValue = getCookie(inclisiranCookieName);
-		if( drugcode.trim() === '2INC' && inclisiranCookieValue === '' ){
-			checkInclisiran(drugcode.trim());
-		}
-		// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
-	// }
+	if( drugcode.trim() === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
+		checkInclisiran(drugcode.trim());
+	}
+	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
 
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){

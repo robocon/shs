@@ -79,8 +79,8 @@ async function confirmMRA(drugcode){
 					icon: 'success',
 					allowOutsideClick: false
 				});
-
-                setCookie(mraCookieName, '1'); // บันทึก cookie 
+				console.log(res.cookieData);
+                // setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
 
 			}else{
 				Swal.fire({
@@ -156,7 +156,7 @@ async function confirmLipidDrug(drugcode){
 				allowOutsideClick: false
 			});
 
-            setCookie(lipicCookieName, '1'); // บันทึก cookie 
+            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
 
 		}else{
 			Swal.fire({
@@ -228,7 +228,7 @@ function confirmAdreno(drugcode){
 				icon: 'success',
 				allowOutsideClick: false
 			});
-            setCookie(adrenoCookieName, '1'); // บันทึก cookie 
+            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
 
 		}else{
 			Swal.fire({
@@ -303,7 +303,7 @@ async function confirmDiabetes(drugcode){
 				allowOutsideClick: false
 			});
 
-            setCookie(diabetesCookieName, '1'); // บันทึก cookie
+            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie
             
 		}else{
 			Swal.fire({
@@ -422,7 +422,7 @@ function confirmInclisiran(drugcode){
 				allowOutsideClick: false
 			});
 
-            setCookie(inclisiranCookieName, '1'); // บันทึก cookie
+            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie
             
 		}else{
 			Swal.fire({
