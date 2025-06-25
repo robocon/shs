@@ -61,7 +61,7 @@ $tvn=$_POST["tvn"];
 				$aCode[$no] ="SURG";
 			}
 			
-			$aDetail[$no]  = $_POST['dpycode'.$no].' '.$_POST['item'.$no];
+			$aDetail[$no]  = $_POST['dpycode'.$no].' '.htmlspecialchars($_POST['item'.$no], ENT_QUOTES);
 			$aDSPY[$no]= $ydspp;
 			$aDSPN[$no]= $ndspp;
 			$aAmount[$no]  = $_POST['amount'.$no];
