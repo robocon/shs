@@ -838,9 +838,10 @@ if($insert1===true){
 
 	// ปริ้นสติกเกอร์
 	$i_title = 1;
+	$reasonToUsedDrug .= '<div style="page-break-after:always;"></div>';
 	foreach($newDrugItems AS $drugItem){ // เอารายการที่คัดมาใหม่ ปริ้นสติกเกอร์
 
-		$reasonToUsedDrug .= '<div style="page-break-after:always;"></div>';
+		
 		$reasonToUsedDrug .= '<div style="font-family: MS Sans Serif; font-size:12px;">';
 		
 		$brTitle = '';
