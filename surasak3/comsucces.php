@@ -12,7 +12,7 @@ if ($_REQUEST['do'] == 'edit') {
 	$thidate = (date("Y") + 543) . date("-m-d H:i:s");
 	$row = $_POST['row'];
 	$user = $_POST['user'];
-	$p_edit = $_POST['p_edit'];
+	$p_edit = htmlspecialchars($_POST['p_edit'], ENT_QUOTES);
 	$programmer = $_POST['programmer'];
 
 	$date = substr($_POST['date'], 0, 10);  //วันที่แจ้ง
