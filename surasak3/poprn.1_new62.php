@@ -1,8 +1,11 @@
 <?php
 //ขออนุมัติจัดซื้อยา  2.รวมVATก่อน
 //function baht///
+
+include("connect.inc");
+
 function baht($nArabic){
-	
+	include("connect.inc");
     $nArabic = number_format($nArabic, 2, '.', ''); 
     $cTarget = Ltrim($nArabic);
     $cLtnum="";
@@ -15,8 +18,6 @@ function baht($nArabic){
    $nUnit=$x;
    $nNum=$nUnit;
    $cRead  = "(";
-
-include("connect.inc");
  
  IF ($cLtnum <> "0"){
   $count=0;
@@ -134,7 +135,6 @@ $cRead = $cRead."บาท";
     else{
            $cRead = $cRead."ถ้วน)" ;
            }  
-    include("connect.inc");
 
    return $cRead;
 }
@@ -159,7 +159,6 @@ return $vat;
 	}
 ///end of function convert to float number ทศนิยม 2ตำแหน่ง
 
-    include("connect.inc");
 
 	///Load offisers
     $aMancode=array("aMancode"); 
@@ -858,7 +857,7 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 			<?php
 			$sumtotal=0;
 			for ($ii=1; $ii <= 19; $ii++) { 
-				 include("connect.inc");
+			
 				$sql1="select unitpri,part,freelimit,edpri,edpri_from,snspec from druglst where drugcode='$aDrugcode[$ii]'";
 				//print $sql1;
 				$chkquery=mysql_query($sql1);
@@ -1268,7 +1267,7 @@ print "<DIV style='left:7PX;top:3324PX;width:900PX;height:26PX;'><span class='fc
 			<?php
 			$sumtotal=0;
 			for ($ii=1; $ii <= 18; $ii++) { 
-				 include("connect.inc");
+			
 				$sql1="select unitpri,part,freelimit,edpri,edpri_from from druglst where drugcode='$aDrugcode[$ii]'";
 				//print $sql;
 				$chkquery=mysql_query($sql1);
@@ -2083,10 +2082,8 @@ print "<DIV style='left:433PX;top:8333PX;width:316PX;height:30PX;TEXT-ALIGN:RIGH
 print "<DIV style='left:74PX;top:8383PX;width:675PX;height:30PX;'><span class='fc1-0'>ข้าพเจ้า $aYot[19] $aFname[19] ตำแหน่ง$aPost[19] $aPost2[19] ขอเบิกเงินจาก</span></DIV>";
 print "<DIV style='left:24PX;top:8408PX;width:725PX;height:30PX;'><span class='fc1-0'>ฝกง. ร.พ.ค่ายสุรศักดิ์มนตรี เพื่อนำมาจ่าย ตามรายการต่อไปนี้</span></DIV>";
 print "<DIV style='left:24PX;top:8439PX;width:82PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
-print "<DIV style='left:355PX;top:8981PX;width:310PX;height:30PX;'><span class='fc1-0'>ผู้ตรวจ</span></DIV>";
-print "<DIV style='left:105PX;top:8981PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[13]</span></DIV>";
+
 print "<DIV style='left:24PX;top:8671PX;width:97PX;height:30PX;'><span class='fc1-0'>(ตัวอักษร)</span></DIV>";
-print "<DIV style='left:518PX;top:9058PX;width:310PX;height:30PX;'><span class='fc1-0'>............/............/............</span></DIV>";
 
 print "<DIV style='left:493PX;top:8787PX;width:167PX;height:30PX;'><span class='fc1-0'>$cBorrowdate</span></DIV>";  //แก้ไขวันที่ 21/04/60
 
@@ -2124,8 +2121,18 @@ print "<DIV style='left:24PX;top:8850PX;width:375PX;height:30PX;TEXT-ALIGN:CENTE
 print "<DIV style='left:24PX;top:8903PX;width:79PX;height:30PX;'><span class='fc1-0'>จำนวนเงิน</span></DIV>";
 print "<DIV style='left:437PX;top:8874PX;width:284PX;height:30PX;'><span class='fc1-0'> ( ) เงินสด&nbsp;&nbsp;&nbsp;&nbsp;( ) เช็คเลขที่..................................</span></DIV>";
 print "<DIV style='left:437PX;top:8850PX;width:284PX;height:30PX;'><span class='fc1-0'> ได้รับเงินตามใบเบิกเงินฉบับนี้ไว้ถูกต้องแล้ว</span></DIV>";
-print "<DIV style='left:125PX;top:9010PX;width:117PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[13])</span></DIV>";
-print "<DIV style='left:100PX;top:9039PX;width:310PX;height:30PX;'><span class='fc1-0'>$aPost[13]</span></DIV>";
+
+//หัวหน้าการเงิน --> headmony2
+print "<DIV style='left:355PX;top:8967PX;width:310PX;height:30PX;'><span class='fc1-0'>ผู้ตรวจ</span></DIV>";
+print "<DIV style='left:105PX;top:8967PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[13]</span></DIV>";
+print "<DIV style='left:125PX;top:8997PX;width:117PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[13])</span></DIV>";
+$positionHeadmoney2 = '';
+if(!empty($aPost2[13])){
+	$positionHeadmoney2 = '<br>'.$aPost2[13];
+}
+print "<DIV style='left:30PX;top:9018PX;width:310PX;line-height:20px;text-align:center;'><span class='fc1-0'>$aPost[13]$positionHeadmoney2</span></DIV>";
+print "<DIV style='left:78PX;top:9058PX;width:310PX;height:30PX;'><span class='fc1-0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;............/............/............</span></DIV>";
+
 print "<DIV style='left:659PX;top:8555PX;width:88PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$nPriadvat</span></DIV>";
 print "<DIV style='left:526PX;top:8555PX;width:88PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$nVat</span></DIV>";
 print "<DIV style='left:526PX;top:8526PX;width:88PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$nNetprice</span></DIV>";
@@ -2136,10 +2143,13 @@ print "<DIV style='left:292PX;top:8903PX;width:43PX;height:30PX;'><span class='f
 print "<DIV style='left:672PX;top:8903PX;width:43PX;height:30PX;'><span class='fc1-0'>บาท</span></DIV>";
 print "<DIV style='left:486PX;top:8903PX;width:183PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$nNetpaid</span></DIV>";
 print "<DIV style='left:404PX;top:8903PX;width:79PX;height:30PX;'><span class='fc1-0'>จำนวนเงิน</span></DIV>";
-print "<DIV style='left:501PX;top:9010PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;' ><span class='fc1-0'>(..............................................)</span></DIV>";
-print "<DIV style='left:501PX;top:9039PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;'><span class='fc1-0'>..............................................</span></DIV>";
-print "<DIV style='left:444PX;top:8981PX;width:310PX;height:30PX;'><span class='fc1-0'>ชื่อผู้รับเงิน...............................................</span></DIV>";
-print "<DIV style='left:78PX;top:9058PX;width:310PX;height:30PX;'><span class='fc1-0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;............/............/............</span></DIV>";
+
+// สี่เหลี่ยมช่องขวา
+print "<DIV style='left:444PX;top:8967PX;width:310PX;height:30PX;'><span class='fc1-0'>ชื่อผู้รับเงิน...............................................</span></DIV>";
+print "<DIV style='left:501PX;top:8997PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;' ><span class='fc1-0'>(..............................................)</span></DIV>";
+print "<DIV style='left:501PX;top:9018PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;'><span class='fc1-0'>..............................................</span></DIV>";
+print "<DIV style='left:518PX;top:9058PX;width:310PX;height:30PX;'><span class='fc1-0'>............/............/............</span></DIV>";
+
 
 print "<DIV style='left:280PX;top:9091PX;width:374PX;height:30PX;'><span class='fc1-0'>ผู้มีอำนาจสั่งจ่ายเงิน</span></DIV>";
 print "<DIV style='left:105PX;top:9091PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[1]</span></DIV>";
@@ -2147,13 +2157,16 @@ print "<DIV style='left:35PX;top:9127PX;width:274PX;height:30PX;TEXT-ALIGN:CENTE
 print "<DIV style='left:35PX;top:9150PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
 print "<DIV style='left:34PX;top:9202PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>............/............/............</span></DIV>";
 
-$position2 = '';
+$positionHeadmoney = '';
 if(!empty($aPost2[11])){
-	$position2 = '<br>'.$aPost2[11];
+	$positionHeadmoney = '<br>'.$aPost2[11];
 }
 print "<DIV style='left:440PX;top:9091PX;width:310PX;height:30PX;'><span class='fc1-0'>ชื่อผู้จ่ายเงิน&nbsp;&nbsp;$aYot[11]</span></DIV>";
 print "<DIV style='left:470PX;top:9127PX;width:227PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[11])</span></DIV>";
-print "<DIV style='left:432PX;top:9150PX;width:310PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[11]$position2</span></DIV>";
+print "<DIV style='left:432PX;top:9150PX;width:310PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[11]$positionHeadmoney</span></DIV>";
+
+
+
 print "<DIV style='left:470PX;top:9202PX;width:227PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>............/............/............</span></DIV>";
 
 print "<DIV style='left:659PX;top:8613PX;width:88PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$nTax</span></DIV>";
@@ -2200,7 +2213,7 @@ print "<DIV style='z-index:0'> &nbsp; </div>";
     <td height="30" colspan="4"><span class='fc1-5'>ส่วนราชการ</span><span class='fc1-0'>&nbsp;&nbsp;กองเภสัชกรรม&nbsp;&nbsp;&nbsp;&nbsp;รพ.ค่ายสุรศักดิ์มนตรี</span></td>
     </tr>
   <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>ที่ </span><span class='fc1-0'><? print "<div style='width:180PX;height:30PX;'><span class='fc1-0'>กห  0483.63.4/$cPono$cPonoyear</span></div>";?></span><? print "<div style='left:342PX;width:150PX;height:30PX;'><span class='fc1-0'><b>วันที่</b> $cPodate</span></div>";?></td>
+    <td height="30" colspan="4"><span class='fc1-5'>ที่ </span><span class='fc1-0'><?="<div style='width:180PX;height:30PX;'><span class='fc1-0'>กห  0483.63.4/$cPono$cPonoyear</span></div>";?></span><?="<div style='left:342PX;width:150PX;height:30PX;'><span class='fc1-0'><b>วันที่</b> $cPodate</span></div>";?></td>
     </tr>
   <tr>
     <td height="30" colspan="4"><span class='fc1-5'>เรื่อง&nbsp;&nbsp;</span><span class='fc1-0'>รายงานผลการดำเนินการร่างขอบเขตของงาน</span></td>
@@ -2405,7 +2418,7 @@ print"<DIV style='left:88PX;top:10340PX;width:600PX;height:30PX;TEXT-ALIGN:CENTE
 			<?php
 			$sumtotal=0;
 			for ($ii=1; $ii <= 19; $ii++) { 
-				 include("connect.inc");
+			
 				$sql1="select drugcode,tradname,unitpri,part,freelimit,edpri,edpri_from,specno,snspec from druglst where drugcode='$aDrugcode[$ii]'";
 				//echo $sql1."<br>";
 				$chkquery=mysql_query($sql1);
