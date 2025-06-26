@@ -30,7 +30,7 @@ curl_close($ch);
 		cursor: pointer;
 	}
 	.button {
-		padding: 8px 8px;
+		padding: 4px 8px;
 		font-size: 24px;
 		text-align: center;
 		cursor: pointer;
@@ -41,9 +41,7 @@ curl_close($ch);
 		border-radius: 8px;
 		box-shadow: 0 9px #999;
 	}
-
 	.button:hover {background-color: #3e8e41}
-
 	.button:active {
 		background-color: #3e8e41;
 		box-shadow: 0 5px #666;

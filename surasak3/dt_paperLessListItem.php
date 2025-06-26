@@ -69,29 +69,28 @@ if($qSubclinic->num_rows>0){
 }
 
 // $dataType = "API";
-$switchData = "DB";
-if($switchData==="API"){
+// $switchData = "DB";
+// if($switchData==="API"){
 
-	$ch = curl_init(); 
-	curl_setopt($ch, CURLOPT_URL, $apiUrl);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-	curl_setopt($ch, CURLOPT_HEADER, 0);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+// 	$ch = curl_init(); 
+// 	curl_setopt($ch, CURLOPT_URL, $apiUrl);
+// 	curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+// 	curl_setopt($ch, CURLOPT_HEADER, 0);
+// 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+// 	curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 
-	$result = curl_exec( $ch );
-	$items = $json->decode($result);
+// 	$result = curl_exec( $ch );
+// 	$items = $json->decode($result);
 	
-}elseif($switchData==="DB"){
+// }elseif($switchData==="DB"){
 
+	$actual_date = "";
 	if(!empty($year) && empty($month)){ // เลือกปีอย่างเดียว
 		$actual_date = " WHERE `actual_date` LIKE '$year%'";
 
 	}elseif(!empty($year) && !empty($month)){
 		$actual_date = " WHERE `actual_date` LIKE '$year-$month%'";
 
-	}else{ // ตัว default
-		$actual_date = " WHERE b.row_id IS NOT NULL ";
 	}
 
 	$whereDoctor = "";
@@ -103,18 +102,32 @@ if($switchData==="API"){
 	if(!empty($sub_clinic)){
 		$whereSubclinic = " AND `sub_clinic` = '$sub_clinic' ";
 	}
+
+	$sql = sprintf("SELECT `row_id` FROM `opcard` WHERE `hn` = '%s' LIMIT 1 ",$dbi->real_escape_string($hn));
+	$q = $dbi->query($sql);
+	if($q===false){
+		echo "ไม่พบข้อมูล HN: $hn";
+		exit;
+	}else{
+		$op = $q->fetch_assoc();
+		$opcard_id = $op['row_id'];
+	}
 	
-	/**
-	 * เปลี่ยนจาก clinic เป็น sub_clinic
-	 */
-	$sqlDigitalOpcard = "SELECT b.* FROM (
-	SELECT `row_id` FROM `opcard` WHERE `hn` = '$hn' 
-	) AS a LEFT JOIN `digital_opcard` AS b ON b.`opcard_id` = a.`row_id` 
-	$actual_date $whereDoctor $whereSubclinic 
-	ORDER BY FIELD(upload_type, 'summary','normal','other',''),b.`actual_date` DESC";
+	
+	$sqlDigitalOpcard = "SELECT * FROM 
+	( `digital_opcard` WHERE `opcard_id` = '$opcard_id' 
+	$actual_date 
+	$whereDoctor 
+	$whereSubclinic 
+	ORDER BY FIELD(`upload_type`, 'summary','normal','other',''),`actual_date` DESC
+	) AS a";
+	dump($sqlDigitalOpcard);
+
 	$qDitial = $dbi->query($sqlDigitalOpcard);
 	$newItems = array();
-	if($qDitial->num_rows>0){
+	$digitalRows = $qDitial->num_rows;
+	dump($digitalRows);
+	if($digitalRows>0){
 		$base_url = 'http://192.168.131.240:8081/storage/';
 		while($a = $qDitial->fetch_assoc()){ 
 			$a['original'] = $base_url.$a['file_name'];
@@ -126,56 +139,66 @@ if($switchData==="API"){
 	$items = new stdClass();
 	$items->totalCount = count($newItems);
 	$items->list = $newItems;
-}
+// }
 ?>
 <style>
 	body{
 		margin: 0;
+	}
+	p{
+		margin:0;
+		padding:0;
+	}
+	a{
+		text-decoration: none;
+		color: blue;
 	}
 	body, input, button, select, option{
 		font-family: "TH SarabunPSK";
 		font-size: 18px;
 	}
 	.thumbImg{
-		max-height: 150px;
-		max-width: 150px;
-		box-shadow: 5px 5px 5px #b8b8b8;
-	}
-	.thumbImg:hover{
-		cursor: pointer;
-		box-shadow: 5px 5px 5px #666666;
-	}
-	#thumbList{
-		/* padding-top: 12em; */
-	}
-	#thumbList > .column{
-		margin-bottom: 4px;
+		max-height: 130px;
+		box-shadow: 1px 1px 1px #b8b8b8;
+		width: 100px;
 	}
 	.thumbContain{
-		border-bottom:1px solid #b8b8b8;
+		position: relative;
 		text-align: center;
+		float: left;
+		margin: 0 0 1em 1em;
+		height: 153px;
 	}
-	.thumbContain a{
-		text-decoration: none;
-		color: blue;
+	.thumbContain:hover{
+		box-shadow: 2px 2px 2px #b8b8b8;
 	}
-	.thumbContain p{
-		margin-bottom: 4px;
+	.thumbContain:hover p{
+		font-weight: bold;
+	}
+	.imgContainer{
+		position: relative;
+		height: 130px;
+	}
+	.file_summary{
+		color: red;
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		left: 0;
 	}
 </style>
-<script language="JavaScript">
+<script>
 var isNS = (navigator.appName == "Netscape") ? 1 : 0;
- 
 if(navigator.appName == "Netscape") document.captureEvents(Event.MOUSEDOWN||Event.MOUSEUP);
- 
+
 function mischandler(){
   return false;
 }
- 
+
 function mousehandler(e){
 	var myevent = (isNS) ? e : event;
 	var eventbutton = (isNS) ? myevent.which : myevent.button;
-   if((eventbutton==2)||(eventbutton==3)) return false;
+	if((eventbutton==2)||(eventbutton==3)) return false;
 }
 document.oncontextmenu = mischandler;
 document.onmousedown = mousehandler;
@@ -218,7 +241,6 @@ document.onmouseup = mousehandler;
 			<div style="margin-bottom:4px;" align="center">
 				<label for="doctor"><b>แพทย์ : </b></label>
 				<select name="doctor" id="doctor">
-
 					<option value="">-- ทั้งหมด --</option>
 					<?php 
 					foreach($doctorItem AS $doctor_id => $doctor_name){ 
@@ -239,9 +261,9 @@ document.onmouseup = mousehandler;
 			$y_end = date('Y', strtotime("-5 years"));
 			$y_range = range($y_start, $y_end);
 
-			if(empty($year)){
-				$year = date('Y');
-			}
+			// if(empty($year)){
+			// 	$year = date('Y');
+			// }
 			
 			?>
 			<b>ปี:</b> <select name="year" id="year">
@@ -286,14 +308,15 @@ if ($items->totalCount > 0) {
         ?>
         <div class="column thumbContain">
             <a href="dt_paperLessFullPage.php?path=<?=rawurlencode($item->original);?>&hn=<?=$hn;?>" target="right">
-                <img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" loading="lazy" onerror="this.src='images/medical-history.png';">
-				<?php 
-				$summaryTxt = '';
-				if ($item->type==='summary') {
-					$summaryTxt = '<span style="color:red;">สรุปประวัติ</span><br>';
-				}
-				?>
-                <p><b><?=$summaryTxt.$d.' '.$def_fullm_th[$m].' '.($y+543);?></b></p>
+				<div class="imgContainer">
+					<img src="<?=$item->thumbnail;?>" alt="Lights" class="thumbImg" loading="lazy" onerror="this.src='images/medical-history.png';">
+					<?php 
+					if ($item->type==='summary') {
+						?><div><span class="file_summary"><b>สรุปประวัติ</b></span></div><?php
+					}
+					?>
+				</div>
+                <p><?=$d.' '.$def_fullm_th[$m].' '.($y+543);?></p>
             </a>
         </div>
         <?php
