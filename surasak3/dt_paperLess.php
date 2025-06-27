@@ -1,5 +1,5 @@
 <?php
-require_once 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 if($_SESSION["sOfficer"] == ""){
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
@@ -7,7 +7,6 @@ if($_SESSION["sOfficer"] == ""){
 }
 
 function calcage($birth){
-
 	$today = getdate();   
 	$nY  = $today['year']; 
 	$nM = $today['mon'] ;
@@ -15,18 +14,15 @@ function calcage($birth){
 	$bM=substr($birth,5,2);
 	$ageY=$nY-$bY;
 	$ageM=$nM-$bM;
-
 	if ($ageM<0) {
 		$ageY=$ageY-1;
 		$ageM=12+$ageM;
 	}
-
 	if ($ageM==0){
 		$pAge="$ageY ปี";
 	}else{
 		$pAge="$ageY ปี $ageM เดือน";
 	}
-
 	return $pAge;
 }
 
@@ -87,6 +83,17 @@ if($numdrugreact>0){
 		font-family: "TH SarabunPSK";
 		font-size: 20px;
 	}
+	.showHideBtn button{
+		background-color: #04AA6D;
+		color: white;
+		border: none;
+		border-radius: 4px;
+		padding: 4px 6px;
+		display: inline-block;
+	}
+	.showHideBtn button:hover{
+		cursor: pointer;
+	}
 </style>
 <script type="text/javascript">
 	var isNS = (navigator.appName == "Netscape") ? 1 : 0;
@@ -102,23 +109,41 @@ if($numdrugreact>0){
 	document.oncontextmenu = mischandler;
 	document.onmousedown = mousehandler;
 	document.onmouseup = mousehandler;
+
+	function getCookie(cname) {
+		let name = cname + "=";
+		let ca = document.cookie.split(';');
+		for(let i = 0; i < ca.length; i++) {
+			let c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+				return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+
+	// ตั้งให้ cookie หมดอายุใน เที่ยงคืนของทุกวัน
+	function setCookie(cname, cvalue) {
+		var d = new Date('<?=date('Y-m-d 23:59:59');?>');
+		var expires = "expires="+d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
 </script>
-<!-- <div align="center" style="font-size:24px; margin-top:10px; margin-bottom:10px;">
-	<h3 align="center" style="margin-top:10px; font-size:28px;">ประวัติการรักษาพยาบาลผู้ป่วยนอก (Digital OPD Card)</h3>
-	<strong>HN : </strong><?php echo $hn;?>
-	<span style="margin-left:20px;"><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?>
-	<span style="margin-left:20px;"><strong>อายุ : </strong><?php echo $cAge;?></span>
-	<span style="margin-left:20px;"><strong>สิทธิการรักษา : </strong><?php echo $ptright;?></span>
-	<div>
-		<span><strong>โรคประจำตัว : </strong><strong style="color:blue;"><?php echo $congenital_disease;?></strong></span>
-		<span style="margin-left:20px;"><strong>แพ้ยา : </strong><strong style="color:red;"><?php echo $drugreact_disease;?></strong></span>
-	</div>
-</div> -->
 
 <div style="position:absolute; top:0; left:0; height:100%; width:100%;">
 	<frameset>
 		<iframe id="iFrameLeft" name="left" src="dt_paperLessListItem.php?hn=<?=$hn;?>" style="width: 20%; height: 100%; overflow: hidden; float:left;"></iframe>
-		<div id="headerDetailContainer">
+		<?php
+		$headerTabCss = '';
+		if($_COOKIE['eopdTab']=="0"){
+			$headerTabCss = 'display:none;';
+		}
+		?>
+		<div id="headerDetailContainer" style="<?=$headerTabCss;?>">
 			<div id="headerDetail" align="center" style="font-size:24px;">
 				<h3 align="center">ประวัติการรักษาพยาบาลผู้ป่วยนอก (Digital OPD Card)</h3>
 				<strong>HN : </strong><?php echo $hn;?>
@@ -130,19 +155,30 @@ if($numdrugreact>0){
 					<span style="margin-left:20px;"><strong>แพ้ยา : </strong><strong style="color:red;"><?php echo $drugreact_disease;?></strong></span>
 				</div>
 			</div>
-			<div style="position:absolute; right:0;">
-				<button onclick="hideHeaderDetail()">Hide</button>
-			</div>
 		</div>
-		<div style="position:absolute; right:0;">
-			<button onclick="hideHeaderDetail()">Show</button>
+		<div style="position:absolute; top:4px; right:4px; <?=$headerTabCss;?>" class="showHideBtn" id="hideContain">
+			<button onclick="hideHeaderDetail()">ซ่อนเมนู</button>
+		</div>
+		<div style="position:absolute; top:4px; right:4px; <?=(!empty($headerTabCss) ? '' : 'display:none;' );?>" class="showHideBtn" id="showContain">
+			<button onclick="showHeaderDetail()">แสดงเมนู</button>
 		</div>
 		<iframe id="iFrameRight" name="right" src="opdcard_font.php?hn=<?=$hn;?>" scrolling="auto" style="width: 79%; height: 100%;"></iframe>
 	</frameset>
 </div>
 <script>
 	function hideHeaderDetail(){
+		document.getElementById('hideContain').style.display='none';
 		toggle(document.getElementById('headerDetailContainer'));
+		document.getElementById('showContain').style.display='';
+
+		setCookie('eopdTab','0');
+	}
+	function showHeaderDetail(){
+		document.getElementById('showContain').style.display='none';
+		toggle(document.getElementById('headerDetailContainer'));
+		document.getElementById('hideContain').style.display='';
+
+		setCookie('eopdTab','1');
 	}
 	function toggle(el) {
 		if (el.style.display == 'none') {
