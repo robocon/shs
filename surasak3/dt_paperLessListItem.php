@@ -210,10 +210,11 @@ $items->list = $newItems;
 		height: 153px;
 	}
 	.thumbContain:hover{
-		box-shadow: 2px 2px 2px #b8b8b8;
+		/* box-shadow: 2px 2px 2px #b8b8b8; */
+		background-color: #dddddd;
 	}
 	.thumbContain:hover p{
-		font-weight: bold;
+		/* font-weight: bold; */
 	}
 	.imgContainer{
 		position: relative;
