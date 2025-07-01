@@ -380,10 +380,11 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	}
 if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R36"){
 	$sql="select sum(price),hn,ptname from depart where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
-	//echo "==>".$sql;
 	$query=mysql_query($sql);
 	list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
-	echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
+	if($sumprice>0){
+		echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
+	}
 	$pay=700;
 }
 		
@@ -4786,20 +4787,21 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 </TABLE>
 <style>
 	#pregBackground{
-		position:fixed;
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
-		background-color:#00000085;
+		display: grid;
+		position: fixed;
+		inset: 0;
+		overflow-y: auto;
+		background-color: #00000075;
+		justify-content: center;
+		padding: 8px;
 	}
 	#pregContainer{
-		position:absolute;
-		top:200px;
-		left:220px;
-		background:#ffffff;
-		border:1px solid #000000;
-		box-shadow: black 0.1em 0.1em 0.2em;
+		display: grid;
+		position: relative;
+		box-sizing: border-box;
+		grid-template-columns: minmax(0, 100%);
+		background-color: white;
+		padding: 8px;
 	}
 	#pregContent ul{
 		margin: 0;
@@ -4826,14 +4828,42 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		cursor: pointer;
 	}
 </style>
-<div id="pregBackground" style="display:none;"></div>
-<div style="display:none;" id="pregContainer">
-	<div style="min-width:680px; max-width:1024px; position:relative;">
-		<div style="position:absolute;top:0;right:0;" id="pregCloseBtn"><img src="images\icon-close.png" alt="ปิดหน้าต่าง" width="26" height="26" onclick="closePreg()"></div>
-		<div style="" id="pregHeader">ทดสอบหัวข้อ</div>
-		<div style="" id="pregContent">ทดสอบรายละเอียด</div>
+<div id="pregBackground" style="display:none;">
+	<div id="pregContainer">
+		<div>
+			<div style="position:absolute;top:0;right:0;" id="pregCloseBtn"><img src="images\icon-close.png" alt="ปิดหน้าต่าง" width="26" height="26" onclick="closePreg()"></div>
+			<div id="pregHeader">ทดสอบหัวข้อ</div>
+			<div id="pregContent" style="grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));">ทดสอบรายละเอียด</div>
+		</div>
 	</div>
 </div>
+<!--
+<div style="display: grid; position: fixed; inset: 0; overflow-y: auto; background-color: #00000075; justify-content: center; padding: 8px;">
+	<div style="display: grid; position: relative; box-sizing: border-box; grid-template-columns: minmax(0, 100%); background-color: white; padding: 8px; ">
+		<div style="width:800px;">
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer feugiat dui posuere quam cursus posuere. Aliquam erat volutpat. Vivamus sodales mauris viverra eros bibendum, vel rhoncus augue molestie. Morbi in neque quis ipsum ornare ornare. Donec at malesuada est. Nulla facilisi. Aenean bibendum bibendum augue, ornare feugiat odio ultrices vitae. Nullam dignissim eros in lacus lacinia aliquam eget tristique tortor. Curabitur consectetur massa erat, at tristique magna cursus vitae. Nulla sodales bibendum magna. Praesent placerat, orci id rutrum rhoncus, ligula eros porta augue, nec condimentum nisl erat et dolor. Etiam gravida lectus in dolor iaculis, eu dapibus enim finibus. Nunc gravida sagittis rutrum.
+
+Ut urna velit, pharetra ac suscipit ac, condimentum eget mauris. Maecenas tristique convallis est eget interdum. Mauris sem nunc, tempor et lacus eu, ornare mollis mauris. Quisque sed dui sed velit elementum fringilla sed at tellus. In hac habitasse platea dictumst. Pellentesque scelerisque massa ac quam feugiat, posuere finibus orci sagittis. Vivamus aliquam a sem sit amet euismod. Ut maximus finibus iaculis. Sed eu sodales arcu, non scelerisque lectus. Cras vulputate est elit, eget auctor ex iaculis nec. Integer tincidunt ligula et massa sagittis, quis rhoncus dolor suscipit.
+
+Mauris pharetra convallis leo, non aliquam orci euismod sed. Etiam hendrerit dolor id turpis egestas, vel cursus urna tempor. Praesent eget dignissim sem. Morbi justo ligula, ultrices et laoreet sit amet, malesuada vitae libero. Nullam vestibulum varius elit a lacinia. Morbi ipsum risus, bibendum nec quam a, sollicitudin mollis quam. Integer interdum dolor vel magna finibus, ut viverra arcu eleifend. Mauris eleifend imperdiet dui ac vestibulum. Etiam tincidunt ligula sit amet ex porta aliquam. Integer dapibus, mi et lacinia convallis, ligula mauris ultrices ex, sed mollis risus magna vitae ex. Nullam ullamcorper mattis lobortis. Vivamus vel nibh a lorem fringilla elementum. Cras maximus dignissim libero, rutrum faucibus enim porttitor a. Sed suscipit et elit at fringilla. Nullam condimentum, erat sit amet viverra tempus, leo diam aliquam mi, ac finibus quam justo et turpis.
+
+Vivamus auctor eget dolor in faucibus. Quisque scelerisque eleifend arcu quis tempor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sagittis sem vel nisi elementum, nec elementum lectus pretium. Nunc lacus lacus, viverra ut sem at, laoreet mattis neque. Proin mollis, est non mattis consectetur, augue justo pretium odio, sit amet tincidunt ex elit eu diam. Suspendisse id tortor ac tellus accumsan pellentesque. Aliquam rutrum metus ipsum, ut porta neque pretium quis. Donec viverra velit quis leo maximus, vel efficitur arcu semper. Nam condimentum risus facilisis interdum fringilla. Vivamus sed orci vel eros lacinia consequat. Nullam ac erat eros.
+
+Duis commodo et leo a gravida. Aliquam sed mi tortor. Morbi tempor dictum nibh, vel imperdiet arcu dictum ut. Nullam laoreet est a laoreet scelerisque. Donec ullamcorper porttitor tortor ac accumsan. Aenean consectetur ullamcorper tortor eu scelerisque. Proin maximus, diam in viverra venenatis, ligula erat interdum velit, nec imperdiet tellus tellus eget neque. Maecenas sagittis nunc ut tristique maximus. Vivamus faucibus eu lectus at euismod. Vivamus diam lectus, gravida ac congue ut, blandit a eros. Nulla vehicula, augue quis eleifend vulputate, orci nisl pretium eros, sit amet efficitur risus est nec purus. Aenean vestibulum lectus quis lectus consequat, in consectetur purus fringilla.
+
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam a iaculis odio. Fusce fringilla orci arcu, dignissim facilisis purus tempus nec. Donec ligula dui, pellentesque nec aliquet non, dignissim et orci. Nulla vel lacus posuere, vestibulum magna ut, mollis libero. Suspendisse tincidunt pretium est sit amet semper. Donec et vestibulum nibh, a luctus mauris. Morbi euismod lacus eu tempor maximus. Mauris eget ante a felis tincidunt dignissim. Sed mattis elementum elit at aliquet. Nulla facilisi. Etiam sem nunc, venenatis et leo ut, accumsan mattis ipsum. Quisque condimentum lacus neque, et pretium tortor porttitor nec. Praesent nec porttitor augue. Praesent erat diam, volutpat in lacus in, sagittis iaculis nibh. Vivamus porttitor, diam a porta faucibus, nunc turpis dapibus turpis, et pharetra nulla mi a neque.
+
+Curabitur faucibus scelerisque dui id tempor. Sed consequat tortor eget elit suscipit, nec pulvinar erat viverra. Vivamus eleifend eros faucibus, ullamcorper elit eu, scelerisque nisi. Ut sed posuere turpis. Praesent sit amet fermentum nulla. Nunc ut leo consectetur, mattis nisi a, congue purus. Aliquam a arcu tellus. Nulla consectetur dapibus odio quis fermentum. Suspendisse nec turpis tortor. Phasellus metus arcu, mollis vulputate tincidunt eu, elementum nec erat. Vivamus ut massa purus. Curabitur eu mauris ac risus lacinia hendrerit.
+
+Praesent id iaculis eros. Nullam feugiat lacinia fringilla. Nullam elementum nisi tincidunt, congue ligula ut, aliquam eros. Mauris et ex arcu. Phasellus volutpat sem nec tortor consequat pretium quis id leo. Donec hendrerit arcu odio, non pretium nisl mattis at. Cras eu tincidunt libero, id tincidunt sem. Morbi lacinia rutrum ultrices. Cras mattis augue et commodo sodales. Morbi efficitur nisl ex, sit amet euismod purus rhoncus non. Proin vel ipsum eu nisi posuere euismod a non eros. Nam orci est, aliquet ac imperdiet ut, mollis at sem. Phasellus in justo arcu. Nunc dictum laoreet ante et aliquet. Duis ultricies enim quam, nec rhoncus odio ullamcorper fringilla.
+
+Fusce sem sem, malesuada at rhoncus in, laoreet sit amet ante. Ut ut sem et tortor rhoncus scelerisque. Vivamus vel turpis orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus purus massa, commodo sit amet dui vel, viverra aliquet quam. Pellentesque convallis quis ante ut scelerisque. Nam non nisi lobortis nisl pulvinar placerat.
+
+Nunc vehicula sem vitae nulla pellentesque, eu maximus magna pretium. Proin ac tempor massa. Sed odio velit, malesuada vel pellentesque id, placerat euismod lectus. In rhoncus nibh vel erat aliquam, nec mollis felis maximus. Suspendisse porta ullamcorper porta. Pellentesque iaculis lectus at congue semper. Donec vitae massa feugiat nunc porta egestas.
+</div>	
+</div>
+</div>
+-->
 <script type="text/javascript" src="js/specific_patient_groups_drug.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 

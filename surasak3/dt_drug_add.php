@@ -772,7 +772,18 @@ if($insert1===true){
 	$subDetailList = array(
 		'INCIL1_1' => 'Target organ damage',
 		'INCIL1_2' => 'เป็นมานาน ≥10ปี',
-		'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี'
+		'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี',
+		'INCIL2_1' => 'First-degree relative with known premature (<55 years, men; &lt;60 years, women) coronary heart disease (CHD) OR First-degree relative with known LDL cholesterol &gt;95th percentile by age and gender for country',
+		'INCIL2_2' => 'First-degree relative with tendon xanthoma and/or corneal arcus OR Child(ren) &lt;18 years with LDL cholesterol &gt; 95th percentile by age and gender for country',
+		'INCIL2_3' => 'Subject has premature  (&lt;55 years, men; &lt;60 years, women) CHD',
+		'INCIL2_4' => 'Subject has premature (&lt;55 years, men; &lt;60 years, women) cerebral or peripheral vascular disease',
+		'INCIL2_5' => 'Tendon xanthoma',
+		'INCIL2_6' => 'Corneal arcus in a person &lt;45 years',
+		'INCIL2_7' => '&gt; 8.5 mmol/L (&gt;325 mg/dL)',
+		'INCIL2_8' => '6.5 – 8.4 mmol/L (251-325 mg/dL)',
+		'INCIL2_9' => '5.0 – 6.4 mmol/L (191-250 mg/dL)',
+		'INCIL2_10' => '4.0 – 4.9 mmol/L (155-190 mg/dL)',
+		'INCIL2_11' => 'Causative mutation shown in the LDLR, APOB, or PCSK9 genes',
 	);
 
 	// ดึงข้อมูลออกมาจาก Cookie
@@ -812,12 +823,11 @@ if($insert1===true){
 				if($qInDoctor===true){
 					
 					$doctorMedicalId = $dbi->insert_id;
-
 					foreach ($cItem['detail'] as $dItem) { // บันทึกรายย่อย
 
 						$subDetail = '';
-						if($dItem==='INCIL1'){
-							$subDetail = $json->encode($cItem['sub_detail']);
+						if(!empty($cItem['sub_detail'])){
+							$subDetail = $json->encode($cItem['sub_detail'][$dItem]);
 						}
 
 						$sqlDetail = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`, `sub_detail`) 
@@ -853,7 +863,8 @@ if($insert1===true){
 		$d_i = 1;
 		foreach($drugItem['detail'] AS $d){
 
-			$detailKey = ($d=='INCIL1') ? sprintf("%s", $d) : '';
+			// $detailKey = ($d=='INCIL1') ? sprintf("%s", $d) : '';
+			$detailKey = $d;
 			$subDetail = '';
 			if(!empty($drugItem['sub_detail'])){
 			
@@ -875,6 +886,8 @@ if($insert1===true){
 }
 
 $_SESSION['dt_drugstk'] .= $reasonToUsedDrug;
+
+
 
 // ถ้ามีการยืนยันเหตุผลในการใช้ยา
 ##############################  END  #######################################

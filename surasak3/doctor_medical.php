@@ -14,17 +14,13 @@ if($action==='save'){
     if($_COOKIE[$cookieName]){
         $res = $json->decode($_COOKIE[$cookieName]);
     }
-
-    $detailKey = ($_POST['detail'][0]=='INCIL1') ? sprintf("%s", $_POST['detail'][0]) : '';
-
-    $subDetail = (!empty($_POST['sub_detail']) ? array($detailKey=>$_POST['sub_detail']) : '' );
     
     $res[$key] = array(
         'criteria'=>$_POST['criteria'],
         'drugcode'=>$_POST['drugcode'],
         'doctor'=>$_POST['doctor'],
         'detail'=>$_POST['detail'],
-        'sub_detail'=>$subDetail
+        'sub_detail'=>$_POST['sub_detail']
     );
 
     setcookie($cookieName, $json->encode($res), strtotime(date('Y-m-d 23:59:59')), '/');
