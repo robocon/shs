@@ -197,7 +197,7 @@ if($num < 1){
 
                     $linksmall = "<button type=\"button\" class=\"txtsarabun\" id=\"button\" onclick=\"window.open('printQrCode_opd3.php?hn=$hn')\"><img src='images/print.png' height='28px' width='28px' style='margin-top:5px;' /><div style='margin-top:5px;'>พิมพ์ QR Code เล็ก<br>แบบไม่มี VN</div></button>";
 
-                    $allow_depart = array('ADM', 'ADMCOM', 'ADMNHSO', 'ADMMAINOPD', 'ADMNEWCHKUP');
+                    $allow_depart = array('ADM', 'ADMCOM', 'ADMSSO', 'ADMNHSO', 'ADMMAINOPD', 'ADMNEWCHKUP');
                     $test_depart = in_array($_SESSION["smenucode"], $allow_depart);
 
                     $allow_user = array('วฤณดา นฤวรากรณ์', 'วิจิตรา บุญเพิ่ม', 'บุษบง ใหม่แก้ว', 'ขัตติยาณี วงค์อ๊อด', 'อาทิตยา อากรปรุ', 'สุวพันธ์ ชมวงษ์');
