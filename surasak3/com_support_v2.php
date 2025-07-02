@@ -520,10 +520,11 @@ if($form_action==='edit'){
                 var dataObj = JSON.parse(xhttp.responseText);
                 
                 var preHtml = '<table class="chk_table">';
-                preHtml += '<tr><td>วันที่</td><td>หัวข้อ</td><td width="40%">รายละเอียด</td><td>ผู้ร้องขอ</td><td>แผนก</td><td>ผู้ปฏิบัติ</td></tr>';
+                preHtml += '<tr><td>#</td><td>วันที่</td><td>หัวข้อ</td><td width="40%">รายละเอียด</td><td>ผู้ร้องขอ</td><td>แผนก</td><td>ผู้ปฏิบัติ</td></tr>';
                 for (var index = 0; index < dataObj.length; index++) {
                     var element = dataObj[index];
                     preHtml += '<tr>';
+                    preHtml += '<td>'+element.row+'</td>';
                     preHtml += '<td>'+element.dateend+'</td>';
                     preHtml += '<td>'+element.head+'</td>';
                     preHtml += '<td>'+element.detail+'</td>';

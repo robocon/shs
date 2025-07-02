@@ -115,7 +115,7 @@ if ($action==='udpateTime') {
                     title: "แก้ไข วัน-เวลา ปิดงาน",
                     html: `<div>
                         <div>
-                            วัน <input type="date" id="swal-input1" class="swal2-input" value="${d}">
+                            วัน <input type="date" id="swal-input1" class="swal2-input" value="${d}" lang="th-TH">
                         </div>
                         <div>
                             เวลา <input type="time" id="swal-input2" class="swal2-input" value="${t}">

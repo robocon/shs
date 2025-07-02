@@ -17,13 +17,13 @@ function cancelBtnForm(){
 
 async function checkMRA(drugcode){ // 1FINE
 	
-	const htmlTxt = `<div>
+	const htmlTxt = `<div style="width: 600px; height: 400px;">
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
 		<p><input type="checkbox" class="inputMRA" id="inputMRA1" name="detail[]" value="MRA1"><label for="inputMRA1">1.) CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)</label></p>
 		<p><input type="checkbox" class="inputMRA" id="inputMRA2" name="detail[]" value="MRA2"><label for="inputMRA2">2.) มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L</label></p>
 		<p><input type="checkbox" class="inputMRA" id="inputMRA3" name="detail[]" value="MRA3"><label for="inputMRA3">3.) ไม่มีภาวะ adrenal insufficiency</label></p>
 		<p><input type="checkbox" class="inputMRA" id="inputMRA4" name="detail[]" value="MRA4"><label for="inputMRA4">4.) ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup></label></p>
-		<p>
+		<p style="text-align: center;">
 			<button type="button" onclick="confirmMRA('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="Mineralocorticoid receptor antagonist (MRA)">
 		</p>
@@ -99,12 +99,12 @@ async function confirmMRA(drugcode){
 
 async function checkLipidDrug(drugcode){ // 1EPAD  1SEMA
 	
-	const htmlTxt = `<div>
+	const htmlTxt = `<div style="width: 600px; height: 400px;">
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
 		<p><input type="checkbox" class="inputLipid" id="inputLipid1" name="detail[]" value="LIPID1"><label for="inputLipid1">1.) เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl</label></p>
 		<p><input type="checkbox" class="inputLipid" id="inputLipid2" name="detail[]" value="LIPID2"><label for="inputLipid2">2.) ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl</label></p>
 		<p><input type="checkbox" class="inputLipid" id="inputLipid3" name="detail[]" value="LIPID3"><label for="inputLipid3">3.) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl</label></p>
-		<p>
+		<p style="text-align: center;">
 			<button type="button" onclick="confirmLipidDrug('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="Other lipid-regulating drug">
 		</p>
@@ -172,11 +172,11 @@ async function confirmLipidDrug(drugcode){
 }
 
 async function checkAdreno(drugcode){ // 7BREZ
-    const htmlTxt = `<div>
+    const htmlTxt = `<div style="width: 600px; height: 400px;">
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
 		<p><input type="checkbox" class="inputAdreno" id="inputAdreno1" name="detail[]" value="ADENO1"><label for="inputAdreno1">1.) เป็น COPD ความรุนแรงระดับ E</label></p>
 		<p><input type="checkbox" class="inputAdreno" id="inputAdreno2" name="detail[]" value="ADENO2"><label for="inputAdreno2">2.) มีระดับ eosinophil > 300 cell/µl</label></p>
-		<p>
+		<p style="text-align: center;">
 			<button type="button" onclick="confirmAdreno('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="Adrenoceptor agonists">
 		</p>
@@ -244,13 +244,13 @@ function confirmAdreno(drugcode){
 }
 
 async function checkDiabetes(drugcode){ // 2SEMA  2DULA  2EVO
-    const htmlTxt = `<div>
+    const htmlTxt = `<div style="width: 600px; height: 400px;">
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
 		<p><input type="checkbox" class="inputDiabetes" id="inputDiabetes1" name="detail[]" value="DIABETES1"><label for="inputDiabetes1">1.) คนไข้ DM มี BMI &gt; 30</label></p>
 		<p><input type="checkbox" class="inputDiabetes" id="inputDiabetes2" name="detail[]" value="DIABETES2"><label for="inputDiabetes2">2.) คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCVD</label></p>
 		<p><input type="checkbox" class="inputDiabetes" id="inputDiabetes3" name="detail[]" value="DIABETES3"><label for="inputDiabetes3">3.) คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g</label></p>
 		<p><input type="checkbox" class="inputDiabetes" id="inputDiabetes4" name="detail[]" value="DIABETES4"><label for="inputDiabetes4">4.) คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD</label></p>
-		<p>
+		<p style="text-align: center;">
 			<button type="button" onclick="confirmDiabetes('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="Drug use in diabetes">
 		</p>
@@ -325,10 +325,10 @@ async function checkInclisiran(drugcode){ // 2INC
 			<input type="checkbox" onclick="clickInclisiran()" class="inputInclisiran" id="inputInclisiran1" name="detail[]" value="INCIL1"><label for="inputInclisiran1">1.) ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl</label>
 			<div style="display:none;" id="subIncli1">
 				<ul>
-					<li><input type="checkbox" class="subDetail" id="sub_detail1" name="sub_detail[]" value="INCIL1_1"><label for="sub_detail1">1.1) Target organ damage</label></li>
-					<li><input type="checkbox" class="subDetail" id="sub_detail2" name="sub_detail[]" value="INCIL1_2"><label for="sub_detail2">1.2) เป็นมานาน ≥10ปี</label></li>
+					<li><input type="checkbox" class="subDetail1" id="sub_detail1" name="sub_detail[]" value="INCIL1_1"><label for="sub_detail1">1.1) Target organ damage</label></li>
+					<li><input type="checkbox" class="subDetail1" id="sub_detail2" name="sub_detail[]" value="INCIL1_2"><label for="sub_detail2">1.2) เป็นมานาน ≥10ปี</label></li>
 					<li>
-						<input type="checkbox" class="subDetail" id="sub_detail3" name="sub_detail[]" value="INCIL1_3"><label for="sub_detail3">1.3) มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่</label>
+						<input type="checkbox" class="subDetail1" id="sub_detail3" name="sub_detail[]" value="INCIL1_3"><label for="sub_detail3">1.3) มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่</label>
 						<ul>
 							<li>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000</li>
 							<li>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี</li>
@@ -337,9 +337,97 @@ async function checkInclisiran(drugcode){ // 2INC
 				</ul>
 			</div>
 		</div>
-		<p><input type="checkbox" class="inputInclisiran" id="inputInclisiran2" name="detail[]" value="INCIL2"><label for="inputInclisiran2">2.) ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl</label></p>
+		<div>
+			<input type="checkbox" onclick="clickInclisiran2()" class="inputInclisiran" id="inputInclisiran2" name="detail[]" value="INCIL2"><label for="inputInclisiran2">2.) ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl</label>
+			<div style="display:none;" id="subIncli2">
+				<table style="width:80%; margin: 0 auto;">
+					<tr>
+						<td colspan="3" style="text-align:center; font-weight:bold;">เกณฑ์การวินิจฉัยโรคคอเลสเตอรอลสูงทางพันธุกรรมหรือ Familial Hypercholesterolemia (FH)<br>ใช้ตาม Dutch Lipid Clinic Network Criteria โดยมีคะแนนมากกว่าหรือเท่ากับ 6</td>
+					</tr>
+					<tr>
+						<td colspan="2" style="font-weight:bold;">Dutch Lipid Clinic Network Criteria</td>
+						<td>Points</td>
+					</tr>
+					<tr>
+						<td colspan="2" style="font-weight:bold; background-color:#dddddd;">Group1: Family history</td>
+						<td></td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="1" id="incil2_1" name="sub_detail[]" value="INCIL2_1"></td>
+						<td><label for="incil2_1">First-degree relative with known premature (<55 years, men; &lt;60 years, women) coronary heart disease (CHD) OR First-degree relative with known LDL cholesterol &gt;95th percentile by age and gender for country</label></td>
+						<td align="center">1</td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="2" id="incil2_2" name="sub_detail[]" value="INCIL2_2"></td>
+						<td><label for="incil2_2">First-degree relative with tendon xanthoma and/or corneal arcus OR Child(ren) &lt;18 years with LDL cholesterol &gt; 95th percentile by age and gender for country</label></td>
+						<td align="center">2</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2" style="font-weight:bold; background-color:#dddddd;">Group2: Clinical history</td>
+						<td></td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="2" id="incil2_3" name="sub_detail[]" value="INCIL2_3"></td>
+						<td><label for="incil2_3">Subject has premature  (&lt;55 years, men; &lt;60 years, women) CHD</label></td>
+						<td align="center">2</td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" class="subDetail2" data-score="1" id="incil2_4" name="sub_detail[]" value="INCIL2_4"></td>
+						<td><label for="incil2_4">Subject has premature (&lt;55 years, men; &lt;60 years, women) cerebral or peripheral vascular disease</label></td>
+						<td align="center">1</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2" style="font-weight:bold; background-color:#dddddd;">Group 3: Physical examination</td>
+						<td></td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="6" id="incil2_5" name="sub_detail[]" value="INCIL2_5"></td>
+						<td><label for="incil2_5">Tendon xanthoma</label></td>
+						<td align="center">6</td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="4" id="incil2_6" name="sub_detail[]" value="INCIL2_6"></td>
+						<td><label for="incil2_6">Corneal arcus in a person &lt;45 years</label></td>
+						<td align="center">4</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2" style="font-weight:bold; background-color:#dddddd;">Group 4: Biochemical results (LDL cholesterol)</td>
+						<td></td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="8" id="incil2_7" name="sub_detail[]" value="INCIL2_7"></td>
+						<td><label for="incil2_7">&gt; 8.5 mmol/L (&gt;325 mg/dL)</label></td>
+						<td align="center">8</td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="5" id="incil2_8" name="sub_detail[]" value="INCIL2_8"></td>
+						<td><label for="incil2_8">6.5 – 8.4 mmol/L (251-325 mg/dL)</label></td>
+						<td align="center">5</td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="3" id="incil2_9" name="sub_detail[]" value="INCIL2_9"></td>
+						<td><label for="incil2_9">5.0 – 6.4 mmol/L (191-250 mg/dL)</label></td>
+						<td align="center">3</td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="1" id="incil2_10" name="sub_detail[]" value="INCIL2_10"></td>
+						<td><label for="incil2_10">4.0 – 4.9 mmol/L (155-190 mg/dL)</label></td>
+						<td align="center">1</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2" style="font-weight:bold; background-color:#dddddd;">Group 5: Molecular genetic testing (DNA analysis)</td>
+						<td></td>
+					</tr>
+					<tr valign="top">
+						<td><input type="checkbox" class="subDetail2" data-score="8" id="incil2_11" name="sub_detail[]" value="INCIL2_11"></td>
+						<td><label for="incil2_11">Causative mutation shown in the LDLR, APOB, or PCSK9 genes</label></td>
+						<td align="center">8</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		<p><input type="checkbox" class="inputInclisiran" id="inputInclisiran3" name="detail[]" value="INCIL3"><label for="inputInclisiran3">3.) เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้</label></p>
-		<p>
+		<p style="text-align: center;">
 			<button type="button" onclick="confirmInclisiran('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="Inclisiran">
 		</p>
@@ -358,6 +446,32 @@ function clickInclisiran(){
 		document.getElementById('subIncli1').style.display='';
 	}else{
 		document.getElementById('subIncli1').style.display='none';
+
+		document.getElementById('sub_detail1').checked=false;
+		document.getElementById('sub_detail2').checked=false;
+		document.getElementById('sub_detail3').checked=false;
+
+	}
+}
+
+function clickInclisiran2(){
+	if(document.getElementById('inputInclisiran2').checked===true){
+		document.getElementById('subIncli2').style.display='';
+	}else{
+		document.getElementById('subIncli2').style.display='none';
+
+		document.getElementById('incil2_1').check = false;
+		document.getElementById('incil2_2').check = false;
+		document.getElementById('incil2_3').check = false;
+		document.getElementById('incil2_4').check = false;
+		document.getElementById('incil2_5').check = false;
+		document.getElementById('incil2_6').check = false;
+		document.getElementById('incil2_7').check = false;
+		document.getElementById('incil2_8').check = false;
+		document.getElementById('incil2_9').check = false;
+		document.getElementById('incil2_10').check = false;
+		document.getElementById('incil2_11').check = false;
+
 	}
 }
 
@@ -367,6 +481,7 @@ function confirmInclisiran(drugcode){
 	let formData = new FormData();
 	let incliCount = 0;
 	let checkIncli1 = false;
+	let checkIncli2 = false;
 	for (let i = 0; i < incliItem.length; i++) {
 
 		if (incliItem[i].checked===true) { 
@@ -375,30 +490,64 @@ function confirmInclisiran(drugcode){
 			if(incliItem[i].value==='INCIL1'){
 				checkIncli1 = true;
 			}
+
+			if(incliItem[i].value==='INCIL2'){
+				checkIncli2 = true;
+			}
 			
 			formData.append("detail[]", incliItem[i].value);
 			incliCount++;
 		}
 	}
 
-	const subIncliItem = document.querySelectorAll('.subDetail');
-	let subCount = 0;
+	const subIncliItem = document.querySelectorAll('.subDetail1');
+	let subCount1 = 0;
 	for (let i = 0; i < subIncliItem.length; i++) {
 		if (subIncliItem[i].checked===true) {
-			formData.append("sub_detail[]", subIncliItem[i].value);
-			subCount++;
+			formData.append("sub_detail[INCIL1][]", subIncliItem[i].value);
+			subCount1++;
+		}
+	}
+
+	const subIncliItem2 = document.querySelectorAll('.subDetail2');
+	let subCount2 = 0;
+	let score = 0;
+	for (let i = 0; i < subIncliItem2.length; i++) {
+		if (subIncliItem2[i].checked===true) {
+			console.log( subIncliItem2[i].value);
+			formData.append("sub_detail[INCIL2][]", subIncliItem2[i].value);
+			score += parseInt(subIncliItem2[i].getAttribute('data-score'));
+			subCount2++;
 		}
 	}
 
 	if(incliCount===0){
 		Swal.fire({
-			title: "กรุณาเลือกรายละเอียดอย่างน้อย 1ข้อ",
+			title: "กรุณาเลือกรายการอย่างน้อย 1ข้อ",
 			icon: 'warning',
 			allowOutsideClick: false
 		});
-	}else if(checkIncli1===true && subCount===0){ // ข้อ 1 ถูกติ๊กเอาไว้ แต่ไม่ได้เลือกตัวย่่อย
+		return false;
+	}
+	if(checkIncli1===true && subCount1===0){ // ข้อ 1 ถูกติ๊กเอาไว้ แต่ไม่ได้เลือกตัวย่่อย
 		Swal.fire({
-			title: "กรุณาเลือกรายละเอียดในข้อที่1 อย่างน้อย 1ข้อ",
+			title: "กรุณาเลือกรายละเอียดในข้อที่ 1 อย่างน้อย 1ข้อ",
+			icon: 'warning',
+			allowOutsideClick: false
+		});
+		return false;
+	}
+
+	if(checkIncli2===true && subCount2===0){
+		Swal.fire({
+			title: "กรุณาเลือกรายละเอียดในข้อที่ 2",
+			icon: 'warning',
+			allowOutsideClick: false
+		});
+		return false;
+	}else if(checkIncli2===true && subCount2>0 && score<6){
+		Swal.fire({
+			title: "คะแนนไม่ถึง 6 กรุณาเลือกใหม่อีกครั้ง",
 			icon: 'warning',
 			allowOutsideClick: false
 		});
