@@ -3072,15 +3072,34 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkDiabetes(drugcode.trim());
 	}
 
+	var doctor_id = document.getElementById('doctor_id').value;
 	if( drugcode.trim() === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
-		checkInclisiran(drugcode.trim());
+		// อนุญาตให้แพทย์2ท่านนี้สั่งได้เท่านั้น
+		// ณัชญ์ระวี บุรีคำ (md29760)
+		// วิรดา  อนันตวงศ์ (md43724)
+		if(doctor_id == 'md29760' || doctor_id == 'md43724'){
+			checkInclisiran(drugcode.trim());
+		}else{
+			Swal.fire({
+				title: 'แจ้งเตือน',
+				icon: 'warning',
+				html:`อนุญาตให้แพทย์เฉพาะทาง<br>โรคหัวใจและโรคระบบต่อมไร้ท่อ<br><b>สั่งใช้ได้เท่านั้น</b>`,
+				allowOutsideClick: false
+			});
+			resetLeftForm();
+			return false;
+		}
 	}
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
 
-	var doctor_id = document.getElementById('doctor_id').value;
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
 		if( drugcode == '6VISL' || drugcode == '6HIAL' ){
-			Swal.fire("ยาควบคุมราคา กรุณาให้จักษุแพทย์สั่งยา");
+			Swal.fire({
+				title: 'แจ้งเตือน',
+				icon: 'warning',
+				html:`ยาควบคุมราคา กรุณาให้จักษุแพทย์สั่งยา`,
+				allowOutsideClick: false
+			});
 		}
 	}
 
@@ -4583,7 +4602,7 @@ function viatch(ing,code){
 	<TD align="right" >จำนวน : </TD>
 	<TD><INPUT  ID="drug_amount" TYPE="text" NAME="drug_amount"  size="10" onkeypress = "if(event.keyCode == 13){ checkForm1(); return false; }else{ check_number();}"  > </TD>
 </TR>
-<TR ID="slip_detail" style="display:">
+<TR ID="slip_detail">
 	<TD align="right" >วิธีใช้ : </TD>
 	<TD><INPUT NAME="drug_slip" TYPE="text" ID="drug_slip" onKeyPress="if(event.keyCode == 13){ checkForm1(); return false; }else{ searchSuggest('slip',this.value,2);} " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }" size="10"></TD>
 </TR>
@@ -4837,33 +4856,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		</div>
 	</div>
 </div>
-<!--
-<div style="display: grid; position: fixed; inset: 0; overflow-y: auto; background-color: #00000075; justify-content: center; padding: 8px;">
-	<div style="display: grid; position: relative; box-sizing: border-box; grid-template-columns: minmax(0, 100%); background-color: white; padding: 8px; ">
-		<div style="width:800px;">
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer feugiat dui posuere quam cursus posuere. Aliquam erat volutpat. Vivamus sodales mauris viverra eros bibendum, vel rhoncus augue molestie. Morbi in neque quis ipsum ornare ornare. Donec at malesuada est. Nulla facilisi. Aenean bibendum bibendum augue, ornare feugiat odio ultrices vitae. Nullam dignissim eros in lacus lacinia aliquam eget tristique tortor. Curabitur consectetur massa erat, at tristique magna cursus vitae. Nulla sodales bibendum magna. Praesent placerat, orci id rutrum rhoncus, ligula eros porta augue, nec condimentum nisl erat et dolor. Etiam gravida lectus in dolor iaculis, eu dapibus enim finibus. Nunc gravida sagittis rutrum.
 
-Ut urna velit, pharetra ac suscipit ac, condimentum eget mauris. Maecenas tristique convallis est eget interdum. Mauris sem nunc, tempor et lacus eu, ornare mollis mauris. Quisque sed dui sed velit elementum fringilla sed at tellus. In hac habitasse platea dictumst. Pellentesque scelerisque massa ac quam feugiat, posuere finibus orci sagittis. Vivamus aliquam a sem sit amet euismod. Ut maximus finibus iaculis. Sed eu sodales arcu, non scelerisque lectus. Cras vulputate est elit, eget auctor ex iaculis nec. Integer tincidunt ligula et massa sagittis, quis rhoncus dolor suscipit.
-
-Mauris pharetra convallis leo, non aliquam orci euismod sed. Etiam hendrerit dolor id turpis egestas, vel cursus urna tempor. Praesent eget dignissim sem. Morbi justo ligula, ultrices et laoreet sit amet, malesuada vitae libero. Nullam vestibulum varius elit a lacinia. Morbi ipsum risus, bibendum nec quam a, sollicitudin mollis quam. Integer interdum dolor vel magna finibus, ut viverra arcu eleifend. Mauris eleifend imperdiet dui ac vestibulum. Etiam tincidunt ligula sit amet ex porta aliquam. Integer dapibus, mi et lacinia convallis, ligula mauris ultrices ex, sed mollis risus magna vitae ex. Nullam ullamcorper mattis lobortis. Vivamus vel nibh a lorem fringilla elementum. Cras maximus dignissim libero, rutrum faucibus enim porttitor a. Sed suscipit et elit at fringilla. Nullam condimentum, erat sit amet viverra tempus, leo diam aliquam mi, ac finibus quam justo et turpis.
-
-Vivamus auctor eget dolor in faucibus. Quisque scelerisque eleifend arcu quis tempor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam sagittis sem vel nisi elementum, nec elementum lectus pretium. Nunc lacus lacus, viverra ut sem at, laoreet mattis neque. Proin mollis, est non mattis consectetur, augue justo pretium odio, sit amet tincidunt ex elit eu diam. Suspendisse id tortor ac tellus accumsan pellentesque. Aliquam rutrum metus ipsum, ut porta neque pretium quis. Donec viverra velit quis leo maximus, vel efficitur arcu semper. Nam condimentum risus facilisis interdum fringilla. Vivamus sed orci vel eros lacinia consequat. Nullam ac erat eros.
-
-Duis commodo et leo a gravida. Aliquam sed mi tortor. Morbi tempor dictum nibh, vel imperdiet arcu dictum ut. Nullam laoreet est a laoreet scelerisque. Donec ullamcorper porttitor tortor ac accumsan. Aenean consectetur ullamcorper tortor eu scelerisque. Proin maximus, diam in viverra venenatis, ligula erat interdum velit, nec imperdiet tellus tellus eget neque. Maecenas sagittis nunc ut tristique maximus. Vivamus faucibus eu lectus at euismod. Vivamus diam lectus, gravida ac congue ut, blandit a eros. Nulla vehicula, augue quis eleifend vulputate, orci nisl pretium eros, sit amet efficitur risus est nec purus. Aenean vestibulum lectus quis lectus consequat, in consectetur purus fringilla.
-
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nam a iaculis odio. Fusce fringilla orci arcu, dignissim facilisis purus tempus nec. Donec ligula dui, pellentesque nec aliquet non, dignissim et orci. Nulla vel lacus posuere, vestibulum magna ut, mollis libero. Suspendisse tincidunt pretium est sit amet semper. Donec et vestibulum nibh, a luctus mauris. Morbi euismod lacus eu tempor maximus. Mauris eget ante a felis tincidunt dignissim. Sed mattis elementum elit at aliquet. Nulla facilisi. Etiam sem nunc, venenatis et leo ut, accumsan mattis ipsum. Quisque condimentum lacus neque, et pretium tortor porttitor nec. Praesent nec porttitor augue. Praesent erat diam, volutpat in lacus in, sagittis iaculis nibh. Vivamus porttitor, diam a porta faucibus, nunc turpis dapibus turpis, et pharetra nulla mi a neque.
-
-Curabitur faucibus scelerisque dui id tempor. Sed consequat tortor eget elit suscipit, nec pulvinar erat viverra. Vivamus eleifend eros faucibus, ullamcorper elit eu, scelerisque nisi. Ut sed posuere turpis. Praesent sit amet fermentum nulla. Nunc ut leo consectetur, mattis nisi a, congue purus. Aliquam a arcu tellus. Nulla consectetur dapibus odio quis fermentum. Suspendisse nec turpis tortor. Phasellus metus arcu, mollis vulputate tincidunt eu, elementum nec erat. Vivamus ut massa purus. Curabitur eu mauris ac risus lacinia hendrerit.
-
-Praesent id iaculis eros. Nullam feugiat lacinia fringilla. Nullam elementum nisi tincidunt, congue ligula ut, aliquam eros. Mauris et ex arcu. Phasellus volutpat sem nec tortor consequat pretium quis id leo. Donec hendrerit arcu odio, non pretium nisl mattis at. Cras eu tincidunt libero, id tincidunt sem. Morbi lacinia rutrum ultrices. Cras mattis augue et commodo sodales. Morbi efficitur nisl ex, sit amet euismod purus rhoncus non. Proin vel ipsum eu nisi posuere euismod a non eros. Nam orci est, aliquet ac imperdiet ut, mollis at sem. Phasellus in justo arcu. Nunc dictum laoreet ante et aliquet. Duis ultricies enim quam, nec rhoncus odio ullamcorper fringilla.
-
-Fusce sem sem, malesuada at rhoncus in, laoreet sit amet ante. Ut ut sem et tortor rhoncus scelerisque. Vivamus vel turpis orci. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus purus massa, commodo sit amet dui vel, viverra aliquet quam. Pellentesque convallis quis ante ut scelerisque. Nam non nisi lobortis nisl pulvinar placerat.
-
-Nunc vehicula sem vitae nulla pellentesque, eu maximus magna pretium. Proin ac tempor massa. Sed odio velit, malesuada vel pellentesque id, placerat euismod lectus. In rhoncus nibh vel erat aliquam, nec mollis felis maximus. Suspendisse porta ullamcorper porta. Pellentesque iaculis lectus at congue semper. Donec vitae massa feugiat nunc porta egestas.
-</div>	
-</div>
-</div>
--->
 <script type="text/javascript" src="js/specific_patient_groups_drug.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 
