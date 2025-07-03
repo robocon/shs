@@ -59,9 +59,9 @@ function calcage($birth){
 	
 
 
-	$sql111 = "Select hn,yot,name,surname,ptright,dbirth,idcard,phone,blood,congenital_disease,drugreact From opcard where hn='".$hn."' ";
+	$sql111 = "Select hn,yot,name,surname,ptright,dbirth,idcard,phone,blood,congenital_disease,drugreact,hospcode From opcard where hn='".$hn."' ";
 	$result111 = Mysql_Query($sql111);
-	list($hn,$yot,$name,$surname,$ptright,$dbirth,$idcard,$phone,$blood,$congenital_disease,$drugreact) = Mysql_fetch_row($result111);
+	list($hn,$yot,$name,$surname,$ptright,$dbirth,$idcard,$phone,$blood,$congenital_disease,$drugreact,$hospcode) = Mysql_fetch_row($result111);
 	
 	$ptname="$yot $name&nbsp;&nbsp;$surname";
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
@@ -170,12 +170,12 @@ p.text {
 }
 </style>
 <script language="javascript">
-//window.opener.location.reload();
-//window.opener.location.reload(true);
-window.print();
-	setTimeout(function(){ 
-            window.close();
-	}, 1000);
+window.onload = function(){
+	window.print();
+	window.onafterprint = function(){
+		window.close();
+	}
+}
 </script>
 <title>ใบตรวจโรคผู้ป่วยนอก</title>
 <div class="narrowWaisted">
@@ -187,15 +187,15 @@ window.print();
 	<div style="font-size:36px; font-weight:bold;" align="center">โรงพยาบาลค่ายสุรศักดิ์มนตรี</div>
 	<div style="font-size:32px; font-weight:bold;" align="center">ใบตรวจโรคผู้ป่วยนอก</div></th>
 	<th width="20%" valign="top">
-	<img src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1">
+	<img src="printQrCode.php?hn=<?=$hn;?>&size=5&level=2&margin=1">
 	<div align="center"><?=$hn;?></div>
 	</th>
   </tr>
   <tr >
     <td></td>
     <td colspan="2"><div>
-	<span><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?></span>
-	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?php echo $idcard;?></span>
+	<span><strong>ชื่อ- นามสกุล : </strong><?=$ptname;?></span>
+	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?=$idcard;?></span>
 	
 	</div>
 	</td>
@@ -203,25 +203,32 @@ window.print();
   <tr >
     <td><div align="center">&nbsp;</div></td>
     <td colspan="2"><div>
-	<span><strong>กรุ๊ปเลือด : </strong><?php echo $blood;?></span>
-	<span style="margin-left:20px;"><strong>วัน/เดือน/ปีเกิด : </strong><?php echo $birthday;?></span>
-	<span style="margin-left:20px;"><strong>อายุ : </strong><?php echo $cAge;?></span>
+	<span><strong>กรุ๊ปเลือด : </strong><?=$blood;?></span>
+	<span style="margin-left:20px;"><strong>วัน/เดือน/ปีเกิด : </strong><?=$birthday;?></span>
+	<span style="margin-left:20px;"><strong>อายุ : </strong><?=$cAge;?></span>
 	</div>
 	</td>
   </tr>
   <tr >
     <td><div align="center">&nbsp;</div></td>
     <td colspan="2"><div>
-	<span><strong>สิทธิการรักษา : </strong><?php echo $ptright;?></span>
-	<span style="margin-left:20px;"><strong>หมายเลขโทรศัพท์ : </strong><?php echo $phone;?></span>
+	<span><strong>สิทธิการรักษา : </strong><?=$ptright;?></span>
+	<?php 
+	$stylePhone = 'margin-left:20px;';
+	if(!empty($hospcode)){
+		?><span><strong>รพ.หลัก : </strong><?=$hospcode;?></span><br><?php
+		$stylePhone = '';
+	}
+	?>
+	<span style="<?=$stylePhone;?>"><strong>หมายเลขโทรศัพท์ : </strong><?=$phone;?></span>
 	</div>
 	</td>
   </tr>  
   <tr >
     <td><div align="center">&nbsp;</div></td>
     <td colspan="2"><div>
-	<span><strong>โรคประจำตัว : </strong><?php echo $congenital_disease;?></span>
-	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?php echo $drugreact_disease;?></span>
+	<span><strong>โรคประจำตัว : </strong><?=$congenital_disease;?></span>
+	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?=$drugreact_disease;?></span>
 	</div>
 	</td>
   </tr>  

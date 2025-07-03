@@ -1,8 +1,6 @@
 <?php
-// session_start();
-// include_once 'connect.php';
-require_once 'bootstrap.php';
-include_once 'includes/JSON.php';
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
@@ -65,21 +63,23 @@ if($action==='checkuser'){
 
 $act = sprintf("%s", (!empty($_POST["act"]) ? $_POST["act"] : '' ));
 if ($act == "add") {
-    if (!empty($_POST["txtuser"])) {
 
+    $txtname = sprintf("%s", $_POST["txtname"]);
+    $txtuser = sprintf("%s", $_POST["txtuser"]);
+    $password1 = sprintf("%s", $_POST["password1"]);
+    $idcard = sprintf("%s", $_POST["idcard"]);
+    $age = sprintf("%s", $_POST["age"]);
+    $email = sprintf("%s", $_POST["email"]);
+    $eopd = sprintf("%s", $_POST["eopd"]);
+    $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
+    $department = sprintf("%s", $_POST['department']);
+    $position = sprintf("%s", $_POST['position']);
+    $perform = sprintf("%s", $_POST['perform']);
 
-        $txtname = sprintf("%s", $_POST["txtname"]);
-        $txtuser = sprintf("%s", $_POST["txtuser"]);
-        $password1 = sprintf("%s", $_POST["password1"]);
-        $idcard = sprintf("%s", $_POST["idcard"]);
-        $age = sprintf("%s", $_POST["age"]);
-        $email = sprintf("%s", $_POST["email"]);
-        $eopd = sprintf("%s", $_POST["eopd"]);
-        $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
-        $department = sprintf("%s", $_POST['department']);
-        $position = sprintf("%s", $_POST['position']);
-        $perform = sprintf("%s", $_POST['perform']);
-        
+    if(empty($txtname) || empty($txtuser) || empty($password1) || empty($idcard) || empty($age) || empty($email) || empty($department) || empty($position) || empty($perform) || empty($sOfficer) ){
+        $res = array('status'=>400, 'message'=>'กรุณากรอกข้อมูลให้ครบถ้วน');
+    }else{
+
         $eopdStatus = 'n';
         if($eopd=='1'){
             $eopdStatus = 'y';
@@ -92,16 +92,23 @@ if ($act == "add") {
         $q = $dbi->query($sql);
         if ($q!==false) { 
             
-            $sMessage = "$sOfficer ได้ทำการร้องขอผู้ใช้งาน $txtname($txtuser) $department $position $perform";
-            $curl = curl_init();
-            curl_setopt( $curl, CURLOPT_URL, SURASAK_DOCKER."/telegram/index.php");
-            curl_setopt( $curl, CURLOPT_POST, 1);
-            curl_setopt( $curl, CURLOPT_POSTFIELDS, "sMessage=".$sMessage."&type=user_register_request");
-            curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
-            curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
-            $result = curl_exec( $curl );
-            curl_close($curl);
+            $msgTelegram = "🙋🏽‍♀️ $sOfficer \nได้ทำการร้องขอผู้ใช้งาน \nชื่อ-สกุล:$txtname \nชื่อผู้ใช้:$txtuser \nแผนก:$department \nตำแหน่ง:$position \nปฏิบัติหน้าที่:$perform";
+            $ch = curl_init();
+            curl_setopt( $ch, CURLOPT_URL, NOTIFY_HOST."/telegram/register.php");
+            curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0);
+            curl_setopt( $ch, CURLOPT_SSLVERSION, 6);
+            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt( $ch, CURLOPT_POST, 1);
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, "sMessage=".$msgTelegram); 
+            $headers = array( 'Content-type: application/x-www-form-urlencoded' );
+            curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+
+            $result = curl_exec( $ch );
+            if($result===false){
+                $error = curl_error($ch);
+            }
+            curl_close($ch);
 
             $res = array('status'=>200, 'message'=>'ทำการร้องขอผู้ใช้งานในระบบเรียบร้อย ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง ขอบคุณครับ', 'id'=>$dbi->insert_id, 'res'=>$lineRes);
 
@@ -115,10 +122,12 @@ if ($act == "add") {
             
             $res = array('status'=>400, 'message'=>$errorMsg);
         }
-
-        echo $json->encode($res);
-        exit;
+        
     }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo $json->encode($res);
+    exit;
 }
 ?>
 
@@ -519,10 +528,10 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                         Swal.fire("มีผู้ใช้งานแล้ว กรุณาเปลี่ยนไปใช้ชื่ออื่น");
                         return false;
                     }
-                    // console.log(stat);
+                    
                     if(stat===true){
                         checkuser(username.value).then((res)=>{ 
-                            // console.log(res);
+                            
                             if(res.status===400){
                                 Swal.fire("กรุณากด \"ตรวจสอบผู้ใช้งาน\" อีกครั้ง");
                             }else{

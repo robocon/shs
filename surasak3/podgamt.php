@@ -18,9 +18,9 @@ if($rows["edpri"] > 0){
 }
 
 
-$Spec = iconv("tis-620", "utf-8",$Spec);
-$Packing = iconv("tis-620", "utf-8",$Packing);
-$Pack = iconv("tis-620", "utf-8",$Pack);
+//$Spec = iconv("tis-620", "utf-8",$Spec);
+//$Packing = iconv("tis-620", "utf-8",$Packing);
+//$Pack = iconv("tis-620", "utf-8",$Pack);
 
     print"<form method='POST' action='podginfo.php' target='top'>";
 	print"<font face='Angsana New'><p>รายการสั่งซื้อที่ $x <span lang='en-us'>&nbsp; </span>บริษัท ($cComcode) $cComname</p>";
@@ -30,7 +30,7 @@ $Pack = iconv("tis-620", "utf-8",$Pack);
 	print"</span><input type='text' name='tradname' size='20' value='$Trade'><br>";
 	print"หน่วยนับ <span lang='en-us'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 	print"</span> <input type='text' name='cPacking' size='15' value='$Packing'><span lang='en-us'>&nbsp;&nbsp;";
-	      print"</span>ขนาดบรรจุ<span lang='en-us'>&nbsp;&nbsp;&nbsp;&nbsp; </span><input type='text' name='cPack' size='18' value='$Pack'><br>";
+	print"</span>ขนาดบรรจุ<span lang='en-us'>&nbsp;&nbsp;&nbsp;&nbsp; </span><input type='text' name='cPack' size='18' value='$Pack'><br>";
 	print"จำนวนวางระดับ <input type='text' name='nMinimum' size='10' value='$Minimum'><span lang='en-us'>&nbsp;&nbsp;";
 	print"</span>จำนวนคงคลัง";
 	print"<input type='text' name='nTotalstk' size='15' value='$Totalstk'><br>";

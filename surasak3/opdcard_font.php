@@ -118,14 +118,6 @@ p.text {
 }
 
 </style>
-<script language="javascript">
-//window.opener.location.reload();
-//window.opener.location.reload(true);
-//window.print();
-	//setTimeout(function(){ 
-      //      window.close();
-	//}, 1000);
-</script>
 <title>เวชระเบียน/Medical</title>
 <?php
 $hn = sprintf("%s", $_GET['hn']);
@@ -142,8 +134,6 @@ $cAge=calcage($dbirth);
 	$dbirth="$dy-$dm-$dd";
 	//echo $dbirth;
 	$birthday=DateThai($dbirth);
-
-
 
 if($congenital_disease == ""){
 	$congenital_disease="ปฎิเสธ";
@@ -176,9 +166,14 @@ if($congenital_disease == ""){
 
 
 	if($idcard=="" || $idcard=="-"){
-		$img=$hn.'.jpg';
+		$img='NoPicture.jpg';
 	}else{
 		$img=$idcard.'.jpg';
+	}
+
+	$imgPath = '../image_patient/'.$img;
+	if(!is_file($imgPath)){
+		$imgPath = '../image_patient/NoPicture.jpg';
 	}
 	
 	if($sex=="ช"){
@@ -220,15 +215,15 @@ $regisdate=DateThai($regisdate);
 
 <table border="0" align="center" width="100%" cellpadding="0">
   <tr>
-    <th width="10%" valign="top" align="center"><img src="images/LogoFSH_mini.jpg"></th>
+    <th width="10%" valign="top" align="center"><img style="height:120px;" src="images/LogoFSH_mini.jpg"></th>
     <th width="70%" valign="top">
 	<div style="font-size:32px; font-weight:bold;" align="center">โรงพยาบาลค่ายสุรศักดิ์มนตรี</div>
 	<div style="font-size:28px; font-weight:bold;" align="center">มทบ.32 จ.ลำปาง โทร. 054-839305</div>
 	<div style="font-size:28px; font-weight:bold;" align="center">เวชระเบียน/Medical Record</div>
 	</th>
 	<th width="20%" valign="top" align="right">
-	<img src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1">
-	<div style="margin-right:24px; font-size:28px; font-weight:bold;"><?=$hn;?></div>
+		<img style="height:100px;" src="printQrCode.php?hn=<?php echo $hn;?>&size=5&level=2&margin=1">
+		<div style="margin-right:24px; font-size:28px; font-weight:bold;"><?=$hn;?></div>
 	</th>
   </tr>
 </table>
@@ -237,15 +232,20 @@ $regisdate=DateThai($regisdate);
 <div align="center">
 
 <table border="0" align="center" width="100%" cellpadding="5">
-  <tr >
-    <td colspan="3" align="right">
-    <IMG SRC='../image_patient/<?=$img;?>' WIDTH='100' HEIGHT='130' BORDER='0' ALT=''>
-	<div style="margin-right:10px; font-weight:bold;"><?php echo $mid;?></div>
+  <!-- <tr >
+    <td colspan="2" rowspan="3">
+    	
+		<div style="margin-right:10px; font-weight:bold;"><?php echo $mid;?></div>
 	</td>
-  </tr>
+  </tr> -->
   <tr >
     <td width="60%"><span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?php echo $idcard;?></span></td>
-    <td width="40%" align="right"><strong>วันที่ลงทะเบียน : </strong><?php echo $regisdate;?></td>
+    <td width="40%" align="left" style="position:relative;">
+		<strong>วันที่ลงทะเบียน : </strong><?php echo $regisdate;?>
+		<div style="position:absolute; top:0; right:0;">
+			<img src='<?=$imgPath;?>' height='120'>
+		</div>
+	</td>
   </tr>
   <tr >
     <td width="60%"><span style="margin-left:20px;"><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?></span></td>

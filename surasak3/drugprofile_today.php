@@ -1,4 +1,4 @@
-<?php
+๏ปฟ<?php
     session_start();
 
     if (!isset($sIdname)){die;}
@@ -35,24 +35,24 @@ if($_GET["action"] == "view_order"){
 exit();
 }
 
-	$month_["01"] = "ม.ค.";
-    $month_["02"] = "ก.พ.";
-    $month_["03"] = "มี.ค.";
-    $month_["04"] = "เม.ย.";
-    $month_["05"] = "พ.ค.";
-    $month_["06"] = "มิ.ย.";
-    $month_["07"] = "ก.ค.";
-    $month_["08"] = "ส.ค.";
-    $month_["09"] = "ก.ย.";
-    $month_["10"] = "ต.ค.";
-    $month_["11"] = "พ.ย.";
-    $month_["12"] = "ธ.ค.";
+	$month_["01"] = "เธก.เธ.";
+    $month_["02"] = "เธ.เธ.";
+    $month_["03"] = "เธกเธต.เธ.";
+    $month_["04"] = "เน€เธก.เธข.";
+    $month_["05"] = "เธ.เธ.";
+    $month_["06"] = "เธกเธด.เธข.";
+    $month_["07"] = "เธ.เธ.";
+    $month_["08"] = "เธช.เธ.";
+    $month_["09"] = "เธ.เธข.";
+    $month_["10"] = "เธ•.เธ.";
+    $month_["11"] = "เธ.เธข.";
+    $month_["12"] = "เธ.เธ.";
 
-	$_SESSION["cWard"]="หอผู้ป่วยหญิง ";
+	$_SESSION["cWard"]="เธซเธญเธเธนเนเธเนเธงเธขเธซเธเธดเธ ";
 
- $build = array("หอผู้ป่วยหญิง"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45");
+ $build = array("เธซเธญเธเธนเนเธเนเธงเธขเธซเธเธดเธ"=>"42","เธซเธญเธเธนเนเธเนเธงเธข ICU"=>"44","เธซเธญเธเธนเนเธเนเธงเธขเธชเธนเธ•เธด"=>"43","เธซเธญเธเธนเนเธเนเธงเธขเธเธดเน€เธจเธฉ"=>"45");
 
-	//$build = array("หอผู้ป่วยหญิง"=>"42");
+	//$build = array("เธซเธญเธเธนเนเธเนเธงเธขเธซเธเธดเธ"=>"42");
 
 ?>
 <html>
@@ -204,7 +204,7 @@ function show_tooltip(diagnos,doctor,age){
 	tooltip.style.left=document.body.scrollLeft+event.clientX;
 	tooltip.style.top=document.body.scrollTop+event.clientY;
 	tooltip.innerHTML="";
-	tooltip.innerHTML = tooltip.innerHTML+"<TABLE border=\"1\" bordercolor=\"blue\"><TR bgcolor=\"blue\"><TD align=\"center\"><B><FONT COLOR=\"#FFFFFF\">รายละเอียด</FONT></B></TD></TR><TR><TD><BR>&nbsp;อายุ&nbsp;:&nbsp;"+age+"&nbsp;&nbsp;<BR>&nbsp;โรค&nbsp;:&nbsp;"+diagnos+"&nbsp;&nbsp;<BR>&nbsp;หมอ&nbsp;:&nbsp;"+doctor+"&nbsp;&nbsp;<BR><BR></TD></TR></TABLE>";
+	tooltip.innerHTML = tooltip.innerHTML+"<TABLE border=\"1\" bordercolor=\"blue\"><TR bgcolor=\"blue\"><TD align=\"center\"><B><FONT COLOR=\"#FFFFFF\">เธฃเธฒเธขเธฅเธฐเน€เธญเธตเธขเธ”</FONT></B></TD></TR><TR><TD><BR>&nbsp;เธญเธฒเธขเธธ&nbsp;:&nbsp;"+age+"&nbsp;&nbsp;<BR>&nbsp;เนเธฃเธ&nbsp;:&nbsp;"+diagnos+"&nbsp;&nbsp;<BR>&nbsp;เธซเธกเธญ&nbsp;:&nbsp;"+doctor+"&nbsp;&nbsp;<BR><BR></TD></TR></TABLE>";
 	tooltip.style.display="";
 }
 
@@ -295,7 +295,7 @@ function view_order() {
 	<TD>
 <?php
 
-echo "<A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A><center><u>ผู้ป่วยรับใหม่วันนี้</u></center><BR>";?>
+echo "<A HREF=\"../nindex.htm\">&lt; &lt; เน€เธกเธเธน</A><center><u>เธเธนเนเธเนเธงเธขเธฃเธฑเธเนเธซเธกเนเธงเธฑเธเธเธตเน</u></center><BR>";?>
 </TD>
 	<TD align="right">
 </TD>
@@ -316,19 +316,19 @@ foreach ($build as $key => $value){
 	<TD>
 <TABLE width="99%" align="center">
 <TR>
-	<TD colspan="10"><A HREF="ward_phardividedrug.php?idward=<?php echo $value;?>">จ่ายยา <?php echo $key;?> ทั้งหมด</A></TD>
+	<TD colspan="10"><A HREF="ward_phardividedrug.php?idward=<?php echo $value;?>">เธเนเธฒเธขเธขเธฒ <?php echo $key;?> เธ—เธฑเนเธเธซเธกเธ”</A></TD>
 </TR>
 <TR bgcolor="blue" align="center" class="font_title">
 	<TD bgcolor="#FFFFFF"><FONT COLOR="#000000"><B><A HREF="<?php echo $_SERVER["PHP_SELF"];?>">UP</A></B></FONT></TD>
-	<TD><B>เตียง</B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">วันรับป่วย</FONT></B></TD>
+	<TD><B>เน€เธ•เธตเธขเธ</B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เธงเธฑเธเธฃเธฑเธเธเนเธงเธข</FONT></B></TD>
 	<TD><B><FONT COLOR="#FFFFDD">AN</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">ชื่อผู้ป่วย</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">คืนยา</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">เพิ่ม/แก้ไข/OFF ยา</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">จ่ายยา</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">ข้อมูล<BR>การจ่ายยา</FONT></B></TD>
-	<TD><B><FONT COLOR="#FFFFDD">จ่ายยา<BR>ล่าสุด</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เธเธทเนเธญเธเธนเนเธเนเธงเธข</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เธเธทเธเธขเธฒ</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เน€เธเธดเนเธก/เนเธเนเนเธ/OFF เธขเธฒ</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เธเนเธฒเธขเธขเธฒ</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เธเนเธญเธกเธนเธฅ<BR>เธเธฒเธฃเธเนเธฒเธขเธขเธฒ</FONT></B></TD>
+	<TD><B><FONT COLOR="#FFFFDD">เธเนเธฒเธขเธขเธฒ<BR>เธฅเนเธฒเธชเธธเธ”</FONT></B></TD>
 	<TD><B><FONT COLOR="#FFFFDD">Doctor Order</FONT></B></TD>
 </TR>
 <?php
@@ -351,12 +351,12 @@ echo "
 	<TD></TD>
 	<TD>",$arr["bed"],"</TD>
 	<TD align=\"center\">",$arr["date1"]," ",$month_[$arr["date2"]]," ",substr($arr["date3"],2),"</TD>
-	<TD><a href='phardc.php?an=".$arr["an"]."' onclick=\"return confirm('ยืนยันการปลดล็อคเพื่อจำหน่าย an : ".$arr["an"]."?');\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('",$arr["diagnos"],"','",$arr["doctor"],"','",$arr["age"],"');\" OnmouseOut = \"hid_tooltip();\">",$arr["an"],"</a></span></TD>
+	<TD><a href='phardc.php?an=".$arr["an"]."' onclick=\"return confirm('เธขเธทเธเธขเธฑเธเธเธฒเธฃเธเธฅเธ”เธฅเนเธญเธเน€เธเธทเนเธญเธเธณเธซเธเนเธฒเธข an : ".$arr["an"]."?');\"><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('",$arr["diagnos"],"','",$arr["doctor"],"','",$arr["age"],"');\" OnmouseOut = \"hid_tooltip();\">",$arr["an"],"</a></span></TD>
 	<TD>",$arr["ptname"],"</TD>
-	<TD align=\"center\"><A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">คืนยา</A></TD>
-	<TD align=\"center\"><A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เพิ่ม/แก้ไข/OFF ยา</A></TD>
-	<TD align=\"center\"><A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">จ่ายยา</A></TD>
-	<TD align=\"center\"><A HREF=\"rp_profile.php?an=".$arr["an"]."&month=".date("m")."&year=".(date("Y")+543)."&date=".date("dmy")."\" target=\"_blank\">ข้อมูล<BR>การจ่ายยา</A></TD>
+	<TD align=\"center\"><A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">เธเธทเธเธขเธฒ</A></TD>
+	<TD align=\"center\"><A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เน€เธเธดเนเธก/เนเธเนเนเธ/OFF เธขเธฒ</A></TD>
+	<TD align=\"center\"><A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เธเนเธฒเธขเธขเธฒ</A></TD>
+	<TD align=\"center\"><A HREF=\"rp_profile.php?an=".$arr["an"]."&month=".date("m")."&year=".(date("Y")+543)."&date=".date("dmy")."\" target=\"_blank\">เธเนเธญเธกเธนเธฅ<BR>เธเธฒเธฃเธเนเธฒเธขเธขเธฒ</A></TD>
 	<TD align=\"center\">",$arr["last_drug"],"</TD>
 	<TD align=\"center\">&nbsp;<div id='",$arr["an"],"'></div>&nbsp;</TD>
 </TR>

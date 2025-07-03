@@ -504,16 +504,19 @@ while($rows = mysql_fetch_array($query)){
 	if($tmp_certtype == "ใบรับรองแพทย์ 5 โรค (E_CERT-001)" AND $status_show == false){
 		$link = "Checkup_Medical_Cert.php?hn=".$tmp_hn."&rowid=".$tmp_row_id."&vn=".$tmp_vn."&type=A";
 		//echo $link;exit();
+		echo "<h1 align='center'>หากระบบอัตโนมัติไม่ทำงาน >>> <a href='".$link."'>Click ที่นี่</a> </h1>";
 		header( "location: $link" );
  		exit(0);
 		
 	}else if($tmp_certtype == "ใบรับรองแพทย์ สำหรับใบอนุญาตขับรถ (E_CERT-002)"){
 		$link = "Checkup_Medical_Cert_Drive.php?hn=".$tmp_hn."&rowid=".$tmp_row_id."&vn=".$tmp_vn."&type=B";
+		echo "<h1 align='center'>หากระบบอัตโนมัติไม่ทำงาน >>> <a href='".$link."'>Click ที่นี่</a> </h1>";
 		header( "location: $link" );
  		exit(0);
 
 	}else{ // ใบรับรองแพทย์ 5 โรค + Lab
 		$link = "Checkup_Medical_Cert_WithLab.php?hn=".$tmp_hn."&rowid=".$tmp_row_id."&vn=".$tmp_vn."&type=C";
+		echo "<h1 align='center'>หากระบบอัตโนมัติไม่ทำงาน >>> <a href='".$link."'>Click ที่นี่</a> </h1>";
 		header( "location: $link" );
  		exit(0);
 

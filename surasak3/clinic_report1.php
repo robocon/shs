@@ -449,7 +449,7 @@ switch($_POST['m_start']){
 	AND a.time ='".$_POST['time']."' 
 	AND a.doctor ='".$_POST['doctor']."' 
 	AND a.status='Y' ORDER BY a.row_id ASC";
-	
+	//echo $sql;
 	$query=mysql_query($sql) or die (mysql_error());
 	$numrow=mysql_num_rows($query);
 	
@@ -467,7 +467,7 @@ switch($_POST['m_start']){
 <table border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="font2 shs-table" width="100%" align="center">
   <tr bgcolor="#999999">
     <td align="center"  width="7%">ลำดับ</td>
-    <td colspan="2" align="center" width="47%">ชื่อ - สกุล</td>
+    <td colspan="2" align="center" width="30%">ชื่อ - สกุล</td>
     <td align="center" width="13%">HN</td>
 	<td align="center" width="20%">สิทธิ์</td>
     <td align="center" width="13%">AN</td>
@@ -524,7 +524,7 @@ echo "<table width='100%' border='0' align='center' class='font2 footer-sign'>
 		echo "<table width=\"100%\" border=\"1\" style=\"border-collapse:collapse; border-color:#000;\" cellpadding=\"0\" cellspacing=\"0\" class=\"font2 shs-table\" align='center'>
   <tr bgcolor=\"#999999\">
     <td align=\"center\" width=\"7%\">ลำดับ</td>
-    <td colspan='2' align='center' width=\"47%\">ชื่อ - สกุล</td>
+    <td colspan='2' align='center' width=\"30%\">ชื่อ - สกุล</td>
     <td align=\"center\" width=\"13%\">HN</td>
 	<td align=\"center\" width=\"20%\">สิทธิ์</td>
     <td align=\"center\" width=\"13%\">AN</td>
@@ -541,8 +541,7 @@ $lname = substr($arr['ptname'],strlen($fname)+1);
 ?>
     <tr>
     <td align="center"><?=$run;?></td>
-    <td style='border-right-style:none'>&nbsp;<?=$fname?></td>
-    <td style="border-left-style:none"><?=$lname?></td>
+    <td colspan='2'>&nbsp;<?=$fname."&nbsp;&nbsp;&nbsp;".$lname;?></td>
     <td>&nbsp;<?=$arr['hn']?></td>
 	<td>&nbsp;<?php 
 		

@@ -1,11 +1,7 @@
 <?php 
-include_once 'bootstrap.php';
-// include_once 'includes/JSON.php';
-// $json = new Services_JSON();
-
-// $dbi=new mysqli(HOST,USER,PASS,DB);
-// $dbi->set_charset('utf8');
-// $dbi->query("SET NAMES UTF8");
+include dirname(__FILE__).'/bootstrap.php';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
 $action = $_REQUEST['action'];
 if ($action === 'search_user') {
@@ -82,48 +78,23 @@ if ($action === 'search_user') {
     }
     redirect("com_support_v2.php", $msg);
     exit;
-}
+}else
 
 
 $page = $_REQUEST['page'];
 if($page==='load25page'){ 
 
-    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' ORDER BY `dateend` DESC LIMIT 100";
+    $latestMonth = strtotime("-1 month");
+    $dateEnd = (date("Y",$latestMonth)+543).date("-m", $latestMonth);
+
+    $sql = "SELECT * FROM `com_support` WHERE `programmer` LIKE 'กฤษณะศักดิ์%' AND `dateend` LIKE '$dateEnd%' ORDER BY `dateend` ASC";
     $q = $dbi->query($sql);
     $items = array();
     while ($item = $q->fetch_assoc()) {
         $id = $item['row_id'];
-
-        $item['detail'] = strip_tags(html_entity_decode($item['detail']));
+        $item['detail'] = strip_tags(htmlspecialchars_decode($item['detail'],ENT_QUOTES));
         $items[] = $item;
-
     }
-
-    $sql_sub = "SELECT * FROM `com_support_details` WHERE `editor` LIKE 'กฤษณะศักดิ์%' ORDER BY `date` DESC LIMIT 100 ";
-    $q_sub = $dbi->query($sql_sub);
-    if($q_sub->num_rows > 0){
-        while ($s = $q_sub->fetch_assoc()) { 
-            $id = $s['com_id'];
-
-            $sql = "SELECT * FROM `com_support` WHERE `row` = '$id' ";
-            $q = $dbi->query($sql);
-            $i = $q->fetch_assoc();
-
-            $is['row'] = $i['row'];
-            $is['depart'] = $i['depart'];
-            $is['head'] = $i['head'];
-            $is['detail'] = strip_tags(html_entity_decode($s['detail']));
-
-            $is['user'] = $i['user'];
-            $is['programmer'] = $i['programmer'];
-            $is['user1'] = $i['user1'];
-            $is['p_edit'] = '';
-            $is['date'] = $i['date'];
-            $is['dateend'] = $i['dateend'];
-            $items[] = $is;
-        }
-    }
-
     echo json_encode($items);
     exit;
 }elseif ($page==='loadOrderPage') {
@@ -230,6 +201,9 @@ if($page==='load25page'){
 </style>
 <div>
     <ul class="nav">
+        <li>
+            <a href="com_support_edit_time.php" target="_blank">รายการประจำเดือน</a>
+        </li>
         <li>
             <a href="javascript:void(0)" onclick="get25Page()">50 รายการล่าสุด</a>
         </li>
@@ -546,10 +520,11 @@ if($form_action==='edit'){
                 var dataObj = JSON.parse(xhttp.responseText);
                 
                 var preHtml = '<table class="chk_table">';
-                preHtml += '<tr><td>วันที่</td><td>หัวข้อ</td><td width="40%">รายละเอียด</td><td>ผู้ร้องขอ</td><td>แผนก</td><td>ผู้ปฏิบัติ</td></tr>';
+                preHtml += '<tr><td>#</td><td>วันที่</td><td>หัวข้อ</td><td width="40%">รายละเอียด</td><td>ผู้ร้องขอ</td><td>แผนก</td><td>ผู้ปฏิบัติ</td></tr>';
                 for (var index = 0; index < dataObj.length; index++) {
                     var element = dataObj[index];
                     preHtml += '<tr>';
+                    preHtml += '<td>'+element.row+'</td>';
                     preHtml += '<td>'+element.dateend+'</td>';
                     preHtml += '<td>'+element.head+'</td>';
                     preHtml += '<td>'+element.detail+'</td>';

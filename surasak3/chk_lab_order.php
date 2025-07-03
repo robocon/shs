@@ -164,7 +164,13 @@ if( $action == false ){
 } else if ( $action === 'import' ) {
 
     $file = $_FILES['file'];
-    $content = file_get_contents($file['tmp_name']);
+    // $content = file_get_contents($file['tmp_name']);
+    $handle = fopen($file['tmp_name'], "r");
+    $items = array();
+    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        $items[] = $data;
+    }
+    fclose($handle);
     $part = input_post('part');
     
     // เอาไว้ใช้นับเลข bs
@@ -185,8 +191,8 @@ if( $action == false ){
     // นับ digi เพื่อเอาไปใช้ใน sprintf ทีหลัง เพราะบางบริษัทมีหลักร้อยหรือหลักพันไม่เท่ากัน
     $number_digi = strlen($pre_bs_number);
 
-    if( $content !== false ){
-        $items = explode("\r\n", $content);
+    if( count($items)>0 ){
+        // $items = explode("\r\n", $content);
         
         $i = 0;
         foreach ( $items as $key => $item ) {
@@ -195,7 +201,15 @@ if( $action == false ){
 
             if( $i > 0 && !empty($item) ){
 
-                list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
+                // list($labnumber, $hn, $name, $surname, $sex, $dob, $lab_sso) = explode(',', $item,7);
+                $labnumber = iconv('TIS-620', 'UTF-8', $item[0]);
+                $hn = iconv('TIS-620', 'UTF-8', $item[1]);
+                $name = iconv('TIS-620', 'UTF-8', $item[2]);
+                $surname = iconv('TIS-620', 'UTF-8', $item[3]);
+                $sex = iconv('TIS-620', 'UTF-8', $item[4]);
+                $dob = iconv('TIS-620', 'UTF-8', $item[5]);
+                $lab_sso = iconv('TIS-620', 'UTF-8', $item[6]);
+                
 
                 $dob = set_date($dob);
                 

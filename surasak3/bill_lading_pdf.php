@@ -195,7 +195,7 @@ for ($i=1; $i <= $full_rows; $i++) {
     if( !empty($item) ){
 
         // รองรับแค่ที่2บรรทัด
-        $tradename = iconv('UTF8', 'TIS620', $item['tradename']);
+        $tradename = iconv('UTF-8', 'TIS-620', $item['tradename']);
         $tradename = trim($tradename);
         $tradename = preg_replace('/[[:space:]]+/',' ',$tradename);
 

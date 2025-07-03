@@ -92,6 +92,56 @@ if(!$query){
  
 //////////////////////////////////////////////////////////////////
 
+/////////////////////////////////////////////////////////////////
+
+
+//-----> sql ข้อมูลซักประวัติ
+
+//$sql = "SELECT * FROM `opd` WHERE hn = '$hn'  "; //AND thidate like '%$Txt_Datetime2%' ORDER BY row_id ASC 
+$sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn' AND vn = '$vn' ";
+//echo $sql;exit();
+$query = mysql_query($sql); 
+$num = mysql_num_rows($query);
+
+if(empty($num)){
+    echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติ</h1>";echo "<br>".exit();
+}//end if
+
+while($rows = mysql_fetch_array($query)){
+
+    $Txt_Temp = $rows["temperature"];
+    $Txt_Pause = $rows["pause"];
+    $Txt_Rate = $rows["rate"];
+    $Txt_Weight = $rows["weight"];
+    $Txt_Height = $rows["height"];
+
+    $Txt_Bp1 = $rows["bp1"];
+    $Txt_Bp2 = $rows["bp2"];
+    $Txt_Bp21 = $rows["bp21"];
+    $Txt_Bp22 = $rows["bp22"];
+    
+    // เพิ่มเงื่อนไขการวัด bp 2 ครั้ง 27/06/65
+    if($Txt_Bp21 == "" AND $Txt_Bp22 == ""){
+        $Txt_Bp1 = $rows["bp1"];
+        $Txt_Bp2 = $rows["bp2"];
+    }else{
+        $Txt_Bp1 = $rows["bp21"];
+        $Txt_Bp2 = $rows["bp22"];
+    }//end if
+
+    $Txt_Congenital_disease = $rows["congenital_disease"]; // โรคประจำตัว
+    $Txt_Accident_Surgery = $rows["accident_surgery"]; // อุบัติเหตุและผ่าตัด
+    $Txt_Treat_Hospital = $rows["treat_hospital"]; // เคยเข้ารับการรักษาในโรงพยาบาล
+    $Txt_Epilepsy = $rows["epilepsy"]; // โรคลมชัก
+    $Txt_Treat_other = $rows["treat_other"]; // อื่นๆที่สำคัญ
+    //$Txt_Doctor_Ans= $rows["doctor_ans"]; // สรุปความคิดเห็นและข้อแนะนำของแพทย์
+    $Txt_Flag_Address_Use = $rows["address_use"];
+    
+
+}//end while
+
+//////////////////////////////////////////////////////////////////////////
+
 //-----> sql ข้อมูลคนไข้
 $sql = "SELECT * FROM `opcard` WHERE hn = '$hn' ";
 //echo $sql;exit();
@@ -107,12 +157,37 @@ while($rows = mysql_fetch_array($query)){
 	$Txt_Title = $rows["yot"];
     $Txt_Name = $rows["name"];
     $Txt_Surname = $rows["surname"];
-    $Txt_Idcard = $rows["idcard"];
-    $Txt_Address1 = $rows["address"];
-    $Txt_Address2 = "ตำบล ".$rows["tambol"];
-    $Txt_Address3 = "อำเภอ ".$rows["ampur"];
-    $Txt_Address4 = "จังหวัด ".$rows["changwat"];
-    // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+    $Txt_Idcard = $rows["idcard"]; 
+
+
+    if($Txt_Flag_Address_Use == "hospital"){
+        
+        $Txt_Address1 = $rows["address"];
+        $Txt_Address2 = "ตำบล ".$rows["tambol"];
+        $Txt_Address3 = "อำเภอ ".$rows["ampur"];
+        $Txt_Address4 = "จังหวัด ".$rows["changwat"];
+        // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+
+    }else if($Txt_Flag_Address_Use == "card"){
+
+        $Txt_Address1 = $rows["card_address"]." ".$rows["card_moo"];
+        $Txt_Address2 = "ตำบล ".$rows["card_tambol"];
+        $Txt_Address3 = "อำเภอ ".$rows["card_amphur"];
+        $Txt_Address4 = "จังหวัด ".$rows["card_province"];
+        // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+
+    }else{
+
+        $Txt_Address1 = $rows["address"];
+        $Txt_Address2 = "ตำบล ".$rows["tambol"];
+        $Txt_Address3 = "อำเภอ ".$rows["ampur"];
+        $Txt_Address4 = "จังหวัด ".$rows["changwat"];
+        // ไม่มีข้อมูลรหัสไปรษณีย์ ในระบบ รพ.
+
+    }//end if
+
+
+
     $Txt_Phone = $rows["phone"];
     $Txt_Dbirth = $rows["dbirth"];
 
@@ -209,52 +284,6 @@ $Txt_DocCode = $rows["doctorcode"];
 
 /////////////////////////////////////////////////////////////////
 ////////////// end ข้อมูลแพทย์ //////////////////////////////////
-/////////////////////////////////////////////////////////////////
-
-
-//-----> sql ข้อมูลซักประวัติ
-
-//$sql = "SELECT * FROM `opd` WHERE hn = '$hn'  "; //AND thidate like '%$Txt_Datetime2%' ORDER BY row_id ASC 
-$sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn' AND vn = '$vn' ";
-//echo $sql;exit();
-$query = mysql_query($sql); 
-$num = mysql_num_rows($query);
-
-if(empty($num)){
-	echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติ</h1>";echo "<br>".exit();
-}//end if
-
-while($rows = mysql_fetch_array($query)){
-
-	$Txt_Temp = $rows["temperature"];
-    $Txt_Pause = $rows["pause"];
-    $Txt_Rate = $rows["rate"];
-    $Txt_Weight = $rows["weight"];
-    $Txt_Height = $rows["height"];
-
-    $Txt_Bp1 = $rows["bp1"];
-    $Txt_Bp2 = $rows["bp2"];
-    $Txt_Bp21 = $rows["bp21"];
-    $Txt_Bp22 = $rows["bp22"];
-    
-    // เพิ่มเงื่อนไขการวัด bp 2 ครั้ง 27/06/65
-    if($Txt_Bp21 == "" AND $Txt_Bp22 == ""){
-        $Txt_Bp1 = $rows["bp1"];
-        $Txt_Bp2 = $rows["bp2"];
-    }else{
-        $Txt_Bp1 = $rows["bp21"];
-        $Txt_Bp2 = $rows["bp22"];
-    }//end if
-
-    $Txt_Congenital_disease = $rows["congenital_disease"]; // โรคประจำตัว
-    $Txt_Accident_Surgery = $rows["accident_surgery"]; // อุบัติเหตุและผ่าตัด
-    $Txt_Treat_Hospital = $rows["treat_hospital"]; // เคยเข้ารับการรักษาในโรงพยาบาล
-    $Txt_Epilepsy = $rows["epilepsy"]; // โรคลมชัก
-    $Txt_Treat_other = $rows["treat_other"]; // อื่นๆที่สำคัญ
-    //$Txt_Doctor_Ans= $rows["doctor_ans"]; // สรุปความคิดเห็นและข้อแนะนำของแพทย์
-    
-
-}//end while
 
 /////////////////////////////////////////////////////////////////
 
@@ -1223,7 +1252,7 @@ while($rows = mysql_fetch_array($query)){
     //////////////////////////
 
     //-----> ข้อมูลการตรวจ PFT (ปอด)
-    $sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn' ";
+    $sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn' ORDER BY row_id DESC LIMIT 0,1";
     //echo $sql;exit();
     $query = mysql_query($sql); 
     $num = mysql_num_rows($query); 

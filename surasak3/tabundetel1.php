@@ -4,7 +4,7 @@
     $result = mysql_query($query) or die("Query failed,opday");
 
 
-  print "��§ҹ��Ш�  $yrmonth <a target=_self  href='../nindex.htm'><<�����</a><br> ";
+  print "รายงานประจำ  $yrmonth <a target=_self  href='../nindex.htm'><<ไปเมนู</a><br> ";
    $query="SELECT  toborow ,COUNT(*) AS duplicate FROM opday1 GROUP BY toborow HAVING duplicate > 0 ORDER BY toborow";
    $result = mysql_query($query);
      $n=0;
@@ -17,23 +17,23 @@
  
 //    "  <td BGCOLOR=66CDAA><font face='Angsana New'></td>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
-        "  <td BGCOLOR=66CDAA><font face='Angsana New'>�ӹǹ = $duplicate</td>\n".
+        "  <td BGCOLOR=66CDAA><font face='Angsana New'>จำนวน = $duplicate</td>\n".
                " </tr>\n<br>");
 			   $sum = $sum + $duplicate;
                }
 
 print (" <tr>\n".
                "  <td BGCOLOR=66CDAA><font face='Angsana New'>&nbsp;</td>\n".
-              "  <td BGCOLOR=66CDAA><font face='Angsana New'>���������</td>\n".
+              "  <td BGCOLOR=66CDAA><font face='Angsana New'>รวมทั้งหมด</td>\n".
                "  <td BGCOLOR=66CDAA colspan=\"2\">$sum</td>\n".
                " </tr>\n<br>");
 ?>
-<h3>�¡����Է���</h3>
+<h3>แยกตามสิทธิ์</h3>
 <table border="1">
     <tr>
       <th>#</th>
-      <th>�Է��</th>
-      <th>�ӹǹ</th>
+      <th>สิทธิ</th>
+      <th>จำนวน</th>
     </tr>
 <?php
 $i = 1;

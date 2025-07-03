@@ -219,7 +219,7 @@ if($menucode != 'ADMDR1'){
 }else{
 	?>
 	<tr>
-		<td BGCOLOR='#148F77'><a target='_top' href="../sm3.php?user_id=<?=$sRowid;?>"><font face='THSarabunPSK' size='5'>:: ออกจากระบบ(<?=$sOfficer;?>)</font></a></td>
+		<td BGCOLOR="#148F77" style="text-align:center;"><a target="_top" href="../sm3.php?user_id=<?=$sRowid;?>"><font face='THSarabunPSK' size='5'><?=$sOfficer;?><br><strong>ออกจากระบบ</strong></font></a></td>
 	</tr>
 	<?php
 }
@@ -283,7 +283,14 @@ if($menucode!=='ADMDR1'){
 		<td BGCOLOR='#148F77'><a target='_blank' href="ha_index.php"><font face='THSarabunPSK' size='5'>KPI Center (แบบบันทึกตัวชี้วัด)</font></a></td>
 	</tr>
 	<tr>
-		<td BGCOLOR='#148F77'><a target="_blank" href="https://pex.ha.or.th/qrcode/admin/eb160de1de89d9058fcb0b968dbbbd68"><font face='THSarabunPSK' size='5'>บันทึกความพึงพอใจผู้ป่วย</font></a></td>
+		<td BGCOLOR='#148F77'>
+			<a href="javascript:void(0);" onclick="openPopup()"><font face='THSarabunPSK' size='5'>บันทึกความพึงพอใจผู้ป่วย</font></a>
+			<script>
+				function openPopup(){
+					window.open("satisfaction_page.php", "satisfactionPage","width=450,height=150");
+				}
+			</script>
+		</td>
 	</tr>
 	<?php
 }

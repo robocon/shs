@@ -54,19 +54,20 @@ $today = "$yr-$m-$d";
     }
 </style>
 <table align="center">
-    <tr>
-        <th bgcolor=#EC7063>#</th>
-        <th bgcolor=#EC7063>เวลา</th>
-        <th bgcolor=#EC7063>ชื่อ</th>
-        <th bgcolor=#EC7063>HN</th>
-        <th bgcolor=#EC7063>VN</th>
-        <th bgcolor=#EC7063>AN</th>
-        <th bgcolor=#EC7063>รายการ</th>
-        <th bgcolor=#EC7063>ราคารวม</th>
-        <th bgcolor=#EC7063>เบิกได้</th>
-        <th bgcolor=#EC7063>เบิกไม่ได้</th>
-        <th bgcolor=#EC7063>จ่ายเงิน</th>
-        <th bgcolor=#EC7063>เจ้าหน้าที่</th>
+    <tr bgcolor="#EC7063">
+        <th>#</th>
+        <th>ยกเลิก</th>
+        <th>เวลา</th>
+        <th>ชื่อ</th>
+        <th>HN</th>
+        <th>VN</th>
+        <th>AN</th>
+        <th>รายการ</th>
+        <th>ราคารวม</th>
+        <th>เบิกได้</th>
+        <th>เบิกไม่ได้</th>
+        <th>จ่ายเงิน</th>
+        <th>เจ้าหน้าที่</th>
     </tr>
     <?php
     $num = 0;
@@ -76,7 +77,7 @@ $today = "$yr-$m-$d";
     } else {
         $query = "SELECT date,ptname,hn,an,tvn,detail,price,sumyprice,sumnprice,paid,row_id,accno,idname FROM depart WHERE  date LIKE '$today%' and (tvn ='$vn' or an ='$vn')";
     }
-    // var_dump($query);
+    
     $result = mysql_query($query, $Conn)or die("Query failed");
 
     while (list($date, $ptname, $hn, $an, $tvn, $detail, $price, $yprice, $nprice, $paid, $row_id, $accno, $idname) = mysql_fetch_row($result)) {
@@ -87,10 +88,14 @@ $today = "$yr-$m-$d";
         } else {
             $color = "#000000";
         }
+
+        $delLink = '<a href="labdetail.php?sDate='.$date.'&nRow_id='.$row_id.'&nAccno='.$accno.'" target="_blank">🚮</a>';
+
         print (" <tr style='color:$color;'>\n" .
             "  <td >$num</td>\n" .
+            " <td >$delLink</td>".
             "  <td >$time</td>\n" .
-            "  <td ><a target=_BLANK  href=\"labdetail.php? sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n" .
+            "  <td ><a href=\"javascript:void(0);\">$ptname</a></td>\n" .
             "  <td >$hn</td>\n" .
             "  <td >$tvn</td>\n" .
             "  <td >$an</td>\n" .

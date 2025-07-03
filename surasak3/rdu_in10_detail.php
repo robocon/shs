@@ -10,16 +10,37 @@ $table = input_get('table');
 $date = input_get('date');
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in10`");
-$sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` 
+$sql = "CREATE TEMPORARY TABLE `tmp_opday_in10` (
+`row_id` INT(11) NOT NULL,
+`date` VARCHAR(255) CHARACTER SET utf8 NULL,
+`hn` VARCHAR(255) CHARACTER SET utf8 NULL,
+`ptname` VARCHAR(255) CHARACTER SET utf8 NULL,
+`age` VARCHAR(255) CHARACTER SET utf8 NULL,
+`diag` VARCHAR(255) CHARACTER SET utf8 NULL,
+`icd10` VARCHAR(255) CHARACTER SET utf8 NULL,
+`doctor` VARCHAR(255) CHARACTER SET utf8 NULL,
+`date_hn` VARCHAR(255) CHARACTER SET utf8 NULL,
+KEY `date_hn` (`date_hn`),
+KEY `drugcode` (`drugcode`)
+)
 SELECT `row_id`,`date`,`hn`,`ptname`,`age`,`diag`,`icd10`,`doctor`,`date_hn` 
 FROM `rdu_opday` 
 WHERE `date` LIKE '$date%' 
-AND `icd10` regexp 'I10' ";
-$db->exec($sql);
-
+AND `icd10` regexp 'I10' ;";
+$test = $db->exec($sql);
 
 $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in10`");
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
+(
+`row_id` INT(11) NOT NULL,
+`date` VARCHAR(255) CHARACTER SET utf8 NULL,
+`hn` VARCHAR(255) CHARACTER SET utf8 NULL,
+`drugcode` VARCHAR(255) CHARACTER SET utf8 NULL,
+`thidatecode` VARCHAR(255) CHARACTER SET utf8 NULL,
+`date_hn` VARCHAR(255) CHARACTER SET utf8 NULL,
+KEY `date_hn` (`date_hn`),
+KEY `drugcode` (`drugcode`)
+)
 SELECT `row_id`,`date`,`hn`,`drugcode`,`amount`, CONCAT(SUBSTRING(`date`,1,10),`hn`,TRIM(`drugcode`)) AS `thidatecode`,`date_hn`
 FROM `rdu_drugrx` 
 WHERE `date` LIKE '$date%' 
@@ -34,8 +55,7 @@ AND `drugcode` IN (
 '1CODI160-C',
 '1ENT100', 
 '1EXFO-C'
-) GROUP BY `row_id` ORDER BY `hn` ; "; 
-// dump($sql);
+) GROUP BY `thidatecode` ORDER BY `hn` ; "; 
 $db->exec($sql); 
 
 if( $table == 'a' ){
@@ -52,7 +72,6 @@ if( $table == 'a' ){
     LEFT JOIN `tmp_opday_in10` AS b ON b.`date_hn` = a.`date_hn` 
     WHERE b.`row_id` IS NOT NULL 
     ORDER BY b.`hn`;";
-    // dump($sql);
 
 }elseif( $table == 'b' ){
     $sql = "SELECT b.`date`,b.`hn`,b.`ptname`,b.`age`,b.`diag`,b.`icd10`,b.`doctor`,a.`drugcode`,a.`amount`

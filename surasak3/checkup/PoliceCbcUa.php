@@ -1,18 +1,24 @@
 <?php 
-// include 'bootstrap.php';
+require_once '../includes/config.php';
 error_reporting(1);
 ini_set('display_errors', 1);
 ini_set('max_execution_time', 0);
 
-$mysqli = new mysqli();
+function dump($t){
+    echo "<pre>";
+    var_dump($t);
+    echo "</pre>";
+}
+
+$mysqli = new mysqli(HOST,USER,PASS,DB);
 if ($mysqli->connect_errno)
 {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;
   exit();
 }
+$mysqli->query("SET NAMES UTF8");
 
-$camp = $_GET["camp"];
-// $camp = "สอบตำรวจ63_02";
+$part = urldecode($_GET["part"]);
 ?>
 
 <!DOCTYPE html>
@@ -49,27 +55,26 @@ $camp = $_GET["camp"];
     text-align: right;
 }
 </style>
-<?php 
-
-$sql = "SELECT `date_checkup` AS `show_date`, `name` AS `company_name` FROM `chk_company_list` WHERE `code` = '$camp' ";
+<?php
+$sql = "SELECT `date_checkup`,`yearchk` FROM `chk_company_list` WHERE `code` = '$part' LIMIT 1 ";
 $q = $mysqli->query($sql);
-$company = $q->fetch_assoc();
-$company_name = $company['company_name'];
-$show_date = $company['show_date'];
+$item = $q->fetch_assoc();
+$date_checkup = $item['date_checkup'];
+$yearchk = $item['yearchk']-1;
 
 $sql = "SELECT a.*,b.`exam_no` 
-FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$camp' ORDER BY `row` ASC ) AS b 
-LEFT JOIN ( SELECT * FROM `out_result_chkup` WHERE `part` = '$camp' ) AS a ON a.`hn` = b.`HN` 
+FROM ( SELECT * FROM `opcardchk` WHERE `part` = '$part' ORDER BY `row` ASC ) AS b 
+LEFT JOIN ( SELECT * FROM `out_result_chkup` WHERE `part` = '$part' ) AS a ON a.`hn` = b.`HN` 
 WHERE a.`hn` IS NOT NULL 
-ORDER BY b.`row` ASC  ";
+ORDER BY b.`row` ASC";
 $q = $mysqli->query($sql);
 if($q->num_rows > 0 )
 { 
     ?>
-    <h3 class="headerExtra">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเป็นเข้านักเรียนนายสิบตำรวจ ประจำปีงบประมาณ 2564</h3>
+    <h3 class="headerExtra">แบบรายงานการตรวจสุขภาพผู้สมัครสอบเพื่อบรรจุเป็นเข้านักเรียนนายสิบตำรวจ ประจำปีงบประมาณ <?=$yearchk;?></h3>
     <h3 class="headerExtra">โรงพยาบาลค่ายสุรศักดิ์มนตรี อ.เมือง จ.ลำปาง โทร 054-839-305-6 ต่อ 1135</h3>
-    <h3 class="headerExtra">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ 25-26 ธันวาคม 2563</h3>
-    <h3 class="headerExtra">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน.3226) ผู้รับผิดชอบผลการตรวจเอกซเรย์ทรวงอก พ.ท.วริทธิ์  พสุธาดล(ว.38228)</h3>
+    <h3 class="headerExtra">หน่วยงาน : ศูนย์ฝึกอบรมตำรวจภูธร ภาค 5 วันที่ตรวจ <?=$date_checkup;?></h3>
+    <h3 class="headerExtra">ผู้รับผิดชอบการตรวจทางห้องปฏิบัติการ พ.ท.สมยศ  แสงสุข (ทน.3226) ผู้รับผิดชอบผลการตรวจเอกซเรย์ทรวงอก พ.ต.ณัฐนนท์ จันทร์รัตน์(ว.58017)</h3>
     <h3></h3>
     <table width="100%" class="chk_table">
         <thead>
@@ -405,6 +410,8 @@ if($q->num_rows > 0 )
                         elseif ($labItems['GLUU']['result'] == 'Positive') 
                         {
                             echo "P";
+                        }else{
+                            echo $labItems['GLUU']['result'];
                         }
                     }
                     ?>
@@ -546,14 +553,12 @@ if($q->num_rows > 0 )
         </tbody>
     </table>
     <?php
+}else{
+    ?>
+    <p><strong>ไม่พบข้อมูล</strong></p>
+    <p><strong><?=$mysqli->error;?></strong></p>
+    <?php
 }
-
-
 ?>
-
-
-    
-
-
 </body>
 </html>

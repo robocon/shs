@@ -13,7 +13,8 @@ $date_po_th = $date_po_th_D."/".$date_po_th_M."/".$date_po_th_Y;
   
 $sql = "SELECT * FROM stktranx WHERE billno = '".$billno."' AND getdate like '%".$date_po."%' ORDER BY row_id ASC";
 
-//echo $sql;exit();
+//echo $sql;
+//exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
 

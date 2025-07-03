@@ -1,6 +1,12 @@
 <?php
 include 'connect.php';
 include 'bootstrap.php';
+if(empty($_SESSION['sIdname'])){
+    ?>
+    <p>Session หมดอายุ กรุณา <a href="../nindex.htm">Login</a> อีกครั้ง</p>
+    <?php
+    exit;
+}
 ?>
 <!-- อัพเดท เวอร์ชั่นใหม่ๆ ได้ที่ https://github.com/sweetalert2/sweetalert2/releases -->
 <script src="js/sweetalert2.all.min.js"></script>
@@ -16,7 +22,21 @@ include 'bootstrap.php';
         clear: both;
         display: table;
     }
-
+    p{
+        margin:0;
+        padding:0;
+    }
+    @media screen and (max-width: 1110px) {
+        #title-group{
+            width: 100%;
+            float: left;
+        }
+        #icon-telegram{
+            float: left;
+            position: relative !important;
+            width: 100%;
+        }
+    }
 </style>
 <?php
 if ($_SESSION["smenucode"] == "ADM" || $_SESSION["smenucode"] == "ADMCOM") {
@@ -31,6 +51,7 @@ print "<hr>";
 if ($_SESSION['supportMessage']) {
     ?>
     <script>
+        
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({
                 title: '<?=$_SESSION['supportMessage'];?>',
@@ -38,22 +59,45 @@ if ($_SESSION['supportMessage']) {
                 timer: 2000,
                 showConfirmButton: false
             });
+
+            <?php 
+            if($_SESSION['telegram_msg']){
+                ?>
+                async function postMessage(data){
+                    const response = await fetch('<?=NOTIFY_HOST;?>/telegram/jobit.php?'+data);
+                    const resData = await response.json();
+                    return resData;
+                }
+
+                const telegram_msg = encodeURIComponent('<?=$_SESSION['telegram_msg'];?>');
+                var test_str = [];
+                test_str.push(encodeURIComponent('sMessage')+"="+telegram_msg);
+                var data = test_str.join("&");
+                postMessage(data).then((res)=>{
+                    console.log(res);
+                });
+                <?php
+            }
+            ?>
         }, false);
     </script>
     <?php
     $_SESSION['supportMessage'] = NULL;
+    $_SESSION['notify_message'] = null;
 }
 ?>
-<div class="">
-    <div style="">
+<div class="clearfix" style="position:relative;">
+    <div id="title-group">
         <div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>
         <div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong><?=$sOfficer;?></strong> เข้าสู่ระบบ</font></div>
         <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> และนายชาญวิทย์  ตากาบุตร<b>....โทร. 8500</b></font></div>
         <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>
-    </div>
-    <div style="">
         <div align='center' class='forntsarabun'><strong>แจ้งซ่อมในระบบแล้ว กรุณาติดตามสถานะงานด้วยครับ [งานใหม่ : กำลังดำเนินการ : ปิดงาน]</strong></div><BR>
-        <div align='center' class='forntsarabun'>แสกน QR Code เพื่อเข้ากลุ่มติดตามงาน IT<br><img src='images/it-job.jpg' width='180' height='180'></div>
+    </div>
+    <div align='center' id="icon-telegram" class='forntsarabun' style="position:absolute; top:0; right:1em;">
+        <img src='images/it-job.jpg' width='180' height='180'>
+        <p><strong>กลุ่มติดตามงาน IT</strong></p>
+        <p>(กลุ่มใหม่ Telegram)</p>
     </div>
 </div>
 
@@ -62,7 +106,7 @@ $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
 $num = "Y";
 $datechk = (date("Y") + 543) . date("-m-d");
-$query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1` 
+$query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1`,`phone`
 FROM `com_support` 
 WHERE `status` ='$num' AND `date` >= '2565-01-01 00:00:00'
 ORDER BY `row` DESC";
@@ -70,18 +114,20 @@ ORDER BY `row` DESC";
 
 $result = mysql_query($query) or die("Query failed111" . mysql_error());
 if ($num1 = mysql_num_rows($result)) {
-    print "<div align='center' class='forntsarabun'><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน $num1 รายการ</strong></div>";
-    print "<table class='forntsarabun'  align='center' width='98%'>";
-    print " <tr>";
-    print "  <th bgcolor=#EC7063>ลำดับแจ้ง</th>";
-    print "  <th bgcolor=#EC7063>แผนก</th>";
-    print "  <th bgcolor=#EC7063>หัวข้อ</th>";
-    print "  <th bgcolor=#EC7063>ผู้ที่ร้องขอ</th>";
-    print "  <th bgcolor=#EC7063>วันที่ร้องขอ</th>";
-    print "  <th bgcolor=#EC7063>ผู้รับผิดชอบ</th>";
-    print "  <th bgcolor=#EC7063>พิมพ์</th>";
-    print " </tr>";
-    while (list($row, $jobtype, $depart, $head, $datetime, $programmer, $date, $user1) = mysql_fetch_row($result)) {
+    ?>
+    <div align="center" class="forntsarabun"><strong>งานที่แจ้งเข้ามาใหม่ในระบบ จำนวน <?=$num1;?> รายการ</strong></div>
+    <table class="forntsarabun"  align="center" width="98%">
+    <tr bgcolor="#EC7063">
+        <th width="5%">ใบงาน</th>
+        <th width="15%">แผนก</th>
+        <th>หัวข้อ</th>
+        <th width="12%">ผู้ที่ร้องขอ</th>
+        <th width="12%">วันที่ร้องขอ</th>
+        <th width="8%">ผู้รับผิดชอบ</th>
+        <th width="3%">พิมพ์</th>
+    </tr>
+    <?php
+    while (list($row, $jobtype, $depart, $head, $datetime, $programmer, $date, $user1, $phone) = mysql_fetch_row($result)) {
         $n++;
         $date_key = substr($date, 0, 10);
         //echo $date_key;
@@ -100,16 +146,17 @@ if ($num1 = mysql_num_rows($result)) {
 
         $color = "#F5B7B1";
         list($dateTh, $time) = explode(' ', $date);
+        list($hour,$min,$sec) = explode(':', $time);
         list($y, $m, $d) = explode('-', $dateTh);
         $shortYear = substr($y, 2);
-        $thSortDate = $d.' '.$def_month_th[$m].' '.$shortYear.' '.$time;
+        $thSortDate = $d.' '.$def_month_th[$m].' '.$shortYear.' '.$hour.':'.$min;
 
         print (" <tr>\n" .
         "<td BGCOLOR=$color align='center'>$row</td>\n" .
-        "<td BGCOLOR=$color>$depart</td>\n" .
+        "<td BGCOLOR=$color>$depart ( $phone )</td>\n" .
         "<td BGCOLOR=$color><a target=_TOP href=\"comdetail.php? row=$row\">$head</a> <span style='margin-left:5px;'>$new</span></td>\n" .
         "<td BGCOLOR=$color>$user1</td>\n" .
-        "<td BGCOLOR=$color>$thSortDate</td>\n" .
+        "<td BGCOLOR=$color>$thSortDate น.</td>\n" .
         "<td BGCOLOR=$color>$where</td>\n" .
         "<td BGCOLOR=$color align='center'><a target='_blank' href=\"com_form.php?row=$row\"><img src='images/printer.png' width='16'></a></td>\n" .
         "</tr>\n");
@@ -126,33 +173,36 @@ $Thaidate = date("d-m-") . (date("Y") + 543);
 $n = 0;
 $num = 'A';
 
-$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user` 
+$query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user`,`phone`,`user1`
 FROM `com_support` 
 WHERE `status` ='$num' 
 ORDER BY `row` DESC";
 $result = mysql_query($query) or die("Query failed111");
 
 if ($num2 = mysql_num_rows($result)) {
-    print "<div align='center' class='forntsarabun'><strong>งานที่กำลังดำเนินการ จำนวน $num2 รายการ</strong></div>";
-    print "<table class='forntsarabun'  align='center' width='98%'>";
-    print " <tr>";
-    print "  <th bgcolor=#FAD7A0>ลำดับแจ้ง</th>";
-    print "  <th bgcolor=#FAD7A0>แผนก</th>";
-    print "  <th bgcolor=#FAD7A0>หัวข้อ</th>";
-    print "  <th bgcolor=#FAD7A0>วันที่ร้องขอ</th>";
-    print "  <th bgcolor=#FAD7A0>ผู้รับผิดชอบ</th>";
-    print "  <th bgcolor=#FAD7A0>พิมพ์</th>";
-    //print"  <th bgcolor=#FAD7A0>การทำงาน</th>";
-    if ($_SESSION['smenucode'] == 'ADM' or $_SESSION['smenucode'] == 'ADMCOM') {
-        print "  <th bgcolor=#FAD7A0>เพิ่มรายละเอียด</th>";
-    }
-
-
-    print " </tr>";
-    while (list($row, $depart, $head, $datetime, $programmer, $date, $user) = mysql_fetch_row($result)) {
+    ?>
+    <div align="center" class="forntsarabun"><strong>งานที่กำลังดำเนินการ จำนวน <?=$num2;?> รายการ</strong></div>
+    <table class="forntsarabun"  align="center" width="98%">
+        <tr bgcolor="#FAD7A">
+            <th width="5%">ใบงาน</th>
+            <th width="15%">แผนก</th>
+            <th>หัวข้อ</th>
+            <th width="12%">วันที่ร้องขอ</th>
+            <th width="12%">ผู้รับผิดชอบ</th>
+            <th width="3%">พิมพ์</th>
+            <?php 
+            if ($_SESSION['smenucode'] == 'ADM' or $_SESSION['smenucode'] == 'ADMCOM') {
+                ?><th width="5%">เพิ่มรายละเอียด</th><?php
+            }
+            ?>
+            
+        </tr>
+    
+    <?php
+    while (list($row, $depart, $head, $datetime, $programmer, $date, $user, $phone, $user1) = mysql_fetch_row($result)) {
         $n++;
         $sql_detail = "SELECT * FROM `com_support_details` WHERE `com_id` = '$row' ORDER BY `id` DESC";
-        //echo $sql_detail."<br>";
+        
         $q = mysql_query($sql_detail);
         if (mysql_num_rows($q) > 0) {
             $comment = "<img src='images/comment-64.png' width='32' height='32'>";
@@ -174,9 +224,9 @@ if ($num2 = mysql_num_rows($result)) {
 
         print (" <tr>\n" .
             "  <td BGCOLOR=#FCF3CF align='center'>$row</td>\n" .
-            "  <td BGCOLOR=#FCF3CF>$depart</td>\n" .
+            "  <td BGCOLOR=#FCF3CF>$depart ( $phone )</td>\n" .
             "  <td BGCOLOR=#FCF3CF><a target=_TOP href=\"comdetail.php? row=$row\">$head</a><span style='margin-left:5px;'>$comment</span></td>\n" .
-            "  <td BGCOLOR=#FCF3CF>$date</td>\n" .
+            "  <td BGCOLOR=#FCF3CF title=\"$user1\">$date</td>\n" .
             "  <td BGCOLOR=#FCF3CF>$where</td>\n" .
             "  <td BGCOLOR=#FCF3CF align='center'><a target='_blank' href=\"com_form.php?row=$row\"><img src='images/printer.png' width='16'></a></td>\n");
         // "  <td BGCOLOR=#FCF3CF align='center'>$add</td>\n".
@@ -206,7 +256,7 @@ $q = mysql_query($sql);
 $a = mysql_fetch_assoc($q);
 $countAllItem = $a['count'];
 
-$query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`p_edit`,`dateend`
+$query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`p_edit`,`dateend`,`phone`
 FROM `com_support` 
 WHERE `status` ='n' 
 ORDER BY `dateend` DESC ";
@@ -267,22 +317,21 @@ if ($countAllItem>0) {
             </select>
         </div>
     </div>
+    <table class="forntsarabun" align="center" width="98%">
+        <tr bgcolor="#73C6B6">
+            <th width="5%">ใบงาน</th>
+            <th width="15%">แผนก</th>
+            <th width="">หัวข้อ</th>
+            <th width="8%">การดำเนิการ</th>
+            <th width="10%">ผู้รับผิดชอบ</th>
+            <th width="12%">วันเวลาที่ดำเนินการ</th>
+            <th width="3%">พิมพ์</th>
+        </tr>
     <?php
-    
-    print "<table class='forntsarabun' align='center' width='98%'>";
-    print " <tr>";
-    print "  <th bgcolor=#73C6B6>ลำดับแจ้ง</th>";
-    print "  <th bgcolor=#73C6B6>แผนก</th>";
-    print "  <th bgcolor=#73C6B6>หัวข้อ</th>";
-    print "  <th bgcolor=#73C6B6>การดำเนิการ</th>";
-    print "  <th bgcolor=#73C6B6 width='10%'>ผู้รับผิดชอบ</th>";
-    print "  <th bgcolor=#73C6B6 width='8%'>วันเวลาที่ดำเนินการ</th>";
-    print "  <th bgcolor=#73C6B6>พิมพ์</th>";
-    print " </tr>";
-    
     foreach ($items as $k => $v) {
 
         $row = $v['row'];
+        $phone = $v['phone'];
 
         $sqlDetail = sprintf("SELECT `id` FROM `com_support_details` WHERE `com_id` = '%s' ", $row);
         $qDetail = $dbi->query($sqlDetail);
@@ -299,7 +348,7 @@ if ($countAllItem>0) {
 
         print (" <tr>\n" .
             "  <td BGCOLOR=#D5F5E3  align='center'>$row</td>\n" .
-            "  <td BGCOLOR=#D5F5E3>$depart</td>\n" .
+            "  <td BGCOLOR=#D5F5E3>$depart ( $phone )</td>\n" .
             "  <td BGCOLOR=#D5F5E3><a target=_TOP href=\"comdetail.php?row=$row\">$head</a>$icon</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$p_edit</td>\n" .
             "  <td BGCOLOR=#D5F5E3>$programmer</td>\n" .

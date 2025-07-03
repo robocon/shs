@@ -6,19 +6,7 @@ include 'includes/JSON.php';
 $action = input('action');
 $db = Mysql::load();
 
-if ($action == 'del') {
-    
-    if(!authen()) die('กรุณา Loing เพื่อเข้าสู่ระบบอีกครั้ง');
-
-    $id = input_get('id');
-    $del = $db->exec("DELETE FROM `chk_company_list` WHERE `id` = '$id' ");
-    $msg = 'ดำเนินการเรียบร้อย';
-    if( $del !== true ){
-        $msg = errorMsg('delete', $del['id']);
-    }
-    redirect('chk_company.php', $msg);
-    exit;
-}elseif ($action==='findWithYear') {
+if ($action==='findWithYear') {
 
     $year = sprintf("%s", $_GET['year'])+543;
     $json = new Services_JSON();
@@ -70,44 +58,7 @@ if ($action == 'del') {
 <body>
 <?php
 include 'chk_menu.php';
-
 ?>
-<style>
-ol > li {
-    margin-bottom: 6px;
-}
-.modal {
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-#myModalContainer{
-    width: 90%;
-    background: #fff;
-    padding: 1em;
-    margin:0 auto;
-}
-</style>
 
 <button onclick="formAddCompany()">+ เพิ่มบริษัท</button>
 
@@ -150,6 +101,8 @@ ol > li {
                         </select>
                     </span>
                     <?php
+                }else{
+                    ?><div>ไม่มีข้อมูลในตาราง chk_company_list</div><?php
                 }
                 ?>
             </div>
@@ -162,13 +115,21 @@ ol > li {
     <fieldset style="float:left;">
         <legend>ค้นหาจากชื่อบริษัท</legend>
         <form action="chk_company.php" method="post">
-            <div>
-                ค้นหาจากชื่อบริษัท <input type="text" name="company_name" id="company_name" required>
-            </div>
-            <div>
-                <button type="submit">แสดงผล</button>
-                <input type="hidden" name="views" value="search">
-            </div>
+            <table>
+                <tr>
+                    <td><strong>ชื่อ :</strong></td>
+                    <td>
+                        <input type="text" name="company_name" id="company_name" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit">แสดงผล</button>
+                        <input type="hidden" name="views" value="search">
+                    </td>
+                </tr>
+            </table>
         </form>
     </fieldset>
 </div>
@@ -181,10 +142,17 @@ ol > li {
         });
     }
 
-    async function loadFormAddCompany(){
-        const response = await fetch('chk_form_company.php');
+    async function loadFormAddCompany(id=0){
+        const response = await fetch('chk_form_company.php?id='+id);
         const body = await response.text();
         return body;
+    }
+
+    function btnEditCompany(id){
+        loadFormAddCompany(id).then((res)=>{ 
+            document.getElementById('resFormAddCompany').innerHTML = res;
+            document.getElementById('myModal').style.display = '';
+        });
     }
 
     function closeFormAdd(){
@@ -252,7 +220,6 @@ ol > li {
 
                 const jobDate = new Date(job_date_run);
                 const dateNow = new Date("<?=date('Y-m-d');?>");
-
                 if(jobDate.getTime() <= dateNow.getTime()){
                     Swal.fire({
                         title: "กรุณาเลือกวันที่ของงานที่จะเกิดขึ้นในอนาคต",
@@ -286,7 +253,6 @@ ol > li {
     }
 
     async function doSaveForm(formData){
-        console.log(formData);
         let response = await fetch('chk_subapi.php', {
             method: 'POST',
             headers: {
@@ -328,6 +294,54 @@ ol > li {
         const data = await response.json();
         return data;
     }
+
+    function confirmDelCompany(companyId){
+        Swal.fire({
+            title: "คุณมั่นใจที่จะลบข้อมูล",
+            text: "การลบข้อมูลนี้จะไม่สามารถกู้ข้อมูลคืนมาได้อีก",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "ใช่ ลบข้อมูลได้เลย",
+            cancelButtonText: "ยกเลิก"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                doDelCompany(companyId).then((res)=>{
+                    if(res.status==400){
+                        Swal.fire({
+                            title: "ไม่สามารถลบข้อมูลได้",
+                            text: res.message,
+                            icon: "warning"
+                        });
+                    }else if(res.status==200){
+                        Swal.fire({
+                            title: "ลบข้อมูลเรียบร้อย",
+                            icon: "success"
+                        }).then((fResult)=>{
+                            window.location = 'chk_company.php';
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    async function doDelCompany(companyId){
+        let formData = {
+            "id": companyId,
+            "action": "delCompany"
+        };
+        let response = await fetch('chk_subapi.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        const res = await response.json();
+        return res;
+    }
 </script>
 <?php 
 $views = input_post('views');
@@ -355,6 +369,7 @@ if ( $views == 'search' ) {
     
     $db->select($sql);
     $items = $db->get_items();
+    if(count($items)>0){
     ?>
     <h3>รายชื่อบริษัท</h3>
     <table class="chk_table">
@@ -372,8 +387,8 @@ if ( $views == 'search' ) {
 
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
         // เทศบาลเมืองพิชัย 67
-        $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
-
+        // $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
+        $expense_list = array('');
         foreach ($items as $key => $item) {
 
             $companyCode = $item['code']; 
@@ -390,7 +405,11 @@ if ( $views == 'search' ) {
             <tr style="vertical-align:top;">
                 <td><?=$i;?></td>
                 <td><a href="chk_show_user.php?part=<?=urlencode($item['code']);?>" target="_blank" title="ดูรายชื่อทั้งหมด"><?=$item['name'];?></a></td>
-                <td><?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br><a href="chk_company.php?id=<?=$item['id'];?>">แก้ไขชื่อบริษัท</a></td>
+                <td>
+                    <?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br>
+                    <!-- chk_company.php?id=<?=$item['id'];?> -->
+                    <a href="javascript:void(0);" onclick="btnEditCompany('<?=$item['id'];?>')">✏️ แก้ไขชื่อบริษัท</a>
+                </td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>
                 <td style="vertical-align: top;">
@@ -410,7 +429,19 @@ if ( $views == 'search' ) {
                         <?php 
                         if(in_array($item['code'], $expense_list)===true){
                             ?>
-                            <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank" style="border: 1px solid #1e8958; background-color: #0a3622; border-radius: 4px; padding: 0 2px; color: #ffffff;">&#128073; บันทึกค่าใช้จ่าย อปท.</a>
+                            <li>
+                                <a href="manual_expense.php?part=<?=$item['code'];?>" target="_blank" style="border: 1px solid #1e8958; background-color: #0a3622; border-radius: 4px; padding: 0 2px; color: #ffffff;">&#128073; บันทึกค่าใช้จ่าย อปท.</a>
+                            </li>
+                            <?php
+                        }
+                        if(preg_match('/(ตำรวจ)/',$item['code'])!==false){
+                            ?>
+                            <li>
+                                <a href="checkup/PoliceCbcUa.php?part=<?=$item['code'];?>" target="_blank">ผลตรวจห้องปฏิบัติการ</a>
+                            </li>
+                            <li>
+                                <a href="checkup/PoliceEtc.php?part=<?=$item['code'];?>" target="_blank">ผลการตรวจร่างกายทั่วไป</a>
+                            </li>
                             <?php
                         }
                         ?>
@@ -430,8 +461,33 @@ if ( $views == 'search' ) {
         ?>
     </table>
     <?php
+    }else{
+        ?><div><p><strong>ไม่พบข้อมูล</strong></p></div><?php
+    }
     ?>
 </div>
+<button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+<script>
+    // Get the button:
+    let mybutton = document.getElementById("myBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            mybutton.style.display = "block";
+        } else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+        document.body.scrollTop = 0; // For Safari
+        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    }
+</script>
 <?php
 }
 ?>

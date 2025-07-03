@@ -3,13 +3,13 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$id = input_get('id', 0);
+$id = isset($_GET['id']) ? $_GET['id'] : 0;
 $company = $company_code = $date_checkup = $job_date_run = '';
 $read_only = false;
 if( $id > 0 ){
-    $sql = "SELECT * FROM `chk_company_list` WHERE `id` = '$id' ";
-    $db->select($sql);
-    $item = $db->get_item();
+    $sql = sprintf("SELECT * FROM `chk_company_list` WHERE `id` = '%s' ", $dbi->real_escape_string($id));
+    $q = $dbi->query($sql);
+    $item = $q->fetch_assoc();
 
     $name = $item['name'];
     $code = $item['code'];
@@ -18,12 +18,13 @@ if( $id > 0 ){
     
     $read_only = 'readonly="readonly"';
 
-    $db->select("SELECT `row` FROM `opcardchk` WHERE `part` = '$code' ");
-    $user_rows = $db->get_rows();
-    $del_txt = 'chk_company.php?action=del&id='.$id;
-    if( $user_rows > 0 ){
-        // ถ้ายังมี user จะลบไม่ได้
-        $del_txt = 'javascript: void(0); alert(\'กรุณาลบรายชื่อผู้ตรวจสุขภาพก่อนลบบริษัท\');';
+    // ถ้ายังมี user จะลบไม่ได้
+    $sqlOpcardchk = sprintf("SELECT `row` FROM `opcardchk` WHERE `part` = '%s' ", $dbi->real_escape_string($code));
+    $qOpcardchk = $dbi->query($sqlOpcardchk);
+    $opcardchk_rows = $qOpcardchk->num_rows;
+    $companyId = $item['id'];
+    if( $opcardchk_rows > 0 ){
+        $companyId = '';
     }
     
 }
@@ -85,9 +86,11 @@ if( $id > 0 ){
                             <td></td>
                             <td>
                                 <button type="submit">💾 บันทึกข้อมูล</button>&nbsp; 
-                                <?php 
-                                if( $id > 0 ){
-                                    ?><a href="<?=$del_txt;?>" onclick="return confirm('ยืนยันที่จะลบข้อมูล?')">🗑️ ลบข้อมูล</a><?php
+                                <?php
+                                if($opcardchk_rows > 0){
+                                    ?><a href="javascript:void(0);" onclick="Swal.fire({title:'กรุณาลบรายชื่อก่อน ถึงจะลบข้อมูลบริษัทได้'})" style="color: #dc3545;">🗑️ ลบข้อมูล</a><?
+                                }else{
+                                    ?><a href="javascript:void(0);" onclick="confirmDelCompany('<?=$companyId;?>')" style="color: #dc3545;">🗑️ ลบข้อมูล</a><?php
                                 }
                                 ?>
                                 <input type="hidden" name="action" value="save">

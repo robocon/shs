@@ -113,7 +113,7 @@ $result = mysql_query($query) or die("Query failed");
 
 //insert data into depart
    $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright)VALUES('$nRunno','$Thidate','$cPtname','$cHn',
-				'$cAn','$cDoctor','$cDepart','$item','$aDetail',                '$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright');";
+				'$cAn','$cDoctor','$cDepart','$item','$aDetail','$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright');";
 
        $result = mysql_query($query) or 
                 die("**เตือน !ท่านได้ยกเลิกรายการไปก่อนหน้านี้แล้ว");

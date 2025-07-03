@@ -1,8 +1,23 @@
 <?php
 session_start();
+date_default_timezone_set("Asia/Bangkok");
 
 include("connect.inc");
 require_once 'includes/config.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+
+if(!function_exists('dump')){
+	function dump($t){
+		echo "<pre>";
+		var_dump($t);
+		echo "</pre>";
+	}
+}
+
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
+
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
 function send_line_noti($sMessage, $sToken){
 	$curl = curl_init(); 
@@ -214,9 +229,14 @@ $count = count($_SESSION["list_drugcode"]);
 	}
 	
 	$sql = "INSERT INTO dphardep(chktranx,date,ptname,hn,price,doctor,item,idname,diag,essd,nessdy,nessdn,dpy,dpn,dsy,dsn,tvn,ptright,whokey,kew)VALUES('".$nRunno."','".$Thidate."','".$Ptname."','".$_SESSION["hn_now"]."','".$Netprice."','".$_SESSION["dt_doctor"]."','".$_POST["totalitem"]."','".$_SESSION["sOfficer"]."','".jschars($_SESSION["dt_diag"])."','".$pricetype["DDL1"]."','".$pricetype["DDY1"]."','".$pricetype["DDN1"]."','".$pricetype["DPY1"]."','".$pricetype["DPN1"]."','".$pricetype["DSY1"]."','".$pricetype["DSN1"]."','".$_SESSION["vn_now"]."','".$_SESSION["ptright_now"]."','DR','".$kew."');";
-	//echo "<!-- ".$sql." -->";
 	$result = Mysql_Query($sql);
-	if($result){ $insert1 = true; $idno=mysql_insert_id();}else{ $insert1 = false; }
+	if($result){ 
+		$insert1 = true; 
+		$idno=mysql_insert_id();
+	}else{ 
+		$insert1 = false;
+		$idno = 0;
+	}
 	
 
 	$commar = "";
@@ -254,17 +274,19 @@ $_SESSION["dt_drugstk"] .= "
     <td colspan=\"3\" style=\"line-height:12px;font-family:'MS Sans Serif';font-size:10px;\">ลักษณะ <u>$type</u>&nbsp;&nbsp;อาการ <u>$organ</u></td>
   </tr>";
 }*/
-	
-	$query = "INSERT INTO ddrugrx(date,hn,drugcode,tradname,amount,price,item,slcode,part,idno, salepri, freepri, drug_inject_amount,drug_inject_unit, drug_inject_amount2,drug_inject_unit2,drug_inject_time,drug_inject_slip, drug_inject_type, drug_inject_etc,reason,DPY , DPN,indicator  ) VALUES";
-	
-	
+
+$ddrugrxList = array();
+
+$query = "INSERT INTO ddrugrx(date,hn,drugcode,tradname,amount,price,item,slcode,part,idno, salepri, freepri, drug_inject_amount,drug_inject_unit, drug_inject_amount2,drug_inject_unit2,drug_inject_time,drug_inject_slip, drug_inject_type, drug_inject_etc,reason,DPY , DPN,indicator  ) VALUES";
 	
 $j=29;
 $k1=10;
 $k2=$k1+150;
 $k3=$k2+50;
 
-	for($i=0;$i<$count;$i++){
+for($i=0;$i<$count;$i++){
+
+		$ddrugrxList[] = $_SESSION["list_drugcode"][$i];
 		
 		$sql = "Select tradname, part, salepri, freepri, unit  From druglst  where drugcode = '".$_SESSION["list_drugcode"][$i]."' limit 1";
 
@@ -495,7 +517,104 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 	}else{  //ถ้าเป็น สิทธิอื่นๆ
 	$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
 	}
-	
+}else if($_SESSION["list_drugcode"][$i]=="10H014"){
+	if($chkPtright=="R02" || $chkPtright=="R03" || $chkPtright=="R04" || $chkPtright=="R07" || $chkPtright=="R09" || $chkPtright=="R12" || $chkPtright=="R21" || $chkPtright=="R33"){  //ยืนยันสิทธิ์โดยพี่ีเพชร จัดเก็บรายได้
+	//เพิ่มสิทธิ R12 วันที่ 19/05/2559 ยืนยันโดยพี่อึ่ง หน.ประกันสังคม / 30 บาท
+	//เพิ่มสิทธิ R04 วันที่ 3/04/2566 ยืนยันโดยพี่ทิวา ห้องยา
+		$sqlb="select * from drugrx 
+		where `date` like '$chkDate%' 
+		and hn='".$_SESSION["hn_now"]."' 
+		and drugcode='10H014' 
+		and part='DDL' 
+		and amount >0";
+		//echo $sqlb."<br>";
+		$queryb=mysql_query($sqlb);
+		$numb=mysql_num_rows($queryb);
+		//echo "===>".$numb;
+		if($numb < 1){  //ถ้าเดือนนี้ยังไม่ได้รับยาฟรี 1 หลอด
+				$sql2="select * from ddrugrx as a 
+				inner join dphardep as b 
+				on a.idno=b.row_id 
+				where a.`date` like '$chkDate1%' 
+				and a.hn='".$_SESSION["hn_now"]."' 
+				and a.drugcode='10H014' 
+				and a.amount ='1' 
+				and a.part='DDL' 
+				and b.dr_cancle is null";
+				//echo "<br>".$sql2."<br>";
+				$query2=mysql_query($sql2)or die("Query failed");
+				$num2=mysql_num_rows($query2);
+				//echo ">>>>".$num2;
+				if($num2 < 1){  //ถ้ายังไม่มีการบันทึกข้อมูลฟรียา 10H014 ในตาราง  ddrugrx
+					if($_SESSION["list_drugamount"][$i] == 1){  //ถ้าจำนวนที่สั่งมามี 1 หลอด
+						$sumbalm=$sumbalm+count($i);  //หาจำนวนแถวในการสั่งยา Balm
+						
+						//echo "สั่งมามากกว่า 1 หลอด $sumbalm<br>";
+						if($sumbalm==1){  //สั่งยาเพียง 1 แถว
+							//echo "บันทึกยาฟรีในรอบแรก <br>";						
+							
+							$ddlpart="DDL";
+							$ddlamount=1;  //จำนวนที่เบิกได้
+							$ddlprice=59.00;  //ราคาที่เบิกได้		
+										
+							$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+							
+								$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
+								//echo $str;
+								$strquery=mysql_query($str);
+								list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
+								$newessd=$chkessd+59.00;
+								$newnessdn=$chknessdn-59.00;
+								
+								$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
+								//echo "<br>".$update."<br>";
+								mysql_query($update);	
+							}else{ //ถ้าสั่งยามากกว่า 1 แถว
+								//echo "บันทึกยาที่ต้องจ่ายเงิน";
+								$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+								//echo "==>".$query."<br>";								
+							}					
+					}else{	//else ถ้าสั่งมาหลายๆ หลอด	
+						$sumbalm=$sumbalm+count($i);  //หาจำนวนแถวในการสั่งยา Balm
+						
+						//echo "สั่งมามากกว่า 1 หลอด $sumbalm<br>";
+						if($sumbalm==1){  //สั่งยาเพียง 1 แถว
+							//echo "บันทึกยาฟรีในรอบแรก <br>";
+							$ddlpart="DDL";
+							$ddnpart="DDN";
+							$ddlamount=1;  //จำนวนที่เบิกได้
+							$ddlprice=59.00;  //ราคาที่เบิกได้
+							$ddnamount=$_SESSION["list_drugamount"][$i] - 1;  //จำนวนที่เบิกไม่ได้
+							$ddnprice=$ddnamount * $salepri;  //ราคาที่เบิกไม่ได้	
+										
+							$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddnamount."','".$ddnprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddnpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."') , ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";		
+						
+								$str="select row_id,essd,nessdn from dphardep where row_id='".$idno."'";
+								//echo $str;
+								$strquery=mysql_query($str);
+								list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
+								$newessd=$chkessd+59.00;
+								$newnessdn=$chknessdn-59.00;
+								
+								$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
+								//echo "<br>".$update."<br>";
+								mysql_query($update);	
+							}else{ //ถ้าสั่งยามากกว่า 1 แถว
+								//echo "บันทึกยาที่ต้องจ่ายเงิน";
+								$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+								//echo "==>".$query."<br>";								
+							}						
+						}
+					}else{  //ถ้ามีการบันทึกข้อมูลแถมฟรีไปแล้ว
+						$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+						//echo "==>".$query."<br>";
+					}
+		}else{  //ถ้าได้รับยาฟรีไปแล้ว
+		$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+		}
+	}else{  //ถ้าเป็น สิทธิอื่นๆ
+	$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
+	}	
 }else{  //else ถ้าเป็นยาอื่นๆ
 	$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$_SESSION["list_drugamount"][$i]."','".( $_SESSION["list_drugamount"][$i] * $salepri)."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$part."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
 }
@@ -571,12 +690,6 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
       }
 	$j = $j+5;
 	
-	// เก็บ log หลังจากเพิ่มจากลงใน ddrugrx
-	// $logs = "ddrugrx - add\r\n";
-	// $logs .= "[mysql] : $query\r\n";
-	// $logs .= "---------------------------\r\n\r\n";
-	// file_put_contents('logs/doctor-drug.log', $logs, FILE_APPEND);
-	
 	
 	//$_SESSION["dt_drugstk"] .="<DIV style='left:".$k2."px;top:".$j."PX;width:306PX;height:30PX;position:absolute'>
 	//					<font style=\"font-family:'MS Sans Serif'; font-size:8px\" >".$_SESSION["dt_doctor"]."
@@ -632,6 +745,152 @@ $_SESSION["dt_drugstk"] .= "<BR>".nl2br($arr["detail_all"]);
 }
 $_SESSION["dt_drugstk"] .="</TABLE>";
 
+#################################  START  ####################################
+// ถ้ามีการยืนยันเหตุผลในการใช้ยา
+$reasonToUsedDrug = '';
+if($insert1===true){
+
+	$detailList = array(
+		'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
+		'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
+		'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
+		'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
+		'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
+		'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
+		'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+		'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
+		'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
+		'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
+		'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
+		'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
+		'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
+		'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+		'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+		'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
+	);
+
+	$subDetailList = array(
+		'INCIL1_1' => 'Target organ damage',
+		'INCIL1_2' => 'เป็นมานาน ≥10ปี',
+		'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี',
+		'INCIL2_1' => 'First-degree relative with known premature (<55 years, men; &lt;60 years, women) coronary heart disease (CHD) OR First-degree relative with known LDL cholesterol &gt;95th percentile by age and gender for country',
+		'INCIL2_2' => 'First-degree relative with tendon xanthoma and/or corneal arcus OR Child(ren) &lt;18 years with LDL cholesterol &gt; 95th percentile by age and gender for country',
+		'INCIL2_3' => 'Subject has premature  (&lt;55 years, men; &lt;60 years, women) CHD',
+		'INCIL2_4' => 'Subject has premature (&lt;55 years, men; &lt;60 years, women) cerebral or peripheral vascular disease',
+		'INCIL2_5' => 'Tendon xanthoma',
+		'INCIL2_6' => 'Corneal arcus in a person &lt;45 years',
+		'INCIL2_7' => '&gt; 8.5 mmol/L (&gt;325 mg/dL)',
+		'INCIL2_8' => '6.5 – 8.4 mmol/L (251-325 mg/dL)',
+		'INCIL2_9' => '5.0 – 6.4 mmol/L (191-250 mg/dL)',
+		'INCIL2_10' => '4.0 – 4.9 mmol/L (155-190 mg/dL)',
+		'INCIL2_11' => 'Causative mutation shown in the LDLR, APOB, or PCSK9 genes',
+	);
+
+	// ดึงข้อมูลออกมาจาก Cookie
+	$cookieName = date('Y-m-d').sprintf("%s", $_SESSION["hn_now"]); // ชื่อ Cookie
+	$cookieItems = $json->decode($_COOKIE[$cookieName]);
+
+	// เอา drugcode ที่่เก็บไว้ใน Cookie(ที่หมอคีย์) มาเทียบกับที่สั่งจริงๆ(ที่หมอคีย์ไปแล้วบางตัวอาจจะไม่ได้สั่งจริง)
+	$cookieDrugcode = array();
+	foreach ($cookieItems as $item) {
+		$cookieDrugcode[] = $item['drugcode'];
+	}
+
+	$newDrugItems = array(); // เก็บเอาไว้ปริ้นสติกเกอร์
+
+	$drugIntersecItems = array_intersect($cookieDrugcode, $ddrugrxList); // เอาที่หมอสั่ง กับใน cookie มา intersection กัน
+	foreach($drugIntersecItems AS $trueItem){
+		
+		foreach ($cookieItems as $cItem) {
+			
+			if($trueItem === $cItem['drugcode']){ // ไปดึงเอาข้อมูลจากใน Cookie มาบันทึกในฐานข้อมูล
+
+				$newDrugItems[] = $cItem;
+
+				// บันทึกหัวข้อ
+				$sqlInDoctor = sprintf("INSERT INTO `doctor_medical` (`id`, `date`, `hn`, `datehn`, `drugcode`, `criteria`, `doctor`, `dphardep_id`) 
+				VALUES 
+				(NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s');",
+					$dbi->real_escape_string(date('Y-m-d')),
+					$dbi->real_escape_string($_SESSION["hn_now"]),
+					$dbi->real_escape_string(date('Y-m-d').$_SESSION["hn_now"]),
+					$dbi->real_escape_string($cItem['drugcode']),
+					$dbi->real_escape_string($cItem['criteria']),
+					$dbi->real_escape_string($cItem['doctor']),
+					$dbi->real_escape_string($idno)
+				);
+				$qInDoctor = $dbi->query($sqlInDoctor);
+				if($qInDoctor===true){
+					
+					$doctorMedicalId = $dbi->insert_id;
+					foreach ($cItem['detail'] as $dItem) { // บันทึกรายย่อย
+
+						$subDetail = '';
+						if(!empty($cItem['sub_detail'])){
+							$subDetail = $json->encode($cItem['sub_detail'][$dItem]);
+						}
+
+						$sqlDetail = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`, `sub_detail`) 
+						VALUES 
+						(NULL, '%s', '%s', '%s', '%s');",
+							$dbi->real_escape_string(date('Y-m-d')),
+							$dbi->real_escape_string($doctorMedicalId),
+							$dbi->real_escape_string($dItem),
+							$dbi->real_escape_string($subDetail)
+						);
+						$qDetail = $dbi->query($sqlDetail);
+					}
+
+				} // end if insert doctor_medical
+			} // end if drugcode is same doctor order
+		} // end foreach 
+	}
+
+	// ปริ้นสติกเกอร์
+	$i_title = 1;
+	$reasonToUsedDrug .= '<div style="page-break-after:always;"></div>';
+	foreach($newDrugItems AS $drugItem){ // เอารายการที่คัดมาใหม่ ปริ้นสติกเกอร์
+
+		$reasonToUsedDrug .= '<div style="font-family: MS Sans Serif; font-size:12px;">';
+		
+		$brTitle = '';
+		if($i_title>1){
+			$brTitle = '<br>';
+		}
+
+		$reasonToUsedDrug .= $brTitle.'<b>[RDU] '.$drugItem['criteria'].'</b><br>';
+
+		$d_i = 1;
+		foreach($drugItem['detail'] AS $d){
+
+			// $detailKey = ($d=='INCIL1') ? sprintf("%s", $d) : '';
+			$detailKey = $d;
+			$subDetail = '';
+			if(!empty($drugItem['sub_detail'])){
+			
+				$subDetailJson = $drugItem['sub_detail'][$detailKey];
+				$sub_i = 1;
+				foreach ($subDetailJson as $sub) {
+					$subDetail .= '&nbsp;&nbsp; '.$d_i.'.'.$sub_i.'. '.$subDetailList[$sub].'<br>';
+					$sub_i++;
+				}
+			}
+			
+			$reasonToUsedDrug .= $d_i.'. '.$detailList[$d].'<br>'.$subDetail;
+			$d_i++;
+		}
+
+		$i_title++;
+		$reasonToUsedDrug .= '</div>';
+	}
+}
+
+$_SESSION['dt_drugstk'] .= $reasonToUsedDrug;
+
+
+
+// ถ้ามีการยืนยันเหตุผลในการใช้ยา
+##############################  END  #######################################
 
 	 if($insert1 == true && $count > 0)
 		$result2 = Mysql_Query($query) or die(Mysql_error());
@@ -733,12 +992,12 @@ list($hn,$vn,$fullname,$ptright,$age)=mysql_fetch_array($cquery);
 
 $subptright=substr($ptright,4);
 //$subptright=iconv_substr($ptright,4,'UTF-8');
-$doctor_name=$_SESSION["dt_doctor"];
+// $doctor_name=$_SESSION["dt_doctor"];
 
-		$sToken = "7ZCg8RDDGKBjaFP5pTElicwHE4Ax3a4FLGBFTXN8FRm"; // test
-		$sMessage ="แพทย์สั่งจ่ายยา\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nสิทธิ: $ptright\nแพทย์: $doctor_name";
-		send_line_noti($sMessage, $sToken);	
-		
+// $sToken = "7ZCg8RDDGKBjaFP5pTElicwHE4Ax3a4FLGBFTXN8FRm"; // test
+// $sMessage ="แพทย์สั่งจ่ายยา\nHN: $hn VN: $vn\nชื่อผู้ป่วย: $fullname\nอายุ: $age\nสิทธิ: $ptright\nแพทย์: $doctor_name";
+// send_line_noti($sMessage, $sToken);	
+
 }
 //-----------------------------------//	
 

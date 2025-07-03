@@ -1,6 +1,6 @@
 <?php
 include 'connect.php';
-include 'bootstrap.php';
+include dirname(__FILE__).'/bootstrap.php';
 
 if ($_REQUEST['do'] == 'edit') {
 
@@ -12,7 +12,7 @@ if ($_REQUEST['do'] == 'edit') {
 	$thidate = (date("Y") + 543) . date("-m-d H:i:s");
 	$row = $_POST['row'];
 	$user = $_POST['user'];
-	$p_edit = $_POST['p_edit'];
+	$p_edit = htmlspecialchars($_POST['p_edit'], ENT_QUOTES);
 	$programmer = $_POST['programmer'];
 
 	$date = substr($_POST['date'], 0, 10);  //วันที่แจ้ง
@@ -48,15 +48,15 @@ if ($_REQUEST['do'] == 'edit') {
 	$query = mysql_query($update);
 	if ($query) {
 
-		$sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
-		$sMessage = "สรุปปิดงาน\nลำดับแจ้ง: $row\nเรื่อง: $head\nผู้แจ้ง: $user\nดำเนินการเรียบร้อยโดย $programmer";
-		sendLineNotify($sMessage, $sToken);
+		// $sToken = "bXrbN0yds9GRmkTEX6ZLsWZh57aqmRlPbT8oBGo6MpS"; // test
+		$_SESSION['telegram_msg'] = "🎉 สรุปปิดงาน \\n*ลำดับแจ้ง*: $row \\n*เรื่อง*: $head \\n*ผู้แจ้ง*: $user \\nดำเนินการเรียบร้อยโดย $programmer";
+		// sendLineNotify($sMessage, $sToken);
 
-		$tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
-		sendLineNotify($sMessage, $tokenTwo);
+		// $tokenTwo = "Lj4dFQ5pNX3PIwSEBOEG40B9rQNhsKxB3Sb8W1JzSWJ";
+		// sendLineNotify($sMessage, $tokenTwo);
 
 		$_SESSION['supportMessage'] = "บันทึกข้อมูลเรียบร้อยแล้ว";
-		$location = ' com_support.php';
+		$location = 'com_support.php';
 
 	} else {
 

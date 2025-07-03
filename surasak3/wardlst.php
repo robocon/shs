@@ -8,28 +8,28 @@
    session_register("cWardname");    
 
     $today="$d-$m-$yr";
-   print "<font face='Angsana New'>วันที่ $today  รายการใบเบิกยาจาก $cWardname ";
-	print "&nbsp;&nbsp;&nbsp;&nbsp<input type=button onclick='history.back()' value='<<< กลับไป'>";
-  //print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<ไปเมนู</a>";
+   print "<font face='Angsana New'>เธงเธฑเธเธ—เธตเน $today  เธฃเธฒเธขเธเธฒเธฃเนเธเน€เธเธดเธเธขเธฒเธเธฒเธ $cWardname ";
+	print "&nbsp;&nbsp;&nbsp;&nbsp<input type=button onclick='history.back()' value='<<< เธเธฅเธฑเธเนเธ'>";
+  //print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='../nindex.htm'><<เนเธเน€เธกเธเธน</a>";
     $today="$yr-$m-$d";
 ?>
 <table>
  <tr>
   <th bgcolor=6495ED><font face='Angsana New'>#</th>
-    <th bgcolor=6495ED><font face='Angsana New'>เตียง</th>
-  <th bgcolor=6495ED><font face='Angsana New'>เวลา</th>
-  <th bgcolor=6495ED><font face='Angsana New'>ชื่อ</th>
+    <th bgcolor=6495ED><font face='Angsana New'>เน€เธ•เธตเธขเธ</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เน€เธงเธฅเธฒ</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เธเธทเนเธญ</th>
   <th bgcolor=6495ED><font face='Angsana New'>HN</th>
     <th bgcolor=6495ED><font face='Angsana New'>AN</th>
-  <th bgcolor=6495ED><font face='Angsana New'>รายการ</th>
-    <th bgcolor=6495ED><font face='Angsana New'>ราคารวม</th>
-    <th bgcolor=6495ED><font face='Angsana New'>สิทธิ</th>
-    <th bgcolor=6495ED><font face='Angsana New'>แพทย์</th>
-    <th bgcolor=6495ED><font face='Angsana New'>ตัดสต๊อก/จ่าย</th>
+  <th bgcolor=6495ED><font face='Angsana New'>เธฃเธฒเธขเธเธฒเธฃ</th>
+    <th bgcolor=6495ED><font face='Angsana New'>เธฃเธฒเธเธฒเธฃเธงเธก</th>
+    <th bgcolor=6495ED><font face='Angsana New'>เธชเธดเธ—เธเธด</th>
+    <th bgcolor=6495ED><font face='Angsana New'>เนเธเธ—เธขเน</th>
+    <th bgcolor=6495ED><font face='Angsana New'>เธ•เธฑเธ”เธชเธ•เนเธญเธ/เธเนเธฒเธข</th>
  </tr>
 
 <?php
-    $detail="ค่ายาเวชภัณฑ์";
+    $detail="เธเนเธฒเธขเธฒเน€เธงเธเธ เธฑเธ“เธ‘เน";
     $num=0;
     include("connect.inc");
     $query = "SELECT whokey,date,ptname,hn,an,price,row_id,accno,ptright,doctor,dgtake FROM dphardep WHERE whokey LIKE '$cWardcode%' and date LIKE '$today%' and an !='' ";

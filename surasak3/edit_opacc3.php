@@ -18,6 +18,7 @@ $items = $db->get_items();
 <tr>
     <td>row_id</td>
     <td>date</td>
+    <td>ptname</td>
     <td>depart</td>
     <td>detail</td>
     <td>price</td>
@@ -35,6 +36,7 @@ foreach ($items as $key => $item) {
     <tr>
         <td><a href="edit_opacc4.php?id=<?=$item['row_id'];?>" target="patdata"><?=$item['row_id'];?></a></td>
         <td><?=$item['date'];?></td>
+        <td><?=$item['ptname'];?></td>
         <td><?=$item['depart'];?></td>
         <td><?=$item['detail'];?></td>
         <td><?=$item['price'];?></td>

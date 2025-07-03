@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.inc");
+include("connect.php");
 
 
 if($_GET["action"] == "add"){

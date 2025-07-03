@@ -1,10 +1,10 @@
 <?php
 session_start();
 if(isset($_GET["action"])){
-	header("content-type: application/x-javascript; charset=TIS-620");
+	// header("content-type: application/x-javascript; charset=TIS-620");
 }
 
-include 'connect.inc';
+include 'connect.php';
 
 $limit30checkday = 30;
 $sql = "CREATE TEMPORARY TABLE drugrx_notinj SELECT row_id FROM drugrx WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' AND 
@@ -30,7 +30,7 @@ function jschars($str)
 }
 
 
-//******************************* เรียกข้อมูลจาก SESSION มาแสดงเป็น Form ********************
+//******************************* เน€เธฃเธตเธขเธเธเนเธญเธกเธนเธฅเธเธฒเธ SESSION เธกเธฒเนเธชเธ”เธเน€เธเนเธ Form ********************
 
 if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	$count = count($_SESSION["list_drugcode"]);
@@ -49,10 +49,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	echo "
 			<TR class='tb_head'>
 				<TD><INPUT TYPE=\"checkbox\" NAME=\"all\" onclick=\"checkall2(this.checked)\"></TD>
-				<TD>ชื่อยา</TD>
-				<TD>จำนวน</TD>
-				<TD>หน่วย</TD>
-				<TD>วิธีใช้</TD>
+				<TD>เธเธทเนเธญเธขเธฒ</TD>
+				<TD>เธเธณเธเธงเธ</TD>
+				<TD>เธซเธเนเธงเธข</TD>
+				<TD>เธงเธดเธเธตเนเธเน</TD>
 				<TD>&nbsp;</TD>
 			</TR>
 			";
@@ -126,8 +126,8 @@ for($i=0;$i<$count;$i++){
 				if(substr($_SESSION["list_drug_reason"][$i],0,1)=="F"){
 					
 					if($part == "DDY"){
-						$pricetype["DDN"]+=($salepri * $_SESSION["list_drugamount"][$i]);//บวกราคาใหม่
-						$pricetype["DDY"]-=($salepri * $_SESSION["list_drugamount"][$i]);//ลบราคาเก่าออก
+						$pricetype["DDN"]+=($salepri * $_SESSION["list_drugamount"][$i]);//เธเธงเธเธฃเธฒเธเธฒเนเธซเธกเน
+						$pricetype["DDY"]-=($salepri * $_SESSION["list_drugamount"][$i]);//เธฅเธเธฃเธฒเธเธฒเน€เธเนเธฒเธญเธญเธ
 					}
 					
 					$part="DDN";
@@ -136,15 +136,15 @@ for($i=0;$i<$count;$i++){
 					echo "<INPUT TYPE=\"hidden\" name=\"ddnnew\" value=\"$i\">";
 				}
 			}
-			//แก้ช่อง textbox จำนวน <TD align='right'><input name='piece$i' value='".$_SESSION["list_drugamount"][$i]."' type='text' size=3> &nbsp;&nbsp;</TD>
-			//แก้ช่องวิธีใช้ <input name='act$i' value='".$_SESSION["list_drugslip"][$i]."' type='text' size=5 onKeyPress=addslip2('slip2',this.value,2,$i); >
+			//เนเธเนเธเนเธญเธ textbox เธเธณเธเธงเธ <TD align='right'><input name='piece$i' value='".$_SESSION["list_drugamount"][$i]."' type='text' size=3> &nbsp;&nbsp;</TD>
+			//เนเธเนเธเนเธญเธเธงเธดเธเธตเนเธเน <input name='act$i' value='".$_SESSION["list_drugslip"][$i]."' type='text' size=5 onKeyPress=addslip2('slip2',this.value,2,$i); >
 			echo "
 			<TR  class='tb_detail' ".$style.">
 				<TD align=\"center\"><INPUT TYPE=\"checkbox\" NAME=\"check_list[]\" value=\"".$i."\"></TD>
-				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('รายละเอียดยา','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>สต็อก : ",$stock," ",$unit,"<BR>ราคา : ".$salepri." บาท <BR>PART : ".$part." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," (ราคา ",($salepri * $_SESSION["list_drugamount"][$i])," บาท)</span><BR>".$list_remark."</TD>
+				<TD>&nbsp;&nbsp;<span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('เธฃเธฒเธขเธฅเธฐเน€เธญเธตเธขเธ”เธขเธฒ','&nbsp;&nbsp;&nbsp;<B>",substr($drugname,0,10),"</B>&nbsp;&nbsp;&nbsp;<BR>เธชเธ•เนเธญเธ : ",$stock," ",$unit,"<BR>เธฃเธฒเธเธฒ : ".$salepri." เธเธฒเธ— <BR>PART : ".$part." ','left',-200,-180);\" OnmouseOut = \"hid_tooltip();\">",$drugname," (เธฃเธฒเธเธฒ ",($salepri * $_SESSION["list_drugamount"][$i])," เธเธฒเธ—)</span><BR>".$list_remark."</TD>
 				<TD align='right'>".$_SESSION["list_drugamount"][$i]."</TD>
 				<TD>",$unit,"</TD>
-				<TD><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$_SESSION["list_drugslip"][$i]."</span></TD>
+				<TD><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('เธงเธดเธเธตเนเธเนเธขเธฒ','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$_SESSION["list_drugslip"][$i]."</span></TD>
 				<TD align='center'><A HREF=\"#\" Onclick=\"javascript : document.getElementById('drug_code').value='",jschars($_SESSION["list_drugcode"][$i]),"';document.getElementById('drug_amount').value='",jschars($_SESSION["list_drugamount"][$i]),"';document.getElementById('drug_slip').value='",jschars($_SESSION["list_drugslip"][$i]),"';document.getElementById('addoredit').value='".$i."';
 				if(check_inject('",jschars($_SESSION["list_drugcode"][$i]),"') == true){
 					
@@ -157,21 +157,21 @@ for($i=0;$i<$count;$i++){
 			document.getElementById('slip_detail').style.display = '';	
 					
 				}";
-			echo "\">แก้ไข</A></TD>
+			echo "\">เนเธเนเนเธ</A></TD>
 			</TR>
 			";
 
 	}
 	if($i >0)
 	echo "<TR class='tb_detail'>
-					<TD   colspan=\"6\">&nbsp;&nbsp;รวมทั้งหมด : ".($total_price)." บาท</TD>
+					<TD   colspan=\"6\">&nbsp;&nbsp;เธฃเธงเธกเธ—เธฑเนเธเธซเธกเธ” : ".($total_price)." เธเธฒเธ—</TD>
 				</TR>";
 
 	echo "<TR class='tb_detail'>
-					<TD  align=\"center\" ><INPUT TYPE=\"button\" value=\"  ลบ  \" onclick=\"del_list();\"></TD>
+					<TD  align=\"center\" ><INPUT TYPE=\"button\" value=\"  เธฅเธ  \" onclick=\"del_list();\"></TD>
 					<TD  colspan=\"5\">";
 
-	echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"      ตกลง      \" ></div></TD></TR>";
+	echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"      เธ•เธเธฅเธ      \" ></div></TD></TR>";
 	$phar = $pricetype["DDL"]+$pricetype["DDY"]+$pricetype["DDN"];
 	echo "</TABLE>
 
@@ -192,7 +192,7 @@ for($i=0;$i<$count;$i++){
 	exit();
 }
 
-// ********************************* บันทึกข้อมูลยา ลงในรายการ SESSION *****************************************
+// ********************************* เธเธฑเธเธ—เธถเธเธเนเธญเธกเธนเธฅเธขเธฒ เธฅเธเนเธเธฃเธฒเธขเธเธฒเธฃ SESSION *****************************************
 if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 	
 	$count = count($_SESSION["list_drugcode"]);
@@ -227,7 +227,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "addtolist"){
 }
 
 
-// ********************************* ดึกรายการยาเดิมออกมาแสดงเพื่อทำการแก้ไข *****************************************
+// ********************************* เธ”เธถเธเธฃเธฒเธขเธเธฒเธฃเธขเธฒเน€เธ”เธดเธกเธญเธญเธเธกเธฒเนเธชเธ”เธเน€เธเธทเนเธญเธ—เธณเธเธฒเธฃเนเธเนเนเธ *****************************************
 if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	
 	$_SESSION["list_drugcode"] = array() ;
@@ -266,7 +266,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	exit();
 }
 
-//************************** ลบยา ออกจาก SESSION ********************************************************
+//************************** เธฅเธเธขเธฒ เธญเธญเธเธเธฒเธ SESSION ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	
 	$count = count($_SESSION["list_drugcode"]);
@@ -285,14 +285,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "deltolist"){
 	exit();
 }
 
-//************************** แสดงรายการยาให้เลือก  ********************************************************
+//************************** เนเธชเธ”เธเธฃเธฒเธขเธเธฒเธฃเธขเธฒเนเธซเนเน€เธฅเธทเธญเธ  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	//$sql = "Select drugcode, tradname, genname,unit, stock, salepri, part, `lock`, lock_dr From druglst where ".$where." (drugcode like '%".$_GET["search"]."%' OR genname LIKE '%".$_GET["search"]."%' OR  tradname LIKE '%".$_GET["search"]."%') and (part!='DDL' and part!='DDY' and part!='DDN' ) Order by drugcode ASC";
 
-	// ไม่แสดงชื่อ tradname ที่มี (Z) Ward บอกพี่วามาอีกที
+	// เนเธกเนเนเธชเธ”เธเธเธทเนเธญ tradname เธ—เธตเนเธกเธต (Z) Ward เธเธญเธเธเธตเนเธงเธฒเธกเธฒเธญเธตเธเธ—เธต
 	$sql = "SELECT `drugcode`,`tradname`,`genname`,`unit`,`stock`,`salepri`,`part`,`lock`,`lock_dr` 
 	FROM `druglst` 
 	WHERE `drugcode` LIKE '".$_GET["search"]."%' 
@@ -313,16 +313,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				<font style="color: #FFFFFF"></font>
 			</td>
 			<td width="368">
-				<font style="color: #FFFFFF"><strong>ชื่อยา</strong></font>
+				<font style="color: #FFFFFF"><strong>เธเธทเนเธญเธขเธฒ</strong></font>
 			</td>
 			<td width="110">
-				<font style="color: #FFFFFF"><strong>หน่วย</strong></font>
+				<font style="color: #FFFFFF"><strong>เธซเธเนเธงเธข</strong></font>
 			</td>
 			<td width="">
-				<font style="color: #FFFFFF"><strong>เหลือยา</strong></font>
+				<font style="color: #FFFFFF"><strong>เน€เธซเธฅเธทเธญเธขเธฒ</strong></font>
 			</td>
 			<td width="79">
-				<font style="color: #FFFFFF"><strong>ราคา</strong></font>
+				<font style="color: #FFFFFF"><strong>เธฃเธฒเธเธฒ</strong></font>
 			</td>
 			<td width="24" bgcolor="#3333CC">
 				<font style="color: #FF0000;">
@@ -357,14 +357,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 			?>
 			<tr bgcolor="<?=$bgcolor;?>" <?=$style;?>>
 				<td rowspan="3" align="center"><?=$obj;?></td>
-				<td align="right" bgcolor="<?=$bgcolor;?>">ชื่อสามัญ : </td>
+				<td align="right" bgcolor="<?=$bgcolor;?>">เธเธทเนเธญเธชเธฒเธกเธฑเธ : </td>
 				<td bgcolor="<?=$bgcolor;?>"><?=$arr["genname"];?></td>
 				<td rowspan="2" bgcolor="<?=$bgcolor;?>" align="center"><?=$arr["unit"];?></td>
 				<td colspan="2" rowspan="2" bgcolor="<?=$bgcolor;?>"><?php echo ( $stock > 0 ) ? $stock : 0 ;?></td>
 				<td colspan="2" rowspan="2" bgcolor="<?=$bgcolor;?>"><?=$arr["salepri"];?></td>
 			</tr>
 			<tr <?=$style;?>>
-				<td align="right" bgcolor="<?=$bgcolor;?>">ชื่อการค้า : </td>
+				<td align="right" bgcolor="<?=$bgcolor;?>">เธเธทเนเธญเธเธฒเธฃเธเนเธฒ : </td>
 				<td bgcolor="<?=$bgcolor;?>"><?=$arr["tradname"];?></td>
 			</tr>
 			<tr >
@@ -392,14 +392,14 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 	exit();
 }
 
-//************************** แสดงรายการวิธีใช้ยาให้เลือก  ********************************************************
+//************************** เนเธชเธ”เธเธฃเธฒเธขเธเธฒเธฃเธงเธดเธเธตเนเธเนเธขเธฒเนเธซเนเน€เธฅเธทเธญเธ  ********************************************************
 if(isset($_GET["action"]) && $_GET["action"] == "slip"){
 
 	$sql = "Select detail1, detail2, detail3, detail4, slcode  From drugslip where  (slcode LIKE '%".$_GET["search"]."%') OR (detail1 LIKE '%".$_GET["search"]."%') OR (detail2 LIKE '%".$_GET["search"]."%') OR (detail3 LIKE '%".$_GET["search"]."%')  Order by slcode ASC ";
 	$result = Mysql_Query($sql);
 	if(Mysql_num_rows($result) > 0){
 		$i=" id='choice1' ";
-		echo "<Div style=\"position: absolute;text-align: left; width:720px; height:400px; overflow:auto; \"><TABLE width=\"100%\" bgcolor=\"#FFFFCC\"><TD align=\"center\" bgcolor=\"#3333CC\" width=\"460\"><FONT COLOR=\"#FFFFFF\"><B>รายการวิธีใช้ยา</B></FONT></TD><TD  bgcolor=\"red\" align=\"center\"><FONT COLOR=\"#FFFFFF\"><B><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></B></FONT></TD>";
+		echo "<Div style=\"position: absolute;text-align: left; width:720px; height:400px; overflow:auto; \"><TABLE width=\"100%\" bgcolor=\"#FFFFCC\"><TD align=\"center\" bgcolor=\"#3333CC\" width=\"460\"><FONT COLOR=\"#FFFFFF\"><B>เธฃเธฒเธขเธเธฒเธฃเธงเธดเธเธตเนเธเนเธขเธฒ</B></FONT></TD><TD  bgcolor=\"red\" align=\"center\"><FONT COLOR=\"#FFFFFF\"><B><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></B></FONT></TD>";
 		while($arr = Mysql_fetch_assoc($result)){
 			echo "<TR bgcolor=\"#FFFFCC\">
 					<TD colspan=\"2\"><INPUT id='choice' TYPE=\"radio\" NAME=\"choice\" onkeypress=\"if(event.keyCode==13)addslip('",$arr["slcode"],"'); \" ondblclick=\"addslip('",$arr["slcode"],"'); \" >&nbsp;",$arr["detail1"]," ",$arr["detail2"]," ",$arr["detail3"]," ",$arr["detail4"],"</TD>
@@ -413,7 +413,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "slip"){
 
 
 
-//******************************************** ตรวจสอบรหัสยา *****************************
+//******************************************** เธ•เธฃเธงเธเธชเธญเธเธฃเธซเธฑเธชเธขเธฒ *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 
 	$sql = "SELECT count(drugcode) as amountcode FROM `druglst` where drugcode = '".$_GET["search"]."' ";
@@ -432,7 +432,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "checkdrugcode"){
 exit();
 }
 
-//******************************************** ตรวจสอบรหัสวิธีใช้ยา *****************************
+//******************************************** เธ•เธฃเธงเธเธชเธญเธเธฃเธซเธฑเธชเธงเธดเธเธตเนเธเนเธขเธฒ *****************************
 if(isset($_GET["action"]) && $_GET["action"] == "checkdrugslip"){
 
 	$sql = "SELECT count(slcode) as amountcode FROM `drugslip` where slcode = '".$_GET["search"]."' ";
@@ -484,9 +484,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 ?>
 <html>
 <head>
-<title>เบิกเวชภัณฑ์</title>
+<title>เน€เธเธดเธเน€เธงเธเธ เธฑเธ“เธ‘เน</title>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 24px;
@@ -496,7 +495,6 @@ body,td,th {
 .tb_detail {background-color: #FFFFC1;  }
 .tb_detail2 {background-color: #FFFFC1; color:#0000FF; }
 .tb_menu {background-color: #FFFFC1;  }
--->
 </style>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -519,7 +517,7 @@ function newXmlHttp(){
 	return xmlhttp;
 }
 
-// แสดงรายการยา
+// เนเธชเธ”เธเธฃเธฒเธขเธเธฒเธฃเธขเธฒ
 function searchSuggest(action,str,len) {
 
 	if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){
@@ -645,13 +643,13 @@ function checkForm1(){
 	txt = txt.substr(4);
 
 	if(document.form1.drug_code.value == ""){
-		alert("กรุณาใส่รหัสยา");
+		alert("เธเธฃเธธเธ“เธฒเนเธชเนเธฃเธซเธฑเธชเธขเธฒ");
 		document.form1.drug_code.focus();
 	}else if(document.form1.drug_amount.value == "" || eval(document.form1.drug_amount.value) <=0){
-		alert("กรุณาใส่จำนวนยา");
+		alert("เธเธฃเธธเธ“เธฒเนเธชเนเธเธณเธเธงเธเธขเธฒ");
 		document.form1.drug_amount.focus();
 	}else if(document.form1.drug_slip.value == ""){
-		alert("กรุณาใส่วิธีใช้ยา");
+		alert("เธเธฃเธธเธ“เธฒเนเธชเนเธงเธดเธเธตเนเธเนเธขเธฒ");
 		document.form1.drug_slip.focus();
 	}else{
 		
@@ -677,7 +675,7 @@ e_k=event.keyCode
 	//if (e_k != 47 && e_k != 46 && (e_k < 48) || (e_k > 57)) {
 	if ((e_k < 48) || (e_k > 57)) {
 		event.returnValue = false;
-		alert("กรุณากรอกเป็นตัวเลขเท่านั้นค่ะ");
+		alert("เธเธฃเธธเธ“เธฒเธเธฃเธญเธเน€เธเนเธเธ•เธฑเธงเน€เธฅเธเน€เธ—เนเธฒเธเธฑเนเธเธเนเธฐ");
 		return false;
 	}else{
 		return true;
@@ -718,23 +716,23 @@ function checkall3(xx){
 </head>
 <body>
 
-<!-- <a href='../nindex.htm'>&lt;&lt;ไปเมนู</a><BR>
-<A HREF="dt_index.php">&lt;&lt; เลือกผู้ป่วยใหม่</A> -->
+<!-- <a href='../nindex.htm'>&lt;&lt;เนเธเน€เธกเธเธน</a><BR>
+<A HREF="dt_index.php">&lt;&lt; เน€เธฅเธทเธญเธเธเธนเนเธเนเธงเธขเนเธซเธกเน</A> -->
 
 <TABLE align="center" border="1" bordercolor="#F0F000">
   <TR>
     <TD><TABLE width="900">
       <TR>
-        <TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<?php echo $toborow;?></TD>
+        <TD colspan="8" class="tb_head">เธเนเธญเธกเธนเธฅเธเธนเนเธเนเธงเธข&nbsp;&nbsp;<?php echo $toborow;?></TD>
       </TR>
       <TR>
         <TD align="right" class="tb_detail">AN : </TD>
         <TD><?php echo $_SESSION["cAn"];?></TD>
-        <TD align="right" class="tb_detail">ชื่อ-สกุล : </TD>
+        <TD align="right" class="tb_detail">เธเธทเนเธญ-เธชเธเธธเธฅ : </TD>
         <TD><?php echo $_SESSION["ptname_ipd"];?></TD>
-        <TD align="right" class="tb_detail">อายุ : </TD>
+        <TD align="right" class="tb_detail">เธญเธฒเธขเธธ : </TD>
         <TD><?php echo $_SESSION["age_ipd"];?></TD>
-        <TD align="right" class="tb_detail">สิทธิการรักษา : </TD>
+        <TD align="right" class="tb_detail">เธชเธดเธ—เธเธดเธเธฒเธฃเธฃเธฑเธเธฉเธฒ : </TD>
         <TD><?php echo $_SESSION["ptright_ipd"];?></TD>
       </TR>
     </TABLE></TD>
@@ -757,20 +755,20 @@ function checkall3(xx){
 	<TD>
 <TABLE width="232" border="0">
 <TR>
-	<TD align="right" class="tb_detail">ยา : </TD>
+	<TD align="right" class="tb_detail">เธขเธฒ : </TD>
 	<TD><INPUT ID="drug_code" TYPE="text" NAME="drug_code" onkeyup="searchSuggest('drug',this.value,3);"></TD>
 
 </TR>
 <TR>
-	<TD align="right" class="tb_detail">จำนวน : </TD>
+	<TD align="right" class="tb_detail">เธเธณเธเธงเธ : </TD>
 	<TD><INPUT  ID="drug_amount" TYPE="text" NAME="drug_amount"  size="5" onkeypress = "if(event.keyCode == 13){ checkForm1(); return false; }else{ check_number();}"  > </TD>
 </TR>
 <TR ID="slip_detail" style="display:">
-	<TD align="right" class="tb_detail">วิธีใช้ : </TD>
+	<TD align="right" class="tb_detail">เธงเธดเธเธตเนเธเน : </TD>
 	<TD><INPUT ID="drug_slip" TYPE="text" NAME="drug_slip" onKeyPress="if(event.keyCode == 13){ checkForm1(); return false; }else{ searchSuggest('slip',this.value,2);} " onKeyDown="if(event.keyCode == 40 && document.getElementById('list').innerHTML != ''){document.getElementById('choice').focus();document.getElementById('choice').checked=true;return false; }"></TD>
 </TR>
 <TR>
-  <TD align="center" colspan="2"><INPUT id="form_submit" TYPE="submit" value="   ตกลง    " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;<INPUT TYPE="button" value="ยกเลิก" onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';"><Div id="list" ></Div>
+  <TD align="center" colspan="2"><INPUT id="form_submit" TYPE="submit" value="   เธ•เธเธฅเธ    " onClick="checkForm1();" onKeyPress="if(event.keyCode == 13) checkForm1(); return false;" onKeyDown="if(event.keyCode == 38){document.form1.drug_slip.focus();}">&nbsp;<INPUT TYPE="button" value="เธขเธเน€เธฅเธดเธ" onClick="document.getElementById('drug_code').value='';document.getElementById('drug_amount').value='';document.getElementById('drug_slip').value='';document.getElementById('addoredit').value='E';"><Div id="list" ></Div>
     </TD>
 </TR>
 </TABLE>
@@ -783,10 +781,10 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		if($arr["stkcutdate"] == "00:00:00" || $arr["stkcutdate"] == ""){
 			$onclick = "listdrugprov();";
 		}else{
-			$onclick = "alert('รายการยาได้ถูกตัดสต๊อกแล้ว ให้ผู้ป่วยยกเลิกรายการยาที่ห้องยาก่อน จึงจะสามารถปรับปรุงรายการยาได้');";
+			$onclick = "alert('เธฃเธฒเธขเธเธฒเธฃเธขเธฒเนเธ”เนเธ–เธนเธเธ•เธฑเธ”เธชเธ•เนเธญเธเนเธฅเนเธง เนเธซเนเธเธนเนเธเนเธงเธขเธขเธเน€เธฅเธดเธเธฃเธฒเธขเธเธฒเธฃเธขเธฒเธ—เธตเนเธซเนเธญเธเธขเธฒเธเนเธญเธ เธเธถเธเธเธฐเธชเธฒเธกเธฒเธฃเธ–เธเธฃเธฑเธเธเธฃเธธเธเธฃเธฒเธขเธเธฒเธฃเธขเธฒเนเธ”เน');";
 		}
 
-		//echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">ยกเลิก/แก้ไขรายการครั้งล่าสุด</A></CENTER><BR>";
+		//echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">เธขเธเน€เธฅเธดเธ/เนเธเนเนเธเธฃเธฒเธขเธเธฒเธฃเธเธฃเธฑเนเธเธฅเนเธฒเธชเธธเธ”</A></CENTER><BR>";
 	}?>
 
 	</TD>

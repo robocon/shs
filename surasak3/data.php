@@ -1,27 +1,23 @@
 <?php
+require_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+$json = new Services_JSON();
 
-	//ตั้งค่าการเชื่อมต่อฐานข้อมูล
-	$database_host 			= '192.168.131.240';
-	$database_username 		= 'sm3db_user';
-	$database_password 		= 'sm3dbPassword';
-	$database_name 			= 'sm3db-utf8';
+$dbi = new mysqli(HOST,USER,PASS,DB);
+$dbi->query("SET NAMES UTF8");
 
-	$mysqli = new mysqli($database_host, $database_username, $database_password, $database_name);
-	//กำหนด charset ให้เป็น utf8 เพื่อรองรับภาษาไทย
-	$mysqli->set_charset("utf8");
+//กรณีมี Error เกิดขึ้น
+if ($dbi->connect_error) {
+	die('Error : ('. $dbi->connect_errno .') '. $dbi->connect_error);
+}
 
-	//กรณีมี Error เกิดขึ้น
-	if ($mysqli->connect_error) {
-		die('Error : ('. $mysqli->connect_errno .') '. $mysqli->connect_error);
-	}
+//เรียกข้อมูลจาก ตาราง chart 
+$get_data = $dbi->query("SELECT province as name, (men + wemen) as y FROM `chart` ");
+
+while($data = $get_data->fetch_assoc()){
 	
-	//เรียกข้อมูลจาก ตาราง chart 
-	$get_data = $mysqli->query("SELECT province as name, (men + wemen) as y FROM `chart` ");
+	$result[] = $data;
+}
 	
-	while($data = $get_data->fetch_assoc()){
-		
-		$result[] = $data;
-	}
-		
-	echo $json = json_encode( $result, JSON_NUMERIC_CHECK);
+echo $json->encode( $result, JSON_NUMERIC_CHECK);
 ?>

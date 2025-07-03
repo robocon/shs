@@ -3,45 +3,102 @@
 //
 //-------------------- Create file service ไฟล์ที่ 14 --------------------//
 // 
-$temp7 = "CREATE TEMPORARY TABLE report_service 
-SELECT a.`thidate`,a.`hn`,a.`vn`,a.`an`,a.`ptname`,a.`ptright`,a.`goup`,a.`toborow`, SUBSTRING(a.`thidate`, 1, 10) AS `date2`,a.`idcard`, 
-b.`ptrightdetail`, 
-c.`temperature`, c.`pause`, c.`rate`, c.`bp1`, c.`bp2`, c.`organ`
-FROM `opday` AS a
-LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
-LEFT JOIN `opd` AS c ON c.`thdatehn` = a.`thdatehn`
-WHERE a.`thidate` LIKE '$thimonth%' 
-GROUP BY `date2`, a.`hn` 
-ORDER BY a.`thidate` ASC";
-$querytmp7 = mysql_query($temp7) or die("Query failed,Create temp7");
 
-$temp71 = "CREATE TEMPORARY TABLE report_serviceopacc 
-SELECT date,paid,hn,credit,txdate 
-FROM opacc 
-WHERE txdate LIKE '$thimonth%' ";
-$querytmp71 = mysql_query($temp71) or die("Query failed,Create temp71");
 
-$sql7="SELECT * 
-FROM report_service";
-$result7 = mysql_query($sql7) or die("Query failed, SELECT report_service (service)");
-$num = mysql_num_rows($result7);
+$sqlptr = "SELECT code,detail FROM  ptrightdetail";
+$qPtr = $dbi->query($sqlptr);
+$ptrArray = array();
+while ($a = $qPtr->fetch_assoc()) {
+    $ptrArray[$a['detail']] = $a['code'];
+}
+
+$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `f43_opday`
+(INDEX `hn` (`hn`), INDEX `txdatehn`(`thidate`,`hn`), INDEX `thdatehn`(`thdatehn`))
+SELECT `thidate`,`thdatehn`,`hn`,`vn`,`an`,`ptname`,`ptright`,`goup`,`toborow`,TRIM(`idcard`) AS `idcard`,
+CONCAT(`thidate`,`hn`) AS `txdatehn`,
+SUBSTRING(`ptright`,1,3) AS `ptCode`
+FROM `opday` 
+WHERE `thidate` LIKE '$thimonth%' AND (`hn` <> '' AND TRIM(`idcard`) <> '');";
+$q = $dbi->query($sql);
+
+$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `f43_opd`
+(INDEX `hn` (`hn`), INDEX `thdatehn`(`thdatehn`))
+SELECT `thdatehn`,`hn`,`temperature`,`pause`,`rate`,`bp1`,`bp2`,`organ`
+FROM `opd` 
+WHERE `thidate` LIKE '$thimonth%' AND `temperature` NOT LIKE '..%';";
+$q = $dbi->query($sql);
+
+$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `f43_opacc` 
+(INDEX `hn` (`hn`), INDEX `thdatehn`(`thdatehn`))
+SELECT `date`,SUM(`paid`) AS `paid`,`hn`,`credit`,CONCAT(SUBSTRING(`txdate`,9,2),'-',SUBSTRING(`txdate`,6,2),'-',SUBSTRING(`txdate`,1,4),`hn`) AS `thdatehn`
+FROM `opacc` 
+WHERE `txdate` LIKE '$thimonth%'
+GROUP BY `thdatehn`;";
+$q = $dbi->query($sql);
+
+// $temp7 = "CREATE TEMPORARY TABLE report_service 
+// SELECT a.`thidate`,a.`hn`,a.`vn`,a.`an`,a.`ptname`,a.`ptright`,a.`goup`,a.`toborow`, SUBSTRING(a.`thidate`, 1, 10) AS `date2`,a.`idcard`, 
+// b.`ptrightdetail`, 
+// c.`temperature`, c.`pause`, c.`rate`, c.`bp1`, c.`bp2`, c.`organ`
+// FROM `opday` AS a
+// LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
+// LEFT JOIN `opd` AS c ON c.`thdatehn` = a.`thdatehn`
+// WHERE a.`thidate` LIKE '$thimonth%' 
+// GROUP BY `date2`, a.`hn` 
+// ORDER BY a.`thidate` ASC";
+// $querytmp7 = mysql_query($temp7) or die("Query failed,Create temp7");
+
+$sql = "SELECT a.*,b.`temperature`,b.`pause`,b.`rate`,b.`bp1`,b.`bp2`,b.`organ`,c.`paid`
+FROM `f43_opday` AS a 
+LEFT JOIN `f43_opd` AS b ON b.`thdatehn` = a.`thdatehn` 
+LEFT JOIN `f43_opacc` AS c ON c.`thdatehn` = a.`thdatehn` 
+WHERE b.`temperature` <> ''";
+$qService = $dbi->query($sql);
+
+// $querytmp71 = mysql_query($temp71) or die("Query failed,Create temp71");
+
+// $sql7="SELECT * 
+// FROM report_service";
+// $result7 = mysql_query($sql7) or die("Query failed, SELECT report_service (service)");
+// $num = mysql_num_rows($result7);
 
 $txt = '';
-while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$idcard,$ptrightdetail,$btemp,$pr,$rr,$sbp,$dbp,$organ) = mysql_fetch_row ($result7) ) {	
+// while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$idcard,$ptrightdetail,$btemp,$pr,$rr,$sbp,$dbp,$organ) = mysql_fetch_row ($result7) ) {	
+while($a = $qService->fetch_assoc()){
 
-    $sql = "SELECT SUM(paid),credit FROM report_serviceopacc WHERE hn = '$hn' AND txdate LIKE '$thimonth%'  ";
-    list($price,$credit)  = mysql_fetch_row(mysql_query($sql));
+    $thidate = $a['thidate'];
+    $hn = $a['hn'];
+    $vn = $a['vn'];
+    $an = $a['an'];
+    $ptname = $a['ptname'];
+    $newptright = $a['ptCode'];
+
+    $toborow = $a['toborow'];
+    $idcard = $a['idcard'];
+    $price = $payprice = $actualpay = $a['paid'];
+
+    $btemp = $a['temperature'];
+    $sbp = $a['bp1'];
+    $dbp = $a['bp2'];
+    $pr = $a['pause'];
+    $rr = $a['rate'];
+    $organ = $a['organ'];
+
+    // $sql = "SELECT SUM(paid),credit FROM report_serviceopacc WHERE hn = '$hn' AND txdate LIKE '$thimonth%'  ";
+    // list($price,$credit)  = mysql_fetch_row(mysql_query($sql));
         
-    $sql1 = "SELECT SUM(paid) FROM report_serviceopacc WHERE hn = '$hn' AND txdate LIKE '$thimonth%' AND credit = 'เงินสด' ";
-    list($paycash)  = mysql_fetch_row(mysql_query($sql1));
-    $payprice = $paycash;
-    if(empty($payprice) || $payprice==0){
-        $payprice = "0.00";
-    }
-    $actualpay=$paycash;
-    if(empty($actualpay) || $actualpay==0){
-        $actualpay = "0.00";
-    }	
+    // $sql1 = "SELECT SUM(paid) FROM report_serviceopacc WHERE hn = '$hn' AND txdate LIKE '$thimonth%' AND credit = 'เงินสด' ";
+    // list($paycash)  = mysql_fetch_row(mysql_query($sql1));
+    // $payprice = $paycash;
+    // if(empty($payprice) || $payprice==0){
+    //     $payprice = "0.00";
+    // }
+    // $actualpay=$paycash;
+    // if(empty($actualpay) || $actualpay==0){
+    //     $actualpay = "0.00";
+    // }	
+
+
     $date = substr($date,0,10);
     list($yy,$mm,$dd) = explode("-",$date);
     $yy = $yy-543;
@@ -75,12 +132,13 @@ while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$idcard
     }
     
     // ถ้ามี ptrightdetail
-    if( !empty($ptrightdetail) ){
-        $sqlptr = "SELECT code FROM  ptrightdetail WHERE detail='$ptrightdetail'";
-        $resultptr = mysql_query($sqlptr) or die(mysql_error());
-        list($instype) = mysql_fetch_row($resultptr);
-    }else{
-        $newptright = substr($ptright,0,3);
+    // if( !empty($ptrightdetail) ){
+        // $sqlptr = "SELECT code FROM  ptrightdetail WHERE detail='$ptrightdetail'";
+        // $resultptr = mysql_query($sqlptr) or die(mysql_error());
+        // list($instype) = mysql_fetch_row($resultptr);
+        // $instype = $ptrArray[$ptrightdetail];
+    // }else{
+        // $newptright = substr($ptright,0,3);
         if($newptright == "R01" || $newptright == "R05"){  //เงินสด
             $instype = "9100";  //ประเภทสิทธิการรักษา
         }else if($newptright == "R02" || $newptright == "R03"  || $newptright == "R04"){  //โครงการเบิกจ่ายตรง
@@ -92,7 +150,7 @@ while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$idcard
         }else if($newptright == "R09"){  //ประกันสุขภาพถ้วนหน้า
             $instype = "0100";  //ประเภทสิทธิการรักษา
         }
-    }
+    // }
 
     if(!empty($an)){  //สถานะผู้มารับบริการ
         $typeout = "2";    //รับไว้รักษาต่อ
@@ -114,15 +172,19 @@ while ( list($thidate,$hn,$vn,$an,$ptname,$ptright,$goup,$toborow,$date2,$idcard
         $price="50.00";
     }
 
-    $hsub = '';
+    $caseout = $hsub = $cost = '';
 
-    $inline = "$hospcode|$hn|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$hsub|$idcard\r\n";			
+    $inline = "$hospcode|$idcard|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$hsub|$idcard\r\n";			
     // print($inline);
     $txt .= $inline;
     
 }  //close while
 $filePath = $dirPath.'/service.txt';
-file_put_contents($filePath, $txt);
+unlink($filePath);
+
+mkdir($dirPath, 0777, true);
+
+file_put_contents($filePath, $txt, FILE_APPEND | LOCK_EX);
 $zipLists[] = $filePath;
 
 $header = "HOSPCODE|PID|HN|SEQ|DATE_SERV|TIME_SERV|LOCATION|INTIME|INSTYPE|INSID|MAIN|TYPEIN|REFERINHOSP|CAUSEIN|CHIEFCOMP|SERVPLACE|BTEMP|SBP|DBP|PR|RR|TYPEOUT|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|D_UPDATE|HSUB|CID\r\n";
