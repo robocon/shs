@@ -1,5 +1,5 @@
 <?php
-include 'bootstrap.php';
+require_once dirname(__FILE__).'/bootstrap.php';
 ?>
 <style type="text/css">
 	.body-contain{
@@ -16,25 +16,18 @@ include 'bootstrap.php';
 	}
 </style>
 <?php
-$id = input_get('id');
-// DB::load();
-$db = Mysql::load();
-
-$sql = "SELECT * 
-FROM `news` 
-WHERE `id` = :id 
-AND `status` = 1";
-// $item = DB::select($sql, array(':id' => $id), true);
-$db->select($sql, array(':id' => $id));
-$item = $db->get_item();
-if( !empty($item) ){
+$sql = sprintf("SELECT * FROM `news` WHERE `id` = '%s' AND `status` = 1", $dbi->real_escape_string($_GET['id']));
+$q = $dbi->query($sql);
+$rows = $q->num_rows;
+if( $rows > 0 ){
+	$item = $q->fetch_assoc();
 ?>
 <div class="body-contain">
 	<div>
-		<div><a href="../display.php">&lt;&lt;&nbsp;��Ѻ�˹����ѡ</a></div>
+		<div><a href="../display.php">&lt;&lt;&nbsp;กลับไปหน้าหลัก</a></div>
 	</div>
 	<div>
-		<h3>��Ǣ�͢���:: <?=$item['title'];?></h3>
+		<h3>หัวข้อข่าว:: <?=$item['title'];?></h3>
 	</div>
 	<div>
 		<?php
@@ -49,7 +42,7 @@ if( !empty($item) ){
 }else{
 ?>
 <div class="body-contain">
-	<div><p>��辺�����ŷ���ͧ���</p></div>
+	<div><p>ไม่พบข้อมูลที่ต้องการ</p></div>
 </div>
 <?php
 }
