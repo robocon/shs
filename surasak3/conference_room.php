@@ -1,5 +1,43 @@
 <?php
 require_once dirname(__FILE__).'/bootstrap.php';
+require_once dirname(__FILE__).'/includes/JSON.php';
+require_once dirname(__FILE__).'/class_file/ConferenceRoom.php';
+
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+
+$action = isset($_POST['action']) ? $_POST['action'] : '' ;
+if($action==='save'){
+    // dump($_POST);
+
+    $sql = sprintf("INSERT INTO `conference_room` 
+    (`id`, `date`, `room`, `department_id`, `time_start`, `time_end`, `detail`, `date_add`, `officer`, `date_edit`, `officer_edit`, `crontab_status`) 
+    VALUES 
+    (NULL, '%s', '%s', '%s', '%s', '%s', '%s', NOW(), '%s', NULL, NULL, 'n');", 
+        $dbi->real_escape_string($_POST['date']),
+        $dbi->real_escape_string($_POST['room']),
+        $dbi->real_escape_string($_POST['department']),
+        $dbi->real_escape_string($_POST['startTime']),
+        $dbi->real_escape_string($_POST['endTime']),
+        $dbi->real_escape_string($_POST['detail']),
+        $dbi->real_escape_string($_SESSION['sOfficer'])
+    );
+    // dump($sql);
+    $q = $dbi->query($sql);
+    $id = null;
+    if($q!==false){
+        $id = $dbi->insert_id;
+        $res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย', 'id'=>$id);
+
+        
+
+        
+    }else{
+        $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
+    }
+
+    echo $json->encode($res);
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,28 +52,37 @@ require_once dirname(__FILE__).'/bootstrap.php';
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
+    <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size: 20px;
+        }
+        label{
+            font-weight: bold;
+        }
+    </style>
     <div class="container">
         <h3 class="mt-3">บันทึกใช้ห้องประชุม</h3>
         <div class="">
-            <form action="conference_room.php" class="" method="post" id="userForm">
+            <form action="conference_room.php" class="" method="post" id="userForm" onsubmit="onSubmitForm()">
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="inputDate" class="form-label">วันที่</label>
-                        <input type="date" class="form-control" id="inputDate" name="date" value="">
+                        <input type="date" class="form-control" id="inputDate" name="date" value="" required>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label for="inputRoom" class="form-label">ห้องประชุม</label>
-                        <select class="form-select" id="inputRoom" name="room" value="" >
-                            <option value="1">ห้องประชุม 1</option>
-                            <option value="2">ห้องประชุม 2</option>
-                            <option value="4">ห้องประชุม 4</option>
+                        <label for="inputRoom" class="form-label">เลือกห้องประชุม</label>
+                        <select class="form-select" id="inputRoom" name="room" value="1" required>
+                            <option value="ห้องประชุม 1">ห้องประชุม 1</option>
+                            <option value="ห้องประชุม 2">ห้องประชุม 2</option>
+                            <option value="ห้องประชุม 4">ห้องประชุม 4</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="inputDepartment" class="form-label">แผนก</label>
-                        <select name="department" class="form-select" id="inputDepartment">
+                        <label for="inputDepartment" class="form-label">เลือกแผนก</label>
+                        <select name="department" class="form-select" id="inputDepartment" required>
                         <?php 
                         $q = $dbi->query("SELECT * FROM `departments` WHERE `status`='y' ORDER BY `id` ASC");
                         while ($a = $q->fetch_assoc()) {
@@ -50,23 +97,23 @@ require_once dirname(__FILE__).'/bootstrap.php';
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="startTime" class="form-label">เริ่มเวลา</label>
-                        <input id="startTime" class="form-control" type="time" list="timesRangeStart" name="startTime" required>
+                        <input id="startTime" class="form-control" type="time" list="timesRangeStart" name="startTime" value="" required>
                         <span class="badge text-bg-warning" id="valueStartTime"></span>
                     </div>
                     <div class="col-md-4">
                         <label for="endTime" class="form-label">สิ้นสุุด</label>
-                        <input id="endTime" class="form-control" type="time" list="timesRangeEnd" name="endTime" required>
+                        <input id="endTime" class="form-control" type="time" list="timesRangeEnd" name="endTime" value="" required>
                         <span class="badge text-bg-warning" id="valueEndTime"></span>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col">
                         <label for="inputDetail" class="form-label">รายละเอียด</label>
-                        <textarea class="form-control" name="detail" id="inputDetail" rows="3"></textarea>
+                        <textarea class="form-control" name="detail" id="inputDetail" rows="3" required></textarea>
                     </div>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary">บันทึก</button>
+                    <button type="submit" class="btn btn-primary">บันทึก</button>
                     <input type="hidden" name="action" value="save">
                 </div>
             </form>
@@ -78,7 +125,7 @@ require_once dirname(__FILE__).'/bootstrap.php';
         startTime.addEventListener(
             "input",
             () => {
-                valueStartTime.innerText = startTime.value+'น.';
+                valueStartTime.innerText = startTime.value+' น.';
             },
             false,
         );
@@ -88,12 +135,61 @@ require_once dirname(__FILE__).'/bootstrap.php';
         endTime.addEventListener(
             "input",
             () => {
-                valueEndTime.innerText = endTime.value+'น.';
+                valueEndTime.innerText = endTime.value+' น.';
             },
             false,
         );
+
+        function onSubmitForm(){
+            event.preventDefault();
+            
+            const date = document.getElementById("inputDate").value;
+            const startTime = document.getElementById("startTime").value;
+            const endTime = document.getElementById("endTime").value;
+            const detail = document.getElementById("inputDetail").value;
+
+            if(date==='' || startTime==='' || endTime==='' || detail===''){
+                Swal.fire("กรุณากรอกข้อมูลให้ครบถ้วน");
+            }
+
+            const form =document.querySelector('#userForm');
+            const data = new URLSearchParams(new FormData(form)).toString();
+            sendForm(data).then((res)=>{
+                console.log(res);
+                if(res.status===200){
+                    Swal.fire({
+                        title: 'บันทึกสำเร็จ',
+                        text: res.message,
+                        icon: 'success',
+                        allowOutsideClick: false
+                    });
+
+                }else{
+                    Swal.fire({
+                        title: 'Error',
+                        text: res.message,
+                        icon: 'warning',
+                        allowOutsideClick: false
+                    });
+                }
+                
+            });
+        }
+
+        async function sendForm(data){
+            let response = await fetch('conference_room.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: data
+            });
+            const body = await response.json();
+            return body;
+        }
     </script>
 
+    <!-- เวลาสำหรับ input type date -->
     <datalist id="timesRangeStart">
         <option value="07:00:00">
         <option value="07:15:00">
