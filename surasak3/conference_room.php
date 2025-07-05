@@ -1,7 +1,7 @@
 <?php
 require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/includes/JSON.php';
-require_once dirname(__FILE__).'/class_file/ConferenceRoom.php';
+// require_once dirname(__FILE__).'/class_file/ConferenceRoom.php';
 
 $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
