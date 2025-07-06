@@ -7,30 +7,29 @@ $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
 $action = isset($_POST['action']) ? $_POST['action'] : '' ;
 if($action==='save'){
-    // dump($_POST);
 
-    $sql = sprintf("INSERT INTO `conference_room` 
-    (`id`, `date`, `room`, `department_id`, `time_start`, `time_end`, `detail`, `date_add`, `officer`, `date_edit`, `officer_edit`, `crontab_status`) 
-    VALUES 
-    (NULL, '%s', '%s', '%s', '%s', '%s', '%s', NOW(), '%s', NULL, NULL, 'n');", 
-        $dbi->real_escape_string($_POST['date']),
-        $dbi->real_escape_string($_POST['room']),
-        $dbi->real_escape_string($_POST['department']),
-        $dbi->real_escape_string($_POST['startTime']),
-        $dbi->real_escape_string($_POST['endTime']),
-        $dbi->real_escape_string($_POST['detail']),
-        $dbi->real_escape_string($_SESSION['sOfficer'])
-    );
-    // dump($sql);
-    $q = $dbi->query($sql);
-    $id = null;
+    $sqlHeader = "INSERT INTO `conference_room` 
+    (`id`, `date`, `room`, `department_id`, `time_start`, `time_end`, `detail`, `date_add`, `officer`, `date_edit`, `officer_edit`, `crontab_status`) VALUES ";
+
+    $sqlList = array();
+    foreach ($_POST['date'] as $date) {
+        $sqlList[] = sprintf("(NULL, '%s', '%s', '%s', '%s', '%s', '%s', NOW(), '%s', NULL, NULL, 'n')",
+            $dbi->real_escape_string($date),
+            $dbi->real_escape_string($_POST['room']),
+            $dbi->real_escape_string($_POST['department']),
+            $dbi->real_escape_string($_POST['startTime']),
+            $dbi->real_escape_string($_POST['endTime']),
+            $dbi->real_escape_string($_POST['detail']),
+            $dbi->real_escape_string($_SESSION['sOfficer'])
+        );
+    }
+    $sqlContent = $sqlHeader.implode(',', $sqlList).';';
+    
+    $q = $dbi->query($sqlContent);
+    $id = 0;
     if($q!==false){
         $id = $dbi->insert_id;
         $res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย', 'id'=>$id);
-
-        
-
-        
     }else{
         $res = array('status'=>400, 'message'=>'ไม่สามารถบันทึกข้อมูลได้ '.$dbi->error);
     }
@@ -68,21 +67,27 @@ if($action==='save'){
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label for="inputDate" class="form-label">วันที่</label>
-                        <input type="date" class="form-control" id="inputDate" name="date" value="" required>
+                        <div class="input-group">
+                            <input type="date" class="form-control" id="inputDate" name="date[]" value="" required><button class="btn btn-secondary" type="button" id="addMoreDate" onclick="doAddDate()">➕</button>
+                        </div>
+                        <!-- รายการปุ่มลบ -->
+                        <div id="moreBtn"></div>
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <label for="inputRoom" class="form-label">เลือกห้องประชุม</label>
-                        <select class="form-select" id="inputRoom" name="room" value="1" required>
+                        <label for="inputRoom" class="form-label">ห้องประชุม</label>
+                        <select class="form-select" id="inputRoom" name="room" required>
+                            <option value="">เลือกห้องประชุม</option>
                             <option value="ห้องประชุม 1">ห้องประชุม 1</option>
                             <option value="ห้องประชุม 2">ห้องประชุม 2</option>
                             <option value="ห้องประชุม 4">ห้องประชุม 4</option>
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="inputDepartment" class="form-label">เลือกแผนก</label>
+                        <label for="inputDepartment" class="form-label">แผนก</label>
                         <select name="department" class="form-select" id="inputDepartment" required>
+                            <option value="">เลือกแผนก</option>
                         <?php 
                         $q = $dbi->query("SELECT * FROM `departments` WHERE `status`='y' ORDER BY `id` ASC");
                         while ($a = $q->fetch_assoc()) {
@@ -107,24 +112,34 @@ if($action==='save'){
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col">
+                    <div class="col-md-8">
                         <label for="inputDetail" class="form-label">รายละเอียด</label>
-                        <textarea class="form-control" name="detail" id="inputDetail" rows="3" required></textarea>
+                        <textarea class="form-control" name="detail" id="inputDetail" rows="2" required></textarea>
                     </div>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary">บันทึก</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm();">Reset</button>
                     <input type="hidden" name="action" value="save">
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Template สำหรับปุ่มลบ -->
+    <div id="tempBtnRemove" style="display: none;">
+        <div class="input-group mt-1">
+            <input type="date" class="form-control" id="inputDate" name="date[]" value=""><button class="btn btn-secondary" type="button" onclick="removeBtn(this)">➖</button>
+        </div>
+    </div>
+
     <script>
         const startTime = document.getElementById("startTime");
         const valueStartTime = document.getElementById("valueStartTime");
         startTime.addEventListener(
             "input",
             () => {
+                valueStartTime.style.display = '';
                 valueStartTime.innerText = startTime.value+' น.';
             },
             false,
@@ -135,10 +150,33 @@ if($action==='save'){
         endTime.addEventListener(
             "input",
             () => {
+                valueEndTime.style.display = '';
                 valueEndTime.innerText = endTime.value+' น.';
             },
             false,
         );
+
+        function doAddDate(){
+            const tempRem = document.getElementById('tempBtnRemove').innerHTML;
+            const moreBtnContainer = document.getElementById('moreBtn');
+            moreBtnContainer.insertAdjacentHTML('afterbegin',tempRem);
+        }
+
+        function removeBtn(thisBtn){
+            thisBtn.parentNode.remove()
+        }
+
+        function resetForm(){
+            document.getElementById('inputDate').value = '';
+            document.getElementById('inputRoom').value = '';
+            document.getElementById('inputDepartment').value = '';
+            document.getElementById('startTime').value = '';
+            document.getElementById('endTime').value = '';
+            document.getElementById('inputDetail').value = '';
+            document.getElementById('valueStartTime').style.display = 'none';
+            document.getElementById('valueEndTime').style.display = 'none';
+            document.getElementById('moreBtn').innerHTML = '';
+        }
 
         function onSubmitForm(){
             event.preventDefault();
@@ -155,7 +193,6 @@ if($action==='save'){
             const form =document.querySelector('#userForm');
             const data = new URLSearchParams(new FormData(form)).toString();
             sendForm(data).then((res)=>{
-                console.log(res);
                 if(res.status===200){
                     Swal.fire({
                         title: 'บันทึกสำเร็จ',
@@ -163,7 +200,7 @@ if($action==='save'){
                         icon: 'success',
                         allowOutsideClick: false
                     });
-
+                    resetForm();
                 }else{
                     Swal.fire({
                         title: 'Error',
@@ -172,7 +209,6 @@ if($action==='save'){
                         allowOutsideClick: false
                     });
                 }
-                
             });
         }
 
@@ -210,7 +246,6 @@ if($action==='save'){
         <option value="11:00:00">
         <option value="11:15:00">
         <option value="11:30:00">
-        <option value="11:45:00">
         <option value="13:00:00">
         <option value="13:15:00">
         <option value="13:30:00">
@@ -223,6 +258,7 @@ if($action==='save'){
         <option value="15:15:00">
         <option value="15:30:00">
         <option value="15:45:00">
+        <option value="16:00:00">
     </datalist>
 
     <datalist id="timesRangeEnd">
@@ -242,8 +278,7 @@ if($action==='save'){
         <option value="11:15:00">
         <option value="11:30:00">
         <option value="11:45:00">
-        <option value="13:00:00">
-        <option value="13:15:00">
+        <option value="12:00:00">
         <option value="13:30:00">
         <option value="13:45:00">
         <option value="14:00:00">
@@ -258,6 +293,7 @@ if($action==='save'){
         <option value="16:15:00">
         <option value="16:30:00">
         <option value="16:45:00">
+        <option value="17:00:00">
     </datalist>
 </body>
 </html>
