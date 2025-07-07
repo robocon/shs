@@ -3,7 +3,15 @@ if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "v
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-include("connect.inc");
+include("connect.php");
+
+if(!function_exists('dump')){
+	function dump($t){
+		echo "<pre>";
+		var_dump($t);
+		echo "</pre>";
+	}
+}
 
 // Set default variable for day, month, year
 $days = array();
@@ -125,9 +133,11 @@ $_GET['y'] = $_GET['y']-543;
 		$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))],'&nbsp;',
 		date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543,"\">";
 		*/
-		
+
+		// จะเปลี่ยนมาใช้ฟังก์ชั่นนี้ก็ได้
+		// $toTime = strtotime("+".$num[$i]." days");
 		$get_time = mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']);
-		// $get_time = strtotime("+".$num[$i]."days");
+		
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
 		$ycheck = date('Y', $get_time)+543;
