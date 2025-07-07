@@ -83,11 +83,11 @@ $_GET['y'] = $_GET['y']-543;
 	$num[4] = 30;
 	$num[5] = 90;
 
+	if($_GET["druginj"]=='VERO RABIES 3'){
+		$num[3] = 28;
+	}
+
 	if($_GET["druginj"]=='VERO RABIES 5'){
-		$num[0] = 0;
-		$num[1] = 3;
-		$num[2] = 7;
-		$num[3] = 14;
 		$num[4] = 28;
 		$num[5] = 90;
 	}
@@ -127,6 +127,7 @@ $_GET['y'] = $_GET['y']-543;
 		*/
 		
 		$get_time = mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']);
+		// $get_time = strtotime("+".$num[$i]."days");
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
 		$ycheck = date('Y', $get_time)+543;

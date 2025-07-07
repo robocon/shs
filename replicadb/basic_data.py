@@ -1,5 +1,9 @@
 # Python mysql connect
 # https://www.w3schools.com/python/python_mysql_getstarted.asp
+# Installation
+#$> pip install mysql-connector-python
+# Upgrade
+#$> pip install mysql-connector-python --upgrade
 
 # Python  call system command
 # https://www.digitalocean.com/community/tutorials/python-system-command-os-subprocess-call

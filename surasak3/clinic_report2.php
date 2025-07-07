@@ -408,7 +408,7 @@ $dbi->query("SET NAMES UTF8");
 				<td align='center'>($doctor)</td>
 			</tr>
 			<tr>
-				<td align='center'>นักกายภาพบำบัด</td>
+				<td align='center'>นายสิบประจำงานแพทย์ทางเลือก</td>
 				<td align='center'>แพทย์ผู้รักษา</td>
 			</tr>
 			<tr>
