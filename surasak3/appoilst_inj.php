@@ -91,16 +91,12 @@ $_GET['y'] = $_GET['y']-543;
 	$num[4] = 30;
 	$num[5] = 90;
 
-	if($_GET["druginj"]=='VERO RABIES 3'){
-		$num[3] = 28;
-	}
-
 	if($_GET["druginj"]=='VERO RABIES 5'){
 		$num[4] = 28;
 		$num[5] = 90;
 	}
 
-	if($_GET["druginj"]=='SPEEDA 4'){
+	if($_GET["druginj"]=='SPEEDA 4' || $_GET["druginj"]=='SPEEDA 5'){
 		$num[3] = 28;
 	}
 
