@@ -101,6 +101,14 @@ $list_lab["UPT"] = "upt";
 $list_lab["ANTIHB"] = "antihb";
 $list_lab["AHAV"] = "ahav";
 
+//เพิ่มใหม่ LFT
+$list_lab["TB"] = "TB";
+$list_lab["DB"] = "DB";
+$list_lab["ALB"] = "ALB";
+$list_lab["TP"] = "TP";
+
+
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
