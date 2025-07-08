@@ -1,9 +1,11 @@
 <?php
 session_start();
-include("connect.inc");
 
-$date_now = date("Y-m-d H:i:s");
+include("connect.php");
+include dirname(__FILE__)."/bootstrap.php";
 
+$dbi = new mysqli(HOST,USER,PASS,DB,PORT);
+$dbi->query("SET NAMES UTF-8");
 
 function calcage($birth){
 
@@ -164,24 +166,15 @@ $list_lab["TP"] = "TP";
 <?php if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 
 //ค้นหา hn จาก opday ****************************************************************************************
-	$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$_POST["p_hn"]."' limit 0,1";
-	$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	/*if(mysql_num_rows($result) <= 0){
-		echo "<CENTER>ผู้ป่วยยังไม่ได้ทำการลงทะเบียน</CENTER>";
-		exit();
-	}*/
-	$arr_view = mysql_fetch_assoc($result);
+$sql = "Select *, concat(yot,' ',name,' ',surname) as ptname From opcard where  hn = '".$_POST["p_hn"]."' limit 0,1";
+$result = mysql_query($sql) or die("Error line 117 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
+$arr_view = mysql_fetch_assoc($result);
 
 $sql = "Select vn,ptright,toborow From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' limit 0,1";
 list($arr_view["vn"],$ptright,$toborow) = mysql_fetch_row(mysql_query($sql));
-//echo "===>".$arr_view["vn"];
 
 $date_hn = date("Y-m-d").$arr_view["hn"];
 $date_vn = date("Y-m-d").$arr_view["vn"];
-
-/*$sql = "Select  weight, height,waist From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' Order by row_id DESC limit 1";
-$result = Mysql_Query($sql);
-list($weight, $height,$waist) = Mysql_fetch_row($result);*/
 
 $sql3 = "Select  temperature,pause,rate,weight,height,bp1,bp2,bp3,bp4,waist From opd where hn = '".$arr_view["hn"]."' AND type <> 'ญาติ' and thidate like '$thaidate%'";
 $result3 = Mysql_Query($sql3);
@@ -194,10 +187,7 @@ if($cou=="0"){
 }
 
 //ค้นหาวันเกิดจาก opcard ****************************************************************************************
-	//$sql = "Select dbirth From opcard where hn = '".$arr_view["hn"]."' limit  0,1";
-	//$result = mysql_query($sql) or die("Error line 122 \n <!-- ".$sql." --> \n <!-- ".mysql_error()." -->");
-	//list($arr_view["dbirth"]) = mysql_fetch_row($result);
-	$arr_view["age"] = calcage($arr_view["dbirth"]);
+$arr_view["age"] = calcage($arr_view["dbirth"]);
 
 ////*runno ตรวจสุขภาพ*/////////
 $query = "SELECT runno, prefix  FROM runno WHERE title = 'y_chekup'";
@@ -405,9 +395,9 @@ while($arr = Mysql_fetch_assoc($result)){
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM METHOD=POST ACTION="Edx_ofyear_out_save.php" target="_blank" <?php //if($arr_view["vn"] ==""){echo "Onsubmit=\"alert('ผู้ป่วยยังไม่ได้ทำการลงทะเบียน');return false;\"";}?>>
 
-<input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
-<input name="hn" type="hidden" id="hn"  value="<?php echo $arr_view["hn"];?>" />
-<input name="vn" type="hidden" id="vn"  value="<?php echo $arr_view["vn"];?>" />
+<input name="age" type="hidden" id="age"  value="<?=$arr_view["age"];?>" />
+<input name="hn" type="hidden" id="hn"  value="<?=$arr_view["hn"];?>" />
+<input name="vn" type="hidden" id="vn"  value="<?=$arr_view["vn"];?>" />
 
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" width="100%" >
 <TR>
@@ -418,18 +408,18 @@ while($arr = Mysql_fetch_assoc($result)){
 	</TR>
 	<TR>
 		<TD style="background-color:pink">
-	<table width="700" border="0" class="tb_font">
+	<table width="" border="0" class="tb_font">
 		<tr>
-			<td width="400" align="right"><span class="tb_font_2">VN :</span></td>
-			<td width="400"><?php echo $arr_view["vn"];?></td>
+			<td align="right"><span class="tb_font_2">VN :</span></td>
+			<td><?=$arr_view["vn"];?></td>
 			<td align="left"><span class="tb_font_2">HN :</span></td>
-			<td width="400"><?php echo $arr_view["hn"];?></td>
+			<td><?=$arr_view["hn"];?></td>
 			</tr>
 		<tr>
-			<td width="400" align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
-			<td><?php echo $arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?php echo $arr_view["ptname"];?>"/></td>
-			<td width="400" align="left"><span class="tb_font_2">อายุ :</span> </td>
-			<td align="left"><?php echo $arr_view["age"];?></td>
+			<td align="right"><span class="tb_font_2">ชื่อ-สกุล : </span></td>
+			<td><?=$arr_view["ptname"];?><input name="ptname" type="hidden" id="ptname" value="<?=$arr_view["ptname"];?>"/></td>
+			<td align="left"><span class="tb_font_2">อายุ :</span> </td>
+			<td align="left"><?=$arr_view["age"];?></td>
 			</tr>
 		<tr>
 		  <td align="right"><span class="tb_font_2">หน่วยงาน : </span></td>
@@ -457,11 +447,11 @@ while($arr = Mysql_fetch_assoc($result)){
 			?>
             </select>
 		  </span></td>
-</tr>
+		</tr>
 		<tr>
-		  <td align="right" width="400"><span class="tb_font_2">ที่อยู่ตามข้อมูล รพ. : </span></td>
+		  <td align="right" ><span class="tb_font_2">ที่อยู่ตามข้อมูล รพ. : </span></td>
 
-		  <td align="left" width="700">
+		  <td align="left">
 		  		<?php
 		  
 		  			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
@@ -476,8 +466,8 @@ while($arr = Mysql_fetch_assoc($result)){
 		  </td>
 		</tr>
 		<tr>
-		  <td align="right" width="400"><span class="tb_font_2">ที่อยู่ตามบัตรประชาชน : </span></td>
-		  <td align="left" width="700">
+		  <td align="right" ><span class="tb_font_2">ที่อยู่ตามบัตรประชาชน : </span></td>
+		  <td align="left">
 		  		<?php
 		  
 		  			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
@@ -500,19 +490,19 @@ while($arr = Mysql_fetch_assoc($result)){
 		  </tr-->
 	</table>
 	<hr />
-	<table width="854" border="0" class="tb_font">
+	<table width="" border="0" class="tb_font">
 	  <tr>
-			<td width="130" align="right" class="tb_font_2">ส่วนสูง : </td>
-			<td width="79"><input id="pt_height" name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" />
+			<td width="200" align="right" class="tb_font_2">ส่วนสูง : </td>
+			<td><input id="pt_height" name="height" type="text" size="1" maxlength="6" value="<?php echo $height; ?>" />
 ซม.</td>
-			<td width="76" align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
-			<td width="129"><input id="pt_weight" name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
+			<td align="right"><span class="tb_font_2">น้ำหนัก :</span></td>
+			<td><input id="pt_weight" name="weight" type="text" size="1" maxlength="5" value="<?php echo $weight; ?>" />
 กก. </td>
-			<td width="77" align="right"><span class="tb_font_2">รอบเอว :</span></td>
-			<td width="132"><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" />
+			<td align="right"><span class="tb_font_2">รอบเอว :</span></td>
+			<td><input name="round_" type="text" size="1" maxlength="5" value="<?php echo $waist; ?>" />
 			  ซม.</td>
-			<td width="70" align="left"><span class="tb_font_2">BP1 :</span></td>
-			<td width="150" align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
+			<td align="right"><span class="tb_font_2">BP1 :</span></td>
+			<td align="left"><input name="bp1" type="text" size="1" maxlength="3" value="<?php echo $bp1;?>" />
 			  /
 			  <input name="bp2" type="text" size="1" maxlength="3" value="<?php echo $bp2; ?>" />
 			  mmHg</td>
@@ -639,42 +629,42 @@ C&deg; </td>
 			</td>
 		  </tr>
 	</table>
-	<TABLE class="tb_font">
-	</TABLE>
-	<TABLE width="725" class="tb_font">
+
+	<TABLE width="" class="tb_font">
 	<tr>
-           <td width="101" align="right" class="tb_font_2">โรคประจำตัว :</td>
-           <td width="612" colspan="5" align="left"><span class="data_show">
-             <input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>"/>
-             <input type="button"  onclick="document.getElementById('congenital_disease').value='ปฏิเสธ';" name="Submit3" value="ปฏิเสธ" />
-           </span></td>
-         </tr>
+		<td width="200" align="right" class="tb_font_2">โรคประจำตัว :</td>
+		<td colspan="5" align="left"><span class="data_show">
+			<input name="congenital_disease" type="text" id="congenital_disease" size="80"  value="<?php echo $congenital_disease;?>"/>
+			<input type="button"  onclick="document.getElementById('congenital_disease').value='ปฏิเสธ';" name="Submit3" value="ปฏิเสธ" />
+		</span>
+		</td>
+	</tr>
 		 <tr>
-           <td width="101" align="right" class="tb_font_2">อุบัติเหตุ และ ผ่าตัด :</td>
-           <td width="612" colspan="5" align="left"><span class="data_show">
+           <td align="right" class="tb_font_2">อุบัติเหตุ และ ผ่าตัด :</td>
+           <td colspan="5" align="left"><span class="data_show">
              <input name="accident_surgery" type="text" id="accident_surgery" size="80"  value=""/>
              <input type="button"  onclick="document.getElementById('accident_surgery').value='ปฏิเสธ';" name="Submit3" value="ปฏิเสธ" />
            </span></td>
          </tr>
 		 <tr>
-           <td width="101" align="right" class="tb_font_2">เคยเข้ารับการรักษาในโรงพยาบาล :</td>
-           <td width="612" colspan="5" align="left"><span class="data_show">
+           <td align="right" class="tb_font_2">เคยเข้ารับการรักษาในโรงพยาบาล :</td>
+           <td colspan="5" align="left"><span class="data_show">
              <input name="treat_hospital" type="text" id="treat_hospital" size="80"  value=""/>
              <input type="button"  onclick="document.getElementById('treat_hospital').value='ปฏิเสธ';" name="Submit3" value="ปฏิเสธ" />
            </span></td>
          </tr>
 	
 		 <tr id="txt_epilepsy" style="display: none;">
-           <td width="101" align="right" class="tb_font_2" >โรคลมชัก :</td>
-           <td width="612" colspan="5" align="left"><span class="data_show">
+           <td align="right" class="tb_font_2" >โรคลมชัก :</td>
+           <td colspan="5" align="left"><span class="data_show">
              <input name="epilepsy" type="text" id="epilepsy" size="80"  value=""/>
              <input type="button"  onclick="document.getElementById('epilepsy').value='ปฏิเสธ';" name="Submit3" value="ปฏิเสธ" />
            </span></td>
 		</tr>
         
 		 <tr>
-           <td width="101" align="right" class="tb_font_2">ประวัติอื่นๆที่สำคัญ :</td>
-           <td width="612" colspan="5" align="left"><span class="data_show">
+           <td align="right" class="tb_font_2">ประวัติอื่นๆที่สำคัญ :</td>
+           <td colspan="5" align="left"><span class="data_show">
              <input name="treat_other" type="text" id="treat_other" size="80"  value=""/>
              <input type="button"  onclick="document.getElementById('treat_other').value='ปฏิเสธ';" name="Submit3" value="ปฏิเสธ" />
            </span></td>
@@ -693,7 +683,7 @@ C&deg; </td>
 	</TABLE>
 	<TABLE class="tb_font">
 	  <tr>
-           <td align="right" valign="top" class="tb_font_2">อาการ : </td>
+           <td width="200" align="right" valign="top" class="tb_font_2">อาการ : </td>
            <td colspan="2" align="left" valign="top"><textarea id="organ" name="organ" cols="40" rows="6" >ขอใบรับรองแพทย์<?php echo $og;?></textarea> &nbsp;&nbsp;</td>
            <td colspan="2" align="left" valign="top">
 		   <table border="0">
@@ -718,36 +708,38 @@ C&deg; </td>
 			 ?>
                           </select></td>
                 </tr>
-             </table></td>
+             </table>
+			</td>
          </tr>
 	</TABLE>
+
 	<table class="tb_font">
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">ตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</td>
+		<tr valign="top">
+			<td width="200" align="right" valign="top" class="tb_font_2">ตรวจสุขภาพช่องปากและฟัน :<br>(Dental Examination)</td>
 			<td><input type="text" name="dental_exam" size="50" value="<?=$arr_dxofyear['dental_exam'];?>"></td>
 		</tr>
-		<tr>
-			<td align="right" valign="top" class="tb_font_2">ตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</td>
+		<tr valign="top">
+			<td align="right" valign="top" class="tb_font_2">ตรวจสายตาและตาบอดสี :<br>(Auto-R & color blindness)</td>
 			<td><input type="text" name="color_blind" size="50" value="<?=$arr_dxofyear['color_blind'];?>"></td>
 		</tr>
-		<tr>
+		<tr valign="top">
 			<td align="right" valign="top" class="tb_font_2">ตรวจการได้ยิน (Audiogram) :</td>
 			<td><input type="text" name="audiogram" size="50" value="<?=$arr_dxofyear['audiogram'];?>"></td>
 		</tr>
-		<tr>
+		<tr valign="top">
 			<td align="right" valign="top" class="tb_font_2">ตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</td>
 			<td><input type="text" name="ekg" size="50" value="<?=$arr_dxofyear['ekg'];?>"></td>
 		</tr>
-		<tr>
+		<tr valign="top">
 			<td align="right" valign="top" class="tb_font_2">ตรวจสมรรถภาพปอด (PFT) :</td>
 			<td><input type="text" name="pft" size="50" value="<?=$arr_dxofyear['pft'];?>"></td>
 		</tr>
 	</table>
 	<TABLE class="tb_font">
-	<tr>
-           <td align="right" class="tb_font_2">คลินิก : </td>
+		<tr>
+           <td width="200" align="right" class="tb_font_2">คลินิก : </td>
            <td align="left" colspan="5">
-   	<select name="clinic" id="clinic">
+   			<select name="clinic" id="clinic">
       <?php 
 	  	print "<option value='' >-- กรุณาเลือกคลินิก --</option>";
 		print " <option value='12 เวชปฏิบัติ' selected>เวชปฏิบัติ</option>";
@@ -803,126 +795,206 @@ C&deg; </td>
 <BR>
 
 <!-- ผลการตรวจทางพยาธิ -->
-<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
-<TR>
-	<TD>
-	<TABLE border="0" cellpadding="0" cellspacing="0">
+<TABLE width="100%" border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394">
 	<TR>
-		<TD align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?php echo $lab_date;?></TD>
-	</TR>
-	<TR class="tb_font">
 		<TD>
-	&nbsp;&nbsp; <span class="style5">UA :</span> 
-       <table border="0">
-	  <tr>
-	  <?php
-	  $i=1;
-	  	while(list($labname,$labresult, $unit) = mysql_fetch_row($result_ua)){
-		if($labname == "OTHERU"){
-			$size="13";
-		}else{
-			$size="6";
-		}
-
-		//if(!empty($arr_dxofyear[$list_ua[$labname]]))
-			//$labresult = $arr_dxofyear[$list_ua[$labname]];
-	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
-          <td>&nbsp;<input name="<?php echo  $list_ua[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
-	<?php 
-	if($i%5==0) echo "<tr></tr>";
-	$i++;
-			}?>
-		  </tr>
-      </table>
-	  <hr />
-	  <div><span class="style5">&nbsp;&nbsp;CBC :</span></div>
-	<div >
-    <table border="0">
-	  <tr>
-	  <?php
-	  $i=1;
-	  	while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_cbc)){
-		if($labname == "OTHER" || $labname == "PLTS"){
-			$size="13";
-		}else{
-			$size="6";
-		}
-		//if(!empty($arr_dxofyear[$list_cbc[$labname]]))
-			//$labresult = $arr_dxofyear[$list_cbc[$labname]];
-	  ?>
-          <td align="right" class="tb_font_2"><?php echo $labname;?> : </td>
-          <td>&nbsp;<input name="<?php echo  $list_cbc[$labname];?>" type="text" value="<?php echo $labresult;?>"  size="<?php echo $size;?>" readonly />&nbsp;<?php //echo //$unit;?>&nbsp;</td>
-          <input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
-          <input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
-	<?php 
-	if($i%5==0) echo "<tr></tr>";
-	$i++;
-			}?>
-		  </tr>
-      </table>
-      </div>
-	  <hr />
-
-	<?php 
-	$other_lab_rows = mysql_num_rows($result_lab);
-	if ($other_lab_rows > 0) 
-	{
-	?>
-	<div><span class="style5">&nbsp;&nbsp;แลปอื่นๆ :</span></div>
-	<table border="0">
-		<tr>
-		<?php
-		$i=1;
-		while(list($labname,$labresult, $unit,$normalrange,$flag) = mysql_fetch_row($result_lab))
-		{ 
-			// สกรีนผลแลปที่ให้แสดงผลได้
-			// if(empty($list_lab[$labname]))
-			// {
-			// 	continue;
-			// }
-
-			$extraName = "";
-			if($labname=='10001')
-			{
-				$extraName = '(LDLC)';
-			}
-			?>
-			<td align="right" class="tb_font_2"><?php echo $labname.$extraName;?> : </td>
-			<td>
-				&nbsp;<input name="<?php echo $list_lab[$labname];?>" type="text" value="<?php echo $labresult;?>" size="6" readonly />&nbsp;&nbsp;
-				<input type="hidden" name="<?=$labname?>range" value="<?=$normalrange?>" />
-				<input type="hidden" name="<?=$labname?>flag" value="<?=$flag?>" />
-			</td>
 			<?php 
-			// ตัดบรรทัดใหม่
-			if($i%5==0) echo "<tr></tr>";
-			$i++;
-		}
-		?>
-		</tr>
+			$uaRows = mysql_num_rows($result_ua);
+			$cbcRows = mysql_num_rows($result_cbc);
+			?>
+			<TABLE width="100%" border="0" cellpadding="0" cellspacing="0">
+				<TR>
+					<td align="left" bgcolor="#0000CC" class="tb_font_1" style="position:relative;">
+						&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?=$lab_date; ?>
+						<div style="text-align:center;position: absolute; top: 0; width: 100%;">
+							<?php
+							$currDate = date('Y-m-d');
+							$treeMonthPass = date('Y-m-d',strtotime("-3 months"));
+							$hn = $dbi->real_escape_string($_POST["p_hn"]);
+							$sql = sprintf("SELECT `labnumber`,SUBSTRING(`orderdate`, 1, 10) AS `short_order_date`, GROUP_CONCAT(`profilecode`,'') AS `lab_lists`
+							FROM `resulthead` 
+							WHERE `hn` = '%s' 
+							AND `orderdate` >= '$treeMonthPass' 
+							AND `orderdate` NOT LIKE '$currDate%%' 
+							GROUP BY `labnumber`",
+								$hn
+							);
+							$q = $dbi->query($sql);
+							if($q->num_rows>0){
+								?>
+								เลือกผลแลปวันอื่น
+								<select id="selectNewLab" onchange="doSelectLab(this)" style="width:100px;">
+									<option value="">เลือกวันที่</option>
+								<?php
+								while ($a = $q->fetch_assoc()) {
+									?><option value="<?=$a['labnumber'];?>"><?=$a['short_order_date'].' ( '.$a['lab_lists'].' )';?></option><?php
+								}
+								?>
+								</select>
+								<?php
+							}
+							?>
+						</div>
+						<script>
+							function doSelectLab(thisInput){
+								const labnumber = thisInput.value;
+								getUa(labnumber);
+								getCbc(labnumber);
+							}
 
-		<tr>
-			<td colspan="10">
-			<p style="margin: 0;">
-				<?php 
-				echo implode(', ', array_keys($list_lab));
-				?>
-			</p>
-			<p style="margin: 0;">*ผลแลปอื่นๆที่ไม่มีในรายการข้างต้น <b><u>หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน</u></b> กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
-			</td>
-		</tr>
+							async function getUa(labnumber){
+								let formData = new FormData();
+								formData.append("labnumber", labnumber);
+								formData.append("action", 'findUAResult');
+								const postData = new URLSearchParams(formData).toString();
+								await sendForm('edx_lab.php',postData).then((res)=>{
+									document.getElementById('uaResultContainer').innerHTML = res;
+								});
+							}
 
-	</table>
-	<?php 
-	}
-	?>
+							async function getCbc(labnumber){
+								let formData = new FormData();
+								formData.append("labnumber", labnumber);
+								formData.append("action", 'findCBCResult');
+								const postData = new URLSearchParams(formData).toString();
+								await sendForm('edx_lab.php',postData).then((res)=>{
+									document.getElementById('cbcResultContainer').innerHTML = res;
+								});
+							}
 
+							async function sendForm(url, postData){
+								let response = await fetch(url, {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+									},
+									body: postData
+								});
+								const body = await response.text();
+								return body;
+							}
+						</script>
+					</td>
+				</TR>
+				<TR class="tb_font">
+					<TD>
+						&nbsp;&nbsp; <span class="style5">UA :</span>
+						<div id="uaResultContainer">
+						<?php
+						if($uaRows>0){
+						?>
+						<table border="0">
+							<tr>
+								<?php
+								$i = 1;
+								while (list($labname, $labresult, $unit) = mysql_fetch_row($result_ua)) {
+									if ($labname == "OTHERU") {
+										$size = "13";
+									} else {
+										$size = "6";
+									}
+									?>
+									<td align="right" class="tb_font_2"><?=$labname; ?> : </td>
+									<td>&nbsp;<input name="<?=$list_ua[$labname]; ?>" type="text" value="<?=$labresult; ?>" size="<?=$size; ?>" readonly />&nbsp;&nbsp;</td>
+									<?php
+									if ($i % 5 == 0) echo "<tr></tr>";
+									$i++;
+								}
+								?>
+							</tr>
+						</table>
+						<?php
+						}else{
+							?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูล UA</b></p><?php
+						}
+						?>
+						</div>
+						<hr />
+						<div><span class="style5">&nbsp;&nbsp;CBC :</span></div>
+						<div id="cbcResultContainer">
+							<?php
+							if($cbcRows>0){
+							?>
+							<table border="0">
+								<tr>
+									<?php
+									$i = 1;
+									while (list($labname, $labresult, $unit, $normalrange, $flag) = mysql_fetch_row($result_cbc)) {
+										if ($labname == "OTHER" || $labname == "PLTS") {
+											$size = "13";
+										} else {
+											$size = "6";
+										}
+										?>
+										<td align="right" class="tb_font_2"><?=$labname; ?> : </td>
+										<td>
+											&nbsp;<input name="<?=$list_cbc[$labname]; ?>" type="text" value="<?=$labresult; ?>" size="<?=$size; ?>" readonly />&nbsp;&nbsp;
+											<input type="hidden" name="<?= $labname ?>range" value="<?= $normalrange ?>" />
+											<input type="hidden" name="<?= $labname ?>flag" value="<?= $flag ?>" />
+										</td>
+										<?php
+										if ($i % 5 == 0) echo "<tr></tr>";
+										$i++;
+									} ?>
+								</tr>
+							</table>
+							<?php
+							}else{
+								?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูล CBC</b></p><?php
+							}
+							?>
+						</div>
+						<hr />
+						<div><span class="style5">&nbsp;&nbsp;แลปอื่นๆ :</span></div>
+						<?php
+						$other_lab_rows = mysql_num_rows($result_lab);
+						if ($other_lab_rows > 0) {
+						?>
+							
+							<table border="0">
+								<tr>
+									<?php
+									$i = 1;
+									while (list($labname, $labresult, $unit, $normalrange, $flag) = mysql_fetch_row($result_lab)) {
+										$extraName = "";
+										if ($labname == '10001') {
+											$extraName = '(LDLC)';
+										}
+										?>
+										<td align="right" class="tb_font_2"><?=$labname . $extraName; ?> : </td>
+										<td>
+											&nbsp;<input name="<?=$list_lab[$labname]; ?>" type="text" value="<?=$labresult; ?>" size="6" readonly />&nbsp;&nbsp;
+											<input type="hidden" name="<?= $labname ?>range" value="<?= $normalrange ?>" />
+											<input type="hidden" name="<?= $labname ?>flag" value="<?= $flag ?>" />
+										</td>
+									<?php
+										// ตัดบรรทัดใหม่
+										if ($i % 5 == 0) echo "<tr></tr>";
+										$i++;
+									}
+									?>
+								</tr>
+								<tr>
+									<td colspan="10">
+										<p style="margin: 0;">
+											<?php
+											echo implode(', ', array_keys($list_lab));
+											?>
+										</p>
+										<p style="margin: 0;">*ผลแลปอื่นๆที่ไม่มีในรายการข้างต้น <b><u>หากจำเป็นต้องให้แแพทย์บันทึกผลและออกรายงาน</u></b> กรุณาแจ้งศูนย์คอมฯล่วงหน้า เพื่อจะได้ปรับปรุงฐานข้อมูลก่อน ขอบคุณครับ</p>
+									</td>
+								</tr>
+							</table>
+						<?php
+						}else{
+							?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูลแลปอืนๆ</b></p><?php
+						}
+						?>
+					</TD>
+				</TR>
+			</TABLE>
 		</TD>
 	</TR>
-	</TABLE>
-	</TD>
-</TR>
 </TABLE>
 <BR>
 <!-- บันทึกการวินิฉัยจากแพทย์ -->
