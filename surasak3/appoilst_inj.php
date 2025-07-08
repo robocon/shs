@@ -479,7 +479,7 @@ return stat;
 			<Option value="VERORAB 5">VERORAB 5 เข็ม</Option>
 			<Option value="SPEEDA 2">SPEEDA 2 เข็ม</Option>
 			<Option value="SPEEDA 3">SPEEDA 3 เข็ม</Option>
-			<Option value="SPEEDA 4">SPEEDA 4 เข็ม</Option>
+			<Option value="SPEEDA 4">SPEEDA 4 เข็ม ฉีดใต้ผิวหนัง ( ID )</Option>
 			<Option value="SPEEDA 5">SPEEDA 5 เข็ม</Option>
 			<Option value="Euvax 3">Euvax 3 เข็ม</Option>
 			<Option value="Euvax 4">Euvax 4 เข็ม</Option>
