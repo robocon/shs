@@ -1,5 +1,8 @@
 <?php
 require dirname(__FILE__)."/bootstrap.php";
+require dirname(__FILE__)."/includes/JSON.php";
+
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
 $list_ua["COLOR"] =  "ua_color"; 
 $list_ua["APPEAR"] =  "ua_appear"; 
@@ -109,6 +112,8 @@ if($action=='findUAResult'){
             ?>
         </table>
         <?php
+    }else{
+        ?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูล UA</b></p><?php
     }
     exit;
 
@@ -148,6 +153,82 @@ if($action=='findUAResult'){
             ?>
         </table>
         <?php
+    }else{
+        ?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูล CBC</b></p><?php
     }
     exit;
+}else if($action=='findOTHERResult'){
+
+    $sql = sprintf("SELECT b.`labcode`,b.`result`,b.`unit`,b.`normalrange`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `authorisedate`
+	FROM ( 
+		SELECT MAX(`autonumber`) AS `autonumber` 
+		FROM `resulthead` 
+		WHERE `labnumber` = '%s' 
+		AND ( `profilecode` <> 'UA' AND `profilecode` <> 'CBC' )
+		GROUP BY `profilecode`
+	) as a , 
+	`resultdetail` as b  
+	WHERE a.`autonumber` = b.`autonumber` 
+	AND b.`parentcode` <> 'UA' 
+	AND b.`parentcode` <> 'CBC' 
+    AND b.`labcode` IN('TRIG','GLU','CHOL','AST','ALT','ALP','BUN','CREA','URIC','HDL','LDL','10001','MALARI','METAMP','HBSAG','HCVAB','HIV','VDRL','PARASI','GROUPT','RH','UPT','ANTIHB','AHAV','TB','DB','ALB','TP')
+	Order by a.`autonumber` ASC ",
+    $dbi->real_escape_string($_POST['labnumber'])
+    );
+    
+    $q = $dbi->query($sql);
+    if($q->num_rows>0){
+
+        $items = array();
+        $orderdate = '';
+        while ($a = $q->fetch_assoc()) {
+            $orderdate = $a['authorisedate'];
+            $labname = $a['labcode'];
+            $a['name'] = $list_lab[$labname];
+            $items[] = $a;
+        }
+
+        $res = array(
+            'status'=>200,
+            'date'=>$orderdate,
+            'data'=>$items
+        );
+    /*
+    ?>
+    <table border="0">
+        <tr>
+            <?php
+            $i = 1;
+            while ($a = $q->fetch_assoc()) {
+                $extraName = "";
+                $labname = $a['labcode'];
+                if ($labname == '10001') {
+                    $extraName = '(LDLC)';
+                }
+                ?>
+                <td align="right" class="tb_font_2"><?=$labname . $extraName; ?> : </td>
+                <td>
+                    &nbsp;<input name="<?=$list_lab[$labname]; ?>" type="text" value="<?=$a['result']; ?>" size="6" readonly />&nbsp;&nbsp;
+                    <input type="hidden" name="<?=$labname;?>range" value="<?=$a['normalrange'];?>" />
+                    <input type="hidden" name="<?=$labname;?>flag" value="<?=$a['flag']?>" />
+                </td>
+            <?php
+                // ตัดบรรทัดใหม่
+                if ($i % 5 == 0) echo "<tr></tr>";
+                $i++;
+            }
+            ?>
+        </tr>
+    </table>
+    <?php
+    */
+
+    }else{
+        
+        $res = array('status'=>400, 'message'=>'ไม่พบข้อมูลแลปอืนๆ');
+    }
+
+    echo $json->encode($res);
+    exit;
 }
+

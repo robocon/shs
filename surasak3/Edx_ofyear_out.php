@@ -802,83 +802,47 @@ C&deg; </td>
 			$uaRows = mysql_num_rows($result_ua);
 			$cbcRows = mysql_num_rows($result_cbc);
 			?>
-			<TABLE width="100%" border="0" cellpadding="0" cellspacing="0">
+			<TABLE width="100%" border="0" cellpadding="0" cellspacing="0" id="lab_table">
 				<TR>
 					<td align="left" bgcolor="#0000CC" class="tb_font_1" style="position:relative;">
-						&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?=$lab_date; ?>
+						<?php 
+						if(empty($lab_date)){
+							$lab_date = '-';
+						}
+						?>
+						&nbsp;&nbsp;&nbsp;ผลการตรวจทางพยาธิ เมื่อวันที่ <?=$lab_date;?>
 						<div style="text-align:center;position: absolute; top: 0; width: 100%;">
 							<?php
 							$currDate = date('Y-m-d');
 							$treeMonthPass = date('Y-m-d',strtotime("-3 months"));
 							$hn = $dbi->real_escape_string($_POST["p_hn"]);
-							$sql = sprintf("SELECT `labnumber`,SUBSTRING(`orderdate`, 1, 10) AS `short_order_date`, GROUP_CONCAT(`profilecode`,'') AS `lab_lists`
-							FROM `resulthead` 
-							WHERE `hn` = '%s' 
-							AND `orderdate` >= '$treeMonthPass' 
-							AND `orderdate` NOT LIKE '$currDate%%' 
-							GROUP BY `labnumber`",
-								$hn
-							);
-							$q = $dbi->query($sql);
-							if($q->num_rows>0){
-								?>
-								เลือกผลแลปวันอื่น
-								<select id="selectNewLab" onchange="doSelectLab(this)" style="width:100px;">
-									<option value="">เลือกวันที่</option>
-								<?php
-								while ($a = $q->fetch_assoc()) {
-									?><option value="<?=$a['labnumber'];?>"><?=$a['short_order_date'].' ( '.$a['lab_lists'].' )';?></option><?php
-								}
-								?>
-								</select>
-								<?php
-							}
 							?>
 						</div>
-						<script>
-							function doSelectLab(thisInput){
-								const labnumber = thisInput.value;
-								getUa(labnumber);
-								getCbc(labnumber);
-							}
-
-							async function getUa(labnumber){
-								let formData = new FormData();
-								formData.append("labnumber", labnumber);
-								formData.append("action", 'findUAResult');
-								const postData = new URLSearchParams(formData).toString();
-								await sendForm('edx_lab.php',postData).then((res)=>{
-									document.getElementById('uaResultContainer').innerHTML = res;
-								});
-							}
-
-							async function getCbc(labnumber){
-								let formData = new FormData();
-								formData.append("labnumber", labnumber);
-								formData.append("action", 'findCBCResult');
-								const postData = new URLSearchParams(formData).toString();
-								await sendForm('edx_lab.php',postData).then((res)=>{
-									document.getElementById('cbcResultContainer').innerHTML = res;
-								});
-							}
-
-							async function sendForm(url, postData){
-								let response = await fetch(url, {
-									method: 'POST',
-									headers: {
-										'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-									},
-									body: postData
-								});
-								const body = await response.text();
-								return body;
-							}
-						</script>
 					</td>
 				</TR>
 				<TR class="tb_font">
 					<TD>
-						&nbsp;&nbsp; <span class="style5">UA :</span>
+						<div style="padding: 0 0 0 8px;">
+							<span class="style5">UA :</span> 
+							<span>
+								<?php
+								$sql = sprintf("SELECT SUBSTRING(`orderdate`,1,10) AS `short_order_date`,`labnumber` FROM `resulthead` WHERE `hn` = '%s' AND `orderdate` >= '$treeMonthPass' AND `orderdate` NOT LIKE '$currDate%%' AND `profilecode` = 'UA';", $hn);
+								$q = $dbi->query($sql);
+								if($q->num_rows>0){
+									?>
+									<select id="selectNewUa" onchange="doSelectUa(this)" style="width:100px;">
+										<option value="">เลือกผลแลป</option>
+									<?php
+									while ($a = $q->fetch_assoc()) {
+										?><option value="<?=$a['labnumber'];?>"><?=$a['short_order_date'].' ('.$a['labnumber'].')';?></option><?php
+									}
+									?>
+									</select>
+									<?php
+								}
+								?>
+							</span>
+						</div>
 						<div id="uaResultContainer">
 						<?php
 						if($uaRows>0){
@@ -910,7 +874,27 @@ C&deg; </td>
 						?>
 						</div>
 						<hr />
-						<div><span class="style5">&nbsp;&nbsp;CBC :</span></div>
+						<div style="padding: 0 0 0 8px;">
+							<span class="style5">CBC :</span>
+							<span>
+								<?php
+								$sql = sprintf("SELECT SUBSTRING(`orderdate`,1,10) AS `short_order_date`,`labnumber` FROM `resulthead` WHERE `hn` = '%s' AND `orderdate` >= '$treeMonthPass' AND `orderdate` NOT LIKE '$currDate%%' AND `profilecode` = 'CBC';", $hn);
+								$q = $dbi->query($sql);
+								if($q->num_rows>0){
+									?>
+									<select id="selectNewUa" onchange="doSelectCbc(this)" style="width:100px;">
+										<option value="">เลือกผลแลป</option>
+									<?php
+									while ($a = $q->fetch_assoc()) {
+										?><option value="<?=$a['labnumber'];?>"><?=$a['short_order_date'].' ('.$a['labnumber'].')';?></option><?php
+									}
+									?>
+									</select>
+									<?php
+								}
+								?>
+							</span>
+						</div>
 						<div id="cbcResultContainer">
 							<?php
 							if($cbcRows>0){
@@ -945,12 +929,88 @@ C&deg; </td>
 							?>
 						</div>
 						<hr />
-						<div><span class="style5">&nbsp;&nbsp;แลปอื่นๆ :</span></div>
-						<?php
-						$other_lab_rows = mysql_num_rows($result_lab);
-						if ($other_lab_rows > 0) {
-						?>
-							
+						<div style="padding: 0 0 0 8px; position:relative;">
+							<span class="style5">แลปอื่นๆ :</span>
+							<span>
+							<?php
+							$sql = sprintf("SELECT `labnumber`,SUBSTRING(`orderdate`,1,10) AS `short_order_date`,GROUP_CONCAT(`profilecode`) AS `group_profile` FROM `resulthead` WHERE `hn` = '%s' AND `orderdate` >= '$treeMonthPass' AND `orderdate` NOT LIKE '$currDate%%' AND ( `profilecode` <> 'UA' AND `profilecode` <> 'CBC' ) GROUP BY `labnumber`", $hn);
+							$q = $dbi->query($sql);
+							if($q->num_rows>0){
+								?>
+								<select id="selectNewOther" onchange="doSelectOther(this)" style="width:100px;">
+									<option value="">เลือกผลแลป</option>
+								<?php
+								while ($a = $q->fetch_assoc()) {
+									?><option value="<?=$a['labnumber'];?>"><?=$a['short_order_date'].' ('.$a['labnumber'].' --&gt; '.$a['group_profile'].')';?></option><?php
+								}
+								?>
+								</select>
+								<?php
+							}
+							?>
+							</span>
+
+							<style>
+								label:hover{
+									cursor: pointer;
+								}
+								.other-child{
+									/* width: 150px; */
+								}
+							</style>
+							<!-- ฟอร์มเลือกข้อมูลแลปอื่นๆ -->
+							<div id="otherLabChoiseContain" style="position: absolute; background-color: white; padding: 8px; z-index:1; width:600px; border: 2px solid black; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+								<div style="background-color: #bbbbbb; text-align:center;"><span id="otherLabHeader">YYYY-MM-DD</span> <a href="javascript:void(0);" onclick="closeOtherLab()">[ ปิด ]</a></div>
+								<div id="otherLabChoise">
+									<div class="other-child">
+										<input type="checkbox" class="other-lab-item" id="test999" value="xxx" data-flag="N" data-range="0-99">
+										<label for="test999"><span class="tb_font_2">test:</span> 9999 mmHg</label>
+									</div>
+								</div>
+								<div>
+									<button type="button" onclick="selectOtherLab()">เลือกข้อมูล</button>
+								</div>
+							</div>
+							<!-- ฟอร์มเลือกข้อมูลแลปอื่นๆ -->
+							<script>
+								function closeOtherLab(){
+									document.getElementById('otherLabChoiseContain').style.display = 'none';
+								}
+
+								function selectOtherLab(){
+									let items = document.querySelectorAll('.other-lab-item');
+									for (let i = 0; i < items.length; i++) {
+										const el = items[i];
+										if(el.checked === true){
+											
+											let name = el.getAttribute('data-name');
+											let result = el.getAttribute('data-value');
+											let flag = el.getAttribute('data-flag');
+											let range = el.getAttribute('data-range');
+											let labcode = el.getAttribute('data-code');
+											
+											const content = `<span class="tb_font_2">${name}</span> : 
+											<input name="${name}" type="text" value="${result}" size="6" readonly />
+											<input type="hidden" name="${labcode}range" value="${range}" />
+											<input type="hidden" name="${labcode}flag" value="${flag}" />`;
+
+											document.getElementById('otherResultContainer').insertAdjacentHTML('afterbegin',content);
+											
+											
+											document.getElementById('otherLabChoise').innerHTML = '';
+										}
+									}
+
+									closeOtherLab();
+								}
+							</script>
+
+						</div>
+						<div id="otherResultContainer" style="position:relative;">
+							<?php
+							$other_lab_rows = mysql_num_rows($result_lab);
+							if ($other_lab_rows > 0) {
+							?>
 							<table border="0">
 								<tr>
 									<?php
@@ -963,9 +1023,9 @@ C&deg; </td>
 										?>
 										<td align="right" class="tb_font_2"><?=$labname . $extraName; ?> : </td>
 										<td>
-											&nbsp;<input name="<?=$list_lab[$labname]; ?>" type="text" value="<?=$labresult; ?>" size="6" readonly />&nbsp;&nbsp;
-											<input type="hidden" name="<?= $labname ?>range" value="<?= $normalrange ?>" />
-											<input type="hidden" name="<?= $labname ?>flag" value="<?= $flag ?>" />
+											&nbsp;<input name="<?=$list_lab[$labname]; ?>" type="text" value="<?=$labresult;?>" size="6" readonly />&nbsp;&nbsp;
+											<input type="hidden" name="<?=$labname ?>range" value="<?=$normalrange ?>" />
+											<input type="hidden" name="<?=$labname ?>flag" value="<?=$flag?>" />
 										</td>
 									<?php
 										// ตัดบรรทัดใหม่
@@ -985,17 +1045,99 @@ C&deg; </td>
 									</td>
 								</tr>
 							</table>
-						<?php
-						}else{
-							?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูลแลปอืนๆ</b></p><?php
-						}
-						?>
+							<?php
+							}else{
+								?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูลแลปอืนๆ</b></p><?php
+							}
+							?>
+						</div>
 					</TD>
 				</TR>
 			</TABLE>
 		</TD>
 	</TR>
 </TABLE>
+
+<script>
+
+function doSelectUa(thisInput){
+	getUa(thisInput.value);
+}
+
+function doSelectCbc(thisInput){
+	getCbc(thisInput.value);
+}
+
+function doSelectOther(thisInput){
+	getOther(thisInput.value);
+}
+
+async function getUa(labnumber){
+	let formData = new FormData();
+	formData.append("labnumber", labnumber);
+	formData.append("action", 'findUAResult');
+	const postData = new URLSearchParams(formData).toString();
+	await sendForm('edx_lab.php',postData).then((res)=>{
+		document.getElementById('uaResultContainer').innerHTML = res;
+	});
+}
+
+async function getCbc(labnumber){
+	let formData = new FormData();
+	formData.append("labnumber", labnumber);
+	formData.append("action", 'findCBCResult');
+	const postData = new URLSearchParams(formData).toString();
+	await sendForm('edx_lab.php',postData).then((res)=>{
+		document.getElementById('cbcResultContainer').innerHTML = res;
+	});
+}
+
+async function getOther(labnumber){
+	let formData = new FormData();
+	formData.append("labnumber", labnumber);
+	formData.append("action", 'findOTHERResult');
+	const postData = new URLSearchParams(formData).toString();
+	await sendForm('edx_lab.php',postData).then((res)=>{
+		const r = JSON.parse(res);
+		if(r.status===200){
+			
+			//สร้างฟอร์มให้เลือกข้อมูล
+			buildOtherLabForm(r.data, r.date);
+		}else if(r.status===400){
+			document.getElementById('otherResultContainer').innerHTML = '<p><b>&nbsp;&nbsp;&nbsp;'+r.message+'</b></p>';
+		}
+		
+	});
+}
+
+async function buildOtherLabForm(items, headerDate){
+	document.getElementById('otherLabChoise').innerHTML = '';
+	document.getElementById('otherLabHeader').innerHTML = headerDate;
+	for (let i = 0; i < items.length; i++) {
+		const el = items[i];
+
+		const content = `<div class="other-child">
+		<input type="checkbox" class="other-lab-item" id="${el.labcode}" data-code="${el.labcode}" data-name="${el.name}" data-value="${el.result}" data-flag="${el.flag}" data-range="${el.normalrange}">
+		<label for="${el.labcode}"><span class="tb_font_2">${el.name}:</span> ${el.result}</label>
+		</div>`;
+
+		document.getElementById('otherLabChoise').insertAdjacentHTML('beforeend',content);
+		document.getElementById('otherLabChoiseContain').style.display = '';
+	}
+}
+
+async function sendForm(url, postData){
+	let response = await fetch(url, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+		},
+		body: postData
+	});
+	const body = await response.text();
+	return body;
+}
+</script>
 <BR>
 <!-- บันทึกการวินิฉัยจากแพทย์ -->
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#BAF394" >
@@ -1035,50 +1177,31 @@ C&deg; </td>
 	jQuery.noConflict();
 	(function( $ ) {
 	$(function() {
-		
         $(document).on('click', '#btn-bmi', function(){
-
             var pt_height = $("#pt_height").val();
 			var pt_weight = $("#pt_weight").val();
-
 			var hei = pt_height / 100;
 			var bmi = pt_weight / ( hei * hei );
-
 			$("#pt_bmi").val(bmi.toFixed(2));
-            
         });
-		
 	});
 })(jQuery);
 </script>
-
-
-
 <?php }?>
-
-
-
-<?php 
-include("unconnect.inc");
- ?>
-</body>
-
-
-</html>
-
 <script>
 function Show() {
-	
 	var select = document.getElementById('camp');
 	var text = select.options[select.selectedIndex].text;
-	//alert(text);
-  
-  if(text == "ใบรับรองแพทย์ สำหรับใบอนุญาตขับรถ (E_CERT-002)"){
-	document.getElementById("txt_epilepsy").style.display = null; 
-  }else{
-	document.getElementById('txt_epilepsy').style.display="none";
-  }//end if 
-
-
-}//end function
+	if(text == "ใบรับรองแพทย์ สำหรับใบอนุญาตขับรถ (E_CERT-002)"){
+		document.getElementById("txt_epilepsy").style.display = null; 
+	}else{
+		document.getElementById('txt_epilepsy').style.display="none";
+	}//end if 
+	}//end function
 </script>
+<?php
+include("unconnect.inc");
+?>
+</body>
+</html>
+
