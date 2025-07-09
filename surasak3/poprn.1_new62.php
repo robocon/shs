@@ -742,7 +742,7 @@ print "<DIV style='left:152PX;top:4465PX;width:520PX;height:30PX;'><span class='
 print "<DIV style='left:208PX;top:4540PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
 print "<DIV style='left:213PX;top:4565PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
 print "<DIV style='left:213PX;top:4590PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
-print "<DIV style='left:213PX;top:4615PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:213PX;top:4615PX;width:285PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
 print "<DIV style='left:213PX;top:4640PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cPodate</span></DIV>";
 
 print "<DIV style='left:88PX;top:4690PX;width:245PX;height:30PX;'><span class='fc1-0'>- อนุมัติตามข้อ 9.</span></DIV>";
@@ -1963,7 +1963,7 @@ print "<DIV style='left:195PX;top:7990PX;width:618PX;height:30PX;'><span class='
 print "<DIV style='left:499PX;top:8020PX;width:87PX;height:30PX;TEXT-ALIGN:LEFT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
 print "<DIV style='left:444PX;top:8045PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
 print "<DIV style='left:444PX;top:8070PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
-print "<DIV style='left:444PX;top:8095PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:444PX;top:8095PX;width:290PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
 print "<DIV style='left:444PX;top:8120PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 
 
