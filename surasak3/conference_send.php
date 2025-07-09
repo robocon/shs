@@ -2,7 +2,7 @@
 <?php
 require dirname(__FILE__).'/includes/config.php';
 
-$dbi = new mysqli('localhost',USER,PASS,DB,PORT);
+$dbi = new mysqli(HOST,USER,PASS,DB,PORT);
 $dbi->query("SET NAMES UTF-8");
 
 $currDate = date('Y-m-d');
