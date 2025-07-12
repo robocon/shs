@@ -155,17 +155,18 @@ if($_POST["act"]=="edit"){
 	}
 	$q->free_result();
 
-	$edit="update drugreact SET 
-	advreact='$advreact',
-	sideeffects='$sideeffects',
-	asses='$asses',
-	reporter='$reporter',
-	date='$report_date',
-	officer1='".$_SESSION['sOfficer']."',
-	groupname='$drugreact_group_name',
-	g6pd = $g6pdField
-	where row_id='".$row_id."'";
-	//echo $edit;
+	$edit="UPDATE `drugreact` SET 
+	`advreact`='$advreact',
+	`sideeffects`='$sideeffects',
+	`asses`='$asses',
+	`reporter`='$reporter',
+	`date`='$report_date',
+	`officer1`='".$_SESSION['sOfficer']."',
+	`groupname`='$drugreact_group_name',
+	`g6pd` = $g6pdField,
+	`date_edit` = NOW()
+	WHERE `row_id`='$row_id'";
+	
 	if(mysql_query($edit)){	
 		// เก็บข้อมูลเข้าแฟ้ม drugallergy
 		$sHn=$hn;
@@ -428,16 +429,15 @@ if ( $page == 'search' ) {
     }
 ?>	
 <h3 align="center">ประวัติการแพ้ยา</h3>
-<?
+<?php
     $dsql = "SELECT * FROM `drugreact` WHERE `hn` = '$hn' order by groupname";
     $dquery=mysql_query($dsql);
 	$dnum=mysql_num_rows($dquery);
-	
-
     if ( $dnum > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
             <tr style="background-color:#16A085;">
+				<th>วันที่</th>
                 <th>รหัสยา</th>
                 <th>ชื่อการค้า</th>
                 <th>ชื่อสามัญ</th>
@@ -453,6 +453,7 @@ if ( $page == 'search' ) {
             while($ditem = mysql_fetch_array($dquery)){
                 ?>
                 <tr style="background-color:#D5F5E3;">
+					<td><?=$ditem['date'];?></td>
                     <td align="center"><?=$ditem['drugcode'];?></td>
                     <td><?=$ditem['tradname'];?></td>
                     <td><?=$ditem['genname'];?></td>
@@ -506,16 +507,15 @@ if ( $page == 'search' ) {
 
 </TABLE>
 <h3 align="center">ประวัติการแพ้ยา</h3>
-<?
+<?php
     $dsql = "SELECT * FROM `drugreact` WHERE `hn` = '$hn' order by groupname";
     $dquery=mysql_query($dsql);
 	$dnum=mysql_num_rows($dquery);
-	
-
     if ( $dnum > 0 ) {
         ?>
         <table class="chk_table" width="90%" bgcolor="#FFFFFF" align="center">
             <tr style="background-color:#16A085;">
+				<th>วันที่</th>
                 <th>รหัสยา</th>
                 <th>ชื่อการค้า</th>
                 <th>ชื่อสามัญ</th>
@@ -542,6 +542,7 @@ if ( $page == 'search' ) {
 
                 ?>
                 <tr style="background-color:#D5F5E3;">
+					<td><?=$ditem['date'];?></td>
                     <td align="center"><?=$ditem['drugcode'];?></td>
                     <td><?=$ditem['tradname'];?></td>
                     <td><?=$ditem['genname'];?></td>
