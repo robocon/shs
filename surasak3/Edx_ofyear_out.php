@@ -993,7 +993,7 @@ C&deg; </td>
 							</style>
 							<!-- ฟอร์มเลือกข้อมูลแลปอื่นๆ -->
 							<div id="otherLabChoiseContainer" style="display:none;">
-								<div id="otherLabHeaderContainer">ผลแลปวันที่ <span id="otherLabHeader">YYYY-MM-DD</span> <a href="javascript:void(0);" onclick="closeOtherLab()">[ ปิด ]</a></div>
+								<div id="otherLabHeaderContainer">ผลแลปวันที่ <span id="otherLabHeader">YYYY-MM-DD</span> (<span id="otherLabNumber">YYYYMMDD</span>) <a href="javascript:void(0);" onclick="closeOtherLab()">[ ปิด ]</a></div>
 								<div id="otherLabChoiseContent">
 									<div class="other-child">
 										<input type="checkbox" class="other-lab-item" id="test999" value="xxx" data-flag="N" data-range="0-99">
@@ -1160,7 +1160,7 @@ async function getOther(labnumber){
 		if(r.status===200){
 			
 			//สร้างฟอร์มให้เลือกข้อมูล
-			buildOtherLabForm(r.data, r.date);
+			buildOtherLabForm(r.data, r.date, labnumber);
 		}else if(r.status===400){
 			// document.getElementById('otherResultContainer').innerHTML = '<p><b>&nbsp;&nbsp;&nbsp;'+r.message+'</b></p>';
 			closeOtherLab();
@@ -1169,9 +1169,10 @@ async function getOther(labnumber){
 	});
 }
 
-async function buildOtherLabForm(items, headerDate){
+async function buildOtherLabForm(items, headerDate, labnumber){
 	document.getElementById('otherLabChoiseContent').innerHTML = '';
 	document.getElementById('otherLabHeader').innerHTML = headerDate;
+	document.getElementById('otherLabNumber').innerHTML = labnumber;
 	for (let i = 0; i < items.length; i++) {
 		const el = items[i];
 
