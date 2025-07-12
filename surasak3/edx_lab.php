@@ -159,7 +159,7 @@ if($action=='findUAResult'){
     exit;
 }else if($action=='findOTHERResult'){
 
-    $sql = sprintf("SELECT b.`labcode`,b.`result`,b.`unit`,b.`normalrange`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `authorisedate`
+    $sql = sprintf("SELECT b.`labcode`,b.`result`,b.`unit`,b.`normalrange`,b.`flag`,SUBSTRING(b.`authorisedate`,1,10) AS `authorisedate`,b.`labname`
 	FROM ( 
 		SELECT MAX(`autonumber`) AS `autonumber` 
 		FROM `resulthead` 
@@ -183,8 +183,9 @@ if($action=='findUAResult'){
         $orderdate = '';
         while ($a = $q->fetch_assoc()) {
             $orderdate = $a['authorisedate'];
-            $labname = $a['labcode'];
-            $a['name'] = $list_lab[$labname];
+            $labcode = $a['labcode'];
+            $a['name'] = $list_lab[$labcode];
+            $a['labname'] = $a['labname'];
             $items[] = $a;
         }
 

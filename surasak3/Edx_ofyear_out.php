@@ -135,6 +135,7 @@ $list_lab["TP"] = "TP";
 </head>
 
 <body>
+<script src="js/sweetalert2.all.min.js" type="text/javascript"></script>
 <a href ="../nindex.htm" >&lt;&lt; เมนู</a>  || <a href="upd_labstatus.php" target="_blank">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>
 <center>
   <!--div class="font_title">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า62</div-->
@@ -468,17 +469,21 @@ while($arr = Mysql_fetch_assoc($result)){
 		<tr>
 		  <td align="right" ><span class="tb_font_2">ที่อยู่ตามบัตรประชาชน : </span></td>
 		  <td align="left">
-		  		<?php
-		  
-		  			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
-		  			$query_run = mysql_query($sql_address);
-		  			while($result_address = mysql_fetch_array($query_run)){ 
-		  				 
-		  				echo $result_address['card_address']." ".$result_address['card_moo']." ต.".$result_address['card_tambol']." อ.".$result_address['card_amphur']." จ.".$result_address['card_province'];
-		  			}//end while
+			<?php
+			$sql_address = "select * from opcard where hn = '".$arr_view["hn"]."' LIMIT 0,1 ";
+			$query_run = mysql_query($sql_address);
+			$result_address = mysql_fetch_array($query_run);
+			if($result_address['card_address']==='NULL' || $result_address['card_address']==''){
+				?><span style="text-decoration:underline;">ไม่พบที่อยู่ตามบัตรประชาชน กรุณาติดต่อแผนกทะเบียน เพื่ออัพเดทข้อมูล</span><?php
+			}else{
+				echo $result_address['card_address']." ".$result_address['card_moo']." ต.".$result_address['card_tambol']." อ.".$result_address['card_amphur']." จ.".$result_address['card_province'];
+				?>
+				[ <input type="radio" name="flag_address_use" value="card" title="ใช้ข้อมูลที่อยู่นี้"> ]
+				<?php
+			}
 
-		  		?>
-		  		 [ <input type="radio" name="flag_address_use" value="card" title="ใช้ข้อมูลที่อยู่นี้"> ]
+			
+			?>
 		  </td>
 		  </tr>
 		  <!--tr>
@@ -951,60 +956,115 @@ C&deg; </td>
 							</span>
 
 							<style>
-								label:hover{
+								label:hover, .otherlab-cancel-btn:hover{
 									cursor: pointer;
 								}
+								#otherResultContainer, #otherLabChoiseContent{
+									display: flex;
+									flex-direction: row;
+									flex-wrap: wrap;
+								}
+
+								#otherLabChoiseContainer{
+									position: absolute;
+									background-color: white;
+									padding: 8px;
+									z-index:1;
+									width:616px;
+									border: 2px solid black;
+									top: 50%;
+									left: 50%;
+									transform: translate(-50%, -50%);
+								}
+								#otherLabHeaderContainer{
+									background-color: #bbbbbb;
+									text-align:center;
+								}
+								#otherLabHeader{
+									font-weight: bold;
+								}
 								.other-child{
-									/* width: 150px; */
+									width: 300px;
+								}
+								.otherlab-cancel-btn{
+									font-size:14px;
+									text-decoration: none;
 								}
 							</style>
 							<!-- ฟอร์มเลือกข้อมูลแลปอื่นๆ -->
-							<div id="otherLabChoiseContain" style="position: absolute; background-color: white; padding: 8px; z-index:1; width:600px; border: 2px solid black; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-								<div style="background-color: #bbbbbb; text-align:center;"><span id="otherLabHeader">YYYY-MM-DD</span> <a href="javascript:void(0);" onclick="closeOtherLab()">[ ปิด ]</a></div>
-								<div id="otherLabChoise">
+							<div id="otherLabChoiseContainer" style="display:none;">
+								<div id="otherLabHeaderContainer">ผลแลปวันที่ <span id="otherLabHeader">YYYY-MM-DD</span> <a href="javascript:void(0);" onclick="closeOtherLab()">[ ปิด ]</a></div>
+								<div id="otherLabChoiseContent">
 									<div class="other-child">
 										<input type="checkbox" class="other-lab-item" id="test999" value="xxx" data-flag="N" data-range="0-99">
 										<label for="test999"><span class="tb_font_2">test:</span> 9999 mmHg</label>
 									</div>
 								</div>
 								<div>
-									<button type="button" onclick="selectOtherLab()">เลือกข้อมูล</button>
+									<button type="button" onclick="selectOtherLab()">เลือกข้อมูล</button>&nbsp;&nbsp;<input type="checkbox" onclick="selectCheckall()" id="checkAllBtn"><label for="checkAllBtn">เลือกทั้งหมด</label>
 								</div>
 							</div>
 							<!-- ฟอร์มเลือกข้อมูลแลปอื่นๆ -->
 							<script>
+
+								function selectCheckall(){
+									let items = document.querySelectorAll('.other-lab-item');
+									for (let i = 0; i < items.length; i++) {
+										items[i].checked = true;
+									}
+								}
+
 								function closeOtherLab(){
-									document.getElementById('otherLabChoiseContain').style.display = 'none';
+									document.getElementById('otherLabChoiseContainer').style.display = 'none';
+									document.getElementById('otherLabChoiseContent').innerHTML = '';
+									document.getElementById('selectNewOther').value='';
+									document.getElementById('checkAllBtn').checked = false;
 								}
 
 								function selectOtherLab(){
 									let items = document.querySelectorAll('.other-lab-item');
+
+									let checkedStatus = false;
+									let content = [];
 									for (let i = 0; i < items.length; i++) {
 										const el = items[i];
 										if(el.checked === true){
-											
+											checkedStatus = true;
+											let labname = el.getAttribute('data-labname');
 											let name = el.getAttribute('data-name');
 											let result = el.getAttribute('data-value');
 											let flag = el.getAttribute('data-flag');
 											let range = el.getAttribute('data-range');
 											let labcode = el.getAttribute('data-code');
+											let unit = el.getAttribute('data-unit');
 											
-											const content = `<span class="tb_font_2">${name}</span> : 
+											const childDiv = `<div style="width:300px;"><span class="tb_font_2">${labname}</span> : 
 											<input name="${name}" type="text" value="${result}" size="6" readonly />
 											<input type="hidden" name="${labcode}range" value="${range}" />
-											<input type="hidden" name="${labcode}flag" value="${flag}" />`;
+											<input type="hidden" name="${labcode}flag" value="${flag}" />
+											<a href="javascript:void(0);" onclick="this.parentNode.remove();" title="ยกเลิก" class="otherlab-cancel-btn">❌</a>
+											</div>`;
 
-											document.getElementById('otherResultContainer').insertAdjacentHTML('afterbegin',content);
-											
-											
-											document.getElementById('otherLabChoise').innerHTML = '';
+											content.push(childDiv);
+
 										}
 									}
-
+									
+									if(checkedStatus===false){
+										Swal.fire({
+											title: 'แจ้งเตือน',
+											icon: 'warning',
+											html:`กรุณาเลือกข้อมูลอย่างน้อย 1 รายการ`,
+											allowOutsideClick: false
+										});
+										return false;
+									}
+									
+									document.getElementById('otherResultContainer').insertAdjacentHTML('beforeend',content.join(''));
+									
 									closeOtherLab();
 								}
 							</script>
-
 						</div>
 						<div id="otherResultContainer" style="position:relative;">
 							<?php
@@ -1046,8 +1106,6 @@ C&deg; </td>
 								</tr>
 							</table>
 							<?php
-							}else{
-								?><p><b>&nbsp;&nbsp;&nbsp;ไม่พบข้อมูลแลปอืนๆ</b></p><?php
 							}
 							?>
 						</div>
@@ -1104,25 +1162,37 @@ async function getOther(labnumber){
 			//สร้างฟอร์มให้เลือกข้อมูล
 			buildOtherLabForm(r.data, r.date);
 		}else if(r.status===400){
-			document.getElementById('otherResultContainer').innerHTML = '<p><b>&nbsp;&nbsp;&nbsp;'+r.message+'</b></p>';
+			// document.getElementById('otherResultContainer').innerHTML = '<p><b>&nbsp;&nbsp;&nbsp;'+r.message+'</b></p>';
+			closeOtherLab();
 		}
 		
 	});
 }
 
 async function buildOtherLabForm(items, headerDate){
-	document.getElementById('otherLabChoise').innerHTML = '';
+	document.getElementById('otherLabChoiseContent').innerHTML = '';
 	document.getElementById('otherLabHeader').innerHTML = headerDate;
 	for (let i = 0; i < items.length; i++) {
 		const el = items[i];
 
 		const content = `<div class="other-child">
-		<input type="checkbox" class="other-lab-item" id="${el.labcode}" data-code="${el.labcode}" data-name="${el.name}" data-value="${el.result}" data-flag="${el.flag}" data-range="${el.normalrange}">
-		<label for="${el.labcode}"><span class="tb_font_2">${el.name}:</span> ${el.result}</label>
+		<input 
+		type="checkbox" 
+		class="other-lab-item" 
+		id="${el.labcode}" 
+		data-code="${el.labcode}" 
+		data-name="${el.name}" 
+		data-value="${el.result}" 
+		data-flag="${el.flag}" 
+		data-range="${el.normalrange}" 
+		data-unit="${el.unit}" 
+		data-labname="${el.labname}"
+		>
+		<label for="${el.labcode}"><span class="tb_font_2">${el.labname}( ${el.name} ):</span> ${el.result} ${el.unit}</label>
 		</div>`;
 
-		document.getElementById('otherLabChoise').insertAdjacentHTML('beforeend',content);
-		document.getElementById('otherLabChoiseContain').style.display = '';
+		document.getElementById('otherLabChoiseContent').insertAdjacentHTML('beforeend',content);
+		document.getElementById('otherLabChoiseContainer').style.display = '';
 	}
 }
 
