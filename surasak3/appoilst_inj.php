@@ -96,7 +96,7 @@ $_GET['y'] = $_GET['y']-543;
 		$num[5] = 90;
 	}
 
-	if($_GET["druginj"]=='SPEEDA 4' || $_GET["druginj"]=='SPEEDA 5'){
+	if($_GET["druginj"]=='SPEEDA 4'){
 		$num[3] = 28;
 	}
 
