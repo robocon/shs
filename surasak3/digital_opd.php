@@ -107,7 +107,11 @@ if($alcohol==0){
 	$drugreact_rows = mysql_num_rows($result);
 	if($drugreact_rows>0){
 		while($arr = Mysql_fetch_assoc($result)){
-			array_push($list1 ,$arr["tradname"]);
+			$effect = '';
+			if(!empty($arr["sideeffects"])){
+				$effect = '('.$arr["sideeffects"].')';
+			}
+			array_push($list1 , $arr["tradname"].$effect);
 		}
 		$list_drug1 = implode(", ",$list1);
 		$drugreact_disease .= $list_drug1;
@@ -117,14 +121,12 @@ if($alcohol==0){
 
 	//////// อาการข้างเคียง ////////
 	$list2 = array();
-	$sql2 = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and sideeffects !=''";
+	$sql2 = "SELECT `tradname`,`advreact`,`sideeffects` FROM `drugreact` WHERE `hn` = '$hn' AND (`advreact`='' AND `sideeffects` !='') ";
 	$result2 = Mysql_Query($sql2);
 	$drugreact_rows2 = mysql_num_rows($result2);
-	//echo $sql2;
 	if($drugreact_rows2>0){
 		while($arr2 = Mysql_fetch_assoc($result2)){
-			array_push($list2 ,$arr2["tradname"]);
-				
+			array_push($list2 ,$arr2['tradname'].'('.$arr2["sideeffects"].')');
 		}
 		$list_drug2 = implode(", ",$list2);
 		$sideeffects_disease .= $list_drug2;
@@ -146,14 +148,10 @@ if($alcohol==0){
 	list($dbirth,$idcard,$phone,$blood,$opcard_congenital_disease,$allergy,$hospcode) = Mysql_fetch_row($result111);
 	//$dbirth="$y-$m-$d"; //ส่งผ่านข้อมูลวันเกิดจาก opedit โดยการ submit
     $cAge=calcage($dbirth);
-	
-	//$dbirth = "1982-03-05 ";
 	list($dy,$dm,$dd)=explode("-",$dbirth);
 	$dy=$dy-543;
 	$dbirth="$dy-$dm-$dd";
-	//echo $dbirth;
 	$birthday=DateThai($dbirth);
-
 	if(empty($allergy)){
 		$allergy="ไม่มีประวัติ";
 	}
@@ -307,7 +305,7 @@ window.onload = function(){
 	<span style="margin-left:20px;"><strong>เลขบัตรประชาชน : </strong><?=$idcard;?></span>
 	</div>
 	</td>
-	<td rowspan="5" valign="middle" align="center"><?=$typeimg;?></td>	
+	<td rowspan="5" valign="top" align="center"><?=$typeimg;?></td>	
   </tr>
   <tr >
     <td colspan="2"><div>
@@ -332,16 +330,17 @@ window.onload = function(){
 	</td>
   </tr>  
   <tr >
-    <td colspan="2"><div>
-	<span><strong>โรคประจำตัว : </strong><?=$congenital_disease;?></span>
-	<span style="margin-left:20px;"><strong>แพ้ยา : </strong><?=$drugreact_disease;?></span>
-	</div>
+    <td colspan="3">
+		<div>
+			<span><strong>โรคประจำตัว : </strong><?=$congenital_disease;?></span>
+			<span style="margin-left:20px;"><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?=$allergy;?></span>
+		</div>
 	</td>
   </tr>
   <tr >
-    <td colspan="2"><div>
-	<span><strong>แพ้อาหาร/สารเคมี/อื่นๆ : </strong><?=$allergy;?></span>
-	<span style="margin-left:20px;"><strong>ผลข้างเคียงจากยา : </strong><?=$sideeffects_disease;?></span>
+    <td colspan="3"><div>
+	<span><strong>แพ้ยา : </strong><?=$drugreact_disease;?></span>
+	<span><strong>ผลข้างเคียงจากยา : </strong><?=$sideeffects_disease;?></span>
 	</div>
 	</td>
   </tr>  
