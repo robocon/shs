@@ -3,7 +3,7 @@
  * ใช้ไฟล์ rdu_convert.php, rdu_convert_diag.php, rdu_convert_drug.php, rdu_convert_lab.php, rdu_convert_trauma.php 
  * ดึงข้อมูลมาไว้ใน folder rdu แล้วเอาไฟล์Dumpใส่ Database rdu ใน 192.168.1.13 อีกที
  */
-include 'bootstrap.php';
+include dirname(__FILE__).'/bootstrap.php';
 define('RDU_TEST', '1');
 
 $db = Mysql::load();
@@ -69,61 +69,33 @@ $quarter_range = array(
     'ไตรมาสที่ 4(ก.ค. - ก.ย.)'
 );
 ?>
-
 <form action="rdu.php" method="post">
-
     <fieldset>
         <legend>RDU Indicator</legend>
-    
-
         <div>
             เลือกปีงบประมาณ 
             <select name="year" id="">
-                <?php
-                foreach ($year_range as $year_en) {
-
-                    $selected = ( $year_en == $year ) ? 'selected="selected"' : '' ;
-
-                    ?>
-                    <option value="<?=$year_en;?>" <?=$selected;?>><?=($year_en + 543);?></option>
-                    <?php
-                }
+            <?php
+            foreach ($year_range as $year_en) {
+                $selected = ( $year_en == $year ) ? 'selected="selected"' : '' ;
                 ?>
-            </select>
-            
-            <?php /* ?>
-            เลือกช่วงไตรมาส 
-            <select name="quarter" id="">
+                <option value="<?=$year_en;?>" <?=$selected;?>><?=($year_en + 543);?></option>
                 <?php
-                foreach ($quarter_range as $key => $quarter_item) {
-
-                    $selected = ( $key == $quarter ) ? 'selected="selected"' : '' ;
-                    
-                    ?>
-                    <option value="<?=$key;?>" <?=$selected;?> ><?=$quarter_item;?></option>
-                    <?php
-                }
-                ?>
+            }
+            ?>
             </select>
-            <?php */ ?>
-
             <?php 
             $get_month = input_post('month', date('m'));
             getMonthList('month', $get_month);
             ?>
         </div>
-
         <div>
             <button type="submit">แสดงผล</button>
             <input type="hidden" name="action" value="load">
         </div>
-
     </fieldset>
-
 </form>
-
 <?php 
-
 // special char
 // w3schools.com/charsets/ref_utf_math.asp
 // &le; <=
@@ -168,6 +140,12 @@ if ( $action == 'load' ) {
     $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 
     $year = $year + 543;
+
+    $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
+    SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
+    FROM `rdu_drugrx` 
+    WHERE `date_en` >= '$date_start' AND `date_en` <= '$date_end' ";
+    $db->exec($sql);
 
     // $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
     // $db->exec($sql);
@@ -255,6 +233,12 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
+
+        <?php 
+
+        exit;
+
+        ?>
         <tr>
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
@@ -447,10 +431,10 @@ if ( $action == 'load' ) {
     </table>
     <?php 
 
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_trauma_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_lab_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_trauma_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_lab_main`");
 
 }
