@@ -9,24 +9,24 @@ define('RDU_TEST', '1');
 $db = Mysql::load();
 // $db->exec("SET NAMES UTF8");
 
-$quarter = input_post('quarter');
-if( $quarter == 1 ){
-    $month_range['min'] = '10';
-    $month_range['max'] = '12'; //คม
+// $quarter = input_post('quarter');
+// if( $quarter == 1 ){
+//     $month_range['min'] = '10';
+//     $month_range['max'] = '12'; //คม
     
-}else if( $quarter == 2 ){
-    $month_range['min'] = '01';
-    $month_range['max'] = '03'; //คม
+// }else if( $quarter == 2 ){
+//     $month_range['min'] = '01';
+//     $month_range['max'] = '03'; //คม
     
-}else if( $quarter == 3 ){
-    $month_range['min'] = '04';
-    $month_range['max'] = '06';
+// }else if( $quarter == 3 ){
+//     $month_range['min'] = '04';
+//     $month_range['max'] = '06';
     
-}else if( $quarter == 4 ){
-    $month_range['min'] = '07';
-    $month_range['max'] = '09';
+// }else if( $quarter == 4 ){
+//     $month_range['min'] = '07';
+//     $month_range['max'] = '09';
     
-}
+// }
 ?>
 
 <style>
@@ -58,16 +58,16 @@ body, button{
 $default_year = date('Y');
 $year = input_post('year', $default_year);
 
-$yChk = get_year_checkup(true,true);
+// $yChk = get_year_checkup(true,true);
 
-$year_range = range(2017,$yChk);
+$year_range = range(2020,$default_year);
 
-$quarter_range = array(
-    1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',
-    'ไตรมาสที่ 2(ม.ค. - มี.ค.)',
-    'ไตรมาสที่ 3(เม.ย. - มิ.ย.)',
-    'ไตรมาสที่ 4(ก.ค. - ก.ย.)'
-);
+// $quarter_range = array(
+//     1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',
+//     'ไตรมาสที่ 2(ม.ค. - มี.ค.)',
+//     'ไตรมาสที่ 3(เม.ย. - มิ.ย.)',
+//     'ไตรมาสที่ 4(ก.ค. - ก.ย.)'
+// );
 ?>
 <form action="rdu.php" method="post">
     <fieldset>
@@ -109,11 +109,19 @@ if ( $action == 'load' ) {
     $yearSelectedTH = $yearSelected = input_post('year');
     $monthSelected = input_post('month');
 
+    if($monthSelected===false){
+        echo "กรุณาเลือกเดือน";
+        exit;
+    }
+
     // EN
     $whereMonth = $yearSelected.'-'.$monthSelected;
 
     $date_start = $whereMonth.'-01';
     $date_end = $whereMonth.'-'.date("t", strtotime($date_start));
+
+    $dateStartTh = ($yearSelectedTH + 543).'-'.$monthSelected.'-01';
+    $dateEndTh = ($yearSelectedTH + 543).'-'.$monthSelected.'-'.date('t', strtotime($dateStartTh));
 
     // TH
     $whereMonthTH = ($yearSelectedTH + 543).'-'.$monthSelected;
@@ -123,12 +131,14 @@ if ( $action == 'load' ) {
 
     // mktime format : H i s m d Y
     // 6เดือนล่าสุด
-    $last6MonthMK = mktime(0,0,0,$monthSelected-6,$lastOfMonth,$yearSelected);
+    // $last6MonthMK = mktime(0,0,0,$monthSelected-6,$lastOfMonth,$yearSelected);
+    $last6MonthMK = strtotime("-6 months");
     $last6Month = date('Y-m-d', $last6MonthMK);
     $last6MonthTH = (date('Y', $last6MonthMK)+543).date('-m-d', $last6MonthMK);
 
 
-    $last1YearMK = mktime(0,0,0,$monthSelected,$lastOfMonth,$yearSelected-1);
+    // $last1YearMK = mktime(0,0,0,$monthSelected,$lastOfMonth,$yearSelected-1);
+    $last1YearMK = strtotime("-1 year");
     $last1Year = date('Y-m-d', $last1YearMK);
     $last1YearTH = (date('Y', $last1YearMK)+543).date('-m-d', $last1YearMK);
     
@@ -137,15 +147,16 @@ if ( $action == 'load' ) {
         // $year = $year - 1;
     // }
 
-    $last_day = date('t', $year.'-'.$month_range['max'].'-01');
+    // $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 
     $year = $year + 543;
 
-    $sql = "CREATE TEMPORARY TABLE `tmp_in1` 
-    SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
-    FROM `rdu_drugrx` 
-    WHERE `date_en` >= '$date_start' AND `date_en` <= '$date_end' ";
-    $db->exec($sql);
+    // Core temporary
+    // วันที่ของ drugrx เป็นรูปแบบ พ.ศ.
+    
+    include 'rdu_core.php';
+    include 'rdu_in1.php';
+    include 'rdu_in6.php';
 
     // $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
     // $db->exec($sql);
@@ -177,9 +188,6 @@ if ( $action == 'load' ) {
             <td align="center">1</td>
             <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
             <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
-            <?php
-            include 'rdu_in1.php';
-            ?>
             <td align="right"><?=number_format($in1a);?></td>
             <td align="right"><?=number_format($in1b);?></td>
             <td align="right"><?=number_format($in1_result, 2);?></td>
@@ -220,9 +228,10 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            include 'rdu_in6.php';
             // $url_in6 = "year=$year&quarter=$quarter";
-            $url_in6 = "date=$whereMonth";
+            // $url_in6 = "date=$whereMonth";
+
+            $url_in6 = "date_start=$dateStartTh&date_end=$dateEndTh";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
@@ -233,12 +242,6 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
-
-        <?php 
-
-        exit;
-
-        ?>
         <tr>
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>

@@ -14,24 +14,16 @@ DSN = เวชภัณฑ์เบิกไม่ได้
 DPY = อุปกรณ์เบิกได้
 DPN = อุปกรณ์เบิกไม่ได้ 
 */
-
-$sql = "CREATE TEMPORARY TABLE `tmp_in1` 
-SELECT `row_id`,`date`,`hn`,`drugcode`,`part`,`date_hn` 
-FROM `rdu_drugrx` 
-WHERE `date_en` >= '$date_start' AND `date_en` <= '$date_end' ";
-$db->exec($sql);
-
-$in1a = $items_a = $in1b = $items_b = $in1_result = 0;
+$items_a = $items_b = false;
+$in1a = $in1b = $in1_result = 0;
 // xxx > '' is handle both between IS NOT EMPTY and = '' 
 // Question id 2327029 in StackOverflow
-$sql = "SELECT COUNT(`row_id`) AS `rows` 
-FROM `tmp_in1` 
-WHERE `part` = 'DDL' ";
+$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_base_drugrx` WHERE `part` = 'DDL' ";
 $db->select($sql);
 $items_a = $db->get_item();
 $in1a = $items_a['rows'];
 
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_in1` WHERE `part` LIKE 'DD%'";
+$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_base_drugrx` WHERE `part` LIKE 'DD%'";
 $db->select($sql);
 $items_b = $db->get_item();
 $in1b = $items_b['rows'];

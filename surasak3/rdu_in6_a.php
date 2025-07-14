@@ -1,10 +1,21 @@
 <?php 
+include dirname(__FILE__).'/bootstrap.php';
+define('RDU_TEST', '1');
+$db = Mysql::load();
 
-include 'bootstrap.php';
+$dateStartTh = $_GET['date_start'];
+$dateEndTh = $_GET['date_end'];
+
+$date_start = bc_to_ad($dateStartTh);
+$date_end = bc_to_ad($dateEndTh);
+
+include dirname(__FILE__).'/rdu_core.php';
+include dirname(__FILE__).'/rdu_in6.php';
+
 
 // $year = input_get('year');
 // $quarter = input_get('quarter');
-
+/*
 $db = Mysql::load();
 $db->exec("SET NAMES UTF8");
 $date = input_get('date');
@@ -64,7 +75,16 @@ LEFT JOIN `tmp_drugrx_in6_a` AS b ON b.`date_hn` = a.`date_hn`
 WHERE b.`row_id` IS NOT NULL ";
 $db->select($sql);
 $items = $db->get_items();
+*/
 
+// $sql = "SELECT a.*,b.*
+// FROM `tmp_diag_in6` AS a 
+// LEFT JOIN `tmp_drugrx_in6` AS b ON b.`thdatehn` = a.`thdatehn` 
+// WHERE b.`row_id` IS NOT NULL ";
+// $db->select($sql);
+// $items = $db->get_items();
+$items = $items_a;
+// dump($items_a);
 ?> 
 
 <style>
@@ -105,7 +125,15 @@ body, button{
     </tr>
     <?php 
     $i = 1;
+    $doctorList = array();
     foreach ($items as $key => $item) {
+
+        $doctorKey = $item['doctor'];
+        if(!$doctorList[$doctorKey]){
+            $doctorList[$doctorKey] = 1;
+        }else{
+            $doctorList[$doctorKey]++;
+        }
         ?>
         <tr>
             <td><?=$i;?></td>
@@ -124,34 +152,40 @@ body, button{
     }
     ?>
 </table>
-
 <?php 
-$sql = "SELECT a.`doctor`,COUNT(a.`doctor`) AS `count_dr` 
-FROM `tmp_diag_in6_a` AS a 
-LEFT JOIN `tmp_drugrx_in6_a` AS b ON b.`date_hn` = a.`date_hn` 
-WHERE b.`row_id` IS NOT NULL 
-GROUP BY a.`doctor` 
-ORDER BY COUNT(a.`doctor`) DESC";
-$db->select($sql);
-$items = $db->get_items();
+
+arsort($doctorList);
+
+
+
+
+// exit;
+// $sql = "SELECT a.`doctor`,COUNT(a.`doctor`) AS `count_dr` 
+// FROM `tmp_diag_in6_a` AS a 
+// LEFT JOIN `tmp_drugrx_in6_a` AS b ON b.`date_hn` = a.`date_hn` 
+// WHERE b.`row_id` IS NOT NULL 
+// GROUP BY a.`doctor` 
+// ORDER BY COUNT(a.`doctor`) DESC";
+// $db->select($sql);
+// $items = $db->get_items();
+
 ?>
-<table class="chk_table">
+<table class="chk_table" style="margin-top:8px;">
     <tr>
         <th>ชื่อแพทย์</th>
         <th>จำนวน</th>
     </tr>
     <?php 
-    foreach ($items as $key => $item) {
+    foreach ($doctorList as $key => $value) {
         ?>
         <tr>
-            <td><?=$item['doctor'];?></td>
-            <td><?=$item['count_dr'];?></td>
+            <td><?=$key;?></td>
+            <td><?=$value;?></td>
         </tr>
         <?php
     }
     ?>
 </table>
 <?php 
-
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6_a`");
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");
+// $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in6_a`");
+// $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_in6_a`");
