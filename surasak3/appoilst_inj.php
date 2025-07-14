@@ -97,7 +97,18 @@ $_GET['y'] = $_GET['y']-543;
 	}
 
 	if($_GET["druginj"]=='SPEEDA 4'){
+		$num[0] = 0;
+		$num[1] = 3;
+		$num[2] = 7;
 		$num[3] = 28;
+	}
+
+	if($_GET["druginj"]=='SPEEDA 5'){
+		$num[0] = 0;
+		$num[1] = 3;
+		$num[2] = 7;
+		$num[3] = 14;
+		$num[4] = 28;
 	}
 
 	switch($_GET["druginj"]){
