@@ -26,7 +26,8 @@ if($query['error']){
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`thdatehn`
 FROM `tmp_base_drugrx` 
-WHERE `drugcode` IN ( '1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' ); "; 
+WHERE `drugcode` IN ( '1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' )
+GROUP BY `thdatehn`; "; 
 $res = $db->exec($sql);
 if($res['error']){
     echo 'tmp_drugrx_in7 : '.$res['error'];
