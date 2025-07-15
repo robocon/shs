@@ -1687,7 +1687,7 @@ if ( $group2_rows > 0 ) {
 <table width="100%" border="0" class="text4">
   <tr>
     <td  width="50%" align="center">
-		<strong>CXR : </strong>ร.อ. ณัฐนนท์ จันทร์รัตน (ว.58017) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
+		<strong>CXR : </strong>ร.อ.หญิงบุณยาพร  เพชรปานกัน (ว.61593) รังสีแพทย์<strong> (<?=$authorisedate;?>)</strong>
 		<strong>Authorise LAB : </strong><?=$authorisename;?><strong> (<?=$authorisedate;?>) </strong>
 		<br />
 	</td>
