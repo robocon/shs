@@ -59,7 +59,7 @@ h3{
         <td>น้อยกว่าหรือเท่ากับร้อยละ 20</td>
     </tr>
 </table>
-<p id="table1"><b>ตัวตั้ง</b> จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันที่ได้รับยาปฏิชีวนะ</p>
+<p id="table1"><b>ตัวตั้ง</b> จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันที่ได้รับยาปฏิชีวนะ <span title="Expand">↕️</span></p>
 <table class="chk_table" id="table1_detail" style="display: none;">
     <tr>
         <th>#</th>
@@ -106,7 +106,7 @@ foreach ($items as $key => $item) {
 <?php
 arsort($doctorList);
 ?>
-<table class="chk_table">
+<table class="chk_table" style="margin-top:8px;">
     <tr>
         <th>ชื่อแพทย์</th>
         <th>จำนวน</th>
@@ -123,7 +123,7 @@ arsort($doctorList);
     ?>
 </table>
 
-<p id="table2"><b>ตัวหาร</b> จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันทั้งหมด</p>
+<p id="table2"><b>ตัวหาร</b> จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันทั้งหมด <span title="Expand">↕️</span></p>
 <table class="chk_table" style="margin-top:8px; display:none;" id="table2_detail">
     <tr>
         <th>#</th>
@@ -165,7 +165,7 @@ foreach ($items_in7_b as $key => $item) {
 <?php
 arsort($doctorList);
 ?>
-<table class="chk_table">
+<table class="chk_table" style="margin-top:8px;">
     <tr>
         <th>ชื่อแพทย์</th>
         <th>จำนวน</th>
