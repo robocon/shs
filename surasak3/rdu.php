@@ -235,10 +235,10 @@ if ( $action == 'load' ) {
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-                <a href="rdu_in6_a.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6a);?></a>
+                <a href="rdu_in6_show.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in6_b.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6b);?></a>
+                <a href="rdu_in6_show.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6b);?></a>
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
