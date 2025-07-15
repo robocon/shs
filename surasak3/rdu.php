@@ -31,22 +31,17 @@ $db = Mysql::load();
 
 <style>
 /* ตาราง */
-body, button{
+*{
     font-family: "TH SarabunPSK", "TH Sarabun New";
-    font-size: 16pt;
+    font-size: 20px;
 }
 .chk_table{
     border-collapse: collapse;
 }
-
-.chk_table, th, td{
-    border: 1px solid black;
-    font-size: 16pt;
-}
-
 .chk_table th,
 .chk_table td{
     padding: 3px;
+    border: 1px solid black;
 }
 </style>
 
@@ -131,48 +126,23 @@ if ( $action == 'load' ) {
 
     // mktime format : H i s m d Y
     // 6เดือนล่าสุด
-    // $last6MonthMK = mktime(0,0,0,$monthSelected-6,$lastOfMonth,$yearSelected);
     $last6MonthMK = strtotime("-6 months");
     $last6Month = date('Y-m-d', $last6MonthMK);
     $last6MonthTH = (date('Y', $last6MonthMK)+543).date('-m-d', $last6MonthMK);
 
-
-    // $last1YearMK = mktime(0,0,0,$monthSelected,$lastOfMonth,$yearSelected-1);
     $last1YearMK = strtotime("-1 year");
     $last1Year = date('Y-m-d', $last1YearMK);
     $last1YearTH = (date('Y', $last1YearMK)+543).date('-m-d', $last1YearMK);
-    
-    // ถ้าไตรมาสแรกหักไป1ปี
-    // if( $quarter == 1 ){
-        // $year = $year - 1;
-    // }
-
-    // $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 
     $year = $year + 543;
 
-    // Core temporary
-    // วันที่ของ drugrx เป็นรูปแบบ พ.ศ.
-    
-    include 'rdu_core.php';
+    include 'rdu_tb_diag.php';
+    include 'rdu_tb_drugrx.php';
+    include 'rdu_tb_opday.php';
     include 'rdu_in1.php';
     include 'rdu_in6.php';
-
-    // $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_main` SELECT * FROM `drugrx` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_trauma_main` SELECT * FROM `trauma` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_opday_main` SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_lab_main` SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
+    include 'rdu_in7.php';
+    
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
     <table class="chk_table">
@@ -228,9 +198,6 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            // $url_in6 = "year=$year&quarter=$quarter";
-            // $url_in6 = "date=$whereMonth";
-
             $url_in6 = "date_start=$dateStartTh&date_end=$dateEndTh";
             ?>
             <td>&le; ร้อยละ 20</td>
@@ -247,7 +214,6 @@ if ( $action == 'load' ) {
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
             <?php 
             
-            include 'rdu_in7.php';
             // $url_in7 = "year=$year&quarter=$quarter";
             $url_in7 = "date=$whereMonthTH";
             ?>
@@ -260,6 +226,11 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
+
+        <?php 
+        exit;
+        ?>
+
         <tr>
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>

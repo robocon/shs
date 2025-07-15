@@ -9,7 +9,8 @@ $dateEndTh = $_GET['date_end'];
 $date_start = bc_to_ad($dateStartTh);
 $date_end = bc_to_ad($dateEndTh);
 
-include dirname(__FILE__).'/rdu_core.php';
+include dirname(__FILE__).'/rdu_tb_diag.php';
+include dirname(__FILE__).'/rdu_tb_drugrx.php';
 include dirname(__FILE__).'/rdu_in6.php';
 
 $items = $items_a;

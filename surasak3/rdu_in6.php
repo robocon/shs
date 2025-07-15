@@ -31,13 +31,13 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_drugrx_in6` 
 SELECT * 
 FROM `tmp_base_drugrx` 
-WHERE `drugcode` IN ('1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$' ) 
+WHERE `an` IS NULL AND `drugcode` IN ('1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$' ) 
 GROUP BY `thdatehn`;"; 
 $db->exec($sql);
 
 $in6a = $items_a = $in6b = $items_b = $in6_result = 0;
 
-$sql = "SELECT * 
+$sql = "SELECT a.*,b.* 
 FROM `tmp_diag_in6` AS a 
 LEFT JOIN `tmp_drugrx_in6` AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`row_id` IS NOT NULL;";
