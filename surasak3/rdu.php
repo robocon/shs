@@ -142,7 +142,7 @@ if ( $action == 'load' ) {
     include 'rdu_in1.php';
     include 'rdu_in6.php';
     include 'rdu_in7.php';
-    
+
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
     <table class="chk_table">
@@ -198,39 +198,29 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            $url_in6 = "date_start=$dateStartTh&date_end=$dateEndTh";
+            $url = "date_start=$dateStartTh&date_end=$dateEndTh";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-                <a href="rdu_in6_show.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6a);?></a>
+                <a href="rdu_in6_show.php?<?=$url;?>" target="_blank"><?=number_format($in6a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in6_show.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6b);?></a>
+                <a href="rdu_in6_show.php?<?=$url;?>" target="_blank"><?=number_format($in6b);?></a>
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
-            <?php 
-            
-            // $url_in7 = "year=$year&quarter=$quarter";
-            $url_in7 = "date=$whereMonthTH";
-            ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-                <a href="rdu_in7_a.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7a);?></a>
+                <a href="rdu_in7_show.php?<?=$url;?>" target="_blank"><?=number_format($in7a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in7_b.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7b);?></a>
+                <a href="rdu_in7_show.php?<?=$url;?>" target="_blank"><?=number_format($in7b);?></a>
             </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
-
-        <?php 
-        exit;
-        ?>
-
         <tr>
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>

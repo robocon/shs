@@ -1,7 +1,9 @@
-<?php 
+<?php
 include dirname(__FILE__).'/bootstrap.php';
 define('RDU_TEST', '1');
+
 $db = Mysql::load();
+$db->exec("SET NAMES UTF8");
 
 $dateStartTh = $_GET['date_start'];
 $dateEndTh = $_GET['date_end'];
@@ -9,12 +11,10 @@ $dateEndTh = $_GET['date_end'];
 $date_start = bc_to_ad($dateStartTh);
 $date_end = bc_to_ad($dateEndTh);
 
-include dirname(__FILE__).'/rdu_tb_diag.php';
+include dirname(__FILE__).'/rdu_tb_opday.php';
 include dirname(__FILE__).'/rdu_tb_drugrx.php';
-include dirname(__FILE__).'/rdu_in6.php';
-
-$items = $items_a;
-?> 
+include dirname(__FILE__).'/rdu_in7.php';
+?>
 <style>
 *{
     font-family: "TH Sarabun New","TH SarabunPSK";
@@ -43,24 +43,23 @@ h3{
 </style>
 <table>
     <tr>
-        <td><b>ตัวชี้วัดที่ 6</b></td>
-        <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
+        <td><b>ตัวชี้วัดที่ 7</b></td>
+        <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
     </tr>
     <tr>
         <td><b>ตัวตั้ง</b></td>
-        <td><a href="#table1">จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน ที่ได้รับยาปฏิชีวน</a></td>
+        <td><a href="#table1">จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันที่ได้รับยาปฏิชีวนะ</a></td>
     </tr>
     <tr>
         <td><b>ตัวหาร</b></td>
-        <td><a href="#table2">จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด</a></td>
+        <td><a href="#table2">จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันทั้งหมด</a></td>
     </tr>
     <tr>
         <td><b>เป้าหมาย</b></td>
         <td>น้อยกว่าหรือเท่ากับร้อยละ 20</td>
     </tr>
 </table>
-
-<p id="table1"><b>ตัวตั้ง</b> จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน</p>
+<p id="table1"><b>ตัวตั้ง</b> จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันที่ได้รับยาปฏิชีวนะ</p>
 <table class="chk_table" id="table1_detail" style="display: none;">
     <tr>
         <th>#</th>
@@ -68,45 +67,46 @@ h3{
         <th>HN</th>
         <th>ชื่อผู้ป่วย</th>
         <th>อายุ</th>
-        <th>Diag</th>
+        <th>Diag1</th>
         <th>ICD-10</th>
         <th>Drug code</th>
         <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
-    <?php 
-    $i = 1;
-    $doctorList = array();
-    foreach ($items as $key => $item) {
-
-        $doctorKey = $item['doctor'];
-        if(!$doctorList[$doctorKey]){
-            $doctorList[$doctorKey] = 1;
-        }else{
-            $doctorList[$doctorKey]++;
-        }
-        ?>
-        <tr>
-            <td><?=$i;?></td>
-            <td><?=$item['date'];?></td>
-            <td><?=$item['hn'];?></td>
-            <td><?=$item['ptname'];?></td>
-            <td><?=$item['age'];?></td>
-            <td><?=$item['diag'];?></td>
-            <td><?=$item['icd10'];?></td>
-            <td><?=$item['drugcode'];?></td>
-            <td><?=$item['amount'];?></td>
-            <td><?=$item['doctor'];?></td>
-        </tr>
-        <?php 
-        $i++;
+<?php 
+$doctorList = array();
+$items = $items_in7_a;
+$i = 1;
+foreach ($items as $key => $item) {
+    $key = $item['doctor'];
+    if(!$doctorList[$key]){
+        $doctorList[$key] = 1;
+    }else{
+        $doctorList[$key]++;
     }
     ?>
+    <tr>
+        <td><?=$i;?></td>
+        <td><?=$item['date'];?></td>
+        <td><?=$item['hn'];?></td>
+        <td><?=$item['ptname'];?></td>
+        <td><?=$item['age'];?></td>
+        <td><?=$item['diag'];?></td>
+        <td><?=$item['icd10'];?></td>
+        <td><?=$item['drugcode'];?></td>
+        <td><?=$item['amount'];?></td>
+        <td><?=$item['doctor'];?></td>
+    </tr>
+    <?php
+    $i++;
+}
+?>
 </table>
-<?php 
+
+<?php
 arsort($doctorList);
 ?>
-<table class="chk_table" style="margin-top:8px;">
+<table class="chk_table">
     <tr>
         <th>ชื่อแพทย์</th>
         <th>จำนวน</th>
@@ -122,10 +122,8 @@ arsort($doctorList);
     }
     ?>
 </table>
-<?php 
-$items = $items_b;
-?>
-<p id="table2"><b>ตัวหาร</b> จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด</p>
+
+<p id="table2"><b>ตัวหาร</b> จำนวนครั้งของผู้ป่วยนอกโรคอุจจาระร่วงเฉียบพลันทั้งหมด</p>
 <table class="chk_table" style="margin-top:8px; display:none;" id="table2_detail">
     <tr>
         <th>#</th>
@@ -137,36 +135,37 @@ $items = $items_b;
         <th>ICD-10</th>
         <th>แพทย์</th>
     </tr>
-    <?php 
-    $i = 1;
-    $doctorList = array();
-    foreach ($items as $key => $item) {
-        $doctorKey = $item['doctor'];
-        if(!$doctorList[$doctorKey]){
-            $doctorList[$doctorKey] = 1;
-        }else{
-            $doctorList[$doctorKey]++;
-        }
-        ?>
-        <tr>
-            <td><?=$i;?></td>
-            <td><?=$item['svdate'];?></td>
-            <td><?=$item['hn'];?></td>
-            <td><?=$item['ptname'];?></td>
-            <td><?=$item['age'];?></td>
-            <td><?=$item['diag'];?></td>
-            <td><?=$item['icd10'];?></td>
-            <td><?=$item['doctor'];?></td>
-        </tr>
-        <?php 
-        $i++;
+<?php
+$doctorList = array();
+$i = 1;
+foreach ($items_in7_b as $key => $item) {
+    
+    $key = $item['doctor'];
+    if(!$doctorList[$key]){
+        $doctorList[$key] = 1;
+    }else{
+        $doctorList[$key]++;
     }
     ?>
+    <tr>
+        <td><?=$i;?></td>
+        <td><?=$item['thidate'];?></td>
+        <td><?=$item['hn'];?></td>
+        <td><?=$item['ptname'];?></td>
+        <td><?=$item['age'];?></td>
+        <td><?=$item['diag'];?></td>
+        <td><?=$item['icd10'];?></td>
+        <td><?=$item['doctor'];?></td>
+    </tr>
+    <?php
+    $i++;
+}
+?>
 </table>
-<?php 
+<?php
 arsort($doctorList);
 ?>
-<table class="chk_table" style="margin-top:8px;">
+<table class="chk_table">
     <tr>
         <th>ชื่อแพทย์</th>
         <th>จำนวน</th>

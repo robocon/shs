@@ -26,14 +26,22 @@ AND (
     OR a.`icd10` IN ( 'J210', 'J218', 'J219' ) 
     OR a.`icd10` IN ( 'H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729' )
 ) AND a.`svdate` <> '' ;";
-$db->exec($sql);
+$res = $db->exec($sql);
+if($res['error']){
+    echo 'tmp_diag_in6 : '.$res['error'];
+    exit;
+}
 
 $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_drugrx_in6` 
 SELECT * 
 FROM `tmp_base_drugrx` 
 WHERE `an` IS NULL AND `drugcode` IN ('1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','1FARM','1KLA500-N','1RUL150-C','1AZI','5AMOX','5AMO250','5AUG35-C','5CEFA','5CEFS','5CEFU','5ERY','1MEIA200','5ZITH*$' ) 
 GROUP BY `thdatehn`;"; 
-$db->exec($sql);
+$res = $db->exec($sql);
+if($res['error']){
+    echo 'tmp_drugrx_in6 : '.$res['error'];
+    exit;
+}
 
 $in6a = $items_a = $in6b = $items_b = $in6_result = 0;
 

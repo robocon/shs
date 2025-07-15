@@ -25,4 +25,8 @@ FROM `diag` AS a
 LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) 
 WHERE ( a.`svdate_en` >= '$date_start' AND a.`svdate_en` <= '$date_end' ) 
 AND a.`svdate` <> '' ;";
-$db->exec($sql);
+$res = $db->exec($sql);
+if($res['error']){
+    echo 'tmp_base_opday : '.$res['error'];
+    exit;
+}

@@ -5,7 +5,7 @@ if ( !defined('RDU_TEST') ) {
 }
 
 $sql = "CREATE TEMPORARY TABLE `tmp_opday_in7` 
-SELECT `row_id`,`date`,`hn`,`icd10`,`thdatehn`,`ptname`
+SELECT * 
 FROM `tmp_base_opday` 
 WHERE ( 
     `icd10` IN ( 'A000', 'A001', 'A009' ) 
@@ -17,34 +17,35 @@ WHERE (
     OR `icd10` IN ( 'A09', 'A090', 'A099' ) 
     OR `icd10` IN ( 'K521', 'K528', 'K529' ) 
 )";
-$db->exec($sql);
+$query = $db->exec($sql);
+if($query['error']){
+    echo 'tmp_opday_in7 : '.$query['error'];
+    exit;
+}
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in7` 
 SELECT `row_id`,`date`,`hn`,`drugcode`,`thdatehn`
 FROM `tmp_base_drugrx` 
 WHERE `drugcode` IN ( '1CIPR-C*?','1CRAV-NN','1LEX400-N','1GRAC','5ERY','5ZITH*$','1DOXY','1COTR4' ); "; 
-$db->exec($sql); 
+$res = $db->exec($sql);
+if($res['error']){
+    echo 'tmp_drugrx_in7 : '.$res['error'];
+    exit;
+} 
 
 $in7a = $in7b = $in7_result = 0;
 
-$sql = "SELECT a.*,b.* 
+$sqlIn7a = "SELECT a.*,b.* 
 FROM `tmp_opday_in7` AS a 
 LEFT JOIN `tmp_drugrx_in7` AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`row_id` IS NOT NULL";
-dump($sql);
-$db->select($sql);
+$db->select($sqlIn7a);
 $items_in7_a = $db->get_items();
-dump($items_in7_a);
 $in7a = $db->get_rows();
-// dump($in7a);
-
-echo "<hr>";
 
 $sql = "SELECT * FROM `tmp_opday_in7`";
 $db->select($sql);
 $items_in7_b = $db->get_items();
-// dump($items_in7_b);
 $in7b = $db->get_rows();
-// dump($in7b);
 
 $in7_result = ( $in7a / $in7b ) * 100 ;

@@ -32,4 +32,8 @@ LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id`
 LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`date`,9,2),'-',SUBSTRING(a.`date`,6,2),'-',SUBSTRING(a.`date`,1,4),a.`hn`) 
 WHERE ( a.`date` >= '$dateStartTh' AND a.`date` <= '$dateEndTh' ) 
 AND a.`amount` > 0 AND a.`status` = 'y' ;";
-$db->select($sql);
+$res = $db->exec($sql);
+if($res['error']){
+    echo 'tmp_base_drugrx : '.$res['error'];
+    exit;
+}
