@@ -3072,7 +3072,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkAdreno(drugcode.trim());
 	}
 
-	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && typeof dataDateHn.DIABETES === 'undefined' ){
+	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '1SEMA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
 		checkDiabetes(drugcode.trim());
 	}
 
