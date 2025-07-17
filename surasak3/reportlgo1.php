@@ -121,16 +121,12 @@ $total=number_format($total,2);
 		$icd101=$externalcause;
 	}		
 		
-		
-
-$opdate=explode(' ',$thidate);
-$dateth=$opdate[0];
+	$opdate=explode(' ',$thidate);
+	$dateth=$opdate[0];
 	$dateth1=explode('-',$dateth);
-		$day=$dateth1[2].'-'.$dateth1[1].'-'.$dateth1[0];
-$timeth=$opdate[1];
-
-$datetime=$day.' '.$timeth;
-
+	$day=$dateth1[2].'-'.$dateth1[1].'-'.$dateth1[0];
+	$timeth=$opdate[1];
+	$datetime=$day.' '.$timeth;
 
 	$sql107 = "Select doctorcode,menucode From doctor where name = '$doctor'";
 	//echo $sql107."<br>";
