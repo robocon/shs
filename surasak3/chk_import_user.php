@@ -1,9 +1,9 @@
 <?php
-
+setlocale( LC_ALL, 'th_TH' );
 include 'bootstrap.php';
 $action = input('action');
 $db = Mysql::load();
-setlocale( LC_ALL, 'th_TH' );
+
 if( empty($action) ){
     include_once 'chk_menu.php';
 
