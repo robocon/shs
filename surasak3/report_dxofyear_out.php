@@ -369,7 +369,6 @@ Select * from  resulthead
 WHERE hn='".$result['hn']."' 
 and clinicalinfo ='ตรวจสุขภาพประจำปี$chkyear' ";
 $query1 = mysql_query($sql1); 
-
 	?>
 <table width="100%">
 <tr>
@@ -512,12 +511,11 @@ C ํ</span></td>
             <td width="21%" align="center" bgcolor="#CCCCCC">normalrange</td>
           </tr>
 		<?php
-		$sql="SELECT * FROM result1 WHERE profilecode='CBC' ";
+		$sql="SELECT `autonumber` FROM result1 WHERE `profilecode`='CBC' ORDER BY `autonumber` DESC LIMIT 1";
 		$query = mysql_query($sql);
 		$arrresult = mysql_fetch_array($query);
 
 		$strSQL = "SELECT * FROM resultdetail  WHERE autonumber='".$arrresult['autonumber']."' and (labcode != 'ATYP' && labcode !='BAND' && labcode !='OTHER' && labcode !='NRBC') ORDER BY `seq` ASC";
-
 		$objQuery = mysql_query($strSQL);
 		while($objResult = mysql_fetch_array($objQuery))
 		{
@@ -628,7 +626,7 @@ C ํ</span></td>
             <td width="41%" align="center" bgcolor="#CCCCCC">normalrange</td>
           </tr>
 		<?php
-		$sql="SELECT * FROM result1 WHERE profilecode='UA' ";
+		$sql="SELECT * FROM result1 WHERE profilecode='UA' ORDER BY `autonumber` DESC LIMIT 1";
 		$query = mysql_query($sql);
 		$arrresult = mysql_fetch_array($query);
 /////
