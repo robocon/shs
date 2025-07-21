@@ -139,9 +139,13 @@ if ( $action == 'load' ) {
     include 'rdu_tb_diag.php';
     include 'rdu_tb_drugrx.php';
     include 'rdu_tb_opday.php';
-    include 'rdu_in1.php';
-    include 'rdu_in6.php';
-    include 'rdu_in7.php';
+    include 'rdu_tb_trauma.php';
+    // include 'rdu_in1.php';
+    // include 'rdu_in6.php';
+    // include 'rdu_in7.php';
+    include 'rdu_in8.php';
+
+    // exit;
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
@@ -224,17 +228,12 @@ if ( $action == 'load' ) {
         <tr>
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
-            <?php
-            include 'rdu_in8.php';
-            // $url_in8 = "year=$year&quarter=$quarter";
-            $url_in8 = "date=$whereMonthTH";
-            ?>
             <td>&le; ร้อยละ 40</td>
             <td align="right">
-                <a href="rdu_in8_a.php?<?=$url_in8;?>" target="_blank"><?=number_format($in8a);?></a>
+                <a href="rdu_in8_show.php?<?=$url;?>" target="_blank"><?=number_format($in8a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in8_b.php?<?=$url_in8;?>" target="_blank"><?=number_format($in8b);?></a>
+                <a href="rdu_in8_show.php?<?=$url;?>" target="_blank"><?=number_format($in8b);?></a>
             </td>
             <td align="right"><?=number_format($in8_result, 2);?></td>
         </tr>

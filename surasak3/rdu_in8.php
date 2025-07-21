@@ -1,14 +1,12 @@
 <?php 
-
 if ( !defined('RDU_TEST') ) {
     echo '404 :( invalid Please try again later';
     exit;
 }
 
-
-$sql = "CREATE TEMPORARY TABLE `tmp_trauma_diag_in8` 
-SELECT a.`hn`,a.`organ`,a.`maintenance`,
-a.`row_id`,b.`svdate`,b.`icd10`,a.`thdatehn`,b.`diag`,b.`doctor` 
+$sqlTmpTraumaDiagIn8 = "CREATE TEMPORARY TABLE `tmp_trauma_diag_in8` 
+SELECT a.`row_id`,a.`hn`,a.`organ`,a.`maintenance`,a.`thdatehn`,
+b.`svdate`,b.`icd10`,b.`diag`,b.`doctor` 
 FROM ( 
     SELECT * 
     FROM `tmp_base_trauma` 
@@ -36,30 +34,42 @@ LEFT JOIN (
     GROUP BY `hn`
 ) AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`row_id` IS NOT NULL ";
-$db->exec($sql);
+echo "<hr>";
+dump($sqlTmpTraumaDiagIn8);
+$e = $db->exec($sqlTmpTraumaDiagIn8);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
 SELECT * 
 FROM `tmp_base_drugrx` 
 WHERE `drugcode` IN ( '1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ) 
 GROUP BY `thdatehn`"; 
-$db->exec($sql); 
+echo "<hr>";
+dump($sql);
+$e = $db->exec($sql); 
 
 $items_in8_a = $items_in8_b = $in8a = $in8b = $in8_result = 0;
 
 // ตั้ง
-$sql = "SELECT COUNT(a.`row_id`) AS `rows`
+$sql = "SELECT a.*,b.* 
 FROM `tmp_trauma_diag_in8` AS a 
 LEFT JOIN `tmp_drugrx_in8` AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`row_id` IS NOT NULL";
 $db->select($sql);
-$items_in8_a = $db->get_item();
-$in8a = $items_in8_a['rows'];
+$items_in8_a = $db->get_items();
+// $in8a = $items_in8_a['rows'];
+$items_in8_a = $db->get_rows();
+echo "<hr>";
+dump($sql);
+dump($items_in8_a);
 
 // หาร
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_trauma_diag_in8`";
+$sql = "SELECT * FROM `tmp_trauma_diag_in8`";
 $db->select($sql);
-$items_in8_b = $db->get_item();
-$in8b = $items_in8_b['rows'];
+$items_in8_b = $db->get_items();
+// $in8b = $items_in8_b['rows'];
+$in8b = $db->get_rows();
+echo "<hr>";
+dump($sql);
+dump($in8b);
 
 $in8_result = ( $in8a / $in8b ) * 100 ;

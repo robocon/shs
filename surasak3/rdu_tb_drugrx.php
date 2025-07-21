@@ -4,7 +4,7 @@
  * - จำนวน(amount) ต้องมากกว่า 0
  * - สถานะต้องเป็น Y
  */
-$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_base_drugrx` (
+$sqlTmpBaseDrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_base_drugrx` (
 `row_id` INT(11),
 `date` VARCHAR(20) CHARACTER SET utf8,
 `hn` VARCHAR(20) CHARACTER SET utf8,
@@ -32,7 +32,7 @@ LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id`
 LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`date`,9,2),'-',SUBSTRING(a.`date`,6,2),'-',SUBSTRING(a.`date`,1,4),a.`hn`) 
 WHERE ( a.`date` >= '$dateStartTh' AND a.`date` <= '$dateEndTh' ) 
 AND a.`amount` > 0 AND a.`status` = 'y' ;";
-$res = $db->exec($sql);
+$res = $db->exec($sqlTmpBaseDrugrx);
 if($res['error']){
     echo 'tmp_base_drugrx : '.$res['error'];
     exit;

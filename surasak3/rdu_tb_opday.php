@@ -1,5 +1,5 @@
 <?php
-$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_base_opday` (
+$sqlTmpBaseOpday = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_base_opday` (
 `row_id` INT(11),
 `thidate` VARCHAR(10) CHARACTER SET utf8,
 `thdatehn` VARCHAR(10) CHARACTER SET utf8,
@@ -16,7 +16,7 @@ KEY `icd10` (`icd10`)
 SELECT `row_id`,`thidate`,`thdatehn`,`hn`,`ptname`,`age`,`doctor`,`icd10`,`diag` 
 FROM `opday` 
 WHERE `thidate` >= '$dateStartTh' AND `thidate` <= '$dateEndTh' ;";
-$res = $db->exec($sql);
+$res = $db->exec($sqlTmpBaseOpday);
 if($res['error']){
     echo 'tmp_base_opday : '.$res['error'];
     exit;

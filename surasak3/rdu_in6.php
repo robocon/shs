@@ -12,7 +12,7 @@ $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_in6`
 SELECT a.`row_id`,a.`svdate`,a.`svdate_en`,a.`hn`,a.`icd10`,a.`diag`,CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) AS `thdatehn`, 
 c.`ptname`,c.`age`,c.`doctor`
 FROM `tmp_base_diag` AS a 
-LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) 
+LEFT JOIN `tmp_base_opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) 
 WHERE ( a.`svdate_en` >= '$date_start' AND a.`svdate_en` <= '$date_end' ) 
 AND ( 
     a.`icd10` IN ( 'J00', 'J010', 'J011', 'J012', 'J013', 'J014', 'J018', 'J019' ) 
