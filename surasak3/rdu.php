@@ -144,8 +144,9 @@ if ( $action == 'load' ) {
     // include 'rdu_in6.php';
     // include 'rdu_in7.php';
     // include 'rdu_in8.php';
-    include 'rdu_in10.php';
-    // exit;
+    // include 'rdu_in10.php';
+    include 'rdu_in11.php';
+    exit;
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
@@ -258,26 +259,17 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
-
-        <?php
-        exit;
-        ?>
-
         <tr>
             <td align="center">11</td>
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร<br>
             ยาในเงื่อนไขข้อนี้คือ <b>Code:</b>1EUGL-C <b>Tradname:</b>Diabenol 5 mg. (Z) <b>Genname:</b>Glibenclamide 5 mg. 
             </td>
-            <?php
-            include 'rdu_in11.php';
-            $link_11 = "rdu_in11_detail.php?date=$whereMonthTH&minDate=$last6Month&maxDate=$whereMonth-$lastOfMonth";
-            ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
-                <a href="<?=$link_11;?>&table=a" target="_blank"><?=number_format($in11a);?></a>
+                <a href="rdu_in11_show.php?<?=$url;?>" target="_blank"><?=number_format($in11a);?></a>
             </td>
             <td align="right">
-                <a href="<?=$link_11;?>&table=b" target="_blank"><?=number_format($in11b);?></a>
+                <a href="rdu_in11_show.php?<?=$url;?>" target="_blank"><?=number_format($in11b);?></a>
             </td>
             <td align="right"><?=number_format($in11_result, 2);?></td>
         </tr>

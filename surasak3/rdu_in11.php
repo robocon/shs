@@ -1,5 +1,4 @@
 <?php 
-
 if ( !defined('RDU_TEST') ) {
     echo 'RDU Indicator (2^3)+3 :( BAD GATE WAYYYYYYYYYY NOOOOOOOOOOOOOOOOOOOOOOO';
     exit;
@@ -10,27 +9,23 @@ if ( !defined('RDU_TEST') ) {
 
 // เตรียมข้อมูล opday icd10 E11
 $sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
-SELECT `row_id`,`date`,`hn`,`age`,`icd10`,`date_hn`,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
-FROM `rdu_opday` 
-WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
-AND `icd10` regexp 'E11' 
-GROUP BY `hn` ;";
+SELECT *,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
+FROM `tmp_base_opday` 
+WHERE `icd10` regexp 'E11' ;";
 $db->exec($sql); 
 
 // เตรียมข้อมูล drugrx ยาโค้ด 1EUGL-C
 $sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
-SELECT `row_id`,`hn`,`drugcode`,`date_hn` 
-FROM `rdu_drugrx` 
-WHERE ( `date_en` >= '$date_start' AND `date_en` <= '$date_end' ) 
-AND `drugcode` LIKE '1EUGL-C%' 
-GROUP BY `hn` ;";
+SELECT * 
+FROM `tmp_base_drugrx` 
+WHERE `drugcode` LIKE '1EUGL-C%' ;";
 $test = $db->exec($sql); 
 
 // เอาสองตัวบนมารวมกัน จะได้ ผู้ป่วยที่ได้รับยา gibenclamide แบบที่ยังไม่ได้แบ่งตามอายุ
 $sql = "CREATE TEMPORARY TABLE `tmp_user_in11` 
 SELECT a.*,CONCAT( (SUBSTRING(a.`date`, 1, 4) - 543), SUBSTRING(a.`date`,5,6) ) AS `date_en`,b.`drugcode` 
 FROM `pre_opday_in11` AS a 
-LEFT JOIN `pre_drugrx_in11` AS b ON b.`date_hn` = a.`date_hn` 
+LEFT JOIN `pre_drugrx_in11` AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`hn` IS NOT NULL 
 GROUP BY a.`hn`;"; 
 $db->exec($sql); 
