@@ -36,8 +36,6 @@ LEFT JOIN (
     GROUP BY `thdatehn`
 ) AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`row_id` IS NOT NULL ";
-// echo "<hr>";
-// dump($sqlTmpTraumaDiagIn8);
 $e = $db->exec($sqlTmpTraumaDiagIn8);
 
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in8` 
@@ -45,8 +43,6 @@ SELECT *
 FROM `tmp_base_drugrx` 
 WHERE `drugcode` IN ( '1DIC250','1RUL150-C','5ERY','5ZITH*$','1CIPR-C*?','1CLIN300','1DIC500','1AMOX500-D','1AMOX625','5AMOX','5AUG35-C','1AUGM1-N','1DOXY','1COTR4','1METR' ) 
 GROUP BY `thdatehn`"; 
-// echo "<hr>";
-// dump($sql);
 $e = $db->exec($sql); 
 
 $items_in8_a = $items_in8_b = $in8a = $in8b = $in8_result = 0;
@@ -58,21 +54,12 @@ LEFT JOIN `tmp_drugrx_in8` AS b ON b.`thdatehn` = a.`thdatehn`
 WHERE b.`row_id` IS NOT NULL";
 $db->select($sql);
 $items_in8_a = $db->get_items();
-// $in8a = $items_in8_a['rows'];
-$items_in8_a = $db->get_rows();
-// echo "<hr>";
-// dump($sql);
-// dump($items_in8_a);
+$in8a = $db->get_rows();
 
 // หาร
 $sql = "SELECT * FROM `tmp_trauma_b`";
 $db->select($sql);
 $items_in8_b = $db->get_items();
-// $in8b = $items_in8_b['rows'];
 $in8b = $db->get_rows();
-// echo "<hr>";
-// dump($sql);
-// dump($in8b);
-// dump($items_in8_b);
 
 $in8_result = ( $in8a / $in8b ) * 100 ;

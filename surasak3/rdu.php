@@ -143,8 +143,8 @@ if ( $action == 'load' ) {
     // include 'rdu_in1.php';
     // include 'rdu_in6.php';
     // include 'rdu_in7.php';
-    include 'rdu_in8.php';
-
+    // include 'rdu_in8.php';
+    include 'rdu_in10.php';
     // exit;
 
     ?>
@@ -249,19 +249,20 @@ if ( $action == 'load' ) {
             <td align="center">10</td>
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
-            <?php 
-            include 'rdu_in10.php';
-            $url_in10 = "rdu_in10_detail.php?date=$whereMonthTH";
-            ?>
             <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด">
-                <a href="<?=$url_in10;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
+                <a href="rdu_in10_show.php?<?=$url;?>" target="_blank"><?=number_format($in10a);?></a>
             </td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด">
-                <a href="<?=$url_in10;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
+                <a href="rdu_in10_show.php?<?=$url;?>" target="_blank"><?=number_format($in10b);?></a>
             </td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
+
+        <?php
+        exit;
+        ?>
+
         <tr>
             <td align="center">11</td>
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร<br>

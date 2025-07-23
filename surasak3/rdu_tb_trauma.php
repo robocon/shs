@@ -13,7 +13,8 @@ KEY `thdatehn` (`thdatehn`)
 )
 SELECT `row_id`,`hn`,`date`,`organ`,`maintenance`,`doctor`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn`
 FROM `trauma` 
-WHERE ( `date` >= '$dateStartTh' AND `date` <= '$dateEndTh' ); ";
+WHERE ( `date` >= '$dateStartTh' AND `date` <= '$dateEndTh' ) 
+AND `an` = '' ;";
 $res = $db->exec($sqlTmpBaseTrauma);
 if($res['error']){
     echo 'tmp_base_trauma : '.$res['error'];

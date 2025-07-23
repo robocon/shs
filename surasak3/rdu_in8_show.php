@@ -76,12 +76,18 @@ h3{
         <th>Diag</th>
         <th>ICD-10</th>
         <th>Drug code</th>
-        <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
 <?php 
 $i = 1;
+$doctorList = array();
 foreach ($items_in8_a as $key => $item) {
+    $key = $item['doctor'];
+    if(!$doctorList[$key]){
+        $doctorList[$key] = 1;
+    }else{
+        $doctorList[$key]++;
+    }
     ?>
     <tr>
         <td><?=$i;?></td>
@@ -92,7 +98,6 @@ foreach ($items_in8_a as $key => $item) {
         <td><?=$item['diag'];?></td>
         <td><?=$item['icd10'];?></td>
         <td><?=$item['drugcode'];?></td>
-        <td><?=$item['amount'];?></td>
         <td><?=$item['doctor'];?></td>
     </tr>
     <?php
@@ -101,9 +106,32 @@ foreach ($items_in8_a as $key => $item) {
 ?>
 </table>
 
+<?php
+arsort($doctorList);
+?>
+<table class="chk_table" style="margin-top:8px;">
+    <tr>
+        <th>ชื่อแพทย์</th>
+        <th>จำนวน</th>
+    </tr>
+    <?php 
+    foreach ($doctorList as $key => $value) {
+        ?>
+        <tr>
+            <td><?=$key;?></td>
+            <td><?=$value;?></td>
+        </tr>
+        <?php
+    }
+    ?>
+</table>
+
 <div>&nbsp;</div>
 
 <p id="table2"><b>ตัวหาร</b> จำนวนครั้งของผู้ป่วยนอกบาดแผลสดจากอุบัติเหตุทั้งหมด <span title="Expand">↕️</span></p>
+<p style="margin:0;"><b>เงื่อนไขการเลือกข้อมูล</b>ข้อมูลอาการ มีคำว่า มีด, mc, แผล, ทิ่ม, แทง, บาด </p>
+<p style="margin:0;">ข้ามอาการ ที่มีคำว่า ไม่มีบาดแผล, ไม่มีแผล, ทำแผล, ล้างแผล, แผลเย็บ, กัด, ข่วน, เขี้ยว, วัน, สัปดาห์, เดือน, ผ่าตัด, นัด, ตาย, day, bed </p>
+
 <table class="chk_table" style="margin-top:8px;" id="table2_detail">
     <tr>
         <th>#</th>

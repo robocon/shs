@@ -15,7 +15,8 @@ KEY `icd10` (`icd10`)
 )
 SELECT `row_id`,`thidate`,`thdatehn`,`hn`,`ptname`,`age`,`doctor`,`icd10`,`diag` 
 FROM `opday` 
-WHERE `thidate` >= '$dateStartTh' AND `thidate` <= '$dateEndTh' ;";
+WHERE `thidate` >= '$dateStartTh' AND `thidate` <= '$dateEndTh' 
+AND ( `an` IS NULL OR `an` = '');";
 $res = $db->exec($sqlTmpBaseOpday);
 if($res['error']){
     echo 'tmp_base_opday : '.$res['error'];

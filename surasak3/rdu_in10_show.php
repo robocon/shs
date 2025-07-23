@@ -9,12 +9,11 @@ $dateEndTh = $_GET['date_end'];
 $date_start = bc_to_ad($dateStartTh);
 $date_end = bc_to_ad($dateEndTh);
 
-include dirname(__FILE__).'/rdu_tb_diag.php';
+include dirname(__FILE__).'/rdu_tb_opday.php';
 include dirname(__FILE__).'/rdu_tb_drugrx.php';
-include dirname(__FILE__).'/rdu_in6.php';
+include dirname(__FILE__).'/rdu_in10.php';
 
-$items = $items_a;
-?> 
+?>
 <style>
 *{
     font-family: "TH Sarabun New","TH SarabunPSK";
@@ -41,18 +40,19 @@ h3{
     color: white;
 }
 </style>
+
 <table>
     <tr>
-        <td><b>ตัวชี้วัดที่ 6</b></td>
-        <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
+        <td><b>ตัวชี้วัดที่ 10</b></td>
+        <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่ใช้ RAS blockage (ACEIs / ARBs / Renin inhibitor) 2 ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
     </tr>
     <tr>
         <td><b>ตัวตั้ง</b></td>
-        <td><a href="#table1">จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน ที่ได้รับยาปฏิชีวนะ</a></td>
+        <td><a href="#table1">จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS blockage  ได้แก่ ACEIs+ARBs หรือ ACEIs+Renin inhibitor หรือ ARBs+Renin inhibitor  ≥2 ชนิด</a></td>
     </tr>
     <tr>
         <td><b>ตัวหาร</b></td>
-        <td><a href="#table2">จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด</a></td>
+        <td><a href="#table2">จำนวน visit ผู้ป่วยโรคความดันเลือดสูงที่ได้รับยาลดความดันเลือดกลุ่ม RAS blockage อย่างน้อย 1 ชนิด</a></td>
     </tr>
     <tr>
         <td><b>เป้าหมาย</b></td>
@@ -60,7 +60,7 @@ h3{
     </tr>
 </table>
 
-<p id="table1"><b>ตัวตั้ง</b> จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน ที่ได้รับยาปฏิชีวนะ <span title="Expand">↕️</span></p>
+<p id="table1"><b>ตัวตั้ง</b> จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS blockage  ได้แก่ ACEIs+ARBs หรือ ACEIs+Renin inhibitor หรือ ARBs+Renin inhibitor  ≥2 ชนิด <span title="Expand">↕️</span></p>
 <table class="chk_table" id="table1_detail" style="display: none;">
     <tr>
         <th>#</th>
@@ -71,36 +71,34 @@ h3{
         <th>Diag</th>
         <th>ICD-10</th>
         <th>Drug code</th>
-        <th>จำนวน</th>
         <th>แพทย์</th>
     </tr>
     <?php 
-    $i = 1;
-    $doctorList = array();
-    foreach ($items as $key => $item) {
-        $doctorKey = $item['doctor'];
-        if(!$doctorList[$doctorKey]){
-            $doctorList[$doctorKey] = 1;
-        }else{
-            $doctorList[$doctorKey]++;
-        }
-        ?>
-        <tr>
-            <td><?=$i;?></td>
-            <td><?=$item['date'];?></td>
-            <td><?=$item['hn'];?></td>
-            <td><?=$item['ptname'];?></td>
-            <td><?=$item['age'];?></td>
-            <td><?=$item['diag'];?></td>
-            <td><?=$item['icd10'];?></td>
-            <td><?=$item['drugcode'];?></td>
-            <td><?=$item['amount'];?></td>
-            <td><?=$item['doctor'];?></td>
-        </tr>
-        <?php 
-        $i++;
+$i = 1;
+$doctorList = array();
+foreach ($items_in10_a as $key => $item) {
+    $doctorKey = $item['doctor'];
+    if(!$doctorList[$doctorKey]){
+        $doctorList[$doctorKey] = 1;
+    }else{
+        $doctorList[$doctorKey]++;
     }
     ?>
+    <tr>
+        <td><?=$i;?></td>
+        <td><?=$item['thidate'];?></td>
+        <td><?=$item['hn'];?></td>
+        <td><?=$item['ptname'];?></td>
+        <td><?=$item['age'];?></td>
+        <td><?=$item['diag'];?></td>
+        <td><?=$item['icd10'];?></td>
+        <td><?=$item['drugcode'];?></td>
+        <td><?=$item['doctor'];?></td>
+    </tr>
+    <?php
+    $i++;
+}
+?>
 </table>
 <?php 
 arsort($doctorList);
@@ -121,10 +119,7 @@ arsort($doctorList);
     }
     ?>
 </table>
-<?php 
-$items = $items_b;
-?>
-<p id="table2"><b>ตัวหาร</b> จำนวนครั้งที่มารับบริการของผู้ป่วยนอกโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันทั้งหมด <span title="Expand">↕️</span></p>
+<p id="table2"><b>ตัวหาร</b> จำนวน visit ผู้ป่วยโรคความดันเลือดสูงที่ได้รับยาลดความดันเลือดกลุ่ม RAS blockage อย่างน้อย 1 ชนิด <span title="Expand">↕️</span></p>
 <table class="chk_table" style="margin-top:8px; display:none;" id="table2_detail">
     <tr>
         <th>#</th>
@@ -139,7 +134,7 @@ $items = $items_b;
     <?php 
     $i = 1;
     $doctorList = array();
-    foreach ($items as $key => $item) {
+    foreach ($items_in10_b as $key => $item) {
         $doctorKey = $item['doctor'];
         if(!$doctorList[$doctorKey]){
             $doctorList[$doctorKey] = 1;
@@ -149,7 +144,7 @@ $items = $items_b;
         ?>
         <tr>
             <td><?=$i;?></td>
-            <td><?=$item['svdate'];?></td>
+            <td><?=$item['thidate'];?></td>
             <td><?=$item['hn'];?></td>
             <td><?=$item['ptname'];?></td>
             <td><?=$item['age'];?></td>
