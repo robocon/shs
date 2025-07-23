@@ -213,17 +213,21 @@ function sit2(){
 	$option_diag = 'selected';
 	$option_diag_sso = '';
 	$chk_user = $_GET['chk'];
+	$defaultCss = 'display:block';
+	$ssoCss = 'display:none';
 	if( substr($cPtright,0,3) == 'R07' && $chk_user === 'sso' ){
 		$option_diag = '';
 		$option_diag_sso = 'selected';
+
+		$defaultCss = 'display:none';
+		$ssoCss = 'display:block';
 	}
 	?>
 	
-   <form method="POST" action="prelab.php" onsubmit="return check();">
-   <input type="hidden" name="chktoborow" value="<?=$atoborow;?>" />
+<form method="POST" action="prelab.php" onsubmit="return check();">
+	<input type="hidden" name="chktoborow" value="<?=$atoborow;?>" />
     <p><font face="Angsana New">
-&nbsp;&nbsp;&#3650;&#3619;&#3588;&nbsp;&nbsp;&nbsp;&nbsp;
-  &nbsp;&nbsp;
+	&nbsp;&nbsp;&#3650;&#3619;&#3588;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <select size="1" name="diag" id="aLink" onchange="if(this.value=='ตรวจสุขภาพ' || this.value=='ตรวจสุขภาพประกันสังคม'){sit();} else{sit2();}"><script type="text/javascript">
 document.getElementById('aLink').focus();
 </script>
@@ -240,7 +244,7 @@ document.getElementById('aLink').focus();
   </select>&nbsp;</font><span style="font-size:10px; color: #0000FF; font-weight:bold; margin-left:10px;">กรณี ตรวจ ATK เชิงรุก กรุณาเลือก ตรวจเชิงรุก</span></p>
 <font face="Angsana New">สิทธิ&nbsp;
 <? if($_SESSION["smenucode"]=="ADMXR" || $_SESSION["smenucode"]=="ADM"){ ?>
-	<select name="pt" id="pt" style="display:">
+	<select name="pt" id="pt" style="<?=$defaultCss;?>">
 	<?
 	while($resultpt = mysql_fetch_array($rowpt)){
 		$re = $resultpt[0]."".$resultpt[1];
@@ -270,7 +274,7 @@ document.getElementById('aLink').focus();
    ?>
 </select>
 <? }else{ ?>
-<select name="pt" id="pt" style="display:">
+<select name="pt" id="pt" style="<?=$defaultCss;?>">
   <?
    while($resultpt = mysql_fetch_array($rowpt)){
 	$re = $resultpt[0]."".$resultpt[1];
@@ -303,7 +307,7 @@ document.getElementById('aLink').focus();
 <? } ?>
 
 <!--โชว์ข้อมูล กรณีที่เลือกเป็น ตรวจสุขภาพ-->
-<select name="pt2" id="pt2" style="display:none">
+<select name="pt2" id="pt2" style="<?=$ssoCss;?>">
 <?php
 while($resultpt = mysql_fetch_array($rowpt1)){
 	$re = $resultpt[0]." ".$resultpt[1];
