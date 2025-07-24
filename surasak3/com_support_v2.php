@@ -27,7 +27,7 @@ if ($action === 'search_user') {
 
     $depart = $_POST['depart'];
     $head = $_POST['head'];
-    $detail = $_POST['detail'];
+    $detail = strip_tags(htmlspecialchars_decode($_POST['detail'],ENT_QUOTES),'<img>');
     $user = $_POST['user'];
     $date = $_POST['date'];
     $programmer = $_POST['programmer'];
@@ -315,7 +315,7 @@ if($form_action==='edit'){
                 menubar: false, // ปิดใช้งาน menubar
                 forced_root_block : '', // ไม่ต้องใช้ tag p เมื่อเริ่มต้นใช้งาน tinymce
                 paste_as_text: true,
-                width: 1024
+                // width: 1024
             });
         </script>
 
