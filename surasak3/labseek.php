@@ -18,8 +18,7 @@
 
 if(isset($_GET["action"]) && $_GET["action"] == "code"){
 	include("connect.inc");
-	
-	$sql = "Select  code,detail,price,depart,icd9cm from labcare  where  labstatus ='Y' AND code !='12723-sso' and code like '%".$_GET["search1"]."%' or detail like '%".$_GET["search1"]."%' or codex like '%".$_GET["search1"]."%' or icd9cm like '%".$_GET["search1"]."%' and version !='OLD' limit 0,20 ";
+		$sql = "Select  code,detail,price,depart,icd9cm from labcare  where  labstatus ='Y' AND code !='12723-sso' AND (code like '%".$_GET["search1"]."%' OR codex like '%".$_GET["search1"]."%' OR detail like '%".$_GET["search1"]."%' or codex like '%".$_GET["search1"]."%' or icd9cm like '%".$_GET["search1"]."%') and version !='OLD' limit 0,20 ";
 	//echo $sql;
 	$result = Mysql_Query($sql)or die(Mysql_error());
 
@@ -295,11 +294,11 @@ document.getElementById('aLink').focus();
  If (!empty($_POST["code"])){
 
 	if($_POST["code"]=="12723" && $_POST["amount"]=="2500" && $_SESSION["cPtright"]=="R07 ประกันสังคม"){
-    $query = "SELECT code,depart,detail,price,yprice,nprice,icd9cm FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab LIKE '12723-sso') AND labstatus ='Y'";	
+    $query = "SELECT code,depart,detail,price,yprice,nprice,icd9cm FROM labcare WHERE (code LIKE '".$_POST["code"]."%' OR codex LIKE '".$_POST["code"]."%' OR codelab LIKE '12723-sso') AND labstatus ='Y'";	
 	}else if($_POST["code"]=="12723"){
-    $query = "SELECT code,depart,detail,price,yprice,nprice,icd9cm FROM labcare WHERE (code LIKE '".$_POST["code"]."%' or codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
+    $query = "SELECT code,depart,detail,price,yprice,nprice,icd9cm FROM labcare WHERE (code LIKE '".$_POST["code"]."%' OR codex LIKE '".$_POST["code"]."%' OR codelab = '".$_POST["code"]."') AND labstatus ='Y'";	
 	}else{ 
-		$query = "SELECT `code`,`depart`,`detail`,`price`,`yprice`,`nprice`,`icd9cm` FROM `labcare` WHERE ( `code` LIKE '".$_POST["code"]."%' OR `codelab` LIKE '".$_POST["code"]."%' ) AND `labstatus` ='Y' AND `version` !='OLD'";
+		$query = "SELECT `code`,`depart`,`detail`,`price`,`yprice`,`nprice`,`icd9cm` FROM `labcare` WHERE ( `code` LIKE '".$_POST["code"]."%' OR codex LIKE '".$_POST["code"]."%' OR `codelab` LIKE '".$_POST["code"]."%' ) AND `labstatus` ='Y' AND `version` !='OLD'";
 	}
     $result = mysql_query($query)
         or die("Query failed");
