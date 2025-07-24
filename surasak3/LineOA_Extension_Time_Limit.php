@@ -9,6 +9,11 @@ if($_SESSION["sOfficer"] == ""){
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 exit();
 }//end if
+ 
+ 
+
+
+
 
 
 $servername = "192.168.131.220";
@@ -71,7 +76,7 @@ hr{
 
 
 <style>
-    /* สไตล์สำหรับ modal */
+     
     .modal {
       display: none;
       position: fixed;
@@ -106,13 +111,14 @@ hr{
 
 <title>จำกัดรอบเวลาจองคิว LineOA</title>
 <?
-if(isset($_GET['depart'])){
-	      $sql = "SELECT * FROM trn_time_limit";
+ 
+	      $sql = "SELECT * FROM trn_time_limit WHERE Flag_Use = 'Y' ORDER BY Date DESC";
 //echo $sql;
         $result0 = $conn->query($sql);
         if($result0->num_rows <= 0){ 
-          echo "<h3 align='center' style='color:white;background-color:red'>ไม่พบข้อมูล!</h3>"; 
-          exit();
+          //echo "<h3 align='center' style='color:white;background-color:red'>ไม่พบข้อมูล!</h3>"; 
+
+          //exit();
         }//end if
      
 
@@ -120,11 +126,73 @@ if(isset($_GET['depart'])){
 
 
 ?>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+</head>
 	<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>  
-	<center> 
-    <h2>แผนก : <font color=blue><?php echo $_GET['depart'] ?></font></h2>
-<table  border="1" cellpadding="0" cellspacing="0">
+<center>
+<h1 align="center"><span class="tet1">จำกัดรอบเวลาจองคิว LineOA</span></h1>
+<div align="center" style="color:blue;">ปัจจุบัน คลินิกทันตกรรมและห้องตรวจจักษุ(ตา) เปิดจองรอบ 09.00 น. ในแต่ละวัน เท่านั้น</div>
+<div align="center" style="color:blue;">หากต้องการปิดจองให้เลือก ทั้งวันได้เลย เพื่อความสะดวกรวดเร็ว</div>
+<br />
+<form action="LineOA_Extension_Time_Limit.php" method="post">
+  <input type="hidden" name="go">
+  แผนก : 
+   <select id="Dept_Close" name="Dept_Close" required> 
+    <option value="">--- ระบุ ---</option>
+    <option value="U22 ห้องตรวจจักษุ(ตา)">ห้องตรวจจักษุ(ตา)</option>
+    <option value="U13 กองทันตกรรม">ทันตกรรม</option>
+    <option value="U21 นวดแผนไทย">นวดแผนไทย</option>
+    <option value="U24 คลินิกฝังเข็ม">คลินิกฝังเข็ม</option>
+   </select>
+
+   วันที่ปิดรับ : <input type="date" id="Date_Close" name="Date_Close" required>
+
+  รอบเวลาปิด : 
+<input type="time" name="Time_Close" id="timeClose" min="08:00" max="23:59" step="900" onclick="toggleInputs('time')">
+
+หรือ ทั้งวัน 
+<input type="checkbox" name="Time_Close_Allday" id="timeCloseAllDay" onclick="toggleInputs('allday')">
+
+<script>
+function toggleInputs(source) {
+  const timeInput = document.getElementById('timeClose');
+  const allDayCheckbox = document.getElementById('timeCloseAllDay');
+
+  if (source === 'time') {
+    // ถ้ามีการเลือกเวลา -> disable checkbox
+    if (timeInput.value) {
+      allDayCheckbox.checked = false;
+      allDayCheckbox.disabled = true;
+    } else {
+      allDayCheckbox.disabled = false;
+    }
+  }
+
+  if (source === 'allday') {
+    if (allDayCheckbox.checked) {
+      // ล้างค่าเวลาและ disable
+      timeInput.value = '';
+      timeInput.disabled = true;
+    } else {
+      timeInput.disabled = false;
+    }
+  }
+}
+</script>
+
+ <br /><br /> 
+   <button type="submit">บันทึก</button>
+</form>
+
+<hr>
+
+<h4 style="color:red"> *** ระบบนี้มีการเก็บข้อมูลการทำรายการ ***</h4>
+ 
+</center> 
+
+<table  border="1" cellpadding="0" cellspacing="0"  style="margin: auto;">
 	<tr style="background-color: #33ddff;">
     <td width="30" align="center"><span class="tet">ลำดับ</span></td>
 	<td width="200" align="center"><span class="tet">แผนก</span></td>
@@ -132,7 +200,7 @@ if(isset($_GET['depart'])){
     <td width="101" align="center"><span class="tet">รอบเวลา</span></td>
     <td width="150" align="center"><span class="tet">สถานะ</span></td>
     <td width="100" align="center"><span class="tet">ฟังก์ชั่น</span></td>  
-    <td width="200" align="center"><span class="tet">แก้ไขล่าสุด</span></td> 
+    <td width="200" align="center"><span class="tet">สร้างโดย</span></td> 
       
     </tr>
 
@@ -146,13 +214,24 @@ $count = 1;
   <td   align="center"><span class="tet"><?php echo $count++; ?></span></td>
 	<td   align="center"><span class="tet"><?php echo $result['Department']; ?></span></td>
   <td   align="center"><span class="tet"><?php echo $result['Date']; ?></span></td>
-    <td   align="center"><span class="tet"><?php echo $result['Time']; ?> น.</span></td>
+    <td   align="center"><span class="tet">
+      <?php 
+      if($result['Time'] == "allday"){
+        echo "ทั้งวัน";
+      }else{
+        echo $result['Time']." น.";
+      }
+      
+
+       ?> 
+
+    </span></td>
     <td   align="center"><span class="tet">
       <?php 
       
       if($result['Flag_Use'] == "Y"){
         //echo "<font color=green>&#10004; เปิดรับจอง</font>"; 
-        echo "<font color=red>&#10006; ปิดรับจอง</font>";  
+        echo "<font color=red>&#10006; ปิดรับจองแล้ว</font>";  
       }else{
         
       }//end if
@@ -160,8 +239,8 @@ $count = 1;
       ?>
         
       </span></td>
-    <td   align="center"><span class="tet"><a href="#<?php echo $result['Id']; ?>"><button>ลบ</button></a></span></td>
-    <td   align="center"><span class="tet"><?php echo $result['Last_Update']; ?></span></td> 
+    <td   align="center"><span class="tet"><button onclick="confirmDelete(<?php echo $result['Id']; ?>)">ลบ</button></span></td>
+    <td   align="center"><span class="tet"><?php echo $result['User_Create']; ?></span></td> 
  
     </tr>
 
@@ -172,73 +251,106 @@ $count = 1;
 echo "</center>";
 
  
-}//emd isset
+ 
 	?>
 
-     
- 
-<center>
+</center>
+
+
+<?php 
+//------> start add date close -------//
+
+if(isset($_POST['go'])){
+
+$officer_dtime = $officer." ".date("d-m-Y H:i:s");
+
+
+if (isset($_POST['Time_Close_Allday'])) {
+  $Time_Close = "allday";
+}else{
+   $Time_Close = $_POST['Time_Close'];
+}//end if
 
 
 
-<h1 align="center"><span class="tet1">จำกัดรอบเวลาจองคิว LineOA</span></h1><br />
-  <br />
-   รอบวันที่ต้องการปิดรับ : <input type="date">
 
-   รอบเวลาที่ต้องการปิดรับ : 
-   <select>
-    <option value="09:00">09:00 น.</option>
-    <option value="10:00">10:00 น.</option>
-   </select>
 
- 
-   <button>บันทึก</button>
-
-<hr>
-
-<h4 style="color:red"> *** ระบบนี้มีการเก็บข้อมูลการทำรายการ ***</h4>
- 
-</center> 
-
-<!-- Modal แจ้งเตือน -->
-  <div id="successModal" class="modal">
-    <div class="modal-content">
-      <p>ส่งข้อความยกเลิกสำเร็จแล้ว</p>
-      <button class="modal-button" onclick="closeModal()">รับทราบ</button>
-    </div>
-  </div>
- 
+$sql = "INSERT INTO trn_time_limit (Department, Date, Time, Flag_Use, User_Create) 
+        VALUES ('".$_POST['Dept_Close']."', '".$_POST['Date_Close']."', '".$Time_Close."', 'Y', '".$officer_dtime."')";
  
 
- <script>
-    function send($data) {
-      const raw = $data;
-      const parts = raw.split('|');
-
-      const params = new URLSearchParams({
-        item1: parts[0] || '',
-        item2: parts[1] || '',
-        item2: parts[2] || ''
-      });
-
-
-      const url = `http://192.168.131.220/agent_liff_notify/booking_appointment_cancel_by_hospital.php?hn=${encodeURIComponent(parts[0])}&rowid=${encodeURIComponent(parts[1])}&by=${encodeURIComponent(parts[2])}`;
-
- 
-		fetch(url)
-		  .then(response => response.text())  
-		  .then(data => { 
-		    document.getElementById('successModal').style.display = 'block';
-		  })
-		  .catch(error => {
-		    console.error('เกิดข้อผิดพลาด:', error);
-		    alert("ไม่สามารถส่งข้อความได้ พบข้อผิดพลาด =  " + error);
-		  });
-    }// end func
-
-    function closeModal() {
-	  document.getElementById('successModal').style.display = 'none';
-	}
+$result = $conn->query($sql);
+echo '
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    Swal.fire({
+      icon: "success",
+      title: "เพิ่มข้อมูลสำเร็จ",
+      showConfirmButton: false,
+      timer: 1000
+    }).then(() => {
+      window.location.href = "LineOA_Extension_Time_Limit.php";
+    });
   </script>
+';
+ 
 
 
+}//end if isset $Fdepart
+
+//------> end add date close -------//
+
+
+?>
+
+<script>
+function confirmDelete(rowid) {
+  Swal.fire({
+    title: 'ต้องการลบข้อมูลนี้?', 
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'ยืนยัน!',
+    cancelButtonText: 'ยกเลิก'
+  }).then((result) => {
+    if (result.isConfirmed) { 
+      window.location.href = 'LineOA_Extension_Time_Limit.php?del=' + rowid;
+    }
+  });
+}
+</script>
+ 
+ <?php 
+
+ if(isset($_GET['del'])){
+
+   $officer_dtime = $officer." ".date("d-m-Y H:i:s");
+
+    $sql = "UPDATE trn_time_limit SET
+            Flag_Use = '',
+            Last_Update = '".$officer_dtime."'
+            WHERE Id = '".$_GET['del']."' ";
+     
+
+    $result = $conn->query($sql);
+    echo '
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script>
+        Swal.fire({
+          icon: "success",
+          title: "ลบข้อมูลสำเร็จ",
+          showConfirmButton: false,
+          timer: 1000
+        }).then(() => {
+          window.location.href = "LineOA_Extension_Time_Limit.php";
+        });
+      </script>
+    ';
+
+ }//end if
+
+ 
+
+
+?>

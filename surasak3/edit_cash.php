@@ -157,8 +157,8 @@ body,td,th {
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='เงินสด' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';"></TD>
 		 	<TD>เงินสด</TD>
 		 	<td align='right'>&nbsp;&nbsp;
-		 	    <input type='radio' name='credit' value='ทหารไทย' onclick="document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();" /></td>
-		 	<td>บัตรเครดิต ธ.ทหารไทย</td>
+		 	    <input type='radio' name='credit' value='กรุงไทย' onclick="document.getElementById('detail1').innerHTML='หมายเลขบัตรเครดิต'; detailhead1.style.display='';document.f1.detail_1.focus();" /></td>
+		 	<td>บัตรเครดิต ธ.กรุงไทย</td>
 		 	<td align='right'>&nbsp;&nbsp;
 		 	    <input type='radio' name='credit' value='จ่ายตรง' onclick="document.getElementById('detail1').innerHTML=''; detailhead1.style.display='none';document.f1.detail_1.value='';" /></td>
 		 	<td>จ่ายตรง</td>
