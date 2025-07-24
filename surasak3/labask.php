@@ -307,28 +307,11 @@ document.getElementById('aLink').focus();
 <? } ?>
 
 <!--โชว์ข้อมูล กรณีที่เลือกเป็น ตรวจสุขภาพ-->
-<?php
-// ดูว่ามีข้อมูลในตารางลูกจ้างรึป่าว
-$sql = "SELECT `id` FROM `employee` WHERE `hn` = '$cHn' AND `status` IS NULL ;";
-$q = mysql_query($sql);
-$emRows = mysql_num_rows($q);
-?>
-<!--โชว์ข้อมูล กรณีที่เลือกเป็น ตรวจสุขภาพ-->
 <select name="pt2" id="pt2" style="<?=$ssoCss;?>">
 <?php
 while($resultpt = mysql_fetch_array($rowpt1)){
 	$re = $resultpt[0]." ".$resultpt[1];
-	
-	$select = '';
-	if($emRows>0 && $resultpt[0]==='R42'){
-		$select = 'selected="selected"';
-	}
-
-	?>
-	<option value="<?=$re;?>" <?=$select;?> ><?=$re?></option>
-	<?php
-
-	/*
+	//R01เงินสด
 	if($cPtright==$re){
 		$c=0;
 		?>
@@ -340,15 +323,12 @@ while($resultpt = mysql_fetch_array($rowpt1)){
 		<option value="<?=$re;?>" <? if(substr($atoborow,0,4)=="EX26" || substr($atoborow,0,4)=="EX45" ){ echo "selected";}?>>  <?=$re?></option>
 		<?php
 	}
-	*/
 }
-/*
 if(!isset($c)){
 	?>
 	<option value="<?=$cPtright;?>"><?=$cPtright?></option>
 	<?php
 }
-*/
 ?>
 </select>
 

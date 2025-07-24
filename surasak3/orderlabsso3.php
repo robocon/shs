@@ -23,12 +23,18 @@ if($type == 'lab')
 	// {
 		$a->orderLab($_REQUEST['labSelect']);
 	// }
+
+	$sql = sprintf("UPDATE `employee` SET `date_lab`=NOW() WHERE `hn`='%s';", $dbi->real_escape_string($hn));
+	$dbi->query($sql);
 }
 elseif($type == 'xray')
 {
 	if($a->findXray() === false)
 	{
 		$a->orderXray($_REQUEST['labSelect']);
+		
+		$sql = sprintf("UPDATE `employee` SET `date_xray`=NOW() WHERE `hn`='%s';", $dbi->real_escape_string($hn));
+		$dbi->query($sql);
 	}
 }
 ?>
