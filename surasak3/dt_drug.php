@@ -2243,66 +2243,70 @@ exit();
 if(isset($_GET["action"]) && $_GET["action"] == "drug_interaction"){
 
 ///////////////////////////////////////////////////////
-		$listinteraction =array();
-		$listremedint =array();
-		
-		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC limit 1 ";
-		
-		$result = mysql_query($sql);
-		$rows = mysql_num_rows($result);
-		if($rows > 0){
-		
-			while(list($row_id, $doctor) = mysql_fetch_row($result)){
-				$sql = " Select b.genname, b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
-				$result2 = mysql_query($sql) or die(mysql_error());
+	$listinteraction =array();
+	$listremedint =array();
 	
+	$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC limit 1 ";
+	$result = mysql_query($sql);
+	$rows = mysql_num_rows($result);
+	if($rows > 0){
 	
-				while(list($genname, $tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
-					$chkgenname=substr($genname,0,12);
-					list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
-					array_push($listinteraction,$drugcode);
-					
-				}
-			}
+		while(list($row_id, $doctor) = mysql_fetch_row($result)){
+			$sql = " Select b.genname, b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$result2 = mysql_query($sql) or die(mysql_error());
 
-		}
-		//print_r($listinteraction);
-		$sql  = "SELECT  drugcode FROM drugrx  WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' ";
-		$result = mysql_query($sql);
-		$rows = mysql_num_rows($result);
-		if($rows > 0){
-			while(list($codes) = mysql_fetch_row($result)){
-				array_push($listremedint,$codes);
+			while(list($genname, $tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
+				$chkgenname=substr($genname,0,12);
+				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
+				array_push($listinteraction,$drugcode);
+				
 			}
 		}
-	$list_session = " '".implode("','",$_SESSION["list_drugcode"])."' ";
+
+	}
+	
+	// $sql  = "SELECT  drugcode FROM drugrx  WHERE hn = '".$_SESSION["hn_now"]."' AND drugcode <> 'INJ' ";
+	// $result = mysql_query($sql);
+	// $rows = mysql_num_rows($result);
+	// if($rows > 0){
+	// 	while(list($codes) = mysql_fetch_row($result)){
+	// 		array_push($listremedint,$codes);
+	// 	}
+	// }
+	$list_session = " '".implode("','",$_SESSION["list_drugcode"])."' "; // <<---- รายการยาที่ user ปัจจุบันสั่ง
 	$list_session2 = " '".implode("','",$listinteraction)."' ";//listยาที่มาจากแพทย์อื่น
 	$list_session3 = " '".implode("','",$listremedint)."' ";//listยาที่มาจากการremed
-
-	//print_r($listinteraction);
-
-	$sql = "SELECT first_drugcode, between_drugcode,first_genname,between_genname effect, action, follow, onset, violence, referable, status  FROM drug_interaction  where (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session.") ) OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session2.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session2.") ) OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session3.") ) OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session3.") ) ";
+	
+	$sql = "SELECT first_drugcode, between_drugcode,first_genname,between_genname effect, action, follow, onset, violence, referable, status  
+	FROM drug_interaction  
+	where 
+	( first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session.") ) 
+	OR ( between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session.") ) 
+	OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session2.") ) 
+	OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session2.") ) 
+	OR (first_drugcode = '".$_GET["drugcode"]."' AND between_drugcode in (".$list_session3.") ) 
+	OR (between_drugcode = '".$_GET["drugcode"]."' AND first_drugcode in (".$list_session3.") ) ";
 	
 	$result = Mysql_Query($sql);
 	$rows = Mysql_num_rows($result);
-		if($rows == 0){
-			echo "0";
-		}else{
-			$arr = Mysql_fetch_assoc($result);
-			$i=0;
-			$sql = " Select genname From  druglst where drugcode in ('".$arr["first_drugcode"]."','".$arr["between_drugcode"]."') ";
-			$result = Mysql_Query($sql);
-			while($arr2 = Mysql_fetch_assoc($result)){
-				$druglist[$i] = $arr2["genname"];
-				$i++;
-			}
-
-			if($arr["status"]=="popup"){
-				echo "1เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n [ Yes/OK ] เพื่อยกเลิก  [ No/Cancel ] เพื่อสั่งใช้ยาต่อไป";
-			}else if($arr["status"]=="lock"){
-				echo "2เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n [ Yes/OK ] เพื่อยกเลิก  [ No/Cancel ] เพื่อสั่งใช้ยาต่อไป";
-			}
+	if($rows == 0){
+		echo "0";
+	}else{
+		$arr = Mysql_fetch_assoc($result);
+		$i=0;
+		$sql = " Select genname From  druglst where drugcode in ('".$arr["first_drugcode"]."','".$arr["between_drugcode"]."') ";
+		$result = Mysql_Query($sql);
+		while($arr2 = Mysql_fetch_assoc($result)){
+			$druglist[$i] = $arr2["genname"];
+			$i++;
 		}
+
+		if($arr["status"]=="popup"){
+			echo "1เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n [ Yes/OK ] เพื่อยกเลิก  [ No/Cancel ] เพื่อสั่งใช้ยาต่อไป";
+		}else if($arr["status"]=="lock"){
+			echo "2เกิด Drug Interaction ระหว่างยา ".$druglist[0]." กับยา ".$druglist[1]." \n ผลกระทบ : ".$arr["effect"]." \n กลไกที่เกิด : ".$arr["action"]." \n การติดตาม : ".$arr["follow"]." \n onset : ".$arr["onset"]." \n ความรุนแรง : ".$arr["violence"]." \n หลักฐาน : ".$arr["referable"]." \n สถานะ : ".$arr["status"]." \n [ Yes/OK ] เพื่อยกเลิก  [ No/Cancel ] เพื่อสั่งใช้ยาต่อไป";
+		}
+	}
 	
 	exit();
 }
@@ -3068,7 +3072,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkAdreno(drugcode.trim());
 	}
 
-	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '2EVO' ) && typeof dataDateHn.DIABETES === 'undefined' ){
+	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '1SEMA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
 		checkDiabetes(drugcode.trim());
 	}
 

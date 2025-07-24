@@ -3,7 +3,15 @@ if(isset($_GET["action"]) && ($_GET["action"] == "view" || $_GET["action"] == "v
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-include("connect.inc");
+include("connect.php");
+
+if(!function_exists('dump')){
+	function dump($t){
+		echo "<pre>";
+		var_dump($t);
+		echo "</pre>";
+	}
+}
 
 // Set default variable for day, month, year
 $days = array();
@@ -84,16 +92,23 @@ $_GET['y'] = $_GET['y']-543;
 	$num[5] = 90;
 
 	if($_GET["druginj"]=='VERO RABIES 5'){
-		$num[0] = 0;
-		$num[1] = 3;
-		$num[2] = 7;
-		$num[3] = 14;
 		$num[4] = 28;
 		$num[5] = 90;
 	}
 
 	if($_GET["druginj"]=='SPEEDA 4'){
+		$num[0] = 0;
+		$num[1] = 3;
+		$num[2] = 7;
 		$num[3] = 28;
+	}
+
+	if($_GET["druginj"]=='SPEEDA 5'){
+		$num[0] = 0;
+		$num[1] = 3;
+		$num[2] = 7;
+		$num[3] = 14;
+		$num[4] = 28;
 	}
 
 	switch($_GET["druginj"]){
@@ -125,8 +140,11 @@ $_GET['y'] = $_GET['y']-543;
 		$month[date('m',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))],'&nbsp;',
 		date(' Y',mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']))+543,"\">";
 		*/
-		
+
+		// จะเปลี่ยนมาใช้ฟังก์ชั่นนี้ก็ได้
+		// $toTime = strtotime("+".$num[$i]." days");
 		$get_time = mktime(0,0,0,$_GET['m'],$_GET['d']+$num[$i],$_GET['y']);
+		
 		$dcheck = date('d', $get_time);
 		$mcheck = date('m', $get_time);
 		$ycheck = date('Y', $get_time)+543;
@@ -472,7 +490,7 @@ return stat;
 			<Option value="VERORAB 5">VERORAB 5 เข็ม</Option>
 			<Option value="SPEEDA 2">SPEEDA 2 เข็ม</Option>
 			<Option value="SPEEDA 3">SPEEDA 3 เข็ม</Option>
-			<Option value="SPEEDA 4">SPEEDA 4 เข็ม</Option>
+			<Option value="SPEEDA 4">SPEEDA 4 เข็ม ฉีดใต้ผิวหนัง ( ID )</Option>
 			<Option value="SPEEDA 5">SPEEDA 5 เข็ม</Option>
 			<Option value="Euvax 3">Euvax 3 เข็ม</Option>
 			<Option value="Euvax 4">Euvax 4 เข็ม</Option>

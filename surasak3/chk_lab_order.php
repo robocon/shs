@@ -1,5 +1,5 @@
 <?php
-
+setlocale( LC_ALL, 'th_TH' );
 include 'bootstrap.php';
 
 $action = input('action');
@@ -253,8 +253,6 @@ if( $action == false ){
                 }
 
                 // if( $find_bs === true ){
-
-                    
                 //     $sql_chk_lab_items = "INSERT INTO `chk_lab_items` ( 
                 //         `id`, `hn`, `ptname`, `labnumber`, `item_sso`, `part`, `dob`, `sex`
                 //     ) VALUES (
@@ -264,7 +262,6 @@ if( $action == false ){
                 //     if( $insert !== true ){
                 //         $msg = errorMsg(NULL, $insert['id']);
                 //     }
-
                 // }
                 // เพิ่มรายการเข้าไปเก็บเอาไว้ตอนรายงานการเงิน
                 

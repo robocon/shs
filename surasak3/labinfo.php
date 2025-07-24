@@ -98,6 +98,7 @@ if (isset($sIdname)){} else {die;} //for security
 			$x++;
 			$aDgcode[$x] = $row->code;
 			$aTrade[$x] = $row->detail;
+			$aIcd9cm[$x] = $row->icd9cm;
 			$aPrice[$x] = $row->price;
 
 			$aPart[$x] = $row->part;
@@ -116,7 +117,6 @@ if (isset($sIdname)){} else {die;} //for security
 		/////////		
 
 		for ($n = 1; $n <= $x; $n++) {
-			
 			print ("<tr>\n" .
 			"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n" .
 			"<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n" .
@@ -154,6 +154,7 @@ if (isset($sIdname)){} else {die;} //for security
 			$x++;
 			$aDgcode[$x] = $row->code; // <----- เอาไปใช้ต่อใน labtranx.php
 			$aTrade[$x] = $row->detail;
+			$aIcd9cm[$x] = $row->icd9cm;
 			$aPrice[$x] = $row->price;
 
 			$aPart[$x] = $row->part;
@@ -190,7 +191,19 @@ if (isset($sIdname)){} else {die;} //for security
 			}
 
 			$cookieItem[] = $aTrade[$n];
-
+			
+			if($_SESSION['smenucode']=="ADM" || $_SESSION['smenucode']=="ADMSUR"){
+			print ("<tr>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'>$aDgcode[$n]</td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'>$aTrade[$n] ($aIcd9cm[$n])</td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'>$aPrice[$n]</td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'>$aAmount[$n]</td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n" .
+				"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n" .
+				" </tr>\n");
+			}else{
 			print ("<tr>\n" .
 				"<td bgcolor=F5DEB3><font face='Angsana New'><a target='right'  href=\"labdele.php? Delrow=$n\">ลบ</td>\n" .
 				"<td bgcolor=F5DEB3><font face='Angsana New'>$n</td>\n" .
@@ -201,6 +214,7 @@ if (isset($sIdname)){} else {die;} //for security
 				"<td bgcolor=F5DEB3><font face='Angsana New'><b>$aMoney[$n]</b></td>\n" .
 				"<td bgcolor=F5DEB3><font face='Angsana New'>$aFilmsize[$n]</td>\n" .
 				" </tr>\n");
+			}	
 		}
 
 		$cookieText = implode(', ', $cookieItem);

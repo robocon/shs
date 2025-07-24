@@ -50,16 +50,37 @@ if($congenital_disease == ""){
 // แพ้ยา
 $i=0;
 $list = array();
-$sql = "SELECT `tradname` FROM `drugreact` WHERE `hn` = '$hn' AND `advreact` <> '' GROUP BY `tradname`";
+$sql = "SELECT `tradname`,`sideeffects` FROM `drugreact` WHERE `hn` = '$hn' AND `advreact` <> '' GROUP BY `tradname`";
 $result = Mysql_Query($sql);
 $numdrugreact=mysql_num_rows($result);
 $drugreact_disease ="ปฎิเสธการแพ้ยา";
 if($numdrugreact>0){
 	while($arr = Mysql_fetch_assoc($result)){
-		array_push($list ,$arr["tradname"]);
+		$effect = '';
+		if(!empty($arr["sideeffects"])){
+			$effect = '('.$arr["sideeffects"].')';
+		}
+		
+		array_push($list ,$arr["tradname"].$effect);
 	}
 	$drugreact_disease = implode(", ",$list);
 }
+
+// อาการข้างเคียง แบบเดียวกับ digital_opd.php
+$list2 = array();
+$sideeffects_disease = '';
+$sql2 = "SELECT `tradname`,`advreact`,`sideeffects` FROM `drugreact` WHERE `hn` = '$hn' AND (`advreact`='' AND `sideeffects` !='') ";
+$result2 = Mysql_Query($sql2);
+$drugreact_rows2 = mysql_num_rows($result2);
+if($drugreact_rows2>0){
+	while($arr2 = Mysql_fetch_assoc($result2)){
+		array_push($list2 , '<b>'.$arr2['tradname'].'</b>('.$arr2["sideeffects"].')');
+	}
+	$list_drug2 = implode(", ",$list2);
+	$sideeffects_disease .= $list_drug2;
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -144,15 +165,24 @@ if($numdrugreact>0){
 		}
 		?>
 		<div id="headerDetailContainer" style="<?=$headerTabCss;?>">
-			<div id="headerDetail" align="center" style="font-size:24px;">
+			<div id="headerDetail" align="center" style="font-size:22px;">
 				<h3 align="center">ประวัติการรักษาพยาบาลผู้ป่วยนอก (Digital OPD Card)</h3>
-				<strong>HN : </strong><?php echo $hn;?>
-				<span style="margin-left:20px;"><strong>ชื่อ- นามสกุล : </strong><?php echo $ptname;?>
-				<span style="margin-left:20px;"><strong>อายุ : </strong><?php echo $cAge;?></span>
-				<span style="margin-left:20px;"><strong>สิทธิการรักษา : </strong><?php echo $ptright;?></span>
+				<span><strong>HN : </strong><?=$hn;?></span>
+				<span style="margin-left:20px;"><strong>ชื่อ- นามสกุล : </strong><?=$ptname;?></span>
+				<span style="margin-left:20px;"><strong>อายุ : </strong><?=$cAge;?></span>
+				<span style="margin-left:20px;"><strong>สิทธิการรักษา : </strong><?=$ptright;?></span>
 				<div>
-					<span><strong>โรคประจำตัว : </strong><strong style="color:blue;"><?php echo $congenital_disease;?></strong></span>
-					<span style="margin-left:20px;"><strong>แพ้ยา : </strong><strong style="color:red;"><?php echo $drugreact_disease;?></strong></span>
+					<span><strong>โรคประจำตัว : </strong><strong style="color:blue;"><?=$congenital_disease;?></strong></span>
+					<span style="margin-left:20px;">
+						<strong>แพ้ยา : </strong><strong style="color:red;"><?=$drugreact_disease;?></strong>
+						<?php
+						if(!empty($sideeffects_disease)){
+							?>
+							<strong>ผลข้างเคียง : </strong><?=$sideeffects_disease;?>
+							<?php
+						}
+						?>
+					</span>
 				</div>
 			</div>
 		</div>

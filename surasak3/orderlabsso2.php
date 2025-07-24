@@ -99,12 +99,9 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
     if(!empty($pt)){
         $dbirthEn = bc_to_ad($pt['dbirth']);
         $dateNow = date('Y-m-d');
-        // dump($dbirthEn);
-        // dump($dateNow);
 
         $diff = abs(strtotime($dateNow)-strtotime($dbirthEn));
         $yearOnly = floor($diff / (365*60*60*24));
-        // dump($yearOnly);
 
         $age = findPtAge($pt['dbirth']);
         ?>
@@ -239,6 +236,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
 
                                 // ปี 67 
                                 // 'HDL-sso','HBSAG','STOCB-sso',
+                                /*
                                 $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL');
                                 if($yearOnly < 35){
                                     $chkList = array('CBC-sso', 'UA-sso');
@@ -255,9 +253,37 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                         }
                                     }
                                 }
+                                */
                                 
                                 // ปี 66 
                                 // $chkList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'LIPID');
+
+
+                                $chkList = array();
+                                $sqlEmployee = "SELECT `lab` FROM `employee` WHERE `hn` = '$hn' AND `date_lab` IS NULL ;";
+                                $qEm = $dbi->query($sqlEmployee);
+                                if($qEm->num_rows>0){
+                                    $em = $qEm->fetch_assoc();
+                                    $labItems = explode('|', $em['lab']);
+                                    foreach ($labItems as $lab) {
+                                        
+                                        /**
+                                         * !important ตัวไหนที่มี -sso ให้ใช้ไปเเลย ส่วนถ้าตัวไหนไม่มีให้ใช้ตัวปกติ
+                                         */
+                                        if($lab!=='CXR'){
+                                            $labCode = $lab.'-sso';
+                                            $sqlLabSearch = "SELECT `code` FROM `labcare` WHERE `code` = '$labCode' AND `labstatus` ='Y' AND `version` !='OLD'";
+                                            $qLabSearch = $dbi->query($sqlLabSearch);
+                                            if($qLabSearch->num_rows==0){
+                                                $labCode = $lab;
+                                            }
+
+                                            $chkList[] = $labCode;
+                                        }
+                                        
+                                    }
+                                }
+                                
                                 ?>
                                 <table width="100%" class="chk_table">
                                     <thead>
@@ -287,7 +313,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                                 <input type="hidden" name="labSelect[]" value="<?=$code;?>">
                                             </td>
                                             <td align="center">
-                                                <a href="javascript:void(0);" onclick="removeLabItem('<?=$keyCode;?>','<?=$l['price'];?>')">ลบ</a>
+                                                <a href="javascript:void(0);" onclick="removeLabItem('<?=$keyCode;?>','<?=$l['price'];?>')" style="padding-left: 4px; padding-right: 4px;">ลบ</a>
                                             </td>
                                         </tr>
                                         <?php
@@ -337,7 +363,8 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                             </thead>
                             <tbody>
                                 <?php 
-                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL','HDL-sso','CHOL-sso','HBSAG','STOCB-sso');
+                                // $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS', 'TRI','LDL','HDL-sso','CHOL-sso','HBSAG','STOCB-sso');
+                                $quickList = array('CBC-sso', 'UA-sso', 'CR-sso', 'BS-sso','CHOL-sso','HDL-sso','HBSAG-sso','STOCB-sso');
                                 foreach ($quickList as $key => $code) { 
 
                                     $key = rand(1000,9999);
@@ -354,7 +381,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
                                             <input type="hidden" name="labSelect[]" value="<?=$code;?>">
                                         </td>
                                         <td align="center">
-                                            <a href="javascript:void(0);" onclick="addLabItem('<?=$code;?>','<?=$l['detail'];?>','<?=$l['price'];?>')">เพิ่ม</a>
+                                            <a href="javascript:void(0);" onclick="addLabItem('<?=$code;?>','<?=$l['detail'];?>','<?=$l['price'];?>')" style="padding-left: 4px; padding-right: 4px;">เพิ่ม</a>
                                         </td>
                                     </tr>
                                     <?php

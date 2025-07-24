@@ -3,50 +3,45 @@
  * ใช้ไฟล์ rdu_convert.php, rdu_convert_diag.php, rdu_convert_drug.php, rdu_convert_lab.php, rdu_convert_trauma.php 
  * ดึงข้อมูลมาไว้ใน folder rdu แล้วเอาไฟล์Dumpใส่ Database rdu ใน 192.168.1.13 อีกที
  */
-include 'bootstrap.php';
+include dirname(__FILE__).'/bootstrap.php';
 define('RDU_TEST', '1');
 
 $db = Mysql::load();
 // $db->exec("SET NAMES UTF8");
 
-$quarter = input_post('quarter');
-if( $quarter == 1 ){
-    $month_range['min'] = '10';
-    $month_range['max'] = '12'; //คม
+// $quarter = input_post('quarter');
+// if( $quarter == 1 ){
+//     $month_range['min'] = '10';
+//     $month_range['max'] = '12'; //คม
     
-}else if( $quarter == 2 ){
-    $month_range['min'] = '01';
-    $month_range['max'] = '03'; //คม
+// }else if( $quarter == 2 ){
+//     $month_range['min'] = '01';
+//     $month_range['max'] = '03'; //คม
     
-}else if( $quarter == 3 ){
-    $month_range['min'] = '04';
-    $month_range['max'] = '06';
+// }else if( $quarter == 3 ){
+//     $month_range['min'] = '04';
+//     $month_range['max'] = '06';
     
-}else if( $quarter == 4 ){
-    $month_range['min'] = '07';
-    $month_range['max'] = '09';
+// }else if( $quarter == 4 ){
+//     $month_range['min'] = '07';
+//     $month_range['max'] = '09';
     
-}
+// }
 ?>
 
 <style>
 /* ตาราง */
-body, button{
+*{
     font-family: "TH SarabunPSK", "TH Sarabun New";
-    font-size: 16pt;
+    font-size: 20px;
 }
 .chk_table{
     border-collapse: collapse;
 }
-
-.chk_table, th, td{
-    border: 1px solid black;
-    font-size: 16pt;
-}
-
 .chk_table th,
 .chk_table td{
     padding: 3px;
+    border: 1px solid black;
 }
 </style>
 
@@ -58,72 +53,44 @@ body, button{
 $default_year = date('Y');
 $year = input_post('year', $default_year);
 
-$yChk = get_year_checkup(true,true);
+// $yChk = get_year_checkup(true,true);
 
-$year_range = range(2017,$yChk);
+$year_range = range(2020,$default_year);
 
-$quarter_range = array(
-    1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',
-    'ไตรมาสที่ 2(ม.ค. - มี.ค.)',
-    'ไตรมาสที่ 3(เม.ย. - มิ.ย.)',
-    'ไตรมาสที่ 4(ก.ค. - ก.ย.)'
-);
+// $quarter_range = array(
+//     1 => 'ไตรมาสที่ 1(ต.ค. - ธ.ค.)',
+//     'ไตรมาสที่ 2(ม.ค. - มี.ค.)',
+//     'ไตรมาสที่ 3(เม.ย. - มิ.ย.)',
+//     'ไตรมาสที่ 4(ก.ค. - ก.ย.)'
+// );
 ?>
-
 <form action="rdu.php" method="post">
-
     <fieldset>
         <legend>RDU Indicator</legend>
-    
-
         <div>
             เลือกปีงบประมาณ 
             <select name="year" id="">
-                <?php
-                foreach ($year_range as $year_en) {
-
-                    $selected = ( $year_en == $year ) ? 'selected="selected"' : '' ;
-
-                    ?>
-                    <option value="<?=$year_en;?>" <?=$selected;?>><?=($year_en + 543);?></option>
-                    <?php
-                }
+            <?php
+            foreach ($year_range as $year_en) {
+                $selected = ( $year_en == $year ) ? 'selected="selected"' : '' ;
                 ?>
-            </select>
-            
-            <?php /* ?>
-            เลือกช่วงไตรมาส 
-            <select name="quarter" id="">
+                <option value="<?=$year_en;?>" <?=$selected;?>><?=($year_en + 543);?></option>
                 <?php
-                foreach ($quarter_range as $key => $quarter_item) {
-
-                    $selected = ( $key == $quarter ) ? 'selected="selected"' : '' ;
-                    
-                    ?>
-                    <option value="<?=$key;?>" <?=$selected;?> ><?=$quarter_item;?></option>
-                    <?php
-                }
-                ?>
+            }
+            ?>
             </select>
-            <?php */ ?>
-
             <?php 
             $get_month = input_post('month', date('m'));
             getMonthList('month', $get_month);
             ?>
         </div>
-
         <div>
             <button type="submit">แสดงผล</button>
             <input type="hidden" name="action" value="load">
         </div>
-
     </fieldset>
-
 </form>
-
 <?php 
-
 // special char
 // w3schools.com/charsets/ref_utf_math.asp
 // &le; <=
@@ -137,11 +104,19 @@ if ( $action == 'load' ) {
     $yearSelectedTH = $yearSelected = input_post('year');
     $monthSelected = input_post('month');
 
+    if($monthSelected===false){
+        echo "กรุณาเลือกเดือน";
+        exit;
+    }
+
     // EN
     $whereMonth = $yearSelected.'-'.$monthSelected;
 
     $date_start = $whereMonth.'-01';
     $date_end = $whereMonth.'-'.date("t", strtotime($date_start));
+
+    $dateStartTh = ($yearSelectedTH + 543).'-'.$monthSelected.'-01';
+    $dateEndTh = ($yearSelectedTH + 543).'-'.$monthSelected.'-'.date('t', strtotime($dateStartTh));
 
     // TH
     $whereMonthTH = ($yearSelectedTH + 543).'-'.$monthSelected;
@@ -151,38 +126,27 @@ if ( $action == 'load' ) {
 
     // mktime format : H i s m d Y
     // 6เดือนล่าสุด
-    $last6MonthMK = mktime(0,0,0,$monthSelected-6,$lastOfMonth,$yearSelected);
+    $last6MonthMK = strtotime("-6 months");
     $last6Month = date('Y-m-d', $last6MonthMK);
     $last6MonthTH = (date('Y', $last6MonthMK)+543).date('-m-d', $last6MonthMK);
 
-
-    $last1YearMK = mktime(0,0,0,$monthSelected,$lastOfMonth,$yearSelected-1);
+    $last1YearMK = strtotime("-1 year");
     $last1Year = date('Y-m-d', $last1YearMK);
     $last1YearTH = (date('Y', $last1YearMK)+543).date('-m-d', $last1YearMK);
-    
-    // ถ้าไตรมาสแรกหักไป1ปี
-    // if( $quarter == 1 ){
-        // $year = $year - 1;
-    // }
-
-    $last_day = date('t', $year.'-'.$month_range['max'].'-01');
 
     $year = $year + 543;
 
-    // $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_diag_main` SELECT * FROM `diag` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_main` SELECT * FROM `drugrx` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_trauma_main` SELECT * FROM `trauma` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_opday_main` SELECT * FROM `opday` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
-
-    // $sql = "CREATE TEMPORARY TABLE `tmp_lab_main` SELECT * FROM `lab` WHERE `year` = '$year' AND `quarter` = '$quarter' ";
-    // $db->exec($sql);
+    include 'rdu_tb_diag.php';
+    include 'rdu_tb_drugrx.php';
+    include 'rdu_tb_opday.php';
+    include 'rdu_tb_trauma.php';
+    // include 'rdu_in1.php';
+    // include 'rdu_in6.php';
+    // include 'rdu_in7.php';
+    // include 'rdu_in8.php';
+    // include 'rdu_in10.php';
+    include 'rdu_in11.php';
+    exit;
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
@@ -199,9 +163,6 @@ if ( $action == 'load' ) {
             <td align="center">1</td>
             <td>ร้อยละของรายการยาที่สั่งใช้ยาในบัญชียาหลักแห่งชาติ</td>
             <td>รพ.ระดับ A &ge; 75%<br>S &ge; 80%<br>M1-M2 &ge; 85%<br>F1-F3 &ge; 90%</td>
-            <?php
-            include 'rdu_in1.php';
-            ?>
             <td align="right"><?=number_format($in1a);?></td>
             <td align="right"><?=number_format($in1b);?></td>
             <td align="right"><?=number_format($in1_result, 2);?></td>
@@ -242,51 +203,38 @@ if ( $action == 'load' ) {
             <td align="center">6</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลันในผู้ป่วยนอก</td>
             <?php 
-            include 'rdu_in6.php';
-            // $url_in6 = "year=$year&quarter=$quarter";
-            $url_in6 = "date=$whereMonth";
+            $url = "date_start=$dateStartTh&date_end=$dateEndTh";
             ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-                <a href="rdu_in6_a.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6a);?></a>
+                <a href="rdu_in6_show.php?<?=$url;?>" target="_blank"><?=number_format($in6a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in6_b.php?<?=$url_in6;?>" target="_blank"><?=number_format($in6b);?></a>
+                <a href="rdu_in6_show.php?<?=$url;?>" target="_blank"><?=number_format($in6b);?></a>
             </td>
             <td align="right"><?=number_format($in6_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">7</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในโรคอุจจาระร่วงเฉียบพลัน</td>
-            <?php 
-            
-            include 'rdu_in7.php';
-            // $url_in7 = "year=$year&quarter=$quarter";
-            $url_in7 = "date=$whereMonthTH";
-            ?>
             <td>&le; ร้อยละ 20</td>
             <td align="right">
-                <a href="rdu_in7_a.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7a);?></a>
+                <a href="rdu_in7_show.php?<?=$url;?>" target="_blank"><?=number_format($in7a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in7_b.php?<?=$url_in7;?>" target="_blank"><?=number_format($in7b);?></a>
+                <a href="rdu_in7_show.php?<?=$url;?>" target="_blank"><?=number_format($in7b);?></a>
             </td>
             <td align="right"><?=number_format($in7_result, 2);?></td>
         </tr>
         <tr>
             <td align="center">8</td>
             <td>ร้อยละการใช้ยาปฏิชีวนะในบาดแผลสดจากอุบัติเหตุ</td>
-            <?php
-            include 'rdu_in8.php';
-            // $url_in8 = "year=$year&quarter=$quarter";
-            $url_in8 = "date=$whereMonthTH";
-            ?>
             <td>&le; ร้อยละ 40</td>
             <td align="right">
-                <a href="rdu_in8_a.php?<?=$url_in8;?>" target="_blank"><?=number_format($in8a);?></a>
+                <a href="rdu_in8_show.php?<?=$url;?>" target="_blank"><?=number_format($in8a);?></a>
             </td>
             <td align="right">
-                <a href="rdu_in8_b.php?<?=$url_in8;?>" target="_blank"><?=number_format($in8b);?></a>
+                <a href="rdu_in8_show.php?<?=$url;?>" target="_blank"><?=number_format($in8b);?></a>
             </td>
             <td align="right"><?=number_format($in8_result, 2);?></td>
         </tr>
@@ -302,16 +250,12 @@ if ( $action == 'load' ) {
             <td align="center">10</td>
             <td>ร้อยละของผู้ป่วยความดันเลือดสูงทั่วไป ที่มีการใช้ RAS blockage (ACEIs/ARBs/Renin inhibitor) <br>
             2ชนิดร่วมกัน ในการรักษาภาวะความดันเลือดสูง</td>
-            <?php 
-            include 'rdu_in10.php';
-            $url_in10 = "rdu_in10_detail.php?date=$whereMonthTH";
-            ?>
             <td>ร้อยละ 0</td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage &ge;2ชนิด">
-                <a href="<?=$url_in10;?>&table=a" target="_blank"><?=number_format($in10a);?></a>
+                <a href="rdu_in10_show.php?<?=$url;?>" target="_blank"><?=number_format($in10a);?></a>
             </td>
             <td align="right" title="จำนวน visit ผู้ป่วยความดันเลือดสูงที่ได้รับการสั่งใช้ยากลุ่ม RAS Blockage อย่างน้อย1ชนิด">
-                <a href="<?=$url_in10;?>&table=b" target="_blank"><?=number_format($in10b);?></a>
+                <a href="rdu_in10_show.php?<?=$url;?>" target="_blank"><?=number_format($in10b);?></a>
             </td>
             <td align="right"><?=number_format($in10_result, 2);?></td>
         </tr>
@@ -320,16 +264,12 @@ if ( $action == 'load' ) {
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร<br>
             ยาในเงื่อนไขข้อนี้คือ <b>Code:</b>1EUGL-C <b>Tradname:</b>Diabenol 5 mg. (Z) <b>Genname:</b>Glibenclamide 5 mg. 
             </td>
-            <?php
-            include 'rdu_in11.php';
-            $link_11 = "rdu_in11_detail.php?date=$whereMonthTH&minDate=$last6Month&maxDate=$whereMonth-$lastOfMonth";
-            ?>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
-                <a href="<?=$link_11;?>&table=a" target="_blank"><?=number_format($in11a);?></a>
+                <a href="rdu_in11_show.php?<?=$url;?>" target="_blank"><?=number_format($in11a);?></a>
             </td>
             <td align="right">
-                <a href="<?=$link_11;?>&table=b" target="_blank"><?=number_format($in11b);?></a>
+                <a href="rdu_in11_show.php?<?=$url;?>" target="_blank"><?=number_format($in11b);?></a>
             </td>
             <td align="right"><?=number_format($in11_result, 2);?></td>
         </tr>
@@ -447,10 +387,10 @@ if ( $action == 'load' ) {
     </table>
     <?php 
 
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_trauma_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_main`");
-    $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_lab_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_diag_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_trauma_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_main`");
+    // $db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_lab_main`");
 
 }

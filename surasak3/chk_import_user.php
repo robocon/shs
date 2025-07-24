@@ -1,5 +1,5 @@
 <?php
-
+setlocale( LC_ALL, 'th_TH' );
 include 'bootstrap.php';
 $action = input('action');
 $db = Mysql::load();
@@ -192,7 +192,6 @@ if( empty($action) ){
                     $idcard = $item['idcard'];
                 }
 
-
                 // $fullname = preg_replace('/\s+/', ' ', $fullname);
                 // list($name, $surname) = explode(' ',$fullname);
                 $name = trim($fname);
@@ -228,16 +227,12 @@ if( empty($action) ){
                 '$course',
                 '$date_chkup',
                 'y');";
-                // dump($sql);
+                
                 $insert = $db->insert($sql);
-
             }
-            
         }
-
         $msg = 'นำเข้าข้อมูลเรียบร้อย';
     }
-
     redirect('chk_import_user.php', $msg);
     exit;
 }
