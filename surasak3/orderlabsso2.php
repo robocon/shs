@@ -53,7 +53,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>บันทึกรายการตรวจ VN <?=$vn.' '.$ptname;?></title>
+    <title>ตรวจสุขภาพลูกจ้าง VN <?=$vn.' '.$ptname;?></title>
 </head>
 <body>
     <style>
@@ -63,7 +63,7 @@ $update = $oc->update($hn, array('employee' => 'y','guardian' => $guardian));
             }
         }
         *{
-            font-family: "TH Sarabun New","TH SarabunPSK";
+            font-family: "TH SarabunPSK", "TH Sarabun New";
             font-size: 20px;
         }
         .clearfix::after {
