@@ -41,7 +41,7 @@ session_register("until_login");
         </font>
 
         <? if ($_SESSION["smenucode"] == "ADMXRAY" || $_SESSION["smenucode"] == "ADM") { ?>
-            <br><a href="orderlabsso.php" target="_blank"><b>&gt;&gt;&nbsp;ตรวจสุขภาพลูกจ้างประจำปี67&nbsp;&lt;&lt;&lt;</b></a>
+            <br><a href="orderlabsso.php" target="_blank"><b>&gt;&gt;&nbsp;ตรวจสุขภาพลูกจ้างประจำปี68&nbsp;&lt;&lt;&lt;</b></a>
         <? } ?>
 
     <?
