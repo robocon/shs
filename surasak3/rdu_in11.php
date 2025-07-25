@@ -4,67 +4,55 @@ if ( !defined('RDU_TEST') ) {
     exit;
 }
 
-// $en_date_min = bc_to_ad($date_min);
-// $en_date_max = bc_to_ad($date_max);
-
 // เตรียมข้อมูล opday icd10 E11
-$sql = "CREATE TEMPORARY TABLE `pre_opday_in11` 
+$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `pre_opday_in11` 
 SELECT *,TRIM(SUBSTRING(`age`, 1, 2)) AS `shortage`
 FROM `tmp_base_opday` 
 WHERE `icd10` regexp 'E11' ;";
 $db->exec($sql); 
 
 // เตรียมข้อมูล drugrx ยาโค้ด 1EUGL-C
-$sql = "CREATE TEMPORARY TABLE `pre_drugrx_in11` 
+$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `pre_drugrx_in11` 
 SELECT * 
 FROM `tmp_base_drugrx` 
 WHERE `drugcode` LIKE '1EUGL-C%' ;";
-$test = $db->exec($sql); 
+$db->exec($sql);
 
 // เอาสองตัวบนมารวมกัน จะได้ ผู้ป่วยที่ได้รับยา gibenclamide แบบที่ยังไม่ได้แบ่งตามอายุ
-$sql = "CREATE TEMPORARY TABLE `tmp_user_in11` 
-SELECT a.*,CONCAT( (SUBSTRING(a.`date`, 1, 4) - 543), SUBSTRING(a.`date`,5,6) ) AS `date_en`,b.`drugcode` 
+$sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_user_in11` 
+SELECT a.*,b.`drugcode` 
 FROM `pre_opday_in11` AS a 
 LEFT JOIN `pre_drugrx_in11` AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`hn` IS NOT NULL 
-GROUP BY a.`hn`;"; 
-$db->exec($sql); 
+GROUP BY a.`hn`;";
+$db->exec($sql);
 
 // เตรียมหา A2 จากผลแลปครั้งล่าสุด
-$sql = "SELECT COUNT(a.`row_id`) AS `rows` 
+$sql = "SELECT a.*,b.* 
 FROM (  
-    SELECT `row_id`,`hn`,`date_en`,`shortage` 
-    FROM `tmp_user_in11` 
-    WHERE `shortage` <= 65 
+    SELECT * FROM `tmp_user_in11` WHERE `shortage` <= 65 
 ) AS a 
 LEFT JOIN ( 
-    SELECT * 
-    FROM `rdu_lab` 
-    WHERE ( `orderdate` >= '$last6Month 00:00:00' AND `orderdate` <= '$whereMonth-$lastOfMonth 23:59:59' )
-    AND ( `egfr` < 60 AND `egfr` > 0 ) 
-    GROUP BY `hn`
-) AS b ON b.`hn` = a.`hn` 
+    SELECT * FROM `tmp_base_crea` WHERE ( `egfr` > 0 AND `egfr` < 60 ) 
+) AS b ON b.`thdatehn` = a.`thdatehn` 
 WHERE b.`id` IS NOT NULL ; ";
 $db->select($sql); 
-$pre_a2 = $db->get_item();
-
+$pre_a2 = $db->get_items();
+$a2Rows = $db->get_rows();
 
 // A1
-$sql = "SELECT COUNT(`row_id`) AS `rows`  FROM `tmp_user_in11` WHERE `shortage` > 65 ;";
+$sql = "SELECT *  FROM `tmp_user_in11` WHERE `shortage` > 65 ;";
 $db->select($sql);
-$pre_a1 = $db->get_item();
+$pre_a1 = $db->get_items();
+$a1Rows = $db->get_rows();
 
-
-$in11a = $pre_a1['rows'] + $pre_a2['rows'];
+// $in11a = $pre_a1['rows'] + $pre_a2['rows'];
+$in11a = $a1Rows + $a2Rows;
 
 // ตัวหาร
-$sql = "SELECT COUNT(`row_id`) AS `rows` FROM `tmp_user_in11` ";
+$sql = "SELECT * FROM `tmp_user_in11` ";
 $db->select($sql);
-$pre_b = $db->get_item();
-$in11b = $pre_b['rows'];
+$pre_b = $db->get_items();
+$in11b = $db->get_rows();
 
 $in11_result  = ( $in11a / $in11b ) * 100 ;
-
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_opday_in11`;");
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `pre_drugrx_in11`;");
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_user_in11`;");
