@@ -552,8 +552,8 @@ if ( $page === 'search_an' ) {
                     confirmButtonColor: '#d33'
                 }).then((result)=>{
                     if(result.isConfirmed){
-                        // return true;
-                        window.location.href = 'med_ward.php?action=delete&id=<?=$id;?>&fill_an=<?=$an;?>';
+                        let anEncode = encodeURIComponent('<?=$an;?>');
+                        window.location.href = 'med_ward.php?action=delete&id=<?=$id;?>&fill_an='+anEncode;
                     }else{
                         return false;
                     }
