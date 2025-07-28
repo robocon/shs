@@ -183,12 +183,12 @@ if ( $action === 'save' ) {
     
     $id = input_get('id');
     $an = sprintf("%s", $_GET['fill_an']);
-    $sql = "UPDATE `med_scan` SET `status` = 'n' WHERE `id` = '$id' ";
-    $q = mysql_query($sql);
+    $sql = sprintf("UPDATE `med_scan` SET `status` = 'n' WHERE `id` = '%s' ", $dbi->real_escape_string($_GET['id']));
+    $q = $dbi->query($sql);
     $msg = 'ดำเนินการเรียบร้อย';
     $err = '';
     if($q === false){
-        $err = mysql_error();
+        $err = $dbi->error;
         set_log($err);
         $msg = 'ไม่สามารถดำเนินการได้ : '.$err;
     }
@@ -544,7 +544,7 @@ if ( $page === 'search_an' ) {
         ?>
         </table>
         <script>
-            function confirmDelete(){
+            function confirmDelete(id){
                 Swal.fire({
                     title: "ยืนยันการลบข้อมูล",
                     showCancelButton: true,
@@ -553,7 +553,8 @@ if ( $page === 'search_an' ) {
                 }).then((result)=>{
                     if(result.isConfirmed){
                         let anEncode = encodeURIComponent('<?=$an;?>');
-                        window.location.href = 'med_ward.php?action=delete&id=<?=$id;?>&fill_an='+anEncode;
+                        let url = 'med_ward.php?action=delete&id='+id+'&fill_an='+anEncode;
+                        window.location = url;
                     }else{
                         return false;
                     }
