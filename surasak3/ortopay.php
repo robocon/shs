@@ -93,7 +93,7 @@ function  checklist(){
 
 <p>>>>><input class="txtsarabun" name="n1" type="text" value="รหัส ชื่อรายการ" size="20" readonly="readonly">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <input class="txtsarabun" name="T1" type="text" value="เลือกประเภท" size="22" readonly="readonly">
-&nbsp;&nbsp;<input class="txtsarabun" name="T2" type="text" value="รหัสอุปรณ์" size="8" readonly="readonly">&nbsp;<input class="txtsarabun" name="T2" type="text" value="จำนวน" size="7" readonly="readonly">
+&nbsp;&nbsp;<input class="txtsarabun" name="T2" type="text" value="รหัสอุปกรณ์" size="8" readonly="readonly">&nbsp;<input class="txtsarabun" name="T2" type="text" value="จำนวน" size="7" readonly="readonly">
   <input class="txtsarabun" name="T5" type="text" value="ราคารวม" size="8" readonly="readonly" />
   <input class="txtsarabun" name="T3" type="text" value="เบิกได้(รวม)" size="8" readonly="readonly"><input class="txtsarabun" name="T4" type="text" value="เบิกไม่ได้(รวม)" size="8" readonly="readonly">
 <form method="POST" action="orpaid.php" onsubmit="return checklist()" name="form11">

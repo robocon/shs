@@ -124,7 +124,7 @@ if($rows["claimaipn"]=="s"){  //กำลังส่งข้อมูล
 	|| $rows["an"]=="67/1010" || $rows["an"]=="67/959" || $rows["an"]=="67/1246" || $rows["an"]=="67/1216" || $rows["an"]=="67/1142"
 	|| $rows["an"]=="67/1291" || $rows["an"]=="67/1290" || $rows["an"]=="67/1360" || $rows["an"]=="67/1442" || $rows["an"]=="67/2196"
 	|| $chkan=="67/2084" || $chkan=="68/268" || $chkan=="68/559" || $chkan=="68/459" || $chkan=="68/493" || $chkan=="68/716" || $chkan=="68/864"
-	|| $chkan=="68/906" || $chkan=="68/760"){
+	|| $chkan=="68/906" || $chkan=="68/760" || $chkan=="68/1015"){
 	?>
     <td align="center"><? if($rows["claimaipn"]!="y"){ ?><a href="dataaipn/exportdataaipn_other.php?an=<?=$rows["an"];?>">ดาวน์โหลดไฟล์ร่วมจ่าย</a><? } ?></td>
 	<?php
