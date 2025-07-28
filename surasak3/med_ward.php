@@ -295,34 +295,7 @@ if( isset($_SESSION['x-msg']) ){
     if(isset($_SESSION['line_msg'])){
         ?>
         <script>
-
-            function sendLineNotifyV2(){
-
-                var line_message = '<?=$_SESSION['line_msg'];?>';
-                var line_type = '<?=$_SESSION['line_type'];?>';
-                var test_str = [];
-                test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
-                test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
-                var data = test_str.join("&");
-
-                var request = new XMLHttpRequest();
-                request.onreadystatechange = function(){
-                    if( request.readyState == 4 && request.status == 200 ){
-                        
-                    }
-                };
-                request.timeout = 3000;
-                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', true);
-                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                request.ontimeout = function(){
-                    alert(" Error timeout");
-                };
-                request.send(data);
-
-            }
-            // sendLineNotifyV2();
-
-
+            
             window.onload = function(){
                 sendTelegram();
             }
