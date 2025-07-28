@@ -1,6 +1,6 @@
 <?php 
-include 'bootstrap.php';
-require_once 'includes/JSON.php';
+include dirname(__FILE__).'/bootstrap.php';
+include dirname(__FILE__).'/includes/JSON.php';
 
 if(empty($_SESSION['sOfficer'])){
     header("Location: login_page.php");
@@ -100,8 +100,8 @@ if ( $action === 'save' ) {
 
     // count file
     $firstTime = false;
-    $q = mysql_query("SELECT `id` FROM `med_scan` WHERE `an` = '$an' ");
-    if( mysql_num_rows($q) == 0 ){
+    $q = $dbi->query(sprintf("SELECT `id` FROM `med_scan` WHERE `an` = '%s' ", $dbi->real_escape_string($an)));
+    if( $q->num_rows == 0 ){
         $firstTime = true;
     }
 
@@ -139,11 +139,11 @@ if ( $action === 'save' ) {
             $sqlInsert = "INSERT INTO `med_scan` (`id`, `hn`, `an`, `idcard`, `ptname`, `filename`, `path`, `editor`, `date`, `lastupdate`, `status`) 
             VALUES 
             (NULL, '$hn', '$an', '$idcard', '$ptname', '$new_file', '$full_path', '$editor', NOW(), NOW(), 'y');";
-            $q = mysql_query($sqlInsert);
+            $q = $dbi->query($sqlInsert);
             if( $q === false ){
-                $err = set_log(mysql_error());
+                $err = set_log($dbi->error);
             }else{
-                $ids[] = mysql_insert_id();
+                $ids[] = $dbi->insert_id;
             }
 
             $uploadOk = 1;
@@ -188,10 +188,13 @@ if ( $action === 'save' ) {
     $msg = 'ดำเนินการเรียบร้อย';
     $err = '';
     if($q === false){
-        $err = set_log(mysql_error());
-        $msg = 'ไม่สามารถดำเนินการได้';
+        $err = mysql_error();
+        set_log($err);
+        $msg = 'ไม่สามารถดำเนินการได้ : '.$err;
     }
-    redirect('med_ward.php?fill_an='.$an,$msg.$err['msg']);
+    redirect('med_ward.php?fill_an='.$an, $msg);
+    exit;
+    
 }elseif ($action==='pushWithCurl') {
     
     $json = new Services_JSON();
@@ -292,30 +295,7 @@ if( isset($_SESSION['x-msg']) ){
     if(isset($_SESSION['line_msg'])){
         ?>
         <script>
-
-            function sendLineNotifyV2(){
-
-                var line_message = '<?=$_SESSION['line_msg'];?>';
-                var line_type = '<?=$_SESSION['line_type'];?>';
-                var test_str = [];
-                test_str.push(encodeURIComponent('message')+"="+encodeURIComponent(line_message));
-                test_str.push(encodeURIComponent('token')+"="+encodeURIComponent('XhvMYujk7DaMZnNOsCYldMFya0nlv9UeEDfQhnbEgb5'));
-                var data = test_str.join("&");
-
-                var request = new XMLHttpRequest();
-                request.onreadystatechange = function(){
-                    if( request.readyState == 4 && request.status == 200 ){
-                        // console.log(request.responseText);
-                    }
-                };
-                request.open('POST', '<?=NOTIFY_HOST;?>/send_notify_v2.php', false);
-                request.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-                request.send(data); 
-
-            }
-            sendLineNotifyV2();
-
-
+            
             window.onload = function(){
                 sendTelegram();
             }
@@ -390,6 +370,7 @@ if($_COOKIE['medWardNotify2'] == 1){
     $style = 'display: none;';
 }
 ?>
+<!--
 <div id="flexContainer" class="flexContainer" style="border: 2px solid #000; padding: 8px; text-align: center; <?=$style;?>">
     <div class="flexCenter">
         <div>
@@ -403,6 +384,7 @@ if($_COOKIE['medWardNotify2'] == 1){
         </div>
     </div>
 </div>
+-->
 <script>
     function doNotDisplayNotify(t){
         if(t.checked==true){
@@ -507,15 +489,18 @@ if ( $page === 'search_an' ) {
 }elseif ( $page === 'searchFile' ) {
     
     $an = input('an');
-    $sql = "SELECT a.*,b.`bedcode` 
+
+    $sql = sprintf("SELECT a.*,b.`bedcode` 
     FROM `med_scan` AS a 
     LEFT JOIN `ipcard` AS b ON b.`an` = a.`an` 
-    WHERE a.`an` = '$an' 
+    WHERE a.`an` = '%s' 
     AND a.`status` = 'y' 
-    ORDER BY a.`id` DESC";
-    $q = mysql_query($sql);
-    if ( mysql_num_rows($q) > 0 ) {
-
+    ORDER BY a.`id` DESC",
+        $dbi->real_escape_string($an)
+    );
+    $q = $dbi->query($sql);
+    $numRows = $q->num_rows;
+    if ( $numRows > 0 ) {
         ?>
         <table class="chk_table">
             <tr>
@@ -524,13 +509,12 @@ if ( $page === 'search_an' ) {
                 <th>ไฟล์</th>
                 <th>จัดการ</th>
             </tr>
-        
         <?php
-        while ($item = mysql_fetch_assoc($q)) {
+        while($item = $q->fetch_assoc()) {
             $id = $item['id'];
             $fullWardName = getFullWardName(trim($item['bedcode']));
             ?>
-            <tr>
+            <tr id="trId<?=$id;?>">
                 <td>
                     <p><?=$item['date'];?></p>
                 </td>
@@ -552,7 +536,7 @@ if ( $page === 'search_an' ) {
                     ?>
                     </td>
                 <td>
-                    <a href="javascript:void(0);" onclick="confirmDelete();" class="btnActive">ลบ 🗑️</a>
+                    <a href="javascript:void(0);" onclick="confirmDelete('<?=$id;?>');" class="btnActive">ลบ 🗑️</a>
                 </td>
             </tr>
             <?php
@@ -562,7 +546,7 @@ if ( $page === 'search_an' ) {
         <script>
             function confirmDelete(){
                 Swal.fire({
-                    title: "ยืนยันทึ่จะลบข้อมูล",
+                    title: "ยืนยันการลบข้อมูล",
                     showCancelButton: true,
                     confirmButtonText: 'ยืนยันการลบ',
                     confirmButtonColor: '#d33'
