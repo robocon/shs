@@ -120,7 +120,7 @@ if($rows["claimcipn"]=="s"){  //กำลังส่งข้อมูล
 	if($rows["an"]=="63/2594" || $rows["an"]=="63/2726" || $rows["an"]=="64/58" || $rows["an"]=="64/854" || $rows["an"]=="64/751"
 	|| $rows["an"]=="64/526" || $rows["an"]=="64/1620" || $rows["an"]=="64/1809" || $rows["an"]=="65/112" || $rows["an"]=="65/296"
 	|| $rows["an"]=="65/204" || $rows["an"]=="65/1173" || $rows["an"]=="66/302" || $rows["an"]=="66/473" || $rows["an"]=="66/625"
-	|| $rows["an"]=="68/549" || $rows["an"]=="68/1079"){
+	|| $rows["an"]=="68/549" || $rows["an"]=="68/1079" || $rows["an"]=="68/1126"){
 	?>
     <td align="center"><? if($rows["claimcipn"]!="y"){ ?><a href="datacipn/exportdatacipn_other.php?an=<?=$rows["an"];?>">ดาวน์โหลดไฟล์ร่วมจ่าย</a><? } ?></td>
 	<?php

@@ -140,13 +140,14 @@ if ( $action == 'load' ) {
     include 'rdu_tb_drugrx.php';
     include 'rdu_tb_opday.php';
     include 'rdu_tb_trauma.php';
+    include 'rdu_tb_lab.php';
     // include 'rdu_in1.php';
     // include 'rdu_in6.php';
     // include 'rdu_in7.php';
     // include 'rdu_in8.php';
     // include 'rdu_in10.php';
     include 'rdu_in11.php';
-    exit;
+    // exit;
 
     ?>
     <h3>รายงานผลการดำเนินงานตามตัวชี้วัด RDU ปีงบประมาณ <?=$year_for_title + 543;?> ขั้นที่2 (เดือน <?=$def_fullm_th[$monthSelected];?>) </h3>
@@ -273,6 +274,9 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in11_result, 2);?></td>
         </tr>
+        <?php
+        exit;
+        ?>
         <tr>
             <td align="center">12</td>
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
