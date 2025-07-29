@@ -106,6 +106,7 @@ class OpdReceive
         $op = $opday->getThisDay($this->hn);
         $ptright = $op['ptright'];
         $ptname = $op['ptname'];
+        $vn = $op['vn'];
 
         $nLab_orderhead = 0;
 
@@ -135,7 +136,7 @@ class OpdReceive
                 `clinicianname`, `priority`, `clinicalinfo` 
             ) VALUES (
                 NULL, NOW(), '$labnumber', '$this->hn', 'OPD', '$ptname', 
-                '$gender', '$dbirth', '', '', '', '', 
+                '$gender', '$dbirth', '100', 'checkupopd', '$vn', '', 
                 'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
             );";
             $orderhead_save = $this->dbi->query($orderhead_sql);
