@@ -49,7 +49,7 @@ if($q->num_rows > 0){
         $hn = $l['hn'];
         $date = $l['date'];
         $tvn = $l['tvn'];
-        // $user_number = sprintf('%03d', $l['lab']);
+        $user_number = sprintf('%03d', $l['lab']);
         if($type=='cbc' OR $type=='all'){
             $code_exam_cbc = date('ymd').$user_number.'01';
             ?>
@@ -60,7 +60,7 @@ if($q->num_rows > 0){
             <div>
                 <span style="font-size:17pt;">CBC</span>
                 <span ><img src="barcode/labstk.php?cLabno=<?=$code_exam_cbc;?>"></span>
-                <span style="font-size:20pt; font-weight:bold;">C</span>
+                <span style="font-size:18pt; font-weight:bold;"><?=$user_number;?></span>
             </div>
             <div style="page-break-before: always;"></div>
             <?php
@@ -75,7 +75,7 @@ if($q->num_rows > 0){
             <div>
                 <span style="font-size:17pt;">UA</span>
                 <span ><img src="barcode/labstk.php?cLabno=<?=$ua_code;?>"></span>
-                <span style="font-size:20pt; font-weight:bold;">C</span>
+                <span style="font-size:18pt; font-weight:bold;"><?=$user_number;?></span>
             </div>
             <div style="page-break-before: always;"></div>
             <?php
@@ -86,23 +86,23 @@ if($q->num_rows > 0){
             ?>
             <div style="font-size:12pt; font-weight: normal; left:0; top:0; height:15px;"><b>HN</b>:<?=$hn;?>(<?=$tvn;?>) <?=$date;?></div>
             <div style="font-size:17pt; font-weight:bold; left:0; top:15px; height:25px;"><?=$ptname;?></div>
-            <!-- <div style="font-size:15pt; font-weight: normal; left:0; top:0; height:18px;">CBC</div> -->
             <div>
                 <span style="font-size:14pt;">CHEM</span>
                 <span ><img src="barcode/labstk.php?cLabno=<?=$chem_code;?>"></span>
-                <span style="font-size:20pt; font-weight:bold;">C</span>
+                <span style="font-size:18pt; font-weight:bold;"><?=$user_number;?></span>
             </div>
             <div style="page-break-before: always;"></div>
 
+            <!--
             <div style="font-size:12pt; font-weight: normal; left:0; top:0; height:15px;"><b>HN</b>:<?=$hn;?>(<?=$tvn;?>) <?=$date;?></div>
             <div style="font-size:17pt; font-weight:bold; left:0; top:15px; height:25px;"><?=$ptname;?></div>
-            <!-- <div style="font-size:15pt; font-weight: normal; left:0; top:0; height:18px;">CBC</div> -->
             <div>
                 <span style="font-size:14pt;">CHEM</span>
                 <span ><img src="barcode/labstk.php?cLabno=<?=$chem_code;?>"></span>
                 <span style="font-size:20pt; font-weight:bold;">C</span>
             </div>
             <div style="page-break-before: always;"></div>
+            -->
             <?php
         }
         ?>

@@ -5,6 +5,12 @@ require_once dirname(__FILE__).'/class_file/class_opcard.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$sql = "SELECT `prefix`,`runno` FROM `runno` WHERE `title` = 'emp_checkup' ";
+$q = $dbi->query($sql);
+$runno = $q->fetch_assoc();
+$prefix = $runno['prefix'];
+$year_th = $runno['runno'];
+
 $opcard = new Opcard();
 ?>
 <!DOCTYPE html>
@@ -21,21 +27,17 @@ $opcard = new Opcard();
     require_once 'report_checkup_employee_menu.php';
     
     $yearCheckup = get_year_checkup(true);
-    $sql = "SELECT b.hn AS main_hn,b.depart,b.lab,a.* FROM ( 
+    $sql = "SELECT b.hn AS main_hn,b.department,b.lab,a.* FROM ( 
         SELECT row_id,hn,ptname,age,vn,thidate,SUBSTRING(thidate,1,10) AS thidate2 
         FROM opday 
         WHERE ptright LIKE 'R42%' 
-        AND ( thidate LIKE '2567-01-29%' 
-        OR thidate LIKE '2567-01-30%' 
-        OR thidate LIKE '2567-01-31%' 
-        OR thidate LIKE '2567-02-01%' 
-        OR thidate LIKE '2567-02-02%' )
-    ) AS a RIGHT JOIN lab67 AS b ON a.hn = b.hn
+        AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
+    ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
     ORDER BY b.depart ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="">
-        <h1 class="text-center">กลุ่มเสี่ยง HR ลูกจ้าง 2567</h1>
+        <h1 class="text-center">กลุ่มเสี่ยง HR ลูกจ้าง <?=$year_th;?></h1>
         <!-- <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3> -->
         
         <table class="table table-sm table-striped table-hover table-striped">
@@ -44,7 +46,7 @@ $opcard = new Opcard();
                     <th>#</th>
                     <th>HN</th>
                     <th>ชื่อ-สกุล</th>
-                    <th>แผนก</th>
+                    <th>กลุ่ม</th>
                     <th>อายุ</th>
                     <th width="12%">โรคประจำตัว</th>
                     <th colspan="2">BMI&gt;=23</th>
@@ -109,7 +111,7 @@ $opcard = new Opcard();
                     <td><?=$i;?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['ptname'];?></td>
-                    <td><?=$a['depart'];?></td>
+                    <td><?=$a['department'];?></td>
                     <td><?=$a['age'];?></td>
                     <td><?=$congenital_disease;?></td>
                     <td class="text-end"><span ><?=$bmi;?></span></td>

@@ -5,6 +5,12 @@ require_once dirname(__FILE__).'/class_file/class_opcard.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+$sql = "SELECT `prefix`,`runno` FROM `runno` WHERE `title` = 'emp_checkup' ";
+$q = $dbi->query($sql);
+$runno = $q->fetch_assoc();
+$prefix = $runno['prefix'];
+$year_th = $runno['runno'];
+
 $opcard = new Opcard();
 ?>
 <!DOCTYPE html>
@@ -12,7 +18,7 @@ $opcard = new Opcard();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายชื่อลูกจ้างตรวจสุขภาพปี67</title>
+    <title>รายชื่อลูกจ้างตรวจสุขภาพปี<?=$prefix;?></title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
@@ -21,30 +27,25 @@ $opcard = new Opcard();
     require_once 'report_checkup_employee_menu.php';
     
     $yearCheckup = get_year_checkup(true);
-    $sql = "SELECT b.hn AS main_hn,b.depart,b.lab,a.* FROM ( 
+    $sql = "SELECT b.hn AS main_hn,b.department,b.lab,a.* FROM ( 
         SELECT row_id,hn,ptname,age,vn,thidate,SUBSTRING(thidate,1,10) AS thidate2 
         FROM opday 
         WHERE ptright LIKE 'R42%' 
-        AND ( thidate LIKE '2567-01-29%' 
-        OR thidate LIKE '2567-01-30%' 
-        OR thidate LIKE '2567-01-31%' 
-        OR thidate LIKE '2567-02-01%' 
-        OR thidate LIKE '2567-02-02%' 
-        OR thidate LIKE '2567-02-22%' )
-    ) AS a RIGHT JOIN lab67 AS b ON a.hn = b.hn
-    ORDER BY a.row_id ASC";
+        AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' ) 
+    ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
+    ORDER BY ISNULL(a.row_id) ASC, b.id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="container">
-        <h1>รายชื่อลูกจ้างทั้งหมดปี 67</h1>
-        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
+        <h1>รายชื่อลูกจ้างทั้งหมดปี <?=$prefix;?></h1>
+        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 กรกฎาคม <?=$year_th;?> ถึง 2 สิงหาคม <?=$year_th;?></small></h3>
         
         <table class="table table-sm table-striped table-hover">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
                     <th>วันที่ตรวจ</th>
-                    <th>แผนก</th>
+                    <th>กลุ่ม</th>
                     <th>HN</th>
                     <th>ชื่อ-สกุล</th>
                     <th>อายุ</th>
@@ -78,8 +79,7 @@ $opcard = new Opcard();
                     
                     $sqlLab = "SELECT row_id,depart 
                     FROM depart 
-                    WHERE ( date>='2567-01-29 00:00:00' AND date<='2567-02-02 23:59:59' ) 
-                    AND date LIKE '2567-02-22%' 
+                    WHERE ( date>='2568-07-29' AND date<='2568-08-02' ) 
                     AND hn='$hn' 
                     AND (depart = 'PATHO' OR depart = 'XRAY') 
                     AND detail='ตรวจสุขภาพประกันสังคม' ";
@@ -95,11 +95,11 @@ $opcard = new Opcard();
                         }
                     }
 
-                    $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
-                    $qRegis = $dbi->query($sqlRegis);
-                    if($qRegis->num_rows>0){
+                    // $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
+                    // $qRegis = $dbi->query($sqlRegis);
+                    // if($qRegis->num_rows>0){
                         $regis = '<i class="bi bi-check-circle text-success"></i>';
-                    }
+                    // }
 
                     $sqlOpd = "SELECT row_id,thdatehn FROM dxofyear_out WHERE thdatehn = '$enDateHn' ";
                     $qOpd = $dbi->query($sqlOpd);
@@ -112,7 +112,7 @@ $opcard = new Opcard();
                         $opd = '<i class="bi bi-check-circle text-success"></i>';
                     }
 
-                    $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
+                    $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '$prefix' ";
                     $qDoctor = $dbi->query($sqlDoctor);
                     $chk_doctor_rows = $qDoctor->num_rows;
                     if($chk_doctor_rows>0){
@@ -121,7 +121,7 @@ $opcard = new Opcard();
 
                         if($dxofyear_out_rows>0){
                             $convertToEn = ad_to_bc($dxofyear_out['thdatehn']);
-                            $sqlCondx = "SELECT row_id FROM condxofyear_out WHERE yearcheck='2567' AND camp='ตรวจสุขภาพประกันสังคม' AND hn='$hn' ";
+                            $sqlCondx = "SELECT row_id FROM condxofyear_out WHERE yearcheck='$year_th' AND camp='ตรวจสุขภาพประกันสังคม' AND hn='$hn' ";
                             $qCondx = $dbi->query($sqlCondx);
                             $condx = $qCondx->fetch_assoc();
                             $condxId = $condx['row_id'];
@@ -133,7 +133,7 @@ $opcard = new Opcard();
                 <tr>
                     <td><?=$i;?></td>
                     <td><span title="<?=$a['thidate'];?>"><?=$thidate;?></span></td>
-                    <td><?=$a['depart'];?></td>
+                    <td><?=$a['department'];?></td>
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['age'];?></td>

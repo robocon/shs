@@ -27,7 +27,8 @@ list($year,$month,$day) = explode('-',$enDate);
     FROM (
         SELECT * FROM opday WHERE thidate LIKE '$thidate%' AND ptright LIKE 'R42%' 
     ) AS a 
-    LEFT JOIN opcard AS b ON b.hn = a.hn";
+    LEFT JOIN opcard AS b ON b.hn = a.hn
+    ORDER BY a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="container">
@@ -38,7 +39,7 @@ list($year,$month,$day) = explode('-',$enDate);
             <thead class="table-light">
                 <tr>
                     <th>#</th>
-                    <th>แผนก</th>
+                    <th>กลุ่ม</th>
                     <th>HN</th>
                     <th>เลขที่บัตร</th>
                     <th>ชื่อ-สกุล</th>
@@ -76,11 +77,11 @@ list($year,$month,$day) = explode('-',$enDate);
                     }
                 }
 
-                $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
-                $qRegis = $dbi->query($sqlRegis);
-                if($qRegis->num_rows>0){
+                // $sqlRegis = "SELECT id FROM api_authen WHERE createdDate LIKE '$enDate%' AND hn = '$hn' ";
+                // $qRegis = $dbi->query($sqlRegis);
+                // if($qRegis->num_rows>0){
                     $regis = '<i class="bi bi-check-circle text-success"></i>';
-                }
+                // }
 
                 $sqlOpd = "SELECT row_id FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
                 $qOpd = $dbi->query($sqlOpd);
@@ -88,19 +89,19 @@ list($year,$month,$day) = explode('-',$enDate);
                     $opd = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
-                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
+                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '68' ";
                 $qDoctor = $dbi->query($sqlDoctor);
                 if($qDoctor->num_rows>0){
                     $doctor = '<i class="bi bi-check-circle text-success"></i>';
                 }
                 
-                $sqlLab67 = "SELECT depart,lab FROM lab67 WHERE hn = '$hn'";
+                $sqlLab67 = "SELECT department,lab FROM employee WHERE hn = '$hn'";
                 $qLab67 = $dbi->query($sqlLab67);
                 $lab67 = $qLab67->fetch_assoc();
                 ?>
                 <tr>
                     <td><?=$i;?></td>
-                    <td><?=$lab67['depart'];?></td>
+                    <td><?=$lab67['department'];?></td>
                     <td><span title="<?=$a['thidate'];?>"><?=$a['hn'];?></span></td>
                     <td><span title=""><?=$a['idcard'];?></span></td>
                     <td><?=$a['ptname'];?></td>

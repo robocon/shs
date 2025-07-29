@@ -5,37 +5,27 @@ require_once dirname(__FILE__).'/class_file/class_opcard.php';
 $db = Mysql::load();
 $opcard = new Opcard();
 
-// $camp = 'ลูกจ้าง61';
-
-// $sql = "SELECT b.*,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
-// c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
-// FROM ( 
-//     SELECT * FROM `opcardchk` WHERE `part` = '$camp'
-// ) AS a 
-// LEFT JOIN ( 
-//     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
-// ) AS b ON b.`hn` = a.`HN` 
-// LEFT JOIN ( 
-//     SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
-// ) AS c ON c.`hn` = a.`HN`
-// WHERE b.row_id IS NOT NULL 
-// ORDER BY a.`row`";
+$sql = "SELECT `prefix`,`runno` FROM `runno` WHERE `title` = 'emp_checkup' ";
+$q = $dbi->query($sql);
+$runno = $q->fetch_assoc();
+$prefix = $runno['prefix'];
+$year_th = $runno['runno'];
 
 /**
  * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
  */
-$sql = "SELECT a.main_id,a.depart,a.hn AS main_hn,a.idcard,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
+$sql = "SELECT a.main_id,a.department,a.hn AS main_hn,a.idcard,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
-    SELECT *,id as main_id FROM `lab67` ORDER BY depart ASC,id ASC
+    SELECT *,id as main_id FROM `employee` ORDER BY id ASC
 ) AS a 
 LEFT JOIN ( 
-    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '67' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
+    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '$prefix' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
 ) AS b ON b.`hn` = a.`hn` 
 LEFT JOIN ( 
-    SELECT * FROM `chk_doctor` WHERE `yearchk` = '67' 
+    SELECT * FROM `chk_doctor` WHERE `yearchk` = '$prefix' 
 ) AS c ON c.`hn` = a.`hn`
-ORDER BY a.depart ASC,a.main_id ASC";
+ORDER BY a.main_id ASC";
 // dump($sql);
 
 $db->select($sql);
@@ -68,7 +58,7 @@ $user_rows = $db->get_rows();
 </style>
 <div style="text-align: center;">
     <!-- <p><b><?=$company['name'];?> ระหว่างวันที่ <?=$company['date_checkup'];?> จำนวน <?=$user_rows;?> ราย</b></p> -->
-    <p><b>ตรวจสุขภาพลูกจ้างประจำปี ระหว่างวันที่ 29 มกราคม 22567 ถึง 2 กุมภาพันธ์ 2567 จำนวน <?=$user_rows;?> ราย</b></p>
+    <p><b>ตรวจสุขภาพลูกจ้างประจำปี ระหว่างวันที่ 29 กรกฎาคม <?=$year_th;?> ถึง 2 สิงหาคม <?=$year_th;?> จำนวน <?=$user_rows;?> ราย</b></p>
 </div>
 <table class="chk_table" width="100%">
     <thead>
