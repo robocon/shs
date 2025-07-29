@@ -95,7 +95,13 @@ $opcard = new Opcard();
                 $labPrice = $xrayPrice = 0;
                 
                 $patItems = array();
-                $sqlLab = "SELECT `row_id`,`depart`,`price`,`hn` FROM `depart` WHERE `date` LIKE '$thidate%' AND `hn`='$hn' AND `depart` IN('PATHO','XRAY') AND `detail`='ตรวจสุขภาพประกันสังคม' ";
+                $sqlLab = "SELECT `row_id`,`depart`,`price`,`hn` 
+                FROM `depart` 
+                WHERE `date` LIKE '$thidate%' 
+                AND `hn`='$hn' 
+                AND `depart` IN('PATHO','XRAY') 
+                AND ( `status` = 'Y' AND `price` > 0 ) 
+                AND `detail`='ตรวจสุขภาพประกันสังคม' ";
                 $qLab = $dbi->query($sqlLab);
                 $qLabRows = $qLab->num_rows;
                 if($qLabRows>0){
