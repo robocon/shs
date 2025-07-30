@@ -36,11 +36,11 @@ $opcard = new Opcard();
     ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
-    <div class="container">
+    <div class="container mt-2">
         <h1>รายชื่อลูกจ้างทั้งหมดปี <?=$prefix;?></h1>
         <h3><small class="text-body-secondary">ระหว่างวันที่ 29 กรกฎาคม <?=$year_th;?> ถึง 2 สิงหาคม <?=$year_th;?></small></h3>
         
-        <table class="table table-sm table-striped table-hover">
+        <table class="table table-sm table-striped table-hover" id="tableContent">
             <thead class="table-light">
                 <tr>
                     <th>#</th>

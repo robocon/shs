@@ -51,7 +51,7 @@ $opcard = new Opcard();
         <h1 class="text-center">รายชื่อตรวจสุขภาพลูกจ้างปี <?=$year_th;?></h1>
         <h3 class="text-center"><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
         
-        <table class="table table-sm table-striped table-hover">
+        <table class="table table-sm table-striped table-hover" id="tableContent">
             <thead class="table-light">
                 <tr class="align-middle">
                     <th>#</th>

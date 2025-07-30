@@ -40,7 +40,7 @@ $opcard = new Opcard();
         <h1 class="text-center">กลุ่มเสี่ยงตรวจสุขภาพลูกจ้าง <?=$year_th;?></h1>
         <!-- <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3> -->
         
-        <table class="table table-sm table-striped table-hover table-striped">
+        <table class="table table-sm table-striped table-hover table-striped" id="tableContent">
             <thead class="table-light">
                 <tr>
                     <th>#</th>

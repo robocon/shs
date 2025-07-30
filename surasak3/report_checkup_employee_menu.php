@@ -1,6 +1,26 @@
 <?php
 $sOfficer = $_SESSION['sOfficer'];
 ?>
+<style>
+    @media print{
+        .navbar{
+            display: none;
+        }
+        body{
+            font-size: 16px;
+        }
+    }
+    *{
+        font-family: "TH SarabunPSK", "TH Sarabun New";
+    }
+    body{
+        font-size: 20px;
+    }
+    #tableContent thead th{
+        position: sticky;
+        top:0;
+    }
+</style>
 <nav class="navbar bg-success navbar-expand-lg navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="report_checkup_employee.php">หน้าหลัก</a>
@@ -10,9 +30,6 @@ $sOfficer = $_SESSION['sOfficer'];
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-                <!-- <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li> -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
@@ -24,13 +41,7 @@ $sOfficer = $_SESSION['sOfficer'];
                         <li><a class="dropdown-item" href="report_checkup_employee_risk2.php">กลุ่มเสี่ยง HR</a></li>
                         <li><a class="dropdown-item" href="report_checkup_employee_all.php">ยอดรวมทั้งหมด</a></li>
                         <li><a class="dropdown-item" href="report_checkup_employee_borgor.php">รายงานกองบังคับการ</a></li>
-                        
-                        <!-- <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li> -->
                     </ul>
-                    
                 </li>
                 <li>
                     <a class="nav-link" href="report_checkup_employee_money.php" role="button">จัดเก็บรายได้</a>
