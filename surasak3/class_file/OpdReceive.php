@@ -106,6 +106,7 @@ class OpdReceive
         $op = $opday->getThisDay($this->hn);
         $ptright = $op['ptright'];
         $ptname = $op['ptname'];
+        $vn = $op['vn'];
 
         $nLab_orderhead = 0;
 
@@ -135,7 +136,7 @@ class OpdReceive
                 `clinicianname`, `priority`, `clinicalinfo` 
             ) VALUES (
                 NULL, NOW(), '$labnumber', '$this->hn', 'OPD', '$ptname', 
-                '$gender', '$dbirth', '', '', '', '', 
+                '$gender', '$dbirth', '100', 'checkupopd', '$vn', '', 
                 'MD022 (แพทย์เวชปฎิบัติ)', 'R', '$clinicalinfo'
             );";
             $orderhead_save = $this->dbi->query($orderhead_sql);
@@ -344,8 +345,8 @@ class OpdReceive
             `detail_all`,`dbirth`,`orderby`
         )VALUES (
             '$this->thaiDateFull', '$this->hn', '$this->vn', '$yot', '$name', '$surname', 
-            '1. CHEST CHECK UP', 'MD022 (ไม่ทราบแพทย์)', 'N', '$xray_no', 'digital', 'ตรวจสุขภาพ', 
-            '1. CHEST CHECK UP', '$dbirth', 'XRAY'
+            '1.CHEST CHECK UP', 'MD022 (ไม่ทราบแพทย์)', 'N', '$xray_no', 'digital', 'ตรวจสุขภาพ', 
+            '1.CHEST CHECK UP', '$dbirth', 'XRAY'
         );";
         $xray_doctor_save = $this->dbi->query($sql_xray_doctor);
         if($xray_doctor_save==false){ 
@@ -409,14 +410,15 @@ class OpdReceive
             die($this->dbi->error);
         }
 
+        $remark = (int) $sumPrice;
         $sql_xray_stat = "INSERT INTO `xray_stat` (
             `date` ,`hn` ,`xn` ,`xn_new` ,`ptname` ,`age` ,
             `ptright` ,`patient_from` ,`detail` ,`doctor` ,`digital` ,`10_12` ,
-            `14_14` ,`NONE` ,`office` ,`idno`,`remark` 
+            `14_14` ,`NONE` ,`office` ,`idno`,`remark`,`cancle` 
         )VALUES ( 
             '$this->thaiDateFull', '$this->hn', '', '', '$ptname', '$age', 
             '$ptright', 'OPD', '1.CHEST CHECK UP', 'MD022 (ไม่ทราบแพทย์)', '1', '0', 
-            '0', '0', '$this->sOfficer', '$depart_id', '$sumPrice'
+            '0', '0', '$this->sOfficer', '$chktranx', '$remark', '0'
         );";
         $xray_stat_save = $this->dbi->query($sql_xray_stat);
         if($xray_stat_save==false){

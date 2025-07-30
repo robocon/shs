@@ -4,6 +4,11 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST, USER, PASS, DB);
 $dbi->query("SET NAMES UTF8");
 
+$sql = "SELECT `prefix`,`runno` FROM `runno` WHERE `title` = 'emp_checkup' ";
+$q = $dbi->query($sql);
+$runno = $q->fetch_assoc();
+$prefix = $runno['prefix'];
+$year_th = $runno['runno'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +16,7 @@ $dbi->query("SET NAMES UTF8");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตรวจสุขภาพลูกจ้างประจำปี</title>
+    <title>ตรวจสุขภาพลูกจ้างประจำปี <?=$prefix;?></title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -23,17 +28,13 @@ $dbi->query("SET NAMES UTF8");
     $sql = "SELECT SUBSTRING(thidate,1,10) thidate, COUNT(row_id) AS emp_count 
     FROM opday 
     WHERE ptright LIKE 'R42%' 
-    AND ( thidate LIKE '2567-01-29%' 
-	OR thidate LIKE '2567-01-30%' 
-	OR thidate LIKE '2567-01-31%' 
-	OR thidate LIKE '2567-02-01%' 
-	OR thidate LIKE '2567-02-02%' )
+    AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
     GROUP BY SUBSTRING(thidate,1,10) ";
     $q = $dbi->query($sql);
     ?>
     <div class="container">
-        <h1>ยอดการตรวจสุขภาพลูกจ้างประจำปี 2567</h1>
-        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3>
+        <h1>ยอดการตรวจสุขภาพลูกจ้างประจำปี <?=$year_th;?></h1>
+        <h3><small class="text-body-secondary">ระหว่างวันที่ 29 กรกฎาคม <?=$year_th;?> ถึง 2 สิงหาคม <?=$year_th;?></small></h3>
         <div class="row">
             <div class="col-6">
                 <table class="table table-sm table-striped table-hover">
