@@ -157,7 +157,7 @@ if($drugreact_rows2>0){
 
 <div style="position:absolute; top:0; left:0; height:100%; width:100%;">
 	<frameset>
-		<iframe id="iFrameLeft" name="left" src="dt_paperLessListItem.php?hn=<?=$hn;?>" style="width: 20%; height: 100%; overflow: hidden; float:left;"></iframe>
+		<iframe id="iFrameLeft" name="left" src="dt_paperLessListItem.php?hn=<?=$hn;?>" style="height: 100%; overflow: hidden; float:left;"></iframe>
 		<?php
 		$headerTabCss = '';
 		if($_COOKIE['eopdTab']=="0"){
@@ -186,13 +186,13 @@ if($drugreact_rows2>0){
 				</div>
 			</div>
 		</div>
-		<div style="position:absolute; top:4px; right:4px; <?=$headerTabCss;?>" class="showHideBtn" id="hideContain">
+		<!-- <div style="position:absolute; top:4px; right:4px; <?=$headerTabCss;?>" class="showHideBtn" id="hideContain">
 			<button onclick="hideHeaderDetail()">ซ่อนเมนู</button>
 		</div>
 		<div style="position:absolute; top:4px; right:4px; <?=(!empty($headerTabCss) ? '' : 'display:none;' );?>" class="showHideBtn" id="showContain">
 			<button onclick="showHeaderDetail()">แสดงเมนู</button>
-		</div>
-		<iframe id="iFrameRight" name="right" src="opdcard_font.php?hn=<?=$hn;?>" scrolling="auto" style="width: 79%; height: 100%;"></iframe>
+		</div> -->
+		<iframe id="iFrameRight" name="right" src="opdcard_font.php?hn=<?=$hn;?>" scrolling="auto" style="width: 79%; height: 87%;"></iframe>
 	</frameset>
 </div>
 <script>

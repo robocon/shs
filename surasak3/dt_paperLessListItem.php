@@ -205,7 +205,7 @@ $items->list = $newItems;
 	.thumbContain{
 		position: relative;
 		text-align: center;
-		float: left;
+		/* float: left; */
 		margin: 0 0 1em 1em;
 		height: 153px;
 	}
