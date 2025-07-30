@@ -33,7 +33,7 @@ $opcard = new Opcard();
         WHERE ptright LIKE 'R42%' 
         AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
     ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
-    ORDER BY b.depart ASC";
+    ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="">
@@ -89,7 +89,7 @@ $opcard = new Opcard();
                     $sqlOpd = "SELECT * FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
                     $qOpd = $dbi->query($sqlOpd);
                     if($qOpd->num_rows>0){
-                        // $opd = '<i class="bi bi-check-circle text-success"></i>';
+                        // $opd = '⚠️';
                         $opd = $qOpd->fetch_assoc();
                         $congenital_disease = $opd['congenital_disease'];
                         $bs = $opd['bs'];
@@ -100,26 +100,26 @@ $opcard = new Opcard();
                     }
 
                     if($sbp>140 OR $dbp>90){
-                        $statBp='<i class="bi bi-check-circle text-success"></i>';
+                        $statBp='⚠️';
                     }
 
                     if($bmi > 25){
-                        $statBmi='<i class="bi bi-check-circle text-success"></i>';
+                        $statBmi='⚠️';
                     }
 
                     if($bs >= 126){
-                        $statBs='<i class="bi bi-check-circle text-success"></i>';
+                        $statBs='⚠️';
                     }
     
                     if($chol >= 240){
-                        $statChol='<i class="bi bi-check-circle text-success"></i>';
+                        $statChol='⚠️';
                     }
 
 
                     // $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '67' ";
                     // $qDoctor = $dbi->query($sqlDoctor);
                     // if($qDoctor->num_rows>0){
-                    //     $doctor = '<i class="bi bi-check-circle text-success"></i>';
+                    //     $doctor = '⚠️';
                     // }
                 // }
                 ?>

@@ -44,7 +44,7 @@ $opcard = new Opcard();
         WHERE ptright LIKE 'R42%' 
         AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
     ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
-    ORDER BY ISNULL(a.row_id) ASC, b.id ASC";
+    ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="custom-font">
@@ -57,21 +57,24 @@ $opcard = new Opcard();
                     <th>#</th>
                     <th>วันที่ตรวจ</th>
                     <th>กลุ่ม</th>
-                    <th>เลขที่บัตร</th>
+                    <th width="120">เลขที่บัตร</th>
                     <th>HN</th>
                     <th>ชื่อ-สกุล</th>
                     <th>อายุ</th>
                     <th>VN</th>
                     <th>สิทธิ</th>
-                    <th>รายการตรวจ<br>ตามสิทธิ ปกส.</th>
-                    <th class="text-center">LAB+X-Ray<br>ปกส</th>
-                    <th class="text-center">LAB<br>โรงบาลฯ</th>
-                    <th class="text-center">X-Ray<br>โรงบาลฯ</th>
+                    <th width="400">รายการตรวจ<br>ตามสิทธิ ปกส.</th>
+                    <!-- <th class="text-center">LAB+X-Ray<br>ปกส</th> -->
+                    <th class="text-center">LAB</th>
+                    <th class="text-center">X-Ray</th>
+                    <th>รวม</th>
                 </tr>
             </thead>
         <?php
         $sum_money_sso = 0;
         $sum_money_hos = 0;
+
+        $sum_lab = $sum_xray = 0;
 
         $lab67FullRows = $q->num_rows;
         if($lab67FullRows>0){
@@ -95,13 +98,16 @@ $opcard = new Opcard();
                 $labPrice = $xrayPrice = 0;
                 
                 $patItems = array();
+                $ssoDetail = array();
+
                 $sqlLab = "SELECT `row_id`,`depart`,`price`,`hn` 
                 FROM `depart` 
                 WHERE `date` LIKE '$thidate%' 
                 AND `hn`='$hn' 
                 AND `depart` IN('PATHO','XRAY') 
                 AND ( `status` = 'Y' AND `price` > 0 ) 
-                AND `detail`='ตรวจสุขภาพประกันสังคม' ";
+                AND `detail`='ตรวจสุขภาพประกันสังคม' 
+                ORDER BY `row_id`";
                 $qLab = $dbi->query($sqlLab);
                 $qLabRows = $qLab->num_rows;
                 if($qLabRows>0){
@@ -109,6 +115,7 @@ $opcard = new Opcard();
                         
                         if($p['depart']==='PATHO'){
                             $labPrice = $p['price'];
+                            $sum_lab += $labPrice;
                             $sum_money_hos += $labPrice;
 
                             $sso_items = explode('|',$a['lab']);
@@ -117,11 +124,12 @@ $opcard = new Opcard();
                                 unset($sso_items[$cxrKey]);
                             }
                             
-                            $ssoDetail = array();
+                            
                             foreach ($sso_items as $sso) {
                                 $codeLab = "$sso-sso";
                                 $qLabcare = $dbi->query("SELECT price FROM labcare WHERE code = '$codeLab' ");
                                 $lc = $qLabcare->fetch_assoc();
+
                                 $ssoPrice += $lc['price'];
                                 if($lc['price']>0){
                                     $ssoDetail[] = $codeLab.'('.$lc['price'].')';
@@ -132,8 +140,11 @@ $opcard = new Opcard();
                             
                         }elseif ($p['depart']==='XRAY') {
                             $xrayPrice = $p['price'];
+                            $sum_xray += $xrayPrice;
                             $ssoPrice += $xrayPrice;
                             $sum_money_sso += $ssoPrice;
+                            $ssoDetail[] = '41001-CHK (170.00)';
+                            $sum_money_hos += $xrayPrice;
                         }
                     }
                 }
@@ -169,7 +180,7 @@ $opcard = new Opcard();
                     <td><?=$a['vn'];?></td>
                     <td><?=$a['ptright'];?></td>
                     <td><?=implode(',', $ssoDetail);?></td>
-                    <td class="text-end">
+                    <!-- <td class="text-end">
                         <div class="<?=$lastRows;?>">
                         <?php 
                         if($ssoPrice>0 && !empty($a['thidate2'])){
@@ -179,9 +190,10 @@ $opcard = new Opcard();
                         }
                         ?>
                         </div>
-                    </td>
+                    </td> -->
                     <td class="text-end"><div class="<?=$lastRows;?>"><?=$labPrice;?></div></td>
                     <td class="text-end"><div class="<?=$lastRows;?>"><?=$xrayPrice;?></div></td>
+                    <td class="text-end"><?=number_format($xrayPrice+$labPrice,2);?></td>
                 </tr>
                 <?php
                 $i++;
@@ -189,13 +201,14 @@ $opcard = new Opcard();
         }
         ?>
         <tr>
-            <td colspan="9" class="text-end"><b>ยอดรวมตามรายการตรวจประกันสังคม</b></td>
-            <td class="text-end"><div style="border-bottom: 3px double;"><?=number_format($sum_money_sso,2);?></div></td>
-            <td colspan="2"></td>
+            <td colspan="10" class="text-end"><b>ยอดรวมตามรายการ</b></td>
+            <td class="text-end"><div style="border-bottom: 3px double;"><?=number_format($sum_lab,2);?></div></td>
+            <td class="text-end"><div style="border-bottom: 3px double;"><?=number_format($sum_xray,2);?></div></td>
+            <td ></td>
         </tr>
         <tr>
-            <td colspan="10" class="text-end"><b>ยอดตรวจทั้งหมดในโรงพยาบาล</b></td>
-            <td colspan="2" class="text-end"><div  style="border-bottom: 3px double;"><?=number_format($sum_money_hos,2);?></div></td>
+            <td colspan="12" class="text-end"><b>ยอดตรวจทั้งหมด</b></td>
+            <td class="text-end"><div  style="border-bottom: 3px double;"><?=number_format($sum_money_hos,2);?></div></td>
         </tr>
         </table>
             

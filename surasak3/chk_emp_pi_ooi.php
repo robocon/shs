@@ -17,7 +17,7 @@ $year_th = $runno['runno'];
 $sql = "SELECT a.main_id,a.department,a.hn AS main_hn,a.idcard,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
 FROM ( 
-    SELECT *,id as main_id FROM `employee` ORDER BY id ASC
+    SELECT x.*,x.id as main_id,y.idcard FROM `employee` AS x LEFT JOIN opcard AS y ON x.hn = y.hn ORDER BY id ASC
 ) AS a 
 LEFT JOIN ( 
     SELECT * FROM `dxofyear_out` WHERE `yearchk` = '$prefix' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
@@ -25,8 +25,7 @@ LEFT JOIN (
 LEFT JOIN ( 
     SELECT * FROM `chk_doctor` WHERE `yearchk` = '$prefix' 
 ) AS c ON c.`hn` = a.`hn`
-ORDER BY a.main_id ASC";
-// dump($sql);
+ORDER BY ISNULL(b.row_id) ASC, b.row_id ASC";
 
 $db->select($sql);
 $items = $db->get_items();
@@ -64,7 +63,7 @@ $user_rows = $db->get_rows();
     <thead>
         <tr>
             <th rowspan="2" align="center">ลำดับ</th>
-            <th rowspan="2" align="center">แผนก</th>
+            <th rowspan="2" align="center">กลุ่ม</th>
             <th rowspan="2" align="center">บัตรประชาชน</th>
             <th rowspan="2" align="center">HN</th>
             <th rowspan="2" align="center">ชื่อ - สกุล</th>
@@ -221,7 +220,7 @@ $user_rows = $db->get_rows();
         <tr>
             
             <td align="right"><?=$i;?></td>
-            <td><?=$item['depart'];?></td>
+            <td><?=$item['department'];?></td>
             <td><?=$item['idcard'];?></td>
             <td><?=$main_hn;?></td>
             <td><?=$ptname;?></td>

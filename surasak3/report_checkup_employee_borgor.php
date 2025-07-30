@@ -33,7 +33,7 @@ $opcard = new Opcard();
         WHERE ptright LIKE 'R42%' 
         AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
     ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
-    ORDER BY ISNULL(a.row_id) ASC, b.id ASC";
+    ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="">

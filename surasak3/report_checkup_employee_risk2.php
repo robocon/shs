@@ -33,7 +33,7 @@ $opcard = new Opcard();
         WHERE ptright LIKE 'R42%' 
         AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
     ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
-    ORDER BY b.depart ASC";
+    ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="">
@@ -50,7 +50,7 @@ $opcard = new Opcard();
                     <th>อายุ</th>
                     <th width="12%">โรคประจำตัว</th>
                     <th colspan="2">BMI&gt;=23</th>
-                    <th colspan="2">รอบเอว</th>
+                    <th colspan="2">รอบเอว<span title="ชาย > 90 หญิง > 80">ℹ️</span></th>
                     <th>เบอร์โทร</th>
                 </tr>
             </thead>
@@ -88,21 +88,26 @@ $opcard = new Opcard();
                     $round = $opd['round_'];
                 }
 
+                $bmiStyle =  '';
                 if($bmi >= 23){
-                    $statBmi='<i class="bi bi-check-circle text-success"></i>';
+                    $statBmi='⚠️';
+                    $bmiStyle =  'style="color:red;"';
                 }
 
+                $roundStyle = '';
                 $male_prefix = preg_match('/^(นาย)/', $a['ptname']);
                 if($male_prefix > 0){
                     if($round > 90){
-                        $roundStat = '<i class="bi bi-check-circle text-success"></i>';
+                        $roundStat = '⚠️';
+                        $roundStyle = 'style="color:red;"';
                     }
                 }
 
                 $female_prefix = preg_match('/^(นาง|น.ส.)/', $a['ptname']);
                 if($female_prefix > 0){
                     if($round > 80){
-                        $roundStat = '<i class="bi bi-check-circle text-success"></i>';
+                        $roundStat = '⚠️';
+                        $roundStyle = 'style="color:red;"';
                     }
                 }
 
@@ -114,9 +119,9 @@ $opcard = new Opcard();
                     <td><?=$a['department'];?></td>
                     <td><?=$a['age'];?></td>
                     <td><?=$congenital_disease;?></td>
-                    <td class="text-end"><span ><?=$bmi;?></span></td>
+                    <td class="text-end"><span <?=$bmiStyle;?>><?=$bmi;?></span></td>
                     <td class="text-center"><span title="<?=$bmi;?>"><?=$statBmi;?></span></td>
-                    <td class="text-end"><span ><?=$round;?></span></td>
+                    <td class="text-end"><span <?=$roundStyle;?>><?=$round;?></span></td>
                     <td class="text-center"><span title="<?=$round;?>"><?=$roundStat;?></span></td>
                     <td><?=$phone;?></td>
                 </tr>
