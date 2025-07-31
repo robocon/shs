@@ -52,7 +52,7 @@ font-size:20px;
 	<select size="1" name="ptright" class="txt">
 	<?php
 						
-		$sql="select * from ptright where name like '%HD%' OR code = 'R01' OR code = 'R07' order by code asc";
+		$sql="select * from ptright where name like '%HD%' OR code = 'R01' OR code = 'R07' OR code = 'R12' order by code asc";
 		$query=mysql_query($sql);
 		while($rows=mysql_fetch_array($query)){	
 			$ptrightname=$rows["code"]." ".$rows["name"];
