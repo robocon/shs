@@ -1,5 +1,4 @@
 <?php
-session_start();
 include dirname(__FILE__).'/bootstrap.php';
 include dirname(__FILE__).'/includes/JSON.php';
 
@@ -14,7 +13,7 @@ if ($_POST["action"]=='save') {
 	$statusCode = 200;
 	$error = '';
 
-	$sql = sprintf("SELECT * FROM `menu_user` WHERE `member_code` = '%s' ", mysql_real_escape_string($_SESSION['sRowid']));
+	$sql = sprintf("SELECT * FROM `menu_user` WHERE `member_code` = '%s' ", $dbi->real_escape_string($_SESSION['sRowid']));
 	$q = $dbi->query($sql);
 	$menuRows = $q->num_rows;
 	if($menuRows==0){
@@ -52,8 +51,8 @@ if ($_POST["action"]=='save') {
 
 			$sort = $_POST['sort'][$i];
 			$sqlUpdate = sprintf("UPDATE `menu_user` SET `sort` = '%s' WHERE `row_id` = '%s' ", 
-				mysql_real_escape_string($sort),
-				mysql_real_escape_string($id)
+				$dbi->real_escape_string($sort),
+				$dbi->real_escape_string($id)
 			);
 			$q = $dbi->query($sqlUpdate);
 			if($q==false){
@@ -65,7 +64,7 @@ if ($_POST["action"]=='save') {
 
 	if($saveStatus == false){
 		$msg = "บันทึกข้อมูลไม่สำเร็จ";
-		$error = mysql_error();
+		$error = $dbi->error;
 		$statusCode = 400;
 	}
 
@@ -98,20 +97,20 @@ if ($_POST["action"]=='save') {
 		'status'=>$statusCode
 	));
 	exit;
-}elseif ($_POST['action']=='insert_one') {
+}elseif ($_POST['action']=='insert_one'){
+	
+	$menu = $dbi->real_escape_string($_POST['menu']);
+	$script = $dbi->real_escape_string($_POST['script']);
+	$sOfficer = $dbi->real_escape_string($_SESSION['sOfficer']);
+	$smenucode = $dbi->real_escape_string($_SESSION['smenucode']);
+	$sort = $dbi->real_escape_string($_POST['sort']);
+	$sRowid = $dbi->real_escape_string($_SESSION['sRowid']);
+	$target = $dbi->real_escape_string($_POST['target']);
 
-	$sql = sprintf("INSERT INTO `menu_user` 
-	( `menu`, `link`, `user`, `menucode`, `sort`, `member_code`, `target`)
-	VALUES (
-	'%s', '%s', '%s', '%s', '%s', '%s', '%s');",
-		$dbi->real_escape_string($_POST['menu']),
-		$dbi->real_escape_string($_POST['script']),
-		$dbi->real_escape_string($_SESSION['sOfficer']),
-		$dbi->real_escape_string($_SESSION['smenucode']),
-		$dbi->real_escape_string($_POST['sort']),
-		$dbi->real_escape_string($_SESSION['sRowid']),
-		$dbi->real_escape_string($_POST['target']),
-	);
+	$sql = sprintf("INSERT INTO `menu_user` ( `menu`, `link`, `user`, `menucode`, `sort`, `member_code`, `target`) 
+	VALUE 
+	('%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
+	$menu, $script, $sOfficer, $smenucode, $sort, $sRowid, $target);
 	$q = $dbi->query($sql);
 
 	$error = '';
@@ -128,6 +127,6 @@ if ($_POST["action"]=='save') {
 		'error'=>$error,
 		'status'=>$statusCode
 	));
+	
 	exit;
 }
-?>

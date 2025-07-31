@@ -1,12 +1,6 @@
 ﻿<?php
-session_start();
-include("connect.php");
-
-function dump($t){
-	echo '<pre>';
-	var_dump($t);
-	echo '</pre>';
-}
+include dirname(__FILE__).'/bootstrap.php';
+include dirname(__FILE__).'/includes/JSON.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +48,7 @@ function dump($t){
 
 <div class="clearfix">
 	<div style="float:left;">
-		<form METHOD="POST" ACTION="menulstsort_edit.php" id="inputForm" onsubmit="onSubmitForm()">
+		<form method="POST" action="menulstsort_edit.php" id="inputForm" onsubmit="onSubmitForm()">
 			<table style="border-collapse:collapse" bordercolor="#000000" cellpadding="0" cellspacing="0" border="1" class="fontsara1">
 				<thead>
 					<tr bgcolor="#ffff99" onMouseOver="this.style.backgroundColor='#ADDFFF'" onMouseOut="this.style.backgroundColor=''">
@@ -72,36 +66,45 @@ function dump($t){
 					 * รายการเมนุ default
 					 */
 					$department_menu = array();
-					$query = sprintf("SELECT `row_id`,`menu`,`script`,`target`,menu_sort AS `sort` FROM `menulst` WHERE `menucode` = '%s' GROUP BY `script` ORDER BY `menu_sort` ASC", mysql_real_escape_string($smenucode));
+					$query = sprintf("SELECT `row_id`,`menu`,`script`,`target`,menu_sort AS `sort` 
+					FROM `menulst` 
+					WHERE `menucode` = '%s' AND `status` = 'y'
+					GROUP BY `script` 
+					ORDER BY `menu_sort` ASC, `menu` ASC", 
+						$dbi->real_escape_string($smenucode)
+					);
 					$result = mysql_query($query) or die("Query failed : ".mysql_error());
 					$department_numrow = mysql_num_rows($result);
 					if($department_numrow > 0){
 						while ($a = mysql_fetch_assoc($result)) {
-							$department_menu[] = $a;
+							$key = $a['script'];
+							$department_menu[$key] = $a;
 						}
 					}
-
-					// dump($department_menu);
 
 					/**
 					 * menu_user เป็นเมนูที่ user จัดเรียงเอง จะเป็นตารางที่ถูกเก็บแยกออกมาต่างหาก
 					 */
 					$items = array();
-					$query1 = sprintf("SELECT `row_id`,`menu`,`link` AS `script`,`target`,`sort` FROM `menu_user` WHERE `member_code`='$sRowid' ORDER BY `sort`,`row_id` ", mysql_real_escape_string($sRowid));
-					$result1 = mysql_query($query1) or die("Query failed : ".mysql_error());
-					$menuUserRows = $numrow = mysql_num_rows($result1);
+					$query1 = sprintf("SELECT `row_id`,`menu`,`link` AS `script`,`target`,`sort` FROM `menu_user` WHERE `member_code`='%s' ORDER BY `sort`,`row_id` ", $dbi->real_escape_string($sRowid));
+					$result1 = $dbi->query($query1);
+					if($result1 === false){
+						$error = $dbi->error;
+					}
+					$menuUserRows = $numrow = $result1->num_rows;
 					if($numrow > 0){
-						while ($a = mysql_fetch_assoc($result1)) {
-							$items[] = $a;
+						while($a = $result1->fetch_assoc()){
+							$key = $a['script'];
+							$items[$key] = $a;
 						}
-					}else{
+					}else{ // ถ้าไม่มีเมนูที่จัดเรียงเองให้ใช้เมนูของแผนก
 						$items = $department_menu;
 						$numrow = $department_numrow;
 					}
 
 					// หาว่าจาก menulst ที่เป็นเมนูหลัก มีอะไรบ้างที่ menu_user ไม่มีใน menulst
-					$diffItems = array_diff_assoc($department_menu, $items);
-					
+					$diffItems = array_diff_key($department_menu, $items);
+
 					$n = 1;
 					foreach($items AS $row){
 						?>
