@@ -38,7 +38,7 @@ if($action==='findvn'){
 	$last3Month = strtotime("-3 month");
 	$currTHDate = (date('Y')+543).date('-m-d');
 	$date3Months = (date('Y', $last3Month)+543).date('-m-d',$last3Month);
-	$sql = sprintf("SELECT `thidate`,`vn`,`toborow` FROM `opday` WHERE `hn` = '%s' AND `thidate` >= '$date3Months' AND `thidate` <= '$currTHDate' ORDER BY `thidate` DESC", $dbi->real_escape_string($_GET['hn']));
+	$sql = sprintf("SELECT `thidate`,`vn`,`toborow`,`ptright` FROM `opday` WHERE `hn` = '%s' AND `thidate` >= '$date3Months' AND `thidate` <= '$currTHDate' ORDER BY `thidate` DESC", $dbi->real_escape_string($_GET['hn']));
 	$q = $dbi->query($sql);
 	$resData = array();
 	if($q->num_rows){
@@ -54,7 +54,7 @@ if($action==='findvn'){
 		while ($a = $q->fetch_assoc()) {
 			?>
 			<tr>
-				<td><button type="button" onclick="selectVn(<?=$a['vn'];?>)">เลือก</button></td>
+				<td><button type="button" onclick="selectVn('<?=$a['vn'];?>','<?=$a['toborow'];?>','<?=$a['ptright'];?>')">เลือก</button></td>
 				<td><?=$a['thidate'];?></td>
 				<td><?=$a['vn'];?></td>
 				<td><?=$a['toborow'];?></td>
@@ -475,7 +475,6 @@ while($arr = Mysql_fetch_assoc($result)){
 			<td align="right" class="tb_font_2">เลือกวันที่ย้อนหลัง:</td>
 			<td colspan="3" style="position:relative">
 				<input type="date" name="datePrev" id="datePrev" onchange="beforeFindVn(this.value);"> <span id="dateResponse"></span>
-				<div>* การบันทึกวันที่ย้อนหลังระบบจะดึง VN ให้อัตโนมัติ</div>
 				<script>
 					function beforeFindVn(v){
 						findVn(v).then(function(res){
@@ -497,7 +496,18 @@ while($arr = Mysql_fetch_assoc($result)){
 						const data = await response.json();
 						return data;
 					}
-					
+				</script>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td colspan="3">
+				<a href="javascript:void(0);" onclick="findOpday()">หรือเลือก VN จากการมาโรงพยาบาล</a>
+				<div>* การบันทึกวันที่ย้อนหลังระบบจะดึง VN ให้อัตโนมัติ</div>
+				<div style="position: relative; width:100%;">
+					<div id="selectVnContainer" style="display:none; position: absolute; top: 0; left: 0; background-color: white; border: 2px solid black; width:500px;"></div>
+				</div>
+				<script>
 					function findOpday(){
 						findFromOpday().then((res)=>{
 							console.log(res);
@@ -513,8 +523,10 @@ while($arr = Mysql_fetch_assoc($result)){
 						return data;
 					}
 
-					function selectVn(vn){
+					function selectVn(vn,toborow,ptright){
 						document.getElementById('vn').value = vn;
+						document.getElementById('toborow').value = toborow;
+						document.getElementById('ptright').value = ptright;
 						document.getElementById('show_vn').innerHTML = vn;
 						document.getElementById('dateResponse').innerHTML = '';
 						document.getElementById('selectVnContainer').style.display = 'none';
@@ -523,16 +535,6 @@ while($arr = Mysql_fetch_assoc($result)){
 						document.getElementById('selectVnContainer').style.display = 'none';
 					}
 				</script>
-				
-			</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td>
-				<a href="javascript:void(0);" onclick="findOpday()">หรือเลือก VN จากการมาโรงพยาบาล</a>
-				<div style="position: relative; width:100%;">
-					<div id="selectVnContainer" style="display:none; position: absolute; top: 0; left: 0; background-color: white; border: 2px solid black; width:500px;"></div>
-				</div>
 			</td>
 		</tr>
 		<tr>
@@ -1237,8 +1239,8 @@ C&deg; </td>
 <input type="hidden" name="age" id="age"  value="<?=$arr_view["age"];?>" />
 <input type="hidden" name="hn" id="hn"  value="<?=$arr_view["hn"];?>" />
 <input type="hidden" name="vn" id="vn"  value="<?=$arr_view["vn"];?>" />
-<input type="hidden" name="toborow" value="<?=$toborow;?>">
-<input type="hidden" name="ptright" value="<?=$ptright;?>">
+<input type="hidden" name="toborow" id="toborow" value="<?=$toborow;?>">
+<input type="hidden" name="ptright" id="ptright" value="<?=$ptright;?>">
 <input type="hidden" name="row_id" value="<?=$arr_dxofyear["row_id"];?>">
 <input type="hidden" name="labin_date" value="<?=$labin_date;?>">
 </form>
