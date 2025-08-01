@@ -393,7 +393,7 @@ if($result && isset($_POST["submit"])){
 		$list_drug = implode(", ",$list);
 		$_POST["congenital_disease"] .= " , แพ้ยา : ".$list_drug;
 	}
-	$detail = "select * from condxofyear_out where thdatevn = '".$date_vn."' ";
+	$detail = "select * from condxofyear_out where thdatehn  = '$date_hn' AND thdatevn = '$date_vn' ";
 	$result = Mysql_Query($detail);
 	$arrs = Mysql_fetch_assoc($result);
 	?>

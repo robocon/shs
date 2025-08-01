@@ -1,15 +1,12 @@
 <?php
-// session_start();
-// include("connect.php");
-// mysql_query("SET NAMES UTF8");
+include dirname(__FILE__).'/bootstrap.php';
+include dirname(__FILE__).'/includes/JSON.php';
 
-require_once 'bootstrap.php';
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+
 $Conn = mysql_connect(HOST,USER,PASS);
 mysql_select_db(DB);
 mysql_query("SET NAMES UTF8");
-
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
 
 if(empty($_SESSION["sOfficer"])){
 	echo "Sessionหมดอายุ กรุณาloginใหม่อีกครั้ง <a href='../nindex.htm'>คลิกที่นี่เพื่อ Login</a>";
@@ -35,6 +32,41 @@ if($action==='findvn'){
 		$res = '{"status":400,"message":"ไม่พบการลงทะเบียน"}';
 	}
 	echo $res;
+	exit;
+}elseif($action==='findFromOpday'){
+
+	$last3Month = strtotime("-3 month");
+	$currTHDate = (date('Y')+543).date('-m-d');
+	$date3Months = (date('Y', $last3Month)+543).date('-m-d',$last3Month);
+	$sql = sprintf("SELECT `thidate`,`vn`,`toborow` FROM `opday` WHERE `hn` = '%s' AND `thidate` >= '$date3Months' AND `thidate` <= '$currTHDate' ORDER BY `thidate` DESC", $dbi->real_escape_string($_GET['hn']));
+	$q = $dbi->query($sql);
+	$resData = array();
+	if($q->num_rows){
+		?>
+		<table>
+			<tr>
+				<th><a href="javascript:void(0);" onclick="closeSelectVn()">[ปิด]</a></th>
+				<th>วันที่</th>
+				<th>VN</th>
+				<th>การมาโรงพยาบาล</th>
+			</tr>
+		<?php
+		while ($a = $q->fetch_assoc()) {
+			?>
+			<tr>
+				<td><button type="button" onclick="selectVn(<?=$a['vn'];?>)">เลือก</button></td>
+				<td><?=$a['thidate'];?></td>
+				<td><?=$a['vn'];?></td>
+				<td><?=$a['toborow'];?></td>
+			</tr>
+			<?php
+		}
+		?>
+		</table>
+		<?php
+	}else{
+		?><p><b>ไม่พบข้อมูล</b></p><?php
+	}
 	exit;
 }
 
@@ -441,7 +473,7 @@ while($arr = Mysql_fetch_assoc($result)){
 	<table width="1024" border="0" class="tb_font">
 		<tr valign="top">
 			<td align="right" class="tb_font_2">เลือกวันที่ย้อนหลัง:</td>
-			<td colspan="3">
+			<td colspan="3" style="position:relative">
 				<input type="date" name="datePrev" id="datePrev" onchange="beforeFindVn(this.value);"> <span id="dateResponse"></span>
 				<div>* การบันทึกวันที่ย้อนหลังระบบจะดึง VN ให้อัตโนมัติ</div>
 				<script>
@@ -465,7 +497,42 @@ while($arr = Mysql_fetch_assoc($result)){
 						const data = await response.json();
 						return data;
 					}
+					
+					function findOpday(){
+						findFromOpday().then((res)=>{
+							console.log(res);
+							document.getElementById('selectVnContainer').innerHTML = res;
+							document.getElementById('selectVnContainer').style.display = '';
+						});
+					}
+					
+					async function findFromOpday(){
+						const hn = encodeURIComponent('<?=$arr_view["hn"];?>');
+						const response = await fetch('dx_ofyear_out.php?action=findFromOpday&hn='+hn);
+						const data = await response.text();
+						return data;
+					}
+
+					function selectVn(vn){
+						document.getElementById('vn').value = vn;
+						document.getElementById('show_vn').innerHTML = vn;
+						document.getElementById('dateResponse').innerHTML = '';
+						document.getElementById('selectVnContainer').style.display = 'none';
+					}
+					function closeSelectVn(){
+						document.getElementById('selectVnContainer').style.display = 'none';
+					}
 				</script>
+				
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<a href="javascript:void(0);" onclick="findOpday()">หรือเลือก VN จากการมาโรงพยาบาล</a>
+				<div style="position: relative; width:100%;">
+					<div id="selectVnContainer" style="display:none; position: absolute; top: 0; left: 0; background-color: white; border: 2px solid black; width:500px;"></div>
+				</div>
 			</td>
 		</tr>
 		<tr>
