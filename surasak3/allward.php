@@ -216,7 +216,7 @@ $(document).ready(function(){
         <td colspan="2">
         <table  border="0">
           <tr  style="line-height:22PX;">
-            <td  rowspan="5"><img src="../image_patient/<?=$img='NoPicture.jpg';;?>" width="81" height="101" /></td>
+            <td  rowspan="5"><img src="<?=$img;?>" width="81" height="101" /></td>
             <td class="tablefontt1">ชื่อ-สกุล</td>
             
             <td class="tablefontt2"> <? echo "<a target=_blank  href=\"ipdata1.php? cBedcode=$bedcode\">$ptname</a>"; ?>&nbsp;&nbsp;&nbsp;</td>
@@ -228,6 +228,10 @@ $(document).ready(function(){
 				<?php 
 				if(!empty($ptright)){
 					echo $ptright;
+					$chkptright=substr($ptright,0,3);
+					if($chkptright=="R07"){
+						echo "<span style='margin-left:20px; font-size:18px; color:red;'>ไม่สามารถเรียกเก็บค่ายา/เวชภัณฑ์ผู้ป่วยได้ ยกเว้นแพทย์มีความจำเป็นต้องใช้ยาที่เกินสิทธิการรักษา</span>";
+					}	
 				}else{
 					?>
 					<strong style="color:red;"><u>กรุณาติดต่อทะเบียนเพื่ออัพเดทสิทธิ์การรักษา</u></strong>
