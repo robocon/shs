@@ -3064,7 +3064,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkMRA(drugcode.trim());
 	}
 
-	if( ( drugcode.trim() === '1EPAD' || drugcode.trim() === '1SEMA' ) && typeof dataDateHn.LIPID === 'undefined' ){
+	if( ( drugcode.trim() === '1EPAD' ) && typeof dataDateHn.LIPID === 'undefined' ){
 		checkLipidDrug(drugcode.trim());
 	}
 
