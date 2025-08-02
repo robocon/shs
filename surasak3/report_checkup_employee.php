@@ -28,7 +28,7 @@ $year_th = $runno['runno'];
     $sql = "SELECT SUBSTRING(thidate,1,10) thidate, COUNT(row_id) AS emp_count 
     FROM opday 
     WHERE ptright LIKE 'R42%' 
-    AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
+    AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-01' )
     GROUP BY SUBSTRING(thidate,1,10) ";
     $q = $dbi->query($sql);
     ?>
@@ -45,10 +45,12 @@ $year_th = $runno['runno'];
                         </tr>
                     </thead>
                     <?php
+                    $opdayRows = 0;
                     if ($q->num_rows > 0) {
                         while ($a = $q->fetch_assoc()) {
                             $thidate = $a['thidate'];
                             list($y, $m, $d) = explode('-', $thidate);
+                            $opdayRows += (int) $a['emp_count'];
                             ?>
                             <tr>
                                 <td>
@@ -67,9 +69,69 @@ $year_th = $runno['runno'];
                 </table>
             </div>
         </div>
+        <div class="row">
+            <h3>สรุปยอดผู้เข้ารับการตรวจ</h3>
+            <div class="col-6">
+                <?php
+
+                $sql = "SELECT `row_id`,`date`,`hn`,`tvn`,`ptname`,`depart`,`price` 
+                FROM `depart` 
+                WHERE `ptright` LIKE 'R42%' 
+                AND ( `date` >= '2568-07-29' AND `date` <= '2568-08-02' ) 
+                AND ( `depart`='PATHO' OR `depart`='XRAY' ) 
+                ORDER BY `hn`,`row_id` ASC ";
+                $q = $dbi->query($sql);
+                if($q->num_rows>0){
+                    $allXrayCount = 0;
+                    $allLabCount = 0;
+                    while ($a = $q->fetch_assoc()) {
+                        if($a['depart']=='XRAY'){
+                            $allXrayCount++;
+                        }elseif ($a['depart']=='PATHO') {
+                            $allLabCount++;
+                        }
+                    }
+                }
+
+                $sql = "SELECT COUNT(`hn`) AS `rows` FROM `employee`";
+                $q = $dbi->query($sql);
+                $a = $q->fetch_assoc();
+                ?>
+                <table>
+                    <tr>
+                        <td><b>ยอดลูกจ้างทั้งหมด</b></td>
+                        <td><?=$a['rows'];?></td>
+                        <td>ราย</td>
+                    </tr>
+                    <tr>
+                        <td>จำนวนผู้ลงทะเบียน</td>
+                        <td><?=$opdayRows;?></td>
+                        <td>ราย</td>
+                    </tr>
+                    <tr>
+                        <td>ผ่านสถานีเจาะเลือด</td>
+                        <td><?=$allLabCount;?></td>
+                        <td>ราย</td>
+                    </tr>
+                    <tr>
+                        <td>ผ่านสถานี X-Ray</td>
+                        <td><?=$allXrayCount;?></td>
+                        <td>ราย</td>
+                    </tr>
+                    <tr>
+                        <td>ลงข้อมูลซักประวัติไปแล้ว</td>
+                        <td></td>
+                        <td>ราย</td>
+                    </tr>
+                    <tr>
+                        <td>แพทย์ลงผลตรวจแล้ว</td>
+                        <td></td>
+                        <td>ราย</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
     <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
-
 </body>
-
 </html>

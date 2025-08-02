@@ -27,11 +27,12 @@ $opcard = new Opcard();
     require_once 'report_checkup_employee_menu.php';
     
     $yearCheckup = get_year_checkup(true);
-    $sql = "SELECT b.hn AS main_hn,b.department,b.lab,a.* FROM ( 
+    $sql = "SELECT b.hn AS main_hn,b.department,b.lab,a.* 
+    FROM ( 
         SELECT row_id,hn,ptname,age,vn,thidate,SUBSTRING(thidate,1,10) AS thidate2 
         FROM opday 
         WHERE ptright LIKE 'R42%' 
-        AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' ) 
+        AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-01' ) 
     ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
     ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);

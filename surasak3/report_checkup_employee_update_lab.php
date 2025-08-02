@@ -10,8 +10,9 @@ include dirname(__FILE__).'/bootstrap.php';
 </head>
 <body>
 <?php
+exit;
 $sql = "select a.*,b.* from (
-select autonumber,orderdate,labnumber,hn,patientname,clinicalinfo,profilecode from resulthead WHERE orderdate LIKE '2025-07-30%' 
+select autonumber,orderdate,labnumber,hn,patientname,clinicalinfo,profilecode from resulthead WHERE orderdate LIKE '2025-08-01%' 
 ) as a left join employee as b on b.hn = a.hn
 where b.id is not null";
 dump($sql);

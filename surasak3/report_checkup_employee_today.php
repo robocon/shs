@@ -41,6 +41,7 @@ list($year,$month,$day) = explode('-',$enDate);
                     <th>#</th>
                     <th>กลุ่ม</th>
                     <th>HN</th>
+                    <th>VN</th>
                     <th>เลขที่บัตร</th>
                     <th>ชื่อ-สกุล</th>
                     <th>อายุ</th>
@@ -89,10 +90,13 @@ list($year,$month,$day) = explode('-',$enDate);
                     $opd = '<i class="bi bi-check-circle text-success"></i>';
                 }
 
-                $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '68' ";
+                $sqlDoctor = "SELECT id,SUBSTRING(date_chk,1,10) AS `date_chk` FROM chk_doctor WHERE hn = '$hn' AND yearchk = '68' ";
                 $qDoctor = $dbi->query($sqlDoctor);
+                $print = '';
                 if($qDoctor->num_rows>0){
+                    $chkDt = $qDoctor->fetch_assoc();
                     $doctor = '<i class="bi bi-check-circle text-success"></i>';
+                    $print = '<a href="chk_doctor_print.php?hn='.$hn.'&vn='.$a['vn'].'&date='.$chkDt['date_chk'].'" target="_blank" title="สั่งพิมพ์ผล">🖨️</a>';
                 }
                 
                 $sqlLab67 = "SELECT department,lab FROM employee WHERE hn = '$hn'";
@@ -103,6 +107,7 @@ list($year,$month,$day) = explode('-',$enDate);
                     <td><?=$i;?></td>
                     <td><?=$lab67['department'];?></td>
                     <td><span title="<?=$a['thidate'];?>"><?=$a['hn'];?></span></td>
+                    <td><?=$a['vn'];?></td>
                     <td><span title=""><?=$a['idcard'];?></span></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['age'];?></td>
@@ -112,7 +117,7 @@ list($year,$month,$day) = explode('-',$enDate);
                     <td class="text-center"><?=$regis;?></td>
                     <td class="text-center"><?=$xray;?></td>
                     <td class="text-center"><?=$opd;?></td>
-                    <td class="text-center"><?=$doctor;?></td>
+                    <td class="text-center"><?=$doctor.' '.$print;?></td>
                 </tr>
                 <?php
                 $i++;
