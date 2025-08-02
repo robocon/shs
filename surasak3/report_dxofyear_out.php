@@ -57,8 +57,6 @@ if(isset($_POST['hn'])){
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
 	if($num==0){
-		// AND (camp not like '%E_CERT%')
-		// AND (camp not like '%E_CERT%')
 		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
@@ -351,18 +349,6 @@ if(isset($_POST['hn'])){
 	$waist = $round; // เอาไปใช้คำนวณ cv risk score
 	$cigga = $dxofyear['cigarette'];
 	
-	//ปีก่อน
-	$select5 = "select * from condxofyear_out where hn='".$result['hn']."' and yearcheck='".($nPrefix2-1)."' order by row_id desc";
-	$row5 = mysql_query($select5);
-	$result5 = mysql_fetch_array($row5);
-	if(!isset($_GET['no'])){
-	?>
-	<script language="javascript">
-		window.print();
-	</script>
-    <?
-	}
-	
 $chkyear=substr($_GET["chkyear"],2);	
 $sql1="CREATE TEMPORARY TABLE  result1  
 Select * from  resulthead  
@@ -399,7 +385,7 @@ $query1 = mysql_query($sql1);
   <table border="1" cellpadding="0" cellspacing="0" bordercolor="#000000" width="100%" >
   <tr><td>
   <table width="100%" class="text1">
-    <tr><td width="15%" valign="top" class="text3"><strong>HN:</strong> <?=$result['hn']?></td>
+    <tr><td width="12%" valign="top" class="text3"><strong>HN:</strong> <?=$result['hn']?></td>
   <td colspan="3" valign="top" class="text3"><strong>ชื่อ:</strong> <span style=""><strong><?=$result['ptname']?></strong></span></td>
   <td valign="top" class="text3"><strong>อายุ:</strong> <?=$result['age']?></td>
   <td valign="top" class="text3"><strong>สังกัด:</strong> <span style="font-size:18px"><strong><?=$result['camp'];?></strong></span>  </td>
@@ -496,19 +482,25 @@ C ํ</span></td>
 		&nbsp;&nbsp;<b class="text3">CV Risk Score:</b> <?=$PFullScore;?>
 	</td>
 </tr>
-  </table></td></tr></table></td>
-  </tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
 <tr class="text3">
-  <td align="center" valign="top" ><table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
-    <tr>
-      <td align="center"><strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong></td>
-    </tr>
-    <tr>
-      <td><table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <td align="center" valign="top" width="50%">
+	<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#000000">
+		<tr>
+			<td align="center"><strong class="text" style="font-size:22px"><u>CBC : การตรวจเม็ดเลือด</u></strong></td>
+		</tr>
+    	<tr>
+      		<td>
+		<table width="100%" border="0" cellpadding="0" cellspacing="0">
           <tr>
-            <td width="44%" align="center" bgcolor="#CCCCCC">labcode </td>
-            <td width="15%" align="center" bgcolor="#CCCCCC">result</td>
-            <td width="21%" align="center" bgcolor="#CCCCCC">normalrange</td>
+            <th width="44%" align="center" bgcolor="#CCCCCC">labcode </th>
+            <th width="15%" align="center" bgcolor="#CCCCCC">result</th>
+            <th width="21%" align="center" bgcolor="#CCCCCC">normalrange</th>
           </tr>
 		<?php
 		$sql="SELECT `autonumber` FROM result1 WHERE `profilecode`='CBC' ORDER BY `autonumber` DESC LIMIT 1";
@@ -621,9 +613,9 @@ C ํ</span></td>
       <td>
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="text31">
           <tr>
-            <td width="44%" align="center" bgcolor="#CCCCCC">labcode </td>
-            <td width="15%" align="center" bgcolor="#CCCCCC">result</td>
-            <td width="41%" align="center" bgcolor="#CCCCCC">normalrange</td>
+            <th width="44%" align="center" bgcolor="#CCCCCC">labcode </th>
+            <th width="15%" align="center" bgcolor="#CCCCCC">result</th>
+            <th width="41%" align="center" bgcolor="#CCCCCC">normalrange</th>
           </tr>
 		<?php
 		$sql="SELECT * FROM result1 WHERE profilecode='UA' ORDER BY `autonumber` DESC LIMIT 1";
@@ -695,7 +687,7 @@ C ํ</span></td>
 		?>
           <tr>
             <td><?=$objResult["labcode"]." ".$labmean;?></td>
-            <td ><?=$ua_result;?></td>
+            <td align="center"><?=$ua_result;?></td>
             <td align="center"><?=$normalrange;?></td>
           </tr>
           <?  } ?>
@@ -719,9 +711,9 @@ C ํ</span></td>
     </tr>
   </table>    </tr>
 <tr>
-  <td colspan="2" valign="top" class="text">
+  <td colspan="2" valign="top" class="text" width="50%">
 
-  <table width="100%"  bordercolor="#ffffff" border="0"  cellpadding="0" cellspacing="0">
+  <table width=""  bordercolor="#ffffff" border="0"  cellpadding="0" cellspacing="0">
 	<!--
 	<tr>
 		<td valign="top" class="text3"><strong>ผลการตรวจ&nbsp;</strong></td>
@@ -1125,8 +1117,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Malaria(ตรวจหาเชื้อมาลาเรีย) :</strong>      </span></td>
+			<td valign="top"><span class="text3"><strong>Malaria(ตรวจหาเชื้อมาลาเรีย) :</strong>      </span></td>
 			<td  valign="top"><span class="text"><b><?=$result['stat_malari']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1135,8 +1128,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Amphetamine in urine(ตรวจสารเสพติดในปัสสาวะ) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_metamp']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Amphetamine in urine(ตรวจสารเสพติดในปัสสาวะ) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_metamp']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1145,8 +1139,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>HBsAg(ตรวจหาเชื้อไวรัสตับอักเสบบี) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_hbsag']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>HBsAg(ตรวจหาเชื้อไวรัสตับอักเสบบี) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_hbsag']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1155,8 +1150,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Anti HCV(ตรวจหาเชื้อไวรัสตับอักเสบซี) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_hcvab']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Anti HCV(ตรวจหาเชื้อไวรัสตับอักเสบซี) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_hcvab']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1165,8 +1161,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Anti HIV(ตรวจหาภาวะภูมิคุ้มกันบกพร่อง) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_hiv']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Anti HIV(ตรวจหาภาวะภูมิคุ้มกันบกพร่อง) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_hiv']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1175,8 +1172,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>VDRL (ตรวจหาโรคซิฟิลิส) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_vdrl']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>VDRL (ตรวจหาโรคซิฟิลิส) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_vdrl']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1185,8 +1183,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Stool exam(ตรวจอุจจาระ) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_parasi']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Stool exam(ตรวจอุจจาระ) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_parasi']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1195,8 +1194,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Stool Occult(ตรวจเลือดในอุจจาระ) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_stocc']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Stool Occult(ตรวจเลือดในอุจจาระ) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_stocc']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1205,8 +1205,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>ABO blood group(ตรวจหาหมู่เลือดเอ บี โอ) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['groupt']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>ABO blood group(ตรวจหาหมู่เลือดเอ บี โอ) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['groupt']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1215,8 +1216,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Rh blood group(ตรวจหมู่เลือดอาร์เอช) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['rh']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Rh blood group(ตรวจหมู่เลือดอาร์เอช) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['rh']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1225,8 +1227,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>Pregnancy test(ตรวจการตั้งครรภ์) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['stat_upt']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>Pregnancy test(ตรวจการตั้งครรภ์) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['stat_upt']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php 
 	}
@@ -1235,8 +1238,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['dental_exam']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>ผลตรวจสุขภาพช่องปากและฟัน (Dental Examination) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['dental_exam']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php
 	}
@@ -1245,8 +1249,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['color_blind']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>ผลตรวจสายตาและตาบอดสี (Auto-R & color blindness) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['color_blind']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php
 	}
@@ -1255,8 +1260,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจการได้ยิน (Audiogram) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['audiogram']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>ผลตรวจการได้ยิน (Audiogram) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['audiogram']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php
 	}
@@ -1265,8 +1271,9 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</strong>      </span></td>
-			<td  valign="top"><span class="text"><b><?=$result['ekg']?></b></span></td>
+			<td valign="top"><span class="text3"><strong>ผลตรวจคลื่นไฟฟ้าหัวใจ (EKG) :</strong>      </span></td>
+			<td valign="top" align="right"><span class="text"><b><?=$result['ekg']?></b></span></td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php
 	}
@@ -1275,10 +1282,11 @@ C ํ</span></td>
 	{
 		?>
 		<tr class="text3">
-			<td valign="top" colspan="4"><span class="text3"><strong>CXR การตรวจเอกซเรย์ปอด :</strong>      </span></td>
-			<td  valign="top">
+			<td valign="top"><span class="text3"><strong>CXR การตรวจเอกซเรย์ปอด :</strong>      </span></td>
+			<td valign="top" align="right">
 				<span class="text"><b><?=$result['cxr']?></b></span> <? if($result['cxr']=="ผิดปกติ") echo "คำแนะนำ...".$result['reason_cxr']."...";?>
 			</td>
+			<td valign="top" colspan="3"></td>
 		</tr>
 		<?php
 	}
@@ -1331,6 +1339,9 @@ C ํ</span></td>
       <td colspan="2" align="right" valign="top" class="text2"><span class="text1">แพทย์ <?=$result['doctor']?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td>
     </tr>
 </table>
+<script language="javascript">
+		window.print();
+	</script>
 <?
 }else{
 

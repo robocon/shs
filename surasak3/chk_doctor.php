@@ -125,9 +125,6 @@ if( $action === 'save' ){
 
     $_POST['doctorn'] = $doctor;
     $_POST['dx'] = $diag;
-    $nPrefix = '2561';
-
-
 
     if($_POST['normal20']=="ปกติ"|$_POST['normal20']=="") $_POST['ch20']="";
 	if($_POST['normal21']=="ปกติ"|$_POST['normal21']=="") $_POST['ch21']="";
@@ -303,7 +300,7 @@ if( $action === 'save' ){
         '".$_POST['normal22']."','".$_POST['text22']."','".$_POST['normal23']."','".$_POST['text23']."','".$_POST['normal24']."','".$_POST['text24']."',
         '".$_POST['normal25']."','".$_POST['text25']."','".$_POST['normal26']."','".$_POST['text26']."','".$_POST['normal27']."','".$_POST['text27']."',
         '".$_POST['normal28']."','".$_POST['text28']."','".$_POST['normal29']."','".$_POST['text29']."','".$_POST['normal30']."','".$_POST['text30']."',
-        'Y','".$nPrefix."','".$_POST['normal91']."','".$_POST['normal92']."','".$_POST['normal93']."','".$_POST['normal94']."',
+        'Y','$yearchk','".$_POST['normal91']."','".$_POST['normal92']."','".$_POST['normal93']."','".$_POST['normal94']."',
         '".$_POST['normal941']."','".$_POST['normal95']."','".$_POST['normal951']."','".$_POST['normal61']."','".$_POST['normal62']."','".$rs_sum21."',
         '".$rs_sum22."','".$rs_sum23."','".$rs_sum24."','".$rs_sum25."','".$_POST['normal63']."','".$_POST['normal64']."',
         '".$_POST['normal65']."','".$rs_sum51."','".$rs_sum52."','".$rs_sum53."','".$_POST['normal66']."','".$rs_sum61."',
@@ -352,12 +349,9 @@ FROM `dxofyear_out` AS a
 LEFT JOIN `opcard` AS b ON b.`hn` = a.`hn` 
 WHERE a.`hn` = '$hn' 
 ORDER BY `row_id` DESC LIMIT 1";
-
 $db->select($sql);
 $opd = $db->get_item();
-$year_checkup = $opd['yearchk']; // ปีในตาราง dxofyear_out
-
-$chk_year = get_year_checkup(); // ตามปีงบ
+$year_checkup = $opd['yearchk'];
 
 $bp1 = $opd['bp1'];
 $bp2 = $opd['bp2'];
@@ -426,11 +420,7 @@ h1,h3,p{
     cursor: pointer;
 }
 </style>
-<?php 
-if($year_checkup != $chk_year){
-    ?><p style="text-align: center;font-weight: bold;color: red;padding: 16px 8px;text-shadow: 2px 2px 8px #505050;border: 2px solid orange;margin: 8px;">ข้อมูลซักประวัติไม่ใช่ของปีงบ <?=$chk_year;?> กรุณายืนยันข้อมูลกับพยาบาลอีกครั้งว่าได้บันทึกซักประวัติเรียบร้อยแล้ว</p><?php
-}
-?>
+
 <form action="chk_doctor.php" method="post" id="formSubmit">
     <h2 align="center">บันทึกผลตรวจสุขภาพประกันสังคม</h2>
     <table class="chk_table">
