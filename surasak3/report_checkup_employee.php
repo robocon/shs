@@ -25,12 +25,34 @@ $year_th = $runno['runno'];
     require_once 'report_checkup_employee_menu.php';
 
     $yearCheckup = get_year_checkup(true);
-    $sql = "SELECT SUBSTRING(thidate,1,10) thidate, COUNT(row_id) AS emp_count 
-    FROM opday 
-    WHERE ptright LIKE 'R42%' 
-    AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-01' )
-    GROUP BY SUBSTRING(thidate,1,10) ";
-    $q = $dbi->query($sql);
+    $sql = "CREATE TEMPORARY TABLE IF NOT EXISTS `emp_opday`
+    SELECT `row_id`,SUBSTRING(`thidate`,1,10) `thidate`,`thdatehn` 
+    FROM `opday` 
+    WHERE `ptright` LIKE 'R42%' 
+    AND ( `thidate` >= '2568-07-29 00:00:00' AND `thidate` <= '2568-08-04 23:59:59' ) ";
+    $dbi->query($sql);
+
+    $opdaySql = "SELECT *,COUNT(`row_id`) AS `emp_count` FROM `emp_opday` GROUP BY `thidate`";
+    $q = $dbi->query($opdaySql);
+
+    $tmpDxofyear = "CREATE TEMPORARY TABLE IF NOT EXISTS `emp_dxofyear` 
+    SELECT a.*,b.`dxofyear_out_id` FROM `emp_opday` AS a LEFT JOIN ( 
+        SELECT `row_id` AS `dxofyear_out_id`,`hn`,`ptname`,`camp`,
+        CONCAT(SUBSTRING(`thidate`,9,2),'-',SUBSTRING(`thidate`,6,2),'-',(SUBSTRING(`thidate`,1,4)+543),`hn`) AS `thdatehn`
+        FROM `dxofyear_out` 
+        WHERE `yearchk` = '68'
+    ) AS b ON a.`thdatehn` = b.`thdatehn`;";
+    $dbi->query($tmpDxofyear);
+
+    
+    $opdSql = "SELECT * FROM `emp_dxofyear`";
+    $qOpd = $dbi->query($opdSql);
+    $opdRows = $qOpd->num_rows;
+
+
+    $chkSql = "SELECT b.`dxofyear_out_id` FROM `emp_dxofyear` AS a LEFT JOIN `chk_doctor` AS b ON a.`dxofyear_out_id` = b.`dxofyear_out_id` WHERE b.`dxofyear_out_id` IS NOT NULL";
+    $qChk = $dbi->query($chkSql);
+    $chkRows = $qChk->num_rows;
     ?>
     <div class="container">
         <h1>ยอดการตรวจสุขภาพลูกจ้างประจำปี <?=$year_th;?></h1>
@@ -73,11 +95,10 @@ $year_th = $runno['runno'];
             <h3>สรุปยอดผู้เข้ารับการตรวจ</h3>
             <div class="col-6">
                 <?php
-
                 $sql = "SELECT `row_id`,`date`,`hn`,`tvn`,`ptname`,`depart`,`price` 
                 FROM `depart` 
                 WHERE `ptright` LIKE 'R42%' 
-                AND ( `date` >= '2568-07-29' AND `date` <= '2568-08-02' ) 
+                AND ( `date` >= '2568-07-29 00:00:00' AND `date` <= '2568-08-04 23:59:59' ) 
                 AND ( `depart`='PATHO' OR `depart`='XRAY' ) 
                 ORDER BY `hn`,`row_id` ASC ";
                 $q = $dbi->query($sql);
@@ -120,12 +141,12 @@ $year_th = $runno['runno'];
                     </tr>
                     <tr>
                         <td>ลงข้อมูลซักประวัติไปแล้ว</td>
-                        <td></td>
+                        <td><?=$opdRows;?></td>
                         <td>ราย</td>
                     </tr>
                     <tr>
                         <td>แพทย์ลงผลตรวจแล้ว</td>
-                        <td></td>
+                        <td><?=$chkRows;?></td>
                         <td>ราย</td>
                     </tr>
                 </table>

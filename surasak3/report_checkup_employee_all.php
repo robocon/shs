@@ -27,14 +27,14 @@ $opcard = new Opcard();
     require_once 'report_checkup_employee_menu.php';
     
     $yearCheckup = get_year_checkup(true);
-    $sql = "SELECT b.hn AS main_hn,b.department,b.lab,a.* 
+    $sql = "SELECT b.`hn` AS `main_hn`,b.`department`,b.`lab`,a.* 
     FROM ( 
-        SELECT row_id,hn,ptname,age,vn,thidate,SUBSTRING(thidate,1,10) AS thidate2 
-        FROM opday 
-        WHERE ptright LIKE 'R42%' 
-        AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-01' ) 
-    ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
-    ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
+        SELECT `row_id`,`hn`,`ptname`,`age`,`vn`,`thidate`,SUBSTRING(`thidate`,1,10) AS `thidate2` 
+        FROM `opday` 
+        WHERE `ptright` LIKE 'R42%' 
+        AND ( `thidate` >= '2568-07-29 00:00:00' AND `thidate` <= '2568-08-04 23:59:59' ) 
+    ) AS a RIGHT JOIN `employee` AS b ON a.`hn` = b.`hn`
+    ORDER BY ISNULL(a.`row_id`) ASC, a.`row_id` ASC";
     $q = $dbi->query($sql);
     ?>
     <div class="container mt-2">
@@ -78,12 +78,12 @@ $opcard = new Opcard();
                     $enDateHn = $enDate.$hn;
                     $thDateHn = $thidate.$hn;
                     
-                    $sqlLab = "SELECT row_id,depart 
-                    FROM depart 
-                    WHERE ( date>='2568-07-29' AND date<='2568-08-02' ) 
-                    AND hn='$hn' 
-                    AND (depart = 'PATHO' OR depart = 'XRAY') 
-                    AND detail='ตรวจสุขภาพประกันสังคม' ";
+                    $sqlLab = "SELECT `row_id`,`depart` 
+                    FROM `depart` 
+                    WHERE ( `date`>='2568-07-29 00:00:00' AND `date`<='2568-08-04 23:59:59' ) 
+                    AND `hn`='$hn' 
+                    AND (`depart` = 'PATHO' OR `depart` = 'XRAY') 
+                    AND `detail`='ตรวจสุขภาพประกันสังคม' ";
                     $qLab = $dbi->query($sqlLab);
                     if($qLab->num_rows>0){
                         while ($p = $qLab->fetch_assoc()) {
@@ -102,7 +102,7 @@ $opcard = new Opcard();
                         $regis = '<i class="bi bi-check-circle text-success"></i>';
                     // }
 
-                    $sqlOpd = "SELECT row_id,thdatehn FROM dxofyear_out WHERE thdatehn = '$enDateHn' ";
+                    $sqlOpd = "SELECT `row_id`,`thdatehn` FROM `dxofyear_out` WHERE `thdatehn` = '$enDateHn' ";
                     $qOpd = $dbi->query($sqlOpd);
                     $dxofyear_out_rows = $qOpd->num_rows;
                     $dxofyear_id = '';
@@ -113,7 +113,7 @@ $opcard = new Opcard();
                         $opd = '<i class="bi bi-check-circle text-success"></i>';
                     }
 
-                    $sqlDoctor = "SELECT id FROM chk_doctor WHERE hn = '$hn' AND yearchk = '$prefix' ";
+                    $sqlDoctor = "SELECT `id` FROM `chk_doctor` WHERE `hn` = '$hn' AND `yearchk` = '$prefix' ";
                     $qDoctor = $dbi->query($sqlDoctor);
                     $chk_doctor_rows = $qDoctor->num_rows;
                     if($chk_doctor_rows>0){

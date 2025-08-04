@@ -13,6 +13,8 @@ $year_th = $runno['runno'];
 
 /**
  * ปี 67 ไม่ใช้ข้อมูลจาก opcardchk
+ * 
+ * AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
  */
 $sql = "SELECT a.main_id,a.department,a.hn AS main_hn,a.idcard,b.*,c.id AS chk_doctor_id,c.`cxr`,c.`res_cbc`,c.`res_ua`,c.`res_glu`,c.`res_crea`,c.`res_chol`,c.`res_hdl`,c.`res_hbsag`, 
 c.`conclution`,c.`normal_suggest`,c.`normal_suggest_date`,c.`abnormal_suggest`,c.`abnormal_suggest_date`,c.`diag` 
@@ -20,7 +22,7 @@ FROM (
     SELECT x.*,x.id as main_id,y.idcard FROM `employee` AS x LEFT JOIN opcard AS y ON x.hn = y.hn ORDER BY id ASC
 ) AS a 
 LEFT JOIN ( 
-    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '$prefix' AND `camp` LIKE 'ตรวจสุขภาพประกันสังคม%'
+    SELECT * FROM `dxofyear_out` WHERE `yearchk` = '$prefix' 
 ) AS b ON b.`hn` = a.`hn` 
 LEFT JOIN ( 
     SELECT * FROM `chk_doctor` WHERE `yearchk` = '$prefix' 
@@ -29,12 +31,7 @@ ORDER BY ISNULL(b.row_id) ASC, b.row_id ASC";
 
 $db->select($sql);
 $items = $db->get_items();
-
 $user_rows = $db->get_rows();
-
-// $sql = "SELECT * FROM `chk_company_list` WHERE `code` = '$camp' ";
-// $db->select($sql);
-// $company = $db->get_item();
 
 ?>
 <style>

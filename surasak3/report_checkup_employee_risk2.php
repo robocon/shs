@@ -31,7 +31,7 @@ $opcard = new Opcard();
         SELECT row_id,hn,ptname,age,vn,thidate,SUBSTRING(thidate,1,10) AS thidate2 
         FROM opday 
         WHERE ptright LIKE 'R42%' 
-        AND ( thidate >= '2568-07-29' AND thidate <= '2568-08-02' )
+        AND ( `thidate` >= '2568-07-29 00:00:00' AND `thidate` <= '2568-08-04 23:59:59' )
     ) AS a RIGHT JOIN employee AS b ON a.hn = b.hn
     ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
