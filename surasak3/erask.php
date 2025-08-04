@@ -267,7 +267,7 @@ $smctoken = $t['token'];
 	<?php 
 	}
 	
-	if( $menucode == "ADMPT" ){	   
+	if( $menucode == "ADMPT" ){
 		?>
 		<br />
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เฉพาะนวดแผนไทย <br />
@@ -283,11 +283,11 @@ $smctoken = $t['token'];
 				<?php
 			}
 			?>
-		</select>	
+		</select>
 		<?php
 	}  //close if ADMPT
 	
-	if( $menucode == "ADMNID" ){	   
+	if( $menucode == "ADMNID" ){
 		$today = date("Y-m-d");
 		$submonth=substr($today,0,7);
 		?>
