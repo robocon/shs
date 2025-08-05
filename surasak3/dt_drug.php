@@ -3063,7 +3063,8 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	if( drugcode.trim() === '1FINE' && typeof dataDateHn.MRA === 'undefined'){
 		checkMRA(drugcode.trim());
 	}
-
+	
+	// @2568-08-02 ยกเลิกยา 1SEMA
 	if( ( drugcode.trim() === '1EPAD' ) && typeof dataDateHn.LIPID === 'undefined' ){
 		checkLipidDrug(drugcode.trim());
 	}
@@ -3076,6 +3077,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkDiabetes(drugcode.trim());
 	}
 
+	/*
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( drugcode.trim() === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
 		// อนุญาตให้แพทย์2ท่านนี้สั่งได้เท่านั้น
@@ -3094,6 +3096,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			return false;
 		}
 	}
+	*/
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
 
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
