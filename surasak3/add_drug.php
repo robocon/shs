@@ -107,24 +107,6 @@ if(isset($_GET["action"]) && ($_GET["action"] == "drug_interaction" || $_GET["ac
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-// ผลข้างเคียง
-$sqlEffect = "SELECT a.*,b.`tradname` FROM (
-SELECT `drugcode`,`sideeffects` FROM `drugreact` WHERE `hn` = '$my_hn' AND `sideeffects` <> '' GROUP BY `drugcode`
-) AS a LEFT JOIN `druglst` AS b ON a.`drugcode` = b.`drugcode` ";
-$qEffect = $dbi->query($sqlEffect);
-$effectRows = $qEffect->num_rows;
-$sideEffectItems = array();
-
-$drugSideEffectItems = array();
-if($effectRows>0){
-	while ($a = $qEffect->fetch_assoc()) {
-		$key = trim($a['drugcode']);
-		$drugSideEffectItems[$key] = $a['sideeffects'];
-
-		$sideEffectItems[] = $a;
-	}
-}
-
 /**
  * แยกฟังก์ชั่นมาจาก listAjax ===ในเงื่อนไข===> $_GET["action"] == "drugcode"
  * 
@@ -136,7 +118,7 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 	$sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 	list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 	
-	$sql = "SELECT a.`drugcode`,a.`tradname`,a.genname,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`, a.`lock`, a.`lock_ipd`
+	$sql = "SELECT a.`drugcode`,a.`tradname`,a.genname,a.`unit`,a.`unitpri`,a.`stock`,a.`part`,b.`slcode`, a.`lock`, a.`lock_ipd`, a.`lock_dr`
 	FROM ( 
 		SELECT * FROM `druglst` WHERE ( `drugcode` LIKE '$search_txt%' OR `genname` LIKE '$search_txt%' OR `tradname` LIKE '$search_txt%' ) AND `drug_active`='y' 
 	) AS a 
@@ -167,16 +149,14 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 						</TR>
 						<?php
 						$i=0;
+
+						// while($arr = Mysql_fetch_assoc($result)){
 						while($arr = $res->fetch_assoc()){
 
+						
 							$drugcode = jschars($arr["tradname"]);
-							$mydrugcode = trim($arr['drugcode']);
-							
-							$effectTxt = '';
-							if($drugSideEffectItems[$mydrugcode]){
-								$effectTxt = '<br> <b>อาการข้างเคียง</b> '.$drugSideEffectItems[$mydrugcode].'👈';
-							}
 
+							$mydrugcode = trim($arr['drugcode']);
 							$alert_txt = '';
 							$relative_react_txt = '';
 							if(in_array($mydrugcode, $drugreact_list)===true){
@@ -198,14 +178,37 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 								$txt = "select_radio".$i;
 							}
 							
+							if($arr["part"] == "DDY"){
+								$style = "style='color:#0000FF;' ";
+							}elseif($arr["part"] == "DDN" || $arr["part"] == "DSN" || $arr["part"] == "DPN"){
+								$style = "style='color:#FF0000;' ";
+							}else{
+								$style = "";
+							}
+
+				
+				if($arr["lock_dr"] != "Y"){  //lockยา
+					if($arr["lock_dr"] =="N"){
+						$obj = "ยาตัดออก";
+					}else{
+						$obj = $arr["lock_dr"];
+					}
+				}else{
+					$obj="";
+				}				
+				//echo $arr["drugcode"]."===>$obj";			
 							if(($arr["lock_ipd"]=="N") && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R27" || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){  //ถ้า lock ยา  R27 รับสั่งการที่ทิวา  22/11/2565
 							?>
-							<TR valign="top">
+							<TR <?=$style;?>>
+								<? if($obj==""){?>
 								<TD>
 									<INPUT TYPE="text" class="input_check_pass" ID="<?=$txt;?>" NAME="select_radio" size="3" maxlength="3" onkeypress="if(event.keyCode==13){if(this.value=='<?=$pass_drug;?>'){ update_field('<?=$arr['drugcode'];?>','<?=$arr['tradname'];?>','<?=$arr['unit'];?>','<?=$arr['part'];?>','<?=$arr['slcode'];?>'); }else{ alert('รหัสผ่านไม่ถูกต้อง') } } ">
 									<br><FONT style="font-size: 16px;" COLOR="red"><u>รับรหัสผ่านได้ที่ผู้อำนวยการโรงพยาบาลเท่านั้น</u></FONT>
 								</TD>
-								<TD><?=$arr["drugcode"];?> <?=$alert_txt;?><?=$relative_react_txt;?> <?=$effectTxt;?></TD>
+								<? }else{ ?>
+								<TD><?=$obj;?></TD>								
+								<? } ?>
+								<TD><?=$arr["drugcode"];?> <?=$alert_txt;?><?=$relative_react_txt;?></TD>
 								<TD><?=$arr["tradname"];?></TD>
 								<td><?=$arr['genname'];?></td>
 								<TD><?=$arr["part"];?></TD>
@@ -215,21 +218,29 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 							<?php
 							}else{  //ถ้าไม่ได้ lock ยา
 								?>
-								<TR valign="top">
-									<td>
+								<TR <?=$style;?>>
+									<? if($obj==""){  //ไม่ได้ lockยา ?>
+									<TD>
 										<input type="radio" name="simple" id="simple" ondblclick="update_field('<?=$arr['drugcode'];?>','<?=$arr['tradname'];?>','<?=$arr['unit'];?>','<?=$arr['part'];?>','<?=$arr['slcode'];?>')">
-									</td>
+									</TD>
 									<TD>
 										<A HREF="javascript:void(0)" Onclick="update_field('<?=$arr['drugcode'];?>','<?=$arr['tradname'];?>','<?=$arr['unit'];?>','<?=$arr['part'];?>','<?=$arr['slcode'];?>')"><?=$arr['drugcode'];?></A>
-										<?=$alert_txt;?><?=$relative_react_txt;?> <?=$effectTxt;?>
-									</TD>
+										<?=$alert_txt;?><?=$relative_react_txt;?>
+									</TD>									
+									<? }else{ ?>
+									<TD><?=$obj;?></TD>	
+									<TD>
+										<?=$arr['drugcode'];?>
+										<?=$alert_txt;?><?=$relative_react_txt;?>
+									</TD>									
+									<? } ?>									
 									<TD><?=$arr["tradname"];?></TD>
 									<td><?=$arr['genname'];?></td>
 									<TD><?=$arr["part"];?></TD>
 									<TD><?=$arr["unitpri"];?></TD>
 									<TD><?=$arr["stock"];?></TD>
 								</TR>
-								<?php
+								<?php			
 							}
 							$i++;
 						}
@@ -239,6 +250,7 @@ if($_GET["action"] == "drugcode" && !empty($search_txt)){
 			</TR>
 		</TABLE>
 		<?php
+		
 	}else{
 		?>
 		<p style="background-color:#ffffff;padding:8px;margin:0;border:2px solid #000000;"><b>ไม่พบข้อมูล</b></p>
@@ -537,7 +549,7 @@ top:250px;
 border:1.5px solid #FFCC00;
 
 
-background-color:lightyellow;
+layer-background-color:lightyellow;
 font:bold 12px ms sans serif;
 line-height:20px;
 
@@ -1270,13 +1282,17 @@ if (count($groupnameList)>0) {
 }
 
 // ผลข้างเคียง
-if($effectRows>0){
+$sql = "SELECT a.*,b.`tradname` FROM (
+SELECT `drugcode`,`sideeffects` FROM `drugreact` WHERE `hn` = '$hnFromBed' AND `sideeffects` <> '' GROUP BY `drugcode`
+) AS a LEFT JOIN `druglst` AS b ON a.`drugcode` = b.`drugcode` ";
+$q = $dbi->query($sql);
+if($q->num_rows>0){
 	?>
 	<tr>
 		<td>
 		<p style="color:red; margin:0; padding: 0;"><b>ผลข้างเคียงจากการใช้ยา</b></p>
 		<?php
-		foreach ($sideEffectItems AS $a){
+		while ($a = $q->fetch_assoc()) {
 			?>
 			<p style="margin:0; padding: 0;"><b><?=$a['drugcode'];?> : </b><?=$a['tradname'];?>&nbsp;&nbsp;<b>อาการข้างเคียง : </b><?=$a['sideeffects'];?></p>
 			<?php
