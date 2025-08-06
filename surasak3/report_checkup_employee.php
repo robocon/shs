@@ -29,7 +29,7 @@ $year_th = $runno['runno'];
     SELECT `row_id`,SUBSTRING(`thidate`,1,10) `thidate`,`thdatehn` 
     FROM `opday` 
     WHERE `ptright` LIKE 'R42%' 
-    AND ( `thidate` >= '2568-07-29 00:00:00' AND `thidate` <= '2568-08-04 23:59:59' ) ";
+    AND ( `thidate` >= '2568-07-29 00:00:00' AND `thidate` <= '2568-08-04 23:59:59' );";
     $dbi->query($sql);
 
     $opdaySql = "SELECT *,COUNT(`row_id`) AS `emp_count` FROM `emp_opday` GROUP BY `thidate`";
@@ -49,10 +49,6 @@ $year_th = $runno['runno'];
     $qOpd = $dbi->query($opdSql);
     $opdRows = $qOpd->num_rows;
 
-
-    $chkSql = "SELECT b.`dxofyear_out_id` FROM `emp_dxofyear` AS a LEFT JOIN `chk_doctor` AS b ON a.`dxofyear_out_id` = b.`dxofyear_out_id` WHERE b.`dxofyear_out_id` IS NOT NULL";
-    $qChk = $dbi->query($chkSql);
-    $chkRows = $qChk->num_rows;
     ?>
     <div class="container">
         <h1>ยอดการตรวจสุขภาพลูกจ้างประจำปี <?=$year_th;?></h1>
@@ -144,6 +140,14 @@ $year_th = $runno['runno'];
                         <td><?=$opdRows;?></td>
                         <td>ราย</td>
                     </tr>
+                    <?php
+                    $dtSQL = "SELECT b.`hn` AS rows FROM (
+                        SELECT `hn` FROM `employee` 
+                    ) AS a LEFT JOIN `chk_doctor` AS b ON b.`hn` = a.`hn`
+                    WHERE b.`yearchk` = '68'";
+                    $q = $dbi->query($dtSQL);
+                    $chkRows = $q->num_rows;
+                    ?>
                     <tr>
                         <td>แพทย์ลงผลตรวจแล้ว</td>
                         <td><?=$chkRows;?></td>

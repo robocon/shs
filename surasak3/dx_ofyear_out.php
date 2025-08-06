@@ -277,8 +277,13 @@ if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 	// ดึงข้อมูลล่าสุดมาแสดงผล
 	$sql3 = "Select * From dxofyear_out where hn = '$p_hn' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '".date("Y-m-d")."%'
 	$result3 = Mysql_Query($sql3);
+
+	$dateDxofyear = '';
 	if(mysql_num_rows($result3) > 0){
 		$arr_dxofyear = mysql_fetch_assoc($result3);
+
+		$dateDxofyear = ' ( วันที่บันทึกครั้งล่าสุด '.substr($arr_dxofyear['thidate'],0,10).' )';
+
 		$congenital_disease = $arr_dxofyear["congenital_disease"];
 		$height = $arr_dxofyear["height"];
 		$weight = $arr_dxofyear["weight"];
@@ -466,7 +471,7 @@ while($arr = Mysql_fetch_assoc($result)){
 	<td>
 	<table border="0" cellpadding="0" cellspacing="0" width="100%">
 	<tr>
-		<td align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย</td>
+		<td align="left" bgcolor="#0000CC" class="tb_font_1">&nbsp;&nbsp;&nbsp;ข้อมูลผู้ป่วย <?=$dateDxofyear;?></td>
 	</tr>
 	<tr>
 		<td>
