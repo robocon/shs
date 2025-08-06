@@ -1,7 +1,7 @@
 <?php
 session_start();
-include("connect.inc");
-require_once 'includes/config.php';
+include 'connect.php';
+include 'includes/config.php';
 
 $sOfficer="";
 $smenucode = "";
@@ -29,8 +29,7 @@ function displaydate($x) {
 
 $showdate=displaydate(date("Y-m-d"));
 $showtime=date("H:i:s");
-
-$query = "SELECT * FROM inputm WHERE idname = '$sIdname' and pword='$sPword' and status ='Y' ";
+$query = sprintf("SELECT * FROM `inputm` WHERE `idname` = '%s' AND `pword`='%s' AND `status` ='Y' ", mysql_real_escape_string($_SESSION['sIdname']), mysql_real_escape_string($_SESSION['sPword']));
 $result = mysql_query($query) or die( mysql_error($Conn) );
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	if (!mysql_data_seek($result, $i)) {
