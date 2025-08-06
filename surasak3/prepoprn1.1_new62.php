@@ -354,7 +354,7 @@ print "<DIV style='left:435PX;top:637PX;width:320PX;height:30PX;'><span class='f
 print "<DIV style='left:480PX;top:695PX;width:269PX;height:30PX;'><span class='fc1-5'>$aYot[5]</span></DIV>";
 print "<DIV style='left:435PX;top:724PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>($aFname[5])</span></DIV>";
 print "<DIV style='left:435PX;top:753PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost[5]</span></DIV>";
-print "<DIV style='left:435PX;top:782PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:435PX;top:782PX;width:280PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost2[5]</span></DIV>";
 print "<DIV style='left:435PX;top:811PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>............/............/............</span></DIV>";
 
 
