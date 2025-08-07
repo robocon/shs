@@ -210,6 +210,10 @@ $list_lab["DB"] = "DB";
 		text-decoration: none;
 		display: inline-block;
 		border-radius: 12px;
+		line-height: 20px;
+	}
+	.button:hover{
+		background-color: #038d5a;
 	}
 	.checkupField tr td{
 		padding-bottom: 4px;
@@ -227,7 +231,10 @@ $list_lab["DB"] = "DB";
 </head>
 
 <body>
-<a href ="../nindex.htm" class="button">&lt;&lt; เมนู</a> <a href="upd_labstatus.php" target="_blank" class="button">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a> <a href="Edx_ofyear_out.php" class="button">โปรแกรมซักประวัติตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
+<a href ="../nindex.htm" class="button">&lt;&lt; 🏠 กลับหน้าหลัก</a>
+<a href="upd_labstatus.php" target="_blank" class="button">ปรับสถานะ LAB เป็นตรวจสุขภาพ</a>
+<a href="dx_ofyear_out_search.php" target="_blank" class="button">ดูข้อมูล Walk-in ย้อนหลัง</a>
+<a href="Edx_ofyear_out.php" class="button">โปรแกรมซักประวัติตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
 <div>
 	<h1 style="text-align:center;">โปรแกรมซักประวัติตรวจสุขภาพประจำปี (Walk in) && ฮักกันยามเฒ่า62</h1>
 </div>
