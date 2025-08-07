@@ -347,6 +347,16 @@ while ($item = mysql_fetch_assoc($query)) {
 $current_date = strtotime(date('Y-m-d H:i:s'));
 // แพ้ยารุนแรง
 
+$dateHn = date('Y-m-d').$rxHn;
+$rechallengeItem = array();
+$sql = "SELECT `drugcode` FROM `dt_rechallenge` WHERE `datehn` = '$dateHn' AND `reason` <> '' ";
+$q = $dbi->query($sql);
+if($q->num_rows>0){
+	while ($a = $q->fetch_assoc()) {
+		$rechallengeItem[] = $a['drugcode'];
+	}
+}
+
 $num = '0';
 $query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode, a.drugcode, a.part, b.detail1, b.detail2, b.detail3, 
 b.detail4, a.drug_inject_amount, a.drug_inject_unit, a.drug_inject_amount2, a.drug_inject_unit2, a.drug_inject_time, 
@@ -366,6 +376,11 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 		$year=date("Y")+543;
 		$day=date("m-d");
 		$daynow=$year.'-'.$day;
+
+		$rechallengeIcon = '';
+		if(in_array($drugcode, $rechallengeItem)===true){
+			$rechallengeIcon = '🎯 (Rechallenge)';
+		}
 		
 		$chkstatus="SELECT drug_status FROM  drugrx  WHERE date like '$daynow%' and drugcode='$drugcode' and hn='$rxHn' ";
 		$objquery = mysql_query($chkstatus);
@@ -402,7 +417,7 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 		echo " <tr style='line-height:18px;'>\n".
 		"  <td><font face='TH SarabunPSK'>$num.</td>\n".
 		"  <td><font face='TH SarabunPSK' size=''>$drugcode</td>\n".
-		"  <td><font face='TH SarabunPSK' size=''><b>$tradname</b>&nbsp;[$unit] $allergics_txt</td>\n".
+		"  <td><font face='TH SarabunPSK' size=''><b>$tradname</b>&nbsp;[$unit] $allergics_txt $rechallengeIcon</td>\n".
 		"  <td align='right'><font face='TH SarabunPSK'>&nbsp;<b>(&nbsp;$amount&nbsp;)</b></td>\n".
 		"  <td align='right'><font face='TH SarabunPSK'  >&nbsp;$price</td>\n".
 		"  <td align='right'><font face='TH SarabunPSK'  size=''>&nbsp;$part</td>\n".

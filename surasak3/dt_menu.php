@@ -45,6 +45,8 @@ font-weight: bold;
 		$first_page = "dt_index.php";
 		$lab_page = "dt_lab.php";
 	}
+	
+//print_r($_SESSION);	
 ?>
 <script type="text/javascript">
 function newWindowsPaperless()
@@ -112,10 +114,11 @@ menu5[0]='<a href="dt_chkup.php" >ใบรับรองแพทย์</a>'
 menu5[1]='<a href="dt_refer.php" >ใบ Refer</a>'
 
 var menu6=new Array();
-menu6[0]='<a href="dxdr_ofyear1_dr.php" >ตรวจสุขภาพประจำปีกองทัพบก</a>'
+menu6[0]='<a href="dxdr_ofyear1_dr.php" >บันทึกตรวจสุขภาพประจำปีกองทัพบก</a>'
 <!--menu6[1]='<a href="dxdr_ofyear_empsoldier.php">ตรวจสุขภาพลูกจ้าง รพ.</a>'-->
-menu6[2]='<a href="dxdr_ofyearout_dr.php" >ตรวจสุขภาพทั่วไป && ฮักกันยามเฒ่า</a>'
+menu6[2]='<a href="dxdr_ofyearout_dr.php" >บันทึกตรวจสุขภาพทั่วไป && ฮักกันยามเฒ่า</a>'
 <!--menu6[3]='<a href="Edxdr_ofyearout_dr.php" >ตรวจสุขภาพ - สำหรับใบรับรองแพทย์อิเล็กทรอนิกส์</a>'-->
+menu6[4]='<a href="report_dxofyear.php?hn=<?=$_SESSION[hn_now];?>" target=_BLANK >ดูผลตรวจสุขภาพประจำปีกองทัพบก</a>'
 
 var menuwidth='170px' //default menu width
 var menubgcolor='#000097'  //menu bgcolor

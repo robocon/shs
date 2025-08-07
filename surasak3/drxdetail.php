@@ -431,36 +431,39 @@ if($q->num_rows>0){
 </script>
 <p style="margin-bottom:0;"><b>รายการสั่งยาจากแพทย์</b></p>
 <table>
- <tr >
- <th bgcolor=CD853F><font face='Angsana New'>#</th>
- <th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
-  <th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
-    <th bgcolor=CD853F><font face='Angsana New'>part</th>
-  <th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
-  <th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
-  <th bgcolor=CD853F><font face='Angsana New'>วิธีใช้</th>
-  <th bgcolor=CD853F><font face='Angsana New'>แก้ไขวิธีใช้</th>
-<!--  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>-->
-   <th bgcolor=CD853F><font face='Angsana New'>#</th>
-  <th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
-   <th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
-   <th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
-    
- </tr>
-
+	<tr >
+		<th bgcolor=CD853F><font face='Angsana New'>#</th>
+		<th bgcolor=CD853F><font face='Angsana New'>รหัส</th>
+		<th bgcolor=CD853F><font face='Angsana New'>รายการ</th>
+			<th bgcolor=CD853F><font face='Angsana New'>part</th>
+		<th bgcolor=CD853F><font face='Angsana New'>จำนวน</th>
+		<th bgcolor=CD853F><font face='Angsana New'>ราคา</th>
+		<th bgcolor=CD853F><font face='Angsana New'>วิธีใช้</th>
+		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขวิธีใช้</th>
+		<!--  <th bgcolor=CD853F><font face='Angsana New'>ลบ</th>-->
+		<th bgcolor=CD853F><font face='Angsana New'>#</th>
+		<th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
+		<th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
+		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
+	</tr>
 <?php
+$dateHn = date('Y-m-d').$patient_hn;
+$rechallengeItem = array();
+$sql = "SELECT `drugcode` FROM `dt_rechallenge` WHERE `datehn` = '$dateHn' AND `reason` <> '' ";
+$q = $dbi->query($sql);
+if($q->num_rows>0){
+	while ($a = $q->fetch_assoc()) {
+		$rechallengeItem[] = $a['drugcode'];
+	}
+}
+
 $inject = false;
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
-	
 	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno,a.reason FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."' AND a.date = '".$_GET["sDate"]."' ";
-	//echo $query;
     $result = mysql_query($query) or die("Query failed");
 	$n='0';
-	//    print "แพทย์ :$sDoctor<br><br>";
 	$count_row = mysql_num_rows($result);
-	//echo "==>".$count_row;
     while (list ($tradname,$drugcode,$amount,$price,$slcode,$row_id,$part,$office,$detail1,$detail2,$detail3,$detail4,$drug_inject_amount,$drug_inject_unit,$drug_inject_amount2,$drug_inject_unit2,$drug_inject_time,$drug_inject_slip,$drug_inject_etc,$injno,$reason) = mysql_fetch_row ($result)) {
-	
         $x++;
 		$n++;
         $_SESSION["aDgcode"][$x]=$drugcode;
@@ -469,11 +472,10 @@ $inject = false;
         $_SESSION["aAmount"][$x]=$amount;
 	
 		if($_SESSION["aDgcode"][$x]=='1DILA' || $_SESSION["aDgcode"][$x]=='1GPO30*'  || $_SESSION["aDgcode"][$x]=='20SGPO30'  || $_SESSION["aDgcode"][$x]=='20SGPO30' || $_SESSION["aDgcode"][$x]=='1COTR4' || $_SESSION["aDgcode"][$x]=='1ALLO3'){
-
-$color="#00CCFF";
-}else{
-$color="F5DEB3";
-}
+			$color="#00CCFF";
+		}else{
+			$color="F5DEB3";
+		}
 
 $ptright=substr($sPtright,0,3);
 //echo $ptright."...<br>";
@@ -496,11 +498,15 @@ $ptright=substr($sPtright,0,3);
 /*}else{
 	$comment="";
 }*/
+	$rechallengeIcon = '';
+	if(in_array($drugcode, $rechallengeItem)===true){
+		$rechallengeIcon = '🎯 (Rechallenge)';
+	}
 
 		if($count_row ==1)
-		$onclick= "<A HREF='#' onclick=\"alert('กรุณา เหลือรายการยาไว้อย่างน้อย 1 รายการครับ');\">";
-	else
-		$onclick= "<A HREF='drxdeldrug.php?action=del&grow_id2=".$_GET["nRow_id"]."&grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."' target='_blank'>";
+			$onclick= "<A HREF='#' onclick=\"alert('กรุณา เหลือรายการยาไว้อย่างน้อย 1 รายการครับ');\">";
+		else
+			$onclick= "<A HREF='drxdeldrug.php?action=del&grow_id2=".$_GET["nRow_id"]."&grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."' target='_blank'>";
 
 			$c1 = substr($drugcode,0,1);
 			$c2 = substr($drugcode,0,2);
@@ -509,7 +515,7 @@ $ptright=substr($sPtright,0,3);
         print (" <tr BGCOLOR=$color>\n".
 		   "  <td><font face='Angsana New'>$n</td>\n".
 		   "  <td><font face='Angsana New'>$drugcode</td>\n".
-           "  <td><font face='Angsana New'>$tradname $injectno</td>\n".
+           "  <td><font face='Angsana New'>$tradname $injectno $rechallengeIcon</td>\n".
 		   "  <td><font face='Angsana New'>$part<br>$comment</td>\n".
            "  <td><font face='Angsana New'><span id=\"amount_value".$x."\">$amount</span>
 		   <input type=\"text\" style=\"display:none\" name=\"amount".$x."\" value=\"".$amount."\" id=\"amount".$x."\" size=\"5\"></td>\n".
@@ -517,26 +523,22 @@ $ptright=substr($sPtright,0,3);
 		if($c2!='20'&&($c1=='2'||$c1=='0')){
 			if($tob!="EX10"){$inject=true; }
 			//$inject=true;
-echo "  <td><font face='Angsana New'>$drug_inject_slip $drug_inject_amount $drug_inject_unit $drug_inject_amount2 $drug_inject_unit2 $drug_inject_time $drug_inject_etc</td>";	
+			echo "  <td><font face='Angsana New'>$drug_inject_slip $drug_inject_amount $drug_inject_unit $drug_inject_amount2 $drug_inject_unit2 $drug_inject_time $drug_inject_etc</td>";	
 		}else{
-echo "  <td><font face='Angsana New'>$slcode $detail1 $detail2 $detail3 $detail4</td>";
+			echo "  <td><font face='Angsana New'>$slcode $detail1 $detail2 $detail3 $detail4</td>";
 		}
         echo "  <td><font face='Angsana New'><a target=_blank  href=\"drxeditdrug.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\" onclick=\"return confirm('ยืนยันการแก้ไขวิธีใช้')\">แก้ไขวิธีใช้</a></td>\n".
 			//"<td><font face='Angsana New'>".$onclick."ลบ</A></td>\n".
-  "  <td>#</td>\n".
-  
-			"  <td><font face='Angsana New'><a target=_blank  href=\"drxremain.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\" onclick=\"return confirm('ยืนยันการค้างจ่าย')\">ค้างจ่าย</a></td>\n".
-			
+		"  <td>#</td>\n".
+		"  <td><font face='Angsana New'><a target=_blank  href=\"drxremain.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\" onclick=\"return confirm('ยืนยันการค้างจ่าย')\">ค้างจ่าย</a></td>\n".
 			    //"  <td><font face='Angsana New'><a target=_blank  href=\"drxremain.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\">ไม่ตัด</a></td>\n".
-					
-// "  <td><font face='Angsana New'><a target=_blank  href=\"drxremain1.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\">ตัด</a></td>\n".
-			   "  <td><font face='Angsana New'>$office</td>\n".		
-			   "  <td><font face='Angsana New'><a href=\"#\" onclick=\"window.open('upd_cdrug.php?nrow=$row_id',null,'height=300,width=320,scrollbars=0')\">แก้ไขจำนวน</a></td>\n".
+		// "  <td><font face='Angsana New'><a target=_blank  href=\"drxremain1.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\">ตัด</a></td>\n".
+		"  <td><font face='Angsana New'>$office</td>\n".		
+		"  <td><font face='Angsana New'><a href=\"#\" onclick=\"window.open('upd_cdrug.php?nrow=$row_id',null,'height=300,width=320,scrollbars=0')\">แก้ไขจำนวน</a></td>\n".
 		//			  "  <td BGCOLOR=F5DEB3><a target=_blank  href=\"drxek1.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\">แก้ข้อมูล</a></td>\n".
 		//	"<td BGCOLOR=F5DEB3>".$onclick."ลบ</A></td>\n".
-		
            " </tr>";
-      }
+      } // end while
     
 ?>
 </table>

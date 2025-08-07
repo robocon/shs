@@ -4,7 +4,7 @@ if (isset($sIdname)){} else {die;} //for security
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 
-include("connect.inc");
+include("connect.php");
 
 function jschars($str){
     $str = str_replace("\\\\", "\\\\", $str);

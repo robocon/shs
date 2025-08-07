@@ -950,7 +950,7 @@ echo "<BR><BR>
 	";
 	echo"	<BR><BR> <CENTER>ถ้าแพทย์ต้องการออกใบนัด ให้เลือกเมนูออกใบนัดก่อนการพิมพ์ Stiker<BR>Stikerจะออกมาพร้อมกับใบนัดผู้ป่วย</CENTER>";
 			
-		}else{
+}else{
 	
 	if(isset($_POST["doctor"])){
 			$first_page = "dt_dental.php";
@@ -961,7 +961,7 @@ echo "<BR><BR>
 	echo "<CENTER>ขออภัยเกิดความผิดพลาดบางประการ กรุณากรอก VN ใหม่อีกครับ<BR><A HREF=\"".$first_page."\">เลือกผู้ป่วยใหม่</A></CENTER>";
 	echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"5;URL=".$first_page."\">";
 
-		}
+}
 
 
 $mum50 = '50';
