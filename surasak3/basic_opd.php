@@ -2988,7 +2988,7 @@ mmHg </td>
 			</td>
 		</tr>
 		<?php 
-		if($_SESSION['smenucode'] == 'ADMEYE')
+		if($_SESSION['smenucode'] == 'ADMEYE' OR $_SESSION['smenucode'] == 'ADM')
 		{
 			$eye_thdatehn = $thidate.$cHn;
 			$sql = "SELECT * FROM `pt_opd_eye` WHERE `thdatehn` = '$eye_thdatehn' ";
@@ -2999,6 +2999,15 @@ mmHg </td>
 				$eye = $q->fetch_assoc();
 			}
 
+			// ดึงข้อมูลยาต้านการแข็งตัวของเกล็ดเลือดครั้งก่อนหน้า
+			$todayDMY = date('d-m-').(date('Y')+543);
+			$sql = "SELECT `antiplatelet` FROM `pt_opd_eye` WHERE `hn` = '$cHn' AND `thdatehn` NOT LIKE '$todayDMY%' ORDER BY DESC LIMIT 1 ";
+			$q = $dbi->query($sql);
+			if($q->num_rows>0){
+				$prevEye = $q->fetch_assoc();
+				$eye['antiplatelet'] = $prevEye['antiplatelet'];
+			}
+			
 		?>
 		<tr>
 			<td colspan="5">
