@@ -18,6 +18,10 @@ include dirname(__FILE__).'/bootstrap.php';
             font-family: "TH SarabunPSK";
             font-size: 20px;
         }
+        #tableData tr th{
+            background-color: #13795b;
+            color: #ffffff;
+        }
     </style>
 <div class="container">
     <h3 class="mt-2">ตรวจสุขภาพประจำปี Walk-in</h3>
@@ -34,7 +38,6 @@ include dirname(__FILE__).'/bootstrap.php';
             </form>
         </div>
     </div>
-    
     <?php
     if(empty($_POST['dateSelect'])){
         $today = date('Y-m-d');
@@ -49,7 +52,7 @@ include dirname(__FILE__).'/bootstrap.php';
         list($y, $m, $d)=explode('-',$today);
     ?>
     <h3 class="mt-2">วันที่ <?=$d.' '.$def_month_th[$m].' '.($y+543);?></h3>
-    <table class="table table-sm">
+    <table class="table table-hover table-sm" id="tableData">
         <tr>
             <th>เวลา</th>
             <th>HN</th>
