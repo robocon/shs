@@ -67,7 +67,30 @@ if($_SESSION["smenucode"] == "ADMSUR"){
 	include("alert_surgery_set.php");
 }	
 ?>
-<style type="text/css">
+<style type="text/css">	
+    body {
+      background-color: #008080; /* แทน bgcolor */
+      color: #00ffff;            /* แทน text */
+      font-family: Arial, sans-serif;
+    }
+
+    a:link {
+      color: #ffffff;           /* แทน link */
+	  text-decoration: none;
+    }
+
+    a:visited {
+      color: #ffffff;           /* แทน vlink */
+    }
+
+    a:active {
+      color: #ffffff;           /* แทน alink */
+    }
+
+    a:hover {
+      color: #00ffff;           /* เพิ่มความสวยงามตอน hover */
+      text-decoration: none;
+    }
 *{
 	font-family: "TH SarabunPSK";
 }
@@ -94,20 +117,53 @@ if($_SESSION["smenucode"] == "ADMSUR"){
 	transform: translateY(2px);
 }
 
-#menuAll{
-	text-align:center;
-	font-size:24px;
-	background-color: #148F77;
+#menuAll {
+	text-align: center;
+	font-size: 24px;
+	background: linear-gradient(135deg, #2D9966, #178236); /* เขียวไล่เฉด */
 	color: #ffffff;
+	padding: 15px 25px;
+	border-radius: 12px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);	
+	transition: all 0.3s ease;
+	font-weight: bold;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	cursor: pointer;
 }
+
+#menuAll:hover {
+	background: linear-gradient(135deg, #388E3C, #66BB6A);
+	transform: scale(1.03);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.menu-cell {
+	background: linear-gradient(135deg, #2A9689, #1B5E5B);
+	color: #0C0A09;
+	font-size: 22px;
+	text-align: left;
+	padding: 10px 15px;
+	border-radius: 5px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	user-select: none;
+	letter-spacing: 1px;
+	text-decoration: none;
+}
+
+.menu-cell:hover {
+	background: linear-gradient(135deg, #1E7C74, #104B48);
+	transform: translateY(-2px) scale(1.02);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
 #showDateTxt{
 	font-size:22px;
 }
 #showDateTxt:hover{
 	background-color: #CCFFCC!important;
-}
-#userInfo:hover, #menuAll:hover{
-	background-color: #148F77!important;
 }
 
 tr:hover td{
@@ -169,7 +225,7 @@ if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
 //print (" <tr>\n".
 // "  <td BGCOLOR='#148F77'><font face='THSarabunPSK' size='3' color='#FFFFFF' >   $sOfficer </font></td>\n".
 	//	" </tr>\n");
-print "<body bgcolor='#008080' text='#00FFFF' link='#FFFFFF' vlink='#FFFFFF' alink='#FFFFFF' onload='Realtime();'>";
+print "<body onload='Realtime();'>";
 print "<table>";
 
 print "<tr>";
@@ -380,7 +436,7 @@ if($rows){///  ถ้ามี rows
 
 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 		print (" <tr>\n".
-		"  <td BGCOLOR='#008484'><a target='$target' href=\"$script?\"><font face='THSarabunPSK' size='4' >$menu</font></a></td>\n".
+		"  <td class='menu-cell'><a target='$target' href=\"$script?\"><font face='THSarabunPSK'>$menu</font></a></td>\n".
 		" </tr>\n");
 	};
 

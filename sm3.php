@@ -11,6 +11,12 @@ top.window.outerWidth = screen.availWidth;
 }
 }
 //-->
+
+<script>
+  if (top && top.frames["main"]) {
+    top.frames["main"].location.reload(); // รีเฟรชเฉพาะ frame 'main'
+  }
+</script>
 </script>
 
 <?php
@@ -29,7 +35,7 @@ mysql_query("UPDATE `inputm` SET `login_status`=0 WHERE (`row_id`='$sRowid');");
 <frameset framespacing="0" border="0" cols="270,*" frameborder="0">
   <frameset rows="120,*">
     <frame name="contents" target="main" src="banner.htm" marginwidth="0" marginheight="0" scrolling="no" noresize>
-    <frame name="contents1" src="surasak3/login.php" marginwidth="0" marginheight="0" scrolling="yes" target="_self">
+    <frame name="contents1" src="surasak3/login.php" marginwidth="0" marginheight="0" scrolling="yes" target="_self" noresize>
   </frameset>
   <frame name="main" src="display.php" id="mainDisplayPage" marginwidth="0" marginheight="0" scrolling="yes" target="_self">
   <noframes>
