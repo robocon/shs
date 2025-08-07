@@ -867,6 +867,10 @@ $outlab_row = mysql_num_rows($outlab_query);
 										$labmean="เชื้อซิฟิลิส";
 									}else if($objResult["labname"]=="Stool Occult"){
 										$labmean="ตรวจเลือดในอุจจาระ";
+									}else if($objResult["labname"]=="HBA1C"){
+										$labmean="ระดับน้ำตาลสะสม";
+									}else if($objResult["labname"]=="Leptospira Ab IgM" OR $objResult["labname"]=="Leptospira Ab IgG"){
+										$labmean="ตรวจการติดเชื้อแบคทีเรีย โรคไข้ฉี่หนู";
 									}
 
 									$app = '';
