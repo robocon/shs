@@ -25,7 +25,6 @@ if($action==='save'){
 
     setcookie($cookieName, $json->encode($res), strtotime(date('Y-m-d 23:59:59')), '/');
 
-    /*
     $error = array();
     $sql = sprintf("INSERT INTO `doctor_medical` (`id`, `date`, `hn`, `datehn`, `drugcode`, `criteria`, `doctor`) 
     VALUES 
@@ -67,24 +66,21 @@ if($action==='save'){
     }
 
     if(count($error) > 0){
-        $res = array(
+        $jsonResponse = array(
             'status' => 400,
             'message' => 'ไม่สามารถบันทึกข้อมูลได้',
             'error' => implode("\n", $error)
         );
     }else{
-        
+        $jsonResponse = array(
+            'status' => 200,
+            'message' => 'บันทึกสถานะเรียบร้อย',
+            'cookieName'=>$cookieName,
+            'cookieData'=>$json->encode($res)
+        );
     }
-    */
 
-    $res = array(
-        'status' => 200,
-        'message' => 'บันทึกสถานะเรียบร้อย',
-        'cookieName'=>$cookieName,
-        'cookieData'=>$json->encode($res)
-    );
-    
     header('Content-Type: application/json');
-    echo $json->encode($res);
+    echo $json->encode($jsonResponse);
     exit;
 }
