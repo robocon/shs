@@ -49,6 +49,12 @@ print('MYSQL Global : '+str(setGlobal)+'\n')
 
 print('\n UPDATE runno opday dphardep phardep ddrugrx drugrx \n')
 
+# runno
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=runno --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=runno"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
 # opday
 mycursor.execute("SELECT `row_id` AS latest_id FROM opday ORDER BY row_id DESC LIMIT 1")
 myresult = mycursor.fetchone()
