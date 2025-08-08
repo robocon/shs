@@ -1,5 +1,13 @@
 <?php
 include dirname(__FILE__).'/bootstrap.php';
+if(empty($_SESSION['sIdname'])){
+	?>
+	<p>
+		SESSION หมดอายุ กรุณาloginใหม่อีกครั้ง <a href='../nindex.htm'>คลิกที่นี่เพื่อ Login</a>
+	</p>
+	<?php
+	exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
