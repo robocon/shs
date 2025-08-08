@@ -1,62 +1,169 @@
-<?
+<?php
 session_start();
 include("connect.inc");
+
+$seldate = date("d");
+$selmon = date("m");
 ?>
-<style type="text/css">
-<!--
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 20px;
-}
-.txt{
-	font-family: TH SarabunPSK;
-	font-size: 20px;
-}
--->
-</style>
-  <?
-  $seldate=date("d");
-  $selmon=date("m");
-  ?>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ส่งเบิกค่าชดเชย-กองทุนจ่ายตรง</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'TH SarabunPSK', sans-serif;
+      background-color: #007B7F; /* เขียวฟ้าเข้ม */
+      color: #003333;
+    }
+
+    .container {
+      background-color: #E9F7EF;
+      margin: 40px auto;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      max-width: 800px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      color: #004d4d;
+    }
+
+    .description {
+      font-size: 24px;
+	  font-weight:bold;
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+
+    .update-info {
+      margin-top: 10px;
+      font-size: 22px;
+    }
+
+    .update-info div {
+      margin-bottom: 6px;
+    }
+
+    .form-group {
+      margin-top: 25px;
+      font-size: 22px;
+    }
+	
+    select, input[type="submit"], input[type="button"] {
+      font-family: 'TH SarabunPSK', sans-serif;
+      font-size: 24px;
+      padding: 6px 10px;
+      margin: 8px 5px 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+      background-color: #008CBA; /* สีฟ้า */
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #006f94;
+    }	
+
+    .btn-primary {
+      background-color: #1ABC9C;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn-primary:hover {
+      background-color: #006064;
+    }
+    .btn-secondary {
+      background-color: #7e57c2; /* สีม่วง */
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      margin-left: 10px;
+      transition: background 0.3s;
+    }
+    .btn-secondary:hover {
+      background-color: #5e35b1;
+    }
+
+    a {
+      color: #0066cc;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
 <form method="POST" action="datacscd2018_icd10_mount/exportdatacscd.php">
-<p><strong>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (ECD-CSCD) ที่ค้างการลงรหัสโรค รายเดือน (datacscd2018_icd10_mount/...) ลงท้ายด้วย 0600 <br />
-ผู้พัฒนาระบบ&nbsp;&nbsp;&nbsp;ส.อ. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์&nbsp;&nbsp;&nbsp;โทร. 8500<br />
-<div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 14 เดือนสิงหาคม พ.ศ.2562 เป็นต้นไป (last update : 2022-03-19)</div></strong>
-<div style="color:#0000FF">ดูข้อมูลการลงรหัสโรค <a href="report_diagnotfound_cscd.php" target="_blank" >ICD10</a> และรหัสหัตถการ <a href="report_icd9cmnotfound_cscd.php" target="_blank" >ICD9CM</a> ให้ผู้ป่วย</div>
-</strong>
-</p>
-<div><strong>ข้อมูลเดือน : </strong>
-  <select size="1" name="rptmo" class="txt">
-    <option selected>-------เลือก-------</option>
-    <option value="01" <? if($selmon=="01"){ echo "selected='selected'";}?>>มกราคม</option>
-    <option value="02" <? if($selmon=="02"){ echo "selected='selected'";}?>>กุมภาพันธ์</option>
-    <option value="03" <? if($selmon=="03"){ echo "selected='selected'";}?>>มีนาคม</option>
-    <option value="04" <? if($selmon=="04"){ echo "selected='selected'";}?>>เมษายน</option>
-    <option value="05" <? if($selmon=="05"){ echo "selected='selected'";}?>>พฤษภาคม</option>
-    <option value="06" <? if($selmon=="06"){ echo "selected='selected'";}?>>มิถุนายน</option>
-    <option value="07" <? if($selmon=="07"){ echo "selected='selected'";}?>>กรกฎาคม</option>
-    <option value="08" <? if($selmon=="08"){ echo "selected='selected'";}?>>สิงหาคม</option>
-    <option value="09" <? if($selmon=="09"){ echo "selected='selected'";}?>>กันยายน</option>
-    <option value="10" <? if($selmon=="10"){ echo "selected='selected'";}?>>ตุลาคม</option>
-    <option value="11" <? if($selmon=="11"){ echo "selected='selected'";}?>>พฤศจิกายน</option>
-    <option value="12" <? if($selmon=="12"){ echo "selected='selected'";}?>>ธันวาคม</option>
+<h1>โปรแกรมส่งเบิกค่าชดเชยทางการแพทย์ผู้ป่วยนอก สิทธิเบิกจ่ายตรง (EDC-CSCD)</h1>    
+      <div class="description">
+        ข้อมูลที่ค้างการลงรหัสโรค รายเดือน<code>datacscd2018_icd10_mount/...</code> ลงท้ายด้วย 0600<br>
+        ผู้พัฒนาระบบ: ส.อ. เทวิน ศรีแก้ว เจ้าหน้าที่ศูนย์บริการคอมพิวเตอร์ โทร. 8500
+      </div>
+      <div class="update-info">
+        <div style="color:#FF0000">เริ่มใช้ตั้งแต่วันที่ 14 เดือนสิงหาคม พ.ศ.2562 เป็นต้นไป (last update : 2022-03-19)</div>
+        <div style="color: #0000FF">
+          ดูข้อมูลการลงรหัสโรค <a href="report_diagnotfound_cscd.php" target="_blank">ICD10</a> และรหัสหัตถการ <a href="report_icd9cmnotfound_cscd.php" target="_blank">ICD9CM</a>
+        </div>
+      </div>
 
-  </select>
-  <? 
-			   $Y=date("Y")+543;
-			   $date=date("Y")+543+5;
-			  
-				$dates=range(2547,$date);
-				echo "<select name='thiyr'  class='txt'>";
-				foreach($dates as $i){
+      <div class="form-group">
+        <strong>ข้อมูลประจำเดือน:</strong>
+		  <select size="1" name="rptmo" class="txt">
+			<option selected>-------เลือก-------</option>
+			<option value="01" <? if($selmon=="01"){ echo "selected='selected'";}?>>มกราคม</option>
+			<option value="02" <? if($selmon=="02"){ echo "selected='selected'";}?>>กุมภาพันธ์</option>
+			<option value="03" <? if($selmon=="03"){ echo "selected='selected'";}?>>มีนาคม</option>
+			<option value="04" <? if($selmon=="04"){ echo "selected='selected'";}?>>เมษายน</option>
+			<option value="05" <? if($selmon=="05"){ echo "selected='selected'";}?>>พฤษภาคม</option>
+			<option value="06" <? if($selmon=="06"){ echo "selected='selected'";}?>>มิถุนายน</option>
+			<option value="07" <? if($selmon=="07"){ echo "selected='selected'";}?>>กรกฎาคม</option>
+			<option value="08" <? if($selmon=="08"){ echo "selected='selected'";}?>>สิงหาคม</option>
+			<option value="09" <? if($selmon=="09"){ echo "selected='selected'";}?>>กันยายน</option>
+			<option value="10" <? if($selmon=="10"){ echo "selected='selected'";}?>>ตุลาคม</option>
+			<option value="11" <? if($selmon=="11"){ echo "selected='selected'";}?>>พฤศจิกายน</option>
+			<option value="12" <? if($selmon=="12"){ echo "selected='selected'";}?>>ธันวาคม</option>
 
-				?>
-      
-      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
-      <?
-				}
-				echo "<select>";
-				?>
-&nbsp;&nbsp;<span style="color:#FF0000">&nbsp;</span></div>              
-      <p style="margin-left: 65px;"><input type="submit" value=" ส่งออกข้อมูล " name="B1"  class="txt" />&nbsp;&nbsp;&nbsp;<input type="button" value="กลับหน้าหลัก" onclick="window.location.href='../nindex.htm' " class="txt" /></p>
-</form>
+		  </select>
+
+        <select name="thiyr">
+          <?php
+          $currentYear = date("Y") + 543 + 5;
+          $Y = 2567;
+          foreach (range(2561, $currentYear) as $year) {
+            $selected = ($Y == $year) ? "selected" : "";
+            echo "<option value='$year' $selected>$year</option>";
+          }
+          ?>
+        </select>
+		<input type="submit" value="ส่งออกข้อมูล">
+      </div>
+
+      <div align="center" class="form-group">
+        <input type="button" value="กลับหน้าหลัก" onclick="window.location.href='../nindex.htm'" class="btn-primary">
+		<input type="button" value="ดูรายงานการเงิน" onclick="window.location.href='report_cscdformonth.php'" class="btn-secondary" />
+      </div>
+    </form>
+  </div>
+</body>
+</html>
