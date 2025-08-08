@@ -37,6 +37,14 @@ include dirname(__FILE__).'/bootstrap.php';
                 </div>
             </form>
         </div>
+        <div class="col col-md-3">
+            <form action="dx_ofyear_out_search.php" method="post">
+                <div class="input-group mb-3">
+                    <input type="text" name="hn" class="form-control" required>
+                    <button class="btn btn-outline-primary" type="submit" id="button-addon2">ค้นหาจาก HN</button>
+                </div>
+            </form>
+        </div>
     </div>
     <?php
     if(empty($_POST['dateSelect'])){
@@ -44,8 +52,13 @@ include dirname(__FILE__).'/bootstrap.php';
     }else{
         $today = $_POST['dateSelect'];
     }
+
+    $where = sprintf("`thdatehn` LIKE '%s%%'", $dbi->real_escape_string($today));
+    if(!empty($_POST['hn'])){
+        $where = sprintf("`hn` = '%s'", $dbi->real_escape_string($_POST['hn']));
+    }
     
-    $sql = "SELECT * FROM `dxofyear_out` WHERE `thdatehn` LIKE '$today%' ORDER BY `row_id` ASC";
+    $sql = "SELECT * FROM `dxofyear_out` WHERE $where ORDER BY `row_id` ASC";
     $q = $dbi->query($sql);
     if($q->num_rows>0){
 
@@ -72,7 +85,15 @@ include dirname(__FILE__).'/bootstrap.php';
         while ($a = $q->fetch_assoc()) {
             ?>
             <tr>
-                <td><?=substr($a['thidate'],10);?></td>
+                <td>
+                    <?php
+                    if(!empty($_POST['hn'])){
+                        echo $a['thidate'];
+                    }else{
+                        echo substr($a['thidate'],10);
+                    }
+                    ?>
+                </td>
                 <td><?=$a['hn'];?></td>
                 <td><?=$a['vn'];?></td>
                 <td><?=$a['ptname'];?></td>

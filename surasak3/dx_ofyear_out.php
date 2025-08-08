@@ -202,7 +202,7 @@ $list_lab["DB"] = "DB";
 	.pdxhead {font-size: 24px;}
 	label:hover{cursor: pointer;}
 	.button {
-		background-color: #04AA6D; /* Green */
+		background-color: #008080; /* Green */
 		border: none;
 		color: white;
 		padding: 8px 15px;
@@ -213,7 +213,7 @@ $list_lab["DB"] = "DB";
 		line-height: 20px;
 	}
 	.button:hover{
-		background-color: #038d5a;
+		background-color: rgba(1, 117, 75, 1);
 	}
 	.checkupField tr td{
 		padding-bottom: 4px;
