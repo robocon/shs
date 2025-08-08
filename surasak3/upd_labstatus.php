@@ -1,63 +1,97 @@
 <?php
-include("connect.inc");
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>ปรับสถานะแลป</title>
-</head>
-<style type="text/css">
-.ppo {
-	font-family:"Angsana New";
-	font-size:20px;
+session_start();
+include "connect.php";
+
+if(empty($_SESSION['sIdname'])){
+	?>
+	<p>
+		SESSION หมดอายุ กรุณาloginใหม่อีกครั้ง <a href='../nindex.htm'>คลิกที่นี่เพื่อ Login</a>
+	</p>
+	<?php
+	exit;
 }
-</style>
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ปรับสถานะแลป</title>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
-<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a>&nbsp;&nbsp;<a href ="upd_labstatus.php" class="tet">[ HN ใหม่ ]</a>
+<style>
+	*{
+		font-family: "TH SarabunPSK";
+		font-size: 20px;
+	}
+	#showContent tr th{
+		background-color: #13795b;
+		color: #ffffff;
+		text-align: center;
+	}
+</style>
+<div class="container">
+	<div class="mt-2">
+		<a href ="../nindex.htm" class="btn btn-success">🏠 ไปเมนู</a>&nbsp;&nbsp;<a href ="upd_labstatus.php" class="btn btn-success">HN ใหม่</a>
+	</div>
 <?php
 if(isset($_POST['hn'])){
 	$sql = "select * from resulthead where hn='".$_POST['hn']."' group by labnumber order by orderdate desc";
   	$rows = mysql_query($sql);
 	$num = mysql_num_rows($rows);
-	echo "<div align='center'>รายการ LAB ที่ส่งตรวจ</div><table class='ppo' border='1' width='100%' align='center' cellpadding='5' cellspacing='0' style='border-collapse:collapse'><tr style='background-color:#45B39D'><td align='center'>Labnumber</td><td align='center'>HN</td><td align='center'>ชื่อ - สกุล</td><td align='center'>Orderdate</td><td align='center'>Order ที่ส่งตรวจ</td><td align='center'>สถานะการตรวจ</td><td align='center'>ปรับสถานะ</td></tr>";
-  	echo "<div align='center' style='color:red; font-size:12px;'>*** <u><b>คำเตือน</b></u> กรุณาตรวจสอบวันที่ Labnumber, Orderdate และOrder ที่ส่งตรวจ ก่อนการปรับสถานะทุกครั้ง ***</div>";
+	?>
+	<h3 class="text-center">รายการ LAB ที่ส่งตรวจ</h3>
+	<div class="text-center" style='color:red;'>*** <u><b>คำเตือน</b></u> กรุณาตรวจสอบวันที่ Labnumber, Orderdate และOrder ที่ส่งตรวจ ก่อนการปรับสถานะทุกครั้ง ***</div>
+	<table id="showContent" class='table table-hover' border='1' width='100%' cellpadding='5' cellspacing='0' style='border-collapse:collapse'>
+		<tr>
+			<th width="8%">Labnumber</th>
+			<th width="8%">HN</th>
+			<th width="12%">ชื่อ - สกุล</th>
+			<th width="12%">Orderdate</th>
+			<th>Order ที่ส่งตรวจ</th>
+			<th>สถานะการตรวจ</th>
+			<th width="8%">ปรับสถานะ</th>
+		</tr>
+	<?php
 	if($num < 1){
-		echo "<tr><td colspan='7' align='center' style='color:red;'>-------------------- ไม่มีข้อมูล --------------------</td></tr>";
-	}else{	
-	while($result = mysql_fetch_array($rows)){ 
-	
-	$query1 = "select clinicalinfo from orderhead where labnumber='".$result['labnumber']."' group by labnumber";
-	$result1 = mysql_query($query1) or die("Query failed,opday");
-	list($orderclinicalinfo)=mysql_fetch_array($result1);	
-	
-	if($result['orderdate'] < "2022-02-13"){
-		$orderclinicalinfo=$result['clinicalinfo'];
+		?>
+		<tr><td colspan='7' style='color:red;'>-------------------- ไม่มีข้อมูล --------------------</td></tr>
+		<?php
 	}else{
-		$orderclinicalinfo=$orderclinicalinfo;
-	}	
-	
-	if(empty($result['clinicalinfo'])){
-		$color="#FADBD8";
-	}else{
-		$color="#F2F3F4";
-	}		
-	
-		echo "<tr style='background-color:$color'>";
-		echo "<td align='center'>".$result['labnumber']."</td>";
-		echo "<td align='center'>".$result['hn']."</td>";
-		echo "<td align='center'>".$result['patientname']."</td>";
-		echo "<td align='center'>".$result['orderdate']."</td>";
-		echo "<td>&nbsp;".$orderclinicalinfo."</td>";
-		echo "<td>&nbsp;".$result['clinicalinfo']."</td>";
-		echo "<td align='center'><a href='upd_labstatus.php?ids=".$result['labnumber']."' >แก้ไข</a></td>";
-		echo "</tr>";
-	}
+		while($result = mysql_fetch_array($rows)){ 
+		
+			$query1 = "SELECT `clinicalinfo` FROM `orderhead` WHERE `labnumber`='".$result['labnumber']."' GROUP BY `labnumber`";
+			$result1 = mysql_query($query1) or die("Query failed,opday");
+			list($orderclinicalinfo)=mysql_fetch_array($result1);	
+			
+			if($result['orderdate'] < "2022-02-13"){
+				$orderclinicalinfo = $result['clinicalinfo'];
+			}else{
+				$orderclinicalinfo = $orderclinicalinfo;
+			}
+			
+			if(empty($result['clinicalinfo'])){
+				$color="#FADBD8";
+			}else{
+				$color="#F2F3F4";
+			}
+
+			echo "<tr style='background-color:$color'>";
+			echo "<td align='center'>".$result['labnumber']."</td>";
+			echo "<td align='center'>".$result['hn']."</td>";
+			echo "<td align='center'>".$result['patientname']."</td>";
+			echo "<td align='center'>".$result['orderdate']."</td>";
+			echo "<td>&nbsp;".$orderclinicalinfo."</td>";
+			echo "<td>&nbsp;".$result['clinicalinfo']."</td>";
+			echo "<td align='center'><a href='upd_labstatus.php?ids=".$result['labnumber']."' >แก้ไข</a></td>";
+			echo "</tr>";
+		}
 	}
 	echo "</table>";
-}
-elseif(isset($_GET['ids'])){
+}elseif(isset($_GET['ids'])){
 	////*runno ตรวจสุขภาพ*/////////
 	$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 	$result = mysql_query($query) or die("Query failed");
@@ -78,60 +112,68 @@ elseif(isset($_GET['ids'])){
 	$result2 = mysql_fetch_array($rows2);
 
 	$yearTh= substr(date('Y')+543,2,2);
-	$yearRange = array_reverse(range(58, $yearTh));
+	$yearRange = array_reverse(range(60, $yearTh));
 	?>
-	<form id="form1" name="form1" method="post" action="upd_labstatus.php">
-<table width="29%" border='0' align='center'>
-  <tr>
-    <td align="center">สถานะ : 
-    <select  name='clinic'>
-		<?php 
-		if($result2!==false){
-			?><option value='<?=$result2['clinicalinfo']?>'><?=$result2['clinicalinfo']?></option><?php
-		}
-		foreach ($yearRange as $yearItem) {
-			$selected = ($yearItem === $nPrefix) ? 'selected="selected"' : '' ;
-			?>
-			<option value="ตรวจสุขภาพประจำปี<?=$yearItem?>" <?=$selected;?>>ตรวจสุขภาพประจำปี<?=$yearItem?></option>
-			<?php
-		}
-		?>
- 		<option value='ยกเลิก'>ยกเลิก</option>
-
-	</select>&nbsp;
-    <input name='ids' type="hidden" value="<?=$_GET['ids']?>" />
-    <input type="submit" name="upbtn" id="button" value="ตกลง" /></td>
-    </tr>
-  <tr>
-    <td align="center">&nbsp;</td>
-  </tr>
-</table>
+<form id="form1" name="form1" method="post" action="upd_labstatus.php">
+	<table width="29%" border='0' align='center'>
+		<tr>
+			<td>
+				<div class="input-group mb-4">
+					<span class="input-group-text">สถานะเดิม : </span>
+					<span class="input-group-text" style="background-color: white;"><?=$result2['clinicalinfo'];?></span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">
+				<div class="input-group mb-4">
+					<span class="input-group-text">ปรับสถานะใหม่ : </span>
+					<select class="form-select" name='clinic'>
+						<option value="">&gt;&gt; กรุณาเลือกสถานะแลป &lt;&lt;</option>
+						<?php
+						foreach ($yearRange as $yearItem) {
+							$selected = ($yearItem === $nPrefix) ? 'selected="selected"' : '' ;
+							?>
+							<option value="ตรวจสุขภาพประจำปี<?=$yearItem?>" <?=$selected;?>>ตรวจสุขภาพประจำปี<?=$yearItem?></option>
+							<?php
+						}
+						?>
+						<option value='ยกเลิก'>ยกเลิก</option>
+					</select>
+					<input type="submit" name="upbtn" id="button" class="btn btn-primary" value="ตกลง" />
+				</div>
+				<input name='ids' type="hidden" value="<?=$_GET['ids']?>" />
+			</td>
+		</tr>
+		<tr>
+			<td align="center"></td>
+		</tr>
+	</table>
 </form>
-	<?
-}
-elseif(isset($_POST['upbtn'])){
+<?php
+}elseif(isset($_POST['upbtn'])){
 	$sql2 = "update resulthead set clinicalinfo= '".$_POST['clinic']."' where labnumber='".$_POST['ids']."'";
   	$result = mysql_query($sql2);
 	if($result){
-		echo "<br><center>ปรับปรุงข้อมูลเรียบร้อยแล้ว</center>";
+		echo "<center><h3?>ปรับปรุงข้อมูลเรียบร้อยแล้ว</h3></center>";
 		echo "<meta http-equiv='refresh' content='3' />";
 	}
 }else{
 ?>
-<form id="form1" name="form1" method="post" action="upd_labstatus.php">
-
-<table width="29%" border='0' align='center'>
-  <tr>
-    <td align="center">ปรับปรุงสถานะห้องLAB</td>
-  </tr>
-  <tr>
-    <td align="center">HN : 
-      <input name="hn" type="text" id="hn" size="10" />&nbsp;<input type="submit" name="okbtn" id="button" value="ตกลง" /></td>
-    </tr>
-</table>
-</form>
-<?
+<div class="row justify-content-md-center">
+	<div class="col col-md-3 mt-2">
+		<form action="upd_labstatus.php" method="post" class="text-center">
+			<h3>ปรับปรุงสถานะห้องLAB</h3>
+			<div class="input-group mb-3">
+				<input type="text" name="hn" class="form-control" placeholder="กรุณากรอก HN" required>
+				<button class="btn btn-outline-primary" type="submit" id="button-addon2">ค้นหาจาก HN</button>
+			</div>
+		</form>
+	</div>
+</div>
+<?php
 }
 ?>
+</div>
 </body>
 </html>
