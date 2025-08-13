@@ -67,15 +67,12 @@ Mysql_Query($sql);
 
 $row_id = @mysql_insert_id();
 $i=false;
-if(count($_POST["list_lab_appoint"]) > 0){
-
+if(count($_POST["list_lab_appoint"]) > 0)
 	foreach($_POST["list_lab_appoint"] as $key => $value){
 		$sql = "INSERT INTO `appoint_lab` ( `id` , `code` ) VALUES ('".$row_id."', '".$value."'); ";
 		Mysql_Query($sql);
 		$i = true;
 	}
-
-}
 
 $sql = "Select count(distinct hn) as c_app 
 From appoint 
@@ -84,6 +81,7 @@ AND doctor in ('".$_SESSION["dt_doctor"]."','".$appoint_doctor."')
 AND apptime <> 'ยกเลิกการนัด' ";
 $result = Mysql_Query($sql) or die(mysql_error());
 list($c_app) = Mysql_fetch_row($result);
+
 
 
 $dateid=(date("Y")+543)."-".date("m-d");
@@ -205,51 +203,7 @@ if(trim($_POST["xray"]) !=""){
 $_SESSION["dt_drugstk"] .= "</div>"; // End appoint
 
 $_SESSION['dt_drugstk'] .= '<div style="page-break-after:always;"></div><img src="printQrCode.php?hn='.$_SESSION['hn_now'].'">';
+
+header('Location: dt_printstker.php');
+exit;
 ?>
-<style type="text/css">
-.appoint_zone{
-	font-family: 'TH SarabunPSK'!important;
-    font-size: 14pt;
-}
-.appoint_zone p{
-	margin: 0;
-	padding: 0;
-}
-.size1{
-    font-size: 6pt;
-    line-height: 12pt;
-}
-.size2{
-    font-size: 12pt;
-    line-height: 12pt;
-}
-.size3{
-    font-size: 14pt;
-    line-height: 17.5pt;
-}
-.size4{
-    font-size: 15pt;
-    line-height: 21pt;
-}
-.size5{
-    font-size: 22pt;
-    line-height: 28pt;
-}
-.center{
-    text-align: center;
-}
-.test_sticker_line tr{
-    line-height:4mm!important;
-}
-</style>
-<?php
-echo $_SESSION['dt_drugstk'];
-?>
-<script type="text/javascript">
-	window.onload = function(){
-		window.print();
-		window.onafterprint = function(){
-			window.location = 'dt_index.php';
-		}
-	}
-</script>

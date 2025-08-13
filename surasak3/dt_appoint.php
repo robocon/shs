@@ -70,6 +70,10 @@ if($_GET["action"] == "carlendar"){
 	$diffHour = 0;
 	$diffMinute = 0;
 
+	$dfMonth = $_GET['dfMonth'];
+	$today = $_GET['today'];
+	$dfYear = $_GET['dfYear'];
+
 	if ( empty($dfMonth) ) {
 
 		/* ถ้าไม่มีการระบุให้แสดงปฏิทินของเดือนใดเดือนหนึ่ง เราจะแสดงปฏิทินของเดือนปัจจุบันตามเวลาในเครื่องไคลเอ็นต์ 
@@ -698,6 +702,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
 		$i=  count($_COOKIE);
 		if($i > 1){
 
+			$cookieKey = date('dm').(date('Y')+543);
+			
 			foreach($_COOKIE as $key => $value){
 				
 				$xxx = explode(">",$value);
@@ -712,6 +718,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
 				$i--;
 				if($i==1)
 					break;
+				
 			}
 		}
 			
@@ -725,21 +732,25 @@ if(isset($_GET["action"]) && $_GET["action"] == "reloadcookie"){
 	{
 		$i=  count($_COOKIE);
 		if($i > 1){
+			$cookieKey = date('dm').(date('Y')+543);
 		?>
 			<table width="100%">
 				<tr>
 					<td style="background-color: #fff;">
 					<?php 
 					foreach($_COOKIE as $key => $value){
-							
-						$xxx = explode(">",$value);
-						$yyy = explode("<",$xxx[1]);
-			
-						$zzz = $yyy[0];
-						echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
-						$i--;
-						if($i==1)
-							break;
+
+						if(preg_match("/\d{8}/", $key)>0){
+							$xxx = explode(">",$value);
+							$yyy = explode("<",$xxx[1]);
+				
+							$zzz = $yyy[0];
+							echo "&nbsp;&nbsp;",$value,"&nbsp;<BR>";
+							$i--;
+							if($i==1)
+								break;
+
+						}
 					}
 					?>
 					</td>
