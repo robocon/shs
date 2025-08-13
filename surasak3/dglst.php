@@ -52,6 +52,8 @@ if ($user_code !== 'ADM') {
             <li>พชร วงศ์ศิริอำนวย</li>
             <li>จีรอาภา ใจจินา</li>
             <li>ตรัณ วิญญา</li>
+			<li>วรัญญากร วงค์วัน</li>
+			<li>ภัทริษฐ์ชา อินทยากรณ์</li>
         </ol>
         <p>เพื่อทำการแก้ไขข้อมูลยา</p>
         <p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อกลับไปหน้าเมนูหลัก</p>
@@ -148,31 +150,37 @@ function searchSuggest(str,len,getto) {
                 sendTelgramMsg('👾 '.$_SESSION['sIdname'].' ได้ค้นหายา '.$drugcodeSearch.' ในเมนู ::PHAR- แก้ไขข้อมูลยา ');
             }
             
-            $query = sprintf("SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri,spec 
+            $query = sprintf("SELECT drugcode,tradname,genname,salepri,part,stock,mainstk,totalstk, pack, packpri_vat, comcode, comname, unitpri,code24, edpri, spec, medical_sup_free 
             FROM druglst 
             WHERE drugcode LIKE '%s%%' ", mysql_real_escape_string($drugcodeSearch));
             $result = mysql_query($query) or die("Query failed");
-            while (list($drugcode, $tradname, $genname, $salepri, $part, $stock, $mainstk, $totalstk, $pack, $packpri_vat, $comcode, $comname, $unitpri, $code24, $edpri, $spec) = mysql_fetch_row($result)) {
-                print(" <tr>\n" .
-                "  <td BGCOLOR=A3E4D7><a   href=\"dgedit.php?Dgcode=$drugcode\">$drugcode</a></td>\n" .
-                "  <td BGCOLOR=A3E4D7>$tradname</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$genname</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$salepri</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$part</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$stock</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$mainstk</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$totalstk</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$pack</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$packpri_vat</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$edpri</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$unitpri</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$comcode</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$comname</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$code24</td>\n" .
-                "  <td BGCOLOR=A3E4D7>$spec</td>\n" .
+            while (list($drugcode, $tradname, $genname, $salepri, $part, $stock, $mainstk, $totalstk, $pack, $packpri_vat, $comcode, $comname, $unitpri, $code24, $edpri, $spec, $medical_sup_free) = mysql_fetch_row($result)) {
+                if($part=="DSY" && $medical_sup_free=="0"){
+					$tdbgcolor="F08080";
+				}else{
+					$tdbgcolor="A3E4D7";
+				}			
+				print(" <tr>\n" .
+                "  <td BGCOLOR=$tdbgcolor><a   href=\"dgedit.php?Dgcode=$drugcode\">$drugcode</a></td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$tradname</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$genname</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$salepri</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$part</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$stock</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$mainstk</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$totalstk</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$pack</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$packpri_vat</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$edpri</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$unitpri</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$comcode</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$comname</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$code24</td>\n" .
+                "  <td BGCOLOR=$tdbgcolor>$spec</td>\n" .
                 " </tr>\n");
             }
         }
         ?>
     </table>
+	<div align="center">*** พื้นหลังสีแดง คือ เวชภัณฑ์เบิกได้ เฉพาะผู้ป่วยใน ***</div>
 </body>

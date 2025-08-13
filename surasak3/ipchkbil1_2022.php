@@ -569,7 +569,7 @@ if ($row->part=="DDY" and substr($row->date,0,10)!="$sDiscdate"){
             array_push($aNessdy,$row->price);
             array_push($aBNessdy,$row->price-$row->paid);
             } 
-if ($row->part=="DDN" and substr($row->date,0,10)!="$sDiscdate"){
+if ($row->part=="DDN" and substr($row->date,0,10)!="$sDiscdate"){  //จะมีปัญหายอดไม่ตรง ถ้าหากมีการจ่ายยาในวันที่ D/C
             array_push($aNessdn,$row->price);
             array_push($aBNessdn,$row->price-$row->paid);
             } 
