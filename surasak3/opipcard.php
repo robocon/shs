@@ -1,23 +1,23 @@
 <?php
 session_start();
-$thidate = (date("Y")+543).date("-m-d H:i:s"); 
-global $regisdate,$an,$sex,$married,$idcard,
-           $warcard,$camp,$goup,$dbirth,$race,$national,$religion,$career,$ptright,$address,
-            $tambol,$ampur,$changwat,$parent,$couple,$guardian;
- include("connect.inc");
-
-if( empty($cHn) ){
+$thidate = (date("Y") + 543) . date("-m-d H:i:s");
+global $regisdate, $an, $sex, $married, $idcard,
+    $warcard, $camp, $goup, $dbirth, $race, $national, $religion, $career, $ptright, $address,
+    $tambol, $ampur, $changwat, $parent, $couple, $guardian;
+include("connect.inc");
+$cHn = $_GET['cHn'];
+if (empty($cHn)) {
     echo 'ไม่พบข้อมูล <a href="../nindex.htm">กลับไปหน้าหลัก รพ.</a>';
     exit;
 }
 
-$sql = "Select count(row_id) as rows_id From ipcard where date like '".substr($thidate,0,10)."%' AND hn = '".$cHn."' AND dcdate ='0000-00-00 00:00:00'";
+$sql = "Select count(row_id) as rows_id From ipcard where date like '" . substr($thidate, 0, 10) . "%' AND hn = '" . $cHn . "' AND dcdate ='0000-00-00 00:00:00'";
 $result = Mysql_Query($sql);
 $arr = Mysql_fetch_assoc($result);
 
-if($arr["rows_id"] > 0){
-echo "<BR><BR><CENTER>ไม่สามารถ admit ได้เนื่องจากมี HN นี้อยู่ในรายการคนไข้ในแล้ว ยังไม่ได้จำหน่ายออกจากระบบ</CENTER>";
-exit();
+if ($arr["rows_id"] > 0) {
+    echo "<BR><BR><CENTER>ไม่สามารถ admit ได้เนื่องจากมี HN นี้อยู่ในรายการคนไข้ในแล้ว ยังไม่ได้จำหน่ายออกจากระบบ</CENTER>";
+    exit();
 }
 
 
@@ -25,51 +25,51 @@ $query = "SELECT title,prefix,runno FROM runno WHERE title = 'AN'";
 $result = mysql_query($query) or die("Query failed runno ask");
 
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-	if (!mysql_data_seek($result, $i)) {
-		echo "Cannot seek to row $i\n";
-		continue;
-	}
+    if (!mysql_data_seek($result, $i)) {
+        echo "Cannot seek to row $i\n";
+        continue;
+    }
 
-	if(!($row = mysql_fetch_object($result)))
-		continue;
+    if (!($row = mysql_fetch_object($result)))
+        continue;
 }
 
-$vTitle=$row->title;
-$vPrefix=$row->prefix;
-$aRunno_an=$row->runno;
+$vTitle = $row->title;
+$vPrefix = $row->prefix;
+$aRunno_an = $row->runno;
 $aRunno_an++;
-$vAN=$vPrefix.$aRunno_an;
+$vAN = $vPrefix . $aRunno_an;
 
 
 $sql112 = "Select thidate From opday where thdatehn = '$thdatehn' order by row_id desc limit 1 ";
 $result112 = Mysql_Query($sql112);
-list($admit_date) = Mysql_fetch_row($result112);	
+list($admit_date) = Mysql_fetch_row($result112);
 
 
-$sql = "INSERT INTO ipcard (date,an,hn)
-              VALUES('$admit_date','$vAN','$cHn');";
-
+$sql = "INSERT INTO `ipcard` (`date`,`an`,`hn`) VALUES('$admit_date','$vAN','$cHn');";
 $result = mysql_query($sql) or die("หมายเลข AN $vAN ซ้ำ    ไม่สามารถบันทึกได้    โปรดทำรับป่วยใหม่ !");
 
 // update AN to table runno
-    $query ="UPDATE runno SET runno = $aRunno_an WHERE title='AN'";
-    $result = mysql_query($query);
+$query = "UPDATE runno SET runno = $aRunno_an WHERE title='AN'";
+$result = mysql_query($query);
 //        or die("Query failed runno update");
 
 // ใส่ AN ใน opday table 
-    $query ="UPDATE opday SET an = '$vAN' WHERE thdatehn = '$thdatehn' AND vn = '".$_SESSION['admit_vn']."' "; 
-    $result = mysql_query($query);
+$query = "UPDATE opday SET an = '$vAN' WHERE thdatehn = '$thdatehn' AND vn = '" . $_SESSION['admit_vn'] . "' ";
+$result = mysql_query($query);
 
 //echo mysql_errno() . ": " . mysql_error(). "\n";
 //echo "<br>";
 
 print " ลงทะเบียนรับป่วยเรียบร้อย<br>";
 print "  HN:  $cHn       AN: $vAN <br> ";
-print "  $cPtname<br>"; 
+print "  $cPtname<br>";
 print "สิทธิการรักษา : $cPtright<br>";
 // print "<a target=_TOP  href=\"dcsum.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY<br> ";
 // print "<a target=_TOP  href=\"dcsum.1.php?Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARYแบบใหม่<br><br>";
-
+print "<hr>";
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank'  href=\"ipadmitdate.php?Can=$vAN\">แก้ไขเวลาที่ Admi";
+print "<hr>";
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank'  href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span><br>";
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank'  href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span><br><br>";
 
@@ -96,6 +96,3 @@ include("unconnect.inc");
     session_unregister("nVn");  
 */
 //session_destroy();
-?>
-
-

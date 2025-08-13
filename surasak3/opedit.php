@@ -1,7 +1,8 @@
-<?php 
+<?php
+session_start();
 error_reporting(E_ALL);
-include("connect.inc");
-require_once 'includes/config.php';
+include "connect.php";
+include 'includes/config.php';
 
 ?>
 <meta http-equiv="X-UA-Compatible" content="IE=10;IE=9;IE=8,chrome=1">
@@ -182,8 +183,7 @@ echo "<tr bgcolor=\"$bgcolor\" >
 	}
 	
 
-
-    $query = "SELECT * FROM opcard WHERE hn = '$cHn' limit 0,1";
+    $query = sprintf("SELECT * FROM opcard WHERE hn = '%s' limit 0,1", mysql_real_escape_string($_GET['cHn']));
     $result = mysql_query($query)or die("Query failed");
  
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -1687,6 +1687,7 @@ if($cHn=="62-6400"){
 
 <p align="center">
 <input type='submit' value='   บันทึก / ลงทะเบียน   ' name='B1' style="height:50px;">
+<input type="hidden" name="cHn" value="<?=$cHn;?>">
 </p>
 <!--<p align="center">
 <input type="button" value=" ตรวจสอบสิทธิ ธ.ออมสิน " onclick="window.location.href='gsb_chk.php' " style="height:50px;"  />&nbsp;&nbsp;&nbsp;
