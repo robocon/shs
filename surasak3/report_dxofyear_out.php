@@ -47,40 +47,48 @@ hr{
 .text31 {font-family: "TH SarabunPSK";
 	font-size: 16px;
 }
+.button {
+	background-color: #04AA6D; /* Green */
+	border: none;
+	color: white;
+	padding: 8px 15px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	/* font-size: 16px; */
+}
+.button:hover{
+	background-color: #048d5bff;
+}
 </style>
 <?php
 if(isset($_POST['hn'])){
 
 	$hn = sprintf("%s", $_POST['hn']);
-
-	$select = "select * from opcard where idcard = '".$_POST['hn']."'";
+	
+	$select = "SELECT * FROM `condxofyear_out` WHERE `hn` = '$hn' ORDER BY `thidate` DESC";
 	$row = mysql_query($select);
 	$num = mysql_num_rows($row);
-	if($num==0){
-		$select = "select * from condxofyear_out where hn = '".$_POST['hn']."' order by thidate desc";
-		$row = mysql_query($select);
-		$num = mysql_num_rows($row);
-	}else{
-		$numn = mysql_fetch_array($row);
-		$select = "select * from condxofyear_out where hn = '".$numn['hn']."' order by thidate desc";
-		$row = mysql_query($select);
-		$num = mysql_num_rows($row);
-	}
-
 	if($num>0){
 	?>
-
-	<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" style="text-decoration:none;">[ HN ใหม่ ]</a>
-	<table border="1" cellpadding="0" cellspacing="0">
+	<style>
+		*{
+			font-family: "TH SarabunPSK";
+			font-size: 20px;
+		}
+	</style>
+	<a href="../nindex.htm" class="button">&lt;&lt; ไปเมนู</a>&nbsp;&nbsp;<a href="report_dxofyear_out.php" style="text-decoration:none;" class="button">เลือก HN ใหม่</a>
+	<div>&nbsp;</div>
+	<table border="1" cellpadding="4" cellspacing="0">
 		<tr>
-			<td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
-			<td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
-			<td width="37" align="center"><span class="tet">ปี</span></td>
-			<td align="center"><span class="tet">ประเภท</span></td>
-			<td width="37" align="center">&nbsp;</td>
-			<td width="53" align="center">&nbsp;</td>
-			<td width="46" align="center">&nbsp;</td>
-			<td width="46" align="center">&nbsp;</td>
+			<th align="center"><span class="tet">วันที่ลงผลตรวจ</span></th>
+			<th align="center"><span class="tet">ชื่อ-สกุล</span></th>
+			<th align="center"><span class="tet">ปี</span></th>
+			<th align="center"><span class="tet">ประเภท</span></th>
+			<th align="center">&nbsp;</th>
+			<th align="center">&nbsp;</th>
+			<!-- <td width="46" align="center">&nbsp;</td>
+			<td width="46" align="center">&nbsp;</td> -->
 		</tr>
 		<?php
 		$i = 0;
@@ -93,29 +101,38 @@ if(isset($_POST['hn'])){
 				$i = 1;
 			}
 			?>
-			<tr bgcolor=<?= $bgcolor ?>>
-				<td><span class="tet"><?= $result["thidate"] ?></span></td>
-				<td><span class="tet"><?= $result["ptname"] ?></span></td>
-				<td align="center"><span class="tet"><?= $result["yearcheck"] ?></span></td>
-				<td align="center"><span class="tet"><?= $result['camp']; ?></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?= $result["row_id"] ?>&chkyear=<?= $result["yearcheck"] ?>" target="_blank">พิมพ์</a></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?= $result["row_id"] ?>&no&chkyear=<?= $result["yearcheck"] ?>" target="_blank">ดูข้อมูล</a></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?= $result["row_id"] ?>" target="_blank">Stricker</a></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?= $result["row_id"] ?>" target="_blank">OLD</a></span></td>
+			<tr bgcolor=<?=$bgcolor ?>>
+				<td><span class="tet"><?=$result["thidate"] ?></span></td>
+				<td><span class="tet"><?=$result["ptname"] ?></span></td>
+				<td align="center"><span class="tet"><?=$result["yearcheck"] ?></span></td>
+				<td align="center"><span class="tet"><?=$result['camp']; ?></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&chkyear=<?=$result["yearcheck"] ?>" target="_blank">พิมพ์ 🖨️</a></span></td>
+				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&no&chkyear=<?=$result["yearcheck"] ?>" target="_blank">ดูข้อมูล</a></span></td> -->
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"] ?>" target="_blank">Stricker</a></span></td>
+				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"] ?>" target="_blank">OLD</a></span></td> -->
 			</tr>
 			<?php
 		}
-	}else if($num==0){
+		?>
+	</table>
+	<?php
+	}else{
+		?>
+		<p><b>ไม่พบข้อมูล</b></p>
+		<?php
+	}
+	/*
+	else if($num==0){
 	?>
 		<a href ="../nindex.htm" >&lt;&lt; ไปเมนู</a> , <a href ="report_dxofyear_out.php" >[ HN ใหม่ ]</a>
 		<table border="1" cellpadding="0" cellspacing="0"><tr>
-			<td width="101" align="center"><span class="tet">วันที่ตรวจ</span></td>
+			<td align="center"><span class="tet">วันที่ตรวจ</span></td>
 			<td width="197" align="center"><span class="tet">ชื่อ-สกุล</span></td>
 			<td width="37" align="center"><span class="tet">ปี</span></td>
 			<td width="37" align="center">&nbsp;</td>
 			<td width="53" align="center">&nbsp;</td>
-			<td width="46" align="center">&nbsp;</td>
-			<td width="37" align="center">&nbsp;</td>
+			<!-- <td width="46" align="center">&nbsp;</td>
+			<td width="37" align="center">&nbsp;</td> -->
 		</tr>
 		<?php
 		$select = "select * from condxofyear_so where hn = '".$_POST['hn']."' and statusdata='y' order by thidate desc";
@@ -134,10 +151,10 @@ if(isset($_POST['hn'])){
 				<td><span class="tet"><?=$result["thidate"]?></span></td>
 				<td><span class="tet"><?=$result["ptname"]?></span></td>
 				<td align="center"><span class="tet"><?=$result["yearcheck"]?></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&chkyear=<?=$result["yearcheck"]?>" target="_blank">พิมพ์</a></span></td>
+				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"]?>&no&chkyear=<?=$result["yearcheck"]?>" target="_blank">ดูข้อมูล</a></span></td> -->
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"]?>" target="_blank">Stricker</a></span></td>
+				<!-- <td align="center"><span class="tet"><a href="report_dxofyear2013.php?id=<?=$result["row_id"]?>" target="_blank">OLD</a></span></td> -->
 			</tr>
 		<?php
 		}
@@ -146,9 +163,11 @@ if(isset($_POST['hn'])){
         <meta content="1" http-equiv="refresh"  />
 		<?
 	}
+	
 	?>
 	</table>
-<?php
+	<?php
+	*/
 }elseif(isset($_GET['ids'])){ 
 
 	$detail = "select * from condxofyear_out where row_id = '".$_GET['ids']."' ";
@@ -172,114 +191,23 @@ if(isset($_POST['hn'])){
 	  </tr>
 	  <tr>
 		<td>ผลการตรวจ : 
-		<?php 
-		if($arrs["anemia"] =="" && $arrs["cirrhosis"] =="" && $arrs["hepatitis"] =="" && $arrs["cardiomegaly"] =="" && $arrs["allergy"] =="" && $arrs["gout"] =="" && $arrs["waistline"] =="" && $arrs["asthma"] =="" && $arrs["muscle"] =="" && $arrs["ihd"] =="" && $arrs["thyroid"] =="" && $arrs["heart"] =="" && $arrs["emphysema"] =="" && $arrs["herniated"] =="" && $arrs["conjunctivitis"] =="" && $arrs["cystitis"] =="" && $arrs["epilepsy"] =="" && $arrs["fracture"] =="" && $arrs["cardiac"] =="" && $arrs["spine"] =="" && $arrs["dermatitis"] =="" && $arrs["degeneration"] =="" && $arrs["alcoholic"] =="" && $arrs["copd"] =="" && $arrs["bph"] =="" && $arrs["kidney"] ==""  && $arrs["pterygium"]  =="" && $arrs["tonsil"]  =="" && $arrs["paralysis"]  =="" && $arrs["blood"]  =="" && $arrs["conanemia"]  ==""){
-		echo "ปกติ";
-		}else{
-		echo "ป่วยเป็นโรค...";
-			if($arrs["anemia"] =="Y"){
-				echo "โลหิตจาง, ";
+			<?php 
+			if($arrs["sum1"]==""){
+				echo "";
+			}else{ 
+				echo $arrs["sum1"].",";
 			}
-			if ($arrs["cirrhosis"] =="Y"){
-				echo "ตับแข็ง, ";
+			
+			if($arrs["sum2"]==""){
+				echo "";
+			}else{ 
+				echo $arrs["sum2"].",";
 			}
-			if($arrs["hepatitis"] =="Y"){
-				echo "โรคตับอักเสบ, ";	
-			}
-			if($arrs["cardiomegaly"] =="Y"){
-				echo "หัวใจโต, ";
-			}
-			if($arrs["allergy"] =="Y"){
-				echo "ภูมิแพ้, ";
-			}
-			if($arrs["gout"] =="Y"){
-				echo "โรคเก๊าท์, ";
-			}
-			if($arrs["waistline"] =="Y"){
-				echo "รอบเอวเกิน, ";
-			}
-			if($arrs["asthma"] =="Y"){
-				echo "หอบหืด, ";
-			}
-			if($arrs["muscle"] =="Y"){
-				echo "กล้ามเนื้ออักเสบ, ";	
-			}
-			if($arrs["ihd"] =="Y"){
-				echo "โรคหัวใจขาดเลือดเรื้อรัง, ";
-			}
-			if($arrs["thyroid"] =="Y"){
-				echo "ไทรอยด์, ";
-			}
-			if($arrs["heart"] =="Y"){
-				echo "โรคหัวใจ, ";
-			}
-			if($arrs["emphysema"] =="Y"){
-				echo "ถุงลมโป่งพอง, ";
-			}
-			if($arrs["herniated"] =="Y"){
-				echo "หมอนรองกระดูกทับเส้นประสาท, ";
-			}
-			if($arrs["conjunctivitis"] =="Y"){
-				echo "เยื่อบุตาอักเสบ, ";
-			}
-			if($arrs["cystitis"] =="Y"){
-				echo "กระเพาะปัสสาวะอักเสบ, ";	
-			}
-			if($arrs["epilepsy"] =="Y"){
-				echo "ลมชัก, ";
-			}
-			if($arrs["fracture"] =="Y"){
-				echo "กระดูกหักเลื่อน, ";
-			}
-			if($arrs["cardiac"] =="Y"){
-				echo "หัวใจเต้นผิดจังหวะ, ";
-			}
-			if($arrs["spine"] =="Y"){
-				echo "กระดูกสันหลัง (อก) คด, ";
-			}
-			if($arrs["dermatitis"] =="Y"){
-				echo "ผิวหนังอักเสบ, ";
-			}
-			if($arrs["degeneration"] =="Y"){
-				echo "หัวเข่าเสื่อม, ";
-			}
-			if($arrs["alcoholic"] =="Y"){
-				echo "ความผิดปกติจากแอลกอฮอล์, ";
-			}
-			if($arrs["copd"] =="Y"){
-				echo "COPD, ";
-			}
-			if($arrs["bph"] =="Y"){
-				echo "BPH, ";	
-			}
-			if($arrs["kidney"] =="Y"){
-				echo "ไตผิดปกติ, ";
-			}
-			if($arrs["pterygium"] =="Y"){
-				echo "ต้อเนื้อ, ";
-			}
-			if($arrs["tonsil"] =="Y"){
-				echo "ต่อมทอนซิลโต, ";
-			}
-			if($arrs["paralysis"] =="Y"){
-				echo "อัมพาตซีกซ้าย/ขวา, ";
-			}
-			if($arrs["blood"] =="Y"){
-				echo "เม็ดเลือดผิดปกติ, ";
-			}
-			if($arrs["conanemia"] =="Y"){
-				echo "ภาวะซีด";
-			}
-			if($arrs["ht"] =="Y"){
-				echo "ความดันโลหิตสูง";
-			}			
-		}
 		?>
-        
         </td>
 	  </tr>
-      <?
-      	if($_POST['normal41']=="ผิดปกติ"|$_POST['normal42']=="ผิดปกติ"|$_POST['normal43']=="ผิดปกติ") $text41="ตับ";
+      <?php
+		if($_POST['normal41']=="ผิดปกติ"|$_POST['normal42']=="ผิดปกติ"|$_POST['normal43']=="ผิดปกติ") $text41="ตับ";
 		if($_POST['normal44']=="ผิดปกติ"|$_POST['normal45']=="ผิดปกติ") $text44="ไต";
 		if($_POST['normal46']=="ผิดปกติ"|$_POST['normal48']=="ผิดปกติ") $text46="ไขมัน";
 		if($_POST['normal47']=="ผิดปกติ") $text47="เบาหวาน";
@@ -287,17 +215,17 @@ if(isset($_POST['hn'])){
 		if($_POST['normal81']=="ผิดปกติ") $text81="CBC";
 		if($_POST['normal']=="ผิดปกติ") $text="UA";
 	  ?>
-	  <? if($arrs["summary"]=="ผิดปกติ"){?>
+	  <tr>
+	    <td>การวินิฉัยจากแพทย์: <?=$arrs["dx"]?></td>
+      </tr>
+	  <?php if($arrs["summary"]=="ผิดปกติ"){?>
 	  <tr>
 	    <td>Diag: <?=$arrs["diag"]?></td>
       </tr>
       <tr>
-	    <td>บันทึกจากแพทย์: <?=$arrs["dx"]?></td>
-      </tr>
-      <tr>
 	    <td>ความผิดปกติ: <?=$text41?> <?=$text44?> <?=$text46?> <?=$text47?> <?=$text49?> <?=$text81?> <?=$text?></td>
       </tr>
-      <? }?>
+      <?php } ?>
 	  <tr>
 		<td>แพทย์ : <?php echo $arrs["doctor"];?></td>
 	  </tr>
@@ -1363,18 +1291,7 @@ C ํ</span></td>
 ////*runno ตรวจสุขภาพ*/////////
 ?>
 </span>
-<style>
-.button {
-	background-color: #04AA6D; /* Green */
-	border: none;
-	color: white;
-	padding: 8px 15px;
-	text-align: center;
-	text-decoration: none;
-	display: inline-block;
-	/* font-size: 16px; */
-}
-</style>
+
 <!--<a href="report_dxofyear_emp.php">พิมพ์ใบตรวจสุขภาพลูกจ้าง</a>-->
 <div>
 <a href ="../nindex.htm" class="text1 button">&lt;&lt; ไปเมนู</a> <a href="chk_sso.php" target="_blank" class="text1 button">พิมพ์ใบตรวจสุขภาพ <b><u>สิทธิ์ประกันสังคม</u></b>/ลูกจ้างประจำปี67</a>

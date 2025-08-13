@@ -370,8 +370,11 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 }
 //echo $sql;
 $result = mysql_query($sql) or die(mysql_error());
+$condxofyear_out_id = mysql_insert_id();
+
 $upopday = "update opday set checkdx='' where thdatehn = '".$date_hn2."'";
 $result3 = mysql_query($upopday) or die(mysql_error());
+
 $dateopd = (date("Y")+543)."-".date("m-d H:i:s");
 $query ="UPDATE chkup_solider SET dr = '$dateopd' WHERE hn='".$dxdr_ofyear['hn']."'";
 $result5 = mysql_query($query) or die("Query failed");
@@ -393,7 +396,8 @@ if($result && isset($_POST["submit"])){
 		$list_drug = implode(", ",$list);
 		$_POST["congenital_disease"] .= " , แพ้ยา : ".$list_drug;
 	}
-	$detail = "select * from condxofyear_out where thdatehn  = '$date_hn' AND thdatevn = '$date_vn' ";
+	
+	$detail = "select * from condxofyear_out where row_id  = '$condxofyear_out_id' ";
 	$result = Mysql_Query($detail);
 	$arrs = Mysql_fetch_assoc($result);
 	?>
