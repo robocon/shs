@@ -10,20 +10,22 @@ session_destroy();
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Sarabun&display=swap');
 
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #008080;
-      font-family: 'Sarabun', 'TH SarabunPSK', sans-serif;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+	body {
+	  margin: 0;
+	  padding: 0;
+	  background-color: #006666; /* เขียวกองทัพบก */
+	  font-family: 'Sarabun', 'TH SarabunPSK', sans-serif;
+	  color: #ffffff;
+
+	  display: flex;
+	  justify-content: center; /* กึ่งกลางแนวนอน */
+	  align-items: flex-start; /* ชิดด้านบน */
+	  min-height: 100vh;       /* ให้เต็มหน้าจอ */
+	  padding-top: 15px;       /* ห่างจากขอบบน 20px */
+	}
 
     .login-container {
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: #008080;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 6px 16px rgba(0,0,0,0.25);
@@ -61,8 +63,8 @@ session_destroy();
     input[type="submit"] {
       width: 100%;
       padding: 8px;
-      background-color: #00CED1;
-      color: #fff;
+      background-color: #FDC745;
+      color: #000;
       border: none;
       border-radius: 5px;
       font-size: 18px;
@@ -80,7 +82,7 @@ session_destroy();
     }
 
     .forgot-password a {
-      color: #00FFFF;
+      color: #FDC745;
       text-decoration: none;
       font-size: 14px;
     }

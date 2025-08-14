@@ -37,7 +37,7 @@ session_start();
     }
 
     .container {
-      max-width: 900px;
+      max-width: 980px;
       margin: 20px auto;
       padding: 0 20px;
     }
