@@ -105,6 +105,8 @@ $company = $q->fetch_assoc();
     <th>Stool Exam</th>
     <th>Stool Culture</th>
     <th>Stool Occult</th>
+    <th>ตรวจการติดเชื้อแบคทีเรีย โรคไข้ฉี่หนู (Leptospira Ab IgM)</th>
+    <th>ตรวจการติดเชื้อแบคทีเรีย โรคไข้ฉี่หนู (Leptospira Ab IgG)</th>
     <th>METAMP</th>
     <th>ABOC</th>
     <th>EKG</th>
@@ -999,6 +1001,35 @@ if(mysql_num_rows($q_stocc) > 0)
 ?>
 <td align="center"><?=$stoccTxt;?></td>
 
+<?php
+// ตรวจการติดเชื้อแบคทีเรีย โรคไข้ฉี่หนู (Leptospira Ab IgM)
+// ตรวจการติดเชื้อแบคทีเรีย โรคไข้ฉี่หนู (Leptospira Ab IgG)
+$sqlIgM = "SELECT b.`result`, b.`flag` 
+FROM ( 
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' 
+    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+    AND `profilecode` = '36007' 
+    GROUP BY `profilecode` 
+) AS a
+INNER JOIN `resultdetail` AS b ON a.`latest_number` = b.`autonumber`
+WHERE b.result !='DELETE' OR b.result !='*' ";
+$qIgM = mysql_query($sqlIgM) or die(mysql_error());
+if(mysql_num_rows($qIgM) > 0)
+{
+    while ($a = mysql_fetch_assoc($qIgM)) {
+        ?>
+        <td align="center"><?=$a['result'];?></td>
+        <?php
+    }
+}else{
+    ?>
+    <td></td>
+    <td></td>
+    <?php
+}
+?>
 <td align="center">
 <?php 
 $sql14="SELECT b.result, b.flag 
