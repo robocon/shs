@@ -597,24 +597,24 @@ return $pAge;
       <tr>
         <td align="right" class="fonthead">วันเกิด:</td>
         <td colspan="10" class="fonthead"> 
-            <input type='text' id="birth_d" name='d' size='2' value='<?=$cD;?>' maxlength='2' class="notify43">
-            <input type='text' id="birth_m" name='m' size='2' value='<?=$cM;?>' maxlength='2' class="notify43">
-            <input type='text' id="birth_y" name='y' size='4' value='<?=$cY;?>' maxlength='4' class="notify43">
+            <input type='text' id="birth_d" name='d' size='2' value='<?=$cD;?>' maxlength='2' class="notify43" placeholder="วัน">
+            <input type='text' id="birth_m" name='m' size='2' value='<?=$cM;?>' maxlength='2' class="notify43" placeholder="เดือน">
+            <input type='text' id="birth_y" name='y' size='4' value='<?=$cY;?>' maxlength='4' class="notify43" placeholder="ปี พ.ศ.">
           เชื้อชาติ: <select size="1" name="race" id="race">
             <option value=""><-เลือก-></option>
-            <option  value="ไทย"<? if($cRace=='ไทย'){ echo "selected";}?> >ไทย</option>
+            <option value="ไทย"<? if($cRace=='ไทย'){ echo "selected";}?> >ไทย</option>
             <option value="จีน"<? if($cRace=='จีน'){ echo "selected";}?> >จีน</option>
             <option value="ลาว"<? if($cRace=='ลาว'){ echo "selected";}?>  >ลาว</option>
             <option value="พม่า"<? if($cRace=='พม่า'){ echo "selected";}?> >พม่า</option>
-            <option  value="กัมพูชา"<? if($cRace=='กัมพูชา'){ echo "selected";}?>>กัมพูชา</option>
-            <option  value="อินเดีย"<? if($cRace=='อินเดีย'){ echo "selected";}?>>อินเดีย</option>
+            <option value="กัมพูชา"<? if($cRace=='กัมพูชา'){ echo "selected";}?>>กัมพูชา</option>
+            <option value="อินเดีย"<? if($cRace=='อินเดีย'){ echo "selected";}?>>อินเดีย</option>
             <option value="เวียดนาม"<? if($cRace=='เวียดนาม'){ echo "selected";}?> >เวียดนาม</option>
             <option value="อื่นๆ" <? if($cRace=='อื่นๆ'){ echo "selected";}?> >อื่นๆ</option>
             </select>
             สัญชาติ: 
             <select size="1" name="nation" id="nation">
             <option value=""><-เลือก-></option>
-            <option  value="ไทย"<? if($cNation=='ไทย'){ echo "selected";}?> >ไทย</option>
+            <option value="ไทย"<? if($cNation=='ไทย'){ echo "selected";}?> >ไทย</option>
             <option value="จีน"<? if($cNation=='จีน'){ echo "selected";}?> >จีน</option>
             <option value="ลาว"<? if($cNation=='ลาว'){ echo "selected";}?> >ลาว</option>
             <option value="พม่า"<? if($cNation=='พม่า'){ echo "selected";}?> >พม่า</option>
@@ -1910,131 +1910,126 @@ async function onSendTab() {
 
 <script src="js/vendor/jquery-1.11.2.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-		jQuery.noConflict();
-		(function( $ ) {
-		$(function() {
+	jQuery.noConflict();
+	(function( $ ) {
+	$(function() {
 
-				var icf_list = [];
+		var icf_list = [];
 
-				<?php 
-				$q = mysql_query("SELECT * FROM `icf_icf`");
-				$i = 0; 
+		<?php 
+		$q = mysql_query("SELECT * FROM `icf_icf`");
+		$i = 0; 
 
-				while( $item = mysql_fetch_assoc($q) ){
-						?>
-						var myObj = new Object();
-						myObj.code = '<?=$item['id'];?>';
-						myObj.detail = '<?=$item['detail'];?>';
-						icf_list[<?=$i;?>] = myObj; 
-						<?php
-						$i++;
+		while( $item = mysql_fetch_assoc($q) ){
+		?>
+		var myObj = new Object();
+		myObj.code = '<?=$item['id'];?>';
+		myObj.detail = '<?=$item['detail'];?>';
+		icf_list[<?=$i;?>] = myObj; 
+		<?php
+		$i++;
+		}
+		?>
+
+		$(document).on('keyup', '#icf', function(){
+			var search_txt = $(this).val();
+			$('#icf_static').hide();
+			if( search_txt.length > 3 ){
+
+				var regex1 = new RegExp(search_txt,'g');
+
+				var htm = '';
+				htm += '<div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>';
+				htm += '<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">';
+				htm += '<table class="chk_table" style="width: 100%;">';
+				htm += '<tr>';
+				htm += '<th width="5%">รหัส</th>';
+				htm += '<th>รายละเอียด</th>';
+				htm += '</tr>';
+
+				for (var index = 0; index < icf_list.length; index++) {
+
+					var icf_item = icf_list[index];
+					var element = icf_item.detail;
+					var icf_code = icf_item.code;
+
+					if( regex1.test(element) == true ){
+						htm += '<tr valign="top">';
+						htm += '<td class="icf_code" item-data="'+icf_code+'">'+icf_code+'</td>';
+						htm += '<td>'+element+'</td>';
+						htm += '</tr>';
+					}
 				}
-				?>
 
-				$(document).on('keyup', '#icf', function(){
-						var search_txt = $(this).val();
-						$('#icf_static').hide();
-						if( search_txt.length > 3 ){
-
-								var regex1 = new RegExp(search_txt,'g');
-
-								var htm = '';
-								htm += '<div class="close-icf" style="text-align: center; background-color: #ffb3b3;"><b>[ปิด]</b></div>';
-								htm += '<div style="position: absolute; background-color: #ffffff; border: 1px solid #000000; width: 100%;">';
-								htm += '<table class="chk_table" style="width: 100%;">';
-								htm += '<tr>';
-								htm += '<th width="5%">รหัส</th>';
-								htm += '<th>รายละเอียด</th>';
-								htm += '</tr>';
-
-								for (var index = 0; index < icf_list.length; index++) {
-
-										var icf_item = icf_list[index];
-										var element = icf_item.detail;
-										var icf_code = icf_item.code;
-
-										if( regex1.test(element) == true ){
-												htm += '<tr valign="top">';
-												htm += '<td class="icf_code" item-data="'+icf_code+'">'+icf_code+'</td>';
-												htm += '<td>'+element+'</td>';
-												htm += '</tr>';
-										}
-								}
-
-								htm += '</table>';
-								htm += '</div>';
-								
-								$("#icf_res").html(htm);
-								$('#icf_res').show();
-						}
-
-				});
-
-				// ตัวที่เจนจาก js
-				$(document).on('click', '.close-icf', function(){ 
-						$('#icf_res').hide();
-				});
-
-				$(document).on('click', '.icf_code', function(){
-						var code = $(this).attr('item-data');
-						$('#icf').val(code);
-						$('#icf_res').hide();
-						$('#icf_static').hide();
-				});
-
-
-				// ตัวที่เจนจาก php
-				$(document).on('click', '#btn_show_icf', function(){
-					$('#icf_res').hide();
-					$('#icf_static').toggle();
-				})
-				$(document).on('click', '.close_icf_static', function(){
-					$('#icf_static').hide();
-				});
+				htm += '</table>';
+				htm += '</div>';
 				
-
-
-			// input ค้นหาคำนำหน้าชื่อ
-			$(document).on('keyup', '#search_res_yot', function(){
-				var search_key = this.value;
-				var patt = new RegExp("("+search_key+")");
-				if(search_key.length < 3)
-				{
-					for (var ii = 0; ii < $('.find_my_prefix').length; ii++) {
-						var fi = $('.find_my_prefix')[ii];
-						$(fi).show();
-					}
-					return false;
-				}
-
-				for (var index = 0; index < $('.find_my_prefix').length; index++) {
-					var find_item = $('.find_my_prefix')[index];
-					var data_value = $(find_item).attr('data-prefix');
-					if(patt.test(data_value)!==true)
-					{
-						$(find_item).hide();
-					}
-					else
-					{
-						$(find_item).show();
-					}
-				}
-
-			});
-
-			// คลิกเลือกคำนำหน้าชื่อ
-			$(document).on('click', '.prefix-selected', function(){ 
-				var prefix = $(this).attr('data-prefix-selected');
-				document.getElementById('yot').value = prefix;
-				document.getElementById('res_yot').style.display = 'none';
-			});
+				$("#icf_res").html(htm);
+				$('#icf_res').show();
+			}
 
 		});
-		})(jQuery);
+
+		// ตัวที่เจนจาก js
+		$(document).on('click', '.close-icf', function(){ 
+			$('#icf_res').hide();
+		});
+
+		$(document).on('click', '.icf_code', function(){
+			var code = $(this).attr('item-data');
+			$('#icf').val(code);
+			$('#icf_res').hide();
+			$('#icf_static').hide();
+		});
+
+
+		// ตัวที่เจนจาก php
+		$(document).on('click', '#btn_show_icf', function(){
+			$('#icf_res').hide();
+			$('#icf_static').toggle();
+		})
+		$(document).on('click', '.close_icf_static', function(){
+			$('#icf_static').hide();
+		});
+			
+
+
+		// input ค้นหาคำนำหน้าชื่อ
+		$(document).on('keyup', '#search_res_yot', function(){
+			var search_key = this.value;
+			var patt = new RegExp("("+search_key+")");
+			if(search_key.length < 3)
+			{
+				for (var ii = 0; ii < $('.find_my_prefix').length; ii++) {
+					var fi = $('.find_my_prefix')[ii];
+					$(fi).show();
+				}
+				return false;
+			}
+
+			for (var index = 0; index < $('.find_my_prefix').length; index++) {
+				var find_item = $('.find_my_prefix')[index];
+				var data_value = $(find_item).attr('data-prefix');
+				if(patt.test(data_value)!==true)
+				{
+					$(find_item).hide();
+				}
+				else
+				{
+					$(find_item).show();
+				}
+			}
+
+		});
+
+		// คลิกเลือกคำนำหน้าชื่อ
+		$(document).on('click', '.prefix-selected', function(){ 
+			var prefix = $(this).attr('data-prefix-selected');
+			document.getElementById('yot').value = prefix;
+			document.getElementById('res_yot').style.display = 'none';
+		});
+
+	});
+	})(jQuery);
 </script>
-
-
-<?php
-print "</body>";
-include("unconnect.inc");
-?>
+</body>

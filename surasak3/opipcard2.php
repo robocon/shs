@@ -1,37 +1,51 @@
-
-
 <?php
 session_start();
-$thidate = (date("Y")+543).date("-m-d H:i:s"); 
+include("connect.php");
 
-
- include("connect.inc");
- 
- $cAn=$_GET['Can'];
-
-$sql = "Select  *  From ipcard where an= '".$cAn."' ";
+$cAn = $_GET['Can'];
+$sql = "Select  *  From ipcard where an= '$cAn' ";
 $result = mysql_query($sql);
 $arr = mysql_fetch_assoc($result);
+$cHn = $arr['hn'];
+$vAN = $arr['an'];
+$cPtname = $arr['ptname'];
+$cPtright = $arr['ptright'];
 
-$cHn=$arr['hn'];
-$vAN=$arr['an'];
-$cPtname=$arr['ptname'];
-$cPtright=$arr['ptright'];
-
-print "<fieldset><legend>ข้อมูลผู้ป่วย</legend>";
-
-print "  HN:  $cHn       AN: $vAN <br> ";
-print "  $cPtname<br>"; 
-print "สิทธิการรักษา : $cPtright<br>";
-
-print "</fieldset>";
-
-print "<br><hr><br>";
-
+if(empty($cPtname)){
+    $sql = "SELECT `ptname`,`ptright` FROM `opday` WHERE `hn` = '$cHn' AND `an` IS NOT NULL ORDER BY `row_id` DESC LIMIT 1 ";
+    $q = mysql_query($sql);
+    $r = mysql_fetch_assoc($q);
+    $cPtname = $r['ptname'];
+    $cPtright = $r['ptright'];
+}
+?>
+<fieldset>
+    <legend>ข้อมูลผู้ป่วย</legend>
+    <table>
+        <tr>
+            <td align="right">HN : </td>
+            <td><?= $cHn; ?></td>
+        </tr>
+        <tr>
+            <td align="right">AN : </td>
+            <td><?= $vAN; ?></td>
+        </tr>
+        <tr>
+            <td align="right">ชื่อ-สกุล : </td>
+            <td><?= $cPtname; ?></td>
+        </tr>
+        <tr>
+            <td align="right">สิทธิการรักษา : </td>
+            <td><?= $cPtright; ?></td>
+        </tr>
+    </table>
+</fieldset>
+<?php
 // print "<a target=_TOP  href=\"dcsum.php? Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY แบบเก่า<br> ";
-
 // print "<a target=_TOP  href=\"dcsum.1.php? Can=$vAN&Chn=$cHn\">พิมพ์ DISCHARGE SUMMARY  แบบใหม่ <br><br> ";
-
+print "<hr>";
+print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank'  href=\"ipadmitdate.php?Can=$vAN\">แก้ไขเวลาที่ Admit";
+print "<hr>";
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank' href=\"discharge_summary_2019.php?Can=$vAN\">พิมพ์ DISCHARGE SUMMARY <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span><br>";
 print "<span style='color: red;'>(ใหม่)</span>&nbsp;<a target='_blank' href=\"clinical_summary_2019.php?an=$vAN\">พิมพ์ Clinical Summary <span style='color: red; font-weight:bold;'>(เริ่มใช้ 1 เม.ย. 66)</span><br><br> ";
 
@@ -49,15 +63,3 @@ print "<a target=_TOP  href=\"dcsum5.3.php? Can=$vAN&Chn=$cHn\">พิมพ์ 
 print "<a target=_TOP  href=\"dcsum5.4.php? Can=$vAN&Chn=$cHn\">พิมพ์ ใบคำแนะนำ บัตรประกันสังคม<br> ";
 print "<a target=_TOP  href=\"dcsum5.5.php? Can=$vAN&Chn=$cHn\">พิมพ์ ใบคำแนะนำ บัตรสุขภาพถ้วนหน้า<br> ";
 print "<a target=_TOP  href=\"dcsum5.6.php? Can=$vAN&Chn=$cHn\">พิมพ์ ใบคำแนะนำ พรบ<br> ";
-
-include("unconnect.inc");
-/*
-    session_unregister("cHn");  
-    session_unregister("cPtname");
-    session_unregister("cPtright");
-    session_unregister("nVn");  
-*/
-//session_destroy();
-?>
-
-
