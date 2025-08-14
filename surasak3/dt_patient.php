@@ -66,10 +66,10 @@ $sql3 = "Select hospcode From opcard where hn = '".$_SESSION["hn_now"]."' ";
 list($hospcode) = Mysql_fetch_row(Mysql_Query($sql3));
 
 if($style_menu==2){?>
-<TABLE align="center" border="1" bordercolor="#F0F000">
+<TABLE width="90%" align="center" border="1" bordercolor="#F0F000">
 <TR>
 	<TD>
-<TABLE width="900">
+<TABLE width="100%">
 <TR>
 	<TD colspan="8" class="tb_head">ข้อมูลผู้ป่วย&nbsp;&nbsp;<strong style="color: #F4D03F; text-shadow: black 0.1em 0.1em 0.2em;"><?php echo $toborow;?></strong></TD>
 </TR>
@@ -102,7 +102,7 @@ if(!empty($hospcode)){
 <?php
 }else{
 ?>
-<TABLE width="80%" align="center" border="1" bordercolor="#F0F000">
+<TABLE width="90%" align="center" border="1" bordercolor="#F0F000">
 <TR>
 	<TD>
 <TABLE width="100%">
