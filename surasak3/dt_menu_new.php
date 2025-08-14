@@ -3,7 +3,7 @@
 
 <style>
 body {
-    font-family: "TH SarabunPSK";
+    font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
 .styled-table {
@@ -26,23 +26,21 @@ body {
     color: white;
     font-weight: bold;
     padding: 12px 18px;
-    font-size: 22px;
+    font-size: 18px;
     text-decoration: none;
     transition: all 0.25s ease-in-out;
 }
 
 .styled-table td a i {
     margin-right: 8px;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .styled-table td a:hover {
-    background: linear-gradient(135deg, #32CD32, #31D492);
+    background: linear-gradient(135deg, #32CD32, #006400);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     border-radius: 6px;
-	color: #000;
-	font-size: 24px;
 }
 
 /* ปรับ dropdown ให้ลงด้านล่าง */
@@ -52,7 +50,7 @@ body {
     font: normal 16px "Segoe UI", Tahoma, sans-serif;
     line-height: 20px;
     z-index: 100;
-    background-color: #31D492;
+    background-color: #006400;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
@@ -67,8 +65,7 @@ body {
 }
 
 #dropmenudiv a:hover {
-    background-color: #FFB86A;
-	font: normal 18px "Segoe UI", Tahoma, sans-serif;
+    background-color: #32CD32;
     color: #000;
     border-radius: 5px;
 }
@@ -157,7 +154,7 @@ menu6[2]='<a href="dxdr_ofyearout_dr.php" >บันทึกตรวจสุ�
 menu6[4]='<a href="report_dxofyear.php?hn=<?=$_SESSION[hn_now];?>" target=_BLANK >ดูผลตรวจสุขภาพประจำปีกองทัพบก</a>'
 
 var menuwidth='170px' //default menu width
-var menubgcolor='#1C69A8'  //menu bgcolor
+var menubgcolor='#000097'  //menu bgcolor
 var disappeardelay=250  //menu disappear speed onMouseout (in miliseconds)
 var hidemenu_onclick="no" //hide menu when user clicks within menu?
 
