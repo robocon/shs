@@ -1,10 +1,10 @@
 <?php 
 session_start();
-$sOfficer = $_SESSION["sOfficer"];
 if($_SESSION["sOfficer"] == ""){
+	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
-	exit();
+exit();
 }
 include("connect.inc");
 
