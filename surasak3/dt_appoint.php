@@ -8,7 +8,7 @@ session_start();
 if(isset($_GET["action"])){
 	// header("content-type: application/x-javascript; charset=UTF-8");
 }
-include("connect.inc");
+include("connect.php");
 
 // ทดสอบ user สำหรับหมอเป้คนเดียว
 if( $_SESSION['sIdname'] == 'md19921' ){
@@ -74,7 +74,7 @@ if($_GET["action"] == "carlendar"){
 	$today = $_GET['today'];
 	$dfYear = $_GET['dfYear'];
 
-	if ( empty($dfMonth) ) {
+	if ( empty($dfMonth) && empty($today) && empty($dfYear) ) {
 
 		/* ถ้าไม่มีการระบุให้แสดงปฏิทินของเดือนใดเดือนหนึ่ง เราจะแสดงปฏิทินของเดือนปัจจุบันตามเวลาในเครื่องไคลเอ็นต์ 
 		โดยใช้ฟังก์ชั่น getdate() สร้างวันที่/เวลาปัจจุบันของเครื่องไคลเอ็นต์เก้บไว้ในตัวแปร $calTime 
@@ -136,9 +136,36 @@ if($_GET["action"] == "carlendar"){
 	}
 
 	$appdate_en = $year.'-'.sprintf('%02d', $month);
+	$month2Digi = sprintf('%02d', $month);
+
+	$dStart = strtotime(date('Y-m-d'));
+	$dEnd = strtotime($appdate_en.'-'.$today);
+
+	$title_time = '';
+	$timeDiff = '';
+	if($dEnd-$dStart >= 0){
+	
+		list($yearDiff, $monthDiff) = explode('-', date('Y-m',$dEnd-$dStart));
+		$yearDiff = (int)$yearDiff-1970;
+		$monthDiff = (int)$monthDiff-1;
+		
+		if(!empty($yearDiff)){
+			$timeDiff .= $yearDiff.' ปี';
+		}
+		if(!empty($monthDiff)){
+			$timeDiff .= $monthDiff.' เดือน';
+		}
+		
+		if(!empty($timeDiff)){
+			$title_time = ' ('.$timeDiff.')';
+		}
+
+	}else{
+		$title_time = ' <br>!!ท่านกำลังเลือกวันที่ย้อนหลัง!!';
+	}
 
 	$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
-	$full_th_month = $def_fullm_th[$month].' '.($year+543);
+	$full_th_month = $def_fullm_th[$month2Digi].' '.($year+543);
 
 	$sql_temp = "CREATE TEMPORARY TABLE `tmp_appointment` 
 	SELECT `appdate`,`apptime`,`hn`,`other`,`appdate_en` 
@@ -223,13 +250,35 @@ if($_GET["action"] == "carlendar"){
 	$year2 = date("Y");
 	$long_time2 = $month2 + $year2;
 
+	/*
 	if($year == $year2){
 		if(($long_time - $long_time2) >0 )
 			$title_time = " (นัด ".($long_time - $long_time2)." เดือน)";
 	}else{
 		$title_time = " (นัด ".(12 - date("m") + $month )." เดือน)";
 	}
-
+	*/
+	
+	?>
+	<style>
+		.btnCalendar{
+			padding: 2px 8px;
+			background-color: #198754;
+			margin-right: 6px;
+			border: none;
+			color: #ffffff;
+			margin-bottom: 6px;
+			border-radius: 8px;
+			text-decoration: none;
+			display: inline-block;
+			font-family: "TH SarabunPSK";
+			font-size: 20px;
+		}
+		a.btnCalendar:hover {
+			background-color: #059862;
+		}
+	</style>
+	<?php
 	echo "<TABLE><TR valign=\"top\"><TD>";
 	echo "</TD></TD><TD>";
 
@@ -264,19 +313,19 @@ if($_GET["action"] == "carlendar"){
 		list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
 		list($n2yY, $n2yM, $n2yD) = explode('-', date('Y-m-d', $next_2year));
 
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">&gt;&gt; นัด 1เดือน</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">&gt;&gt; นัด 2เดือน</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n1mD.'&dfMonth='.$n1mM.'&dfYear='.$n1mY.'\')">นัด 1เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n2mD.'&dfMonth='.$n2mM.'&dfYear='.$n2mY.'\')">นัด 2เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">นัด 3เดือน</a>';
 		echo '<br>';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">&gt;&gt; นัด 2ปี</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">นัด 6เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">นัด 1ปี</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n2yD.'&dfMonth='.$n2yM.'&dfYear='.$n2yY.'\')">นัด 2ปี</a>';
 		echo '<br>';
 
 	}
 
 	// แสดงของหมอเป้
-	if( $_SESSION['sIdname'] == 'md19921' ){ 
+	if( $_SESSION['sIdname'] == 'md19921' OR $_SESSION['smenucode'] == 'ADM' ){ 
 
 		$next_3month = strtotime(date('Y-m-d')." +3 months");
 		$next_6month = strtotime(date('Y-m-d')." +6 months");
@@ -286,10 +335,10 @@ if($_GET["action"] == "carlendar"){
 		list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
 		list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
 
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">วันปัจจุบัน</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">&gt;&gt; นัด 3เดือน</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">&gt;&gt; นัด 6เดือน</a>&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">&gt;&gt; นัด 1ปี</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">วันปัจจุบัน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">นัด 3เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">นัด 6เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">นัด 1ปี</a>';
 		echo '<br>';
 
 	}
@@ -297,9 +346,8 @@ if($_GET["action"] == "carlendar"){
 	// แสดงของหมอเลอปรัชญ์ 
 	// คลิกไปแต่ละครั้งจะเป็นการนัดทีละ 3เดือน 1ปี
 	if( $_SESSION['sIdname'] == 'md32166' OR $_SESSION['smenucode'] == 'ADM' ){
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$today1.'&dfMonth='.($month + 3).'&dfYear='.$year.'\')">&gt;&gt; เลือนนัดอีก 3เดือน</a>';
-		echo '&nbsp;||&nbsp;';
-		echo '<a href="javascript: void(0);" onclick="show_carlendar(\'&today='.$today1.'&dfMonth='.$month.'&dfYear='.($year+1).'\')">&gt;&gt; เลือนนัดอีก 1ปี</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.($month + 3).'&dfYear='.$year.'\')">เลื่อนนัดอีก 3เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.$month.'&dfYear='.($year+1).'\')">เลื่อนนัดอีก 1ปี</a>';
 	}
 
 
@@ -344,26 +392,30 @@ if($_GET["action"] == "carlendar"){
 
 	}
 
-	echo "<table border=\"1\" bordercolor=\"black\" width=\"320\" height=\"270\">
-	<tr class=\"norm\"><td width=\"50\" align=\"center\">
-	<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today1."&dfMonth=".($month - 1)."&dfYear=".$year."');\">&lt;</a>
-	</td>
-	<td width=\"250\" align=\"center\" colspan=\"5\" bgcolor=\"#00CC99\">
-	".$thmonthname[$month - 1]."&nbsp;
-	".($year + 543)." ".$title_time."
-	</td>
-	<td width=\"50\" align=\"center\">
-	<a href=\"javascript:void(0);\" Onclick=\"show_carlendar('&today=".$today2."&dfMonth=".($month + 1)."&dfYear=".$year."');\">&gt;</a>
-	</td></tr>
-
-	<tr><td width=\"50\" align=\"center\" class=\"sunday\">อา</td>
-	<td width=\"50\" align=\"center\" class=\"norm\">จ</td>
-	<td width=\"50\" align=\"center\" class=\"norm\">อ</td>
-	<td width=\"50\" align=\"center\" class=\"norm\">พ</td>
-	<td width=\"50\" align=\"center\" class=\"norm\">พฤ</td>
-	<td width=\"50\" align=\"center\" class=\"norm\">ศ</td>
-	<td width=\"50\" align=\"center\" class=\"saturday\">ส</td></tr><tr height=\"60\" valign=\"top\">";
-
+	?>
+	<table border="1" bordercolor="black" width="320" height="270">
+	<tr class="norm">
+		<td width="50" align="center">
+			<a href="javascript:void(0);" Onclick="show_carlendar('&today=<?=date('d');?>&dfMonth=<?=($month - 1);?>&dfYear=<?=$year;?>');">&lt;</a>
+		</td>
+		<td width="250" align="center" colspan="5" bgcolor="#00CC99">
+			<?php
+			echo $full_th_month;
+			?>
+			<?=$title_time;?>
+		</td>
+		<td width="50" align="center">
+			<a href="javascript:void(0);" Onclick="show_carlendar('&today=<?=date('d');?>&dfMonth=<?=($month + 1);?>&dfYear=<?=$year;?>');">&gt;</a>
+		</td>
+	</tr>
+	<tr><td width="50" align="center" class="sunday">อา</td>
+	<td width="50" align="center" class="norm">จ</td>
+	<td width="50" align="center" class="norm">อ</td>
+	<td width="50" align="center" class="norm">พ</td>
+	<td width="50" align="center" class="norm">พฤ</td>
+	<td width="50" align="center" class="norm">ศ</td>
+	<td width="50" align="center" class="saturday">ส</td></tr><tr height="60" valign="top">
+	<?php
 	$iday = 1;
 	//แสดงแถวแรกของปฏิทิน
 	for ($i=0; $i<=6; $i++) {

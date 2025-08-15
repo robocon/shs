@@ -21,7 +21,7 @@ body,td,th {
 
 $today = (date("Y")+543)."-".date("m-d");
 $thiday = date("d-m-").(date("Y")+543);
-include("connect.inc");
+include("connect.php");
 
 Function calcage($birth){
 
