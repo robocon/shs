@@ -136,9 +136,16 @@ if ( $action == 'load' ) {
 
     $year = $year + 543;
 
-    include 'rdu_tb_diag.php';
-    include 'rdu_tb_drugrx.php';
+    $yearMonthTH = $year.'-'.$monthSelected;
+    $yearMonth = ($year-543).'-'.$monthSelected;
+
+    // opday ต้องขึ้นก่อน เพราะเป็น base ให้กับข้อมูลตัวอื่นๆ
     include 'rdu_tb_opday.php';
+    // include 'rdu_tb_diag.php';
+    include 'rdu_tb_drugrx.php';
+
+    exit;
+    
     include 'rdu_tb_trauma.php';
     include 'rdu_tb_lab.php';
     // include 'rdu_in1.php';
@@ -264,6 +271,7 @@ if ( $action == 'load' ) {
             <td align="center">11</td>
             <td>ร้อยละของผู้ป่วยที่การใช้ glibenclamide ในผู้ป่วยที่มีอายุมากกว่า 65 ปี<br>หรือมี eGFR น้อยกว่า 60 มล./นาที/1.73 ตารางเมตร<br>
             ยาในเงื่อนไขข้อนี้คือ <b>Code:</b>1EUGL-C <b>Tradname:</b>Diabenol 5 mg. (Z) <b>Genname:</b>Glibenclamide 5 mg. 
+            <span>ต้องคอมเม้นด้วยว่า ครั้งสุดท้ายที่ได้จ่ายยาตัวนี้ไปคือวันไหน เพราะเลิกใช้ยาตัวนี้มานานแล้ว</span>
             </td>
             <td>&le; ร้อยละ 5</td>
             <td align="right">
@@ -274,9 +282,6 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in11_result, 2);?></td>
         </tr>
-        <?php
-        exit;
-        ?>
         <tr>
             <td align="center">12</td>
             <td>ร้อยละของผู้ป่วยเบาหวานที่ใช้ยา metformin เป็นยาชนิดเดียวหรือร่วมกับยาอื่นเพื่อควบคุมระดับน้ำตาล โดยไม่มีข้อห้ามใช้</td>
@@ -293,6 +298,9 @@ if ( $action == 'load' ) {
             </td>
             <td align="right"><?=number_format($in12_result, 2);?></td>
         </tr>
+        <?php 
+        exit;
+        ?>
         <tr>
             <td align="center">13</td>
             <td>ร้อยละของผู้ป่วยนอกที่มีการใช้ยากลุ่ม NSAIDs ซ้ำซ้อน</td>
@@ -387,6 +395,18 @@ if ( $action == 'load' ) {
                 <a href="<?=$link_18;?>&table=b" target="_blank"><?=number_format($in18b);?></a>
             </td>
             <td align="right"><?=number_format($in18_result, 2);?></td>
+        </tr>
+        <tr>
+            <td align="center">19</td>
+            <td>ตัวชี้วัดที่ 19 ร้อยละของโรงพยาบาลส่งเสริมสุขภาพต าบล/หน่วยบริการปฐมภูมิในเครือข่ายที่มีอัตราการใช้ยาปฏิชีวนะ
+ ในโรคติดเชื้อที่ระบบการหายใจช่วงบนและหลอดลมอักเสบเฉียบพลัน ≤ ร้อยละ 20 </td>
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td align="center">20</td>
+            <td>ตัวชี้วัดที่ 20 ร้อยละของโรงพยาบาลส่งเสริมสุขภาพต าบล/หน่วยบริการปฐมภูมิ ในเครือข่ายที่มีอัตราการใช้ยาปฏิชีวนะใน
+ โรคอุจจาระร่วงเฉียบพลัน  ≤ ร้อยละ 20 </td>
+            <td colspan="4"></td>
         </tr>
     </table>
     <?php 

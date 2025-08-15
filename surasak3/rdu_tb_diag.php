@@ -22,8 +22,8 @@ KEY `icd10` (`icd10`)
 SELECT a.`row_id`,a.`svdate`,a.`svdate_en`,a.`hn`,a.`an`,a.`icd10`,a.`diag`,CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) AS `thdatehn`, 
 c.`ptname`,c.`age`,c.`doctor`
 FROM `diag` AS a 
-LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) 
-WHERE ( a.`svdate_en` >= '$date_start' AND a.`svdate_en` <= '$date_end' ) 
+LEFT JOIN `tmp_base_opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`svdate`,9,2),'-',SUBSTRING(a.`svdate`,6,2),'-',SUBSTRING(a.`svdate`,1,4),a.`hn`) 
+WHERE a.`svdate_en` LIKE '$yearMonth%' 
 AND a.`svdate` <> '' ;";
 $res = $db->exec($sqlTmpBaseDiag);
 if($res['error']){

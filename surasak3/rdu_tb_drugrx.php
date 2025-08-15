@@ -24,16 +24,19 @@ KEY `part` (`part`),
 KEY `drugcode` (`drugcode`),
 KEY `thdatehn` (`thdatehn`)
 )
-SELECT a.`row_id`,a.`date`,a.`hn`,a.`an`,a.`part`,a.`drugcode`,a.`tradname`,
-CONCAT(SUBSTRING(a.`date`,9,2),'-',SUBSTRING(a.`date`,6,2),'-',SUBSTRING(a.`date`,1,4),a.`hn`) AS `thdatehn`,a.`idno`,a.`amount`,
-b.`ptname`,b.`doctor`,b.`diag`,c.`age`
-FROM `drugrx` AS a 
+SELECT a.*, b.`ptname`,b.`doctor`,b.`diag`,c.`age`
+FROM ( 
+    SELECT `row_id`,`date`,`hn`,`an`,`part`,`drugcode`,`tradname`,`idno`,`amount`,CONCAT(SUBSTRING(`date`,9,2),'-',SUBSTRING(`date`,6,2),'-',SUBSTRING(`date`,1,4),`hn`) AS `thdatehn` 
+    FROM `drugrx` 
+    WHERE `date` LIKE '$yearMonthTH%' 
+    AND ( `amount` > 0 AND `status` = 'y' ) 
+    AND ( `an` IS NULL OR TRIM(`an`) = '')
+) AS a 
 LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id`
-LEFT JOIN `opday` AS c ON c.`thdatehn` = CONCAT(SUBSTRING(a.`date`,9,2),'-',SUBSTRING(a.`date`,6,2),'-',SUBSTRING(a.`date`,1,4),a.`hn`) 
-WHERE ( a.`date` >= '$dateStartTh' AND a.`date` <= '$dateEndTh' ) 
-AND ( a.`amount` > 0 AND a.`status` = 'y' ) 
-AND ( a.`an` IS NULL OR a.`an` = '') ;";
+LEFT JOIN `tmp_base_opday` AS c ON c.`thdatehn` = a.`thdatehn`;";
+dump($sqlTmpBaseDrugrx);
 $res = $db->exec($sqlTmpBaseDrugrx);
+dump($res);
 if($res['error']){
     echo 'tmp_base_drugrx : '.$res['error'];
     exit;
