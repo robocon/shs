@@ -49,29 +49,230 @@ $num_list_pt2 = Mysql_num_rows($result_list_pt2 );
 <html>
 <head>
 <title><?php echo $_SESSION["sOfficer"];?></title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style type="text/css">
-<!--
-body,td,th {
-	font-family: Angsana New;
-	font-size: 20px;
-}
+  :root{
+    --bg-start:#075F5A;      /* slate-900 */
+    --bg-end:#5D7745;        /* blue-800 */
+    --card:#0b3a2f;          /* teal deeper */
+    --card-2:#0f513d;        /* teal */
+    --accent:#22c55e;        /* green-500 */
+    --accent-2:#38bdf8;      /* sky-400 */
+    --warn:#fde047;          /* yellow-300 */
+    --danger:#ef4444;        /* red-500 */
+    --text:#f8fafc;          /* slate-50 */
+    --muted:#cbd5e1;
+    --line:#115e59;          /* teal-800 line */
+    --shadow: 0 10px 24px rgba(0,0,0,.25);
+    --radius: 14px;
+  }
 
-.tb_head {background-color: #45B39D; color: #FFFFCA; font-weight: bold; text-align:center;  }
-.tb_detail {background-color: #A3E4D7;  }
-.tb_detail2 {background-color: #FFFFFF;  }
-a{
+  html,body{
+    height:100%;
+  }
+  body{
+    margin:0;
+    font-family: "Segoe UI","Tahoma",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+    font-size:18px;
+    line-height:1.6;
+    color:var(--text);
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-end)) fixed;
+  }
+
+  /* Layout wrapper */
+  .page{
+    max-width: 1200px;
+    margin: 24px auto 64px;
+    padding: 16px;
+  }
+
+  /* Top bar title (จาก title เดิม) */
+  .app-title{
+    display:flex; align-items:center; gap:12px;
+    font-weight:700; font-size:22px; letter-spacing:.2px;
+    color:var(--text);
+  }
+
+  /* Notice/ข่าวสาร */
+  .news{
+    margin-top:18px;
+	margin-bottom:18px;
+    background: rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .news-header{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 14px;
+    background: linear-gradient(90deg, rgba(56,189,248,.25), rgba(34,197,94,.25));
+    font-weight:700;
+  }
+  .news-body{
+    padding:10px 14px;
+  }
+  .news-item{
+    padding:8px 0;
+    border-bottom:1px dashed rgba(255,255,255,.12);
+  }
+  .news-item:last-child{ border-bottom:0; }
+
+  /* Menu as modern cards */
+  .menu-bar{
+    display:flex; flex-wrap:wrap; gap:12px;
+    margin: 10px 0 18px;
+  }
+  .menu-item{
+    display:inline-flex; align-items:center; gap:10px;
+    background: #36BBA7;
+    border:1px solid rgba(255,255,255,.18);
+    padding:12px 16px;
+    border-radius: var(--radius);
+    text-decoration:none;
+    color:var(--text);
+    font-weight:600;
+    letter-spacing:.2px;
+    box-shadow: var(--shadow);
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease, border-color .12s ease;
+    backdrop-filter: blur(6px);
+  }
+  .menu-item i{ font-size:18px; }
+  .menu-item:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 16px 28px rgba(0,0,0,.35);
+    background: rgba(56,189,248,.12);
+    border-color: rgba(56,189,248,.55);
 	text-decoration:none;
-}
-#dt_other:target{
-	text-decoration: underline;
-}
+	color:#FFD230;
+  }
+  .menu-item:active{ transform: translateY(0); }
 
-.txtsarabun{ 
-	font-family: "TH SarabunPSK";
-	font-size:16px; 
-	font-weight:bold;
-	}
--->
+  /* Form card */
+  .card{
+    background: rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding:16px;
+  }
+  .form-grid{
+    display:flex; flex-wrap:wrap; gap:12px; align-items:center;
+  }
+  .input, .btn{
+    font-family: inherit;
+    font-size: 18px;
+    border-radius: 12px;
+    border:1px solid rgba(255,255,255,.2);
+    padding: 10px 14px;
+    outline:none;
+  }
+  .input{
+    min-width: 220px;
+    background: rgba(255,255,255,.9);
+    color:#0b1220;
+  }
+  .input:focus{
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 3px rgba(56,189,248,.35);
+  }
+  .btn{
+    cursor:pointer;
+    background: linear-gradient(180deg,#22c55e,#16a34a);
+    color:white;
+    font-weight:700;
+    border:none;
+    transition: transform .1s ease, box-shadow .1s ease, filter .1s ease;
+  }
+  .btn:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0); }
+
+  .btn-secondary{
+    background: linear-gradient(180deg,#a78bfa,#7c3aed);
+  }
+  .btn-ghost{
+    background: transparent;
+    color: var(--warn);
+    border:1px dashed rgba(253,224,71,.6);
+  }
+
+  /* Patient counter pill */
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgb(236, 134, 133);
+    border:1px solid rgba(253,224,71,.55);
+    color:#fff7cc;
+    padding:8px 12px;
+    border-radius: 999px;
+    font-weight:700;
+    box-shadow: var(--shadow);
+  }
+
+  /* Tabs (ลิงก์สลับรายชื่อ) */
+  .tabs{
+    margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;
+  }
+  .tab{
+    text-decoration:none; color:var(--text); font-weight:700;
+    background: rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.18);
+    padding:8px 12px; border-radius: 999px;
+    transition: background .12s ease, transform .12s ease;
+  }
+  .tab:hover{ background: rgba(56,189,248,.18); transform: translateY(-1px); }
+  #dt_other:target, #dt_room:target{ text-decoration: none; }
+
+  /* Tables */
+  table{ border-collapse: separate; border-spacing:0; width:100%; }
+  .table-wrap{
+    margin-top:10px;
+    width:100%; max-width: 1200px; height:350px; overflow:auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.04);
+  }
+  .tb_head{
+    position: sticky; top:0; z-index:1;
+    background: #18786F;
+    color: #fff;
+    font-weight:700; text-align:left;
+  }
+  .tb_head > td{
+    padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.18);
+  }
+  .tb_detail, .tb_detail2{
+    background: transparent; color: var(--text);
+  }
+  .tb_detail:nth-child(even), .tb_detail2:nth-child(even){
+    background: rgba(255,255,255,.04);
+  }
+  td{
+    padding:10px 12px; border-bottom:1px dashed rgba(255,255,255,.12);
+    white-space: nowrap;
+  }
+  tr:hover td{
+    background: rgba(56,189,248,.10);
+  }
+
+  /* Links inside table */
+  a{ color: var(--accent-2); text-decoration:none; }
+  a:hover{ text-decoration: underline; }
+
+  /* Responsive */
+  @media (max-width: 900px){
+    .page{ padding: 12px; }
+    .form-grid{ gap:8px; }
+    .input{ min-width: 160px; font-size:16px; }
+    .btn{ font-size:16px; padding:9px 12px; }
+    td{ padding:8px 10px; }
+    .menu-item{ padding:10px 12px; }
+  }
+
+  /* Utility font for small label */
+  .txtsarabun{ font-family: "Segoe UI","Tahoma",sans-serif; font-size:18px; font-weight:700; }
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 
@@ -84,70 +285,71 @@ window.onload = function(){
 </SCRIPT>
 </head>
 </body>
-<a href="dt_emp_manual_index.php">ตรวจสุขภาพสิทธิประกันสังคม (แบบไม่ต้องใช้ VN)</a>
-|| <a href="dxdr_ofyear1_dr_manual.php">ตรวจสุขภาพประจำปีกองทัพบก (แบบไม่ต้องใช้ VN)</a>
-|| <a href="dxdr_ofyearout_dr_hn.php">ตรวจสุขภาพประจำปีฮักกันยามเฒ่า (แบบไม่ต้องใช้ VN)</a> <br>
-<a href="Edt_index.php">ตรวจสุขภาพ (ขอใบรับรองแพทย์อิเล็กทรอนิกส์)</a>
-|| <A HREF="dt_listpatient.php" target="_blank" >รายชื่อผู้ป่วยตรวจโรควันนี้</A> 
-<BR>
-<table width="100%" border="0">
-  <tr>
-    <td>
-	<FORM name="form_vn" METHOD=POST ACTION="dt_add_patient.php">
-<TABLE>
-<TR>
-	<TD>
-		<TABLE>
-		<TR>
-			<TD><font face=''>VN : </font></TD>
-			<TD><INPUT TYPE="text" NAME="vn_now" class="txtsarabun"></TD>
-			<TD><INPUT TYPE="submit" value="  ตกลง  " class="txtsarabun"></TD>
-			<TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="button" id="button" value="<< กลับไปเมนูหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" /></TD>
-		</TR>
-		<TR>
-			<TD>&nbsp;</TD>
-			<TD><INPUT TYPE="checkbox" NAME="special" value="true" <?php if($_SESSION["dt_special"]) echo "Checked"; ?>> : ค่าบริการคลินิกพิเศษ</TD>
-			<TD>&nbsp;</TD>
-		</TR>
-		</TABLE>
-	</TD>
-</TR>
-</TABLE>
-</FORM>
-</td>
-    <td align="right">
-	<table border="1"  bordercolor="#FF0000" cellpadding="5" cellspacing="0">
-  <tr>
-    <td>จำนวนคนไข้ : <?php echo $num_list_pt;?> คน </td>
-  </tr>
-</table>
+<div class="page">
+  <div class="app-title">
+    <i class="fa-solid fa-stethoscope"></i>
+    <div>เมนูแพทย์ : <?php echo $_SESSION["sOfficer"];?></div>
+  </div>
 
-	</td>
-  </tr>
-</table>
+  <!-- เมนูหลักเป็นการ์ด -->
+  <nav class="menu-bar">
+    <a class="menu-item" href="dt_emp_manual_index.php">
+      <i class="fa-solid fa-id-card-clip"></i> ตรวจสุขภาพสิทธิประกันสังคม (ไม่ใช้ VN)
+    </a>
+    <a class="menu-item" href="dxdr_ofyear1_dr_manual.php">
+      <i class="fa-solid fa-shield-heart"></i> ตรวจสุขภาพประจำปีกองทัพบก (ไม่ใช้ VN)
+    </a>
+    <a class="menu-item" href="dxdr_ofyearout_dr_hn.php">
+      <i class="fa-solid fa-people-roof"></i> ฮักกันยามเฒ่า (ไม่ใช้ VN)
+    </a>
+    <a class="menu-item" href="Edt_index.php">
+      <i class="fa-solid fa-file-signature"></i> ใบรับรองแพทย์อิเล็กทรอนิกส์
+    </a>
+    <a class="menu-item" href="dt_listpatient.php" target="_blank">
+      <i class="fa-solid fa-user-injured"></i> รายชื่อผู้ป่วยตรวจโรควันนี้
+    </a>
+  </nav>
+  <div class="card" style="margin-top:6px;">
+    <form name="form_vn" method="POST" action="dt_add_patient.php">
+      <div class="form-grid">
+        <label for="vn_now" class="txtsarabun" style="min-width:60px;">VN :</label>
+        <input type="text" name="vn_now" id="vn_now" class="input" autocomplete="off" inputmode="numeric" />
+        <input type="submit" value="ตกลง" class="btn" />
+        <input type="button" value="กลับไปเมนูหลัก" onclick="window.location='../nindex.htm'" class="btn btn-secondary" />
+        <label class="txtsarabun" style="display:inline-flex;align-items:center;gap:8px;margin-left:6px;">
+          <input type="checkbox" name="special" value="true" <?php if($_SESSION["dt_special"]) echo "Checked"; ?> />
+          ค่าบริการคลินิกพิเศษ
+        </label>
+
+        <!-- ตัวนับคนไข้ -->
+        <span class="pill" style="margin-left:auto;">
+          <i class="fa-solid fa-users"></i> จำนวนคนไข้: <?php echo $num_list_pt;?> คน
+        </span>
+      </div>
+    </form>
+  </div>
 
 
-<BR><FONT SIZE="4" COLOR="#990033"><B>ข่าวสาร</B></FONT><BR>
-<?php
-    $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-$num = Y;
-$depart1=Y;
-   $query = "SELECT  row,depart,new,datetime FROM new  WHERE status ='$num' and dr  ='$depart1' ORDER BY row DESC  ";
-    $result = mysql_query($query) or die("Query failed");
-    while (list ($row,$depart,$new,$datetime) = mysql_fetch_row ($result)) {
 
-        print ("<tr>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'><br>&nbsp;&nbsp;&nbsp;&nbsp;<IMG height=15 src='new.gif' width=30>&nbsp;***&nbsp$new</td>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>($depart</td>\n".
-           "  <td BGCOLOR=F5DEB3><font face='Angsana New'>&nbsp$datetime)&nbsp*** <br></td>\n".
-
-           " </tr>\n");
+  <div class="news">
+    <div class="news-header">
+      <i class="fa-solid fa-bullhorn"></i> ข่าวสาร
+    </div>
+    <div class="news-body">
+      <?php
+        // วนลูปข่าวสารเดิม แต่เรนเดอร์ให้เป็น .news-item
+        $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
+        $num = Y; $depart1=Y;
+        $query = "SELECT row,depart,new,datetime FROM new WHERE status ='$num' and dr ='$depart1' ORDER BY row DESC";
+		//$query = "SELECT row,depart,new,datetime FROM new WHERE status ='$num' ORDER BY row DESC";
+        $result = mysql_query($query) or die("Query failed");
+        while (list ($row,$depart,$new,$datetime) = mysql_fetch_row ($result)) {
+          echo "<div class='news-item'><i class='fa-regular fa-star'></i> $new <span style='color:var(--muted)'>($depart • $datetime)</span></div>";
         }
-    print "</table>";
+      ?>
+    </div>
+  </div>
 
-
-?>
-<BR>
 <SCRIPT LANGUAGE="JavaScript">
 
 	function switch_div(xx){
@@ -161,9 +363,9 @@ $depart1=Y;
 	}
 
 </SCRIPT>
-<A HREF="javascript:switch_div('2');" id="dt_room" >รายชื่อผู้ป่วยหน้าห้องตรวจ</A>  |  <A HREF="javascript:switch_div('1');" id="dt_other">รายชื่อผู้ป่วยตรวจโรคทั่วไป( <?php echo $num_list_pt2;?> )</A>
+<A HREF="javascript:switch_div('2');" id="dt_room" style="color:#F0B13B;" >รายชื่อผู้ป่วยหน้าห้องตรวจ</A>  |  <A HREF="javascript:switch_div('1');" id="dt_other">รายชื่อผู้ป่วยตรวจโรคทั่วไป( <?php echo $num_list_pt2;?> )</A>
 
-<div  id="first" style="text-align: left; width:800px; height:350px; overflow:auto; ">
+<div id="first" class="table-wrap">
 <TABLE width='600'>
 <TR class="tb_head">
   
@@ -185,7 +387,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row(
 	}
 ?>
 <TR class="<?php echo $class;?>">
-	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" ><?php echo $vn;?></A></TD>
+	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" style="font-size:24px;"><?php echo $vn;?></A></TD>
 		<TD><?php echo substr($thidate,11,8);?></TD>
 	<TD><?php echo $hn;?></TD>
 	<TD><?php echo $ptname;?></TD>
@@ -196,7 +398,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row(
 </TABLE>
 </div>
 
-<div  id="sec" style="text-align: left; width:800px; height:350px; overflow:auto; display:none; ">
+<div id="sec" class="table-wrap" style="display:none;">
 <TABLE width='600'>
 <TR class="tb_head">
 
@@ -218,7 +420,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row(
 	}
 ?>
 <TR class="<?php echo $class;?>">
-	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" ><?php echo $vn;?></A></TD>
+	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" style="font-size:24px;" ><?php echo $vn;?></A></TD>
 
 		<TD><?php echo substr($thidate,11,8);?></TD>
 	<TD><?php echo $hn;?></TD>

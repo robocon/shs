@@ -145,6 +145,8 @@ $num_list_pt2 = Mysql_num_rows($result_list_pt2 );
     box-shadow: 0 16px 28px rgba(0,0,0,.35);
     background: rgba(56,189,248,.12);
     border-color: rgba(56,189,248,.55);
+	text-decoration:none;
+	color:#FFD230;
   }
   .menu-item:active{ transform: translateY(0); }
 
@@ -199,7 +201,7 @@ $num_list_pt2 = Mysql_num_rows($result_list_pt2 );
   /* Patient counter pill */
   .pill{
     display:inline-flex; align-items:center; gap:8px;
-    background: rgba(253,224,71,.15);
+    background: rgb(236, 134, 133);
     border:1px solid rgba(253,224,71,.55);
     color:#fff7cc;
     padding:8px 12px;
@@ -313,7 +315,7 @@ window.onload = function(){
         <label for="vn_now" class="txtsarabun" style="min-width:60px;">VN :</label>
         <input type="text" name="vn_now" id="vn_now" class="input" autocomplete="off" inputmode="numeric" />
         <input type="submit" value="ตกลง" class="btn" />
-        <input type="button" value="<< กลับไปเมนูหลัก" onclick="window.location='../nindex.htm'" class="btn btn-secondary" />
+        <input type="button" value="กลับไปเมนูหลัก" onclick="window.location='../nindex.htm'" class="btn btn-secondary" />
         <label class="txtsarabun" style="display:inline-flex;align-items:center;gap:8px;margin-left:6px;">
           <input type="checkbox" name="special" value="true" <?php if($_SESSION["dt_special"]) echo "Checked"; ?> />
           ค่าบริการคลินิกพิเศษ
@@ -360,7 +362,7 @@ window.onload = function(){
 	}
 
 </SCRIPT>
-<A HREF="javascript:switch_div('2');" id="dt_room" >รายชื่อผู้ป่วยหน้าห้องตรวจ</A>  |  <A HREF="javascript:switch_div('1');" id="dt_other">รายชื่อผู้ป่วยตรวจโรคทั่วไป( <?php echo $num_list_pt2;?> )</A>
+<A HREF="javascript:switch_div('2');" id="dt_room" style="color:#F0B13B;" >รายชื่อผู้ป่วยหน้าห้องตรวจ</A>  |  <A HREF="javascript:switch_div('1');" id="dt_other">รายชื่อผู้ป่วยตรวจโรคทั่วไป( <?php echo $num_list_pt2;?> )</A>
 
 <div id="first" class="table-wrap">
 <TABLE width='600'>
@@ -384,7 +386,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row(
 	}
 ?>
 <TR class="<?php echo $class;?>">
-	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" ><?php echo $vn;?></A></TD>
+	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" style="font-size:24px;"><?php echo $vn;?></A></TD>
 		<TD><?php echo substr($thidate,11,8);?></TD>
 	<TD><?php echo $hn;?></TD>
 	<TD><?php echo $ptname;?></TD>
@@ -417,7 +419,7 @@ while(list($vn, $hn, $ptname, $toborow,$thidate,$officer_opd) = Mysql_fetch_row(
 	}
 ?>
 <TR class="<?php echo $class;?>">
-	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" ><?php echo $vn;?></A></TD>
+	<TD><A HREF="javascript:document.form_vn.vn_now.value='<?php echo $vn;?>';form_vn.submit();" style="font-size:24px;" ><?php echo $vn;?></A></TD>
 
 		<TD><?php echo substr($thidate,11,8);?></TD>
 	<TD><?php echo $hn;?></TD>
