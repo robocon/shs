@@ -79,12 +79,19 @@ $dbi->query("SET NAMES UTF8");
             clear: both;
             display: table;
         }
+        #old-menu .list-item a{
+            background-color: #8f8f8f;
+            border: 1px solid #727272ff;
+        }
+        #old-menu .list-item a:hover{
+            background-color: #727272ff;
+        }
     </style>
     <div>
         <h1>เลือกตัวชี้วัดที่จะบันทึก</h1>
     </div>
     
-    <div style="display:inline-block;">
+    <div style="display:inline-block;" id="old-menu">
         <?php 
         $q = $dbi->query("SELECT * FROM `indicator_main` WHERE `status` = 'y' AND `parent` IS NULL ORDER BY `sort` ");
         if ($q->num_rows>0) {
@@ -161,7 +168,7 @@ $thip_items = array(
     array(
         'name' => '[THIP] PCT Sx', 
         'link' => 'https://docs.google.com/spreadsheets/d/1FMQ8GAARMhfP45KbelR1t9d5r4N8UPtjODMGi8YbBJs/edit?usp=sharing', 
-        'allow'=>array('วราภรณ์2'/* วราภรณ์ ชัยวณิชยา */,'นันท์นภัส','นฤมล')
+        'allow'=>array('สุพิชชา'/* วราภรณ์ ชัยวณิชยา */,'นันท์นภัส','นฤมล')
     ),
     array(
         'name' => '[THIP] PCT QMR / HRD / PTC', 
