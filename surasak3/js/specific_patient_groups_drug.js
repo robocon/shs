@@ -318,7 +318,22 @@ async function confirmDiabetes(drugcode){
 	closePreg();
 }
 
-async function checkInclisiran(drugcode){ // 2INC
+async function checkInclisiran(drugcode){
+
+	const response = await fetch('inclisiran_form.php');
+	let body = await response.text();
+
+	body = body.replace('{{drugcode}}',drugcode);
+
+	document.getElementById("pregHeader").innerHTML = '[RDU] Inclisiran และ Evolocumab';
+	document.getElementById("pregContent").innerHTML = body;
+	
+	document.getElementById("pregCloseBtn").style.display = "none";// ซ่อนปุ่มเอาไว้ก่อน
+	document.getElementById("pregBackground").style.display = "";
+	document.getElementById("pregContainer").style.display = "";
+
+}
+async function checkInclisiran_old(drugcode){ // 2INC
     const htmlTxt = `<div>
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
 		<div>

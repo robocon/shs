@@ -2466,10 +2466,18 @@ body,td,th {
 	font-family: "TH SarabunPSK";
 	font-size: 20px;
 }
+.chk_table{
+	border-collapse: collapse;
+}
+.chk_table th,
+.chk_table td{
+	padding: 2px;
+	border: 1px solid black;
+}
 </style>
 
 <script src="js/sweetalert2.all.min.js"></script>
-
+<script type="text/javascript" src="js/specific_patient_groups_drug.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 /*Fix trim not work on IE8 or under*/
 if(typeof String.prototype.trim !== 'function'){
@@ -3077,26 +3085,26 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkDiabetes(drugcode.trim());
 	}
 
-	/*
+	
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( drugcode.trim() === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
 		// อนุญาตให้แพทย์2ท่านนี้สั่งได้เท่านั้น
 		// ณัชญ์ระวี บุรีคำ (md29760)
 		// วิรดา  อนันตวงศ์ (md43724)
-		if(doctor_id == 'md29760' || doctor_id == 'md43724'){
+		// if(doctor_id == 'md29760' || doctor_id == 'md43724'){
 			checkInclisiran(drugcode.trim());
-		}else{
-			Swal.fire({
-				title: 'แจ้งเตือน',
-				icon: 'warning',
-				html:`อนุญาตให้แพทย์เฉพาะทาง<br>โรคหัวใจและโรคระบบต่อมไร้ท่อ<br><b>สั่งใช้ได้เท่านั้น</b>`,
-				allowOutsideClick: false
-			});
-			resetLeftForm();
-			return false;
-		}
+		// }else{
+		// 	Swal.fire({
+		// 		title: 'แจ้งเตือน',
+		// 		icon: 'warning',
+		// 		html:`อนุญาตให้แพทย์เฉพาะทาง<br>โรคหัวใจและโรคระบบต่อมไร้ท่อ<br><b>สั่งใช้ได้เท่านั้น</b>`,
+		// 		allowOutsideClick: false
+		// 	});
+		// 	resetLeftForm();
+		// 	return false;
+		// }
 	}
-	*/
+	
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
 
 	if( doctor_id != 'md32166' && doctor_id != 'md29268' ){
@@ -4864,7 +4872,6 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	</div>
 </div>
 
-<script type="text/javascript" src="js/specific_patient_groups_drug.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 
 window.onload = function(){
