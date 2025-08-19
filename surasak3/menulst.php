@@ -71,7 +71,6 @@ if($_SESSION["smenucode"] == "ADMSUR"){
     body {
       background-color: #008080; /* แทน bgcolor */
       color: #00ffff;            /* แทน text */
-      font-family: Arial, sans-serif;
     }
 
     a:link {
@@ -88,9 +87,30 @@ if($_SESSION["smenucode"] == "ADMSUR"){
     }
 
     a:hover {
-      color: #00ffff;           /* เพิ่มความสวยงามตอน hover */
       text-decoration: none;
     }
+	
+.menu-main {
+	background: linear-gradient(135deg, #2A9689, #1B5E5B);
+	color: #0C0A09;
+	font-size: 22px;
+	text-align: left;
+	padding: 10px 15px;
+	border-radius: 5px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	transition: all 0.3s ease;
+	user-select: none;
+	letter-spacing: 1px;
+	text-decoration: none;
+}
+
+.menu-main:hover {
+	background: linear-gradient(135deg, #1E7C74, #104B48);
+	transform: translateY(-2px) scale(1.02);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+	
 *{
 	font-family: "TH SarabunPSK";
 }
@@ -139,24 +159,24 @@ if($_SESSION["smenucode"] == "ADMSUR"){
 }
 
 .menu-cell {
-	background: linear-gradient(135deg, #2A9689, #1B5E5B);
-	color: #0C0A09;
+	background: linear-gradient(135deg, #00BFA5, #00897B); /* เขียวอมฟ้าสด → เขียวเข้ม */
+	color: #FFFFFF; /* ตัวอักษรสีขาว */
 	font-size: 22px;
 	text-align: left;
-	padding: 10px 15px;
-	border-radius: 5px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	padding: 4px 12px;
+	border-radius: 6px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	cursor: pointer;
 	transition: all 0.3s ease;
 	user-select: none;
-	letter-spacing: 1px;
+	letter-spacing: 0.5px;
 	text-decoration: none;
 }
 
 .menu-cell:hover {
-	background: linear-gradient(135deg, #1E7C74, #104B48);
-	transform: translateY(-2px) scale(1.02);
-	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+	background: linear-gradient(135deg, #1DE9B6, #00695C); /* โทนเขียวฟ้าอ่อน → เขียวฟ้าเข้ม */
+	transform: translateY(-2px) scale(1.03);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 #showDateTxt{
@@ -418,7 +438,7 @@ if($rows){///  ถ้ามี rows
 
 	while (list ($menu,$script,$target) = mysql_fetch_row ($result)) {
 		print (" <tr>\n".
-		"  <td BGCOLOR='#008484' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='' size='5'COLOR='#ffffff'>$menu</font></a></td>\n".
+		"  <td class='menu-main' style='padding: 3px;'><a target='$target' class='menulst-refer06' href=\"$script?$userRowId\"><font face='' size='5'COLOR='#ffffff'>$menu</font></a></td>\n".
 		" </tr>\n");
 	}
 
