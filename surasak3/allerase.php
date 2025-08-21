@@ -1,9 +1,9 @@
 <?php
-session_start();
-//  ยกเลิกรายก ารแลบ หรือ ส่งข้อมูลเข้า บ/ช ผป.ใน
+include dirname(__FILE__).'/bootstrap.php';
+//  ยกเลิกรายการแลบ หรือ ส่งข้อมูลเข้า บ/ช ผป.ใน
 //  laberase.php-->labselect.php-->labdetail.php-->labturn.php
 //	แก้2files _erase,select: laberase,labselect,xr,er,or,pt,den
-//	ส่วน labdetail.php,labturn.phpไไม่ต้องแก้
+//	ส่วน labdetail.php,labturn.php ไม่ต้องแก้
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,51 +18,124 @@ session_start();
 <body>
     <div class="container">
         <style>
-    * {
-        font-family: "TH SarabunPSK";
-        font-size: 20px;
+            * {
+                font-family: "TH SarabunPSK";
+                font-size: 20px;
+            }
+            h3{
+                font-size: 28px;
+                margin:0;
+            }
+            .table thead tr th{
+                background-color: #008080;
+                color: #fff;
+            }
+        </style>
+    <h3 class="mt-2 text-center">ต้องการยกเลิกรายการ หรือ ส่งข้อมูลเข้าบัญชีผู้ป่วยในเมื่อรับป่วย</h3>
+    <div class="row mt-2">
+        <div class="col-md-4">
+            <form method="POST" action="allerase.php"  style="float:left;">
+                <table>
+                    <tr>
+                        <td align="right">ผู้ป่วยนอกตาม HN : </td>
+                        <td><input type="text" name="hn" id="hn" required></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input class='btn btn-primary' type='submit' value='ค้นหา' name='B1'>
+                            <input type="hidden" name="action" value="searchByHn">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <form action="allerase.php" method="post" style="float:left;" class="mx-2">
+                <table>
+                    <tr>
+                        <td>ผู้ป่วยในตาม AN : </td>
+                        <td><input type="text" name="an" id="an"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input class='btn btn-primary' type='submit' value='ค้นหา' name='B1'>
+                            <input type="hidden" name="action" value="searchByAn">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+    <?php
+    $action = $_POST['action'];
+    if($action==='searchByHn'){
+        $sql = sprintf("SELECT * FROM `depart` WHERE `hn` = '%s' ", $dbi->real_escape_string($_POST['hn']));
+
+    }elseif ($action==='searchByAn') {
+        $sql = sprintf("SELECT * FROM `depart` WHERE `an` = '%s' ORDER BY `row_id` DESC", $dbi->real_escape_string($_POST['an']));
+        $q = $dbi->query($sql);
+        if($q->num_rows>0){
+
+            $sql = sprintf("SELECT * FROM `ipcard` WHERE `an` = '%s'", $dbi->real_escape_string($_POST['an']));
+            $qIp = $dbi->query($sql);
+            $ip = $qIp->fetch_assoc();
+            ?>
+            <div class="mt-2">
+                <table>
+                    <tr>
+                        <td align="right"><b>AN: </b></td>
+                        <td><?=$ip['an'];?></td>
+                        <td align="right"><b>ชื่อ-สกุล: </b></td>
+                        <td><?=$ip['ptname'];?></td>
+                    </tr>
+                    <tr>
+                        <td align="right"><b>สิทธิ: </b></td>
+                        <td><?=$ip['ptright'];?></td>
+                        <td align="right"><b>หอผู้ป่วย: </b></td>
+                        <td><?=$ip['my_ward'];?></td>
+                    </tr>
+                </table>
+            </div>
+            <table class="table table-hover table-sm table-striped mt-2">
+                <thead>
+                    <tr>
+                        <th>วัน-เวลา</th>
+                        <th>รายละเอียด</th>
+                        <th>จำนวน</th>
+                        <th>ราคา</th>
+                        <th>เบิกได้</th>
+                        <th>เบิกไม่ได้</th>
+                        <th>ผู้บันทึกรายการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                while ($a = $q->fetch_assoc()) {
+                    ?>
+                    <tr>
+                        <td><a href="labdetail.php?nRow_id=<?=$a['row_id'];?>"><?=$a['date'];?></a></td>
+                        <td><?=$a['detail'];?></td>
+                        <td><?=$a['depart'];?></td>
+                        <td><?=$a['price'];?></td>
+                        <td><?=$a['sumyprice'];?></td>
+                        <td><?=$a['sumnprice'];?></td>
+                        <td><?=$a['idname'];?></td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </tbody>
+            </table>
+            <?php
+        }else{
+            ?>
+            <p><b>ไม่พบข้อมูลผู้ป่วยใน</b></p>
+            <?php
+        }
     }
-    div{
-        margin-top:8px;
-    }
-    h3{
-        font-size: 28px;
-        margin:0;
-    }
-    .btn{
-        padding: 2px 8px;
-        background-color: #198754;
-        margin-right: 6px;
-        border: none;
-        color: #ffffff;
-        margin-bottom: 6px;
-        border-radius: 8px;
-        text-decoration: none;
-        display: inline-block;
-        font-family: "TH SarabunPSK";
-        font-size: 20px;
-    }
-    .btn:hover {
-        background-color: #059862;
-    }
-    </style>
-    <h3>ต้องการยกเลิกรายการ หรือ ส่งข้อมูลเข้าบัญชีผู้ป่วยในเมื่อรับป่วย</h3>
-    <form method="POST" action="alldelselect.php" >
-        <table>
-            <tr>
-                <td align="right">วันที่ : </td>
-                <td><input type="date" name="date" id="date" value="<?=date('Y-m-d');?>"></td>
-            </tr>
-            <tr>
-                <td align="right">HN : </td>
-                <td><input type="text" name="hn" id="hn" required></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input class='txt btn' type='submit' value='ค้นหา' name='B1'></td>
-            </tr>
-        </table>
-    </form>
+    ?>
 </div>
 </body>
 </html>

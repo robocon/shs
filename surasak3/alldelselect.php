@@ -3,8 +3,18 @@ require_once 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-list($y, $m, $d) = explode('-', $_POST['date']);
-$thdate = ($y+543).'-'.$m.'-'.$d;
+$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+mysql_select_db(DB, $Conn) or die( mysql_error() );
+mysql_query("SET NAMES UTF8", $Conn);
+
+$today = "$d-$m-$yr";
+
+$vn = sprintf("%s", $_POST['vn']);
+if(empty($vn)){
+    echo 'ไม่พบข้อมูล คลิก<a target=_self  href="allerase.php">ที่นี่</a>เพื่อย้อนกลับ';
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,108 +29,98 @@ $thdate = ($y+543).'-'.$m.'-'.$d;
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body class="container">
+<?php 
+print "<div>วันที่ <strong>$today</strong> เลือกคลิกรายการที่ต้องการยกเลิก หรือส่งข้อมูลเข้าบัญชีผู้ป่วยใน ";
+print "&nbsp;&nbsp;&nbsp;&nbsp<a target=_self  href='allerase.php'><<ไปเมนู</a></div>";
+$today = "$yr-$m-$d";
+?>
 <style>
-    * {
+    body,
+    td,
+    th {
         font-family: "TH SarabunPSK";
         font-size: 20px;
     }
-    #table-content thead tr{
-        background-color: red!important;
+    table {
+        border-collapse: collapse;
+        width: 100%;
     }
-    #table-content a{
-        text-decoration: none;
+    th,td {
+        text-align: left;
+        padding: 8px;
+    }
+    tr:nth-child(even) {
+        background-color: #FDEDEC;
     }
 </style>
-<div class="mt-2">
-    <div>
-        <a href="allerase.php" class="btn btn-primary">&lt;&lt;&nbsp;กลับไปก่อนหน้า</a>
-    </div>
-    <div class="mt-2">
-        <h3>รายการ ณ วันที่ <?=$d.' '.$def_fullm_th[$m].' '.$y;?></h3>
-    </div>
-</div>
-<div>
+<table align="center">
+    <tr bgcolor="#EC7063">
+        <th>#</th>
+        <th>ยกเลิก</th>
+        <th>เวลา</th>
+        <th>ชื่อ</th>
+        <th>HN</th>
+        <th>VN</th>
+        <th>AN</th>
+        <th>รายการ</th>
+        <th>ราคารวม</th>
+        <th>เบิกได้</th>
+        <th>เบิกไม่ได้</th>
+        <th>จ่ายเงิน</th>
+        <th>เจ้าหน้าที่</th>
+    </tr>
     <?php
+    $num = 0;
+    
+    if ($_SESSION["smenucode"] == "ADMXR") {
+        $query = "SELECT date,ptname,hn,an,tvn,detail,price,sumyprice,sumnprice,paid,row_id,accno,idname FROM depart WHERE  date LIKE '$today%' and (tvn ='$vn' or an ='$vn') and doctor='MD199 ภาริดา เป็งวัน' ";
+    } else {
+        $query = "SELECT date,ptname,hn,an,tvn,detail,price,sumyprice,sumnprice,paid,row_id,accno,idname FROM depart WHERE  date LIKE '$today%' and (tvn ='$vn' or an ='$vn')";
+    }
+    
+    $result = mysql_query($query, $Conn)or die("Query failed");
 
-    /**
-     * @todo ถ้ารายการไหนมี AN ให้ไปค้นหาจากใน ipacc ด้วย
-     */
-    $query = sprintf("SELECT `date`,`ptname`,`hn`,`an`,`tvn`,`detail`,`price`,`sumyprice`,`sumnprice`,`paid`,`row_id`,`accno`,`idname` 
-    FROM depart 
-    WHERE `date` LIKE '%s%%' 
-    AND `hn` = '%s' ",
-    $dbi->real_escape_string($thdate),
-    $dbi->real_escape_string($_POST['hn'])
-    );
-    $q = $dbi->query($query);
-    if($q->num_rows>0){
-        ?>
-        <table class="table table-hover table-striped table-sm" id="table-content">
-            <thead class="table-dark">
-                <tr>
-                    <th>#</th>
-                    <th>ยกเลิก</th>
-                    <th>เวลา</th>
-                    <th>ชื่อ</th>
-                    <th>HN</th>
-                    <th>VN</th>
-                    <th>AN</th>
-                    <th>รายการ</th>
-                    <th>ราคารวม</th>
-                    <th>เบิกได้</th>
-                    <th>เบิกไม่ได้</th>
-                    <th>จ่ายเงิน</th>
-                    <th>เจ้าหน้าที่</th>
-                </tr>
-            </thead>
-            <?php
-            $num = 1;
-            while (list($date, $ptname, $hn, $an, $tvn, $detail, $price, $yprice, $nprice, $paid, $row_id, $accno, $idname) = $q->fetch_row()) {
-                ?>
-                <tr>
-                    <td><?=$num;?></td>
-                    <td><a href="labdetail.php?sDate=<?=$date;?>&nRow_id=<?=$row_id;?>&nAccno=<?=$accno;?>" target="_blank">🗑️</a></td>
-                    <td><?=substr($date,10);?></td>
-                    <td><a href="javascript:void(0);"><?=$ptname;?></a></td>
-                    <td><?=$hn;?></td>
-                    <td><?=$tvn;?></td>
-                    <td><?=$an;?></td>
-                    <td><?=$detail;?></td>
-                    <td><?=$price;?></td>
-                    <td><?=$yprice;?></td>
-                    <td><?=$nprice;?></td>
-                    <td><?=$paid;?></td>
-                    <td><?=$idname;?></td>
-                </tr>
-                <?php
-                $num++;
-            }
-            ?>
-        </table>
-        <?php
-    }else{
-        ?>
-        <p class="bg-secondary bg-gradient p-2 text-center text-white">ไม่พบข้อมูล</p>
-        <?php
+    while (list($date, $ptname, $hn, $an, $tvn, $detail, $price, $yprice, $nprice, $paid, $row_id, $accno, $idname) = mysql_fetch_row($result)) {
+        $num++;
+        $time = substr($date, 11);
+        if ($nprice > 0) {
+            $color = "#FC0303";
+        } else {
+            $color = "#000000";
+        }
+
+        $delLink = '<a href="labdetail.php?sDate='.$date.'&nRow_id='.$row_id.'&nAccno='.$accno.'" target="_blank">🚮</a>';
+
+        print (" <tr style='color:$color;'>\n" .
+            "  <td >$num</td>\n" .
+            " <td >$delLink</td>".
+            "  <td >$time</td>\n" .
+            "  <td ><a href=\"javascript:void(0);\">$ptname</a></td>\n" .
+            "  <td >$hn</td>\n" .
+            "  <td >$tvn</td>\n" .
+            "  <td >$an</td>\n" .
+            "  <td >$detail</td>\n" .
+            "  <td >$price</td>\n" .
+            "  <td >$yprice</td>\n" .
+            "  <td >$nprice</td>\n" .
+            "  <td >$paid</td>\n" .
+            "  <td >$idname</td>\n" .
+            " </tr>\n");
     }
     ?>
-</div>
-
+</table>
 <?php 
-
-exit;
-$match = preg_match("/\//", $_POST["an"], $matchs);
-
+$match = preg_match("/\//", $vn, $matchs);
+var_dump($match);
 if($match!==false){
     $sql = "SELECT a.*, b.`ptname`,b.`hn` 
     FROM ( 
     SELECT *,SUBSTRING(`date`,11,9) AS `time` FROM ipacc 
-    WHERE `an` = '$_POST[an]' 
+    WHERE `an` = '$vn' 
     AND `depart` = 'WARD' 
     AND `date` LIKE '$today%' 
     AND `idno` = 0 
     ) AS a LEFT JOIN `ipcard` AS b ON a.an = b.an";
-    dump($sql);
     $q = $dbi->query($sql);
     if($q->num_rows>0){
         ?>
