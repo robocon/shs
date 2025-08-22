@@ -46,7 +46,20 @@ $sNetprice = $row->price;
 $sDiag = $row->diag;
 $cPaid = $sNetprice;
 $departId = $row->row_id;
+$departStatus = $row->status;
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ยกเลิกรายการ</title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
+</head>
+<body>
+<div class="container">
 <style>
 * {
     font-family: "TH SarabunPSK";
@@ -61,6 +74,9 @@ h3{
     color: #fff;
 }
 </style>
+<div class="mt-2">
+    <a class="btn btn-primary" href="javascript:history.back();">ย้อนกลับ</a>
+</div>
 <table>
     <tr>
         <td align="right"><b>วันเวลา: </b></td>
@@ -106,9 +122,75 @@ h3{
     }
     ?>
 </table>
-<?php
-print "รวมงิน  $sNetprice บาท<br>";
-?>
+<div><b>รวมงิน</b> <?=$sNetprice;?>บาท</div>
 <div style='margin-left:5px;color:red;font-size:16px;'>*** กรณียกเลิกข้ามวัน ให้ทำในช่วงเวลาหลังจากที่บันทึกข้อมูลของวันนั้นๆ เช่นวันที่ต้องการยกเลิกคีย์มาเวลา 08.00 น. ควรยกเลิกหลังเวลา 08.00 น. เป็นต้น ***</div>
+<?php
+if($departStatus==='Y' && $sPrice > 0){
+    ?><a class="btn btn-primary" href="javascript:void(0);" onclick="checkConfirm();">ยืนยันการยกเลิก</a><?php
+}else{
+    ?><a class="btn btn-danger" href="javascript:void(0);">รายการนี้ถูกยกเลิกไปแล้ว</a><?php
+}
+?>
+<script>
+    // 
+    // return confirm('คุณต้องการยกเลิกทุกรายการใช่หรือไม่?')
+    function checkConfirm(){
+        onCheckConfirm();
+    }
+    async function onCheckConfirm(){
+        const { value: ipAddress } = await Swal.fire({
+            title: "ยืนยันการยกเลิกรายการ",
+            input: "password",
+            inputLabel: "กรุณาใส่รหัสผ่านของท่านเพื่อยืนยันการยกเลิกรายการดังกล่าว",
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return "กรุณาใส่รหัสผ่าน";
+                }else{
+                    onCheckPassword(value).then((r)=>{
+                        if(r.status===400){
+                            Swal.fire({title: "ยืนยันรหัสผ่านไม่ถูกต้อง"});
+                        }else{
+                            window.location = 'labturn.php?row_id=<?=$departId;?>';
+                        }
+                    });
+                }
+            },
+            confirmButtonText: "ยืนยันการยกเลิก",
+            cancelButtonText: "ยกเลิก",
+            allowOutsideClick: false
+        });
+        
+        async function onCheckPassword(password){
+            const id = '<?=sprintf("%s", $_SESSION['sRowid']);?>';
+            let data = [];
+            data.push(encodeURIComponent('action') + "=" + encodeURIComponent('checkOldPass'));
+            data.push(encodeURIComponent('id') + "=" + encodeURIComponent(id));
+            data.push(encodeURIComponent('pass') + "=" + encodeURIComponent(password));
+            let dataPost = data.join("&");
 
-<a target=_BLANK href='labturn.php?row_id=<?=$departId;?>' onclick="return confirm('คุณต้องการยกเลิกทุกรายการใช่หรือไม่?')">ยืนยันการยกเลิก</a>
+            let response = await fetch('chgpword.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                },
+                body: dataPost
+            });
+            const body = await response.json();
+            return body;
+
+            
+        }
+        return false;
+    }
+
+    async function onCancel(id){
+        const response = await fetch('ipacc_cancel.php?id='+encodeURIComponent(id));
+        const data = await response.json();
+        return data;
+    }
+
+</script>
+</div>
+</body>
+</html>

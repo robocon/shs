@@ -1,6 +1,10 @@
 <?php
 session_start();
-include dirname(__FILE__).'/connect.php';
+include dirname(__FILE__).'/bootstrap.php';
+
+$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
+mysql_select_db(DB, $Conn) or die( mysql_error() );
+mysql_query("SET NAMES UTF8", $Conn);
 
 $Thaidate = date("d-m-") . (date("Y") + 543) . "  " . date("H:i:s");
 $Thidate = (date("Y") + 543) . date("-m-d H:i:s");
@@ -9,13 +13,24 @@ $departRowId = $_GET['row_id'];
 $query = "SELECT status, price FROM depart WHERE row_id = '$departRowId' limit 1 ";
 $result = mysql_query($query);
 list($status, $price) = mysql_fetch_row($result);
-
 if ($status == "N") {
-    echo "<BR><BR><CENTER>ไม่สามารถยกเลิกได้เนื่องจากรายการนี้เคยถูกยกเลิกไปแล้ว</CENTER>";
+    ?>
+    <h3 style="text-align:center;">รายการนี้เคยถูกยกเลิกไปแล้ว</h3>
+    <div style="text-align:center;">
+        <a href="allerase.php">คลิกที่นี่</a> เพื่อกลับไปหน้าแรก
+    </div>
+    <?php
     exit();
+
 } else if ($price < 0) {
-    echo "<BR><BR><CENTER>ไม่สามารถยกเลิกได้เนื่องจากรายการมีจำนวนเงินที่ติดลบ</CENTER>";
+    ?>
+    <h3 style="text-align:center;">รายการนี้เคยถูกยกเลิกไปแล้ว</h3>
+    <div style="text-align:center;">
+        <a href="allerase.php">คลิกที่นี่</a> เพื่อกลับไปหน้าแรก
+    </div>
+    <?php
     exit();
+
 }
 
 $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
@@ -40,7 +55,7 @@ $result = mysql_query($query) or die("Query failed");
 
 
 //to find data from depart
-$query = "SELECT * FROM depart WHERE row_id = '$sPharow' "; //session
+$query = "SELECT * FROM depart WHERE row_id = '$departRowId' "; //session
 $result = mysql_query($query) or die("Query failed");
 
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -70,6 +85,7 @@ $aSumYprice = $row->sumyprice * -1;
 $aSumNprice = $row->sumnprice * -1;
 $cAccno  = $row->accno;
 $tvn   = $row->tvn;
+$sOfficer = $_SESSION['sOfficer'];
 
 //ยกเลิกสถิติฟิล์ม
 $query = "UPDATE xray_stat SET cancle = '1' WHERE idno = '" . $row->chktranx . "' limit 1";
@@ -79,7 +95,7 @@ $result = mysql_query($query) or die("Query failed");
 $query = "INSERT INTO depart(chktranx,date,ptname,hn,an,doctor,depart,item,detail,price,sumyprice,sumnprice,paid, idname,diag,accno,tvn,ptright)VALUES('$nRunno','$Thidate','$cPtname','$cHn',
         '$cAn','$cDoctor','$cDepart','$item','$aDetail','$Netprice','$aSumYprice','$aSumNprice','','$sOfficer','$cDiag','$cAccno','$tvn','$cPtright');";
 
-$result = mysql_query($query) or die("**เตือน !ท่านได้ยกเลิกรายการไปก่อนหน้านี้แล้ว");
+$result = mysql_query($query) or die("**เตือน !ท่านได้ยกเลิกรายการไปก่อนหน้านี้แล้ว".mysql_error());
 $idno = mysql_insert_id();
 
 //insert data into patdata
@@ -91,7 +107,7 @@ $aYprice = array("Yprice ");
 $aNprice = array("Nprice");
 $aPart = array("part ");
 
-$query = "SELECT code,detail,amount,price,yprice,nprice,part,row_id FROM patdata WHERE idno = '$sPharow' ";
+$query = "SELECT code,detail,amount,price,yprice,nprice,part,row_id FROM patdata WHERE idno = '$departRowId' ";
 $result = mysql_query($query) or die("Query failed");
 while (list($code, $detail, $amount, $price, $yprice, $nprice, $part, $row_id) = mysql_fetch_row($result)) {
     array_push($aCode, $code);
@@ -185,46 +201,70 @@ $query = "UPDATE opday SET   xray= xray+$xraypri,
         WHERE thdatehn= '$Thdhn' AND vn = '" . $_SESSION["sVn"] . "' ";
 $result = mysql_query($query) or die("Query failed,update opday");
 
-$sql = "Update depart set status = 'N' where row_id = '$sPharow' ";
+$sql = "Update depart set status = 'N' where row_id = '$departRowId' ";
 $result = mysql_query($sql);
 
-$sql = "Update patdata set status = 'N' where idno = '$sPharow' ";
+$sql = "Update patdata set status = 'N' where idno = '$departRowId' ";
 $result = mysql_query($sql);
-
+?>
+<style>
+    *{
+        font-family: "TH SarabunPSK";
+        font-size: 20px;
+    }
+</style>
+<table>
+    <tr>
+        <td align="right"><b>วันที่ :</b></td>
+        <td><?=$Thaidate;?></td>
+        <td align="right"><b>ชื่อ-สกุล :</b></td>
+        <td><?=$cPtname;?></td>
+    </tr>
+    <tr>
+        <td align="right"><b>HN :</b></td>
+        <td><?=$cHn;?></td>
+        <td align="right"><b>VN :</b></td>
+        <td><?=$tvn;?></td>
+    </tr>
+    <tr>
+        <td align="right"><b>AN :</b></td>
+        <td><?=$cAn;?></td>
+        <td align="right"><b>สิทธิ :</b></td>
+        <td><?=$cPtright;?></td>
+    </tr>
+    <tr>
+        <td align="right"><b>Diag :</b></td>
+        <td><?=$cDiag;?></td>
+        <td align="right"><b>แพทย์ :</b></td>
+        <td><?=$cDoctor;?></td>
+    </tr>
+</table>
+<table border="1" style="border-collapse:collapse; border: 1px solid #000000;">
+<tr style="background-color: #008080; color: #ffffff;">
+    <th>#</th>
+    <th>รายการ</th>
+    <th>จำนวน</th>
+    <th>ราคา</th>
+</tr>
+<?php
 //ใบแจ้งการยกเลิก
-print "<font face='Angsana New'>$Thaidate<br>";
-print "$cPtname HN:$cHn VN:$tvn <br>";
-print "สิทธิ: $cPtright<br>";
-print "โรค :$cDiag<br>";
-print "แพทย์:$cDoctor<br>";
-
-print "<table>";
-print "<tr>";
-print "<th>#</th>";
-print "<th>รายการ</th>";
-print "<th>จำนวน</th>";
-print "<th>ราคา</th>";
-print "</tr>";
-
 $no = 0;
 for ($n = 1; $n <= $x; $n++) {
     if (!empty($aCode[$n])) {
         $no++;
-        print("<tr>\n" .
-        "<td>$no</td>\n" .
-        "<td>$aDetail[$n]</td>\n" .
-        "<td>$aAmount[$n]</td>\n" .
-        "<td>$aMoney[$n]</td>\n" .
-        "</tr>\n");
+        ?>
+        <td><?=$no;?></td>
+        <td><?=$aDetail[$n];?></td>
+        <td align="right"><?=$aAmount[$n];?></td>
+        <td align="right"><?=$aMoney[$n];?></td>
+        <?php
     }
 };
-print "</table>";
+?>
+</table>
+<?php
 print "ราคารวม $Netprice บาท<br>";
-//จบใบแจ้งการยกเลิก
-
-print "ยกเลิกรายการเรียบร้อย <br>";
 print "จนท. $sOfficer  $Thaidate<br>";
-
-session_unregister("sVn");
-
-include("unconnect.inc");
+//จบใบแจ้งการยกเลิก
+?>
+<h3 style="font-size: 28px;"><u>ยกเลิกรายการเรียบร้อย</u></h3>
