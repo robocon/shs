@@ -340,11 +340,11 @@ window.onload = function(){
         // วนลูปข่าวสารเดิม แต่เรนเดอร์ให้เป็น .news-item
         $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
         $num = Y; $depart1=Y;
-        $query = "SELECT row,depart,new,datetime FROM new WHERE status ='$num' and dr ='$depart1' ORDER BY row DESC";
-		//$query = "SELECT row,depart,new,datetime FROM new WHERE status ='$num' ORDER BY row DESC";
+        //$query = "SELECT row,depart,new,datetime FROM new WHERE status ='$num' and dr ='$depart1' ORDER BY row DESC";
+		$query = "SELECT row,depart,new,datetime FROM new WHERE status ='$num' ORDER BY row DESC";
         $result = mysql_query($query) or die("Query failed");
         while (list ($row,$depart,$new,$datetime) = mysql_fetch_row ($result)) {
-          echo "<div class='news-item'><i class='fa-regular fa-star'></i> $new <span style='color:var(--muted)'>($depart • $datetime)</span></div>";
+          echo "<div class='news-item'><i class='fa-regular fa-star'></i>$new<span style='color:var(--muted)'>($depart • $datetime)</span></div>";
         }
       ?>
     </div>

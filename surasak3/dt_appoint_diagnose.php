@@ -112,6 +112,11 @@ if($action === 'save'){
 
 	redirect('dt_appoint_diagnose.php', $msg);
 	exit;
+}elseif ($action==='del') {
+	$msg = 'บันทึกข้อมูลเรียบร้อย';
+	$q = $db->delete("DELETE FROM `dr_limit_appoint` WHERE `id` = :id ;", array(':id'=>$_GET['id']));
+	redirect('dt_appoint_diagnose.php', $msg);
+	exit;
 }
 
 $title = 'ระบบจำกัดนัดผู้ป่วย';
@@ -363,7 +368,7 @@ if ( $page === 'showlist' ) {
 							<td><?php echo $date_in_week[$date_number];?></td>
 							<td><?php echo $item['user_row'];?></td>
 							<td>
-								<a href="">แก้ไข</a> / <a href="">ลบ</a>
+								<a href="">แก้ไข</a> / <a href="dt_appoint_diagnose.php?action=del&id=<?=$item['id'];?>">ลบ</a>
 							</td>
 						</tr>
 						<?php

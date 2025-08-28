@@ -161,14 +161,16 @@ $thip_items = array(
         'allow'=>array('วิลาวรรณ','ภิรมภรณ์','ปิยาภรณ์','จีราภรณ์2','จันทร์วลัย')
     ),
     array(
+        /* วราภรณ์ ศรีรัตนา */
         'name' => '[THIP] PCT OB-Gyne', 
         'link' => 'https://docs.google.com/spreadsheets/d/13QH2ijKYKQ5_k1tX9Et6y0ZNXgQQCWRzgjtb5YmnoTY/edit?usp=drive_link', 
-        'allow'=>array('วราภรณ์'/* วราภรณ์ ศรีรัตนา */)
+        'allow'=>array('วราภรณ์')
     ),
     array(
+        /* วราภรณ์ ชัยวณิชยา */
         'name' => '[THIP] PCT Sx', 
         'link' => 'https://docs.google.com/spreadsheets/d/1FMQ8GAARMhfP45KbelR1t9d5r4N8UPtjODMGi8YbBJs/edit?usp=sharing', 
-        'allow'=>array('สุพิชชา'/* วราภรณ์ ชัยวณิชยา */,'นันท์นภัส','นฤมล')
+        'allow'=>array('สุพิชชา','นันท์นภัส','นฤมล')
     ),
     array(
         'name' => '[THIP] PCT QMR / HRD / PTC', 
