@@ -49,9 +49,7 @@ function jschars($str)
 	$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 	$Thidate2 = date("d-m-").(date("Y")+543).date(" H:i:s");
 	
-	
-	
-	 
+		
 	if(isset($_SESSION["cancle_row_id"]) && $_SESSION["cancle_row_id"] != ""){
 
 		$sql = "Update dphardep set dr_cancle='1' where hn='".$_SESSION["hn_now"]."' AND row_id = '".$_SESSION["cancle_row_id"]."' ";
@@ -750,50 +748,87 @@ $_SESSION["dt_drugstk"] .="</TABLE>";
 $reasonToUsedDrug = '';
 if($insert1===true){
 
+	// $detailList = array(
+	// 	'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
+	// 	'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
+	// 	'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
+	// 	'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
+	// 	'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
+	// 	'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
+	// 	'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+	// 	'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
+	// 	'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
+	// 	'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
+	// 	'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
+	// 	'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
+	// 	'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
+	// 	'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+	// 	'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+	// 	'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
+	// );
+
+	// $subDetailList = array(
+	// 	'INCIL1_1' => 'Target organ damage',
+	// 	'INCIL1_2' => 'เป็นมานาน ≥10ปี',
+	// 	'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี',
+	// 	'INCIL2_1' => 'First-degree relative with known premature (<55 years, men; &lt;60 years, women) coronary heart disease (CHD) OR First-degree relative with known LDL cholesterol &gt;95th percentile by age and gender for country',
+	// 	'INCIL2_2' => 'First-degree relative with tendon xanthoma and/or corneal arcus OR Child(ren) &lt;18 years with LDL cholesterol &gt; 95th percentile by age and gender for country',
+	// 	'INCIL2_3' => 'Subject has premature  (&lt;55 years, men; &lt;60 years, women) CHD',
+	// 	'INCIL2_4' => 'Subject has premature (&lt;55 years, men; &lt;60 years, women) cerebral or peripheral vascular disease',
+	// 	'INCIL2_5' => 'Tendon xanthoma',
+	// 	'INCIL2_6' => 'Corneal arcus in a person &lt;45 years',
+	// 	'INCIL2_7' => '&gt; 8.5 mmol/L (&gt;325 mg/dL)',
+	// 	'INCIL2_8' => '6.5 – 8.4 mmol/L (251-325 mg/dL)',
+	// 	'INCIL2_9' => '5.0 – 6.4 mmol/L (191-250 mg/dL)',
+	// 	'INCIL2_10' => '4.0 – 4.9 mmol/L (155-190 mg/dL)',
+	// 	'INCIL2_11' => 'Causative mutation shown in the LDLR, APOB, or PCSK9 genes',
+	// );
+
 	$detailList = array(
-		'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
-		'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
-		'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
-		'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
-		'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
-		'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
-		'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-		'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
-		'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
-		'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
-		'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
-		'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
-		'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
-		'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-		'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-		'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
+		'INCLI1_SUB1_1' => 'ครอบครัวมีประวัติโรคหลอดเลือดหัวใจเกิดก่อนวัยอันควร (Premature CVD) ผู้ชาย < 55 ปี, ผู้หญิง < 60 ปี',
+		'INCLI1_SUB1_2' => 'มีประวัติญาติค่า LDL-C สูงว่าคนปกติทั่วไป (95% tile) ในอายุและเพศ ของญาติสายตรงทั้งหมด',
+		'INCLI1_SUB1_3' => 'ญาติสายตรงมีภาวะ Tendon Xanthoma และ/หรือ Corneal arcus',
+		'INCLI1_SUB1_4' => 'มีประวัติญาติที่อายุ &lt; 18 ปี มี ค่า LDL-C สูงว่าคนปกติทั่วไป (95% tile) ในอายุและเพศเดียวกัน',
+		'INCLI1_SUB2_1' => 'มีภาวะโรคหลอดเลือดหัวใจตีบ (CAD) ก่อนวัยอันควรเช่น (ผู้ชาย &lt; 55 ปี, ผู้หญิง &lt; 60 ปี)',
+		'INCLI1_SUB2_2' => 'มีภาวะโรคหลอดเลือดสมองและโรคหลอดเลือดส่วนปลายผิดปกติ (ผู้ชาย &lt; 55 ปี, ผู้หญิง &lt; 60 ปี)',
+		'INCLI1_SUB3_1' => 'มีภาวะ Tendon Xanthoma',
+		'INCLI1_SUB3_2' => 'มีภาวะ Corneal arcus โดยคนไข้อายุ &lt; 45 ปี',
+		'INCLI1_SUB4_1' => '&gt;330 mg/dL (8.5 mmol/L)',
+		'INCLI1_SUB4_2' => '250–329 mg/dL (6.5–8.5 mmol/L)',
+		'INCLI1_SUB4_3' => '190–249 mg/dL (4.9–6.4 mmol/L)',
+		'INCLI1_SUB4_4' => '155–189 mg/dL (4.0–4.9 mmol/L)',
+		'INCLI1_SUB4_5' => 'มีการกลายพันธุ์ยีนที่ทำงานเกี่ยวกับ LDL-R เช่นยีน  LDL‐R, ApoB, or PCSK9 gene',
+
+		'INCLI2_SUB_1'=>'มี Target organ damage',
+		'INCLI2_SUB_2'=>'เป็นมามากกว่า 10 ปี',
+		'INCLI2_SUB_3'=>'มี coronary calcium score ≥ 1,000 หรือ มีประวัติครอบครัวเป็นภาวะ Premature atherosclerosis (ผู้ชาย < 55 ปี, ผู้หญิง < 60 ปี)',
+
+		'INCLI3_SUB_1'=>'มีประวัติ major ASCVD events หลายครั้ง',
+		'INCLI3_SUB_2'=>'มีประวัติ major ASCVD events 1 ครั้ง + กลุ่มภาวะความเสี่ยงสูง (high risk condition)',
+
+		'INCLI4_SUB_1'=>'มีภาวะ familial hypercholesterolemia (FH)',
+		'INCLI4_SUB_2'=>'มีประวัติ Coronary artery by pass surgery หรือ percutaneous coronary intervention และ อย่างน้อยเคยมีประวัติการเกิด ASCVD event(s) ที่มีระยะเกิน 1 ปี และ ไม่มีภาวะแทรกช้อน',
+		'INCLI4_SUB_3'=>'เบาหวาน',
+		'INCLI4_SUB_4'=>'ไตเรื้อรัง (eGFR 15-59 ml/min/1.73 m2)',
 	);
 
-	$subDetailList = array(
-		'INCIL1_1' => 'Target organ damage',
-		'INCIL1_2' => 'เป็นมานาน ≥10ปี',
-		'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี',
-		'INCIL2_1' => 'First-degree relative with known premature (<55 years, men; &lt;60 years, women) coronary heart disease (CHD) OR First-degree relative with known LDL cholesterol &gt;95th percentile by age and gender for country',
-		'INCIL2_2' => 'First-degree relative with tendon xanthoma and/or corneal arcus OR Child(ren) &lt;18 years with LDL cholesterol &gt; 95th percentile by age and gender for country',
-		'INCIL2_3' => 'Subject has premature  (&lt;55 years, men; &lt;60 years, women) CHD',
-		'INCIL2_4' => 'Subject has premature (&lt;55 years, men; &lt;60 years, women) cerebral or peripheral vascular disease',
-		'INCIL2_5' => 'Tendon xanthoma',
-		'INCIL2_6' => 'Corneal arcus in a person &lt;45 years',
-		'INCIL2_7' => '&gt; 8.5 mmol/L (&gt;325 mg/dL)',
-		'INCIL2_8' => '6.5 – 8.4 mmol/L (251-325 mg/dL)',
-		'INCIL2_9' => '5.0 – 6.4 mmol/L (191-250 mg/dL)',
-		'INCIL2_10' => '4.0 – 4.9 mmol/L (155-190 mg/dL)',
-		'INCIL2_11' => 'Causative mutation shown in the LDLR, APOB, or PCSK9 genes',
+	$titleList = array(
+		'INCIL1' => 'ผู้ป่วยที่เป็นโรคไขมันในเลือดสูงจากกรรมพันธุ์ (Familial hypercholesterolemia) หรือ (FH) ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 100 mg/dl',
+		'INCIL2' => 'ผู้ป่วยที่มีภาวะไขมันในเลือดสูง (dyslipidemia) เป็นโรคเบาหวาน (diabetes) ที่มีความเสี่ยงสูง (high risk) ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า &gt; 100 mg/dl',
+		'INCIL3' => 'ผู้ป่วยที่เป็นโรคหัวใจ (Clinical ASCVD) ที่มีสาเหตุมาจากหลอดเลือดแดงแข็ง (Established atherosclerotic cardiovascular disease) และอยู่ในกลุ่มความเสี่ยงสูงมาก (very high risk) ที่ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 70 mg/dl',
+		'INCIL4' => 'ผู้ป่วยที่เป็นโรคหัวใจ (Clinical ASCVD) ที่มีสาเหตุมาจากหลอดเลือดแดงแข็ง (Established atherosclerotic cardiovascular disease) และอยู่ในกลุ่มภาวะความเสี่ยงสูง (high risk condition) ที่ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 100 mg/dl'
 	);
 
 	// ดึงข้อมูลออกมาจาก Cookie
 	$cookieName = date('Y-m-d').sprintf("%s", $_SESSION["hn_now"]); // ชื่อ Cookie
 	$cookieItems = $json->decode($_COOKIE[$cookieName]);
+	$medicalDrugs = $_SESSION[$cookieName];
 
 	// เอา drugcode ที่่เก็บไว้ใน Cookie(ที่หมอคีย์) มาเทียบกับที่สั่งจริงๆ(ที่หมอคีย์ไปแล้วบางตัวอาจจะไม่ได้สั่งจริง)
 	$cookieDrugcode = array();
 	foreach ($cookieItems as $item) {
 		$cookieDrugcode[] = $item['drugcode'];
+		// $cookieDrugcode[] = $item;
 	}
 
 	$newDrugItems = array(); // เก็บเอาไว้ปริ้นสติกเกอร์
@@ -823,11 +858,11 @@ if($insert1===true){
 				if($qInDoctor===true){
 					
 					$doctorMedicalId = $dbi->insert_id;
-					foreach ($cItem['detail'] as $dItem) { // บันทึกรายย่อย
+					foreach ($cItem['title'] as $dItem) { // บันทึกรายย่อย
 
 						$subDetail = '';
-						if(!empty($cItem['sub_detail'])){
-							$subDetail = $json->encode($cItem['sub_detail'][$dItem]);
+						if(!empty($cItem['detail'])){
+							$subDetail = $json->encode($cItem['detail'][$dItem]);
 						}
 
 						$sqlDetail = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`, `sub_detail`) 
@@ -857,26 +892,23 @@ if($insert1===true){
 		if($i_title>1){
 			$brTitle = '<br>';
 		}
-
-		$reasonToUsedDrug .= $brTitle.'<b>[RDU] '.$drugItem['criteria'].'</b><br>';
+		
+		$reasonToUsedDrug .= $brTitle.'<b>[RDU] เหตุผลการใช้ยา</b><br>';
 
 		$d_i = 1;
-		foreach($drugItem['detail'] AS $d){
-
-			// $detailKey = ($d=='INCIL1') ? sprintf("%s", $d) : '';
+		foreach($drugItem['title'] AS $d){
 			$detailKey = $d;
 			$subDetail = '';
-			if(!empty($drugItem['sub_detail'])){
-			
-				$subDetailJson = $drugItem['sub_detail'][$detailKey];
+			if(!empty($drugItem['detail'])){
+				$subDetailJson = $drugItem['detail'][$d];
 				$sub_i = 1;
 				foreach ($subDetailJson as $sub) {
-					$subDetail .= '&nbsp;&nbsp; '.$d_i.'.'.$sub_i.'. '.$subDetailList[$sub].'<br>';
+					$subDetail .= '&nbsp;&nbsp; '.$d_i.'.'.$sub_i.'. '.$detailList[$sub].'<br>';
 					$sub_i++;
 				}
 			}
 			
-			$reasonToUsedDrug .= $d_i.'. '.$detailList[$d].'<br>'.$subDetail;
+			$reasonToUsedDrug .= $d_i.'. '.$titleList[$d].'<br>'.$subDetail;
 			$d_i++;
 		}
 

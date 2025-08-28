@@ -318,12 +318,16 @@ async function confirmDiabetes(drugcode){
 	closePreg();
 }
 
-async function checkInclisiran(drugcode){
-
+async function checkInclisiran(drugcode, criteriaCode, criteria){
+	console.log(drugcode);
+	console.log(criteriaCode);
+	console.log(criteria);
 	const response = await fetch('inclisiran_form.php');
 	let body = await response.text();
 
 	body = body.replace('{{drugcode}}',drugcode);
+	body = body.replace('{{criteriaCode}}',criteriaCode);
+	body = body.replace('{{criteria}}',criteria);
 
 	document.getElementById("pregHeader").innerHTML = '[RDU] Inclisiran และ Evolocumab';
 	document.getElementById("pregContent").innerHTML = body;
@@ -456,123 +460,176 @@ async function checkInclisiran_old(drugcode){ // 2INC
 	document.getElementById("pregContainer").style.display = "";
 }
 
-function clickInclisiran(){
+// function clickInclisiran(){
+// 	if(document.getElementById('inputInclisiran1').checked===true){
+// 		document.getElementById('subIncli1').style.display='';
+// 	}else{
+// 		document.getElementById('subIncli1').style.display='none';
+
+// 		document.getElementById('sub_detail1').checked=false;
+// 		document.getElementById('sub_detail2').checked=false;
+// 		document.getElementById('sub_detail3').checked=false;
+
+// 	}
+// }
+
+// function clickInclisiran2(){
+// 	if(document.getElementById('inputInclisiran2').checked===true){
+// 		document.getElementById('subIncli2').style.display='';
+// 	}else{
+// 		document.getElementById('subIncli2').style.display='none';
+
+// 		document.getElementById('incil2_1').check = false;
+// 		document.getElementById('incil2_2').check = false;
+// 		document.getElementById('incil2_3').check = false;
+// 		document.getElementById('incil2_4').check = false;
+// 		document.getElementById('incil2_5').check = false;
+// 		document.getElementById('incil2_6').check = false;
+// 		document.getElementById('incil2_7').check = false;
+// 		document.getElementById('incil2_8').check = false;
+// 		document.getElementById('incil2_9').check = false;
+// 		document.getElementById('incil2_10').check = false;
+// 		document.getElementById('incil2_11').check = false;
+
+// 	}
+// }
+
+
+function clickINC1(){
 	if(document.getElementById('inputInclisiran1').checked===true){
 		document.getElementById('subIncli1').style.display='';
 	}else{
 		document.getElementById('subIncli1').style.display='none';
-
-		document.getElementById('sub_detail1').checked=false;
-		document.getElementById('sub_detail2').checked=false;
-		document.getElementById('sub_detail3').checked=false;
-
 	}
 }
 
-function clickInclisiran2(){
+function clickINC2(){
 	if(document.getElementById('inputInclisiran2').checked===true){
 		document.getElementById('subIncli2').style.display='';
 	}else{
 		document.getElementById('subIncli2').style.display='none';
-
-		document.getElementById('incil2_1').check = false;
-		document.getElementById('incil2_2').check = false;
-		document.getElementById('incil2_3').check = false;
-		document.getElementById('incil2_4').check = false;
-		document.getElementById('incil2_5').check = false;
-		document.getElementById('incil2_6').check = false;
-		document.getElementById('incil2_7').check = false;
-		document.getElementById('incil2_8').check = false;
-		document.getElementById('incil2_9').check = false;
-		document.getElementById('incil2_10').check = false;
-		document.getElementById('incil2_11').check = false;
-
 	}
 }
 
-function confirmInclisiran(drugcode){
+function clickINC3(){
+	if(document.getElementById('inputInclisiran3').checked===true){
+		document.getElementById('subIncli3').style.display='';
+	}else{
+		document.getElementById('subIncli3').style.display='none';
+	}
+}
+
+function clickINC4(){
+	if(document.getElementById('inputInclisiran4').checked===true){
+		document.getElementById('subIncli4').style.display='';
+	}else{
+		document.getElementById('subIncli4').style.display='none';
+	}
+}
+
+function confirmInclisiran(drugcode, criteriaCode, criteria){
 
 	const incliItem = document.querySelectorAll('.inputInclisiran');
 	let formData = new FormData();
 	let incliCount = 0;
-	let checkIncli1 = false;
-	let checkIncli2 = false;
 	for (let i = 0; i < incliItem.length; i++) {
-
-		if (incliItem[i].checked===true) { 
-
-			// ถ้าเป็นข้อ 1 ให้แปะสถานะเอาไว้
-			if(incliItem[i].value==='INCIL1'){
-				checkIncli1 = true;
-			}
-
-			if(incliItem[i].value==='INCIL2'){
-				checkIncli2 = true;
-			}
-			
-			formData.append("detail[]", incliItem[i].value);
+		const el = incliItem[i];
+		if (el.checked===true) { 
+			formData.append(el.getAttribute('name'), el.value);
 			incliCount++;
-		}
-	}
-
-	const subIncliItem = document.querySelectorAll('.subDetail1');
-	let subCount1 = 0;
-	for (let i = 0; i < subIncliItem.length; i++) {
-		if (subIncliItem[i].checked===true) {
-			formData.append("sub_detail[INCIL1][]", subIncliItem[i].value);
-			subCount1++;
-		}
-	}
-
-	const subIncliItem2 = document.querySelectorAll('.subDetail2');
-	let subCount2 = 0;
-	let score = 0;
-	for (let i = 0; i < subIncliItem2.length; i++) {
-		if (subIncliItem2[i].checked===true) {
-			console.log( subIncliItem2[i].value);
-			formData.append("sub_detail[INCIL2][]", subIncliItem2[i].value);
-			score += parseInt(subIncliItem2[i].getAttribute('data-score'));
-			subCount2++;
 		}
 	}
 
 	if(incliCount===0){
 		Swal.fire({
-			title: "กรุณาเลือกรายการอย่างน้อย 1ข้อ",
-			icon: 'warning',
-			allowOutsideClick: false
-		});
-		return false;
-	}
-	if(checkIncli1===true && subCount1===0){ // ข้อ 1 ถูกติ๊กเอาไว้ แต่ไม่ได้เลือกตัวย่่อย
-		Swal.fire({
-			title: "กรุณาเลือกรายละเอียดในข้อที่ 1 อย่างน้อย 1ข้อ",
+			title: "กรุณาเลือกเกณฑ์ประเมินอย่างน้อย 1ข้อ",
 			icon: 'warning',
 			allowOutsideClick: false
 		});
 		return false;
 	}
 
-	if(checkIncli2===true && subCount2===0){
-		Swal.fire({
-			title: "กรุณาเลือกรายละเอียดในข้อที่ 2",
-			icon: 'warning',
-			allowOutsideClick: false
-		});
-		return false;
-	}else if(checkIncli2===true && subCount2>0 && score<6){
-		Swal.fire({
-			title: "คะแนนไม่ถึง 6 กรุณาเลือกใหม่อีกครั้ง",
-			icon: 'warning',
-			allowOutsideClick: false
-		});
-		return false;
+	if(document.getElementById('inputInclisiran1').checked===true){
+		let detail1 = document.querySelectorAll('.detail1');
+		let detail1Checked = false;
+		let score = 0;
+		for (let index = 0; index < detail1.length; index++) {
+			const el = detail1[index];
+
+			let itemScore = el.getAttribute("data-score");
+			if(el.checked === true){
+				score += parseInt(itemScore);
+				detail1Checked = true;
+			}
+		}
+		
+		if(detail1Checked===false){
+			Swal.fire({title:"กรุณาเลือกเกณฑ์การประเมินในข้อที่1", icon: "warning"});
+			return false;
+		}else{
+			if(score<=6){
+				Swal.fire({title:"คะแนนรวมในเกณฑ์ข้อที่1 ต้องมากกว่า 6", icon: "warning"});
+				return false;
+			}
+		}
+	}
+
+	if(document.getElementById('inputInclisiran2').checked===true){
+		let detail2 = document.querySelectorAll('.detail2');
+		let detail2Checked = false;
+		for (let index = 0; index < detail2.length; index++) {
+			const el = detail2[index];
+			if(el.checked === true){
+				detail2Checked = true;
+			}
+		}
+		if(detail2Checked===false){
+			Swal.fire({title:"กรุณาเลือกเกณฑ์การประเมินในข้อที่2", icon: "warning"});
+			return false;
+		}
+	}
+
+	if(document.getElementById('inputInclisiran3').checked===true){
+		let detail3 = document.querySelectorAll('.detail3');
+		let detail3Checked = false;
+		for (let index = 0; index < detail3.length; index++) {
+			const el = detail3[index];
+			if(el.checked === true){
+				detail3Checked = true;
+			}
+		}
+		if(detail3Checked===false){
+			Swal.fire({title:"กรุณาเลือกเกณฑ์การประเมินในข้อที่3", icon: "warning"});
+			return false;
+		}else{
+			if(document.getElementById('inputInclisiran4').checked===false){
+				Swal.fire({title:"เกณฑ์การประเมินต้องทำควบคู่กับข้อ4", icon: "warning"});
+				return false;
+			}
+		}
+	}
+
+	if(document.getElementById('inputInclisiran4').checked===true){
+		let detail4 = document.querySelectorAll('.detail4');
+		let detail4Checked = false;
+		for (let index = 0; index < detail4.length; index++) {
+			const el = detail4[index];
+			if(el.checked === true){
+				detail4Checked = true;
+			}
+		}
+
+		if(detail4Checked===false){
+			Swal.fire({title:"กรุณาเลือกเกณฑ์การประเมินในข้อที่4", icon: "warning"});
+			return false;
+		}
 	}
 
 	formData.append("action", 'save');
-	formData.append("criteria", 'Inclisiran (Sybrava 284 mg)');
-	formData.append("criteriaCode", 'INCLISIRAN');
+	formData.append("criteria", criteria);
+	formData.append("criteriaCode", criteriaCode);
 	formData.append("drugcode", drugcode);
+	// hn กับ doctor ถูกประกาศไว้แล้วใน dt_drug.php
 	formData.append("hn", hn);
 	formData.append("doctor", doctor);
 

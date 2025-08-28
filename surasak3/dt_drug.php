@@ -3043,9 +3043,11 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	if(cookieDateHn!==''){
 		dataDateHn = JSON.parse(decodeURIComponent(cookieDateHn));
 	}
-	
+
+	const drugTrim = drugcode.trim();
+
 	// คำนวณยาผู้ป่วย ถ้ายังเหลือจะทำการแจ้งเตือน
-	drugLeftOver(drugcode.trim()).then((res)=>{
+	drugLeftOver(drugTrim).then((res)=>{
 		if(res.status==400){
 			Swal.fire({
 				title: 'แจ้งเตือน', 
@@ -3054,13 +3056,13 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	});
 
-	checkAlphaBlocker(drugcode.trim()).then((res)=>{
+	checkAlphaBlocker(drugTrim).then((res)=>{
 		if(res.status==400){
 			Swal.fire(res.message);
 		}
 	});
 
-	alphaBlockersOtherDoctor(drugcode.trim()).then((res)=>{
+	alphaBlockersOtherDoctor(drugTrim).then((res)=>{
 		if(res.status==400){
 			Swal.fire(res.message);
 		}
@@ -3068,31 +3070,31 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// START ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
 	// Mineralocorticoid receptor antagonist (MRA)
-	if( drugcode.trim() === '1FINE' && typeof dataDateHn.MRA === 'undefined'){
-		checkMRA(drugcode.trim());
+	if( drugTrim === '1FINE' && typeof dataDateHn.MRA === 'undefined'){
+		checkMRA(drugTrim);
 	}
 	
 	// @2568-08-02 ยกเลิกยา 1SEMA
-	if( ( drugcode.trim() === '1EPAD' ) && typeof dataDateHn.LIPID === 'undefined' ){
-		checkLipidDrug(drugcode.trim());
+	if( ( drugTrim === '1EPAD' ) && typeof dataDateHn.LIPID === 'undefined' ){
+		checkLipidDrug(drugTrim);
 	}
 
-	if( drugcode.trim() === '7BREZ' && typeof dataDateHn.ADRENO === 'undefined' ){
-		checkAdreno(drugcode.trim());
+	if( drugTrim === '7BREZ' && typeof dataDateHn.ADRENO === 'undefined' ){
+		checkAdreno(drugTrim);
 	}
 
-	if( ( drugcode.trim() === '2SEMA' || drugcode.trim() === '2DULA' || drugcode.trim() === '1SEMA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
-		checkDiabetes(drugcode.trim());
+	if( ( drugTrim === '2SEMA' || drugTrim === '2DULA' || drugTrim === '1SEMA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
+		checkDiabetes(drugTrim);
 	}
 
-	
+	console.log(dataDateHn.INCLISIRAN);
 	var doctor_id = document.getElementById('doctor_id').value;
-	if( drugcode.trim() === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
+	if( drugTrim === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
 		// อนุญาตให้แพทย์2ท่านนี้สั่งได้เท่านั้น
 		// ณัชญ์ระวี บุรีคำ (md29760)
 		// วิรดา  อนันตวงศ์ (md43724)
 		// if(doctor_id == 'md29760' || doctor_id == 'md43724'){
-			checkInclisiran(drugcode.trim());
+			checkInclisiran(drugTrim,'INCLISIRAN','Inclisiran 284 mg');
 		// }else{
 		// 	Swal.fire({
 		// 		title: 'แจ้งเตือน',
@@ -3103,6 +3105,11 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		// 	resetLeftForm();
 		// 	return false;
 		// }
+	}
+
+	console.log(dataDateHn.EVOLOCUMAB);
+	if( drugTrim === '2EVO' && typeof dataDateHn.EVOLOCUMAB === 'undefined' ){
+		checkInclisiran(drugTrim,'EVOLOCUMAB','Evolocumab 140 mg/ml');
 	}
 	
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ
@@ -3135,7 +3142,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	callback_myWindow = returnstr = xmlhttp.responseText;
 
 	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
-	if(drugcode.trim()=='1FEBU'){ 
+	if(drugTrim=='1FEBU'){ 
 		var res_1feb = check_1FEBU();
 		if(res_1feb==true){ 
 			clear_left_form();
@@ -3149,7 +3156,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		}
 	}
 	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
-	if(metformin_drug.indexOf(drugcode.trim())>=0){
+	if(metformin_drug.indexOf(drugTrim)>=0){
 		var res_metformin = check_metformin();
 		if(res_metformin===false){ 
 			clear_left_form();
@@ -3159,8 +3166,8 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	}
 
 	// แจ้งเตือน NSAIDS ซ้ำซ้อน
-	if(nsaidsListForJs.indexOf(drugcode.trim())>=0){ 
-		var resNsaids = check_nsaids(drugcode.trim());
+	if(nsaidsListForJs.indexOf(drugTrim)>=0){ 
+		var resNsaids = check_nsaids(drugTrim);
 		if(resNsaids==false){ 
 			clear_left_form();
 			return false;
@@ -3186,22 +3193,22 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	let resCheckDrugreact = check_drugreact(drugcode, returnstr);
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่11
-	glibenclamide_alert(drugcode.trim());
+	glibenclamide_alert(drugTrim);
 
 	// แจ้งเตือน RDUตัวชี้วัดที่14
-	kidney_egfr_alert(drugcode.trim());
+	kidney_egfr_alert(drugTrim);
 
 	// แจ้งเตือน RDUตัวชี้วัดที่18
-	rdu18_alert(drugcode.trim(), icd10);
+	rdu18_alert(drugTrim, icd10);
 
 	// แจ้งเตือน RDUตัวชี้วัดที่7
-	rdu7_alert(drugcode.trim(), icd10);
+	rdu7_alert(drugTrim, icd10);
 
 	// แจ้งเตือน RDUตัวชี้วัดที่8
-	rdu8_alert(drugcode.trim(), icd10);
+	rdu8_alert(drugTrim, icd10);
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่6
-	rdu6_alert(drugcode.trim(), icd10);
+	rdu6_alert(drugTrim, icd10);
 
 	// เอารายการยาที่ double click มาไว้ในฟอร์มซ้ายมือ
 	do_add_drug(returnstr, drugcode);
