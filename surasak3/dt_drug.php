@@ -3087,14 +3087,34 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkDiabetes(drugTrim);
 	}
 
-	console.log(dataDateHn.INCLISIRAN);
+
+/* 
+เอาไว้หา ldl-c จาก opday + ( resulthead + resultdetail )
+SELECT a.*,b.*  
+FROM (
+	SELECT `hn`,`thdatehn` FROM `opday` WHERE `thidate` LIKE '2568-08-29%' 
+) AS a 
+LEFT JOIN (
+	SELECT x.*,y.`labcode`,y.`labname`
+	FROM ( 
+		SELECT `autonumber`,`hn`,SUBSTRING(`orderdate`,1,10) AS `orderdate`,CONCAT(SUBSTRING(`orderdate`,9,2),'-',SUBSTRING(`orderdate`,6,2),'-',(SUBSTRING(`orderdate`,1,4)+543),`hn`) AS `thdatehn` 
+		FROM `resulthead` 
+		WHERE `orderdate` LIKE '2025-08-29%' 
+		AND `profilecode` = 'LIPID' 
+	) AS x 
+	LEFT JOIN `resultdetail` AS y ON x.`autonumber` = y.`autonumber` 
+	WHERE y.`labcode` = '10001' 
+) AS b ON a.`thdatehn` = b.`thdatehn`
+WHERe b.`autonumber` IS NOT NULL 
+*/
+	
 	var doctor_id = document.getElementById('doctor_id').value;
 	if( drugTrim === '2INC' && typeof dataDateHn.INCLISIRAN === 'undefined' ){
 		// อนุญาตให้แพทย์2ท่านนี้สั่งได้เท่านั้น
 		// ณัชญ์ระวี บุรีคำ (md29760)
 		// วิรดา  อนันตวงศ์ (md43724)
 		// if(doctor_id == 'md29760' || doctor_id == 'md43724'){
-			checkInclisiran(drugTrim,'INCLISIRAN','Inclisiran 284 mg');
+			checkInclisiran(hn, drugTrim, 'INCLISIRAN','Inclisiran 284 mg');
 		// }else{
 		// 	Swal.fire({
 		// 		title: 'แจ้งเตือน',
@@ -3107,9 +3127,14 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		// }
 	}
 
-	console.log(dataDateHn.EVOLOCUMAB);
+	// console.log(dataDateHn.EVOLOCUMAB);
+	/*
+	เกณฑ์ที่ต้องผ่านข้อแรกเลยก็คือ *พึ่งได้รับยาเป็นครั้งแรกเท่านั้น*
+	ถ้าผ่านไปได้ในข้อต่อไปคือ
+	- ต้องการ ldl-c ในข้อย่อยแต่ละตัว
+	*/
 	if( drugTrim === '2EVO' && typeof dataDateHn.EVOLOCUMAB === 'undefined' ){
-		checkInclisiran(drugTrim,'EVOLOCUMAB','Evolocumab 140 mg/ml');
+		checkInclisiran(hn, drugTrim, 'EVOLOCUMAB','Evolocumab 140 mg/ml');
 	}
 	
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ

@@ -318,10 +318,14 @@ async function confirmDiabetes(drugcode){
 	closePreg();
 }
 
-async function checkInclisiran(drugcode, criteriaCode, criteria){
-	console.log(drugcode);
-	console.log(criteriaCode);
-	console.log(criteria);
+/**
+ * ดึงแบบฟอร์มมาให้หมอกรอกข้อมูล
+ * @param {*} drugcode 
+ * @param {*} criteriaCode 
+ * @param {*} criteria 
+ */
+async function checkInclisiran(hn, drugcode, criteriaCode, criteria){
+
 	const response = await fetch('inclisiran_form.php');
 	let body = await response.text();
 
@@ -337,6 +341,12 @@ async function checkInclisiran(drugcode, criteriaCode, criteria){
 	document.getElementById("pregContainer").style.display = "";
 
 }
+
+async function getLabLDLC(hn){
+	const response = await fetch('/path/to/template.html');
+	const body = await response.text();
+}
+
 async function checkInclisiran_old(drugcode){ // 2INC
     const htmlTxt = `<div>
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
