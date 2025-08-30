@@ -328,15 +328,18 @@ if($_GET["action"] == "carlendar"){
 	if( $_SESSION['sIdname'] == 'md19921' OR $_SESSION['smenucode'] == 'ADM' ){ 
 
 		$next_3month = strtotime(date('Y-m-d')." +3 months");
+		$next_5month = strtotime(date('Y-m-d')." +5 months");
 		$next_6month = strtotime(date('Y-m-d')." +6 months");
 		$next_1year = strtotime(date('Y-m-d')." +1 year");
 
 		list($n3mY, $n3mM, $n3mD) = explode('-', date('Y-m-d', $next_3month));
+		list($n5mY, $n5mM, $n5mD) = explode('-', date('Y-m-d', $next_5month));
 		list($n6mY, $n6mM, $n6mD) = explode('-', date('Y-m-d', $next_6month));
 		list($n1yY, $n1yM, $n1yD) = explode('-', date('Y-m-d', $next_1year));
 
 		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.date('d').'&dfMonth='.date('m').'&dfYear='.date('Y').'\')">วันปัจจุบัน</a>';
 		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n3mD.'&dfMonth='.$n3mM.'&dfYear='.$n3mY.'\')">นัด 3เดือน</a>';
+		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n5mD.'&dfMonth='.$n5mM.'&dfYear='.$n5mY.'\')">นัด 5เดือน</a>';
 		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n6mD.'&dfMonth='.$n6mM.'&dfYear='.$n6mY.'\')">นัด 6เดือน</a>';
 		echo '<a href="javascript: void(0);" class="btnCalendar" onclick="show_carlendar(\'&today='.$n1yD.'&dfMonth='.$n1yM.'&dfYear='.$n1yY.'\')">นัด 1ปี</a>';
 		echo '<br>';
