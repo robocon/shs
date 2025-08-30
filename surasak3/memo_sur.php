@@ -10,40 +10,51 @@ include("connect.inc");
 if(isset($_GET["action"]) && $_GET["action"] == "view_hn"){
 
 $sql = "Select yot, name, surname From opcard where hn = '".$_GET["hn"]."' limit 1";
-
 $result  = Mysql_Query($sql);
-list($yot, $name, $sname) = Mysql_fetch_row($result);
+list($yot, $name, $sname, $ptright_opcard) = Mysql_fetch_row($result);
 
 $thidate=(date("Y")+543).date("-m-d");
-$sql = "Select vn From opday where hn = '".$hn."' and thidate like '$thidate%' Order by row_id DESC limit 1";
+$sql = "Select vn, ptright From opday where hn = '".$hn."' and thidate like '$thidate%' Order by row_id DESC limit 1";
 $result  = Mysql_Query($sql);
-list($vn) = Mysql_fetch_row($result);
+list($vn,$ptright) = Mysql_fetch_row($result);
 
 
 $sql = "Select an From ipcard where hn = '".$_GET["hn"]."' and dcdate='0000-00-00 00:00:00' Order by row_id DESC limit 1";
 $result  = Mysql_Query($sql);
 list($an) = Mysql_fetch_row($result);
 
-echo $yot,"][", $name,"][", $sname,"][", $an,"][", $vn;
+if(empty($ptright)){
+	$ptright=$ptright_opcard;
+}
+
+//echo $yot,"][", $name,"][", $sname,"][", $an,"][", $vn;
+echo $yot,"][", $name,"][", $sname,"][", $an,"][", $vn,"][", $ptright;
 exit();
 }
 
 if(isset($_GET["action"]) && $_GET["action"] == "view_an"){
 
-$sql = "Select hn From ipcard where an = '".$_GET["an"]."' and dcdate='0000-00-00 00:00:00' Order by row_id DESC limit 1";
+$sql = "Select hn,ptright From ipcard where an = '".$_GET["an"]."' and dcdate='0000-00-00 00:00:00' Order by row_id DESC limit 1";
 $result  = Mysql_Query($sql);
-list($hn) = Mysql_fetch_row($result);
+list($hn,$ptright) = Mysql_fetch_row($result);
 
 $thidate=(date("Y")+543).date("-m-d");
 $sql = "Select vn From opday where hn = '".$hn."' and thidate like '$thidate%' Order by row_id DESC limit 1";
 $result  = Mysql_Query($sql);
 list($vn) = Mysql_fetch_row($result);
 
-$sql = "Select yot, name, surname From opcard where hn = '".$hn."' limit 1";
+$sql = "Select yot, name, surname,ptright From opcard where hn = '".$hn."' limit 1";
 
 $result  = Mysql_Query($sql);
-list($yot, $name, $sname) = Mysql_fetch_row($result);
-echo $yot,"][", $name,"][", $sname,"][", $hn,"][", $vn;
+list($yot, $name, $sname,$ptright_opcard) = Mysql_fetch_row($result);
+
+
+if(empty($ptright)){
+	$ptright=$ptright_opcard;
+}	
+
+//echo $yot,"][", $name,"][", $sname,"][", $hn,"][", $vn;
+echo $yot,"][", $name,"][", $sname,"][", $an,"][", $vn,"][", $ptright;
 exit();
 }
 
@@ -450,7 +461,79 @@ select.form_sarabun {
     cursor: pointer;
 }
 
+  .btn{
+    cursor:pointer;
+    background: linear-gradient(180deg,#22c55e,#16a34a);
+    color:white;
+    font-weight:700;
+    border-radius: 12px;
+    border:1px solid rgba(255,255,255,.2);
+    transition: transform .1s ease, box-shadow .1s ease, filter .1s ease;
+  }
+  .btn:hover{ filter:brightness(1.05); transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0); }
 
+  .btn-secondary{
+    background: linear-gradient(180deg,#a78bfa,#7c3aed);
+	height: 40;
+	width: 120;
+  }
+
+button {
+    background: linear-gradient(135deg, #37BC7D, #18786F);
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: "TH SarabunPSK", sans-serif;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #34a5cf, #37BC7D);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+#menu {
+    margin-top: 10px;
+    background: #f9fcff;
+    border: 1px solid #cddbe8;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 360px;
+    padding: 10px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+#menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#menu li {
+    margin: 8px 0;
+}
+
+#menu li a {
+    display: block;
+    text-decoration: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #2C92B8;
+    font-size: 20px;
+    font-family: "TH SarabunPSK", sans-serif;
+    transition: 0.3s;
+}
+
+#menu li a:hover {
+    background: #2C92B8;
+    color: #fff;
+    transform: translateX(5px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
 
 </style>
 <SCRIPT LANGUAGE="JavaScript">
@@ -492,6 +575,7 @@ function viewdetail_hn(hn) { // *************************************** Java Aja
 			document.getElementById('lastname').value = txt2[2];
 			document.getElementById('an').value = txt2[3];
 			document.getElementById('vn').value = txt2[4];
+			document.getElementById('ptright').value = txt2[5];
 			
 		}
 }
@@ -515,6 +599,7 @@ function viewdetail_an(an) {
 			document.getElementById('lastname').value = txt2[2];
 			document.getElementById('hn').value = txt2[3];
 			document.getElementById('vn').value = txt2[4];
+			document.getElementById('ptright').value = txt2[5];
 			
 		}
 }
@@ -558,37 +643,46 @@ function show_tooltip(detail,al,l,r){
 </div>
 <TABLE width="100%">
 <TR>
-	<TD width="50%">
-	<?php
-echo "<A HREF=\"../nindex.htm\" style=\"font-size: 14px;\">&lt; &lt; เมนู</A>";
-echo "&nbsp;|&nbsp;";
-//echo "<A HREF=\"memo_confirnout.php\" style=\"font-size: 14px;\">ยืนยันเครสนอกเวลารายการ</A>";
-echo "&nbsp;|&nbsp;";
-?>
-</TD>
+	<TD width="50%"></TD>
 	<TD width="50%">
 <?php
 
 
-echo "<A HREF=\"javascript:void(0);\" Onclick=\"if(document.getElementById('menu').style.display=='') document.getElementById('menu').style.display='none'; else document.getElementById('menu').style.display=''; \">รายงานต่างๆ</A>";
+/*echo "<A HREF=\"javascript:void(0);\" Onclick=\"if(document.getElementById('menu').style.display=='') document.getElementById('menu').style.display='none'; else document.getElementById('menu').style.display=''; \">รายงานต่างๆ</A>";
 echo "";
-echo "<Div id=\"menu\" style=\"background: #FFFFFF; position: absolute; display:none; \"><BR><A HREF=\"report_sur01.php\" style=\"font-size: 14px;\" target=\"_blank\">ผ่าตัดนอกเวลาราชการ</A>";
+echo "<Div id=\"menu\" style=\"background: #FFFFFF; position: absolute; display:none; \"><BR><A HREF=\"report_sur01.php\" style=\"font-size: 24px;\" target=\"_blank\">ผ่าตัดนอกเวลาราชการ</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur00.php\" style=\"font-size: 14px;\" target=\"_blank\">รายงานสรุป</A>";
+echo "<A HREF=\"report_sur00.php\" style=\"font-size: 24px;\" target=\"_blank\">รายงานสรุป</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur02.php\" style=\"font-size: 14px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามศัลยกรรมห้องผ่าตัดใหญ่</A>";
+echo "<A HREF=\"report_sur02.php\" style=\"font-size: 24px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามศัลยกรรมห้องผ่าตัดใหญ่</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur03.php\" style=\"font-size: 14px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามประเภทบาดแผลผ่าตัด(ผ่าตัดใหญ่)</A>";
+echo "<A HREF=\"report_sur03.php\" style=\"font-size: 24px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามประเภทบาดแผลผ่าตัด(ผ่าตัดใหญ่)</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur07.php\" style=\"font-size: 14px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามประเภทบาดแผลผ่าตัด(ผ่าตัดเล็ก)</A>";
+echo "<A HREF=\"report_sur07.php\" style=\"font-size: 24px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามประเภทบาดแผลผ่าตัด(ผ่าตัดเล็ก)</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur04.php\" style=\"font-size: 14px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามสิทธิการรักษา</A>";
+echo "<A HREF=\"report_sur04.php\" style=\"font-size: 24px;\" target=\"_blank\">สรุปยอดผู้ป่วยแบ่งตามสิทธิการรักษา</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur05.php\" style=\"font-size: 14px;\" target=\"_blank\">สรปุยอดผู้ป่วยแบ่งตามประเภทผู้ป่วยห้องผ่าตัดใหญ่</A>";
+echo "<A HREF=\"report_sur05.php\" style=\"font-size: 24px;\" target=\"_blank\">สรปุยอดผู้ป่วยแบ่งตามประเภทผู้ป่วยห้องผ่าตัดใหญ่</A>";
 echo "<BR>";
-echo "<A HREF=\"report_sur06.php\" style=\"font-size: 14px;\" target=\"_blank\">สรปุยอดผู้ป่วยแบ่งตามประเภทผู้ป่วยห้องผ่าตัดเล็ก</A>";
-echo "<BR></Div>";
+echo "<A HREF=\"report_sur06.php\" style=\"font-size: 24px;\" target=\"_blank\">สรปุยอดผู้ป่วยแบ่งตามประเภทผู้ป่วยห้องผ่าตัดเล็ก</A>";
+echo "<BR></Div>";*/
 ?>
+<button type="button"
+    onclick="let m=document.getElementById('menu'); m.style.display = (m.style.display==''?'none':'');">
+    รายงานต่างๆ
+</button>
+<div id="menu" style="display:none; margin-top:10px;">
+    <ul>
+        <li><a href="report_sur01.php" target="_blank">ผ่าตัดนอกเวลาราชการ</a></li>
+        <li><a href="report_sur00.php" target="_blank">รายงานสรุป</a></li>
+        <li><a href="report_sur02.php" target="_blank">สรุปยอดผู้ป่วยแบ่งตามศัลยกรรมห้องผ่าตัดใหญ่</a></li>
+		<li><a href="report_sur03.php" target="_blank">สรุปยอดผู้ป่วยแบ่งตามประเภทบาดแผลผ่าตัด(ผ่าตัดใหญ่)</a></li>
+		<li><a href="report_sur07.php" target="_blank">สรุปยอดผู้ป่วยแบ่งตามประเภทบาดแผลผ่าตัด(ผ่าตัดเล็ก)</a></li>
+		<li><a href="report_sur04.php" target="_blank">สรุปยอดผู้ป่วยแบ่งตามสิทธิการรักษา</a></li>
+		<li><a href="report_sur05.php" target="_blank">สรปุยอดผู้ป่วยแบ่งตามประเภทผู้ป่วยห้องผ่าตัดใหญ่</a></li>
+		<li><a href="report_sur06.php" target="_blank">สรปุยอดผู้ป่วยแบ่งตามประเภทผู้ป่วยห้องผ่าตัดเล็ก</a></li>
+    </ul>
+</div>
 </TD>
 </TR>
 </TABLE>
@@ -645,8 +739,22 @@ echo "<BR></Div>";
     <td colspan="2" class="bg-form">
 	ยศ : <INPUT class="form_sarabun" TYPE="text" ID="yot" NAME="yot" size="7"  value="<?php echo $yot;?>">
 	ชื่อ : <INPUT class="form_sarabun" TYPE="text" ID="name" NAME="name"  size="15"   value="<?php echo $name;?>">
-	นามสกุล : <INPUT class="form_sarabun" TYPE="text" ID="lastname" NAME="lastname"  size="15"   value="<?php echo $lastname;?>"> </td>
+	นามสกุล : <INPUT class="form_sarabun" TYPE="text" ID="lastname" NAME="lastname"  size="15"   value="<?php echo $lastname;?>">
+	สิทธิการรักษา : <INPUT class="form_sarabun" TYPE="text" ID="ptright" NAME="ptright"  size="15"   value="<?php echo $ptright;?>">	</td>
   </tr>
+  <tr align="center">
+    <td colspan="2" class="bg-form">
+	สิทธิการรักษา : <select class="form_sarabun" name="ptright1" id="ptright1">
+	<option>---------- สิทธิการรักษา ----------</option>
+	<?php
+	 foreach( $cfg_ptright as  $key => $value){
+		echo "<option value='".$key."' ";
+			if($key == $arr["ptright"] || $key == $ptright) echo " Selected ";
+		echo ">".$value."</option>";
+	}
+	 ?>
+    </select></td>
+  </tr>  
   <tr>
     <td width="152" align="right" class="bg-form">เวลารับผู้ป่วย : &nbsp;</td>
     <td width="237" class="bg-form"><input class="form_sarabun" name="time_in" type="text" id="time_in" size="7" maxlength="4" value="<?php echo $timein;?>" onkeypress="check_number();" placeholder="0800" /></td>
@@ -656,7 +764,7 @@ echo "<BR></Div>";
     <td class="bg-form"><input class="form_sarabun" name="time_out" type="text" id="time_out" size="7" maxlength="4" value="<?php echo $timeout;?>" onkeypress="check_number();" placeholder="0800" /></td>
   </tr>
   <tr>
-    <td align="right" class="bg-form">เวลาลงมีผ่าตัด : &nbsp;</td>
+    <td align="right" class="bg-form">เวลาลงมีดผ่าตัด : &nbsp;</td>
     <td class="bg-form"><input class="form_sarabun" name="time_knife" type="text" id="time_knife" size="7" maxlength="4" value="<?php echo $timeknife;?>" onkeypress="check_number();" placeholder="0800" /></td>
   </tr>
   <tr>
@@ -689,11 +797,11 @@ echo "<BR></Div>";
   </tr>
   <tr>
     <td align="right" class="bg-form">Diag : &nbsp;</td>
-    <td class="bg-form"><input class="form_sarabun" name="diag" type="text" id="diag" value="<?php echo $arr["diag"];?>" /></td>
+    <td class="bg-form"><input class="form_sarabun medium" name="diag" type="text" id="diag" value="<?php echo $arr["diag"];?>" /></td>
   </tr>
   <tr>
     <td align="right" class="bg-form">Operation : &nbsp;</td>
-    <td class="bg-form"><input class="form_sarabun" name="operation" type="text" id="operation" value="<?php echo $arr["opertion"];?>" /></td>
+    <td class="bg-form"><input class="form_sarabun medium" name="operation" type="text" id="operation" value="<?php echo $arr["opertion"];?>" /></td>
   </tr>
   <tr>
     <td align="right" class="bg-form">Ward : &nbsp;</td>
@@ -755,19 +863,6 @@ echo "<BR></Div>";
 	 foreach( $cfg_type_scar as  $key => $value){
 		echo "<option value='".$key."' ";
 			if($key == $arr["type_scar"]) echo " Selected ";
-		echo ">".$value."</option>";
-	}
-	 ?>
-    </select>    </td>
-  </tr>
-  <tr>
-    <td align="right" class="bg-form">สิทธิ์ผู้ป่วย : &nbsp;</td>
-    <td class="bg-form"><select class="form_sarabun" name="ptright">
-	<option>--สิทธิ์ผู้ป่วย--</option>
-	<?php
-	 foreach( $cfg_ptright as  $key => $value){
-		echo "<option value='".$key."' ";
-			if($key == $arr["ptright"]) echo " Selected ";
 		echo ">".$value."</option>";
 	}
 	 ?>
@@ -871,7 +966,8 @@ echo "<BR></Div>";
 	<TD>
 <FORM METHOD=POST ACTION="">
 ค้นหา HN : <INPUT class="form_sarabun medium" TYPE="text" NAME="search_hn" size="8">&nbsp;
-<INPUT class="form_sarabun" TYPE="submit" value="ตกลง">
+<INPUT class="form_sarabun" TYPE="submit" value="ตกลง">&nbsp;&nbsp;&nbsp;
+<input type="button" value="กลับไปเมนูหลัก" onclick="window.location='../nindex.htm'" class="btn btn-secondary" />
 </FORM>
 
 <TABLE class="form-table-list" width="100%">
