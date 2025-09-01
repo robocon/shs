@@ -205,9 +205,13 @@ return $ageY;
 	//$sql = "CREATE TEMPORARY TABLE  xray_stat_2 Select date_format(date,'%Y-%m-%d') as date2, hn,  xn,  xn_new,  ptname,  age,  ptright,  patient_from,  detail,  doctor,  digital,  10_12,  14_14,  NONE  From xray_stat where date like '".$date_select."'   ";
 	//$result = mysql_query($sql) or die(mysql_error());
 
-	$sql = "Select row_id, date_format(date,'%d/%m/%Y') as date3, hn,  xn,  xn_new,  ptname,  age,  ptright,  patient_from,  detail,  doctor,  digital,  10_12,  14_14,  NONE From xray_stat  where date like '".$date_select."' AND cancle = '0'  ";
+	$sql = "Select row_id, date_format(date,'%d/%m/%Y') as date3, hn,  xn,  xn_new,  ptname,  age,  ptright,  patient_from,  detail,  doctor,  digital,  10_12,  14_14,  NONE 
+	From xray_stat 
+	where date like '".$date_select."' 
+	AND (`detail` NOT LIKE '%BMD%' AND `detail` NOT LIKE '%U/S%' AND `detail` NOT LIKE '%CT %' )
+	AND cancle = '0'  ";
 	$result = mysql_query($sql) or die(mysql_error());
-echo $sql;
+
 $i=1;
 	while($arr = mysql_fetch_assoc($result)){
 		
