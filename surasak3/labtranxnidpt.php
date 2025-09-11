@@ -14,9 +14,7 @@ $code = isset($_GET['code']) ? trim($_GET['code']) : false ;
 $date_start_th = ( isset($_SESSION['date_start']) && !empty($_SESSION['date_start']) ) ? $_SESSION['date_start'] : false ;
 $date_end_th =  ( isset($_SESSION['date_end']) && !empty($_SESSION['date_start']) ) ? $_SESSION['date_end'] : false ;
 
-$thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', 
-'05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', 
-'09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
+$thaimonthFull = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
                     
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 $Thaidate = date("d-m-").(date("Y")+543)."  ".date("H:i:s");
@@ -61,7 +59,7 @@ $cPart = $lab['depart']; // อิงตาม labcare
 
 // บันทึกข้อมูลการรักษา
 $thidate5 = (date("Y")+543).date("-m-d H:i:s"); 
-$query = "INSERT INTO medicalcertificate  (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
+$query = "INSERT INTO medicalcertificate  (`thidate`,`number`,`hn`,`part`,`doctor`)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
 $result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
 
 $dateNow = date('Y-m-d');
@@ -70,11 +68,8 @@ WHERE `hn` = '$cHn'
 AND `part` = '$cPart' 
 AND ( `date_start` <= '$dateNow' AND `date_start` IS NOT NULL ) 
 AND ( `date_end` >= '$dateNow' AND `date_end` IS NOT NULL ) ";
-// echo "<pre>";
-// var_dump($sql);
 $q = mysql_query($sql) or die( mysql_error() );
 $rows = mysql_num_rows($q);
-// var_dump($rows);
 $showStart = 0;
 
 // ถ้ายังไม่มีข้อมูลวันที่เริ่มตรวจ และวันที่สิ้นสุด
@@ -105,6 +100,7 @@ $cDoctor2 = substr($cDoctor,0,5);
 $acu = 0;
 $licen = '';
 
+// MD184 ==> สัมมา เลิศธีรกุล
 if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216'))===true )
 {
   
@@ -177,7 +173,7 @@ $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;
     };
 </script>
 <div style="text-align: center;">
-    <img  WIDTH=80 HEIGHT=100 SRC='logo.jpg'>
+    <img  WIDTH=70 HEIGHT=100 SRC='logo.jpg'>
 </div>
 <div style="height: 24px;">
     <div style="float: left; padding-left: 2em;">
@@ -264,8 +260,8 @@ if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','M
     print "<br><br>";
     
 }else{
-    print "เพื่อ.............................................................................<BR>";
-    print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>";
+    print "เพื่อ&nbsp;&nbsp;บำบัดรักษาโรค<BR><BR>";
+    // print "<font face='Angsana New' size ='3'>ตั้งแต่เวลา........................ถึง........................น.<BR><BR>";
 }
       
 
@@ -276,7 +272,7 @@ if( in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','M
 // if( $auto_name ){
 //     print "<font face='Angsana New' size ='3'><CENTER>ลงชื่อ&nbsp;&nbsp;&nbsp;$yot&nbsp;$cDoctor1&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 // } else {
-    print "<font face='Angsana New' size ='3'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลงชื่อ&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
+    print "<br><br><font face='Angsana New' size ='3' style='margin-bottom: 12px;'><CENTER>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ลงชื่อ&nbsp;$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;แพทย์ผู้ตรวจ<BR></CENTER>";
 // }
 
 	  
