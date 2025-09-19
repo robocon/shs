@@ -1,11 +1,12 @@
 <?php
 session_start();
 require_once 'includes/config.php';
-if (isset($sIdname)){} else {die;}
+include("connect.inc");
+
+if (isset($_SESSION['sIdname'])){} else {die;}
 
 $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
-		
-	//header("content-type: application/x-javascript; charset=UTF-8");
+//header("content-type: application/x-javascript; charset=UTF-8");
 ?>
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
@@ -13,13 +14,8 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 <a name="top" id="top"></a>
 <br />
 <?php
-	
-    include("connect.inc");
-	
-	
-	
-	$lbedcode=substr($_GET['code'],0,2);
-	if($lbedcode=='42'){
+$lbedcode=substr($_GET['code'],0,2);
+if($lbedcode=='42'){
 $wardname="หอผู้ป่วยรวม";	
 $sortname="รวม";
 	}elseif($lbedcode=='43'){

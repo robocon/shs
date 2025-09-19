@@ -1,8 +1,15 @@
 <?php
 session_start();
+
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
+
 session_unregister("Bcode");
 session_register("Bcode");
-
 
 $Thdate = date("d-m-") . (date("Y") + 543) . '   ' . date("H:i:s");
 
@@ -207,7 +214,7 @@ if ($arr["an"] != "") {
     <p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp; AN&nbsp; <input type="text" name="an" size="10"></font></p>
     <p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;
-    <input type="reset" value="  ลบทิ้ง  " name="B2"></font></p>
+    <input type="reset" value="  ยกเลิก  " name="B2"></font></p>
   </form></td>
               </tr>
             </table>

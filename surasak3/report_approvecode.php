@@ -30,6 +30,10 @@ a:active {
 <div align="center">
 <form method="POST" action="report_approvecode.php">
 <input type="hidden" name="act" value="show" />
+  <strong>HN :</strong>
+  <input name="hn" type="text" id="hn" size="20" class="txt" 
+         value="<?=(isset($_POST['hn'])?$_POST['hn']:'');?>"> 
+  <br><br>
 	<strong>ระหว่างวันที่ : </strong>
     <input name="date1" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
     <strong>เลือกเดือน : </strong><select size="1" name="month1" class="txt">
@@ -109,12 +113,16 @@ $showdate2=$_POST["date2"]."/".$_POST["month2"]."/".$_POST["year2"];
 
 $chkdate1=$_POST["year1"]."-".$_POST["month1"]."-".$_POST["date1"]." 00:00:00";
 $chkdate2=$_POST["year2"]."-".$_POST["month2"]."-".$_POST["date2"]." 23:59:59";
-$sql="CREATE TEMPORARY TABLE reportcscd1 select * from opacc where (txdate >= '$chkdate1' and txdate <='$chkdate2') and credit='จ่ายตรง' ";
-//echo $sql;
-$query=mysql_query($sql);
 
-$querytmp="SELECT * FROM reportcscd1";
-$resulttmp = mysql_query($querytmp) or die("Query reportcscd1 failed");
+    // รับค่า HN จากฟอร์ม
+    $hn = trim($_POST["hn"]);
+
+    // สร้างเงื่อนไขค้นหา
+    $where = " (a.txdate >= '$chkdate1' AND a.txdate <= '$chkdate2') AND a.credit='จ่ายตรง' ";
+    if($hn != ""){
+        $where .= " AND a.hn='$hn' ";
+    }
+
 ?>
 <hr />
 <div align="center" style="margin-top: 20px;"><strong>รายงานแสดงหมายเลข Approve Code สิทธิเบิกจ่ายตรง</strong></div>
@@ -136,15 +144,26 @@ $resulttmp = mysql_query($querytmp) or die("Query reportcscd1 failed");
     <td width="6%" align="center" bgcolor="#66CC99"><strong>Approve Code</strong></td>
 	<td width="6%" align="center" bgcolor="#66CC99"><strong>Billno</strong></td>
     <td width="6%" align="center" bgcolor="#66CC99"><strong>ผลการตอบกลับ</strong></td>
-    <td width="5%" align="center" bgcolor="#66CC99"><strong>สถานะ STM</strong></td>
-    <td width="5%" align="center" bgcolor="#66CC99"><strong>ประเภท</strong></td>
+    <td width="5%" align="center" bgcolor="#66CC99"><strong>Statment No</strong></td>
 	<td width="13%" align="center" bgcolor="#66CC99"><strong>จัดการ</strong></td>
   </tr>
 <?
 if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCSCD"){ 
-	$sql="select * from reportcscd1 where (txdate >= '$chkdate1' and txdate <='$chkdate2') and credit='จ่ายตรง'  order by hn asc";
+    $sql="SELECT a.row_id,a.date,a.txdate,a.hn,a.vn,a.price,a.paidcscd,a.credit,a.typecscd,a.idname,a.credit_detail,a.billno,a.detail,a.depart, 
+                 CONCAT(c.yot,' ',c.name,' ',c.surname) AS ptname, 
+                 c.idcard
+          FROM opacc a
+          LEFT JOIN opcard c ON a.hn=c.hn
+          WHERE $where
+          ORDER BY a.hn ASC";
 }else{
-	$sql="select * from reportcscd1 where (txdate >= '$chkdate1' and txdate <='$chkdate2') and credit='จ่ายตรง'  order by date asc";	
+    $sql="SELECT a.row_id,a.date,a.txdate,a.hn,a.vn,a.price,a.paidcscd,a.credit,a.typecscd,a.idname,a.credit_detail,a.billno,a.detail,a.depart, 
+                 CONCAT(c.yot,' ',c.name,' ',c.surname) AS ptname, 
+                 c.idcard
+          FROM opacc a
+          LEFT JOIN opcard c ON a.hn=c.hn
+          WHERE $where
+          ORDER BY a.txdate ASC";
 }
 //echo $sql;
 $query=mysql_query($sql);
@@ -153,10 +172,6 @@ $sumprice=0;
 $sumpaidcscd=0;
 while($rows=mysql_fetch_array($query)){
 	$i++;
-	$sql1="select * from opcard where hn='$rows[hn]'";
-	$query1=mysql_query($sql1);
-	$rows1=mysql_fetch_array($query1);
-	$ptname=$rows1["yot"]." ".$rows1["name"]."&nbsp;&nbsp;".$rows1["surname"];
 	$sumprice=$sumprice+$rows["price"];
 	$sumpaidcscd=$sumpaidcscd+$rows["paidcscd"];
 
@@ -167,19 +182,6 @@ while($rows=mysql_fetch_array($query)){
 	$y=substr($rows["txdate"],0,4);	
 	
 	$thdatehn="$d-$m-$y".$rows["hn"];
-
-
-$sqlopc="select opdtype from opday where thidate like '$txdate%' and thdatehn='".$thdatehn."' and vn='".$rows["vn"]."' and opdtype='SI' group by hn limit 1";
-
-$queryopc=mysql_query($sqlopc);
-list($opdtype)=mysql_fetch_array($queryopc);
-
-if($opdtype=="SI"){
-	//echo "$sqlopc<br>";
-	$comment="OP self Isolation";
-}else{
-	$comment="";
-}
 
 
 
@@ -205,20 +207,31 @@ if($opdtype=="SI"){
 							$typecscd="<div style='color:green;'><strong>&nbsp;</strong></div>";
 						}
 					}
+
+					$y1=$y-543;
+									
+					$date="$y1$m$d";		
+					$invbillno=str_replace(array("/"," "),'',$rows['billno']);	
+					$invbillno=sprintf('%05d',$invbillno);
+					$invvn=sprintf('%03d',$rows['vn']);
+
+					$invno=$date.$invvn.$invbillno;  //อ้างอิง billtran.invno ขนาดข้อมูลต้อง >=9 && <= 16	
+
 					
-					 if($rows["status_stm"]=="n"){
-					 	$status_stm="<div style='color:red;'>ยังไม่ได้รับ<div>";
-					 }else{
-					 	$status_stm="";
-					 }			
+					$sql2="select accperiod	 from stm_cscd where hn='".$rows['hn']."' and invno='".$invno."'";
+					$query2=mysql_query($sql2);
+					$rows2=mysql_fetch_array($query2);
+					$accperiod=$rows2["accperiod"];	
+
+		
 ?>  
   <tr bgcolor="<?=$bg;?>">
     <td align="center"><?=$i;?></td>
     <td align="center"><?=$rows["date"]?></td>
     <td align="center"><?=$rows["vn"]?></td>
     <td align="center"><?=$rows["hn"]?></td>
-    <td><?=$ptname;?></td>
-    <td><?=$rows1["idcard"];?></td>
+    <td><?=$rows["ptname"];?></td>
+    <td><?=$rows["idcard"];?></td>
     <td><?=$rows["depart"]?></td>
     <td><?=$rows["detail"]?></td>
     <td align="right"><?=$rows["price"]?></td>
@@ -227,8 +240,7 @@ if($opdtype=="SI"){
     <td align="center"><?=$rows["credit_detail"]?></td>
 	<td align="center"><?=$rows["billno"]?></td>
     <td align="center"><?=$typecscd;?></td>
-    <td align="center"><?=$status_stm;?></td>
-	<td align="center"><?=$comment;?></td>
+    <td align="center"><?=$accperiod;?></td>
     <td align="center"><a href="report_approvecode.php?getid=<?=$rows["row_id"];?>&act=edit">แก้ไข</a></td>
   </tr>
 <?
@@ -307,11 +319,22 @@ $ptname=$rows1["yot"]." ".$rows1["name"]."&nbsp;&nbsp;".$rows1["surname"];
     <td align="center">:</td>
     <td><?=$rows["price"]?></td>
   </tr>
+  <? if($rows["depart"]=="PHAR"){ 
+	$paidcscd=$rows["essd"]+$rows["nessdy"]+$rows["dpy"]+$rows["dsy"];
+	$paidcscd=number_format($paidcscd,2);
+  ?>
+  <tr>
+    <td><strong>จำนวนเงินค่ายา/เวชภัณฑ์ที่เบิกได้</strong></td>
+    <td align="center">:</td>
+    <td><?=$paidcscd;?></td>
+  </tr>
+  <? }else{ ?>
   <tr>
     <td><strong>จำนวนเงินที่เบิกได้</strong></td>
     <td align="center">:</td>
     <td><?=$rows["paidcscd"]?></td>
-  </tr>
+  </tr>  
+  <? } ?>
 <? if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMCSCD"){ ?>
   <tr>
     <td><strong>จำนวนเงินที่ขอเบิก</strong></td>
@@ -362,7 +385,7 @@ if($_POST["act"]=="update"){
 	if(mysql_query($edit)){
 		echo "<script>alert('แก้ไขข้อมูลเรียบร้อยแล้ว');windows.location='report_apporvecode.php';</script>";
 	}else{
-		echo "<script>alert('!!!ผิดพลาด...ไม่สามารถแก้ไขข้อมูลได้');windows.location='report_apporvecode.php?act=edit&getid=$postid';</script>";
+		echo "<script>alert('!!!ผิดพลาด...ไม่สามารถแก้ไขข้อมูลได้');window.location='report_apporvecode.php?act=edit&getid=$postid';</script>";
 	}
 }
 ?>

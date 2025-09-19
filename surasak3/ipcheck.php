@@ -1,5 +1,11 @@
 <?php
 session_start();
+if($_SESSION["sOfficer"] == ""){
+	
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
 include("connect.inc"); 
 
 $an = sprintf("%s", $_POST['an']);

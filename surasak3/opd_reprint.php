@@ -1,6 +1,6 @@
 <?php
-include("connect.inc");  
 session_start();
+include("connect.inc");  
 
 $def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
@@ -271,6 +271,7 @@ if($num%2==0){
 		   "  <td align='center'>$printapp</td>\n".
 		   "  <td align='center'><A target=_BLANK HREF=\"digital_opd_form.php?dthn=".urlencode($thdatehn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์แบบฟอร์ม</div></A></td>\n".
 		   "  <td align='center'><A target=_BLANK HREF=\"digital_dental.php?dthn=".urlencode($thdatehn)."\"><img src='images/printer.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบตรวจโรค</div></A>
+		   <div style='margin-top:20px;'><A target=_BLANK HREF=\"digital_dental_dm.php?dthn=".urlencode($thdatehn)."\"><img src='images/print.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบตรวจโรค<br>เบาหวาน</div></A></div>
 		   <div style='margin-top:20px;'><A target=_BLANK HREF=\"digital_dental_consentform.php?dthn=".urlencode($thdatehn)."\"><img src='images/print-yellow.png' height='20px' width='20px' /><div style='margin-top:5px;'>พิมพ์ใบยินยอม</div></A></div></td>\n".
 		   " </tr>\n");
        }

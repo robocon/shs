@@ -1,17 +1,6 @@
 <?php
 session_start();
 include("connect.inc");
-session_unregister("cHn");
-session_unregister("cPtname");
-session_unregister("cPtright");
-session_unregister("nVn");
-session_unregister("cAge");
-session_unregister("nRunno");
-session_unregister("vAN");
-session_unregister("thdatehn");
-session_unregister("cNote");
-session_unregister("Ptright1");
-//    session_destroy();
 
 if (empty($_SESSION["sOfficer"])) {
     echo "<div style='font-weight:bold;font-size:24px;color:red;'>Session หมดอายุ กรุณา Login ใหม่อีกครั้งเพื่อใช้งาน</div>";
