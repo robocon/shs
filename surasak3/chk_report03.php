@@ -496,7 +496,7 @@ if( $num > 0 ){
 									$labmean="รูปร่างเม็ดเลือดแดง";
 								}
 						
-								if($objResult['flag']=='L' || $objResult['flag']=='H'){
+								if($objResult['flag']=='L' || $objResult['flag']=='H' || $objResult['flag']=='HH'){
 									$objResult["result"]="<strong>".$objResult["result"]."</strong>";
 									$showresult="ผิดปกติ";
 								}else{
