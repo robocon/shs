@@ -1,6 +1,5 @@
 <?php
-session_start();
-include("connect.inc");
+include dirname(__FILE__).'/bootstrap.php';
 
 $foodContainer = (!empty($_POST['food_container'])) ? sprintf("%s", $_POST['food_container']) : '';
 $foodContainerText = "ไม่ต้องการแยกภาชนะ";
@@ -8,7 +7,6 @@ if($foodContainer=="1"){
 	$foodContainerText = "แยกภาชนะ";
 }
 
-// $addfood=jschars($_POST['addfood']);
 $addfood = htmlspecialchars($_POST['addfood'], ENT_QUOTES);
 $food = $_POST['food'];
 
@@ -18,24 +16,25 @@ $chgcode = "Food";
 
 $bedcode = sprintf("%s", $_POST['bedcode']);
 
-
 $foodin = $food . ' ' . $addfood.' '.$foodContainerText;
-// $cBedcode
+
 $query = "UPDATE bed SET food='$foodin' WHERE bedcode='$bedcode' ";
-$result = mysql_query($query) or die("Query failed bed");
+$result = $dbi->query($query);
+if($result===false){
+    echo 'Error ['.$dbi->errno."] ".$dbi->error . "<br>";
+}
 
 
 $sql_food = "INSERT INTO `ward_log` 
 ( `regisdate` , `an` , `hn` , `ward` , `bedcode` , `chgcode` , `old` , `new` ,  `lastcall` , `office` ) 
 VALUES 
-( '" . $regisdate . "', '" . $_POST['an'] . "', '" . $_POST['hn'] . "', '" . $_POST['ward'] . "', '" . $_POST['bedcode'] . "','" . $chgcode . "', '" . $_POST['food_old'] . "', '$foodin', '" . $_POST['lastcall'] . "',  '" . $sOfficer . "')";
-$result_food = mysql_query($sql_food) or die(mysql_error());
-if (!$result) {
-    echo "new food fail <br>";
-    echo mysql_errno() . ": " . mysql_error() . "\n";
+( '$regisdate', '" . $_POST['an'] . "', '" . $_POST['hn'] . "', '" . $_POST['ward'] . "', '" . $_POST['bedcode'] . "','$chgcode', '" . $_POST['food_old'] . "', '$foodin', '" . $_POST['lastcall'] . "',  '$sOfficer')";
+$result_food = $dbi->query($sql_food);
+if (!$result_food) {
+    echo "ward_log Error: <br>";
+    echo '['.$dbi->errno."] ".$dbi->error . "<br>";
 } else {
-    print " แก้ไขอาหารใหม่เป็น : $foodin <br>";
-    // print "  ปิดหน้าต่างนี้   แล้ว Refresh หน้าต่างหอผู้ป่วยเพื่อทำข้อมูลให้เป็นปัจจุบัน";
+    echo " แก้ไขอาหารใหม่เป็น : $foodin <br>";
 }
 
 ?>
@@ -63,9 +62,3 @@ if (!$result) {
 <br />
 <br />
 ระบบปิดหน้าต่างใน <span id="mysdiv">5</span> วินาที
-<?php
-include("unconnect.inc");
-session_unregister('cBedcode');
-session_register("Bedcode");
-////
-?>
