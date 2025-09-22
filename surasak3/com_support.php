@@ -90,7 +90,7 @@ if ($_SESSION['supportMessage']) {
     <div id="title-group">
         <div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>
         <div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong><?=$sOfficer;?></strong> เข้าสู่ระบบ</font></div>
-        <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> และนายชาญวิทย์  ตากาบุตร<b>....โทร. 8500</b></font></div>
+        <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> <b>....โทร. 8500</b></font></div>
         <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>
         <div align='center' class='forntsarabun'><strong>แจ้งซ่อมในระบบแล้ว กรุณาติดตามสถานะงานด้วยครับ [งานใหม่ : กำลังดำเนินการ : ปิดงาน]</strong></div><BR>
     </div>

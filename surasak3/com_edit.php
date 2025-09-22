@@ -156,7 +156,7 @@ $dbarr = mysql_fetch_array($result);
 				<td align="right"><strong>ผู้รับผิดชอบ :&nbsp;</strong></td>
 				<td colspan="3">
 					<?php 
-					$programmerList = array('เทวิน  ศรีแก้ว','กฤษณะศักดิ์  กันธรส','ชาญวิทย์  ตากาบุตร','จักรพันธ์  รุ่งเรืองศรี','ฐานพัฒน์  นิลคำ');
+					$programmerList = array('เทวิน  ศรีแก้ว','กฤษณะศักดิ์  กันธรส','จักรพันธ์  รุ่งเรืองศรี','ฐานพัฒน์  นิลคำ');
 					?>
 					<select name="programmer" class="forntsarabun">
 						<option value="0" selected>==&gt;&nbsp;กรุณาเลือก&nbsp;&lt;==</option>
