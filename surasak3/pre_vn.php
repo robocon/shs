@@ -7,7 +7,7 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $classOpday = new Opday();
-exit;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

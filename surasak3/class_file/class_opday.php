@@ -66,7 +66,7 @@ class Opday extends DbConnect
         `ptright`,`goup`,`camp`,`note`,`toborow`,`idcard`,
         `officer`,`checkdx`) VALUES
         ('$thidate','$thdatehn','$hn','$vn','$thdatevn','$cPtname', '$age', 
-        '$cPtright','$cGoup','$cCamp','$cNote','$toborow',' $cIdcard',
+        '$cPtright','$cGoup','$cCamp','$cNote','$toborow','$cIdcard',
         '$this->sOfficer','$checkdx');";
         $save = $this->dbi->query($query);
         if($save===true){
