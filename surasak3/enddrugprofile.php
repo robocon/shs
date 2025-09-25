@@ -1,9 +1,7 @@
 <?php
-    session_start();
-
-    if (!isset($sIdname)){die;}
-
-	 include("connect.inc");
+session_start();
+if (!isset($_SESSION['sIdname'])){die;}
+include 'connect.php';
 
 if($_GET["action"] == "view_order"){
 	
@@ -492,6 +490,3 @@ echo "
 <BR><BR><BR><BR><BR><BR><BR>
 </body>
 </html>
-<?php
-include("unconnect.inc");
-?>

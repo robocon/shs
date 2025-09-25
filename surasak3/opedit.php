@@ -1451,7 +1451,7 @@ while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 </td>
   </tr>
 <tr>
-<td colspan="6"><span style='font-size: 24px;'>ตรวจสอบฐานข้อมูลตรวจสุขภาพกองทัพบกประจำปี 2568 (เก็บตก ถึงวันที่ 11 ธ.ค. 67)</span></td>
+<td colspan="6"><span style='font-size: 24px;'>ตรวจสอบฐานข้อมูลตรวจสุขภาพกองทัพบกประจำปี 2569</span></td>
 </tr>
 <?
 
@@ -1497,19 +1497,37 @@ if($numchk1 > 0){
 if($numchk > 0){	
 ?>  
   <tr style="background-color: #A9DFBF">
-    <td align="right" class="fonthead" bgcolor="#45B39D"><span style='font-size: 28px;'>พบข้อมูล&nbsp;</span></td>
-    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>ตรวจสอบพบรายชื่อที่ลงทะเบียนตรวจสุขภาพกองทัพบก ประจำปี <?=$yearcheck;?></span> ให้เลือก <span class="fonthead1">EX26 ตรวจสุขภาพประจำปี</span> สิทธิการรักษาเลือก <span class="fonthead1">R22 ตรวจสุขภาพประจำปีกองทัพบก</span> ***
-	<? echo $chkupdetail;?>
-	<? echo $chkupalert;?>
-	</td>
+	<table style="width:100%; border-collapse: collapse; margin-bottom:20px;">
+	  <tr style="background-color: #2ECC71; color:white; font-size: 28px; font-weight:bold;">
+		<td align="center" colspan="5">✅ พบข้อมูลการลงทะเบียนตรวจสุขภาพประจำปี</td>
+	  </tr>
+	  <tr style="background-color: #ABEBC6; color:#145A32; font-size: 20px;">
+		<td colspan="5" style="padding:10px; line-height:1.1;">
+		  ตรวจสอบพบรายชื่อที่ลงทะเบียนตรวจสุขภาพกองทัพบก ประจำปี <strong><?=$yearcheck;?></strong><br>
+		  ให้เลือก <span style="color:blue; font-weight:bold;">EX26 ตรวจสุขภาพประจำปี</span><br>
+		  สิทธิการรักษาเลือก <span style="color:green; font-weight:bold;">R22 ตรวจสุขภาพประจำปีกองทัพบก</span><br><br>
+		  <?=$chkupdetail;?><br>
+		  <?=$chkupalert;?>
+		</td>
+	  </tr>
+	</table>
     </tr>
   <tr>
 <? }else{ ?>
   <tr style="background-color: #F5B7B1">
-    <td align="right" class="fonthead" bgcolor="#EC7063"><span style='font-size: 28px;'>ไม่พบข้อมูล&nbsp;</span></td>
-    <td colspan="4" class="fonthead"><span style='font-size: 24px;'>หากกำลังพลมาตรวจสุขภาพกองทัพบก ประจำปี <?=$yearcheck;?></span> ให้เลือก <span class="fonthead1">EX16 ตรวจสุขภาพ</span> สิทธิการรักษาเลือก <span class="fonthead1">R01 เงินสด</span> ***
-	<? echo $chkupalert;?>
-	</td>
+	<table style="width:100%; border-collapse: collapse; margin-bottom:20px;">
+	  <tr style="background-color: #E74C3C; color:white; font-size: 28px; font-weight:bold;">
+		<td align="center" colspan="5">❌ ไม่พบข้อมูล</td>
+	  </tr>
+	  <tr style="background-color: #F5B7B1; color:#641E16; font-size: 20px;">
+		<td colspan="5" style="padding:10px; line-height:1.1;">
+		  หากกำลังพลมาตรวจสุขภาพกองทัพบก ประจำปี <strong><?=$yearcheck;?></strong><br>
+		  ให้เลือก <span style="color:blue; font-weight:bold;">EX16 ตรวจสุขภาพ</span><br>
+		  สิทธิการรักษาเลือก <span style="color:red; font-weight:bold;">R01 เงินสด</span><br><br>
+		  <?=$chkupalert;?>
+		</td>
+	  </tr>
+	</table>
     </tr>
   <tr>
 <?
