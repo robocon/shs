@@ -175,6 +175,54 @@ body,td,th {
 	font-weight: bold;
 }
 .style1 {color: #FFFFFF}
+
+
+#result {
+    display: inline-block;
+    text-align: left;
+    font-family: "Tahoma", "Angsana New", sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    padding: 15px 20px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin-top: 15px;
+	margin-bottom: 15px;
+    max-width: 1200px;
+}
+
+/* หัวข้อกลุ่มโรค */
+#result .group-disease {
+    font-weight: bold;
+    color: #fff;
+    background: #e74c3c;   /* แดงเข้ม */
+    padding: 5px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+/* หัวข้อกลุ่มเสี่ยง */
+#result .group-risk {
+    font-weight: bold;
+    color: #000;
+    background: #f1c40f;   /* เหลือง */
+    padding: 5px 10px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+/* รายการโรค */
+#result ul {
+    margin: 8px 0 15px 20px;
+    padding: 0;
+}
+
+#result ul li {
+    margin: 4px 0;
+}
 </style>
 <script type="text/javascript">
 function check(){
@@ -424,6 +472,39 @@ if(empty($arr_dxofyear["bp21"]) && empty($arr_dxofyear["bp22"])){
 }else{
 	$bp1=$arr_dxofyear["bp21"];
 	$bp2=$arr_dxofyear["bp22"];
+}
+
+
+
+$sql = "SELECT group_type, disease_name
+        FROM personnel_disease
+        WHERE hn = '".$arr_view["hn"]."'
+        ORDER BY FIELD(group_type,'กลุ่มโรค','กลุ่มเสี่ยง'), disease_name ASC";
+
+$res = mysql_query($sql);
+
+// สำหรับ PHP เก่า
+$groups = array();
+while($row = mysql_fetch_assoc($res)){
+    $groups[$row['group_type']][] = $row['disease_name'];
+}
+
+// สร้างตัวแปรเก็บ HTML แทน echo
+$display_html = '';
+
+if(!empty($groups)) {
+    if(isset($groups['กลุ่มโรค'])){
+        $display_html .= "<span style='color:red; font-weight:bold;'>กลุ่มโรค: </span>";
+        $display_html .= implode(", ", $groups['กลุ่มโรค']);
+        $display_html .= "<br>";
+    }
+    if(isset($groups['กลุ่มเสี่ยง'])){
+        $display_html .= "<span style='color:orange; font-weight:bold;'>กลุ่มเสี่ยง: </span>";
+        $display_html .= implode(", ", $groups['กลุ่มเสี่ยง']);
+        $display_html .= "<br>";
+    }
+} else {
+    $display_html .= "<span style='color:gray; font-weight:bold;'>ไม่พบข้อมูลกลุ่มโรค/กลุ่มเสี่ยง</span>";
 }
 ?>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
@@ -1047,6 +1128,11 @@ if($arr_view["age"] >= 35){
 ?>
 <table border="2" cellpadding="2" cellspacing="0" bordercolor="#000000"  width="100%" bgcolor="#FFCCCC">
   <tr><td>
+<div align="center">
+    <div id="result">
+       <strong style="color:blue;">ประวัติตรวจสุขภาพครั้งก่อน : </strong><?php echo $display_html; ?>
+    </div>
+</div>    
 	  <table width="100%" border="0">
 	    <tr>
 	      <td align="right" class="tb_font_2">&nbsp;</td>
@@ -1471,7 +1557,8 @@ if($arr_view["age"] >= 35){
 	    <td width="27%" align="right" bgcolor="#FFCC99" class="tb_font_2">
 				<!-- ตัวเก่า dxdr_xray_film.php -->
 				<!-- pacs ใหม่ http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=หมายเลข HN --> 
-				ตรวจเอ็กซ์เรย์ปอด : <a href="http://pacssrsh/explore.asp?path=/All%20Patients/InternalPatientUID=<?=$queryvn['hn'];?>" target="_blank">ดูฟิลม์</a> 
+				ตรวจเอ็กซ์เรย์ปอด : 
+				<a href="http://localhost:9090?QueryMode=PID&Value=<?=$queryvn['hn'];?>" target="_blank">ดูฟิลม์ XRAY</a> 
 			</td>
 	    <td width="21%" bgcolor="#FFCC99" class="labfont"><input name='normal51' type='radio' value='ปกติ' onclick="togglediv2('acnormal51')" id="normal58"/>
 	      ปกติ
@@ -1772,11 +1859,18 @@ BPH</span></td>
       <input name="cure_disease" type="text" id="cure_disease" size="80"  />
     </span></td>
     <td width="50%" valign="middle" bgcolor="#FFCCCC"><strong>นัดครั้งต่อไป : </strong><span class="labfont">
-	  <select name="appoint" id="appoint">
-	  <option value="">ไม่มีนัด</option>
-	  <option value="กลุ่มโรคนัดพบแพทย์ 1 เดือน">กลุ่มโรค นัดพบแพทย์ 1 เดือน</option>
-	  <option value="กลุ่มเสี่ยงนัดพบแพทย์ 3 เดือน">กลุ่มเสี่ยง นัดพบแพทย์ 3 เดือน</option>
-	  </select>
+      <select name="appoint" id="appoint">
+	  <option value="ไม่มีนัด">ไม่มีนัด</option>
+	  <option value="กลุ่มโรคนัดพบแพทย์ 1 เดือน"<? if($result_dx['bs'] > 125 || $result_dx['chol'] > 240 || $result_dx['tg'] > 500){ echo "selected='selected';";}?>>กลุ่มโรค นัดพบแพทย์ 1 เดือน</option>
+	  <option value="กลุ่มเสี่ยงนัดพบแพทย์ 3 เดือน">กลุ่มเสี่ยงนัดพบแพทย์ 3 เดือน</option>
+	  <?php
+		if($arr_dxofyear["prawat"] == "0"){ //ถ้าไม่มีโรคประจำตัว จะอยู่ในกลุ่มเลี่ยง
+	  ?>
+	  <option value="กลุ่มเสี่ยงนัดพบแพทย์ 3 เดือน" <? if(($result_dx['bs'] >= 100 && $result_dx['bs'] <= 125) || ($result_dx['chol'] >= 200 && $result_dx['chol'] <= 240) || ($result_dx['tg'] >= 150 && $result_dx['tg'] <= 500)){ echo "selected='selected';";}?>>กลุ่มเสี่ยง นัดพบแพทย์ 3 เดือน</option>
+	  <?php
+		}
+	  ?>
+      </select>
     </span></td>
   </tr>
 </table>

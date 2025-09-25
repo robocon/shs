@@ -22,13 +22,17 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 ////*runno ตรวจสุขภาพ*/////////
 
 // ==== QUERY DATA ====
-$sql_total = "SELECT COUNT(*) AS total FROM register_chkup_soldier WHERE yearcheck='$yearcheck'";
+$sql_total = "SELECT COUNT(*) AS total FROM register_chkup_soldier WHERE yearcheck='$yearcheck' AND active='y'";
 $res_total = mysql_query($sql_total);
 $row_total = mysql_fetch_assoc($res_total);
 $total_all = $row_total['total'];
 
 // ตรวจแล้ว
-$sql_done = "SELECT COUNT(*) AS done FROM register_chkup_soldier WHERE yearcheck='$yearcheck' AND active='y'";
+$sql_done = "SELECT COUNT(*) AS done 
+			 FROM register_chkup_soldier
+			 WHERE yearcheck='$yearcheck'
+			 AND register_date !='0000-00-00 00:00:00'
+			 AND active='y'";
 $res_done = mysql_query($sql_done);
 $row_done = mysql_fetch_assoc($res_done);
 $done_all = $row_done['done'];
@@ -39,9 +43,9 @@ $pending_all = $total_all - $done_all;
 // ==== แยกตาม camp ====
 $sql_camp = "SELECT camp,
                 COUNT(*) AS total,
-                SUM(CASE WHEN active='y' THEN 1 ELSE 0 END) AS done,
-                SUM(CASE WHEN active='' THEN 1 ELSE 0 END) AS pending
-             FROM register_chkup_soldier WHERE yearcheck='$yearcheck'
+                SUM(CASE WHEN register_date != '0000-00-00 00:00:00' THEN 1 ELSE 0 END) AS done,
+                SUM(CASE WHEN register_date = '0000-00-00 00:00:00' OR register_date IS NULL THEN 1 ELSE 0 END) AS pending
+             FROM register_chkup_soldier WHERE yearcheck='$yearcheck' AND active='y'
              GROUP BY camp";
 $res_camp = mysql_query($sql_camp);
 
@@ -59,31 +63,55 @@ $thai_date = $y . "-" . $m . "-" . $d;
 $sql_today = "SELECT camp,
                 COUNT(*) AS today_total			
               FROM register_chkup_soldier
-              WHERE yearcheck='$yearcheck' AND register_date LIKE '$today%'
+              WHERE yearcheck='$yearcheck'  AND active='y' AND register_date LIKE '$today%'
               GROUP BY camp";
 			  //echo $sql_today;
 $res_today = mysql_query($sql_today);
 
 // ==== ข้อมูลตรวจวันนี้ ====
 $sql_today1 = "SELECT camp,
-                SUM(CASE WHEN active='y' THEN 1 ELSE 0 END) AS done,
-                SUM(CASE WHEN active='' THEN 1 ELSE 0 END) AS pending				
+                SUM(CASE WHEN register_date != '0000-00-00 00:00:00' THEN 1 ELSE 0 END) AS done,
+                SUM(CASE WHEN register_date = '0000-00-00 00:00:00' OR register_date IS NULL THEN 1 ELSE 0 END) AS pending			
               FROM register_chkup_soldier
-              WHERE yearcheck='$yearcheck' AND register_date LIKE '$today%'
+              WHERE yearcheck='$yearcheck' AND active='y' AND register_date LIKE '$today%'
               GROUP BY camp";
 			  //echo $sql_today;
 $res_today1 = mysql_query($sql_today1);
 
 // ==== เพศ ====
-$sql_sex = "SELECT sex, COUNT(*) AS cnt FROM register_chkup_soldier WHERE yearcheck='$yearcheck' GROUP BY sex";
+$sql_sex = "SELECT sex, COUNT(*) AS cnt FROM register_chkup_soldier WHERE yearcheck='$yearcheck' AND active='y' GROUP BY sex";
 $res_sex = mysql_query($sql_sex);
 
 // ==== อายุ ====
 $yearNow = date("Y");
-$sql_age = "SELECT
-            SUM(CASE WHEN (YEAR(CURDATE()) - YEAR(birthdate)) < 35 THEN 1 ELSE 0 END) AS under35,
-            SUM(CASE WHEN (YEAR(CURDATE()) - YEAR(birthdate)) >= 35 THEN 1 ELSE 0 END) AS over35
-            FROM register_chkup_soldier WHERE yearcheck='$yearcheck'";
+$sql_age = "
+SELECT
+    SUM(
+        CASE 
+            WHEN (YEAR(CURDATE()) - 
+                  CASE 
+                      WHEN YEAR(birthday) > YEAR(CURDATE()) THEN YEAR(birthday) - 543
+                      ELSE YEAR(birthday)
+                  END
+                 ) < 35
+            THEN 1 ELSE 0
+        END
+    ) AS under35,
+    SUM(
+        CASE 
+            WHEN (YEAR(CURDATE()) - 
+                  CASE 
+                      WHEN YEAR(birthday) > YEAR(CURDATE()) THEN YEAR(birthday) - 543
+                      ELSE YEAR(birthday)
+                  END
+                 ) >= 35
+            THEN 1 ELSE 0
+        END
+    ) AS over35
+FROM register_chkup_soldier 
+WHERE yearcheck='$yearcheck' AND active='y'
+";
+//echo $sql_age;
 $res_age = mysql_query($sql_age);
 $row_age = mysql_fetch_assoc($res_age);
 ?>
@@ -161,7 +189,7 @@ function drawCharts() {
         ['ยังไม่ได้ตรวจ', <?php echo $pending_all; ?>]
     ]);
     var chartStatus = new google.visualization.PieChart(document.getElementById('chart_active'));
-    chartStatus.draw(dataStatus, {title:'อัตราการเข้ารับบริการของกำลังพล'});
+    chartStatus.draw(dataStatus, {title:'อัตราการเข้ารับบริการตรวจสุขภาพ'});
 
 }
 </script>
@@ -204,7 +232,7 @@ function drawCharts() {
 		// ==== แยกตาม camp ====
 		$sql_camp1 = "SELECT camp,
 						COUNT(*) AS total
-					 FROM register_chkup_soldier WHERE yearcheck='$yearcheck' AND camp='".$rowd['camp']."'
+					 FROM register_chkup_soldier WHERE yearcheck='$yearcheck' AND active='y' AND camp='".$rowd['camp']."'
 					 GROUP BY camp";
 					 //echo $sql_camp1;
 		$chk_camp = mysql_query($sql_camp1);	
