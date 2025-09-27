@@ -7,6 +7,8 @@ include("connect.inc");
 include("checklogin.php");
 
 $choose = array();
+
+
 array_push($choose,"ไข้");
 array_push($choose,"ไอ");
 array_push($choose,"เจ็บคอ");
