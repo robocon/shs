@@ -360,44 +360,7 @@ if ( $q->num_rows > 0 ) {
     </table>
     <?php
 }
-$style = '';
-if($_COOKIE['medPharNotify2'] == 1){
-    $style = 'display: none;';
-}
 ?>
-<div id="flexContainer" class="flexContainer" style="border: 2px solid #000; padding: 8px; text-align: center; <?=$style;?>">
-    <div class="flexCenter">
-        <div>
-            <img src="images/close-notify.png" width="600px"> <img src="images/join-telegram.png" alt="" width="600px">
-        </div>
-        <div>
-            <input type="checkbox" name="medPharNotify2" id="medPharNotify2" value="1" onclick="doNotDisplayNotify(this)"> <label for="medPharNotify2">ไม่ต้องแสดงข้อความนี้อีก เป็นเวลา 5 วัน</label>
-        </div>
-        <div>
-            <button type="button" onclick="closeContainer()">ปิด</button>
-        </div>
-    </div>
-</div>
-<script>
-    function doNotDisplayNotify(t){
-        if(t.checked==true){
-            setCookie('medPharNotify2', '1', 5);
-        }else{
-            setCookie('medPharNotify2', '0', 0);
-        }
-    }
-
-    function closeContainer(){
-        document.getElementById('flexContainer').style.display = 'none';
-    }
-
-    function setCookie(cname, cvalue, exdays) {
-		const d = new Date();
-		d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-		let expires = "expires="+d.toUTCString();
-		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-	}
-</script>
 <div class="clearfix">
     <fieldset style="width:30%; float:left;">
         <legend>ค้นหาเอกสารด้วย AN</legend>

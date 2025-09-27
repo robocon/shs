@@ -29,12 +29,11 @@ if(empty($_SESSION['sIdname'])){
 $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
+$Dgcode = $_GET['Dgcode'];
 if(empty($Dgcode)){
     echo '<p>กรุณาใส่ข้อมูลยาให้ถูกต้อง <a href="dglst.php">คลิกที่นี่</a> เพื่อย้อนกลับ</p>';
     exit;
 }
-
-$Dgcode = $_GET['Dgcode'];
 
 if(DEV === false){
     sendTelgramMsg("❗❗❗ ".$_SESSION['sIdname'].' ❗❗❗ ได้เข้าใช้งาน ฟอร์มปรับปรุงและแก้ไขข้อมูลยา/เวชภัณฑ์ ('.$Dgcode.')');
