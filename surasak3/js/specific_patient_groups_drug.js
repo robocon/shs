@@ -221,23 +221,28 @@ function confirmAdreno(drugcode){
 
     const postData = new URLSearchParams(formData).toString();
 	sendForm('doctor_medical.php',postData).then((res)=>{
-		if(res.status === 200){
-			Swal.fire({
-				title: 'สำเร็จ',
-				text: res.message,
-				icon: 'success',
-				allowOutsideClick: false
-			});
-            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
 
+		let resIcon, resText, tiresTitletle = '';
+
+		if(res.status === 200){
+			resText = res.message;
+			resTitle = 'สำเร็จ';
+			resIcon = 'success';
+			
 		}else{
-			Swal.fire({
-				title: 'แจ้งเตือน',
-				text: res.message,
-				icon: 'warning',
-				allowOutsideClick: false
-			});
+			resText = res.message;
+			resTitle = 'แจ้งเตือน';
+			resIcon = 'warning';
+
 		}
+
+		Swal.fire({
+			title: resTitle,
+			text: resText,
+			icon: resIcon,
+			allowOutsideClick: false
+		});
+
 	});
 	
 	closePreg();
@@ -340,11 +345,6 @@ async function checkInclisiran(hn, drugcode, criteriaCode, criteria){
 	document.getElementById("pregBackground").style.display = "";
 	document.getElementById("pregContainer").style.display = "";
 
-}
-
-async function getLabLDLC(hn){
-	const response = await fetch('/path/to/template.html');
-	const body = await response.text();
 }
 
 async function checkInclisiran_old(drugcode){ // 2INC

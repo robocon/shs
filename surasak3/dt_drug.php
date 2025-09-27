@@ -1931,12 +1931,16 @@ if(isset($_GET["action"]) && $_GET["action"] == "addamount"){
 			if($limit_row > 30)
 				$limit_row = 30;
 			*/
+
+			$strLast3Years = strtotime('-3 years');
+			$last3Years = (date('Y', $strLast3Years)+543).date('-m-d 00:00:00');
+
 			$limit_row = 30;
 
-			$where_date = " (`date` LIKE '2565%' || `date` LIKE '2566%' || `date` LIKE '2567%') ";
+			// $where_date = " (`date` LIKE '2565%' || `date` LIKE '2566%' || `date` LIKE '2567%') ";
 
 			// สร้าง TEMP จาก drugrx
-			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where $where_date AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
+			$sql = "CREATE TEMPORARY TABLE drugrx2 Select slcode, drugcode, amount From  `drugrx` where `date` >= '$last3Years' AND drugcode = '".$_GET["search"]."' Order by row_id DESC limit ".$limit_row;
 			$result = Mysql_Query($sql);
 
 			$sql = "SELECT amount, count( amount ) FROM `drugrx2` where amount > 0 GROUP BY amount Order by `count( amount )` DESC limit 1";
@@ -4475,8 +4479,8 @@ function viatch(ing,code){
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก 
 
-	$where_date = " ( a.`date` LIKE '2565%' OR a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' ) ";
-	$pre_date_time = strtotime('-3 YEAR');
+	// $where_date = " ( a.`date` LIKE '2567%' OR a.`date` LIKE '2566%' OR a.`date` LIKE '2565%' ) ";
+	$pre_date_time = strtotime('-3 YEARS');
 	$pre_date = (date("Y", $pre_date_time)+543).date("-m-d", $pre_date_time);
 /*	$sql = "SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM drugrx as a INNER JOIN (Select `drugcode`,`lock_dr` From druglst ".$where1." ) as b ON a.drugcode = b.drugcode
@@ -4488,7 +4492,7 @@ function viatch(ing,code){
 	$sql = "/* head_remed */ 
 	SELECT DISTINCT  a.date AS date1,  a.date as date2 
 	FROM ddrugrx as a INNER JOIN dphardep as c ON a.date=c.date 
-	WHERE a.`date` >= '$pre_date 00:00:00'  AND a.hn = '".$_SESSION["hn_now"]."' AND c.dr_cancle is null AND a.an is null and a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE a.`date` >= '$pre_date 00:00:00'  AND a.hn = '".$_SESSION["hn_now"]."' AND (c.dr_cancle is null AND a.an is null) AND c.stkcutdate !='' AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY date2, a.drugcode, a.slcode
 	HAVING sum( a.amount ) >0
 	Order by a.date DESC limit 100";	
@@ -4543,7 +4547,7 @@ function viatch(ing,code){
 	}
 //date_format( a.date, '%d/%m/%Y' )date_format( a.date, '%Y-%m-%d' )
 
-	$where_date = " ( a.`date` LIKE '2565%' OR a.`date` LIKE '2564%' OR a.`date` LIKE '2563%' ) ";
+	// $where_date = " ( a.`date` LIKE '2567%' OR a.`date` LIKE '2566%' OR a.`date` LIKE '2565%' ) ";
 
 //------ระบบช้าเพราะ Query ตรงจุดนี้ กรณีมีรายการยาจำนวนมาก
 
