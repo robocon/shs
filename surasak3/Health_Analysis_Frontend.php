@@ -181,7 +181,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $where = "c.yearcheck='".mysql_real_escape_string($yearcheck)."'";
 if($search!=''){
     $s = mysql_real_escape_string($search);
-    $where .= " AND (r.hn LIKE '%".$s."%' OR r.name LIKE '%".$s."%' OR r.camp LIKE '%".$s."%')";
+    $where .= " AND (r.hn LIKE '%".$s."%' OR r.name LIKE '%".$s."%' OR r.camp LIKE '%".$s."%') AND r.active='y'";
 }
 
 $sql = "SELECT DISTINCT r.hn, CONCAT(r.yot, r.name,' ',r.surname) AS fullname, r.camp,c.congenital_disease,c.age
@@ -200,9 +200,10 @@ $qry=mysql_query($sql);
 <title>ระบบวิเคราะห์ข้อมูลผลการตรวจสุขภาพประจำปี <?=esc($yearcheck)?></title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body{background:linear-gradient(120deg,#f0f7ff,#f7fff0);font-family:'Segoe UI',Tahoma,Arial;padding:20px}
-.header-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:18px}
-.title{font-size:20px;font-weight:700;color:#223}
+body{background:linear-gradient(120deg,#f0f7ff,#f7fff0);font-family:'Segoe UI',Tahoma,Arial;padding:20px;}
+
+.header-card{background:#fff;padding:20px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.08);margin-bottom:18px;}
+.title{font-size:20px;font-weight:700;color:#223;}
 .subtitle{color:#556}
 .table-fixed {
   table-layout: fixed;
@@ -324,6 +325,5 @@ if(in_array('disease',$overall)){
       </div>
     </div>
   </div>
-</div>
 </body>
 </html>

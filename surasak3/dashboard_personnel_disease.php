@@ -93,9 +93,10 @@ SELECT
     p.newcase
 FROM personnel_disease p
 JOIN register_chkup_soldier r ON r.hn = p.hn
-WHERE r.yearcheck = '$yearcheck'
+WHERE r.yearcheck = '$yearcheck' AND r.active='y'
 ORDER BY r.camp, p.fullname, p.group_type, p.disease_name
 ";
+//echo $sql_each;
 $res_each = mysql_query($sql_each);
 
 $each_summary = array();

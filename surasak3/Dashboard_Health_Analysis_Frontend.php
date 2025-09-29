@@ -173,6 +173,7 @@ $sql = "SELECT DISTINCT r.hn, CONCAT(r.yot, r.name,' ',r.surname) AS fullname,
         FROM condxofyear_so c 
         JOIN register_chkup_soldier r ON c.hn=r.hn 
         WHERE c.yearcheck='".mysql_real_escape_string($yearcheck)."'
+		AND r.active='y'
         GROUP BY c.hn";
 $qry = mysql_query($sql);
 
@@ -222,7 +223,7 @@ if($qry && mysql_num_rows($qry)>0){
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<title>Dashboard สุขภาพ <?=esc($yearcheck)?></title>
+<title>Dashboard ผลการตรวจสุขภาพ <?=esc($yearcheck)?></title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 body{font-family:sans-serif;background:#f9f9f9;padding:20px}
@@ -232,11 +233,13 @@ h2{font-size:18px;margin-bottom:10px}
 </head>
 <body>
 
-<h1>Dashboard สุขภาพ <?=esc($yearcheck)?></h1>
+<h1 align="center">Dashboard การวิเคราะห์สุขภาพกำลังทหารที่เข้ารับการตรวจสุขภาพประจำปี <?=esc($yearcheck)?></h1>
 
 <div class="card">
   <h2>ภาพรวมจำนวนกลุ่ม</h2>
-  <canvas id="chart_overall" height="120"></canvas>
+	<div style="display:flex; justify-content:center; align-items:center; height:400px;">
+	  <canvas id="chart_overall" width="350" height="350"></canvas>
+	</div>
 </div>
 
 <div class="card">
@@ -248,21 +251,140 @@ h2{font-size:18px;margin-bottom:10px}
   <h2>กลุ่มใหม่/เก่า</h2>
   <canvas id="chart_newold" height="120"></canvas>
 </div>
+<!-- รวม plugin ChartDataLabels -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <script>
-const ctxOverall = document.getElementById('chart_overall');
-new Chart(ctxOverall,{
-  type:'pie',
-  data:{
-    labels:['ปกติ','เสี่ยง','โรค'],
-    datasets:[{
-      data:[<?=$summary['normal']?>,<?=$summary['risk']?>,<?=$summary['disease']?>],
-      backgroundColor:['#28a745','#ffc107','#dc3545']
+const ctxOverall = document.getElementById('chart_overall').getContext('2d');
+new Chart(ctxOverall, {
+  type: 'pie',
+  data: {
+    labels: ['ปกติ', 'เสี่ยง', 'โรค'],
+    datasets: [{
+      data: [<?=$summary['normal']?>, <?=$summary['risk']?>, <?=$summary['disease']?>],
+      backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+      borderColor: '#fff', // เส้นขอบขาวแบ่งส่วน
+      borderWidth: 2,
+      hoverOffset: 20, // ทำให้เวลาชี้ มีการ pop-up
+      shadowOffsetX: 0, // ทำเงา
+      shadowOffsetY: 5,
+      shadowBlur: 10,
+      shadowColor: 'rgba(0,0,0,0.3)'
     }]
-  }
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',      // legend อยู่ด้านบน
+        align: 'center',            // จัดกึ่งกลางตามแกน y ของ chart
+        labels: {
+          font: {
+            size: 18,
+            weight: 'bold'
+          },
+          usePointStyle: true,
+          padding: 20
+        }
+      },	  
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function(context) {
+            let label = context.label || '';
+            let value = context.raw || 0;
+            return label + ': ' + value + ' ราย';
+          }
+        }
+      },
+      datalabels: { // แสดงตัวเลขบน Pie
+        color: '#fff',
+        font: {
+          weight: 'bold',
+          size: 12
+        },
+        formatter: function(value, context) {
+          return value;
+        }
+      }
+    }
+  },
+  plugins: [ChartDataLabels] // ต้องใส่ plugin เพื่อใช้งาน datalabels
 });
 
 
+// ----- by camp -----
+var ctxCamp = document.getElementById('chart_camp').getContext('2d');
+
+// สร้าง labels
+var labels = [
+<?php
+foreach(array_keys($by_camp) as $label){
+    echo "'".$label."',";
+}
+?>
+];
+
+// สร้าง datasets
+var normalData = [
+<?php
+foreach($by_camp as $row){
+    echo $row['normal'].",";
+}
+?>
+];
+
+var riskData = [
+<?php
+foreach($by_camp as $row){
+    echo $row['risk'].",";
+}
+?>
+];
+
+var diseaseData = [
+<?php
+foreach($by_camp as $row){
+    echo $row['disease'].",";
+}
+?>
+];
+
+var chartCamp = new Chart(ctxCamp, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            { label: 'ปกติ', data: normalData, backgroundColor: '#28a745' },
+            { label: 'เสี่ยง', data: riskData, backgroundColor: '#ffc107' },
+            { label: 'โรค', data: diseaseData, backgroundColor: '#dc3545' }
+        ]
+    },
+    options: {
+        responsive: true,
+        legend: { position: 'bottom' },
+        scales: {
+            yAxes: [{ ticks: { beginAtZero: true } }]
+        }
+    }
+});
+
+
+
+
+// ----- new/old -----
+const ctxNewOld = document.getElementById('chart_newold');
+new Chart(ctxNewOld,{
+  type:'bar',
+  data:{
+    labels:['เสี่ยงใหม่','เสี่ยงเก่า','โรคใหม่','โรคเก่า'],
+    datasets:[{
+      data:[<?=$new_old['risk_new']?>,<?=$new_old['risk_old']?>,<?=$new_old['disease_new']?>,<?=$new_old['disease_old']?>],
+      backgroundColor:['#ffcd56','#f0ad4e','#ff6384','#c82333']
+    }]
+  }
+});
 </script>
 </body>
 </html>
