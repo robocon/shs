@@ -16,19 +16,29 @@ session_unregister("Ptright1");
 ?>
 <style>
 body {
-	background-color: #FFFFF0;
+    background-color: #FFFFF0;
     font-family: "TH SarabunPSK";
-        font-size: 18px;
-    }
+    font-size: 18px;
+}
 .txtsarabun {
-font-family:"TH SarabunPSK";
-font-size:20px;
+    font-family:"TH SarabunPSK";
+    font-size:20px;
 }	
 .style2 {
 	font-family:"TH SarabunPSK";
 	font-size: 18;
-	}
+}
+.fButton{
+    padding: 2px 4px;
+    border: 1px solid #545454;
+    border-radius: 3px;
+    background-color: #efefef;
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+}
 </style>
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script><body bgcolor="#60c4b8">
@@ -158,8 +168,9 @@ font-size:20px;
             "  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".
 			"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('https://eservices.nhso.go.th/eServices/mobile/login.xhtml')\">ตรวจสอบสิทธิ</button><br>
-            1.) <a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br>
-            2.) <a href=\"javascript:void(0);\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</a>
+            <a target='_blank' class='fButton' href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br>
+            <a href=\"javascript:void(0);\" class='fButton' onclick=\"testCheckSit('$idcard')\">WebService สปสช</a>
+            <a href=\"javascript:void(0);\" class='fButton' onclick=\"SRMCheckSit('$idcard')\">SRM สปสช</a>
             </td>".
 			/*"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
@@ -310,11 +321,119 @@ $smctoken = $t['token'];
 
 <script type="text/javascript" src="js/nhso.js"></script>
 <script type="text/javascript">
-    function testCheckSit(idcard){ 
+    function testCheckSit(idcard){
         document.getElementById('ptnotifyContent').innerHTML = 'กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่';
         registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
         document.getElementById('ptrightNotify').style.display = '';
     }
+    function SRMCheckSit(idcard){ 
+        Swal.fire({
+            title: "กำลังตรวจสอบสิทธิจาก WebService สปสช \nกรุณารอสักครู่",
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        });
+        
+        loadTokenKey()
+        .then((res)=>{
+            rightSearch(idcard,res.srmAccessToken).then((resRight)=>{
+                if(resRight.error){
+                    Swal.fire({
+                        title: resRight.error+"\n"+'Token หมดอายุ กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง',
+                        icon: "warning"
+                    });
+                }else{
+                    let hospSubTxt = ``;
+                    if(resRight.funds[0].hospSub){
+                        hospSubTxt = `<p><b>หน่วยบริการปฐมภูมิ:</b> ${resRight.funds[0].hospSub.hname}(${resRight.funds[0].hospSub.hcode})</p>`;
+                    }
+
+                    let departmentTxt = ``;
+                    if(resRight.funds[0].department){
+                        departmentTxt = `<p><b>หน่วยงานที่สังกัด:</b> ${resRight.funds[0].department.name} (${resRight.funds[0].department.id})</p>`;
+                    }
+
+                    let hospMainOpTxt = ``;
+                    if(resRight.funds[0].hospMainOp){
+                        hospMainOpTxt = `<p><b>หน่วยบริการประจำ:</b> ${resRight.funds[0].hospMainOp.hname}(${resRight.funds[0].hospMainOp.hcode})</p>`;
+                    }
+
+                    let hospMainTxt = ``;
+                    if(resRight.funds[0].hospMain){
+                        hospMainTxt = `<p><b>หน่วยบริการส่งต่อ:</b> ${resRight.funds[0].hospMain.hname}(${resRight.funds[0].hospMain.hcode})</p>`;
+                    }
+
+                    let purchaseProvinceTxt = ``;
+                    if(resRight.funds[0].purchaseProvince){
+                        purchaseProvinceTxt = `<p><b>จังหวัดที่ลงทะเบียน:</b> ${resRight.funds[0].purchaseProvince.name} (${resRight.funds[0].purchaseProvince.id})</p>`;
+                    }
+                    
+                    Swal.fire({
+                        title: "ข้อมูลจาก API สปสช",
+                        icon: "success",
+                        html:`<div style="text-align: left; font-size:16pt;"><p><b>ชื่อ-สกุล:</b> ${resRight.tname}${resRight.fname}  ${resRight.lname}</p>
+                        <p><b>เลขที่บัตรประชาชน:</b> ${resRight.pid}</p>
+                        <p><b>เดือนปีเกิด:</b> ${resRight.birthDate}</p>
+                        <p><b>เพศ:</b> ${resRight.sex.name}  <b>สัญชาติ:</b> ${resRight.nation.name}</p>
+                        ${hospMainOpTxt}
+                        ${hospSubTxt}
+                        ${hospMainTxt}
+                        <p><b>สิทธิหลัก:</b> ${resRight.funds[0].mainInscl.name} (${resRight.funds[0].mainInscl.id})</p>
+                        <p><b>สิทธิย่อย:</b> ${resRight.funds[0].subInscl.name} (${resRight.funds[0].subInscl.id})</p>
+                        ${purchaseProvinceTxt}
+                        ${departmentTxt}
+                        </div>`,
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        })
+        .catch((err)=>{
+            console.error("Application level error handling:", err);
+        });
+    }
+
+    async function loadTokenKey(){
+        try {
+            const response = await fetch('http://localhost:8123/index.php');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const body = await response.json();
+            return body;
+            
+        } catch (error) {
+            Swal.fire({
+                title: "ไม่พบเซิฟเวอร์",
+                icon: "warning",
+                html:`กรุณาติดตั้งโปรแกรมอ่านข้อมูล Token`
+            });
+            return false;
+        }
+    }
+
+    async function rightSearch(idcard,token){
+        try {
+            const response = await fetch('https://srm.nhso.go.th/api/ucws/v1/right-search?pid='+idcard,{
+                headers:{
+                    'Authorization':'Bearer '+token
+                }
+            });
+            const body = await response.json();
+            return body;
+        } catch (error) {
+            Swal.fire({
+                title: "Token หมดอายุ",
+                icon: "warning",
+                html:`กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง`
+            });
+            return false;
+        }
+        
+    }
+
+
+
 
     /* checkIpd */
     function checkIpd(link, ev, hn){
