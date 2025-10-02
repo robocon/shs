@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "connect.inc";
+require_once "connect.php";
 require_once "includes/functions.php";
 
 if(PHP_VERSION_ID <= 50217){
@@ -41,18 +41,33 @@ font-size:20px;
 	font-family:"TH SarabunPSK";
 	font-size: 18;
 	}
+.fButton{
+    padding: 2px 4px;
+    border: 1px solid #545454;
+    border-radius: 3px;
+    background-color: #efefef;
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+}
+.sweetContainer{
+    text-align: left;
+    font-size:16pt;
+}
+.sweetContainer p{
+    margin: 0 0 8px 0;
+}
 </style>
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
-
 <SCRIPT LANGUAGE="JavaScript">
 
 	function checkForm(){
 		var stat = true;
 		var id13 = document.f1.idcard.value;
 		var sum = 0;
-
 		
 			if(id13 != "" && id13 != "-"){
 				
@@ -83,7 +98,7 @@ font-size:20px;
 
 </SCRIPT>
 <div style="margin-left:50px; margin-top: 30px;">
-<form name="f1" method="post" action="<?php echo $PHP_SELF ?>" Onsubmit="return checkForm();">
+<form name="f1" method="post" action="opidno.php" Onsubmit="return checkForm();">
 	<p style="font-size:24px;"><b>ค้นหาคนไข้จากเลขบัตรประจำตัว13หลัก</b></p>
 	<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ID&nbsp;&nbsp;&nbsp;
 	<input name="idcard" type="text" class="txtsarabun" id="aLink" size="16">
@@ -116,8 +131,8 @@ font-size:20px;
 
 <?php
 $pre_hn = null;
-If (!empty($idcard)){
-    
+If (!empty($_POST['idcard'])){
+    $idcard = $_POST['idcard'];
     $query = "SELECT idcard,hn,yot,name,surname,ptright1, idcard FROM opcard WHERE idcard = '$idcard'";
     $result = mysql_query($query) or die("query failed,opcard");
 
@@ -137,7 +152,7 @@ If (!empty($idcard)){
 			$color = "#fdee6e";
 		}
 
-		if(!empty($idcard)){
+		if(!empty($_POST['idcard'])){
 			$sql = "Select id From ssodata where id LIKE '$idcard%' limit 1 ";
 			if(Mysql_num_rows(Mysql_Query($sql)) > 0){
 				echo"ผู้ป่วยมีสิทธิประกันสังคม";
@@ -184,8 +199,9 @@ If (!empty($idcard)){
 		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".	
 		"  <td BGCOLOR=".$color.">
 		<button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
-		<a target= _BLANK href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br><br>
-		<a href=\"javascript:void(0);\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</a>
+		<a target='_BLANK' class='fButton' href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br>
+		<a href=\"javascript:void(0);\" class='fButton' onclick=\"testCheckSit('$idcard')\">WebService สปสช</a><br>
+		<a href=\"javascript:void(0);\" class='fButton' onclick=\"SRMCheckSit('$idcard')\">SRM สปสช</a>
 		</td>\n".
 		" </tr>\n");
 	} // End while
@@ -219,6 +235,10 @@ $smctoken = $t['token'];
 		document.getElementById('ptnotifyContent').innerHTML = 'กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่';
         registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
         document.getElementById('ptrightNotify').style.display = '';
+    }
+
+	function SRMCheckSit(idcard){
+        loadSRM(idcard);
     }
 </script>
 <div style="margin-top: 30px; font-size:18px; font-weight:bold;">
@@ -267,7 +287,7 @@ if($pre_hn !== null){
                     
                 }else{
                     const baseUrl = link.getAttribute('data-url');
-                    window.open(baseUrl, 'registerVn',"width="+screen.width+",height="+screen.height);
+                    window.open(baseUrl, 'registerVn');
                 }
             },
             false // true is Syncronous and false is Assyncronous (Default by true)

@@ -117,3 +117,114 @@ function registerChecksit(divId,idcard,person_id,smctoken){
     request.open('GET', 'nhsoBroker.php?idcard='+idcard+'&user_person_id='+person_id+'&smctoken='+smctoken, true);
     request.send();
 }
+
+async function loadSRM(idcard){ 
+    Swal.fire({
+        title: "กำลังตรวจสอบสิทธิจาก WebService สปสช \nกรุณารอสักครู่",
+        didOpen: () => {
+            Swal.showLoading();
+        },
+    });
+    
+    loadTokenKey()
+    .then((res)=>{
+        if(res!==false){
+            rightSearch(idcard,res.srmAccessToken).then((resRight)=>{
+                if(resRight.error){
+                    Swal.fire({
+                        title: resRight.error+"\n"+'Token หมดอายุ กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง',
+                        icon: "warning",
+                        allowOutsideClick: false
+                    });
+                }else{
+                    let hospSubTxt = ``;
+                    if(resRight.funds[0].hospSub){
+                        hospSubTxt = `<p><b>หน่วยบริการปฐมภูมิ:</b> ${resRight.funds[0].hospSub.hname}(${resRight.funds[0].hospSub.hcode})</p>`;
+                    }
+
+                    let departmentTxt = ``;
+                    if(resRight.funds[0].department){
+                        departmentTxt = `<p><b>หน่วยงานที่สังกัด:</b> ${resRight.funds[0].department.name} (${resRight.funds[0].department.id})</p>`;
+                    }
+
+                    let hospMainOpTxt = ``;
+                    if(resRight.funds[0].hospMainOp){
+                        hospMainOpTxt = `<p><b>หน่วยบริการประจำ:</b> ${resRight.funds[0].hospMainOp.hname}(${resRight.funds[0].hospMainOp.hcode})</p>`;
+                    }
+
+                    let hospMainTxt = ``;
+                    if(resRight.funds[0].hospMain){
+                        hospMainTxt = `<p><b>หน่วยบริการส่งต่อ:</b> ${resRight.funds[0].hospMain.hname}(${resRight.funds[0].hospMain.hcode})</p>`;
+                    }
+
+                    let purchaseProvinceTxt = ``;
+                    if(resRight.funds[0].purchaseProvince){
+                        purchaseProvinceTxt = `<p><b>จังหวัดที่ลงทะเบียน:</b> ${resRight.funds[0].purchaseProvince.name} (${resRight.funds[0].purchaseProvince.id})</p>`;
+                    }
+                    
+                    Swal.fire({
+                        title: "ข้อมูลจาก API สปสช",
+                        icon: "success",
+                        html:`<div class="sweetContainer"><p><b>ชื่อ-สกุล:</b> ${resRight.tname}${resRight.fname}  ${resRight.lname}</p>
+                        <p><b>เลขที่บัตรประชาชน:</b> ${resRight.pid}</p>
+                        <p><b>เดือนปีเกิด:</b> ${resRight.birthDate}</p>
+                        <p><b>เพศ:</b> ${resRight.sex.name}  <b>สัญชาติ:</b> ${resRight.nation.name}</p>
+                        ${hospMainOpTxt}
+                        ${hospSubTxt}
+                        ${hospMainTxt}
+                        <p><b>สิทธิหลัก:</b> ${resRight.funds[0].mainInscl.name} (${resRight.funds[0].mainInscl.id})</p>
+                        <p><b>สิทธิย่อย:</b> ${resRight.funds[0].subInscl.name} (${resRight.funds[0].subInscl.id})</p>
+                        ${purchaseProvinceTxt}
+                        ${departmentTxt}
+                        </div>`,
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        }
+    })
+    .catch((err)=>{
+        console.error("Application level error handling:", err);
+    });
+}
+
+async function loadTokenKey(){
+    try {
+        const response = await fetch('http://localhost:8123/index.php');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const body = await response.json();
+        return body;
+        
+    } catch (error) {
+        Swal.fire({
+            title: "ไม่พบ Broker surasak",
+            icon: "warning",
+            html:`<a href="https://www.canva.com/design/DAG0ce5_6uY/aleba9PDJTX2epGVi41dMw/view?utm_content=DAG0ce5_6uY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h0a7d134f55" target="_blank">คลิกที่นี่</a> เพื่อดูขั้นตอนการติดตั้งและใช้งาน`,
+            allowOutsideClick: false
+        });
+        return false;
+    }
+}
+
+async function rightSearch(idcard,token){
+    try {
+        const response = await fetch('https://srm.nhso.go.th/api/ucws/v1/right-search?pid='+idcard,{
+            headers:{
+                'Authorization':'Bearer '+token
+            }
+        });
+        const body = await response.json();
+        return body;
+    } catch (error) {
+        Swal.fire({
+            title: "Token หมดอายุ",
+            icon: "warning",
+            html:`กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง`,
+            allowOutsideClick: false
+        });
+        return false;
+    }
+    
+}
