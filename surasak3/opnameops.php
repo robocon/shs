@@ -49,7 +49,24 @@ body {
 table tr td{
 	padding: 6px;
 }
+.fButton{
+    padding: 2px 4px;
+    border: 1px solid #545454;
+    border-radius: 3px;
+    background-color: #efefef;
+    color: black;
+    text-decoration: none;
+    display: inline-block;
+}
+.sweetContainer{
+    text-align: left;
+    font-size:16pt;
+}
+.sweetContainer p{
+    margin: 0 0 8px 0;
+}
 </style>
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
@@ -92,14 +109,14 @@ if(!empty($name) OR !empty($sname)){
 
 	if( !empty($sname) ){ 
         if( !empty($name) ){
-            $query .= "OR ";
+            $query .= "AND ";
         }
 
 		$query .= "`surname` LIKE '%$sname%' ";
 	}
 
     $query .= "ORDER BY `row_id` DESC";
-
+	//echo $query;
     $result = mysql_query($query) or die("Query failed");
 
     while (list ($hn,$yot,$name,$surname,$dbirth,$idcard,$idguard) = mysql_fetch_row ($result)) {
@@ -133,7 +150,10 @@ if(!empty($name) OR !empty($sname)){
 		"  <td><a target= _BLANK href=\"ancheck.php?hn=$hn\">ตรวจนอน</a></td>\n".
 		"<td align='center'>$alert_msg</td>".
 		"  <td>$idguard</td>\n".
-		"  <td><button type=\"button\" id=\"checkPt\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</button></td>\n".
+		"  <td>
+        <button type=\"button\" id=\"checkPt\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</button><br>
+        <a href=\"javascript:void(0);\" class='fButton' onclick=\"SRMCheckSit('$idcard')\">SRM สปสช</a>
+        </td>\n".
         " </tr>\n");
     }
     include("unconnect.inc");
@@ -162,6 +182,10 @@ if(!empty($name) OR !empty($sname)){
         document.getElementById('ptnotifyContent').innerHTML = 'กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่';
         registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');
         document.getElementById('ptrightNotify').style.display = '';
+    }
+
+    function SRMCheckSit(idcard){
+        loadSRM(idcard);
     }
 
     /* checkIpd */

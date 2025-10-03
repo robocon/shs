@@ -40,9 +40,10 @@ if($type === 'patdata' && $action === 'save'){
     $depart = $_POST['depart'];
     $detail = $_POST['detail'];
     $cashok = $_POST['cashok'];
+    $tvn = $_POST['tvn'];
     $sql = "UPDATE `depart` SET 
     `date`='$date',`price`='$price', `sumyprice`='$sumyprice', `sumnprice`='$sumnprice', 
-    `paid`='$paid', `depart`='$depart', `detail`='$detail', `cashok`='$cashok' 
+    `paid`='$paid', `depart`='$depart', `detail`='$detail', `cashok`='$cashok', `tvn` = '$tvn'
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
@@ -64,10 +65,12 @@ if($type === 'patdata' && $action === 'save'){
     $detail = $_POST['detail'];
     $credit = $_POST['credit'];
     $credit_detail = $_POST['credit_detail'];
+    $vn = $_POST['vn'];
     
     $sql = "UPDATE `opacc` SET 
     `date`='$date',`txdate`='$txdate',`price`='$price', `paid`='$paid', `essd`='$essd', 
-    `paidcscd`='$paidcscd' , `depart`='$depart', `detail`='$detail', `credit`='$credit', `credit_detail`='$credit_detail' 
+    `paidcscd`='$paidcscd' , `depart`='$depart', `detail`='$detail', `credit`='$credit', `credit_detail`='$credit_detail', 
+    `vn` = '$vn'
     WHERE `row_id`='$id';";
     $save = $db->exec($sql);
     if($save === true){
@@ -180,7 +183,10 @@ if ($type === 'patdata') {
             paid <input type="text" name="paid" id="paid" value="<?=$item['paid'];?>">
         </div>
         <div>
-        cashok <input type="text" name="cashok" id="cashok" value="<?=$item['cashok'];?>">
+            cashok <input type="text" name="cashok" id="cashok" value="<?=$item['cashok'];?>">
+        </div>
+        <div>
+            tvn <input type="text" name="tvn" id="tvn" value="<?=$item['tvn'];?>">
         </div>
         <div>
             <button type="submit">save</button>
@@ -242,6 +248,9 @@ if ($type === 'patdata') {
         </div>
         <div>
             paidcscd <input type="text" name="paidcscd" id="paidcscd" value="<?=$item['paidcscd'];?>">
+        </div>
+        <div>
+            vn <input type="text" name="vn" id="vn" value="<?=$item['vn'];?>">
         </div>
         <div>
             <button type="submit">save</button>
