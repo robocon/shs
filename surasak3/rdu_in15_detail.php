@@ -51,7 +51,9 @@ AND `drugcode` IN (
     '7SERE50', 
     '7SYMB', 
     '7BUDE', 
-    '7SER_EVO' 
+    '7SER_EVO', 
+    '7BREZ', 
+    '7SERO'
 ) 
 GROUP BY `hn`";
 $db->exec($sql);

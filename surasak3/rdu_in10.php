@@ -13,7 +13,7 @@ $db->exec($sql);
 $sql = "CREATE TEMPORARY TABLE `tmp_drugrx_in10` 
 SELECT *, CONCAT(`thdatehn`,TRIM(`drugcode`)) AS `thidatecode` 
 FROM `tmp_base_drugrx` 
-WHERE `drugcode` IN ( '1RENI5-C','1ENAL5','1COVE5','1ENAL20','1TANZ','1LOSAR100','1EDAR','1CODI160-C','1ENT100', '1EXFO-C') ORDER BY `hn`; ";
+WHERE `drugcode` IN ( '1RENI5-C','1ENAL5','1COVE5','1ENAL20','1TANZ','1LOSAR100','1EDAR','1CODI160-C','1ENT100','1EXFO-C','1TANZ50','1FIMA') ORDER BY `hn`; ";
 $db->exec($sql); 
 
 

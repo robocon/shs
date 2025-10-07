@@ -41,7 +41,9 @@ AND `drugcode` IN (
     '7SERE50', 
     '7SYMB', 
     '7BUDE', 
-    '7SER_EVO' 
+    '7SER_EVO', 
+    '7BREZ', 
+    '7SERO'
 ) 
 GROUP BY `hn`;";
 
@@ -63,6 +65,3 @@ $pre_in15b = $db->get_item();
 $in15b = $pre_in15b['rows'];
 
 $in15_result = ( $in15a / $in15b ) * 100 ;
-
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_opday_in15`");
-$db->exec("DROP TEMPORARY TABLE IF EXISTS `tmp_drugrx_in15`");
