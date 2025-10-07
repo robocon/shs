@@ -1,8 +1,8 @@
 <?php 
 include 'bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
-
-$sql = "SELECT * FROM `accrued` WHERE ( `date` >= '2563-10-01 00:00:00' AND `date` <= '2564-09-30 23:59:59' ) AND `status_pay` = 'y' ";
+$dbi->query("SET NAMES UTF8");
+$sql = "SELECT * FROM `accrued` WHERE ( `date` >= '2567-10-01 00:00:00' AND `date` <= '2568-09-30 23:59:59' ) AND `status_pay` = 'y' ";
 $q = $dbi->query($sql);
 
 ?>
@@ -20,7 +20,7 @@ $q = $dbi->query($sql);
         border: 1px solid black;
     }
 </style>
-<h1>สถานะการชำระจากค้างจ่าย ปีงบ64 (ตั้งแต่ 01 ต.ค. 2563 ถึง 30 ก.ย. 2564)</h1>
+<h1>สถานะการชำระจากค้างจ่าย ปีงบ64 (ตั้งแต่ 01 ต.ค. 2567 ถึง 30 ก.ย. 2568)</h1>
 <table class="chk_table">
     <tr style="background-color: #ADDFFF;">
         <th>ลำดับ</th>
