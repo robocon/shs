@@ -3236,8 +3236,19 @@ WHERe b.`autonumber` IS NOT NULL
 	// แจ้งเตือน RDUตัวชี้วัดที่8
 	rdu8_alert(drugTrim, icd10);
 	
-	// แจ้งเตือน RDUตัวชี้วัดที่6
-	rdu6_alert(drugTrim, icd10);
+	// แจ้งเตือน RDUตัวชี้วัดที่6 หลอดลมอักเสบ
+	// ข้ามแบบฟอร์มถ้าอยู่ในกลุ่มรูมาติก
+	let skipRDU6item = ['I00','I02','I05','I06','I07','I08','I09'];
+	let isRheumatic = false;
+	for (let indexRu = 0; indexRu < skipRDU6item.length; indexRu++) {
+		const el = skipRDU6item[indexRu];
+		if(icd10.indexOf(el) > -1){
+			isRheumatic = true;
+		}
+	}
+	if(isRheumatic===false){ // ถ้าไม่มีโรคหัวใจรูมาติกก็ให้คีย์เหมือนเดิม
+		rdu6_alert(drugTrim, icd10);
+	}
 
 	// เอารายการยาที่ double click มาไว้ในฟอร์มซ้ายมือ
 	do_add_drug(returnstr, drugcode);
