@@ -72,12 +72,20 @@
     #ptnotifyContent {
       padding: 6px;
     }
+    .sweetContainer{
+      font-family: "TH SarabunPSK";
+      text-align: left;
+      font-size:16pt;
+    }
+    .sweetContainer p{
+      margin: 0 0 8px 0;
+    }
   </style>
 </head>
 <?php
 include("connect.inc");
 
-$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+$qToken = mysql_query("SELECT * FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
 $t = mysql_fetch_array($qToken);
 $person_id = preg_replace('/\D/', '', $t['cid']);
 $smctoken = $t['token'];
@@ -88,6 +96,7 @@ $smctoken = $t['token'];
   </div>
   <div style="padding: 6px;" id="ptnotifyContent">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</div>
 </div>
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <script type="text/javascript" src="templates/classic/main.js"></script>
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
@@ -98,6 +107,10 @@ $smctoken = $t['token'];
     registerChecksit('ptnotifyContent', idcard, '<?= $person_id; ?>', '<?= $smctoken; ?>');
     document.getElementById('ptrightNotify').style.display = '';
   }
+
+  function SRMCheckSit(idcard){
+        loadSRM(idcard);
+    }
 
   /* checkIpd */
   function checkIpd(link, ev, hn) {
@@ -179,7 +192,7 @@ $smctoken = $t['token'];
         <td><?= $ptright1; ?></td>
         <td><?= $ptright; ?></td>
         <td><?php echo ($test_match > 0) ? $matchs['0'] : ''; ?></td>
-        <td><a data-time="<?=$arr['date'];?>" href="#?idcard=<?=$idcard;?>&timestamp=<?=$timestamp;?>" onclick="testCheckSit('<?= $idcard; ?>')">WebService สปสช</a></td>
+        <td><a data-time="<?=$arr['date'];?>" href="#?idcard=<?=$idcard;?>&timestamp=<?=$timestamp;?>" onclick="SRMCheckSit('<?= $idcard; ?>')">API สปสช</a></td>
       </tr>
     <?
       $i++;

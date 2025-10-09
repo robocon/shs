@@ -948,6 +948,36 @@ if(isset($_GET["action"]) && $_GET["action"] == "get_all_icd10"){
 	exit;
 }
 
+/**
+ * หา icd10 เพื่อดูประวัติโรครูมาติกในผู้ป่วย
+ */
+if(isset($_GET["action"]) && $_GET["action"] == "getRheumatic"){
+	$hn = $_SESSION['hn_now'];
+
+	// dump("SELECT `icd10` FROM `diag` WHERE `hn` = '$hn' and `icd10` REGEXP 'I0[5-9].+'");
+	$q  = $dbi->query("SELECT `icd10` FROM `diag` WHERE `hn` = '$hn' AND `icd10` REGEXP '(I0[5-9])(.+)?'");
+	$count = $q->num_rows;
+	echo $json->encode(array('count'=> $count));
+	exit;
+}
+
+if(isset($_GET["action"]) && $_GET["action"] == "saveRheumatic"){
+	
+	$dateHn = date('Y-m-d').$hn;
+	$sql = sprintf("INSERT INTO `rdu_form6` 
+	(`id`, `date`, `hn`, `dateHn`, `icd10`, `drugcode`, `doctor`,`rheumatic`) 
+	VALUES 
+	(NULL, NOW(), '%s', '%s', '%s', '%s', '%s','y');", 
+		$dbi->real_escape_string($_SESSION['hn_now']),
+		$dbi->real_escape_string($dateHn),
+		$dbi->real_escape_string($_POST['icd10']),
+		$dbi->real_escape_string($_POST['drugcode']),
+		$dbi->real_escape_string($_SESSION['sOfficer'])
+	);
+	$q  = $dbi->query($sql);
+	exit;
+}
+
 
 
 //********************** Form Remed ยาผู้ป่วยนอก ******************************************
@@ -3237,18 +3267,7 @@ WHERe b.`autonumber` IS NOT NULL
 	rdu8_alert(drugTrim, icd10);
 	
 	// แจ้งเตือน RDUตัวชี้วัดที่6 หลอดลมอักเสบ
-	// ข้ามแบบฟอร์มถ้าอยู่ในกลุ่มรูมาติก
-	let skipRDU6item = ['I00','I02','I05','I06','I07','I08','I09'];
-	let isRheumatic = false;
-	for (let indexRu = 0; indexRu < skipRDU6item.length; indexRu++) {
-		const el = skipRDU6item[indexRu];
-		if(icd10.indexOf(el) > -1){
-			isRheumatic = true;
-		}
-	}
-	if(isRheumatic===false){ // ถ้าไม่มีโรคหัวใจรูมาติกก็ให้คีย์เหมือนเดิม
-		rdu6_alert(drugTrim, icd10);
-	}
+	rdu6_alert(drugTrim, icd10);
 
 	// เอารายการยาที่ double click มาไว้ในฟอร์มซ้ายมือ
 	do_add_drug(returnstr, drugcode);
@@ -3642,11 +3661,44 @@ function rdu6_alert(drugcode, icd10){
 	var key = y+'-'+m+'-'+d+hn;
 	var my_cookie_name = "rdu_form6["+key+"]";
 	var f_cookie = getCookie(my_cookie_name);
-	if(f_cookie=="" && testRdu6===true){
-		var url = 'hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
-		url += '&icd10='+encodeURIComponent(getIcd10);
-		url += '&drugcode='+encodeURIComponent(drugcode);
-		window.open("rdu_form6.php?"+url,"myWindow","width=900,height=600");
+	if(f_cookie=="" && testRdu6===true){ 
+
+		let xmlhttp = newXmlHttp();
+		let rheumaticCount = 0;
+		xmlhttp.open("GET", 'dt_drug.php?action=getRheumatic', false);
+		xmlhttp.onreadystatechange = function () {
+			if (xmlhttp.readyState === 4) {
+				if (xmlhttp.status >= 200 && xmlhttp.status < 400) {
+					let rheumatic = JSON.parse(xmlhttp.responseText.trim());
+					rheumaticCount = parseInt(rheumatic.count);
+				} else {
+					// Error :(
+				}
+			}
+		};
+		xmlhttp.send(null);
+
+		// ถ้าไม่เจอว่ามีประวัติเป็นโรครูมาติกให้แสดงแบบฟอร์มเหมือนเดิม
+		if(rheumaticCount===0){
+			var url = 'hn='+encodeURIComponent('<?=$_SESSION['hn_now'];?>');
+			url += '&icd10='+encodeURIComponent(getIcd10);
+			url += '&drugcode='+encodeURIComponent(drugcode);
+			window.open("rdu_form6.php?"+url,"myWindow","width=900,height=600");
+		}else if(rheumaticCount>0){
+
+			// ส่งข้อมูลไปบันทึกหลังบ้านว่าแพทย์ได้สั่งจ่ายยาตัวนี้และเข้าเงื่อนไข icd10 ตามที่กำหนดไว้
+			let data = [];
+			data.push(encodeURIComponent('icd10')+"="+encodeURIComponent(getIcd10));
+			data.push(encodeURIComponent('drugcode')+"="+encodeURIComponent(drugcode));
+			let postData = data.join("&");
+
+			let xmlhttp = newXmlHttp();
+			xmlhttp.open("POST", "dt_drug.php?action=saveRheumatic", false);
+			xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xmlhttp.send(postData);
+
+			setCookie(my_cookie_name, '1');
+		}
 	}
 }
 
