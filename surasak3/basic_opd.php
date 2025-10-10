@@ -1410,7 +1410,17 @@ list($congenital_disease, $weight, $height, $cigarette1, $alcohol1, $cigarette0,
 		$drugreact_info = '<a href="javascript:void(0);" onclick="show_drugreact_hn(\''.$hn.'\')" style="color:red;" title="คลิกเพื่อดูประวัติแพ้ยาทั้งหมด"><b>ประวัติแพ้ยา</b></a>&nbsp;:&nbsp;'.$txt_react2;
 	}
 	
-
+	$sqlReact = "SELECT `drugcode`,`genname`,`sideeffects` FROM `drugreact` WHERE `hn` = '$hn' AND advreact='' AND `sideeffects` !='' ";
+	$qReact = $dbi->query($sqlReact);
+	if($qReact->num_rows>0){
+		$effect = '';
+		while ($react = $qReact->fetch_assoc()) {
+			$effect .= 'อาการข้างเคียงของยา <b>'.$react['drugcode'].'['.$react['genname'].']</b>: '.$react['sideeffects'];
+		}
+		// $react = $qReact->fetch_assoc();
+		$sideeffect = $react['sideeffects'];
+		$txt_react2 .= $effect;
+	}
 
 //echo "==>$vn";
 	// ตรวจสอบการนัด **************************************************
