@@ -189,7 +189,7 @@ if($q->num_rows > 0){
     if ($view=='saveform') {
         ?>
         <div style="text-align:center;">
-            <button type="submit" style="padding: 8px; 16px">บันทึกข้อมูล</button>
+            <button type="submit" style="padding: 8px 16px;">บันทึกข้อมูล</button>
             <input type="hidden" name="hn" value="<?=$_GET['hn'];?>">
             <input type="hidden" name="action" value="save">
         </div>

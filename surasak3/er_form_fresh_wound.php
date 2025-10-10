@@ -19,8 +19,11 @@ if ($action==='save') {
     $ftwn = sprintf("%s", $_POST['ftwn']);
 
     $json = new Services_JSON();
-    $ftwa = $json->encode($_POST['ftwa']);
-    $ftwb = $json->encode($_POST['ftwb']);
+    $ftwa = !empty($_POST['ftwa']) ? $json->encode($_POST['ftwa']) : '' ;
+    $ftwb = !empty($_POST['ftwb']) ? $json->encode($_POST['ftwb']) : '' ;
+
+    $atb = sprintf("%s", $_POST['atb_text']);
+    $atb_day = sprintf("%s", $_POST['atb_day']);
 
     $sql = "SELECT * FROM `er_ftw` WHERE `datehn` = '$datehn' ";
     $q = $dbi->query($sql);
@@ -35,13 +38,15 @@ if ($action==='save') {
         `ftwa`='$ftwa', 
         `ftwb`='$ftwb', 
         `ftwn`='$ftwn', 
-        `owner`='$owner' 
+        `owner`='$owner',
+        `atb`='$atb',
+        `atb_day`='$atb_day'
         WHERE (`id`='$ftw_id');";
 
     }else {
-        $sql = "INSERT INTO `er_ftw` (`id`, `date`, `hn`, `datehn`, `ftwa`, `ftwb`, `ftwn`, `owner`) 
+        $sql = "INSERT INTO `er_ftw` (`id`, `date`, `hn`, `datehn`, `ftwa`, `ftwb`, `ftwn`, `owner`, `atb`, `atb_day`) 
         VALUES 
-        (NULL, '$date', '$hn', '$datehn', '$ftwa', '$ftwb', '$ftwn', '$owner');";
+        (NULL, '$date', '$hn', '$datehn', '$ftwa', '$ftwb', '$ftwn', '$owner', '$atb', '$atb_day');";
     }
     $save = $dbi->query($sql);
     $msg = "บันทึกข้อมูลเรียบร้อย";
@@ -149,7 +154,7 @@ if($q->num_rows > 0){
                 <td>1.แผลขอบไม่เรียบ เย็บแผลให้ขอบชนกันได้ไม่สนิท</td>
                 <td align="center"><input type="checkbox" name="ftwa[]" id="ftw_a01" value="a1" <?=$a1;?> ></td>
                 <td rowspan="5">
-                    <p>1<sup>st</sup>-line : Dicloxacillin 250-500 mg QID ขณะท้องว่าง</p>
+                    <p>1<sup>st</sup>-line : <b>Dicloxacillin</b> 250-500 mg QID ขณะท้องว่าง</p>
                     <p><u>กรณีแพ้ Penicillin</u></p>
                     <ol>
                         <li><b>Clindamycin</b> 300mg TID</li>
@@ -207,6 +212,7 @@ if($q->num_rows > 0){
     </div>
     <div>
         <p style="margin: 16px;"><input type="checkbox" name="ftwn" id="ftw_n" value="n" <?=$n;?> ><b><u><label for="ftw_n">ไม่เข้าเกณฑ์การได้รับยาปฏิชีวนะ</label></u></b></p>
+        <p style="margin: 16px;"><input type="checkbox" name="atb" id="atb"><label for="atb">เข้าเกณฑ์ได้ยาปฏิชีวนะ</label> : กรณีพิจารณาให้ ATB อื่นนอกเหนือจากข้างต้นโปรดระบุ <input type="text" name="atb_text" id="atb_text"> นาน <input type="number" name="atb_day" id="atb_day" >วัน</p>
         <p>คณะอนุกรรมการส่งเสริมการใช้ยาอย่างสมเหตุผล</p>
         <p>Reference: แนวทางการใช้ยาปฏิชีวนะอย่างสมเหตุผล. 2554 [ออนไลน์]: http://newsser.fda.moph.go.th/rumthai/userfiledownload/asu173dl.pdf</p>
     </div>
@@ -214,7 +220,7 @@ if($q->num_rows > 0){
     if ($view=='saveform') {
         ?>
         <div style="text-align:center;">
-            <button type="submit" style="padding: 8px; 16px">บันทึกข้อมูล</button>
+            <button type="submit" style="padding: 8px 16px;">บันทึกข้อมูล</button>
             <input type="hidden" name="hn" value="<?=$_GET['hn'];?>">
             <input type="hidden" name="action" value="save">
         </div>

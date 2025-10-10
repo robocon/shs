@@ -3117,7 +3117,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkAdreno(drugTrim);
 	}
 
-	if( ( drugTrim === '2SEMA' || drugTrim === '2DULA' || drugTrim === '1SEMA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
+	if( ( drugTrim === '2SEMA' || drugTrim === '2DULA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
 		checkDiabetes(drugTrim);
 	}
 
