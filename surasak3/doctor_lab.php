@@ -87,10 +87,10 @@ require_once 'bootstrap.php';
             }
 
             $whereClinician = "AND `clinicianname` IN($dtName)";
-            $order = "ORDER BY `clinicianname`";
+            $order = "ORDER BY `clinicianname`,`autonumber` DESC";
         }else{
             $whereClinician = "";
-            $order = "ORDER BY `autonumber`";
+            $order = "ORDER BY `autonumber` DESC";
         }
 
         $sql = "SELECT `hn`,`patienttype`,`orderdate`,`labnumber`,`patientname`,`sourcename`,`room`,`clinicalinfo`,`clinicianname` 
