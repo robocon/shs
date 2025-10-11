@@ -115,7 +115,7 @@ if ( $_SESSION['smenucode'] != 'ADMFOD' ) {
 	<a href="druginr.php" target="_blank">รายชื่อผู้ป่วยที่ INR > 6</a>
 	<?php
 }
-?>
+?>&nbsp;|&nbsp;<a href="doctor_lab.php" target="_blank">ติดตามผลแลปผู้ป่วยนอก</a>
 </div>
 <?php
 if(empty($_POST["search_hn"])){
