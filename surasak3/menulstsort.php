@@ -61,6 +61,11 @@ include dirname(__FILE__).'/includes/JSON.php';
 					<?php 
 					$sRowid = $_SESSION['sRowid'];
 					$smenucode = $_SESSION['smenucode'];
+
+					$whereMenuCode = "";
+					if($smenucode!=='ADM'){
+						$whereMenuCode = "AND `menucode` = '%s'";
+					}
 					
 					/**
 					 * รายการเมนุ default
@@ -68,7 +73,7 @@ include dirname(__FILE__).'/includes/JSON.php';
 					$department_menu = array();
 					$query = sprintf("SELECT `row_id`,`menu`,`script`,`target`,menu_sort AS `sort` 
 					FROM `menulst` 
-					WHERE `menucode` = '%s' AND `status` = 'y'
+					WHERE `status` = 'y' $whereMenuCode 
 					GROUP BY `script` 
 					ORDER BY `menu_sort` ASC, `menu` ASC", 
 						$dbi->real_escape_string($smenucode)

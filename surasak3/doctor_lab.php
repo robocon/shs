@@ -30,7 +30,7 @@ require_once 'bootstrap.php';
     <div class="container mt-2">
     <?php
     $dateNow = date('Y-m-d');
-    $sql = "SELECT `clinicianname` FROM `orderhead` WHERE `orderdate` LIKE '$dateNow%' AND `clinicianname` != ' กรุณาเลือกแพทย์' GROUP BY `clinicianname`";
+    $sql = "SELECT `clinicianname` FROM `orderhead` WHERE `orderdate` LIKE '$dateNow%' AND `patienttype` = 'OPD' AND `clinicianname` != ' กรุณาเลือกแพทย์' GROUP BY `clinicianname`";
     $q = $dbi->query($sql);
     ?>
     <form action="doctor_lab.php" method="post" class="row g-3">
@@ -93,64 +93,105 @@ require_once 'bootstrap.php';
             $order = "ORDER BY `autonumber` DESC";
         }
 
-        $sql = "SELECT `hn`,`patienttype`,`orderdate`,`labnumber`,`patientname`,`sourcename`,`room`,`clinicalinfo`,`clinicianname` 
+        $sql = "CREATE TEMPORARY TABLE `tmp_orderhead`(
+            `hn` VARCHAR(50),
+            `patienttype` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `orderdate` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `labnumber` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `patientname` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `sourcename` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `room` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `clinicalinfo` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `clinicianname` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            KEY `hn` (`hn`),
+            KEY `labnumber` (`labnumber`)
+        )
+        SELECT `hn`,`patienttype`,`orderdate`,`labnumber`,`patientname`,`sourcename`,`room`,`clinicalinfo`,`clinicianname` 
         FROM `orderhead` 
         WHERE `orderdate` LIKE '$dateNow%' 
         AND `clinicianname` != ' กรุณาเลือกแพทย์' 
-        AND `sourcecode` = '' 
+        AND `patienttype` = 'OPD'
         $whereClinician $order";
+        $dbi->query($sql);
+        
+        $sql = "SELECT a.*,b.`autonumber`,GROUP_CONCAT(b.`profilecode`) AS `profilecode` 
+        FROM `tmp_orderhead` AS a LEFT JOIN `resulthead` AS b ON b.`labnumber` = a.`labnumber`
+        GROUP BY b.labnumber
+        ORDER BY a.clinicianname ASC, a.labnumber DESC ;";
         $q = $dbi->query($sql);
-        if($q->num_rows>0){
-            ?>
-            <table class="table mt-4 table-sm">
-                <tr>
-                    <th>เวลาส่ง</th>
-                    <th>HN</th>
-                    <th>Labnumber</th>
-                    <th>ชื่อ-สกุล</th>
-                    <th>VN</th>
-                    <th>แพทย์</th>
-                    <th>รายการที่แพทย์ส่งตรวจ</th>
-                    <th>ผลแลป</th>
-                </tr>
-            <?php
-            while ($a = $q->fetch_assoc()) { 
-                $orderDate = substr($a['orderdate'],10);
-                $labnumber = $a['labnumber'];
 
-                $sqlResult = "SELECT `autonumber`,`labnumber`,`profilecode`,`sourcename` FROM `resulthead` WHERE `labnumber` = '$labnumber' ";
-                $qResult = $dbi->query($sqlResult);
-                $resultHeadRows = $qResult->num_rows;
+        $orderHeadRows = $q->num_rows;
+        if($orderHeadRows>0){
+            
+            $doctorItems = array();
+
+            while ($a = $q->fetch_assoc()) {
+                $key = $a['clinicianname'];
+
+                $doctorItems[$key]['name'] = $key;
+                $doctorItems[$key]['data'][] = $a;
+                
+            }
+            
+            foreach ($doctorItems as $key => $item) {
                 ?>
-                <tr>
-                    <td><?=$orderDate;?></td>
-                    <td><?=$a['hn'];?></td>
-                    <td><?=$a['labnumber'];?></td>
-                    <td><?=$a['patientname'];?></td>
-                    <td><?=$a['room'];?></td>
-                    <td><?=$a['clinicianname'];?></td>
-                    <td><?=$a['clinicalinfo'];?></td>
-                    <td>
-                        <?php
-                        if($resultHeadRows>0){
-
-                            $profile = array();
-                            while ($rh = $qResult->fetch_assoc()) {
-                                $profile[] = $rh['profilecode'];
-                            }
-                            $listlab = implode(',', $profile);
-
-                            $link = 'lab_lst_print_opd1new2.php?hn='.$a['hn'].'&labnumber='.$labnumber.'&listlab='.urlencode($listlab).'&depart='.$a['patienttype'].'&doctor='.$a['clinicianname'];
-
-                            ?><span>✔️</span><a href="<?=$link;?>" target="_blank" title="สั่งปริ้น">🖨️</a><?php
-                        }else{
-                            ?><span>❌</span><?php
-                        }
-                        
-                        ?>
-                    </td>
-                </tr>
+                <h3 class="mt-4"><?=$item['name'];?></h3>
+                <table class="table table-sm">
+                    <tr>
+                        <th>เวลาส่ง</th>
+                        <th>HN</th>
+                        <th>Labnumber</th>
+                        <th>ชื่อ-สกุล</th>
+                        <th>VN</th>
+                        <th>แพทย์</th>
+                        <th>รายการที่แพทย์ส่งตรวจ</th>
+                        <th>ผลแลป</th>
+                    </tr>
                 <?php
+                foreach ($item['data'] as $k => $data) {
+                    
+                    $orderDate = substr($data['orderdate'],10);
+                    $labnumber = $data['labnumber'];
+                    $doctor = $data['clinicianname'];
+                    ?>
+                    <tr>
+                        <td><?=$orderDate;?></td>
+                        <td><?=$data['hn'];?></td>
+                        <td><?=$labnumber;?></td>
+                        <td><?=$data['patientname'];?></td>
+                        <td><?=$data['room'];?></td>
+                        <td><?=$doctor;?></td>
+                        <td><?=$data['clinicalinfo'];?></td>
+                        <td>
+                            <?php
+                            if(!empty($data['autonumber'])){
+
+                                $link = 'lab_lst_print_opd1new2.php?hn='.$data['hn'].'&labnumber='.$labnumber.'&listlab='.$data['profilecode'].'&depart='.$data['patienttype'].'&doctor='.$doctor;
+
+                                ?><span>✔️</span><a href="<?=$link;?>" target="_blank" title="สั่งปริ้น">🖨️</a><?php
+                            }else{
+                                ?><span>❌</span><?php
+                            }
+                            
+                            ?>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
+                </table>
+                <?php
+            }
+            
+            exit;
+            while ($a = $q->fetch_assoc()) { 
+                // $orderDate = substr($a['orderdate'],10);
+                // $labnumber = $a['labnumber'];
+
+                // $sqlResult = "SELECT `autonumber`,`labnumber`,`profilecode`,`sourcename` FROM `resulthead` WHERE `labnumber` = '$labnumber' ";
+                // $qResult = $dbi->query($sqlResult);
+                // $resultHeadRows = $qResult->num_rows;
+                
             }
             ?>
             </table>

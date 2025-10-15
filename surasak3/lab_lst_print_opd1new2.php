@@ -13,7 +13,7 @@ $gethn = $_GET["hn"];
 $getlabnumber = $_GET["labnumber"];
 $getlistlab = $_GET["listlab"];
 $getdepart = $_GET["depart"];
-// $getdoctor = $_GET["doctor"];
+$getdoctor = $_GET["doctor"];
 if(isset($_GET["lab_date"])){
 	$date_now = $_GET["lab_date"];  // วันที่ที่ถูกส่งมากำหนดในตัวแปร $date_now
 }else{

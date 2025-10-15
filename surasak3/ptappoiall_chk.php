@@ -1,3 +1,6 @@
+<?php
+include("connect.php");
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -83,8 +86,6 @@
   </style>
 </head>
 <?php
-include("connect.inc");
-
 $qToken = mysql_query("SELECT * FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
 $t = mysql_fetch_array($qToken);
 $person_id = preg_replace('/\D/', '', $t['cid']);
@@ -101,7 +102,67 @@ $smctoken = $t['token'];
 <script type="text/javascript" src="js/ptrightOnline.js"></script>
 <script type="text/javascript" src="assets/js/json2.js"></script>
 <script type="text/javascript" src="js/nhso.js"></script>
-<script type="text/javascript">
+<body>
+  <?php
+  $appd = $_GET['appd'];
+
+  $query = "CREATE TEMPORARY TABLE appoint1 SELECT *, left( `doctor` , 5 ) AS codedoctor FROM appoint WHERE appdate = '$appd' ";
+  $result = mysql_query($query) or die("Query failed,app");
+
+  $query = "SELECT hn,ptname,apptime,came,row_id,age,doctor,depcode,officer,appdate_en FROM appoint WHERE appdate = '$appd' GROUP BY `hn` ORDER BY row_id ASC    ";
+  $resultAppoint = mysql_query($query) or die("Query failed");
+  ?>
+
+  <h1 align="center" class="font2">ใบตรวจสอบสิทธิผู้ป่วยนัด วันที่ <?= $appd; ?></h1>
+  <table border="1" cellspacing="0" cellpadding="2" style="border-collapse:collapse;" bordercolor="#000000" class="font1">
+    <tr>
+      <th align="center">ลำดับ</th>
+      <th align="center">HN</th>
+      <th align="center">IDCARD</th>
+      <th align="center">ชื่อ-สกุล</th>
+      <th align="center">สิทธิ์หลัก</th>
+      <th align="center">สิทธิ์รอง</th>
+      <th align="center">หมายเหตุ</th>
+      <th align="center">ตรวจสอบสิทธิ</th>
+    </tr>
+    <?php
+    $i = 1;
+    while ($arr = mysql_fetch_array($resultAppoint)) {
+
+      $sql = "Select ptright,ptright1,idcard,concat(yot,name,' ',surname)as ptname, hospcode
+  From opcard 
+  where hn = '" . $arr['hn'] . "' 
+  limit 1 ";
+      $result1 = mysql_query($sql);
+      list($ptright, $ptright1, $idcard, $ptname, $hospcode) = mysql_fetch_row($result1);
+
+      $test_match = preg_match('/^(\d+)/', $hospcode, $matchs);
+
+      $timestamp = strtotime($arr['appdate_en']);
+
+      //if(substr($ptright1,0,3)!='R03' & substr($ptright1,0,3)!='R07' & substr($ptright,0,3)!='R04' & substr($ptright1,0,3)!='R02'){
+    ?>
+      <tr>
+        <td align="center"><?=$i;?></td>
+        <td><?=$arr['hn'];?></td>
+        <td><?= $idcard; ?></td>
+        <td><?= $ptname; ?></td>
+        <td><?= $ptright1; ?></td>
+        <td><?= $ptright; ?></td>
+        <td><?php echo ($test_match > 0) ? $matchs['0'] : ''; ?></td>
+        <td><a data-time="<?=$arr['date'];?>" href="#?idcard=<?=$idcard;?>&timestamp=<?=$timestamp;?>" onclick="SRMCheckSit('<?= $idcard; ?>')">API สปสช</a></td>
+      </tr>
+    <?php
+      $i++;
+      //}
+
+    }
+    ?>
+  </table>
+  <p align="right" class="font1">ผู้ตรวจสอบ.............................................................................</p>
+  <p align="right" class="font1">&nbsp;</p>
+
+  <script type="text/javascript">
   function testCheckSit(idcard) {
     document.getElementById('ptnotifyContent').innerHTML = 'กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่';
     registerChecksit('ptnotifyContent', idcard, '<?= $person_id; ?>', '<?= $smctoken; ?>');
@@ -110,7 +171,7 @@ $smctoken = $t['token'];
 
   function SRMCheckSit(idcard){
         loadSRM(idcard);
-    }
+  }
 
   /* checkIpd */
   function checkIpd(link, ev, hn) {
@@ -143,66 +204,6 @@ $smctoken = $t['token'];
   //     document.getElementById('ptrightNotify').style.display = 'none';
   // });
 </script>
-
-<body>
-  <?
-  $appd = $_GET['appd'];
-
-  $query = "CREATE TEMPORARY TABLE appoint1 SELECT *, left( `doctor` , 5 ) AS codedoctor FROM appoint WHERE appdate = '$appd' ";
-  $result = mysql_query($query) or die("Query failed,app");
-
-  $query = "SELECT hn,ptname,apptime,came,row_id,age,doctor,depcode,officer,appdate_en FROM appoint WHERE appdate = '$appd' ORDER BY row_id ASC    ";
-  $resultAppoint = mysql_query($query) or die("Query failed");
-  ?>
-
-  <h1 align="center" class="font2">ใบตรวจสอบสิทธิผู้ป่วยนัด วันที่ <?= $appd; ?></h1>
-  <table border="1" cellspacing="0" cellpadding="2" style="border-collapse:collapse;" bordercolor="#000000" class="font1">
-    <tr>
-      <th align="center">ลำดับ</th>
-      <th align="center">HN</th>
-      <th align="center">IDCARD</th>
-      <th align="center">ชื่อ-สกุล</th>
-      <th align="center">สิทธิ์หลัก</th>
-      <th align="center">สิทธิ์รอง</th>
-      <th align="center">หมายเหตุ</th>
-      <th align="center">ตรวจสอบสิทธิ</th>
-    </tr>
-    <?
-    $i = 1;
-    while ($arr = mysql_fetch_array($resultAppoint)) {
-
-      $sql = "Select ptright,ptright1,idcard,concat(yot,name,' ',surname)as ptname, hospcode
-  From opcard 
-  where hn = '" . $arr['hn'] . "' 
-  limit 1 ";
-      $result1 = mysql_query($sql);
-      list($ptright, $ptright1, $idcard, $ptname, $hospcode) = mysql_fetch_row($result1);
-
-      $test_match = preg_match('/^(\d+)/', $hospcode, $matchs);
-
-      $timestamp = strtotime($arr['appdate_en']);
-
-      //if(substr($ptright1,0,3)!='R03' & substr($ptright1,0,3)!='R07' & substr($ptright,0,3)!='R04' & substr($ptright1,0,3)!='R02'){
-    ?>
-      <tr>
-        <td align="center"><?=$i;?></td>
-        <td><?=$arr['hn'];?></td>
-        <td><?= $idcard; ?></td>
-        <td><?= $ptname; ?></td>
-        <td><?= $ptright1; ?></td>
-        <td><?= $ptright; ?></td>
-        <td><?php echo ($test_match > 0) ? $matchs['0'] : ''; ?></td>
-        <td><a data-time="<?=$arr['date'];?>" href="#?idcard=<?=$idcard;?>&timestamp=<?=$timestamp;?>" onclick="SRMCheckSit('<?= $idcard; ?>')">API สปสช</a></td>
-      </tr>
-    <?
-      $i++;
-      //}
-
-    }
-    ?>
-  </table>
-  <p align="right" class="font1">ผู้ตรวจสอบ.............................................................................</p>
-  <p align="right" class="font1">&nbsp;</p>
 
 </body>
 

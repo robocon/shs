@@ -49,6 +49,13 @@ function checksit(divId,idcard,person_id,smctoken){
 
 }
 
+/**
+ * ตรวจสอบสิทธิผ่าน WebService SOAP ตัวเก่า ตอนนี้ยกเลิกระบบนี้ไปแล้ว
+ * @param {*} divId 
+ * @param {*} idcard 
+ * @param {*} person_id 
+ * @param {*} smctoken 
+ */
 function registerChecksit(divId,idcard,person_id,smctoken){
     var request = new newXmlHttp();
     request.onreadystatechange = function() {
@@ -127,58 +134,13 @@ async function loadSRM(idcard){
     });
     
     loadTokenKey()
-    .then((res)=>{
+    .then((res)=>{ 
         if(res!==false){
             rightSearch(idcard,res.srmAccessToken).then((resRight)=>{
-                if(resRight.error){
-                    Swal.fire({
-                        title: resRight.error+"\n"+'Token หมดอายุ กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง',
-                        icon: "warning",
-                        allowOutsideClick: false
-                    });
-                }else{
-                    let hospSubTxt = ``;
-                    if(resRight.funds[0].hospSub){
-                        hospSubTxt = `<p><b>หน่วยบริการปฐมภูมิ:</b> ${resRight.funds[0].hospSub.hname}(${resRight.funds[0].hospSub.hcode})</p>`;
-                    }
-
-                    let departmentTxt = ``;
-                    if(resRight.funds[0].department){
-                        departmentTxt = `<p><b>หน่วยงานที่สังกัด:</b> ${resRight.funds[0].department.name} (${resRight.funds[0].department.id})</p>`;
-                    }
-
-                    let hospMainOpTxt = ``;
-                    if(resRight.funds[0].hospMainOp){
-                        hospMainOpTxt = `<p><b>หน่วยบริการประจำ:</b> ${resRight.funds[0].hospMainOp.hname}(${resRight.funds[0].hospMainOp.hcode})</p>`;
-                    }
-
-                    let hospMainTxt = ``;
-                    if(resRight.funds[0].hospMain){
-                        hospMainTxt = `<p><b>หน่วยบริการส่งต่อ:</b> ${resRight.funds[0].hospMain.hname}(${resRight.funds[0].hospMain.hcode})</p>`;
-                    }
-
-                    let purchaseProvinceTxt = ``;
-                    if(resRight.funds[0].purchaseProvince){
-                        purchaseProvinceTxt = `<p><b>จังหวัดที่ลงทะเบียน:</b> ${resRight.funds[0].purchaseProvince.name} (${resRight.funds[0].purchaseProvince.id})</p>`;
-                    }
+                if(resRight!==false){
                     
-                    Swal.fire({
-                        title: "ข้อมูลจาก API สปสช",
-                        icon: "success",
-                        html:`<div class="sweetContainer"><p><b>ชื่อ-สกุล:</b> ${resRight.tname}${resRight.fname}  ${resRight.lname}</p>
-                        <p><b>เลขที่บัตรประชาชน:</b> ${resRight.pid}</p>
-                        <p><b>เดือนปีเกิด:</b> ${resRight.birthDate}</p>
-                        <p><b>เพศ:</b> ${resRight.sex.name}  <b>สัญชาติ:</b> ${resRight.nation.name}</p>
-                        ${hospMainOpTxt}
-                        ${hospSubTxt}
-                        ${hospMainTxt}
-                        <p><b>สิทธิหลัก:</b> ${resRight.funds[0].mainInscl.name} (${resRight.funds[0].mainInscl.id})</p>
-                        <p><b>สิทธิย่อย:</b> ${resRight.funds[0].subInscl.name} (${resRight.funds[0].subInscl.id})</p>
-                        ${purchaseProvinceTxt}
-                        ${departmentTxt}
-                        </div>`,
-                        allowOutsideClick: false
-                    });
+                    setContent(resRight);
+
                 }
             });
         }
@@ -215,16 +177,67 @@ async function rightSearch(idcard,token){
                 'Authorization':'Bearer '+token
             }
         });
+        if(response.status===401){
+            tokenTimeOut();
+            return false;
+        }
         const body = await response.json();
         return body;
     } catch (error) {
-        Swal.fire({
-            title: "Token หมดอายุ",
-            icon: "warning",
-            html:`กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง`,
-            allowOutsideClick: false
-        });
-        return false;
     }
     
+}
+
+function setContent(resRight){
+    let hospSubTxt = ``;
+    if(resRight.funds[0].hospSub){
+        hospSubTxt = `<p><b>หน่วยบริการปฐมภูมิ:</b> ${resRight.funds[0].hospSub.hname}(${resRight.funds[0].hospSub.hcode})</p>`;
+    }
+
+    let departmentTxt = ``;
+    if(resRight.funds[0].department){
+        departmentTxt = `<p><b>หน่วยงานที่สังกัด:</b> ${resRight.funds[0].department.name} (${resRight.funds[0].department.id})</p>`;
+    }
+
+    let hospMainOpTxt = ``;
+    if(resRight.funds[0].hospMainOp){
+        hospMainOpTxt = `<p><b>หน่วยบริการประจำ:</b> ${resRight.funds[0].hospMainOp.hname}(${resRight.funds[0].hospMainOp.hcode})</p>`;
+    }
+
+    let hospMainTxt = ``;
+    if(resRight.funds[0].hospMain){
+        hospMainTxt = `<p><b>หน่วยบริการส่งต่อ:</b> ${resRight.funds[0].hospMain.hname}(${resRight.funds[0].hospMain.hcode})</p>`;
+    }
+
+    let purchaseProvinceTxt = ``;
+    if(resRight.funds[0].purchaseProvince){
+        purchaseProvinceTxt = `<p><b>จังหวัดที่ลงทะเบียน:</b> ${resRight.funds[0].purchaseProvince.name} (${resRight.funds[0].purchaseProvince.id})</p>`;
+    }
+    
+    Swal.fire({
+        title: "ข้อมูลจาก API สปสช",
+        icon: "success",
+        html:`<div class="sweetContainer"><p><b>ชื่อ-สกุล:</b> ${resRight.tname}${resRight.fname}  ${resRight.lname}</p>
+        <p><b>เลขที่บัตรประชาชน:</b> ${resRight.pid}</p>
+        <p><b>เดือนปีเกิด:</b> ${resRight.birthDate}</p>
+        <p><b>เพศ:</b> ${resRight.sex.name}  <b>สัญชาติ:</b> ${resRight.nation.name}</p>
+        ${hospMainOpTxt}
+        ${hospSubTxt}
+        ${hospMainTxt}
+        <p><b>สิทธิหลัก:</b> ${resRight.funds[0].mainInscl.name} (${resRight.funds[0].mainInscl.id})</p>
+        <p><b>สิทธิย่อย:</b> ${resRight.funds[0].subInscl.name} (${resRight.funds[0].subInscl.id})</p>
+        ${purchaseProvinceTxt}
+        ${departmentTxt}
+        </div>`,
+        allowOutsideClick: false
+    });
+}
+
+function tokenTimeOut(){
+    Swal.fire({
+        title: "Token หมดอายุ",
+        icon: "warning",
+        html:`กรุณาเสียบบัตรประชาชน\nและกด PIN ใหม่อีกครั้ง`,
+        allowOutsideClick: false
+    });
 }
