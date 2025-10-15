@@ -30,7 +30,7 @@ require_once 'bootstrap.php';
     <div class="container mt-2">
     <?php
     $dateNow = date('Y-m-d');
-    $sql = "SELECT `clinicianname` FROM `orderhead` WHERE `orderdate` LIKE '$dateNow%' AND `patienttype` = 'OPD' AND `clinicianname` != ' กรุณาเลือกแพทย์' GROUP BY `clinicianname`";
+    $sql = "SELECT `clinicianname` FROM `orderhead` WHERE `orderdate` LIKE '$dateNow%' AND `patienttype` = 'OPD' AND (`clinicianname` != ' กรุณาเลือกแพทย์' AND `clinicianname` NOT LIKE 'HD%') GROUP BY `clinicianname`";
     $q = $dbi->query($sql);
     ?>
     <form action="doctor_lab.php" method="post" class="row g-3">
@@ -73,61 +73,80 @@ require_once 'bootstrap.php';
     $action=$_POST['action'];
     if($action==='show'){
 
+        $dateNow = date('Y-m-d');
+        $thDateNow = (date('Y')+543).date('-m-d');
+
         if(empty($_POST['selectall'])){
             $dtList = array();
             foreach ($_POST['doctor'] as $dt) {
                 $dtList[] = "'$dt'";
             }
             $dtName = implode(',', $dtList);
-            $dateNow = date('Y-m-d');
-
+            
             if(empty($dtList)){
-                echo "กรุณาเลือกแพทย์ที่ต้องการ";
+                ?>
+                <div class="mt-4"><p><b>กรุณาเลือกแพทย์ที่ต้องการ</b></p></div>
+                <?php
                 exit;
             }
 
-            $whereClinician = "AND `clinicianname` IN($dtName)";
-            $order = "ORDER BY `clinicianname`,`autonumber` DESC";
+            $whereDoctor = "WHERE `doctor2` IN($dtName)";
         }else{
-            $whereClinician = "";
-            $order = "ORDER BY `autonumber` DESC";
+            $whereDoctor = "";
         }
 
-        $sql = "CREATE TEMPORARY TABLE `tmp_orderhead`(
+        $sqlOrderhead = "CREATE TEMPORARY TABLE `tmp_orderhead`(
             `hn` VARCHAR(50),
             `patienttype` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             `orderdate` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             `labnumber` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             `patientname` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
-            `sourcename` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             `room` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             `clinicalinfo` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             `clinicianname` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+            `thdatehn` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
             KEY `hn` (`hn`),
             KEY `labnumber` (`labnumber`)
         )
-        SELECT `hn`,`patienttype`,`orderdate`,`labnumber`,`patientname`,`sourcename`,`room`,`clinicalinfo`,`clinicianname` 
+        SELECT `hn`,`patienttype`,`orderdate`,`labnumber`,`patientname`,`room`,`clinicalinfo`,`clinicianname`,
+        CONCAT(SUBSTRING(`orderdate`,9,2),'-',SUBSTRING(`orderdate`,6,2),'-',(SUBSTRING(`orderdate`,1,4)+543),`hn`) AS `thdatehn`
         FROM `orderhead` 
         WHERE `orderdate` LIKE '$dateNow%' 
         AND `clinicianname` != ' กรุณาเลือกแพทย์' 
-        AND `patienttype` = 'OPD'
-        $whereClinician $order";
-        $dbi->query($sql);
-        
-        $sql = "SELECT a.*,b.`autonumber`,GROUP_CONCAT(b.`profilecode`) AS `profilecode` 
-        FROM `tmp_orderhead` AS a LEFT JOIN `resulthead` AS b ON b.`labnumber` = a.`labnumber`
-        GROUP BY b.labnumber
-        ORDER BY a.clinicianname ASC, a.labnumber DESC ;";
-        $q = $dbi->query($sql);
+        AND `patienttype` = 'OPD'";
+        $dbi->query($sqlOrderhead);
 
+        $sqlOpd = "CREATE TEMPORARY TABLE `tmp_opd`(
+        `row_id` INT(11),
+        `thdatehn` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+        `doctor` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+        KEY `thdatehn` (`thdatehn`)
+        )
+        SELECT `row_id`,`thdatehn`,`doctor` FROM `opd` WHERE `thidate` LIKE '$thDateNow%';";
+        $dbi->query($sqlOpd);
+        
+        $sqlTmpLaborder = "CREATE TEMPORARY TABLE `tmp_laborder`
+        SELECT b.*,c.`autonumber`,
+        GROUP_CONCAT(c.`profilecode`) AS `profilecode`,
+        IF(SUBSTRING(b.`clinicianname`,0,5)='MD022',a.`doctor`,b.`clinicianname`) AS `doctor2`
+        FROM `tmp_opd` AS a 
+        LEFT JOIN `tmp_orderhead` AS b ON b.`thdatehn` = a.`thdatehn` 
+        LEFT JOIN `resulthead` AS c ON c.`labnumber` = b.`labnumber` 
+        WHERE b.`hn` IS NOT NULL 
+        GROUP BY c.`labnumber` 
+        ORDER BY c.`clinicianname` ASC, c.`labnumber` DESC ;";
+        $dbi->query($sqlTmpLaborder);
+
+        $sql = "SELECT * FROM `tmp_laborder` $whereDoctor ";
+        $q = $dbi->query($sql);
         $orderHeadRows = $q->num_rows;
         if($orderHeadRows>0){
             
             $doctorItems = array();
 
             while ($a = $q->fetch_assoc()) {
-                $key = $a['clinicianname'];
 
+                $key = $a['doctor2'];
                 $doctorItems[$key]['name'] = $key;
                 $doctorItems[$key]['data'][] = $a;
                 
@@ -144,7 +163,7 @@ require_once 'bootstrap.php';
                         <th>ชื่อ-สกุล</th>
                         <th>VN</th>
                         <th>แพทย์</th>
-                        <th>รายการที่แพทย์ส่งตรวจ</th>
+                        <th width="39%">รายการที่แพทย์ส่งตรวจ</th>
                         <th>ผลแลป</th>
                     </tr>
                 <?php
@@ -152,7 +171,7 @@ require_once 'bootstrap.php';
                     
                     $orderDate = substr($data['orderdate'],10);
                     $labnumber = $data['labnumber'];
-                    $doctor = $data['clinicianname'];
+                    $doctor = $data['doctor2'];
                     ?>
                     <tr>
                         <td><?=$orderDate;?></td>
@@ -182,20 +201,6 @@ require_once 'bootstrap.php';
                 </table>
                 <?php
             }
-            
-            exit;
-            while ($a = $q->fetch_assoc()) { 
-                // $orderDate = substr($a['orderdate'],10);
-                // $labnumber = $a['labnumber'];
-
-                // $sqlResult = "SELECT `autonumber`,`labnumber`,`profilecode`,`sourcename` FROM `resulthead` WHERE `labnumber` = '$labnumber' ";
-                // $qResult = $dbi->query($sqlResult);
-                // $resultHeadRows = $qResult->num_rows;
-                
-            }
-            ?>
-            </table>
-            <?php
         }else{
             ?>
             <div class="mt-4">
