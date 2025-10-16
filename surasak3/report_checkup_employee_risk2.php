@@ -56,6 +56,8 @@ $opcard = new Opcard();
         <?php
         if($q->num_rows>0){
             $i=1;
+            $male = 0;
+            $female = 0;
             $roundMen = 0;
             $roundWomen = 0;
             $bmi23Count = $bmi30Count = 0;
@@ -116,6 +118,7 @@ $opcard = new Opcard();
                 // $male_prefix = preg_match('/^(นาย)/', $a['ptname']);
                 // if($male_prefix > 0){
                 if($b['sex']=='ช'){
+                    $male++;
                     if($round > 90){
                         $roundStat = '⚠️';
                         $roundStyle = 'style="color:red;"';
@@ -126,6 +129,7 @@ $opcard = new Opcard();
                 // $female_prefix = preg_match('/^(นาง|น.ส.|หญิง)/', $a['ptname']);
                 // if($female_prefix > 0){
                 if($b['sex']=='ญ'){
+                    $female++;
                     if($round > 80){
                         $roundStat = '⚠️';
                         $roundStyle = 'style="color:red;"';
@@ -173,7 +177,6 @@ $opcard = new Opcard();
                 </table>
             </div>
         </div>
-
         <div class="row mt-4">
             <div class="col-md-4">
                 <table class="table">
@@ -192,7 +195,24 @@ $opcard = new Opcard();
                 </table>
             </div>
         </div>
-
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <table class="table">
+                    <tr>
+                        <th>ลูกจ้างแยกตามเพศ</th>
+                        <th class="text-center">จำนวนราย</th>
+                    </tr>
+                    <tr>
+                        <td>ชาย</td>
+                        <td class="text-center"><?=$male;?></td>
+                    </tr>
+                    <tr>
+                        <td>หญิง</td>
+                        <td class="text-center"><?=$female;?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
     <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
 
