@@ -5018,7 +5018,7 @@ SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1
 FROM `drugrx` 
 WHERE `hn` = '$patient_hn' 
 AND `date` >= '$date_start'
-AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150','1API') 
 AND `status` = 'Y' AND `amount` > 0 
 ORDER BY `row_id` ASC;";
 $dbi->query($sqlTemp);

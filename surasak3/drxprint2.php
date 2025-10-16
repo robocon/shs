@@ -260,7 +260,7 @@ if(!empty($cStkcutdate)) {
 		FROM `drugrx` 
 		WHERE `hn` = '%s' 
 		AND ( `date` >= '$sixMonthsTH' AND `date` <= '$opday_thidate' ) 
-		AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+		AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150','1API') 
 		AND `status` = 'Y' AND `amount` > 0 
 		ORDER BY `row_id` DESC
 	) AS a
