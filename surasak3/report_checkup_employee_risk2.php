@@ -2,9 +2,6 @@
 require_once dirname(__FILE__).'/bootstrap.php';
 require_once dirname(__FILE__).'/class_file/class_opcard.php';
 
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
-
 $sql = "SELECT `prefix`,`runno` FROM `runno` WHERE `title` = 'emp_checkup' ";
 $q = $dbi->query($sql);
 $runno = $q->fetch_assoc();
@@ -23,7 +20,7 @@ $opcard = new Opcard();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
-    <?php 
+    <?php
     require_once 'report_checkup_employee_menu.php';
     
     $yearCheckup = get_year_checkup(true);
@@ -36,11 +33,11 @@ $opcard = new Opcard();
     ORDER BY ISNULL(a.row_id) ASC, a.row_id ASC";
     $q = $dbi->query($sql);
     ?>
-    <div class="">
+    <div class="mt-2">
         <h1 class="text-center">กลุ่มเสี่ยง HR ลูกจ้าง <?=$year_th;?></h1>
         <!-- <h3><small class="text-body-secondary">ระหว่างวันที่ 29 มกราคม 2567 ถึง 2 กุมภาพันธ์ 2567</small></h3> -->
         
-        <table class="table table-sm table-striped table-hover table-striped" id="tableContent">
+        <table class="table table-sm table-striped table-hover table-striped mt-2" id="tableContent">
             <thead class="table-light">
                 <tr>
                     <th>#</th>
@@ -49,8 +46,9 @@ $opcard = new Opcard();
                     <th>กลุ่ม</th>
                     <th>อายุ</th>
                     <th width="12%">โรคประจำตัว</th>
-                    <th colspan="2">BMI&gt;=23</th>
-                    <th colspan="2">รอบเอว<span title="ชาย > 90 หญิง > 80">ℹ️</span></th>
+                    <th class="text-center">BMI&gt;=23</th>
+                    <th class="text-center">BMI&gt;30</th>
+                    <th class="text-center">รอบเอว<span title="ชาย > 90 หญิง > 80">ℹ️</span></th>
                     <th>เบอร์โทร</th>
                 </tr>
             </thead>
@@ -58,6 +56,9 @@ $opcard = new Opcard();
         <?php
         if($q->num_rows>0){
             $i=1;
+            $roundMen = 0;
+            $roundWomen = 0;
+            $bmi23Count = $bmi30Count = 0;
             while ($a = $q->fetch_assoc()) {
 
                 $thidate = $a['thidate2'];
@@ -68,6 +69,7 @@ $opcard = new Opcard();
                 if(empty($b['phone']) OR $b['phone']==='-'){
                     $b['phone'] = $b['ptffone'];
                 }
+
                 $phone = str_replace('-', '', $b['phone']);
                 $phone = str_replace(array(',',' '), '<br>', $phone);
                 if(empty($thidate)){
@@ -79,35 +81,55 @@ $opcard = new Opcard();
                 $thDateHn = $enDate.$hn;
                 
                 $sbp = $dbp = $statBp = $bmi = $statBmi = $congenital_disease = $round = $roundStat = '';
-                $sqlOpd = "SELECT * FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
-                $qOpd = $dbi->query($sqlOpd);
-                if($qOpd->num_rows>0){
+                $sqlDxofyear = "SELECT `congenital_disease`,`bmi`,`round_` FROM dxofyear_out WHERE thdatehn = '$thDateHn' ";
+                $qDxofyear = $dbi->query($sqlDxofyear);
+                if($qDxofyear->num_rows>0){
+                    $dxofyear = $qDxofyear->fetch_assoc();
+                    $congenital_disease = $dxofyear['congenital_disease'];
+                    $bmi = $dxofyear['bmi'];
+                    $round = $dxofyear['round_'];
+                }else{
+                    list($y,$m,$d) = explode('-', $thidate);
+                    $opdThDateHn = "$d-$m-$y".$hn;
+                    $sqlOpd = "SELECT `congenital_disease`,`weight`,`height`,`bmi`,`waist` FROM `opd` WHERE `thdatehn` = '$opdThDateHn'";
+                    $qOpd = $dbi->query($sqlOpd);
                     $opd = $qOpd->fetch_assoc();
+                    $bmi = round($opd['weight'] / ( ($opd['height']/100)*($opd['height']/100) ),2);
                     $congenital_disease = $opd['congenital_disease'];
-                    $bmi = $opd['bmi'];
-                    $round = $opd['round_'];
+                    $round = $opd['waist'];
                 }
 
                 $bmiStyle =  '';
                 if($bmi >= 23){
                     $statBmi='⚠️';
                     $bmiStyle =  'style="color:red;"';
+                    $bmi23Count++;
+                }
+
+                $bmi30Style = '';
+                if($bmi > 30){
+                    $bmi30Style =  'style="color:red;"';
+                    $bmi30Count++;
                 }
 
                 $roundStyle = '';
-                $male_prefix = preg_match('/^(นาย)/', $a['ptname']);
-                if($male_prefix > 0){
+                // $male_prefix = preg_match('/^(นาย)/', $a['ptname']);
+                // if($male_prefix > 0){
+                if($b['sex']=='ช'){
                     if($round > 90){
                         $roundStat = '⚠️';
                         $roundStyle = 'style="color:red;"';
+                        $roundMen++;
                     }
                 }
 
-                $female_prefix = preg_match('/^(นาง|น.ส.)/', $a['ptname']);
-                if($female_prefix > 0){
+                // $female_prefix = preg_match('/^(นาง|น.ส.|หญิง)/', $a['ptname']);
+                // if($female_prefix > 0){
+                if($b['sex']=='ญ'){
                     if($round > 80){
                         $roundStat = '⚠️';
                         $roundStyle = 'style="color:red;"';
+                        $roundWomen++;
                     }
                 }
 
@@ -119,10 +141,11 @@ $opcard = new Opcard();
                     <td><?=$a['department'];?></td>
                     <td><?=$a['age'];?></td>
                     <td><?=$congenital_disease;?></td>
-                    <td class="text-end"><span <?=$bmiStyle;?>><?=$bmi;?></span></td>
-                    <td class="text-center"><span title="<?=$bmi;?>"><?=$statBmi;?></span></td>
-                    <td class="text-end"><span <?=$roundStyle;?>><?=$round;?></span></td>
-                    <td class="text-center"><span title="<?=$round;?>"><?=$roundStat;?></span></td>
+                    <td class="text-center"><span <?=$bmiStyle;?>><?=$bmi;?></span></td>
+                    <!-- <td class="text-center"><span title="<?=$bmi;?>"><?=$statBmi;?></span></td> -->
+                    <td class="text-center"><span <?=$bmi30Style;?>><?=$bmi;?></span></td>
+                    <td class="text-center"><span <?=$roundStyle;?>><?=$round;?></span></td>
+                    <!-- <td class="text-center"><span title="<?=$round;?>"><?=$roundStat;?></span></td> -->
                     <td><?=$phone;?></td>
                 </tr>
                 <?php
@@ -132,7 +155,44 @@ $opcard = new Opcard();
         ?>
             </tbody>
         </table>
-            
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <table class="table">
+                    <tr>
+                        <th>ยอดอ้วนลงพุง</th>
+                        <th class="text-center">จำนวนราย</th>
+                    </tr>
+                    <tr>
+                        <td>ชาย รอบเอว >90</td>
+                        <td class="text-center"><?=$roundMen;?></td>
+                    </tr>
+                    <tr>
+                        <td>หญิง รอบเอว >80</td>
+                        <td class="text-center"><?=$roundWomen;?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <table class="table">
+                    <tr>
+                        <th>BMI</th>
+                        <th class="text-center">จำนวนราย</th>
+                    </tr>
+                    <tr>
+                        <td>BMI ≥ 23</td>
+                        <td class="text-center"><?=$bmi23Count;?></td>
+                    </tr>
+                    <tr>
+                        <td>BMI > 30</td>
+                        <td class="text-center"><?=$bmi30Count;?></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
     </div>
     <script type="text/javascript" src="bootstrap/js/bootstrap.bundle.min.js"></script>
 
