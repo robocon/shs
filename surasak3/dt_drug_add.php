@@ -749,19 +749,6 @@ $reasonToUsedDrug = '';
 if($insert1===true){
 
 	// $detailList = array(
-	// 	'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
-	// 	'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
-	// 	'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
-	// 	'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
-	// 	'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
-	// 	'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
-	// 	'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-	// 	'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
-	// 	'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
-	// 	'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
-	// 	'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
-	// 	'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
-	// 	'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
 	// 	'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
 	// 	'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
 	// 	'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
@@ -785,6 +772,23 @@ if($insert1===true){
 	// );
 
 	$detailList = array(
+		'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
+		'MRA2' => 'มีระดับ k<sup>+</sup> ไม่เกิน 5 mEq/L',
+		'MRA3' => 'ไม่มีภาวะ adrenal insufficiency',
+		'MRA4' => 'ระดับ eGFR > 25 ml/min/1.73m<sup>3</sup>',
+
+		'LIPID1' => 'เกิด DI หรือไม่สามารถใช้ยา fibrates ได้เมื่อ TG > 500 mg/dl',
+		'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
+		'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
+
+		'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
+		'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
+
+		'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
+		'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
+		'DIABETES3' => 'คนไข้ DM มีภาวะ CKD eGFR &lt; 60 ml/min/7.13m2 หรือ ACR ≥ 30 mg/g',
+		'DIABETES4' => 'คนไข้ DM หรือ obesity ที่มีความเสี่ยงสูงในภาวะ MASLD',
+
 		'INCLI1_SUB1_1' => 'ครอบครัวมีประวัติโรคหลอดเลือดหัวใจเกิดก่อนวัยอันควร (Premature CVD) ผู้ชาย < 55 ปี, ผู้หญิง < 60 ปี',
 		'INCLI1_SUB1_2' => 'มีประวัติญาติค่า LDL-C สูงว่าคนปกติทั่วไป (95% tile) ในอายุและเพศ ของญาติสายตรงทั้งหมด',
 		'INCLI1_SUB1_3' => 'ญาติสายตรงมีภาวะ Tendon Xanthoma และ/หรือ Corneal arcus',

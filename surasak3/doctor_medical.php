@@ -14,15 +14,15 @@ if($action==='save'){
     $criteria = $_POST['criteriaCode'];
     $cookieName = date('Y-m-d').sprintf("%s", $_POST['hn']);
 
-    $error = array();
-
     $items = $_POST['title'];
     $detail = array();
     $drugcode = trim($_POST['drugcode']);
     foreach ($items as $title) { 
-
         $detail[$title] = $_POST[$title];
-
+    }
+    
+    if(!empty($_COOKIE[$cookieName][$criteria])){
+        $res = $json->decode($_COOKIE[$cookieName]);
     }
 
     $res[$criteria] = array(
@@ -33,11 +33,6 @@ if($action==='save'){
         'title' => $_POST['title'],
         'detail' => $detail
     );
-    if(!empty($_COOKIE[$cookieName][$criteria])){
-        
-        $res = $json->decode($_COOKIE[$cookieName]);
-
-    }
 
     setcookie($cookieName, $json->encode($res), strtotime(date('Y-m-d 23:59:59')), '/');
 
