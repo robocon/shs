@@ -156,6 +156,10 @@ $title = 'เข้าสู่ระบบอินทราเน็ต รพ
 	</div>
 	</div>
 </div>
-
+<script>
+	window.onload = function(){
+		document.getElementById('username').focus();
+	}
+</script>
 </body>
 </html>
