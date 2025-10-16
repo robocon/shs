@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.php");
+include("connect.inc");
   
 function calcage($birth){
 
@@ -28,8 +28,18 @@ function calcage($birth){
 
 //print_r($_GET);
 
-$chkdate1="2563-01-01 00:00:00";
-$chkdate2="2564-08-26 23:59:59";
+?>
+	<style type="text/css">
+<!--
+body,td,th {
+	font-size: 14px;
+}
+-->
+</style>
+<body Onload="window.print();">
+<?php
+$chkdate1="2564-01-01 00:00:00";
+$chkdate2="2565-12-31 23:59:59";
 
 $sqlop1="select * from dphardep where hn ='".$_GET["hn"]."' AND (date >= '$chkdate1' and date <= '$chkdate2') and stkcutdate !='' and dr_cancle is null and (an ='' OR an is null)";
 //echo $sqlop1;
@@ -97,14 +107,8 @@ $age = calcage($dbirth);
 
 if(!empty($cStkcutdate)) {
 
-	?>
-	<style type="text/css">
-<!--
-body,td,th {
-	font-size: 14px;
-}
--->
-</style><body Onload="window.print();">
+?>
+<div style="page-break-after: always">
 	<?php
 	print "<u><br><font face='THSarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='THSarabunPSK' size= 4 ><b><b>&nbsp;HN:&nbsp;$rxHn&nbsp;&nbsp;VN:$rxvn </b>&nbsp;$rxPtright</b></font></u><br>";
 	print "<font face='THSarabunPSK' size= 4 >วันที่ $d/$m/$y&nbsp;&nbsp;$t";
@@ -376,10 +380,8 @@ $num=Mysql_num_rows($result);
 			}
 		}
 	}
-}
-if($j < $numop1){
-echo "<div style=\"page-break-before: always;\">&nbsp;</div>";
-}
-}
 
-include("unconnect.inc");
+echo "</div>";
+}
+}
+?>
