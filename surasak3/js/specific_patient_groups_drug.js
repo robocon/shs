@@ -15,6 +15,10 @@ function cancelBtnForm(){
 	closePreg();
 }
 
+/**
+ * แบบฟอร์ม MRA
+ * @param {*} drugcode 
+ */
 async function checkMRA(drugcode){ // 1FINE
 	
 	const htmlTxt = `<div style="width: 600px; height: 400px;">
@@ -36,8 +40,15 @@ async function checkMRA(drugcode){ // 1FINE
 	document.getElementById("pregBackground").style.display = "";
 	document.getElementById("pregContainer").style.display = "";
 
+	document.getElementById("pregContainer").style.height = "350px";
+
 }
 
+/**
+ * 
+ * @param {*} drugcode 
+ * @returns 
+ */
 async function confirmMRA(drugcode){
 	const mraItems = document.querySelectorAll('.inputMRA');
 	let mraCount = 0;
@@ -79,8 +90,7 @@ async function confirmMRA(drugcode){
 					icon: 'success',
 					allowOutsideClick: false
 				});
-				console.log(res.cookieData);
-                // setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
+                setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
 
 			}else{
 				Swal.fire({
@@ -91,7 +101,6 @@ async function confirmMRA(drugcode){
 				});
 			}
 		});
-
 		
 		closePreg();
 	}
@@ -116,6 +125,8 @@ async function checkLipidDrug(drugcode){ // 1EPAD  1SEMA
 	document.getElementById("pregCloseBtn").style.display = "none";// ซ่อนปุ่มเอาไว้ก่อน
 	document.getElementById("pregBackground").style.display = "";
 	document.getElementById("pregContainer").style.display = "";
+
+	document.getElementById("pregContainer").style.height = "300px";
 }
 
 async function confirmLipidDrug(drugcode){
@@ -156,7 +167,7 @@ async function confirmLipidDrug(drugcode){
 				allowOutsideClick: false
 			});
 
-            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
+            setCookie(res.cookieName, res.cookieData); // บันทึก cookie 
 
 		}else{
 			Swal.fire({
@@ -308,7 +319,7 @@ async function confirmDiabetes(drugcode){
 				allowOutsideClick: false
 			});
 
-            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie
+            setCookie(res.cookieName, res.cookieData); // บันทึก cookie
             
 		}else{
 			Swal.fire({
@@ -470,41 +481,6 @@ async function checkInclisiran_old(drugcode){ // 2INC
 	document.getElementById("pregContainer").style.display = "";
 }
 
-// function clickInclisiran(){
-// 	if(document.getElementById('inputInclisiran1').checked===true){
-// 		document.getElementById('subIncli1').style.display='';
-// 	}else{
-// 		document.getElementById('subIncli1').style.display='none';
-
-// 		document.getElementById('sub_detail1').checked=false;
-// 		document.getElementById('sub_detail2').checked=false;
-// 		document.getElementById('sub_detail3').checked=false;
-
-// 	}
-// }
-
-// function clickInclisiran2(){
-// 	if(document.getElementById('inputInclisiran2').checked===true){
-// 		document.getElementById('subIncli2').style.display='';
-// 	}else{
-// 		document.getElementById('subIncli2').style.display='none';
-
-// 		document.getElementById('incil2_1').check = false;
-// 		document.getElementById('incil2_2').check = false;
-// 		document.getElementById('incil2_3').check = false;
-// 		document.getElementById('incil2_4').check = false;
-// 		document.getElementById('incil2_5').check = false;
-// 		document.getElementById('incil2_6').check = false;
-// 		document.getElementById('incil2_7').check = false;
-// 		document.getElementById('incil2_8').check = false;
-// 		document.getElementById('incil2_9').check = false;
-// 		document.getElementById('incil2_10').check = false;
-// 		document.getElementById('incil2_11').check = false;
-
-// 	}
-// }
-
-
 function clickINC1(){
 	if(document.getElementById('inputInclisiran1').checked===true){
 		document.getElementById('subIncli1').style.display='';
@@ -653,7 +629,7 @@ function confirmInclisiran(drugcode, criteriaCode, criteria){
 				allowOutsideClick: false
 			});
 
-            // setCookie(res.cookieName, res.cookieData); // บันทึก cookie
+            setCookie(res.cookieName, res.cookieData); // บันทึก cookie
             
 		}else{
 			Swal.fire({
