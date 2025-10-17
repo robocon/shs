@@ -115,10 +115,12 @@ $opcard = new Opcard();
                 }
 
                 $roundStyle = '';
-                // $male_prefix = preg_match('/^(นาย)/', $a['ptname']);
-                // if($male_prefix > 0){
                 if($b['sex']=='ช'){
-                    $male++;
+                    
+                    if(!empty($thidate)){
+                        $male++;
+                    }
+                    
                     if($round > 90){
                         $roundStat = '⚠️';
                         $roundStyle = 'style="color:red;"';
@@ -126,10 +128,12 @@ $opcard = new Opcard();
                     }
                 }
 
-                // $female_prefix = preg_match('/^(นาง|น.ส.|หญิง)/', $a['ptname']);
-                // if($female_prefix > 0){
                 if($b['sex']=='ญ'){
-                    $female++;
+
+                    if(!empty($thidate)){
+                        $female++;
+                    }
+
                     if($round > 80){
                         $roundStat = '⚠️';
                         $roundStyle = 'style="color:red;"';
