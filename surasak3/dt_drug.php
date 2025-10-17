@@ -186,12 +186,20 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_500"){
 
 if(isset($_GET["action"]) && $_GET["action"] == "check30day"){
 
-$times = mktime("0","0","0",date("m"),date("d")-$limit30checkday,date("Y"));
-$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
-$date2 = (date("Y")+543).date("-m-d H:i:s");
-$sql = " Select date_format(date,'%d-%m-%Y'), tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_GET["search"]."' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
-$result = mysql_query($sql);
-$rows = mysql_num_rows($result);
+	// ตรวจสอบว่าในช่วงระยะเวลา 30วันที่ผ่านมาเคยจ่ายยาตัวนี้ไปแล้วรึยัง
+	$times = mktime("0","0","0",date("m"),date("d")-$limit30checkday,date("Y"));
+	$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
+	$date2 = (date("Y")+543).date("-m-d H:i:s");
+	$sql = " Select date_format(date,'%d-%m-%Y'), tradname, amount, slcode 
+	From drugrx 
+	where amount > 0 
+	AND hn = '".$_SESSION["hn_now"]."' 
+	AND drugcode = '".$_GET["search"]."' 
+	AND status = 'Y' 
+	AND  date between '".$date1."' AND '".$date2."' 
+	Order by date DESC ";
+	$result = mysql_query($sql);
+	$rows = mysql_num_rows($result);
 	if($rows == 0){
 		echo "0";
 	}
@@ -199,39 +207,39 @@ $rows = mysql_num_rows($result);
 		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
 		echo "เคยจ่ายยา ".$tradname." ครั้งล่าสุดเมื่อวันที่ ".$date." จำนวน ".$amount." วิธีใช้ ".$slcode." \n ท่านต้องการสั่งยาหรือไม่?";
 	}
-exit();
+	exit();
 }
 
 
 if(isset($_GET["action"]) && $_GET["action"] == "check90day"){
 
-$times = mktime("0","0","0",date("m"),date("d")-$limit90checkday,date("Y"));
-$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
-$date2 = (date("Y")+543).date("-m-d H:i:s");
-$sql = " Select date_format(date,'%d-%m-%Y'), drugcode,tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_GET["search"]."' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
-$result = mysql_query($sql);
-$rows = mysql_num_rows($result);
-$tbrows = mysql_fetch_array($result);
+	$times = mktime("0","0","0",date("m"),date("d")-$limit90checkday,date("Y"));
+	$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
+	$date2 = (date("Y")+543).date("-m-d H:i:s");
+	$sql = " Select date_format(date,'%d-%m-%Y'), drugcode,tradname, amount, slcode From drugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_GET["search"]."' AND status = 'Y' AND  date between '".$date1."' AND '".$date2."' Order by date DESC ";
+	$result = mysql_query($sql);
+	$rows = mysql_num_rows($result);
+	$tbrows = mysql_fetch_array($result);
 	if($tbrows["drugcode"] == "2OSTE"){
-				list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
+		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
 		echo "เคยจ่ายยา ".$tradname." \nที่กำหนดให้จ่ายยาเว้นระยะ 3 เดือน ครั้งล่าสุดเมื่อวันที่ ".$date."\nจำนวน ".$amount." วิธีใช้ ".$slcode." \nท่านต้องการสั่งยาหรือไม่?";
 	}else{
 		echo "0";
 	}
-exit();
+	exit();
 }
 ///////////////////////////////////////////////////////////////////
 if(isset($_GET["action"]) && $_GET["action"] == "checktoday"){
-$date2 = (date("Y")+543).date("-m-d");
+	$date2 = (date("Y")+543).date("-m-d");
 
-$sql2 = " Select tradname, amount, slcode,idno From ddrugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_GET["search"]."' AND  date like '".$date2."%' Order by date DESC ";
-$result2 = mysql_query($sql2);
-$rows2 = mysql_num_rows($result2);
-list($tradname2, $amount2, $slcode2,$idno2)=mysql_fetch_array($result2);
+	$sql2 = " Select tradname, amount, slcode,idno From ddrugrx where amount > 0 AND hn = '".$_SESSION["hn_now"]."' AND drugcode = '".$_GET["search"]."' AND  date like '".$date2."%' Order by date DESC ";
+	$result2 = mysql_query($sql2);
+	$rows2 = mysql_num_rows($result2);
+	list($tradname2, $amount2, $slcode2,$idno2)=mysql_fetch_array($result2);
 
-$sql3 = " Select doctor From dphardep where row_id='$idno2'";
-$result3 = mysql_query($sql3);
-$rows3 = mysql_fetch_array($result3);
+	$sql3 = " Select doctor From dphardep where row_id='$idno2'";
+	$result3 = mysql_query($sql3);
+	$rows3 = mysql_fetch_array($result3);
 
 	if($rows2 == 0){
 		echo "0";
@@ -242,7 +250,7 @@ $rows3 = mysql_fetch_array($result3);
 		echo "คำเตือน : มีการจ่ายยา ".$tradname2." จากแพทย์ท่านอื่นแล้ว\nกรุณาตรวจสอบการจ่ายยาด้านล่าง เพื่อมิให้การจ่ายยาซ้ำซ้อน\nท่านต้องการสั่งยาหรือไม่?";
 	}
 
-exit();
+	exit();
 }
 
 if( !function_exists('dump') ){
@@ -3711,9 +3719,10 @@ function addslip2(action,str,len,no) {
 			document.getElementById("list").innerHTML = xmlhttp.responseText;
 		}
 }
+
 function ajaxcheck(action,str,drugcode){
 	xmlhttp = newXmlHttp();
-	url = 'dt_drug.php?action='+action+'&search=' + str+'&chkdrugcode=' + drugcode;
+	url = 'dt_drug.php?action='+action+'&search='+str+'&chkdrugcode='+drugcode;
 	xmlhttp.open("GET", url, false);
 	xmlhttp.send(null);
 	return xmlhttp.responseText;
@@ -3845,7 +3854,7 @@ function drug_interaction(drugcode){
 
 	let return_drug_interaction = xmlhttp.responseText;
 	if(return_drug_interaction!="0"){
-		return_drug_interaction = return_drug_interaction.substr(4);
+		return_drug_interaction = return_drug_interaction.substring(0,1);
 	}
 	
 	return return_drug_interaction;
@@ -3859,48 +3868,55 @@ function drug_interaction(drugcode){
 }
 */
 
+/**
+ * หลังจากกดเลือกยาไปแล้ว คำสั่งนี้จะเป็นการตกลงเพื่อเลือกไปยังรายการยาที่สั่งจ่าย
+ */
 function checkForm1(){
-	var txt ;
-	var txt1 ;
-	var txt2 ;
 
 	const drug_code = document.getElementById('drug_code').value;
 
+	// ย้ายไปอยู่ในฟังก์ชั่น check_drugreact()
 	// txt = ajaxcheck("checkdrugcode",'',drug_code);
 	// txt = txt.substr(4);
 	
-	txt1 = ajaxcheck("checkdrugamount",document.form1.drug_amount.value,drug_code);
+	let txt1 = ajaxcheck("checkdrugamount", document.form1.drug_amount.value, drug_code);
 	txt1 = txt1.substr(4);
 
-	txt2 = ajaxcheck("checkdrugslip",document.form1.drug_slip.value);
+	let txt2 = ajaxcheck("checkdrugslip",document.form1.drug_slip.value);
 	txt2 = txt2.substr(4);
 	
-	txt3 = ajaxcheck("check30day",'',drug_code);
+	// ตรวจสอบว่าในช่วงระยะเวลา 30วันที่ผ่านมาเคยจ่ายยาตัวนี้ไปแล้วรึยัง
+	let txt3 = ajaxcheck("check30day",drug_code);
 	txt3 = txt3.substr(4);
 	
-	txt3 = ajaxcheck("check90day",'',drug_code);
-	txt3 = txt3.substr(4);
+	// ตรวจสอบว่าในช่วงระยะเวลา 90วันที่ผ่านมาเคยจ่ายยาตัวนี้ไปแล้วรึยัง
+	let txt4 = ajaxcheck("check90day",drug_code);
+	txt4 = txt4.substr(4);
 	
-	txt7 = ajaxcheck("checktoday",'',drug_code);
+	// เช็กว่าจ่ายยาซ้ำซ้อนกับแพทย์ท่านอื่นรึป่าว
+	// ถ้าเป็น 0 แสดงว่าไม่ซ้ำ
+	let txt7 = ajaxcheck("checktoday",drug_code);
 	txt7 = txt7.substr(4);
 	
-	txt8 = ajaxcheck("checkptright",'',drug_code);
+	let txt8 = ajaxcheck("checkptright",drug_code);
 	txt8 = txt8.substr(4);
 
-	txt9 = ajaxcheck("checkptrightucsso",'',drug_code);
+	let txt9 = ajaxcheck("checkptrightucsso",drug_code);
 	txt9 = txt9.substr(4);
 	
-	txt10 = ajaxcheck("checkpharlock",'',drug_code);
+	let txt10 = ajaxcheck("checkpharlock",drug_code);
 	txt10 = txt10.substr(4);
 	
-	txt11 = ajaxcheck("checkdpycode",'',drug_code);
+	let txt11 = ajaxcheck("checkdpycode",drug_code);
 	txt11 = txt11.substr(4);
 	
+	// ซ้ำซ้อนกับ txt8
 	// txt12 = ajaxcheck("checkptright",'',drug_code);
 	// txt12 = txt12.substr(4);	
 
-	// return_drug_interaction = drug_interaction(drug_code);
-	return_drug_interaction = '';
+	let return_drug_interaction = drug_interaction(drug_code);
+	console.log(return_drug_interaction);
+	// return_drug_interaction = '';
 
 	// ใบงาน 3840 แจ้งเตือนให้จ่าย 20
 	// if( drug_code == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 
@@ -3912,21 +3928,6 @@ function checkForm1(){
 	if( drug_code == "1PLAQ-N" || drug_code == "1ZITH-C" ){ 
 		alert("ขอสงวนสิทธิใช้กรณีคนไข้ โควิด-19");
 	}
-	
-	/*if(txt == "0"){
-		alert("กรุณาลองใส่รหัสยาใหม่");
-		document.form1.drug_code.focus();
-
-	}else if(txt == "3" && !alert("ผู้ป่วยมีการแพ้ยาตัวนี้ ไม่สามารถจ่ายยาได้ ต้องการจ่ายยาให้ติดต่อห้องยาเพื่อลบการแพ้ยา")){
-		document.form1.drug_code.focus();
-
-	}else if(txt == "55" && !alert("ผู้ป่วยมีการแพ้ยาในกลุ่มนี้ ไม่สามารถจ่ายยาได้ กรุณาติดต่อเภสัชกรห้องยาค่ะ")){
-		document.form1.drug_code.focus();
-
-	}else if(txt == "55" && !confirm("ยาที่ท่านสั่งใช้ เป็นยาในกลุ่มเดียวกับยาที่ผู้ป่วยมีโอกาสแพ้ยา \nท่านต้องการสั่งจ่ายยาหรือไม่")){
-		document.form1.drug_code.focus();	
-
-	}*/
 
 	if(drug_code == ""){
 		alert("กรุณาใส่รหัสยา");
@@ -3959,10 +3960,18 @@ function checkForm1(){
 	}else if(txt2 == "0"){
 		alert("ค้นหาวิธีใช้ยาในระบบไม่พบ กรุณาระบุวิธีใช้ยาใหม่ หรือติดต่อกองเภสัชกรรม");
 		document.form1.drug_slip.focus();
-	}else if(txt7 != "0" && !confirm(txt7)){
-		return false;
-	}else if(txt3 != "0" && !confirm(txt3)){
-		return false;
+	}else if(txt7 != "0" && txt7!==''){
+		if(confirm(txt7)==false){
+			return false;
+		}
+	}else if(txt3 != "0" && txt3!==''){
+		if(confirm(txt3)==false){
+			return false;
+		}
+	}else if(txt4 != "0" && txt4!==''){
+		if(confirm(txt4)==false){
+			return false;
+		}
 	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม ไม่สามารถสั่งจ่ายยาได้กรุณาเปลี่ยนเป็นยา Generic หรือยาตัวอื่น")){
 		document.form1.drug_code.focus();
 	}else if(drug_code == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
@@ -3986,18 +3995,15 @@ function checkForm1(){
 		// แก้ไขเมื่อวันที่ 19/03/63 ให้เพิ่มจาก 60 เป็น 100
 		alert("ยา Sodium  hyaluronate 0.18% , 0.3 ml.  ยามีโควต้าจัดซื้อ \n ควบคุมการจ่ายได้ไม่เกิน 100 หลอด/คน/เดือน");  
 		document.form1.drug_amount.focus();				
-/*	}else if( drug_code == "10H005" && eval(document.form1.drug_amount.value) > 50 ){ 
-		
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");
-		document.form1.drug_amount.focus();
-*/
+	//}else if( drug_code == "10H005" && eval(document.form1.drug_amount.value) > 50 ){ 
+	//	alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ฟ้าทลายโจร ไม่เกิน 50เม็ดต่อคน");
+	//	document.form1.drug_amount.focus();
+	//}
+	//else if( drug_code == "1NEX40" && eval(document.form1.drug_amount.value) > 30 ){ 
+	//	alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ยาNEXIUM ไม่เกิน 14เม็ดต่อคน");  
+	//	document.form1.drug_amount.focus();
 	}
-	/*
-	else if( drug_code == "1NEX40" && eval(document.form1.drug_amount.value) > 30 ){ 
-		alert("แจ้งเตือนจากห้องยา\nจำกัดการสั่งใช้ยาNEXIUM ไม่เกิน 14เม็ดต่อคน");  
-		document.form1.drug_amount.focus();
-	}
-	*/
+	
 	else if(document.getElementById('drug_inject_amount').style.display == '' && document.form1.drug_inject_amount.value==''){
 		alert("กรุณาใส่ จำนวนยาที่ต้องการฉีดให้คนไข้ ");
 		document.form1.drug_inject_amount.focus();
@@ -4013,29 +4019,31 @@ function checkForm1(){
 	}else if(document.getElementById('reason').style.display == '' && document.form1.reason2.value==''){
 	//(document.getElementById('reason11').checked==false && document.getElementById('reason22').checked==false)){
 		alert("กรุณาระบุข้อบ่งชี้ในการใช้ยานอก");
-		/*document.form1.reason.focus();*/
-	document.form1.reason2.focus();
-	}else if(return_drug_interaction!='' && return_drug_interaction.substring(0,1) == "2" && confirm(return_drug_interaction)){  // lock
-		document.form1.drug_code.focus();
-	}else if(return_drug_interaction!='' && return_drug_interaction.substring(0,1) == "1" && !confirm(return_drug_interaction)){  //popup
-		document.form1.drug_code.focus();	
+		document.form1.reason2.focus();
+	}else if(return_drug_interaction!='' && return_drug_interaction == "2" ){  // lock
+		if(confirm(return_drug_interaction)===true){
+			document.form1.drug_code.focus();
+		}
+	}else if(return_drug_interaction!='' && return_drug_interaction == "1"){  //popup
+		if(confirm(return_drug_interaction)===false){
+			document.form1.drug_code.focus();
+		}
 	}else if(drug_code == "4MET25" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4MET25 สั่งได้ไม่เกิน 10 หลอด");
-		document.form1.drug_amount.focus();	
+		document.form1.drug_amount.focus();
 	}else if(drug_code == "10H014" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 10H014 สั่งได้ไม่เกิน 10 หลอด");
-		document.form1.drug_amount.focus();			
+		document.form1.drug_amount.focus();
 	}else if(drug_code == "4ANAL" && eval(document.form1.drug_amount.value) >=11){
 		alert("ผิดพลาด!!! ยา 4ANAL สั่งได้ไม่เกิน 10 หลอด");
-		document.form1.drug_amount.focus();			
-/*	}else if(drug_code == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
-		alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
-		document.form1.drug_amount.focus();	*/
+		document.form1.drug_amount.focus();
+	//}else if(drug_code == "1CODIC-N" && eval(document.form1.drug_amount.value) >=11){
+	//	alert("ผิดพลาด!!! ยา 1CODIC-N สั่งได้ไม่เกิน 10 เม็ด เนื่องจากยาใกล้หมด");
+	//	document.form1.drug_amount.focus();
 
 	}else{
-		
+	
 		if(check_inject(drug_code) == false){
-			
 			document.form1.drug_inject_amount.value = '';
 			document.form1.drug_inject_unit.value = '';
 			document.form1.drug_inject_amount2.value = '';
@@ -4044,10 +4052,9 @@ function checkForm1(){
 			document.form1.drug_inject_slip.value = '';
 			document.form1.drug_inject_type.value = '';
 			document.form1.drug_inject_etc.value = '';
-
 		}
 		//document.form1.drug_inject_amount.value = document.form1.drug_inject_amount.value+" "+document.form1.drug_unit.value;
-		if(txt8!="0"){
+		if(typeof txt8 !== 'undefined' && txt8 !== null && txt8 !== '' && txt8!="0"){
 			var contxt8 = confirm(txt8);
 			if(contxt8==true){
 				var lockpt = "FPT ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)";
@@ -4057,7 +4064,6 @@ function checkForm1(){
 		}else{
 			var lockpt = document.form1.reason.value;	
 		}
-			
 			// if(txt12!="0"){
 			// 	var contxt12 = confirm(txt12);
 			// 	if(contxt12==true){
