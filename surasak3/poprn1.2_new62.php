@@ -2227,12 +2227,12 @@ print "<DIV style='z-index:0'> &nbsp; </div>";
     </tr>
 <? if($chkprice < 100000){ ?>    
   <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 249/66 ลง 26 ก.ย. 2566</span></td>
+    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 230/68 ลง 7 ต.ค. 2568</span></td>
 
     </tr>
 <? }else{ ?>
   <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 203/67 ลง 24 ก.ย. 2567</span></td>
+    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 229/68 ลง 7 ต.ค. 2568</span></td>
     </tr>
 <? } ?>
   <tr>
