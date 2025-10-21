@@ -11,14 +11,13 @@ $action = isset($_POST['action']) ? $_POST['action'] : '';
 
 if($action==='save'){
 
-    $criteria = $_POST['criteriaCode'];
+    $title = $criteria = $_POST['criteriaCode'];
     $cookieName = date('Y-m-d').sprintf("%s", $_POST['hn']);
 
-    $items = $_POST['title'];
-    $detail = array();
+    $dataDetail = array();
     $drugcode = trim($_POST['drugcode']);
-    foreach ($items as $title) { 
-        $detail[$title] = $_POST[$title];
+    foreach ($_POST['title'] as $k) { 
+        $dataDetail[$k] = $_POST[$k];
     }
     
     if(!empty($_COOKIE[$cookieName][$criteria])){
@@ -30,8 +29,8 @@ if($action==='save'){
         'criteria' => $criteria,
         'drugcode' => $drugcode,
         'doctor' => $_POST['doctor'],
-        'title' => $_POST['title'],
-        'detail' => $detail
+        'title' => $title,
+        'detail' => $dataDetail
     );
 
     setcookie($cookieName, $json->encode($res), strtotime(date('Y-m-d 23:59:59')), '/');
@@ -41,7 +40,7 @@ if($action==='save'){
         'message' => 'บันทึกสถานะเรียบร้อย',
         'cookieName'=>$cookieName,
         'cookieData'=>$json->encode($res)
-    );
+    ); 
 
     header('Content-Type: application/json');
     echo $json->encode($jsonResponse);

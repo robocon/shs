@@ -3915,8 +3915,6 @@ function checkForm1(){
 	// txt12 = txt12.substr(4);	
 
 	let return_drug_interaction = drug_interaction(drug_code);
-	console.log(return_drug_interaction);
-	// return_drug_interaction = '';
 
 	// ใบงาน 3840 แจ้งเตือนให้จ่าย 20
 	// if( drug_code == "1XA.5-NN" && eval(document.form1.drug_amount.value) > 20 ){ 

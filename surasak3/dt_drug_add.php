@@ -19,6 +19,11 @@ $dbi->query("SET NAMES UTF8");
 
 $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
+global $nRunno;
+if(empty($nRunno)){
+	$nRunno = $_SESSION["nRunno"];
+}
+
 function send_line_noti($sMessage, $sToken){
 	$curl = curl_init(); 
 	curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/send_notify_v2.php"); 
@@ -745,31 +750,9 @@ $_SESSION["dt_drugstk"] .="</TABLE>";
 
 #################################  START  ####################################
 // ถ้ามีการยืนยันเหตุผลในการใช้ยา
+
 $reasonToUsedDrug = '';
 if($insert1===true){
-
-	// $detailList = array(
-	// 	'INCIL1'=>'ผู้ป่วย DM ที่มีความเสี่ยงสูง (ประเมิณโรคเบาหวานที่มีความเสี่ยงสูง) ที่มี LDL-C สูงและไม่มีโรคหัวใจ ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-	// 	'INCIL2'=>'ผู้ป่วยโรคคอเลสเตอรอลสูงทางพันธุกรรม (ประเมิณตาม Dutch Lipid Clinic Network Criteria ≥ 6) (familial hypercholesterolemia) ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
-	// 	'INCIL3'=>'เกิดผลข้างเคียงจากยากลุ่ม statin ไม่สามารถทนต่อผลข้างเคียงได้',
-	// );
-
-	// $subDetailList = array(
-	// 	'INCIL1_1' => 'Target organ damage',
-	// 	'INCIL1_2' => 'เป็นมานาน ≥10ปี',
-	// 	'INCIL1_3' => 'มีความเสี่ยงอื่นๆ เพิ่มเติม ได้แก่<br>- มี subclinical atherosclerosis เช่น Coronary calcium score ≥1,000<br>- ประวัติครอบครัวมี premature atherosclerosis ผู้หญิงอายุ &lt;55 ปี ผู้ชายอายุ &lt;45 ปี',
-	// 	'INCIL2_1' => 'First-degree relative with known premature (<55 years, men; &lt;60 years, women) coronary heart disease (CHD) OR First-degree relative with known LDL cholesterol &gt;95th percentile by age and gender for country',
-	// 	'INCIL2_2' => 'First-degree relative with tendon xanthoma and/or corneal arcus OR Child(ren) &lt;18 years with LDL cholesterol &gt; 95th percentile by age and gender for country',
-	// 	'INCIL2_3' => 'Subject has premature  (&lt;55 years, men; &lt;60 years, women) CHD',
-	// 	'INCIL2_4' => 'Subject has premature (&lt;55 years, men; &lt;60 years, women) cerebral or peripheral vascular disease',
-	// 	'INCIL2_5' => 'Tendon xanthoma',
-	// 	'INCIL2_6' => 'Corneal arcus in a person &lt;45 years',
-	// 	'INCIL2_7' => '&gt; 8.5 mmol/L (&gt;325 mg/dL)',
-	// 	'INCIL2_8' => '6.5 – 8.4 mmol/L (251-325 mg/dL)',
-	// 	'INCIL2_9' => '5.0 – 6.4 mmol/L (191-250 mg/dL)',
-	// 	'INCIL2_10' => '4.0 – 4.9 mmol/L (155-190 mg/dL)',
-	// 	'INCIL2_11' => 'Causative mutation shown in the LDLR, APOB, or PCSK9 genes',
-	// );
 
 	$detailList = array(
 		'MRA1' => 'CKD w DM(ชะลอไตเสื่อมผู้ป่วย DM)',
@@ -781,8 +764,8 @@ if($insert1===true){
 		'LIPID2' => 'ผู้ป่วย DM 40ปีขึ้นไปที่คุม LDL-Cได้ แต่ยังมีTriglycerides = 150-499 mg/dl',
 		'LIPID3' => 'ใช้ยากลุ่ม statin + ezetimibe ไม่สามารถลดLDL ให้ต่ำกว่า 70,100 mg/dl',
 
-		'ADENO1' => 'เป็น COPD ความรุนแรงระดับ E',
-		'ADENO2' => 'มีระดับ eosinophil > 300 cell/µl',
+		'ADRENO1' => 'เป็น COPD ความรุนแรงระดับ E',
+		'ADRENO2' => 'มีระดับ eosinophil > 300 cell/µl',
 
 		'DIABETES1' => 'คนไข้ DM มี BMI &gt;',
 		'DIABETES2' => 'คนไข้ DM ที่มีภาวะ/ความเสี่ยงสูงที่จะเป็น MI, Stroke, ASCV',
@@ -817,6 +800,10 @@ if($insert1===true){
 	);
 
 	$titleList = array(
+		'MRA' => 'mineralocorticoid receptor antagonist (MRA)',
+		'LIPID' => 'Other lipid-regulating drug',
+		'ADRENO' => 'Adrenoceptor agonists',
+		'DIABETES' => 'Drug use in diabetes',
 		'INCIL1' => 'ผู้ป่วยที่เป็นโรคไขมันในเลือดสูงจากกรรมพันธุ์ (Familial hypercholesterolemia) หรือ (FH) ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 100 mg/dl',
 		'INCIL2' => 'ผู้ป่วยที่มีภาวะไขมันในเลือดสูง (dyslipidemia) เป็นโรคเบาหวาน (diabetes) ที่มีความเสี่ยงสูง (high risk) ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า &gt; 100 mg/dl',
 		'INCIL3' => 'ผู้ป่วยที่เป็นโรคหัวใจ (Clinical ASCVD) ที่มีสาเหตุมาจากหลอดเลือดแดงแข็ง (Established atherosclerotic cardiovascular disease) และอยู่ในกลุ่มความเสี่ยงสูงมาก (very high risk) ที่ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 70 mg/dl',
@@ -832,18 +819,13 @@ if($insert1===true){
 	$cookieDrugcode = array();
 	foreach ($cookieItems as $item) {
 		$cookieDrugcode[] = $item['drugcode'];
-		// $cookieDrugcode[] = $item;
 	}
 
 	$newDrugItems = array(); // เก็บเอาไว้ปริ้นสติกเกอร์
-
 	$drugIntersecItems = array_intersect($cookieDrugcode, $ddrugrxList); // เอาที่หมอสั่ง กับใน cookie มา intersection กัน
 	foreach($drugIntersecItems AS $trueItem){
-		
 		foreach ($cookieItems as $cItem) {
-			
 			if($trueItem === $cItem['drugcode']){ // ไปดึงเอาข้อมูลจากใน Cookie มาบันทึกในฐานข้อมูล
-
 				$newDrugItems[] = $cItem;
 
 				// บันทึกหัวข้อ
@@ -860,26 +842,21 @@ if($insert1===true){
 				);
 				$qInDoctor = $dbi->query($sqlInDoctor);
 				if($qInDoctor===true){
-					
 					$doctorMedicalId = $dbi->insert_id;
-					foreach ($cItem['title'] as $dItem) { // บันทึกรายย่อย
+					foreach ($cItem['detail'] as $detail => $subDetail) { // บันทึกรายย่อย
 
-						$subDetail = '';
-						if(!empty($cItem['detail'])){
-							$subDetail = $json->encode($cItem['detail'][$dItem]);
-						}
+						$sumSubDetail = $json->encode($subDetail);
 
 						$sqlDetail = sprintf("INSERT INTO `doctor_medical_detail` (`id`, `date`, `doctor_medical_id`, `detail`, `sub_detail`) 
 						VALUES 
 						(NULL, '%s', '%s', '%s', '%s');",
 							$dbi->real_escape_string(date('Y-m-d')),
 							$dbi->real_escape_string($doctorMedicalId),
-							$dbi->real_escape_string($dItem),
-							$dbi->real_escape_string($subDetail)
+							$dbi->real_escape_string($detail),
+							$dbi->real_escape_string($sumSubDetail)
 						);
 						$qDetail = $dbi->query($sqlDetail);
 					}
-
 				} // end if insert doctor_medical
 			} // end if drugcode is same doctor order
 		} // end foreach 
@@ -888,8 +865,8 @@ if($insert1===true){
 	// ปริ้นสติกเกอร์
 	$i_title = 1;
 	$reasonToUsedDrug .= '<div style="page-break-after:always;"></div>';
+	$d_i = 1;
 	foreach($newDrugItems AS $drugItem){ // เอารายการที่คัดมาใหม่ ปริ้นสติกเกอร์
-
 		$reasonToUsedDrug .= '<div style="font-family: MS Sans Serif; font-size:12px;">';
 		
 		$brTitle = '';
@@ -898,21 +875,17 @@ if($insert1===true){
 		}
 		
 		$reasonToUsedDrug .= $brTitle.'<b>[RDU] เหตุผลการใช้ยา</b><br>';
-
-		$d_i = 1;
-		foreach($drugItem['title'] AS $d){
-			$detailKey = $d;
+		
+		foreach($drugItem['detail'] AS $keyTitle => $items){
 			$subDetail = '';
-			if(!empty($drugItem['detail'])){
-				$subDetailJson = $drugItem['detail'][$d];
+			if(!empty($items)){
 				$sub_i = 1;
-				foreach ($subDetailJson as $sub) {
+				foreach ($items as $key => $sub) {
 					$subDetail .= '&nbsp;&nbsp; '.$d_i.'.'.$sub_i.'. '.$detailList[$sub].'<br>';
 					$sub_i++;
 				}
 			}
-			
-			$reasonToUsedDrug .= $d_i.'. '.$titleList[$d].'<br>'.$subDetail;
+			$reasonToUsedDrug .= $d_i.'. '.$titleList[$keyTitle].'<br>'.$subDetail;
 			$d_i++;
 		}
 
@@ -920,8 +893,8 @@ if($insert1===true){
 		$reasonToUsedDrug .= '</div>';
 	}
 }
-
 $_SESSION['dt_drugstk'] .= $reasonToUsedDrug;
+
 
 
 

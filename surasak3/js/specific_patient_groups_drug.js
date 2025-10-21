@@ -40,7 +40,7 @@ async function checkMRA(drugcode){ // 1FINE
 	document.getElementById("pregBackground").style.display = "";
 	document.getElementById("pregContainer").style.display = "";
 
-	document.getElementById("pregContainer").style.height = "350px";
+	// document.getElementById("pregContainer").style.height = "350px";
 
 }
 
@@ -75,10 +75,11 @@ async function confirmMRA(drugcode){
 		formData.append("drugcode", drugcode);
 		formData.append("hn", hn);
 		formData.append("doctor", doctor);
-		formData.append("detail[]", 'MRA1');
-		formData.append("detail[]", 'MRA2');
-		formData.append("detail[]", 'MRA3');
-		formData.append("detail[]", 'MRA4');
+		formData.append("title[]", 'MRA');
+		formData.append("MRA[]", 'MRA1');
+		formData.append("MRA[]", 'MRA2');
+		formData.append("MRA[]", 'MRA3');
+		formData.append("MRA[]", 'MRA4');
 
 		const postData = new URLSearchParams(formData).toString();
 		
@@ -126,7 +127,7 @@ async function checkLipidDrug(drugcode){ // 1EPAD  1SEMA
 	document.getElementById("pregBackground").style.display = "";
 	document.getElementById("pregContainer").style.display = "";
 
-	document.getElementById("pregContainer").style.height = "300px";
+	// document.getElementById("pregContainer").style.height = "300px";
 }
 
 async function confirmLipidDrug(drugcode){
@@ -135,7 +136,7 @@ async function confirmLipidDrug(drugcode){
 	let lipidCount = 0;
 	for (let i = 0; i < lipidItem.length; i++) {
 		if (lipidItem[i].checked===true) {
-			formData.append("detail[]", lipidItem[i].value);
+			formData.append("LIPID[]", lipidItem[i].value);
 			lipidCount++;
 		}
 	}
@@ -153,6 +154,7 @@ async function confirmLipidDrug(drugcode){
 	formData.append("action", 'save');
 	formData.append("criteria", 'Other lipid-regulating drug');
 	formData.append("criteriaCode", 'LIPID');
+	formData.append("title[]", 'LIPID');
 	formData.append("drugcode", drugcode);
 	formData.append("hn", hn);
 	formData.append("doctor", doctor);
@@ -185,8 +187,8 @@ async function confirmLipidDrug(drugcode){
 async function checkAdreno(drugcode){ // 7BREZ
     const htmlTxt = `<div style="width: 600px; height: 400px;">
 		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
-		<p><input type="checkbox" class="inputAdreno" id="inputAdreno1" name="detail[]" value="ADENO1"><label for="inputAdreno1">1.) เป็น COPD ความรุนแรงระดับ E</label></p>
-		<p><input type="checkbox" class="inputAdreno" id="inputAdreno2" name="detail[]" value="ADENO2"><label for="inputAdreno2">2.) มีระดับ eosinophil > 300 cell/µl</label></p>
+		<p><input type="checkbox" class="inputAdreno" id="inputAdreno1" name="detail[]" value="ADRENO1"><label for="inputAdreno1">1.) เป็น COPD ความรุนแรงระดับ E</label></p>
+		<p><input type="checkbox" class="inputAdreno" id="inputAdreno2" name="detail[]" value="ADRENO2"><label for="inputAdreno2">2.) มีระดับ eosinophil > 300 cell/µl</label></p>
 		<p style="text-align: center;">
 			<button type="button" onclick="confirmAdreno('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="Adrenoceptor agonists">
@@ -227,8 +229,9 @@ function confirmAdreno(drugcode){
     formData.append("drugcode", drugcode);
     formData.append("hn", hn);
     formData.append("doctor", doctor);
-    formData.append("detail[]", 'ADENO1');
-    formData.append("detail[]", 'ADENO2');
+	formData.append("title[]", 'ADRENO');
+    formData.append("detail[]", 'ADRENO1');
+    formData.append("detail[]", 'ADRENO2');
 
     const postData = new URLSearchParams(formData).toString();
 	sendForm('doctor_medical.php',postData).then((res)=>{
@@ -287,7 +290,7 @@ async function confirmDiabetes(drugcode){
 	let diabetesCount = 0;
 	for (let i = 0; i < diabetesItem.length; i++) {
 		if (diabetesItem[i].checked===true) {
-			formData.append("detail[]", diabetesItem[i].value);
+			formData.append("DIABETES[]", diabetesItem[i].value);
 			diabetesCount++;
 		}
 	}
@@ -305,6 +308,7 @@ async function confirmDiabetes(drugcode){
     formData.append("action", 'save');
 	formData.append("criteria", 'Drug use in diabetes');
 	formData.append("criteriaCode", 'DIABETES');
+	formData.append("title[]", 'DIABETES');
 	formData.append("drugcode", drugcode);
 	formData.append("hn", hn);
 	formData.append("doctor", doctor);
@@ -558,6 +562,7 @@ function confirmInclisiran(drugcode, criteriaCode, criteria){
 				return false;
 			}
 		}
+		formData.append("title[]", "INCIL1");
 	}
 
 	if(document.getElementById('inputInclisiran2').checked===true){
@@ -573,6 +578,8 @@ function confirmInclisiran(drugcode, criteriaCode, criteria){
 			Swal.fire({title:"กรุณาเลือกเกณฑ์การประเมินในข้อที่2", icon: "warning"});
 			return false;
 		}
+
+		formData.append("title[]", "INCIL2");
 	}
 
 	if(document.getElementById('inputInclisiran3').checked===true){
@@ -593,6 +600,8 @@ function confirmInclisiran(drugcode, criteriaCode, criteria){
 				return false;
 			}
 		}
+
+		formData.append("title[]", "INCIL3");
 	}
 
 	if(document.getElementById('inputInclisiran4').checked===true){
@@ -609,6 +618,8 @@ function confirmInclisiran(drugcode, criteriaCode, criteria){
 			Swal.fire({title:"กรุณาเลือกเกณฑ์การประเมินในข้อที่4", icon: "warning"});
 			return false;
 		}
+
+		formData.append("title[]", "INCIL4");
 	}
 
 	formData.append("action", 'save');
