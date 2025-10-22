@@ -324,7 +324,7 @@ $prow_id     =array("prow_id");
     array_push($aDepart,$row->depart);
     array_push($aDetail,$row->detail);
     array_push($aPrice,$row->price);
-	if($row->credit=="จ่ายตรง"){
+	if($row->credit=="จ่ายตรง" || $row->credit=="จ่ายตรง อปท." || $row->credit=="จ่ายตรง อปท. (HD)" || $row->credit=="กทม" || $row->credit=="กสทช" || $row->credit=="ททท" || $row->credit=="กฟผ"){
 		array_push($aPaid,$row->paidcscd);
 	}else{
 		array_push($aPaid,$row->paid);

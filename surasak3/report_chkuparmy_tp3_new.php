@@ -15,6 +15,7 @@ include("connect.inc");
 	
 	$nPrefix=$row->prefix;
 	$nPrefix2="25".$nPrefix;
+	$nPrefix2="2568";
 ////*runno ตรวจสุขภาพ*/////////
 ?>	
 <title>รายงานผลการตรวจสุขภาพกำลังพล ทบ. ประจำปี <?=$nPrefix2;?></title>
@@ -85,7 +86,7 @@ if($_POST["act"]=="show"){
 	}else{
 	$result="select * from dxofyear where yearchk='$year1' and camp='$_POST[camp]' group by hn order by row_id desc";
 	}
-	//echo $result;
+	echo $result;
 	$object=mysql_query($result) or die("Query chkup_solider Error");
 	$numtotal=mysql_num_rows($object);
 

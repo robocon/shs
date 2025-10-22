@@ -127,66 +127,107 @@ if(isset($_POST['preview'])){
 
 // ---------- SAVE IMPORT ----------
 if(isset($_POST['save_import'])){
-    $success=0;
-	$fail=0;
-	$duplicate = 0; // นับรายการซ้ำ
-	foreach($_POST['data'] as $row){
-		list($yot,$name,$surname,$id_soldier,$idcard,$camp,$position,$ratchakan,$sex,$birthday) = explode("|",$row);
+    $success = 0;
+    $fail = 0;
+    $duplicate = 0;
+    $errorRows = array(); // เก็บรายการแถวที่ผิดพลาด
+    $validData = array(); // เก็บเฉพาะข้อมูลที่ตรวจสอบแล้วผ่าน
 
-		// check validation
-		if(strlen($id_soldier)>10 || !checkIDCard($idcard) || !checkDateFormat($birthday)){
-			$fail++;
-			continue;
-		}
+    $rowNum = 0;
+    foreach($_POST['data'] as $row){
+        $rowNum++;
+        list($yot,$name,$surname,$id_soldier,$idcard,$camp,$position,$ratchakan,$sex,$birthday,$comment) = explode("|",$row);
 
-		// ตรวจสอบ idcard ซ้ำในปีนั้น
-		$chk_sql = "SELECT COUNT(*) AS cnt 
-					FROM register_chkup_soldier 
-					WHERE idcard='$idcard' AND yearcheck='$yearcheck'";
-		$chk_res = mysql_query($chk_sql);
-		$chk_row = mysql_fetch_assoc($chk_res);
+        // ตรวจว่าครบทุกช่องหรือไม่
+        if(empty($yot) || empty($name) || empty($surname) || empty($id_soldier) || empty($idcard) || empty($camp) || empty($position) || empty($sex) || empty($birthday)){
+            $errorRows[] = "แถวที่ $rowNum: ข้อมูลไม่ครบถ้วน";
+            continue;
+        }
 
-		if($chk_row['cnt'] > 0){
-			$duplicate++; // ข้อมูลซ้ำ
-			continue;
-		}
+        // ตรวจรูปแบบเลขบัตรประชาชน
+        if(!checkIDCard($idcard)){
+            $errorRows[] = "แถวที่ $rowNum: เลขบัตรประชาชนไม่ถูกต้อง";
+            continue;
+        }
 
-		// insert ข้อมูล
-		$sql="INSERT INTO register_chkup_soldier
-			(row_id,yot,name,surname,id_soldier,idcard,camp,position,ratchakan,sex,birthday,yearcheck,active)
-			VALUES
-			(NULL,'$yot','$name','$surname','$id_soldier','$idcard','$camp','$position','$ratchakan','$sex','$birthday','$yearcheck','y')";
-		$ok = mysql_query($sql);
-		if($ok) $success++; else $fail++;
-	}
+        // ตรวจรูปแบบวันที่
+        if(!checkDateFormat($birthday)){
+            $errorRows[] = "แถวที่ $rowNum: รูปแบบวันเกิดไม่ถูกต้อง (ต้องเป็น YYYY-MM-DD)";
+            continue;
+        }
 
-	// แสดงผล
-echo "<!DOCTYPE html>
-<html>
-<head>
-<meta charset='utf-8'>
-<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
-</head>
-<body>
-<script>
-Swal.fire({
-    icon: 'info',
-    title: 'นำเข้าข้อมูลเสร็จสิ้น',
-    html: `
-        <div>
-            <span style='color:green;'>สำเร็จ $success รายการ</span><br>
-            <span style='color:red;'>ล้มเหลว $fail รายการ</span><br>
-            <span style='color:orange;'>ไม่สำเร็จ มีข้อมูลอยู่แล้ว $duplicate รายการ</span>
-        </div>
-    `
-}).then(() => {
-    window.location.href = 'register_soldier.php';
-});
-</script>
-</body>
-</html>";
-	exit;
+        // ตรวจ idcard ซ้ำในปีนั้น
+        $chk_sql = "SELECT COUNT(*) AS cnt FROM register_chkup_soldier WHERE idcard='$idcard' AND yearcheck='$yearcheck'";
+        $chk_res = mysql_query($chk_sql);
+        $chk_row = mysql_fetch_assoc($chk_res);
+        if($chk_row['cnt'] > 0){
+            $errorRows[] = "แถวที่ $rowNum: มีข้อมูลอยู่แล้วในระบบ (ปี $yearcheck)";
+            continue;
+        }
+
+        // ผ่านการตรวจทั้งหมด — เก็บไว้เตรียม insert ทีหลัง
+        $validData[] = array($yot,$name,$surname,$id_soldier,$idcard,$camp,$position,$ratchakan,$sex,$birthday,$comment);
+    }
+
+    // ถ้ามี error แม้แต่ 1 แถว — หยุดและแจ้งผู้ใช้ก่อน
+    if(count($errorRows) > 0){
+        $errorHtml = "<ul style='text-align:left;'>";
+        foreach($errorRows as $err){
+            $errorHtml .= "<li style='color:red;'>$err</li>";
+        }
+        $errorHtml .= "</ul>";
+
+        echo "<!DOCTYPE html>
+        <html><head><meta charset='utf-8'>
+        <script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
+        </head><body>
+        <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'พบข้อผิดพลาดในการนำเข้า',
+            html: `$errorHtml <br><b>ระบบยังไม่บันทึกข้อมูลใด ๆ</b>`
+        }).then(() => { window.location.href = 'register_soldier.php'; });
+        </script>
+        </body></html>";
+        exit;
+    }
+
+    // ถ้าไม่มี error — ค่อย insert ข้อมูลทั้งหมด
+    foreach($validData as $v){
+        list($yot,$name,$surname,$id_soldier,$idcard,$camp,$position,$ratchakan,$sex,$birthday,$comment) = $v;
+
+        $sql = "INSERT INTO register_chkup_soldier
+            (row_id,yot,name,surname,id_soldier,idcard,camp,position,ratchakan,sex,birthday,comment,yearcheck,active)
+            VALUES
+            (NULL,'$yot','$name','$surname','$id_soldier','$idcard','$camp','$position','$ratchakan','$sex','$birthday','$comment','$yearcheck','y')";
+        $ok = mysql_query($sql);
+        if($ok) $success++; else $fail++;
+    }
+
+    // แสดงผลรวมการบันทึก
+    echo "<!DOCTYPE html>
+    <html>
+    <head><meta charset='utf-8'><script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script></head>
+    <body>
+    <script>
+    Swal.fire({
+        icon: 'success',
+        title: 'นำเข้าข้อมูลเสร็จสิ้น',
+        html: `
+            <div>
+                <span style='color:green;'>สำเร็จ $success รายการ</span><br>
+                <span style='color:red;'>ล้มเหลว $fail รายการ</span>
+            </div>
+        `
+    }).then(() => {
+        window.location.href = 'register_soldier.php';
+    });
+    </script>
+    </body>
+    </html>";
+    exit;
 }
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -334,15 +375,15 @@ h2{text-align:center;color:#444;margin-bottom:20px;}
 		<table class="table table-bordered table-striped table-hover">
 		<thead>
 		<tr>
-		<th>ยศ</th><th>ชื่อ</th><th>นามสกุล</th><th>หมายเลขทหาร</th><th>บัตร ปชช</th><th>สังกัด</th><th>ตำแหน่ง</th><th>ช่วยราชการ</th><th>เพศ</th><th>วันเกิด</th>
+		<th>ยศ</th><th>ชื่อ</th><th>นามสกุล</th><th>หมายเลขทหาร</th><th>บัตร ปชช</th><th>สังกัด</th><th>ตำแหน่ง</th><th>ช่วยราชการ</th><th>เพศ</th><th>วันเกิด</th><th>หมายเหตุ</th>
 		</tr>
 		</thead>
 		<tbody>
 		<?php
 		foreach($previewData as $row){
-		  if(count($row)<10) continue;
+		  if(count($row)<11) continue;
 		  echo "<tr>";
-		  for($c=0;$c<10;$c++){ echo "<td>".htmlspecialchars($row[$c])."</td>"; }
+		  for($c=0;$c<11;$c++){ echo "<td>".htmlspecialchars($row[$c])."</td>"; }
 		  echo "</tr>";
 		  echo "<input type='hidden' name='data[]' value='".implode("|",$row)."'>";
 		}
