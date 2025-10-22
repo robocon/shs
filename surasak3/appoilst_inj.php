@@ -20,10 +20,7 @@ for($i=1; $i<=31; $i++){
 	$days[$i] = $i;
 }
 
-$month = array(
-	'01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', 
-	'07' => 'กรกฏาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม'
-);
+$def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
 
 $years = array();
 $year = date('Y')+543;
@@ -62,10 +59,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "view"){
 			<td algin="right"><strong>สิทธิ์: </strong></td>
 			<td>
 				<?=$ptright;?>
-				<INPUT TYPE="hidden" Name="fullname" Value="<?=$fullname;?>">
-				<INPUT TYPE="hidden" Name="ptright" value="<?=$ptright;?>">
-				<INPUT TYPE="hidden" Name="idcard" value="<?=$idcard;?>">
-				<INPUT TYPE="hidden" Name="dbirth" value="<?=$dbirth;?>">
+				<input type="hidden" name="fullname" value="<?=$fullname;?>">
+				<input type="hidden" name="ptright" value="<?=$ptright;?>">
+				<input type="hidden" name="idcard" value="<?=$idcard;?>">
+				<input type="hidden" name="dbirth" value="<?=$dbirth;?>">
 			</td>
 		</tr>
 	</table>
@@ -157,7 +154,7 @@ $_GET['y'] = $_GET['y']-543;
 		</select>
 		
 		<select class="change-date" name="month[]">
-			<?php foreach($month as $key => $m){ ?>
+			<?php foreach($def_fullm_th as $key => $m){ ?>
 			<?php $checked = ( $mcheck==$key ) ? 'selected' : '' ;?>
 			<option value="<?php echo $key;?>" <?php echo $checked;?>><?php echo $m;?></option>
 			<?php } ?>
@@ -174,7 +171,7 @@ $_GET['y'] = $_GET['y']-543;
 	}
 		
 	echo "</TABLE>";
-	}else if($_GET["druginj"] == "Tetanus Toxoid" || $_GET["druginj"] == "Adsorbed Td"){
+	}else if($_GET["druginj"] == "Tetanus Toxoid" || $_GET["druginj"] == "Adsorbed Td" || $_GET["druginj"] == "T-VAC"){
 
 		echo "<TABLE width='300' cellpadding='2' cellspacing='0' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
 		<TR align='center'>
@@ -204,7 +201,7 @@ $_GET['y'] = $_GET['y']-543;
 		</select>
 		
 		<select class="change-date" name="month[]">
-			<?php foreach($month as $key => $m){ ?>
+			<?php foreach($def_fullm_th as $key => $m){ ?>
 			<?php $checked = ( $mcheck==$key ) ? 'selected' : '' ;?>
 			<option value="<?php echo $key;?>" <?php echo $checked;?>><?php echo $m;?></option>
 			<?php } ?>
@@ -275,7 +272,7 @@ $_GET['y'] = $_GET['y']-543;
 		</select>
 		
 		<select class="change-date" name="month[]">
-			<?php foreach($month as $key => $m){ ?>
+			<?php foreach($def_fullm_th as $key => $m){ ?>
 			<?php $checked = ( $mcheck==$key ) ? 'selected' : '' ;?>
 			<option value="<?php echo $key;?>" <?php echo $checked;?>><?php echo $m;?></option>
 			<?php } ?>
@@ -312,15 +309,13 @@ $month[9] = "ตุลาคม";
 $month[10] = "พฤศจิกายน";
 $month[11] = "ธันวาคม";
 
-?>
 
+?>
 <HTML>
 <HEAD>
 <TITLE> นัดฉีดยา </TITLE>
 
 <style type="text/css">
-
-
 a:link {color:#FF0000; text-decoration:underline;}
 a:visited {color:#FF0000; text-decoration:underline;}
 a:active {color:#FF0000; text-decoration:underline;}
@@ -339,88 +334,7 @@ body,td,th {
 
 }
 </style>
-<SCRIPT LANGUAGE="JavaScript">
-	
-	window.onload = function(){
-		
-		view_inj();
-
-	}
-
-	function newXmlHttp(){
-	var xmlhttp = false;
-
-		try{
-			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		}catch(e){
-		try{
-			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			}catch(e){
-				xmlhttp = false;
-			}
-		}
-
-		if(!xmlhttp && document.createElement){
-			xmlhttp = new XMLHttpRequest();
-		}
-	return xmlhttp;
-}
-
-function viewdetail(action,hn) {
-	var stat;
-	if(document.getElementById("hn").value != ""){
-		url = 'appoilst_inj.php?action='+action+'&hn=' + hn;
-		xmlhttp = newXmlHttp();
-		xmlhttp.open("GET", url, false);
-		xmlhttp.send(null);
-
-		stat = xmlhttp.responseText;
-		stat = stat.substr(4);
-
-		document.getElementById("div_viewdetail").innerHTML = stat;
-	}
-}
-
-function view_inj(){
-	
-	d = document.getElementById("sdd").value;
-	m= document.getElementById("smm").value;
-	y = document.getElementById("syy").value;
-	druginj = document.getElementById("drug_inj").value;
-
-	url = 'appoilst_inj.php?action=view_inj&d='+d+'&m='+m+'&y='+y+'&druginj='+druginj;
-	xmlhttp = newXmlHttp();
-	xmlhttp.open("GET", url, false);
-	xmlhttp.send(null);
-
-	document.getElementById("detail_date").innerHTML = xmlhttp.responseText;
-
-}
-
-function checkForm(){
-
-var stat = true;
-	if(document.f1.hn.value == ''){
-		alert('กรุณากรอก HN ด้วยครับ');
-		stat = false;
-	}else if(document.f1.drug_inj.value == ''){
-		alert('กรุณาเลือกยา ด้วยครับ');
-		stat = false;
-	}else if(document.f1.doctor.value == ''){
-		alert('กรุณาเลือก แพทย์ ด้วยครับ');
-		stat = false;
-	}else if(document.getElementById("div_viewdetail").innerHTML.length <= 139){
-		alert('กรุณากดปุ่ม View เพื่อตรวจสอบชื่อ และ สิทธิ์ ผู้ป่วย');
-		stat = false;
-	}	
-
-
-return stat;
-}
-
-</SCRIPT>
 </HEAD>
-
 <BODY onLoad="viewdetail('view',document.getElementById('hn').value);" >
 <A HREF="../nindex.htm"><FONT SIZE="3" COLOR="#FF0000">&lt;&lt; เมนู</FONT></A><BR><BR>
 
@@ -455,15 +369,14 @@ return stat;
 		}?>
 		</Select>
 		&nbsp;:&nbsp;
-		<Select ID="smm" name="smm" Onchange="view_inj();">
-		<?php for($i=0;$i<12;$i++){
-			if($i<10) $j = "0";
-				else $j = "";
-			echo "<Option value=\"",$j,($i+1),"\" ";
-				if($i+1 == date("m")) echo " Selected ";			
-			echo ">",$month[$i],"</Option>";	
-		}?>
-		</Select>
+
+		<select ID="smm" name="smm" Onchange="view_inj();">
+			<?php foreach($def_fullm_th as $key => $m){ ?>
+			<?php $checked = ( date('m')==$key ) ? 'selected' : '' ;?>
+			<option value="<?php echo $key;?>" <?php echo $checked;?>><?php echo $m;?></option>
+			<?php } ?>
+		</select>
+
 		&nbsp;:&nbsp;
 		<Select ID="syy" name="syy" Onchange="view_inj();">
 		<?php for($i=date("Y")-1;$i<date("Y")+3;$i++){
@@ -482,9 +395,10 @@ return stat;
 			<Option value="">-- เลือกยา --</Option>
 			<Option value="Tetanus Toxoid">Diphtheria and Tetanus vaccine</Option>
 			<option value="Adsorbed Td">Adsorbed Td</option>
+			<option value="T-VAC">T-VAC vaccine 0.5 ml</option>
 			<Option value="VERO RABIES 2">VERO RABIES 2 เข็ม</Option>
 			<Option value="VERO RABIES 3">VERO RABIES 3 เข็ม</Option>
-			<Option value="VERO RABIES 5">VERO RABIES 5 เข็ม</Option>            
+			<Option value="VERO RABIES 5">VERO RABIES 5 เข็ม</Option>
 			<Option value="VERORAB 2">VERORAB 2 เข็ม</Option>
 			<Option value="VERORAB 3">VERORAB 3 เข็ม</Option>
 			<Option value="VERORAB 5">VERORAB 5 เข็ม</Option>
@@ -538,5 +452,81 @@ return stat;
 </TD></TR></TABLE></TD></TR></TABLE>
 </FORM>
 
+<SCRIPT LANGUAGE="JavaScript">
+	
+	window.onload = function(){
+		view_inj();
+	}
+
+	function newXmlHttp(){
+	var xmlhttp = false;
+
+		try{
+			xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		}catch(e){
+		try{
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}catch(e){
+				xmlhttp = false;
+			}
+		}
+
+		if(!xmlhttp && document.createElement){
+			xmlhttp = new XMLHttpRequest();
+		}
+	return xmlhttp;
+}
+
+function viewdetail(action,hn) {
+	var stat;
+	if(document.getElementById("hn").value != ""){
+		url = 'appoilst_inj.php?action='+action+'&hn=' + hn;
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
+
+		stat = xmlhttp.responseText.trim();
+		// stat = stat.substr(4);
+
+		document.getElementById("div_viewdetail").innerHTML = stat;
+	}
+}
+
+function view_inj(){
+	
+	d = document.getElementById("sdd").value;
+	m= document.getElementById("smm").value;
+	y = document.getElementById("syy").value;
+	druginj = document.getElementById("drug_inj").value;
+
+	url = 'appoilst_inj.php?action=view_inj&d='+d+'&m='+m+'&y='+y+'&druginj='+druginj;
+	xmlhttp = newXmlHttp();
+	xmlhttp.open("GET", url, false);
+	xmlhttp.send(null);
+
+	document.getElementById("detail_date").innerHTML = xmlhttp.responseText;
+
+}
+
+function checkForm(){
+
+var stat = true;
+	if(document.f1.hn.value == ''){
+		alert('กรุณากรอก HN ด้วยครับ');
+		stat = false;
+	}else if(document.f1.drug_inj.value == ''){
+		alert('กรุณาเลือกยา ด้วยครับ');
+		stat = false;
+	}else if(document.f1.doctor.value == ''){
+		alert('กรุณาเลือก แพทย์ ด้วยครับ');
+		stat = false;
+	}else if(document.getElementById("div_viewdetail").innerHTML.length <= 139){
+		alert('กรุณากดปุ่ม View เพื่อตรวจสอบชื่อ และ สิทธิ์ ผู้ป่วย');
+		stat = false;
+	}
+	return stat;
+}
+
+</SCRIPT>
 </BODY>
 </HTML>

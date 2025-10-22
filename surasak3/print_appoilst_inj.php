@@ -1,6 +1,14 @@
 <?php
 session_start();
-include("connect.inc");
+include 'connect.php';
+
+if(empty($_SESSION['sOfficer'])){
+	?>
+	<p>Session หมดอายุ</p>
+	<p>กรุณา Login ใหม่อีกครั้ง</p>
+	<?php
+	exit;
+}
 
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 $Thidate2 = (date("Y")+543).date("-m-d"); 
@@ -43,6 +51,11 @@ unset($_POST['year']);
 $_POST['list_date'] = $new_listdate;
 $_POST['list_date2'] = $new_listdate2;
 
+if($_POST['sdd'] && $_POST['smm'] && $_POST['syy']){
+	$Thidate = $_POST['syy'].'-'.$_POST['smm'].'-'.$_POST['sdd'].date(" H:i:s"); 
+	$Thidate2 = $_POST['syy'].'-'.$_POST['smm'].'-'.$_POST['sdd']; 
+}
+
 // จบ Override list_date กับ list_date2
 
 function calcage($birth){
@@ -79,6 +92,8 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 	$dgcode = "0DT";
 }else if($_POST["drug_inj"] == "Adsorbed Td"){
 	$dgcode = "0DT-N";
+}else if($_POST["drug_inj"] == "T-VAC"){
+	$dgcode = "0TT";
 }else if($_POST["drug_inj"] == "VERORAB"){
 	$dgcode = "0VERO";
 }else if($_POST["drug_inj"] == "VERO RABIES"){
@@ -104,7 +119,6 @@ if($_POST["drug_inj"] == "Tetanus Toxoid"){
 
 // ถ้า status ไม่ใช่ y จะออกใบนัดไม่ได้
 $sql = "Select idno From drugrx where hn = '".$_POST['hn']."' AND date like '".$Thidate2."%' AND drugcode = '".$dgcode."' AND status = 'Y' limit 1";
-echo $sql;
 $result = mysql_query($sql);
 $rows_drugrx = mysql_num_rows($result);
 if($rows_drugrx==0){
@@ -128,6 +142,8 @@ if($rows_drugrx > 0){
 		$drugName = 'Diphtheria and Tetanus vaccine';
 	}else if($_POST["drug_inj"] == "Adsorbed Td"){
 		$dgcode = "0DT-N";
+	}else if($_POST["drug_inj"] == "T-VAC"){
+		$dgcode = "0TT";
 	}else if($_POST["drug_inj"] == "VERORAB"){
 		$dgcode = "0VERO";
 	}else if($_POST["drug_inj"] == "VERO RABIES"){

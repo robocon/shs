@@ -1,13 +1,17 @@
 <?php 
 require_once 'bootstrap.php';
 
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->set_charset("utf8");
+if(empty($_SESSION['sOfficer'])){
+	?>
+	<p>Session หมดอายุ</p>
+	<p>กรุณา Login ใหม่อีกครั้ง</p>
+	<?php
+	exit;
+}
 
 $page = $_GET['page'];
 if($page=='reprint')
 {
-
     $date = $_GET['date'];
     $hn = $_GET['hn'];
     $sql = "SELECT * FROM `appoint` WHERE `date` = '$date' AND `hn` = '$hn' ";
@@ -29,65 +33,121 @@ if($page=='reprint')
         $remark = $a['remark'];
 
     }
-
+    ?>
+    <style>
+        *{
+            font-family: "TH SarabunPSK";
+            font-size: 16pt;
+        }
+        h3,p{
+            margin: 0;
+            padding: 0;
+        }
+        h3{
+            font-size: 20pt;
+        }
+    </style>
+    <?php
     $datehn = substr($date,8,2).'-'.substr($date,5,2).'-'.substr($date,0,4).$hn;
     $sqlOpday="SELECT `ptright` FROM `opday` WHERE `thdatehn` = '$datehn'";
     $qop = $dbi->query($sqlOpday);
     $opday = $qop->fetch_assoc();
     $ptright = $opday['ptright'];
-    
-    echo "<TABLE align='center'><TR><TD>";
-
-    echo "<CENTER><B><FONT  class='font_title_b'>ใบนัดผู้ป่วยฉีดยาต่อเนื่อง โรงพยาบาลค่ายสุรศักดิ์มนตรี</FONT></B></CENTER>";
-    echo "&nbsp;&nbsp;<B>ชื่อ</B> :  $fullname";
-    echo "&nbsp;&nbsp;<B>HN</B> : $hn";
-    echo "&nbsp;&nbsp;<B>อายุ</B> : $age";
-    echo "&nbsp;&nbsp;<B>สิทธิ</B> : $ptright";
-    
-    echo "<p><TABLE align='center' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
-    <TR>
-        <TD>&nbsp;&nbsp;&nbsp;<FONT  class='font_title_b'><B>เพื่อ</B> : <U><B>$detail2</B></U></FONT>&nbsp;&nbsp;&nbsp;</TD>
-    </TR>
-    </TABLE></p>";
-    
-    echo "<table><tr><td><table border='1' width='300' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>";
-    echo "<tr align='center'><td><B>นัดวันที่</B></td><td><B>เวลา</B></td><td><B>ผู้ฉีด</B></td></tr>";
-    for($i=0;$i<count($list);$i++){
-        
-        list($y,$m,$d) = explode('-', $list[$i]['appdate']);
-        $fulldate = $d.' '.$def_fullm_th[$m].' '.$y;
-
-        $apptime = $list[$i]['apptime'];
-    
-        echo "<tr><td width='130' class='font_title_n'>$fulldate</td>";
-        echo "<td align='center'  width='70' class='font_title_n'>$apptime</td>";
-        echo "<td  width='100'>&nbsp;</td></tr>";
-    }
-    echo "</table></td><td>";
-    
-    echo "<table>";
-    echo "<tr ><td align='right' class='font_title_n'><B>ยื่นใบนัดที่</B> : </td><td class='font_title_n'>$room</td></tr>";
-    echo "<tr><td align='right' class='font_title_n'><B>แพทย์ผู้นัด</B> : </td><td class='font_title_n'>".substr($doctor,5)."</td></tr>";
-    echo "<tr><td align='right' class='font_title_n'><B>ผู้ออกใบนัด</B> : </td><td class='font_title_n'>$officer</td></tr>";
-    echo "<tr><td align='center' class='font_title_n' colspan='2'>$date</td></tr>";
-    echo "</table>";
-    
-    echo "</td></table>";
-    
-    echo "<CENTER><FONT class='font_title_b'><B>หมายเหตุ</B> : <U><B>$remark</B></U></FONT></CENTER>";
-    
-    echo "</TD></TR></TABLE>";
     ?>
+    <table align="center">
+        <tr>
+            <td>
+                <table align="center">
+                    <tr>
+                        <td rowspan="5"><img src="images/LogoFSH_mini.jpg" style="height:120px;">&nbsp;&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><h3>ใบนัดผู้ป่วยฉีดยาต่อเนื่อง</h3></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="center"><h3>โรงพยาบาลค่ายสุรศักดิ์มนตรี</h3></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p><B>HN</B> : <?=$hn;?></p>
+                            <p><B>อายุ</B> : <?=$age;?></p>
+                        </td>
+                        <td>
+                            <p><B>ชื่อ-สกุล</B> :  <?=$fullname;?></p>
+                            <p><B>สิทธิ</B> : <?=$ptright;?></p>
+                        </td>
+                    </tr>
+                </table>
+                <table align='center' border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse;'>
+                    <tr>
+                        <td>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<FONT><B>เพื่อ</B> : <U><B><?=$detail2;?></B></U></FONT>&nbsp;&nbsp;&nbsp;&nbsp;
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td>
+                            <table border='1' bordercolor='#000000' style='BORDER-COLLAPSE: collapse'>
+                                <tr align='center'>
+                                    <td><B>นัดวันที่</B></td>
+                                    <td><B>เวลา</B></td>
+                                    <td><B>ผู้ฉีด</B></td>
+                                </tr>
+                                <?php
+                                for($i=0;$i<count($list);$i++){
+        
+                                    list($y,$m,$d) = explode('-', $list[$i]['appdate']);
+                                    $fulldate = $d.' '.$def_fullm_th[$m].' '.$y;
+
+                                    $apptime = $list[$i]['apptime'];
+                                    
+                                    echo "<tr><td class='font_title_n'>&nbsp;$fulldate&nbsp;</td>";
+                                    echo "<td align='center' class='font_title_n'>&nbsp;$apptime&nbsp;</td>";
+                                    echo "<td width='100'>&nbsp;</td></tr>";
+                                }
+                                ?>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <table>
+                                <tr>
+                                    <td class='font_title_n' align="right"><B>ยื่นใบนัดที่</B> : </td>
+                                    <td class='font_title_n'><?=$room;?></td>
+                                </tr>
+                                <tr>
+                                    <td class='font_title_n' align="right"><B>แพทย์ผู้นัด</B> : </td>
+                                    <td class='font_title_n'><?=substr($doctor,5);?></td>
+                                </tr>
+                                <tr>
+                                    <td class='font_title_n' align="right"><B>ผู้ออกใบนัด</B> : </td>
+                                    <td class='font_title_n'><?=$officer;?></td>
+                                </tr>
+                                <tr>
+                                    <td class='font_title_n' align="right"><B>วันที่ออกใบนัด</B> : </td>
+                                    <td class='font_title_n'><?=$date;?></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class='font_title_n' align="center"><B>หมายเหตุ</B> : <U><B><?=$remark;?></B></U></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
     <script>
         window.onload = function(){
             window.print();
         }
     </script>
     <?php
-
     exit;
 }
-
 
 $tt = strtotime("-3 month");
 $endate = date('Y-m-d',$tt);
@@ -107,11 +167,14 @@ $q = $dbi->query($sql);
 </div>
 
 <div>
-    <h3>พิมพ์ใบนัดฉีดยา(ห้องฉุกเฉิน)ย้อนหลัง</h3>
-    <br><span>ข้อมูล3เดือนย้อนหลัง</span>
+    <h3>พิมพ์ใบนัดฉีดยา(ห้องฉุกเฉิน)ย้อนหลัง</h3><span>ข้อมูล3เดือนย้อนหลัง</span>
 </div>
 
 <style>
+    *{
+        font-family: "TH SarabunPSK";
+        font-size: 16pt;
+    }
     .chk_table{
         border-collapse: collapse;
     }
@@ -139,7 +202,7 @@ while ($a = $q->fetch_assoc()) {
     $hn = $a['hn'];
     ?>
     <tr>
-        <td><a href="reprint_inj_appoint.php?page=reprint&hn=<?=$hn;?>&date=<?=$date;?>" target="_blank"><?=$a['hn'];?></a></td>
+        <td>🖨️<a href="reprint_inj_appoint.php?page=reprint&hn=<?=$hn;?>&date=<?=$date;?>" target="_blank"><?=$a['hn'];?></a></td>
         <td><?=$a['ptname'];?></td>
         <td><?=$a['appdate'];?></td>
         <td><?=$a['apptime'];?></td>
