@@ -4,14 +4,14 @@ if(empty($_SESSION['sOfficer'])){
     include 'pageNotFound.php';
     exit;
 }
-$defaultDate = (date('Y')+543).date('-m-d');
+$defaultDate = empty($_POST['dateSelect']) ? (date('Y')+543).date('-m-d') : sprintf("%s", $_POST['dateSelect']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>ค่าใช้จ่ายCT</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
@@ -56,10 +56,10 @@ $defaultDate = (date('Y')+543).date('-m-d');
                         <th>HN</th>
                         <th>ชื่อ-สกุล</th>
                         <th>depart</th>
-                        <th>detail</th>
-                        <th>price</th>
-                        <th>ptright</th>
-                        <th>cashok</th>
+                        <th>รายละเอียด</th>
+                        <th>ค่าใช้จ่าย</th>
+                        <th>สิทธิ</th>
+                        <th>เก็บเงิน</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,11 +117,15 @@ $defaultDate = (date('Y')+543).date('-m-d');
                         </tr>
                         <?php
                     }
+                    if(!empty($emptyCash)){
+                        ?>
+                        <tr>
+                            <td>ยังไม่ได้บันทึก</td>
+                            <td align="right"><?=number_format($emptyCash,2);?></td>
+                        </tr>
+                        <?php
+                    }
                     ?>
-                    <tr>
-                        <td>ยังไม่ได้บันทึก</td>
-                        <td align="right"><?=number_format($emptyCash,2);?></td>
-                    </tr>
                     <tr>
                         <td><strong>รวมยอด</strong></td>
                         <td align="right"><?=number_format($sum,2);?></td>
