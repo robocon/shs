@@ -336,7 +336,7 @@ if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD
 // MD212 พิมพ์ทอง สุระเรืองชัย
 // MD184 สัมมา เลิศธีรกุล
 // เฉพาะแพทย์แผนไทย
-if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216','MD184'))===true)
+if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216','MD184','MD227'))===true)
 {
     ?>
 	<br><br>
@@ -353,6 +353,8 @@ if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD
 	<a target="_blank" href="labtranxnidpt.php?subDoctor=6&code=<?=$Dgcode;?>">ณัฏฐาพร วงศ์เสนา</a>
 	<br><br>
 	<a target="_blank" href="labtranxnidpt.php?subDoctor=7&code=<?=$Dgcode;?>">สัมมา เลิศธีรกุล ว.50813</a>
+	<br><br>
+	<a target="_blank" href="labtranxnidpt.php?subDoctor=8&code=<?=$Dgcode;?>">กชกร หาญณรงค์ พท.ป.4569</a>
 	<br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=5&code=<?=$Dgcode;?>">ใบรับรองการตรวจร่างกายแพทย์แผนไทย - พิมพ์ทอง สุระเรืองชัย</a>
     <!--<br><br>

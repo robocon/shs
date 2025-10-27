@@ -8,10 +8,13 @@
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div class="container">
-    <div class="position-absolute top-50 start-50 translate-middle">
-        <div class="text-bg-warning p-3 text-center"><h3>4️⃣0️⃣4️⃣ Page Not Found ⚠️</h3></div>
-    </div>
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <div class="mb-auto">&nbsp;</div>
+    <main class="px-3">
+        <div class="">
+            <div class="text-bg-warning p-3 text-center"><h3>4️⃣0️⃣4️⃣ Page Not Found ⚠️</h3></div>
+        </div>
+    </main>
 </div>
 </body>
 </html>
