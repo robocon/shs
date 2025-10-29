@@ -1,5 +1,5 @@
 <?php
-require_once dirname(__FILE__).'/database.php';
+include_once dirname(__FILE__).'/database.php';
 class Opd extends DbConnect
 {
     public $dbi = null;

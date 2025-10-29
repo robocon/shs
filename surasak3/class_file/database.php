@@ -6,12 +6,13 @@ class DbConnect{
     public $dbi = null;
     public function __construct()
     {
-        $this->dbi = new mysqli(HOST,USER,PASS,DB);
-        if ($this->dbi->connect_errno) {
-            var_dump($this->dbi->error);
+        $this->dbi = new mysqli(HOST,USER,PASS,DB,PORT);
+        if ($this->dbi->error) {
+            var_dump('Class DbConnect Error : '.$this->dbi->error);
             exit;
         }
-        $this->dbi->query("SET NAMES UTF8");
+        // $this->dbi->query("SET NAMES UTF8");
+        $this->dbi->set_charset('utf8');
     }
 
     public function __query($sql){

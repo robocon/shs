@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__).'/database.php';
+include_once dirname(__FILE__).'/database.php';
 class Opcard extends DbConnect
 {
     public $dbi = null;

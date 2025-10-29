@@ -4,8 +4,8 @@ error_reporting(1);
 ini_set('display_errors', 1);
 session_start();
 
-include dirname(__FILE__).'/includes/config.php';
-include dirname(__FILE__).'/includes/functions.php';
+include_once dirname(__FILE__).'/includes/config.php';
+include_once dirname(__FILE__).'/includes/functions.php';
 
 if(PHP_VERSION_ID<=50329 && empty($Conn)){
 	$Conn = mysql_connect(HOST, USER, PASS) or die( 'Error Connection : '.mysql_error().' HOST:'.HOST );

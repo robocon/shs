@@ -1,10 +1,7 @@
 <?php
-require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/class_file/class_xray.php';
-require_once dirname(__FILE__).'/includes/JSON.php';
-
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/class_file/class_xray.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
 
 $action = sprintf("%s", $_REQUEST['action']);
 if($action === 'save'){

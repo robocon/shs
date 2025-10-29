@@ -1,6 +1,4 @@
 <?php
-include_once 'bootstrap.php';
-
 session_unregister("cDepart");
 session_unregister("aDetail");
 session_unregister("cTitle");
