@@ -17,9 +17,28 @@ if($action == 'getOpd'){
     $items = $opd->last3MonthsFromHn('53-9604');
     if(!empty($items)){
         foreach ($items as $a) {
+
+            list($y,$m,$d) = explode('-', substr($a['thidate'],0,10));
+            $thaiDate = $d.' '.$def_month_th[$m].' '.$y;
+            $enDate = ($y-543)."-$m-$d";
             ?>
             <tr>
-                <td><a href="javascript:void(0);" class="mr-2" onclick=""><?=substr($a['thidate'],0,10);?></a>&nbsp;&nbsp;</td>
+                <td>
+                    <a href="javascript:void(0);" 
+                    class="mr-2" 
+                    t-date="<?=$enDate;?>"
+                    t-height="<?=$a['height'];?>"
+                    t-weight="<?=$a['weight'];?>"
+                    t-waist="<?=$a['waist'];?>"
+                    t-temp="<?=$a['temp'];?>"
+                    t-pulse="<?=$a['pulse'];?>"
+                    t-rate="<?=$a['rate'];?>"
+                    t-bmi="<?=$a['bmi'];?>"
+                    t-bp1="<?=$a['bp1'];?>"
+                    t-bp2="<?=$a['bp2'];?>"
+                    onclick="selectOpd(this)"><?=$thaiDate;?>
+                    </a>
+                </td>
                 <td>&nbsp;&nbsp;<?=$a['vn'];?></td>
                 <td>&nbsp;&nbsp;<?=$a['doctor'];?></td>
                 <td>&nbsp;&nbsp;<?=$a['toborow'];?></td>
@@ -71,7 +90,7 @@ if($action == 'getOpd'){
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-3 mb-lg-0">
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#">รายชื่อ</a>
             </li>
@@ -82,7 +101,7 @@ if($action == 'getOpd'){
     <div>
         <h3>ฟอร์มกรอกข้อมูล Ratinal Exam</h3>
         <form class="row g-3 col-lg-12 mt-2" action="ratinalExam.php" method="POST">
-            <div class="mb-2 row">
+            <div class="mb-3 row">
                 <label for="hn" class="col-sm-4 col-md-3 col-form-label fw-bold">ค้นหาจาก HN</label>
                 <div class="col-auto">
                     <div class="input-group">
@@ -102,8 +121,8 @@ if($action == 'getOpd'){
         if($opc!==false){
         ?>
         <div class="mt-4">
-        <form class="row g-3 col-lg-12" action="ratinalExam.php" method="post">
-            <div class="mb-2 row">
+        <form class="row g-3 col-lg-12" id="userForm" action="ratinalExam.php" method="post">
+            <div class="mb-3 row">
                 <label for="date" class="col-sm-4 col-md-3 col-form-label fw-bold">ข้อมูลเบื้องต้น</label>
                 <div class="col-auto">
                     <table>
@@ -122,27 +141,74 @@ if($action == 'getOpd'){
                     </table>
                 </div>
             </div>
-            <div class="mb-2 row">
+            <div class="mb-3 row">
                 <label for="date" class="col-sm-4 col-md-3 col-form-label fw-bold">วันที่มารับบริการ</label>
                 <div class="col-auto">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="date" name="date">
+                        <input type="date" class="form-control" id="date" name="date">
                         <button class="btn btn-secondary" type="button" onclick="selectDate()">เลือกวันที่</button>
                     </div>
                 </div>
             </div>
-            <div class="mb-2 row">
+            <div class="mb-3 row">
                 <label class="col-sm-4 col-md-3 col-form-label fw-bold">ข้อมูลซักประวัติ</label>
-                <div class="col-sm-6 col-md-7">
-                    <div class="form-floating ">
-                        <input type="email" class="form-control" id="height" placeholder="ส่วนสูง">
-                        <label for="height">ส่วนสูง</label>
+                <div class="col-sm-8 col-md-9">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="height" class="form-label"><strong>ส่วนสูง</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="height" name="height" placeholder="เซนติเมตร">
+                        </div>
+                        <div class="col">
+                            <label for="weight" class="form-label"><strong>น้ำหนัก</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="กิโลกรัม">
+                        </div>
+                        <div class="col">
+                            <label for="waist" class="form-label"><strong>รอบเอว</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="waist" name="waist" placeholder="นิ้ว">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="temp" class="form-label"><strong>อุณหภูมิ</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="temp" name="temp">
+                        </div>
+                        <div class="col">
+                            <label for="pulse" class="form-label"><strong>Pulse</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="pulse" name="pulse">
+                        </div>
+                        <div class="col">
+                            <label for="rate" class="form-label"><strong>Rate</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="rate" name="rate">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="bmi" class="form-label"><strong>BMI</strong></label>
+                            <input type="number" step="0.01" class="form-control" id="bmi" name="bmi">
+                        </div>
+                        <div class="col">
+                            <label for="bp1" class="form-label"><strong>BP</strong></label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" class="form-control" id="bp1" name="bp1">
+                                <button class="btn btn-secondary" type="button">/</button>
+                                <input type="number" step="0.01" class="form-control" id="bp2" name="bp2">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="mb-2 row">
+            <div class="mb-3 row">
                 <label class="col-sm-4 col-md-3 col-form-label fw-bold">Retina Exam</label>
-                <div class="col-sm-6 col-md-7 border-bottom">
+                <div class="col-sm-8 col-md-9">
+                    <div class="mb-3 row">
+                        <label for="date" class="col-md-3 col-form-label fw-bold">วันที่ได้รับการตรวจตา</label>
+                        <div class="col-md-5">
+                            <div class="input-group">
+                                <input type="date" class="form-control" id="retinal_date" name="retinal_date">
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" class="form-check-input" name="retinal" id="retinal1" value="No DR">
                         <label for="retinal1" class="form-check-label">No DR</label>
@@ -161,9 +227,9 @@ if($action == 'getOpd'){
                     </div>
                 </div>
             </div>
-            <div class="mb-2 row">
+            <div class="mb-3 row">
                 <label for="date" class="col-sm-4 col-md-3 col-form-label fw-bold">การรักษา</label>
-                <div class="col-sm-8 col-md-5">
+                <div class="col-sm-8 col-md-9">
                     <div class="form-check">
                         <input type="radio" class="form-check-input" name="follow" id="follow1" value="ติดตามอาการ">
                         <label for="follow1" class="form-check-label">ติดตามอาการ</label>
@@ -183,7 +249,7 @@ if($action == 'getOpd'){
                     </div>
                 </div>
             </div>
-            <div class="d-grid gap-2 col-6 mx-auto">
+            <div class="d-grid gap-2 col-6 mx-auto mb-3">
                 <button class="btn btn-primary" type="submit">บันทึกข้อมูล</button>
             </div>
         </form>
@@ -204,7 +270,7 @@ if($action == 'getOpd'){
                                 <th>วันที่</th>
                                 <th>VN</th>
                                 <th>แพทย์</th>
-                                <th>มาใช้บริการ</th>
+                                <th>การมาโรงพยาบาล</th>
                             </tr>
                             ${resHtml}
                             </table>
@@ -229,6 +295,38 @@ if($action == 'getOpd'){
                 const body = await response.text();
                 return body;
             }
+
+            function selectOpd(t){
+                document.getElementById('date').value = t.getAttribute("t-date");
+                document.getElementById('height').value = t.getAttribute("t-height");
+                document.getElementById('weight').value = t.getAttribute("t-weight");
+                document.getElementById('waist').value = t.getAttribute("t-waist");
+                document.getElementById('temp').value = t.getAttribute("t-temp");
+                document.getElementById('pulse').value = t.getAttribute("t-pulse");
+                document.getElementById('rate').value = t.getAttribute("t-rate");
+                document.getElementById('bmi').value = t.getAttribute("t-bmi");
+                document.getElementById('bp1').value = t.getAttribute("t-bp1");
+                document.getElementById('bp2').value = t.getAttribute("t-bp2");
+                Swal.close();
+            }
+
+            let userForm = document.getElementById('userForm');
+            userForm.addEventListener('submit',(ev)=>{
+                
+                ev.preventDefault();
+
+                const formData = new FormData(userForm);
+                let htmlTxt = '';
+                for (const [key, value] of formData) {
+                    htmlTxt += `${key}: ${value}<br>`;
+                }
+
+                Swal.fire({
+                    title: "ทดสอบบันทึกข้อมูล",
+                    html: `${htmlTxt}`
+                });
+                return false;
+            });
         </script>
         <?php
         }else{
