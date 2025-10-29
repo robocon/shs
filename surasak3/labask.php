@@ -1,14 +1,15 @@
 <?php
-   session_start();
-   if(isset($sIdname)){} else {die;}
-    include("connect.inc");
+session_start();
+if(isset($_SESSION['sIdname'])){} else {die;}
+include_once("connect.php");
 ?>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 <script type="text/javascript" src="epoch_classes.js"></script>
 <script src="sweetalert/jquery-3.6.0.js"></script>
 <script src="sweetalert/sweetalert2@11.js"></script>
 <?php  
-
+	$cHn = $_GET['cHn'];
+	$tvn = $_GET['tvn'];
     ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
 	$strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
 	$strresult = mysql_query($strsql);

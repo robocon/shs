@@ -1,14 +1,16 @@
 <?php
-    $cHn="";
-    $cPtname="";
-    $cPtright="";
-    $nRunno="";
-    session_register("nRunno");
-    session_register("cHn");
-    session_register("cPtname");
-    session_register("cPtright");
+include_once("connect.php");
+
+$cHn="";
+$cPtname="";
+$cPtright="";
+$nRunno="";
+session_register("nRunno");
+session_register("cHn");
+session_register("cPtname");
+session_register("cPtright");
 ?>
-<form method="POST" action="<?php echo $PHP_SELF ?>">
+<form method="POST" action="vndiag.php">
   <p>ผู้ป่วยนอก  หมายเลข VN (ได้จากแผนกเวชระเบียน)</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;VN&nbsp;&nbsp;<input type="text" name="vn" size="8"></p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="   ตกลง   " name="B1"></p>
@@ -16,11 +18,11 @@
 </form>
 
 <?php
-   $tvn="$vn";
-    session_register("tvn");
+$vn = $_POST['vn'];
+$tvn="$vn";  
+session_register("tvn");
 If (!empty($vn)){
-    include("connect.inc");
-
+    
     $today = date("d-m-Y");   
     $d=substr($today,0,2);
     $m=substr($today,3,2);
@@ -28,13 +30,8 @@ If (!empty($vn)){
     $thdatevn=$d.'-'.$m.'-'.$yr.$vn;
 // ตรวจดูว่าลงทะเบียนหรือยัง
     $query = "SELECT * FROM opday WHERE thdatevn = '$thdatevn'";
-    $result = mysql_query($query)
-        or die("Query failed,opday");
-/*
-    echo mysql_errno() . ": " . mysql_error(). "\n";
-    echo "<br>";
-*/
-        for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+    $result = mysql_query($query) or die("Query failed,opday");
+    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
             echo "Cannot seek to row $i\n";
             continue;
@@ -42,17 +39,18 @@ If (!empty($vn)){
 
         if(!($row = mysql_fetch_object($result)))
             continue;
-         }	
-//กรณียังไม่ลงทะเบียน
+    }
+    //กรณียังไม่ลงทะเบียน
     If (empty($row->hn)){
         print "VN :$vn<br>";
         print "<FONT SIZE=\"4\"  COLOR=\"#0033CC\"><strong>ยังไม่ได้ลงทะเบียนตรวจวันนี้  โปรดขอ VN ใหม่จากห้องทะเบียน</strong></FONT><br>";
-                                    }
-//กรณีลงทะเบียนแล้ว
-   else { 
+    }
+    //กรณีลงทะเบียนแล้ว
+    else {
         $cHn=$row->hn;
         $cPtname=$row->ptname;
         $cPtright=$row->ptright;
+        $tvn = $row->vn;
 
         // แจ้งเตือนกรณีสิทธิไม่ตรง
         $idcard = $row->idcard;
@@ -68,18 +66,9 @@ If (!empty($vn)){
                 <?php
             }
         }
-
-
-        //print "VN  :$vn<br>";
-        //print "HN :$cHn<br>";
-        //print "$cPtname<br>";
-        //print "สิทธิการรักษา :$cPtright";
-       // print "<br><a href='erask.php'>ชื่อถูกต้อง ทำรายการต่อไป</a>";
-	   print "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=erask.php\">";
-//runno  for chktranx
+    
     $query = "SELECT title,prefix,runno FROM runno WHERE title = 'depart'";
-    $result = mysql_query($query)
-        or die("Query failed");
+    $result = mysql_query($query)or die("Query failed");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
@@ -89,17 +78,18 @@ If (!empty($vn)){
 
         if(!($row = mysql_fetch_object($result)))
             continue;
-         }
+    }
 
     $nRunno=$row->runno;
     $nRunno++;
 
     $query ="UPDATE runno SET runno = $nRunno WHERE title='depart'";
-    $result = mysql_query($query)
-        or die("Query failed");
-//end  runno  for chktranx
-           }
-   include("unconnect.inc");
-   }
+    $result = mysql_query($query)or die("Query failed");
+    //end  runno  for chktranx
+
+    print "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=erask.php?cHn=$cHn&tvn=$tvn\">";
+    }
+    include("unconnect.inc");
+}
 ?>
 

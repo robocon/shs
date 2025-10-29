@@ -1,13 +1,10 @@
 <?php
 session_start();
-include("connect.inc");
-require_once 'includes/config.php';
-/*  print "ผู้ป่วยนอก<br>";
-print "HN :$cHn<br>";
-print "VN:$tvn<br>";
+include_once 'connect.php';
+include_once 'includes/config.php';
 
-print "$cPtname<br>";*/
-
+$cHn=$_GET['cHn'];
+$tvn=$_GET['tvn'];
 ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
 
 $strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
@@ -24,10 +21,11 @@ if($strrow>0){
 
 }
 
-$sqlage = "select idcard,dbirth,ptright,idguard from opcard where hn ='".$cHn."'";
+$sqlage = "select idcard,dbirth,ptright,idguard,CONCAT(`yot`,`name`,' ',`surname`) AS `cPtname` from opcard where hn ='".$cHn."'";
 $arr_age = mysql_fetch_array(mysql_query($sqlage));
 
 $idcard=$arr_age['idcard'];
+$cPtname=$arr_age['cPtname'];
 $idguardCode=substr($arr_age['idguard'],0,4);
 if($idguardCode=='MX07'){
 	?>
@@ -70,7 +68,6 @@ if(!empty($accruedTxt)){
 	// ตรวจสอบ VN ซ้ำซ้อน**************************************************
 	$chkdate = (date("Y")+543).date("-m-d");
 	$sqlvn = "Select count(vn) From opday where thidate LIKE '".$chkdate."%' AND vn = '$tvn'";
-	//echo $sqlvn;
 	list($vn_row) = mysql_fetch_row(mysql_query($sqlvn));
 	if($vn_row > 1){
 		echo "<div align='center' style='font-size:24px;color:red;font-weight:bold;margin-top:20px;margin-bottom:20px;'>
@@ -84,9 +81,7 @@ if(!empty($accruedTxt)){
 <table  border="0">
 	<tr>
 		<td>ผู้ป่วยนอก</td>
-		<td rowspan="5" valign="top">
-			<?=$image;?>
-		</td>
+		<td rowspan="5" valign="top"><?=$image;?></td>
 	</tr>
 	<tr>
 		<td>HN :<?=$cHn;?></td>
@@ -95,7 +90,7 @@ if(!empty($accruedTxt)){
 		<td>VN :<?=$tvn;?></td>
 	</tr>
 	<tr>
-		<td><?=$cPtname;?></td>
+		<td>ชื่อ-สกุล :<?=$cPtname;?></td>
 	</tr>
 </table>
 <?php
