@@ -15,35 +15,16 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
     <table width=\"100%\" border=\"0\" align=\"center\">
     <tr align=\"center\" bgcolor=\"#3366FF\" class=\"font_title\">
     <td >ยืนยันการฉีดยา</td>
-    </tr>";
-
-    if(!empty($ptname)){
-        ?>
-        <tr>
-            <td>
-                <table>
-                    <tr>
-                        <td align="right"><strong>HN :</strong></td>
-                        <td><?=$_GET["hn"];?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><strong>ชื่อ-สกุล :</strong></td>
-                        <td><?=$ptname;?></td>
-                    </tr>
-                    <tr>
-                        <td align="right"><strong>สิทธิ์ :</strong></td>
-                        <td><?=$ptright;?></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        <?php
-    }
-
-    echo "<tr><td >";
+    </tr>
+    <tr>
+    <td >";
 
     if($ptname != "")
     {
+        echo "HN : ".$_GET["hn"]."<BR>";
+        echo "ชื่อ-สกุล : ".$ptname."<BR>";
+        echo "สิทธิ์ : ".$ptright."<BR>";
+    
         $sql = "CREATE TEMPORARY TABLE drugrx_now  Select  right(date,8) as time2, date,  slcode, tradname, drugcode, drug_inject_slip, drug_inject_amount, drug_inject_type, drug_inject_etc, row_id, amount From drugrx  where date like '".((date("Y")+543).date("-m-d"))."%' AND hn = '".$_GET["hn"]."' AND left(drugcode,1) in ('2','0')  AND right(left(drugcode,2),1) not in ('0','1','2','3','4','5','6','7','8','9') AND drugcode not in ('2SYNV*@','2GOON','2HYRU') AND (an is null OR an = '' ) ";
         $result = Mysql_Query($sql) or die(Mysql_Error());
         $sql = "Select date ,  slcode, tradname, drugcode, drug_inject_slip, drug_inject_amount, drug_inject_type, drug_inject_etc, row_id, amount From drugrx_now group by drugcode, slcode Having sum(amount) > 0 ";
@@ -102,6 +83,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
         echo "<INPUT TYPE=\"hidden\" value=\"".$dbirth."\" name=\"dbirth\">";
         echo "<INPUT TYPE=\"hidden\" value=\"".$ptright."\" name=\"ptright\">";
 
+        /*
         if($_SESSION['smenucode']=="ADMMAINOPD" OR $_SESSION['smenucode']=="ADM")
         {
             ?>
@@ -109,9 +91,11 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_inj")
             <label for="isOpd">
                 <input type="checkbox" name="isOpd" id="isOpd" value="1" checked="checked"> OPD ฉีดยา 
             </label>
-            <p style="margin:0;padding:0;">ระบบจะทำการคิดค่าฉีดยาอัตโนมัติ</p>
+            <p>ระบบจะทำการคิดค่าฉีดยาอัตโนมัติ</p>
             <?php
         }
+        */
+
         $submit_button = "<INPUT TYPE=\"submit\" value=\" ตกลง \" >";
     }
     else
@@ -157,6 +141,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
                             echo "HN : ".$_GET["hn"]."<BR>";
                             echo "ชื่อ-สกุล : ".$ptname."<BR>";
                             echo "สิทธิ์ : ".$ptright."<br>";
+                            /*
                             if($_SESSION['smenucode']=="ADMMAINOPD")
                             {
                                 ?>
@@ -166,6 +151,7 @@ if(isset($_GET["action"]) && $_GET["action"] =="confirm_ds")
                                 <br>
                                 <?php
                             }
+                            */
                             $submit_button = "<INPUT TYPE=\"submit\" value=\" ตกลง \" >";
                         }else{
                             echo "ไม่มีหมายเลข HN : ".$_GET["hn"]."";
@@ -279,9 +265,6 @@ if(isset($_GET["action"]) && $_GET["action"] =="reconfirm_ds")
     }
     .menu_container ul li::after{
         content:"|";
-    }
-    label:hover{
-        cursor: pointer;
     }
 </style>
 <div class="menu_container clearfix">

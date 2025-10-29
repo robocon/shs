@@ -43,6 +43,8 @@ body,td,th {font-family:  MS Sans Serif;font-size: 14 px;}
 	if(isset($_POST["hn"]) && $_POST["hn"] != ""){
 		$injTxt = '';
 		$list = array();
+
+		/*
 		$isOpd = $_POST['isOpd'];
 		if($isOpd == "1"){
 
@@ -101,6 +103,7 @@ body,td,th {font-family:  MS Sans Serif;font-size: 14 px;}
 				$injTxt = 'บันทึกค่าฉีดยาผู้ป่วยนอกเรียบร้อย';
 			}
 		}
+		*/
 		
 		$count = count($_POST["drugcode"]);
 		$j=0;
