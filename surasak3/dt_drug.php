@@ -3131,7 +3131,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		checkAdreno(drugTrim);
 	}
 
-	if( ( drugTrim === '2SEMA' || drugTrim === '2DULA' ) && typeof dataDateHn.DIABETES === 'undefined' ){
+	if( ( drugTrim === '2SEMA' || drugTrim === '2DULA' || drugTrim === '1SEMA') && typeof dataDateHn.DIABETES === 'undefined' ){
 		checkDiabetes(drugTrim);
 	}
 	
@@ -3141,7 +3141,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 		// ณัชญ์ระวี บุรีคำ (md29760)
 		// วิรดา  อนันตวงศ์ (md43724)
 		// ข้อความการแจ้งเตือน : `อนุญาตให้แพทย์เฉพาะทาง<br>โรคหัวใจและโรคระบบต่อมไร้ท่อ<br><b>สั่งใช้ได้เท่านั้น</b>`
-		checkInclisiran(hn, drugTrim, 'INCLISIRAN','Inclisiran 284 mg');
+		checkInclisiran(drugTrim, 'INCLISIRAN','Inclisiran 284 mg');
 	}
 
 
@@ -3152,7 +3152,11 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	- ต้องการ ldl-c ในข้อย่อยแต่ละตัว
 	*/
 	if( drugTrim === '2EVO' && typeof dataDateHn.EVOLOCUMAB === 'undefined' ){
-		checkInclisiran(hn, drugTrim, 'EVOLOCUMAB','Evolocumab 140 mg/ml');
+		checkInclisiran(drugTrim, 'EVOLOCUMAB','Evolocumab 140 mg/ml');
+	}
+
+	if( drugTrim === '1TAMI' && typeof dataDateHn.TAMIVIR === 'undefined' ){
+		checkTamivir(drugTrim, 'TAMIVIR','OSELTAMIVIR 75 mg.');
 	}
 	
 	// END ฟอร์มการสั่งใช้ยากลุ่มผู้ป่วยเฉพาะ

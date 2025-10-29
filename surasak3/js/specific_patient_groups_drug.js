@@ -654,3 +654,62 @@ function confirmInclisiran(drugcode, criteriaCode, criteria){
 	
 	closePreg();
 }
+
+function checkTamivir(drugcode, criteriaCode, criteria){
+
+	const htmlTxt = `<div style="width: 600px; height: 400px;">
+		<p><b>กรุณาเลือกเหตุผลการสั่งใช้ยา</b></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia1" name="detail[]" value="TAMIVIA1"><label for="inputTamivia1">1.) สงสัยปอดอักเสบจากอาการ หรือ CXR</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia2" name="detail[]" value="TAMIVIA2"><label for="inputTamivia2">2.) ชึมผิดปกติหรือมีอาการทางระบบประสาท</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia3" name="detail[]" value="TAMIVIA3"><label for="inputTamivia3">3.) SpO2 RA < 95% ที่ต้องใช้ออกชิเจน</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia4" name="detail[]" value="TAMIVIA4"><label for="inputTamivia4">4.) มีข้อบ่งชี้ในการนอนโรงพยาบาล</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia5" name="detail[]" value="TAMIVIA5"><label for="inputTamivia5">5.) BMI > 30 kg/m2</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia6" name="detail[]" value="TAMIVIA6"><label for="inputTamivia6">6.) ตั้งครรภ์หรือหลังคลอดไม่เกิน 14 วัน</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia7" name="detail[]" value="TAMIVIA7"><label for="inputTamivia7">7.) อายุ < 2 หรือ > 60 ปี</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia8" name="detail[]" value="TAMIVIA8"><label for="inputTamivia8">8.) มีโรคเรื้อรังเช่น โรคหอบหืด โรคปอดเรื้อรัง โณคหัวใจและหลอดเลือด โรคตับ โรคไต เบาหวาน มะเร็ง</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia9" name="detail[]" value="TAMIVIA9"><label for="inputTamivia9">9.) โรคที่มีภาวะภูมิคุ้มกันต่ำหรือใช้ยากดภูมิ</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia10" name="detail[]" value="TAMIVIA10"><label for="inputTamivia10">10.) เด็กที่มีภาวะพร่องทางระบบประสาท พัฒนาการช้า หรือ โรคลมชัก</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia11" name="detail[]" value="TAMIVIA11"><label for="inputTamivia11">11.) บุคคลกลุ่มเสี่ยงต่อการระบาดรุนแรง เช่น พลทหาร หรือ บุคลากรทางการแพทย์</label></p>
+		<p style="text-align: center;">
+			<button type="button" onclick="confirmTamivir('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
+			<input type="hidden" name="criteria" id="criteria" value="${criteria}">
+		</p>
+	</div>`;
+
+	document.getElementById("pregHeader").innerHTML = '[RDU] OSELTAMIVIR 75 mg.';
+	document.getElementById("pregContent").innerHTML = htmlTxt;
+	
+	document.getElementById("pregCloseBtn").style.display = "none";// ซ่อนปุ่มเอาไว้ก่อน
+	document.getElementById("pregBackground").style.display = "";
+	document.getElementById("pregContainer").style.display = "";
+
+}
+
+async function confirmTamivir(drugcode){
+	const tamiviaItem = document.querySelectorAll('.inputTamivia');
+	let formData = new FormData();
+	let tamiviaCount = 0;
+	for (let i = 0; i < tamiviaItem.length; i++) {
+		const el = tamiviaItem[i];
+		if (el.checked===true) { 
+			console.log(el.checked);
+			console.log(el.value);
+			formData.append(el.getAttribute('name'), el.value);
+			tamiviaCount++;
+		}
+	}
+
+	if(tamiviaCount===0){
+		Swal.fire({
+			title: "กรุณาเลือกเกณฑ์ประเมินอย่างน้อย 1ข้อ",
+			icon: 'warning',
+			allowOutsideClick: false
+		});
+		return false;
+	}
+
+	console.log(formData);
+
+	return false;
+}
+
