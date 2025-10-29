@@ -15,10 +15,6 @@ if ( $action == 'save' ) {
     $company_code = 'checkup_solider_'.$number;
 
     $msg = "บันทึกข้อมูลเรียบร้อย";
-    if(empty($company)){
-        redirect('pm_shs.php', "กรุณาใส่ข้อมูล");
-        exit;
-    }
 
     if( $id > 0 ){
         $sql = "UPDATE `chk_company_list`
@@ -139,10 +135,10 @@ if(empty($page)){
     ?>
 
     <fieldset>
-        <legend>เพิ่มหน่วยงานใหม่</legend>
+        <legend>เพิ่มบริษัทใหม่</legend>
         <form action="pm_shs.php" method="post">
             <div>
-                ชื่อหน่วยงาน : <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
+                ชื่อบริษัท : <input type="text" name="company" value="<?=$name;?>" style="width: 40%; ">
             </div>
             <div>
                 วันที่ตรวจ : <input type="text" name="date_checkup" value="<?=$date_checkup;?>"> 
@@ -210,6 +206,9 @@ if(empty($page)){
                             </li>
                             <li>
                                 <a href="chk_sticker_deploy2.php?part=<?=$item['code'];?>" target="_blank">Sticker deploy 2</a>
+                            </li>
+                            <li>
+                                <a href="chk_sticker_deploy3.php?part=<?=$item['code'];?>" target="_blank">สติกเกอร์ ชื่อ-สกุล ลำดับที่</a>
                             </li>
                         </ul>
                     </td>
