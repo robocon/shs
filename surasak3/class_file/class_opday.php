@@ -158,13 +158,9 @@ class Opday extends DbConnect
     }
 
     public function testGetOpcard($hn){
-
-
         $opcard = new Opcard();
         $pt = $opcard->getByHn($hn);
         return $pt;
-
     }
-
 }
 ?>

@@ -65,6 +65,16 @@ print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
 
+# opd
+mycursor.execute("SELECT `row_id` AS latest_id FROM opd ORDER BY row_id DESC LIMIT 1")
+myresult = mycursor.fetchone()
+latest_id = str(myresult["latest_id"])
+
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=opd --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=opd --sink-disable-truncate true"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
+
 
 # dphardep
 mycursor.execute("SELECT `row_id` AS latest_id FROM dphardep ORDER BY row_id DESC LIMIT 1")
