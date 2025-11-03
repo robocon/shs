@@ -60,7 +60,7 @@ if($action == 'getOpd'){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ratinal Exam</title>
+    <title>Retinal Exam</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
@@ -79,13 +79,10 @@ if($action == 'getOpd'){
         label:hover{
             cursor: pointer;
         }
-        fieldset{
-            border: 1px solid red;
-        }
     </style>
     <nav class="navbar navbar-expand-lg" id="" data-bs-theme="dark">
         <div class="container-fluid">
-        <a class="navbar-brand" href="../nindex.htm">🏠</a>
+        <a class="navbar-brand" href="../nindex.htm">🏠 HOME</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -98,21 +95,17 @@ if($action == 'getOpd'){
         </div>
         </div>
     </nav>
-    <div>
-        <h3>ฟอร์มกรอกข้อมูล Ratinal Exam</h3>
-        <form class="row g-3 col-lg-12 mt-2" action="ratinalExam.php" method="POST">
-            <div class="mb-3 row">
-                <label for="hn" class="col-sm-4 col-md-3 col-form-label fw-bold">ค้นหาจาก HN</label>
-                <div class="col-auto">
-                    <div class="input-group">
-                        <input type="text" class="form-control" id="hn" name="hn">
-                        <button class="btn btn-secondary" type="submit">ค้นหา</button>
-                    </div>
-                </div>
+    <h3 class="mt-3">ฟอร์มกรอกข้อมูล Retinal Exam</h3>
+    <form class="row mt-3 mb-3" action="retinalExam.php" method="POST">
+        <div class="col-sm-8 col-md-6 col-lg-4">
+            <label for="hn" class="form-label fw-bold">ค้นหาจาก HN</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="hn" name="hn">
+                <button class="btn btn-secondary" type="submit">ค้นหา</button>
             </div>
             <input type="hidden" name="page" value="search">
-        </form>
-    </div>
+        </div>
+    </form>
     
     <?php
     $page = sprintf("%s", $_POST['page']);
@@ -120,126 +113,125 @@ if($action == 'getOpd'){
         $opc = $opcard->getByHn($_POST['hn'],array('`hn`','`ptright`'));
         if($opc!==false){
         ?>
-        <div class="mt-4">
-        <form class="row g-3 col-lg-12" id="userForm" action="ratinalExam.php" method="post">
-            <div class="mb-3 row">
-                <label for="date" class="col-sm-4 col-md-3 col-form-label fw-bold">ข้อมูลเบื้องต้น</label>
-                <div class="col-auto">
-                    <table>
-                        <tr>
-                            <td class="text-end"><strong>HN: </strong></td>
-                            <td><?=$opc['hn'];?></td>
-                            <td class="text-end"><strong>ชื่อ-สกุล: </strong></td>
-                            <td><?=$opc['ptname'];?></td>
-                        </tr>
-                        <tr>
-                            <td class="text-end"><strong>สิทธิ: </strong></td>
-                            <td><?=$opc['ptright'];?></td>
-                            <td class="text-end"><strong>อายุ: </strong></td>
-                            <td><?=$opc['age'];?>ปี</td>
-                        </tr>
-                    </table>
+        <hr>
+        <div class="row mb-3 mt-3">
+        <form class="" id="userForm" action="retinalExam.php" method="post">
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label fw-bold">ข้อมูลเบื้องต้น</label>
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label for="date" class="col-sm-4 col-md-3 col-form-label fw-bold">วันที่มารับบริการ</label>
+            <div class="row mb-3">
                 <div class="col-auto">
+                    <label for="inputCity" class="form-label fw-bold">HN: </label>
+                    <?=$opc['hn'];?>
+                </div>
+                <div class="col-auto">
+                    <label for="inputCity" class="form-label fw-bold">ชื่อ-สกุล: </label>
+                    <?=$opc['ptname'];?>
+                </div>
+                <div class="col-auto">
+                    <label for="inputCity" class="form-label fw-bold">สิทธิ: </label>
+                    <?=$opc['ptright'];?>
+                </div>
+                <div class="col-auto">
+                    <label for="inputCity" class="form-label fw-bold">อายุ: </label>
+                    <?=$opc['hn'];?>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-8 col-md-6 col-lg-4">
+                    <label for="date" class="form-label fw-bold">วันที่มารับบริการ</label>
                     <div class="input-group">
-                        <input type="date" class="form-control" id="date" name="date">
+                        <input type="text" class="form-control" id="date" name="date">
                         <button class="btn btn-secondary" type="button" onclick="selectDate()">เลือกวันที่</button>
                     </div>
+                    <input type="hidden" name="page" value="search">
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label class="col-sm-4 col-md-3 col-form-label fw-bold">ข้อมูลซักประวัติ</label>
-                <div class="col-sm-8 col-md-9">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="height" class="form-label"><strong>ส่วนสูง</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="height" name="height" placeholder="เซนติเมตร">
-                        </div>
-                        <div class="col">
-                            <label for="weight" class="form-label"><strong>น้ำหนัก</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="กิโลกรัม">
-                        </div>
-                        <div class="col">
-                            <label for="waist" class="form-label"><strong>รอบเอว</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="waist" name="waist" placeholder="นิ้ว">
-                        </div>
+            
+            <div class="row mb-3">
+                <div class="col-12 fw-bold">ข้อมูลซักประวัติ</div>
+                <div class="col-auto mb-2">
+                    <label for="height" class="form-label fw-bold">ส่วนสูง</label>
+                    <input type="number" step="0.01" class="form-control" id="height" name="height" placeholder="เซนติเมตร">
+                </div>
+                <div class="col-auto">
+                    <label for="weight" class="form-label fw-bold">น้ำหนัก</label>
+                    <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="กิโลกรัม">
+                </div>
+                <div class="col-auto mb-2">
+                    <label for="waist" class="form-label fw-bold">รอบเอว</label>
+                    <input type="number" step="0.01" class="form-control" id="waist" name="waist" placeholder="นิ้ว">
+                </div>
+                <div class="col-auto">
+                    <label for="temp" class="form-label fw-bold">อุณหภูมิ</label>
+                    <input type="number" step="0.01" class="form-control" id="temp" name="temp">
+                </div>
+                <div class="col-auto mb-2">
+                    <label for="pulse" class="form-label fw-bold">Pulse</label>
+                    <input type="number" step="0.01" class="form-control" id="pulse" name="pulse">
+                </div>
+                <div class="col-auto">
+                    <label for="rate" class="form-label fw-bold">Rate</label>
+                    <input type="number" step="0.01" class="form-control" id="rate" name="rate">
+                </div>
+                <div class="col-auto mb-2">
+                    <label for="bmi" class="form-label fw-bold">BMI</label>
+                    <input type="number" step="0.01" class="form-control" id="bmi" name="bmi">
+                </div>
+                <div class="col-auto">
+                    <label for="bp1" class="form-label fw-bold">BP</label>
+                    <div class="input-group">
+                        <input type="number" step="0.01" class="form-control" id="bp1" name="bp1">
+                        <button class="btn btn-secondary" type="button">/</button>
+                        <input type="number" step="0.01" class="form-control" id="bp2" name="bp2">
                     </div>
+                </div>
+            </div>
 
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="temp" class="form-label"><strong>อุณหภูมิ</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="temp" name="temp">
-                        </div>
-                        <div class="col">
-                            <label for="pulse" class="form-label"><strong>Pulse</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="pulse" name="pulse">
-                        </div>
-                        <div class="col">
-                            <label for="rate" class="form-label"><strong>Rate</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="rate" name="rate">
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label for="bmi" class="form-label"><strong>BMI</strong></label>
-                            <input type="number" step="0.01" class="form-control" id="bmi" name="bmi">
-                        </div>
-                        <div class="col">
-                            <label for="bp1" class="form-label"><strong>BP</strong></label>
-                            <div class="input-group">
-                                <input type="number" step="0.01" class="form-control" id="bp1" name="bp1">
-                                <button class="btn btn-secondary" type="button">/</button>
-                                <input type="number" step="0.01" class="form-control" id="bp2" name="bp2">
-                            </div>
-                        </div>
-                    </div>
+            <div class="row mb-3">
+                <div class="col-sm-8 col-md-6 col-lg-4">
+                    <label for="retinal_date" class="form-label fw-bold">วันที่ได้รับการตรวจตา</label>
+                    <input type="date" class="form-control" id="retinal_date" name="retinal_date" placeholder="เซนติเมตร">
                 </div>
             </div>
-            <div class="mb-3 row">
-                <label class="col-sm-4 col-md-3 col-form-label fw-bold">Retina Exam</label>
-                <div class="col-sm-8 col-md-9">
-                    <div class="mb-3 row">
-                        <label for="date" class="col-md-3 col-form-label fw-bold">วันที่ได้รับการตรวจตา</label>
-                        <div class="col-md-5">
-                            <div class="input-group">
-                                <input type="date" class="form-control" id="retinal_date" name="retinal_date">
-                            </div>
-                        </div>
-                    </div>
+            
+            <div class="row mb-3">
+                <label class="form-label fw-bold">Retina Exam</label>
+                <div class="col-auto">
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="retinal" id="retinal1" value="No DR">
+                        <input type="radio" class="form-check-input retina-exam" name="retinal" id="retinal1" value="No DR">
                         <label for="retinal1" class="form-check-label">No DR</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="retinal" id="retinal2" value="Mind DR">
+                        <input type="radio" class="form-check-input retina-exam" name="retinal" id="retinal2" value="Mind DR">
                         <label for="retinal2" class="form-check-label">Mind DR</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="retinal" id="retinal3" value="Moderate DR">
+                        <input type="radio" class="form-check-input retina-exam" name="retinal" id="retinal3" value="Moderate DR">
                         <label for="retinal3" class="form-check-label">Moderate DR</label>
                     </div>
                     <div class="form-check form-check-inline">
-                        <input type="radio" class="form-check-input" name="retinal" id="retinal4" value="Severe DR">
+                        <input type="radio" class="form-check-input retina-exam" name="retinal" id="retinal4" value="Severe DR">
                         <label for="retinal4" class="form-check-label">Severe DR</label>
                     </div>
                 </div>
             </div>
+
             <div class="mb-3 row">
-                <label for="date" class="col-sm-4 col-md-3 col-form-label fw-bold">การรักษา</label>
-                <div class="col-sm-8 col-md-9">
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" name="follow" id="follow1" value="ติดตามอาการ">
+                <label class="form-label fw-bold">การรักษา</label>
+                <div class="col-auto">
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input treatment" name="follow" id="follow1" value="ติดตามอาการ">
                         <label for="follow1" class="form-check-label">ติดตามอาการ</label>
                     </div>
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" name="follow" id="follow2" value="Laser">
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input treatment" name="follow" id="follow2" value="Laser">
                         <label for="follow2" class="form-check-label">Laser</label>
                     </div>
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" name="follow" id="follow3" value="other">
+                    <div class="form-check form-check-inline">
+                        <input type="radio" class="form-check-input treatment" name="follow" id="follow3" value="other">
                         <div class="input-group">
                             <div>
                                 <label for="follow3" class="form-check-label">Other</label>
@@ -289,7 +281,7 @@ if($action == 'getOpd'){
 
             async function onLoadOpday(){
                 const hn = '<?=$_POST['hn'];?>';
-                const response = await fetch('ratinalExam.php?action=getOpd&hn='+hn);
+                const response = await fetch('retinalExam.php?action=getOpd&hn='+hn);
                 if (!response.ok) {
                 }
                 const body = await response.text();
@@ -315,12 +307,59 @@ if($action == 'getOpd'){
                 
                 ev.preventDefault();
 
+                let dateValue = document.getElementById('date').value;
+                let retinalDateValue = document.getElementById('retinal_date').value;
+
+                if(retinalDateValue==''){
+                    Swal.fire({
+                        title: "กรุณาเลือก วันที่ได้รับการตรวจตา",
+                        didClose: ()=>{
+                            document.getElementById('retinal_date').focus();
+                        }
+                    });
+                    return false;
+                }
+
+                let examItem = document.getElementsByClassName('retina-exam');
+                let examTest = false;
+                let treatmentItem = document.getElementsByClassName('treatment');
+                let treatmentTest = false;
+
+                let i = 0;
+                while (examItem[i]) {
+                    if(examItem[i].checked===true){
+                        examTest = true;
+                    }
+                    i++;
+                }
+                if(examTest===false){
+                    Swal.fire({
+                        title: "กรุณาเลือกตัวเลือก Retinal Exam"
+                    });
+                    return false;
+                }
+
+                let ii = 0;
+                while (treatmentItem[ii]) {
+                    if(treatmentItem[ii].checked===true){
+                        treatmentTest = true;
+                    }
+                    ii++;
+                }
+                if(treatmentTest===false){
+                    Swal.fire({
+                        title: "กรุณาเลือกตัวเลือก การรักษา"
+                    });
+                    return false;
+                }
+
                 const formData = new FormData(userForm);
                 let htmlTxt = '';
                 for (const [key, value] of formData) {
                     htmlTxt += `${key}: ${value}<br>`;
                 }
 
+                console.log(htmlTxt);
                 Swal.fire({
                     title: "ทดสอบบันทึกข้อมูล",
                     html: `${htmlTxt}`
