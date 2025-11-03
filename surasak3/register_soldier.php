@@ -55,7 +55,6 @@ if(isset($_POST['save_manual'])){
     (row_id,hn,yot,name,surname,id_soldier,idcard,camp,position,ratchakan,sex,birthday,yearcheck,active,register_manual)
     VALUES
     (NULL,'$hn','$yot','$name','$surname','$id_soldier','$idcard','$camp','$position','$ratchakan','$sex','$birthday','$yearcheck','y','y')";
-	//echo $sql;
     $ok = mysql_query($sql);
     if($ok){
         echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>
@@ -66,6 +65,9 @@ if(isset($_POST['save_manual'])){
         <script>Swal.fire({icon:'error',title:'ผิดพลาด',text:'ไม่สามารถบันทึกได้'}).then(()=>{window.location='register_soldier.php';});</script>";
         exit;
     }
+
+    $sqlUpdate = sprintf("UPDATE `opcard` SET `mid` = '%s' WHERE (`hn`='%s');", $id_soldier, $hn);
+    mysql_query($sqlUpdate);
 }
 
 // ---- PREVIEW IMPORT ----
@@ -255,8 +257,8 @@ h2{text-align:center;color:#444;margin-bottom:20px;}
           text-align: center;
       }
       .form-control {
-          border-radius: 12px;
-          padding: 12px;
+          border-radius: 6px;
+          /* padding: 12px; */
       }
       .btn-upload {
           width: 100%;
@@ -279,6 +281,9 @@ h2{text-align:center;color:#444;margin-bottom:20px;}
           margin-top: 10px;
           text-align: center;
       }
+      .important-data{
+        color: red;
+      }
 </style>
 </head>
 <body>
@@ -291,6 +296,9 @@ h2{text-align:center;color:#444;margin-bottom:20px;}
     <li class="<?php echo ($active_tab=="import"?"active":""); ?>">
       <a href="#import" data-toggle="tab">นำเข้าไฟล์ข้อมูล (*.csv,*.txt)</a>
     </li>
+    <li>
+      <a href="chk_yeardetailall.php?year=<?=$yearcheck;?>" target="_blank">รายชื่อทั้งหมด</a>
+    </li>
   </ul>
 
 
@@ -300,12 +308,21 @@ h2{text-align:center;color:#444;margin-bottom:20px;}
 		<form method="post" class="form-horizontal">
 		<input type="hidden" name="yearcheck" value="<?php echo $yearcheck;?>">
 		<input type="hidden" name="active_tab" value="manual">
-        <div class="form-group"><label class="col-sm-2 control-label">HN</label><div class="col-sm-4"><input type="text" name="hn" class="form-control"></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">ยศ</label><div class="col-sm-4"><input type="text" name="yot" class="form-control" required></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">ชื่อ</label><div class="col-sm-4"><input type="text" name="name" class="form-control" required></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">นามสกุล</label><div class="col-sm-4"><input type="text" name="surname" class="form-control" required></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">หมายเลขทหาร</label><div class="col-sm-4"><input type="text" name="id_soldier" class="form-control" maxlength="10" required></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">เลขบัตรประชาชน</label><div class="col-sm-4"><input type="text" name="idcard" class="form-control" maxlength="13" required></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">HN</label>
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <input type="text" id="hn" name="hn" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="button" onclick="findHn()">ดึงข้อมูล</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-group"><label class="col-sm-2 control-label">ยศ</label><div class="col-sm-4"><input type="text" name="yot" id="yot" class="form-control" required></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">ชื่อ</label><div class="col-sm-4"><input type="text" name="name" id="name" class="form-control" required></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">นามสกุล</label><div class="col-sm-4"><input type="text" name="surname" id="surname" class="form-control" required></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">หมายเลขทหาร<span class="important-data">*</span></label><div class="col-sm-4"><input type="text" name="id_soldier" id="id_soldier" class="form-control" maxlength="10" required><span></span></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">เลขบัตรประชาชน</label><div class="col-sm-4"><input type="text" name="idcard" id="idcard" class="form-control" maxlength="13" required></div></div>
         <div class="form-group"><label class="col-sm-2 control-label">สังกัด</label><div class="col-sm-4">
 		<select class="form-control" id="camp" name="camp" required>
 			<option value="">-- กรุณาเลือกสังกัด --</option>
@@ -345,12 +362,43 @@ h2{text-align:center;color:#444;margin-bottom:20px;}
 			<option value="อศจ.มทบ.32">อศจ.มทบ.32</option>
 		</select>		
 		</div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">ตำแหน่ง</label><div class="col-sm-4"><input type="text" name="position" class="form-control" required></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">ตำแหน่ง<span class="important-data">*</span></label><div class="col-sm-4"><input type="text" name="position" class="form-control" required></div></div>
         <div class="form-group"><label class="col-sm-2 control-label">ช่วยราชการ</label><div class="col-sm-4"><input type="text" name="ratchakan" class="form-control"></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">เพศ</label><div class="col-sm-4"><select name="sex" class="form-control"><option value="">--เลือก--</option><option value="1">ชาย</option><option value="2">หญิง</option></select></div></div>
-        <div class="form-group"><label class="col-sm-2 control-label">วันเกิด</label><div class="col-sm-4"><input type="date" name="birthday" class="form-control" required></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">เพศ</label><div class="col-sm-4"><select name="sex" id="sex" class="form-control"><option value="">--เลือก--</option><option value="1">ชาย</option><option value="2">หญิง</option></select></div></div>
+        <div class="form-group"><label class="col-sm-2 control-label">วันเกิด</label><div class="col-sm-4"><input type="date" name="birthday" id="birthday" class="form-control" required></div></div>
         <div class="form-group"><div class="col-sm-offset-2 col-sm-4"><button type="submit" name="save_manual" class="btn btn-success">บันทึกข้อมูล</button></div></div>
       </form>
+      <script>
+        function findHn(){
+            const hnValue = document.getElementById('hn').value;
+            if(hnValue!==''){
+                onFindHn(hnValue).then((res)=>{
+                    
+                    document.getElementById('yot').value = res.yot;
+                    document.getElementById('name').value = res.name;
+                    document.getElementById('surname').value = res.surname;
+                    document.getElementById('idcard').value = res.idcard;
+
+                    if(res.mid!=='-' && res.mid!==''){
+                        document.getElementById('id_soldier').value = res.mid;
+                    }
+
+                    if(res.sex==='ช'){
+                        document.getElementById('sex').value = 1;
+                    }else if(res.sex==='ญ'){
+                        document.getElementById('sex').value = 2;
+                    }
+                    document.getElementById('birthday').value = res.dbirth_en;
+                });
+            }
+        }
+
+        async function onFindHn(hn){
+            const response = await fetch('api/Opcard.php?action=getOpcard&hn='+hn);
+            const data = await response.json();
+            return data;
+        }
+      </script>
     </div>
 
 		<!-- Import Tab -->
