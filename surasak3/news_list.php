@@ -121,8 +121,6 @@ include 'templates/classic/header.php';
 <?php endif; ?>
 
 <?php
-
-
 if ( $task === false ) {
     ?>
     <div class="col">
@@ -179,7 +177,6 @@ if ( $task === false ) {
         }
         .del-oldfile{
             cursor: pointer;
-            
         }
         .del-oldfile:hover{
             color: red;
@@ -193,34 +190,53 @@ if ( $task === false ) {
             </div>
         </div>
         <div>
-            <form action="news_list.php" method="post" enctype="multipart/form-data">
+            <style>
+                .hideTbBorder, .hideTbBorder tr, .hideTbBorder td{
+                    border: none;
+                }
+                table tr td{
+                    vertical-align: top;
+                }
+                .del-file:hover{
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
+            </style>
+            <form action="news_list.php" method="post" enctype="multipart/form-data" id="userForm">
                 <div class="col">
                     <div class="cell">
-                        <label for="title">ชื่อเรื่อง</label>
-                        <input type="text" name="title" value="<?=$item['title'];?>" class="width-2of5">
-                        <label for="">รายการไฟล์</label>
-                        <?php
-                        if( $id !== false ){
-                            
-                            $fds = glob('news/'.$item['folder'].'/*.pdf');
-                            foreach ($fds as $key => $fd) {
-                                $file_name = substr( strrchr($fd, '/'), 1);
-                                ?>
-                                <div><?=$file_name;?> <span data-path="<?=$fd;?>" class="del-oldfile">[ ลบ ]</span></div>
-                                <?php
-                            }
-                            
-                        }
-                        ?>
-                        <div id="file-lists">
-                            <div class="file-contain">
-                                <input type="file" name="files[]">
-                            </div>
-                        </div>
-                        <div>
-                            <button id="addFile">เพิ่มไฟล์อัพโหลด</button>
-                            <div style="font-size: 16px; color: red;">* อนุญาตเฉพาะไฟล์ .pdf</div>
-                        </div>
+                        <table class="hideTbBorder">
+                            <tr>
+                                <td align="right"><label for="title">ชื่อเรื่อง</label></td>
+                                <td><input type="text" name="title" id="title" value="<?=$item['title'];?>" class="width-2of5"></td>
+                            </tr>
+                            <tr>
+                                <td align="right"><label for="">รายการไฟล์</label></td>
+                                <td>
+                                    <?php
+                                    if( $id !== false ){
+                                        $fds = glob('news/'.$item['folder'].'/*.pdf');
+                                        foreach ($fds as $key => $fd) {
+                                            $file_name = substr( strrchr($fd, '/'), 1);
+                                            ?>
+                                            <div><?=$file_name;?> <span data-path="<?=$fd;?>" class="del-oldfile">[ ลบ ]</span></div>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                    <div id="file-lists">
+                                        <div class="file-contain">
+                                            <input type="file" name="files[]">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button id="addFile">เพิ่มไฟล์อัพโหลด</button>
+                                        <div style="font-size: 16px; color: red;">* อนุญาตเฉพาะไฟล์ .pdf</div>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 <div class="col">
@@ -239,6 +255,16 @@ if ( $task === false ) {
     </div>
     <script type="text/javascript">
         
+        document.getElementById('userForm').addEventListener('submit', function(event){
+            event.preventDefault();
+            let title = document.getElementById('title');
+            if(title.value==''){
+                alert('กรุณาใส่ชื่อเรื่อง');
+                title.focus();
+            }
+            return false;
+        });
+
         function delFile(th){
             th.parentNode.remove();
             return false;
