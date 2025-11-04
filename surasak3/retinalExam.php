@@ -3,6 +3,12 @@ include_once dirname(__FILE__).'/bootstrap.php';
 include_once dirname(__FILE__).'/class_file/class_opcard.php';
 include_once dirname(__FILE__).'/class_file/class_opd.php';
 
+/**
+ * @todo
+ * [] เหลือ Save แบบฟอร์ม
+ * [] หน้ารายงานเรียกดูข้อมูลย้อนหลัง
+ */
+
 if(empty($_SESSION['sOfficer'])){
     include_once 'pageNotFound.php';
     exit;
@@ -14,7 +20,7 @@ $opd = new Opd();
 $action = $_GET['action'];
 if($action == 'getOpd'){
 
-    $items = $opd->last3MonthsFromHn('53-9604');
+    $items = $opd->last3MonthsFromHn($_GET['hn']);
     if(!empty($items)){
         foreach ($items as $a) {
 
@@ -288,8 +294,12 @@ if($action == 'getOpd'){
                 return body;
             }
 
+            /**
+             * fill data to input form
+             */
             function selectOpd(t){
                 document.getElementById('date').value = t.getAttribute("t-date");
+                document.getElementById('retinal_date').value = t.getAttribute("t-date");
                 document.getElementById('height').value = t.getAttribute("t-height");
                 document.getElementById('weight').value = t.getAttribute("t-weight");
                 document.getElementById('waist').value = t.getAttribute("t-waist");
@@ -302,10 +312,14 @@ if($action == 'getOpd'){
                 Swal.close();
             }
 
+            /**
+             * onsubmit
+             */
             let userForm = document.getElementById('userForm');
             userForm.addEventListener('submit',(ev)=>{
                 
                 ev.preventDefault();
+                // console.log(ev.formData);
 
                 let dateValue = document.getElementById('date').value;
                 let retinalDateValue = document.getElementById('retinal_date').value;
@@ -353,19 +367,44 @@ if($action == 'getOpd'){
                     return false;
                 }
 
-                const formData = new FormData(userForm);
-                let htmlTxt = '';
-                for (const [key, value] of formData) {
-                    htmlTxt += `${key}: ${value}<br>`;
+                let formData = {};
+                for (let index = 0; index < userForm.elements.length; index++) {
+                    const element = userForm.elements[index];
+                    if(element.type!=="submit" && element.value !== ''){
+                        formData[element.name] = element.value;
+                    }
                 }
-
-                console.log(htmlTxt);
-                Swal.fire({
-                    title: "ทดสอบบันทึกข้อมูล",
-                    html: `${htmlTxt}`
+                
+                onSave(formData).then((res)=>{
+                    console.log(res);
                 });
+                
                 return false;
             });
+
+            async function onSave(formData){
+                // const data = new URLSearchParams(formData).toString();
+                // const data = Object.fromEntries(formData);
+                // let htmlTxt = '';
+                // for (const [key, value] of formData) {
+                //     htmlTxt += `${key}: ${value}<br>`;
+                // }
+                // Swal.fire({
+                //     title: "ทดสอบบันทึกข้อมูล",
+                //     html: `${htmlTxt}`
+                // });
+
+                const response = await fetch('api/Opd.php?action=saveRetinal', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+                return data;
+
+            }
         </script>
         <?php
         }else{
