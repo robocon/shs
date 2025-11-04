@@ -32,6 +32,7 @@ if($action == 'getOpd'){
                 <td>
                     <a href="javascript:void(0);" 
                     class="mr-2" 
+                    opd-id="<?=$a['row_id'];?>"
                     t-date="<?=$enDate;?>"
                     t-height="<?=$a['height'];?>"
                     t-weight="<?=$a['weight'];?>"
@@ -249,6 +250,7 @@ if($action == 'getOpd'){
             </div>
             <div class="d-grid gap-2 col-6 mx-auto mb-3">
                 <button class="btn btn-primary" type="submit">บันทึกข้อมูล</button>
+                <input type="hidden" name="opd_id" id="opd_id" value="">
             </div>
         </form>
         </div>
@@ -298,6 +300,8 @@ if($action == 'getOpd'){
              * fill data to input form
              */
             function selectOpd(t){
+                
+                document.getElementById('opd_id').value = t.getAttribute("opd-id");
                 document.getElementById('date').value = t.getAttribute("t-date");
                 document.getElementById('retinal_date').value = t.getAttribute("t-date");
                 document.getElementById('height').value = t.getAttribute("t-height");
@@ -312,6 +316,22 @@ if($action == 'getOpd'){
                 Swal.close();
             }
 
+            /** ให้โฟกัส input ถ้าคลิกที่ Other */
+            document.getElementById('follow3').addEventListener('click', function(){
+                document.getElementById('followText').focus();
+            });
+
+            /** ถ้าคลิกตัวอื่นให้ล้าค่าใน Other */
+            let itemTreatment = document.getElementsByClassName('treatment');
+            for (let index = 0; index < itemTreatment.length; index++) {
+                const el = itemTreatment[index];
+                el.onclick = function(){
+                    if(itemTreatment[index].value!=='other'){
+                        document.getElementById('followText').value = '';
+                    }
+                }
+            }
+
             /**
              * onsubmit
              */
@@ -319,7 +339,6 @@ if($action == 'getOpd'){
             userForm.addEventListener('submit',(ev)=>{
                 
                 ev.preventDefault();
-                // console.log(ev.formData);
 
                 let dateValue = document.getElementById('date').value;
                 let retinalDateValue = document.getElementById('retinal_date').value;
@@ -339,6 +358,7 @@ if($action == 'getOpd'){
                 let treatmentItem = document.getElementsByClassName('treatment');
                 let treatmentTest = false;
 
+                /** เช็กว่าติ๊กช่องในส่วนของ Retinal แล้วรึยัง */
                 let i = 0;
                 while (examItem[i]) {
                     if(examItem[i].checked===true){
@@ -353,6 +373,7 @@ if($action == 'getOpd'){
                     return false;
                 }
 
+                /** เช็กว่าติ๊กในช่อง การรักษาแล้วรึยัง */
                 let ii = 0;
                 while (treatmentItem[ii]) {
                     if(treatmentItem[ii].checked===true){
@@ -366,7 +387,11 @@ if($action == 'getOpd'){
                     });
                     return false;
                 }
-
+                
+                /** 
+                 * รวมข้อมูลในฟอร์ม 
+                 * @param {Object} formData
+                 */
                 let formData = {};
                 for (let index = 0; index < userForm.elements.length; index++) {
                     const element = userForm.elements[index];
@@ -383,17 +408,6 @@ if($action == 'getOpd'){
             });
 
             async function onSave(formData){
-                // const data = new URLSearchParams(formData).toString();
-                // const data = Object.fromEntries(formData);
-                // let htmlTxt = '';
-                // for (const [key, value] of formData) {
-                //     htmlTxt += `${key}: ${value}<br>`;
-                // }
-                // Swal.fire({
-                //     title: "ทดสอบบันทึกข้อมูล",
-                //     html: `${htmlTxt}`
-                // });
-
                 const response = await fetch('api/Opd.php?action=saveRetinal', {
                     method: 'POST',
                     headers: {
@@ -403,7 +417,6 @@ if($action == 'getOpd'){
                 });
                 const data = await response.json();
                 return data;
-
             }
         </script>
         <?php
