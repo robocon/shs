@@ -1,71 +1,75 @@
-<style>
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 20px;
-}
-.font1{
-	font-family: "TH SarabunPSK";
-	font-size:20px;
-}
-.forntsarabun {
-	font-family: "TH SarabunPSK";
-	font-size: 20px;
-}
-</style>
-<?
- include("connect.inc");
-		$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
-		$result = mysql_query($query) or die("Query failed");
-		
-		for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-			if (!mysql_data_seek($result, $i)) {
-				echo "Cannot seek to row $i\n";
-				continue;
-			}
-				if(!($row = mysql_fetch_object($result)))
-				continue;
-		}
-		$nPrefix=$row->prefix;
-		$chknPrefix="25".$nPrefix;
-?>
-<form method="POST" action="report_financearmychkup.php">
-<input name="act" type="hidden" value="show">
-  <p><strong>ลูกหนี้ตรวจสุขภาพทหาร
-  </strong>ปรับปรุงล่าสุด 5/3/2561 By pfc.แอมป์<p><strong>ระบุปีงบประมาณ :&nbsp;</strong>
-    <input name="year" type="text" class="forntsarabun" id="aLink" size="12" value="<?=$nPrefix;?>">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   <input name="B1" type="submit" class="forntsarabun" value="ค้นหาข้อมูล">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_top  href="../nindex.htm"><< เมนูหลัก</a></p>
-  </form>
-<?
-if($_POST["act"]=="show"){
-$year=$_POST["year"];
-$appd=$appdate.' '.$appmo.' '.$thiyr;
-$appd1=$thiyr.'-'.$appmo.'-'.$appdate;
-    print "<font face='TH SarabunPSK'><b>รายชื่อผู้ที่ลงทะเบียนตรวจสุขภาพประจำปี $year</b><br>";
-  
-//  print "<b>วันที่</b>  ";
-  print "จำนวนรายการที่บันทึก/กดดู = รายชื่อผู้ป่วย<br> ";
-   $query="SELECT  camp,substring(camp,1,5),COUNT(*) AS duplicate FROM condxofyear_so  WHERE yearcheck = '$chknPrefix'   GROUP BY camp HAVING duplicate > 0 ORDER BY camp";
-  	//echo $query;
-   $result = mysql_query($query);
-   $query1=mysql_query("SELECT  * FROM condxofyear_so  WHERE yearcheck = '$chknPrefix'");  
-   $row=mysql_num_rows($query1);
-            print (" <tr>\n".
-               "  <td BGCOLOR=66CDAA><font face='TH SarabunPSK'>ดูรายงาน</td>\n".
-               "  <td BGCOLOR=66CDAA><font face='TH SarabunPSK'><a target=_BLANK href=\"report_financearmychkup1.php?camp=all&year=$year\">ทั้งหมด</a></td>\n".
-        	   "  <td BGCOLOR=66CDAA><font face='TH SarabunPSK'>จำนวน&nbsp; = &nbsp;$row &nbsp;&nbsp;รายการ</td>\n".
-               " </tr>\n<br>");   
-   $n=0;
- while (list ($showcamp,$camp,$duplicate) = mysql_fetch_row ($result)) {
-            $n++;
-$num= $duplicate+$num;
-            print (" <tr>\n".
-               "  <td BGCOLOR=66CDAA><font face='TH SarabunPSK'>$n)&nbsp;&nbsp;</td>\n".
-              "  <td BGCOLOR=66CDAA><font face='TH SarabunPSK'><a target=_BLANK href=\"report_financearmychkup1.php?camp=$showcamp&year=$year\">$showcamp&nbsp;&nbsp;</a></td>\n".
-         "  <td BGCOLOR=66CDAA><font face='TH SarabunPSK'>จำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;รายการ</td>\n".
-               " </tr>\n<br>");
-               }
+<?php
+session_start();
+include("connect.inc");
 
+// --- ดึงปีล่าสุดจาก runno ---
+$query = "SELECT runno, prefix FROM runno WHERE title = 's_chekup'";
+$result = mysql_query($query) or die("Query failed");
+
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+    if (!mysql_data_seek($result, $i)) continue;
+    if(!($row = mysql_fetch_object($result))) continue;
+}
+$nPrefix = $row->prefix;
+$chknPrefix = "25".$nPrefix;
+?>
+<form method="POST" action="">
+<input name="act" type="hidden" value="show">
+  <p><strong>ลูกหนี้ตรวจสุขภาพทหาร</strong>  
+  ปรับปรุงล่าสุด 29/9/2568 By sgpt.แอมป์</p>
+  <p><strong>ระบุปีงบประมาณ :&nbsp;</strong>
+    <input name="year" type="text" size="12" value="<?=$nPrefix;?>">
+    &nbsp;&nbsp;<input name="B1" type="submit" value="ค้นหาข้อมูล">
+    &nbsp;&nbsp;<a target=_top href="../nindex.htm">&lt;&lt; เมนูหลัก</a>
+  </p>
+</form>
+
+<?php
+if($_POST["act"]=="show"){
+    $year = $_POST["year"];
+
+    echo "<h3>รายชื่อผู้ที่ลงทะเบียนตรวจสุขภาพประจำปี $year และเรียกเก็บจากหน่วยต้นสังกัด</h3>";
+    echo "จำนวนรายการที่บันทึก/กดดู = รายชื่อผู้ป่วย<br>";
+
+    // รวมทั้งหมด
+    $query1 = mysql_query("SELECT * FROM condxofyear_so WHERE yearcheck = '$chknPrefix'");  
+    $row = mysql_num_rows($query1);
+
+    echo "<table border='1' cellpadding='5' cellspacing='0' width='80%'>";
+    echo "<tr bgcolor='#66CDAA'>
+            <td><b>ลำดับ</b></td>
+            <td><b>ชื่อสังกัด</b></td>
+            <td><b>จำนวน</b></td>
+          </tr>";
+
+    // --- JOIN โดยใช้ hn เป็นตัวเชื่อม ---
+    $query = "	
+		SELECT 
+			r.camp AS camp_name, 
+			COUNT(DISTINCT r.hn) AS duplicate
+		FROM register_chkup_soldier r
+		INNER JOIN opacc o ON r.hn = o.hn
+		WHERE r.yearcheck = '$chknPrefix'
+		  AND o.credit = 'CHKUP$year'
+		GROUP BY r.camp
+		HAVING duplicate > 0
+		ORDER BY r.camp;		
+    ";
+	//echo $query;
+    $result = mysql_query($query);
+    $n=0;
+
+    while ($data = mysql_fetch_assoc($result)) {
+        $n++;
+        $camp_name = $data['camp_name'];
+        $duplicate = $data['duplicate'];
+
+        echo "<tr bgcolor='".($n%2==0?"#f1f8e9":"#ffffff")."'>
+                <td>$n)</td>
+                <td><a target='_blank' href=\"report_financearmychkup1.php?camp=".urlencode($camp_name)."&year=$year\">$camp_name</a></td>
+                <td>จำนวน = $duplicate รายการ</td>
+              </tr>";
+    }
+    echo "</table>";
 }
 ?>

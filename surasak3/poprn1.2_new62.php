@@ -744,7 +744,7 @@ print "<DIV style='left:208PX;top:4640PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT
 print "<DIV style='left:213PX;top:4665PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
 print "<DIV style='left:213PX;top:4690PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
 print "<DIV style='left:213PX;top:4715PX;width:280PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
-print "<DIV style='left:213PX;top:4740PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cPodate</span></DIV>";
+print "<DIV style='left:213PX;top:4740PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 
 print "<DIV style='left:88PX;top:4790PX;width:245PX;height:30PX;'><span class='fc1-0'>- อนุมัติตามข้อ 9.</span></DIV>";
 print "<DIV style='left:88PX;top:4815PX;width:245PX;height:30PX;'><span class='fc1-0'>- ลงนามให้แล้ว และให้</span></DIV>";
@@ -773,10 +773,10 @@ print "<DIV style='left:480PX;top:4965PX;width:56PX;height:30PX;'><span class='f
 print "<DIV style='left:417PX;top:4990PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
 print "<DIV style='left:417PX;top:5015PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
 if(empty($aPost2[1])){
-print "<DIV style='left:417PX;top:5040PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cChkindate</span></DIV>";
+print "<DIV style='left:417PX;top:5040PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 }else{
 print "<DIV style='left:417PX;top:5040PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[1]</span></DIV>";
-print "<DIV style='left:417PX;top:5065PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$cChkindate</span></DIV>";	
+print "<DIV style='left:417PX;top:5065PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";	
 }	
 //สิ้นสุดเนื้อหา PO ใบที่1 page12
 print "<BR>";
@@ -1466,7 +1466,7 @@ print "<DIV style='left:84PX;top:5934PX;width:87PX;height:30PX;'><span class='fc
 	<TD colspan=\"2\" width='180' align='center'>$aPost2[1]</TD>
 </TR>
 <TR>
-	<TD colspan=\"2\" width='180' align='center'>$cBounddate</TD>
+	<TD colspan=\"2\" width='180' align='center'>........../........../..........</TD>
 </TR>
 </TABLE>
 </span></DIV>";
@@ -1965,7 +1965,7 @@ print "<DIV style='left:499PX;top:8020PX;width:87PX;height:30PX;TEXT-ALIGN:LEFT;
 print "<DIV style='left:444PX;top:8045PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
 print "<DIV style='left:444PX;top:8070PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
 print "<DIV style='left:444PX;top:8095PX;width:280PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
-print "<DIV style='left:444PX;top:8120PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
+//print "<DIV style='left:444PX;top:8120PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 
 
 
@@ -1975,10 +1975,10 @@ print "<DIV style='left:148PX;top:8070PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT
 print "<DIV style='left:143PX;top:8095PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
 print "<DIV style='left:143PX;top:8120PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
 if(empty($aPost2[1])){
-print "<DIV style='left:143PX;top:8145PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
+//print "<DIV style='left:143PX;top:8145PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 }else{
 print "<DIV style='left:143PX;top:8145PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[1]</span></DIV>";
-print "<DIV style='left:143PX;top:8170PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";	
+//print "<DIV style='left:143PX;top:8170PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";	
 }	
 print "<BR>";
 print "</BODY></HTML>";

@@ -126,19 +126,6 @@ $list_lab["GFR"] = "gfr";
 	font-size: 14px;
 	color: #FF0000;
 }
-.button-blue {
-    background-color: #008CBA;
-    font-family: "TH SarabunPSK";
-    border: none;
-    border-radius: 12px;
-    color: white;
-    padding: 5px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 22px;
-    font-weight: bold;
-}
 </style>
 <SCRIPT LANGUAGE="JavaScript">
 function check(){
@@ -335,11 +322,11 @@ $(function() {
 	}*/
 	$arr_view = mysql_fetch_assoc($result);
 
-$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' and toborow='EX26 ตรวจสุขภาพประจำปี' limit 0,1";
+$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' and (toborow='EX16 ตรวจสุขภาพ'  || toborow='EX26 ตรวจสุขภาพประจำปี') limit 0,1";
 //echo $sql;
 $resultvn=mysql_query($sql);
 if(mysql_num_rows($resultvn) < 1){
-	echo "<script>alert('ไม่พบข้อมูลผู้ป่วย HN: $_POST[p_hn] ลงทะเบียน EX26 ตรวจสุขภาพประจำปีในวันนี้ กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
+	echo "<script>alert('ไม่พบข้อมูลผู้ป่วย HN: $_POST[p_hn] ลงทะเบียน EX16 ตรวจสุขภาพ หรือ EX26 ตรวจสุขภาพประจำปีในวันนี้ กรุณาติดต่อที่ห้องทะเบียน');window.location='dx_ofyear.php';</script>";
 }
 list($arr_view["vn"]) = mysql_fetch_row($resultvn);
 
@@ -444,6 +431,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$covaccine_5=$arr_dxofyear["covaccine_5"];
 		$covaccine_6=$arr_dxofyear["covaccine_6"];
 		
+		$covid_status=$arr_dxofyear["covid_status"];
+		$covid_dose=$arr_dxofyear["covid_dose"];
+		$hepB_status=$arr_dxofyear["hepB_status"];
+		$hepB_active=$arr_dxofyear["hepB_active"];
+		$flu_status=$arr_dxofyear["flu_status"];
+		$flu_date=$arr_dxofyear["flu_date"];
+		$mmr_status=$arr_dxofyear["mmr_status"];
+		$mmr_date=$arr_dxofyear["mmr_date"];		
+		$dt_status=$arr_dxofyear["dt_status"];
+		$dt_date=$arr_dxofyear["dt_date"];	
+		$hpv_status=$arr_dxofyear["hpv_status"];
+		$hpv_date=$arr_dxofyear["hpv_date"];			
+		
 		
 		
 		
@@ -495,6 +495,19 @@ $query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
 		$covaccine_4=$arr_dxofyear["covaccine_4"];
 		$covaccine_5=$arr_dxofyear["covaccine_5"];
 		$covaccine_6=$arr_dxofyear["covaccine_6"];
+		
+		$covid_status=$arr_dxofyear["covid_status"];
+		$covid_dose=$arr_dxofyear["covid_dose"];
+		$hepB_status=$arr_dxofyear["hepB_status"];
+		$hepB_active=$arr_dxofyear["hepB_active"];
+		$flu_status=$arr_dxofyear["flu_status"];
+		$flu_date=$arr_dxofyear["flu_date"];
+		$mmr_status=$arr_dxofyear["mmr_status"];
+		$mmr_date=$arr_dxofyear["mmr_date"];		
+		$dt_status=$arr_dxofyear["dt_status"];
+		$dt_date=$arr_dxofyear["dt_date"];	
+		$hpv_status=$arr_dxofyear["hpv_status"];
+		$hpv_date=$arr_dxofyear["hpv_date"];		
 		
 		
 		
@@ -616,8 +629,12 @@ echo $query1;
 $result1 = mysql_query($query1) or die("Query failed,opday");
 list($vn,$ptright)=mysql_fetch_array($result1);	
 */
+
+
+
+$toborow="EX26 ตรวจสุขภาพประจำปี";
 ?>
-<div align="center" style="color:#FF0000;">ถ้าผล LAB ไม่ขึ้น กรุณาตรวจสอบและปรับสถานะ เป็น ตรวจสุขภาพประจำปี <?=$nPrefix;?></div>
+<div align="center" style="color:#FF0000;">ผล LAB ไม่ขึ้น กรุณาปรับสถานะ เป็น ตรวจสุขภาพประจำปี <?=$nPrefix;?></div>
 <!-- ข้อมูลเบื้องต้นของผู้ป่วย -->
 <FORM name="vsform" method="POST" ACTION="dx_ofyear_save.php" target="_blank" onsubmit="return check()" >
 <input name="age" type="hidden" id="age"  value="<?php echo $arr_view["age"];?>" />
@@ -625,6 +642,8 @@ list($vn,$ptright)=mysql_fetch_array($result1);
 <input name="vn" type="hidden" id="vn"  value="<?php echo $arr_view["vn"];?>" />
 <input name="camp" type="hidden" id="camp"  value="<?php echo $arr_view["camp"];?>" />
 <input name="idcard" type="hidden" id="idcard"  value="<?php echo $arr_view["idcard"];?>" />
+<input name="bmi" type="hidden" id="bmi"  value="<?php echo $bmi;?>" />
+<input name="toborow" type="hidden" id="bmi"  value="<?php echo $toborow;?>" />
 <TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#7DCEA0" width="100%" >
 <TR>
 	<TD>
@@ -767,136 +786,62 @@ mmHg</td>
             <input type="radio" name="exercise" value="2" <?php if($exercise==2){ echo "checked"; } ?> />
 ออกกำลังกาย ตามเกณฑ์ </td>
 		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">ฉีดวัคซีนโควิด 19&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_amount" id="covaccine_amount1" value="1" <?php if($covaccine_amount==1){ echo "checked"; } ?> />
-		  1 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_amount" id="covaccine_amount2" value="2" <?php if($covaccine_amount==2){ echo "checked"; } ?> />
-		  2 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_amount" id="covaccine_amount3" value="3" <?php if($covaccine_amount==3){ echo "checked"; } ?> />
-		  3 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_amount" id="covaccine_amount4" value="4" <?php if($covaccine_amount==4){ echo "checked"; } ?> />
-		  4 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_amount" id="covaccine_amount5" value="5" <?php if($covaccine_amount==5){ echo "checked"; } ?> />
-		  5 เข็ม</label>&nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_amount" id="covaccine_amount6" value="6" <?php if($covaccine_amount==6){ echo "checked"; } ?> />
-		  6 เข็ม</label></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">เข็มที่ 1&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_1" id="covaccine_11" value="sinovac" <?php if($covaccine_1=="sinovac"){ echo "checked"; } ?> />
-		    sinovac
-		  </label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_1" id="covaccine_12" value="astrazeneca" <?php if($covaccine_1=="astrazeneca"){ echo "checked"; } ?> />
-		  astrazeneca</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_1" id="covaccine_13" value="sinopharm" <?php if($covaccine_1=="sinopharm"){ echo "checked"; } ?> />
-		  sinopharm</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_1" id="covaccine_14" value="pfizer" <?php if($covaccine_1=="pfizer"){ echo "checked"; } ?> />
-		  pfizer</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_1" id="covaccine_15" value="moderna" <?php if($covaccine_1=="moderna"){ echo "checked"; } ?> />
-		  moderna</label></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">เข็มที่ 2&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_2" id="covaccine_21" value="sinovac" <?php if($covaccine_2=="sinovac"){ echo "checked"; } ?> />
-		    sinovac
-		  </label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_2" id="covaccine_22" value="astrazeneca" <?php if($covaccine_2=="astrazeneca"){ echo "checked"; } ?> />
-		  astrazeneca</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_2" id="covaccine_23" value="sinopharm" <?php if($covaccine_2=="sinopharm"){ echo "checked"; } ?> />
-		  sinopharm</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_2" id="covaccine_24" value="pfizer" <?php if($covaccine_2=="pfizer"){ echo "checked"; } ?> />
-		  pfizer</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_2" id="covaccine_25" value="moderna" <?php if($covaccine_2=="moderna"){ echo "checked"; } ?> />
-		  moderna</label></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">เข็มที่ 3&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_3" id="covaccine_31" value="sinovac" <?php if($covaccine_3=="sinovac"){ echo "checked"; } ?> />
-		    sinovac
-		  </label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_3" id="covaccine_32" value="astrazeneca" <?php if($covaccine_3=="astrazeneca"){ echo "checked"; } ?> />
-		  astrazeneca</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_3" id="covaccine_33" value="sinopharm" <?php if($covaccine_3=="sinopharm"){ echo "checked"; } ?> />
-		  sinopharm</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_3" id="covaccine_34" value="pfizer" <?php if($covaccine_3=="pfizer"){ echo "checked"; } ?> />
-		  pfizer</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_3" id="covaccine_35" value="moderna" <?php if($covaccine_3=="moderna"){ echo "checked"; } ?> />
-		  moderna</label></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">เข็มที่ 4&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_4" id="covaccine_41" value="sinovac" <?php if($covaccine_4=="sinovac"){ echo "checked"; } ?> />
-		    sinovac
-		  </label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_4" id="covaccine_42" value="astrazeneca" <?php if($covaccine_4=="astrazeneca"){ echo "checked"; } ?> />
-		  astrazeneca</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_4" id="covaccine_43" value="sinopharm" <?php if($covaccine_4=="sinopharm"){ echo "checked"; } ?> />
-		  sinopharm</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_4" id="covaccine_44" value="pfizer" <?php if($covaccine_4=="pfizer"){ echo "checked"; } ?> />
-		  pfizer</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_4" id="covaccine_45" value="moderna" <?php if($covaccine_4=="moderna"){ echo "checked"; } ?> />
-		  moderna</label></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">เข็มที่ 5&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_5" id="covaccine_51" value="sinovac" <?php if($covaccine_5=="sinovac"){ echo "checked"; } ?> />
-		    sinovac
-		  </label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_5" id="covaccine_52" value="astrazeneca" <?php if($covaccine_5=="astrazeneca"){ echo "checked"; } ?> />
-		  astrazeneca</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_5" id="covaccine_53" value="sinopharm" <?php if($covaccine_5=="sinopharm"){ echo "checked"; } ?> />
-		  sinopharm</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_5" id="covaccine_54" value="pfizer" <?php if($covaccine_5=="pfizer"){ echo "checked"; } ?> />
-		  pfizer</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_5" id="covaccine_55" value="moderna" <?php if($covaccine_5=="moderna"){ echo "checked"; } ?> />
-		  moderna</label></td>
-		  </tr>
-		<tr>
-		  <td align="right" class="tb_font_2">เข็มที่ 6&nbsp;:</td>
-		  <td colspan="7"><label>
-		    <input type="radio" name="covaccine_6" id="covaccine_61" value="sinovac" <?php if($covaccine_6=="sinovac"){ echo "checked"; } ?> />
-		    sinovac
-		  </label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_6" id="covaccine_62" value="astrazeneca" <?php if($covaccine_6=="astrazeneca"){ echo "checked"; } ?> />
-		  astrazeneca</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_6" id="covaccine_63" value="sinopharm" <?php if($covaccine_6=="sinopharm"){ echo "checked"; } ?> />
-		  sinopharm</label>
-		  &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_6" id="covaccine_64" value="pfizer" <?php if($covaccine_6=="pfizer"){ echo "checked"; } ?> />
-		  pfizer</label>
-          &nbsp;&nbsp;&nbsp;&nbsp;<label>
-		    <input type="radio" name="covaccine_6" id="covaccine_65" value="moderna" <?php if($covaccine_6=="moderna"){ echo "checked"; } ?> />
-		  moderna</label></td>
-		  </tr>		  
+<tr>
+<td width="230" align="right" class="tb_font_2">การฉีดวัคซีนป้องกัน Covid-19</td>
+<td colspan="7">
+<input type="radio" name="covid_status" value="ไม่ได้ฉีดวัคซีน" <?php if($covid_status=="ไม่ได้ฉีดวัคซีน"){ echo "checked"; } ?>> ไม่ได้ฉีดวัคซีน 
+<input type="radio" name="covid_status" value="ฉีดวัคซีน" <?php if($covid_status=="ฉีดวัคซีน"){ echo "checked"; } ?>> ฉีดวัคซีน จำนวน 
+<input type="text" name="covid_dose" size="2" value="<?=$covid_dose;?>"> เข็ม
+</td>
+</tr>
+
+<tr>
+<td align="right" class="tb_font_2">การฉีดวัคซีนป้องกันโรคตับอักเสบบี</td>
+<td colspan="7">
+<input type="radio" name="hepB_status" value="ไม่ได้รับ" <?php if($hepB_status=="ไม่ได้รับ"){ echo "checked"; } ?>> ไม่ได้รับ 
+<input type="radio" name="hepB_status" value="ได้รับ" <?php if($hepB_status=="ได้รับ"){ echo "checked"; } ?>> ได้รับ 
+<span style="margin-left:30px;">
+<input type="radio" name="hepB_active" value="มีภูมิ" <?php if($hepB_active=="มีภูมิ"){ echo "checked"; } ?>> มีภูมิ
+<input type="radio" name="hepB_active" value="ไม่มีภูมิ" <?php if($hepB_active=="ไม่มีภูมิ"){ echo "checked"; } ?>> ไม่มีภูมิ
+</span>
+</td>
+</tr>
+
+<tr>
+<td align="right" class="tb_font_2">การฉีดวัคซีนป้องกันโรคไข้หวัดใหญ่</td>
+<td colspan="7">
+<input type="radio" name="flu_status" value="ไม่ได้รับ" <?php if($flu_status=="ไม่ได้รับ"){ echo "checked"; } ?>> ไม่ได้รับ 
+<input type="radio" name="flu_status" value="ได้รับ" <?php if($flu_status=="ได้รับ"){ echo "checked"; } ?>> ได้รับ เมื่อวันที่ 
+<input type="date" name="flu_date" value="<?=$flu_date;?>">
+</td>
+</tr>
+
+<tr>
+<td align="right" class="tb_font_2">การฉีดวัคซีนป้องกันโรค หัด/คางทูม/หัดเยอรมัน (MMR)</td>
+<td colspan="7">
+<input type="radio" name="mmr_status" value="ไม่ได้รับ" <?php if($mmr_status=="ไม่ได้รับ"){ echo "checked"; } ?>> ไม่ได้รับ 
+<input type="radio" name="mmr_status" value="ได้รับ" <?php if($mmr_status=="ได้รับ"){ echo "checked"; } ?>> ได้รับ เมื่อวันที่ 
+<input type="date" name="mmr_date" value="<?=$mmr_date;?>">
+</td>
+</tr>
+
+<tr>
+<td align="right" class="tb_font_2">การฉีดวัคซีนป้องกันโรค คอตีบ-บาดทะยัก (DT)</td>
+<td colspan="7">
+<input type="radio" name="dt_status" value="ไม่ได้รับ" <?php if($dt_status=="ไม่ได้รับ"){ echo "checked"; } ?>> ไม่ได้รับ 
+<input type="radio" name="dt_status" value="ได้รับ" <?php if($dt_status=="ได้รับ"){ echo "checked"; } ?>> ได้รับ เมื่อวันที่ 
+<input type="date" name="dt_date" value="<?=$dt_date;?>">
+</td>
+</tr>
+
+<tr>
+<td align="right" class="tb_font_2">การฉีดวัคซีนป้องกันโรค มะเร็งปากมดลูก (HPV)</td>
+<td colspan="7">
+<input type="radio" name="hpv_status" value="ไม่ได้รับ"> ไม่ได้รับ 
+<input type="radio" name="hpv_status" value="ได้รับ"> ได้รับ เมื่อวันที่ 
+<input type="date" name="hpv_date" value="<?=$hpv_date;?>">
+</td>
+</tr>	  
 	</table>
 	<TABLE class="tb_font">
 	</TABLE>
@@ -976,23 +921,23 @@ mmHg</td>
    	<select name="clinic" id="clinic">
       <?php 
 	  	print "<option value='' >-- กรุณาเลือกคลินิก --</option>";
-		print " <option value='12 เวชปฏิบัติ' selected>เวชปฏิบัติ</option>";
-		print " <option value='01 อายุรกรรม'>อายุรกรรม</option>";
-		print " <option value='02 ศัลยกรรม'>ศัลยกรรม</option>";
-		print " <option value='03 สูติกรรม'>สูติกรรม</option>";
-		print " <option value='04 นารีเวชกรรม'>นารีเวชกรรม</option>";
-		print " <option value='05 กุมารเวช'>กุมารเวช</option>";
-		print " <option value='06 โสต ศอ นาสิก'>โสต สอ นาสิก</option>";
-		print " <option value='07 จักษุ'>จักษุ</option>";
-		print " <option value='08 ศัลยกรรมกระดูก'>ศัลยกรรมกระดุก</option>";
-		print " <option value='08 ศัลยกรรมทางเดินปัสสาวะ'>ศัลยกรรมทางเดินปัสสาวะ</option>";
-		print " <option value='09 จิตเวช'>จิตเวช</option>";
-		print " <option value='10 รังษีวิทยา'>รังษีวิทยา</option>";
-		print " <option value='11 ทันตกรรม'>ทันตกรรม</option>";
+		print " <option value='เวชกรรมปฎิบัติทั่วไป' selected>เวชปฏิบัติ</option>";
+		print " <option value='อายุรกรรม'>อายุรกรรม</option>";
+		print " <option value='ศัลยกรรม'>ศัลยกรรม</option>";
+		print " <option value='สูติกรรม'>สูติกรรม</option>";
+		print " <option value='นารีเวชกรรม'>นารีเวชกรรม</option>";
+		print " <option value='กุมารเวช'>กุมารเวช</option>";
+		print " <option value='โสต ศอ นาสิก'>โสต สอ นาสิก</option>";
+		print " <option value='จักษุ'>จักษุ</option>";
+		print " <option value='ศัลยกรรมกระดูก'>ศัลยกรรมกระดุก</option>";
+		print " <option value='ศัลยกรรมทางเดินปัสสาวะ'>ศัลยกรรมทางเดินปัสสาวะ</option>";
+		print " <option value='จิตเวช'>จิตเวช</option>";
+		print " <option value='รังษีวิทยา'>รังษีวิทยา</option>";
+		print " <option value='ทันตกรรม'>ทันตกรรม</option>";
 		if($_SESSION["smenucode"] != "ADMMAINOPD"){
-		print " <option value='12 เวชศาสตร์ฟื้นฟู'>เวชศาสตร์ฟื้นฟู</option>";
+		print " <option value='เวชศาสตร์ฟื้นฟู'>เวชศาสตร์ฟื้นฟู</option>";
 		}
-		print " <option value='12 อื่นๆ'>อื่นๆ</option>";
+		print " <option value='อื่นๆ'>อื่นๆ</option>";
 	?>
              </select>           </td>
          </tr>
@@ -1144,11 +1089,14 @@ mmHg</td>
 <br />
 <center>
 <!--<input name="submit" type="submit" value="ตกลง"  />&nbsp;&nbsp;-->
-<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />&nbsp;&nbsp;
-<input name="submit3" type="submit" class="button-blue" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" />
+<input name="submit2" type="submit" value="ตกลง&amp;สติกเกอร์ OPD" />
 </center>
 <INPUT TYPE="hidden" value="<?php echo $arr_dxofyear["row_id"];?>" name="row_id" />
 </FORM>
+
+
+
+
 
 
 <?php }?>

@@ -130,6 +130,7 @@ if(isset($_POST['hn'])){
 					<span class="input-group-text">ปรับสถานะใหม่ : </span>
 					<select class="form-select" name='clinic'>
 						<option value="">&gt;&gt; กรุณาเลือกสถานะแลป &lt;&lt;</option>
+						<option value="ตรวจสุขภาพประจำปี69" <?=$selected;?>>ตรวจสุขภาพประจำปี69</option>
 						<?php
 						foreach ($yearRange as $yearItem) {
 							$selected = ($yearItem === $nPrefix) ? 'selected="selected"' : '' ;

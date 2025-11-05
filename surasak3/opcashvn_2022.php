@@ -15,7 +15,7 @@ session_start();//for security
 	if($today=="--"){
 		$today = $_GET['a']."-".$_GET['b']."-".$_GET['c'];
 	}
-   print "<font face='Angsana New'><b>วันที่ $today: เก็บเงินผู้ป่วยที่ยังไม่ได้  'จ่ายเงิน' , *กรณีเบิกตรงให้เก็บเงินส่วนที่ 'เบิกไม่ได้' &nbsp;<U>ถ้าเป็นสีแดงแสดงว่าสิทธิการรักษามีปัญหา</U></b><br>";
+   print "<font face='Angsana New' style='font-size:28px;'><b>วันที่ $today: เก็บเงินผู้ป่วยที่ยังไม่ได้  'จ่ายเงิน' , *กรณีเบิกตรงให้เก็บเงินส่วนที่ 'เบิกไม่ได้' &nbsp;<U>ถ้าเป็นสีแดงแสดงว่าสิทธิการรักษามีปัญหา</U></b><br>";
 
 
   $today="$yr-$m-$d";
@@ -116,30 +116,127 @@ session_start();//for security
 	} 
 
 
-print "<div style='font-weight:bold;'>รายการที่เข้าบัญชีไปแล้ว </div>"; 
-print "<table width='60%' cellpadding='5'>";
-//print_r($_POST);
+print "
+<div style='
+    font-weight: bold;
+    font-size: 20px;
+    color: #006ba6;
+    margin: 10px 0 10px 20px;
+    font-family: Tahoma, sans-serif;
+'>
+    <i class='fas fa-list'></i> รายการที่เข้าบัญชีไปแล้ว
+</div>
+
+<table style='
+    width: 95%;
+    border-collapse: collapse;
+    margin-left: 10px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: TH SarabunPSK, Tahoma, sans-serif;
+'>
+    <thead style='background: linear-gradient(135deg, #00b8a9, #006ba6); color: #fff;'>
+        <tr>
+            <th style='padding: 8px;'>วันที่</th>
+            <th style='padding: 8px;'>VN</th>
+            <th style='padding: 8px;'>HN</th>
+            <th style='padding: 8px;'>แผนก</th>
+            <th style='padding: 8px;'>รายละเอียด</th>
+            <th style='padding: 8px;'>ชำระ</th>
+            <th style='padding: 8px;'>เครดิต</th>
+            <th style='padding: 8px;'>รายละเอียดเครดิต</th>
+            <th style='padding: 8px;'>Paid CSCd</th>
+            <th style='padding: 8px;'>สิทธิ์</th>
+            <th style='padding: 8px;'>เลขบิล</th>
+            <th style='padding: 8px;'>ผู้ออกใบเสร็จ</th>
+        </tr>
+    </thead>
+    <tbody>
+";
+
 $chkdate="$yr-$m-$d";
-$query51 = "SELECT  date,hn,an,depart,detail,price,paid,idname,credit,ptright,billno,paidcscd,credit_detail,idname,vn FROM opacc WHERE date LIKE '$chkdate%' and hn='$hn'  ";
-//echo $query51;   
+$query51 = "SELECT date,hn,an,depart,detail,price,paid,idname,credit,ptright,billno,paidcscd,credit_detail,idname,vn 
+            FROM opacc 
+            WHERE date LIKE '$chkdate%' and hn='$hn' ";
 $result51 = mysql_query($query51) or die("Query failed");
+
 while (list ($date,$hn,$an,$depart,$detail,$price,$paid,$idname,$credit,$ptright,$billno,$paidcscd,$credit_detail,$idname,$opacc_vn) = mysql_fetch_row ($result51)) {
-	print ("<tr BGCOLOR='#fadbd8' width='90%'>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$date</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$opacc_vn</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$hn</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$depart</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='3'><b>$detail</b></td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='3'><b>$paid</b></td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2' color='red'><b>$credit</b></td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2' color='red'><b>$credit_detail</b></td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$paidcscd</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$ptright</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$billno</td>\n".
-	"  <td ><font face='TH SarabunPSK'font size='2'>$idname</td>\n".
-	" </tr>\n");
+    print ("
+        <tr style='background-color:#f9f9f9; border-bottom:1px solid #ddd;'>
+            <td style='padding:6px;'>$date</td>
+            <td style='padding:6px;'>$opacc_vn</td>
+            <td style='padding:6px;'>$hn</td>
+            <td style='padding:6px;'>$depart</td>
+            <td style='padding:6px; font-weight:bold;'>$detail</td>
+            <td style='padding:6px; font-weight:bold;'>$paid</td>
+            <td style='padding:6px; color:red; font-weight:bold;'>$credit</td>
+            <td style='padding:6px; color:red;'>$credit_detail</td>
+            <td style='padding:6px;'>$paidcscd</td>
+            <td style='padding:6px;'>$ptright</td>
+            <td style='padding:6px;'>$billno</td>
+            <td style='padding:6px;'>$idname</td>
+        </tr>
+    ");
 }
-print "</table>";
+
+print "
+    </tbody>
+</table>
+";
+
+
+////*runno ตรวจสุขภาพ*/////////
+$query = "SELECT runno, prefix  FROM runno WHERE title = 's_chekup'";
+	$result = mysql_query($query) or die("Query failed");
+	
+	for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+		if (!mysql_data_seek($result, $i)) {
+			echo "Cannot seek to row $i\n";
+			continue;
+		}
+			if(!($row = mysql_fetch_object($result)))
+			continue;
+	}
+	
+	$nPrefix=$row->prefix;
+	$yearcheck="25".$nPrefix;
+////*runno ตรวจสุขภาพ*/////////
+
+$sqlchk="select yot,name,surname,camp from register_chkup_soldier where yearcheck='$yearcheck' and idcard='".$cIdcard."'";
+//echo $sqlchk;
+$querychk=mysql_query($sqlchk);
+$numchk=mysql_num_rows($querychk);
+if($numchk > 0){
+    list($chkyot,$chkname,$chksurname,$chkcamp)=mysql_fetch_array($querychk);
+    $chkupdetail = "
+    <div style='
+        background: linear-gradient(135deg, #00b8a9, #006ba6);
+        color: #fff;
+        border-radius: 12px;
+        padding: 20px 25px;
+        margin: 20px;
+        margin-left: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        max-width: 600px;
+        font-family: Tahoma, sans-serif;
+        text-align: center;
+    '>
+		<div style='font-size: 22px; font-weight: bold; margin-bottom: 8px;'>กำลังพลตรวจสุขภาพประจำปีกองทัพบก</div>
+        <div style='font-size: 22px; font-weight: bold; margin-bottom: 8px;'>
+            <i class='fas fa-user'></i> ชื่อ - นามสกุล :
+            <span style='color:#fff;'>$chkyot $chkname $chksurname</span>
+        </div>
+        <div style='font-size: 18px;'>
+            <i class='fas fa-building'></i> หน่วยต้นสังกัด :
+            <span style='font-weight:500;'>$chkcamp</span>
+        </div>
+    </div>";
+}else{
+    $chkupdetail="";
+}
+echo $chkupdetail;
 
 print "<br><strong>รายการตรวจวิเคราะห์โรคหรือทำหัตถการ</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<<&nbsp<a target=_self  href='../nindex.htm'>ไปเมนู</a>";
 print "&nbsp;&nbsp;&nbsp&nbsp;&nbsp&nbsp;<<&nbsp<a target=_self  href='vncash_2022.php'>รายต่อไป</a>&nbsp&nbsp;";
@@ -218,12 +315,13 @@ while (list ($date,$ptname,$hn,$an,$depart,$detail,$price,$sumnprice,$paid,$row_
 	$hnid = $hn;
 
 	$totalpaid1=$sumnprice;
+	//echo "==>".$sumnprice;
 
 	print " <tr>\n".
            "  <td BGCOLOR=$color><font face='Angsana New' size='1' ><input name='ch$num' type='checkbox' value='$row_id'><font color='#CC0000'><B>$credit</B></font></td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$num</td>\n".
            "  <td BGCOLOR=$color><font face='Angsana New'>$time</td>\n";
-	if($sumnprice>0&$sumnprice!=$price||$cunt>15){
+	if($sumnprice>0 || ($sumnprice>0 && $sumnprice!=$price) || $cunt>15){
 		print "  <td BGCOLOR=$color><font face='Angsana New'><a target=_BLANK  href=\"opitem_2022.php?sDate=$date&nRow_id=$row_id&nAccno=$accno\">$ptname</a></td>\n";
 	}else{
 		print "  <td BGCOLOR=$color><font face='Angsana New'>$ptname</td>\n";
