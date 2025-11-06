@@ -157,10 +157,39 @@ class Opday extends DbConnect
         return $pAge;
     }
 
-    public function testGetOpcard($hn){
-        $opcard = new Opcard();
-        $pt = $opcard->getByHn($hn);
-        return $pt;
+    /**
+     * แสดงรายการที่ผู้ป่วยมาใช้บริการจาก HN
+     * @param string $hn
+     */
+    public function getOpdayLast6Months($hn=null){
+        $last6Months = strtotime("-6 Month");
+        $thidate = (date('Y', $last6Months)+543).date('-m-d 00:00:00', $last6Months);
+        $sql = sprintf("SELECT `row_id`,SUBSTRING(`thidate`,1,10) AS `thidate`,`hn`,`ptname`,`vn`,`ptright`,`toborow`,`doctor` 
+        FROM `opday` 
+        WHERE `hn` = '%s' 
+        AND `an` IS NULL 
+        AND `thidate` > '$thidate' ", $this->dbi->real_escape_string($hn));
+        $q = $this->dbi->query($sql);
+        $items = false;
+        if($q->num_rows>0){
+            while ($a = $q->fetch_assoc()) {
+                if(empty($a['doctor'])){
+                    $a['doctor'] = '';
+                }
+                $items[] = $a;
+            }
+        }
+        return $items;
+    }
+
+    public function getFromThidateHn($thdatehn){
+        $sql = sprintf("SELECT * FROM `opday` WHERE `thdatehn` = '$thdatehn'");
+        $q = $this->dbi->query($sql);
+        $item = false;
+        if($q->num_rows>0){
+            $item = $q->fetch_assoc();
+        }
+        return $item;
     }
 }
 ?>

@@ -113,19 +113,31 @@ class ClassDepart extends DbConnect{
         $officer='',            // จนท.ผู้บันทึก
         $cashok='',             // สถานะการเก็บเงิน(ดีดลูกหนี้)
         $nLab_orderhead = '',   // เลขที่แลป
-        $depart=''              // แผนก
+        $depart='',             // แผนก
+        $date='',                // วันที่
+        $dataDoctor=''
     ){ 
 
         $opday = new Opday();
-        $op = $opday->getThisDay($hn);
-        if ($op===false) {
-            return "ไม่มีข้อมูลการออก VN ในวันนี้";
-            exit;
+        if(empty($date)){
+            $op = $opday->getThisDay($hn);
+            if ($op===false) {
+                return "ไม่มีข้อมูลการออก VN ในวันนี้";
+                exit;
+            }
+        }else{
+            list($y,$m,$d) = explode('-', $date);
+            $dmYDateHn = "$d-$m-$y".$hn;
+            $op = $opday->getFromThidateHn($dmYDateHn);
         }
-
         $ptright = $op['ptright'];
         $ptname = $op['ptname'];
         $vn = $op['vn'];
+        
+        $doctor = 'MD022 (ไม่ทราบแพทย์)';
+        if(!empty($dataDoctor)){
+            $doctor = $dataDoctor;
+        }
 
         $labprice = $this->getPrice($labItems);
         $sumPrice = $labprice['sumPrice'];
@@ -145,7 +157,7 @@ class ClassDepart extends DbConnect{
             `idname`, `diag`, `tvn`, `ptright`, `lab`, `status` ,
             `cashok`, `paid`
         ) VALUES ( 
-            '$runnoChktranx', '$thaiDateTime', '$ptname', '$hn', 'MD022 (ไม่ทราบแพทย์)', '$depart', 
+            '$runnoChktranx', '$thaiDateTime', '$ptname', '$hn', '$doctor', '$depart', 
             '$countItem', '$detail', '$sumPrice', '$sumYPrice', '$sumNPrice', 
             '$officer', '$diag', '$vn', '$ptright', '$nLab_orderhead', 'Y', 
             '$cashok', '$sumPrice'
