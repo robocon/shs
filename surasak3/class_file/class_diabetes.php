@@ -12,26 +12,44 @@ class Diabetes extends Opd
 
     public function getDmNumber($hn=null){
 
-        $sql = sprintf("SELECT `dm_no` FROM `diabetes` WHERE `hn` = '%s' ", $this->dbi->real_escape_string($hn));
+        $sql = sprintf("SELECT `dm_no` FROM `diabetes_clinic` WHERE `hn` = '%s' ", $this->dbi->real_escape_string($hn));
         $q = $this->dbi->query($sql);
-        $item = false;
+        $dmNo = false;
         if($q->num_rows > 0){
             $item = $q->fetch_assoc();
+            $dmNo = $item['dm_no'];
         }
-        return $item;
+        return $dmNo;
     }
 
-    public function insertDiabetes($post=null){
+    public function insertRetinalHistory($post=null){
+        
+        $sql = sprintf("INSERT INTO `diabetes_clinic_history` (
+        `dm_no`, `dateN`, `hn`, `doctor`, `ptname`, `bmi`, 
+        `retinal`, `height`, `weight`, `round`, `temperature`, `pause`, 
+        `rate`, `bp1`, `bp2`, `officer`, `register_date`, `added_date`, 
+        `edited_date`, `retinal_date`, `dummy_no`, `follow`, `followText`
+        ) VALUES (
+        '','','','','','',
+        '','','','','','',
+        '','','','','','',
+        '','','','','',''
+        );");
+        dump($sql);
+    }
 
-        INSERT INTO `diabetes_clinic_history` (`row_id`, `dm_no`, `thidate`, `dateN`, `hn`, `doctor`, `ptname`, `ptright`, `dbbirt`, `sex`, `diagnosis`, `diagdetail`, `ht`, `htdetail`, `smork`, `bw`, `bmi`, `retinal`, `foot`, `l_bs`, `l_hbalc`, `l_ldl`, `l_creatinine`, `l_urine`, `l_microal`, `foot_care`, `nutrition`, `exercise`, `smoking`, `admit_dia`, `dt_heart`, `dt_brain`, `height`, `weight`, `round`, `temperature`, `pause`, `rate`, `bp1`, `bp2`, `officer`, `officer_edit`, `register_date`, `added_date`, `edited_date`, `ht_etc`, `edited_user`, `retinal_date`, `foot_date`, `dummy_no`, `tooth_date`, `tooth`, `l_ua`, `date_footcare`, `date_nutrition`, `date_exercise`, `follow`, `followText`) VALUES ('27226', '566', '2011-11-07', '2025-11-04', '49-11742', 'MD009 นภสมร ธรรมลักษมี', 'นาย ประสงค์ เตชะนันท์', 'R07ประกันสังคม', '2508-09-01', '0', '1', '2549-12-06', '1', '2549-09-08', '0', '', '26.56', 'No DR', '', '132', '7.1', '84', '11001324', '', '', '0', '0', '0', '0', '', '', '', '160.0', '75.0', '', '36.6', '90', '20', '134', '79', 'สุวพันธ์ ชมวงษ์', '', '', '2025-11-04 09:01:55', '2025-11-04 09:01:55', '', 'สุวพันธ์3', '2568-11-04 00:00:00', '0000-00-00 00:00:00', '60242818', '0000-00-00', '', '', '0000-00-00', '0000-00-00', NULL, NULL, NULL);
-
+    public function insertRetinalDiabetes($post){
+        $sql = "INSERT INTO `diabetes_clinic` (
+        `dm_no`, `thidate`, `dateN`, `hn`, `doctor`, `ptname`, 
+        `bmi`, `retinal`, `height`, `weight`, `round`, `temperature`, 
+        `pause`, `rate`, `bp1`, `bp2`, `officer`, `register_date`, 
+        `retinal_date`, `follow`, `followText`
+        ) VALUES ('4555', '4545', '2025-10-30', '2025-10-30', '66-1665', 'MD204 จักษุแพทย์', 'นาง เนตย์ ก๋องวงค์', 'R01 เงินสด', '2498-03-12', '1', '', '', '', '', '0', '', '18.47', 'No DR', 'Low Risk', '110', '7.4', '44', '0.62', '', '', '1', '0', '0', '0', '', '', '', '149.0', '41.0', '71.0', '36.6', '74', '20', '175', '78', 'อาทิตยา ยาวิราช', '', '2025-10-30 12:44:26', '', '2568-10-30 00:00:00', '2568-10-30 00:00:00', '0000-00-00', '1', '', '2568-10-30', '0000-00-00', '0000-00-00', NULL, NULL);";
     }
 
     public function saveDiabetes($data){
         dump($data);
         $sql = "UPDATE `diabetes_clinic` SET 
-
-
 `bmi`='26.67',                          bmi
 `height`='150.0',                       height
 `weight`='60',                          weight
@@ -42,9 +60,7 @@ class Diabetes extends Opd
 `temperature`='36.5',                   temp
                                         follow
                                         followText
-
 `dateN` = NOW()
-
         `row_id`='4531', 
         `dm_no`='4521', 
         `thidate`='2025-10-16', 

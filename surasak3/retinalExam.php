@@ -107,7 +107,7 @@ if($action == 'getOpd'){
         <div class="col-sm-8 col-md-6 col-lg-4">
             <label for="hn" class="form-label fw-bold">ค้นหาจาก HN</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="hn" name="hn">
+                <input type="text" class="form-control" id="hn" name="hnSearch">
                 <button class="btn btn-secondary" type="submit">ค้นหา</button>
             </div>
             <input type="hidden" name="page" value="search">
@@ -117,7 +117,7 @@ if($action == 'getOpd'){
     <?php
     $page = sprintf("%s", $_POST['page']);
     if(!empty($page) && $page==="search"){
-        $opc = $opcard->getByHn($_POST['hn'],array('`hn`','`ptright`'));
+        $opc = $opcard->getByHn($_POST['hnSearch'],array('`hn`','`ptright`'));
         if($opc!==false){
         ?>
         <hr>
@@ -251,6 +251,7 @@ if($action == 'getOpd'){
             <div class="d-grid gap-2 col-6 mx-auto mb-3">
                 <button class="btn btn-primary" type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="opd_id" id="opd_id" value="">
+                <input type="hidden" name="hn" id="hn" value="<?=$opc['hn'];?>">
             </div>
         </form>
         </div>
@@ -288,7 +289,7 @@ if($action == 'getOpd'){
             }
 
             async function onLoadOpday(){
-                const hn = '<?=$_POST['hn'];?>';
+                const hn = '<?=$_POST['hnSearch'];?>';
                 const response = await fetch('retinalExam.php?action=getOpd&hn='+hn);
                 if (!response.ok) {
                 }
