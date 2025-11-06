@@ -14,4 +14,13 @@ if($action==='getOpcard'){
     $data = $opcard->getByHn($_REQUEST['hn'],array('yot','name','surname','mid','idcard','sex','dbirth'));
     echo $json->encode($data);
     exit;
+}elseif ($action==="getFromName") {
+    $data = $opcard->getByName($_REQUEST['name'],$_REQUEST['surname'],array('hn'));
+    if($data!==false){
+        $res = array('data'=>$data,'status'=>200);
+    }else{
+        $res = array('status'=>400);
+    }
+    echo $json->encode($res);
+    exit;
 }

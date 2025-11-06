@@ -50,6 +50,23 @@ class Opcard extends DbConnect
         return $item;
     }
 
+    public function getByName($name=null, $surname=null, $fields=null){
+        $field = '*';
+        if(!empty($fields)){
+            $field = implode(',', $fields);
+            $field .= ",`yot`,`name`,`surname`,`dbirth`,TIMESTAMPDIFF(YEAR,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)),NOW()) AS `age`,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)) AS `dbirth_en`";
+        }
+        $sql = sprintf("SELECT $field FROM `opcard` WHERE `name`='%s' and `surname`='%s'", $this->dbi->real_escape_string($name),$this->dbi->real_escape_string($surname));
+        $result = $this->dbi->query($sql);
+        $item = false;
+        if($result->num_rows > 0){
+            $item = $result->fetch_assoc();
+            $item['ptname'] = $item['yot'].$item['name'].' '.$item['surname'];
+            $item['age'] = (int) $this->getAge($item['dbirth']);
+        }
+        return $item;
+    }
+
     public function update($hn, $items=array()){ 
 
         if(count($items) > 1){
