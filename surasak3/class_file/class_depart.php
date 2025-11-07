@@ -1,7 +1,7 @@
 <?php 
-require_once dirname(__FILE__).'/database.php';
-require_once dirname(__FILE__).'/class_opcard.php';
-require_once dirname(__FILE__).'/class_opday.php';
+include_once dirname(__FILE__).'/database.php';
+include_once dirname(__FILE__).'/class_opcard.php';
+include_once dirname(__FILE__).'/class_opday.php';
 #https://docs.phpdoc.org/guide/references/phpdoc/index.html#phpdoc-reference
 class ClassDepart extends DbConnect{
 
@@ -133,7 +133,7 @@ class ClassDepart extends DbConnect{
         $ptright = $op['ptright'];
         $ptname = $op['ptname'];
         $vn = $op['vn'];
-        
+
         $doctor = 'MD022 (ไม่ทราบแพทย์)';
         if(!empty($dataDoctor)){
             $doctor = $dataDoctor;
@@ -146,6 +146,9 @@ class ClassDepart extends DbConnect{
 
         $runnoChktranx = $this->startRunno();
         $thaiDateTime = $this->getThDateTime();
+        if(!empty($date)){
+            $thaiDateTime = $date.' '.date('H:i:s');
+        }
         $countItem = count($labItems);
         if (empty($officer)) {
             $officer = $this->getOfficer();

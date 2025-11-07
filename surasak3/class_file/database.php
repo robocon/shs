@@ -15,7 +15,10 @@ class DbConnect{
         $this->dbi->set_charset('utf8');
     }
 
+    public $callQuery = null;
+
     public function __query($sql){
+        $this->callQuery = $sql;
         $q = false;
         try {
             $q = $this->dbi->query($sql);

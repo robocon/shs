@@ -16,7 +16,7 @@ if($action==='saveExpense'){
     $post = $json->decode($jsonData);
 
     $date = $post['date'];
-    $hn = $post['hn'];
+    $hn = trim($post['hn']);
     $depart = $post['depart'];
 
     $detail = $post['detail'];
@@ -30,33 +30,76 @@ if($action==='saveExpense'){
     $doctor = $post['doctor'];
 
     $opacc = new ClassOpacc();
-    $resOpacc = $opacc->getOpacc($date, $hn, 'PATHO');
-    
-    if($resOpacc!==false){
-        $res=array('status'=>400,'msg'=>$hn.' บันทึกข้อมูลไปแล้ว');
-    }else{
-
+    $resOpacc = $opacc->getOpacc($date, $hn, $depart);
+    $res=array('status'=>400,'msg'=>$hn.' บันทึกข้อมูลไปแล้ว');
+    if($resOpacc==false){
+        $resData = array();
         $dep = new ClassDepart();
         $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart, $date, $doctor);
         $departIdList[] = $departId;
-        dump("insertOnlyDepart");
-        dump($departId);
-        echo "<hr>";
+        $resData['depart'] = $departId;
 
         $patdata = new ClassPatdata();
-        $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
-        dump("insertOnlyPatdata");
-        dump($insertPatdata);
-        echo "<hr>";
+        $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items, $date);
+        $resData['patdata'] = $insertPatdata;
 
-        $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
-        dump("insertOpacc");
-        dump($opaccInsert);
-        echo "<hr>";
+        $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit, $date);
+        $resData['opacc'] = $opaccInsert;
 
-        echo "<h3>บันทึกข้อมูลเรียบร้อย</h3>";
+        $res=array('status'=>200, 'msg'=>'บันทึกข้อมูลเรียบร้อย', 'data'=>$resData);
     }
 
-    $json->encode($res);
+    echo $json->encode($res);
+    exit;
+}elseif ($action==='getDepartFromHn') {
+    $dep = new ClassDepart();
+    
+    $departItems = $dep->getDepart($_POST['date'], $_POST['hn']);
+    $res=array('status'=>400,'msg'=>'ไม่พบข้อมูล');
+    if($departItems!==false){
+        $res=array('status'=>200,'data'=>$departItems);
+    }
+    echo $json->encode($res);
+    exit;
+}elseif ($action==='updateVnDepart') {
+
+    $post = $json->decode($jsonData);
+
+// hn
+// dateFrom
+// vnFrom
+// dateTo
+// vnTo
+
+    $dep = new ClassDepart();
+    $patdata = new ClassPatdata();
+    $opacc = new ClassOpacc();
+
+    foreach ($post['depart'] as $departId) {
+        
+        $dItem = $dep->getDepartFromId($departId);
+        if(count($dItem)>0){
+            
+            list($oldDate, $oldTime) = explode(' ', $dItem['date']);
+            $newDate = $post['dateTo'].' '.$oldTime;
+            $dep->setDepartManual(array('txdate'=>$newDate, 'tvn'=>$post['vnTo']), $departId);
+
+            $patdata->updateFromIdno(array('date'=>$newDate), $departId);
+
+        }
+
+        $oItems = $opacc->findOpaccFromTxdate($dItem['date']);
+        if($oItems!==false){
+            
+            foreach ($oItems as $oItem) {
+                $opaccId = $oItem['row_id'];
+                list($opaccDate, $opaccTime) = explode(' ', $oItem['date']);
+                $newOpaccDate = $post['dateTo'].' '.$opaccTime;
+                $opacc->updateOpacc(array('date'=>$newOpaccDate, 'txdate'=>$newDate, 'vn'=>$post['vnTo']), $opaccId);
+            }
+        }
+
+    }
+    
     exit;
 }

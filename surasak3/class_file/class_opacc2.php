@@ -1,7 +1,7 @@
 <?php 
-require_once dirname(__FILE__).'/class_opcard.php';
-require_once dirname(__FILE__).'/class_opday.php';
-require_once dirname(__FILE__).'/class_depart.php';
+include_once dirname(__FILE__).'/class_opcard.php';
+include_once dirname(__FILE__).'/class_opday.php';
+include_once dirname(__FILE__).'/class_depart.php';
 
 class ClassOpacc extends ClassDepart{
 
@@ -24,8 +24,8 @@ class ClassOpacc extends ClassDepart{
         if(!empty($depart)){
             $whereDepart = "AND `depart` = '$depart' ";
         }
-
-        $q = $this->dbi->query("SELECT * FROM opacc WHERE date LIKE '$date%' AND hn = '$hn' $whereDepart ");
+        
+        $q = $this->dbi->query("SELECT * FROM `opacc` WHERE `date` LIKE '$date%' AND `hn` = '$hn' $whereDepart ");
         $items = array();
         if ($q->num_rows>0) {
             while ($a = $q->fetch_assoc()) {
@@ -38,7 +38,7 @@ class ClassOpacc extends ClassDepart{
         return $items;
     } 
     
-    public function insertOpacc($departItems=null,$detail=null,$officer=null,$credit=null){ 
+    public function insertOpacc($departItems=null,$detail=null,$officer=null,$credit=null,$date=''){ 
 
         if (empty($departItems)) {
             return "insertOpacc required departItems";
@@ -47,6 +47,9 @@ class ClassOpacc extends ClassDepart{
         
         $opaccItems = array();
         $thDateTime = $this->getThDateTime();
+        if(!empty($date)){
+            $thDateTime = $date.' '.date('H:i:s');
+        }
         foreach ($departItems as $key => $id) {
 
             $dep = $this->getDepartFromId($id);
@@ -104,8 +107,16 @@ class ClassOpacc extends ClassDepart{
         return $res;
     }
 
-    public function findOpaccFromTxdate(){
-
+    public function findOpaccFromTxdate($txDate){
+        $q = $this->dbi->query("SELECT * FROM `opacc` WHERE `txdate` = '$txDate' ");
+        $res = false;
+        if ($q->num_rows>0) {
+            $res = array();
+            while ($a = $q->fetch_assoc()) {
+                $res[] = $a;
+            }
+        }
+        return $res;
     }
 
     public function updateOpacc($dataList=array(), $id=null){

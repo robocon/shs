@@ -4,7 +4,9 @@ if(empty($_SESSION['sOfficer'])){
     include 'pageNotFound.php';
     exit;
 }
-
+/**
+ * สิ่งที่อยากทำเพิ่ม คือ ให้แลปสามารถเพิ่มได้หลายๆรายการมากกว่านี้
+ */
 
 ?>
 <!DOCTYPE html>
@@ -12,21 +14,28 @@ if(empty($_SESSION['sOfficer'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>เพิ่มค่าใช้จ่าย/หัตถการ ผู้ป่วยนอก ย้อนหลัง</title>
 </head>
 <body>
-    <form action="javascript:void(0);" method="post" id="searchHn">
-        <div>
-            <label for="name">Name: </label>
-            <input type="text" name="name" id="name" value="">
+    <fieldset>
+        <legend>ค้นหา HN จากชื่อ-สกุล</legend>
+        <form action="javascript:void(0);" method="post" id="searchHn">
+            <div>
+                <label for="name">Name: </label>
+                <input type="text" name="name" id="name" value="" required="required">
 
-            <label for="surname">Surname: </label>
-            <input type="text" name="surname" id="surname" value="">
-
-            <button type="submit">Search</button>
-        </div>
-    </form>
-    <form action="addDepart.php" method="post" id="saveForm" onsubmit="saveForm()">
+                <label for="surname">Surname: </label>
+                <input type="text" name="surname" id="surname" value="" required="required">
+            </div>
+            <div>
+                <button type="submit">Search</button>
+            </div>
+        </form>
+    </fieldset>
+    <fieldset>
+        <legend>บันทึกเข้า Depart Patdata Opacc</legend>
+    
+    <form action="formAddDepart.php" method="post" id="saveForm">
         <div>
             <!-- ใส่ HN เลือกวันที่จาก date -->
             <label for="hn">HN: </label>
@@ -39,7 +48,7 @@ if(empty($_SESSION['sOfficer'])){
 
             <label for="code">Code: </label>
             <input type="text" name="code" id="code" onkeyup="searchLab(this.value)" autocomplete="off" value="" required="required">
-            <a href="javascript:void(0);">AgCG3</a>
+            <a href="javascript:void(0);" onclick="document.getElementById('code').value='AgCG3';document.getElementById('depart').value='PATHO';">AgCG3</a>
             <input type="hidden" name="depart" id="depart" value="">
         </div>
         <div>
@@ -75,12 +84,18 @@ if(empty($_SESSION['sOfficer'])){
                 }
                 ?>
             </select>
+        </div>
+        <div>
             <button type="submit">Save</button>
         </div>
-        <div id="resContent"></div>
+        
     </form>
+    </fieldset>
+    <div id="resContent"></div>
     <script>
-
+        /**
+         * ค้นหารายการแลป
+         */
         async function searchLab(codeLab){
             document.getElementById('resContent').innerHTML = '';
             document.getElementById('resContent').style.display = '';
@@ -98,7 +113,7 @@ if(empty($_SESSION['sOfficer'])){
                 });
                 const res = await response.json();
                 if(res.status===200){
-                    let htmlTxt = `<table border="1"><tr><th>Code</th><th>Detail</th><th>Price</th></tr>`;
+                    let htmlTxt = `<h4>เลือกรายการแลป/หัตถการ ที่ต้องการ</h4><table border="1"><tr><th>Code</th><th>Detail</th><th>Price</th></tr>`;
                     for (let index = 0; index < res.data.length; index++) {
                         const el = res.data[index];
                         htmlTxt += `<tr><td><a href="javascript:void(0)" onclick="addSelectLab('${el.code}','${el.depart}')">${el.code}</a></td><td>${el.detail}</td><td>${el.price}</td></tr>`;
@@ -108,18 +123,23 @@ if(empty($_SESSION['sOfficer'])){
                     document.getElementById('resContent').innerHTML = htmlTxt;
                     
                 }else{
-                    document.getElementById('resContent').innerHTML = 'ไม่พบข้อมูล';
+                    document.getElementById('resContent').innerHTML = '<span style="color:red;">ไม่พบข้อมูล</span>';
                 }
             }
         }
-
         
+        /**
+         * ตอนคลิกเลือกรายการ
+         */
         function addSelectLab(labCode, depart){
             document.getElementById('code').value=labCode;
             document.getElementById('depart').value=depart;
             document.getElementById('resContent').style.display = 'none';
         }
 
+        /**
+         * ตอนคลิกวันที่แล้วแสดงรายการให้เลือกทันที
+         */
         async function searchOpday(){
             document.getElementById('resContent').innerHTML = '';
             document.getElementById('resContent').style.display = '';
@@ -137,7 +157,7 @@ if(empty($_SESSION['sOfficer'])){
             });
             const res = await response.json();
             if(res.status===200){
-                let htmlTxt = `<table border="1"><tr><th>วันที่</th><th>มาใช้บริการ</th><th>แพทย์</th></tr>`;
+                let htmlTxt = `<h4>กรุณาเลือกวันที่ผู้ป่วยมารับบริการจริง</h4><table border="1"><tr><th>วันที่</th><th>มาใช้บริการ</th><th>แพทย์</th></tr>`;
                 for (let index = 0; index < res.data.length; index++) {
                     const el = res.data[index];
                     
@@ -147,10 +167,13 @@ if(empty($_SESSION['sOfficer'])){
                 document.getElementById('resContent').innerHTML = htmlTxt;
                 
             }else{
-                document.getElementById('resContent').innerHTML = 'ไม่พบข้อมูล';
+                document.getElementById('resContent').innerHTML = '<span style="color:red;">ไม่พบข้อมูล</span>';
             }
         }
 
+        /**
+         * ตอนกดคลิกเลือกรายการ
+         */
         function addSelectDate(thidate,vn,ptright){
             document.getElementById('date').value=thidate;
             document.getElementById('vn').value=vn;
@@ -159,20 +182,44 @@ if(empty($_SESSION['sOfficer'])){
             document.getElementById('resContent').style.display = 'none';
         }
 
-        document.getElementById('searchHn').onsubmit = function(ev){
+
+        /**
+         * ค้นหา HN จาก ชื่อสกุล
+         */
+        document.getElementById('searchHn').onsubmit = function(event){
             event.preventDefault();
+            document.getElementById('resContent').innerHTML = '';
             const name = document.getElementById('name').value;
             const surname = document.getElementById('surname').value;
 
             onFindHnFromName(name, surname).then((res)=>{
                 if(res.status===200){
                     document.getElementById('hn').value = res.data.hn;
+
+                    document.getElementById('name').value = '';
+                    document.getElementById('surname').value = '';
                 }else{
-                    document.getElementById('resContent').innerHTML = 'ไม่พบข้อมูล';
+                    document.getElementById('resContent').innerHTML = '<span style="color:red;">ไม่พบข้อมูล</span>';
                 }
             });
+
+            resetForm();
         }
 
+        function resetForm(){
+            document.getElementById('date').value = '';
+            document.getElementById('vn').value = '';
+            document.getElementById('ptright').value = '';
+
+            document.getElementById('code').value = '';
+            document.getElementById('depart').value = '';
+
+            document.getElementById('doctor').value = '';
+        }
+
+        /**
+         * ค้นหา HN จากชื่อสกุล
+         */
         async function onFindHnFromName(name, surname){
             let data = [];
             data.push(encodeURIComponent('name')+"="+encodeURIComponent(name));
@@ -189,10 +236,16 @@ if(empty($_SESSION['sOfficer'])){
             return res;
         }
 
-        async function saveForm(){
+        /**
+         * ตอนกดบันทึกแบบฟอร์ม
+         */
+        let saveForm = document.getElementById('saveForm');
+        saveForm.addEventListener("submit", callSaveForm);
+        async function callSaveForm(){
             event.preventDefault();
-
-            saveForm = document.getElementById('saveForm');
+            document.getElementById('resContent').innerHTML = '';
+            document.getElementById('resContent').style.display = '';
+            
             let formData = {};
             for (let index = 0; index < saveForm.length; index++) {
                 const element = saveForm.elements[index];
@@ -209,8 +262,10 @@ if(empty($_SESSION['sOfficer'])){
                 body: JSON.stringify(formData)
             });
             const res = await response.json();
-            console.log(res);
-
+            
+            document.getElementById('resContent').innerHTML = res.msg;
+            document.getElementById('hn').value = '';
+            resetForm();
             return false;
         }
     </script>

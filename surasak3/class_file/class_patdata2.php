@@ -156,4 +156,19 @@ class ClassPatdata extends ClassDepart
 
     }
 
+    public function updateFromIdno($dataList=array(), $idno=null){
+
+        $updateList = array_map(array($this, 'mapUpdate'), array_keys($dataList), array_values($dataList));
+        $updateTxt = implode(', ', $updateList);
+
+        $sqlUpdatePatdata = "UPDATE `patdata` SET $updateTxt WHERE `idno` = '$idno' ";
+        $save = $this->dbi->query($sqlUpdatePatdata);
+        if ($this->dbi->error) {
+            return $this->dbi->error.' : '.$sqlUpdatePatdata;
+        }else{
+            return $save;
+        }
+
+    }
+
 }
