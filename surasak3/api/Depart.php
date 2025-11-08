@@ -65,41 +65,52 @@ if($action==='saveExpense'){
 
     $post = $json->decode($jsonData);
 
-// hn
-// dateFrom
-// vnFrom
-// dateTo
-// vnTo
-
-    $dep = new ClassDepart();
+    $depart = new ClassDepart();
     $patdata = new ClassPatdata();
     $opacc = new ClassOpacc();
 
+    $error = array();
     foreach ($post['depart'] as $departId) {
         
-        $dItem = $dep->getDepartFromId($departId);
+        $dItem = $depart->getDepartFromId($departId);
         if(count($dItem)>0){
             
             list($oldDate, $oldTime) = explode(' ', $dItem['date']);
             $newDate = $post['dateTo'].' '.$oldTime;
-            $dep->setDepartManual(array('txdate'=>$newDate, 'tvn'=>$post['vnTo']), $departId);
-
-            $patdata->updateFromIdno(array('date'=>$newDate), $departId);
-
-        }
-
-        $oItems = $opacc->findOpaccFromTxdate($dItem['date']);
-        if($oItems!==false){
-            
-            foreach ($oItems as $oItem) {
-                $opaccId = $oItem['row_id'];
-                list($opaccDate, $opaccTime) = explode(' ', $oItem['date']);
-                $newOpaccDate = $post['dateTo'].' '.$opaccTime;
-                $opacc->updateOpacc(array('date'=>$newOpaccDate, 'txdate'=>$newDate, 'vn'=>$post['vnTo']), $opaccId);
+            $updateDepart = $depart->setDepartManual(array('date'=>$newDate, 'tvn'=>$post['vnTo']), $departId);
+            if($updateDepart!==true){
+                $error[] = $updateDepart;
+            }
+            $updatePatdata = $patdata->updateFromIdno(array('date'=>$newDate), $departId);
+            if($updatePatdata!==true){
+                $error[] = $updatePatdata;
             }
         }
 
+        $oItems = $opacc->findOpaccFromTxdate($dItem['date'], $post['hn'], $post['vnFrom']);
+        if($oItems!==false){
+            foreach ($oItems as $oItem) {
+                $opaccId = $oItem['row_id'];
+                $newBillno = $oItem['billno'];
+                list($opaccDate, $opaccTime) = explode(' ', $oItem['date']);
+                $newOpaccDate = $post['dateTo'].' '.$opaccTime;
+                $updateOpacc = $opacc->updateOpacc(array('date'=>$newOpaccDate, 'txdate'=>$newDate, 'vn'=>$post['vnTo']), $opaccId);
+                if($updateOpacc!==true){
+                    $error[] = $updateOpacc;
+                }
+            }
+            
+        }// end oItems
+
+    }// end foreach depart
+
+    if(count($error)>0){
+        $res = array('status'=>400,'error'=>$error);
+    }else{
+        $res = array('status'=>200);
     }
+
+    echo $json->encode($res);
     
     exit;
 }

@@ -20,25 +20,31 @@ if(empty($_SESSION['sOfficer'])){
 </style>
 <form action="formMoveDepart.php" method="post" id="formUpdate">
     <table width="100%">
-        <tr valign="top">
-            <td>
+        <tr>
+            <td colspan="2">
                 <div>
-                    <div>
-                        <label for="hn">HN: </label>
-                        <input type="text" name="hn" id="hn" value="68-888">
-                    </div>
+                    <label for="hn">HN: </label>
+                    <input type="text" name="hn" id="hn" value="" onfocusout="findOpcard(this.value)">
+                </div>
+                <div id="fullName"></div>
+                <div>&nbsp;</div>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td width="50%">
+                <div>
                     <label for="dateFrom">จากวันที่: </label>
-                    <input type="date" name="dateFrom" id="dateFrom" value="2568-11-04" onclick="selectDate('dateFrom','display-1')">
-                    <input type="hidden" name="vnFrom" id="display-1-vn">
+                    <input type="text" name="dateFrom" id="dateFrom" value="" onclick="selectDate('dateFrom','display-1')"><br>
+                    VN: <input type="text" name="vnFrom" id="display-1-vn" readonly>
                 </div>
                 <div id="display-1">display 1</div>
                 <div id="display-2">display 2</div>
             </td>
-            <td>
+            <td width="50%">
                 <div>
                     <label for="dateTo">เป็นวันที่: </label>
-                    <input type="date" name="dateTo" id="dateTo" value="2568-10-14" onclick="selectDate('dateTo','display-3')">
-                    <input type="hidden" name="vnTo" id="display-3-vn">
+                    <input type="text" name="dateTo" id="dateTo" value="" onclick="selectDate('dateTo','display-3')"><br>
+                    VN: <input type="text" name="vnTo" id="display-3-vn" readonly>
                 </div>
                 <div id="display-3">display 3</div>
             </td>
@@ -51,6 +57,27 @@ if(empty($_SESSION['sOfficer'])){
     </table>
 </form>
 <script>
+    async function findOpcard(hn){
+        let data = [];
+        data.push(encodeURIComponent('hn')+"="+encodeURIComponent(hn));
+        let dataPost = data.join("&");
+        const response = await fetch('api/Opcard.php?action=getOpcard', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: dataPost
+        });
+        const res = await response.json();
+        console.log(typeof res);
+        if(res!==false){
+            document.getElementById('fullName').innerHTML = `<b>ชื่อ-สกุล</b>:${res.ptname} <b>เลขบัตรประชาชน</b>: ${res.idcard} <b>สิทธิ</b>: ${res.ptright}`;
+        }else{
+            document.getElementById('fullName').innerHTML = `<span style="color:red;">ไม่พบข้อมูล</span>`;
+        }
+        
+    }
+
     async function selectDate(selectId,showIn){
         const hn = document.getElementById('hn');
         let data = [];
@@ -65,11 +92,28 @@ if(empty($_SESSION['sOfficer'])){
         });
         const res = await response.json();
         if(res.status===200){
-            let htmlTxt = `<h4>กรุณาเลือกวันที่ผู้ป่วยมารับบริการจริง</h4><table border="1"><tr><th>วันที่</th><th>มาใช้บริการ</th><th>แพทย์</th></tr>`;
+            let htmlTxt = `<h4>กรุณาเลือกวันที่ผู้ป่วยมารับบริการจริง</h4>
+            <table border="1">
+                <tr>
+                    <th>วันที่</th>
+                    <th>VN</th>
+                    <th>มาใช้บริการ</th>
+                    <th>แพทย์</th>
+                </tr>`;
             for (let index = 0; index < res.data.length; index++) {
                 const el = res.data[index];
                 
-                htmlTxt += `<tr><td><a href="javascript:void(0)" onclick="addSelectDate('${el.thidate}','${el.vn}','${hn.value}','${selectId}','${showIn}')">${el.thidate}</a></td><td>${el.toborow}</td><td>${el.doctor}</td></tr>`;
+                htmlTxt += `<tr>
+                    <td>
+                        <a 
+                        href="javascript:void(0)" 
+                        onclick="addSelectDate('${el.thidate}','${el.vn}','${hn.value}','${selectId}','${showIn}')">${el.thidate}
+                        </a>
+                    </td>
+                    <td>${el.vn}</td>
+                    <td>${el.toborow}</td>
+                    <td>${el.doctor}</td>
+                </tr>`;
             }
             htmlTxt += '</table>';
             document.getElementById(showIn).innerHTML = htmlTxt;
@@ -106,7 +150,7 @@ if(empty($_SESSION['sOfficer'])){
             let htmlTxt = `<h4>กรุณาเลือกรายการ</h4>
             <table border="1">
             <tr>
-            <th>date</th>
+            <th><input type="checkbox" id="checkboxAll" onclick="checkAll(this.checked)"><label for="checkboxAll">date</label></th>
             <th>depart</th>
             <th>detail</th>
             <th>price</th>
@@ -115,7 +159,7 @@ if(empty($_SESSION['sOfficer'])){
             for (let index = 0; index < res.data.length; index++) {
                 const el = res.data[index];
                 htmlTxt += `<tr>
-                <td><input type="checkbox" id="${el.row_id}" name="depart[]" value="${el.row_id}"><label for="${el.row_id}">${el.date}</label></td>
+                <td><input type="checkbox" id="${el.row_id}" class="checkClient" name="depart[]" value="${el.row_id}"><label for="${el.row_id}">${el.date}</label></td>
                 <td>${el.depart}</td>
                 <td>${el.detail}</td>
                 <td>${el.price}</td>
@@ -173,8 +217,20 @@ if(empty($_SESSION['sOfficer'])){
             body: JSON.stringify(formData2)
         });
         const res = await response.json();
+        if(res.status===200){
+            const newDiv = document.createElement('div');
+            newDiv.textContent = 'บันทึกข้อมูลเรียบร้อย';
+            document.getElementById('display-2').append(newDiv);
+        }
+        // console.log(res);
+    }
 
-        console.log(res);
+    function checkAll(allChecked){
+        const els = document.getElementsByClassName('checkClient');
+        for (let index = 0; index < els.length; index++) {
+            const element = els[index];
+            element.checked=allChecked;
+        }
     }
 </script>
 </body>

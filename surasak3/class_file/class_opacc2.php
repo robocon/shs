@@ -107,8 +107,8 @@ class ClassOpacc extends ClassDepart{
         return $res;
     }
 
-    public function findOpaccFromTxdate($txDate){
-        $q = $this->dbi->query("SELECT * FROM `opacc` WHERE `txdate` = '$txDate' ");
+    public function findOpaccFromTxdate($txDate, $hn, $vn){
+        $q = $this->dbi->query("SELECT * FROM `opacc` WHERE `txdate` = '$txDate' AND `hn` = '$hn' AND `vn` = '$vn' ");
         $res = false;
         if ($q->num_rows>0) {
             $res = array();

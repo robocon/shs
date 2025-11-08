@@ -11,7 +11,7 @@ $action = sprintf("%s", $_REQUEST['action']);
  * @var string $_REQUEST['hn']
  */
 if($action==='getOpcard'){
-    $data = $opcard->getByHn($_REQUEST['hn'],array('yot','name','surname','mid','idcard','sex','dbirth'));
+    $data = $opcard->getByHn($_REQUEST['hn'],array('yot','name','surname','mid','idcard','sex','dbirth','ptright'));
     echo $json->encode($data);
     exit;
 }elseif ($action==="getFromName") {
