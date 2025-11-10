@@ -472,10 +472,10 @@ print"<DIV style='left:136PX;top:1140PX;width:800PX;height:26PX;' class='fc1-0'>
 	$aFreelimit = array("freelimit");
 
 //$x  $tradname $packing  $pack  $amount  $price  $packpri  $specno 
-    $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' ";
+    $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' order by row_id asc";
 	//echo $query;
     $result = mysql_query($query) or die("Query poitems failed");
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+    for ($i = 0; $i < mysql_num_rows($result); $i++) {
         if (!mysql_data_seek($result, $i)) {
             echo "Cannot seek to row $i\n";
             continue;
@@ -850,9 +850,10 @@ print"<DIV style='left:600PX;top:2262PX;width:64PX;height:23PX;TEXT-ALIGN:CENTER
     $aSpecno   = array(" specno");
 
 //$x  $tradname $packing  $pack  $amount  $price  $packpri  $specno 
-    $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' ";
+    $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' order by row_id asc";
+	//echo $query;
 	$result = mysql_query($query) or die("Query poitems failed");
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+    for ($i = 0; $i < mysql_num_rows($result); $i++) {
         if (!mysql_data_seek($result, $i)) {
             echo "Cannot seek to row $i\n";
             continue;
@@ -1261,8 +1262,9 @@ print"<BR>";
 	
     $query = "SELECT a.drugcode,a.tradname,b.part,b.stock,b.mainstk,b.totalstk
               FROM poitems as a INNER JOIN druglst as b ON a.drugcode=b.drugcode
-			  WHERE a.idno = '$nRow_id' ";		  
-    $result = mysql_query($query) or die("Query poitems failed");
+			  WHERE a.idno = '$nRow_id'  order by a.row_id asc";		  
+    //echo $query;
+	$result = mysql_query($query) or die("Query poitems failed");
 	$i=0;
 	$sum_amount=0;
     while($rows = mysql_fetch_array($result)){
@@ -1272,7 +1274,9 @@ print"<BR>";
 		$query1=mysql_query($sql1);
 		list($amount)=mysql_fetch_array($query1);
 		
-		if($rows["part"]=="DSY" || $rows["part"]=="DSN" || $rows["drugcode"]=="4EKC" || $rows["drugcode"]=="4STGEL"){  //เอาจากเบิกจากคลังยา
+		if($rows["part"]=="DSY" || $rows["part"]=="DSN" || $rows["drugcode"]=="4EKC" || $rows["drugcode"]=="4STGEL" || 
+		$rows["drugcode"]=="2SWFI10" || $rows["drugcode"]=="2NSS5ML" || $rows["drugcode"]=="2NSS3" ||
+		$rows["drugcode"]=="2SUCC" || $rows["drugcode"]=="2EYLEA"){  //เอาจากเบิกจากคลังยา
 			$rxrate3m=$amount/3;		
 			$nMonth_new=$rows["totalstk"]/$rxrate3m;
 		}else{
