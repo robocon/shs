@@ -17,6 +17,11 @@ if(empty($_SESSION['sOfficer'])){
     <title>เพิ่มค่าใช้จ่าย/หัตถการ ผู้ป่วยนอก ย้อนหลัง</title>
 </head>
 <body>
+    <style>
+        label:hover{
+            cursor: pointer;
+        }
+    </style>
     <fieldset>
         <legend>ค้นหา HN จากชื่อ-สกุล</legend>
         <form action="javascript:void(0);" method="post" id="searchHn">
@@ -84,6 +89,9 @@ if(empty($_SESSION['sOfficer'])){
                 }
                 ?>
             </select>
+        </div>
+        <div>
+            <input type="checkbox" name="acceptOpacc" id="acceptOpacc" value="1"> <label for="acceptOpacc">เพิ่มเข้า Opacc</label>
         </div>
         <div>
             <button type="submit">Save</button>

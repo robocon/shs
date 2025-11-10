@@ -43,8 +43,10 @@ if($action==='saveExpense'){
         $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items, $date);
         $resData['patdata'] = $insertPatdata;
 
-        $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit, $date);
-        $resData['opacc'] = $opaccInsert;
+        if($post['acceptOpacc']=='1'){
+            $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit, $date);
+            $resData['opacc'] = $opaccInsert;
+        }
 
         $res=array('status'=>200, 'msg'=>'บันทึกข้อมูลเรียบร้อย', 'data'=>$resData);
     }

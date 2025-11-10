@@ -43,6 +43,8 @@ if($_SESSION['sIdname']!=='krit')
 
         <a href="dt_appoint_diagnose.php" class="w3-bar-item w3-button" target="_blank">Lock นัดแพทย์</a>
         
+        <a href="formAddDepart.php" class="w3-bar-item w3-button" target="_blank">เพิ่ม คชจ.</a>
+        <a href="formMoveDepart.php" class="w3-bar-item w3-button" target="_blank">ย้าย VN</a>
     </div>
     <div class="w3-container" style="margin-left:25%">
         <h3>ซะป๊ะเมนูไม่ไหวจะเคลียร์</h3>
