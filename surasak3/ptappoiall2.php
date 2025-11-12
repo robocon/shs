@@ -37,7 +37,7 @@ print "วัน/เวลาทำการตรวจสอบ....$Thaidate";
 <style type="text/css">
 table{
 	width: 100%;
-	border-left: 1px solid #ffffff
+	border-left: 1px solid #ffffff;
 	border-top: 1px solid #ffffff;
 	border-collapse: collapse;
 	border-spacing: 0;
@@ -133,10 +133,6 @@ body,td,th {
 			}
 
 		}
-		
-		
-		
-		//echo "==>".$arr["doctor"];
 
 		$link = 'ptappoiall2.php?doctor='.$name_dc.'&appd='.$appd_encode;
 		$listhn[$arr["hn"]] .= "<A HREF=\"$link\" target='_blank'>".$name_dc."</A> &nbsp; ";
@@ -152,47 +148,44 @@ body,td,th {
 	}else{
 		$doctor2 = " AND a.`doctor` = '".$doctor."' ";
 	}
-	
-	//echo "==>".$doctor2;
 
-	$query1 = "
-SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`detail2`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
-date_format(a.`date`,'%d-%m-%Y') AS `date`,
-left(a.`apptime`,5) AS `left5`
-FROM `appoint` AS a 
-INNER JOIN ( 
-    SELECT `row_id`,`hn`, MAX(`row_id`) AS `id`, SUBSTRING(`doctor`, 1,5) AS `drcode`
-    FROM `appoint` 
-    WHERE `appdate` = '$appd' 
-    AND `doctor` LIKE '$doctor%'
-    GROUP BY `hn`, `drcode`
-) AS b ON b.`id` = a.`row_id` 
-ORDER BY `hn` ASC
-	";
-	//echo $query1;
-	?>
-	<div style="display: none;"><?php var_dump($query1);?></div>
-	<?php
+	$query1 = "SELECT a.`row_id`,a.`hn`,a.`ptname`,a.`apptime`,a.`detail`,a.`detail2`,a.`came`,a.`row_id`,a.`age`,a.`officer`,a.`diag`,a.`other`,a.`room`, 
+	date_format(a.`date`,'%d-%m-%Y') AS `date`,
+	left(a.`apptime`,5) AS `left5`
+	FROM `appoint` AS a 
+	WHERE `appdate` = '$appd' 
+	AND `doctor` LIKE '$doctor%'
+	ORDER BY `hn` ASC";
+	
 	if($_GET['sortby'] === 'time'){
 		$query1 .= ", a.`apptime` ASC";
 	}else{
 		$query1 .= ", a.`detail` DESC";
 	}
-
-	// echo "<pre>";
-	// var_dump($query1);
-
+	
     $result = mysql_query($query1) or die( mysql_error() );
 	$date_now = date("d-m-").(date("Y")+543);
 
 	// สกรีนค่าที่ซ้ำออกไป
 	$user_lists = array();
+
+	// เก็บรายชื่อคนที่ยกเลิกนัด เอาไว้แสดงอีก 1 ตาราง
+	$unincome_lists = array();
+	$cancelHn = array();
+
 	while( $item = mysql_fetch_assoc($result) ){
+
+		if( $item['apptime'] === 'ยกเลิกการนัด' ){
+			$unincome_lists[] = $item;
+			$cancelHn[] = $item['hn'];
+			continue;
+		}
 		
 		list($key_year, $hn_key) = explode('-', $item['hn']);
 		$item['sort_hn'] = $key_year.sprintf("%08d", intval($hn_key)); // สร้าง key ขึ้นมาเอาไว้สำหรับ sort โดยเฉพาะ
-		$key = md5($item['hn'].md5($item['room'])); // สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
+		$key = md5($item['hn'].md5($item['room']).md5($item['apptime'])); // สร้างคีย์จาก hn และ room ถ้าห้องตรวจเป็นห้องเดียวกันแต่คนละเวลา มันจะแสดงเฉพาะ row ล่าสุด
 		$user_lists[$key] = $item;
+
 	}
 	
 	// เรียงจากน้อยไปหามากตาม sort_hn
@@ -200,16 +193,13 @@ ORDER BY `hn` ASC
 		return $a['sort_hn'] - $b['sort_hn'];
 	}
 	usort($user_lists, "sorthn");
-
 	
 	$i = 1;
-	$unincome_lists = array();
 	foreach( $user_lists AS $item ){
-
-		// เก็บรายชื่อคนที่ยกเลิกนัด เอาไว้แสดงอีก 1 ตาราง
-		if( $item['apptime'] === 'ยกเลิกการนัด' ){
-			$unincome_lists[] = $item;
-			continue;
+		
+		$dup = '';
+		if(in_array($item['hn'], $cancelHn)==true){
+			$dup = '<span style="color:red;">ลงนัดซ้ำซ้อน</span>';
 		}
 		
 		$hn = $item['hn'];
@@ -238,11 +228,11 @@ ORDER BY `hn` ASC
 			$detail = substr($detail,4);
 		}
 
+		// เอาไว้ดูว่าครั้งล่าสุดที่มาคือวันไหน
+		$chkopcard="select * from opday where hn='$hn' order by row_id desc limit 1";
+		$chkquery=mysql_query($chkopcard);
+		$chkrows=mysql_fetch_array($chkquery);
 
-$chkopcard="select * from opday where hn='$hn' order by row_id desc limit 1";
-$chkquery=mysql_query($chkopcard);
-$chkrows=mysql_fetch_array($chkquery);
-// echo "==>$hn.<br>";
 		?>
 		<tr style="background-color: #<?=$bgcolor;?>;" valign="top">
 			<td><?=$i;?></td>
@@ -267,7 +257,7 @@ $chkrows=mysql_fetch_array($chkquery);
 			<td><?=substr($chkrows["thidate"],0,10);?></td>
 			<!-- <td><?=$chkrows["okopd"];?></td> -->
 			<td>
-				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '';?></td>
+				<?php echo ( isset($listhn[$hn]) ) ? $listhn[$hn] : '';?><?=$dup;?></td>
 			<td>
 				<?php 
 				if($detail=="FU33 นัดตรวจสุขภาพ"){
