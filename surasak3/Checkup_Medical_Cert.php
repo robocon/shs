@@ -199,8 +199,12 @@ while($rows = mysql_fetch_array($query)){
 
 
 //-----> sql ข้อมูลแพทย์
-
-$sql = "SELECT * FROM `doctor` WHERE row_id = '20' AND status = 'y' ";
+$datenow=date("Y-m-d");
+if($datenow=="2025-11-10"){
+$sql = "SELECT * FROM `doctor` WHERE row_id = '223' AND status = 'y' ";
+}else{
+$sql = "SELECT * FROM `doctor` WHERE row_id = '20' AND status = 'y' ";	
+}	
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
@@ -223,7 +227,7 @@ while($rows = mysql_fetch_array($query)){
 
 //-----> ¢éÍÁÙÅ dx áÅÐ doctor_ans ¨Ò¡ËÁÍ
  
-$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn'  ";
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' order by row_id desc";
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);

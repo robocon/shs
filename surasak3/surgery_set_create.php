@@ -288,33 +288,182 @@ exit();*/
 	);";
 	//echo $strSQL;
 
+
+$disease_list = array();
+
+// ตรวจสอบว่ามีโรคประจำตัวหรือไม่
+if ($disease == "มี") {
+
+    if (isset($_POST['disease_ht']) && $_POST['disease_ht'] == 'y') {
+        $disease_list[] = 'HT';
+    }
+    if (isset($_POST['disease_dm']) && $_POST['disease_dm'] == 'y') {
+        $disease_list[] = 'DM';
+    }
+    if (isset($_POST['disease_dlp']) && $_POST['disease_dlp'] == 'y') {
+        $disease_list[] = 'DLP';
+    }
+    if (isset($_POST['disease_asthma']) && $_POST['disease_asthma'] == 'y') {
+        $disease_list[] = 'Asthma';
+    }
+    if (isset($_POST['disease_copd']) && $_POST['disease_copd'] == 'y') {
+        $disease_list[] = 'COPD';
+    }
+    if (isset($_POST['disease_kidney']) && $_POST['disease_kidney'] == 'y') {
+        $disease_list[] = 'Kidney Disease';
+    }
+}
+
+// รวมชื่อโรคเป็นข้อความ
+if (count($disease_list) > 0) {
+    $comorbidities = implode(', ', $disease_list);
+} else {
+    $comorbidities = '-';
+}
+
+// แสดงผล
+//echo "โรคประจำตัว: " . $comorbidities;
+
+
+// ตรวจสอบชนิดการระงับความรู้สึก
+$anesthesia_list = array();
+
+// ตรวจสอบว่ามีการเลือก checkbox หรือไม่
+if (isset($_POST['inhalation_ga']) && $_POST['inhalation_ga'] == 'y') {
+    $anesthesia_list[] = 'GA';
+}
+if (isset($_POST['inhalation_sa']) && $_POST['inhalation_sa'] == 'y') {
+    $anesthesia_list[] = 'SA';
+}
+if (isset($_POST['inhalation_bb']) && $_POST['inhalation_bb'] == 'y') {
+    $anesthesia_list[] = 'BB';
+}
+if (isset($_POST['inhalation_iva']) && $_POST['inhalation_iva'] == 'y') {
+    $anesthesia_list[] = 'IVA';
+}
+if (isset($_POST['inhalation_la']) && $_POST['inhalation_la'] == 'y') {
+    $anesthesia_list[] = 'LA';
+}
+if (isset($_POST['inhalation_ta']) && $_POST['inhalation_ta'] == 'y') {
+    $anesthesia_list[] = 'TA';
+}
+if (isset($_POST['inhalation_other']) && $_POST['inhalation_other'] == 'y') {
+    // ถ้าเลือก "อื่นๆ" ให้เพิ่มรายละเอียดด้วย
+    $detail = isset($_POST['inhalation_detail']) ? trim($_POST['inhalation_detail']) : '';
+    if ($detail != '') {
+        $anesthesia_list[] = 'อื่นๆ (' . $detail . ')';
+    } else {
+        $anesthesia_list[] = 'อื่นๆ';
+    }
+}
+
+// สร้างข้อความสรุป
+if (count($anesthesia_list) > 0) {
+    $anesthesia = implode(', ', $anesthesia_list);
+} else {
+    $anesthesia = '-';
+}
+
+// แสดงผล
+//echo "การระงับความรู้สึก: " . $anesthesia;
+
+
+// สมมติ $date_surg = '2025-11-11';
+list($year, $month, $day) = explode('-', $date_surg);
+
+// แปลงปีเป็น พ.ศ.
+$year_be = $year + 543;
+
+// สร้างรูปแบบ DD/MM/YYYY
+$date_surg_be = $day . '/' . $month . '/' . $year_be;
+
+// แสดงผล
+//echo $date_surg_be; // ตัวอย่าง: 11/11/2568
+
+
 	$objQuery = mysql_query($strSQL);
 if($objQuery){
-	echo "<script>
-		$(document).ready(function() {
-		Swal.fire({
-			title: 'Success',
-			text: 'บันทึกข้อมูลสำเร็จ !',
-			icon: 'success',
-			timer: 5000,
-			showConfirmButton: false
-			});
-		})
-	</script>";
-	header("refresh:2; url=surgery_set.php");
-}else{
-	echo "<script>
-		$(document).ready(function() {
-		Swal.fire({
-			title: 'ผิดพลาด',
-			text: 'บันทึกข้อมูลไม่สำเร็จ !',
-			icon: 'error',
-			timer: 5000,
-			showConfirmButton: false
-			});
-		})
-	</script>";
-	header("refresh:2; url=surgery_set.php");
+
+	// -------------------------------
+	// 🔔 แจ้งเตือน Telegram
+	// -------------------------------
+	$notify_url = "http://192.168.131.191/notify_surgery.php";
+
+$message = "📢 แจ้งเตือนใบเซตผ่าตัดใหม่\n"
+         . "--------------------------\n"
+         . "👤 ผู้ป่วย: $ptname ($hn)\n"
+         . "🏥 AN: $an\n"
+         . "🎂 อายุ: $age \n"
+         . "💊 โรคประจำตัว: $comorbidities\n"
+         . "⚖️ น้ำหนัก: $weight kg\n"
+         . "📏 ส่วนสูง: $height cm\n"
+         . "🧮 BMI: $bmi\n"
+         . "📝 Dx: $diag\n"		 
+         . "💉 การผ่าตัด: $operation\n"
+         . "🩺 แพทย์: $doctor\n"
+         . "🏷️ Ward: $ward\n"
+         . "📅 วันที่ผ่าตัด: $date_surg_be\n"
+         . "⏰ เวลา: $surgery_time\n"
+         . "🔪 Operation: $operation\n"
+         . "💤 การระงับความรู้สึก: $anesthesia\n"
+         . "--------------------------\n"
+         . "บันทึกโดย: $officer\n"
+         . "วันที่บันทึก: $date";
+
+			$curl = curl_init();
+
+			// เตรียม POST data เป็น string
+			$post_data = 'message=' . urlencode($message);
+
+			curl_setopt($curl, CURLOPT_URL, $notify_url);
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data); // ส่งเป็น string
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($curl, CURLOPT_VERBOSE, 1);
+
+			// ตั้ง timeout
+			curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+			curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+
+			$result = curl_exec($curl);
+
+			if($result === false){
+				echo "cURL Error: " . curl_error($curl) . "\n";
+			}else{
+				$httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+				echo "HTTP code: $httpcode\n";
+				echo "Response: " . $result . "\n";
+			}
+
+			curl_close($curl);
+
+    //=== แจ้งเตือน SweetAlert ===//
+    echo "<script>
+        $(document).ready(function() {
+            Swal.fire({
+                title: 'Success',
+                text: 'บันทึกข้อมูลสำเร็จและส่งแจ้งเตือนแล้ว!',
+                icon: 'success',
+                timer: 5000,
+                showConfirmButton: false
+            });
+        });
+    </script>";
+    header("refresh:2; url=surgery_set.php");
+
+} else {
+    echo "<script>
+        $(document).ready(function() {
+            Swal.fire({
+                title: 'ผิดพลาด',
+                text: 'บันทึกข้อมูลไม่สำเร็จ!',
+                icon: 'error',
+                timer: 5000,
+                showConfirmButton: false
+            });
+        });
+    </script>";
+    header("refresh:2; url=surgery_set.php");
 }
 
 ?>
