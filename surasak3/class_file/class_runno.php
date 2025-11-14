@@ -18,4 +18,11 @@ class Runno extends DbConnect{
         }
         return $runno;
     }
+
+    public $nextRunno = 0;
+    public function setNextRunno(){
+        $sql = sprintf("UPDATE `runno` SET `runno`='%s', `startday`=NOW() WHERE `title`='diabetes' LIMIT 1;", $this->nextRunno);
+        $q = $this->dbi->query($sql);
+        return $q;
+    }
 }

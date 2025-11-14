@@ -43,7 +43,8 @@ if($action == 'getOpd'){
                     t-bmi="<?=$a['bmi'];?>"
                     t-bp1="<?=$a['bp1'];?>"
                     t-bp2="<?=$a['bp2'];?>"
-                    onclick="selectOpd(this)"><?=$thaiDate;?>
+                    t-vn="<?=$a['vn'];?>"
+                    onclick="selectOpd(this,'<?=$thaiDate;?>')"><?=$thaiDate;?>
                     </a>
                 </td>
                 <td>&nbsp;&nbsp;<?=$a['vn'];?></td>
@@ -79,7 +80,7 @@ if($action == 'getOpd'){
             font-family: "TH SarabunPSK";
             font-size: 16pt;
         }
-        #opdTb tr th{
+        #navMenu, #opdTb tr th{
             background-color: #13795b;
             color:#ffffff;
         }
@@ -87,7 +88,7 @@ if($action == 'getOpd'){
             cursor: pointer;
         }
     </style>
-    <nav class="navbar navbar-expand-lg" id="" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg" id="navMenu" data-bs-theme="dark">
         <div class="container-fluid">
         <a class="navbar-brand" href="../nindex.htm">🏠 HOME</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +97,7 @@ if($action == 'getOpd'){
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-3 mb-lg-0">
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">รายชื่อ</a>
+                <a class="nav-link active" aria-current="page" href="retinalExam.php">Retinal Exam</a>
             </li>
             </ul>
         </div>
@@ -130,20 +131,21 @@ if($action == 'getOpd'){
             </div>
             <div class="row mb-3">
                 <div class="col-auto">
-                    <label for="inputCity" class="form-label fw-bold">HN: </label>
+                    <label class="form-label fw-bold">HN: </label>
                     <?=$opc['hn'];?>
                 </div>
                 <div class="col-auto">
-                    <label for="inputCity" class="form-label fw-bold">ชื่อ-สกุล: </label>
+                    <label class="form-label fw-bold">ชื่อ-สกุล: </label>
                     <?=$opc['ptname'];?>
+                    <input type="hidden" name="ptname" value="<?=$opc['ptname'];?>">
                 </div>
                 <div class="col-auto">
-                    <label for="inputCity" class="form-label fw-bold">สิทธิ: </label>
+                    <label class="form-label fw-bold">สิทธิ: </label>
                     <?=$opc['ptright'];?>
                 </div>
                 <div class="col-auto">
-                    <label for="inputCity" class="form-label fw-bold">อายุ: </label>
-                    <?=$opc['hn'];?>
+                    <label class="form-label fw-bold">อายุ: </label>
+                    <?=$opc['age'];?>ปี
                 </div>
             </div>
             <div class="row mb-3">
@@ -158,42 +160,51 @@ if($action == 'getOpd'){
             </div>
             
             <div class="row mb-3">
-                <div class="col-12 fw-bold">ข้อมูลซักประวัติ</div>
+                <div class="col-12 fw-bold">ข้อมูลซักประวัติ <span id="afterSelectOpd" style="color: red;"></span></div>
                 <div class="col-auto mb-2">
                     <label for="height" class="form-label fw-bold">ส่วนสูง</label>
-                    <input type="number" step="0.01" class="form-control" id="height" name="height" placeholder="เซนติเมตร">
+                    <div class="form-text" id="showHeight">-</div>
+                    <input type="hidden" class="form-control" id="height" name="height">
                 </div>
                 <div class="col-auto">
                     <label for="weight" class="form-label fw-bold">น้ำหนัก</label>
-                    <input type="number" step="0.01" class="form-control" id="weight" name="weight" placeholder="กิโลกรัม">
+                    <div class="form-text" id="showWeight">-</div>
+                    <input type="hidden" class="form-control" id="weight" name="weight">
                 </div>
                 <div class="col-auto mb-2">
                     <label for="waist" class="form-label fw-bold">รอบเอว</label>
-                    <input type="number" step="0.01" class="form-control" id="waist" name="waist" placeholder="นิ้ว">
+                    <div class="form-text" id="showWaist">-</div>
+                    <input type="hidden" class="form-control" id="waist" name="waist">
                 </div>
                 <div class="col-auto">
                     <label for="temp" class="form-label fw-bold">อุณหภูมิ</label>
-                    <input type="number" step="0.01" class="form-control" id="temp" name="temp">
+                    <div class="form-text" id="showTemp">-</div>
+                    <input type="hidden" class="form-control" id="temp" name="temp">
                 </div>
                 <div class="col-auto mb-2">
                     <label for="pulse" class="form-label fw-bold">Pulse</label>
-                    <input type="number" step="0.01" class="form-control" id="pulse" name="pulse">
+                    <div class="form-text" id="showPulse">-</div>
+                    <input type="hidden" class="form-control" id="pulse" name="pulse">
                 </div>
                 <div class="col-auto">
                     <label for="rate" class="form-label fw-bold">Rate</label>
-                    <input type="number" step="0.01" class="form-control" id="rate" name="rate">
+                    <div class="form-text" id="showRate">-</div>
+                    <input type="hidden" class="form-control" id="rate" name="rate">
                 </div>
                 <div class="col-auto mb-2">
                     <label for="bmi" class="form-label fw-bold">BMI</label>
-                    <input type="number" step="0.01" class="form-control" id="bmi" name="bmi">
+                    <div class="form-text" id="showBmi">-</div>
+                    <input type="hidden" class="form-control" id="bmi" name="bmi">
                 </div>
                 <div class="col-auto">
                     <label for="bp1" class="form-label fw-bold">BP</label>
                     <div class="input-group">
-                        <input type="number" step="0.01" class="form-control" id="bp1" name="bp1">
-                        <button class="btn btn-secondary" type="button">/</button>
-                        <input type="number" step="0.01" class="form-control" id="bp2" name="bp2">
+                        <div class="form-text" id="showBp1">-</div>
+                        <div class="form-text"> / </div>
+                        <div class="form-text" id="showBp2">-</div>
                     </div>
+                    <input type="hidden" class="form-control" id="bp1" name="bp1">
+                    <input type="hidden" class="form-control" id="bp2" name="bp2">
                 </div>
             </div>
 
@@ -252,6 +263,7 @@ if($action == 'getOpd'){
                 <button class="btn btn-primary" type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="opd_id" id="opd_id" value="">
                 <input type="hidden" name="hn" id="hn" value="<?=$opc['hn'];?>">
+                <input type="hidden" class="form-control" id="vn" name="vn">
             </div>
         </form>
         </div>
@@ -300,8 +312,18 @@ if($action == 'getOpd'){
             /**
              * fill data to input form
              */
-            function selectOpd(t){
-                
+            function selectOpd(t, thaiDate){
+                document.getElementById('afterSelectOpd').innerHTML = `( <b>VN:</b> ${t.getAttribute("t-vn")} <b>วันที่</b> ${thaiDate} )`;
+                document.getElementById('showHeight').innerHTML = `${t.getAttribute("t-height")} ซม.`;
+                document.getElementById('showWeight').innerHTML = `${t.getAttribute("t-weight")} กก.`;
+                document.getElementById('showWaist').innerHTML = `${t.getAttribute("t-waist")} ซม.`;
+                document.getElementById('showTemp').innerHTML = t.getAttribute("t-temp");
+                document.getElementById('showPulse').innerHTML = t.getAttribute("t-pulse");
+                document.getElementById('showRate').innerHTML = t.getAttribute("t-rate");
+                document.getElementById('showBmi').innerHTML = t.getAttribute("t-bmi");
+                document.getElementById('showBp1').innerHTML = t.getAttribute("t-bp1");
+                document.getElementById('showBp2').innerHTML = t.getAttribute("t-bp2");
+
                 document.getElementById('opd_id').value = t.getAttribute("opd-id");
                 document.getElementById('date').value = t.getAttribute("t-date");
                 document.getElementById('retinal_date').value = t.getAttribute("t-date");
@@ -314,6 +336,7 @@ if($action == 'getOpd'){
                 document.getElementById('bmi').value = t.getAttribute("t-bmi");
                 document.getElementById('bp1').value = t.getAttribute("t-bp1");
                 document.getElementById('bp2').value = t.getAttribute("t-bp2");
+                document.getElementById('vn').value = t.getAttribute("t-vn");
                 Swal.close();
             }
 
@@ -322,7 +345,7 @@ if($action == 'getOpd'){
                 document.getElementById('followText').focus();
             });
 
-            /** ถ้าคลิกตัวอื่นให้ล้าค่าใน Other */
+            /** ถ้าคลิกตัวอื่นให้ลบค่าใน Other */
             let itemTreatment = document.getElementsByClassName('treatment');
             for (let index = 0; index < itemTreatment.length; index++) {
                 const el = itemTreatment[index];
@@ -361,9 +384,11 @@ if($action == 'getOpd'){
 
                 /** เช็กว่าติ๊กช่องในส่วนของ Retinal แล้วรึยัง */
                 let i = 0;
+                let examValue = '';
                 while (examItem[i]) {
                     if(examItem[i].checked===true){
                         examTest = true;
+                        examValue = examItem[i].value;
                     }
                     i++;
                 }
@@ -376,9 +401,11 @@ if($action == 'getOpd'){
 
                 /** เช็กว่าติ๊กในช่อง การรักษาแล้วรึยัง */
                 let ii = 0;
+                let treatmentValue = '';
                 while (treatmentItem[ii]) {
                     if(treatmentItem[ii].checked===true){
                         treatmentTest = true;
+                        treatmentValue = treatmentItem[ii].value;
                     }
                     ii++;
                 }
@@ -396,13 +423,21 @@ if($action == 'getOpd'){
                 let formData = {};
                 for (let index = 0; index < userForm.elements.length; index++) {
                     const element = userForm.elements[index];
-                    if(element.type!=="submit" && element.value !== ''){
+                    if(element.type!=="submit" && element.value !== '' && element.type!=='radio'){
+                        formData[element.name] = element.value;
+                    }else if(element.type==='radio' && element.checked===true){
                         formData[element.name] = element.value;
                     }
                 }
                 
                 onSave(formData).then((res)=>{
-                    console.log(res);
+                    if(res.status===200){
+                        Swal.fire("บันทึกข้อมูลเรียบร้อย").then(()=>{
+                            window.location='retinalExam.php';
+                        });
+                    }else{
+                        Swal.fire({html:`Message: ${res.msg}<br>Error: ${res.error}`});
+                    }
                 });
                 
                 return false;
