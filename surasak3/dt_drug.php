@@ -2444,8 +2444,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ // คำนว
 		FROM `drugrx` 
 		WHERE `date` < '$date' AND `hn` = '%s' AND `drugcode` = '%s' 
 		ORDER BY `row_id` DESC LIMIT 1 
-	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
-	WHERE b. ",
+	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` ",
 	$dbi->real_escape_string($hn),
 	$dbi->real_escape_string($drugcode)
 	);
@@ -2459,9 +2458,9 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ // คำนว
 		$genname = '('.$b['genname'].')';
 		$unit = strtolower(trim($b['unit']));
 	}
-
+	
 	$q = $dbi->query($sql);
-	if($q->num_rows>0 && ($unit=='tablet' OR $unit=='capsule')){
+	if($q->num_rows>0 && (preg_match('(tablet|capsule)+', $unit)!==false)){
 		$a = $q->fetch_assoc();
 		if($a['day_diff'] < $a['day_averrage']){
 			$tradname = $a['tradname'];
