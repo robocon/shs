@@ -44,7 +44,7 @@ $defaultDate = empty($_POST['dateSelect']) ? (date('Y')+543).date('-m-d') : spri
     <?php
     $action = sprintf("%s", $_POST['action']);
     if($action==='search' && !empty($_POST['dateSelect'])){
-        $sql = sprintf("SELECT * FROM `depart` WHERE `date` LIKE '%s%%' AND `idname` = 'เจ้าหน้าที่ x-ray คอมพิวเตอร์' AND `an` = '' AND ( `price` > 0 AND `status` = 'Y' ) ORDER BY `row_id` DESC", $dbi->real_escape_string($_POST['dateSelect']));
+        $sql = sprintf("SELECT * FROM `depart` WHERE `date` LIKE '%s%%' AND `idname` = 'เจ้าหน้าที่ x-ray คอมพิวเตอร์' AND ( `price` > 0 AND `status` = 'Y' ) ORDER BY `row_id` DESC", $dbi->real_escape_string($_POST['dateSelect']));
         $q = $dbi->query($sql);
         if($q->num_rows>0){
             ?>
@@ -54,6 +54,7 @@ $defaultDate = empty($_POST['dateSelect']) ? (date('Y')+543).date('-m-d') : spri
                         <th>#</th>
                         <th>วัน-เวลา</th>
                         <th>HN</th>
+                        <th>AN</th>
                         <th>ชื่อ-สกุล</th>
                         <th>depart</th>
                         <th>รายละเอียด</th>
@@ -83,6 +84,7 @@ $defaultDate = empty($_POST['dateSelect']) ? (date('Y')+543).date('-m-d') : spri
                     <td><?=$i;?></td>
                     <td><?=$a['date'];?></td>
                     <td><?=$a['hn'];?></td>
+                    <td><?=$a['an'];?></td>
                     <td><?=$a['ptname'];?></td>
                     <td><?=$a['depart'];?></td>
                     <td><?=$a['detail'];?></td>
