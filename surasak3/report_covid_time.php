@@ -251,7 +251,7 @@ if($page){
                 for (let index = 0; index < items.length; index++) {
                     const el = items[index];
                     const icdValue = el.getAttribute('data-icd');
-                    if( checkboxItem.indexOf(icdValue)<1 ){
+                    if( checkboxItem.indexOf(icdValue)<0 ){
                         el.style.display = 'none';
                     }else{
                         el.style.display = '';
