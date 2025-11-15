@@ -3,6 +3,10 @@ require_once dirname(__FILE__).'/bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
+function mapData($v){
+    return "'$v'";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +25,13 @@ $dbi->query("SET NAMES UTF8");
     *{
         font-family: "TH SarabunPSK";
         font-size: 20px;
+    }
+    #show-table tr th{
+        background-color: #13795b;
+		color: #ffffff;
+    }
+    label:hover{
+        cursor: pointer;
     }
 </style>
 <div class="container-fluid">
@@ -171,7 +182,22 @@ if($page){
     $q = $dbi->query($sql);
     if($q->num_rows>0){
         ?>
-        <table class="table">
+        <div>
+            <span><strong>เลือก ICD 10 ที่ต้องการแสดงผล</strong></span>
+            <?php
+            $icdItems = array('U071','J00','J101');
+            foreach ($icdItems as $item) {
+                ?>
+                <input type="checkbox" id="<?=$item;?>" class="selectedItem" value="<?=$item;?>" onclick="selectIcd10(this)" checked="checked">
+                <label for="<?=$item;?>"><?=$item;?></label>
+                <?php
+            }
+
+            // $forJs = array_map('mapData', $icdItems);
+            // $setIcdItemForJs = implode(',', $forJs);
+            ?>
+        </div>
+        <table class="table mt-2" id="show-table">
             <tr>
                 <th>วันที่เข้ารับบริการ</th>
                 <th>HN</th>
@@ -190,7 +216,7 @@ if($page){
         <?php
         while ($a = $q->fetch_assoc()) {
             ?>
-            <tr>
+            <tr class="data" data-icd="<?=$a['icd10'];?>">
                 <td><?=$a['registerdate'];?></td>
                 <td><?=$a['hn'];?></td>
                 <td><?=$a['vn'];?></td>
@@ -209,6 +235,30 @@ if($page){
         }
         ?>
         </table>
+        <script>
+            function selectIcd10(checkboxElement){
+
+                let checkboxItem = [];
+                const selectedItem = document.getElementsByClassName('selectedItem');
+                for (let index = 0; index < selectedItem.length; index++) {
+                    const element = selectedItem[index];
+                    if(element.checked===true){
+                        checkboxItem.push(element.value);
+                    }
+                }
+                
+                const items = document.getElementsByClassName('data');
+                for (let index = 0; index < items.length; index++) {
+                    const el = items[index];
+                    const icdValue = el.getAttribute('data-icd');
+                    if( checkboxItem.indexOf(icdValue)<1 ){
+                        el.style.display = 'none';
+                    }else{
+                        el.style.display = '';
+                    }
+                }
+            }
+        </script>
         <?php
     }else{
         ?>
