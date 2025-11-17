@@ -267,6 +267,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 	$preg = sprintf('%s', $_POST['preg']);
 	$smoke_ncd = sprintf('%s', $_POST['smoke_ncd']);
 	$drink_ncd = sprintf('%s', $_POST['drink_ncd']);
+	$spo2 = sprintf('%s', $_POST['spo2']);
 
 	$congenital_disease = sprintf("%s", $_POST["congenital_disease"]);
 	
@@ -396,7 +397,8 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		`smoke_ncd`='$smoke_ncd',
 		`drink_ncd`='$drink_ncd',
 		`bmi`= '".$_POST["bmi"]."',
-		`cvrisk_area`= '".$_POST["cvrisk_area"]."'		
+		`cvrisk_area`= '".$_POST["cvrisk_area"]."',
+		`spo2`= '$spo2'
 		WHERE `row_id` = '$opd_id' LIMIT 1 ";
 		$result = Mysql_Query($sql) or die("UPDATE OPD ".Mysql_Error());
 
@@ -482,7 +484,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			`bp4`,`mens`,`mens_date`,`vaccine`,`parent_smoke`,`parent_smoke_amount`,
 			`parent_drink`,`parent_drink_amount`,`smoke_amount`,`drink_amount`,`ht_amount`,`dm_amount`, 
 			`hpi`,`grade`,`mind`,`the_pill`,`cvriskscore`,`cvriskscore_lab`, 
-			`pregnancy`,`smoke_ncd`,`drink_ncd`,`bmi`,`cvrisk_area`
+			`pregnancy`,`smoke_ncd`,`drink_ncd`,`bmi`,`cvrisk_area`,`spo2`
 		)VALUES (
 			NULL , '".$thidate_now."', '".$thidatehn."', '".$_REQUEST["hn"]."', '".$_POST["ptname"]."', '".$_POST["temperature"]."', 
 			'".$_POST["pause"]."', '".$_POST["rate"]."', '".$_POST["weight"]."', '".$_POST["bp1"]."', '".$_POST["bp2"]."', '".$_POST["drugreact"]."', 
@@ -492,7 +494,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			'$bp4','$mens','$mens_date','$vaccine','$parent_smoke','$parent_smoke_amount', 
 			'$parent_drink','$parent_drink_amount','$smoke_amount','$drink_amount','$ht_amount','$dm_amount', 
 			'$hpi', '$grade','$mind','$the_pill', '".$pfullscore."' , '".$_POST["cvriskscore_lab"]."', 
-			'$preg','$smoke_ncd','$drink_ncd', '".$_POST["bmi"]."', '".$_POST["cvrisk_area"]."'
+			'$preg','$smoke_ncd','$drink_ncd', '".$_POST["bmi"]."', '".$_POST["cvrisk_area"]."','$spo2'
 		);";
 		$result = Mysql_Query($sql) or die("INSERT OPD ".Mysql_Error());
 		$opd_id = mysql_insert_id($result);
@@ -1883,49 +1885,49 @@ mmHg </td>
 					<input name="painscore" type="text" id="painscore" size="3" value="0" />
 				</td>
 				<td align="right" class="data_show">CV risk score (ไม่ใช้ผลเลือด):</td>
-				<td align="left" valign="bottom" colspan="3">
+				<td align="left" valign="bottom">
 					<input name="cvriskscore" type="text" id="cvriskscore" size="3" value="<?php echo $cvriskscore;?>" /> %
-				<?php
-				if($cvriskscore >= 20){
-		$sql1 = "Select row_id,date_active,officer,datetime from screen_cvdrisk where hn = '".$_REQUEST["hn"]."'";
-		//echo $sql1;
-		$query1 = mysql_query($sql1);
-		$num1 = mysql_num_rows($query1);
-		if($num1 < 1){	 //ยังไม่ได้ให้คำแนะนำ	
-					echo "<script> 
-					Swal.fire(
-					  'แจ้งเตือน',
-					  'ผู้ป่วยมีค่า CVDRISK SCORE มากกว่า 20 ขึ้นไป<br>กรุณาระบุข้อมูลเพิ่มเติม',
-					'warning'
-					)
-					</script>";			
-					if( $cvrisk_area == "in" ){
-						$area1 = 'checked="checked"';
-					}else if ( $cvrisk_area == "out" ) {
-						$area2 = 'checked="checked"';
+					<?php
+					if($cvriskscore >= 20){
+						$sql1 = "Select row_id,date_active,officer,datetime from screen_cvdrisk where hn = '".$_REQUEST["hn"]."'";
+						$query1 = mysql_query($sql1);
+						$num1 = mysql_num_rows($query1);
+						if($num1 < 1){ //ยังไม่ได้ให้คำแนะนำ	
+							echo "<script> 
+							Swal.fire(
+							'แจ้งเตือน',
+							'ผู้ป่วยมีค่า CVDRISK SCORE มากกว่า 20 ขึ้นไป<br>กรุณาระบุข้อมูลเพิ่มเติม',
+							'warning'
+							)
+							</script>";			
+							if( $cvrisk_area == "in" ){
+								$area1 = 'checked="checked"';
+							}else if ( $cvrisk_area == "out" ) {
+								$area2 = 'checked="checked"';
+							}
+							?>
+							<span style="margin-left:10px;">
+							<label for="area1"><input type="radio" name="cvrisk_area" id="cvrisk_area1" value="in" class="lmp" <?=$area1;?> ><strong style='color:blue;'>ในเขต</strong></label>&nbsp;&nbsp;&nbsp;
+							<label for="area2"><input type="radio" name="cvrisk_area" id="cvrisk_area2" value="out" class="lmp" <?=$area2;?> ><strong style='color:red;'>นอกเขต</strong></label>
+							</span>
+							<?php
+						}else{
+							list($row_id,$date_active,$user,$datetime) = mysql_fetch_array($query1);
+							$yy = substr($date_active,0,4);
+							$yy=$yy+543;
+							$mm = substr($date_active,5,2);
+							$dd = substr($date_active,8,2);
+							$date_active="$dd/$mm/$yy";
+							echo "<strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ $date_active โดย $user</strong>";
+						}
 					}
-						
-				?>
-				<span style="margin-left:10px;">
-				<label for="area1"><input type="radio" name="cvrisk_area" id="cvrisk_area1" value="in" class="lmp" <?=$area1;?> ><strong style='color:blue;'>ในเขต</strong></label>&nbsp;&nbsp;&nbsp;
-				<label for="area2"><input type="radio" name="cvrisk_area" id="cvrisk_area2" value="out" class="lmp" <?=$area2;?> ><strong style='color:red;'>นอกเขต</strong></label>
-				</span>
-				<?php
-		}else{
-				list($row_id,$date_active,$user,$datetime) = mysql_fetch_array($query1);
-					$yy = substr($date_active,0,4);
-					$yy=$yy+543;
-					$mm = substr($date_active,5,2);
-					$dd = substr($date_active,8,2);
-					$date_active="$dd/$mm/$yy";				
-			echo "<strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ $date_active โดย $user</strong>";
-		}		
-				}	
-				?>
+					?>
 				</td>
+				<td align="right" ><label for="">O<sub>2</sub>Sat</label>: </td>
+				<td align="left" ><input type="text" name="spo2" id="spo2" size="3"></td>
 			 </tr>
 			 <tr>
-				<td align="right" class="data_show">CV risk score (ใช้ผลเลือด) :</td>
+				<td align="right" class="data_show">CV risk score (ใช้ผลเลือด) : </td>
 				<td align="left" colspan="5">
 					<input name="cvriskscore_lab" type="text" id="cvriskscore_lab" size="3" value="<?php echo $cvriskscore_lab;?>" /> %
 				</td>
