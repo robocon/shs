@@ -113,7 +113,6 @@ if ( $action == 'show' ) {
         }
         
         $opd_time = '-';
-        // if ( $regis_time != '-' ) { 
 
         $sql = "SELECT SUBSTRING(`thidate`, 1, 10) AS `date`,SUBSTRING(`thidate`, 12, 8) AS `opd_time`  
         FROM `opd` 
@@ -129,8 +128,7 @@ if ( $action == 'show' ) {
             
             $sum_opd += $opd_diff;
         }
-    // }
-    
+
         ?>
         <tr>
             <td><?=$i;?></td>
