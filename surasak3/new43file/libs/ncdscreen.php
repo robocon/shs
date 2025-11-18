@@ -133,7 +133,7 @@ while ($item = mysql_fetch_assoc($q)) {
     .$item['SCREENPLACE'].'|'
     .$provider.'|'
     .$item['D_UPDATE'].'|'
-    .$item['CID']."\r\n";
+    .$item['CID']."|$HOSPCODE9|$HOSPCODE9\r\n";
 
 }
 
@@ -141,7 +141,7 @@ $filePath = $dirPath.'/ncdscreen.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|SERVPLACE|SMOKE|ALCOHOL|DMFAMILY|HTFAMILY|WEIGHT|HEIGHT|WAIST_CM|SBP_1|DBP_1|SBP_2|DBP_2|BSLEVEL|BSTEST|SCREENPLACE|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|SERVPLACE|SMOKE|ALCOHOL|DMFAMILY|HTFAMILY|WEIGHT|HEIGHT|WAIST_CM|SBP_1|DBP_1|SBP_2|DBP_2|BSLEVEL|BSTEST|SCREENPLACE|PROVIDER|D_UPDATE|CID|HOSPCODE9|SCREENPLACE9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_ncdscreen.txt';
 file_put_contents($qofPath, $txt);

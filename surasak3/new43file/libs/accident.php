@@ -179,7 +179,7 @@ while (list ($date,$hn,$appdate,$doctor,$type_accident,$depcode,$urgency,$wounde
     $splint="3";
     $fluid="3";
 
-    $txt .= "$hospcode|$hn|$seq|$datetime_serv|$datetime_ae|$aetype|$aeplace|$typein_ae|$traffic|$vehicle|$alcohol|$nacrotic_drug|$belt|$helmet|$airway|$stopbleed|$splint|$fluid|$urgency|$coma_eye|$coma_speak|$coma_movement|$d_update|$idcard\r\n";
+    $txt .= "$hospcode|$hn|$seq|$datetime_serv|$datetime_ae|$aetype|$aeplace|$typein_ae|$traffic|$vehicle|$alcohol|$nacrotic_drug|$belt|$helmet|$airway|$stopbleed|$splint|$fluid|$urgency|$coma_eye|$coma_speak|$coma_movement|$d_update|$idcard|$HOSPCODE9\r\n";
     // $strFileName9 = "accident.txt";
     // $objFopen9 = fopen($strFileName9, 'a');
     // fwrite($objFopen9, $strText9);
@@ -195,7 +195,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|SEQ|DATETIME_SERV|DATETIME_AE|AETYPE|AEPLACE|TYPEIN_AE|TRAFFIC|VEHICLE|ALCOHOL|NACROTIC_DRUG|BELT|HELMET|AIRWAY|STOPBLEED|SPLINT|FLUID|URGENCY|COMA_EYE|COMA_SPEAK|COMA_MOVEMENT|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATETIME_SERV|DATETIME_AE|AETYPE|AEPLACE|TYPEIN_AE|TRAFFIC|VEHICLE|ALCOHOL|NACROTIC_DRUG|BELT|HELMET|AIRWAY|STOPBLEED|SPLINT|FLUID|URGENCY|COMA_EYE|COMA_SPEAK|COMA_MOVEMENT|D_UPDATE|CID|HOSPCODE9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_accident.txt';
 file_put_contents($qofPath, $txt);

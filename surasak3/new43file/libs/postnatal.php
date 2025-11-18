@@ -18,7 +18,7 @@ while ($item = $q_postnatal->fetch_assoc()) {
     $D_UPDATE = $item['D_UPDATE'];
     $CID = $item['CID'];
 
-    $postnatal_data = "$HOSPCODE|$PID|$SEQ|$GRAVIDA|$BDATE|$PPCARE|$PPPLACE|$PPRESULT|$PROVIDER|$D_UPDATE|$CID\r\n";
+    $postnatal_data = "$HOSPCODE|$PID|$SEQ|$GRAVIDA|$BDATE|$PPCARE|$PPPLACE|$PPRESULT|$PROVIDER|$D_UPDATE|$CID|$HOSPCODE9|$HOSPCODE9\r\n";
     $txt .= $postnatal_data;
 
 }
@@ -27,7 +27,7 @@ $filePath = $dirPath.'/postnatal.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|GRAVIDA|BDATE|PPCARE|PPPLACE|PPRESULT|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|GRAVIDA|BDATE|PPCARE|PPPLACE|PPRESULT|PROVIDER|D_UPDATE|CID|HOSPCODE9|BHOSP9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_postnatal.txt';
 file_put_contents($qofPath, $txt);

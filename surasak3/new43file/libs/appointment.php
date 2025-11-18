@@ -80,7 +80,7 @@ while (list ($date,$hn,$appdate,$doctor,$detail,$depcode) = mysql_fetch_row ($re
     
     $aptype = '';
 
-    $txt .= "$hospcode|$hn|$an|$seq|$date_serv|$clinic|$apdate|$aptype|$apdiag|$provider|$d_update|$cid\r\n";	
+    $txt .= "$hospcode|$hn|$an|$seq|$date_serv|$clinic|$apdate|$aptype|$apdiag|$provider|$d_update|$cid|$HOSPCODE9\r\n";	
     // $strFileName8 = "appointment.txt";
     // $objFopen8 = fopen($strFileName8, 'a');
     // fwrite($objFopen8, $strText8);
@@ -97,7 +97,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|SEQ|DATE_SERV|CLINIC|APDATE|APTYPE|APDIAG|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|AN|SEQ|DATE_SERV|CLINIC|APDATE|APTYPE|APDIAG|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_appointment.txt';
 file_put_contents($qofPath, $txt);

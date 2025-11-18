@@ -192,7 +192,7 @@ while (list ($date,$hn,$admdate,$myward,$an,$depart,$amount,$price,$paid,$part) 
 	list($hh,$ss,$ii)=explode(":",$regis2);
 	$d_update=($yy-543).$mm.$dd.$hh.$ss.$ii;
 
-    $inline = "$hospcode|$hn|$an|$datetime_admit|$wardstay|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update|$cid\r\n";
+    $inline = "$hospcode|$hn|$an|$datetime_admit|$wardstay|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update|$cid|$HOSPCODE9\r\n";
     // dump($inline);
     $txt .= $inline;
     // $strFileName18 = "charge_ipd.txt";
@@ -213,7 +213,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE|CID|HOSPCODE9\r\n";
 $charge_ipd_txt = $header.$txt;
 $qofPath = $dirPath.'/qof_charge_ipd.txt';
 file_put_contents($qofPath, $charge_ipd_txt);

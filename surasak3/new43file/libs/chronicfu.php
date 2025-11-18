@@ -103,14 +103,14 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['D_UPDATE'].'|'
     .$item['CHRONICFUPLACE'].'|'
     .$item['CID']
-    ."\r\n";
+    ."|$HOSPCODE9\r\n";
 }
 
 $filePath = $dirPath.'/chronicfu.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|WEIGHT|HEIGHT|WAIST_CM|SBP|DBP|FOOT|RETINA|PROVIDER|D_UPDATE|CHRONICFUPLACE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|WEIGHT|HEIGHT|WAIST_CM|SBP|DBP|FOOT|RETINA|PROVIDER|D_UPDATE|CHRONICFUPLACE|CID|HOSPCODE9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_chronicfu.txt';
 file_put_contents($qofPath, $txt);
