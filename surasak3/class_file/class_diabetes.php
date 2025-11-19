@@ -37,6 +37,7 @@ class Diabetes extends Opd
     }
 
     /**
+     * เพิ่มข้อมูลใน diabetes_clinic โดยเน้นที่การเพิ่ม retinal exam
      * @param string $dmNumber 
      * @param array $post
      * @return int last insert id
@@ -69,6 +70,33 @@ class Diabetes extends Opd
         }else{
             $this->diabetesState = 400;
             $this->diabetesError = $this->dbi->error;
+        }
+        return $res;
+    }
+
+    /**
+     * อัพเดทข้อมูลใน diabetes_clinic เน้นที่ retinal exam
+     */
+    public function updateRetinalDiabetes($dmNumber='',$dateN='',$post=array()){
+        $sql = sprintf("UPDATE `diabetes_clinic` SET 
+        `dateN` = '%s',
+        `retinal` = '%s',
+        `retinal_date` = '%s',
+        `follow` = '%s',
+        `followText` = '%s'
+        WHERE `dm_no` = '%s'",
+        $dateN,
+        $this->data($post['retinal']),
+        $this->data($post['retinal_date']),
+        $this->data($post['follow']),
+        $this->data($post['followText']),
+        $this->data($dmNumber));
+        $res = array();
+        $q = $this->dbi->query($sql);
+        if($q!==false){
+            $res = $dmNumber;
+        }else{
+            $res = $this->dbi->error;
         }
         return $res;
     }
@@ -124,31 +152,10 @@ class Diabetes extends Opd
         }
         return $res;
     }
-
-    public function updateRetinalDiabetes($dmNumber='',$dateN='',$post=array()){
-        $sql = sprintf("UPDATE `diabetes_clinic` SET 
-        `dateN` = '%s',
-        `retinal` = '%s',
-        `retinal_date` = '%s',
-        `follow` = '%s',
-        `followText` = '%s'
-        WHERE `dm_no` = '%s'",
-        $dateN,
-        $this->data($post['retinal']),
-        $this->data($post['retinal_date']),
-        $this->data($post['follow']),
-        $this->data($post['followText']),
-        $this->data($dmNumber));
-        $res = array();
-        $q = $this->dbi->query($sql);
-        if($q!==false){
-            $res = $dmNumber;
-        }else{
-            $res = $this->dbi->error;
-        }
-        return $res;
-    }
-
+    
+    /**
+     * ค้นหา retinal_exam จาก datehn
+     */
     public function findRetinalExamFromDateHn($datehn=''){
         $sql = sprintf("SELECT * FROM `retinal_exam` WHERE `datehn` = '%s' ", $this->data($datehn));
         $q = $this->dbi->query($sql);
@@ -171,8 +178,9 @@ class Diabetes extends Opd
         CURDATE(), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
         );",
         $dmNumber, $this->data($post['hn']), $datehn, $this->data($post['opd_id']), $this->data($post['retinal']),
-        $this->data($post['retinal_date']),$this->data($post['follow']),$this->data($post['retfollow_textinal']),$_SESSION['sOfficer']
+        $this->data($post['retinal_date']),$this->data($post['follow']),$this->data($post['followText']),$_SESSION['sOfficer']
         );
+        dump($sql);
         $q = $this->dbi->query($sql);
         if($q!==false){
             $this->diabetesState = 200;

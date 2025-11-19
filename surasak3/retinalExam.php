@@ -4,9 +4,7 @@ include_once dirname(__FILE__).'/class_file/class_opcard.php';
 include_once dirname(__FILE__).'/class_file/class_opd.php';
 
 /**
- * @todo
- * [] เหลือ Save แบบฟอร์ม
- * [] หน้ารายงานเรียกดูข้อมูลย้อนหลัง
+ * api/Opd.php?action=saveRetinal
  */
 
 if(empty($_SESSION['sOfficer'])){
