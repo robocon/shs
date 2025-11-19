@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 
-require_once dirname(__FILE__).'/../bootstrap.php';
+require_once '../bootstrap.php';
 
 header('Content-Type: text/html; charset=utf-8');
 $dbi = new mysqli(HOST, USER, PASS, DB);
