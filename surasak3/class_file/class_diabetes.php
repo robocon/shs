@@ -101,6 +101,9 @@ class Diabetes extends Opd
         return $res;
     }
 
+    /**
+     * ค้นหา diabetes_clinic_history จาก HN ของวันนี้
+     */
     public function findDiabetesHistoryToday($hn=null){
         if(empty($hn)){
             return false;
@@ -115,6 +118,9 @@ class Diabetes extends Opd
         return $row_id;
     }
 
+    /**
+     * บันทึกข้อมูลที่สำคัญของ retinal exam เข้าไปใน diabetes_clinic_history
+     */
     public function insertRetinalDiabetesHistory($dmNumber='', $post=array()){
         $dateN = date('Y-m-d');
         $res = false;
@@ -152,9 +158,9 @@ class Diabetes extends Opd
         }
         return $res;
     }
-    
+
     /**
-     * ค้นหา retinal_exam จาก datehn
+     * ค้นหา retinal_exam จาก datehn รูปแบบ YYYY-mm-ddHN
      */
     public function findRetinalExamFromDateHn($datehn=''){
         $sql = sprintf("SELECT * FROM `retinal_exam` WHERE `datehn` = '%s' ", $this->data($datehn));
@@ -167,6 +173,9 @@ class Diabetes extends Opd
         return $id;
     }
 
+    /**
+     * บันทึกข้อมูลเข้าไปใน retinal_exam
+     */
     public function insertRetinalExam($dmNumber='',$post=array()){
         $datehn = date('Y-m-d').$post['hn'];
         $res = false;
@@ -192,24 +201,28 @@ class Diabetes extends Opd
         return $res;
     }
 
+    /**
+     * อัพเดทข้อมูลใน retinal exam
+     */
     public function updateRetinalExam($post=array()){
 
         $datehn = $post['date'].$post['hn'];
 
         $sql = sprintf("UPDATE `retinal_exam` SET 
-        `hn`='68-4110', 
-        `datehn`='2025-11-1368-4110', 
-        `opd_id`='1124870', 
-        `retinal`='No DR', 
-        `retinal_date`='2025-11-03', 
-        `follow`='ติดตามอาการ', 
-        `follow_text`='', 
-        `officer`='กฤษณะศักดิ์ กันธรส' 
-        WHERE (`datehn`='$datehn');",
+        `retinal`='%s', 
+        `retinal_date`='%s', 
+        `follow`='%s', 
+        `follow_text`='%s', 
+        `officer`='%s' 
+        WHERE (`datehn`='%s');",
+        $this->data($post['retinal']),
+        $this->data($post['retinal_date']),
+        $this->data($post['follow']),
+        $this->data($post['follow_text']),
+        $this->data($post['officer']),
         $this->data($datehn)
         );
         $q = $this->dbi->query($sql);
-        dump($q);
         if($q!==false){
             $this->diabetesState = 200;
             $res = $this->dbi->insert_id;
