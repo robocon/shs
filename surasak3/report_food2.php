@@ -203,56 +203,56 @@ $value2=$value1[2].' '.$month[$value1[1]].' '.($value1[0]+543);
 $regisdate=($value1[0]+543).'-'.$value1[1].'-'.$value1[2];
 
 //// มื้อเช้า  เตียงสามัญ///
-$sql42="Select count(an)as count42 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '42%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql42="Select count(an)as count42 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '42%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query42 = mysql_query($sql42) or die (mysql_error());
 $arr42=mysql_fetch_array($query42);
 
-$sql43="Select count(an)as count43 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql43="Select count(an)as count43 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query43 = mysql_query($sql43) or die (mysql_error());
 $arr43=mysql_fetch_array($query43);
 
-$sql44="Select count(an)as count44 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '44%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql44="Select count(an)as count44 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '44%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query44 = mysql_query($sql44) or die (mysql_error());
 $arr44=mysql_fetch_array($query44);
 
-$sql45="Select count(an)as count45 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '45%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql45="Select count(an)as count45 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '45%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query45 = mysql_query($sql45) or die (mysql_error());
 $arr45=mysql_fetch_array($query45);
 
 
 /////////  มื้อกลางวัน  สามัญ ///
 
-$sql142="Select count(an)as count142 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql142="Select count(an)as count142 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query142 = mysql_query($sql142) or die (mysql_error());
 $arr142=mysql_fetch_array($query142);
 
-$sql143="Select count(an)as count143 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql143="Select count(an)as count143 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query143 = mysql_query($sql143) or die (mysql_error());
 $arr143=mysql_fetch_array($query143);
 
-$sql144="Select count(an)as count144 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql144="Select count(an)as count144 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query144 = mysql_query($sql144) or die (mysql_error());
 $arr144=mysql_fetch_array($query144);
 
-$sql145="Select count(an)as count145 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '45%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql145="Select count(an)as count145 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '45%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query145 = mysql_query($sql145) or die (mysql_error());
 $arr145=mysql_fetch_array($query145);
 
 /////////  มื้อกลางเย็น  สามัญ ///
 
-$sql242="Select count(an)as count242 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql242="Select count(an)as count242 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query242 = mysql_query($sql242) or die (mysql_error());
 $arr242=mysql_fetch_array($query242);
 
-$sql243="Select count(an)as count243 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql243="Select count(an)as count243 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query243 = mysql_query($sql243) or die (mysql_error());
 $arr243=mysql_fetch_array($query243);
 
-$sql244="Select count(an)as count244 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql244="Select count(an)as count244 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query244 = mysql_query($sql244) or die (mysql_error());
 $arr244=mysql_fetch_array($query244);
 
-$sql245="Select count(an)as count245 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql245="Select count(an)as count245 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query245 = mysql_query($sql245) or die (mysql_error());
 $arr245=mysql_fetch_array($query245);
 
@@ -276,57 +276,57 @@ $avg=ceil($sum1/3);
 
 ////////////// เตียงพิเศษ //////
 //// มื้อเช้า  เตียงพิเศษ///1.
-$sql421="Select count(an)as count421 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '42%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql421="Select count(an)as count421 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '42%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query421= mysql_query($sql421) or die (mysql_error());
 $arr421=mysql_fetch_array($query421);
 
-$sql431="Select count(an)as count431 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql431="Select count(an)as count431 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query431 = mysql_query($sql431) or die (mysql_error());
 $arr431=mysql_fetch_array($query431);
 
-$sql441="Select count(an)as count441 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '44%' AND food !=  'NPO (งดอาหาร, น้ำ)' ";
+$sql441="Select count(an)as count441 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '44%' AND food !=  'NPO (งดอาหาร, น้ำ)' ";
 $query441 = mysql_query($sql441) or die (mysql_error());
 $arr441=mysql_fetch_array($query441);
 
-$sql451="Select count(an)as count451 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '45%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql451="Select count(an)as count451 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '45%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query451 = mysql_query($sql451) or die (mysql_error());
 $arr451=mysql_fetch_array($query451);
 
 
 ///  มื้อกลางวัน  พิเศษ ///2.
 
-$sql422="Select count(an)as count422 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql422="Select count(an)as count422 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query422 = mysql_query($sql422) or die (mysql_error());
 $arr422=mysql_fetch_array($query422);
 
-$sql432="Select count(an)as count432 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql432="Select count(an)as count432 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query432 = mysql_query($sql432) or die (mysql_error());
 $arr432=mysql_fetch_array($query432);
 
-$sql442="Select count(an)as count442 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql442="Select count(an)as count442 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query442 = mysql_query($sql442) or die (mysql_error());
 $arr442=mysql_fetch_array($query442);
 
-$sql452="Select count(an)as count452 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql452="Select count(an)as count452 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query452 = mysql_query($sql452) or die (mysql_error());
 $arr452=mysql_fetch_array($query452);
 
 
 ///  มื้อเย็น  พิเศษ ///3.
 
-$sql423="Select count(an)as count423 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql423="Select count(an)as count423 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query423 = mysql_query($sql423) or die (mysql_error());
 $arr423=mysql_fetch_array($query423);
 
-$sql433="Select count(an)as count433 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql433="Select count(an)as count433 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query433 = mysql_query($sql433) or die (mysql_error());
 $arr433=mysql_fetch_array($query433);
 
-$sql443="Select count(an)as count443 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql443="Select count(an)as count443 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query443 = mysql_query($sql443) or die (mysql_error());
 $arr443=mysql_fetch_array($query443);
 
-$sql453="Select count(an)as count453 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql453="Select count(an)as count453 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query453 = mysql_query($sql453) or die (mysql_error());
 $arr453=mysql_fetch_array($query453);
 
@@ -391,8 +391,7 @@ global  $sum1,$sum2,$avg1,$avg2,$sum12,$sumavg1,$sumavg2;
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>น.โภชนาการ รพ.ค่ายสุรศักดิ์มนตรี</td>
+    <td colspan="2" align="right">น.โภชนาการ รพ.ค่ายสุรศักดิ์มนตรี</td>
   </tr>
 </table>
 
@@ -417,56 +416,56 @@ $value2=$value1[2].' '.$month[$value1[1]].' '.($value1[0]+543);
 $regisdate=($value1[0]+543).'-'.$value1[1].'-'.$value1[2];
 
 //// มื้อเช้า  เตียงสามัญ///
-$sql42="Select count(an)as count42 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '42%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql42="Select count(an)as count42 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '42%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query42 = mysql_query($sql42) or die (mysql_error());
 $arr42=mysql_fetch_array($query42);
 
-$sql43="Select count(an)as count43 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql43="Select count(an)as count43 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query43 = mysql_query($sql43) or die (mysql_error());
 $arr43=mysql_fetch_array($query43);
 
-$sql44="Select count(an)as count44 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '44%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql44="Select count(an)as count44 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '44%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query44 = mysql_query($sql44) or die (mysql_error());
 $arr44=mysql_fetch_array($query44);
 
-$sql45="Select count(an)as count45 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเช้า' and bedcode like '45%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql45="Select count(an)as count45 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเช้า' and bedcode like '45%' AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query45 = mysql_query($sql45) or die (mysql_error());
 $arr45=mysql_fetch_array($query45);
 
 
 /////////  มื้อกลางวัน  สามัญ ///
 
-$sql142="Select count(an)as count142 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql142="Select count(an)as count142 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query142 = mysql_query($sql142) or die (mysql_error());
 $arr142=mysql_fetch_array($query142);
 
-$sql143="Select count(an)as count143 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql143="Select count(an)as count143 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query143 = mysql_query($sql143) or die (mysql_error());
 $arr143=mysql_fetch_array($query143);
 
-$sql144="Select count(an)as count144 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql144="Select count(an)as count144 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query144 = mysql_query($sql144) or die (mysql_error());
 $arr144=mysql_fetch_array($query144);
 
-$sql145="Select count(an)as count145 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารกลางวัน' and bedcode like '45%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql145="Select count(an)as count145 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารกลางวัน' and bedcode like '45%' AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query145 = mysql_query($sql145) or die (mysql_error());
 $arr145=mysql_fetch_array($query145);
 
 /////////  มื้อกลางเย็น  สามัญ ///
 
-$sql242="Select count(an)as count242 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql242="Select count(an)as count242 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query242 = mysql_query($sql242) or die (mysql_error());
 $arr242=mysql_fetch_array($query242);
 
-$sql243="Select count(an)as count243 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql243="Select count(an)as count243 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query243 = mysql_query($sql243) or die (mysql_error());
 $arr243=mysql_fetch_array($query243);
 
-$sql244="Select count(an)as count244 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql244="Select count(an)as count244 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query244 = mysql_query($sql244) or die (mysql_error());
 $arr244=mysql_fetch_array($query244);
 
-$sql245="Select count(an)as count245 from food1 Where regisdate like '$regisdate%' and bedpri='300.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql245="Select count(an)as count245 from food1 Where regisdate like '$regisdate%' and bedpri='400.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query245 = mysql_query($sql245) or die (mysql_error());
 $arr245=mysql_fetch_array($query245);
 
@@ -490,57 +489,57 @@ $avg=ceil($sum1/3);
 
 ////////////// เตียงพิเศษ //////
 //// มื้อเช้า  เตียงพิเศษ///1.
-$sql421="Select count(an)as count421 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '42%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql421="Select count(an)as count421 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '42%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query421= mysql_query($sql421) or die (mysql_error());
 $arr421=mysql_fetch_array($query421);
 
-$sql431="Select count(an)as count431 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql431="Select count(an)as count431 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '43%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query431 = mysql_query($sql431) or die (mysql_error());
 $arr431=mysql_fetch_array($query431);
 
-$sql441="Select count(an)as count441 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '44%' AND food !=  'NPO (งดอาหาร, น้ำ)' ";
+$sql441="Select count(an)as count441 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '44%' AND food !=  'NPO (งดอาหาร, น้ำ)' ";
 $query441 = mysql_query($sql441) or die (mysql_error());
 $arr441=mysql_fetch_array($query441);
 
-$sql451="Select count(an)as count451 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเช้า' and bedcode like '45%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
+$sql451="Select count(an)as count451 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเช้า' and bedcode like '45%'  AND food !=  'NPO (งดอาหาร, น้ำ)'";
 $query451 = mysql_query($sql451) or die (mysql_error());
 $arr451=mysql_fetch_array($query451);
 
 
 ///  มื้อกลางวัน  พิเศษ ///2.
 
-$sql422="Select count(an)as count422 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql422="Select count(an)as count422 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query422 = mysql_query($sql422) or die (mysql_error());
 $arr422=mysql_fetch_array($query422);
 
-$sql432="Select count(an)as count432 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql432="Select count(an)as count432 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query432 = mysql_query($sql432) or die (mysql_error());
 $arr432=mysql_fetch_array($query432);
 
-$sql442="Select count(an)as count442 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql442="Select count(an)as count442 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query442 = mysql_query($sql442) or die (mysql_error());
 $arr442=mysql_fetch_array($query442);
 
-$sql452="Select count(an)as count452 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารกลางวัน' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql452="Select count(an)as count452 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารกลางวัน' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query452 = mysql_query($sql452) or die (mysql_error());
 $arr452=mysql_fetch_array($query452);
 
 
 ///  มื้อเย็น  พิเศษ ///3.
 
-$sql423="Select count(an)as count423 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql423="Select count(an)as count423 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '42%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query423 = mysql_query($sql423) or die (mysql_error());
 $arr423=mysql_fetch_array($query423);
 
-$sql433="Select count(an)as count433 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql433="Select count(an)as count433 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '43%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query433 = mysql_query($sql433) or die (mysql_error());
 $arr433=mysql_fetch_array($query433);
 
-$sql443="Select count(an)as count443 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql443="Select count(an)as count443 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '44%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query443 = mysql_query($sql443) or die (mysql_error());
 $arr443=mysql_fetch_array($query443);
 
-$sql453="Select count(an)as count453 from food1 Where regisdate like '$regisdate%' and bedpri !='300.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
+$sql453="Select count(an)as count453 from food1 Where regisdate like '$regisdate%' and bedpri !='400.00' and typefood='อาหารเย็น' and bedcode like '45%'  AND food != 'NPO (งดอาหาร, น้ำ)' and food !='NPO (งดอาหาร, น้ำ) น้ำหวาน 1 ขวด' ";
 $query453 = mysql_query($sql453) or die (mysql_error());
 $arr453=mysql_fetch_array($query453);
 
@@ -599,8 +598,7 @@ $sumavg2=($avg*150)+($avg2*200);
   </tr>
   <tr>
     <td>&nbsp;</td>
-    <td>&nbsp;</td>
-    <td>น.โภชนาการ รพ.ค่ายสุรศักดิ์มนตรี</td>
+    <td colspan="2" align="right">น.โภชนาการ รพ.ค่ายสุรศักดิ์มนตรี</td>
   </tr>
 </table>
 

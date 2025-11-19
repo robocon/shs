@@ -37,7 +37,7 @@ function mapData($v){
 <div class="container-fluid">
 
     <h3 class="mt-2">ระยะเวลารอคอยผู้ป่วย ARI Clinic</h3>
-
+    <span>* จำนวน ชั่วโมงและนาที คือระยะเวลาตั้งแต่ลงทะเบียนไปจนถึงเก็บเงินผู้ป่วย/จ่ายยา</span>
     <form action="report_covid_time.php" method="post">
         <div class="row g-3 align-items-center">
             <div class="col-auto">
@@ -207,7 +207,7 @@ if($page){
                 <th>Diag</th>
                 <th>ลงทะเบียน</th>
                 <th>OPD</th>
-                <th>พบแพทย์</th>
+                <th>พบแพทย์<br><span style="font-size:15px;">เวลาที่แพทย์จ่ายยา</span></th>
                 <th>จ่ายยา</th>
                 <th>ส่วนเก็บเงิน</th>
                 <th>ชั่วโมง</th>
@@ -215,6 +215,13 @@ if($page){
             </tr>
         <?php
         while ($a = $q->fetch_assoc()) {
+            if($a['phar_time']>$a['money_time']){
+                $pTime = strtotime($a['phar_time']);
+                $rTime = strtotime($a['register_time']);
+                $diff = abs($pTime-$rTime);
+                $a['minute'] = ($diff / 60)%60;
+                $a['hour'] = round($diff / 3600);
+            }
             ?>
             <tr class="data" data-icd="<?=$a['icd10'];?>">
                 <td><?=$a['registerdate'];?></td>
@@ -223,11 +230,11 @@ if($page){
                 <td><?=$a['ptname'];?></td>
                 <td><?=$a['icd10'];?></td>
                 <td><?=$a['diag'];?></td>
-                <td><?=$a['register_time'];?></td>
-                <td><?=$a['opd_time'];?></td>
-                <td><?=$a['dt_time'];?></td>
-                <td><?=$a['phar_time'];?></td>
-                <td><?=$a['money_time'];?></td>
+                <td><?=$a['register_time'];?><!--ลงทะเบียน--></td>
+                <td><?=$a['opd_time'];?><!--OPD--></td>
+                <td><?=$a['dt_time'];?><!--พบแพทย์--></td>
+                <td><?=$a['phar_time'];?><!--จ่ายยา--></td>
+                <td><?=$a['money_time'];?><!--ส่วนเก็บเงิน--></td>
                 <td><?=$a['hour'];?></td>
                 <td><?=$a['minute'];?></td>
             </tr>

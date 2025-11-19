@@ -11,7 +11,7 @@ $q = mysql_query($sql, $db2);
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {
 
-    $txt .= $item['hospcode'].'|'.$item['policy_id'].'|'.$item['policy_year'].'|'.$item['policy_data'].'|'.$item['d_update']."\r\n";
+    $txt .= $item['hospcode'].'|'.$item['policy_id'].'|'.$item['policy_year'].'|'.$item['policy_data'].'|'.$item['d_update']."|$HOSPCODE9\r\n";
 
 }
 
@@ -19,7 +19,7 @@ $filePath = $dirPath.'/policy.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$headerQof = "HOSPCODE|POLICY_ID|POLICY_YEAR|POLICY_DATA|D_UPDATE\r\n";
+$headerQof = "HOSPCODE|POLICY_ID|POLICY_YEAR|POLICY_DATA|D_UPDATE|HOSPCODE9\r\n";
 $qofPath = $dirPath.'/qof_policy.txt';
 file_put_contents($qofPath, $headerQof.$txt);
 $qofLists[] = $qofPath;

@@ -302,6 +302,15 @@ if($menucode != 'ADMDR1'){
 <tr>
 	<td BGCOLOR='#148F77'><a target='main' href="newpw.php"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>
 </tr>
+<?php
+if($sOfficer=='ศิริบงกช' || $sOfficer=='ดวงเพชร'){
+?>
+<tr>
+	<td BGCOLOR='#148F77'><a target='_blank' href="report_special_clinic.php"><font face='THSarabunPSK' size='5'>:: ข้อมูลคลินิกพิเศษ/นอกเวลาราชการ</font></a></td>
+</tr>
+<?php
+}
+?>
 <?php 
 if($sOfficer=='วรินทร ทานาค (ว.22067)'){
 	?>

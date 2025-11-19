@@ -102,7 +102,7 @@ while (list ($date,$hn,$an,$drugcode,$dname,$amount,$didstd,$unit,$unit_packing,
 
     // echo "$hospcode|$hn|$seq|$date_serv|$clinic|$didstd|$dname|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update<br/>";
     
-    $inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$didstd|$dname|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update|$cid\r\n";
+    $inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$didstd|$dname|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update|$cid|$HOSPCODE9\r\n";
     // print($inline);
     $txt .= $inline;
     
@@ -111,7 +111,7 @@ $filePath = $dirPath.'/drug_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|DIDSTD|DNAME|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|DIDSTD|DNAME|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_drug_opd.txt';
 file_put_contents($qofPath, $txt);

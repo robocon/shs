@@ -72,7 +72,7 @@ while ($c19 = mysql_fetch_assoc($q_c19)) {
     $opcard = mysql_fetch_assoc($q_opcard);
     $CID = $opcard['idcard'];
 
-    $epiTXT .= "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$VACCINETYPE|$VACCINEPLACE|$PROVIDER|$D_UPDATE|$CID\r\n";
+    $epiTXT .= "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$VACCINETYPE|$VACCINEPLACE|$PROVIDER|$D_UPDATE|$CID|$HOSPCODE9|$HOSPCODE9\r\n";
 
 }
 
@@ -81,7 +81,7 @@ file_put_contents($filePath, $epiTXT);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|VACCINETYPE|VACCINEPLACE|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|VACCINETYPE|VACCINEPLACE|PROVIDER|D_UPDATE|CID|HOSPCODE9|VACCINEPLACE9\r\n";
 $epiTXT = $header.$epiTXT;
 $qofPath = $dirPath.'/qof_epi.txt';
 file_put_contents($qofPath, $epiTXT);

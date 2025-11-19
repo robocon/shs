@@ -62,14 +62,14 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['QUALIFIER'].'|'
     .$provider.'|'
     .$item['D_UPDATE'].'|'
-    .$item['CID']."\r\n";
+    .$item['CID']."|$HOSPCODE9\r\n";
 }
 
 $filePath = $dirPath.'/icf.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|DISABID|PID|SEQ|DATE_SERRV|ICF|QUALIFIER|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|DISABID|PID|SEQ|DATE_SERRV|ICF|QUALIFIER|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_icf.txt';
 file_put_contents($qofPath, $txt);

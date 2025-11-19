@@ -54,7 +54,7 @@ while (list ($date,$dcdate,$hn,$an,$icd10,$doctor,$result) = mysql_fetch_row ($r
     $provider=$seq.$doctorcode;
     }
 
-    $txt .= "$hospcode|$hn|$hospcode|$an|$seq|$ddeath|$cdeath_a|$cdeath_b|$cdeath_c|$cdeath_d|$odisease|$cdeath|$pregdeath|$pdeath|$provider|$d_update|$cid\r\n";				
+    $txt .= "$hospcode|$hn|$hospcode|$an|$seq|$ddeath|$cdeath_a|$cdeath_b|$cdeath_c|$cdeath_d|$odisease|$cdeath|$pregdeath|$pdeath|$provider|$d_update|$cid|$HOSPCODE9|$HOSPCODE9\r\n";				
     // $strFileName3 = "death.txt";
     // $objFopen3 = fopen($strFileName3, 'a');
     // fwrite($objFopen3, $strText3);
@@ -72,7 +72,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|HOSPDEATH|AN|SEQ|DDEATH|CDEATH_A|CDEATH_B|CDEATH_C|CDEATH_D|ODISEASE|CDEATH|PREGDEATH|PDEATH|PROVIDER|D_UPDATE|CID\r\n";
+$header = "HOSPCODE|PID|HOSPDEATH|AN|SEQ|DDEATH|CDEATH_A|CDEATH_B|CDEATH_C|CDEATH_D|ODISEASE|CDEATH|PREGDEATH|PDEATH|PROVIDER|D_UPDATE|CID|HOSPCODE9|HOSP9_DEATH\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_death.txt';
 file_put_contents($qofPath, $txt);

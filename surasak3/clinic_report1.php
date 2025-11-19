@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>รายงานสมุดทะเบียนใบรับรองแพทย์</title>
+<title>รายงานคลินิกพิเศษนอกเวลาราชการ</title>
 	
 <style type="text/css">
 
@@ -58,12 +58,12 @@ table {
 
 /* Your Style */
 @font-face{
-	font-family: 'Trirong-Regular';
-	src: url('fonts/webfont/Trirong-Regular.eot');
-	src: url('fonts/webfont/Trirong-Regular.eot#iefix'),
-	url('fonts/webfont/Trirong-Regular.woff') format('embedded-opentype'),
-	url('fonts/webfont/Trirong-Regular.ttf') format('truetype');
-	/*url('fonts/webfont/Trirong-Regular.svg#ludger_duvernayregular') format('svg');*/
+	font-family: 'TH SarabunPSK';
+	src: url('fonts/webfont/TH SarabunPSK.eot');
+	src: url('fonts/webfont/TH SarabunPSK.eot#iefix'),
+	url('fonts/webfont/TH SarabunPSK.woff') format('embedded-opentype'),
+	url('fonts/webfont/TH SarabunPSK.ttf') format('truetype');
+	/*url('fonts/webfont/TH SarabunPSK.svg#ludger_duvernayregular') format('svg');*/
 	font-weight: normal;
 	font-style: normal;
 }
@@ -72,11 +72,11 @@ body{
 	padding: 0;
 }
 body, td, th, h1, h2, h3, legend{
-	font-family: 'Trirong-Regular';
+	font-family: 'TH SarabunPSK';
 	font-size: 1em;
 }
 select, input, button{
-	font-family: 'Trirong-Regular';
+	font-family: 'TH SarabunPSK';
 	font-size: 1em;
 }
 fieldset{
@@ -129,7 +129,7 @@ b, strong, h1, h2, h3{
 	
 	body, td, th, h1, h2, h3, legend{
 		padding-left: 10px;
-		/*font-family: 'Trirong-Regular';
+		/*font-family: 'TH SarabunPSK';
 		font-size: 1em;*/
 	}
 	.shs-header{
@@ -445,7 +445,7 @@ switch($_POST['m_start']){
 	$sql="SELECT a.*,b.ptright 
 	FROM clinic_vip AS a 
 	LEFT JOIN opcard AS b ON b.hn=a.hn
-	WHERE a.thidate LIKE '$thidate' 
+	WHERE a.thidate LIKE '$thidate%' 
 	AND a.time ='".$_POST['time']."' 
 	AND a.doctor ='".$_POST['doctor']."' 
 	AND a.status='Y' ORDER BY a.row_id ASC";
@@ -470,7 +470,7 @@ switch($_POST['m_start']){
     <td colspan="2" align="center" width="30%">ชื่อ - สกุล</td>
     <td align="center" width="13%">HN</td>
 	<td align="center" width="20%">สิทธิ์</td>
-    <td align="center" width="13%">AN</td>
+    <td align="center" width="13%">ค่าคลินิกพิเศษ/นอกเวลาราชการ</td>
     <td colspan="2" align="center" id="no_print">จัดการ</td>
 
   </tr>
@@ -484,8 +484,10 @@ switch($_POST['m_start']){
    
    global  $yot,$doctor;
 
-
-
+	$sql_pat="select price from patdata where date like '$thidate%' AND hn='".$arr['hn']."' AND code IN ('clinic','clinic50','clinic100','clinic300','doctor100') GROUP by hn HAVING SUM(price) > 0";
+	//echo $sql_pat;
+	$query_pat=mysql_query($sql_pat);
+	list($price)=mysql_fetch_array($query_pat);
   $r++;
   	  if($r=='31'){
 $r=1;
@@ -498,7 +500,7 @@ echo "<table width='100%' border='0' align='center' class='font2 footer-sign'>
   </tr>
   <tr>
     <td align='center'>พ.ต.หญิง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td align='center'>$yot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align='center'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
   </tr>
   <tr>
     <td align='center'>( พ.ต.หญิงศิริบงกช คัมภีร์พิทักษ์ )</td>
@@ -527,7 +529,7 @@ echo "<table width='100%' border='0' align='center' class='font2 footer-sign'>
     <td colspan='2' align='center' width=\"30%\">ชื่อ - สกุล</td>
     <td align=\"center\" width=\"13%\">HN</td>
 	<td align=\"center\" width=\"20%\">สิทธิ์</td>
-    <td align=\"center\" width=\"13%\">AN</td>
+    <td align=\"center\" width=\"13%\">ค่าคลินิกพิเศษ/นอกเวลาราชการ</td>
     <td align=\"center\" id='no_print' colspan='2' id=\"no_print\">จัดการ</td>
 
   </tr>";
@@ -549,7 +551,7 @@ $lname = substr($arr['ptname'],strlen($fname)+1);
 		// mb_str_replace('โครงการ', '',)
 
 	?></td>
-    <td>&nbsp;<?=$arr['an']?></td>
+    <td align="center">&nbsp;<?=number_format($price,2)?></td>
     <td align="center" id="no_print"><a id="edit" class="various iframe" href="clinic_editform.php?row_id=<?=$arr['row_id']?>">แก้ไข</a></td>
     <td align="center" id="no_print"><a id="delete" class="various iframe" href="clinic_delete.php?row_id=<?=$arr['row_id']?>">ลบ</a></td>
     </tr>
@@ -570,7 +572,7 @@ $lname = substr($arr['ptname'],strlen($fname)+1);
   </tr>
   <tr>
     <td align="center">พ.ต.หญิง &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td align="center"><?=$yot;?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
   </tr>
   <tr>
     <td align="center">( ศิริบงกช คัมภีร์พิทักษ์ )</td>
