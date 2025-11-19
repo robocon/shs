@@ -65,7 +65,10 @@ if($action==='findvn'){
 		</table>
 		<?php
 	}else{
-		?><p><b>ไม่พบข้อมูล</b></p><?php
+		?>
+		<p><a href="javascript:void(0);" onclick="closeSelectVn()">[ปิด]</a></p>
+		<p><b>ไม่พบข้อมูล</b></p>
+		<?php
 	}
 	exit;
 }
@@ -202,7 +205,7 @@ $list_lab["DB"] = "DB";
 	.pdxhead {font-size: 24px;}
 	label:hover{cursor: pointer;}
 	.button {
-		background-color: #008080; /* Green */
+		background-color: #04AA6D; /* Green */
 		border: none;
 		color: white;
 		padding: 8px 15px;
@@ -213,7 +216,7 @@ $list_lab["DB"] = "DB";
 		line-height: 20px;
 	}
 	.button:hover{
-		background-color: rgba(1, 117, 75, 1);
+		background-color: #038d5a;
 	}
 	.checkupField tr td{
 		padding-bottom: 4px;
@@ -278,11 +281,11 @@ if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 	$sql = "Select vn,ptright,toborow From opday where thdatehn = '$thdateHn' limit 1";
 	list($arr_view["vn"],$ptright,$toborow) = mysql_fetch_row(mysql_query($sql));
 
-	// $date_hn = date("Y-m-d").$arr_view["hn"];
+	$date_hn = date("Y-m-d").$arr_view["hn"];
 	// $date_vn = date("Y-m-d").$arr_view["vn"];
 	
 	// ดึงข้อมูลล่าสุดมาแสดงผล
-	$sql3 = "Select * From dxofyear_out where hn = '$p_hn' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '".date("Y-m-d")."%'
+	$sql3 = "Select * From dxofyear_out where thdatehn = '$date_hn' ORDER BY row_id DESC LIMIT 0,1 "; //and thidate like '".date("Y-m-d")."%'
 	$result3 = Mysql_Query($sql3);
 
 	$dateDxofyear = '';
@@ -319,11 +322,17 @@ if(!empty($_POST["post_vn"]) && $_POST["p_hn"] != ""){
 		
 	}else{ // ถ้าไม่มีข้อมูลใน dxofyear_out ค่อยมาใช้ข้อมูลจากใน opd แทน
 
-		$sql3 = "Select congenital_disease,temperature,pause,rate,weight,height,bp1,bp2,waist,cigarette,alcohol,exercise,doctor From opd where hn = '$p_hn' AND type <> 'ญาติ' ORDER BY row_id DESC LIMIT 1 "; //and thidate like '$thaidate%'
+		$sql3 = "SELECT `thidate`,`congenital_disease`,`temperature`,`pause`,`rate`,`weight`,`height`,`bp1`,`bp2`,`waist`,`cigarette`,`alcohol`,`exercise`,`doctor` 
+		FROM `opd` 
+		WHERE `hn` = '$p_hn' 
+		AND `type` <> 'ญาติ' 
+		ORDER BY `row_id` DESC 
+		LIMIT 1 "; //and thidate like '$thaidate%'
 		$result3 = Mysql_Query($sql3);
 		$cou = mysql_num_rows($result3);
-		list($congenital_disease,$temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$waist, $cigarette, $alcohol, $exercise, $doctor) = Mysql_fetch_row($result3);
+		list($thidate,$congenital_disease,$temperature,$pause,$rate,$weight,$height,$bp1,$bp2,$waist, $cigarette, $alcohol, $exercise, $doctor) = Mysql_fetch_row($result3);
 
+		$dateDxofyear = ' ( วันที่บันทึกครั้งล่าสุด '.substr($thidate,0,10).' )';
 	}
 
 	if($congenital_disease == ''){ 

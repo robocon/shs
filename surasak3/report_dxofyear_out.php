@@ -1,13 +1,5 @@
 <?php 
 include_once dirname(__FILE__).'/bootstrap.php';
-
-$Conn = mysql_connect(HOST, USER, PASS) or die( mysql_error() );
-mysql_select_db(DB, $Conn) or die( mysql_error() );
-mysql_query("SET NAMES UTF8", $Conn);
-
-$dbi = new mysqli(HOST, USER, PASS, DB);
-$dbi->query("SET NAMES UTF8");
-
 ?>
 <style type="text/css">
 hr{
@@ -71,21 +63,27 @@ if(isset($_POST['hn'])){
 	$num = mysql_num_rows($row);
 	if($num>0){
 	?>
-	<style>
-		*{
-			font-family: "TH SarabunPSK";
-			font-size: 20px;
-		}
-	</style>
 	<a href="../nindex.htm" class="button">&lt;&lt; ไปเมนู</a>&nbsp;&nbsp;<a href="report_dxofyear_out.php" style="text-decoration:none;" class="button">เลือก HN ใหม่</a>
 	<div>&nbsp;</div>
+	<?php
+	$sql = sprintf("SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '%s'", $dbi->real_escape_string($_POST['hn']));
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
+		$opcard = $q->fetch_assoc();
+		?>
+		<div class="tet">
+			<b>HN: </b><?=$opcard['hn'];?> <b>ชื่อสกุล: </b><?=$opcard['ptname'];?>
+		</div>
+		<?php
+	}
+	?>
 	<table border="1" cellpadding="4" cellspacing="0">
 		<tr>
 			<th align="center"><span class="tet">วันที่ลงผลตรวจ</span></th>
 			<th align="center"><span class="tet">ชื่อ-สกุล</span></th>
 			<th align="center"><span class="tet">ปี</span></th>
 			<th align="center"><span class="tet">ประเภท</span></th>
-			<th align="center">&nbsp;</th>
+			<th align="center">พิมพ์</th>
 			<th align="center">&nbsp;</th>
 			<!-- <td width="46" align="center">&nbsp;</td>
 			<td width="46" align="center">&nbsp;</td> -->
@@ -106,7 +104,7 @@ if(isset($_POST['hn'])){
 				<td><span class="tet"><?=$result["ptname"] ?></span></td>
 				<td align="center"><span class="tet"><?=$result["yearcheck"] ?></span></td>
 				<td align="center"><span class="tet"><?=$result['camp']; ?></span></td>
-				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&chkyear=<?=$result["yearcheck"] ?>" target="_blank">พิมพ์ 🖨️</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&chkyear=<?=$result["yearcheck"] ?>" target="_blank">🖨️</a></span></td>
 				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&no&chkyear=<?=$result["yearcheck"] ?>" target="_blank">ดูข้อมูล</a></span></td> -->
 				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"] ?>" target="_blank">Stricker</a></span></td>
 				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"] ?>" target="_blank">OLD</a></span></td> -->
