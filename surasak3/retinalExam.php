@@ -80,7 +80,7 @@ if($action == 'getOpd'){
             font-family: "TH SarabunPSK";
             font-size: 16pt;
         }
-        #navMenu, #opdTb tr th{
+        #navMenu, #opdTb tr th, .swal2-html-container table tr th{
             background-color: #13795b;
             color:#ffffff;
         }
@@ -436,7 +436,7 @@ if($action == 'getOpd'){
                             window.location='retinalExam.php';
                         });
                     }else{
-                        Swal.fire({html:`Message: ${res.msg}<br>Error: ${res.error}`});
+                        Swal.fire({html:`<div><b>Message</b>: ไม่สามารถบันทึกข้อมูลได้</div><div><b>Error</b>: ${res.error.message}</div>`});
                     }
                 });
                 

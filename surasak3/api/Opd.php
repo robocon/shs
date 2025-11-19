@@ -30,6 +30,7 @@ if($action==='saveRetinal'){
             $dmNumber = $res['dm_no'] = $resInsertDiabetes;
         }else{
             $error_list['insert_retinal_diabetes'] = $resInsertDiabetes;
+            $error_list['message'] = $dm->getError();
             $res['status']=400;
         }
     }else{
@@ -44,6 +45,7 @@ if($action==='saveRetinal'){
             $res['dm_history_id'] = $insertHistoryId;
         }else{
             $error_list['insert_diabetes_history'] = $insertHistoryId;
+            $error_list['message'] = $dm->getError();
             $res['status']=400;
         }
     }else{
@@ -60,6 +62,7 @@ if($action==='saveRetinal'){
             $res['retinal_id'] = $insertRetinal;
         }else{
             $error_list['insert_retinal'] = $insertRetinal;
+            $error_list['message'] = $dm->getError();
             $res['status']=400;
         }
     }else{
