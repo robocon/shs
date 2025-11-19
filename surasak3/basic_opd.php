@@ -1146,7 +1146,8 @@ $showyear="25".$nPrefix;
  &nbsp;&nbsp;<input type="button" name="button" id="button" value="ข้อมูล Refer, Observe และคำแนะนำ" onclick="window.open('opd_advice.php') " class="txtsarabun" /> <br>
  
 <div style="margin-left:10px;"><input type="button" name="button" id="button" value="บันทึกการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_home.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />&nbsp;&nbsp;&nbsp;&nbsp;
-<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />
+<input type="button" name="button" id="button" value="พิมพ์ข้อมูลการดูแลรักษาผู้ป่วย Covid-19 กรณี OP SI" onclick="window.open('opselfisolation_print.php?hn=<?php echo $hn;?>&thidatehn=<?=$thidatehn;?>') " class="txtsarabun" />&nbsp;&nbsp;&nbsp;&nbsp;
+<input type="button" name="button" id="button" value="บันทึกรายชื่อผู้ป่วยคลินิกพิเศษ/นอกเวลาราชการ" onclick="window.open('clinic_vip.php') " class="button-blue" />
 </div>
 </span></p>
 </div>
