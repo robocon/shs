@@ -16,6 +16,8 @@ $action = sprintf("%s", $_REQUEST['action']);
 if($action==='saveRetinal'){
 
     $post = $json->decode($jsonData);
+
+    // ดูว่าใน diabetes_clinic เคยมีข้อมูลแล้วรึยัง
     $item = $dm->getDiabetesFromHn($post['hn']);
 
     $res = array('status'=>200, 'msg'=>'บันทึกข้อมูลเรียบร้อย');
@@ -35,6 +37,9 @@ if($action==='saveRetinal'){
         }
     }else{
         $dmNumber = $item['dm_no'];
+        $updateDm = $dm->updateRetinalDiabetes($dmNumber,$item['dateN'], $post);
+        $res['update_dm_no'] = $updateDm;
+
     }
 
     // เช็กดูว่าวันนี้มี history แล้วรึยัง ถ้ายังไม่มีค่อยเพิ่ม
@@ -51,9 +56,7 @@ if($action==='saveRetinal'){
     }else{
         $res['dm_history_id'] = $his;
     }
-
-    $updateDm = $dm->updateRetinalDiabetes($dmNumber,$item['dateN'], $post);
-    $res['update_dm_no'] = $updateDm;
+    
 
     $retinal = $dm->findRetinalExamFromDateHn(date('Y-m-d').$post['hn']);
     if($retinal===false){

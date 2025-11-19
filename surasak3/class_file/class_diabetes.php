@@ -52,13 +52,13 @@ class Diabetes extends Opd
         `pause`, `rate`, `bp1`, `bp2`, `officer`, `register_date`, 
         `retinal_date`, `follow`, `followText`
         ) VALUES(
-        '%s', '%s', '%s', '%s', '%s', '%s',
+        '%s', CURDATE(), '%s', '%s', '%s', '%s',
         '%s', '%s', '%s', '%s', '%s', '%s',
         '%s', '%s', '%s', '%s', '%s', '%s',
         '%s', '%s', '%s'
         );",
-        $dmNumber, $post['date'], $dateN, $post['hn'], $post['doctor'], $post['ptname'],
-        $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['waist'],
+        $dmNumber, $post['date'], $post['hn'], $post['doctor'], $post['ptname'],
+        $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['temp'],
         $post['pulse'],$post['rate'],$post['bp1'],$post['bp2'],$_SESSION['sOfficer'],$registerDate,
         $post['retinal_date'],$post['follow'],$post['followText']
         );
@@ -143,7 +143,7 @@ class Diabetes extends Opd
         '%s', '%s', '%s', '%s'
         );",
         $dmNumber, $dateN, $post['hn'], $post['doctor'], $post['ptname'],
-        $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['waist'],
+        $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['temp'],
         $post['pulse'],$post['rate'],$post['bp1'],$post['bp2'],$_SESSION['sOfficer'],$_SESSION['sIdname'],
         $dummy_no,
         $post['retinal_date'],$post['follow'],$post['followText'],$post['opd_id']
@@ -177,7 +177,7 @@ class Diabetes extends Opd
      * บันทึกข้อมูลเข้าไปใน retinal_exam
      */
     public function insertRetinalExam($dmNumber='',$post=array()){
-        $datehn = date('Y-m-d').$post['hn'];
+        $datehn = $post['date'].$post['hn'];
         $res = false;
 
         $sql = sprintf("INSERT INTO `retinal_exam` (
@@ -189,7 +189,6 @@ class Diabetes extends Opd
         $dmNumber, $this->data($post['hn']), $datehn, $this->data($post['opd_id']), $this->data($post['retinal']),
         $this->data($post['retinal_date']),$this->data($post['follow']),$this->data($post['followText']),$_SESSION['sOfficer']
         );
-        dump($sql);
         $q = $this->dbi->query($sql);
         if($q!==false){
             $this->diabetesState = 200;
@@ -207,7 +206,7 @@ class Diabetes extends Opd
     public function updateRetinalExam($post=array()){
 
         $datehn = $post['date'].$post['hn'];
-
+        $res = false;
         $sql = sprintf("UPDATE `retinal_exam` SET 
         `retinal`='%s', 
         `retinal_date`='%s', 
@@ -230,5 +229,6 @@ class Diabetes extends Opd
             $this->diabetesState = 400;
             $this->diabetesError = $this->dbi->error;
         }
+        return $res;
     }
 }

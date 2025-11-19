@@ -16,6 +16,7 @@ $opcard = new Opcard();
 $opd = new Opd();
 
 $action = $_GET['action'];
+// สร้างรายการจาก opd 3เดือนย้อนหลัง
 if($action == 'getOpd'){
 
     $items = $opd->last3MonthsFromHn($_GET['hn']);
@@ -42,6 +43,7 @@ if($action == 'getOpd'){
                     t-bp1="<?=$a['bp1'];?>"
                     t-bp2="<?=$a['bp2'];?>"
                     t-vn="<?=$a['vn'];?>"
+                    t-doctor="<?=$a['doctor'];?>"
                     onclick="selectOpd(this,'<?=$thaiDate;?>')"><?=$thaiDate;?>
                     </a>
                 </td>
@@ -260,6 +262,7 @@ if($action == 'getOpd'){
             <div class="d-grid gap-2 col-6 mx-auto mb-3">
                 <button class="btn btn-primary" type="submit">บันทึกข้อมูล</button>
                 <input type="hidden" name="opd_id" id="opd_id" value="">
+                <input type="hidden" name="doctor" id="doctor" value="">
                 <input type="hidden" name="hn" id="hn" value="<?=$opc['hn'];?>">
                 <input type="hidden" class="form-control" id="vn" name="vn">
             </div>
@@ -334,7 +337,8 @@ if($action == 'getOpd'){
                 document.getElementById('bmi').value = t.getAttribute("t-bmi");
                 document.getElementById('bp1').value = t.getAttribute("t-bp1");
                 document.getElementById('bp2').value = t.getAttribute("t-bp2");
-                document.getElementById('vn').value = t.getAttribute("t-vn");
+                document.getElementById('doctor').value = t.getAttribute("t-doctor");
+                
                 Swal.close();
             }
 
