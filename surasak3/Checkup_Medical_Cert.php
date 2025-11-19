@@ -94,16 +94,14 @@ if(!$query){
 
 //$sql = "SELECT * FROM `opd` WHERE hn = '$hn'  "; //AND thidate like '%$Txt_Datetime2%' ORDER BY row_id ASC 
 $sql = "SELECT * FROM `dxofyear_out` WHERE hn = '$hn'  ";
-//echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
-
 if(empty($num)){
     echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติคนไข้</h1>";echo "<br>".exit();
-}//end if
-
+}
+//end if
+$doctorDxofyearOut = '';
 while($rows = mysql_fetch_array($query)){
-
     $Txt_Temp = $rows["temperature"];
     $Txt_Pause = $rows["pause"];
     $Txt_Rate = $rows["rate"];
@@ -118,8 +116,7 @@ while($rows = mysql_fetch_array($query)){
     $Txt_Treat_other = $rows["treat_other"]; // Í×è¹æ·ÕèÊÓ¤Ñ­
     //$Txt_Doctor_Ans= $rows["doctor_ans"]; // ÊÃØ»¤ÇÒÁ¤Ô´àËç¹áÅÐ¢éÍá¹Ð¹Ó¢Í§á¾·Âì
     $Txt_Flag_Address_Use = $rows["address_use"];
-
-
+    $doctorCodeDxofyearOut = substr($rows["doctor"],0,5);
 }//end while
 
 /////////////////////////////////////////////////////////////////
@@ -200,12 +197,9 @@ while($rows = mysql_fetch_array($query)){
 
 //-----> sql ข้อมูลแพทย์
 $datenow=date("Y-m-d");
-if($datenow=="2025-11-10"){
-$sql = "SELECT * FROM `doctor` WHERE row_id = '223' AND status = 'y' ";
-}else{
-$sql = "SELECT * FROM `doctor` WHERE row_id = '20' AND status = 'y' ";	
-}	
-//echo $sql;exit();
+// 223 => MD223 ฐิตาภา เหมพิจิตร
+// 20 => MD041 วรวิทย์ วงษ์มณี
+$sql = "SELECT * FROM `doctor` WHERE `name` LIKE '$doctorCodeDxofyearOut%' AND status = 'y' ";
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
 
@@ -246,7 +240,6 @@ while($rows = mysql_fetch_array($query)){
 ///////////////////////////////////////////////////////////////// 
 ?>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 15pt;
@@ -302,9 +295,6 @@ font.txt_dotted {
   box-shadow: 2px 5px #888888;
   width: 230px;
 }
--->
-
-
 </style>
 <title>ใบรับรองแพทย์ 5 โรค</title>
 
