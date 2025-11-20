@@ -52,18 +52,23 @@ hr{
 .button:hover{
 	background-color: #048d5bff;
 }
+a{
+	text-decoration: none;
+}
 </style>
 <?php
 if(isset($_POST['hn'])){
 
 	$hn = sprintf("%s", $_POST['hn']);
 	
-	$select = "SELECT * FROM `condxofyear_out` WHERE `hn` = '$hn' ORDER BY `thidate` DESC";
-	$row = mysql_query($select);
-	$num = mysql_num_rows($row);
+	$sql = sprintf("SELECT * FROM `condxofyear_out` WHERE `hn` = '%s' ORDER BY `thidate` DESC", $dbi->real_escape_string($_POST['hn']));
+	$qCondx = $dbi->query($sql);
+	$num = $qCondx->num_rows;
 	if($num>0){
 	?>
-	<a href="../nindex.htm" class="button">&lt;&lt; ไปเมนู</a>&nbsp;&nbsp;<a href="report_dxofyear_out.php" style="text-decoration:none;" class="button">เลือก HN ใหม่</a>
+	<a href="../nindex.htm" class="text1 button">&lt;&lt; ไปเมนู</a>&nbsp;&nbsp;
+	<a href="report_dxofyear_out.php" style="text-decoration:none;" class="text1 button">เลือก HN ใหม่</a>&nbsp;&nbsp;
+	<a href="chk_sso.php" target="_blank" class="text1 button">พิมพ์ใบตรวจสุขภาพ <b><u>สิทธิ์ประกันสังคม</u></b>/ลูกจ้างประจำปี67</a>
 	<div>&nbsp;</div>
 	<?php
 	$sql = sprintf("SELECT `hn`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname` FROM `opcard` WHERE `hn` = '%s'", $dbi->real_escape_string($_POST['hn']));
@@ -83,14 +88,14 @@ if(isset($_POST['hn'])){
 			<th align="center"><span class="tet">ชื่อ-สกุล</span></th>
 			<th align="center"><span class="tet">ปี</span></th>
 			<th align="center"><span class="tet">ประเภท</span></th>
-			<th align="center">พิมพ์</th>
+			<th align="center"><span class="tet">พิมพ์ผล</span></th>
 			<th align="center">&nbsp;</th>
 			<!-- <td width="46" align="center">&nbsp;</td>
 			<td width="46" align="center">&nbsp;</td> -->
 		</tr>
 		<?php
 		$i = 0;
-		while ($result = mysql_fetch_array($row)) {
+		while ($result = $qCondx->fetch_assoc()) {
 			if ($i == 1) {
 				$i = 0;
 				$bgcolor = "#FFFFA6";
@@ -106,7 +111,7 @@ if(isset($_POST['hn'])){
 				<td align="center"><span class="tet"><?=$result['camp']; ?></span></td>
 				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&chkyear=<?=$result["yearcheck"] ?>" target="_blank">🖨️</a></span></td>
 				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out.php?id=<?=$result["row_id"] ?>&no&chkyear=<?=$result["yearcheck"] ?>" target="_blank">ดูข้อมูล</a></span></td> -->
-				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"] ?>" target="_blank">Stricker</a></span></td>
+				<td align="center"><span class="tet"><a href="report_dxofyear_out.php?ids=<?=$result["row_id"] ?>" target="_blank" class="button">ปริ้นสติกเกอร์</a></span></td>
 				<!-- <td align="center"><span class="tet"><a href="report_dxofyear_out2014.php?id=<?=$result["row_id"] ?>" target="_blank">OLD</a></span></td> -->
 			</tr>
 			<?php
@@ -116,7 +121,8 @@ if(isset($_POST['hn'])){
 	<?php
 	}else{
 		?>
-		<p><b>ไม่พบข้อมูล</b></p>
+		<p><b>ไม่พบข้อมูลการตรวจสุขภาพ</b></p>
+		<p><a href="javascript:history.back()">ย้อนกลับ</a></p>
 		<?php
 	}
 	/*
