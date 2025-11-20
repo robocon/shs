@@ -48,7 +48,7 @@ if($type === 'dphardep')
                         <td><?=$a['hn'];?></td>
                         <td><?=$a['ptright'];?></td>
                         <td><?=$a['price'];?></td>
-                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=dphardep" target="editPage">แก้ไข</a><td>
+                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&tablePart=dphardep" target="editPage">แก้ไข</a><td>
                     </tr>
                     <?php
 
@@ -89,7 +89,7 @@ if($type === 'dphardep')
                         <td><?=$a['tradname'];?></td>
                         <td><?=$a['amount'];?></td>
                         <td><?=$a['price'];?></td>
-                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=ddrugrx" target="editPage">แก้ไข</a><td>
+                        <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&tablePart=ddrugrx" target="editPage">แก้ไข</a><td>
                     </tr>
                     <?php
                 }

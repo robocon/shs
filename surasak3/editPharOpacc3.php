@@ -95,7 +95,7 @@ if($q->num_rows===0)
                     <td><?=$a['hn'];?></td>
                     <td><?=$a['ptright'];?></td>
                     <td><?=$a['price'];?></td>
-                    <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=phardep" target="editPage">แก้ไข</a><td>
+                    <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&tablePart=phardep" target="editPage">แก้ไข</a><td>
                 </tr>
                 <?php
             }
@@ -133,7 +133,7 @@ if($q->num_rows===0)
                     <td><?=$a['tradname'];?></td>
                     <td><?=$a['amount'];?></td>
                     <td><?=$a['price'];?></td>
-                    <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&part=drugrx" target="editPage">แก้ไข</a><td>
+                    <td><a href="editPharOpacc5.php?row_id=<?=$a['row_id'];?>&tablePart=drugrx" target="editPage">แก้ไข</a><td>
                 </tr>
                 <?php
             }

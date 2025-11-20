@@ -11,7 +11,7 @@ if($_SESSION['sIdname']!=='krit')
 // $json = new Services_JSON();
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
-$part = $_REQUEST['part'];
+$tablePart = $_REQUEST['tablePart'];
 $row_id = $_REQUEST['row_id'];
 
 $section = $_REQUEST['section'];
@@ -87,12 +87,16 @@ elseif($action==='save' && $section==='dphardep')
     $date = $_POST['date'];
     $price = $_POST['price'];
     $essd = $_POST['essd'];
+    $nessdy = $_POST['nessdy'];
+    $nessdn = $_POST['nessdn'];
     $row_id = $_POST['row_id'];
     $tvn = $_POST['tvn'];
 
     $sql = "UPDATE `dphardep` SET `date`='$date', 
     `price`='$price', 
     `essd`='$essd', 
+    `nessdy`='$nessdy', 
+    `nessdn`='$nessdn', 
     `tvn`='$tvn'
     WHERE `row_id`='$row_id' ;";
     $q = $dbi->query($sql);
@@ -105,6 +109,7 @@ elseif($action==='save' && $section==='dphardep')
         echo "บันทึกข้อมูลเรียบร้อย";
     }
     
+
 }
 elseif($action==='save' && $section==='ddrugrx')
 {
@@ -113,11 +118,13 @@ elseif($action==='save' && $section==='ddrugrx')
     $salepri = sprintf("%s", $_POST['salepri']);
     $row_id = sprintf("%s", $_POST['row_id']);
     $amount = sprintf("%s", $_POST['amount']);
+    $part = sprintf("%s", $_POST['part']);
 
     $sql = "UPDATE `ddrugrx` SET `date`='$date', 
     `price`='$price', 
     `salepri`='$salepri',
-    `amount`='$amount'
+    `amount`='$amount',
+    `part`='$part'
     WHERE `row_id`='$row_id' ;";
     $q = $dbi->query($sql);
     if(!empty($mysqli->error))
@@ -211,7 +218,7 @@ if($part==='phardep' && !empty($row_id))
             <td colspan="4" style="text-align: center;">
                 <button type="submit">บันทึกข้อมุล</button>
                 <input type="hidden" name="section" value="phardep">
-                <input type="hidden" name="part" value="phardep">
+                <input type="hidden" name="tablePart" value="phardep">
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="row_id" value="<?=$it['row_id'];?>">
             </td>
@@ -271,7 +278,7 @@ if($part==='phardep' && !empty($row_id))
             <td colspan="4">
                 <button type="submit">บันทึกข้อมุล</button>
                 <input type="hidden" name="section" value="drugrx">
-                <input type="hidden" name="part" value="drugrx">
+                <input type="hidden" name="tablePart" value="drugrx">
                 <input type="hidden" name="action" value="save">
                 <input type="hidden" name="row_id" value="<?=$it['row_id'];?>">
             </td>
@@ -351,6 +358,12 @@ if($part==='phardep' && !empty($row_id))
                 <td><input type="text" name="essd" id="essd" value="<?=$a['essd'];?>"></td>
             </tr>
             <tr>
+                <td>nessdy</td>
+                <td><input type="text" name="nessdy" id="nessdy" value="<?=$a['nessdy'];?>"></td>
+                <td>nessdn</td>
+                <td><input type="text" name="nessdn" id="nessdn" value="<?=$a['nessdn'];?>"></td>
+            </tr>
+            <tr>
                 <td>tvn</td>
                 <td><input type="text" name="tvn" id="tvn" value="<?=$a['tvn'];?>"></td>
                 <td></td>
@@ -360,7 +373,7 @@ if($part==='phardep' && !empty($row_id))
                 <td rowspan="4">
                     <button type="submit">บันทึก</button>
                     <input type="hidden" name="section" value="dphardep">
-                    <input type="hidden" name="part" value="dphardep">
+                    <input type="hidden" name="tablePart" value="dphardep">
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="row_id" value="<?=$a['row_id'];?>">
                 </td>
@@ -404,7 +417,7 @@ if($part==='phardep' && !empty($row_id))
                 <td rowspan="4">
                     <button type="submit">บันทึก</button>
                     <input type="hidden" name="section" value="ddrugrx">
-                    <input type="hidden" name="part" value="ddrugrx">
+                    <input type="hidden" name="tablePart" value="ddrugrx">
                     <input type="hidden" name="action" value="save">
                     <input type="hidden" name="row_id" value="<?=$a['row_id'];?>">
                 </td>
