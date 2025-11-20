@@ -74,35 +74,38 @@ if($action == 'getOpd'){
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
-<div class="container">
-    <style>
-        *{
-            font-family: "TH SarabunPSK";
-            font-size: 16pt;
-        }
-        #navMenu, #opdTb tr th, .swal2-html-container table tr th{
-            background-color: #13795b;
-            color:#ffffff;
-        }
-        label:hover{
-            cursor: pointer;
-        }
-    </style>
-    <nav class="navbar navbar-expand-lg" id="navMenu" data-bs-theme="dark">
-        <div class="container-fluid">
-        <a class="navbar-brand" href="../nindex.htm">🏠 HOME</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+<style>
+    *{
+        font-family: "TH SarabunPSK";
+        font-size: 16pt;
+    }
+    #navMenu, #opdTb tr th, .swal2-html-container table tr th{
+        background-color: #13795b;
+        color:#ffffff;
+    }
+    label:hover{
+        cursor: pointer;
+    }
+</style>
+<nav class="navbar navbar-expand-lg" id="navMenu" data-bs-theme="dark">
+    <div class="container-fluid">
+    <a class="navbar-brand" href="../nindex.htm">🏠</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-3 mb-lg-0">
             <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="retinalExam.php">Retinal Exam</a>
             </li>
-            </ul>
-        </div>
-        </div>
-    </nav>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="retinalExamReport.php">Report</a>
+            </li>
+        </ul>
+    </div>
+    </div>
+</nav>
+<div class="container">
     <h3 class="mt-3">ฟอร์มกรอกข้อมูล Retinal Exam</h3>
     <form class="row mt-3 mb-3" action="retinalExam.php" method="POST">
         <div class="col-sm-8 col-md-6 col-lg-4">
