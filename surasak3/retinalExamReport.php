@@ -47,6 +47,10 @@ if(empty($_SESSION['sOfficer'])){
         label:hover{
             cursor: pointer;
         }
+        #table tr th{
+            background-color: #13795b;
+            color: #ffffff;
+        }
     </style>
     <h3 class="mt-3">รายงาน Retinal Exam</h3>
     <form class="row mt-3 mb-3" action="retinalExamReport.php" method="POST">
@@ -61,8 +65,46 @@ if(empty($_SESSION['sOfficer'])){
     </form>
     <?php
     if($_POST['page']=='search'){
-        dump($_POST);
-        $sql = "SELECT * FROM `retinal_exam` WHERE `";
+        
+        $sql = sprintf("SELECT * FROM `retinal_exam` WHERE `date` LIKE '%s'", $dbi->real_escape_string($_POST['date']));
+        $q = $dbi->query($sql);
+        if($q->num_rows>0){
+            ?>
+            <table class="table" id="table">
+                <tr>
+                    <th>#</th>
+                    <th>วันที่มารับบริการ</th>
+                    <th>HN</th>
+                    <th>Retinal Exam</th>
+                    <th>วันที่ตรวจตา</th>
+                    <th>การรักษา</th>
+                </tr>
+            <?php
+            $ii = 1;
+            while ($a = $q->fetch_assoc()) {
+                ?>
+                <tr>
+                    <td><?= $ii; ?></td>
+                    <td><?= $a['service_date']; ?></td>
+                    <td><?= $a['hn']; ?></td>
+                    <td><?= $a['retinal'] ?></td>
+                    <td><?= $a['retinal_date'] ?></td>
+                    <td>
+                        <?php
+                        echo $a['follow'];
+                        if(!empty($a['followText'])){
+                            echo $a['followText'];
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <?php
+                $ii++;
+            }
+            ?>
+            </table>
+            <?php
+        }
     }
     ?>
 </div>

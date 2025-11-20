@@ -58,8 +58,8 @@ if($action==='saveRetinal'){
     }
     
 
-    $retinal = $dm->findRetinalExamFromDateHn(date('Y-m-d').$post['hn']);
-    if($retinal===false){
+    $retinalId = $dm->findRetinalExamFromDateAndHn($post['hn']);
+    if($retinalId===false){
         $insertRetinal = $dm->insertRetinalExam($dmNumber, $post);
         if($insertRetinal!==false){
             $res['retinal_id'] = $insertRetinal;
@@ -69,7 +69,7 @@ if($action==='saveRetinal'){
             $res['status']=400;
         }
     }else{
-        $dm->updateRetinalExam($post);
+        $dm->updateRetinalExam($retinalId, $post);
     }
     
     if(count($error_list)>0){

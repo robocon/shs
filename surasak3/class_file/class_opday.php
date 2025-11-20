@@ -168,7 +168,7 @@ class Opday extends DbConnect
         FROM `opday` 
         WHERE `hn` = '%s' 
         AND `an` IS NULL 
-        AND `thidate` > '$thidate' ", $this->dbi->real_escape_string($hn));
+        AND `thidate` > '%s' ", $this->dbi->real_escape_string($hn), $this->dbi->real_escape_string($thidate));
         $q = $this->dbi->query($sql);
         $items = false;
         if($q->num_rows>0){

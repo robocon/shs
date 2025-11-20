@@ -43,7 +43,7 @@ class Diabetes extends Opd
      * @return int last insert id
      */
     public function insertRetinalDiabetes($dmNumber='', $post=array()){
-        $dateN = date('Y-m-d');
+        
         $registerDate = date('Y-m-d H:i:s');
         $res = false;
         $sql = sprintf("INSERT INTO `diabetes_clinic`(
@@ -162,8 +162,8 @@ class Diabetes extends Opd
     /**
      * ค้นหา retinal_exam จาก datehn รูปแบบ YYYY-mm-ddHN
      */
-    public function findRetinalExamFromDateHn($datehn=''){
-        $sql = sprintf("SELECT * FROM `retinal_exam` WHERE `datehn` = '%s' ", $this->data($datehn));
+    public function findRetinalExamFromDateAndHn($hn=''){
+        $sql = sprintf("SELECT `id` FROM `retinal_exam` WHERE `date` = CURDATE() AND `hn` = '%s' ", $this->data($hn));
         $q = $this->dbi->query($sql);
         $id = false;
         if($q->num_rows > 0){
@@ -181,12 +181,12 @@ class Diabetes extends Opd
         $res = false;
 
         $sql = sprintf("INSERT INTO `retinal_exam` (
-        `date`, `dm_no`, `hn`, `datehn`, `opd_id`, `retinal`, 
+        `date`, `dm_no`, `hn`, `service_date`, `datehn`, `opd_id`, `retinal`, 
         `retinal_date`, `follow`, `follow_text`, `officer`
         ) VALUES (
-        CURDATE(), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
+        CURDATE(), '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
         );",
-        $dmNumber, $this->data($post['hn']), $datehn, $this->data($post['opd_id']), $this->data($post['retinal']),
+        $dmNumber, $this->data($post['hn']), $this->data($post['date']), $datehn, $this->data($post['opd_id']), $this->data($post['retinal']),
         $this->data($post['retinal_date']),$this->data($post['follow']),$this->data($post['followText']),$_SESSION['sOfficer']
         );
         $q = $this->dbi->query($sql);
@@ -203,28 +203,31 @@ class Diabetes extends Opd
     /**
      * อัพเดทข้อมูลใน retinal exam
      */
-    public function updateRetinalExam($post=array()){
+    public function updateRetinalExam($retinalId, $post=array()){
 
         $datehn = $post['date'].$post['hn'];
         $res = false;
         $sql = sprintf("UPDATE `retinal_exam` SET 
+        `service_date`='%s',
+        `datehn`='%s',
         `retinal`='%s', 
         `retinal_date`='%s', 
         `follow`='%s', 
         `follow_text`='%s', 
         `officer`='%s' 
-        WHERE (`datehn`='%s');",
+        WHERE (`id`='%s');",
+        $this->data($post['date']),
+        $this->data($datehn),
         $this->data($post['retinal']),
         $this->data($post['retinal_date']),
         $this->data($post['follow']),
-        $this->data($post['follow_text']),
-        $this->data($post['officer']),
-        $this->data($datehn)
+        $this->data($post['followText']),
+        $this->data($_SESSION['sOfficer']),
+        $this->data($retinalId)
         );
         $q = $this->dbi->query($sql);
         if($q!==false){
             $this->diabetesState = 200;
-            $res = $this->dbi->insert_id;
         }else{
             $this->diabetesState = 400;
             $this->diabetesError = $this->dbi->error;
