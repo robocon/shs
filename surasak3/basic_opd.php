@@ -1019,7 +1019,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		$time = "4";
 		$path = 'insert_basic_opd.php';	
 		
-	if($_POST["print_basic_opd"] == "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){
+	if($_POST["print_basic_opd"] == "ตกลง & ปริ้นสติกเกอร์แบบ PDF"){ // <<<====== ยกเลิก
 		// echo "<SCRIPT LANGUAGE=\"JavaScript\">window.onload = function(){ window.open('stk_basic_opd.php?dthn=".urlencode($thidatehn)."'); ".$plus." }</SCRIPT>";
 		$time = "6";
 		$path = 'stk_basic_opd.php';
@@ -1925,7 +1925,7 @@ mmHg </td>
 					?>
 				</td>
 				<td align="right" ><label for="">O<sub>2</sub>Sat</label>: </td>
-				<td align="left" ><input type="text" name="spo2" id="spo2" size="3"></td>
+				<td align="left" ><input type="text" name="spo2" id="spo2" size="3">%</td>
 			 </tr>
 			 <tr>
 				<td align="right" class="data_show">CV risk score (ใช้ผลเลือด) : </td>
