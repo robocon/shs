@@ -14,7 +14,7 @@ if($action==='search'){
 
     }else{
 
-        $last = strtotime("-6 months");
+        $last = strtotime("-1 year");
         $date = (date('Y', $last)+543).date('-m-d', $last);
         $sql = "SELECT `row_id` AS `id`,`date`,`hn`,`tvn` 
         FROM `phardep` 
@@ -22,7 +22,7 @@ if($action==='search'){
         AND `date` >= '$date' 
         AND ( `price` > 0 AND `borrow` IS NULL ) 
         AND ( `an` = '' OR `an` IS NULL) ORDER BY `date` DESC ";
-        $q = $dbi->query($sql);
+		$q = $dbi->query($sql);
         $a_rows = $q->num_rows;
         if($a_rows==0){
             $res = array('status'=>400, 'message' => 'ไม่พบรายการ 6เดือนย้อนหลัง' );
@@ -42,7 +42,7 @@ if($action==='search'){
 }elseif ($action==='showDrugrx') {
     
     $hn = sprintf("%s", $_REQUEST['hn']);
-    $last = strtotime("-6 months");
+    $last = strtotime("-1 year");
     $date = (date('Y', $last)+543).date('-m-d', $last);
     $res = array();
     if(empty($hn)){
@@ -142,7 +142,7 @@ if($action==='search'){
                 </tr>
                 <tr>
                     <td>
-                        <b style="color: orange;">* Visit 6 เดือนล่าสุด</b>
+                        <b style="color: orange;">*2568-11-21 ห้องยามีการขอปรับเป็น 1ปี ล่าสุด</b>
                     </td>
                 </tr>
             </table>

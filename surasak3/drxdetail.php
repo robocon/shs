@@ -335,7 +335,7 @@ $EnOpdayThidate = (substr($opdayThidate,0,4)-543).substr($opdayThidate,4,6);
 
 
 $patient_hn = trim($sHn);
-$sixMonthsLater = strtotime("-6 Months", strtotime($EnOpdayThidate));
+$sixMonthsLater = strtotime("-1 year", strtotime($EnOpdayThidate));
 $sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 // $currentDayTH = (date('Y')+543).date('-m-d');
 
@@ -382,7 +382,7 @@ if($q->num_rows>0){
 	<div style="display: block;">
 		<fieldset style="display:inline;">
 			<legend>
-				<p style="font-size:18px; font-weight:bold; margin:0; padding:0;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin / NOACs ในช่วง 6 เดือนย้อนหลัง</u> </p>
+				<p style="font-size:18px; font-weight:bold; margin:0; padding:0;"><u style="text-decoration-color: red;">ผู้ป่วยมีประวัติการใช้ Warfarin / NOACs ในช่วง 1 ปีย้อนหลัง</u> </p>
 			</legend>
 			<table>
 				<tr style="background-color: #73C6B6;">
