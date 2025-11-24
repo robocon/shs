@@ -247,7 +247,14 @@ $dbarr = mysql_fetch_array($result);
 			</tr>
 			<tr>
 				<td valign="top" bgcolor="#FF99CC" align="right"><strong>ผลการดำเนินงาน :</strong></td>
-				<td colspan="3" bgcolor="#FF99CC"><textarea name="p_edit" rows="5" class="forntsarabun" style="width:100%;"></textarea></td>
+				<td colspan="3" bgcolor="#FF99CC">
+					<textarea id="p_edit" name="p_edit" rows="5" class="forntsarabun" style="width:100%;"></textarea>
+					<?php
+					if($_SESSION['smenucode']==='ADM' || $_SESSION['smenucode']==='ADMCOM'){
+						?><a href="javascript:void(0);" onclick="addSuccessText()">ดำเนินการแก้ไขเรียบร้อย</a><?php
+					}
+					?>
+				</td>
 			</tr>
 			<tr>
 				<td bgcolor="#CC6699">&nbsp;</td>
@@ -259,6 +266,9 @@ $dbarr = mysql_fetch_array($result);
 		</table>
 		<script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 		<script>
+			function addSuccessText(){
+				document.getElementById('p_edit').value='ดำเนินการแก้ไขเรียบร้อย';
+			}
 			tinymce.init({
 				selector: 'textarea#detail',
 				toolbar: false, // ปิดใช้งาน toolbar
