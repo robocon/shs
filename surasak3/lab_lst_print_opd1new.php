@@ -159,17 +159,29 @@ while($rowsop=mysql_fetch_array($queryop)){
 			 */
 
 
-			$sql1 = "SELECT b. * 
-			FROM ( 
-				SELECT MAX(`autonumber`) AS `latest_id` 
-				FROM `resulthead` 
-				WHERE `hn` ='$gethn' 
-				AND `labnumber` = '$getlabnumber' 
-				AND `testgroupname` ='$newtestgroupname' 
-				GROUP BY `profilecode`
-			) AS a 
-			LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` ";
-
+			if($getlabnumber=="240826050"){
+				$sql1 = "SELECT b. * 
+				FROM ( 
+					SELECT `autonumber` AS `latest_id` 
+					FROM `resulthead` 
+					WHERE `hn` ='$gethn' 
+					AND `labnumber` = '$getlabnumber' 
+					AND `testgroupname` ='$newtestgroupname' 
+					GROUP BY `profilecode`
+				) AS a 
+				LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` ";
+			}else{
+				$sql1 = "SELECT b. * 
+				FROM ( 
+					SELECT MAX(`autonumber`) AS `latest_id` 
+					FROM `resulthead` 
+					WHERE `hn` ='$gethn' 
+					AND `labnumber` = '$getlabnumber' 
+					AND `testgroupname` ='$newtestgroupname' 
+					GROUP BY `profilecode`
+				) AS a 
+				LEFT JOIN `resulthead` AS b ON b.`autonumber` = a.`latest_id` ";				
+			}	
 			
 			// $sql1="select * 
 			// from resulthead 
@@ -177,11 +189,12 @@ while($rowsop=mysql_fetch_array($queryop)){
 			// and labnumber = '$getlabnumber' 
 			// and testgroupname='$newtestgroupname' 
 			// GROUP BY `profilecode` ";
-			
+			//echo $sql1;
 			$result1= mysql_query($sql1);
 			while($arr1 = mysql_fetch_assoc($result1)){
 			$autonumber = $arr1["autonumber"];
 			$sql2 = "select * from resultdetail where autonumber = '$autonumber' order by seq ASC";
+			//echo $sql2."<br>";
 			$result2= mysql_query($sql2);
 			$i=0;
 			while($arr2 = mysql_fetch_assoc($result2)){

@@ -1557,6 +1557,100 @@ if($arr_view["age"] >= 35){
 <!-- 🔴 สิ้นสุด Card ค่า BS -->
 
 
+<!-- 🟢 เริ่มต้น Card ค่า CHOL -->
+<tr>
+  <!-- Label -->
+  <td align="right" class="profilelab">CHOL :</td>
+
+  <!-- ค่าจาก ผลย้อนหลัง 2 ปี -->
+  <td align="center" bgcolor="#0099CC" class="labfontlab">
+    <span class="style1"><?=$result_year2['chol']?></span>
+  </td>
+
+  <!-- ค่าจาก ผลย้อนหลัง 1 ปี -->
+  <td align="center" bgcolor="#0099CC" class="labfontlab">
+    <span class="style1"><?=$result_year1['chol']?></span>
+  </td>
+
+  <!-- ค่า CHOL พร้อมตรวจเงื่อนไข -->
+  <td align="center" bgcolor="#FFFFFF" class="profilehead">
+    <?php 
+      if ($result_dx['cholflag']!="N") {  //ค่าผิดปกติ
+        echo "<span style='color:#F00'><strong>{$result_dx['chol']}</strong></span>";
+      } else {
+        echo "<span style='color:#00F'>{$result_dx['chol']}</span>";
+      }
+    ?>
+  </td>
+
+  <!-- ค่าอ้างอิง -->
+  <td class="labfont">(<?=$result_dx['cholrange']?>)</td>
+
+  <!-- Flag -->
+  <td align="center" class="labfont">
+    <span <?php if($result_dx['cholflag']!="N"){ echo "style='color:#F00;font-weight:bold;'"; }?>>
+      <?=$result_dx['cholflag']?>
+    </span>
+  </td>
+
+  <!-- เลือกปกติ/ผิดปกติ -->
+  <td class="labfont">
+    <input 
+      type="radio" 
+      name="normal46" 
+      value="ปกติ" 
+      onclick="togglediv2('acnormal46');" 
+      <?php if(isset($result_dx['cholflag']) && $result_dx['cholflag']=="N"){ echo "checked"; }?> 
+    /> ปกติ
+
+    <input 
+      type="radio" 
+      name="normal46" 
+      value="ผิดปกติ" 
+      onclick="togglediv1('acnormal46');" 
+      <?php if(isset($result_dx['cholflag']) && $result_dx['cholflag']!="N"){ echo "checked";}?> 
+    />
+    <?php 
+      if ($result_dx['chol'] >= 200) {
+        echo "<span style='color:#F00'><strong>ผิดปกติ</strong></span>";
+      } else {
+        echo "<span style='color:#000'>ผิดปกติ</span>";
+      }
+    ?>
+  </td>
+
+  <!-- รายการคำแนะนำ -->
+  <td>
+    <div 
+      id="acnormal46" 
+      <?php 
+		if(empty($result_dx['cholflag']) || $result_dx['cholflag']=="N"){ 
+          echo "style='display: none;'";  
+        } else { 
+          echo "style='display: block;'";  
+        }
+      ?>>
+      <select name="ch46" class="labfont">
+        <option 
+          value="ระดับไขมันในเลือดสูงผิดปกติ ควรควบคุมอาหารกลุ่มไขมัน ออกกำลังกาย และตรวจซ้ำใน 3 เดือน"
+          <?php if($result_dx['chol'] >= 200 && $result_dx['chol'] <= 240){ echo "selected='selected'"; }?>
+        >
+          ระดับไขมันในเลือดสูงผิดปกติ ควรควบคุมอาหารกลุ่มไขมัน ออกกำลังกาย และตรวจซ้ำใน 3 เดือน
+        </option>
+
+        <option 
+          value="ระดับไขมันในเลือดสูงผิดปกติ ควรพบแพทย์เพื่อประเมินและให้การรักษา ตรวจซ้ำใน 1 เดือน"
+          <?php if($result_dx['chol'] > 240){ echo "selected='selected'"; }?>
+        >
+          ระดับไขมันในเลือดสูงผิดปกติ ควรพบแพทย์เพื่อประเมินและให้การรักษา ตรวจซ้ำใน 1 เดือน
+        </option>
+      </select>
+    </div>
+  </td>
+</tr>
+<!-- 🔴 สิ้นสุด Card ค่า CHOL -->
+
+
 <!-- 🟢 เริ่มต้น Card ค่า TRIG -->
 <tr>
   <!-- Label -->
