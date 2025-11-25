@@ -9,6 +9,7 @@ include_once dirname(__FILE__).'/includes/JSON.php';
 $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $action = isset($_POST['action']) ? $_POST['action'] : '';
 
+// สร้าง Cookie ไว้เก็บข้อมูลเฉยๆ
 if($action==='save'){
 
     $title = $criteria = $_POST['criteriaCode'];
@@ -16,7 +17,7 @@ if($action==='save'){
 
     $dataDetail = array();
     $drugcode = trim($_POST['drugcode']);
-    foreach ($_POST['title'] as $k) { 
+    foreach ($_POST['title'] as $k) {
         $dataDetail[$k] = $_POST[$k];
     }
     

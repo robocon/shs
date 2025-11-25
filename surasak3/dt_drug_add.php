@@ -750,7 +750,6 @@ $_SESSION["dt_drugstk"] .="</TABLE>";
 
 #################################  START  ####################################
 // ถ้ามีการยืนยันเหตุผลในการใช้ยา
-
 $reasonToUsedDrug = '';
 if($insert1===true){
 
@@ -797,6 +796,18 @@ if($insert1===true){
 		'INCLI4_SUB_2'=>'มีประวัติ Coronary artery by pass surgery หรือ percutaneous coronary intervention และ อย่างน้อยเคยมีประวัติการเกิด ASCVD event(s) ที่มีระยะเกิน 1 ปี และ ไม่มีภาวะแทรกช้อน',
 		'INCLI4_SUB_3'=>'เบาหวาน',
 		'INCLI4_SUB_4'=>'ไตเรื้อรัง (eGFR 15-59 ml/min/1.73 m2)',
+
+		'TAMIVIA1' => 'สงสัยปอดอักเสบจากอาการ หรือ CXR',
+		'TAMIVIA2' => 'ชึมผิดปกติหรือมีอาการทางระบบประสาท',
+		'TAMIVIA3' => 'SpO2 RA < 95% ที่ต้องใช้ออกชิเจ',
+		'TAMIVIA4' => 'มีข้อบ่งชี้ในการนอนโรงพยาบาล',
+		'TAMIVIA5' => 'BMI > 30 kg/m2',
+		'TAMIVIA6' => 'ตั้งครรภ์หรือหลังคลอดไม่เกิน 14 วัน',
+		'TAMIVIA7' => 'อายุ < 2 หรือ > 60 ปี',
+		'TAMIVIA8' => 'มีโรคเรื้อรังเช่น โรคหอบหืด โรคปอดเรื้อรัง โณคหัวใจและหลอดเลือด โรคตับ โรคไต เบาหวาน มะเร็ง',
+		'TAMIVIA9' => 'โรคที่มีภาวะภูมิคุ้มกันต่ำหรือใช้ยากดภูมิ',
+		'TAMIVIA10' => 'เด็กที่มีภาวะพร่องทางระบบประสาท พัฒนาการช้า หรือ โรคลมชัก',
+		'TAMIVIA11' => 'บุคคลกลุ่มเสี่ยงต่อการระบาดรุนแรง เช่น พลทหาร หรือ บุคลากรทางการแพทย์',
 	);
 
 	$titleList = array(
@@ -807,7 +818,8 @@ if($insert1===true){
 		'INCIL1' => 'ผู้ป่วยที่เป็นโรคไขมันในเลือดสูงจากกรรมพันธุ์ (Familial hypercholesterolemia) หรือ (FH) ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 100 mg/dl',
 		'INCIL2' => 'ผู้ป่วยที่มีภาวะไขมันในเลือดสูง (dyslipidemia) เป็นโรคเบาหวาน (diabetes) ที่มีความเสี่ยงสูง (high risk) ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า &gt; 100 mg/dl',
 		'INCIL3' => 'ผู้ป่วยที่เป็นโรคหัวใจ (Clinical ASCVD) ที่มีสาเหตุมาจากหลอดเลือดแดงแข็ง (Established atherosclerotic cardiovascular disease) และอยู่ในกลุ่มความเสี่ยงสูงมาก (very high risk) ที่ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 70 mg/dl',
-		'INCIL4' => 'ผู้ป่วยที่เป็นโรคหัวใจ (Clinical ASCVD) ที่มีสาเหตุมาจากหลอดเลือดแดงแข็ง (Established atherosclerotic cardiovascular disease) และอยู่ในกลุ่มภาวะความเสี่ยงสูง (high risk condition) ที่ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 100 mg/dl'
+		'INCIL4' => 'ผู้ป่วยที่เป็นโรคหัวใจ (Clinical ASCVD) ที่มีสาเหตุมาจากหลอดเลือดแดงแข็ง (Established atherosclerotic cardiovascular disease) และอยู่ในกลุ่มภาวะความเสี่ยงสูง (high risk condition) ที่ได้รับยาในกลุ่ม statin + ezetimibe + bempedoic acid ขนาดยาสูงสุด เป็นระยะเวลา 3 เดือนแล้ว LDL-C มีค่า > 100 mg/dl',
+		'TAMIVIA' => '1TAMI - Osealtamivir'
 	);
 
 	// ดึงข้อมูลออกมาจาก Cookie

@@ -344,7 +344,7 @@ async function confirmDiabetes(drugcode){
  * @param {*} criteriaCode 
  * @param {*} criteria 
  */
-async function checkInclisiran(hn, drugcode, criteriaCode, criteria){
+async function checkInclisiran(drugcode, criteriaCode, criteria){
 
 	const response = await fetch('inclisiran_form.php');
 	let body = await response.text();
@@ -671,7 +671,7 @@ function checkTamivir(drugcode, criteriaCode, criteria){
 		<p><input type="radio" class="inputTamivia" id="inputTamivia10" name="detail[]" value="TAMIVIA10"><label for="inputTamivia10">10.) เด็กที่มีภาวะพร่องทางระบบประสาท พัฒนาการช้า หรือ โรคลมชัก</label></p>
 		<p><input type="radio" class="inputTamivia" id="inputTamivia11" name="detail[]" value="TAMIVIA11"><label for="inputTamivia11">11.) บุคคลกลุ่มเสี่ยงต่อการระบาดรุนแรง เช่น พลทหาร หรือ บุคลากรทางการแพทย์</label></p>
 		<p style="text-align: center;">
-			<button type="button" onclick="confirmTamivir('${drugcode}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
+			<button type="button" onclick="confirmTamivir('${drugcode}','${criteriaCode}','${criteria}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="${criteria}">
 		</p>
 	</div>`;
@@ -685,16 +685,16 @@ function checkTamivir(drugcode, criteriaCode, criteria){
 
 }
 
-async function confirmTamivir(drugcode){
+async function confirmTamivir(drugcode, criteriaCode, criteria){
 	const tamiviaItem = document.querySelectorAll('.inputTamivia');
 	let formData = new FormData();
 	let tamiviaCount = 0;
 	for (let i = 0; i < tamiviaItem.length; i++) {
 		const el = tamiviaItem[i];
 		if (el.checked===true) { 
-			console.log(el.checked);
-			console.log(el.value);
-			formData.append(el.getAttribute('name'), el.value);
+
+			// formData.append(el.getAttribute('name'), el.value);
+			formData.append('TAMIVIA[]', el.value);
 			tamiviaCount++;
 		}
 	}
@@ -707,9 +707,38 @@ async function confirmTamivir(drugcode){
 		});
 		return false;
 	}
+	formData.append("title[]", "TAMIVIA");
 
-	console.log(formData);
+	formData.append("action", 'save');
+	formData.append("criteria", criteria);
+	formData.append("criteriaCode", criteriaCode);
+	formData.append("drugcode", drugcode);
+	// hn กับ doctor ถูกประกาศไว้แล้วใน dt_drug.php
+	formData.append("hn", hn);
+	formData.append("doctor", doctor);
 
-	return false;
+	const postData = new URLSearchParams(formData).toString();
+	sendForm('doctor_medical.php',postData).then((res)=>{
+		if(res.status === 200){
+			Swal.fire({
+				title: 'สำเร็จ',
+				text: res.message,
+				icon: 'success',
+				allowOutsideClick: false
+			});
+
+            setCookie(res.cookieName, res.cookieData); // บันทึก cookie
+            
+		}else{
+			Swal.fire({
+				title: 'แจ้งเตือน',
+				text: res.message+':'+res.error,
+				icon: 'warning',
+				allowOutsideClick: false
+			});
+		}
+	});
+	
+	closePreg();
 }
 
