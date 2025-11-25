@@ -187,7 +187,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_500"){
 if(isset($_GET["action"]) && $_GET["action"] == "check30day"){
 
 	// ตรวจสอบว่าในช่วงระยะเวลา 30วันที่ผ่านมาเคยจ่ายยาตัวนี้ไปแล้วรึยัง
-	$times = mktime("0","0","0",date("m"),date("d")-$limit30checkday,date("Y"));
+	// $times = mktime("0","0","0",date("m"),date("d")-$limit30checkday,date("Y"));
+	$times = strtotime("-1 month");
 	$date1 = (date("Y",$times)+543).date("-m-d H:i:s",$times);
 	$date2 = (date("Y")+543).date("-m-d H:i:s");
 	$sql = " Select date_format(date,'%d-%m-%Y'), tradname, amount, slcode 
@@ -205,7 +206,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "check30day"){
 	}
 	else{
 		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
-		echo "เคยจ่ายยา ".$tradname." ครั้งล่าสุดเมื่อวันที่ ".$date." จำนวน ".$amount." วิธีใช้ ".$slcode." \n ท่านต้องการสั่งยาหรือไม่?";
+		echo "เคยจ่ายยา ".$tradname." ครั้งล่าสุดเมื่อวันที่ ".$date." จำนวน ".$amount." วิธีใช้ ".$slcode."";
 	}
 	exit();
 }
@@ -222,7 +223,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "check90day"){
 	$tbrows = mysql_fetch_array($result);
 	if($tbrows["drugcode"] == "2OSTE"){
 		list($date, $tradname, $amount, $slcode) = mysql_fetch_row($result);
-		echo "เคยจ่ายยา ".$tradname." \nที่กำหนดให้จ่ายยาเว้นระยะ 3 เดือน ครั้งล่าสุดเมื่อวันที่ ".$date."\nจำนวน ".$amount." วิธีใช้ ".$slcode." \nท่านต้องการสั่งยาหรือไม่?";
+		echo "เคยจ่ายยา ".$tradname." \nที่กำหนดให้จ่ายยาเว้นระยะ 3 เดือน ครั้งล่าสุดเมื่อวันที่ ".$date."\nจำนวน ".$amount." วิธีใช้ ".$slcode."";
 	}else{
 		echo "0";
 	}
@@ -3890,12 +3891,21 @@ function checkForm1(){
 	
 	// ตรวจสอบว่าในช่วงระยะเวลา 30วันที่ผ่านมาเคยจ่ายยาตัวนี้ไปแล้วรึยัง
 	let txt3 = ajaxcheck("check30day",drug_code);
-	txt3 = txt3.substr(4);
-	
+	if(txt3!==''&&txt3!=='0'){
+		Swal.fire({
+			title: '30วันที่ผ่านมา',
+			html: txt3
+		});
+	}
 	// ตรวจสอบว่าในช่วงระยะเวลา 90วันที่ผ่านมาเคยจ่ายยาตัวนี้ไปแล้วรึยัง
 	let txt4 = ajaxcheck("check90day",drug_code);
-	txt4 = txt4.substr(4);
-	
+	if(txt4!==''&&txt4!=='0'){
+		Swal.fire({
+			title: '90วันที่ผ่านมา',
+			html: txt4
+		});
+	}
+
 	// เช็กว่าจ่ายยาซ้ำซ้อนกับแพทย์ท่านอื่นรึป่าว
 	// ถ้าเป็น 0 แสดงว่าไม่ซ้ำ
 	let txt7 = ajaxcheck("checktoday",drug_code);
@@ -3965,14 +3975,15 @@ function checkForm1(){
 		if(confirm(txt7)==false){
 			return false;
 		}
-	}else if(txt3 != "0" && txt3!==''){
-		if(confirm(txt3)==false){
-			return false;
-		}
-	}else if(txt4 != "0" && txt4!==''){
-		if(confirm(txt4)==false){
-			return false;
-		}
+	// }else if(txt3 != "0" && txt3!==''){
+		// console.log(confirm(fullText3));
+		// if(confirm(fullText3)==false){
+		// 	return false;
+		// }
+	// }else if(txt4 != "0" && txt4!==''){
+		// if(confirm(txt4)==false){
+		// 	return false;
+		// }
 	}else if(txt9 == "1" && !alert("คำเตือน!!! สิทธิผู้ป่วยเป็นประกันสุขภาพถ้วนหน้า/ประกันสังคม ไม่สามารถสั่งจ่ายยาได้กรุณาเปลี่ยนเป็นยา Generic หรือยาตัวอื่น")){
 		document.form1.drug_code.focus();
 	}else if(drug_code == "1COVE5" && eval(document.form1.drug_amount.value) % 30 != 0 ){
