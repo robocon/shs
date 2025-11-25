@@ -57,7 +57,7 @@ if(empty($_SESSION['sOfficer'])){
         <div class="col-sm-8 col-md-6 col-lg-4">
             <label for="hn" class="form-label fw-bold">ค้นหาจาก วันที่</label>
             <div class="input-group">
-                <input type="date" class="form-control" id="date" name="date" value="2025-11-20">
+                <input type="date" class="form-control" id="date" name="date" value="">
                 <button class="btn btn-secondary" type="submit">ค้นหา</button>
             </div>
             <input type="hidden" name="page" value="search">
