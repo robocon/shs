@@ -87,21 +87,10 @@ print('returned value:', returned_value,'\n')
 # myresult = mycursor.fetchone()
 # latest_id = str(myresult["latest_id"])
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile"
-=======
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile --sink-disable-truncate true"
->>>>>>> development
-print("  REPLICADB COMMAND : ", str(cmd),'\n')
-returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-print('returned value:', returned_value,'\n')
-=======
 # cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile --sink-disable-truncate true"
 # print("  REPLICADB COMMAND : ", str(cmd),'\n')
 # returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 # print('returned value:', returned_value,'\n')
->>>>>>> Stashed changes
 
 # drugreact_group
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drugreact_group --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drugreact_group"
@@ -116,16 +105,16 @@ returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code 
 print('returned value:', returned_value,'\n')
 
 # druglst
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=druglst --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=druglst"
-print("  REPLICADB COMMAND : ", str(cmd),'\n')
-returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-print('returned value:', returned_value,'\n')
+# cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=druglst --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=druglst"
+# print("  REPLICADB COMMAND : ", str(cmd),'\n')
+# returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+# print('returned value:', returned_value,'\n')
 
-p = Popen("download_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
-stdout, stderr = p.communicate()
+# p = Popen("download_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+# stdout, stderr = p.communicate()
 
-p = Popen("import_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
-stdout, stderr = p.communicate()
+# p = Popen("import_default_data.bat", cwd=r"D:/docker/www/sm3dev/replicadb")
+# stdout, stderr = p.communicate()
 
 # drug_interaction
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drug_interaction --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drug_interaction"

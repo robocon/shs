@@ -1,7 +1,7 @@
 <?php
 session_start();
+include_once dirname(__FILE__).'/connect.php';
 if (!isset($_SESSION['sIdname'])){die;}
-include 'connect.php';
 
 if($_GET["action"] == "view_order"){
 	
@@ -15,7 +15,6 @@ if($_GET["action"] == "view_order"){
 		$i++;
 	}
 
-
 	$sql = "Select distinct a.an From file_dcorder as a INNER JOIN bed as b ON a.an = b.an  where a.drugok = '0' ";
 	echo $sql."<br>";
 	$result = mysql_query($sql);
@@ -28,31 +27,25 @@ if($_GET["action"] == "view_order"){
 	}
 	
 	$list = implode("[]",$lst);
-
 	echo $list;
-
-exit();
+	exit();
 }
 
-	$month_["01"] = "ม.ค.";
-    $month_["02"] = "ก.พ.";
-    $month_["03"] = "มี.ค.";
-    $month_["04"] = "เม.ย.";
-    $month_["05"] = "พ.ค.";
-    $month_["06"] = "มิ.ย.";
-    $month_["07"] = "ก.ค.";
-    $month_["08"] = "ส.ค.";
-    $month_["09"] = "ก.ย.";
-    $month_["10"] = "ต.ค.";
-    $month_["11"] = "พ.ย.";
-    $month_["12"] = "ธ.ค.";
+$month_["01"] = "ม.ค.";
+$month_["02"] = "ก.พ.";
+$month_["03"] = "มี.ค.";
+$month_["04"] = "เม.ย.";
+$month_["05"] = "พ.ค.";
+$month_["06"] = "มิ.ย.";
+$month_["07"] = "ก.ค.";
+$month_["08"] = "ส.ค.";
+$month_["09"] = "ก.ย.";
+$month_["10"] = "ต.ค.";
+$month_["11"] = "พ.ย.";
+$month_["12"] = "ธ.ค.";
 
-	$_SESSION["cWard"]="หอผู้ป่วยรวม";
-
- $build = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47","หอผู้ป่วย รพ.สนาม"=>"48");
-
-	//$build = array("หอผู้ป่วยหญิง"=>"42");
-
+$_SESSION["cWard"]="หอผู้ป่วยรวม";
+$build = array("หอผู้ป่วยรวม"=>"42","หอผู้ป่วย ICU"=>"44","หอผู้ป่วยสูติ"=>"43","หอผู้ป่วยพิเศษ"=>"45","หอผู้ป่วย Cohort Ward"=>"46","หอผู้ป่วย Home Isolation"=>"47","หอผู้ป่วย รพ.สนาม"=>"48");
 ?>
 <html>
 <head>
@@ -366,8 +359,13 @@ echo "<BR><BR><A HREF=\"../nindex.htm\">&lt; &lt; เมนู</A><BR>";?>
 <?php
 foreach ($build as $key => $value){
 
-	$sql = "SELECT bed,date,date_format(date,'%d') as date1,date_format(date,'%m') as date2,date_format(date,'%Y') as date3,ptname,hn,an,diagnos,doctor,ptright,age,accno, bedcode, last_drug FROM bed WHERE bedcode LIKE '".$value."%' AND an != '' ORDER BY bed ASC";
-	//echo $sql;
+	$sql = "SELECT `bed`,`date`,date_format(`date`,'%d') as date1,date_format(`date`,'%m') as date2,date_format(`date`,'%Y') as date3,
+	`ptname`,`hn`,`an`,`diagnos`,`doctor`,`ptright`,`age`,`accno`,`bedcode`,`last_drug` 
+	FROM `bed` 
+	WHERE `bedcode` LIKE '$value%' 
+	AND `an` != '' 
+	ORDER BY `bed` ASC";
+	
 	$result = Mysql_Query($sql);
 	if(Mysql_num_rows($result) == 0)
 		continue;
@@ -396,12 +394,10 @@ foreach ($build as $key => $value){
 	<TD><B><FONT COLOR="#FFFFDD">Doctor Order</FONT></B></TD>
 </TR>
 <?php
-
 while($arr = Mysql_fetch_assoc($result)){
 
 	$an = $arr['an'];
 	$chkdate=substr($arr["date"],0,10);
-	//echo $chkdate;
 	if($chkdate=="2563-02-29"){
 		$arr["date1"]=substr($chkdate,8,2);
 		$arr["date2"]=substr($chkdate,5,2);
@@ -419,7 +415,6 @@ while($arr = Mysql_fetch_assoc($result)){
 		if( $scanRow == 1 ){
 			$exText = ' (รับใหม่)';
 		}
-
 		$link_scan = '<a href="med_phar.php?fill_an='.$an.'" target="_blank">'.$an.'</a>'.$exText;
 	}
 
@@ -427,7 +422,6 @@ while($arr = Mysql_fetch_assoc($result)){
 		$bgcolor = "#FFFF99";
 		$list_drug = explode(" ",$arr["last_drug"]);
 		$day = explode("-",$list_drug[0]);
-		
 		$arr["last_drug"] = $day[2]."/".$day[1]."/".$day[0]."<BR>".$list_drug[1];
 	}else{
 		$bgcolor = "#FFFFFF";
@@ -436,7 +430,6 @@ while($arr = Mysql_fetch_assoc($result)){
 	$dAdmit = $arr["date3"]."-".$arr["date2"]."-".$arr["date1"];
 	$today = (date("Y")+543)."-".date("m-d");
 	if($dAdmit==$today){
-		
 		$bgcolor = "#66FFFF";
 	}
 	
@@ -444,25 +437,19 @@ while($arr = Mysql_fetch_assoc($result)){
 	$strresult1=mysql_query($str1);
 	$arr1=mysql_fetch_array($strresult1);
 	
- if($arr1['status_log']=='' || $arr1['status_log']==NULL){
-
-	$message="ยืนยันการปลดล็อคเพื่อจำหน่าย";
-	
-	$L1="<A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">คืนยา</A>";
-	
-	$L2="<A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เพิ่ม/แก้ไข/OFF ยา</A>";
-	$L3="<A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">จ่ายยา</A>";
+	if($arr1['status_log']=='' || $arr1['status_log']==NULL){
+		$message="ยืนยันการปลดล็อคเพื่อจำหน่าย";
+		$L1="<A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">คืนยา</A>";
+		$L2="<A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เพิ่ม/แก้ไข/OFF ยา</A>";
+		$L3="<A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">จ่ายยา</A>";
 	}else{
-	$message="ยืนยันการยกเลิกการปลดล็อคเพื่อจำหน่าย";	
-	$L1="คืนยา";
-	$L2="เพิ่ม/แก้ไข/OFF ยา";
-	$L3="จ่ายยา";
+		$message="ยืนยันการยกเลิกการปลดล็อคเพื่อจำหน่าย";	
+		$L1="คืนยา";
+		$L2="เพิ่ม/แก้ไข/OFF ยา";
+		$L3="จ่ายยา";
 	}
 
-
-
-echo "
-<TR  id='",$arr["an"],"rows' bgcolor=\"$bgcolor\">
+echo "<TR  id='",$arr["an"],"rows' bgcolor=\"$bgcolor\">
 	<TD></TD>
 	<TD>",$arr["bed"],"</TD>
 	<TD align=\"center\">",$arr["date1"]," ",$month_[$arr["date2"]]," ",substr($arr["date3"],2),"</TD>
@@ -476,8 +463,7 @@ echo "
 	<TD align=\"center\"><A HREF=\"rp_profile.php?an=".$arr["an"]."&month=".date("m")."&year=".(date("Y")+543)."&date=".date("dmy")."\" target=\"_blank\">ข้อมูล<BR>การจ่ายยา</A></TD>
 	<TD align=\"center\">",$arr["last_drug"],"</TD>
 	<TD align=\"center\">&nbsp;<div id='",$arr["an"],"'></div>&nbsp;$link_scan</TD>
-</TR>
-		";
+</TR>";
 }
 ?>
 </TABLE>
@@ -490,3 +476,6 @@ echo "
 <BR><BR><BR><BR><BR><BR><BR>
 </body>
 </html>
+<?php
+include("unconnect.inc");
+?>

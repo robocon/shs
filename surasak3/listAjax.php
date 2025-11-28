@@ -3,13 +3,8 @@ session_start();
 //print_r($_SESSION);
 header("content-type: application/x-javascript; charset=UTF-8");
 include("connect.inc");
-?>
 
-
-<?
 if($_GET["action"] == "drugcode"){// ชื่อยา**********************************************************************
-
-
 
 $sql = "Select prefix From `runno` where `title`  = 'passdrug' limit 1 ";
 list($pass_drug) = mysql_fetch_row(mysql_query($sql));
@@ -338,37 +333,29 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 
 /******* แก้ไขข้อมูลใน SESSION ********************************************************************/
 
-$sql = "Select row_id From drugslip where slcode = '".$_GET["slcode"]."' limit 1";
-$result = Mysql_Query($sql);
-$count = Mysql_num_rows($result);
-
-if($count ==0){
-echo "
-			<div  id=\"msgalert\" align = \"center\" style=\"position: absolute;text-align: center; overflow:auto; \">
-				
-			<TABLE align=\"center\" bgcolor=\"#FFFFFF\" border=\"1\" bordercolor=\"#FF0000\" cellspacing=\"0\" cellpadding=\"0\" width=\"85%\" Onclick=\"document.getElementById('msgalert').innerHTML = '';\">
+	$sql = "Select row_id From drugslip where slcode = '".$_GET["slcode"]."' limit 1";
+	$result = Mysql_Query($sql);
+	$count = Mysql_num_rows($result);
+	if($count ==0){
+		echo "<div  id=\"msgalert\" align = \"center\" style=\"position: absolute;text-align: center; overflow:auto; \">
+		<TABLE align=\"center\" bgcolor=\"#FFFFFF\" border=\"1\" bordercolor=\"#FF0000\" cellspacing=\"0\" cellpadding=\"0\" width=\"85%\" Onclick=\"document.getElementById('msgalert').innerHTML = '';\">
 			<TR>
 				<TD>
-				<TABLE width=\"100%\">
-				<TR bgcolor=\"#FF0000\" class=\"font_title\" align=\"center\">
-				<TD align=\"center\">
-						<FONT COLOR=\"#FFFFFF\"><B>Alert</B></FONT>
-					</TD>
-				</TR>
-				<TR>
-					<TD align=\"center\"><BR>ไม่สามารถแก้ไขข้อมูลได้<BR>
-					ไม่มีรหัสวิธีใช้ยา ".$_GET["slcode"]."<BR><BR>
-					</TD>
-				</TR>
-				</TABLE>
-			</TD>
-		</TR>
+					<TABLE width=\"100%\">
+						<TR bgcolor=\"#FF0000\" class=\"font_title\" align=\"center\">
+							<TD align=\"center\">
+								<FONT COLOR=\"#FFFFFF\"><B>Alert</B></FONT>
+							</TD>
+						</TR>
+						<TR>
+							<TD align=\"center\"><BR>ไม่สามารถแก้ไขข้อมูลได้<BR>ไม่มีรหัสวิธีใช้ยา ".$_GET["slcode"]."<BR><BR></TD>
+						</TR>
+					</TABLE>
+				</TD>
+			</TR>
 		</TABLE>
-			
-			</div>
-			";
-			
-}else	if(isset($_GET["rowid"]) && $_GET["rowid"] != ""){
+		</div>";
+	}else if(isset($_GET["rowid"]) && $_GET["rowid"] != ""){
 		
 		$sql = "Select count(statcon) as count_dg,statcon From dgprofile where row_id = '".$_GET["rowid"]."' ";
 		$result = Mysql_Query($sql);
