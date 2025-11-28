@@ -3,6 +3,13 @@ session_start();
 include_once dirname(__FILE__).'/connect.php';
 if (!isset($_SESSION['sIdname'])){die;}
 
+/**
+ * @todo
+ * [] แยก Class bed
+ * [] แยก Class med_scan
+ * [] แยก Class ipcard
+ */
+
 if($_GET["action"] == "view_order"){
 	
 	$sql = "Select distinct an From bed where an != '' ";
@@ -404,6 +411,10 @@ while($arr = Mysql_fetch_assoc($result)){
 		$arr["date3"]=substr($chkdate,0,4);
 	}
 
+	/**
+	 * @todo
+	 * Rewrite เงื่อนไขใหม่ เพราะใจความสำคัญคือดูว่าใน med_scan เป็นผู้ป่วยใหม่รึป่าวแค่นั้นเองไม่น่าที่จะ query 2รอบ
+	 */
 	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL AND `status` = 'y' ";
 	$medScanQuery = mysql_query($sql);
 	$link_scan = "";
