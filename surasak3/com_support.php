@@ -37,6 +37,10 @@ if(empty($_SESSION['sIdname'])){
             width: 100%;
         }
     }
+    .each_container{
+        float: left;
+        margin-right:12px;
+    }
 </style>
 <?php
 if ($_SESSION["smenucode"] == "ADM" || $_SESSION["smenucode"] == "ADMCOM") {
@@ -90,7 +94,7 @@ if ($_SESSION['supportMessage']) {
     <div id="title-group">
         <div align='center' class='forntsarabun'><strong>ระบบบันทึกการแจ้งซ่อมอุปกรณ์คอมพิวเตอร์ และพัฒนาปรับปรุงโปรแกรมในระบบโรงพยาบาล<BR>ศูนย์บริการคอมพิวเตอร์ โรงพยาบาลค่ายสุรศักดิ์มนตรี</strong></div><BR>
         <div align='center'><font class='forntsarabun'>ยินดีต้อนรับ คุณ <strong><?=$sOfficer;?></strong> เข้าสู่ระบบ</font></div>
-        <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://sneaky-floss-1a7.notion.site/d7e08e2f5b644804859ebeb9b7261d0f?v=c8f3fb912d1b45bbb9b654871fcf78aa' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> <b>....โทร. 8500</b></font></div>
+        <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่โปรแกรมเมอร์....</b>ส.อ. เทวิน  ศรีแก้ว <a href='https://www.notion.so/Workload-2be3d7a84adf80249652fab512331e68?source=copy_link' target='_blank'>นายกฤษณะศักดิ์  กันธรส</a> ....โทร. 8500</b></font></div>
         <div align='center'><font size='1' class='forntsarabun'><b>เจ้าหน้าที่ช่างคอมพิวเตอร์....</b>นายจักรพันธ์  รุ่งเรืองศรี และนายฐานพัฒน์  นิลคำ<b>....โทร. 6203</b></font></div><br>
         <div align='center' class='forntsarabun'><strong>แจ้งซ่อมในระบบแล้ว กรุณาติดตามสถานะงานด้วยครับ [งานใหม่ : กำลังดำเนินการ : ปิดงาน]</strong></div><BR>
     </div>
@@ -108,7 +112,8 @@ $num = "Y";
 $datechk = (date("Y") + 543) . date("-m-d");
 $query = "SELECT `row`,`jobtype`,`depart`,`head`,`datetime`,`programmer`,`date`,`user1`,`phone`
 FROM `com_support` 
-WHERE `status` ='$num' AND `date` >= '2565-01-01 00:00:00'
+WHERE `status` ='$num' 
+AND `date` >= '2565-01-01 00:00:00'
 ORDER BY `row` DESC";
 
 
@@ -260,7 +265,7 @@ $query = "SELECT `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`p_edit`,`
 FROM `com_support` 
 WHERE `status` ='n' 
 ORDER BY `dateend` DESC ";
-$result_all = mysql_query($query) or die("Query failed111");
+$result_all = mysql_query($query) or die("Query failed111 : ".mysql_error());
 $all_rows = mysql_num_rows($result_all);
 
 $limit = '250';
@@ -367,4 +372,47 @@ if ($countAllItem>0) {
     <?php
 }
 
+$last3Month = strtotime('-6 month');
+$currentThaiDate = (date('Y', $last3Month)+543).date('-m-01', $last3Month);
+
+$sql = "SELECT COUNT(`row`) AS `sum`,SUBSTRING(`dateend`,1,7) AS `month`,`programmer` FROM `com_support` WHERE `status` = 'n' AND `dateend` >= '$currentThaiDate' GROUP BY SUBSTRING(`dateend`,1,7) DESC,`programmer` DESC";
+$q = $dbi->query($sql);
+if($q->num_rows>0){
+    $items = array();
+    while ($a = $q->fetch_assoc()) {
+        $key = $a['month'];
+        $items[$key][] = $a;
+    }
+
 ?>
+<div class="clearfix">
+<?php
+    foreach ($items as $key => $item) {
+    list($y, $m) = explode('-', $key);
+    ?>
+    <div class="forntsarabun each_container">
+        <h3 style="margin-bottom:0; padding:0;"><?= $def_fullm_th[$m] ?> <?= $y ?></h3>
+        <div>
+            <table class="forntsarabun">
+                <tr style="background-color: #6c757d; color:#ffffff;">
+                    <th>ชื่อ-สกุล</th>
+                    <th>ใบงาน</th>
+                </tr>
+            <?php
+            foreach ($item as $it) {
+                ?>
+                <tr style="background-color: #a7acb1;">
+                    <td><?= $it['programmer'] ?></td>
+                    <td align="right"><?= $it['sum'] ?></td>
+                </tr>
+                <?php
+            }
+            ?>
+            </table>
+        </div>
+    </div>
+    <?php
+    }
+}
+?>
+</div>
