@@ -476,7 +476,7 @@ switch($_POST['m_start']){
 <h2 class="font3 shs-header" align="center">วันที่ <?=$dateshow;?> เวลา <?=$_POST['time'];?> ห้องตรวจโรคผู้ป่วยนอก</h2>
 
 <table class="shs-table" border="1" style="border-collapse:collapse; border-color:#000;" cellpadding="0" cellspacing="0" class="font2" width="100%" align="center">
-	<tr bgcolor="#999999">
+	<tr>
 		<td align="center"  width="7%">ลำดับ</td>
 		<td colspan="2" align="center" width="47%">ชื่อ - สกุล</td>
 		<td align="center" width="13%">HN</td>

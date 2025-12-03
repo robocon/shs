@@ -102,8 +102,8 @@ function  checklist(){
     <input class="txtsarabun" type="text" name="item1" size="25" />
     <select class="txtsarabun" size="1" name="dsp1">
       <option selected value="">*****โปรดเลือกรายการ*****</option>
-      <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+      <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	 &nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode1" size="7">
   <input class="txtsarabun" type="text" name="amount1" size="7">
@@ -113,8 +113,8 @@ function  checklist(){
   2.&nbsp; <input class="txtsarabun" type="text" name="item2" size="25">
   <select class="txtsarabun" size="1" name="dsp2">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode2" size="7">
   <input class="txtsarabun" type="text" name="amount2" size="7">
@@ -124,8 +124,8 @@ function  checklist(){
   3.&nbsp; <input class="txtsarabun" type="text" name="item3" size="25"> 
   <select class="txtsarabun" size="1" name="dsp3">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode3" size="7">
   <input class="txtsarabun" type="text" name="amount3" size="7">
@@ -135,8 +135,8 @@ function  checklist(){
   4.&nbsp; <input class="txtsarabun" type="text" name="item4" size="25">
   <select class="txtsarabun" size="1" name="dsp4">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode4" size="7">
   <input class="txtsarabun" type="text" name="amount4" size="7">
@@ -146,8 +146,8 @@ function  checklist(){
   5.&nbsp; <input class="txtsarabun" type="text" name="item5" size="25">
   <select class="txtsarabun" size="1" name="dsp5">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode5" size="7">
   <input class="txtsarabun" type="text" name="amount5" size="7">
@@ -157,8 +157,8 @@ function  checklist(){
   6.&nbsp; <input class="txtsarabun" type="text" name="item6" size="25">
   <select class="txtsarabun" size="1" name="dsp6">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode6" size="7">
   <input class="txtsarabun" type="text" name="amount6" size="7">
@@ -168,8 +168,8 @@ function  checklist(){
   7.&nbsp; <input class="txtsarabun" type="text" name="item7" size="25">
   <select class="txtsarabun" size="1" name="dsp7">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode7" size="7">
  <input class="txtsarabun" type="text" name="amount7" size="7">
@@ -179,8 +179,8 @@ function  checklist(){
   8.&nbsp; <input class="txtsarabun" type="text" name="item8" size="25"> 
     <select class="txtsarabun" size="1" name="dsp8">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode8" size="7">
   <input class="txtsarabun" type="text" name="amount8" size="7">
@@ -190,8 +190,8 @@ function  checklist(){
   9.&nbsp; <input class="txtsarabun" type="text" name="item9" size="25"> 
   <select class="txtsarabun" size="1" name="dsp9">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode9" size="7">
   <input class="txtsarabun" type="text" name="amount9" size="7">
@@ -201,8 +201,8 @@ function  checklist(){
   10.<input class="txtsarabun" type="text" name="item10" size="25">
   <select class="txtsarabun" size="1" name="dsp10">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode10" size="7">
   <input class="txtsarabun" type="text" name="amount10" size="7">
@@ -212,8 +212,8 @@ function  checklist(){
   11.<input class="txtsarabun" type="text" name="item11" size="25"> 
   <select class="txtsarabun" size="1" name="dsp11">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode11" size="7">
   <input class="txtsarabun" type="text" name="amount11" size="7">
@@ -223,8 +223,8 @@ function  checklist(){
   12.<input class="txtsarabun" type="text" name="item12" size="25"> 
   <select class="txtsarabun" size="1" name="dsp12">
 	<option selected value="">*****โปรดเลือกรายการ*****</option>
-    <option value="DP">อวัยวะเทียม/อุปกรณ์</option>
-	<option value="DS">เวชภัณฑ์ที่ไม่ใช่ยา</option>
+    <option value="DP">DP = อวัยวะเทียม/อุปกรณ์</option>
+	<option value="DS">DS = เวชภัณฑ์ที่ไม่ใช่ยา</option>
 	</select>
 	&nbsp;&nbsp;&nbsp;&nbsp;<input class="txtsarabun" type="text" name="dpycode12" size="7">
   <input class="txtsarabun" type="text" name="amount12" size="7">

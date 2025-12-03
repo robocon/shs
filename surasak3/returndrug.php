@@ -293,7 +293,7 @@ if(isset($_POST['okbtn'])){
 		//echo $selecttrade;
 		$selecttrade = "SELECT drug01.row_id ,  drug01.date ,  drug01.hn ,  drug01.an,  drug01.drugcode ,drug01.tradname, SUM( amount ) , sum( price ) ,  drug01.item ,  drug01.slcode ,  drug01.part ,  drug01.idno,drug01.stock, drug01.statcon, drug01.DPY, drug01.DPN, drug01.reason, drug01.status,druglst01.unit FROM drug01,druglst01 where druglst01.drugcode=drug01.drugcode and drug01.drugcode = '".$rep4['code']."' ";
 
-		//echo $selecttrade;
+		//echo $selecttrade."<br>";
 		$result3 = mysql_query($selecttrade);
 		$rep3 = mysql_fetch_array($result3);
 

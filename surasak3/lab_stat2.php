@@ -127,157 +127,143 @@ if(!empty($_POST["select_date"])){
 	</style>
 	</p>
 	&nbsp;&nbsp;<?php echo $title;?>
-    <table border="1" cellpadding="0" cellspacing="0" bordercolor="#336699">
+<table width="100%" border="1" cellpadding="0" cellspacing="0" bordercolor="#336699">
       <tr>
-        <td><TABLE width="700" border="0" cellpadding="2" cellspacing="2">
-          <TR align="center" class="tb_head">
-			<TD>ปกติ / ยกเลิก</TD>
-            <TD>0000-0700</TD>
-			<TD>0700-0800</TD>
-            <TD>0800-1000</TD>
-            <TD>1000-1600</TD>
-            <TD>1600-2400</TD>
-			<TD>รวม</TD>
-          </TR>
-          <?php
-			if($bgcolor =="#FFFFFF")
-				$bgcolor = "#FFFFBB";
-			else
-				$bgcolor = "#FFFFFF";
+        <td>
+          <TABLE width="100%" border="0" cellpadding="2" cellspacing="2">
+            <TR align="center" class="tb_head">
+              <TD>ปกติ / ยกเลิก</TD>
+              <TD>0000-0600</TD> <TD>รายได้</TD>
+              <TD>0600-0800</TD> <TD>รายได้</TD>
+              <TD>0800-1000</TD> <TD>รายได้</TD>
+              <TD>1000-1600</TD> <TD>รายได้</TD>
+              <TD>1600-2400</TD> <TD>รายได้</TD>
+              <TD>รวม(ครั้ง)</TD> <TD>รายได้สุทธิ</TD>
+            </TR>
 
-			$sum4=0;
-			?>
-          <TR bgcolor="<?php echo $bgcolor;?>">
-			<TD align="right">ปกติ</TD>
-			 </TD>
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where timelst between '00:00:00' AND '06:59:59' ";
-			$result2 = mysql_query($sql);
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum3 += $sum;
-			$sum4 += $sum;
-			?>
-              &nbsp;
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '07:00:00' AND '07:59:59'  ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum0 += $sum; 
-			$sum4 += $sum;
-			?>
-              &nbsp; </TD>
-              <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '08:00:00' AND '09:59:59'  ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum0 += $sum; 
-			$sum4 += $sum;
-			?>
-              &nbsp; </TD>
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '10:00:00' AND '15:59:59'   ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum1 += $sum; 
-			$sum4 += $sum;
-			?>
-              &nbsp; </TD>
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '16:00:00' AND '23:59:59'  ";
-			$result2 = mysql_query($sql);
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum2 += $sum;
-			$sum4 += $sum;
-			?>
-              &nbsp; </TD>
-			  <TD align="right">
-			  <?php
-				echo $sum4;
-				$sum0=0;
-				$sum1=0;
-				$sum2=0;
-				$sum3=0;
-				$sum4=0;
-		?>
-              &nbsp; </TD>
-          </TR>
-		  <TR bgcolor="<?php echo $bgcolor;?>">
-			<TD align="right">ยกเลิก</TD>
-			<TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '00:00:00' AND '06:59:59' AND price <= 0 ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum0 += $sum; 
-			$sum4 += $sum;
-			?>
-              &nbsp;
-			</TD>
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '07:00:00' AND '07:59:59' AND price <= 0    ";
-			$result2 = mysql_query($sql) or die(mysql_error());
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum1 += $sum; 
-			$sum4 += $sum;
-			?>
-              &nbsp;
-			</TD>
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where  timelst between '08:00:00' AND '09:59:59'  AND price <= 0  ";
-			$result2 = mysql_query($sql);
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum2 += $sum;
-			$sum4 += $sum;
-			?>
-              &nbsp; 
-			</TD>
-            <TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where timelst between '10:00:00' AND '15:59:59'  AND price <= 0 ";
-			$result2 = mysql_query($sql);
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum3 += $sum;
-			$sum4 += $sum;
-			?>
-              &nbsp; 
-			</TD>
-			<TD align="right">
-			<?php 
-			$sql = "Select count(hn) From depart_2 where timelst between '16:00:00' AND '23:59:59'  AND price <= 0 ";
-			$result2 = mysql_query($sql);
-			list($sum) = mysql_fetch_row($result2);
-			echo $sum;
-			$sum3_1 += $sum;
-			$sum4 += $sum;
-			?>
-              &nbsp; 
-			</TD>
-			<TD align="right">
-			<?php
-				echo $sum4;
-			?>
-              &nbsp;
-			</TD>
-			<td></td>
-          </TR>
-        </TABLE>
-		</td>
+            <?php
+            if($bgcolor =="#FFFFFF") $bgcolor = "#FFFFBB"; else $bgcolor = "#FFFFFF";
+            
+            // ตัวแปรสำหรับเก็บผลรวมทั้งหมด
+            $grand_total_count = 0;
+            $grand_total_price = 0;
+            ?>
+
+            <TR bgcolor="<?php echo $bgcolor;?>">
+              <TD align="right">ปกติ</TD>
+              
+              <?php
+              // ช่วง 00:00 - 05:59
+              $sql = "Select count(hn), SUM(price) From depart_2 where timelst between '00:00:00' AND '05:59:59' AND price > 0";
+              $result2 = mysql_query($sql);
+              list($c1, $p1) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($c1); ?></TD>
+              <TD align="right"><?php echo number_format($p1, 2); ?></TD>
+
+              <?php
+              // ช่วง 06:00 - 07:59
+              $sql = "Select count(hn), SUM(price) From depart_2 where timelst between '06:00:00' AND '07:59:59' AND price > 0";
+              $result2 = mysql_query($sql);
+              list($c2, $p2) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($c2); ?></TD>
+              <TD align="right"><?php echo number_format($p2, 2); ?></TD>
+
+              <?php
+              // ช่วง 08:00 - 09:59
+              $sql = "Select count(hn), SUM(price) From depart_2 where timelst between '08:00:00' AND '09:59:59' AND price > 0";
+              $result2 = mysql_query($sql);
+              list($c3, $p3) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($c3); ?></TD>
+              <TD align="right"><?php echo number_format($p3, 2); ?></TD>
+
+              <?php
+              // ช่วง 10:00 - 15:59
+              $sql = "Select count(hn), SUM(price) From depart_2 where timelst between '10:00:00' AND '15:59:59' AND price > 0";
+              $result2 = mysql_query($sql);
+              list($c4, $p4) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($c4); ?></TD>
+              <TD align="right"><?php echo number_format($p4, 2); ?></TD>
+
+              <?php
+              // ช่วง 16:00 - 23:59
+              $sql = "Select count(hn), SUM(price) From depart_2 where timelst between '16:00:00' AND '23:59:59' AND price > 0";
+              $result2 = mysql_query($sql);
+              list($c5, $p5) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($c5); ?></TD>
+              <TD align="right"><?php echo number_format($p5, 2); ?></TD>
+
+              <?php
+              // คำนวณยอดรวมแถวปกติ
+              $row_total_count = $c1+$c2+$c3+$c4+$c5;
+              $row_total_price = $p1+$p2+$p3+$p4+$p5;
+              ?>
+              <TD align="right"><strong><?php echo number_format($row_total_count); ?></strong></TD>
+              <TD align="right"><strong><?php echo number_format($row_total_price, 2); ?></strong></TD>
+            </TR>
+
+            <TR bgcolor="<?php echo $bgcolor;?>">
+              <TD align="right">ยกเลิก</TD>
+
+              <?php
+              // ช่วง 00:00 - 05:59
+              $sql = "Select count(hn) From depart_2 where timelst between '00:00:00' AND '05:59:59' AND price <= 0";
+              $result2 = mysql_query($sql);
+              list($cc1) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($cc1); ?></TD>
+              <TD align="right">-</TD>
+
+              <?php
+              // ช่วง 06:00 - 07:59
+              $sql = "Select count(hn) From depart_2 where timelst between '06:00:00' AND '07:59:59' AND price <= 0";
+              $result2 = mysql_query($sql);
+              list($cc2) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($cc2); ?></TD>
+              <TD align="right">-</TD>
+
+              <?php
+              // ช่วง 08:00 - 09:59
+              $sql = "Select count(hn) From depart_2 where timelst between '08:00:00' AND '09:59:59' AND price <= 0";
+              $result2 = mysql_query($sql);
+              list($cc3) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($cc3); ?></TD>
+              <TD align="right">-</TD>
+
+              <?php
+              // ช่วง 10:00 - 15:59
+              $sql = "Select count(hn) From depart_2 where timelst between '10:00:00' AND '15:59:59' AND price <= 0";
+              $result2 = mysql_query($sql);
+              list($cc4) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($cc4); ?></TD>
+              <TD align="right">-</TD>
+
+              <?php
+              // ช่วง 16:00 - 23:59
+              $sql = "Select count(hn) From depart_2 where timelst between '16:00:00' AND '23:59:59' AND price <= 0";
+              $result2 = mysql_query($sql);
+              list($cc5) = mysql_fetch_row($result2);
+              ?>
+              <TD align="right"><?php echo number_format($cc5); ?></TD>
+              <TD align="right">-</TD>
+
+              <?php
+              // คำนวณยอดรวมแถวยกเลิก
+              $row_cancel_count = $cc1+$cc2+$cc3+$cc4+$cc5;
+              ?>
+              <TD align="right"><strong><?php echo number_format($row_cancel_count); ?></strong></TD>
+              <TD align="right">-</TD>
+            </TR>
+
+          </TABLE>
+        </td>
       </tr>
     </table>
     <p>&nbsp;</p>
