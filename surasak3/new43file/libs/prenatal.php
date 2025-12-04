@@ -18,7 +18,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['D_UPDATE'].'|'
     .$item['PROVIDER'].'|'
     .$item['CID'].'|'
-    .$item['HEIGHT']."|$HOSPCODE9\r\n";
+    .$item['HEIGHT']."\r\n";
 
 }
 
@@ -26,7 +26,7 @@ $filePath = $dirPath.'/prenatal.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|GRAVIDA|LMP|EDC|VDRL_RESULT|HB_RESULT|HIV_RESULT|DATE_HCT|HCT_RESULT|THALASSEMIA|D_UPDATE|PROVIDER|CID|HEIGHT|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|GRAVIDA|LMP|EDC|VDRL_RESULT|HB_RESULT|HIV_RESULT|DATE_HCT|HCT_RESULT|THALASSEMIA|D_UPDATE|PROVIDER|CID|HEIGHT\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_prenatal.txt';
 file_put_contents($qofPath, $txt);

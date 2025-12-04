@@ -12,7 +12,7 @@ $sql = "SELECT '11512' AS `HOSPCODE`,
 `provider` AS `PROVIDER`, 
 `d_update` AS `D_UPDATE`, 
 `cid` AS `CID`, 
-`weight` AS `WEIGHT`
+`height` AS `HEIGHT`
 FROM `anc` 
 WHERE `date_serv` LIKE '$date_serv%' ";
 $q = mysql_query($sql, $db2) or die( mysql_error() );
@@ -32,14 +32,14 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['PROVIDER'].'|'
     .$item['D_UPDATE'].'|'
     .$item['CID'].'|'
-    .$item['WEIGHT']."\r\n";
+    .$item['HEIGHT']."\r\n";
 }
 
 $filePath = $dirPath.'/anc.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|GRAVIDA|ANCNO|GA|ANCRESULT|ANCPLACE|PROVIDER|D_UPDATE|CID|WEIGHT|HOSPCODE9|ANCPLACE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|GRAVIDA|ANCNO|GA|ANCRESULT|ANCPLACE|PROVIDER|D_UPDATE|CID|HEIGHT\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_anc.txt';
 file_put_contents($qofPath, $txt);

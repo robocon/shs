@@ -53,8 +53,6 @@ if ( $action == 'save' ) {
 	$anc_id = input_post('anc_id');
 	$prenatal_id = input_post('prenatal_id');
 
-	$WEIGHT_ANC = $_POST['WEIGHT_ANC'];
-
 	$q = mysql_query("SELECT * FROM `anc` WHERE `pid` = '$hn' and `seq` = '$seq' ") or die(mysql_error());
 	$test_row = mysql_num_rows($q);
 	if( $test_row > 0 ){ 
@@ -72,7 +70,6 @@ if ( $action == 'save' ) {
 		`d_update`='$d_update', 
 		`cid`='$cid', 
 		`height`='$HEIGHT_ANC',
-		`weight`='$WEIGHT_ANC',
 		`opday_id` = '$opday_id' 
 		WHERE (`row_id`='$anc_id');";
 		$save = $db->update($sql);
@@ -103,9 +100,9 @@ if ( $action == 'save' ) {
 	}else{	
 		
 		$sql = "INSERT INTO `anc` (
-		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid`, `height` ,`opday_id`, `weight` 
+		`row_id`, `pid`, `seq`, `date_serv`, `gravida`, `ancno`, `ga`, `ancres`, `aplace`, `provider`, `d_update`, `cid`, `height` ,`opday_id` 
 		) VALUES (
-		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$PROVIDER', '$d_update', '$cid', '$HEIGHT_ANC', '$opday_id', '$WEIGHT_ANC'
+		NULL, '$hn', '$seq', '$date_serve', '$gravida', '$ancno', '$ga', '$ancres', '11512', '$PROVIDER', '$d_update', '$cid', '$HEIGHT_ANC', '$opday_id'
 		);";
 		$save = $db->insert($sql); 
 
@@ -266,9 +263,8 @@ if( $page === 'search' ){
 	}
 
 	// วันที่ประจำเดือนครั้งสุดท้ายจาก OPD
-	$db->select("SELECT `mens`,`mens_date`,`weight`,`height` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
+	$db->select("SELECT `mens`,`mens_date`,`height` FROM `opd` WHERE `thdatehn` = '$thdatehn' ");
 	$mens = $db->get_item();
-	$weight = $mens['weight'];
 	$height = $mens['height'];
 	$mensId = $mens['mens'];
 	$mensList = array(1 => 'ยังไม่มีประจำเดือน','หมดประจำเดือน','ยังมีประจำเดือน');
@@ -367,10 +363,6 @@ if( $page === 'search' ){
 				<tr>
 					<td class="txtRight">ส่วนสูง : </td>
 					<td><input type="text" name="HEIGHT_ANC" id="HEIGHT_ANC" onkeyup="copy_height(this.value)" value="<?=$height;?>">(ซม.) ระบุเป็นตัวเลขไม่เกิน 3 หลัก และทศนิยม 1 ตําแหน่ง เช่น 155.9</td>
-				</tr>
-				<tr>
-					<td class="txtRight">น้ำหนัก : </td>
-					<td><input type="text" name="WEIGHT_ANC" id="WEIGHT_ANC" value="<?=$weight;?>">(กก.)</td>
 				</tr>
 				<tr>
                     <td class="txtRight">เลขที่ผู้ให้บริการ(แพทย์ผู้ตรวจ) : </td>

@@ -27,7 +27,7 @@ while ($item = mysql_fetch_assoc($qNUTRITION)) {
     $D_UPDATE = $item['D_UPDATE'];
     $CID = $item['CID'];
 
-    $nutritionTxt = "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$NUTRITIONPLACE|$WEIGHT|$HEIGHT|$HEADCIRCUM|$CHILDDEVELOP|$FOOD|$BOTTLE|$PROVIDER|$D_UPDATE|$CID|$HOSPCODE9|$HOSPCODE9\r\n";
+    $nutritionTxt = "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$NUTRITIONPLACE|$WEIGHT|$HEIGHT|$HEADCIRCUM|$CHILDDEVELOP|$FOOD|$BOTTLE|$PROVIDER|$D_UPDATE|$CID\r\n";
 
 }  //close while
 $filePath = $dirPath.'/nutrition.txt';
@@ -35,7 +35,7 @@ file_put_contents($filePath, $nutritionTxt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|NUTRITIONPLACE|WEIGHT|HEIGHT|HEADCIRCUM|CHILDDEVELOP|FOOD|BOTTLE|PROVIDER|D_UPDATE|CID|HOSPCODE9|NUTRITIONPLACE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|NUTRITIONPLACE|WEIGHT|HEIGHT|HEADCIRCUM|CHILDDEVELOP|FOOD|BOTTLE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_nutrition.txt';
 file_put_contents($qofPath, $nutritionTxt);

@@ -38,7 +38,7 @@ $staff = array(
     'กันยกร มาเกตุ' => '907'
 );
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|SERVPLACE|PPSPECIAL|PPSPLACE|PROVIDER|D_UPDATE|CID|HOSPCODE9|PPSPLACE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|SERVPLACE|PPSPECIAL|PPSPLACE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {
     
@@ -58,10 +58,12 @@ while ( $item = mysql_fetch_assoc($q) ) {
     }else{
         $dr_code = 00000;
     }
-    $PPSPLACE9 = '';
+    
     $PROVIDER = $SEQ.sprintf("%05d", $dr_code);
     
-    $txt .= "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$SERVPLACE|$PPSPECIAL|$PPSPLACE|$PROVIDER|$D_UPDATE|$CID|$HOSPCODE9|$PPSPLACE9\r\n";
+    $txt .= "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$SERVPLACE|$PPSPECIAL|$PPSPLACE|$PROVIDER|$D_UPDATE|$CID\r\n";
+
+
 }
 
 

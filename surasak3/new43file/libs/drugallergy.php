@@ -58,7 +58,7 @@ while (list ($regisdate,$date,$hn,$drugcode,$tradname,$advreact,$asses,$reporter
 
     $provider = $sortdate.sprintf('%03d', $vn).$doctor_code;
 
-    $inline = "$hospcode|$hn|$daterecord|$code24|$dname|$typedx|$alevel|$symptom|$informant|$hospcode|$d_update|$provider|$cid|$HOSPCODE9|$HOSPCODE9\r\n";
+    $inline = "$hospcode|$hn|$daterecord|$code24|$dname|$typedx|$alevel|$symptom|$informant|$hospcode|$d_update|$provider|$cid\r\n";
     // print($inline);
     $txt .= $inline;
     
@@ -67,7 +67,7 @@ $filePath = $dirPath.'/drugallergy.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|DATERECORD|DRUGALLERGY|DNAME|TYPEDX|ALEVEL|SYMPTOM|INFORMANT|INFORMHOSP|D_UPDATE|PROVIDER|CID|HOSPCODE9|HOSP9_INFORMHOSP\r\n";
+$header = "HOSPCODE|PID|DATERECORD|DRUGALLERGY|DNAME|TYPEDX|ALEVEL|SYMPTOM|INFORMANT|INFORMHOSP|D_UPDATE|PROVIDER|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_drugallergy.txt';
 file_put_contents($qofPath, $txt);

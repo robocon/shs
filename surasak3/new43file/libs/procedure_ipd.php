@@ -66,7 +66,7 @@ while (list ($admdate,$an,$icd9cm,$hn,$my_ward,$doctor,$date) = mysql_fetch_row 
 	$timefinish=$datetime_admit;
 	$serviceprice="0.00";
 	
-    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$procedcode|$timestart|$timefinish|$serviceprice|$provider|$d_update|$idcard|$HOSPCODE9\r\n";					
+    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$procedcode|$timestart|$timefinish|$serviceprice|$provider|$d_update|$idcard\r\n";					
     // $strFileName16 = "procedure_ipd.txt";
     // $objFopen16 = fopen($strFileName16, 'a');
     // fwrite($objFopen16, $strText16);
@@ -83,7 +83,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|PROCEDCODE|TIMESTART|TIMEFINISH|SERVICEPRICE|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|PROCEDCODE|TIMESTART|TIMEFINISH|SERVICEPRICE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_procedure_ipd.txt';
 file_put_contents($qofPath, $txt);

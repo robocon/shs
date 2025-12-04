@@ -21,9 +21,8 @@ while ($item = $q_labor->fetch_assoc()) {
     $SBORN = $item['SBORN'];
     $D_UPDATE = $item['D_UPDATE'];
     $CID = $item['CID'];
-    $BHOSP9 = '';
 
-    $labor_data = "$HOSPCODE|$PID|$GRAVIDA|$LMP|$EDC|$BDATE|$BRESULT|$BPLACE|$BHOSP|$BTYPE|$BDOCTOR|$LBORN|$SBORN|$D_UPDATE|$CID|$HOSPCODE9|$BHOSP9\r\n";
+    $labor_data = "$HOSPCODE|$PID|$GRAVIDA|$LMP|$EDC|$BDATE|$BRESULT|$BPLACE|$BHOSP|$BTYPE|$BDOCTOR|$LBORN|$SBORN|$D_UPDATE|$CID\r\n";
     $txt .= $labor_data;
 }
 
@@ -31,7 +30,7 @@ $filePath = $dirPath.'/labor.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|GRAVIDA|LMP|EDC|BDATE|BRESULT|BPLACE|BHOSP|BTYPE|BDOCTOR|LBORN|SBORN|D_UPDATE|CID|HOSPCODE9|BHOSP9\r\n";
+$header = "HOSPCODE|PID|GRAVIDA|LMP|EDC|BDATE|BRESULT|BPLACE|BHOSP|BTYPE|BDOCTOR|LBORN|SBORN|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 
 $qofPath = $dirPath.'/qof_labor.txt';

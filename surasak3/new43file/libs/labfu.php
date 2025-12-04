@@ -85,13 +85,13 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .$item['D_UPDATE'].'|'
     .$item['LABPLACE'].'|'
     .$item['CID']
-    ."|$HOSPCODE9\r\n";
+    ."\r\n";
 
 }
 
 file_put_contents($dirPath.'/labfu.txt', $txt);
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|LABTEST|LABRESULT|D_UPDATE|LABPLACE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|LABTEST|LABRESULT|D_UPDATE|LABPLACE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_labfu.txt';
 file_put_contents($qofPath, $txt);

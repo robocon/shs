@@ -71,7 +71,7 @@ while (list ($regisdate,$hn,$an,$date,$my_ward,$doctor,$diagcode,$type,$svdate) 
 	list($hh,$ss,$ii)=explode(":",$regis2);
 	$d_update=($yy-543).$mm.$dd.$hh.$ss.$ii;
 	
-    $txt .= "$hospcode|$hn|$an|$datetime_admit|$warddiag|$diagtype|$diagcode|$provider|$d_update|$cid|$HOSPCODE9\r\n";
+    $txt .= "$hospcode|$hn|$an|$datetime_admit|$warddiag|$diagtype|$diagcode|$provider|$d_update|$cid\r\n";
     // $strFileName15 = "diagnosis_ipd.txt";
     // $objFopen15 = fopen($strFileName15, 'a');
     // fwrite($objFopen15, $strText15);
@@ -88,7 +88,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDDIAG|DIAGTYPE|DIAGCODE|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDDIAG|DIAGTYPE|DIAGCODE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_diagnosis_ipd.txt';
 file_put_contents($qofPath, $txt);

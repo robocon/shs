@@ -53,7 +53,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     $txt .= $item['NEED_SEALANT'].'|'.$item['NEED_PFILLING'].'|'.$item['NEED_DFILLING'].'|'.$item['NEED_PEXTRACT'].'|';
     $txt .= $item['NEED_DEXTRACT'].'|'.$item['NPROSTHESIS'].'|'.$item['PERMANENT_PERMANENT'].'|'.$item['PERMANENT_PROSTHESIS'].'|';
     $txt .= $item['PROSTHESIS_PROSTHESIS'].'|'.$item['GUM'].'|'.$item['SCHOOLTYPE'].'|'.$item['CLASS'].'|';
-    $txt .= $provider.'|'.$item['D_UPDATE'].'|'.$item['CID']."|$HOSPCODE9\r\n";
+    $txt .= $provider.'|'.$item['D_UPDATE'].'|'.$item['CID']."\r\n";
 
 }
 
@@ -63,7 +63,7 @@ $zipLists[] = $filePath;
 
 $header = "HOSPCODE|PID|SEQ|DATE_SERV|DENTTYPE|SERVPLACE|PTEETH|PCARIES|PFILLING|PEXTRACT|";
 $header .= "DTEETH|DCARIES|DFILLING|DEXTRACT|NEED_FLUORIDE|NEED_SCALING|NEED_SEALANT|NEED_PFILLING|NEED_DFILLING|NEED_PEXTRACT|";
-$header .= "NEED_DEXTRACT|NPROSTHESIS|PERMANENT_PERMANENT|PERMANENT_PROSTHESIS|PROSTHESIS_PROSTHESIS|GUM|SCHOOLTYPE|CLASS|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
+$header .= "NEED_DEXTRACT|NPROSTHESIS|PERMANENT_PERMANENT|PERMANENT_PROSTHESIS|PROSTHESIS_PROSTHESIS|GUM|SCHOOLTYPE|CLASS|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_dental.txt';
 file_put_contents($qofPath, $txt);

@@ -109,7 +109,7 @@ while (list ($thidate,$hn,$vn,$doctor,$clinic_name,$procedcode, $idcard) = mysql
 
     $serviceprice="0.00";
 
-    $txt .= "$hospcode|$hn|$seq|$date_serv|$clinic|$procedcode|$serviceprice|$provider|$d_update|$idcard|$HOSPCODE9\r\n";
+    $txt .= "$hospcode|$hn|$seq|$date_serv|$clinic|$procedcode|$serviceprice|$provider|$d_update|$idcard\r\n";
     
     
 }  //close while
@@ -119,7 +119,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|PROCEDCODE|SERVICEPRICE|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|PROCEDCODE|SERVICEPRICE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_procedure_opd.txt';
 file_put_contents($qofPath, $txt);

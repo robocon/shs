@@ -160,7 +160,7 @@ while (list ($date,$hn,$depart,$price,$paid,$essd,$nessdy,$nessdn,$dpy,$dpn,$dsy
 	$chargelist = "000000";
 	$quantity="1";
 
-	$inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update|$idcard|$HOSPCODE9\r\n";			
+	$inline = "$hospcode|$hn|$seq|$date_serv|$clinic|$chargeitem|$chargelist|$quantity|$instype|$cost|$price|$payprice|$d_update|$idcard\r\n";			
 	// print($inline);
 	$txt .= $inline;
 }
@@ -170,7 +170,7 @@ $filePath = $dirPath.'/charge_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|CLINIC|CHARGEITEM|CHARGELIST|QUANTITY|INSTYPE|COST|PRICE|PAYPRICE|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_charge_opd.txt';
 file_put_contents($qofPath, $txt);

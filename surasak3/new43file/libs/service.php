@@ -172,9 +172,9 @@ while($a = $qService->fetch_assoc()){
         $price="50.00";
     }
 
-    $HOSP9_SUB = $caseout = $hsub = $cost = '';
+    $caseout = $hsub = $cost = '';
 
-    $inline = "$hospcode|$idcard|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$hsub|$idcard|$HOSPCODE9|$HOSPCODE9|$HOSPCODE9|$HOSPCODE9|$HOSP9_SUB\r\n";			
+    $inline = "$hospcode|$idcard|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$hsub|$idcard\r\n";			
     // print($inline);
     $txt .= $inline;
     
@@ -187,7 +187,7 @@ mkdir($dirPath, 0777, true);
 file_put_contents($filePath, $txt, FILE_APPEND | LOCK_EX);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|HN|SEQ|DATE_SERV|TIME_SERV|LOCATION|INTIME|INSTYPE|INSID|MAIN|TYPEIN|REFERINHOSP|CAUSEIN|CHIEFCOMP|SERVPLACE|BTEMP|SBP|DBP|PR|RR|TYPEOUT|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|D_UPDATE|HSUB|CID|HOSPCODE9|HOSP9_MAIN|REFERINHOSP9|REFEROUTHOSP9|HOSP9_SUB\r\n";
+$header = "HOSPCODE|PID|HN|SEQ|DATE_SERV|TIME_SERV|LOCATION|INTIME|INSTYPE|INSID|MAIN|TYPEIN|REFERINHOSP|CAUSEIN|CHIEFCOMP|SERVPLACE|BTEMP|SBP|DBP|PR|RR|TYPEOUT|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|D_UPDATE|HSUB|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_service.txt';
 file_put_contents($qofPath, $txt);
