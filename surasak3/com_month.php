@@ -218,6 +218,7 @@ if ($action==='udpateTime') {
         if (!empty($depart)) {
             $sql .= " AND depart = '$depart' ";
         }
+        $sql .= "ORDER BY `dateend` DESC";
 
         $row = mysql_query($sql);
         $num = mysql_num_rows($row);
