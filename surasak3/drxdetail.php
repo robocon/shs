@@ -7,6 +7,17 @@ require_once dirname(__FILE__).'/bootstrap.php';
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
+function datediff($start, $end) {
+   $datediff = strtotime(dateform($end)) - strtotime(dateform($start));
+   return floor($datediff / (60 * 60 * 24));
+}
+
+function dateform($date){
+   $d = explode('-',$date);
+   return $d[2].'-'.$d[1].'-'.$d[0];
+}
+
+
 //-------------------------เช็ค druginteraction	
 	$csql = "SELECT a.drugcode FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."'   AND a.date = '".$_GET["sDate"]."' ";
 	//echo $csql;
@@ -228,10 +239,10 @@ $sdate=substr($_GET["sDate"],0,10);
 list($y1,$m1,$d1)=explode("-",$sdate);
 $chkdatevn="$d1-$m1-$y1".$_GET["sVn"];
 
-$sqlopday = "select toborow,diag,age,thidate from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
+$sqlopday = "select toborow,diag,age,thidate,vn from opday where hn='$sHn' and thdatevn = '$chkdatevn'";
 //echo $sqlopday;
 $res= mysql_query($sqlopday) or die("Query failed");
-list($toborow,$diagnosis,$age,$opdayThidate) = mysql_fetch_row($res);
+list($toborow,$diagnosis,$age,$opdayThidate,$opdayVn) = mysql_fetch_row($res);
 $tob = substr($toborow,0,4);
 
 $sqlopday1 = "select idcard,dbirth from opcard where hn='$sHn'";
@@ -249,7 +260,7 @@ $m=substr($dDate,5,2);
 $y=substr($dDate,0,4);
 
 print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
-print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <B>สิทธิ:$sPtright</B><br> ";
+print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <b>VN:</b> $opdayVn, <B>สิทธิ: $sPtright</B><br> ";
 print "<font face='Angsana New'>เลขที่บัตรประชาชน : $idcard &nbsp;&nbsp;&nbsp;&nbsp; วัน/เดือน/ปีเกิด : $birthday &nbsp;&nbsp;&nbsp;&nbsp; อายุ : $age<br> ";
 // print "<font face='Angsana New'>โรค: $diagnosis<br>";
 
@@ -457,6 +468,8 @@ if($q->num_rows>0){
 	}
 }
 
+$drugViewerItems = array();
+
 $inject = false;
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
 	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno,a.reason FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."' AND a.date = '".$_GET["sDate"]."' ";
@@ -466,6 +479,9 @@ $inject = false;
     while (list ($tradname,$drugcode,$amount,$price,$slcode,$row_id,$part,$office,$detail1,$detail2,$detail3,$detail4,$drug_inject_amount,$drug_inject_unit,$drug_inject_amount2,$drug_inject_unit2,$drug_inject_time,$drug_inject_slip,$drug_inject_etc,$injno,$reason) = mysql_fetch_row ($result)) {
         $x++;
 		$n++;
+
+		$drugViewerItems[] = "'".$drugcode."'";
+
         $_SESSION["aDgcode"][$x]=$drugcode;
         $_SESSION["aTrade"][$x]=$tradname;
         $_SESSION["aSlipcode"][$x]=$slcode;        
@@ -543,20 +559,82 @@ $ptright=substr($sPtright,0,3);
 ?>
 </table>
 <?php
+	$drugSQL = implode(',', $drugViewerItems);
+	
+	$sixMonth = strtotime('-6 month');
+	$dateSixMont = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
 
-function datediff ( $start, $end ) {
+	$currDate = (date('Y')+543).date('-m-d 00:00:00');
 
-   $datediff = strtotime(dateform($end)) - strtotime(dateform($start));
-   return floor($datediff / (60 * 60 * 24));
-}
+	$sqlLeftOver = "SELECT a.*,b.`amount` AS `amount_per_day`,
+	(a.`amount`/b.`amount`) AS `day_averrage`,
+	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
+	CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
+	c.`doctor`,d.`unit`
+	FROM (
+		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,`idno`
+		FROM `drugrx` 
+		WHERE (`date`>= '$dateSixMont' AND `date` <= '$currDate') 
+		AND `hn` = '$sHn' 
+		AND `drugcode` IN ($drugSQL) 
+		GROUP BY `drugcode`
+		ORDER BY `date` DESC
+	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
+	LEFT JOIN `phardep` AS c ON a.`idno` = c.`row_id` 
+	LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
+	WHERE b.`amount` != '' AND b.`amount` > 0 
+	AND d.`unit` REGEXP '(tablet|capsule)+' ";
+	$qLeftOver = $dbi->query($sqlLeftOver);
+	$drugOverItem = array();
+	if($qLeftOver->num_rows>0){
+		while ($a = $qLeftOver->fetch_assoc()) {
+			if($a['day_diff'] < $a['day_averrage']){
+				$drugOverItem[] = $a;
+			}
+		}
+	}
+	
+	if(count($drugOverItem)>0){
+		?>
+		<div style="display: block; margin-bottom:12px;">
+			<fieldset style="display: inline;">
+				<legend>⚠️ แจ้งเตือน ยาเหลือ ⚠️ <span>(รองรับยาแบบ tablet หรือ capsule )</span></legend>
+				<table>
+					<tr style="background-color:#636363; color:#ffffff;">
+						<th>วันที่จ่ายยา</th>
+						<th>รหัส</th>
+						<th>ชื่อยา</th>
+						<th>จำนวนที่จ่าย</th>
+						<th>วิธีใช้</th>
+						<th>ยาที่เหลือ<br>(โดยประมาณ)</th>
+						<th>วันที่คาดว่ายาจะหมด</th>
+						<th>แพทย์ที่สั่งจ่าย</th>
+					</tr>
+				<?php
+				foreach ($drugOverItem as $key => $item) {
 
-function dateform($date){
-
-   $d = explode('-',$date);
-   return $d[2].'-'.$d[1].'-'.$d[0];
-}
-
-
+					$dateOrder = bc_to_ad($item['date']);
+					$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".$item['day_averrage']."day"));
+					$dateFutureToThai = ad_to_bc($dateFuture);
+					?>
+					<tr style="background-color:#d9d9d9;">
+						<td><?= substr($item['date'],0,10); ?></td>
+						<td><?= $item['drugcode']; ?></td>
+						<td><?= $item['tradname']; ?></td>
+						<td align="center"><?= $item['amount']; ?></td>
+						<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
+						<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
+						<th><?= substr($dateFutureToThai,0,10); ?></th>
+						<td><?= $item['doctor']; ?></td>
+					</tr>
+					<?php
+				}
+				?>
+				</table>
+			</fieldset>
+		</div>
+		<?php
+	}
 
 	$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$sHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
 	//echo $sqlopday;
