@@ -35,6 +35,8 @@ if (empty($_SESSION["sOfficer"])) {
         <div>
             <button type="submit">ค้นหา</button>
             <input type="hidden" name="action" value="findPart">
+
+            <a href="edit_opacc.php" target="_blank">ค้นหาเอง</a>
         </div>
     </form>
     

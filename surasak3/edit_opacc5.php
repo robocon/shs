@@ -168,7 +168,8 @@ if ($type === 'patdata') {
         <div>
             detail <input type="text" name="detail" id="detail" value="<?=$item['detail'];?>"> 
             <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการแพทย์')">ค่าบริการทางการแพทย์</a> | 
-            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการพยาบาล')">ค่าบริการทางการพยาบาล</a>
+            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าบริการทางการพยาบาล')">ค่าบริการทางการพยาบาล</a> | 
+            <a href="javascript:void(0);" onclick="quickAdd('detail','ค่าตรวจวิเคราะห์โรค')">ค่าตรวจวิเคราะห์โรค</a>
         </div>
         <div>
             price <input type="text" name="price" id="price" value="<?=$item['price'];?>">
