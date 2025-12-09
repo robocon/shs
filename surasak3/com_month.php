@@ -14,9 +14,14 @@ if ($action==='udpateTime') {
     $date = $data['date'];
     $time = $data['time'];
 
-    $sql = sprintf("UPDATE `com_support` SET `dateend` = '%s %s' WHERE `row` = '%s'", 
+    $dateStart = $data['dateStart'];
+    $timeStart = $data['timeStart'];
+
+    $sql = sprintf("UPDATE `com_support` SET `dateend` = '%s %s', `date` = '%s %s' WHERE `row` = '%s'", 
         $dbi->real_escape_string($date),
         $dbi->real_escape_string($time),
+        $dbi->real_escape_string($dateStart),
+        $dbi->real_escape_string($timeStart),
         $dbi->real_escape_string($id)
     );
     $q = $dbi->query($sql);
@@ -52,6 +57,7 @@ if ($action==='udpateTime') {
         a:hover {text-decoration: none;}
         a:active {text-decoration: none;}
         label:hover {cursor: pointer;}
+        input {font-size: 20px;font-family: "TH SarabunPSK";}
     </style>
 </head>
 <body>
@@ -252,6 +258,7 @@ if ($action==='udpateTime') {
                     $i++;
 
                     list($dateEnd, $timeEnd) = explode(' ', $result['dateend']);
+                    list($dateStart, $timeStart) = explode(' ', $result['date']);
                     $id = $result['row'];
                 ?>
                     <tr>
@@ -271,7 +278,7 @@ if ($action==='udpateTime') {
                         <td valign="top" class="font1"><!-- วันที่ดำเนินการ -->
                             <?php
                             if($_SESSION['sIdname']==='dan' || $_SESSION['smenucode']==='ADM'){
-                                ?><a href="javascript:void(0)" onclick="editDateTime('<?=$id;?>','<?=$dateEnd;?>','<?=$timeEnd;?>')"><?= $result['dateend'] ?></a><?
+                                ?><a href="javascript:void(0)" onclick="editDateTime('<?=$id;?>','<?=$dateEnd;?>','<?=$timeEnd;?>','<?=$dateStart;?>','<?=$timeStart;?>')"><?= $result['dateend'] ?></a><?
                             }else{
                                 echo $result['dateend'];
                             }
@@ -285,18 +292,18 @@ if ($action==='udpateTime') {
             ?>
         </table>
         <script>
-            async function editDateTime(id, d, t){
+            async function editDateTime(id, d, t, dStart, tStart){
                 let { value: formValues } = await Swal.fire({
                     title: "แก้ไข วัน-เวลา ปิดงาน",
                     html: `<div>
                         <div>
-                            วัน <input type="date" id="swal-input1" class="swal2-input" value="${d}" lang="th-TH">
+                            วันเริ่ม <input type="date" id="dateStart" class="swal2-input" value="${dStart}" lang="th-TH"> เวลาเริ่ม <input type="time" id="timeStart" class="swal2-input" value="${tStart}">
                         </div>
                         <div>
-                            เวลา <input type="time" id="swal-input2" class="swal2-input" value="${t}">
+                            วันปิดงาน <input type="date" id="swal-input1" class="swal2-input" value="${d}" lang="th-TH"> เวลาปิดงาน <input type="time" id="swal-input2" class="swal2-input" value="${t}">
                         </div>
-                    </div>
-                    `,
+                    </div>`,
+                    width: 800,
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
                     confirmButtonText: "บันทึก",
@@ -306,6 +313,8 @@ if ($action==='udpateTime') {
                     preConfirm: () => {
                         return { 
                             "id": id,
+                            "dateStart": document.getElementById("dateStart").value, 
+                            "timeStart": document.getElementById("timeStart").value,
                             "date": document.getElementById("swal-input1").value, 
                             "time": document.getElementById("swal-input2").value
                         };
