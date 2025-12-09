@@ -15,9 +15,9 @@ while ($item = $q_fp->fetch_assoc()) {
     $PROVIDER = $item['PROVIDER'];
     $D_UPDATE = $item['D_UPDATE'];
     $CID = $item['CID'];
-    $FPPLACE9 = '';
 
-    $fp_data = "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$FPTYPE|$FPPLACE|$PROVIDER|$D_UPDATE|$CID|$HOSPCODE9|$FPPLACE9\r\n";
+
+    $fp_data = "$HOSPCODE|$PID|$SEQ|$DATE_SERV|$FPTYPE|$FPPLACE|$PROVIDER|$D_UPDATE|$CID\r\n";
     $txt .= $fp_data;
     
 }
@@ -26,7 +26,7 @@ $filePath = $dirPath.'/fp.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|FPTYPE|FPPLACE|PROVIDER|D_UPDATE|CID|HOSPCODE9|FPPLACE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|FPTYPE|FPPLACE|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_fp.txt';
 file_put_contents($qofPath, $txt);

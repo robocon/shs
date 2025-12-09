@@ -172,10 +172,6 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yo
     $sql ="SELECT `code` FROM `pername` WHERE (`detail1`='$yot' OR `detail2`='$yot' OR `detail3`='$yot' OR `detail4`='$yot')";
     $row = mysql_query($sql, $db2);
     list($pername) = mysql_fetch_array($row);
-
-/*    $sql ="select code from bloodgroup where (detail='$blood' or detail2='$blood')   ";
-    $row = mysql_query($sql);
-    list($abogroup) = mysql_fetch_array($row);*/
 	
 	//กรุ๊ปเลือด
 	$blood=trim($blood);
@@ -189,7 +185,7 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yo
 		$abogroup="4";
 	}else{
 		$abogroup="9";
-	}						
+	}
 	
 
 
@@ -217,31 +213,31 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yo
 	}else if($race=="กัมพูชา"){
 		$race="057";  
 	}else if($race=="อินเดีย"){
-		$race="045";  						
+		$race="045";
 	}else if($race=="เวียดนาม"){
-		$race="046";  						
+		$race="046";
 	}else{
-		$race="999";  
+		$race="999";
 	}
 
    
    //สัญชาติ
     if($nation=="ไทย" || $nation=="01 ไทย"){
-		$nation="099";  
+		$nation="099";
 	}else if($nation=="พม่า"){
-		$nation="048";  
+		$nation="048";
 	}else if($nation=="จีน"){
-		$nation="044";  
+		$nation="044";
 	}else if($nation=="ลาว"){
-		$nation="056";  
+		$nation="056";
 	}else if($nation=="กัมพูชา"){
-		$nation="057";  
+		$nation="057";
 	}else if($nation=="อินเดีย"){
-		$nation="045";  						
+		$nation="045";
 	}else if($nation=="เวียดนาม"){
-		$nation="046";  						
+		$nation="046";
 	}else{
-		$nation="999";  
+		$nation="999";
 	}
 	
 	
@@ -254,7 +250,7 @@ while (list ($regisdate,$hn,$dob,$sex,$marringe,$caree,$nation,$cid,$thidate,$yo
     $discharge = "9";  //สถานะ/สาเหตุการจำหน่าย
     $occ_old = '';
 
-    $inline = "$hospcode|$cid|$PID|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update|$phone|$phone|$HOSPCODE9\r\n";
+    $inline = "$hospcode|$cid|$PID|$hid|$pername|$name|$lname|$hn|$sex|$birth|$mstatus|$occ_old|$occ_new|$race|$nation|$religion|$neweducation|$fstatus|$father|$mother|$couple|$vstatus|$movein|$discharge|$ddischarge|$abogroup|$rhgroup|$labor|$passport|$typearea|$d_update|$phone|$phone\r\n";
 
     $txt .= $inline;
 
@@ -265,7 +261,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 //สำหรับ qof
-$header = "HOSPCODE|CID|PID|HID|PRENAME|NAME|LNAME|HN|SEX|BIRTH|MSTATUS|OCCUPATION_OLD|OCCUPATION_NEW|RACE|NATION|RELIGION|EDUCATION|FSTATUS|FATHER|MOTHER|COUPLE|VSTATUS|MOVEIN|DISCHARGE|DDISCHARGE|ABOGROUP|RHGROUP|LABOR|PASSPORT|TYPEAREA|D_UPDATE|TELEPHONE|MOBILE|HOSPCODE9\r\n";
+$header = "HOSPCODE|CID|PID|HID|PRENAME|NAME|LNAME|HN|SEX|BIRTH|MSTATUS|OCCUPATION_OLD|OCCUPATION_NEW|RACE|NATION|RELIGION|EDUCATION|FSTATUS|FATHER|MOTHER|COUPLE|VSTATUS|MOVEIN|DISCHARGE|DDISCHARGE|ABOGROUP|RHGROUP|LABOR|PASSPORT|TYPEAREA|D_UPDATE|TELEPHONE|MOBILE\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_person.txt';
 file_put_contents($qofPath, $txt);

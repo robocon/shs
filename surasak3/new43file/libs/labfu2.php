@@ -91,7 +91,7 @@ while ( $item = mysql_fetch_assoc($q_labfu2) ) {
     .$item['D_UPDATE'].'|'
     .$item['LABPLACE'].'|'
     .$item['CID']
-    ."|$HOSPCODE9\r\n";
+    ."\r\n";
 
 }
 

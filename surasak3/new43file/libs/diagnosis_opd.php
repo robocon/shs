@@ -39,13 +39,10 @@ while (list ($thidate,$hn,$vn,$doctor,$clinic_name,$date2,$idcard) = mysql_fetch
             }else{
                 $diagcode = $icd10;
                 if($type == "PRINCIPLE"){ $diagtype = "1";}
-                // if($type == "CO-MORBIDITY"){ $diagtype = "2";}
-                // if($type == "COMPLICATION"){ $diagtype = "3";}
-                elseif($type == "OTHER"){ $diagtype = "4";}
-                elseif($type == "EXTERNAL CAUSE"){ $diagtype = "5";}
-                else{
-                    $diagtype = "4";
-                }
+                if($type == "CO-MORBIDITY"){ $diagtype = "2";}
+                if($type == "COMPLICATION"){ $diagtype = "3";}
+                if($type == "OTHER"){ $diagtype = "4";}
+                if($type == "EXTERNAL CAUSE"){ $diagtype = "5";}	
             }
             
             // $newclinic = substr($clinic_name,0,2);
@@ -120,13 +117,10 @@ while (list ($thidate,$hn,$vn,$doctor,$clinic_name,$date2,$idcard) = mysql_fetch
         }else{
             $diagcode = $icd10;
             if($type == "PRINCIPLE"){ $diagtype = "1";}
-            // if($type == "CO-MORBIDITY"){ $diagtype = "2";}
-            // if($type == "COMPLICATION"){ $diagtype = "3";}
-            elseif($type == "OTHER"){ $diagtype = "4";}
-            elseif($type == "EXTERNAL CAUSE"){ $diagtype = "5";}
-            else{
-                $diagtype = "4";
-            }
+            if($type == "CO-MORBIDITY"){ $diagtype = "2";}
+            if($type == "COMPLICATION"){ $diagtype = "3";}
+            if($type == "OTHER"){ $diagtype = "4";}
+            if($type == "EXTERNAL CAUSE"){ $diagtype = "5";}	
         }
         
         // ถ้ามีตัวเลขนำหน้าแสดงว่าเป็นรหัสคลินิกแบบเก่า
@@ -179,7 +173,7 @@ while (list ($thidate,$hn,$vn,$doctor,$clinic_name,$date2,$idcard) = mysql_fetch
             $provider = $date_serv.$vn.$doctorcode;
         }	
 
-        $inline = "$hospcode|$hn|$seq|$date_serv|$diagtype|$diagcode|$clinic|$provider|$d_update|$idcard|$HOSPCODE9\r\n";
+        $inline = "$hospcode|$hn|$seq|$date_serv|$diagtype|$diagcode|$clinic|$provider|$d_update|$idcard\r\n";
         $txt .= $inline;
         
     }  // close while
@@ -188,7 +182,7 @@ $filePath = $dirPath.'/diagnosis_opd.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|DATE_SERV|DIAGTYPE|DIAGCODE|CLINIC|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|SEQ|DATE_SERV|DIAGTYPE|DIAGCODE|CLINIC|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_diagnosis_opd.txt';
 file_put_contents($qofPath, $txt);

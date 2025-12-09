@@ -111,7 +111,7 @@ while (list ($date,$hn,$an,$code,$dname,$amount,$admdate,$dcdate,$myward,$doctor
 	// $datestart=$datetime_admit;  //วันที่เริ่มให้ยา
 	// $datefinish=$datetime_admit;  //วันสุดท้ายที่ให้ยา
 
-    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$typedrug|$didstd|$dname|$datestart|$datefinish|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update|$cid|$HOSPCODE9\r\n";
+    $txt .= "$hospcode|$hn|$an|$datetime_admit|$wardstay|$typedrug|$didstd|$dname|$datestart|$datefinish|$amount|$unit|$unit_packing|$drugprice|$drugcost|$provider|$d_update|$cid\r\n";
 
     // $strFileName17 = "drug_ipd.txt";
     // $objFopen17 = fopen($strFileName17, 'a');
@@ -129,7 +129,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|TYPEDRUG|DIDSTD|DNAME|DATESTART|DATEFINISH|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|AN|DATETIME_ADMIT|WARDSTAY|TYPEDRUG|DIDSTD|DNAME|DATESTART|DATEFINISH|AMOUNT|UNIT|UNIT_PACKING|DRUGPRICE|DRUGCOST|PROVIDER|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_drug_ipd.txt';
 file_put_contents($qofPath, $txt);

@@ -19,7 +19,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
     .'|'.$item['FOOD']
     .'|'.$item['PROVIDER']
     .'|'.$item['D_UPDATE']
-    .'|'.$item['CID']."|$HOSPCODE9|$HOSPCODE9\r\n";
+    .'|'.$item['CID']."\r\n";
 
 }
 
@@ -27,7 +27,7 @@ $filePath = $dirPath.'/newborncare.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$headerQof = "HOSPCODE|PID|SEQ|BDATE|BCARE|BCPLACE|BCARERESULT|FOOD|PROVIDER|D_UPDATE|CID|HOSPCODE9|BCPLACE9\r\n";
+$headerQof = "HOSPCODE|PID|SEQ|BDATE|BCARE|BCPLACE|BCARERESULT|FOOD|PROVIDER|D_UPDATE|CID\r\n";
 $qofPath = $dirPath.'/qof_newborncare.txt';
 file_put_contents($qofPath, $headerQof.$txt);
 $qofLists[] = $qofPath;

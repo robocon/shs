@@ -18,7 +18,7 @@ while ($item = $q_women->fetch_assoc()) {
     $D_UPDATE = $item['D_UPDATE'];
     $CID = $item['CID'];
 
-    $women_data = "$HOSPCODE|$PID|$FPTYPE|$NOFPCAUSE|$TOTALSON|$NUMBERSON|$ABORTION|$STILLBIRTH|$D_UPDATE|$CID|$HOSPCODE9\r\n";
+    $women_data = "$HOSPCODE|$PID|$FPTYPE|$NOFPCAUSE|$TOTALSON|$NUMBERSON|$ABORTION|$STILLBIRTH|$D_UPDATE|$CID\r\n";
     $txt .= $women_data;
     
 }
@@ -27,7 +27,7 @@ $filePath = $dirPath.'/women.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|FPTYPE|NOFPCAUSE|TOTALSON|NUMBERSON|ABORTION|STILLBIRTH|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|FPTYPE|NOFPCAUSE|TOTALSON|NUMBERSON|ABORTION|STILLBIRTH|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_women.txt';
 file_put_contents($qofPath, $txt);

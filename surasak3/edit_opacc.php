@@ -1,5 +1,5 @@
 <?php 
-include_once 'bootstrap.php';
+include_once dirname(__FILE__).'/bootstrap.php';
 if (empty($_SESSION["sOfficer"])) {
     redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
     exit;

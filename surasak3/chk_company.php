@@ -102,7 +102,7 @@ include 'chk_menu.php';
                     </span>
                     <?php
                 }else{
-                    ?><div>ไม่มีข้อมูลในตาราง chk_company_list</div><?php
+                    ?><div>ไม่มีข้อมูลในปี <?= ($year_selected+543); ?></div><?php
                 }
                 ?>
             </div>
@@ -406,9 +406,14 @@ if ( $views == 'search' ) {
                 <td><?=$i;?></td>
                 <td><a href="chk_show_user.php?part=<?=urlencode($item['code']);?>" target="_blank" title="ดูรายชื่อทั้งหมด"><?=$item['name'];?></a></td>
                 <td>
-                    <?=$item['code'];?> <b>(<?=$userRows;?>ราย)</b><br>
-                    <!-- chk_company.php?id=<?=$item['id'];?> -->
-                    <a href="javascript:void(0);" onclick="btnEditCompany('<?=$item['id'];?>')">✏️ แก้ไขชื่อบริษัท</a>
+                    <a href="javascript:void(0);" onclick="btnEditCompany('<?=$item['id'];?>')">✏️ <?=$item['code'];?> <b></a>(<?=$userRows;?>ราย)</b>
+                    <?php
+                    if(!empty($item['job_date_run']) && $item['job_status']==='r'){
+                        ?>
+                        <div><a href="pre_vn.php?id=<?= $item['id']; ?>" target="_blank">⚙️ ตั้งค่าออกVN</a></div>
+                        <?php
+                    }
+                    ?>
                 </td>
                 <td><?=$item['date_checkup'];?></td>
                 <td align="center"><?=$item['yearchk'];?></td>

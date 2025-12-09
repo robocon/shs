@@ -40,8 +40,7 @@ while( $item = mysql_fetch_assoc($querytmp4) ){
     // $expiredate = "";  //วันเดือนปีที่หมดอายุ
     $main = substr($main,0,5);  //สถานบริการหลัก
     $sub = substr($main,0,5);  //สถานบริการรอง
-    $HOSP9_SUB = '';
-    $txt .= "$hospcode|$hn|$instype_old|$instype_new|$inside|$startdate|$expiredate|$main|$sub|$d_update|$cid|$HOSPCODE9|$HOSPCODE9|$HOSP9_SUB\r\n";	
+    $txt .= "$hospcode|$hn|$instype_old|$instype_new|$inside|$startdate|$expiredate|$main|$sub|$d_update|$cid\r\n";	
     
 }  //close while
 
@@ -50,7 +49,7 @@ file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
 
-$header = "HOSPCODE|PID|INSTYPE_OLD|INSTYPE_NEW|INSID|STARTDATE|EXPIREDATE|MAIN|SUB|D_UPDATE|CID|HOSPCODE9|HOSP9_MAIN|HOSP9_SUB\r\n";
+$header = "HOSPCODE|PID|INSTYPE_OLD|INSTYPE_NEW|INSID|STARTDATE|EXPIREDATE|MAIN|SUB|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_card.txt';
 file_put_contents($qofPath, $txt);

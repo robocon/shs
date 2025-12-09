@@ -84,14 +84,14 @@ while (list ($regisdate,$hn,$yot,$name,$lname,$address,$tambol,$ampur,$province,
     list($hh,$ss,$ii)=explode(":",$regis2);
     $d_update=$yy.$mm.$dd.$hh.$ss.$ii;
 
-    $inline = "$hospcode|$hn|$addresstype|$house_id|$housetype|$roomno|$condo|$num_address|$soisub|$soimain|$road|$villaname|$village|$cdistrict|$camphur|$cprovince|$telephone|$mobile|$d_update|$cid|$HOSPCODE9\r\n";
+    $inline = "$hospcode|$hn|$addresstype|$house_id|$housetype|$roomno|$condo|$num_address|$soisub|$soimain|$road|$villaname|$village|$cdistrict|$camphur|$cprovince|$telephone|$mobile|$d_update|$cid\r\n";			
     $txt .= $inline;
 } //close while
 $filePath = $dirPath.'/address.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|ADDRESSTYPE|HOUSE_ID|HOUSETYPE|ROOMNO|CONDO|HOUSENO|SOISUB|SOIMAIN|ROAD|VILLNAME|VILLAGE|TAMBON|AMPUR|CHANGWAT|TELEPHONE|MOBILE|D_UPDATE|CID|HOSPCODE9\r\n";
+$header = "HOSPCODE|PID|ADDRESSTYPE|HOUSE_ID|HOUSETYPE|ROOMNO|CONDO|HOUSENO|SOISUB|SOIMAIN|ROAD|VILLNAME|VILLAGE|TAMBON|AMPUR|CHANGWAT|TELEPHONE|MOBILE|D_UPDATE|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_address.txt';
 file_put_contents($qofPath, $txt);

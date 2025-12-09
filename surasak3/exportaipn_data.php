@@ -125,7 +125,8 @@ if($rows["claimaipn"]=="s"){  //กำลังส่งข้อมูล
 	|| $rows["an"]=="67/1291" || $rows["an"]=="67/1290" || $rows["an"]=="67/1360" || $rows["an"]=="67/1442" || $rows["an"]=="67/2196"
 	|| $rows["an"]=="67/2084" || $rows["an"]=="68/268" || $rows["an"]=="68/559" || $rows["an"]=="68/459" || $rows["an"]=="68/493"
 	|| $rows["an"]=="68/716" || $rows["an"]=="68/864" || $rows["an"]=="68/906" || $rows["an"]=="68/760" || $rows["an"]=="68/1015"
-	|| $rows["an"]=="68/1499" || $rows["an"]=="68/1512"){
+	|| $rows["an"]=="68/1499" || $rows["an"]=="68/1512"|| $rows["an"]=="68/1691" || $rows["an"]=="68/1804" || $rows["an"]=="68/2024"
+	|| $rows["an"]=="68/2010" || $rows["an"]=="68/2021"){
 	?>
     <td align="center"><? if($rows["claimaipn"]!="y"){ ?><a href="dataaipn/exportdataaipn_other.php?an=<?=$rows["an"];?>">ดาวน์โหลดไฟล์ร่วมจ่าย</a><? } ?></td>
 	<?php

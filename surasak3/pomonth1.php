@@ -1,45 +1,129 @@
-<form method="POST" action="podocument1.1.php">
-<p><b>บัญชีการสั่งซื้อยาและเวชภัณฑ์แต่ละบริษัท  รายเดือน</b></p>
-    <p><font face="Angsana New">&nbsp;&nbsp; &#3648;&#3604;&#3639;&#3629;&#3609;&nbsp;<select size="1" name="rptmo">
-    <option selected>--&#3648;&#3621;&#3639;&#3629;&#3585;--</option>
-    <option value="01">&#3617;&#3585;&#3619;&#3634;&#3588;&#3617;</option>
-    <option value="02">&#3585;&#3640;&#3617;&#3616;&#3634;&#3614;&#3633;&#3609;&#3608;&#3660;</option>
-    <option value="03">&#3617;&#3637;&#3609;&#3634;&#3588;&#3617;</option>
-    <option value="04">&#3648;&#3617;&#3625;&#3634;&#3618;&#3609;</option>
-    <option value="05">&#3614;&#3620;&#3625;&#3616;&#3634;&#3588;&#3617;</option>
-    <option value="06">&#3617;&#3636;&#3606;&#3640;&#3609;&#3634;&#3618;&#3609;</option>
-    <option value="07">&#3585;&#3619;&#3585;&#3598;&#3634;&#3588;&#3617;</option>
-    <option value="08">&#3626;&#3636;&#3591;&#3627;&#3634;&#3588;&#3617;</option>
-    <option value="09">&#3585;&#3633;&#3609;&#3618;&#3634;&#3618;&#3609;</option>
-    <option value="10">&#3605;&#3640;&#3621;&#3634;&#3588;&#3617;</option>
-    <option value="11">&#3614;&#3620;&#3625;&#3592;&#3636;&#3585;&#3634;&#3618;&#3609;</option>
-    <option value="12">&#3608;&#3633;&#3609;&#3623;&#3634;&#3588;&#3617;</option>
-  </select>&nbsp;&nbsp; &#3614;.&#3624;
-<!--  <select size="1" name="thiyr">
-    <option selected>2549</option>
-    <option>2550</option>
-    <option>2551</option>
-    <option>2552</option>
-    <option>2553</option>
-    <option>2554</option>
-  </select>-->
-  <? 
-			   $Y=date("Y")+543;
-			   $date=date("Y")+543+5;
-			  
-				$dates=range(2547,$date);
-				echo "<select name='thiyr'>";
-				foreach($dates as $i){
+<?php
+// ตั้งค่าปีไทย
+$year_th = date("Y") + 543;
+$end_year = $year_th + 5;
+$year_list = range(2547, $end_year);
+?>
 
-				?>
-      
-      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
-      <?
-				}
-				echo "<select>";
-				?></p>
-    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="submit" value="    &#3605;&#3585;&#3621;&#3591;    " name="B1">
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../nindex.htm'><<ไปเมนู</a></p>
-</form>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>บัญชีการสั่งซื้อยาและเวชภัณฑ์รายเดือน</title>
 
+<style>
+    body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background: #f7f7f7;
+        padding: 30px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+        font-size: 24px;
+    }
+
+    label {
+        font-size: 18px;
+    }
+
+    select {
+        padding: 8px 10px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        margin-left: 10px;
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 10px 25px;
+        font-size: 18px;
+        border: none;
+        border-radius: 8px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-left: 20px;
+        font-size: 18px;
+        text-decoration: none;
+        color: #444;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .form-row {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+    <h2><b>บัญชีการสั่งซื้อยาและเวชภัณฑ์ (รายเดือน)</b></h2>
+
+    <form method="POST" action="podocument1.1.php">
+
+        <div class="form-row">
+            <label>เดือน:</label>
+            <select name="rptmo" required>
+                <option value="" disabled selected>--เลือกเดือน--</option>
+                <option value="01">มกราคม</option>
+                <option value="02">กุมภาพันธ์</option>
+                <option value="03">มีนาคม</option>
+                <option value="04">เมษายน</option>
+                <option value="05">พฤษภาคม</option>
+                <option value="06">มิถุนายน</option>
+                <option value="07">กรกฎาคม</option>
+                <option value="08">สิงหาคม</option>
+                <option value="09">กันยายน</option>
+                <option value="10">ตุลาคม</option>
+                <option value="11">พฤศจิกายน</option>
+                <option value="12">ธันวาคม</option>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <label>ปี พ.ศ.:</label>
+            <select name="thiyr" required>
+                <?php foreach ($year_list as $y): ?>
+                    <option value="<?= $y ?>" <?= $y == $year_th ? "selected" : "" ?>>
+                        <?= $y ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <div class="form-row">
+            <button type="submit">ตกลง</button>
+            <a class="back-link" href="../nindex.htm">« กลับเมนู</a>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

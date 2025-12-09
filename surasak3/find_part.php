@@ -1,7 +1,9 @@
 <?php 
-// include 'bootstrap.php';
-$dbi = new mysqli('192.168.131.240','sm3db_user','sm3dbPassword','sm3db-utf8');
-$dbi->set_charset('utf8');
+include_once dirname(__FILE__).'/bootstrap.php';
+if (empty($_SESSION["sOfficer"])) {
+    redirect('login_page.php', 'Login หมดอายุ กรุณาเข้าใช้งานใหม่อีกครั้ง');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +35,8 @@ $dbi->set_charset('utf8');
         <div>
             <button type="submit">ค้นหา</button>
             <input type="hidden" name="action" value="findPart">
+
+            <a href="edit_opacc.php" target="_blank">ค้นหาเอง</a>
         </div>
     </form>
     

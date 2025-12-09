@@ -1,7 +1,7 @@
 <?php
 session_start();
-include_once dirname(__FILE__).'/connect.php';
 if (!isset($_SESSION['sIdname'])){die;}
+include("connect.php");
 
 /**
  * @todo
@@ -448,17 +448,22 @@ while($arr = Mysql_fetch_assoc($result)){
 	$strresult1=mysql_query($str1);
 	$arr1=mysql_fetch_array($strresult1);
 	
-	if($arr1['status_log']=='' || $arr1['status_log']==NULL){
-		$message="ยืนยันการปลดล็อคเพื่อจำหน่าย";
-		$L1="<A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">คืนยา</A>";
-		$L2="<A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เพิ่ม/แก้ไข/OFF ยา</A>";
-		$L3="<A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">จ่ายยา</A>";
+ if($arr1['status_log']=='' || $arr1['status_log']==NULL){
+
+	$message="ยืนยันการปลดล็อคเพื่อจำหน่าย";
+	
+	$L1="<A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">คืนยา</A>";
+	
+	$L2="<A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เพิ่ม/แก้ไข/OFF ยา</A>";
+	$L3="<A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">จ่ายยา</A>";
 	}else{
-		$message="ยืนยันการยกเลิกการปลดล็อคเพื่อจำหน่าย";	
-		$L1="คืนยา";
-		$L2="เพิ่ม/แก้ไข/OFF ยา";
-		$L3="จ่ายยา";
+	$message="ยืนยันการยกเลิกการปลดล็อคเพื่อจำหน่าย";	
+	$L1="คืนยา";
+	$L2="เพิ่ม/แก้ไข/OFF ยา";
+	$L3="จ่ายยา";
 	}
+
+
 
 echo "<TR  id='",$arr["an"],"rows' bgcolor=\"$bgcolor\">
 	<TD></TD>

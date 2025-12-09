@@ -317,7 +317,6 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug_alert"){
 			
 		//แพ้ยาตามกลุ่ม
 		$sql1 = "Select drugcode,tradname FROM drugreact WHERE  hn = '$hn' and drugcode='".$_GET["drugcode"]."' and groupname !='' limit 1";
-		//echo $sql1;
 		$result1 = mysql_query($sql1);
 		$rows1 = mysql_num_rows($result1);
 			if($rows1 > 0){
@@ -656,28 +655,28 @@ function checkData(){
 	var stat = true;
 	var txt = "";
 	if(document.getElementById('drugcode').value == ""){
-		txt = txt+"กรุณากรอก รหัสยา<br>";
+		txt = txt+"- รหัสยา<br>";
 		stat = false;
 	}
 
 	if(document.getElementById('drugslip').value == ""){
-		txt = txt+"กรุณากรอก วิธีใช้<br>";
+		txt = txt+"- วิธีใช้<br>";
 		stat = false;
 	}
 
 	if(document.getElementById('amount').value == ""){
-		txt = txt+"กรุณากรอก จำนวน<br>";
+		txt = txt+"- จำนวน<br>";
 		stat = false;
 	}
 
 	if(document.getElementById('statcon').value == ""){
-		txt = txt+"กรุณาเลือก สถานะ<br>";
+		txt = txt+"- สถานะ<br>";
 		stat = false;
 	}
 	
 	if(stat == false){
 		Swal.fire({
-			title: 'ข้อมูลไม่ครบถ้วน',
+			title: 'ข้อมูลไม่ครบถ้วน กรุณาตรวจสอบข้อมูล',
 			html: txt
 		});
 	}
@@ -727,6 +726,9 @@ async function doCheckDrugInteraction(drugcode){
 	return body;
 }
 
+/**
+ * เพิ่มข้อมูลเข้าไปใน $_SESSION
+ */
 async function add_session(){
 
 	if(checkData() == true){
@@ -747,7 +749,7 @@ async function add_session(){
 		amount = document.getElementById('amount').value;
 		statcon = document.getElementById('statcon').value;
 		firstdate = document.getElementById('firstdate').value;
-		enddate = document.getElementById('enddate').value;		
+		enddate = document.getElementById('enddate').value;
 
 		var drug_alert = [<?=implode(',', $drugreact_list_js);?>];
 		var drug_notify = [<?=implode(',', $drugreact_groups_js);?>];
@@ -784,7 +786,7 @@ async function add_session(){
 		}
 
 		action = "add";
-		url = 'listAjax.php?action='+action;
+		url = 'listAjax.php?action=add';
 		url += '&drugcode='+encodeURIComponent(drugcode)
 		url += '&tradname='+encodeURIComponent(tradname);
 		url += '&slcode='+encodeURIComponent(slcode);
@@ -796,13 +798,61 @@ async function add_session(){
 		url += '&enddate='+encodeURIComponent(enddate);
 
 		xmlhttp = newXmlHttp();
+
+		xmlhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				// Typical action to be performed when the document is ready:
+				
+				document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
+
+				// let tr = document.createElement('tr');
+				// if(statcon!=='CONT'){
+				// 	tr.style.backgroundColor = '#FFFFCC';
+				// }else{
+				// 	tr.style.backgroundColor = '#00CC99';
+				// }
+				
+				// รหัสยา
+				// let td1 = document.createElement('td');
+				// td1.textContent = drugcode;
+
+				// ชื่อยา
+				// let td2 = document.createElement('td');
+				// td2.innerHTML = '<b>'+tradname+'<b><br>'+statcon;
+				// td2.style.fontWeight = 'bold';
+
+				// ประเภท
+				// let td3 = document.createElement('td');
+				// td3.textContent = part;
+
+				// วิธีใช้
+				// let td4 = document.createElement('td');
+				// let input1 = document.createElement('input');
+				// input1.setAttribute('type','text');
+				// input1.setAttribute('class','txtsarabun');
+				// input1.setAttribute('size','6');
+
+				// <input type="text" class="txtsarabun" id="slcode0" name="slcode0" value="1*3" size="6">
+				
+
+				// tr.appendChild(td1);
+				// tr.appendChild(td2);
+				// tr.appendChild(td3);
+				
+				// let drugBody = document.getElementById('drugSessionItems');
+				// drugBody.appendChild(tr);
+
+
+				clearData();
+			}
+		};
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
 
-		document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
-		clearData();
+		
+		
 		document.getElementById('drugcode').focus();
-		list_off();
+		// list_off();
 	}
 }
 
@@ -816,16 +866,14 @@ function del_session(delnum,rowid){
 	}
 	if(confirm(txt)){
 		action = "del";
-		an = '<?php echo $_GET["an"];?>';
+		an = '<?=$_GET["an"];?>';
+		url = 'listAjax.php?action=del&delnum='+delnum+'&an='+an+'&rowid='+rowid;
+		xmlhttp = newXmlHttp();
+		xmlhttp.open("GET", url, false);
+		xmlhttp.send(null);
 
-		url = 'listAjax.php?action='+action+'&delnum='+delnum+'&an='+an+rowid;
-
-				xmlhttp = newXmlHttp();
-				xmlhttp.open("GET", url, false);
-				xmlhttp.send(null);
-
-				document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
-				list_off();
+		document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
+		// list_off();
 	}
 }
 
@@ -871,12 +919,10 @@ function list_off(){
 		else
 			hidd = "1";
 
-		url = 'listAjax.php?action='+action+'&an=<?php echo $_GET["an"];?>&stat='+hidd;
-
+		url = 'listAjax.php?action=list_off&an=<?=$_GET["an"];?>&stat='+hidd;
 		xmlhttp = newXmlHttp();
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
-
 		document.getElementById("div_listoff").innerHTML = xmlhttp.responseText;
 
 }
@@ -1300,7 +1346,7 @@ if($q->num_rows>0){
 	  <TD><INPUT NAME="amount" TYPE="text" class="txtsarabun" ID="amount"  onkeypress="submit_button('amount');" size="4"></TD>
 		<TD align="right"><strong>หน่วย :</strong></TD>
 		<TD align="left">
-			<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5" readonly> 
+			<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5"> 
 			<strong>ประเภท:</strong>
 			<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"   size="5" readonly></TD>
 		<TD align="right"><strong>สถานะ :</strong></TD>
@@ -1337,43 +1383,42 @@ if($q->num_rows>0){
 	<div align="center">
 		<a href="add_drugold.php?an=<?=$_GET["an"];?>" target="_blank">เพิ่มยาเดิม (นอกโรงพยาบาล)</a> | <a href="javascript:void(0);" onclick="window.open('drugstk2.php?an=<?=$arr['an'];?>','durgstk','width=900,height=600')">ติด OPD ย้อนหลัง</a>
 	</div>
-<BR><BR>
-
-<CENTER>
-  <strong>[ รายการยา ]</strong>
-</CENTER>
 <BR>
-<?php
-	$sql = "Select date_format(date,'%d/%m/%Y') as dateform From dgprofile  where an = '".$_GET["an"]."' Order by date DESC limit 0,1 ";
-	$result = Mysql_Query($sql);
-	$arr = Mysql_fetch_assoc($result);
 
-	echo "<DD>วันที่ปรับปรุงล่าสุด : ",$arr["dateform"],"<BR><BR>";
+<?php
+$sql = "Select date_format(date,'%d/%m/%Y') as dateform From dgprofile  where an = '".$_GET["an"]."' Order by date DESC limit 0,1 ";
+$result = Mysql_Query($sql);
+$arr = Mysql_fetch_assoc($result);
 ?>
+
+<p style="text-align:center;">
+  <strong style="font-size: 18pt;">[ รายการยา ]</strong> วันที่ปรับปรุงล่าสุด <u><?= $arr["dateform"]; ?></u>
+</p>
+
 <div id="show_druglst">
 <TABLE align="center"  border="1" bordercolor="009688" cellspacing="0" cellpadding="0" width="85%">
 <TR>
 	<TD>
-<TABLE width="100%">
-<TR bgcolor="#3300FF" class="font_title" align="center">
-	<TD bgcolor="009688">รหัสยา</TD>
-	<TD bgcolor="009688">ชื่อยา</TD>
-    <TD bgcolor="009688">ประเภท</TD>
-	<TD bgcolor="009688">วิธีใช้</TD>
-	<TD bgcolor="009688">จำนวน</TD>
-	<TD bgcolor="009688">สถานะ</TD>
-	<TD bgcolor="009688">OFF / ลบ</TD>
-	<TD bgcolor="009688">แก้ไข</TD>
-</TR>
+		<TABLE width="100%">
+			<thead>
+			<TR bgcolor="#3300FF" class="font_title" align="center">
+				<TD bgcolor="009688">รหัสยา</TD>
+				<TD bgcolor="009688">ชื่อยา</TD>
+				<TD bgcolor="009688">ประเภท</TD>
+				<TD bgcolor="009688">วิธีใช้</TD>
+				<TD bgcolor="009688">จำนวน</TD>
+				<TD bgcolor="009688">สถานะ</TD>
+				<TD bgcolor="009688">OFF / ลบ</TD>
+				<TD bgcolor="009688">แก้ไข</TD>
+			</TR>
+			</thead>
+			<tbody id="drugSessionItems">
 <?php
-
 $list_status_drug = array();
-
 $list_status_drug["STAT1"] = "Stat";
 $list_status_drug["STAT"] = "One day";
 $list_status_drug["CONT"] = "Continue";
 $list_status_drug["OLD"] = "ยาเดิม";
-
 
 for($j=0;$j<$_SESSION["num_list"];$j++){
 
@@ -1383,14 +1428,13 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 		$bgcolor = "#FFFFCC";
 		
 
-	$sql = "SELECT an,drugcode,tradname,firstdate,enddate  
+	$sql = "SELECT `an`,`drugcode`,`tradname`,`firstdate`,`enddate` 
 	FROM `dgprofile` 
-	where an='".$_GET["an"]."' 
-	and statcon = 'CONT' 
-	and onoff='ON' 
-	and enddate='".date("Y-m-d")."' 
-	and drugcode='".$_SESSION["list_druglst"]["drugcode"][$j]."'";
-	//echo $sql;
+	where `an`='".$_GET["an"]."' 
+	AND `statcon` = 'CONT' 
+	AND `onoff`='ON' 
+	AND `enddate`='".date("Y-m-d")."' 
+	AND `drugcode`='".$_SESSION["list_druglst"]["drugcode"][$j]."'";
 	$result = mysql_query($sql);
 	$num = mysql_num_rows($result);
 	$rows=mysql_fetch_array($result);
@@ -1398,12 +1442,11 @@ for($j=0;$j<$_SESSION["num_list"];$j++){
 	$row_id = $_SESSION["list_druglst"]["row_id"][$j];
 	$genname = ''.$_SESSION["list_druglst"]["genname"][$j].'';
 
-echo "
-<TR bgcolor=\"",$bgcolor,"\" id=\"trParent$j\">
+echo "<TR bgcolor=\"",$bgcolor,"\" id=\"trParent$j\">
 	<TD>",$_SESSION["list_druglst"]["drugcode"][$j],"</TD>
 	<TD><b>",$_SESSION["list_druglst"]["tradname"][$j],"</b><br>",$genname,"</TD>
 	<TD>",$_SESSION["list_druglst"]["part"][$j],"</TD>
-	<TD><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
+	<TD><INPUT TYPE=\"text\" class=\"txtsarabun drugTake\" id=\"slcode",$j,"\" NAME=\"slcode",$j,"\" value=\"",$_SESSION["list_druglst"]["slcode"][$j],"\" size=\"6\"></TD>
 	<TD ><INPUT TYPE=\"text\" class=\"txtsarabun\" id=\"amount",$j,"\" NAME=\"amount",$j,"\" value=\"",$_SESSION["list_druglst"]["amount"][$j],"\" size=\"3\"></TD>";
 	?>
 	<TD align="center">
@@ -1419,55 +1462,55 @@ echo "
 	}
 	?>
 </TD>
-    <?
-	
+    <?php
 	echo "<TD align=\"center\">",(
-		$_SESSION["list_druglst"]["row_id"][$j] != "" ? "<A HREF=\"javascript: del_session('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."');\">OFF</A>" : "<A HREF=\"javascript: del_session('".$j."','');\">ลบ</A>"
+		$_SESSION["list_druglst"]["row_id"][$j] != "" ? "<A HREF=\"javascript: void(0);\" onclick=\"del_session('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."')\">OFF</A>" : "<A HREF=\"javascript: void(0);\" onclick=\"del_session('".$j."','')\">ลบ</A>"
 	),"</TD>
 	<TD align=\"center\"><A HREF=\"javascript: edit_list('".$j."','".$_SESSION["list_druglst"]["row_id"][$j]."',document.getElementById('slcode",$j,"').value,document.getElementById('amount",$j,"').value,document.getElementById('statusdrug",$j,"').value);\">แก้ไข</A></TD>
-</TR>
+	</TR>";
 
-";
-
-}
-
+}// end for
 ?>
+</tbody>
 </TABLE>
 <script type="text/javascript">
 	function updateStatdrugSession(i, row_id, value){
 
-		var test_str = [];
-		test_str.push(encodeURIComponent('action')+"="+encodeURIComponent('changeSession'));
-		test_str.push(encodeURIComponent('i')+"="+encodeURIComponent(row_id));
-		test_str.push(encodeURIComponent('value')+"="+encodeURIComponent(value));
-		var data = test_str.join("&");
+		if(row_id!==''){
+			var test_str = [];
+			test_str.push(encodeURIComponent('action')+"="+encodeURIComponent('changeSession'));
+			test_str.push(encodeURIComponent('i')+"="+encodeURIComponent(row_id));
+			test_str.push(encodeURIComponent('value')+"="+encodeURIComponent(value));
+			var data = test_str.join("&");
 
-		var request = new newXmlHttp();
-		request.open('POST', 'add_drug.php', true);
-		request.setRequestHeader(
-			'Content-Type',
-			'application/x-www-form-urlencoded; charset=UTF-8'
-		);
-		request.onreadystatechange = function () {
-			if (request.readyState === 4) {
-				if (request.status >= 200 && request.status < 400) { 
-					var res = request.responseText.replace(/^\s+|\s+$/g, '');;
-					if(res=='CONT'){
-
-						document.getElementById("trParent"+i).style.backgroundColor = '#00CC99';
-
+			var request = new newXmlHttp();
+			request.open('POST', 'add_drug.php', true);
+			request.setRequestHeader(
+				'Content-Type',
+				'application/x-www-form-urlencoded; charset=UTF-8'
+			);
+			request.onreadystatechange = function () {
+				if (request.readyState === 4) {
+					if (request.status >= 200 && request.status < 400) { 
+						var res = request.responseText.replace(/^\s+|\s+$/g, '');;
+						if(res=='CONT'){
+							document.getElementById("trParent"+i).style.backgroundColor = '#00CC99';
+						}else{
+							document.getElementById("trParent"+i).style.backgroundColor = '#FFFFCC';
+						}
 					}else{
-
-						document.getElementById("trParent"+i).style.backgroundColor = '#FFFFCC';
-
+						//error
 					}
-				}else{
-					//error
 				}
 			}
+			request.send(data);
+		}else{
+			if(value=='CONT'){
+				document.getElementById("trParent"+i).style.backgroundColor = '#00CC99';
+			}else{
+				document.getElementById("trParent"+i).style.backgroundColor = '#FFFFCC';
+			}
 		}
-		request.send(data);
-		
 	}
 </script>
 </TD>

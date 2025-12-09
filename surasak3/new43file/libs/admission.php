@@ -136,7 +136,7 @@ while (list ($date,$an,$hn,$ptright,$clinic,$my_ward,$dcdate,$dcstatus,$dctype,$
     $admitheight = number_format($admitheight, 2);
     $price = number_format($price, 2);
 
-    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$drg|$rw|$adjrw|$error|$warning|$actlos|$grouper_version|$cid|$HOSPCODE9|$HOSPCODE9|$HOSPCODE9\r\n";
+    $inline = "$hospcode|$hn|$seq|$an|$datetime_admit|$wardadmit|$instype|$typein|$referinhosp|$causein|$admitweight|$admitheight|$datetime_disch|$warddisch|$dischstatus|$dischtype|$referouthosp|$causeout|$cost|$price|$payprice|$actualpay|$provider|$d_update|$drg|$rw|$adjrw|$error|$warning|$actlos|$grouper_version|$cid\r\n";
     
     $txt .= $inline;
 } // End while
@@ -144,7 +144,7 @@ $filePath = $dirPath.'/admission.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHSTATUS|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|DRG|RW|ADJRW|ERROR|WARNING|ACTLOS|GROUPER_VERSION|CID|HOSPCODE9|REFERINHOSP9|REFEROUTHOSP9\r\n";
+$header = "HOSPCODE|PID|SEQ|AN|DATETIME_ADMIT|WARDADMIT|INSTYPE|TYPEIN|REFERINHOSP|CAUSEIN|ADMITWEIGHT|ADMITHEIGHT|DATETIME_DISCH|WARDDISCH|DISCHSTATUS|DISCHTYPE|REFEROUTHOSP|CAUSEOUT|COST|PRICE|PAYPRICE|ACTUALPAY|PROVIDER|D_UPDATE|DRG|RW|ADJRW|ERROR|WARNING|ACTLOS|GROUPER_VERSION|CID\r\n";
 $txt = $header.$txt;
 $qofPath = $dirPath.'/qof_admission.txt';
 file_put_contents($qofPath, $txt);

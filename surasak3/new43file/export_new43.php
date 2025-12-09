@@ -339,7 +339,6 @@ if( $action === false ){
 	$yrmonth = ( $thiyr - 543 )."-$rptmo$rptday_for_day"; // e.g. 2016-05
 	$yy = 543;
 	$hospcode = '11512';
-	$HOSPCODE9 = 'FA0011512';
 	$zipLists = array();
 	$qofLists = array();
 

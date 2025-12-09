@@ -4,7 +4,6 @@ include 'bootstrap.php';
 
 $action = input('action');
 $db = Mysql::load();
-// $db = Mysql::load();
 
 include 'chk_menu.php';
     ?>
@@ -59,7 +58,7 @@ if( $action == false ){
                 <th colspan="9">ข้อมูลจากฐานข้อมูล</th>
             </tr>
             <tr>
-                <th>เลขบัตรประชาชน</th>
+                <th>เลขบัตรประชาชน</th>  z
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>เลขบัตรประชาชน</th>
@@ -71,6 +70,8 @@ if( $action == false ){
                 <th>วันเกิด</th>
                 <th>หมายเหตุ</th>
                 <th></th>
+                <th></th>
+                <th></th>
             </tr>
         <?php
 
@@ -78,33 +79,22 @@ if( $action == false ){
         foreach ( $items as $key => $item ) {
 
             list($idcard, $name, $surname) = explode(',', $item);
-            // dump($idcard);
             $name = iconv('TIS620', 'UTF8', $name);
             $surname = iconv('TIS620', 'UTF8', $surname);
-            // dump($name);
-            // dump($surname);
 
             $idcard = trim($idcard);
             if( !empty($idcard) ){
 
                 ++$i;
             
-                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex`, idguard, idguard2, 
-                `dbirth`, TIMESTAMPDIFF(YEAR,toEn(`dbirth`),NOW()) AS `age`
+                $sql = "SELECT `hn`,`yot`,`name`,`surname`,CONCAT(`yot`,`name`,' ',`surname`) AS `ptname`, `idcard`,`sex`, `idguard`, `idguard2`, 
+                `dbirth`, TIMESTAMPDIFF(YEAR,toEn(`dbirth`),NOW()) AS `age`,`ptright`
                 FROM `opcard` 
                 WHERE `idcard` = '$idcard' ";
                 $db->select($sql);
                 $user = $db->get_item();
                 
                 $color = '';
-
-                // if( $name != $user['name'] ){
-                //     $color = 'style="background-color: yellow;"';
-                // }
-
-                // if( $surname != $user['surname'] ){
-                //     $color = 'style="background-color: yellow;"';
-                // }
 
                 ?>
                 <tr <?=$color;?>>
@@ -121,6 +111,7 @@ if( $action == false ){
                     <td><?=$user['dbirth'];?></td>
                     <td><?=$user['idguard'];?></td>
                     <td><?=$user['idguard2'];?></td>
+                    <td><?=$user['ptright'];?></td>
                 </tr>
                 <?php
             }

@@ -29,12 +29,11 @@ if( $action === 'save' ){
 	$allergic_rows = $db->get_rows();
 
 	if( $drug_rows > 0 && $allergic_rows === 0 ){
-		$sql = "
-		INSERT INTO  `smdb`.`allergic_list` (
+		$sql = "INSERT INTO  `allergic_list` (
 		`id` ,`drug_code` ,`date_add` ,`date_edit` ,`author` ,`author_edit` ,`status`
 		)
 		VALUES (
-		NULL ,  :drug_code,  :date_add , NULL ,  :author, NULL ,  '1'
+		NULL , :drug_code, :date_add , NULL , :author, NULL , '1'
 		);";
 		$data = array(
 			':drug_code' => $phar_code,

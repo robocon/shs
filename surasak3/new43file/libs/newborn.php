@@ -8,7 +8,7 @@ $sql = "SELECT * FROM `43newborn` WHERE `date_visit` LIKE '$yrmonth%' ";
 $q = mysql_query($sql, $db2);
 $txt = '';
 while ( $item = mysql_fetch_assoc($q) ) {
-    $BHOSP9 = '';
+
     $txt .= $item['HOSPCODE']
         .'|'.$item['PID']
         .'|'.$item['MPID']
@@ -29,7 +29,7 @@ while ( $item = mysql_fetch_assoc($q) ) {
         .'|'.$item['D_UPDATE']
         .'|'.$item['CID']
         .'|'.$item['LENGTH']
-        .'|'.$item['HEADCIRCUM']."|$HOSPCODE9|$BHOSP9\r\n";
+        .'|'.$item['HEADCIRCUM']."\r\n";
 
 }
 
@@ -37,7 +37,7 @@ $filePath = $dirPath.'/newborn.txt';
 file_put_contents($filePath, $txt);
 $zipLists[] = $filePath;
 
-$headerQof = "HOSPCODE|PID|MPID|GRAVIDA|GA|BDATE|BTIME|BPLACE|BHOSP|BIRTHNO|BTYPE|BDOCTOR|BWEIGHT|ASPHYXIA|VITK|TSH|TSHRESULT|D_UPDATE|CID|LENGTH|HEADCIRCUM|HOSPCODE9|BHOSP9\r\n";
+$headerQof = "HOSPCODE|PID|MPID|GRAVIDA|GA|BDATE|BTIME|BPLACE|BHOSP|BIRTHNO|BTYPE|BDOCTOR|BWEIGHT|ASPHYXIA|VITK|TSH|TSHRESULT|D_UPDATE|CID|LENGTH|HEADCIRCUM\r\n";
 $qofPath = $dirPath.'/qof_newborn.txt';
 file_put_contents($qofPath, $headerQof.$txt);
 $qofLists[] = $qofPath;
