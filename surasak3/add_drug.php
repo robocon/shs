@@ -1320,7 +1320,7 @@ if($q->num_rows>0){
 <div align="center" ><BR>
 </div>
 <TABLE width="55%" align="center" cellpadding="6" cellspacing="3">
-	<TR>
+	<TR valign="top">
 		<TD width="14%" align="right"><strong>รหัสยา : </strong></TD>
 	  	<TD width="17%" style="position: relative;">
 			<INPUT NAME="drugcode" TYPE="text" class="txtsarabun" ID="drugcode" onKeyPress="searchSuggest2('drugcode',this.value); " onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="13" autofocus>
@@ -1332,7 +1332,7 @@ if($q->num_rows>0){
 	  onkeypress="searchSuggest('drugslip',this.value);" onKeyDown="if(event.keyCode == 40 && document.getElementById('listdrugcode').innerHTML != ''){ document.getElementById('list_radio').focus(); document.getElementById('list_radio').checked=true ; return false;  }" size="11"
 		></TD>
 	</TR>
-	<TR>
+	<TR valign="top">
 		<TD style="position: relative;" align="right">
 			<strong>จำนวน : </strong>
 			<div id="listdrugcode" style="position: absolute; top:0; left:0; width:960px; height:auto; overflow:auto; background-color:#ffffff; text-align:center;"></div>
@@ -1340,18 +1340,34 @@ if($q->num_rows>0){
 	  <TD><INPUT NAME="amount" TYPE="text" class="txtsarabun" ID="amount"  onkeypress="submit_button('amount');" size="4"></TD>
 		<TD align="right"><strong>หน่วย :</strong></TD>
 		<TD align="left">
-			<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5"> 
-			<strong>ประเภท:</strong>
-			<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"   size="5" readonly></TD>
+			<div>
+				<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5"> 
+				<strong>ประเภท:</strong>
+				<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"   size="5" readonly>
+			</div>
+			<div>
+				<select name="" id="" onchange="selectHelper(this.value)">
+					<option value="">ตัวช่วย</option>
+					<option value="tablet">tablet</option>
+					<option value="bottle">bottle</option>
+					<option value="amp">amp</option>
+					<option value="vial">vial</option>
+					<option value="capsule">capsule</option>
+					<option value="elixir">elixir</option>
+					<option value="unit">unit</option>
+				</select>
+			</div>
+		</TD>
 		<TD align="right"><strong>สถานะ :</strong></TD>
 		<TD>
-						<SELECT NAME="statcon" class="txtsarabun" ID="statcon"  onkeypress="submit_button('statcon');" >
-					    <OPTION VALUE="" SELECTED>-- สถานะ --</OPTION>
-							<OPTION VALUE="STAT1">STAT</OPTION>
-							<OPTION VALUE="STAT">จ่ายวันเดียว</OPTION>
-							<OPTION VALUE="CONT">ยา continue</OPTION>
-							<OPTION VALUE="OLD">ยาเดิม</OPTION>
-						</SELECT>		</TD>
+			<SELECT NAME="statcon" class="txtsarabun" ID="statcon"  onkeypress="submit_button('statcon');" >
+			<OPTION VALUE="" SELECTED>-- สถานะ --</OPTION>
+				<OPTION VALUE="STAT1">STAT</OPTION>
+				<OPTION VALUE="STAT">จ่ายวันเดียว</OPTION>
+				<OPTION VALUE="CONT">ยา continue</OPTION>
+				<OPTION VALUE="OLD">ยาเดิม</OPTION>
+			</SELECT>
+		</TD>
 	</TR>
 	<TR>
 	  <TD colspan="6" align="center"><table width="90%" border="0" cellspacing="2" cellpadding="4">
@@ -1373,6 +1389,11 @@ if($q->num_rows>0){
             <input type="button" name="button" id="button" value="กลับหน้าหลัก" onclick="window.location='../nindex.htm' " class="txtsarabun" /></TD>
   </TR>
 	</TABLE>
+	<script>
+		function selectHelper(v){
+			document.getElementById('unit').value=v;
+		}
+	</script>
 <BR>
 	<div align="center">
 		<a href="add_drugold.php?an=<?=$_GET["an"];?>" target="_blank">เพิ่มยาเดิม (นอกโรงพยาบาล)</a> | <a href="javascript:void(0);" onclick="window.open('drugstk2.php?an=<?=$arr['an'];?>','durgstk','width=900,height=600')">ติด OPD ย้อนหลัง</a>
@@ -1513,10 +1534,13 @@ echo "<TR bgcolor=\"",$bgcolor,"\" id=\"trParent$j\">
 <br>
 <?php
 if($_SESSION["num_list"] > 0)
-	echo "
-	<FORM METHOD=POST ACTION=\"\">
-	<CENTER><INPUT TYPE=\"submit\" class=\"txtsarabun\" Name=\"Save_dgprofile\"  VALUE=\"บันทึกข้อมูลใน DrugProfile\" ></CENTER>
-	</FORM>";
+	?>
+	<form action="" method="post" style="margin-bottom: 1em;">
+		<div style="text-align:center;">
+			<button type="submit" name="Save_dgprofile" class="txtsarabun" value="บันทึกข้อมูลใน DrugProfile">บันทึกข้อมูลใน DrugProfile</button>
+		</div>
+	</form>
+	<?php
 ?>
 </div>
 
