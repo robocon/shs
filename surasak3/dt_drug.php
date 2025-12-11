@@ -2557,7 +2557,9 @@ var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020',
 // Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 var febuxo_icd10 = ['I513','I514','I515','I517','I518','I5181','I5189','I519'];
 
-var metformin_drug = ['1MET500-C','1METF','1GLUX1000','1VILMET','1XIGDU','1GEMET'];
+// รายการเดิม '1MET500-C','1METF','1GLUX1000','1VILMET','1XIGDU','1GEMET'
+// อัพเดทตามใบงาน 9422 เอา 1METF กับ 1VILMET ออก
+var metformin_drug = ['1MET500-C','1XIGDU','1GEMET','1GLUX1000'];
 
 var drug_cc='';
 function newXmlHttp(){
@@ -3207,7 +3209,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 			return false;
 		}
 	}
-	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
+	// แจ้งเตือนยา metformin เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 	if(metformin_drug.indexOf(drugTrim)>=0){
 		var res_metformin = check_metformin();
 		if(res_metformin===false){ 
