@@ -66,12 +66,6 @@ print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
 
-# dt_rechallenge
-cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dt_rechallenge --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dt_rechallenge"
-print("  REPLICADB COMMAND : ", str(cmd),'\n')
-returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-print('returned value:', returned_value,'\n')
-
 # ipcard
 mycursor.execute("SELECT `row_id` AS latest_id FROM ipcard ORDER BY row_id DESC LIMIT 1")
 myresult = mycursor.fetchone()
@@ -83,14 +77,14 @@ returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code 
 print('returned value:', returned_value,'\n')
 
 # dgprofile
-# mycursor.execute("SELECT `row_id` AS latest_id FROM dgprofile ORDER BY row_id DESC LIMIT 1")
-# myresult = mycursor.fetchone()
-# latest_id = str(myresult["latest_id"])
+mycursor.execute("SELECT `row_id` AS latest_id FROM dgprofile ORDER BY row_id DESC LIMIT 1")
+myresult = mycursor.fetchone()
+latest_id = str(myresult["latest_id"])
 
-# cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile --sink-disable-truncate true"
-# print("  REPLICADB COMMAND : ", str(cmd),'\n')
-# returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-# print('returned value:', returned_value,'\n')
+cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dgprofile --source-where=\"row_id>"+latest_id+"\" --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dgprofile --sink-disable-truncate true"
+print("  REPLICADB COMMAND : ", str(cmd),'\n')
+returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
+print('returned value:', returned_value,'\n')
 
 # drugreact_group
 cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=drugreact_group --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=drugreact_group"
@@ -121,12 +115,6 @@ cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-
 print("  REPLICADB COMMAND : ", str(cmd),'\n')
 returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
 print('returned value:', returned_value,'\n')
-
-# dt_rechallenge
-# cmd = "replicadb --mode=complete -j=1 --fetch-size 100 --verbose false --source-connect=jdbc:mysql://"+SOURCE_HOST_DB+" --source-user="+SOURCE_USER+" --source-password="+SOURCE_PASS+" --source-table=dt_rechallenge --sink-connect=jdbc:mysql://"+SINK_HOST_DB+" --sink-user="+SINK_USER+" --sink-password="+SINK_PASS+" --sink-table=dt_rechallenge"
-# print("  REPLICADB COMMAND : ", str(cmd),'\n')
-# returned_value = subprocess.call(str(cmd), shell=True)  # returns the exit code in unix
-# print('returned value:', returned_value,'\n')
 
 # opcard
 mycursor.execute("SELECT `row_id` AS latest_id FROM opcard ORDER BY row_id DESC LIMIT 1")

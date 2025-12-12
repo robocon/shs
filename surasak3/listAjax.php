@@ -282,7 +282,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 
 			show_session();
 }else if($_GET["action"] == "del"){
-	var_dump($_GET);
+	
 /******* ลบข้อมูลใน SESSION ********************************************************************/
 	if(isset($_GET["rowid"]) && $_GET["rowid"] != ""){
 		
@@ -291,15 +291,14 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 		$arr = Mysql_fetch_assoc($result);
 		if($arr["statcon"] == "CONT"){
 			$sql = "Update dgprofile set onoff = 'OFF', dateoff = '".date("Y-m-d H:i:s")."' where row_id = '".$_GET["rowid"]."' limit 1 ";
-			// $result = Mysql_Query($sql);
+			$result = Mysql_Query($sql);
 		}else{
 			$sql = "Delete From dgprofile  where row_id = '".$_GET["rowid"]."' limit 1 ";
-			// $result = Mysql_Query($sql);
+			$result = Mysql_Query($sql);
 		}
 
-		var_dump($sql);
-
-		// restart_session($_GET["an"]);
+		// เอา an ไปดึงข้อมูลจากใน dgprofile แล้วสร้าง SESSION ใหม่
+		restart_session($_GET["an"]);
 
 	}else{
 
@@ -326,7 +325,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 		unset($_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]]);
 		unset($_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]]);			
 	}
-	show_session();
+	// show_session();
 
 }else if($_GET["action"] == "edit"){
 
