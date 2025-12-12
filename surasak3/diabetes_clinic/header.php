@@ -185,6 +185,8 @@ label{
 					<li class="last"><a href="report_retinal_exam.php"><span>รายงาน Retinal Exam</span></a></li>
 					<li class="last"><a href="../den_diabetes.php" target="_blank"><span>รายงาน DM ห้องฟัน รายปี</span></a></li>
 					<li class="last"><a href="diabetes_lpho.php" target="_blank"><span>รายงาน DM สสจ ตามปีงบฯ</span></a></li>
+					<li class="last"><a href="../report_ht.php" target="_blank"><span>ตัวชี้วัด Hypertension รายปี</span></a></li>
+					<li class="last"><a href="new_diabetes2.php" target="_blank"><span>อายุ &ge;35ปี ที่ไม่เป็นเบาหวาน</span></a></li>
 					
 				</ul> 
 			</li>

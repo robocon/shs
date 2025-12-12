@@ -15,11 +15,18 @@ $q = $dbi->query($sql);
 
 if($q->num_rows>0){
     ?>
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <div class="container">
-
-    
-    <h3>รายชื่อผู้มารับบริการที่ยังไม่มีข้อมูลในคลินิกเบาหวาน</h3>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h3>รายชื่อผู้มารับบริการที่ยังไม่มีข้อมูลในคลินิกเบาหวาน (hba1c)</h3>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -47,6 +54,7 @@ if($q->num_rows>0){
         </tbody>
     </table>
     </div>
-    <script src="bootstrap/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    <?php
+</body>
+</html>
+<?php
 }
