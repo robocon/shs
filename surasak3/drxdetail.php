@@ -612,10 +612,9 @@ $ptright=substr($sPtright,0,3);
 					</tr>
 				<?php
 				foreach ($drugOverItem as $key => $item) {
-
-					$dateOrder = bc_to_ad($item['date']);
-					$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".$item['day_averrage']."day"));
-					$dateFutureToThai = ad_to_bc($dateFuture);
+					$dateOrder = (substr($item['date'],0,4)-543).substr($item['date'],4,15);
+					$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".round($item['day_averrage'])."day"));
+					$dateFutureToThai = (substr($dateFuture,0,4)+543).substr($dateFuture,4,15);
 					?>
 					<tr style="background-color:#d9d9d9;">
 						<td><?= substr($item['date'],0,10); ?></td>
