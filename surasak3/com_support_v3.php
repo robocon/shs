@@ -13,7 +13,19 @@ $data = $json->decode($content);
 
 $action = $data['action'];
 if ($action === 'search_user') {
-    $sql = sprintf("SELECT `row_id`,`name`,`status` FROM `inputm` WHERE `menucode` = '%s' AND `status` = 'Y' ", $dbi->real_escape_string($data['code']));
+
+    $whereMenucode = "`menucode` = '%s'";
+    if(strpos($data['code'],',')!==false){
+        $codeLists = explode(',', $data['code']);
+        $items = array();
+        foreach ($codeLists as $code) {
+            $items[] = "'".$code."'";
+        }
+        $newItems = implode(',', $items);
+        $whereMenucode = "`menucode` IN ($newItems)";
+    }
+
+    $sql = sprintf("SELECT `row_id`,`name`,`status` FROM `inputm` WHERE $whereMenucode AND `status` = 'Y' ", $dbi->real_escape_string($data['code']));
     $q = $dbi->query($sql);
     $users = array();
     while ($user = $q->fetch_assoc()) {
