@@ -297,6 +297,8 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			$result = Mysql_Query($sql);
 		}
 
+		// dump($sql);
+
 		// เอา an ไปดึงข้อมูลจากใน dgprofile แล้วสร้าง SESSION ใหม่
 		restart_session($_GET["an"]);
 

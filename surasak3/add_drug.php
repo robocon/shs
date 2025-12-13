@@ -872,7 +872,11 @@ function del_session(delnum,rowid){
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
 
-		document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
+		console.log(xmlhttp.responseText);
+
+		location.reload();
+
+		// document.getElementById("show_druglst").innerHTML = xmlhttp.responseText;
 		// list_off();
 	}
 }
