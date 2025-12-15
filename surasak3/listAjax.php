@@ -378,7 +378,14 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 				$sql = "Select salepri, freepri, part, unit, tradname   From druglst where drugcode = '".$_SESSION["list_druglst"]["drugcode"][$_GET["delnum"]]."' limit 0,1 ";
 				list($salepri, $freepri, $part, $unit, $tradname) = Mysql_fetch_row(Mysql_Query($sql));
 				
-				$sql2= "INSERT INTO dgprofile(date,an,drugcode,tradname,unit,salepri,freepri,amount,price,slcode,part,statcon,onoff,dateoff,officer )VALUES ('".$Thidate."','".$_GET["an"]."','".$_SESSION["list_druglst"]["drugcode"][$_GET["delnum"]]."','".$tradname."','".$unit."','".$salepri."','".$freepri."', '".$_SESSION["list_druglst"]["amount"][$_GET["delnum"]]."','".($salepri * $_SESSION["list_druglst"]["amount"][$_GET["delnum"]])."','".$_SESSION["list_druglst"]["slcode"][$_GET["delnum"]]."','".$part."','".$_GET["statcon"]."','ON','','".$_SESSION["sOfficer"]."') ";
+				$sql2= "INSERT INTO dgprofile
+				(date,an,drugcode,tradname,unit,salepri,
+				freepri,amount,price,slcode,part,statcon,
+				onoff,dateoff,officer )
+				VALUES
+				('".$Thidate."','".$_GET["an"]."','".$_SESSION["list_druglst"]["drugcode"][$_GET["delnum"]]."','".$tradname."','".$unit."','".$salepri."',
+				'".$freepri."', '".$_SESSION["list_druglst"]["amount"][$_GET["delnum"]]."','".($salepri * $_SESSION["list_druglst"]["amount"][$_GET["delnum"]])."','".$_SESSION["list_druglst"]["slcode"][$_GET["delnum"]]."','".$part."','".$_GET["statcon"]."',
+				'ON','','".$_SESSION["sOfficer"]."') ";
 				$result2 = Mysql_Query($sql2);
 				
 	
