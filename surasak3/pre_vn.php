@@ -17,14 +17,36 @@ $classOpday = new Opday();
 
 if($data['action']==='updateOpcardchk'){
 
+    $chk_company_id = $data['company_id'];
+
     if (empty($data['user'])) {
         $res = array('status'=>400, 'msg'=>'ไม่พบข้อมูล');
     }else{
-        foreach ($data['user'] as $examno => $ptright) {
-            $sql = "SELECT * FROM `pre_vn` ";
+        if($data['prevnStatus']==0){
+            foreach ($data['user'] as $hn => $ptright) {
+                
+                $sql = "SELECT `idcard`,`name`,`surname` FROM `opcardchk` WHERE `hn` = '$hn' ";
+                $q = $dbi->query($sql);
+                $u = $q->fetch_assoc();
+                $name = $u['name'];
+                $surname = $u['surname'];
+                $idcard = $u['idcard'];
+
+                $sqlPreVn = "INSERT INTO `pre_vn` 
+                (`id`, `hn`, `name`, `surname`, `idcard`, `ptright`, `chk_company_id`) 
+                VALUES 
+                (NULL, '$hn', '$name', '$surname', '$idcard', '$ptright', '$chk_company_id');";
+                // dump($sqlPreVn);
+                $q = $dbi->query($sqlPreVn);
+                // dump($dbi->error);
+            }
+        }elseif ($data['prevnStatus']==1) {
+            $sql = "UPDATE `pre_vn` SET 
+            `ptright`='R07' 
+            WHERE (`id`='10');";
+            dump($sql);
         }
     }
-
     echo $json->encode($res);
     exit;
 }
@@ -55,7 +77,8 @@ if(empty($_GET['id'])){
 <div class="container-fluid">
     <h1 class="mt-3">ตั้งค่าเตรียมออก VN</h1>
     <?php
-    $sql = sprintf("SELECT * FROM `chk_company_list` WHERE `id`='%s' ", $dbi->real_escape_string($_GET['id']));
+    $currentDateEn = date('Y-m-d');
+    $sql = sprintf("SELECT * FROM `chk_company_list` WHERE `id`='%s' AND `job_date_run`='$currentDateEn' ", $dbi->real_escape_string($_GET['id']));
     $q = $dbi->query($sql);
     $item = $q->fetch_assoc();
     if($item['job_status']!=='r'){
@@ -67,8 +90,8 @@ if(empty($_GET['id'])){
     <div class="row">
         <div class="col">
             <h3>STEP 1 ตรวจสอบสิทธิและบันทึก</h3>
-            <div><span class="badge text-bg-warning">* อัพเดทข้อมูฃล ยังไม่ออก VN</span></div>
-            <div><span class="badge text-bg-warning">* ออก VN เฉพาะสิทธิประกันสังคมเท่านั้น</span></div>
+            <div><span class="badge text-bg-warning">* อัพเดทข้อมูล ยังไม่ออก VN</span></div>
+            <div><span class="badge text-bg-warning">* จะทำการออก VN เฉพาะสิทธิประกันสังคมเท่านั้น</span></div>
         </div>
         <div class="col">
             <h3>STEP 2</h3>
@@ -85,8 +108,18 @@ if(empty($_GET['id'])){
                     $chk_company_id = $item['id'];
                     $code = $item['code'];
 
-                    // $sqlPreVn = "SELECT * FROM `pre_vn` WHERE `chk_company_id` = '$chk_company_id' ";
-                    // $qPreVn = $dbi->query($sqlPreVn);
+                    $sqlPreVn = "SELECT * FROM `pre_vn` WHERE `chk_company_id` = '$chk_company_id' ";
+                    $qPreVn = $dbi->query($sqlPreVn);
+                    $preVnRows = $qPreVn->num_rows;
+                    if($preVnRows>0){
+                        ?>
+                        <input type="hidden" name="prevnStatus" id="prevnStatus" value="1">
+                        <?php
+                    }else{
+                        ?>
+                        <input type="hidden" name="prevnStatus" id="prevnStatus" value="0">
+                        <?php
+                    }
 
                     $sqlPtright = "SELECT `code`,`name` FROM `ptright` WHERE `chk_up` = 'y'";
                     $qPtright = $dbi->query($sqlPtright);
@@ -170,20 +203,20 @@ if(empty($_GET['id'])){
 
                     const inputExamno = document.getElementsByName('hn[]');
                     const inputPtright = document.getElementsByName('ptright[]');
+                    const prevnStatus = document.getElementById('prevnStatus').value;
 
                     let user = {};
 
                     let ii = 0;
                     inputPtright.forEach(input => {
-                        if(input.value==='R07'){
                             let key = inputExamno[ii].value;
                             user[key] = input.value;
-                        }
                         ii++;
                     });
                     formData['user'] = user;
                     formData['action'] = 'updateOpcardchk';
                     formData['company_id'] = '<?= $chk_company_id;?>';
+                    formData['prevnStatus'] = prevnStatus;
                     
                     onSaveOpcardchk(formData).then((res)=>{
                         console.log(res);
