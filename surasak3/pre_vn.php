@@ -1,17 +1,38 @@
 <?php
-require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/class_file/class_opcard.php';
-require_once dirname(__FILE__).'/class_file/class_opday.php';
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/class_file/class_opcard.php';
+include_once dirname(__FILE__).'/class_file/class_opday.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
+
+$content = file_get_contents('php://input');
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
+$data = $json->decode($content);
+
+$classOpday = new Opday();
+
+/**
+ * @readme แก้ไปแก้มาจะกลายเป็นว่า แทบจะสร้าง opcardchk ตัวใหม่ขึ้นมาอีกละ
+ * หรือจะเพิ่ม field เข้าไปใน opcardchk ดีหว่า มีฟิลด์ chk_company_id, vn, ptright, thdatehn(dd-mm-YYYYHN)
+ */
+
+if($data['action']==='updateOpcardchk'){
+
+    if (empty($data['user'])) {
+        $res = array('status'=>400, 'msg'=>'ไม่พบข้อมูล');
+    }else{
+        foreach ($data['user'] as $examno => $ptright) {
+            $sql = "SELECT * FROM `pre_vn` ";
+        }
+    }
+
+    echo $json->encode($res);
+    exit;
+}
 
 if(empty($_GET['id'])){
     include 'pageNotFound.php';
     exit;
 }
-
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
-
-$classOpday = new Opday();
 
 ?>
 <!DOCTYPE html>
@@ -44,8 +65,15 @@ $classOpday = new Opday();
     }else{
     ?>
     <div class="row">
-        <div class="col"><h3>STEP 1 ตรวจสอบสิทธิและบันทึก</h3></div>
-        <div class="col"><h3>STEP 2</h3></div>
+        <div class="col">
+            <h3>STEP 1 ตรวจสอบสิทธิและบันทึก</h3>
+            <div><span class="badge text-bg-warning">* อัพเดทข้อมูฃล ยังไม่ออก VN</span></div>
+            <div><span class="badge text-bg-warning">* ออก VN เฉพาะสิทธิประกันสังคมเท่านั้น</span></div>
+        </div>
+        <div class="col">
+            <h3>STEP 2</h3>
+            <span class="badge text-bg-warning">* ออก VN</span>
+        </div>
         <div class="col"><h3>STEP 3</h3></div>
     </div>
     <div class="row mb-4">
@@ -57,8 +85,8 @@ $classOpday = new Opday();
                     $chk_company_id = $item['id'];
                     $code = $item['code'];
 
-                    $sqlPreVn = "SELECT * FROM `pre_vn` WHERE `chk_company_id` = '$chk_company_id' ";
-                    $qPreVn = $dbi->query($sqlPreVn);
+                    // $sqlPreVn = "SELECT * FROM `pre_vn` WHERE `chk_company_id` = '$chk_company_id' ";
+                    // $qPreVn = $dbi->query($sqlPreVn);
 
                     $sqlPtright = "SELECT `code`,`name` FROM `ptright` WHERE `chk_up` = 'y'";
                     $qPtright = $dbi->query($sqlPtright);
@@ -97,7 +125,7 @@ $classOpday = new Opday();
                                 </td>
                                 <td><?= $a['name'].'  '.$a['surname']; ?></td>
                                 <td>
-                                    <select name="ptright[]" id="">
+                                    <select name="ptright[]" class="user-ptright">
                                     <?php
                                     foreach ($ptrightItems as $key => $ptright) {
                                         $selected = $ptright['code']==$a['ptCode'] ? 'selected="selected"' : '';
@@ -129,8 +157,49 @@ $classOpday = new Opday();
             <script>
                 function saveOpcardchk(){
                     event.preventDefault();
-                    Swal.fire("อัพเดทใน Opcardchk + Insert into pre_vn");
-                    return false;
+                    
+                    // const ptrights = document.getElementsByClassName('user-ptright');
+                    let formData = new FormData();
+                    // formData.append('action', 'updateOpcardchk');
+                    // for (let index = 0; index < ptrights.length; index++) {
+                    //     const element = ptrights[index];
+                    //     if(element.value==='R07'){
+                    //         formData.append(element.getAttribute('name'), element.value);
+                    //     }
+                    // }
+
+                    const inputExamno = document.getElementsByName('hn[]');
+                    const inputPtright = document.getElementsByName('ptright[]');
+
+                    let user = {};
+
+                    let ii = 0;
+                    inputPtright.forEach(input => {
+                        if(input.value==='R07'){
+                            let key = inputExamno[ii].value;
+                            user[key] = input.value;
+                        }
+                        ii++;
+                    });
+                    formData['user'] = user;
+                    formData['action'] = 'updateOpcardchk';
+                    formData['company_id'] = '<?= $chk_company_id;?>';
+                    
+                    onSaveOpcardchk(formData).then((res)=>{
+                        console.log(res);
+                    });
+                }
+
+                async function onSaveOpcardchk(formData){
+                    const response = await fetch('pre_vn.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    const body = await response.json();
+                    return body;
                 }
             </script>
         </div>
