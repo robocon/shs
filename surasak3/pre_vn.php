@@ -2,6 +2,7 @@
 include_once dirname(__FILE__).'/bootstrap.php';
 include_once dirname(__FILE__).'/class_file/class_opcard.php';
 include_once dirname(__FILE__).'/class_file/class_opday.php';
+include_once dirname(__FILE__).'/class_file/class_opcardchk.php';
 include_once dirname(__FILE__).'/includes/JSON.php';
 
 $content = file_get_contents('php://input');
@@ -9,6 +10,7 @@ $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $data = $json->decode($content);
 
 $classOpday = new Opday();
+$classOpcardchk = new Opcardchk();
 
 /**
  * @readme แก้ไปแก้มาจะกลายเป็นว่า แทบจะสร้าง opcardchk ตัวใหม่ขึ้นมาอีกละ
@@ -18,35 +20,82 @@ $classOpday = new Opday();
 if($data['action']==='updateOpcardchk'){
 
     $chk_company_id = $data['company_id'];
+    $company = $classOpcardchk->getComanyNameFromId($chk_company_id);
+    $part = $company['part'];
 
-    if (empty($data['user'])) {
-        $res = array('status'=>400, 'msg'=>'ไม่พบข้อมูล');
-    }else{
-        if($data['prevnStatus']==0){
-            foreach ($data['user'] as $hn => $ptright) {
-                
-                $sql = "SELECT `idcard`,`name`,`surname` FROM `opcardchk` WHERE `hn` = '$hn' ";
-                $q = $dbi->query($sql);
-                $u = $q->fetch_assoc();
-                $name = $u['name'];
-                $surname = $u['surname'];
-                $idcard = $u['idcard'];
+    // if (empty($data['user'])) {
+    //     $res = array('status'=>400, 'msg'=>'ไม่พบข้อมูล');
+    // }else{
 
-                $sqlPreVn = "INSERT INTO `pre_vn` 
-                (`id`, `hn`, `name`, `surname`, `idcard`, `ptright`, `chk_company_id`) 
-                VALUES 
-                (NULL, '$hn', '$name', '$surname', '$idcard', '$ptright', '$chk_company_id');";
-                // dump($sqlPreVn);
-                $q = $dbi->query($sqlPreVn);
-                // dump($dbi->error);
-            }
-        }elseif ($data['prevnStatus']==1) {
-            $sql = "UPDATE `pre_vn` SET 
-            `ptright`='R07' 
-            WHERE (`id`='10');";
-            dump($sql);
+    /**
+     * ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+     * @todo ปรับเป็นการเอาค่าที่ได้รับจาก POST มาเทียบกับใน pre_vn ว่าใครเป็นคนใหม่ คนเก่า เพราะ POST ที่ส่งมาเป็นรายชื่อจากใน opcardchk ไม่ใช่จาก pre_vn โดยตรง
+     * แล้วเขียนอยกตาม statement ว่าจะให้อัพเดท หรือว่า เพิ่มข้อมูลเข้าไปใหม่
+     */
+    foreach ($data['user'] as $hn => $ptright) {
+        
+        $preVnUser = $classOpcardchk->getPreVnUser($hn, $chk_company_id);
+        dump($preVnUser);
+        if($preVnUser==false){
+            // INSERT
+            $u = $classOpcardchk->getUserFromHnAndCompany($hn, $part);
+            dump($u);
+
+            $name = $u['name'];
+            $surname = $u['surname'];
+            $idcard = $u['idcard'];
+
+            $sqlPreVn = "INSERT INTO `pre_vn` 
+            (`id`, `hn`, `name`, `surname`, `idcard`, `ptright`, `chk_company_id`) 
+            VALUES 
+            (NULL, '$hn', '$name', '$surname', '$idcard', '$ptright', '$chk_company_id');";
+            // $q = $dbi->query($sqlPreVn);
+            dump($sqlPreVn);
+        }else{
+            // UPDATE
+            $sqlUpdate = "UPDATE `pre_vn` SET 
+            `ptright`='$ptright' 
+            WHERE (`hn`='$hn' AND `chk_company_id` = '$chk_company_id');";
+            // $q = $dbi->query($sqlUpdate);
+            dump($sqlUpdate);
         }
     }
+        
+    // }
+    echo $json->encode($res);
+    exit;
+}elseif($data['action']==='generateVn'){
+    $chk_company_id = $data['company_id'];
+
+    $sql = "SELECT * FROM `pre_vn` WHERE `chk_company_id` = '$chk_company_id' AND (`vn` IS NULL OR `vn` == '') ORDER BY `id` ASC";
+    while($a = $q->fetch_assoc()){
+            
+        $hn = $a['hn'];
+        $ptrightCode = $a['ptright'];
+
+        $thisDay = $classOpday->getThisDay($hn);
+        if($thisDay===false){
+
+            if($ptrightCode=='R33'){
+                $classOpday->setToborow('EX51 ตรวจสุขภาพ อปท.');
+            }elseif ($ptrightCode=='R07') {
+                $classOpday->setToborow('EX46 ตรวจสุขภาพประกันสังคม');
+            }
+            
+            $classOpday->sOfficer = 'กรรณิกา ทาใจ';
+            $opday = $classOpday->createOpday($hn);
+
+
+            /**
+             * ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+             * @todo อัพเดทใน pre_vn ด้วยจ้า
+             */
+        }
+    }
+
+
+
+    $res = array('status'=>400,'msg'=>'กำลังพัฒนาใจเยนๆโยม');
     echo $json->encode($res);
     exit;
 }
@@ -145,7 +194,11 @@ if(empty($_GET['id'])){
                             </tr>
                         <?php
                         $i = 1;
-                        while ($a = $qChk->fetch_assoc()) {
+                        while ($a = $qChk->fetch_assoc()) { 
+                            /**
+                             * ⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️v
+                             * @todo ต้องเอาไปเทียบกับชื่อใน pre_vn อีกครั้งหนึ่งว่าใครเป็นรายชื่อใหม่ หรือรายชื่อเก่าบ้าง
+                             */
                             ?>
                             <tr>
                                 <td>
@@ -240,7 +293,8 @@ if(empty($_GET['id'])){
             <button class="btn btn-primary" onclick="generateVn()">ออก VN Manual</button>
             <script>
                 function generateVn(){
-                    Swal.fire("ออก VN")
+                    Swal.fire("ออก VN");
+                    // ยิง company id ไปที่ generateVn
                 }
             </script>
         </div>
