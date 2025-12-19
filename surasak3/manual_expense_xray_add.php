@@ -15,6 +15,8 @@ $hn = sprintf("%s", $_GET['hn']);
 $depart = sprintf("%s", $_GET['depart']);
 $companyPart = sprintf("%s", $_GET['companyPart']);
 
+$thdatehn = date('d-m-').(date('Y')+543).$hn;
+
 // $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
 // c.`vn` 
 // FROM (
@@ -34,7 +36,7 @@ FROM (
     SELECT * FROM `manual_expense` WHERE `part` = '$companyPart' AND hn = '$hn' 
 ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
 LEFT JOIN (
-    SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow FROM opday WHERE thidate LIKE '$date%'
+    SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,`toborow` FROM `opday` WHERE `thdatehn` = '$thdatehn'
 ) AS c ON a.`hn` = c.`hn`
 GROUP BY a.hn
 ORDER BY a.id ASC";

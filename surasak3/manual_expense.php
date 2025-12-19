@@ -194,13 +194,13 @@ if(!empty($dateSelect)){
                                 $urlLab .= "&depart=PATHO";
                                 $urlLab .= "&officer=".rawurldecode($config['lab']);
                                 $urlLab .= "&moneyOfficer=".rawurldecode($config['money']);
-                                $urlLab .= "&credit=".rawurldecode('จ่ายตรง อปท.');
+                                $urlLab .= "&credit=".rawurldecode('SSOCHECKUP68');
                                 $urlLab .= "&companyPart=".rawurldecode($companyPart);
-                                if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){
+                                // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){
                                     ?>
                                     <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
-                                }
+                                // }
                                 ?>
                             </td>
                             <td>
@@ -209,13 +209,13 @@ if(!empty($dateSelect)){
                                 $url .= "&depart=XRAY";
                                 $url .= "&officer=".rawurldecode($config['xray']);
                                 $url .= "&moneyOfficer=".rawurldecode($config['money']);
-                                $url .= "&credit=".rawurldecode('จ่ายตรง อปท.');
+                                $url .= "&credit=".rawurldecode('SSOCHECKUP68');
                                 $url .= "&companyPart=".rawurldecode($companyPart);
-                                if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
+                                // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
                                     ?>
                                     <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
                                     <?php
-                                }
+                                // }
                                 ?>
                             </td>
                             <td>
