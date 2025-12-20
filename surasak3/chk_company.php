@@ -362,9 +362,9 @@ if ( $views == 'search' ) {
     if(empty($company_name)){
         $sql = "SELECT * FROM `chk_company_list` 
         WHERE `yearchk` = '$year_selected' $whereCompany AND `status` = '1' 
-        ORDER BY `id` ASC";
+        ORDER BY `id` DESC";
     }else{
-        $sql = "SELECT * FROM `chk_company_list` WHERE `name` LIKE '%$company_name%' ";
+        $sql = "SELECT * FROM `chk_company_list` WHERE `name` LIKE '%$company_name%' ORDER BY `id` DESC";
     }
     
     $db->select($sql);
@@ -388,7 +388,7 @@ if ( $views == 'search' ) {
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
         // เทศบาลเมืองพิชัย 67
         // $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
-        $expense_list = array('');
+        $expense_list = array('มหาวิทยาลัยราชภัฏลำปาง 68','คณะพยาบาลศาสตร์ มหาวิทยาลัยราชภัฏลำปาง 68 ธ.ค.');
         foreach ($items as $key => $item) {
 
             $companyCode = $item['code']; 

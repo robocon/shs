@@ -112,18 +112,19 @@ if(!empty($dateSelect)){
                 </div>
                 <div class="col-auto">
                     <label for="dateSelect" class="visually-hidden"></label>
-                    <input type="text" class="form-control" id="dateSelect" name="dateSelect" value="<?=$date;?>">
+                    <input type="date" class="form-control" id="dateSelect" name="dateSelect" value="<?=$date;?>">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary mb-3">แสดง</button>
                 </div>
             </form>
         </div>
-        <table class="table">
+        <table class="table table-sm">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>HN</th>
+                    <th>exam_no</th>
                     <th>ชื่อ-สกุล</th>
                     <th>สิทธิ</th>
                     <th>VN</th>
@@ -139,121 +140,124 @@ if(!empty($dateSelect)){
             $ii = 1;
             if ($q->num_rows>0) {
                 ?>
-                <tbody>
-                    <?php 
-                    while ($a = $q->fetch_assoc()) {
+            <tbody>
+            <?php 
+            while ($a = $q->fetch_assoc()) {
 
-                        $currHn = $a['hn'];
+                $currHn = $a['hn'];
 
-                        $patho = $dep->getDepart($date, $a['hn'], 'PATHO');
-                        $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
-                        $resultheadItems = $result->getResulthead($a['labnumber']);
- 
-                        $op = $opacc->getOpacc($date, $a['hn']);
+                $patho = $dep->getDepart($date, $a['hn'], 'PATHO');
+                $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
+                $resultheadItems = $result->getResulthead($a['labnumber']);
+
+                $opaccItems = $opacc->getOpacc($date, $a['hn']);
+                ?>
+                <tr>
+                    <td><?=$ii;?></td>
+                    <td><?=$a['hn'];?></td>
+                    <td><?= $a['labnumber'] ?></td>
+                    <td>
+                        <div><?=$a['ptname'];?></div>
+                        <a href="javascript:void(0);" class="badge text-bg-info" id="badge<?=$a['id'];?>" onclick="labItem('<?=$a['id'];?>','<?=$a['lab_items'];?>')"><?=$a['lab_items'];?></a>
+                    </td>
+                    <td><?=$a['ptright'];?></td>
+                    <td>
+                        <?php 
+                        if (empty($a['vn'])) {
+                            ?>
+                            <a href="manual_expense_vn.php?hn=<?=$currHn;?>" target="_blank" class="btn btn-primary btn-sm">ออก VN</a>
+                            <?php
+                        }else{
+                            echo $a['vn'];
+                        }
                         ?>
-                        <tr>
-                            <td><?=$ii;?></td>
-                            <td><?=$a['hn'];?></td>
-                            <td>
-                                <div><?=$a['ptname'];?></div>
-                                <a href="javascript:void(0);" class="badge text-bg-info" id="badge<?=$a['id'];?>" onclick="labItem('<?=$a['id'];?>','<?=$a['lab_items'];?>')"><?=$a['lab_items'];?></a>
-                            </td>
-                            <td><?=$a['ptright'];?></td>
-                            <td>
-                                <?php 
-                                if (empty($a['vn'])) {
-                                    ?>
-                                    <a href="manual_expense_vn.php?hn=<?=$currHn;?>" target="_blank" class="btn btn-primary btn-sm">ออก VN</a>
-                                    <?php
-                                }else{
-                                    echo $a['vn'];
-                                }
-                                ?>
-                            </td>
-                            <td><?=$a['toborow'];?></td>
-                            <td>
-                                <?php 
-                                if ($resultheadItems===false) {
-                                    echo "รอผลแลป";
-                                }else {
-                                    $profileCode = array();
-                                    $labnumber = '';
-                                    foreach($resultheadItems AS $rh){
-                                        $labnumber = $rh['labnumber'];
-                                        $profileCode[] = $rh['profilecode'];
-                                    }
-                                    echo $labnumber;
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php 
-                                $ptRightCode = substr($a['ptright'],0,3);
+                    </td>
+                    <td><?=$a['toborow'];?></td>
+                    <td>
+                        <?php 
+                        if ($resultheadItems===false) {
+                            echo "รอผลแลป";
+                        }else {
+                            $profileCode = array();
+                            $labnumber = '';
+                            foreach($resultheadItems AS $rh){
+                                $labnumber = $rh['labnumber'];
+                                $profileCode[] = $rh['profilecode'];
+                            }
+                            echo $labnumber;
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php 
+                        $ptRightCode = substr($a['ptright'],0,3);
 
-                                $urlLab = "hn=".$a['hn'];
-                                $urlLab .= "&depart=PATHO";
-                                $urlLab .= "&officer=".rawurldecode($config['lab']);
-                                $urlLab .= "&moneyOfficer=".rawurldecode($config['money']);
-                                $urlLab .= "&credit=".rawurldecode('SSOCHECKUP68');
-                                $urlLab .= "&companyPart=".rawurldecode($companyPart);
-                                // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){
-                                    ?>
-                                    <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
-                                    <?php
-                                // }
-                                ?>
-                            </td>
-                            <td>
-                                <?php 
-                                $url = "hn=".$a['hn'];
-                                $url .= "&depart=XRAY";
-                                $url .= "&officer=".rawurldecode($config['xray']);
-                                $url .= "&moneyOfficer=".rawurldecode($config['money']);
-                                $url .= "&credit=".rawurldecode('SSOCHECKUP68');
-                                $url .= "&companyPart=".rawurldecode($companyPart);
-                                // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
-                                    ?>
-                                    <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
-                                    <?php
-                                // }
-                                ?>
-                            </td>
-                            <td>
-                                <?php 
-                                foreach ($patho as $key => $pItem) {
-                                    $id = $pItem['row_id'];
+                        $urlLab = "hn=".$a['hn'];
+                        $urlLab .= "&depart=PATHO";
+                        $urlLab .= "&officer=".rawurldecode($config['lab']);
+                        $urlLab .= "&moneyOfficer=".rawurldecode($config['money']);
+                        $urlLab .= "&credit=".rawurldecode('SSOCHECKUP68');
+                        $urlLab .= "&companyPart=".rawurldecode($companyPart);
+                        // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){
+                            ?>
+                            <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
+                            <?php
+                        // }
+                        ?>
+                    </td>
+                    <td>
+                        <?php 
+                        $url = "hn=".$a['hn'];
+                        $url .= "&depart=XRAY";
+                        $url .= "&officer=".rawurldecode($config['xray']);
+                        $url .= "&moneyOfficer=".rawurldecode($config['money']);
+                        $url .= "&credit=".rawurldecode('SSOCHECKUP68');
+                        $url .= "&companyPart=".rawurldecode($companyPart);
+                        // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
+                            ?>
+                            <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
+                            <?php
+                        // }
+                        ?>
+                    </td>
+                    <td>
+                    <?php 
+                    if(count($patho)>0){
+                        foreach ($patho as $key => $pItem) {
+                            $id = $pItem['row_id'];
 
-                                    $pathoDate = substr($pItem['date'], 0, 10);
-                                    $pathoHn = $pItem['hn'];
-                                    $pathoVn = $pItem['tvn'];
-                                    ?>
-                                    <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank">
-                                        <?=$pItem['row_id'];?> <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
-                                    </a>
-                                    <?php 
-                                }
+                            $pathoDate = substr($pItem['date'], 0, 10);
+                            $pathoHn = $pItem['hn'];
+                            $pathoVn = $pItem['tvn'];
+                            ?>
+                            <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank">
+                                <?=$pItem['row_id'];?> <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
+                            </a>
+                            <?php 
+                        }
+                    }
 
-                                foreach($xray AS $x){ 
-                                    $pathoDate = substr($x['date'], 0, 10);
-                                    $pathoHn = $x['hn'];
-                                    $pathoVn = $x['tvn'];
-                                    ?>
-                                    <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank"><?=$x['depart'].'('.$x['price'].')';?></a>
-                                    <?php
-                                }
-                                ?>
-                                
-                            </td>
-                            <td>
-                                <?=$a['labnumber'];?>
-                            </td>
-                        </tr>
-                        <?php
-                        $ii++;
+                    if(count($xray)>0){
+                    
+                        foreach($xray AS $x){ 
+                            $pathoDate = substr($x['date'], 0, 10);
+                            $pathoHn = $x['hn'];
+                            $pathoVn = $x['tvn'];
+                            ?>
+                            <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank"><?=$x['depart'].'('.$x['price'].')';?></a>
+                            <?php
+                        }
                     }
                     ?>
+                    </td>
+                    <td><!-- comment --></td>
+                </tr>
+                <?php
+                $ii++;
+            }
+            ?>
                     
-                </tbody>
+            </tbody>
                 <?php
             }
             ?>
