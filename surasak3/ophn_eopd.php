@@ -22,7 +22,6 @@ if (in_array($_SESSION["sOfficer"], $disableUser) === true) {
 
 
 $query1 = "SELECT * FROM inputm WHERE name = '".$_SESSION["sOfficer"]."' and level_eopd='y'";
-//echo $query1;
 $result = mysql_query($query1) or die("Query failed");
 $num = mysql_num_rows($result);
 if($num < 1){
@@ -99,7 +98,8 @@ if($num < 1){
             <p style="font-size:24px;"><b>ค้นหาคนไข้ e-OPD จากHN</p>
             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input name="chkhn" type="text" class="txtsarabun" id="aLink" size="50" height="40">
-                <span style="margin-left: 10px;">หรือ</span>
+                <span style="margin-left: 10px;">หรือ</span>&nbsp;&nbsp;เลขบัตรปชช&nbsp;&nbsp;
+                <input name="findIdcard" type="text" class="txtsarabun" size="13" height="40">
             </p>
             <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ชื่อ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input name="name" type="text" class="txtsarabun" id="aLink" size="50" height="40">
@@ -137,6 +137,7 @@ if($num < 1){
             $chkhn = $_POST["chkhn"];
             $name = $_POST["name"];
             $surname = $_POST["surname"];
+            $findIdcard = $_POST['findIdcard'];
             $dthn = date("d-m-") . (date("Y") + 543) . $chkhn;
             if (!empty($act)) {
 
@@ -152,8 +153,11 @@ if($num < 1){
                 } else if (!empty($name) && !empty($surname)) {
                     $query = "SELECT hn,yot,name,surname,ptright,ptright1,idcard FROM opcard WHERE name LIKE '%$name%' and surname LIKE '%$surname%'";
                     echo "<FONT SIZE='' COLOR='#FF0033'>ผลการค้นหาจาก ชื่อ: $name และ นามสกุล: $surname</FONT>";
+                } else if(!empty($findIdcard)){
+                    $query = "SELECT `hn`,`yot`,`name`,`surname`,`ptright`,`ptright1`,`idcard` FROM `opcard` WHERE `idcard` = '$findIdcard'";
+                    echo "<FONT SIZE='' COLOR=''>ผลการค้นหาจาก เลขบัตรประชาชน: <span style='color: #FF0033; font-weight:bold;'>$findIdcard<span></FONT>";
                 }
-				//echo $query;	
+				
                 $result = mysql_query($query) or die("Query failed");
                 while (list($hn, $yot, $name, $surname, $ptright, $ptright1, $idcard) = mysql_fetch_row($result)) {
 
