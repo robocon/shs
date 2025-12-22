@@ -1,7 +1,8 @@
 <?php 
-require_once dirname(__FILE__).'/class_opcard.php';
-require_once dirname(__FILE__).'/class_opday.php';
-require_once dirname(__FILE__).'/class_depart.php';
+include_once dirname(__FILE__).'/database.php';
+include_once dirname(__FILE__).'/class_opcard.php';
+include_once dirname(__FILE__).'/class_opday.php';
+include_once dirname(__FILE__).'/class_depart.php';
 
 class ClassPatdata extends ClassDepart
 {
@@ -169,6 +170,18 @@ class ClassPatdata extends ClassDepart
             return $save;
         }
 
+    }
+
+    public function delPatdataFromIdno($idno=false){
+        if(empty($idno)){
+            return false;
+        }
+        $sql = sprintf("DELETE FROM `patdata` WHERE `idno` = '%s' ", $this->dbi->real_escape_string($idno));
+        $res = $this->dbi->query($sql);
+        if($res===false){
+            $res = $this->dbi->error.' : '.$sql;
+        }
+        return $res;
     }
 
 }
