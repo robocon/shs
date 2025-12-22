@@ -227,24 +227,17 @@ echo "
 	<INPUT TYPE=\"text\" NAME=\"search\" size=\"25\" class='txt'>&nbsp;<INPUT TYPE=\"submit\" value=\" ค้นหา \" class='txt'>
 </FORM>
 ";
-
-if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
-	$xxx = explode(" ",$_POST["search"]);
-	//$search_where_arr = array();
-	//foreach($){
-	//	$search_where .= " menu ";
-	//}
-
-	$yyy = implode("%' AND menu like '%",$xxx);
-	$where_search = " AND (menu like '%".$yyy."%')";
-	//echo $yyy;
-	//}
+$search = trim($_POST["search"]);
+if(isset($_POST["search"]) && !empty($search)){
+	$searchItems = explode(" ",$search);
+	$searchArray = array();
+	foreach ($searchItems as $item) {
+		$searchArray[] = " `menu` LIKE '%$item%' ";
+	}
+	$groupTxt = implode(' AND ', $searchArray);
+	$where_search = "AND ($groupTxt)";
 }
 
-/*//echo "<script>alert('ทดสอบ') </script>";*/
-//print (" <tr>\n".
-// "  <td BGCOLOR='#148F77'><font face='THSarabunPSK' size='3' color='#FFFFFF' >   $sOfficer </font></td>\n".
-	//	" </tr>\n");
 print "<body onload='Realtime();'>";
 print "<table>";
 
@@ -431,7 +424,7 @@ $rows=mysql_num_rows($result2);
 $userRowId = "&sOfficer=".$_SESSION['sOfficer']."&dt_doctor=".$_SESSION['dt_doctor'];
 if($rows){///  ถ้ามี rows
 
-	$query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
+	$query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ".$where_search." ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
 	$result = mysql_query($query) or die( mysql_error($Conn) );
 
 	while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
