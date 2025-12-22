@@ -238,7 +238,6 @@ if(!empty($dateSelect)){
                     }
 
                     if(count($xray)>0){
-                    
                         foreach($xray AS $x){ 
                             $pathoDate = substr($x['date'], 0, 10);
                             $pathoHn = $x['hn'];

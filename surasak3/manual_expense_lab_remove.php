@@ -4,3 +4,10 @@ if(empty($_SESSION['sOfficer'])){
     include 'pageNotFound.php';
     exit;
 }
+
+/**
+ * id / row_id
+ * แบ่งตาม
+ * depart + patdata
+ * opacc
+ */
