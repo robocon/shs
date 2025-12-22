@@ -132,4 +132,22 @@ class ClassOpacc extends ClassDepart{
             return $save;
         }
     }
+
+    public function delOpaccFromId($row_id=false){
+        if(empty($row_id)){
+            return false;
+        }
+        $o = $this->findOpaccFromId($row_id);
+        if($o!==false){
+            $sql = sprintf("DELETE FROM `opacc` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($row_id));
+            $res = $this->dbi->query($sql);
+            if($res===false){
+                $res = $this->dbi->error.' : '.$sql;
+            }
+        }else{
+            $res = false;
+        }
+        
+        return $res;
+    }
 }
