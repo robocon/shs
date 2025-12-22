@@ -43,7 +43,7 @@ class ClassDepart extends DbConnect{
      */
     public function getDepartFromId($id=null){
         if (empty($id)) {
-            $res = "Required id";
+            $res = false;
         }else{
             $sql = sprintf("SELECT * FROM `depart` WHERE `row_id` = '%s' LIMIT 1", $this->dbi->real_escape_string($id));
             $q = $this->__query($sql);
@@ -53,7 +53,7 @@ class ClassDepart extends DbConnect{
                     $res = $q->fetch_assoc();
                     $q->free_result();
                 }else{
-                    $res = "Not found data";
+                    $res = false;
                 }
             }else{
                 $res = $q->errorMessage;
@@ -326,6 +326,25 @@ class ClassDepart extends DbConnect{
         $res = $this->dbi->query($sqlUpdateDepart);
         if ($this->dbi->error) {
             $res = $this->dbi->error.' : '.$sqlUpdateDepart;
+        }
+        return $res;
+    }
+
+    /**
+     * ลบ depart
+     */
+    public function delDepartFromRowId($id=false){
+        if(empty($id)){
+            return false;
+        }
+        $res = false;
+        $d = $this->getDepartFromId($id);
+        if($d!==false){
+            $sql = sprintf("DELETE FROM `depart` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
+            $res = $this->__query($sql);
+            if($res===false){
+                $res = $this->dbi->error.' : '.$sql;
+            }
         }
         return $res;
     }
