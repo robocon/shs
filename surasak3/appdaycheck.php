@@ -40,7 +40,7 @@ if(empty($_SESSION['sOfficer'])){
     </div>
 </div>
 <?php
-$hn = $_POST['hn'];
+$hn = $_REQUEST['hn'];
 if(!empty($hn) OR !empty($_POST['idcard'])){
 
     $month["01"] = "มกราคม";
