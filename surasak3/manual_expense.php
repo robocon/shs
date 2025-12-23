@@ -150,7 +150,8 @@ if(!empty($dateSelect)){
                 $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
                 $resultheadItems = $result->getResulthead($a['labnumber']);
 
-                $opaccItems = $opacc->getOpacc($date, $a['hn']);
+                $opaccPatho = $opacc->getOpacc($date, $a['hn'],'PATHO');
+                $opaccXray = $opacc->getOpacc($date, $a['hn'],'XRAY');
                 ?>
                 <tr>
                     <td><?=$ii;?></td>
@@ -199,9 +200,9 @@ if(!empty($dateSelect)){
                         $urlLab .= "&credit=".rawurldecode('SSOCHECKUP68');
                         $urlLab .= "&companyPart=".rawurldecode($companyPart);
                         // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){
-                            ?>
-                            <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
-                            <?php
+                        ?>
+                        <a href="manual_expense_lab_add.php?<?=$urlLab;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
+                        <?php
                         // }
                         ?>
                     </td>
@@ -214,15 +215,40 @@ if(!empty($dateSelect)){
                         $url .= "&credit=".rawurldecode('SSOCHECKUP68');
                         $url .= "&companyPart=".rawurldecode($companyPart);
                         // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
-                            ?>
-                            <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
-                            <?php
+                        ?>
+                        <a href="manual_expense_xray_add.php?<?=$url;?>" class="btn btn-primary btn-sm" target="_blank"><i class="bi bi-currency-bitcoin"></i></a>
+                        <?php
                         // }
                         ?>
                     </td>
                     <td>
-                    <?php 
+                    <?php
+                    if(count($opaccPatho)>0){
+                        ?>
+                        <div class="mb-2">
+                        <?php
+                        foreach ($opaccPatho as $key => $value) {
+                            $departItems = $dep->getFromTxDate($value['txdate'], $value['hn'], $value['depart']);
+                            $opacc_id = $value['row_id'];
+                            $departKey = array();
+                            foreach ($departItems as $k => $v) {
+                                $departKey[] = $v['row_id'];
+                            }
+                            $depart_id = http_build_query($departKey);
+                            ?>
+                            <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-danger btn-sm" target="_blank">
+                                <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
+                            </a>
+                            <?php
+                        }
+                        ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                    <?php
                     if(count($patho)>0){
+                        ?><div class="mb-2"><?php
                         foreach ($patho as $key => $pItem) {
                             $id = $pItem['row_id'];
 
@@ -230,22 +256,45 @@ if(!empty($dateSelect)){
                             $pathoHn = $pItem['hn'];
                             $pathoVn = $pItem['tvn'];
                             ?>
-                            <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank">
-                                <?=$pItem['row_id'];?> <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
-                            </a>
-                            <?php 
+                            <div class="btn-group" role="group" aria-label="patho">
+                                <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-secondary btn-sm" target="_blank">
+                                    <?=$pItem['depart'];?> (<?=$pItem['price'];?>)
+                                </a>
+                                <a href="manual_expense_lab_remove.php?depart_id=<?= $id; ?>" class="btn btn-danger btn-sm" target="_blank">DP 🗑️</a>
+                            </div>
+                            <?php
                         }
+                        ?></div><?php
+                    }
+
+
+
+                    if(count($opaccXray)>0){
+                        ?><div class="mb-2"><?php
+                        foreach ($opaccXray as $key => $value) {
+                            $id = $value['row_id'];
+                            ?>
+                            <a href="manual_expense_lab_remove.php?opacc_id=<?= $id; ?>" class="btn btn-danger btn-sm" target="_blank" title="<?= $value['price']; ?>">O 🗑️</a>
+                            <?php
+                        }
+                        ?></div><?php
                     }
 
                     if(count($xray)>0){
+                        ?><div class="mb-2"><?php
                         foreach($xray AS $x){ 
+                            $id = $pItem['row_id'];
                             $pathoDate = substr($x['date'], 0, 10);
                             $pathoHn = $x['hn'];
                             $pathoVn = $x['tvn'];
                             ?>
-                            <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-primary btn-sm" target="_blank"><?=$x['depart'].'('.$x['price'].')';?></a>
+                            <div class="btn-group" role="group" aria-label="patho">
+                                <a href="reportcash1.php?hn=<?=$pathoHn;?>&vn=<?=$pathoVn;?>&date=<?=$pathoDate;?>" class="btn btn-secondary btn-sm" target="_blank"><?=$x['depart'].'('.$x['price'].')';?></a>
+                                <a href="manual_expense_lab_remove.php?depart_id=<?= $id; ?>" class="btn btn-danger btn-sm" target="_blank">DP 🗑️</a>
+                            </div>
                             <?php
                         }
+                        ?></div><?php
                     }
                     ?>
                     </td>

@@ -88,7 +88,7 @@ class ClassOpacc extends ClassDepart{
     /**
      * 
      */
-    public function findOpaccFromId($id=null, $field=null){
+    public function findOpaccFromId($id=null, $fieldSelect=null){
         if (empty($id)) {
             return array('error'=>true, 'msg'=>'Required id');
         }
@@ -97,12 +97,11 @@ class ClassOpacc extends ClassDepart{
         if (!empty($fieldSelect)) {
             $field = implode(',', $fieldSelect);
         }
-        
         $q = $this->dbi->query("SELECT $field FROM opacc WHERE row_id = '$id'");
         if ($q->num_rows>0) {
             $res = $q->fetch_assoc();
         }else{
-            $res = array('error'=>true, 'msg'=>$this->dbi->error);
+            $res = array('error'=>true, 'msg'=>'not found data from '.$id);
         }
         return $res;
     }
@@ -133,21 +132,15 @@ class ClassOpacc extends ClassDepart{
         }
     }
 
-    public function delOpaccFromId($row_id=false){
-        if(empty($row_id)){
-            return false;
+    public function delOpaccFromId($row_id=''){
+        $res = false;
+        $sql = sprintf("DELETE FROM `opacc` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($row_id));
+        var_dump($sql);
+        $del = $this->dbi->query($sql);
+        var_dump($del);
+        if($del===false){
+            $res = array('error'=>true, 'msg'=>$this->dbi->error.' : '.$sql);
         }
-        $o = $this->findOpaccFromId($row_id);
-        if($o!==false){
-            $sql = sprintf("DELETE FROM `opacc` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($row_id));
-            $res = $this->dbi->query($sql);
-            if($res===false){
-                $res = $this->dbi->error.' : '.$sql;
-            }
-        }else{
-            $res = false;
-        }
-        
         return $res;
     }
 }

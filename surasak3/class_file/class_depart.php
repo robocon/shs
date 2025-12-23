@@ -334,19 +334,35 @@ class ClassDepart extends DbConnect{
      * ลบ depart
      */
     public function delDepartFromRowId($id=false){
-        if(empty($id)){
-            return false;
-        }
-        $res = false;
         $d = $this->getDepartFromId($id);
         if($d!==false){
             $sql = sprintf("DELETE FROM `depart` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
-            $res = $this->__query($sql);
+            $res = $this->dbi->query($sql);
             if($res===false){
-                $res = $this->dbi->error.' : '.$sql;
+                $res = array('error'=>$this->dbi->error.' : '.$sql);
             }
+        }else{
+            $res = false;
         }
         return $res;
+    }
+
+    public function getFromTxDate($txdate=false, $hn=false, $depart=false){
+        $sql = sprintf("SELECT * FROM `depart` WHERE `date` = '%s' AND `hn` = '%s' AND `depart` = '%s';", 
+            $this->dbi->real_escape_string($txdate),
+            $this->dbi->real_escape_string($hn),
+            $this->dbi->real_escape_string($depart)
+        );
+        $q = $this->dbi->query($sql);
+        $items = array();
+        if($q!==false){
+            while ($a = $q->fetch_assoc()) {
+                $items[] = $a;
+            }
+        }else{
+            $items = false;
+        }
+        return $items;
     }
 
 }

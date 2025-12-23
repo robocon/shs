@@ -4,6 +4,7 @@
  */
 class DbConnect{ 
     public $dbi = null;
+    private $msgError = '';
     public function __construct()
     {
         $this->dbi = new mysqli(HOST,USER,PASS,DB,PORT);
@@ -56,6 +57,14 @@ class DbConnect{
         $e->errorDetail = $this->dbi->error;
         $e->errorMessage = "MySQL Error: [{$this->dbi->errno}] {$this->dbi->error}";
         return $e;
+    }
+
+    public function setMsgError($t){
+        $this->msgError=$t;
+    }
+
+    public function getMsgError(){
+        return $this->msgError;
     }
 
 }
