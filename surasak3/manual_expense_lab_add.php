@@ -11,7 +11,10 @@ $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
 $date = (date('Y')+543).date('-m-d');
-
+if(!empty($_GET['date'])){
+    $date = $_GET['date'];
+}
+dump($_GET);
 $hn = sprintf("%s", $_GET['hn']);
 $depart = sprintf("%s", $_GET['depart']);
 $labOfficer = sprintf("%s", $_GET['officer']);
@@ -20,7 +23,10 @@ $credit = sprintf("%s", $_GET['credit']);
 $companyPart = sprintf("%s", $_GET['companyPart']);
 
 $thdatehn = date('d-m-').(date('Y')+543).$hn;
-
+if(!empty($_GET['date'])){
+    list($y,$m,$d) = explode('-', $_GET['date']);
+    $thdatehn = "$d-$m-$y".$hn;
+}
 
 // $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
 // c.`vn` 
@@ -70,16 +76,16 @@ if(empty($a['vn'])){
     }else{
 
         $dep = new ClassDepart();
-        $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart);
+        $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart, $date);
         $departIdList[] = $departId;
-        // dump($departId);
+        dump($departId);
 
         $patdata = new ClassPatdata();
         $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
-        // dump($insertPatdata);
+        dump($insertPatdata);
 
         $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
-        // dump($opaccInsert);
+        dump($opaccInsert);
 
         echo "<h3>บันทึกข้อมูลเรียบร้อย</h3>";
     }

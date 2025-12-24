@@ -90,7 +90,8 @@ class ClassOpacc extends ClassDepart{
      */
     public function findOpaccFromId($id=null, $fieldSelect=null){
         if (empty($id)) {
-            return array('error'=>true, 'msg'=>'Required id');
+            $this->setMsgError('Required id');
+            return false;
         }
 
         $field = '*';
@@ -101,7 +102,9 @@ class ClassOpacc extends ClassDepart{
         if ($q->num_rows>0) {
             $res = $q->fetch_assoc();
         }else{
-            $res = array('error'=>true, 'msg'=>'not found data from '.$id);
+            $this->setMsgError('not found data from '.$id);
+            $res = false;
+            // $res = array('error'=>true, 'msg'=>'not found data from '.$id);
         }
         return $res;
     }
@@ -135,11 +138,11 @@ class ClassOpacc extends ClassDepart{
     public function delOpaccFromId($row_id=''){
         $res = false;
         $sql = sprintf("DELETE FROM `opacc` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($row_id));
-        var_dump($sql);
         $del = $this->dbi->query($sql);
-        var_dump($del);
         if($del===false){
-            $res = array('error'=>true, 'msg'=>$this->dbi->error.' : '.$sql);
+            $this->setMsgError($this->dbi->error.' : '.$sql);
+        }else{
+            $res = true;
         }
         return $res;
     }

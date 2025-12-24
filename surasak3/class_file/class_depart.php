@@ -102,7 +102,8 @@ class ClassDepart extends DbConnect{
 
     /**
      * เพิ่มข้อมูลค่าใช้จ่ายใน depart เท่านั้น
-     * 
+     * @param string $hn หมายเลข HN
+     * @param string $date วันเดือนปี รูปแบบ YYYY-mm-dd
      * @return string $departId หมายเลขของ row_id ที่บันทึกล่าสุด
      */
     public function insertOnlyDepart(
@@ -337,11 +338,13 @@ class ClassDepart extends DbConnect{
         $d = $this->getDepartFromId($id);
         if($d!==false){
             $sql = sprintf("DELETE FROM `depart` WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
-            $res = $this->dbi->query($sql);
-            if($res===false){
-                $res = array('error'=>$this->dbi->error.' : '.$sql);
+            $del = $this->dbi->query($sql);
+            if($del===false){
+                $this->setMsgError($this->dbi->error.' : '.$sql);
+                $res = false;
             }
         }else{
+            $this->setMsgError("Not found data from $id");
             $res = false;
         }
         return $res;

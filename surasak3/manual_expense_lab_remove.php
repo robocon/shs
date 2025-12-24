@@ -14,42 +14,41 @@ $j = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
 $departItems = array();
 $opaccId = $_GET['opacc_id'];
-parse_str($_GET['depart_id'], $departItems);
-
-$resDepart = $resPatdata = $resOpacc = false;
-
-
-$o->delOpaccFromId($opaccId);
-exit;
+parse_str($_GET['depart_id'], $departItems); // คืนค่าจาก http_build_query ให้เป็น array
 
 $resAll = array();
+$opaccStatus = false;
+
 if(!empty($opaccId)){
-    $opaccStatus = false;
     $res = $o->findOpaccFromId($opaccId);
-    if(!$res['error']){
+    if($res!==false){
         $del = $o->delOpaccFromId($opaccId);
         $opaccStatus = true;
+        $res = array('status'=>200,'msg'=>'Delete opacc Successful');
     }else{
-        $res = array('status'=>400,'resOpacc'=>$res['msg']);
+        $res = array('status'=>400,'msg'=>$o->getMsgError());
     }
     $resAll['opacc'] = $res;
-
-
 }
-
+dump($departItems);
 if(count($departItems)>0 && $opaccStatus!==false){
 
     foreach ($departItems as $departId) {
         $resDepart = $p->delDepartFromRowId($departId);
-        if(!$resDepart['error']){
-            $resPatdata = $p->delPatdataFromIdno($departId);
-        }else{
-            $resAll['depart'] = array('status'=>400, 'msg'=>$resDepart['error']);
-        }
-        
-    }
-    
+        if($resDepart !== false){
+            $resAll['depart'] = array('status'=>200, 'msg'=>'Delete depart Successful');
 
+            $resPatdata = $p->delPatdataFromIdno($departId);
+            if($resPatdata!==false){
+                $resAll['patdata'] = array('status'=>200, 'msg'=>'Delete patdata Successful');
+            }else{
+                $resAll['patdata'] = array('status'=>400, 'msg'=>$p->getMsgError());
+            }
+
+        }else{
+            $resAll['depart'] = array('status'=>400, 'msg'=>$p->getMsgError());
+        }
+    }
 }
 echo $j->encode($resAll);
 exit;

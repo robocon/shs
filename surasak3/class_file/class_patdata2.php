@@ -174,12 +174,15 @@ class ClassPatdata extends ClassDepart
 
     public function delPatdataFromIdno($idno=false){
         if(empty($idno)){
+            $this->setMsgError("Not found Idno");
             return false;
         }
         $sql = sprintf("DELETE FROM `patdata` WHERE `idno` = '%s' ", $this->dbi->real_escape_string($idno));
         $res = $this->dbi->query($sql);
         if($res===false){
-            $res = $this->dbi->error.' : '.$sql;
+            $this->setMsgError($this->dbi->error.' : '.$sql);
+        }else{
+            $res = true;
         }
         return $res;
     }
