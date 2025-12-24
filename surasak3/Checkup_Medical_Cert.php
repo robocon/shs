@@ -221,7 +221,7 @@ while($rows = mysql_fetch_array($query)){
 
 //-----> ¢éÍÁÙÅ dx áÅÐ doctor_ans ¨Ò¡ËÁÍ
  
-$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' order by row_id desc";
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' order by row_id desc LIMIT 1";
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
@@ -379,10 +379,6 @@ font.txt_dotted {
         <td width="215px" align="center"><p><? echo "$Txt_DocTitle $Txt_DocName";?></p></td>
         <td width="100px">ใบประกอบวิชาชีพ </td>
         <td width="100px" align="center"><p><? echo "$Txt_DocCode";?></p></td>
-        <?php
-        // <td width="100px">สถานพยาบาล</td>
-        // <td width="150px" align="center"><p>โรงพยาบาลค่ายสุรศักดิ์มนตรี</p></td>
-        ?>
     </tr>
 </table>
 <table>
@@ -395,10 +391,6 @@ font.txt_dotted {
     <tr>
         <td width="100px">ได้ตรวจร่างกาย </td>
         <td width="200px" align="center"><p><? echo "$Txt_Title $Txt_Name $Txt_Surname"; ?></p></td>
-        <?php
-        // <td width="100px">แล้วเมื่อ วันที่ </td>
-        // <td width="100px" align="center"><p><? echo $Txt_Datetime;?></p></td>
-        ?>
         <td width="100px">มีรายละเอียดดังนี้</td>
         <td width="100px"> </td>
     </tr>
@@ -444,18 +436,9 @@ font.txt_dotted {
         <td width="550px"><p>  </p></td>
     </tr>
     <tr>
-        <td width="450px">
-        (2) สรุปความเห็นและข้อแนะนำของแพทย์ 
-        </td>
+        <td width="450px">(2) สรุปความเห็นและข้อแนะนำของแพทย์ </td>
         <td width="350px"><p ><font class="txt_dotted"><? echo $Txt_Doctor_Ans." ".$Txt_Doctor_Dx; ?></font></p></td>
     </tr>
-    <?php
-    // tr>
-    //     <td width="160px">  
-    //     </td>
-    //     <td width="550px"><p> </p></td>
-    // </tr>
-    ?>
 </table>
 
 
