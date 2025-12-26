@@ -435,6 +435,23 @@ if($q->num_rows>0){
 }
 /* แจ้งเตือน Warfarin */
 ?>
+<style>
+.button {
+	font-family: "TH SarabunPSK";
+	font-size: 14pt;
+	padding: 0px 12px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 4px;
+	border: none;
+}
+.button-primary {
+	background-color: #008CBA;
+	color: white;
+}
+</style>
 <script type="text/javascript">
 	function openLink(){
 		window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
@@ -456,6 +473,7 @@ if($q->num_rows>0){
 		<th bgcolor=CD853F><font face='Angsana New'>ค้างจ่าย</th>
 		<th bgcolor=CD853F><font face='Angsana New'>เจ้าหน้าที่</th>
 		<th bgcolor=CD853F><font face='Angsana New'>แก้ไขจำนวน</th>
+		<th bgcolor=CD853F></th>
 	</tr>
 <?php
 $dateHn = date('Y-m-d').$patient_hn;
@@ -471,6 +489,8 @@ if($q->num_rows>0){
 $drugViewerItems = array();
 
 $inject = false;
+$ddrugrxDate = $_GET["sDate"];
+$dphardepId = $_GET["nRow_id"];
     //$query = "SELECT tradname,amount,price,slcode,drugcode,row_id,office,detail1,detail2, detail3, detail4 FROM ddrugrx ,WHERE idno = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' ";
 	$query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode,a.row_id, a.part,a.office, b.detail1, b.detail2, b.detail3, b.detail4, a.drug_inject_amount,a.drug_inject_unit, a.drug_inject_amount2,a.drug_inject_unit2,a.drug_inject_time,a.drug_inject_slip,a.drug_inject_etc,a.injno,a.reason FROM ddrugrx as a, drugslip as b WHERE a.slcode = b.slcode AND a.idno = '".$_GET["nRow_id"]."' AND a.date = '".$_GET["sDate"]."' ";
     $result = mysql_query($query) or die("Query failed");
@@ -553,11 +573,23 @@ $ptright=substr($sPtright,0,3);
 		"  <td><font face='Angsana New'><a href=\"#\" onclick=\"window.open('upd_cdrug.php?nrow=$row_id',null,'height=300,width=320,scrollbars=0')\">แก้ไขจำนวน</a></td>\n".
 		//			  "  <td BGCOLOR=F5DEB3><a target=_blank  href=\"drxek1.php?grow_id=".$row_id."&sDate=".urlencode($_GET["sDate"])."&nRow_id=".urlencode($_GET["nRow_id"])."\">แก้ข้อมูล</a></td>\n".
 		//	"<td BGCOLOR=F5DEB3>".$onclick."ลบ</A></td>\n".
-           " </tr>";
+           "
+		   <td>";
+		if(!empty($drug_inject_slip)){
+			$url = "drug_inj_sticker.php?hn=$sHn&ddrugrx_date=$ddrugrxDate&ddrugrx_id=$row_id&dphardep_id=$dphardepId&drugcode=$drugcode";
+			echo "<a href=\"javascript:void(0);\" onclick=\"openInj('$url')\" class=\"button button-primary\">💉 สติกเกอร์ฉีดยา</a>";
+		}
+		echo "   </td>
+		   </tr>";
       } // end while
     
 ?>
 </table>
+<script>
+	function openInj(url){
+		window.open(url,"drugInj","width=600,height=400");
+	}
+</script>
 <?php
 	$drugSQL = implode(',', $drugViewerItems);
 	
@@ -686,7 +718,10 @@ echo "<table><tr>";
 	<td><a target="_blank"  href="sticker_drx.php?hn=<?=$sHn?>&sDate=<?=$_GET["sDate"]?>">สติ๊กเกอร์ค้างจ่ายติดOPD</a></td>
  </tr></table>
  <div>
-	<p><a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a> | <a target="_blank" href="drxprint2.php"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a> </p>
+	<p>
+		<a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a> | 
+		<a target="_blank" href="drxprint2.php"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a>
+	</p>
  </div>
 <?php
 $strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
