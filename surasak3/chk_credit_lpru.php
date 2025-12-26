@@ -1,8 +1,5 @@
 <?php 
-include 'bootstrap.php';
-
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
+require_once dirname(__FILE__).'/bootstrap.php';
 
 session_unregister("x");
 session_unregister("aDate");
@@ -221,13 +218,26 @@ $appd1 = sprintf('%s', $_GET['appd1']);
 $date = $_GET['date'];
 $doctor='ตรวจสุขภาพ';
 
-$sql = "SELECT a.`hn`,a.`ptname`,b.`vn`,b.`ptright`,b.`thdatehn` 
+// $sql = "SELECT a.`hn`,a.`ptname`,b.`vn`,b.`ptright`,b.`thdatehn` 
+// FROM (
+// 	SELECT * FROM `manual_expense` WHERE `part` IN ('มหาวิทยาลัยราชภัฏลำปาง 68','คณะพยาบาลศาสตร์ มหาวิทยาลัยราชภัฏลำปาง 68 ธ.ค.')
+// ) AS a LEFT JOIN (
+// 	SELECT * FROM `pre_vn` WHERE `chk_company_id` IN ('900','901')
+// ) AS b ON a.`hn` = b.`hn` 
+// WHERE b.`thdatehn` LIKE '$date%' ";
+
+$sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, c.`vn` 
 FROM (
-	SELECT * FROM `manual_expense` WHERE `part` IN ('มหาวิทยาลัยราชภัฏลำปาง 68','คณะพยาบาลศาสตร์ มหาวิทยาลัยราชภัฏลำปาง 68 ธ.ค.')
-) AS a LEFT JOIN (
-	SELECT * FROM `pre_vn` WHERE `chk_company_id` IN ('900','901')
-) AS b ON a.`hn` = b.`hn` 
-WHERE b.`thdatehn` LIKE '$date%' ";
+    SELECT * FROM `manual_expense` WHERE `part` = 'มหาวิทยาลัยราชภัฏลำปาง 68' 
+) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+LEFT JOIN (
+    SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,`toborow` 
+    FROM `opday` 
+    WHERE `thidate` LIKE '$appd1%' 
+) AS c ON a.`hn` = c.`hn` 
+WHERE c.`row_id` IS NOT NULL
+ORDER BY a.`id` ASC";
+
 $q = $dbi->query($sql);
 $users = array();
 while ($aPre = $q->fetch_assoc()) {
@@ -264,9 +274,12 @@ $i = 1;
 while ($aOpacc = $q2->fetch_assoc()) {
     
     $hn = $aOpacc['hn'];
-    $time = substr($aOpacc['date'],11,5);
 
-    $p
+    if(empty($users[$hn])){
+        continue;
+    }
+    
+    $time = substr($aOpacc['date'],11,5);
     ?>
     <tr bgcolor="F5DEB3">
         <td><?=$i;?></td>

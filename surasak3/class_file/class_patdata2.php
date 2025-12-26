@@ -75,13 +75,18 @@ class ClassPatdata extends ClassDepart
 
     /**
      * เพิ่มข้อมูลใน patdata จาก depart
+     * @param string    $departId   depart row_id
+     * @param array     $labItems   รายการจาก labcare
+     * @param string    $date       (Optional) วันที่เพิ่ม
      */
     public function insertOnlyPatdata(
-        $departId=null, 
-        $labItems=array()
+        $departId='', 
+        $labItems=array(),
+        $date=''
     ){
-        if ($departId===null or empty($labItems)) {
-            return "Depart id and lab items is required";
+        if (empty($departId) or empty($labItems)) {
+            $this->setMsgError("Depart id and lab items is required");
+            return false;
             exit;
         }
 
@@ -92,11 +97,15 @@ class ClassPatdata extends ClassDepart
             $ptname = $dep['ptname'];
             $ptright = $dep['ptright'];
         }else{
-            return "Can not find data from depart id";
+            $this->setMsgError("Depart id and lab items is required");
+            return false;
             exit;
         }
         
         $thDateTime = $this->getThDateTime();
+        if(!empty($date)){
+            $thDateTime = $date.' '.date('H:i:s');;
+        }
         $countItem = count($labItems);
 
         $patdataSaveItem = array();

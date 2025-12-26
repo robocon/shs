@@ -3,12 +3,8 @@ session_start();
 include("connect.php");
 ?>
 <style type="text/css">
-body,td,th {
-	font-family: TH SarabunPSK;
-	font-size: 20px;
-}
-.txt{
-	font-family: TH SarabunPSK;
+body,td,th,.txt {
+	font-family: "TH SarabunPSK";
 	font-size: 20px;
 }
 </style>

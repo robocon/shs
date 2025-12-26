@@ -169,16 +169,22 @@ $appd1=$thiyr.'-'.$appmo.'-'.$appdate;
     </tr>
     <?php
     */
-    if( $appd1 == '2568-12-18' OR $appd1 == '2568-12-19' ){
+    
+    if( $appd1 == '2568-12-18' OR $appd1 == '2568-12-19' OR $appd1 == '2568-12-22' OR $appd1 == '2568-12-23' ){
         $n++;
 
-        $sql = "SELECT a.`hn`,a.`ptname`,b.`vn`,b.`ptright`,b.`thdatehn` 
-FROM (
-	SELECT * FROM `manual_expense` WHERE `part` IN ('มหาวิทยาลัยราชภัฏลำปาง 68','คณะพยาบาลศาสตร์ มหาวิทยาลัยราชภัฏลำปาง 68 ธ.ค.')
-) AS a LEFT JOIN (
-	SELECT * FROM `pre_vn` WHERE `chk_company_id` IN ('900','901')
-) AS b ON a.`hn` = b.`hn` 
-WHERE b.`thdatehn` LIKE '$dmyDate%' ";
+        $sql = "SELECT a.*, CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname`, b.`ptright`, 
+        c.`vn` 
+        FROM (
+            SELECT * FROM `manual_expense` WHERE `part` = 'มหาวิทยาลัยราชภัฏลำปาง 68' 
+        ) AS a LEFT JOIN `opcard` AS b ON a.`hn` = b.`hn`
+        LEFT JOIN (
+            SELECT `row_id`,`thidate`,`hn`,`vn`,`ptname`,toborow 
+            FROM opday 
+            WHERE thidate LIKE '$appd1%' 
+        ) AS c ON a.`hn` = c.`hn` 
+        WHERE c.`row_id` IS NOT NULL
+        ORDER BY a.`labnumber` ASC";
         $q = $dbi->query($sql);
         $rows = $q->num_rows;
 
@@ -196,7 +202,7 @@ WHERE b.`thdatehn` LIKE '$dmyDate%' ";
         <tr>
             <td><?= $n ?></td>
             <td><a target='_blank' class='link-report' href="chk_credit_lpru.php?<?=$url;?>">มหาวิทยาลัยราชภัฏลำปาง 68 (<?= $rows; ?> ราย)</a></td>
-            <td><?= $opaccRows ?> รายการ</td>
+            <td></td>
         </tr>
         <?php
     }

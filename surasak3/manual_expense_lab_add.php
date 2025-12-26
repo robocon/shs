@@ -14,7 +14,6 @@ $date = (date('Y')+543).date('-m-d');
 if(!empty($_GET['date'])){
     $date = $_GET['date'];
 }
-dump($_GET);
 $hn = sprintf("%s", $_GET['hn']);
 $depart = sprintf("%s", $_GET['depart']);
 $labOfficer = sprintf("%s", $_GET['officer']);
@@ -68,23 +67,25 @@ if(empty($a['vn'])){
 }else{
 
     $opacc = new ClassOpacc();
-    $resOpacc = $opacc->getOpacc($date, $hn, 'PATHO');
+    $resOpacc = $opacc->getOpacc($date, $hn, 'PATHO', $credit);
     if($resOpacc!==false){
-        echo '<h3>เคยบันทึกข้อมูลไปแล้ว</h3>';
-        // dump($resOpacc);
+        echo '<h3>เคยบันทึกข้อมูล LAB ไปแล้ว</h3>';
+        dump($resOpacc);
         exit;
     }else{
 
         $dep = new ClassDepart();
         $departId = $dep->insertOnlyDepart($hn, $detail, $diag, $lab_items, $labOfficer, $credit, $nLab_orderhead, $depart, $date);
         $departIdList[] = $departId;
-        dump($departId);
+        dump('depart id'.$departId);
 
         $patdata = new ClassPatdata();
-        $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items);
+        $insertPatdata = $patdata->insertOnlyPatdata($departId, $lab_items, $date);
+        dump('patdata ');
         dump($insertPatdata);
 
-        $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit);
+        $opaccInsert = $opacc->insertOpacc($departIdList, $detail, $moneyOfficer, $credit, $date);
+        dump('opacc');
         dump($opaccInsert);
 
         echo "<h3>บันทึกข้อมูลเรียบร้อย</h3>";

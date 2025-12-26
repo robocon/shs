@@ -79,7 +79,7 @@ if(!empty($dateSelect)){
         FROM opday 
         WHERE thidate LIKE '$date%' 
     ) AS c ON a.`hn` = c.`hn` 
-    #WHERE c.`row_id` IS NOT NULL
+    WHERE c.`row_id` IS NOT NULL
     ORDER BY a.id ASC";
     $q = $dbi->query($sql);
     if($q->num_rows == 0){
@@ -119,7 +119,7 @@ if(!empty($dateSelect)){
                 </div>
             </form>
         </div>
-        <table class="table table-sm">
+        <table class="table table-sm table-hover">
             <thead>
                 <tr>
                     <th>#</th>
@@ -145,15 +145,7 @@ if(!empty($dateSelect)){
             while ($a = $q->fetch_assoc()) {
 
                 $currHn = $a['hn'];
-
-                // $patho = $dep->getDepart($date, $a['hn'], 'PATHO');
-                // $xray = $dep->getDepart($date, $a['hn'], 'XRAY');
-                // $resultheadItems = $result->getResulthead($a['labnumber']);
-                dump($date);
-                dump($a['hn']);
-                // dump($date);
                 $opaccPatho = $opacc->getOpacc($date, $a['hn'],'PATHO');
-                dump($opaccPatho);
                 $opaccXray = $opacc->getOpacc($date, $a['hn'],'XRAY');
                 ?>
                 <tr>
@@ -221,7 +213,7 @@ if(!empty($dateSelect)){
                         $url .= "&credit=".rawurldecode('SSOCHECKUP68');
                         $url .= "&companyPart=".rawurldecode($companyPart);
                         if(!empty($dateSelect)){
-                            $urlLab .= "&date=".rawurldecode($dateSelect);
+                            $url .= "&date=".rawurldecode($dateSelect);
                         }
                         // if($ptRightCode=='R33' OR $ptRightCode=='R21' OR $ptRightCode=='R03'){ 
                         ?>
@@ -246,18 +238,24 @@ if(!empty($dateSelect)){
                                 $departKey[] = $v['row_id'];
                             }
                             $depart_id = http_build_query($departKey);
+
+                            $hn = $value['hn'];
+                            $vn = $value['vn'];
+                            $date = substr($value['date'],0,10);
                             ?>
-                            <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-danger btn-sm" target="_blank">
-                                <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
-                            </a>
+                            <div class="btn-group">
+                                <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-danger btn-sm" target="_blank">
+                                    <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
+                                </a>
+                                <a href="reportcash1.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" class="btn btn-secondary btn-sm">🕵</a>
+                            </div>
+                            
                             <?php
                         }
                         ?>
                         </div>
                         <?php
                     }
-                    
-                    
                     
                     if(count($opaccXray)>0){
                         ?><div class="mb-2"><?php
@@ -272,10 +270,17 @@ if(!empty($dateSelect)){
                                 $departKey[] = $v['row_id'];
                             }
                             $depart_id = http_build_query($departKey);
+
+                            $hn = $value['hn'];
+                            $vn = $value['vn'];
+                            $date = substr($value['date'],0,10);
                             ?>
-                            <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-warning btn-sm" target="_blank">
-                                <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
-                            </a>
+                            <div class="btn-group">
+                                <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-warning btn-sm" target="_blank">
+                                    <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
+                                </a>
+                                <a href="reportcash1.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" class="btn btn-secondary btn-sm">🕵</a>
+                            </div>
                             <?php
                             }
                         ?></div><?php
@@ -289,7 +294,6 @@ if(!empty($dateSelect)){
                 $ii++;
             }
             ?>
-                    
             </tbody>
                 <?php
             }

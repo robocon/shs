@@ -166,7 +166,6 @@ class ClassDepart extends DbConnect{
             '$officer', '$diag', '$vn', '$ptright', '$nLab_orderhead', 'Y', 
             '$cashok', '$sumPrice'
         )";
-        
         $depart_save = $this->dbi->query($sql_depart);
         if($depart_save==false){
             return $this->dbi->error;
