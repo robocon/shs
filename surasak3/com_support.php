@@ -372,7 +372,7 @@ if ($countAllItem>0) {
     <?php
 }
 
-$last3Month = strtotime('-6 month');
+$last3Month = strtotime('-1 year');
 $currentThaiDate = (date('Y', $last3Month)+543).date('-m-01', $last3Month);
 
 $sql = "SELECT COUNT(`row`) AS `sum`,SUBSTRING(`dateend`,1,7) AS `month`,`programmer` FROM `com_support` WHERE `status` = 'n' AND `dateend` >= '$currentThaiDate' GROUP BY SUBSTRING(`dateend`,1,7) DESC,`programmer` DESC";
@@ -391,7 +391,7 @@ if($q->num_rows>0){
     list($y, $m) = explode('-', $key);
     ?>
     <div class="forntsarabun each_container">
-        <h3 style="margin-bottom:0; padding:0;"><?= $def_fullm_th[$m] ?> <?= $y ?></h3>
+        <h3 style="margin-bottom:0; padding:0;">เดือน <?= $def_fullm_th[$m] ?> <?= $y ?></h3>
         <div>
             <table class="forntsarabun">
                 <tr style="background-color: #6c757d; color:#ffffff;">
