@@ -174,7 +174,10 @@ while($a = $qService->fetch_assoc()){
 
     $caseout = $hsub = $cost = '';
 
-    $inline = "$hospcode|$idcard|$hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein|$hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$hsub|$idcard\r\n";			
+    // @09:13AM 2568-12-26 วางยาเพื่อที่จะดูว่าแกเตะส่งข้อมูลเพื่อเอาโอทีอย่างเดียวรึป่าว
+    // แต่คิดว่าเตะส่งแหละ เพราะแก้คืนตั้งแต่ต้นเดือน ธ.ค. 68 แกก็เตะส่งข้อมูลอยู่ดี
+    // สรุปคือไม่เช็กเหี้ยอะไรเลย แต่เบิกโอทีกินฟรี
+    $inline = "$hospcode|$idcard| $hn|$seq|$date_serv|$time_serv|$location|$intime|$instype|$insid|$hospcode|$typein| $hospcode|$causein|$chiefcomp|$servplace|$btemp|$sbp|$dbp|$pr|$rr|$typeout|$referouthos|$caseout|$cost|$price|$payprice|$actualpay|$d_update|$hsub|$idcard\r\n";			
     // print($inline);
     $txt .= $inline;
     
