@@ -670,6 +670,7 @@ function checkTamivir(drugcode, criteriaCode, criteria){
 		<p><input type="radio" class="inputTamivia" id="inputTamivia9" name="detail[]" value="TAMIVIA9"><label for="inputTamivia9">9.) โรคที่มีภาวะภูมิคุ้มกันต่ำหรือใช้ยากดภูมิ</label></p>
 		<p><input type="radio" class="inputTamivia" id="inputTamivia10" name="detail[]" value="TAMIVIA10"><label for="inputTamivia10">10.) เด็กที่มีภาวะพร่องทางระบบประสาท พัฒนาการช้า หรือ โรคลมชัก</label></p>
 		<p><input type="radio" class="inputTamivia" id="inputTamivia11" name="detail[]" value="TAMIVIA11"><label for="inputTamivia11">11.) บุคคลกลุ่มเสี่ยงต่อการระบาดรุนแรง เช่น พลทหาร หรือ บุคลากรทางการแพทย์</label></p>
+		<p><input type="radio" class="inputTamivia" id="inputTamivia12" name="detail[]" value="TAMIVIA12"><label for="inputTamivia12">12.) ไม่ใช่บุคคลกลุ่มเสี่ยงแต่มีอาการไม่เกิน 48 ชั่วโมง</label></p>
 		<p style="text-align: center;">
 			<button type="button" onclick="confirmTamivir('${drugcode}','${criteriaCode}','${criteria}')" class="button">ยืนยันการสั่งใช้</button>&nbsp;<button type="button" onclick="cancelBtnForm()" class="button cancel">ยกเลิก</button>
 			<input type="hidden" name="criteria" id="criteria" value="${criteria}">

@@ -2447,6 +2447,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ // คำนว
 	$drugLeft = array();
 	if($drugrxRows>0){
 		$drugLeft = $q->fetch_assoc();
+		
 	}
 
 	$sqlDruglst = sprintf("SELECT `genname`,`unit` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
