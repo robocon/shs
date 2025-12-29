@@ -17,8 +17,22 @@ mysql_query("SET NAMES UTF-8");
 $drugreact = new Drugreact();
 $hypertension = new Hypertension();
 
-$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-$dbi->query("SET NAMES UTF8");
+/**
+ * @param string $thdatehn รูปแบบ dd-mm-YYYYHN
+ * @return array
+ */
+function getBotoxFromThdatehn($thdatehn=''){
+	global $dbi;
+
+	$sql = sprintf("SELECT * FROM `opd_botox` WHERE `thdatehn` = '%s'", $dbi->real_escape_string($thdatehn));
+	dump($sql);
+	$q = $dbi->query($sql);
+	$item = false;
+	if($q->num_rows > 0){
+		$item = $q->fetch_assoc();
+	}
+	return $item;
+}
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -279,74 +293,69 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		$itemOpd = mysql_fetch_assoc($res_row_opd);
 		$opd_id = $itemOpd['row_id'];
 		
-//////// เริ่มต้นการคำนวณ CV Risk Score //////// 
+//////// เริ่มต้นการคำนวณ CV Risk Score ////////
 
-				if($_POST["cigarette"]=="1"){
-					$smoke=1;
-				}else{
-					$smoke=0;
-				}
-							
-				if(!empty($_POST["bp3"]) && $_POST["bp3"] !="....."){
-					$sbp=$_POST["bp3"];
-				}else{
-					$sbp=$_POST["bp1"];
-				}				
-								
-				
-				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
-	    		$query1 = mysql_query($sql1) or die("Query failed");
-				$rows=mysql_fetch_array($query1);
-				
-				if($rows["sex"]=="ช"){
-					$sex=1;
-				}else{
-					$sex=0;
-				}
-							
-				
-				$waist=$_POST["waist"]*0.39370;
-				$waist=round($waist);
-				
-				$height=floor($_POST["height"]);
-				$whtr=$waist/$height;
-				$finalwhtr=$whtr*100;
-				
-				
-				$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_REQUEST["hn"]."' limit 1";	
-	    		$query2 = mysql_query($sql2) or die("Query failed");
-				$numdm=mysql_num_rows($query2);
-				if($numdm > 0){
-					$diabetes=1;
-				}else{
-					$diabetes=0;
-				}
-				
-				$sql3 = "SELECT *  FROM opday WHERE thdatehn = '".$thidatehn."' limit 1";
-				
-	    		$query3 = mysql_query($sql3) or die("Query failed");
-				$rows3=mysql_fetch_array($query3);
-				$age=substr($rows3["age"],0,2);
-				//echo $age."<br>";				
-				
-				
-				$waist=$waist*2.54;
-				
-				//--------- ไม่มีผลเลือด -----------//
-				$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
-								
-				$y=$fullscore-7.720484;	
-				$x=0.978296;
-				
-				$y=exp($y);
-				$z=pow($x,$y);
-				
-				$final=(1-$z)*100;
-				
-				$pfullscore=number_format($final,2);										
-				//---------------จบ-----------------//		
+		if($_POST["cigarette"]=="1"){
+			$smoke=1;
+		}else{
+			$smoke=0;
+		}
+		
+		if(!empty($_POST["bp3"]) && $_POST["bp3"] !="....."){
+			$sbp=$_POST["bp3"];
+		}else{
+			$sbp=$_POST["bp1"];
+		}
+		
+		$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
+		$query1 = mysql_query($sql1) or die("Query failed");
+		$rows=mysql_fetch_array($query1);
+		
+		if($rows["sex"]=="ช"){
+			$sex=1;
+		}else{
+			$sex=0;
+		}
+		
+		$waist=$_POST["waist"]*0.39370;
+		$waist=round($waist);
+		
+		$height=floor($_POST["height"]);
+		$whtr=$waist/$height;
+		$finalwhtr=$whtr*100;
+		
+		$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_REQUEST["hn"]."' limit 1";	
+		$query2 = mysql_query($sql2) or die("Query failed");
+		$numdm=mysql_num_rows($query2);
+		if($numdm > 0){
+			$diabetes=1;
+		}else{
+			$diabetes=0;
+		}
+		
+		$sql3 = "SELECT *  FROM opday WHERE thdatehn = '".$thidatehn."' limit 1";
+		
+		$query3 = mysql_query($sql3) or die("Query failed");
+		$rows3=mysql_fetch_array($query3);
+		$age=substr($rows3["age"],0,2);
+		
+		$waist=$waist*2.54;
+		
+		//--------- ไม่มีผลเลือด -----------//
+		$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
+		
+		$y=$fullscore-7.720484;
+		$x=0.978296;
+		
+		$y=exp($y);
+		$z=pow($x,$y);
+		
+		$final=(1-$z)*100;
+		
+		$pfullscore=number_format($final,2);
+		//---------------จบ-----------------//
 
-//////// จบการคำนวณ CV Risk Score //////// 	
+//////// จบการคำนวณ CV Risk Score ////////
 
 		$sql = "UPDATE `opd` SET `thidate` = '".$thidate_now."', 
 		`temperature`  = '".$_POST["temperature"]."', 
@@ -406,75 +415,69 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		
 //////// เริ่มต้นการคำนวณ CV Risk Score //////// 
 
-				if($_POST["cigarette"]=="1"){
-					$smoke=1;
-				}else{
-					$smoke=0;
-				}
-							
-				if(!empty($_POST["bp3"]) && $_POST["bp3"] !="....."){
-					$sbp=$_POST["bp3"];
-				}else{
-					$sbp=$_POST["bp1"];
-				}
-				
-				
-				$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
-	    		$query1 = mysql_query($sql1) or die("Query failed");
-				$rows=mysql_fetch_array($query1);
-				
-				if($rows["sex"]=="ช"){
-					$sex=1;
-				}else{
-					$sex=0;
-				}
-				
-				
-				$waist=$_POST["waist"]*0.39370;
-				$waist=round($waist);
-				
-				$height=floor($_POST["height"]);
-				$whtr=$waist/$height;
-				$finalwhtr=$whtr*100;
-				
-				
-				$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_REQUEST["hn"]."' limit 1";	
-	    		$query2 = mysql_query($sql2) or die("Query failed");
-				$numdm=mysql_num_rows($query2);
-				if($numdm > 0){
-					$diabetes=1;
-				}else{
-					$diabetes=0;
-				}
-				
-				$sql3 = "SELECT *  FROM opday WHERE thdatehn = '".$thidatehn."' limit 1";
-				
-	    		$query3 = mysql_query($sql3) or die("Query failed");
-				$rows3=mysql_fetch_array($query3);
-				$age=substr($rows3["age"],0,2);
-				//echo $age."<br>";				
-				
-				
-				$waist=$waist*2.54;
-				
-				//--------- ไม่มีผลเลือด -----------//
-				$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
-								
-				$y=$fullscore-7.720484;	
-				$x=0.978296;
-				
-				$y=exp($y);
-				$z=pow($x,$y);
-				
-				$final=(1-$z)*100;
-				
-				$pfullscore=number_format($final,2);
-				
-				//---------------จบ-----------------//		
-
-//////// จบการคำนวณ CV Risk Score //////// 			
+		if($_POST["cigarette"]=="1"){
+			$smoke=1;
+		}else{
+			$smoke=0;
+		}
 		
-			
+		if(!empty($_POST["bp3"]) && $_POST["bp3"] !="....."){
+			$sbp=$_POST["bp3"];
+		}else{
+			$sbp=$_POST["bp1"];
+		}
+		
+		$sql1 = "SELECT *  FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
+		$query1 = mysql_query($sql1) or die("Query failed");
+		$rows=mysql_fetch_array($query1);
+		
+		if($rows["sex"]=="ช"){
+			$sex=1;
+		}else{
+			$sex=0;
+		}
+		
+		$waist=$_POST["waist"]*0.39370;
+		$waist=round($waist);
+		
+		$height=floor($_POST["height"]);
+		$whtr=$waist/$height;
+		$finalwhtr=$whtr*100;
+		
+		$sql2= "SELECT * FROM `diabetes_clinic` WHERE `hn` = '".$_REQUEST["hn"]."' limit 1";	
+		$query2 = mysql_query($sql2) or die("Query failed");
+		$numdm=mysql_num_rows($query2);
+		if($numdm > 0){
+			$diabetes=1;
+		}else{
+			$diabetes=0;
+		}
+		
+		$sql3 = "SELECT *  FROM opday WHERE thdatehn = '".$thidatehn."' limit 1";
+		
+		$query3 = mysql_query($sql3) or die("Query failed");
+		$rows3=mysql_fetch_array($query3);
+		$age=substr($rows3["age"],0,2);
+		
+		$waist=$waist*2.54;
+		
+		//--------- ไม่มีผลเลือด -----------//
+		$fullscore=(0.079*$age)+(0.128*$sex)+(0.019350987*$sbp)+(0.58454*$diabetes)+(3.512566*($waist/$height))+(0.459*$smoke);
+						
+		$y=$fullscore-7.720484;	
+		$x=0.978296;
+		
+		$y=exp($y);
+		$z=pow($x,$y);
+		
+		$final=(1-$z)*100;
+		
+		$pfullscore=number_format($final,2);
+		
+		//---------------จบ-----------------//
+
+//////// จบการคำนวณ CV Risk Score ////////
+		
 		$sql = "INSERT INTO `opd` (
 			`row_id` ,`thidate` ,`thdatehn`, `hn`, `ptname` ,`temperature` ,
 			`pause` ,`rate` ,`weight` ,`bp1`  ,`bp2` ,`drugreact` ,
@@ -816,6 +819,23 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		}
 	}
 
+	$botox = $_POST['clinicBotox'];
+	$item = getBotoxFromThdatehn($thidatehn);
+	if(!empty($botox)){
+		if($item===false){
+			$sql = sprintf("INSERT INTO `opd_botox` (`id`, `thdatehn`, `hn`, `opd_id`, `date_add`) VALUES (NULL, '%s', '%s', '%s', NOW());",
+				$dbi->real_escape_string($thidatehn),
+				$dbi->real_escape_string($_REQUEST['hn']),
+				$dbi->real_escape_string($opd_id)
+			);
+			$opdBotox = $dbi->query($sql);
+		}
+	}else{
+		if($item!==false){
+			$sql = sprintf("DELETE FROM `opd_botox` WHERE `thdatehn` = '%s';", $dbi->real_escape_string($thidatehn));
+			$opdBotox = $dbi->query($sql);
+		}
+	}
 
 	$field="";
 	if($_POST["appoint"] > 0){
@@ -1535,35 +1555,34 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
       </tr>
       <tr>
         <td>
-        <?
-        $query = "SELECT `idcard` , `hn` , `yot` , `name` , `surname` , `goup` , `dbirth` , `idguard` , `ptright` , `note` , `camp`,`typeservice`,`sex`   FROM opcard WHERE hn = '".$_REQUEST["hn"]."' limit 1";
+        <?php
+        $query = "SELECT `idcard`,`hn`,`yot`,`name`,`surname`,`goup`,`dbirth`,`idguard`,`ptright`,`note`,`camp`,`typeservice`,`sex`,`allergy`,`phone` FROM `opcard` WHERE `hn` = '".$_REQUEST["hn"]."' LIMIT 1";
 	    $result = mysql_query($query) or die("Query failed");
-		list($cIdcard,$cHn,$cYot,$cName,$cSurname,$cGoup,$dbirth,$cIdguard,$cPtright,$cNote,$cCamp,$cTypeservice,$cSex) = mysql_fetch_row($result);
+		list($cIdcard,$cHn,$cYot,$cName,$cSurname,$cGoup,$dbirth,$cIdguard,$cPtright,$cNote,$cCamp,$cTypeservice,$cSex,$allergy,$phone) = mysql_fetch_row($result);
 		?>
         ประเภท : 
-          <select name="goup" class="txtsarabun" id="goup" onChange="dochange('type', this.value)">
-          <option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
-          <?
-						include("connect.inc");
-						$query = "SELECT * from grouptype order by row_id asc";
-						$result = mysql_query($query);
-						while($tbrows=mysql_fetch_assoc($result)){
-						$code = substr($cGoup,0,3);
-							if($tbrows['code'] == $code){
+		<select name="goup" class="txtsarabun" id="goup" onChange="dochange('type', this.value)">
+		<option  selected="selected" value="0" >-------------------------เลือก-------------------------</option>
+		<?php
+		$query = "SELECT * from grouptype order by row_id asc";
+		$result = mysql_query($query);
+		while($tbrows=mysql_fetch_assoc($result)){
+			$code = substr($cGoup,0,3);
+			if($tbrows['code'] == $code){
+				?>
+				<option value="<?=$tbrows['name'];?>" selected="selected">
+					<?=$tbrows['name']?>
+				</option>
+				<?
+			}else{
+				?>
+				<option value="<?=$tbrows['name'];?>" >
+					<?=$tbrows['name']?>
+				</option>
+				<?
+			}
+		}// end while
 		?>
-          <option value="<?=$tbrows['name'];?>" selected="selected">
-          <?=$tbrows['name']?>
-          </option>
-          <?
-								}else{
-					     ?>
-          <option value="<?=$tbrows['name'];?>" >
-          <?=$tbrows['name']?>
-          </option>
-          <?
-                                 }
-						  }
-						?>
         </select></td>
         <td>&nbsp;</td>
       </tr>
@@ -2131,13 +2150,6 @@ mmHg </td>
 		<tr>
 			<td align="right" class="data_show">แพ้อาหาร/สารเคมี/อื่นๆ : </td>
 			<td align="left" colspan="5">
-			<?
-				$sql1 = "Select allergy From opcard where hn = '".$hn."' limit 1";
-				//echo $sql1;
-				$query1=mysql_query($sql1);
-				list($allergy) = mysql_fetch_array($query1);
-				//echo $phone;
-			?>
 				<label for="allergy"><input type="text" name="allergy" id="allergy" class="frmsarabun" size="80" value="<?=$allergy;?>"></label>
 			</td>
 		</tr>			
@@ -2803,13 +2815,6 @@ mmHg </td>
 		<tr>
 			<td align="right" class="data_show">เบอร์โทรศัพท์ : </td>
 			<td align="left" colspan="5">
-			<?
-				$sql1 = "Select phone From opcard where hn = '".$hn."' limit 1";
-				//echo $sql1;
-				$query1=mysql_query($sql1);
-				list($phone) = mysql_fetch_array($query1);
-				//echo $phone;
-			?>
 				<label for="phone"><input type="text" name="phone" id="phone" value="<?=$phone;?>"></label>
 			</td>
 		</tr>		
@@ -2899,7 +2904,7 @@ mmHg </td>
 		<tr>
 			<td colspan="6">
 				<fieldset>
-					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe และคำแนะนำก่อนผ่าตัด</legend>
+					<legend style="font-weight:bold;">ฟอร์ม Refer, Observe, Clinic Botox และคำแนะนำก่อนผ่าตัด</legend>
 					<table>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_a" value="form_a"><label for="form_a">Refer</label></div></td>
@@ -2920,25 +2925,41 @@ mmHg </td>
 						<tr>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_i" value="form_i" onClick="togglediv('showform_i')"><label for="form_i">ผู้ป่วยมีอาการปวด</label></div></td>
 							<td><div class="mainThumb"><input type="checkbox" name="display_advice[]" id="form_j" value="form_j" onClick="togglediv3('showform_j')"><label for="form_j">มารับยาฉีด</label></div></td>
-						</tr>						
+						</tr>
+						<tr>
+							<td>
+								<div class="mainThumb">
+									<!-- ตัวนี้ไม่ได้เกี่ยวกับ Advice หัวหน้า OPD ขอเพิ่ม -->
+									<?php
+									$sqlFindBotox = sprintf("SELECT `id` FROM `opd_botox` WHERE `thdatehn` = '%s'", $dbi->real_escape_string($thidatehn));
+									$qBotox = $dbi->query($sqlFindBotox);
+									$checkedBotox = '';
+									if($qBotox->num_rows > 0){
+										$checkedBotox = 'checked="checked"';
+									}
+									?>
+									<input type="checkbox" name="clinicBotox" id="clinicBotox" value="1" <?= $checkedBotox; ?>>
+									<label for="clinicBotox">Clinic Botox</label>
+								</div>
+							</td>
+							<td></td>
+						</tr>
 						<tr>
 							<td colspan="2" align="left">
 								<div id="showform_i" style="display: none; margin-bottom: 8px;"> 
-<?
-		$my_date_hn = date('Y-m-d').$hn;
-		$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
-		if($q_advice->num_rows > 0){
-			$opd_advice = $q_advice->fetch_assoc();
-			$advice_organ = $opd_advice['advice_organ'];
-			$advice_painscore1 = $opd_advice['advice_painscore1'];
-			$advice_rx = $opd_advice['advice_rx'];
-			$advice_rxtime = $opd_advice['advice_rxtime'];
-			$advice_activetime = $opd_advice['advice_activetime'];
-			$advice_painscore2 = $opd_advice['advice_painscore2'];
-			
-		}	
-?>								
-								
+								<?php
+										$my_date_hn = date('Y-m-d').$hn;
+										$q_advice = $dbi->query("SELECT * FROM `opd_advice_form_i` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
+										if($q_advice->num_rows > 0){
+											$opd_advice = $q_advice->fetch_assoc();
+											$advice_organ = $opd_advice['advice_organ'];
+											$advice_painscore1 = $opd_advice['advice_painscore1'];
+											$advice_rx = $opd_advice['advice_rx'];
+											$advice_rxtime = $opd_advice['advice_rxtime'];
+											$advice_activetime = $opd_advice['advice_activetime'];
+											$advice_painscore2 = $opd_advice['advice_painscore2'];
+										}
+								?>
 								<table id="member" class="fontthai">
 								<tr>
 									<td colspan="2" align="left"><div class="mainThumb">อาการปวด : <input type="text" name="advice_organ" id="advice_organ" value="<?=$advice_organ;?>" size="90" style="height:30px;"></div></td>
@@ -3421,7 +3442,7 @@ mmHg </td>
            <input name="printvn" type="submit" class="button-green" id="printvn" value="  พิมพ์ใบสั่งยา  " />
            &nbsp;<input type="button" class="button-gray" onclick="window.open('vnprintqueue.php?clinin='+document.getElementById('clinic').value+'&doctor='+document.getElementById('doctor').value);" value="พิมพ์คิว" />       
 		   
-		   &nbsp;&nbsp;<button name="print_new_opd" type="submit" class="button-blue" id="print_new_opd" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก" /><img src="images/data-storage.png" height="22px" width="22px" />&nbsp;&nbsp;บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก</button>
+		   &nbsp;&nbsp;<button name="print_new_opd" type="submit" class="button-blue" id="print_new_opd" value="บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก"><img src="images/data-storage.png" height="22px" width="22px" />&nbsp;&nbsp;บันทึกและพิมพ์ใบตรวจโรคผู้ป่วยนอก</button>
 		   
 		   
 

@@ -8,6 +8,11 @@ if($_SESSION["sOfficer"] == ""){
 	exit();
 }
 
+$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
+$dbi->set_charset('utf8');
+
+$dthn = $_REQUEST['dthn'];
+
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
 $month["03"] ="มีนาคม";
@@ -988,6 +993,17 @@ if($_SESSION['smenucode'] == 'ADMEYE'){
 		</div>
 		<?php
 	}
+} // $_SESSION['smenucode'] == 'ADMEYE'
+
+$sql = sprintf("SELECT * FROM `opd_botox` WHERE `thdatehn` = '%s'", $dbi->real_escape_string($dthn));
+$q = $dbi->query($sql);
+$botoxRows = $q->num_rows;
+if($botoxRows>0){
+	?>
+	<div>
+		<img src="images/opd/botox.jpg" alt="Clinic Botox" width="240">
+	</div>
+	<?php
 }
 
 }
