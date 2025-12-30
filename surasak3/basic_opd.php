@@ -1899,13 +1899,14 @@ mmHg </td>
 					<input name="bp3" type="text" id="bp3" size="3" value="<?php echo $bp3; ?>" />&nbsp;/&nbsp;<input name="bp4" type="text" id="bp4" size="3" value="<?php echo $bp4; ?>" />&nbsp;mmHg 
 				</td>
              </tr>
-			 <tr>
+			 <tr valign="top">
 				<td align="right" class="data_show">Pain Score:</td>
 				<td align="left">
-					<input name="painscore" type="text" id="painscore" size="3" value="0" />
+					<input name="painscore" type="number" id="painscore" size="3" value="" min="0" max="10" required>
+					<div>คะแนน 0-10</div>
 				</td>
 				<td align="right" class="data_show">CV risk score (ไม่ใช้ผลเลือด):</td>
-				<td align="left" valign="bottom">
+				<td align="left">
 					<input name="cvriskscore" type="text" id="cvriskscore" size="3" value="<?php echo $cvriskscore;?>" /> %
 					<?php
 					if($cvriskscore >= 20){
