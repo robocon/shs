@@ -64,9 +64,9 @@ if ($action==='udpateTime') {
     <?php
     print "<a target=_self  href='../nindex.htm' class='forntsarabun'>กลับหน้าเมนูหลัก</a>&nbsp;&nbsp;||&nbsp;&nbsp;<a  href='com_support.php'><font size='4' class='forntsarabun'>ดูข้อมูลแจ้งซ่อม/ปรับปรุงโปรแกรม</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_self  href='com_month.php'><font size='4' class='forntsarabun'>รายงานประจำเดือน</font></a>&nbsp;&nbsp;||&nbsp;&nbsp;<a target=_blank  href='report_comsupport.php'><font size='4' class='forntsarabun'>รายงานผลการทำงาน</font></a>";
     print "<hr>";
-    if (!isset($_POST['search'])) {
+    if (!isset($_REQUEST['search'])) {
     ?>
-        <form action="<? $_SERVER['PHP_SELF'] ?>" name="f1" method="post" target="_blank">
+        <form action="com_month.php" name="f1" method="post">
             <table width="80%">
                 <tr>
                     <td align="center" class="font1">
@@ -111,8 +111,8 @@ if ($action==='udpateTime') {
                                     <strong>ผู้รับผิดชอบ&nbsp;</strong>
                                 </td>
                                 <td>
-                                    <select name="programmer" class="forntsarabun">
-                                        <option value="0" selected>== เลือกผู้รับผิดชอบ ==</option>
+                                    <select name="programmer" class="forntsarabun" required>
+                                        <option value="0">เลือกผู้รับผิดชอบทั้งหมด</option>
                                         <option value="เทวิน  ศรีแก้ว">เทวิน ศรีแก้ว</option>
                                         <option value="กฤษณะศักดิ์  กันธรส">กฤษณะศักดิ์ กันธรส</option>
                                         <option value="จักรพันธ์  รุ่งเรืองศรี">จักรพันธ์ รุ่งเรืองศรี</option>
@@ -177,7 +177,8 @@ if ($action==='udpateTime') {
                 </tr>
                 <tr>
                     <td align="center" class="font1">
-                        <input name="search" type="submit" class="forntsarabun" value="  ค้นหา  " style="font:TH SarabunPSK" />
+                        <button type="submit" class="forntsarabun">  ค้นหา  </button>
+                        <input type="hidden" name="search" value="  ค้นหา  ">
                     </td>
                 </tr>
             </table>
@@ -193,39 +194,32 @@ if ($action==='udpateTime') {
         </script>
     <?php
     }
-    if (isset($_POST['search'])) {
+    
+    if (isset($_REQUEST['search'])) {
         $month = array('0', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม');
 
-        $sql = "select * from com_support where date like '" . $_POST['yr'] . "-" . $_POST['m'] . "%' and dateend != '0000-00-00 00:00:00'";
+        $sql = "SELECT * FROM `com_support` WHERE `dateend` LIKE '" . $_REQUEST['yr'] . "-" . $_REQUEST['m'] . "%' AND `status` = 'n'";
 
-        if ($_POST['jobtype'] == "0") {
-            if ($_POST['programmer'] == "0") {
-                // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00'";
-            } else {
-                // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and programmer LIKE '".$_POST['programmer']."'";
-                $sql .= " and programmer LIKE '" . $_POST['programmer'] . "'";
-            }
-        } else {
-            if ($_POST['programmer'] == "0") {
-                // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."'";
-                $sql .= " and jobtype='" . $_POST['jobtype'] . "' ";
-            } else {
-                // $sql = "select * from com_support where date like '".$_POST['yr']."-".$_POST['m']."%' and dateend != '0000-00-00 00:00:00' and jobtype='".$_POST['jobtype']."' and programmer LIKE'".$_POST['programmer']."'";		
-                $sql .= " and jobtype='" . $_POST['jobtype'] . "' and programmer LIKE'" . $_POST['programmer'] . "'";
-            }
+        // jobtype=0 คือ เลือกงานทั้งหมด
+        if (!empty($_REQUEST['jobtype']) && $_REQUEST['jobtype'] != "0") {
+            $sql .= "  AND `jobtype`='" . $_REQUEST['jobtype'] . "'";
+        }
+        
+        // jobtype=0 คือ เลือกทุกคน
+        if($_REQUEST['programmer'] != '0'){
+            $sql .= " AND `programmer` = '" . $_REQUEST['programmer'] . "'";
         }
 
-        $software_type = sprintf("%s", $_POST['software_type']);
-        if (!empty($software_type) && $_POST['jobtype'] === 'software') {
-            $sql .= " AND software_type = '$software_type' ";
+        $software_type = sprintf("%s", $_REQUEST['software_type']);
+        if (!empty($software_type) && $_REQUEST['jobtype'] === 'software') {
+            $sql .= " AND `software_type` = '$software_type' ";
         }
 
-        $depart = sprintf("%s", $_POST['depart']);
+        $depart = sprintf("%s", $_REQUEST['depart']);
         if (!empty($depart)) {
-            $sql .= " AND depart = '$depart' ";
+            $sql .= " AND `depart` = '$depart' ";
         }
-        $sql .= "ORDER BY `dateend` DESC";
-
+        $sql .= " ORDER BY `dateend` DESC";
         $row = mysql_query($sql);
         $num = mysql_num_rows($row);
 
@@ -233,7 +227,7 @@ if ($action==='udpateTime') {
         <center>
             <span class="style1">รายงานการแจ้งซ่อมอุปกรณ์ทางคอมพิวเตอร์ และแก้ไขปรับปรุงโปรแกรมโรงพยาบาล<br />
                 ประจำเดือน
-                <?= $month[$_POST['m'] + 0] ?> ปี <?= $_POST['yr'] ?>
+                <?= $month[$_REQUEST['m'] + 0] ?> ปี <?= $_REQUEST['yr'] ?>
             </span>
         </center>
         <table width="100%" border="1" cellpadding="5" cellspacing="0" bordercolor="#000000" style="border-collapse:collapse; font-size: 14px;">

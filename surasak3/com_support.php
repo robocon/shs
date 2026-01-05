@@ -304,10 +304,11 @@ if ($countAllItem>0) {
 
     $maxDateTxt = $def_fullm_th[$maxDateMonth].' '.$maxDateYear;
     $minDateTxt = $def_fullm_th[$minDateMonth].' '.$minDateYear;
+    // ($minDateTxt ถึง $maxDateTxt)
 
     ?>
     <div align="center" class="forntsarabun" id="work_done">
-        <strong>งานที่ดำเนินการเสร็จแล้ว ปี<?=$thYear;?> จำนวน <?=$countAllItem;?> รายการ (<?=$minDateTxt;?> ถึง <?=$maxDateTxt;?>) </strong>
+        <strong>งานที่ดำเนินการเสร็จแล้ว ปี<?=$thYear;?> จำนวน <?=$countAllItem;?> รายการ  </strong>
         <div>
             เลือกหน้า : 
             <select name="page" id="page" onchange="changePage(this.value)">
@@ -403,7 +404,7 @@ if($q->num_rows>0){
                 ?>
                 <tr style="background-color: #a7acb1;">
                     <td><?= $it['programmer'] ?></td>
-                    <td align="right"><?= $it['sum'] ?></td>
+                    <td align="right"><a href="com_month.php?search=1&yr=<?= $y ?>&m=<?= $m ?>&programmer=<?= $it['programmer']; ?>" target="_blank"><?= $it['sum'] ?></a></td>
                 </tr>
                 <?php
             }
