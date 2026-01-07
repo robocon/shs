@@ -221,7 +221,8 @@ if($q->num_rows>0){
 			<td valign="top" align="right"><b>รายละเอียดงาน : </b></td>
 			<td colspan="3">
 				<!-- https://www.tiny.cloud/get-tiny/custom-builds/ -->
-				<!-- https://www.tiny.cloud/docs-4x/general-configuration-guide/basic-setup/#toolbarmenuconfiguration -->
+				<!-- https://www.tiny.cloud/docs-4x/general-configuration-guide/basic-setup/#toolbarmenuconfiguration 
+				<!-- 
 				<script src="js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
 				<script>
 					tinymce.init({
@@ -233,6 +234,7 @@ if($q->num_rows>0){
 						width: 1024
 					});
 				</script>
+				-->
 				<TEXTAREA NAME="detail" id="detail" COLS="100" ROWS="10" class="forntsarabun"></TEXTAREA>
 			</td>
 		</tr>
@@ -296,7 +298,7 @@ if($q->num_rows>0){
 		});
 	}
 
-	const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
+	// const myModal = new bootstrap.Modal('#staticBackdrop', {keyboard: false});
 
 	function closeBtn() {
 		var consent =document.getElementById('consent').checked;
@@ -308,11 +310,11 @@ if($q->num_rows>0){
 			document.getElementById('head').focus();
 
 			// หลังจากที่ปิดคำแนะนำให้แสดง modal
-			let n = getCookie('com_supportPopUp');
-			if(n===''){ 
-				setCookie('com_supportPopUp', '1');
-				myModal.show();
-			}
+			// let n = getCookie('com_supportPopUp');
+			// if(n===''){ 
+			// 	setCookie('com_supportPopUp', '1');
+			// 	myModal.show();
+			// }
 		}
 	}
 
