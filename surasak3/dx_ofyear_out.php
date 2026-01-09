@@ -589,19 +589,20 @@ while($arr = Mysql_fetch_assoc($result)){
 				// จับคู่กับบริษัทให้ทันที ถ้ามีข้อมูล
 				$sql = "SELECT `part` FROM `opcardchk` WHERE `hn` = '$p_hn' ORDER BY `row` DESC LIMIT 1";
 				$q = $dbi->query($sql);
-				$part = '';
+				$wherePart = $part = '';
 				if ($q->num_rows>0) {
 					$opcardchk = $q->fetch_assoc();
 					$part = $opcardchk['part'];
+					$wherePart = "OR `code` = '$part' ";
 				}
 				
 				$chkYear = get_year_checkup(true);
-				$sql = "SELECT `name`,`code` FROM `chk_company_list` WHERE `yearchk`='$chkYear' AND `report` <> '' ORDER BY `id` DESC";
+				$sql = "SELECT `name`,`code` FROM `chk_company_list` WHERE (`yearchk`='$chkYear' AND `report` <> '') $wherePart ORDER BY `id` DESC";
 				$q = $dbi->query($sql);
 				?>
 				<select name="part" id="part" style="width:200px;">
 					<option value="">&lt;&lt;&nbsp;เลือกบริษัท&nbsp;&gt;&gt;</option>
-					<?php 
+					<?php
 					while ($a = $q->fetch_assoc()) { 
 						$selected = ($part==$a['code']) ? 'selected="selected"' : '' ;
 						?>
