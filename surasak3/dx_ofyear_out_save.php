@@ -69,8 +69,14 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 		if(!($row = mysql_fetch_object($result)))
 		continue;
 }
-
 $nPrefix=$row->prefix;
+
+// ถ้ามีการเลือกวันที่ย้อนหลังให้ yearchk เปลี่ยนตามไปด้วย
+if ($_POST['datePrev']) {
+	list($py, $pm, $pd) = explode('-', $_POST['datePrev']);
+	$py = $py+543;
+	$nPrefix = substr($py, 2);
+}
 ////*runno ตรวจสุขภาพ*/////////
 
 $sql = "Select count(row_id) From opd where thdatehn = '$opdayThdatehn' limit 1";

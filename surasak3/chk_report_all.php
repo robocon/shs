@@ -58,20 +58,22 @@ $company = $q->fetch_assoc();
 <div align="center"><strong>ระหว่างวันที่ <?=$company['show_date'];?> จำนวน <?=$num;?> ราย</strong></div>
 <table width="400%" class="chk_table">
   <tr valign="middle">
-    <th width="3%" rowspan="2" align="center">ลำดับ</th>
-    <th width="5%" rowspan="2" align="center">HN</th>
-    <th width="10%" rowspan="2" align="center">ชื่อ - สกุล</th>
-    <th width="5%" rowspan="2" align="center">อายุ</th>
-    <th width="5%" rowspan="2" align="center">น้ำหนัก</th>
-    <th width="5%" rowspan="2" align="center">ส่วนสูง</th>
-    <th width="5%" rowspan="2" align="center">BP</th>
-    <th width="5%" rowspan="2" align="center">Pulse</th>
-    <th width="5%" rowspan="2" align="center">Rate</th>
-    <th width="5%" rowspan="2" align="center">Temp</th>
-    <th width="10%" rowspan="2" align="center">โรคประจำตัว</th>
-    <th width="250%" colspan="48" align="center">รายการตรวจ</th>
-    <th width="10%" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
-    <th width="40%" colspan="4" align="center">สรุปผลการตรวจ</th>
+    <th class="col-1" rowspan="2" align="center">ลำดับ</th>
+    <th class="col-2" rowspan="2" align="center">HN</th>
+    <th class="col-3" rowspan="2" align="center">ชื่อ - สกุล</th>
+    <th class="col-4" rowspan="2" align="center">อายุ</th>
+    <th class="col-5" rowspan="2" align="center">น้ำหนัก</th>
+    <th class="col-6" rowspan="2" align="center">ส่วนสูง</th>
+    <th class="col-7" rowspan="2" align="center">BP</th>
+    <th class="col-8" rowspan="2" align="center">Pulse</th>
+    <th class="col-9" rowspan="2" align="center">Rate</th>
+    <th class="col-10" rowspan="2" align="center">Temp</th>
+    <th class="col-11" rowspan="2" align="center">โรคประจำตัว</th>
+    <th class="col-12" colspan="48" align="center">รายการตรวจ</th>
+    <th class="col-13" rowspan="2" align="center">ภาวะสุขภาพโดยรวม</th>
+    <th class="col-14" rowspan="2" align="center" >เคยเข้ารับการรักษาในโรงพยาบาล</th>
+    <th class="col-15" rowspan="2" align="center" >ประวัติอื่นที่สำคัญ</th>
+    <th class="col-16" colspan="4" align="center">สรุปผลการตรวจ</th>
   </tr>
 
   <tr valign="middle">
@@ -111,27 +113,26 @@ $company = $q->fetch_assoc();
     <th>ABOC</th>
     <th>EKG</th>
     <th>V/A</th>
-    <th width="12%" align="center">สายตา</th>
-    <th width="12%" align="center">สมรรถภาพปอด</th>
-    <th width="12%" align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
-    <th width="12%" align="center">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</th>
-    <th width="12%" align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
-    <th width="12%" align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
-    <th width="12%" align="center">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</th>
-    <th width="12%" align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
-    <th width="12%" align="center">ความดันตา</th>
-    <th width="12%" align="center">ลานสายตา</th>
+    <th align="center">สายตา</th>
+    <th align="center">สมรรถภาพปอด</th>
+    <th align="center">อัลตร้าซาวด์<br>ช่องท้อง</th>
+    <th align="center">ตรวจคัดกรองหาความเสี่ยงของโรคเส้นเลือดแดงตีบตัน (CIMT)</th>
+    <th align="center">ตรวจหัวใจด้วยคลื่นเสียงสะท้อนความถี่สูง (ECHO)</th>
+    <th align="center">ตรวจวัดความแข็งตัวของหลอดเลือด (ABI)</th>
+    <th align="center">สายตาอาชีวอนามัย + สายตาสั้น, ยาว</th>
+    <th align="center">ต่อมลูกหมาก<br>โดยการคลำ</th>
+    <th align="center">ความดันตา</th>
+    <th align="center">ลานสายตา</th>
 
-    <th width="12%" align="center">โรคประจำตัว</th>
-    <th width="12%" align="center">อุบัติเหตุและผ่าตัด</th>
-    <th width="12%" align="center">เคยเข้ารับการรักษาในโรงพยาบาล</th>
-    <th width="12%" align="center">ประวัติอื่นที่สำคัญ</th>
+    <th align="center">โรคประจำตัว</th>
+    <th align="center">อุบัติเหตุและผ่าตัด</th>
+    
 
     <!-- สรุปผลการตรวจ -->
-    <th width="10%" align="center">ผลการได้ยิน</th>
-    <th width="10%" align="center">แมมโมแกรม</th>
-    <th width="10%" align="center">พบแพทย์</th>
-    <th width="10%" align="center">ไม่พบแพทย์</th>
+    <th align="center">ผลการได้ยิน</th>
+    <th align="center">แมมโมแกรม</th>
+    <th align="center">พบแพทย์</th>
+    <th align="center">ไม่พบแพทย์</th>
     <!-- สรุปผลการตรวจ -->
   </tr>
 <?php

@@ -52,9 +52,12 @@ if($action==='findvn'){
 			</tr>
 		<?php
 		while ($a = $q->fetch_assoc()) {
+
+			list($y,$m,$d) = explode('-', substr($a['thidate'],0,10));
+			$dateSelect = ($y-543)."-$m-$d";
 			?>
 			<tr>
-				<td><button type="button" onclick="selectVn('<?=$a['vn'];?>','<?=$a['toborow'];?>','<?=$a['ptright'];?>')">เลือก</button></td>
+				<td><button type="button" onclick="selectVn('<?=$a['vn'];?>','<?=$a['toborow'];?>','<?=$a['ptright'];?>','<?= $dateSelect ?>')">เลือก</button></td>
 				<td><?=$a['thidate'];?></td>
 				<td><?=$a['vn'];?></td>
 				<td><?=$a['toborow'];?></td>
@@ -544,13 +547,14 @@ while($arr = Mysql_fetch_assoc($result)){
 						return data;
 					}
 
-					function selectVn(vn,toborow,ptright){
+					function selectVn(vn,toborow,ptright,dateSelect){
 						document.getElementById('vn').value = vn;
 						document.getElementById('toborow').value = toborow;
 						document.getElementById('ptright').value = ptright;
 						document.getElementById('show_vn').innerHTML = vn;
 						document.getElementById('dateResponse').innerHTML = '';
 						document.getElementById('selectVnContainer').style.display = 'none';
+						document.getElementById('datePrev').value=dateSelect;
 					}
 					function closeSelectVn(){
 						document.getElementById('selectVnContainer').style.display = 'none';
@@ -589,20 +593,19 @@ while($arr = Mysql_fetch_assoc($result)){
 				// จับคู่กับบริษัทให้ทันที ถ้ามีข้อมูล
 				$sql = "SELECT `part` FROM `opcardchk` WHERE `hn` = '$p_hn' ORDER BY `row` DESC LIMIT 1";
 				$q = $dbi->query($sql);
-				$wherePart = $part = '';
+				$part = '';
 				if ($q->num_rows>0) {
 					$opcardchk = $q->fetch_assoc();
 					$part = $opcardchk['part'];
-					$wherePart = "OR `code` = '$part' ";
 				}
 				
 				$chkYear = get_year_checkup(true);
-				$sql = "SELECT `name`,`code` FROM `chk_company_list` WHERE (`yearchk`='$chkYear' AND `report` <> '') $wherePart ORDER BY `id` DESC";
+				$sql = "SELECT `name`,`code` FROM `chk_company_list` WHERE `yearchk`='$chkYear' AND `report` <> '' ORDER BY `id` DESC";
 				$q = $dbi->query($sql);
 				?>
 				<select name="part" id="part" style="width:200px;">
 					<option value="">&lt;&lt;&nbsp;เลือกบริษัท&nbsp;&gt;&gt;</option>
-					<?php
+					<?php 
 					while ($a = $q->fetch_assoc()) { 
 						$selected = ($part==$a['code']) ? 'selected="selected"' : '' ;
 						?>
