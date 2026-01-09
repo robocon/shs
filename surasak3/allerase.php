@@ -4,6 +4,8 @@ include dirname(__FILE__).'/bootstrap.php';
 //  laberase.php-->labselect.php-->labdetail.php-->labturn.php
 //	แก้2files _erase,select: laberase,labselect,xr,er,or,pt,den
 //	ส่วน labdetail.php,labturn.php ไม่ต้องแก้
+
+// https://docs.phpdoc.org/guide/references/phpdoc/index.html#phpdoc-reference
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,6 +34,7 @@ include dirname(__FILE__).'/bootstrap.php';
             }
         </style>
     <h3 class="mt-2 text-center fw-bold">ต้องการยกเลิกรายการ หรือ ส่งข้อมูลเข้าบัญชีผู้ป่วยในเมื่อรับป่วย</h3>
+    <p class="text-center">แสดงรายการ3เดือนย้อนหลังเท่านั้น</p>
     <div class="row mt-2">
         <div class="col-md-4">
             <form method="GET" action="allerase.php"  style="float:left;">
@@ -74,18 +77,39 @@ include dirname(__FILE__).'/bootstrap.php';
         $d = array();
 
         $latest3Months = strtotime('-3 months');
-        $th3Month = (date('Y',$latest3Months)+543).date('-m-d');
+        $th3Month = (date('Y',$latest3Months)+543).date('-m-d', $latest3Months);
 
+
+        /**
+         * ปัญหาของการ select แบบนี้ก็คือ depart ถ้าเลือก vn มันมี relation ได้หลายตัว ขณะที่ ถ้า select แบบ an มันมี an เป็น relation ตัวเดียว
+         */
         if($action==='searchByHn' && !empty($_GET['hn'])){
             $sql = sprintf("SELECT * FROM `depart` WHERE `date` >= '$th3Month' AND `hn` = '%s' AND `an` = '' ORDER BY `row_id` DESC ", $dbi->real_escape_string($_GET['hn']));
-            
+            $q = $dbi->query($sql);
+            $numRows = $q->num_rows;
+            $d = $q->fetch_assoc();
+            dump($sql);
+
+            $ptTxt = 'VN';
+            $ptNumber = $d['tvn'];
+
         }elseif ($action==='searchByAn' && !empty($_GET['an'])) {
+
+            /**
+             * ไอเดีย ~ ~ คือตอน user ลบ จะมีการส่งคำสั่งไปที่หน้า สกง.ก่อน เพื่อเด้งแจ้งเตือนว่า เห้ย! ตอนนี้ ward จะยกเลิกรายการนะเห้ย สกง. โอเครึป่าว
+             * เพราะในบางสิทธิ์มีผลกับการนำส่งเงิน
+             */
             $sql = sprintf("SELECT * FROM `depart` WHERE `date` >= '$th3Month' AND `an` = '%s' ORDER BY `row_id` DESC", $dbi->real_escape_string($_GET['an']));
+            dump($sql);
+            $q = $dbi->query($sql);
+            $numRows = $q->num_rows;
 
             $sqlIp = sprintf("SELECT * FROM `ipcard` WHERE `an` = '%s'", $dbi->real_escape_string($_GET['an']));
             $qIp = $dbi->query($sqlIp);
-            $d = $qIp->fetch_assoc();
+            $ip = $qIp->fetch_assoc();
 
+            $ptTxt = 'AN';
+            $ptNumber = $ip['an'];
         }
         $q = $dbi->query($sql);
         $numRows = $q->num_rows;
@@ -102,7 +126,7 @@ include dirname(__FILE__).'/bootstrap.php';
                         <td><?=$d['ptname'];?></td>
                     </tr>
                     <tr>
-                        <td align="right"><b>VN: </b></td>
+                        <td align="right"><b><?=$ptTxt;?>: </b></td>
                         <td><?=$d['tvn'];?></td>
                         <td align="right"><b>Diag: </b></td>
                         <td><?=$d['diag'];?></td>
