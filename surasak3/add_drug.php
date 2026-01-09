@@ -342,15 +342,12 @@ input[readonly] {
 
 </layer>
 </div>
-
-
 <script language="JavaScript1.2">
-	
 	function chang_layer(ly){
-	 layer1.style.display='none'; 
-	 layer2.style.display='none';
-	 layer3.style.display='none';
-	 ly.style.display = '';
+		layer1.style.display='none'; 
+		layer2.style.display='none';
+		layer3.style.display='none';
+		ly.style.display = '';
 	}
 
 	function regenerate(){
@@ -361,18 +358,6 @@ input[readonly] {
 		if (document.layers)
 		setTimeout("window.onresize=regenerate",400)
 	}
-
-	// window.onload=regenerate2
-	// if (document.all){
-
-	// 	themenu=document.all.slidemenubar2.style
-	// 	rightboundary=0
-	// 	leftboundary=-350
-	// }else{
-	// 	themenu=document.layers.slidemenubar
-	// 	rightboundary=350
-	// 	leftboundary=10
-	// }
 	
 	function pull_draw(){
 
@@ -753,15 +738,6 @@ if($rows>0){
 	</table>
 	<script>
 		function isEnable(an,row_id,drugcode,tradname,unit,part,slcode,amount){
-			// document.getElementById('drugcode').value=drugcode;
-			// document.getElementById('drugname').value=tradname;
-			// document.getElementById('unit').value=unit;
-			// document.getElementById('unit2').value=part;
-			// document.getElementById('drugslip').value=slcode;
-			// document.getElementById('statcon').options[3].selected = true;
-			// document.getElementById('amount').value=amount;
-			// add_session();
-
 			setToOn(an,row_id).then((res)=>{
 				if(res.status==200){
 					location.reload();
@@ -792,7 +768,7 @@ if($rows>0){
 	
 	<table width="100%">
 	<tr align="center" bgcolor="#009688" class="font_title">
-		<td>วันที่</td>
+		<td width="120">วันที่</td>
 		<td width="110">รหัสยา</td>
 		<td>ชื่อยา</td>
 		<td width="50">วิธีใช้</td>
@@ -841,6 +817,7 @@ if($rows>0){
 	<h3>รายการยาเดิม</h3>
 	<table width="100%">
 	<tr align="center" class="font_title">
+		<td width="120">วันที่</td>
 		<td width="110">รหัสยา</td>
 		<td>ชื่อยา</td>
 		<td width="50">วิธีใช้</td>
@@ -848,7 +825,7 @@ if($rows>0){
 		<td width="70">Unit</td>
 	</tr>
 	<?php
-	$sql = sprintf("SELECT DISTINCT `drugcode`,`unit`,`tradname`,`slcode`,`part`,`amount`
+	$sql = sprintf("SELECT DISTINCT `drugcode`,`date`,`unit`,`tradname`,`slcode`,`part`,`amount`
 	FROM `dgprofile_old` 
 	WHERE `an` = '%s' 
 	AND  `statcon` = 'OLD'", $dbi->real_escape_string($_GET['an']));
@@ -856,6 +833,7 @@ if($rows>0){
 	if($res->num_rows>0){
 		while($arr = $res->fetch_assoc()){
 		echo "<TR>
+			<td>".$arr['date']."</td>
 			<td><A HREF=\"javascript:void(0)\" Onclick=\"
 			document.getElementById('amount').focus();
 			document.getElementById('drugcode').value='",$arr["drugcode"],"';

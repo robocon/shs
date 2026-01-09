@@ -465,6 +465,7 @@ if($_GET["action"] == "del"){
 			$result = Mysql_Query($sql);
 		}else{
 
+			// เก็บยา OLD ไว้เป็นประวัติ
 			$insertOld = "INSERT INTO `dgprofile_old` ".$sqlSelect;
 			$q = $dbi->query($insertOld);
 
