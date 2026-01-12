@@ -96,44 +96,42 @@ if(isset($action)  && $action == "viewlist"){
 	exit();
 }else if(isset($action) && $action == "lab"){
 
-	$sql = "Select code, detail From labcare where  detail like '%".$_GET["search"]."%' AND part = 'lab' AND (left(code,1) >='0' AND left(code,1) <='9') Order by numbered ASC";
-
+	// $sql = "Select code, detail From labcare where  detail like '%".$_GET["search"]."%' AND part = 'lab' AND (left(code,1) >='0' AND left(code,1) <='9') Order by numbered ASC";
+	$sql = "SELECT * 
+	From `labcare` 
+	where `detail` LIKE '%".$_GET['search']."%' 
+	AND part = 'LAB' 
+	AND `labstatus` = 'Y'
+	AND `version` != 'OLD'";
 	$result = Mysql_Query($sql)or die(Mysql_error());
-
 	if(Mysql_num_rows($result) > 0){
 		echo "<Div style=\"position: absolute;text-align: left; width:410px; height:430px; overflow:auto; \">";
-
 		echo "<table bgcolor=\"#FFFFCC\" width=\"500\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">
 		<tr align=\"center\" bgcolor=\"#3333CC\">
 			<td width=\"368\"><font style=\"color: #FFFFFF\"><strong>รายละเอียด</strong></font></td>
 			<td width=\"24\" bgcolor=\"#3333CC\"><font style=\"color: #FF0000;\"><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\">X</A></strong></font></td>
 		</tr>";
 
-
 		$i=1;
 		while($arr = Mysql_fetch_assoc($result)){
 				
-				if($i%2==0)
-					$bgcolor="#FFFFFF";
-				else
-					$bgcolor="#FFFFCC";
+			if($i%2==0)
+				$bgcolor="#FFFFFF";
+			else
+				$bgcolor="#FFFFCC";
 
-
-				$arr["detail"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["detail"]);
-
+			$arr["detail"] = ereg_replace(strtoupper($_GET["search"]),"<span style=\"background:#FFC1C1;\">".strtoupper($_GET["search"])."</span>",$arr["detail"]);
 
 			echo "<tr bgcolor=\"$bgcolor\">
 					<td bgcolor=\"$bgcolor\"><A HREF=\"javascript:void(0);\" onclick=\"addtolist('".$arr["code"]."'); \">",$arr["detail"],"</A></td>
 					<td colspan=\"2\"  bgcolor=\"$bgcolor\">",$arr["salepri"],"</td>
 				</tr>
-					<tr bgcolor=\"#A45200\">
+				<tr bgcolor=\"#A45200\">
 					<td height=\"5\"></td>
 					<td height=\"5\"></td>
 					<td height=\"5\"></td>
 				</tr>
 			";
-
-
 		$i++;
 		}
 		echo "</TABLE></Div>";
@@ -1305,6 +1303,8 @@ if($date_en < date('Y-m-d')){
 <div style='margin-top:20px; margin-left:20px;color:blue;font-weight:bold;font-size:24px;'>กรุณาตรวจสอบข้อมูลของผู้ป่วยให้ถูกต้อง เพื่อดำเนินการต่อไป...</div>
 	<input type="hidden" name="appd" value="<?php echo $appd; ?>">
 <input type="hidden" name="chkhn" id="chkhn" value="<?=$_POST["chkhn"];?>">
+<input type="hidden" name="cPtname" value="<?= $cPtname ?>">
+<input type="hidden" name="cAge" value="<?= $cAge ?>">
 <input type="hidden" name="chkidcard" id="chkidcard" value="<?=$_POST["chkidcard"];?>">  
   </form>
 &nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a>

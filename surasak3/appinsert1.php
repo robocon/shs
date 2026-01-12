@@ -11,6 +11,9 @@ if($_POST["chkhn"]!=$cHn){
 	$cHn=$_POST["chkhn"];
 }
 
+$cPtname = $_POST['cPtname'];
+$cAge = $_POST['cAge'];
+
 if($cHn == "" || $cPtname=="" || $cAge==""){
 	
 	echo "<center><font color='#000000' >ข้อมูลไม่ครบถ้วน กรุณาลงข้อมูลใหม่อีกครั้งครับ</font><br />";
@@ -235,18 +238,34 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
     if($count > 0){
     
         $sql = "INSERT INTO `appoint_lab` ( `id` , `code` )  VALUES ";
-            
+        $labin = $labout = array();
         $list = array();
         for ($n=0; $n<$count; $n++){
             If (!empty($_SESSION["list_code"][$n])){
-                $q = "('".$idno."', '".$_SESSION["list_code"][$n]."')  ";
+
+                $labCode = $_SESSION["list_code"][$n];
+
+                $sqlLabcare = "SELECT `labtype` FROM `labcare` WHERE `code` = '$labCode' ";
+                $qLabcare = mysql_query($sqlLabcare);
+                if(mysql_num_rows($qLabcare)>0){
+                    $lc = mysql_fetch_assoc($qLabcare);
+                    if($lc['labtype']=='OUT'){
+                        $labout[] = $labCode;
+                    }elseif ($lc['labtype']=='IN') {
+                        $labin[] = $labCode;
+                    }
+                }
+                $q = "('$idno', '".$_SESSION["list_code"][$n]."')  ";
                 array_push($list,$q);
             }
         }
             
         $sql .= implode(", ",$list);
         $result = Mysql_Query($sql) or die("Error appoint_lab ".Mysql_Error());
-        $patho = implode(", ",$_SESSION["list_code"]);
+
+        // ตัวเดิมเป็น $_SESSION["list_code"] ปรับใหม่คือแยก IN กับ OUT
+        $patho = implode(", ",$labin);
+        $pathoOut = implode(", ",$labout);
     }
     
     // $pathoall=$patho.' '.$patho2;
@@ -376,7 +395,11 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
     }
     
     if (!empty($pathoall)) {
-        print "<p><b>ตรวจพยาธิ:</b> $pathoall</p>";
+        $outTxt = '';
+        if(!empty($pathoOut)){
+            $outTxt = '<b>แลปนอก: </b>'.$pathoOut;
+        }
+        print "<p><b>ตรวจพยาธิ:</b> $pathoall $outTxt</p>";
     }
     
     if (!empty($labm)) { 
@@ -541,7 +564,11 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
     }
     
     if ($patho != 'NA') {
-    print "<b>ตรวจพยาธิ:</b>&nbsp; $patho<br>";
+        $outTxt = '';
+        if(!empty($pathoOut)){
+            $outTxt = '<b>แลปนอก: </b>'.$pathoOut;
+        }
+    print "<b>ตรวจพยาธิ:</b>&nbsp; $patho $outTxt<br>";
     }
     
     if ($xray != 'NA') {
