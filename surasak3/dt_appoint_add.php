@@ -67,12 +67,37 @@ Mysql_Query($sql);
 
 $row_id = @mysql_insert_id();
 $i=false;
+$labin = $labout = array(); // แยกแลปใน แลปนอก
 if(count($_POST["list_lab_appoint"]) > 0)
+
 	foreach($_POST["list_lab_appoint"] as $key => $value){
 		$sql = "INSERT INTO `appoint_lab` ( `id` , `code` ) VALUES ('".$row_id."', '".$value."'); ";
 		Mysql_Query($sql);
 		$i = true;
+
+		// แยกแลปใน แลปนอก
+		$sqlLabcare = "SELECT `labtype` FROM `labcare` WHERE `code` = '$value' ";
+		$qLabcare = mysql_query($sqlLabcare);
+		if(mysql_num_rows($qLabcare)>0){
+			$lc = mysql_fetch_assoc($qLabcare);
+			if($lc['labtype']=='OUT'){
+				$labout[] = $value;
+			}elseif ($lc['labtype']=='IN') {
+				$labin[] = $value;
+			}
+		}
+		
 	}
+
+$fullLab = '';
+if(!empty($labin)){
+	$fullLab = implode(',', $labin);
+}
+
+$laboutTxt = '';
+if(!empty($labout)){
+	$fullLab = $fullLab.' <b>แลปนอก: </b>'.implode(',', $labout);
+}
 
 $sql = "Select count(distinct hn) as c_app 
 From appoint 
@@ -83,22 +108,16 @@ $result = Mysql_Query($sql) or die(mysql_error());
 list($c_app) = Mysql_fetch_row($result);
 
 
-
 $dateid=(date("Y")+543)."-".date("m-d");
 $opsql="SELECT `ptright` 
 FROM `opday` 
 WHERE (`thidate` like '$dateid%' ) 
 AND `hn` = '".$_SESSION["hn_now"]."'";
-//echo $opsql;
 $opquery = mysql_query($opsql);
 if(mysql_num_rows($opquery) > 0){
 	$oprows = mysql_fetch_array($opquery);
 	$cPtright=$oprows["ptright"];
 }
-
-
-
-
 
 if(date("m") > $month){
 	$month +=12; 
@@ -114,29 +133,27 @@ setcookie($xxx[0].$month.$xxx[2], "<A HREF=\"javascript:void(0);\" Onclick=\"doc
 
 $down_list = "";
 
-	if($_POST["xray"] != ""){
-		$down_list .= "X-ray : ".$_POST["xray"];
-	}
+if($_POST["xray"] != ""){
+	$down_list .= "X-ray : ".$_POST["xray"];
+}
 
-	if($other2 != ""){
-		$down_list .= "&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ : ".$other2."";
-	}
+if($other2 != ""){
+	$down_list .= "&nbsp;&nbsp;&nbsp;&nbsp;อื่นๆ : ".$other2."";
+}
 
 if($_SESSION["dt_drugstk"] != ""){
-		$_SESSION["dt_drugstk"].= "<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >วันที่ ".$_POST["date_appoint"]."&nbsp;เวลา : ".$_POST["capptime"]."</p>
-			<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >นัดมาเพื่อ : ".substr($_POST["detail"],5)."</p>";
+	$_SESSION["dt_drugstk"].= "<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >วันที่ ".$_POST["date_appoint"]."&nbsp;เวลา : ".$_POST["capptime"]."</p>
+	<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >นัดมาเพื่อ : ".substr($_POST["detail"],5)."</p>";
+	
+	if(count($_POST["list_lab_appoint"]) > 0){
+		$_SESSION["dt_drugstk"].= "<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >นัดตรวจทางพยาธิ : ".$fullLab."</p>";
+	}
 		
-		if(count($_POST["list_lab_appoint"]) > 0){
-			$_SESSION["dt_drugstk"].= "<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >นัดตรวจทางพยาธิ : ".$lab_appoint_implode."</p>";
-		}
-			
-		
-		
-		if(trim($down_list) !=""){
-			$_SESSION["dt_drugstk"] .="<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >".$down_list."</p>";
-		}
-		
-		$_SESSION["dt_drugstk"].= "<DIV style=\"page-break-after:always\"></DIV>";
+	if(trim($down_list) !=""){
+		$_SESSION["dt_drugstk"] .="<p style=\"font-family:'MS Sans Serif'; font-size:12px;margin:0;\" >".$down_list."</p>";
+	}
+	
+	$_SESSION["dt_drugstk"].= "<DIV style=\"page-break-after:always\"></DIV>";
 }
 
 if(substr($_POST["detail"],0 ,1) == "F"){
@@ -156,7 +173,7 @@ $_SESSION["dt_drugstk"] .= "<p class=\"size3\" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B
 <p class=\"size2\" style=\"margin-top: 2px;\" ><B>แพทย์ :</B> ".$doctor."</p>";
 
 if($i){
-	$_SESSION["dt_drugstk"] .="<p class='size2' >LAB : ".$lab_appoint_implode."</p>";
+	$_SESSION["dt_drugstk"] .="<p class='size2' >LAB : ".$fullLab."</p>";
 }
 
 if(trim($_POST["xray"]) !=""){
@@ -184,7 +201,7 @@ if($i){
 	<p class=\"size3\" ><B><U>นัดวันที่ : ".$_POST["date_appoint"]."</U></B></p>
 	<p class=\"size2\" >แพทย์ : ".$doctor."</p>
 	<p class=\"size2\" >ข้อควรปฏิบัติ : <U>".$_POST["advice"]."</U></p>
-	<p class=\"size2\" >รายการ : <B>".$lab_appoint_implode."</B></p>
+	<p class=\"size2\" >รายการ : ".$fullLab."</p>
 	<p class=\"size2\" >".$other2."</p>
 	<p class=\"size2\" >สิทธิ : ".$cPtright."</p>";
 }
