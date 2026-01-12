@@ -38,7 +38,7 @@ if($mm=='12'){ $mon="ธันวาคม"; }
   <tr>
     <td width="7%" align="center"><strong>ลำดับ</strong></td>
     <td width="10%" align="center"><strong>วัน/เดือน/ปี</strong></td>
-    <td width="15%" align="center"><strong>User</strong></td>
+    <td width="15%" align="center"><strong>เจ้าหน้าที่</strong></td>
 	<td width="9%" align="center"><strong>HN</strong></td>
     <td width="9%" align="center"><strong>AN</strong></td>
     <td width="25%" align="center"><strong>ชื่อ - นามสกุล</strong></td>

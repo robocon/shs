@@ -22,27 +22,30 @@ body {
 <div align="center" style="margin-top:50px;">
 <p><strong>รายงานลูกหนี้เงินสดตามใบเสร็จรับเงิน</strong></p>
 <form method="POST" action="report_chkmoneycredit1.php" target="_blank">
-  <strong>เลือกเดือน</strong> 
-  <select size="1" name="mon">
-    <option value="01" <? if($m=='01'){ echo "selected"; }?>>มกราคม</option>
-        <option value="02" <? if($m=='02'){ echo "selected"; }?>>กุมภาพันธ์</option>
-        <option value="03" <? if($m=='03'){ echo "selected"; }?>>มีนาคม</option>
-        <option value="04" <? if($m=='04'){ echo "selected"; }?>>เมษายน</option>
-        <option value="05" <? if($m=='05'){ echo "selected"; }?>>พฤษภาคม</option>
-        <option value="06" <? if($m=='06'){ echo "selected"; }?>>มิถุนายน</option>
-        <option value="07" <? if($m=='07'){ echo "selected"; }?>>กรกฎาคม</option>
-        <option value="08" <? if($m=='08'){ echo "selected"; }?>>สิงหาคม</option>
-        <option value="09" <? if($m=='09'){ echo "selected"; }?>>กันยายน</option>
-        <option value="10" <? if($m=='10'){ echo "selected"; }?>>ตุลาคม</option>
-        <option value="11" <? if($m=='11'){ echo "selected"; }?>>พฤศจิกายน</option>
-        <option value="12" <? if($m=='12'){ echo "selected"; }?>>ธันวาคม</option>
+	<strong>ระหว่างวันที่ : </strong>
+    <input name="date1" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
+    <strong>เลือกเดือน : </strong><select size="1" name="month1" class="txt">
+    <option selected>-------เลือก-------</option>
+    <option value="01" <? if(date("m")=="01"){ echo "selected";}?>>มกราคม</option>
+    <option value="02" <? if(date("m")=="02"){ echo "selected";}?>>กุมภาพันธ์</option>
+    <option value="03" <? if(date("m")=="03"){ echo "selected";}?>>มีนาคม</option>
+    <option value="04" <? if(date("m")=="04"){ echo "selected";}?>>เมษายน</option>
+    <option value="05" <? if(date("m")=="05"){ echo "selected";}?>>พฤษภาคม</option>
+    <option value="06" <? if(date("m")=="06"){ echo "selected";}?>>มิถุนายน</option>
+    <option value="07" <? if(date("m")=="07"){ echo "selected";}?>>กรกฎาคม</option>
+    <option value="08" <? if(date("m")=="08"){ echo "selected";}?>>สิงหาคม</option>
+    <option value="09" <? if(date("m")=="09"){ echo "selected";}?>>กันยายน</option>
+    <option value="10" <? if(date("m")=="10"){ echo "selected";}?>>ตุลาคม</option>
+    <option value="11" <? if(date("m")=="11"){ echo "selected";}?>>พฤศจิกายน</option>
+    <option value="12" <? if(date("m")=="12"){ echo "selected";}?>>ธันวาคม</option>
+
   </select>
   <? 
 			   $Y=date("Y")+543;
 			   $date=date("Y")+543+5;
 			  
 				$dates=range(2547,$date);
-				echo " พ.ศ. <select name='year'>";
+				echo "<select name='year1'  class='txt'>";
 				foreach($dates as $i){
 
 				?>
@@ -52,11 +55,48 @@ body {
 				}
 				echo "<select>";
 				?>
-&nbsp;&nbsp;&nbsp;&nbsp;
+       &nbsp; <strong>ถึงวันที่</strong> 
+    <input name="date2" type="text" id="date1" size="1" value="<?=date("d");?>" class="txt">
+    <strong>เลือกเดือน : </strong><select size="1" name="month2" class="txt">
+    <option selected>-------เลือก-------</option>
+    <option value="01" <? if(date("m")=="01"){ echo "selected";}?>>มกราคม</option>
+    <option value="02" <? if(date("m")=="02"){ echo "selected";}?>>กุมภาพันธ์</option>
+    <option value="03" <? if(date("m")=="03"){ echo "selected";}?>>มีนาคม</option>
+    <option value="04" <? if(date("m")=="04"){ echo "selected";}?>>เมษายน</option>
+    <option value="05" <? if(date("m")=="05"){ echo "selected";}?>>พฤษภาคม</option>
+    <option value="06" <? if(date("m")=="06"){ echo "selected";}?>>มิถุนายน</option>
+    <option value="07" <? if(date("m")=="07"){ echo "selected";}?>>กรกฎาคม</option>
+    <option value="08" <? if(date("m")=="08"){ echo "selected";}?>>สิงหาคม</option>
+    <option value="09" <? if(date("m")=="09"){ echo "selected";}?>>กันยายน</option>
+    <option value="10" <? if(date("m")=="10"){ echo "selected";}?>>ตุลาคม</option>
+    <option value="11" <? if(date("m")=="11"){ echo "selected";}?>>พฤศจิกายน</option>
+    <option value="12" <? if(date("m")=="12"){ echo "selected";}?>>ธันวาคม</option>
+
+  </select>
+  <? 
+			   $Y=date("Y")+543;
+			   $date=date("Y")+543+5;
+			  
+				$dates=range(2547,$date);
+				echo "<select name='year2'  class='txt'>";
+				foreach($dates as $i){
+
+				?>
+      
+      <option value='<?=$i?>' <? if($Y==$i){ echo "selected"; }?>><?=$i;?></option>
+      <?
+				}
+				echo "<select>";
+				?>       
+&nbsp;&nbsp;
 <strong>เลือกลูกหนี้</strong> 
   <select size="1" name="credit">
-    <option value="เงินสด" selected="selected">เงินสด</option>
-     <option value="ยกเลิก" >ยกเลิก</option>
+    <option value="all" selected="selected">----- ทั้งหมด -----</option>
+	<option value="เงินสด">เงินสด</option>
+	<option value="เงินโอน">เงินโอน</option>
+	<option value="กรุงไทย">กรุงไทย</option>
+	<option value="เช็ค">เช็ค</option>
+    <option value="ยกเลิก" >ยกเลิก</option>
   </select>
 &nbsp;&nbsp;&nbsp;&nbsp;  
   <input type="submit" value="      ดูรายงาน      " name="B1">     
