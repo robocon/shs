@@ -852,7 +852,7 @@ if($rows>0){
 	}else{
 		?>
 		<tr>
-			<td colspan="5"><p style="text-align:center;"><strong>ยังไม่มีข้อมูล</strong></p></td>
+			<td colspan="6"><p style="text-align:center;"><strong>ยังไม่มีข้อมูล</strong></p></td>
 		</tr>
 		<?php
 	}

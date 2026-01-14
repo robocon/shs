@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/connect.php';
+
 session_unregister("druglot");
 session_unregister("druglot_new");
 session_unregister("druglot_qrcode");
@@ -24,9 +28,21 @@ $_SESSION["drughome"] = "";
 $_SESSION["drugstk"] = "";
 
 if(isset($_POST["Save_dgprofile"]) && $_POST["Save_dgprofile"] == "   จ่ายยา   " ){
-	include("connect.inc");
+	
 	$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 	$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
+
+$sqlEffect = sprintf("SELECT a.*,b.`tradname` FROM (
+SELECT `drugcode`,`sideeffects` FROM `drugreact` WHERE `hn` = '%s' AND `sideeffects` <> '' GROUP BY `drugcode`
+) AS a LEFT JOIN `druglst` AS b ON a.`drugcode` = b.`drugcode` ", $dbi->real_escape_string($_POST["Hn"]));
+$qEffect = $dbi->query($sqlEffect);
+$effectList = array();
+if($qEffect->num_rows>0){
+	while ($a = $qEffect->fetch_assoc()) {
+		$drugCode = $a['drugcode'];
+		$effectList[$drugCode] = $a['sideeffects'];
+	}
+}
 	
 	// ถูกส่งมาจากฟอร์มในหน้า phardividedrug.php
 	$item = count($_POST["Drugcode"]);
@@ -197,10 +213,16 @@ for($i=0;$i<$item;$i++){
 			#*************************************************** จบบันทึกค่าใช้จ่ายคนไข้ใน ***************************************************
 			$Trade = substr($_POST["Tradname"][$i],0,20);
 
+			$effectTxt = '';
+			$postDrugCode = $_POST["Drugcode"][$i];
+			if(array_key_exists($postDrugCode, $effectList)==true){
+				$effectTxt = '<div>อาการข้างเคียง: '.$effectList[$postDrugCode].'</div>';
+			}
+
 			$_SESSION["drugbill"] .= "
 			<tr><td>".$j."</td>
 				<td><font face='Angsana New'>".$_POST["Drugcode"][$i]."</td>
-				<td><font face='Angsana New'>".$Trade."</td>
+				<td><font face='Angsana New'>".$Trade.$effectTxt."</td>
 				<td><font face='Angsana New'>".$_POST["Statcon"][$i]."</td>
 				<td><font face='Angsana New'>".$_POST["Slipcode"][$i]."</td>";
 
@@ -586,6 +608,8 @@ for($i=0;$i<$item;$i++){
 			}
 			$_SESSION["drugbill"] .="</table><BR>";
 		}
+
+
 		$my_hn = sprintf("%s", $_POST["Hn"]);
 		$sql = "SELECT `groupname`,advreact,asses FROM `drugreact` WHERE `hn` = '$my_hn' AND `groupname` != '' GROUP BY `groupname`";
 		$result = mysql_query($sql);
@@ -631,8 +655,6 @@ for($i=0;$i<$item;$i++){
 	//echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"3;URL=",$_SERVER["php_self"],"\">";
 
 exit();
-
-include("unconnect.inc");
 }
 
 ?>
