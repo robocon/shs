@@ -40,7 +40,7 @@ LIKE 'SSO%' AND credit NOT
 LIKE 'PAY%' AND credit != 'โครงการนภา'
 ) and txdate!='' ";*/
 
-$query = "SELECT * FROM opacc WHERE date >= '$chkdate1' and date <= '$chkdate2' 
+$query = "SELECT * FROM opacc WHERE date BETWEEN '$chkdate1' AND '$chkdate2'
 AND (credit != '' AND credit != 'ยกเลิก' AND credit != 'ยกเว้น' AND credit != 'ค้างจ่าย' AND credit != 'นอนโรงพยาบาล' AND credit != 'โครงการนภา' AND credit != 'เซ็นทรัล') 
 and txdate!='' ";
 }else{
@@ -61,7 +61,7 @@ $depart=$rows["depart"];
 if($rows["credit"]=="จ่ายตรง" || $rows["credit"]=="จ่ายตรง อปท." || $rows["credit"]=="จ่ายตรง อปท. (HD)" || $rows["credit"]=="กทม" || $rows["credit"]=="กสทช"
  || $rows["credit"]=="ททท" || $rows["credit"]=="กฟผ"){
 	$paidcscd=$rows["paidcscd"];
-}else if($rows["credit"]=="เงินสด" || $rows["credit"]=="เงินโอน"){
+}else if($rows["credit"]=="เงินสด" || $rows["credit"]=="เงินโอน" || $rows["credit"]=="เช็ค" || $rows["credit"]=="กรุงไทย"){
 	$paidcscd=$rows["paid"];		
 }else{
 	if($depart=="PHAR"){  //ถ้าเป็นค่ายา
