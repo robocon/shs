@@ -2556,7 +2556,8 @@ var rdu6_drug = ['1AMOX500-D','1AMOX625','1AUGM1-N','1CEFS','1CRAV-NN','1DOXY','
 var rdu6_icd10 = ['J00','J010','J011','J012','J013','J014','J018','J019','J020','J029','J030','J038','J039','J040','J041','J042','J050','J051','J060','J068','J069','J101','J111','J200','J201','J202','J203','J204','J205','J206','J207','J208','J209','J210','J218','J219','H650','H651','H659','H660','H664','H669','H670','H671','H678','H720','H721','H722','H728','H729'];
 
 // Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
-var febuxo_icd10 = ['I513','I514','I515','I517','I518','I5181','I5189','I519'];
+// var febuxo_icd10 = ['I513','I514','I515','I517','I518','I5181','I5189','I519'];
+var febuxo_icd10 = [];
 
 // รายการเดิม '1MET500-C','1METF','1GLUX1000','1VILMET','1XIGDU','1GEMET'
 // อัพเดทตามใบงาน 9422 เอา 1METF กับ 1VILMET ออก
@@ -3198,17 +3199,18 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 
 	// แจ้งเตือนยา Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 	if(drugTrim=='1FEBU'){ 
-		var res_1feb = check_1FEBU();
-		if(res_1feb==true){ 
-			clear_left_form();
-			Swal.fire({
-				icon: 'warning',
-				allowOutsideClick: false,
-				title:"แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล",
-				text:"ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด"
-			});
-			return false;
-		}
+		// var res_1feb = check_1FEBU();
+		// var res_1feb = false;
+		// if(res_1feb==true){ 
+		// 	clear_left_form();
+		// 	Swal.fire({
+		// 		icon: 'warning',
+		// 		allowOutsideClick: false,
+		// 		title:"แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล",
+		// 		text:"ไม่สามารถจ่ายยาได้ เนื่องจาก Febuxostat เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด"
+		// 	});
+		// 	return false;
+		// }
 	}
 	// แจ้งเตือนยา metformin เพิ่มอัตราการเสียชีวิตในผู้ป่วยโรคหัวใจและหลอดเลือด
 	if(metformin_drug.indexOf(drugTrim)>=0){
@@ -3872,12 +3874,13 @@ function checkForm1(){
 	var drugTrim = document.form1.drug_code.value.trim();
 
 	if(drugTrim=='1FEBU'){ 
-		var res_1feb = check_1FEBU();
-		if(res_1feb==true){ 
-			clear_left_form();
-			alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก ผู้ป่วยรายนี้มีประวัติโรคหัวใจและหลอดเลือด การใช้ยา Febuxostat อาจเพิ่มโอการเสียชีวิตได้');
-			return false;
-		}
+		// var res_1feb = check_1FEBU();
+		// var res_1feb = false;
+		// if(res_1feb==true){ 
+		// 	clear_left_form();
+		// 	alert('>>> แจ้งเตือน การใช้ยาอย่างสมเหตุสมผล <<<'+"\n\n"+'ไม่สามารถจ่ายยาได้ เนื่องจาก ผู้ป่วยรายนี้มีประวัติโรคหัวใจและหลอดเลือด การใช้ยา Febuxostat อาจเพิ่มโอการเสียชีวิตได้');
+		// 	return false;
+		// }
 	}
 
 	txt = ajaxcheck("checkdrugcode",document.form1.drug_code.value);

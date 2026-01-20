@@ -463,6 +463,9 @@ if ($row->depart=="PHAR"){
 }else if($row->credit=="ทหารไทย"){
             array_push($aCredit_3,$row->price);  
             array_push($aCredit_3pd,$row->paid);
+}else if($row->credit=="กรุงไทย"){
+            array_push($aCredit_3,$row->price);  
+            array_push($aCredit_3pd,$row->paid);
 }else if($row->credit=="จ่ายตรง"){
             array_push($aCredit_4,$row->price);  
             array_push($aCredit_4pd,$row->paidcscd);
