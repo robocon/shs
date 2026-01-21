@@ -132,7 +132,7 @@ if($num > 0){
     $result10 = mysql_query($query10)
         or die("Query failed");
 	while($fetch = mysql_fetch_array($result10)){
-    $query13 = "SELECT tradname,amount,price,part FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and (part = 'DDY' or part = 'DDN')";
+    $query13 = "SELECT tradname,amount,price,part,reason FROM drugrx02 WHERE idno = '".$fetch['row_id']."' and (part = 'DDY' or part = 'DDN')";
     $result13 = mysql_query($query13)
         or die("Query failed");
 	$nn = @mysql_num_rows($result13);
@@ -151,9 +151,15 @@ if($num > 0){
     //print "HN: $sHn, สิทธิ์:$ptright<br>";
     //print "โรค: $sDiag, แพทย์ :$doctor<br>";
 	
-    while (list ($tradname,$amount, $price,$part) = mysql_fetch_row ($result13)) {
+    while (list ($tradname,$amount, $price,$part,$reason) = mysql_fetch_row ($result13)) {
 //        array_push($aPrice,$price);
 //        $x++;
+	$reason=substr($reason,0,1);
+	if($reason==""){
+		$showreason="";	
+	}else{
+		$showreason="<b>($reason)</b>";	
+	}
 	if($part=='DDY') {
 		$price = $price;
 		$price1 = "-";
@@ -174,7 +180,7 @@ if($num > 0){
 		$price1=number_format($price1,2);	
 		$sum=number_format($sum,2);		
         print (" <tr bordercolor='#FFFFFF'>\n".
-           "  <td>&nbsp;&nbsp;&nbsp;$tradname</td>\n".
+           "  <td>&nbsp;&nbsp;&nbsp;$tradname $showreason</td>\n".
            "  <td align='center'>$amount</td>\n".
            "  <td align='center'>$unit</td>\n".
            "  <td align='center'>$price</td>\n".
