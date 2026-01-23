@@ -13,7 +13,7 @@ include("connect.inc");
 <style type="text/css">
 
 body,td,th {
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
 a:link {
@@ -29,10 +29,10 @@ a:active {
 	text-decoration: none;
 }
 .txt{
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 16px;
 }
-.txt1 {	font-family: TH SarabunPSK;
+.txt1 {	font-family: "TH SarabunPSK";
 	font-size: 20px;
 }
 #printable { display: block; }
@@ -78,13 +78,15 @@ $months = array(
 
 // สร้างปี
 $date = date("Y") + 543 + 5;
-$ัyears = range(2547, $date);
+$years = range(2547, $date);
 
+$default_year = date('Y')+543;
+$default_month = date('m');
+$default_day = date('d');
 ?>
 <div id="non-printable">
 	<form id="form1" name="form1" method="post" action="report_ptformonth.php">
 		<input name="act" type="hidden" value="show" />
-		
 		<table width="100%" border="0" cellspacing="0" cellpadding="2">
 			<tr>
 				<td align="center">
@@ -96,13 +98,14 @@ $ัyears = range(2547, $date);
 			</tr>
 			<tr>
 				<td align="center">
-
 					วัน เดือน ปี ที่เริ่มต้น
+					<?= $default_day ?>
 					<select class="txt" name="date_start" id="">
 						<?php
 						foreach( $days as $key => $day ){
+							$selected = ($day==$default_day) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$day;?>"><?=$day;?></option>
+							<option value="<?=$day;?>" <?= $selected ?>><?=$day;?></option>
 							<?php
 						}
 						?>
@@ -110,17 +113,19 @@ $ัyears = range(2547, $date);
 					<select class="txt" name="month_start" id="">
 						<?php
 						foreach( $months as $key => $month ){
+							$selected = ($month==$default_month) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$key;?>"><?=$month;?></option>
+							<option value="<?=$key;?>" <?= $selected ?>><?=$month;?></option>
 							<?php
 						}
 						?>
 					</select>
 					<select class="txt" name="year_start" id="">
 						<?php
-						foreach( $ัyears as $key => $year ){
+						foreach( $years as $key => $year ){
+							$selected = ($year==$default_year) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$year;?>"><?=$year;?></option>
+							<option value="<?=$year;?>" <?= $selected ?>><?=$year;?></option>
 							<?php
 						}
 						?>
@@ -130,8 +135,9 @@ $ัyears = range(2547, $date);
 					<select class="txt" name="date_end" id="">
 						<?php
 						foreach( $days as $key => $day ){
+							$selected = ($day==$default_day) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$day;?>"><?=$day;?></option>
+							<option value="<?=$day;?>" <?= $selected ?>><?=$day;?></option>
 							<?php
 						}
 						?>
@@ -139,17 +145,19 @@ $ัyears = range(2547, $date);
 					<select class="txt" name="month_end" id="">
 						<?php
 						foreach( $months as $key => $month ){
+							$selected = ($day==$default_month) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$key;?>"><?=$month;?></option>
+							<option value="<?=$key;?>" <?= $selected ?>><?=$month;?></option>
 							<?php
 						}
 						?>
 					</select>
 					<select class="txt" name="year_end" id="">
 						<?php
-						foreach( $ัyears as $key => $year ){
+						foreach( $years as $key => $year ){
+							$selected = ($day==$default_year) ? 'selected="selected"' : '' ;
 							?>
-							<option value="<?=$year;?>"><?=$year;?></option>
+							<option value="<?=$year;?>" <?= $selected ?>><?=$year;?></option>
 							<?php
 						}
 						?>
@@ -326,7 +334,7 @@ if($_POST["act"]=="show"){
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
-					<td align="left"><div style="margin-left:10px;">(ประภัสสร&nbsp;&nbsp;&nbsp;&nbsp;เครืออินทร์)</div></td>
+					<td align="left"><div style="margin-left:10px;">(ณัฏฐาพร&nbsp;&nbsp;&nbsp;&nbsp;วงศ์เสนา)</div></td>
 				</tr>
 				<tr>
 					<td>&nbsp;</td>

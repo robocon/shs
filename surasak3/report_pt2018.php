@@ -28,7 +28,7 @@ function sign(){
             <td>&nbsp;</td>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
-            <td align="left"><div style="margin-left:10px;">(ประภัสสร&nbsp;&nbsp;&nbsp;&nbsp;เครืออินทร์)</div></td>
+            <td align="left"><div style="margin-left:10px;">(ณัฏฐาพร&nbsp;&nbsp;&nbsp;&nbsp;วงศ์เสนา)</div></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
