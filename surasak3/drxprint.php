@@ -1,7 +1,11 @@
 <?php
 session_start();
-include("connect.inc");
-
+require_once dirname(__FILE__).'/connect.php';
+function dump($t){
+	echo "<pre>";
+	var_dump($t);
+	echo "</pre>";
+}
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
@@ -29,9 +33,9 @@ Function calcage($birth){
 	return $pAge;
 }
 
+$sRow_id = $_GET['sRow_id'];
 $query = "SELECT * FROM dphardep WHERE row_id = '$sRow_id' "; 
 $result = mysql_query($query) or die("Query failed");
-
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 	if (!mysql_data_seek($result, $i)) {
 		echo "Cannot seek to row $i\n";
@@ -119,18 +123,18 @@ if(!empty($cStkcutdate)) {
 		
 	}
 
-
-
 	?>
-	<!-- window.print(); -->
-	<body Onload="">
+	
+	<body>
 	<script type="text/javascript">
+		/*
 		window.onload = function(){
 			window.print();
 			window.onafterprint = function(){
 				window.close();
 			}
 		}
+		*/
 	</script>
 	<?php
 	print "<u><br><font face='TH SarabunPSK' size= 5 ><b>$rxPtname</b></font>&nbsp;<font face='TH SarabunPSK' size= 4 ><b>VN:$rxvn </b>&nbsp;<b>$rxPtright</b>$hdExtra</font></u><font face='TH SarabunPSK' size= 2 ><img src = \"printbcpha1.php?cHn=$rxHn\"></font>&nbsp;<font face='TH SarabunPSK' size= 5 ><b><U>$kewphar</U></b></font><br>";
@@ -139,7 +143,6 @@ if(!empty($cStkcutdate)) {
 	print "<font face='cordia New'>&nbsp;CID : $idcard&nbsp;&nbsp;</font>";
 	print "<font face='cordia New'>&nbsp;วัน/เดือน/ปีเกิด : $birthday&nbsp;&nbsp;</font>";
 	print "<font face='cordia New'>&nbsp;<b>อายุ : $age</b>&nbsp;&nbsp;</font><br>";
-	
 	print "<font face='cordia New'>น้ำหนัก : $weight กก.</font>";
 	print "<font face='cordia New'>&nbsp;ส่วนสูง : $height ซม.</font><br>";
 	
@@ -257,7 +260,6 @@ if(!empty($cStkcutdate)) {
 	// 	$dbi->real_escape_string($patient_hn)
 	// );
 	
-
 	$sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
 		SELECT `row_id`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`,
 		SUBSTRING(`date`, 1, 10) AS `date`
@@ -274,9 +276,7 @@ if(!empty($cStkcutdate)) {
 	ORDER BY a.`date` DESC LIMIT 2",
 	$dbi->real_escape_string($patient_hn)
 	);
-
 	$q = $dbi->query($sql);
-
 	if($q->num_rows>0){
 		?>
 		<div style="display: block;">
@@ -323,9 +323,6 @@ if(!empty($cStkcutdate)) {
 		<?php
 	}
 	/* แจ้งเตือน Warfarin */
-
-
-
 ?>
 
 <table>
@@ -453,41 +450,33 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 }
 ?>
 </table>
-
-
 <?php
-
-function datediff ( $start, $end ) {
-
+function datediff( $start, $end ) {
    $datediff = strtotime(dateform($end)) - strtotime(dateform($start));
    return floor($datediff / (60 * 60 * 24));
 }
 
 function dateform($date){
-
    $d = explode('-',$date);
    return $d[2].'-'.$d[1].'-'.$d[0];
 }
 
 
+$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$rxHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
+$res2= mysql_query($sqlopday2) or die("Query failed");
+list($datekey,$appdate,$end) = mysql_fetch_row($res2);
 
-	$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$rxHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
-	//echo $sqlopday;
-	$res2= mysql_query($sqlopday2) or die("Query failed");
-	list($datekey,$appdate,$end) = mysql_fetch_row($res2);
-	
-	$yy = substr($datekey,0,4);
-	$yy=$yy-543;
-	$mm = substr($datekey,5,2);
-	$dd = substr($datekey,8,2);
-	$start="$yy-$mm-$dd";	
-	
-	if(!empty($appdate)){
-		$appdate=$appdate;
-	}else{
-		$appdate="ไม่มีนัด";
-	}
+$yy = substr($datekey,0,4);
+$yy=$yy-543;
+$mm = substr($datekey,5,2);
+$dd = substr($datekey,8,2);
+$start="$yy-$mm-$dd";	
 
+if(!empty($appdate)){
+	$appdate=$appdate;
+}else{
+	$appdate="ไม่มีนัด";
+}
 
 print "<font face='TH SarabunPSK' size='2'>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
 print "<font face='TH SarabunPSK' size='2'>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
@@ -496,19 +485,12 @@ print "<font face='TH SarabunPSK' size='1'>บัญชียาหลัก เ
 print "<font face='TH SarabunPSK' size='1'>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
 print "<font face='TH SarabunPSK' size='1'>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
 print "<font face='TH SarabunPSK' size='1'>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
-
-
-
-
 print "<font face='TH SarabunPSK' size='2'></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
 print "<font face='TH SarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................<br>";
-
 
 $thdatevn1 = $d.'-'.$m.'-'.$y.$rxHn;
 $thdatevn2 = $d.'-'.$m.'-'.$y.$rxvn;
 $thdatevn3 = $y.'-'.$m.'-'.$d;
-
-
 
 $timedate = date("H:i:s"); 
 $sql = "SELECT time1 FROM opday WHERE  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
@@ -534,25 +516,18 @@ print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>SERVICE</B>:50.00 ";
 $summary = $PHAR+$xray+$patho+$emer+$surg+$physi+$denta+$other+50 ;
 $summary = number_format($summary,2);
 print "<font face='TH SarabunPSK' size='2'><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
-
-
 print "<font face='TH SarabunPSK' size='2'><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
 
 $nnnn=$Nessdn+$DSN+$DPN;
 
 if($nnnn>0 ){
 	echo "<br><font face='TH SarabunPSK' size='5'><center>***ผู้ป่วยมีส่วนเกิน....$nnnn..บาท............*** </center></FONT>";
-};
-	
-	 
+}
 
-
-	 
-
-$today1=(date("Y")+543).date("-m-d");	
+$today1=(date("Y")+543).date("-m-d");
 $sql = "SELECT @n := @n +1 AS 'NO', row_id,hn,ptname From dphardep, (
 SELECT @n :=0
-) AS R  WHERE hn = '".$rxHn."' AND  date LIKE '$today1%' and dr_cancle is null ";
+) AS R  WHERE hn = '$rxHn' AND  date LIKE '$today1%' and dr_cancle is null ";
 $result = Mysql_Query($sql);
 $num=Mysql_num_rows($result);
 	if($num > 1){
@@ -565,11 +540,13 @@ $num=Mysql_num_rows($result);
 }else{ 
 	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";
 }
-include("unconnect.inc");
 
+// เอกสารแสดงค่าใช้จ่ายในการรักษาพยาบาลประเภทผู้ป่วยนอก
 if(substr($rxPtright,0,3)=="R03" || substr($rxPtright,0,3)=="R33"){
 	echo "<div style='page-break-before: always;'></div>";
 	$hn=$rxHn;
 	$date=$y.'-'.$m.'-'.$d;
 	include("reportcash1.php");
 }
+
+// กำลังจะเพิ่มจ่ายยาเกิน

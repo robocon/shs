@@ -697,7 +697,7 @@ if($inject){
 <?php 
 }
 echo "<table><tr>";
-		if($stkcutdate_now ==""){
+	if($stkcutdate_now ==""){
 	?>
     <a target="_blank" href="drxadddrug.php?sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>เพิ่มยา</font></a>&nbsp;&nbsp;
    
@@ -709,7 +709,7 @@ echo "<table><tr>";
 	<td><FONT COLOR="#FF0000"><B>เคยตัดสต๊อกแล้ว</B></FONT>&nbsp;&nbsp;&nbsp;</td>
 	<?php }?>
     </td>
-    <td><a target="_blank" href="drxprint.php"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
+    <td><a target="_blank" href="drxprint.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
     <td><a target="_blank" href="slipprntest1.php"><font face='Angsana New'>พิมพ์สลากยารุ่นเก่า(2560)</a></td>
     <td><a target="_blank" href="slipprntest1_new.php"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
 	<td><a target="_blank" href="drxprintopd.php"><font face='Angsana New'>พิมพ์ใบรายการยากลับบ้าน</a></td>
@@ -720,7 +720,7 @@ echo "<table><tr>";
  <div>
 	<p>
 		<a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a> | 
-		<a target="_blank" href="drxprint2.php"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a>
+		<a target="_blank" href="drxprint2.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a>
 	</p>
  </div>
 <?php
