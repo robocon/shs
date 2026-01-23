@@ -1,5 +1,7 @@
+<?php
+require_once dirname(__FILE__).'/connect.php';
+?>
 <style type="text/css">
-<!--
 .textcash {
 	font-family: "TH SarabunPSK";
 	font-size: 18px;
@@ -8,34 +10,27 @@
 	font-family: "TH SarabunPSK";
 	font-size: 22px;
 }
--->
 </style>
-<!--<script>
-print();
-</script>-->
 <table width="85%">
 <tr><td align="center" class="textcash1"><strong>เอกสารแสดงค่าใช้จ่ายในการรักษาพยาบาลประเภทผู้ป่วยนอก</strong></td>
 </tr>
 <tr>
   <td align="center" class="textcash1">โรงพยาบาลค่ายสุรศักดิ์มนตรี ลำปาง โทร.054-839305</td>
 </tr>
-<?
-include("connect.inc");
+<?php
 $getvn=$_GET["vn"];
- $sqlopcard = "select * from opcard where hn = '$hn' limit 1";
- $rows = mysql_query($sqlopcard);
- $results = mysql_fetch_array($rows);
- $yy = substr($date,0,4); 
- $mm = substr($date,5,2); 
- $dd = substr($date,8,2); 
- $payyes=0;
- $payno=0;
- $total = 0;
+$sqlopcard = "select * from opcard where hn = '$hn' limit 1";
+$rows = mysql_query($sqlopcard);
+$results = mysql_fetch_array($rows);
+$yy = substr($date,0,4); 
+$mm = substr($date,5,2); 
+$dd = substr($date,8,2); 
+$payyes=0;
+$payno=0;
+$total = 0;
 $thdatehn=$dd.'-'.$mm.'-'.$yy.$hn;
 
-?>
-<?
-	  	  $sql3 = "SELECT vn,ptright from opday where thdatehn = '$thdatehn'";
+$sql3 = "SELECT vn,ptright from opday where thdatehn = '$thdatehn'";
 $result3 = mysql_query($sql3) ;
 $row3= mysql_fetch_array($result3);
 
@@ -746,8 +741,7 @@ LIKE  '$date%' and tvn='$getvn'";
 	}
 } //close opacc99	
 ////////////////////////////////////////////////////////////
-	 include("unconnect.inc");
-	 $total = $payyes+$payno;
+	$total = $payyes+$payno;
   ?>
  <tr bordercolor="#333333">
    <td colspan="3" align="right"><strong>รวมทั้งสิ้น</strong>&nbsp;&nbsp;</td><td align="center"><strong>
@@ -759,9 +753,3 @@ LIKE  '$date%' and tvn='$getvn'";
    </strong></td></tr>
 </table>
 <br />
-<!--<table width="85%">
-<tr>
-  <td align="right" class="textcash">
- <strong>ลงชื่อ .............................................................................. ผู้ตรวจสอบ<br />
- </td></tr>
- </table>-->
