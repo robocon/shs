@@ -5,6 +5,36 @@ date_default_timezone_set("Asia/Bangkok");
 include("connect.inc");
 include_once 'includes/JSON.php';
 
+
+// 1. ดึงข้อมูลจาก API (สมมติว่าดึงผ่าน URL เรียบร้อยแล้ว)
+$vn_to_check = $_SESSION["vn_now"]; 
+$api_url = "http://192.168.131.191/JSON/get_summary_payment_api.php?vn=" . $vn_to_check;
+
+// 1. เริ่มต้นดึงข้อมูล
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $api_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+$response_data = curl_exec($ch); // ดึงข้อมูลมาเก็บในตัวแปรนี้
+curl_close($ch);
+
+// 2. แปลงข้อมูลจาก Serialize String กลับเป็น Array
+// ใช้ได้กับ PHP ทุกเวอร์ชั่น แม้ไม่มี json_decode
+$data = unserialize($response_data); 
+
+// 3. ดึงตัวแปรมาใช้งาน (ตรวจสอบด้วยว่า $data เป็น array หรือไม่)
+if (is_array($data)) {
+    $remaining = $data['billing']['remaining']; 
+    $limit     = $data['billing']['limit'];     
+    $spent     = $data['billing']['spent_total'];
+    $is_over   = $data['flags']['is_over_limit'];
+
+    //echo "==>" . $remaining;
+} else {
+    echo "==> ดึงข้อมูลไม่ได้หรือข้อมูลไม่ใช่ Serialize Format";
+}
+
+
 if($_SESSION["sOfficer"] == ""){
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
@@ -382,7 +412,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	}else{
 		$code = "OTHER";
 	}
-if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R36"){
+/*if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R36"){
 	$sql="select sum(price),hn,ptname from depart where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
 	$query=mysql_query($sql);
 	list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
@@ -390,7 +420,58 @@ if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_no
 		echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
 	}
 	$pay=700;
+}*/
+
+
+
+
+// 1. กำหนดกลุ่มรหัสสิทธิที่ต้องการตรวจสอบไว้ใน Array (แก้ไขง่ายในที่เดียว)
+$check_rights = array('R07', 'R09', 'R10', 'R11', 'R12', 'R13', 'R14', 'R17', 'R35', 'R36');
+
+// 2. ตัด 3 ตัวแรกของสิทธิปัจจุบันมาเช็ค
+$current_right = substr($_SESSION["ptright_now"], 0, 3);
+
+// 3. ตรวจสอบว่าสิทธิปัจจุบันอยู่ในกลุ่มที่กำหนดหรือไม่
+if (in_array($current_right, $check_rights)) {
+    
+    // ดึงวันที่ปัจจุบัน (พ.ศ.)
+    $date_now = (date("Y") + 543) . date("-m-d");
+    $hn = $_SESSION["hn_now"];
+
+    // SQL Query
+    $sql = "SELECT SUM(price), hn, ptname 
+            FROM depart 
+            WHERE hn = '$hn' 
+            AND date LIKE '$date_now%'";
+    //echo $sql;        
+    $query = mysql_query($sql);
+    list($sumprice, $hn, $ptname) = mysql_fetch_array($query);
+
+    // กำหนดเพดานเงิน (700 บาท)
+    $pay_limit = $limit;
+
+    if ($sumprice > 0) {
+        // ใช้ดีไซน์ Compact Horizontal ที่เราทำไว้ก่อนหน้านี้มาประยุกต์ได้ครับ
+        // หรือใช้สไตล์ด่วนตามด้านล่างนี้
+        $bg_color = ($sumprice > $pay_limit) ? "#FF0000" : "#48bb78"; // แดงถ้าเกิน, เขียวถ้าไม่เกิน
+        
+        echo "<div style='background-color: $bg_color; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold; display: inline-block;'>";
+        echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท <span style='margin-left:50px;color:red;'>(เบิกคืนได้ไม่เกิน " . number_format($pay_limit, 2) . " บาท)</span>";
+        echo "</div>";
+    }
+    
+    $pay = $pay_limit;
 }
+
+
+
+
+
+
+
+
+
+
 		
 	echo "<FORM name=\"form_list\" METHOD=POST ACTION=\"dt_drug_reason.php\" onsubmit=\"return viatch($count,'$code');\">
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
@@ -701,12 +782,15 @@ for($i=0;$i<$count;$i++){
 	if($_SESSION["dt_special"])
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
 		$chkprice=$total_price;
-		if(substr($_SESSION["ptright_now"],0,3) == "R12" && $chkprice > 700){  //R12 ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
-			if($_SESSION["hn_now"]=="60-10215"){  //ผอ.อรรณพ อนุมัติเคสบิดาพลทหาร 20/03/65
+
+		//echo "==>".$exopd;
+		if(in_array($current_right, $check_rights) && $chkprice > $remaining && $exopd!="EX02"){  //ประกันสุขภาพถ้วนหน้า/ประกันสังคม
+			/*if($_SESSION["hn_now"]=="60-10215"){  //ผอ.อรรณพ อนุมัติเคสบิดาพลทหาร 20/03/65
 				echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
 			}else{
 				echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
-			}
+			}*/
+			echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกินวงเงินคงเหลือ $remaining บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
 		}else{
 		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
 		}
@@ -1740,7 +1824,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
 					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
-					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
+					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"5\" maxlength=\"5\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">รับรหัสผ่านได้ที่ผู้อำนวยการเท่านั้น</FONT>";
 				}else{
 
@@ -3780,7 +3864,7 @@ function alert500(){
 		stat = xmlhttp.responseText;
 		stat = stat.substr(4);
 		if(stat == '0'){
-			if((ptright == 'R07' || ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
+			if((ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
 				alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ "+ptrightDetail);
 					
 			}

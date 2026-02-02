@@ -1,3 +1,54 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    // ดึงค่า VN จากตัวแปร PHP ในหน้าจอนั้นๆ
+    var current_vn = "<?php echo $_SESSION["vn_now"]; ?>"; 
+    
+    // URL ของ API ที่ Server ใหม่ (PHP 7+)
+    var api_url = "http://192.168.131.191/JSON/summary_payment_json.php?vn=" + current_vn;
+
+	$.getJSON(api_url, function(data) {
+		if(data.status === "success") {
+			$("#display-ptname").text(data.patient.name);
+			$("#display-right").text(data.patient.right);
+			$("#display-spent").text(data.billing.spent_total.toLocaleString());
+			
+			var container = $("#billing-container").removeClass("bar-danger bar-warning bar-success bar-skip");
+			var msg = $("#mini-msg");
+			var icon = $("#mini-icon");
+
+			if(data.should_check) {
+				$("#display-limit").text(data.billing.limit.toLocaleString());
+				$("#display-remaining").text(data.billing.remaining.toLocaleString());
+
+				if(data.flags.alert_level === "danger") {
+					container.addClass("bar-danger");
+					msg.html("⚠️ เกินวงเงิน!");
+					icon.text("🚨");
+				} else if(data.flags.alert_level === "warning") {
+					container.addClass("bar-warning");
+					msg.html("🟡 ใกล้เต็ม");
+					icon.text("⚠️");
+				} else {
+					container.addClass("bar-success");
+					msg.html("✅ ปกติ");
+					icon.text("🟢");
+				}
+			} else {
+				$("#display-limit").text("ไม่จำกัดวงเงิน");
+				$("#display-remaining").text("เบิกได้ตามสิทธิ");
+				container.addClass("bar-skip");
+				msg.html("สิทธิทั่วไป");
+				icon.text("ℹ️");
+			}
+		}
+	});
+});
+</script>
+
+
+
+
 <SCRIPT LANGUAGE="JavaScript">
 
 function show_tooltip(title,detail,al,l,r){
@@ -786,3 +837,85 @@ if($row_diabet > 0){
 	}
 }  //close if session
 ?>
+<style>
+    #billing-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px 15px;
+        border-radius: 6px;
+        font-family: 'TH SarabunPSK';
+        background: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e2e8f0;
+        border-left: 5px solid #cbd5e0;
+        margin: 5px 0;
+    }
+
+    .billing-section {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+    }
+
+    .billing-data {
+        white-space: nowrap;
+        margin-right: 15px;
+    }
+
+    .label-sm {
+        color: #718096;
+        font-size: 24px;
+        margin-right: 4px;
+    }
+
+    .value-sm {
+        font-weight: bold;
+        color: #2d3748;
+		font-size: 24px;
+    }
+
+    /* สถานะการแสดงผล */
+    .bar-danger { border-left-color: #e53e3e; background-color: #fff5f5; color: #c53030; }
+    .bar-warning { border-left-color: #dd6b20; background-color: #fffaf0; color: #9c4221; }
+    .bar-success { border-left-color: #38a169; background-color: #f0fff4; color: #276749; }
+    .bar-skip { border-left-color: #3182ce; background-color: #ebf8ff; color: #2b6cb0; }
+
+    #mini-msg {
+        font-weight: bold;
+        margin-left: auto;
+        padding-left: 15px;
+        border-left: 1px solid rgba(0,0,0,0.1);
+    }
+</style>
+<div id="billing-container" class="bar-skip">
+    <div class="billing-section">
+        <span id="mini-icon">ℹ️</span>
+        <div class="billing-data">
+            <span class="value-sm" id="display-ptname">กำลังโหลด...</span>
+        </div>
+        
+        <div class="billing-data">
+            <span class="label-sm">สิทธิ:</span>
+            <span class="value-sm" id="display-right">-</span>
+        </div>
+
+        <div class="billing-data">
+            <span class="label-sm">วงเงิน:</span>
+            <span class="value-sm" style="color:green;" id="display-limit">-</span>
+        </div>
+
+        <div class="billing-data">
+            <span class="label-sm">ใช้ไป:</span>
+            <span class="value-sm" style="color:blue;" id="display-spent">-</span>
+        </div>
+
+        <div class="billing-data">
+            <span class="label-sm">คงเหลือ:</span>
+            <span class="value-sm" style="color:red;" id="display-remaining">-</span>
+        </div>
+    </div>
+
+    <div id="mini-msg">ตรวจสอบข้อมูล...</div>
+</div>
