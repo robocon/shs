@@ -392,8 +392,8 @@ print "<DIV style='left:445PX;top:587PX;width:269PX;height:30PX;'><span class='f
 print "<DIV style='left:450PX;top:616PX;width:269PX;height:30PX;'><span class='fc1-5'>$aYot[3]</span></DIV>";
 print "<DIV style='left:435PX;top:645PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>($aFname[3])</span></DIV>";
 print "<DIV style='left:435PX;top:674PX;width:309PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost[3]</span></DIV>";
-//print "<DIV style='left:435PX;top:703PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost2[3]</span></DIV>";
-print "<DIV style='left:435PX;top:703PX;width:309PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>............/............/............</span></DIV>";
+print "<DIV style='left:435PX;top:703PX;width:349PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>$aPost2[3]</span></DIV>";
+print "<DIV style='left:435PX;top:732PX;width:309PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-5'>............/............/............</span></DIV>";
 
 
 print "<DIV style='left:435PX;top:761PX;width:269PX;height:30PX;'><span class='fc1-5'>เรียน ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
