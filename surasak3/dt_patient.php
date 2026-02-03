@@ -1,54 +1,3 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-    // ดึงค่า VN จากตัวแปร PHP ในหน้าจอนั้นๆ
-    var current_vn = "<?php echo $_SESSION["vn_now"]; ?>"; 
-    
-    // URL ของ API ที่ Server ใหม่ (PHP 7+)
-    var api_url = "http://192.168.131.191/JSON/summary_payment_json.php?vn=" + current_vn;
-
-	$.getJSON(api_url, function(data) {
-		if(data.status === "success") {
-			$("#display-ptname").text(data.patient.name);
-			$("#display-right").text(data.patient.right);
-			$("#display-spent").text(data.billing.spent_total.toLocaleString());
-			
-			var container = $("#billing-container").removeClass("bar-danger bar-warning bar-success bar-skip");
-			var msg = $("#mini-msg");
-			var icon = $("#mini-icon");
-
-			if(data.should_check) {
-				$("#display-limit").text(data.billing.limit.toLocaleString());
-				$("#display-remaining").text(data.billing.remaining.toLocaleString());
-
-				if(data.flags.alert_level === "danger") {
-					container.addClass("bar-danger");
-					msg.html("⚠️ เกินวงเงิน!");
-					icon.text("🚨");
-				} else if(data.flags.alert_level === "warning") {
-					container.addClass("bar-warning");
-					msg.html("🟡 ใกล้เต็ม");
-					icon.text("⚠️");
-				} else {
-					container.addClass("bar-success");
-					msg.html("✅ ปกติ");
-					icon.text("🟢");
-				}
-			} else {
-				$("#display-limit").text("ไม่จำกัดวงเงิน");
-				$("#display-remaining").text("เบิกได้ตามสิทธิ");
-				container.addClass("bar-skip");
-				msg.html("สิทธิทั่วไป");
-				icon.text("ℹ️");
-			}
-		}
-	});
-});
-</script>
-
-
-
-
 <SCRIPT LANGUAGE="JavaScript">
 
 function show_tooltip(title,detail,al,l,r){
@@ -919,3 +868,53 @@ if($row_diabet > 0){
 
     <div id="mini-msg">ตรวจสอบข้อมูล...</div>
 </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    // ดึงค่า VN จากตัวแปร PHP ในหน้าจอนั้นๆ
+    var current_vn = "<?php echo $_SESSION["vn_now"]; ?>"; 
+    
+    // URL ของ API ที่ Server ใหม่ (PHP 7+)
+    var api_url = "http://192.168.131.191/JSON/summary_payment_json.php?vn="+current_vn;
+	//alert(api_url);
+	$.getJSON(api_url, function(data) {
+		if(data.status === "success") {
+			$("#display-ptname").text(data.patient.name);
+			$("#display-right").text(data.patient.right);
+			$("#display-spent").text(data.billing.spent_total.toLocaleString());
+			
+			var container = $("#billing-container").removeClass("bar-danger bar-warning bar-success bar-skip");
+			var msg = $("#mini-msg");
+			var icon = $("#mini-icon");
+
+			if(data.should_check) {
+				$("#display-limit").text(data.billing.limit.toLocaleString());
+				$("#display-remaining").text(data.billing.remaining.toLocaleString());
+
+				if(data.flags.alert_level === "danger") {
+					container.addClass("bar-danger");
+					msg.html("⚠️ เกินวงเงิน!");
+					icon.text("🚨");
+				} else if(data.flags.alert_level === "warning") {
+					container.addClass("bar-warning");
+					msg.html("🟡 ใกล้เต็ม");
+					icon.text("⚠️");
+				} else {
+					container.addClass("bar-success");
+					msg.html("✅ ปกติ");
+					icon.text("🟢");
+				}
+			} else {
+				$("#display-limit").text("ไม่จำกัดวงเงิน");
+				$("#display-remaining").text("เบิกได้ตามสิทธิ");
+				container.addClass("bar-skip");
+				msg.html("สิทธิทั่วไป");
+				icon.text("ℹ️");
+			}
+		}
+	});
+});
+</script>

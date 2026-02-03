@@ -6,8 +6,8 @@ include("connect.inc");
 $officer = $_SESSION["sOfficer"];
 if($_SESSION["sOfficer"] == ""){
 	
-	echo "<center><font color='#000000' >¢ÍÍÀÑÂ¤ÃÑº ¡ÒÃ Login ¢Í§·èÒ¹ËÁ´ÍÒÂØ </font><br />";
-	echo "<a href=\"../sm3.php\" target=\"_top\">¡ÅÑºË¹éÒáÃ¡</a></center>";
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 exit();
 }//end if
 
@@ -79,7 +79,7 @@ $sql = " INSERT INTO log_ecert (
     Desc_Type , 
     Code_RowidVn 
     )
-    VALUES ( '','$officer','$Txt_Datetime $Txt_DateTime','".$_GET['hn']."','B','ãºÃÑºÃÍ§á¾·Âì (ÊÓËÃÑº¢ÑºÃ¶)','".$_GET['rowid'].'-'.$_GET['vn']."' )";
+    VALUES ( '','$officer','$Txt_Datetime $Txt_DateTime','".$_GET['hn']."','B','ใบรับรองแพทย์ (สำหรับขับรถ)','".$_GET['rowid'].'-'.$_GET['vn']."' )";
 //echo $sql;exit();
 $query = mysql_query($sql);  
 

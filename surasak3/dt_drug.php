@@ -4,12 +4,13 @@ date_default_timezone_set("Asia/Bangkok");
 
 include("connect.inc");
 include_once 'includes/JSON.php';
-
+//print_r($_SESSION);
 
 // 1. ดึงข้อมูลจาก API (สมมติว่าดึงผ่าน URL เรียบร้อยแล้ว)
 $vn_to_check = $_SESSION["vn_now"]; 
-$api_url = "http://192.168.131.191/JSON/get_summary_payment_api.php?vn=" . $vn_to_check;
-
+//echo "-->".$vn_to_check;
+$api_url = "http://192.168.131.191/JSON/get_summary_payment_api.php?vn=".$vn_to_check;
+//echo "-->".$api_url;
 // 1. เริ่มต้นดึงข้อมูล
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
@@ -456,7 +457,7 @@ if (in_array($current_right, $check_rights)) {
         $bg_color = ($sumprice > $pay_limit) ? "#FF0000" : "#48bb78"; // แดงถ้าเกิน, เขียวถ้าไม่เกิน
         
         echo "<div style='background-color: $bg_color; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold; display: inline-block;'>";
-        echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท <span style='margin-left:50px;color:red;'>(เบิกคืนได้ไม่เกิน " . number_format($pay_limit, 2) . " บาท)</span>";
+        echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท <span style='margin-left:50px;color:blue;'>(เบิกคืนได้ไม่เกิน " . number_format($pay_limit, 2) . " บาท)</span>";
         echo "</div>";
     }
     
