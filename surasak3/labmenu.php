@@ -45,6 +45,9 @@
 <!--<span style="font-weight:bold; font-size:14px; color:#FF0000;">*** ตรวจสุขภาพลูกจ้างประจำปี 62 ให้เข้าเมนู <a href="labemployee.php" target="_blank">สั่ง Lab ตรวจสุขภาพลูกจ้างประจำปี</a> เท่านั้น ***</span>-->
 
 <? } ?>
+<div style="margin-top:8px;">
+	<a href="appoint_lab_review.php" target="_blank">รายชื่อผู้ป่วยนัดค่าแลปเกิน 1,000.- ประกันสังคม</a>
+</div>
 </body>
 
 </html>

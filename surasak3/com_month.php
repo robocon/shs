@@ -272,7 +272,7 @@ if ($action==='udpateTime') {
                         <td valign="top" class="font1"><!-- วันที่ดำเนินการ -->
                             <?php
                             if($_SESSION['sIdname']==='dan' || $_SESSION['smenucode']==='ADM'){
-                                ?><a href="javascript:void(0)" onclick="editDateTime('<?=$id;?>','<?=$dateEnd;?>','<?=$timeEnd;?>','<?=$dateStart;?>','<?=$timeStart;?>')"><?= $result['dateend'] ?></a><?
+                                ?><a href="#<?=$id;?>" onclick="editDateTime('<?=$id;?>','<?=$dateEnd;?>','<?=$timeEnd;?>','<?=$dateStart;?>','<?=$timeStart;?>')"><?= $result['dateend'] ?></a><?
                             }else{
                                 echo $result['dateend'];
                             }
@@ -287,6 +287,7 @@ if ($action==='udpateTime') {
         </table>
         <script>
             async function editDateTime(id, d, t, dStart, tStart){
+                event.preventDefault();
                 let { value: formValues } = await Swal.fire({
                     title: "แก้ไข วัน-เวลา ปิดงาน",
                     html: `<div>
