@@ -8,12 +8,14 @@ $dbi->query("SET NAMES UTF8");
 
 $my_an = sprintf("%s", $_REQUEST["an"]);
 
+/*
 if(empty($my_an)){
 	?>
 	<p><b>ไม่สามารถระบุ AN ได้ <a href="javascript:history.back();" >คลิกที่นี่</a>เพื่อกลับหน้าจ่ายยาผู้ป่วยใน</b></p>
 	<?php
 	exit;
 }
+*/
 
 /**
  * ข้อมูลเบื้องต้นของผู้ป่วยจาก an
@@ -1328,7 +1330,7 @@ if($q->num_rows>0){
 	  <TD><INPUT NAME="amount" TYPE="text" class="txtsarabun" ID="amount"  onkeypress="submit_button('amount');" size="4"></TD>
 		<TD align="right"><strong>หน่วย :</strong></TD>
 		<TD align="left">
-			<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5" readonly> 
+			<INPUT NAME="unit" TYPE="text" class="txtsarabun" ID="unit" onKeyPress="submit_button('amount');"  size="5"> 
 			<strong>ประเภท:</strong>
 			<INPUT NAME="unit2" TYPE="text" class="txtsarabun" ID="unit2"   size="5" readonly></TD>
 		<TD align="right"><strong>สถานะ :</strong></TD>

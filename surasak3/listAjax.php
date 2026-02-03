@@ -275,6 +275,7 @@ list($pass_drug) = mysql_fetch_row(mysql_query($sql));
 			$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = "";
 			$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $_GET["firstdate"];
 			$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $_GET["enddate"];
+			$_SESSION["list_druglst"]["unit"][$_SESSION["num_list"]] = $_GET["unit"];
 
 			if($_GET["tradname"] == "")
 				$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $tradname;
