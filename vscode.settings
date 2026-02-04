@@ -1,0 +1,58 @@
+{
+    "terminal.integrated.fontFamily": "MesloLGM Nerd Font",
+    "editor.renderWhitespace": "all",
+    "git.autofetch": true,
+    "terminal.integrated.fontSize": 12,
+    "php.validate.executablePath": "D:/OLD-CODE/php-8.1.27-Win32-vs16-x64/php.exe",
+    "workbench.activityBar.location": "top",
+    "intelephense.environment.shortOpenTag": false,
+    "workbench.secondarySideBar.defaultVisibility": "visible",
+    "editor.suggestOnTriggerCharacters": false, 
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.snippetSuggestions": "top",
+
+    // --- การตั้งค่า Vim พื้นฐาน ---
+    "vim.easymotion": true,             // เปิดใช้โหมดกระโดดไกล (พิมพ์ <leader><leader>s)
+    "vim.incsearch": true,              // ไฮไลท์คำค้นหาทันทีที่เริ่มพิมพ์
+    "vim.useSystemClipboard": true,     // ให้ Vim ใช้ Clipboard เดียวกับ Windows (Copy/Paste ข้ามโปรแกรมได้)
+    "vim.hlsearch": true,               // ไฮไลท์คำที่ค้นหาค้างไว้
+    
+    // --- การจัดการคีย์บอร์ด (แก้ปัญหาคีย์ซ้ำกับ Windows) ---
+    "vim.handleKeys": {
+        "<C-c>": false,                 // คืนค่า Ctrl+C ให้ Windows (Copy)
+        "<C-v>": false,                 // คืนค่า Ctrl+V ให้ Windows (Paste)
+        "<C-f>": false,                 // คืนค่า Ctrl+F ให้ Windows (Find)
+        "<C-z>": false,                 // คืนค่า Ctrl+Z ให้ Windows (Undo)
+        "<C-p>": false,                 // ไม่ต้องยุ่งกับ Ctrl+p
+        "<C-b>": false,                 // เปิด/ปิดแถบข้าง (Side Bar)
+        "<C-n>": false                  // new tab
+    },
+
+    // --- ปรับแต่ง UI ให้เหมาะกับการใช้ Vim ---
+    "editor.lineNumbers": "relative",   // ใช้เลขบรรทัดแบบสัมพัทธ์ (สำคัญมาก! ช่วยให้รู้ว่าต้องกระโดดไปกี่บรรทัด)
+    "editor.cursorStyle": "line",       // ปรับ Cursor ปกติเป็นเส้น
+    "vim.cursorStylePerMode.insert": "line", // Mode Insert ให้เป็นเส้น (เหมือนพิมพ์งานปกติ)
+    "vim.cursorStylePerMode.normal": "block", // Mode Normal ให้เป็นบล็อก (แบบ Vim)
+
+    // --- Key Remapping (สูตรลัด) ---
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "j"],
+            "after": ["<Esc>"],          // พิมพ์ 'jj' เร็วๆ ในโหมดพิมพ์ เพื่อออกจากโหมดไป Normal Mode (ไม่ต้องเอื้อมนิ้วไปกด Esc)
+        }
+    ],
+    "vim.normalModeKeyBindings": [
+        {
+            "before": ["o", "o"],
+            "after": ["o", "<Esc>", "p"],
+            "remarks": "เปิดบรรทัดใหม่ข้างล่างแล้ววางของที่ Copy มาทันที"
+        }
+    ],
+    // --- ปรับการเลื่อนหน้าจอ ---
+    "editor.smoothScrolling": true,
+    "editor.cursorSurroundingLines": 8,
+    "editor.wordSeparators": "@,48-57,_,192-255,$", // ให้ Cursor อยู่ห่างจากขอบบน/ล่างอย่างน้อย 8 บรรทัดเสมอ (มองเห็น context รอบข้าง)
+
+    "vim.wrapscan": true, // ให้วนกลับไป search ใหม่
+    "vim.iskeyword": "@,48-57,_,192-255,$" // เพิ่ม _ และ $ ให้เข้าเป็นส่วนหนึ่งของคำ
+}
