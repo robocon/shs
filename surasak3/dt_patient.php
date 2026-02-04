@@ -838,6 +838,18 @@ if($row_diabet > 0){
         border-left: 1px solid rgba(0,0,0,0.1);
     }
 </style>
+
+<?php
+// 1. กำหนดกลุ่มรหัสสิทธิที่ต้องการตรวจสอบไว้ใน Array (แก้ไขง่ายในที่เดียว)
+$check_rights = array('R07', 'R09', 'R10', 'R11', 'R12', 'R13', 'R14', 'R17', 'R35', 'R36', 'R43', 'R44', 'R60', 'R61');
+
+// 2. ตัด 3 ตัวแรกของสิทธิปัจจุบันมาเช็ค
+$current_right = substr($_SESSION["ptright_now"], 0, 3);
+
+// 3. ตรวจสอบว่าสิทธิปัจจุบันอยู่ในกลุ่มที่กำหนดหรือไม่
+if (in_array($current_right, $check_rights)) {
+?>
+
 <div id="billing-container" class="bar-skip">
     <div class="billing-section">
         <span id="mini-icon">ℹ️</span>
@@ -864,11 +876,15 @@ if($row_diabet > 0){
             <span class="label-sm">คงเหลือ:</span>
             <span class="value-sm" style="color:red;" id="display-remaining">-</span>
         </div>
+		
+		<div class="billing-data">
+		<span class="value-sm" style="color:#000000; margin-left:50px;">⚕️ (ไม่รวมค่า LAB/XRAY/หัตถการ)  🔬☢️</span>
+		</div>
     </div>
 
     <div id="mini-msg">ตรวจสอบข้อมูล...</div>
 </div>
-
+<?php } ?>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

@@ -427,7 +427,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 
 
 // 1. กำหนดกลุ่มรหัสสิทธิที่ต้องการตรวจสอบไว้ใน Array (แก้ไขง่ายในที่เดียว)
-$check_rights = array('R07', 'R09', 'R10', 'R11', 'R12', 'R13', 'R14', 'R17', 'R35', 'R36');
+$check_rights = array('R07', 'R09', 'R10', 'R11', 'R12', 'R13', 'R14', 'R17', 'R35', 'R36', 'R43', 'R44', 'R60', 'R61');
 
 // 2. ตัด 3 ตัวแรกของสิทธิปัจจุบันมาเช็ค
 $current_right = substr($_SESSION["ptright_now"], 0, 3);
@@ -454,10 +454,11 @@ if (in_array($current_right, $check_rights)) {
     if ($sumprice > 0) {
         // ใช้ดีไซน์ Compact Horizontal ที่เราทำไว้ก่อนหน้านี้มาประยุกต์ได้ครับ
         // หรือใช้สไตล์ด่วนตามด้านล่างนี้
-        $bg_color = ($sumprice > $pay_limit) ? "#FF0000" : "#48bb78"; // แดงถ้าเกิน, เขียวถ้าไม่เกิน
+        $bg_color = ($sumprice > $pay_limit) ? "#FF6467" : "#48bb78"; // แดงถ้าเกิน, เขียวถ้าไม่เกิน
         
         echo "<div style='background-color: $bg_color; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold; display: inline-block;'>";
-        echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท <span style='margin-left:50px;color:blue;'>(เบิกคืนได้ไม่เกิน " . number_format($pay_limit, 2) . " บาท)</span>";
+        //echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท <span style='margin-left:50px;color:#000000;'>(เบิกคืนได้ไม่เกิน " . number_format($pay_limit, 2) . " บาท)</span>";
+		echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท </span>";
         echo "</div>";
     }
     
@@ -4956,7 +4957,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	<TD valign="top"><Div id="druglist" ></Div>
 	<?php 
 		$listinteraction =array();
-		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
+		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND (whokey = 'DR' OR whokey LIKE '%HD%') AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
 		
 		$result = mysql_query($sql);
 		$rows = mysql_num_rows($result);
@@ -4969,16 +4970,19 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		echo "<tr class='tb_head' >
 			<td align=\"center\" >ชื่อยา</td>
 			<td align=\"center\" >จำนวน</td>
+			<td align=\"center\" >ราคารวม</td>
 			<td align=\"center\" >วิธีใช้</td>
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
 		while(list($row_id, $doctor) = mysql_fetch_row($result)){
-			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,b.salepri, a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 			$result2 = mysql_query($sql) or die(mysql_error());
 			
 			$ii = 1;
-			while(list($genname,$tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
-
+			$total_drug=0;
+			while(list($genname,$tradname, $drugcode, $amount, $unit, $salepri, $slcode) = mysql_fetch_row($result2)){
+				$sumprice_drug = $amount * $salepri;
+				$total_drug = $total_drug + $sumprice_drug;
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 
@@ -4989,11 +4993,13 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 				echo "<TR style='$trBgColor'>";
 					echo "<TD><span title='Drug code: $drugcode'>".$tradname." ( $drugcode ) [ $genname ]</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
+					echo "<TD align='right'>".number_format($sumprice_drug,2)."</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
 				echo "</TR>";
 				$ii++;
 			}
+			echo "<tr><td colspan='2' align='right'><strong>รวมทั้งสิ้น</strong></td><td align='right'>".number_format($total_drug,2)."</td><td colspan='2'><strong>บาท</strong></td></tr>";
 		}
 		echo "</Table>";
 		}
