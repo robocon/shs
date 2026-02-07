@@ -5,9 +5,10 @@ date_default_timezone_set("Asia/Bangkok");
 include("connect.inc");
 include_once 'includes/JSON.php';
 //print_r($_SESSION);
-
+$check_date = (date("Y")+543).date("-m-d");
 // 1. ดึงข้อมูลจาก API (สมมติว่าดึงผ่าน URL เรียบร้อยแล้ว)
 $vn_to_check = $_SESSION["vn_now"]; 
+
 //echo "-->".$vn_to_check;
 $api_url = "http://192.168.131.191/JSON/get_summary_payment_api.php?vn=".$vn_to_check;
 //echo "-->".$api_url;
@@ -786,15 +787,48 @@ for($i=0;$i<$count;$i++){
 		$chkprice=$total_price;
 
 		//echo "==>".$exopd;
-		if(in_array($current_right, $check_rights) && $chkprice > $remaining && $exopd!="EX02"){  //ประกันสุขภาพถ้วนหน้า/ประกันสังคม
-			/*if($_SESSION["hn_now"]=="60-10215"){  //ผอ.อรรณพ อนุมัติเคสบิดาพลทหาร 20/03/65
-				echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
-			}else{
-				echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
-			}*/
-			echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกินวงเงินคงเหลือ $remaining บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
-		}else{
-		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
+		// 1. ตรวจสอบเงื่อนไขพื้นฐาน (สิทธิ์/วงเงิน/ข้อยกเว้น)
+		if(in_array($current_right, $check_rights) && $chkprice > $remaining && $exopd != "EX02") {
+			// กรณีที่ 2: วงเงินเกิน แต่ให้ทางเลือกถ้าเป็นผู้ป่วยนัด
+		// 2. เพิ่มการ Query เช็คสถานะในตาราง opday ของ VN นี้โดยเฉพาะ
+			$sql_check_status = "SELECT type_sso_nhso FROM opday WHERE thidate LIKE '$check_date%' AND vn = '$vn_to_check' LIMIT 1";
+			//echo $sql_check_status;
+			$res_check = mysql_query($sql_check_status);
+			$row_check = mysql_fetch_array($res_check);
+			$current_type_status = $row_check['type_sso_nhso'];
+
+			// 3. ตรวจสอบว่ายังไม่ได้ถูกตั้งค่าเป็น 'APPOINT' ใช่หรือไม่
+			if($current_type_status != "APPOINT") {
+				// กรณีที่ยังไม่ได้ยืนยันว่าเป็นผู้ป่วยนัด ให้แสดงกล่องถามแพทย์
+				echo "<div class='alert-box'>";
+				echo "<strong style='color:red; font-size:1.2em;'>ท่านสั่งจ่ายยาเกินวงเงินคงเหลือ $remaining บาท</strong><br>";
+				echo "กรณีนี้เป็นผู้ป่วยที่มี <strong>'นัดครั้งถัดไป'</strong> ใช่หรือไม่?<br><br>";
+				
+				echo "<input type='button' class='btn-confirm' value='ใช่, เป็นผู้ป่วยนัด (ขยายวงเงิน)'  onclick='confirmAppoint(\"$vn_to_check\", \"$check_date\")'>";
+				echo "&nbsp;&nbsp;";
+				echo "<input type='button' value='ไม่ใช่ (กลับไปแก้ไขรายการยา)' onclick='window.location.reload();'>";
+				echo "</div>";
+			} else {
+				// กรณีที่ type_sso_nhso เป็น 'APPOINT' แล้ว (ผ่านการกดยืนยันมาก่อนหน้า)
+				// ให้แสดงปุ่มสั่งยาปกติได้เลย เพราะถือว่าเข้าเงื่อนไขยกเว้นวงเงิน
+				// กรณีปกติ หรือ ผ่านการยืนยันเป็นผู้ป่วยนัดแล้ว
+				echo "<div align=\"center\">";
+				echo "  <INPUT TYPE=\"submit\" value=\"      ยืนยันการสั่งจ่ายยา      \" onclick=\"return chklist()\">";
+				
+				// ตรวจสอบว่าถ้าเป็นเคสที่ถูกปรับสถานะเป็น APPOINT ให้แสดงข้อความกำกับ
+				if($current_type_status == "APPOINT" || $row_check['type_sso_nhso'] == "APPOINT") {
+					echo "<br>";
+					echo "<div class=\"status-extended\">";
+					echo "  <span>✅</span> สถานะ: ผู้ป่วยนัดครั้งต่อไป (ขยายวงเงินเรียบร้อย)";
+					echo "</div>";
+				}
+				
+				echo "</div>";
+			}
+
+		} else {
+			// กรณีปกติ หรือผ่านเงื่อนไขแล้ว เป็นสิทธิ์ที่ไม่ต้องเช็ค)
+			echo "<div align=\"center\"><INPUT TYPE=\"submit\" style=\"border: 2px solid #4caf50; cursor: pointer;\" value=\"      ยืนยันการสั่งจ่ายยา      \" onclick=\"return chklist()\"></div>";
 		}
 	
 	echo "	</TD>
@@ -2604,6 +2638,47 @@ body,td,th {
 	padding: 2px;
 	border: 1px solid black;
 }
+
+
+
+
+.alert-box {
+    background-color: #fff3f3;
+    border: 2px solid #ff0000;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+.btn-confirm {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-confirm:hover { background-color: #45a049; }
+
+
+.status-extended {
+    margin-top: 12px;
+    display: inline-block;
+    padding: 6px 15px;
+    background-color: #e8f5e9; /* สีเขียวอ่อน */
+    border: 1px solid #4caf50;
+    color: #2e7d32;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Tahoma, sans-serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.status-extended span {
+    margin-right: 5px;
+}
+
 </style>
 
 <script src="js/sweetalert2.all.min.js"></script>
@@ -5204,6 +5279,33 @@ elseif ($patient_hn=='49-19589') {
 	<?php
 }
 ?>
+
+
+<script type="text/javascript">
+function confirmAppoint(vn, orderDate) {
+    if (confirm("ยืนยันว่าเป็นผู้ป่วยนัด?\nระบบจะจำกัดวันนัดไม่เกิน 35 วัน (นับจากวันที่ " + orderDate + ")")) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) { xmlhttp = new XMLHttpRequest(); } 
+        else { xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); }
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if(xmlhttp.responseText.trim() == "SUCCESS") {
+                    alert("บันทึกสถานะผู้ป่วยนัดเรียบร้อยแล้ว");
+                    window.location.reload(); 
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + xmlhttp.responseText);
+                }
+            }
+        }
+        // ส่งทั้ง vn และ order_date ไปยัง server
+        var url = "update_appoint_sso_nhso.php?vn=" + vn + "&order_date=" + orderDate + "&staff_id=<?php echo $_SESSION["sRowid"]; ?>";
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+}
+</script>
+
 </body>
 <?php include("unconnect.inc");?>
 </html>
