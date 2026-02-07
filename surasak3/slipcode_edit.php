@@ -16,29 +16,44 @@ if (empty($_SESSION['sOfficer'])) {
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
+<style>
+    *{
+        font-family: "TH SarabunPSK";
+        font-size: 16pt;
+    }
+    #theadTeal tr th{
+        background-color: #198754;
+        color: #ffffff;
+    }
+</style>
 <div class="container">
-<a target=_self href='../nindex.htm'><< ไปเมนู</a>
-<h1>แก้ไขจำนวนต่อวิธีใช้ยา 1 วัน</h1>
-<form name="formedit" method="post" action="<? $_SERVER['PHP_SELF'] ?>">
-    <table>
-        <tr>
-            <th>รหัส</th>
-            <th>จำนวนต่อ1วัน</th>
-            <th>วิธีใช้</th>
-            <th>วิธีใช้</th>
-            <th>วิธีใช้</th>
-            <th>วิธีใช้</th>
-        </tr>
+<div class="mt-2">
+    <a href='../nindex.htm' class="btn btn-secondary btn-sm">🏠 ไปเมนู</a>
+</div>
+<h3 class="mt-2 mb-2">แก้ไขจำนวนต่อวิธีใช้ยา 1 วัน</h3>
+<form name="formedit" method="post" action="slipcode_edit.php">
+    <table class="table table-hover table-sm table-striped mt-2" id="theadTeal">
+        <thead class="sticky-top">
+            <tr>
+                <th>รหัส</th>
+                <th>จำนวนต่อ1วัน</th>
+                <th>วิธีใช้</th>
+                <th>วิธีใช้</th>
+                <th>วิธีใช้</th>
+                <th>วิธีใช้</th>
+            </tr>
+        </thead>
+        <tbody>
         <?php
         $query = "SELECT row_id,slcode,detail1,detail2,detail3,detail4,amount FROM drugslip where slcode!='' ORDER BY slcode ASC";
         $result = mysql_query($query) or die("Query failed");
         while (list($row, $slcode, $detail1, $detail2, $detail3, $detail4, $amount) = mysql_fetch_row($result)) {
             $k++;
             ?>
-            <tr>
+            <tr class="search-items" data-value="<?= $slcode; ?>">
                 <td><?= $slcode ?></td>
                 <td>
-                    <input name='ch<?=$k;?>' type='text' size='5' value='<?= $amount; ?>' onblur="saveItem(this.value)">
+                    <input name='ch<?=$k;?>' type='text' size='5' value='<?= $amount; ?>' onblur="saveItem('<?= $row ?>',this.value)">
                     <input name='rowid<?=$k;?>' type='hidden' value='<?= $row ?>'>
                 </td>
                 <td><?= $detail1 ?></td>
@@ -48,31 +63,76 @@ if (empty($_SESSION['sOfficer'])) {
             </tr>
             <?php
         }
-        echo "<input name='sum' type='hidden' value='$k'>";
         ?>
-        <tr>
-            <td BGCOLOR='#CCCC00' colspan='6'><input type='submit' value=' ตกลง ' name='ok' onclick='return confirm("ยืนยันการแก้ไขจำนวน?");'></td>
-        </tr>
+        </tbody>
     </table>
 </form>
+<div class="position-fixed top-50 end-0">
+    <div class="p-2">
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon1">🔎</span>
+            <input type="text" class="form-control" id="slip-search" placeholder="ค้นหาตามรหัส" onkeyup="searchItem(this.value)">
+        </div>
+    </div>
+</div>
 <script>
-    function saveItem(v){
-        console.log(v);
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    
+    function saveItem(id, amount){
+        onSave(id, amount).then((res)=>{
+            if(res.status==200){
+                Toast.fire({
+                    icon: "success",
+                    title: "บันทึกข้อมูลเรียบร้อย"
+                });
+            }else if(res.status===400){
+                Swal.fire({
+                    icon:"error",
+                    title: res.msg
+                });
+            }
+        });
+    }
+
+    async function onSave(id, amount){
+        const data = {
+            "id": id,
+            "amount": amount
+        }
+        let response = await fetch('slipcode_edit_save.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        const content = await response.json();
+        return content;
+    }
+
+    function searchItem(v){
+        let items = document.getElementsByClassName('search-items');
+        for (let index = 0; index < items.length; index++) {
+            const el = items[index];
+            const itemValue = el.getAttribute('data-value');
+            if(itemValue.indexOf(v)>-1){
+                el.style.display = '';
+            }else{
+                el.style.display = 'none';
+            }
+        }
     }
 </script>
-<?php
-if (isset($_POST['ok'])) {
-    for ($p = 1; $p < $_POST['sum']; $p++) {
-        $sql = "update drugslip set amount = '" . $_POST['ch' . $p] . "' where row_id='" . $_POST['rowid' . $p] . "' ";
-        mysql_query($sql);
-    }
-?>
-    <script>
-        window.location.href = 'slipcode_edit.php';
-    </script>
-<?php
-}
-?>
 </div>
 </body>
 </html>
