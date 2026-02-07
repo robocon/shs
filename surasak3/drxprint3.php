@@ -359,7 +359,7 @@ if($q->num_rows>0){
 		$rechallengeItem[] = $a['drugcode'];
 	}
 }
-
+$drugViewerItems = array();
 $num = '0';
 $query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode, a.drugcode, a.part, b.detail1, b.detail2, b.detail3, 
 b.detail4, a.drug_inject_amount, a.drug_inject_unit, a.drug_inject_amount2, a.drug_inject_unit2, a.drug_inject_time, 
@@ -374,7 +374,9 @@ AND a.drugcode = c.drugcode ";
 $result = mysql_query($query) or die("Query failed");
 while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1, $detail2, $detail3, $detail4,$dia,$diu,$dia2,$diu2,$dtime,$dis,$dit,$die,$office,$unit,$reason) = mysql_fetch_row($result) ){
 	$num++;
-		
+
+	$drugViewerItems[] = "'".$drugcode."'";
+	
 	if($amount!=0){
 		$year=date("Y")+543;
 		$day=date("m-d");
@@ -544,6 +546,8 @@ $num=Mysql_num_rows($result);
 	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";
 }
 
+$drugSQL = implode(',', $drugViewerItems);
+
 /**
  * ☠️ ปรับวันที่ให้เป็นตาม dphardep 
  */
@@ -559,6 +563,7 @@ SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,`idno`,CONCA
 FROM `drugrx` 
 WHERE `date` LIKE '$dateNow%' 
 AND `hn` = '$rxHn' 
+AND `drugcode` IN ($drugSQL) 
 AND ( `an` IS NULL AND `slcode` != 'b' )
 AND ( `amount` > 0 AND `status` = 'y' )
 GROUP BY `hn`,`drugcode`
