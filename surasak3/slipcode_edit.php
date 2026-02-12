@@ -26,10 +26,32 @@ if (empty($_SESSION['sOfficer'])) {
         color: #ffffff;
     }
 </style>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary" id="mainNav" data-bs-theme="dark" style="background-color: #13795b!important; color: #ffffff;">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="../nindex.htm">🏡</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarScroll">
+      <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="slipadd.php">เพิ่มข้อมูลวิธีใช้</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="dgslip.php">แก้ไขวิธีใช้</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="slipcode_edit.php">จำนวนต่อวัน</a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <div class="container">
-<div class="mt-2">
-    <a href='../nindex.htm' class="btn btn-secondary btn-sm">🏠 ไปเมนู</a>
-</div>
 <h3 class="mt-2 mb-2">แก้ไขจำนวนต่อวิธีใช้ยา 1 วัน</h3>
 <form name="formedit" method="post" action="slipcode_edit.php">
     <table class="table table-hover table-sm table-striped mt-2" id="theadTeal">
