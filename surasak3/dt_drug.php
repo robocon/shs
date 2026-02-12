@@ -1633,6 +1633,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$result = Mysql_Query($sql);
 	list($id, $item, $stkcutdate) = Mysql_fetch_row($result);
 	
+	$update_cancle="UPDATE dphardep SET dr_cancle='1' WHERE row_id='$id'";
+	$query_cancle=mysql_query($update_cancle);
+	
+	
 	if($stkcutdate)
 		session_register("cancle_row_id");
 		$_SESSION["cancle_row_id"] = $id;
@@ -1694,8 +1698,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		$result2 = mysql_query($query) or die("Query failed");
 
 	}
-
-	exit();
+	
+    exit();
 }
 
 //************************** ลบยา ออกจาก SESSION ********************************************************
@@ -5004,7 +5008,7 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 
 
 <?php 
-$sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1 ";
+$sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1 ";
 	$result = Mysql_Query($sql);
 	if(mysql_num_rows($result) >0 ){
 		$arr = Mysql_fetch_assoc($result);
@@ -5016,7 +5020,8 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		}
 
 		echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">ยกเลิก/แก้ไขรายการครั้งล่าสุด</A></CENTER><BR>";
-	}?>
+	}
+?>
 
 	</TD>
 </TR>
