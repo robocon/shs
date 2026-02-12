@@ -14,7 +14,7 @@ function usingIE()
         return false;
     }
 }
-
+$sIdname = $_SESSION['sIdname'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -32,21 +32,18 @@ function usingIE()
 
 <body>
     <style type="text/css">
-        body {
-            /* background-color: #E9F7EF; */
-        }
-
         *{
             font-family: "TH SarabunPSK";
-            font-size: 20px;
+            font-size: 16pt;
         }
-
         h3 {
             font-weight: bold;
         }
-
         input[readonly] {
             background-color: #d5d5d5;
+        }
+        label:hover{
+            cursor: pointer;
         }
     </style>
     <div class="container mt-4">
@@ -91,7 +88,10 @@ function usingIE()
                     <td align="right"><strong>รหัสผ่านใหม่ : &nbsp;</strong></td>
                     <td align="left">
                         <div class="col-md-4">
-                            <input name="newpw1" id="newpw1" type="password" class="form-control" />
+                            <input name="newpw1" id="newpw1" type="password" class="form-control" 
+                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+                            title="ต้องมีอย่างน้อย 8 ตัวอักษร (ตัวเล็ก, ตัวใหญ่, ตัวเลข และอักขระพิเศษอย่างละ 1 ตัว)" 
+                            >
                         </div>
                     </td>
                 </tr>
@@ -99,7 +99,10 @@ function usingIE()
                     <td align="right"><strong>ยืนยันรหัสใหม่ : &nbsp;</strong></td>
                     <td align="left">
                         <div class="col-md-4">
-                            <input name="newpw2" id="newpw2" type="password" class="form-control" />
+                            <input name="newpw2" id="newpw2" type="password" class="form-control" 
+                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+                            title="ต้องมีอย่างน้อย 8 ตัวอักษร (ตัวเล็ก, ตัวใหญ่, ตัวเลข และอักขระพิเศษอย่างละ 1 ตัว)" 
+                            >
                         </div>
                         
                         <p style="margin:0;">
@@ -108,16 +111,16 @@ function usingIE()
 
                         <span class="badge text-bg-warning mb-2">ถ้าไม่มั่นใจว่าตั้งรหัสผ่านถูกต้องหรือไม่สามารถกด แสดงรหัสผ่าน เพื่อดูรหัสของท่านได้</span>
 
-                        <div class="alert alert-warning" role="alert">
-                            <p><b>คำแนะนำในการตั้งรหัสผ่าน</b></p>
-                            <ul>
+                        <div class="alert alert-warning p-2" role="alert">
+                            <p class="m-0"><b>คำแนะนำในการตั้งรหัสผ่าน</b></p>
+                            <ul class="m-0">
                                 <li>รหัสผ่านควรมีความยาว 8 ตัวอักษรขึ้นไป</li>
                                 <li>รหัสผ่านควรมีตัวพิมพ์เล็ก(a-z) พิมพ์ใหญ่(A-Z) ตัวเลข(1-9) และ อักขระพิเศษ(!@#$%^&*[]_+)ผสมกัน</li>
                             </ul>
                         </div>
                         
-                        <div class="alert alert-info" role="alert">
-                            <p>
+                        <div class="alert alert-info p-2" role="alert">
+                            <p class="m-0">
                                 * กรณีจำรหัสผ่านเดิมไม่ได้ สามารถประสาน Admin ของแผนกเพื่อเปลี่ยนรหัสใหม่ <br>( คลิกเพื่อดู<a href="showAdmin.php?group=<?= $_SESSION['smenucode']; ?>" class="alert-link" target="_blank">รายชื่อ Admin ประจำแผนก</a> )
                             </p>
                         </div>

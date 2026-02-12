@@ -42,6 +42,7 @@ if( $_GET["page"] == 'first' ) {
 		<tr>
 			<th>กลุ่ม</th>
 			<th>รายการ</th>
+			<th>สถานะ</th>
 			<th>จำนวนยา</th>
 			<th >ดำเนินการ</th>
 		</tr>
@@ -57,6 +58,15 @@ if( $_GET["page"] == 'first' ) {
 			<tr>
 				<td align="center"><?=$item['id'];?></td>
 				<td><a href="drugreact_group_item.php?id=<?=$item['id'];?>" target="_blank"><?=$item['name'];?></a></td>
+				<td>
+					<?php
+					if($item['status']=='y'){
+						?><span>เปิดใช้งาน</span><?php
+					}elseif ($item['status']=='n') {
+						?><span style="color: red;"><strong>ปิดใช้งาน</strong></span><?php
+					}
+					?>
+				</td>
 				<td>
 					<?=$groupRows;?>
 				</td>

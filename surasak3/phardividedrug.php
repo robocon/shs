@@ -1,69 +1,76 @@
 <?php
-session_start();
-include("connect.inc");
-$build = array("42"=>"หอผู้ป่วยหญิง","44"=>"หอผู้ป่วย ICU","43"=>"หอผู้ป่วยสูติ","45"=>"หอผู้ป่วยพิเศษ");
+    session_start();
 
-session_unregister("list_druglst");
-session_unregister("num_list");
-session_unregister("nRunno");
-
-session_register("list_druglst");
-session_register("num_list");
-session_register("nRunno");
-
-$Thidate = (date("Y")+543).date("-m-d");
-
-$query = "SELECT runno FROM runno WHERE title = 'phardep' limit 0,1";
-$result = mysql_query($query) or die("Query failed");
-list($_SESSION["nRunno"]) = mysql_fetch_row($result);
-$_SESSION["nRunno"]++;
-
-$query ="UPDATE runno SET runno = ".$_SESSION["nRunno"]." WHERE title='phardep'";
-$result = mysql_query($query) or die("Query failed");
-
-$_SESSION["num_list"] = 0;
-$an = $_GET['an'];
-$sql = "SELECT `row_id`,`drugcode`,`tradname`,`part`,`slcode`,`statcon`,`amount`,`firstdate`,`enddate`,`unit`
-FROM `dgprofile` 
-WHERE `an` = '$an' 
-AND LEFT( `drugcode`, 1 ) IN ('0','1','2','3','4','5','6','7','8','9','O') 
-AND 
-(
-	( `onoff` = 'ON' AND (`statcon` = 'CONT' OR `statcon` = 'OLD') ) 
-	OR 
-	( `date` like '$Thidate%' AND (`statcon` = 'STAT' OR `statcon` = 'STAT1') ) 
-) ORDER BY `row_id` ASC ";
-
-$result = Mysql_Query($sql);
-while($arr = Mysql_fetch_assoc($result)){
-
-	$genname = '';
-	$qDruglst = mysql_query("SELECT genname FROM druglst WHERE drugcode = '".$arr["drugcode"]."' ");
-	if(mysql_num_rows($qDruglst)>0){
-		$druglst = mysql_fetch_assoc($qDruglst);
-		$genname = $druglst['genname'];
-	}
+	 include("connect.inc");
+	$build = array("42"=>"หอผู้ป่วยหญิง","44"=>"หอผู้ป่วย ICU","43"=>"หอผู้ป่วยสูติ","45"=>"หอผู้ป่วยพิเศษ");
 	
-	$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
-	$_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]] = $arr["drugcode"];
-	$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $arr["tradname"];
-	$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = $genname;
-	$_SESSION["list_druglst"]["part"][$_SESSION["num_list"]] = $arr["part"];
-	$_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]] = $arr["slcode"];
-	$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
-	$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $arr["amount"];
-	$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $arr["firstdate"];
-	$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $arr["enddate"];
-	$_SESSION["list_druglst"]["unit"][$_SESSION["num_list"]] = $arr["unit"];
 
-	$_SESSION["num_list"]++;
-}
+	session_unregister("list_druglst");
+	session_unregister("num_list");
+	session_unregister("nRunno");
+	
+	session_register("list_druglst");
+	session_register("num_list");
+	session_register("nRunno");
+		
+	$query = "SELECT runno FROM runno WHERE title = 'phardep' limit 0,1";
+	$result = mysql_query($query) or die("Query failed");
+	
+	list($_SESSION["nRunno"]) = mysql_fetch_row($result);
+	
+
+	 $_SESSION["nRunno"]++;
+
+    $query ="UPDATE runno SET runno = ".$_SESSION["nRunno"]." WHERE title='phardep'";
+    $result = mysql_query($query) or die("Query failed");
+
+
+		$_SESSION["num_list"] = 0;
+
+		$sql = "SELECT drugcode, tradname, amount, slcode, statcon, row_id,part 
+		FROM dgprofile 
+		WHERE an = '".$_GET["an"]."' 
+		AND left( drugcode, 1 ) in ('0','1','2','3','4','5','6','7','8','9','O') 
+		AND 
+		(
+			(
+				onoff = 'ON' AND (statcon = 'CONT' OR statcon = 'OLD')
+			) 
+			OR 
+			(
+				`date` like '".(date("Y")+543).date("-m-d")."%' AND (statcon = 'STAT' OR statcon = 'STAT1') 
+			) 
+		) Order by row_id ASC ";
+
+		
+		$result = Mysql_Query($sql);
+		while($arr = Mysql_fetch_assoc($result)){
+
+			$genname = '';
+			$qDruglst = mysql_query("SELECT genname FROM druglst WHERE drugcode = '".$arr["drugcode"]."' ");
+			if(mysql_num_rows($qDruglst)>0){
+				$druglst = mysql_fetch_assoc($qDruglst);
+				$genname = $druglst['genname'];
+			}
+			
+			$_SESSION["list_druglst"]["drugcode"][$_SESSION["num_list"]] = $arr["drugcode"];
+			$_SESSION["list_druglst"]["tradname"][$_SESSION["num_list"]] = $arr["tradname"];
+			$_SESSION["list_druglst"]["genname"][$_SESSION["num_list"]] = $genname;
+			$_SESSION["list_druglst"]["part"][$_SESSION["num_list"]] = $arr["part"];
+			$_SESSION["list_druglst"]["slcode"][$_SESSION["num_list"]] = $arr["slcode"];
+			$_SESSION["list_druglst"]["statcon"][$_SESSION["num_list"]] = $arr["statcon"];
+			$_SESSION["list_druglst"]["amount"][$_SESSION["num_list"]] = $arr["amount"];
+			$_SESSION["list_druglst"]["row_id"][$_SESSION["num_list"]] = $arr["row_id"];
+			$_SESSION["list_druglst"]["firstdate"][$_SESSION["num_list"]] = $arr["firstdate"];
+			$_SESSION["list_druglst"]["enddate"][$_SESSION["num_list"]] = $arr["enddate"];
+			$_SESSION["list_druglst"]["unit"][$_SESSION["num_list"]] = $arr["unit"];
+			
+			$_SESSION["num_list"]++;
+		}
+
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ตัดจ่ายยาคนไข้ใน</title>
 <style type="text/css">
 a:link {color:#FF0000; text-decoration:underline;}
@@ -353,7 +360,7 @@ echo "
 	echo "<INPUT TYPE=\"hidden\" NAME=\"Slipcode[]\" value=\"".htmlspecialchars($_SESSION["list_druglst"]["slcode"][$j])."\">";
 
 	$sql = "Select salepri, part, unit,freepri  From druglst where drugcode = '".$_SESSION["list_druglst"]["drugcode"][$j]."' limit 0,1 ";
-	list($Salepri,$Part,$Unit, $freepri) = Mysql_fetch_row(Mysql_Query($sql));
+	list($Salepri,$Part,$Unit, $freepri) = Mysql_fetch_row(Mysql_Query($sql)); 
 
 	// ให้ใช้ค่าที่ได้จากฟอร์มที่ User กรอกมา
 	$Unit = $_SESSION["list_druglst"]["unit"][$j];

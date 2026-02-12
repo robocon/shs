@@ -4,6 +4,38 @@ date_default_timezone_set("Asia/Bangkok");
 
 include("connect.inc");
 include_once 'includes/JSON.php';
+//print_r($_SESSION);
+$check_date = (date("Y")+543).date("-m-d");
+// 1. ดึงข้อมูลจาก API (สมมติว่าดึงผ่าน URL เรียบร้อยแล้ว)
+$vn_to_check = $_SESSION["vn_now"]; 
+
+//echo "-->".$vn_to_check;
+$api_url = "http://192.168.131.191/JSON/get_summary_payment_api.php?vn=".$vn_to_check;
+//echo "-->".$api_url;
+// 1. เริ่มต้นดึงข้อมูล
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $api_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+$response_data = curl_exec($ch); // ดึงข้อมูลมาเก็บในตัวแปรนี้
+curl_close($ch);
+
+// 2. แปลงข้อมูลจาก Serialize String กลับเป็น Array
+// ใช้ได้กับ PHP ทุกเวอร์ชั่น แม้ไม่มี json_decode
+$data = unserialize($response_data); 
+
+// 3. ดึงตัวแปรมาใช้งาน (ตรวจสอบด้วยว่า $data เป็น array หรือไม่)
+if (is_array($data)) {
+    $remaining = $data['billing']['remaining']; 
+    $limit     = $data['billing']['limit'];     
+    $spent     = $data['billing']['spent_total'];
+    $is_over   = $data['flags']['is_over_limit'];
+
+    //echo "==>" . $remaining;
+} else {
+    echo "==> ดึงข้อมูลไม่ได้หรือข้อมูลไม่ใช่ Serialize Format";
+}
+
 
 if($_SESSION["sOfficer"] == ""){
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
@@ -382,7 +414,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "viewtolist"){
 	}else{
 		$code = "OTHER";
 	}
-if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R36"){
+/*if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_now"],0,3) == "R13" || substr($_SESSION["ptright_now"],0,3) == "R36"){
 	$sql="select sum(price),hn,ptname from depart where hn = '".$_SESSION["hn_now"]."' and date like '".((date("Y")+543).date("-m-d"))."%' ";
 	$query=mysql_query($sql);
 	list($sumprice,$hn,$ptname)=mysql_fetch_array($query);
@@ -390,7 +422,59 @@ if(substr($_SESSION["ptright_now"],0,3) == "R12" || substr($_SESSION["ptright_no
 		echo "<div style=\"background-color: #FF0000;\">ค่าบริการทางการแพทย์ รวมทั้งสิ้น ".$sumprice." บาท เบิกต้นสังกัดได้ไม่เกิน 700.00 บาท</div>";
 	}
 	$pay=700;
+}*/
+
+
+
+
+// 1. กำหนดกลุ่มรหัสสิทธิที่ต้องการตรวจสอบไว้ใน Array (แก้ไขง่ายในที่เดียว)
+$check_rights = array('R07', 'R09', 'R10', 'R11', 'R12', 'R13', 'R14', 'R17', 'R35', 'R36', 'R43', 'R44', 'R60', 'R61');
+
+// 2. ตัด 3 ตัวแรกของสิทธิปัจจุบันมาเช็ค
+$current_right = substr($_SESSION["ptright_now"], 0, 3);
+
+// 3. ตรวจสอบว่าสิทธิปัจจุบันอยู่ในกลุ่มที่กำหนดหรือไม่
+if (in_array($current_right, $check_rights)) {
+    
+    // ดึงวันที่ปัจจุบัน (พ.ศ.)
+    $date_now = (date("Y") + 543) . date("-m-d");
+    $hn = $_SESSION["hn_now"];
+
+    // SQL Query
+    $sql = "SELECT SUM(price), hn, ptname 
+            FROM depart 
+            WHERE hn = '$hn' 
+            AND date LIKE '$date_now%'";
+    //echo $sql;        
+    $query = mysql_query($sql);
+    list($sumprice, $hn, $ptname) = mysql_fetch_array($query);
+
+    // กำหนดเพดานเงิน (700 บาท)
+    $pay_limit = $limit;
+
+    if ($sumprice > 0) {
+        // ใช้ดีไซน์ Compact Horizontal ที่เราทำไว้ก่อนหน้านี้มาประยุกต์ได้ครับ
+        // หรือใช้สไตล์ด่วนตามด้านล่างนี้
+        $bg_color = ($sumprice > $pay_limit) ? "#FF6467" : "#48bb78"; // แดงถ้าเกิน, เขียวถ้าไม่เกิน
+        
+        echo "<div style='background-color: $bg_color; color: white; padding: 5px 15px; border-radius: 4px; font-weight: bold; display: inline-block;'>";
+        //echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท <span style='margin-left:50px;color:#000000;'>(เบิกคืนได้ไม่เกิน " . number_format($pay_limit, 2) . " บาท)</span>";
+		echo "📊 ค่าบริการอื่นๆ นอกจากค่ายา : " . number_format($sumprice, 2) . " บาท </span>";
+        echo "</div>";
+    }
+    
+    $pay = $pay_limit;
 }
+
+
+
+
+
+
+
+
+
+
 		
 	echo "<FORM name=\"form_list\" METHOD=POST ACTION=\"dt_drug_reason.php\" onsubmit=\"return viatch($count,'$code');\">
 	<A HREF=\"javascript:showremed();checkall(false);\">Remedผป.นอก</A> ";
@@ -701,14 +785,50 @@ for($i=0;$i<$count;$i++){
 	if($_SESSION["dt_special"])
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;คิดค่าคลินิกพิเศษ <INPUT TYPE=\"text\" NAME=\"clinic150\" value=\"100\" size=\"4\">";
 		$chkprice=$total_price;
-		if(substr($_SESSION["ptright_now"],0,3) == "R12" && $chkprice > 700){  //R12 ประกันสุขภาพถ้วนหน้า(ผู้พิการ)
-			if($_SESSION["hn_now"]=="60-10215"){  //ผอ.อรรณพ อนุมัติเคสบิดาพลทหาร 20/03/65
-				echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
-			}else{
-				echo "<div  align=\"center\" style=\"color:red;\"><strong>ท่านสั่งจ่ายยาเกิน 700 บาท กรุณาแก้ไขการสั่งจ่ายยาด้วยครับ</strong></div>";
+
+		//echo "==>".$exopd;
+		// 1. ตรวจสอบเงื่อนไขพื้นฐาน (สิทธิ์/วงเงิน/ข้อยกเว้น)
+		if(in_array($current_right, $check_rights) && $chkprice > $remaining && $exopd != "EX02") {
+			// กรณีที่ 2: วงเงินเกิน แต่ให้ทางเลือกถ้าเป็นผู้ป่วยนัด
+		// 2. เพิ่มการ Query เช็คสถานะในตาราง opday ของ VN นี้โดยเฉพาะ
+			$sql_check_status = "SELECT type_sso_nhso FROM opday WHERE thidate LIKE '$check_date%' AND vn = '$vn_to_check' LIMIT 1";
+			//echo $sql_check_status;
+			$res_check = mysql_query($sql_check_status);
+			$row_check = mysql_fetch_array($res_check);
+			$current_type_status = $row_check['type_sso_nhso'];
+
+			// 3. ตรวจสอบว่ายังไม่ได้ถูกตั้งค่าเป็น 'APPOINT' ใช่หรือไม่
+			if($current_type_status != "APPOINT") {
+				// กรณีที่ยังไม่ได้ยืนยันว่าเป็นผู้ป่วยนัด ให้แสดงกล่องถามแพทย์
+				echo "<div class='alert-box'>";
+				echo "<strong style='color:red; font-size:1.2em;'>ท่านสั่งจ่ายยาเกินวงเงินคงเหลือ $remaining บาท</strong><br>";
+				echo "กรณีนี้เป็นผู้ป่วยที่มี <strong>'นัดครั้งถัดไป'</strong> ใช่หรือไม่?<br><br>";
+				
+				echo "<input type='button' class='btn-confirm' value='ใช่, เป็นผู้ป่วยนัด (ขยายวงเงิน)'  onclick='confirmAppoint(\"$vn_to_check\", \"$check_date\")'>";
+				echo "&nbsp;&nbsp;";
+				echo "<input type='button' value='ไม่ใช่ (กลับไปแก้ไขรายการยา)' onclick='window.location.reload();'>";
+				echo "</div>";
+			} else {
+				// กรณีที่ type_sso_nhso เป็น 'APPOINT' แล้ว (ผ่านการกดยืนยันมาก่อนหน้า)
+				// ให้แสดงปุ่มสั่งยาปกติได้เลย เพราะถือว่าเข้าเงื่อนไขยกเว้นวงเงิน
+				// กรณีปกติ หรือ ผ่านการยืนยันเป็นผู้ป่วยนัดแล้ว
+				echo "<div align=\"center\">";
+				echo "  <INPUT TYPE=\"submit\" value=\"      ยืนยันการสั่งจ่ายยา      \" onclick=\"return chklist()\">";
+				
+				// ตรวจสอบว่าถ้าเป็นเคสที่ถูกปรับสถานะเป็น APPOINT ให้แสดงข้อความกำกับ
+				if($current_type_status == "APPOINT" || $row_check['type_sso_nhso'] == "APPOINT") {
+					echo "<br>";
+					echo "<div class=\"status-extended\">";
+					echo "  <span>✅</span> สถานะ: ผู้ป่วยนัดครั้งต่อไป (ขยายวงเงินเรียบร้อย)";
+					echo "</div>";
+				}
+				
+				echo "</div>";
 			}
-		}else{
-		echo "<div  align=\"center\"><INPUT TYPE=\"submit\" value=\"     ยืนยันการสั่งจ่ายยา     \" onclick=\"return chklist()\"></div>";		
+
+		} else {
+			// กรณีปกติ หรือผ่านเงื่อนไขแล้ว เป็นสิทธิ์ที่ไม่ต้องเช็ค)
+			echo "<div align=\"center\"><INPUT TYPE=\"submit\" style=\"border: 2px solid #4caf50; cursor: pointer;\" value=\"      ยืนยันการสั่งจ่ายยา      \" onclick=\"return chklist()\"></div>";
 		}
 	
 	echo "	</TD>
@@ -1513,6 +1633,10 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 	$result = Mysql_Query($sql);
 	list($id, $item, $stkcutdate) = Mysql_fetch_row($result);
 	
+	$update_cancle="UPDATE dphardep SET dr_cancle='1' WHERE row_id='$id'";
+	$query_cancle=mysql_query($update_cancle);
+	
+	
 	if($stkcutdate)
 		session_register("cancle_row_id");
 		$_SESSION["cancle_row_id"] = $id;
@@ -1574,8 +1698,8 @@ if(isset($_GET["action"]) && $_GET["action"] == "listdrugprov"){
 		$result2 = mysql_query($query) or die("Query failed");
 
 	}
-
-	exit();
+	
+    exit();
 }
 
 //************************** ลบยา ออกจาก SESSION ********************************************************
@@ -1740,7 +1864,7 @@ if(isset($_GET["action"]) && $_GET["action"] == "drug"){
 				}else if($arr["drug_lockintern"] == "Y" && $sLevel=="intern"){
 					$obj = "Staff Only !!!";
 				}else if($arr["lock"] != "Y" && (substr($_SESSION["ptright_now"],0,3) == "R07"  || substr($_SESSION["ptright_now"],0,3) == "R09" || substr($_SESSION["ptright_now"],0,3) == "R10"  || substr($_SESSION["ptright_now"],0,3) == "R11"  || substr($_SESSION["ptright_now"],0,3) == "R12"  || substr($_SESSION["ptright_now"],0,3) == "R13"  || substr($_SESSION["ptright_now"],0,3) == "R14"  || substr($_SESSION["ptright_now"],0,3) == "R17"  || substr($_SESSION["ptright_now"],0,3) == "R35"  || substr($_SESSION["ptright_now"],0,3) == "R36"  || substr($_SESSION["ptright_now"],0,3) == "R40")){
-					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"3\" maxlength=\"3\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
+					$obj = "รหัสผ่าน:<INPUT TYPE=\"text\" NAME=\"txt_choice\" size=\"5\" maxlength=\"5\" onkeypress=\"if(event.keyCode==13){if(this.value=='".$pass_drug."'){add_drug('".trim($arr["drugcode"])."','$ptrightCode','$drugLock','$tradname','$genname');}else{alert('รหัสผ่านไม่ถูกต้อง')}} \">";
 					$alert="<FONT style=\"font-size: 20px;\" COLOR=\"red\">รับรหัสผ่านได้ที่ผู้อำนวยการเท่านั้น</FONT>";
 				}else{
 
@@ -2518,6 +2642,47 @@ body,td,th {
 	padding: 2px;
 	border: 1px solid black;
 }
+
+
+
+
+.alert-box {
+    background-color: #fff3f3;
+    border: 2px solid #ff0000;
+    padding: 20px;
+    margin: 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+.btn-confirm {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn-confirm:hover { background-color: #45a049; }
+
+
+.status-extended {
+    margin-top: 12px;
+    display: inline-block;
+    padding: 6px 15px;
+    background-color: #e8f5e9; /* สีเขียวอ่อน */
+    border: 1px solid #4caf50;
+    color: #2e7d32;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: Tahoma, sans-serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.status-extended span {
+    margin-right: 5px;
+}
+
 </style>
 
 <script src="js/sweetalert2.all.min.js"></script>
@@ -3780,7 +3945,7 @@ function alert500(){
 		stat = xmlhttp.responseText;
 		stat = stat.substr(4);
 		if(stat == '0'){
-			if((ptright == 'R07' || ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
+			if((ptright == 'R09' || ptright == 'R10' || ptright == 'R11' || ptright == 'R12' || ptright == 'R13' || ptright == 'R14' || ptright == 'R17' || ptright == 'R35' || ptright == 'R36') && eval(document.getElementById("total_all_price").value) > 700){
 				alert("คำเตือน....ท่านได้จ่ายยาเกิน 700 บาท ให้ ผู้ป่วย สิทธิ "+ptrightDetail);
 					
 			}
@@ -4843,7 +5008,7 @@ else{document.getElementById('drug_inject_time').style.display='';document.getEl
 
 
 <?php 
-$sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1 ";
+$sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname='".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' Order by row_id DESC limit 1 ";
 	$result = Mysql_Query($sql);
 	if(mysql_num_rows($result) >0 ){
 		$arr = Mysql_fetch_assoc($result);
@@ -4855,7 +5020,8 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		}
 
 		echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">ยกเลิก/แก้ไขรายการครั้งล่าสุด</A></CENTER><BR>";
-	}?>
+	}
+?>
 
 	</TD>
 </TR>
@@ -4871,7 +5037,7 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 	<TD valign="top"><Div id="druglist" ></Div>
 	<?php 
 		$listinteraction =array();
-		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND whokey = 'DR' AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
+		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND (whokey = 'DR' OR whokey LIKE '%HD%') AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
 		
 		$result = mysql_query($sql);
 		$rows = mysql_num_rows($result);
@@ -4884,16 +5050,19 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 		echo "<tr class='tb_head' >
 			<td align=\"center\" >ชื่อยา</td>
 			<td align=\"center\" >จำนวน</td>
+			<td align=\"center\" >ราคารวม</td>
 			<td align=\"center\" >วิธีใช้</td>
 			<td align=\"center\" >แพทย์ผู้สั่ง</td>
 		</tr>";
 		while(list($row_id, $doctor) = mysql_fetch_row($result)){
-			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
+			$sql = " Select b.genname,b.tradname, a.drugcode, a.amount, b.unit ,b.salepri, a.slcode From ddrugrx as a LEFT JOIN druglst as b ON a.drugcode = b.drugcode where a.idno = '".$row_id."'  ";
 			$result2 = mysql_query($sql) or die(mysql_error());
 			
 			$ii = 1;
-			while(list($genname,$tradname, $drugcode, $amount, $unit ,$slcode) = mysql_fetch_row($result2)){
-
+			$total_drug=0;
+			while(list($genname,$tradname, $drugcode, $amount, $unit, $salepri, $slcode) = mysql_fetch_row($result2)){
+				$sumprice_drug = $amount * $salepri;
+				$total_drug = $total_drug + $sumprice_drug;
 				list($detail1,  $detail2,  $detail3,  $detail4 ) = mysql_fetch_row(mysql_query("Select detail1 , detail2 , detail3 , detail4 From drugslip where slcode = '".$slcode."' limit 1 "));
 				array_push($listinteraction,$drugcode);
 
@@ -4904,11 +5073,13 @@ $sql = " Select row_id, item, stkcutdate From dphardep where hn = '".$_SESSION["
 				echo "<TR style='$trBgColor'>";
 					echo "<TD><span title='Drug code: $drugcode'>".$tradname." ( $drugcode ) [ $genname ]</span></TD>";
 					echo "<TD align='right'>".$amount."&nbsp;&nbsp;&nbsp;</TD>";
+					echo "<TD align='right'>".number_format($sumprice_drug,2)."</TD>";
 					echo "<TD align='center'><span style=\"CURSOR: pointer\" OnmouseOver = \"show_tooltip('วิธีใช้ยา','",$detail1."<BR>".$detail2."<BR>".$detail3."<BR>".$detail4,"','center',-200,-180);\" OnmouseOut = \"hid_tooltip();\">".$slcode."</span></TD>";
 					echo "<TD>".$doctor."</TD>";
 				echo "</TR>";
 				$ii++;
 			}
+			echo "<tr><td colspan='2' align='right'><strong>รวมทั้งสิ้น</strong></td><td align='right'>".number_format($total_drug,2)."</td><td colspan='2'><strong>บาท</strong></td></tr>";
 		}
 		echo "</Table>";
 		}
@@ -5113,6 +5284,33 @@ elseif ($patient_hn=='49-19589') {
 	<?php
 }
 ?>
+
+
+<script type="text/javascript">
+function confirmAppoint(vn, orderDate) {
+    if (confirm("ยืนยันว่าเป็นผู้ป่วยนัด?\nระบบจะจำกัดวันนัดไม่เกิน 35 วัน (นับจากวันที่ " + orderDate + ")")) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) { xmlhttp = new XMLHttpRequest(); } 
+        else { xmlhttp = new ActiveXObject("Microsoft.XMLHTTP"); }
+
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if(xmlhttp.responseText.trim() == "SUCCESS") {
+                    alert("บันทึกสถานะผู้ป่วยนัดเรียบร้อยแล้ว");
+                    window.location.reload(); 
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + xmlhttp.responseText);
+                }
+            }
+        }
+        // ส่งทั้ง vn และ order_date ไปยัง server
+        var url = "update_appoint_sso_nhso.php?vn=" + vn + "&order_date=" + orderDate + "&staff_id=<?php echo $_SESSION["sRowid"]; ?>";
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+}
+</script>
+
 </body>
 <?php include("unconnect.inc");?>
 </html>

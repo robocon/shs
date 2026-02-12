@@ -345,7 +345,7 @@ if( !function_exists('cal_to_bc') ){
 $EnOpdayThidate = (substr($opdayThidate,0,4)-543).substr($opdayThidate,4,6);
 
 
-$patient_hn = trim($sHn);
+$patientHn = trim($sHn);
 $sixMonthsLater = strtotime("-1 year", strtotime($EnOpdayThidate));
 $sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 // $currentDayTH = (date('Y')+543).date('-m-d');
@@ -368,7 +368,7 @@ $sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
 // LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
 // LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
 // WHERE a.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') ",
-// 	$dbi->real_escape_string($patient_hn)
+// 	$dbi->real_escape_string($patientHn)
 // );
 
 $sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
@@ -385,7 +385,7 @@ LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id`
 LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
 LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode`
 ORDER BY a.`date` DESC LIMIT 2",
-$dbi->real_escape_string($patient_hn)
+$dbi->real_escape_string($patientHn)
 );
 $q = $dbi->query($sql);
 if($q->num_rows>0){
@@ -454,7 +454,7 @@ if($q->num_rows>0){
 </style>
 <script type="text/javascript">
 	function openLink(){
-		window.open('warfarin_history.php?hn=<?=$patient_hn;?>','warfarinHistory','width=789,height=600');
+		window.open('warfarin_history.php?hn=<?=$patientHn;?>','warfarinHistory','width=789,height=600');
 	}
 </script>
 <p style="margin-bottom:0;"><b>รายการสั่งยาจากแพทย์</b></p>
@@ -476,7 +476,7 @@ if($q->num_rows>0){
 		<th bgcolor=CD853F></th>
 	</tr>
 <?php
-$dateHn = date('Y-m-d').$patient_hn;
+$dateHn = date('Y-m-d').$patientHn;
 $rechallengeItem = array();
 $sql = "SELECT `drugcode` FROM `dt_rechallenge` WHERE `datehn` = '$dateHn' AND `reason` <> '' ";
 $q = $dbi->query($sql);
@@ -591,84 +591,85 @@ $ptright=substr($sPtright,0,3);
 	}
 </script>
 <?php
-	$drugSQL = implode(',', $drugViewerItems);
-	
-	$sixMonth = strtotime('-6 month');
-	$dateSixMont = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
+$drugSQL = implode(',', $drugViewerItems);
 
-	$currDate = (date('Y')+543).date('-m-d 00:00:00');
+$sixMonth = strtotime('-6 month');
+$dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
 
-	$sqlLeftOver = "SELECT a.*,b.`amount` AS `amount_per_day`,
-	(a.`amount`/b.`amount`) AS `day_averrage`,
-	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
-	CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
-	c.`doctor`,d.`unit`
-	FROM (
-		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,`idno`
-		FROM `drugrx` 
-		WHERE (`date`>= '$dateSixMont' AND `date` <= '$currDate') 
-		AND `hn` = '$sHn' 
-		AND `drugcode` IN ($drugSQL) 
-		GROUP BY `drugcode`
-		ORDER BY `date` DESC
-	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
-	LEFT JOIN `phardep` AS c ON a.`idno` = c.`row_id` 
-	LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
-	WHERE b.`amount` != '' AND b.`amount` > 0 
-	AND d.`unit` REGEXP '(tablet|capsule)+' ";
-	$qLeftOver = $dbi->query($sqlLeftOver);
-	$drugOverItem = array();
-	if($qLeftOver->num_rows>0){
-		while ($a = $qLeftOver->fetch_assoc()) {
-			if($a['day_diff'] < $a['day_averrage']){
-				$drugOverItem[] = $a;
-			}
+$currDate = (date('Y')+543).date('-m-d 00:00:00');
+$dateNow = (date('Y')+543).date('-m-d');
+
+$tmp_ddrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
+SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
+FROM `ddrugrx`
+WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
+AND `hn` = '$sHn' 
+AND `drugcode` IN ($drugSQL) 
+AND ( `an` IS NULL AND `slcode` != 'b' ) ";
+$dbi->query($tmp_ddrugrx);
+
+$sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
+(a.`amount`/b.`amount`) AS `day_averrage`,
+TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
+CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
+c.`doctor`,d.`unit`,b.`amount` AS `amount_per_day`
+FROM `tmp_ddrugrx` AS a 
+LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
+LEFT JOIN `dphardep` AS c ON a.`idno` = c.`row_id` 
+LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
+ORDER BY a.`hn`,a.`date` DESC";
+$qLeftOver = $dbi->query($sqlTemp);
+
+$drugOverItem = array();
+if($qLeftOver->num_rows>0){
+	while ($a = $qLeftOver->fetch_assoc()) {
+		if($a['day_diff'] < $a['day_averrage']){
+			$drugOverItem[] = $a;
 		}
 	}
-	
-	if(count($drugOverItem)>0){
-		?>
-		<div style="display: block; margin-bottom:12px;">
-			<fieldset style="display: inline;">
-				<legend>⚠️ แจ้งเตือน ยาเหลือ ⚠️ <span>(รองรับยาแบบ tablet หรือ capsule )</span></legend>
-				<table>
-					<tr style="background-color:#636363; color:#ffffff;">
-						<th>วันที่จ่ายยา</th>
-						<th>รหัส</th>
-						<th>ชื่อยา</th>
-						<th>จำนวนที่จ่าย</th>
-						<th>วิธีใช้</th>
-						<th>ยาที่เหลือ<br>(โดยประมาณ)</th>
-						<th>วันที่คาดว่ายาจะหมด</th>
-						<th>แพทย์ที่สั่งจ่าย</th>
-					</tr>
-				<?php
-				foreach ($drugOverItem as $key => $item) {
-					$dateOrder = (substr($item['date'],0,4)-543).substr($item['date'],4,15);
-					$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".round($item['day_averrage'])."day"));
-					$dateFutureToThai = (substr($dateFuture,0,4)+543).substr($dateFuture,4,15);
-					?>
-					<tr style="background-color:#d9d9d9;">
-						<td><?= substr($item['date'],0,10); ?></td>
-						<td><?= $item['drugcode']; ?></td>
-						<td><?= $item['tradname']; ?></td>
-						<td align="center"><?= $item['amount']; ?></td>
-						<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
-						<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
-						<th><?= substr($dateFutureToThai,0,10); ?></th>
-						<td><?= $item['doctor']; ?></td>
-					</tr>
-					<?php
-				}
+}
+if(count($drugOverItem)>0){
+	?>
+	<div style="display: block; margin-bottom:12px;">
+		<fieldset style="display: inline;">
+			<legend>⚠️ แจ้งเตือน ยาเหลือ ⚠️ <span>(รองรับยาแบบ tablet หรือ capsule )</span></legend>
+			<table>
+				<tr style="background-color:#636363; color:#ffffff;">
+					<th>วันที่จ่ายยา</th>
+					<th>รหัส</th>
+					<th>ชื่อยา</th>
+					<th>จำนวนที่จ่าย</th>
+					<th>วิธีใช้</th>
+					<th>ยาที่เหลือ<br>(โดยประมาณ)</th>
+					<th>วันที่คาดว่ายาจะหมด</th>
+					<th>แพทย์ที่สั่งจ่าย</th>
+				</tr>
+			<?php
+			foreach ($drugOverItem as $key => $item) {
+				$dateOrder = (substr($item['date'],0,4)-543).substr($item['date'],4,15);
+				$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".round($item['day_averrage'])."day"));
+				$dateFutureToThai = (substr($dateFuture,0,4)+543).substr($dateFuture,4,15);
 				?>
-				</table>
-			</fieldset>
-		</div>
-		<?php
-	}
+				<tr style="background-color:#d9d9d9;">
+					<td><?= substr($item['date'],0,10); ?></td>
+					<td><?= $item['drugcode']; ?></td>
+					<td><?= $item['tradname']; ?></td>
+					<td align="center"><?= $item['amount']; ?></td>
+					<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
+					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
+					<th><?= substr($dateFutureToThai,0,10); ?></th>
+					<td><?= $item['doctor']; ?></td>
+				</tr>
+				<?php
+			}
+			?>
+			</table>
+		</fieldset>
+	</div>
+	<?php
+}
 
 	$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$sHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
-	//echo $sqlopday;
 	$res2= mysql_query($sqlopday2) or die("Query failed");
 	list($datekey,$appdate,$end) = mysql_fetch_row($res2);
 	
@@ -697,7 +698,7 @@ if($inject){
 <?php 
 }
 echo "<table><tr>";
-		if($stkcutdate_now ==""){
+	if($stkcutdate_now ==""){
 	?>
     <a target="_blank" href="drxadddrug.php?sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>เพิ่มยา</font></a>&nbsp;&nbsp;
    
@@ -709,7 +710,7 @@ echo "<table><tr>";
 	<td><FONT COLOR="#FF0000"><B>เคยตัดสต๊อกแล้ว</B></FONT>&nbsp;&nbsp;&nbsp;</td>
 	<?php }?>
     </td>
-    <td><a target="_blank" href="drxprint.php"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
+    <td><a target="_blank" href="drxprint.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
     <td><a target="_blank" href="slipprntest1.php"><font face='Angsana New'>พิมพ์สลากยารุ่นเก่า(2560)</a></td>
     <td><a target="_blank" href="slipprntest1_new.php"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
 	<td><a target="_blank" href="drxprintopd.php"><font face='Angsana New'>พิมพ์ใบรายการยากลับบ้าน</a></td>
@@ -720,7 +721,8 @@ echo "<table><tr>";
  <div>
 	<p>
 		<a href="slipprntest1_qrcode.php" target="_blank">ฉลากยาพร้อม QR Code</a> | 
-		<a target="_blank" href="drxprint2.php"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a>
+		<a target="_blank" href="drxprint2.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา (Windows 10)</a> | 
+		<a target="_blank" href="drxprint3.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา (แจ้งเตือนยาเหลือ)</a>
 	</p>
  </div>
 <?php

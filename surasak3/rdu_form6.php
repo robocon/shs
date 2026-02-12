@@ -228,7 +228,7 @@ if ($action==='save_form') {
                 <td align="center"><input type="checkbox" name="4_2" id="4_2" value="2" onclick="count_choise(this)"></td>
             </tr>
         </table>
-        <div style="padding: 8px; 0">
+        <div style="padding: 8px;">
             <input type="checkbox" name="noChoise" id="noChoise" value="1" onclick="count_choise(this)"><label for="noChoise"><u><b style="font-size:24px;">ไม่เข้าเกณฑ์การได้รับยาปฏิชีวนะ</b></u></label>
         </div>
         <div align="center">

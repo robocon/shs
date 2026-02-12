@@ -80,7 +80,7 @@ if(isset($_POST['hn'])){
 	<td width="400" align="center">&nbsp;</td>
     <td width="53" align="center">&nbsp;</td>
     <!--td width="46" align="center">&nbsp;</td-->
-    <!--td width="46" align="center">&nbsp;</td-->    
+    <!--td width="46" align="center">&nbsp;</td-->
     </tr>
     <?
 		$i=0;
@@ -148,7 +148,13 @@ while($rows = mysql_fetch_array($query)){
 		$rows["dental_exam"] == "" AND 
 		$rows["rh"] == "" AND 
 		$rows["groupt"] == "" AND 
-		$rows["pft"] == "" 
+		$rows["pft"] == "" AND 
+		$rows["antihb"] == "" AND 
+		$rows["other1"] == "" AND 
+		$rows["other2"] == "" AND
+		$rows["other3"] == "" AND 
+		$rows["other4"] == "" AND 
+		$rows["other5"] == "" 
 	){
 		$status_show = false;
 	}else{

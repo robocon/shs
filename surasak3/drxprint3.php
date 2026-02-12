@@ -359,7 +359,7 @@ if($q->num_rows>0){
 		$rechallengeItem[] = $a['drugcode'];
 	}
 }
-
+$drugViewerItems = array();
 $num = '0';
 $query = "SELECT a.tradname,a.drugcode, a.amount, a.price, a.slcode, a.drugcode, a.part, b.detail1, b.detail2, b.detail3, 
 b.detail4, a.drug_inject_amount, a.drug_inject_unit, a.drug_inject_amount2, a.drug_inject_unit2, a.drug_inject_time, 
@@ -374,7 +374,9 @@ AND a.drugcode = c.drugcode ";
 $result = mysql_query($query) or die("Query failed");
 while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1, $detail2, $detail3, $detail4,$dia,$diu,$dia2,$diu2,$dtime,$dis,$dit,$die,$office,$unit,$reason) = mysql_fetch_row($result) ){
 	$num++;
-		
+
+	$drugViewerItems[] = "'".$drugcode."'";
+	
 	if($amount!=0){
 		$year=date("Y")+543;
 		$day=date("m-d");
@@ -544,6 +546,8 @@ $num=Mysql_num_rows($result);
 	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";
 }
 
+$drugSQL = implode(',', $drugViewerItems);
+
 /**
  * ☠️ ปรับวันที่ให้เป็นตาม dphardep 
  */
@@ -554,36 +558,24 @@ $currDate = (date('Y', strtotime($dphardepDate))+543).date('-m-d 00:00:00', strt
 $dateNow = (date('Y', strtotime($dphardepDate))+543).date('-m-d', strtotime($dphardepDate));
 
 // สร้าง temp drugrx ของวันนี้
-$tmpDrugrxInday = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_drugrx_inday`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,`idno`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`
-FROM `drugrx` 
-WHERE `date` LIKE '$dateNow%' 
-AND `hn` = '$rxHn' 
-AND ( `an` IS NULL AND `slcode` != 'b' )
-AND ( `amount` > 0 AND `status` = 'y' )
-GROUP BY `hn`,`drugcode`
-ORDER BY `date` DESC;";
-$dbi->query($tmpDrugrxInday);
-
-$tmp_drugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_drugrx`
+$tmp_ddrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
-FROM `drugrx`
+FROM `ddrugrx`
 WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
 AND `hn` = '$rxHn' 
-AND ( `an` IS NULL AND `slcode` != 'b' ) 
-AND ( `amount` > 0 AND `status` = 'y' );";
-$dbi->query($tmp_drugrx);
+AND `drugcode` IN ($drugSQL) 
+AND ( `an` IS NULL AND `slcode` != 'b' ) ";
+$dbi->query($tmp_ddrugrx);
 
 $sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
 (a.`amount`/b.`amount`) AS `day_averrage`,
 TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
 CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
 c.`doctor`,d.`unit`,b.`amount` AS `amount_per_day`
-FROM `tmp_drugrx` AS a 
+FROM `tmp_ddrugrx` AS a 
 LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
-LEFT JOIN `phardep` AS c ON a.`idno` = c.`row_id` 
+LEFT JOIN `dphardep` AS c ON a.`idno` = c.`row_id` 
 LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
-WHERE CONCAT(a.`hn`,a.`drugcode`) IN ( SELECT `hn_drugcode` FROM `tmp_drugrx_inday` )
 ORDER BY a.`hn`,a.`date` DESC";
 $qLeftOver = $dbi->query($sqlTemp);
 

@@ -181,7 +181,7 @@ $num = 'A';
 $query = "SELECT  `row`,`depart`,`head`,`datetime`,`programmer`,`date`,`user`,`phone`,`user1`
 FROM `com_support` 
 WHERE `status` ='$num' 
-ORDER BY `row` DESC";
+ORDER BY `date` DESC";
 $result = mysql_query($query) or die("Query failed111");
 
 if ($num2 = mysql_num_rows($result)) {

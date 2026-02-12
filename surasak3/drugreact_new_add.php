@@ -691,11 +691,10 @@ if ( $page == 'search' ) {
 				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
 			</tr>
 			<tr valign="top">
-				<td align="right"><div style="margin-left:10px;"><strong>แพ้ยาตามกลุ่ม : </strong></div></td>
+				<td align="right"><div style="margin-left:10px;"><strong>กลุ่มยาที่มีโอกาสแพ้ : </strong></div></td>
 				<td colspan="4">
 					<?php 
-					$q = $dbi->query("SELECT * FROM `drugreact_group` ");
-					$i = 1;
+					$q = $dbi->query("SELECT * FROM `drugreact_group` WHERE `status` = 'y' ");
 					?>
 					<select name="drugreact_group" id="drugreact_group" class="fontsarabun">
 						<option value="">ไม่มีกลุ่ม</option>
