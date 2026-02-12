@@ -368,7 +368,10 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><b>รหัสผ่าน :</b></td>
                             <td>
                                 <label>
-                                    <input name="password1" type="password" class="form-control" id="password1" placeholder="Password">
+                                    <input name="password1" type="password" class="form-control" id="password1" placeholder="Password" 
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+                                    title="ต้องมีอย่างน้อย 8 ตัวอักษร (ตัวเล็ก, ตัวใหญ่, ตัวเลข และอักขระพิเศษอย่างละ 1 ตัว)" 
+                                    >
                                 </label>
                             </td>
                         </tr>
@@ -376,7 +379,10 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                             <td align="right"><b>ยืนยันรหัสผ่าน :</b></td>
                             <td>
                                 <label>
-                                    <input name="password2" type="password" class="form-control" id="password2" autocomplete="off">
+                                    <input name="password2" type="password" class="form-control" id="password2" autocomplete="off" 
+                                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" 
+                                    title="ต้องมีอย่างน้อย 8 ตัวอักษร (ตัวเล็ก, ตัวใหญ่, ตัวเลข และอักขระพิเศษอย่างละ 1 ตัว)" 
+                                    >
                                 </label>
                                 <div>
                                     <span class="badge text-bg-warning">คำแนะนำการตั้งรหัสผ่าน</span>
@@ -560,7 +566,8 @@ $menucode = sprintf("%s", (!empty($_GET["menucode"]) ? $_GET["menucode"] : '' ))
                                             html: res.message + `
                                                 <br>คลิก <a href="${url}" target="_blank">ที่นี่</a> เพื่อพิมพ์ใบคำร้องขอใช้อินเตอร์เน็ต
                                             `,
-                                            confirmButtonText: "OK"
+                                            confirmButtonText: "OK",
+                                            allowOutsideClick: false
                                         }).then((result)=>{
                                             window.location = 'user_register_request.php';
                                         });
