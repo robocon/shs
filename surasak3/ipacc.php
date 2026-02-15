@@ -1,18 +1,29 @@
 <?php
 session_start();
 include("connect.php");
-print "    รายการค่ารักษาพยาบาล ";
-//   print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target=_self  href='../index.htm'>ไปหน้าจอหลัก</a>";
-print "<br>";
 
+$cAn = $_POST['cAn'];
 if(empty($cAn)){
-    $cAn = $_REQUEST['cAn'];
+    $cAn = $_GET['cAn'];
 }
 
-if (empty($cAccno)) {
-    $cAccno = $_REQUEST['cAccno'];
+$cAccno = $_POST['cAccno'];
+if(empty($cAccno)){
+    $cAccno = $_GET['cAccno'];
 }
+
+if(empty($cAn) && empty($cAccno)){
+    ?>
+    <p>กรุณาตรวจสอบ AN ให้ถูกต้อง</p>
+    <?php
+    exit;
+}
+
+$sqlIpcard = "SELECT `an`,`hn`,`ptname` FROM `ipcard` WHERE `an` = '$cAn'";
+$qIpcard = mysql_query($sqlIpcard);
+$ip = mysql_fetch_assoc($qIpcard);
 ?>
+<h3>รายการค่ารักษาพยาบาล ของ <?= $ip['ptname']; ?> AN: <?= $ip['an']; ?></h3>
 <table>
     <tr>
         <th bgcolor=#669999>
@@ -41,17 +52,11 @@ if (empty($cAccno)) {
         </th>
     </tr>
     <?php
-    /*
-    mysql> select * from table1 USE INDEX (key1,key2) WHERE key1=1 and key2=2 AND
-           key3=3;
-    mysql> select * from table1 IGNORE INDEX (key3) WHERE key1=1 and key2=2 AND
-           key3=3;
-    */
     $query = "SELECT `date`,`depart`,`detail`,`amount`,`price`,`paid`,`part`,`idname`,`nprice` FROM `ipacc` WHERE `an` = '$cAn' AND `accno`='$cAccno' ORDER BY `date` DESC";
-    $result = mysql_query($query)or die("Query failed : ".mysql_error());
+    $result = mysql_query($query) or die("Query failed : " . mysql_error());
     while (list($date, $depart, $detail, $amount, $price, $paid, $part, $idname, $nprice) = mysql_fetch_row($result)) {
         $bgColor = '#C0C0C0';
-        if($nprice>0){
+        if ($nprice > 0) {
             $bgColor = '#ff9292';
         }
         print(" <tr style='background-color:$bgColor;'>\n" .
@@ -65,6 +70,5 @@ if (empty($cAccno)) {
             "  <td><font face='Angsana New'>$idname</td>\n" .
             " </tr>\n");
     }
-    include("unconnect.inc");
     ?>
 </table>

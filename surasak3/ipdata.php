@@ -1,125 +1,121 @@
 <?php
 session_start();
+include_once dirname(__FILE__).'/connect.php';
+$sIdname = $_SESSION['sIdname'];
 ?>
+
 <script language="JavaScript1.2">
-<!--
 window.moveTo(0,0);
 if (document.all) {
-top.window.resizeTo(screen.availWidth,screen.availHeight);
+    top.window.resizeTo(screen.availWidth,screen.availHeight);
 }
 else if (document.layers||document.getElementById) {
-if (top.window.outerHeight<screen.availHeight||top.window.outerWidth<screen.availWidth){
-top.window.outerHeight = screen.availHeight;
-top.window.outerWidth = screen.availWidth;
+    if (top.window.outerHeight<screen.availHeight||top.window.outerWidth<screen.availWidth){
+        top.window.outerHeight = screen.availHeight;
+        top.window.outerWidth = screen.availWidth;
+    }
 }
-}
-//-->
 </script>
 
 <?php
     
-    if (isset($sIdname)){} else {die;} //for security
-//    session_destroy();
-    //wardpage.php
-	$_SESSION["cBedcode"] = $_GET["cBedcode"];
-	$_GET['code']=substr($_GET["cBedcode"],0,2);
-	include("alert_booking.php");
+if (isset($sIdname)){} else {die;} //for security
+$_SESSION["cBedcode"] = $_GET["cBedcode"];
+$cBedcode = $_GET['cBedcode'];
+$_GET['code']=substr($_GET["cBedcode"],0,2);
+include("alert_booking.php");
 
-    session_unregister("cDepart");
-    session_unregister("aDetail");
-    session_unregister("cTitle");
-    //ipdata.php
-    session_unregister("x");
-    session_unregister("aDgcode");
-    session_unregister("aTrade");
-    session_unregister("aPrice");
-    session_unregister("aPart");
-    session_unregister("aAmount");
-    session_unregister("aMoney");
-    session_unregister("Netprice");
-    session_unregister('cDate');
-    session_unregister('cBedcode');
-	  session_unregister('oBedcode');
-    session_unregister('cBed');
-    session_unregister('cPtname');
-    session_unregister('cAge');
-    session_unregister('cPtright');
-    session_unregister('cDoctor');
-    session_unregister('cHn');
-    session_unregister('cAn');
-    session_unregister('cDiag');
-    session_unregister('cBedpri');
-    session_unregister('cChgdate');
-	    session_unregister('cChgwdate');
-    session_unregister('cBedname');
-    session_unregister('cAccno');
-    session_unregister("nRunno");
+session_unregister("cDepart");
+session_unregister("aDetail");
+session_unregister("cTitle");
+//ipdata.php
+session_unregister("x");
+session_unregister("aDgcode");
+session_unregister("aTrade");
+session_unregister("aPrice");
+session_unregister("aPart");
+session_unregister("aAmount");
+session_unregister("aMoney");
+session_unregister("Netprice");
+session_unregister('cDate');
+session_unregister('cBedcode');
+session_unregister('oBedcode');
+session_unregister('cBed');
+session_unregister('cPtname');
+session_unregister('cAge');
+session_unregister('cPtright');
+session_unregister('cDoctor');
+session_unregister('cHn');
+session_unregister('cAn');
+session_unregister('cDiag');
+session_unregister('cBedpri');
+session_unregister('cChgdate');
+session_unregister('cChgwdate');
+session_unregister('cBedname');
+session_unregister('cAccno');
+session_unregister("nRunno");
 ////
-	
-    $Bedcode=$cBedcode;
-    session_register("Bedcode");
 
-    $x=0;
-    $aDgcode = array("รหัส");
-    $aTrade  = array("รายการ");
-    $aPrice  = array("ราคา ");
-    $aPart = array("part");
-    $aAmount = array("        จำนวน   ");
-    $aMoney= array("       รวมเงิน   ");
-    $Netprice="";  
+$Bedcode=$cBedcode;
+session_register("Bedcode");
 
-    $cDate="";
-    $cBed="";
-    $cPtname="";
-    $cAge="";
-    $cPtright="";
-    $cDoctor="";
-    $cHn="";
-    $cAn="";
-    $cDiag="";
-    $cBedpri="";
-    $cChgdate="";
-	$cChgwdate="";
-    $cBedname="";
-    $cAccno="";
+$x=0;
+$aDgcode = array("รหัส");
+$aTrade  = array("รายการ");
+$aPrice  = array("ราคา ");
+$aPart = array("part");
+$aAmount = array("        จำนวน   ");
+$aMoney= array("       รวมเงิน   ");
+$Netprice="";  
 
-    $nRunno="";
-    session_register("nRunno");
+$cDate="";
+$cBed="";
+$cPtname="";
+$cAge="";
+$cPtright="";
+$cDoctor="";
+$cHn="";
+$cAn="";
+$cDiag="";
+$cBedpri="";
+$cChgdate="";
+$cChgwdate="";
+$cBedname="";
+$cAccno="";
 
-    session_register("x");
-    session_register("aDgcode");
-    session_register("aTrade");
-    session_register("aPrice");
-    session_register("aPart");
-    session_register("aAmount");
-    session_register("aMoney");
-    session_register("Netprice");
+$nRunno="";
+session_register("nRunno");
 
-    session_register('cDate');
-    session_register('cBedcode');
-	  session_register('oBedcode');
-    session_register('cBed');
-    session_register('cPtname');
-    session_register('cAge');
-    session_register('cPtright');
-    session_register('cDoctor');
-    session_register('cHn');
-    session_register('cAn');
-    session_register('cDiag');
-    session_register('cBedpri');
-    session_register('cChgdate');
-	session_register('cChgwdate');
-    session_register('cBedname');
-    session_register('cAccno');
+session_register("x");
+session_register("aDgcode");
+session_register("aTrade");
+session_register("aPrice");
+session_register("aPart");
+session_register("aAmount");
+session_register("aMoney");
+session_register("Netprice");
 
-
+session_register('cDate');
+session_register('cBedcode');
+session_register('oBedcode');
+session_register('cBed');
+session_register('cPtname');
+session_register('cAge');
+session_register('cPtright');
+session_register('cDoctor');
+session_register('cHn');
+session_register('cAn');
+session_register('cDiag');
+session_register('cBedpri');
+session_register('cChgdate');
+session_register('cChgwdate');
+session_register('cBedname');
+session_register('cAccno');
 
 global $row ;
 global  $idcard,$camp,$gang,$dbirth ,$address,$tambol,$ampur,$changwat;
-include("connect.inc");
 
    $query = "SELECT * FROM bed WHERE bedcode = '$cBedcode'";
-  // echo $query;
    $result = mysql_query($query)
        or die("Query failed bed");
 
@@ -208,14 +204,14 @@ $sql = "Select dcdate,lock_dc From ipcard where an = '$cAn' limit 1";
 $result2 = mysql_query($sql) or die(mysql_error());
 list($dcdate,$lockdc) = mysql_fetch_row($result2);
 
-   print " <br><a target=_self href='wardpage.php'>บันทึกค่าบริการทางการแพทย์</a>";
+    print " <br><a target=_self href='wardpage.php'>บันทึกค่าบริการทางการแพทย์</a>";
     print " &nbsp;&nbsp;&nbsp;<a target=_self href='iptopay.php'>ค่าบริการอื่นที่ไม่เกี่ยวข้องกับการรักษา</a>";
-	 print " &nbsp;&nbsp;&nbsp;<a target=_self href='drugoutside_ward.php?cAn=$cAn'>บันทึกค่าบริการ นอกโรงพยาบาล</a>";
-	 print " <br><FONT SIZE='3' COLOR='#FF0000'><B>ห้ามคิดค่าบริการทางการพยาบาลเพราะคอมจะคิดตอนย้ายหรือจำหน่าย</B></FONT>";
-   print "<br><BR><a target=_self href='ipacc.php'>ดูบัญชีค่ารักษา</a>";
-   print "&nbsp;&nbsp;&nbsp;<a target=_self href='ipaccrep.php'>รวมเงินค่ารักษาพยาบาล</a>";
-   print "&nbsp;&nbsp;&nbsp;<a target=_self  href=\"returndrug.php?cAn=$cAn&Bed=$cBedcode\">ใบคืนยา</a>";
-   print "&nbsp;&nbsp;&nbsp;<a target=_self  href=\"rx_index.php?cAn=$cAn&Bed=$cBedcode\">เบิกเวชภัณฑ์</a>";
+    print " &nbsp;&nbsp;&nbsp;<a target=_self href='drugoutside_ward.php?cAn=$cAn'>บันทึกค่าบริการ นอกโรงพยาบาล</a>";
+    print " <br><FONT SIZE='3' COLOR='#FF0000'><B>ห้ามคิดค่าบริการทางการพยาบาลเพราะคอมจะคิดตอนย้ายหรือจำหน่าย</B></FONT>";
+    print "<br><BR><a href='ipacc.php?cAn=$cAn&cAccno=$cAccno' target='_blank'>ดูบัญชีค่ารักษา</a>";
+    print "&nbsp;&nbsp;&nbsp;<a target=_self href='ipaccrep.php'>รวมเงินค่ารักษาพยาบาล</a>";
+    print "&nbsp;&nbsp;&nbsp;<a target=_self  href=\"returndrug.php?cAn=$cAn&Bed=$cBedcode\">ใบคืนยา</a>";
+    print "&nbsp;&nbsp;&nbsp;<a target=_self  href=\"rx_index.php?cAn=$cAn&Bed=$cBedcode\">เบิกเวชภัณฑ์</a>";
 
     
     $sql = "SELECT SUM(nprice) AS nprice FROM ipacc WHERE an = '$cAn' ";
