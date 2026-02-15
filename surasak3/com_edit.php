@@ -183,7 +183,8 @@ $dbarr = mysql_fetch_array($result);
 
 			$softwareTypeList = array(
 				'software_type1' => 'แก้ไขโปรแกรม/ข้อมูล',
-				'software_type2' => 'พัฒนาโปรแกรม'
+				'software_type2' => 'พัฒนาโปรแกรม',
+				'software_type3' => 'แก้ไขติด C'
 			)
 			?>
 			<tr style="<?=$swTypeDisplay;?>" id="swTypeContain">
