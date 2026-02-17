@@ -3,6 +3,11 @@ session_start();
 require_once dirname(__FILE__).'/includes/config.php';
 include_once dirname(__FILE__).'/connect.php';
 
+$bsConn = mysqli_connect(BLOOD_SERVER,BLOOD_USER,BLOOD_PASS,BLOOD_DB);
+$bsConn->query("SET NAMES UTF8");
+
+$def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+
 $sIdname = $_SESSION['sIdname'];
 if (!isset($sIdname)){
 	?>
@@ -68,7 +73,7 @@ $i=1;
 
 while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall) = mysql_fetch_row ($result)) {
 
-if($diag1=='' and $an!=''){ $diag1='ไม่มี'; }			
+if($diag1=='' and $an!=''){ $diag1='ไม่มี'; }
 $status2 = substr($status,0,3);
 
 $time=explode(" ",$date1);
@@ -103,6 +108,24 @@ list($hi_type) = Mysql_fetch_row($rows);
 		$location="";
 	}
 
+	$bloodItems = array();
+	if(!empty($hn)){
+		$sqlTrnBlood = "SELECT a.*,b.* FROM (
+			SELECT `Unit_number`,`Pt_HN`,`Pt_Name` FROM `trn_blood` WHERE `Pt_HN` = '$hn'
+		) AS a LEFT JOIN `mst_stock` AS b ON a.`Unit_number` = b.`Unit_number`
+		";
+		$qTrn = $bsConn->query($sqlTrnBlood);
+		if($qTrn->num_rows>0){
+			while ($a = $qTrn->fetch_assoc()) {
+				$bloodItems[] = array(
+					'bloodGroup'=>$a['Blood_Group'], 
+					'expireDate'=>$a['Exp_Date'],
+					'unitNumber'=>$a['Unit_number']
+				);
+			}
+		}
+	}
+	
 
 $sql1 = "SELECT idguard FROM opcard  WHERE `hn` = '".$hn."' limit 1 ";
 $rows1 = mysql_query($sql1);
@@ -241,7 +264,32 @@ $(document).ready(function(){
 			&nbsp;&nbsp; <? echo "<a target=_blank  href=\"anchkstkeye_wristband.php?action=print&an=$an&hn=$hn\" class='tablefont3'>ริชแบนด์ผู้ป่วยใน</a>";?></td>
 		  </tr>
 		  <tr>
-			<td colspan="10"><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a></td>
+			<td colspan="10">
+				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a>
+				<style>
+					.bloodContainer{
+						display: inline-block;
+						margin-left: 0.7em;
+						font-family: "TH SarabunPSK";
+						font-size: 20px;
+						border: 2px solid red;
+						border-radius: 6px;
+						padding: 6px 8px;
+						background-color: pink;
+					}
+				</style>
+				<?php
+				if(!empty($bloodItems)){
+					foreach ($bloodItems as $blood) {
+						list($expY, $expM, $expD) = explode('-', $blood['expireDate']);
+						$expDateTh = $expD.' '.$def_month_th[$expM].' '.($expY + 543);
+						?>
+						<span class="bloodContainer">🩸 ถุงเลือด ( <?= $blood['bloodGroup'] ?> ) <strong>Unit Number</strong>: <?= $blood['unitNumber'] ?> <strong>วันหมดอายุ</strong>: <?= $expDateTh ?></span>
+						<?php
+					}
+				}
+				?>
+			</td>
 		  </tr>
         </table></td>
       </tr>
