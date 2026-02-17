@@ -395,11 +395,13 @@ ADD `officer_edit` VARCHAR( 255 ) NULL ;
     }
     
     if (!empty($pathoall)) {
-        $outTxt = '';
-        if(!empty($pathoOut)){
-            $outTxt = '<b>แลปนอก: </b>'.$pathoOut;
-        }
         print "<p><b>ตรวจพยาธิ:</b> $pathoall $outTxt</p>";
+    }
+    
+    if(!empty($pathoOut)){
+        ?>
+        <p><strong>แลปนอก: </strong><?= $pathoOut ?></p>
+        <?php
     }
     
     if (!empty($labm)) { 
