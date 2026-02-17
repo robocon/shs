@@ -151,7 +151,6 @@ if(!empty($name) OR !empty($sname)){
 		"<td align='center'>$alert_msg</td>".
 		"  <td>$idguard</td>\n".
 		"  <td>
-        <button type=\"button\" id=\"checkPt\" onclick=\"testCheckSit('$idcard')\">WebService สปสช</button><br>
         <a href=\"javascript:void(0);\" class='fButton' onclick=\"SRMCheckSit('$idcard')\">SRM สปสช</a>
         </td>\n".
         " </tr>\n");

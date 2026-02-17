@@ -198,9 +198,8 @@ If (!empty($_POST['idcard'])){
 		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"bot_chk.php\">ตรวจสอบ</a></td>\n".
 		"  <td BGCOLOR=".$color." align='center'><a target= _BLANK href=\"travel_chk.php\">ตรวจสอบ</a></td>\n".	
 		"  <td BGCOLOR=".$color.">
-		<button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"checkPtRight(this, event, '$idcard')\">ตรวจสอบสิทธิ</button><br>
+		<button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('https://eservices.nhso.go.th/eServices/mobile/login.xhtml')\">ตรวจสอบสิทธิ</button><br>
 		<a target='_BLANK' class='fButton' href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br>
-		<a href=\"javascript:void(0);\" class='fButton' onclick=\"testCheckSit('$idcard')\">WebService สปสช</a><br>
 		<a href=\"javascript:void(0);\" class='fButton' onclick=\"SRMCheckSit('$idcard')\">SRM สปสช</a>
 		</td>\n".
 		" </tr>\n");
