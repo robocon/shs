@@ -600,12 +600,15 @@ $currDate = (date('Y')+543).date('-m-d 00:00:00');
 $dateNow = (date('Y')+543).date('-m-d');
 
 $tmp_ddrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
-FROM `ddrugrx`
-WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
-AND `hn` = '$sHn' 
-AND `drugcode` IN ($drugSQL) 
-AND ( `an` IS NULL AND `slcode` != 'b' ) ";
+SELECT a.* FROM (
+	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
+	FROM `ddrugrx`
+	WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
+	AND `hn` = '$sHn' 
+	AND `drugcode` IN ($drugSQL) 
+	AND ( `an` IS NULL AND `slcode` != 'b' ) 
+) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
+WHERE b.`dr_cancle` IS NULL";
 $dbi->query($tmp_ddrugrx);
 
 $sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
@@ -641,7 +644,7 @@ if(count($drugOverItem)>0){
 					<th>จำนวนที่จ่าย</th>
 					<th>วิธีใช้</th>
 					<th>ยาที่เหลือ<br>(โดยประมาณ)</th>
-					<th>วันที่คาดว่ายาจะหมด</th>
+					<th>ใช้ได้(วัน)</th>
 					<th>แพทย์ที่สั่งจ่าย</th>
 				</tr>
 			<?php
@@ -657,7 +660,7 @@ if(count($drugOverItem)>0){
 					<td align="center"><?= $item['amount']; ?></td>
 					<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
 					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
-					<th><?= substr($dateFutureToThai,0,10); ?></th>
+					<th><?= ($item['day_averrage']-$item['day_diff']); ?></th>
 					<td><?= $item['doctor']; ?></td>
 				</tr>
 				<?php
