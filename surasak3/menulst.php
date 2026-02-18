@@ -227,18 +227,25 @@ echo "
 	<INPUT TYPE=\"text\" NAME=\"search\" size=\"25\" class='txt'>&nbsp;<INPUT TYPE=\"submit\" value=\" ค้นหา \" class='txt'>
 </FORM>
 ";
-$search = trim($_POST["search"]);
-if(isset($_POST["search"]) && !empty($search)){
-	$searchItems = explode(" ",$search);
-	$searchArray = array();
-	foreach ($searchItems as $item) {
-		$searchArray[] = " `menu` LIKE '%$item%' ";
-	}
-	$groupTxt = implode(' AND ', $searchArray);
-	$where_search = "AND ($groupTxt)";
+
+if(isset($_POST["search"]) && trim($_POST["search"]) <> ""){
+	$xxx = explode(" ",$_POST["search"]);
+	//$search_where_arr = array();
+	//foreach($){
+	//	$search_where .= " menu ";
+	//}
+
+	$yyy = implode("%' AND menu like '%",$xxx);
+	$where_search = " AND (menu like '%".$yyy."%')";
+	//echo $yyy;
+	//}
 }
 
-print "<body onload='Realtime();'>";
+/*//echo "<script>alert('ทดสอบ') </script>";*/
+//print (" <tr>\n".
+// "  <td BGCOLOR='#148F77'><font face='THSarabunPSK' size='3' color='#FFFFFF' >   $sOfficer </font></td>\n".
+	//	" </tr>\n");
+print "<body>";
 print "<table>";
 
 print "<tr>";
@@ -296,7 +303,7 @@ if($menucode != 'ADMDR1'){
 	<td BGCOLOR='#148F77'><a target='main' href="newpw.php"><font face='THSarabunPSK' size='5'>:: เปลี่ยนรหัสผ่าน</font></a></td>
 </tr>
 <?php
-if($sOfficer=='ศิริบงกช' || $sOfficer=='ดวงเพชร'){
+if($sIdname=='ศิริบงกช' || $sIdname=='ดวงเพชร'){
 ?>
 <tr>
 	<td BGCOLOR='#148F77'><a target='_blank' href="report_special_clinic.php"><font face='THSarabunPSK' size='5'>:: ข้อมูลคลินิกพิเศษ/นอกเวลาราชการ</font></a></td>
@@ -305,7 +312,7 @@ if($sOfficer=='ศิริบงกช' || $sOfficer=='ดวงเพชร'){
 }
 ?>
 <?php 
-if($sOfficer=='วรินทร ทานาค (ว.22067)'){
+if($sIdname=='jarunwit' || $sIdname=='thaywin'){
 	?>
 	<tr>
 		<td BGCOLOR='#148F77'>
@@ -424,7 +431,7 @@ $rows=mysql_num_rows($result2);
 $userRowId = "&sOfficer=".$_SESSION['sOfficer']."&dt_doctor=".$_SESSION['dt_doctor'];
 if($rows){///  ถ้ามี rows
 
-	$query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ".$where_search." ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
+	$query = "SELECT menu,link ,sort,target FROM menu_user WHERE member_code='".$sRowid."' and sort !=0 ORDER BY `sort` ASC"; // ถ้าเป็น 0 ไม่แสดง
 	$result = mysql_query($query) or die( mysql_error($Conn) );
 
 	while (list ($menu,$link ,$sort,$target) = mysql_fetch_row ($result)) {
@@ -519,41 +526,52 @@ if($rows){///  ถ้ามี rows
 
 <script language="javascript" src="js/jquery-1.8.0.min.js"></script>
 <script>
-function Realtime(){
-   $.ajax({url:"ajaxtime.php",
-   	async:false,
-	cache:false,
-	global:false,
-	type:"POST",
-	data:"",
-	dataType:"html",
-	success: function(result){
-			// เอามาแปลงเป็นตัวเลขสำหรับ JS
-			var prepare_date = Date.parse(result);
-			Real(prepare_date);
-		}
-	});
+
+let localTime = null; // ตัวแปรเก็บ Date Object ที่ล้อตาม Server
+let syncInterval = 60000; // ระยะเวลา Sync (1 นาที = 60000 ms)
+
+// ฟังก์ชันดึงเวลาจาก PHP
+async function fetchServerTime() {
+	try {
+		const response = await fetch('ajaxtime.php');
+		// const data = await response.json();
+		serverTime = await response.text();
+		
+		// แปลง String จาก PHP เป็น JavaScript Date Object
+		localTime = new Date(serverTime);
+		
+		// document.getElementById('status-text').innerText = 'ซิงค์ล่าสุดเมื่อ: ' + serverTime;
+		// console.log("Synced with server.");
+	} catch (error) {
+		// console.error("Error fetching time:", error);
+	}
 }
 
-function Real(prepare_date){ 
-	setInterval(function(){ 
-
-		// +1 วิไปเรื่อยๆ
-		prepare_date += 1000;
-		var d = new Date(prepare_date);
-		var hour = to2Digit(d.getHours());
-		var min = to2Digit(d.getMinutes());
-		var sec = to2Digit(d.getSeconds());
-		document.getElementById("divDetail").innerHTML = hour+':'+min+':'+sec+' น.';
+// ฟังก์ชันนับเวลาเดินหน้าทีละ 1 วินาที
+function startLocalClock() {
+	setInterval(() => {
+		if (localTime) {
+			// บวกเวลาเพิ่ม 1 วินาที
+			localTime.setSeconds(localTime.getSeconds() + 1);
+			
+			// แสดงผลบนหน้าจอ
+			document.getElementById('divDetail').innerText = localTime.toLocaleTimeString('th-TH')+' น.';
+		}
 	}, 1000);
 }
 
-function to2Digit(i){ 
-	if(i < 10){
-		i = "0"+i;
-	}
-	return i;
+// เริ่มต้นการทำงาน
+async function init() {
+	await fetchServerTime(); // ดึงครั้งแรก
+	startLocalClock();      // เริ่มนับวินาที
+
+	// ตั้งเวลาให้ไปดึงจาก Server ใหม่ทุกๆ 1 นาที
+	setInterval(async () => {
+		await fetchServerTime();
+	}, syncInterval);
 }
+
+init();
 
 // สั่งให้เมนูด้านขวามือทำการ refresh เพื่ออัพเดทหน้าจอ
 parent.document.getElementById('mainDisplayPage').contentWindow.location.reload();
