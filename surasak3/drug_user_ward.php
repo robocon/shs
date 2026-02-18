@@ -44,7 +44,7 @@ if ( $action === false ) {
 		'ADMINOPD' => 'รับป่วยผู้ป่วยใน',
 		'ADMLAB' => 'พยาธิ',
 		'ADMMAINOPD' => 'ห้องตรวจโรคผู้ป่วยนอก',
-		'ADMNID' => 'ฝังเข็ม',
+		'ADMNID' => 'แพทย์ทางเลือก',
 		'ADMOBG' => 'สูติ',
 		'ADMPH' => 'ห้องยา',
 		'ADMPHA' => 'ห้องยา',
@@ -232,7 +232,7 @@ if ( $action === false ) {
 									$color = 'background-color: red;';
 								}
 								?>
-								<tr style="$color">
+								<tr style="<?= $color ?>">
 									<td><?=$i;?></td>
 									<td><?=$item['name'];?></td>
 									<td><?=$checklist[$menucode];?></td>

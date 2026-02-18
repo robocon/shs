@@ -1,11 +1,11 @@
 <?php
 session_start();
-include("connect.php");
+include("connect.inc");
 
 $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
 $dbi->query("SET NAMES UTF8");
 
-function calcage($birth){
+Function calcage($birth){
 
 	$today = getdate();   
 	$nY  = $today['year']; 
@@ -29,34 +29,7 @@ function calcage($birth){
 	return $pAge;
 }
 
-function dump($t){
-	echo "<pre>";
-	var_dump($t);
-	echo "</pre>";
-}
-
-/**
- * พ.ศ. เป็น ค.ศ.
- */
-if( !function_exists('bc_to_ad') ){
-	function bc_to_ad($time = null){
-		$time = preg_replace_callback('/^\d{4,}/', 'cal_to_ad', $time);
-		return $time;
-	}
-}
-
-if( !function_exists('cal_to_ad') ){
-	function cal_to_ad($match){
-		if( intval($match['0']) === 0 ){
-			return $match['0'];
-		}
-		return ( $match['0'] - 543 );
-	}
-}
-
-
-$sRow_id = $_GET['sRow_id'];
-$query = "SELECT * FROM dphardep WHERE row_id = '$sRow_id' ";
+$query = "SELECT * FROM dphardep WHERE row_id = '$sRow_id' "; 
 $result = mysql_query($query) or die("Query failed");
 
 for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -145,7 +118,11 @@ if(!empty($cStkcutdate)) {
 		}
 		
 	}
+
+
+
 	?>
+	<!-- window.print(); -->
 	<body Onload="">
 	<script type="text/javascript">
 		window.onload = function(){
@@ -256,10 +233,31 @@ if(!empty($cStkcutdate)) {
 	
 	$EnOpdayThidate = (substr($opday_thidate,0,4)-543).substr($opday_thidate,4,6);
 	
+
 	/* แจ้งเตือน Warfarin */
 	$patient_hn = trim($rxHn);
 	$sixMonthsLater = strtotime("-6 Months", strtotime($EnOpdayThidate));
 	$sixMonthsTH = (date('Y',$sixMonthsLater)+543).date('-m-d',$sixMonthsLater);
+	// $currentDayTH = (date('Y')+543).date('-m-d');
+
+	// $sql = sprintf("SELECT a.`row_id`,a.`date`,a.`hn`,a.`drugcode`,a.`tradname`,a.`amount`,a.`idno`,a.`slcode`,a.`idno`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM (
+	// 	SELECT `idno` AS `phardep_id` 
+	// 	FROM `drugrx` 
+	// 	WHERE `hn` = '%s' 
+	// 	AND ( `date` >= '$sixMonthsTH' AND `date` < '$opday_thidate' ) 
+	// 	AND `drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') 
+	// 	AND (`status` = 'Y' AND `amount` > 0)
+	// 	GROUP BY `idno` DESC 
+	// 	LIMIT 1
+	// ) AS x LEFT JOIN `drugrx` AS a ON x.`phardep_id` = a.`idno` 
+	// LEFT JOIN `phardep` AS b ON a.`idno` = b.`row_id` 
+	// LEFT JOIN `druglst` AS c ON c.`drugcode` = a.`drugcode`
+	// LEFT JOIN `drugslip` AS e ON a.`slcode` = e.`slcode` 
+	// WHERE a.`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2','1LIX','1ELI5','1PRADA','1PRAD150') ",
+	// 	$dbi->real_escape_string($patient_hn)
+	// );
+	
+
 	$sql = sprintf(" SELECT a.*,b.`tvn`,b.`an`,b.`doctor`,c.`genname`,CONCAT(e.`detail1`,e.`detail2`,e.`detail3`,e.`detail4`) AS `drug_detail` FROM ( 
 		SELECT `row_id`,`hn`,`drugcode`,`tradname`,`amount`,`idno`,`slcode`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS `type`,
 		SUBSTRING(`date`, 1, 10) AS `date`
@@ -325,6 +323,9 @@ if(!empty($cStkcutdate)) {
 		<?php
 	}
 	/* แจ้งเตือน Warfarin */
+
+
+
 ?>
 
 <table>
@@ -452,80 +453,101 @@ while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1
 }
 ?>
 </table>
+
+
 <?php
+
 function datediff ( $start, $end ) {
+
    $datediff = strtotime(dateform($end)) - strtotime(dateform($start));
    return floor($datediff / (60 * 60 * 24));
 }
 
 function dateform($date){
+
    $d = explode('-',$date);
    return $d[2].'-'.$d[1].'-'.$d[0];
 }
 
-$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$rxHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
-$res2= mysql_query($sqlopday2) or die("Query failed");
-list($datekey,$appdate,$end) = mysql_fetch_row($res2);
 
-$yy = substr($datekey,0,4);
-$yy=$yy-543;
-$mm = substr($datekey,5,2);
-$dd = substr($datekey,8,2);
-$start="$yy-$mm-$dd";	
 
-if(!empty($appdate)){
-	$appdate=$appdate;
-}else{
-	$appdate="ไม่มีนัด";
-}
+	$sqlopday2 = "select date,appdate,appdate_en from appoint where hn='$rxHn' and date like '$sdate%' and apptime !='ยกเลิกการนัด'";
+	//echo $sqlopday;
+	$res2= mysql_query($sqlopday2) or die("Query failed");
+	list($datekey,$appdate,$end) = mysql_fetch_row($res2);
+	
+	$yy = substr($datekey,0,4);
+	$yy=$yy-543;
+	$mm = substr($datekey,5,2);
+	$dd = substr($datekey,8,2);
+	$start="$yy-$mm-$dd";	
+	
+	if(!empty($appdate)){
+		$appdate=$appdate;
+	}else{
+		$appdate="ไม่มีนัด";
+	}
 
-print "<font face='TH SarabunPSK' size='2'>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp</font>;";
-print "<font face='TH SarabunPSK' size='2'>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน</font><br>";
-print "<font face='TH SarabunPSK'>(<b>เบิกได้&nbsp;$netfree&nbsp;บาท</b>&nbsp;&nbsp;&nbsp;เบิกไม่ได้&nbsp;$netpay  &nbsp;บาท)&nbsp;&nbsp; </font><font face='TH SarabunPSK' size='4'>รวมเงิน  $rxNetprice  บาท</font><br>";
+
+print "<font face='TH SarabunPSK' size='2'>แพทย์ :$rxDoctor &nbsp;&nbsp;&nbsp;";
+print "<font face='TH SarabunPSK' size='2'>นัดครั้งต่อไป  : ".$appdate." &nbsp;&nbsp;&nbsp;จำนวนวันนัด : ".(int)datediff("$start" , "$end")." วัน<br>";
+print "<font face='TH SarabunPSK'>(<b>เบิกได้&nbsp;$netfree&nbsp;บาท</b>&nbsp;&nbsp;&nbsp;เบิกไม่ได้&nbsp;$netpay  &nbsp;บาท)&nbsp;&nbsp; <font face='TH SarabunPSK' size='4'>รวมเงิน  $rxNetprice  บาท</font><br>";
 print "<font face='TH SarabunPSK' size='1'>บัญชียาหลัก เบิกได้&nbsp;$Essd &nbsp;</font>";
 print "<font face='TH SarabunPSK' size='1'>นอกบัญชียาหลักเบิกได้ &nbsp;$Nessdy &nbsp;&nbsp;เบิกไม่ได้&nbsp; $Nessdn &nbsp;</font>";
 print "<font face='TH SarabunPSK' size='1'>ค่าเวชภัณฑ์เบิกได้ &nbsp;$DSY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DSN &nbsp;</font>";
 print "<font face='TH SarabunPSK' size='1'>ค่าอุปกรณ์เบิกได้  &nbsp;$DPY &nbsp;&nbsp;เบิกไม่ได้&nbsp;$DPN <br></font>";
-print "<font face='TH SarabunPSK' size='2'></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................</font>";
-print "<font face='TH SarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................</font><br>";
+
+
+
+
+print "<font face='TH SarabunPSK' size='2'></b>สำหรับห้องยา&nbsp;&nbsp;ผู้พิมพ์.................ผู้จัด..................";
+print "<font face='TH SarabunPSK'>ผู้ตรวจสอบ..................ผู้จ่าย.................<br>";
 
 
 $thdatevn1 = $d.'-'.$m.'-'.$y.$rxHn;
 $thdatevn2 = $d.'-'.$m.'-'.$y.$rxvn;
 $thdatevn3 = $y.'-'.$m.'-'.$d;
 
+
+
 $timedate = date("H:i:s"); 
 $sql = "SELECT time1 FROM opday WHERE  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
+
 list($timestd) = mysql_fetch_row(Mysql_Query($sql));
 
-print "<font face='TH SarabunPSK' size='2'>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................</font><BR>";
+
+print "<font face='TH SarabunPSK' size='2'>เวลา&nbsp;ผู้ป่วยลงทะเบียน&nbsp;$timestd &nbsp; แพทย์สั่งยา&nbsp$t&nbsp  รับใบสั่งยา&nbsp;$rxpharin...บันทึกข้อมูล&nbsp;$timedate&nbsp; จัด................ ตรวจสอบ...............จ่าย..................<BR>";
 $sql = "Select PHAR , xray,  patho , emer , surg , physi , denta , other   From opday where  thdatevn = '".$thdatevn2."' Order by row_id DESC limit 1";
 list($PHAR , $xray,  $patho , $emer , $surg , $physi , $denta , $other) = mysql_fetch_row(Mysql_Query($sql));
-print "<font face='TH SarabunPSK' size='3'><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER></font>";
-if($PHAR>0){print "<font face='TH SarabunPSK' size='2'><B>ยา</B> : $PHAR</font>";}
-if($xray>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>XRAY</B> : $xray</font>";}
-if($patho>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>LAB</B> : $patho</font>";}
-if($emer>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>ER</B> : $emer</font>";}
-if($surg>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OR</B> : $surg</font>";}
-if($physi>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>PT</B>: $physi</font>";}
-if($denta>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>DEN</B> : $denta</font>";}
+print "<font face='TH SarabunPSK' size='3'><CENTER><U><B>รายละเอียดแสดงค่าใช้จ่ายผู้ป่วยในการเข้ารักษาพยาบาล</B></U><BR></CENTER>";
+if($PHAR>0){print "<font face='TH SarabunPSK' size='2'><B>ยา</B> : $PHAR";}
+if($xray>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>XRAY</B> : $xray";}
+if($patho>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>LAB</B> : $patho";}
+if($emer>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>ER</B> : $emer";}
+if($surg>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OR</B> : $surg";}
+if($physi>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>PT</B>: $physi ";}
+if($denta>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>DEN</B> : $denta";}
 $other -=50;
-if($other>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OTHER</B> : $other</font>";}
-print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>SERVICE</B>:50.00 </font>";
+if($other>0){print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>OTHER</B> : $other";}
+print "<font face='TH SarabunPSK' size='2'>&nbsp;<B>SERVICE</B>:50.00 ";
 //print "<font face='TH SarabunPSK' size='2'>ยา : $PHAR ,&nbsp;X-ray : $xray ,&nbsp;LAB : $patho ,&nbsp;ER : $emer ,&nbsp;ผ่าตัด : $surg ,&nbsp;กายภาพ : $physi ,&nbsp;ทันตกรรม : $denta ,&nbsp;อื่นๆ : $other,&nbsp;ค่าบริการ:50 ";
 $summary = $PHAR+$xray+$patho+$emer+$surg+$physi+$denta+$other+50 ;
 $summary = number_format($summary,2);
-print "<font face='TH SarabunPSK' size='2'><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U></font>";
+print "<font face='TH SarabunPSK' size='2'><br><U>ข้าพเจ้าได้รับยาและเวชภัณฑ์ครบถ้วนและได้รับทราบค่าใช้จ่ายเป็นจำนวนเงิน <B>$summary</B> บาท</U>";
 
 
-print "<font face='TH SarabunPSK' size='2'><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)</font>";
+print "<font face='TH SarabunPSK' size='2'><BR>ลงชื่อ...................................................................................ผู้ป่วย&nbsp;&nbsp;ลงชื่อ.............................................................................ผู้รับยาแทน(ตัวบรรจง)";
 
 $nnnn=$Nessdn+$DSN+$DPN;
 
 if($nnnn>0 ){
 	echo "<br><font face='TH SarabunPSK' size='5'><center>***ผู้ป่วยมีส่วนเกิน....$nnnn..บาท............*** </center></FONT>";
 };
+	
+	 
 
+
+	 
 
 $today1=(date("Y")+543).date("-m-d");	
 $sql = "SELECT @n := @n +1 AS 'NO', row_id,hn,ptname From dphardep, (
@@ -543,111 +565,11 @@ $num=Mysql_num_rows($result);
 }else{ 
 	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";
 }
-
-/**
- * ☠️ ปรับวันที่ให้เป็นตาม dphardep 
- */
-$dphardepDate = bc_to_ad($sdate);
-$sixMonth = strtotime('-6 months', strtotime($dphardepDate));
-$dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
-$currDate = (date('Y', strtotime($dphardepDate))+543).date('-m-d 00:00:00', strtotime($dphardepDate));
-$dateNow = (date('Y', strtotime($dphardepDate))+543).date('-m-d', strtotime($dphardepDate));
-
-// สร้าง temp drugrx ของวันนี้
-$tmpDrugrxInday = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_drugrx_inday`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,`idno`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`
-FROM `drugrx` 
-WHERE `date` LIKE '$dateNow%' 
-AND `hn` = '$rxHn' 
-AND ( `an` IS NULL AND `slcode` != 'b' )
-AND ( `amount` > 0 AND `status` = 'y' )
-GROUP BY `hn`,`drugcode`
-ORDER BY `date` DESC;";
-$dbi->query($tmpDrugrxInday);
-
-$tmp_drugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_drugrx`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
-FROM `drugrx`
-WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
-AND `hn` = '$rxHn' 
-AND ( `an` IS NULL AND `slcode` != 'b' ) 
-AND ( `amount` > 0 AND `status` = 'y' );";
-$dbi->query($tmp_drugrx);
-
-$sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
-(a.`amount`/b.`amount`) AS `day_averrage`,
-TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
-CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
-c.`doctor`,d.`unit`,b.`amount` AS `amount_per_day`
-FROM `tmp_drugrx` AS a 
-LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
-LEFT JOIN `phardep` AS c ON a.`idno` = c.`row_id` 
-LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
-WHERE CONCAT(a.`hn`,a.`drugcode`) IN ( SELECT `hn_drugcode` FROM `tmp_drugrx_inday` )
-ORDER BY a.`hn`,a.`date` DESC";
-$qLeftOver = $dbi->query($sqlTemp);
-
-$drugOverItem = array();
-if($qLeftOver->num_rows>0){
-	while ($a = $qLeftOver->fetch_assoc()) {
-		if($a['day_diff'] < $a['day_averrage']){
-			$drugOverItem[] = $a;
-		}
-	}
-}
-
-if(count($drugOverItem)>0){
-	// echo "<div style='page-break-before: always;'></div>";
-	?>
-	<style>
-		table.drugOver, .drugOver th, .drugOver td{
-			font-family: "TH SarabunPSK";
-			border: 1px solid black;
-  			border-collapse: collapse;
-		}
-	</style>
-	<div>
-		<p style="font-weight:bold; font-size:20px; margin:0; padding:0; font-family:TH SarabunPSK;">⚠️ <u>แจ้งเตือน ยาเหลือ</u></p>
-		<table width="100%" class="drugOver">
-			<thead>
-				<tr>
-					<th>วันที่จ่ายยา</th>
-					<th>รหัส-ชื่อยา</th>
-					<th>จำนวนที่จ่าย</th>
-					<th>วิธีใช้</th>
-					<th>ยาที่เหลือ<br>(โดยประมาณ)</th>
-					<th>วันที่คาดว่ายาจะหมด</th>
-					<th>แพทย์ที่สั่งจ่าย</th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php
-			foreach ($drugOverItem as $key => $item) {
-				$dateOrder = (substr($item['date'],0,4)-543).substr($item['date'],4,15);
-				$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".round($item['day_averrage'])."day"));
-				$dateFutureToThai = (substr($dateFuture,0,4)+543).substr($dateFuture,4,15);
-				?>
-				<tr>
-					<td><?= substr($item['date'],0,10); ?></td>
-					<td><?= $item['tradname']; ?><br><b>[<?= $item['drugcode']; ?>]</b></td>
-					<td align="center"><?= $item['amount']; ?></td>
-					<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
-					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
-					<th><?= substr($dateFutureToThai,0,10); ?></th>
-					<td><?= $item['doctor']; ?></td>
-				</tr>
-				<?php
-			}
-			?>
-			</tbody>
-		</table>
-	</div>
-	<?php
-}
+include("unconnect.inc");
 
 if(substr($rxPtright,0,3)=="R03" || substr($rxPtright,0,3)=="R33"){
 	echo "<div style='page-break-before: always;'></div>";
-	$hn=$rxHn; 
+	$hn=$rxHn;
 	$date=$y.'-'.$m.'-'.$d;
-	include "reportcash1.php";
+	include("reportcash1.php");
 }

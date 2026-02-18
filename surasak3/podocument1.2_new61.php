@@ -73,15 +73,23 @@ If (!empty($yym)){
  
 // "  <td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'><a target=_BLANK  href=\"poprn.1_new62.php?nRow_id=$row_id\">ยาราคารวม VAT (แบบเดิม)</a> <br> <a target=_BLANK  href=\"poprn.1_new67.php?nRow_id=$row_id\">ยาราคารวม VAT (แบบใหม่)</a></td>\n".  //ยาราคารวม vat
 
- "  <td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'><a target=_BLANK  href=\"poprn.1_new62.php?nRow_id=$row_id\">ยาราคารวม VAT (แบบเดิม)</a> <br> <a target=_BLANK  href=\"poprn.1_new68.php?nRow_id=$row_id\">ยาราคารวม VAT (V.2568)</a></td>\n".  //ยาราคารวม vat 
+"<td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'>
+<a target=_BLANK  href=\"poprn.1_new62.php?nRow_id=$row_id\">ยาราคารวม VAT (แบบเดิม)</a> <br>
+<a target=_BLANK  href=\"poprn.1_new68.php?nRow_id=$row_id\">ยาราคารวม VAT (V.2568)</a></td>\n".  //ยาราคารวม vat 
 
- "  <td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'><a target=_BLANK  href=\"poprn.2_new62.php?nRow_id=$row_id\">ยาหักภาษี ณ ที่จ่าย (แบบเดิม)</a> <br> <a target=_BLANK  href=\"poprn.2_new67.php?nRow_id=$row_id\">ยาหักภาษี ณ ที่จ่าย (แบบใหม่)</a></td>\n".  //ยาหักภาษี ณ ที่จ่าย
+"<td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'>
+<a target=_BLANK  href=\"poprn.2_new62.php?nRow_id=$row_id\">ยาหักภาษี ณ ที่จ่าย (แบบเดิม)</a><br>
+<a target=_BLANK  href=\"poprn.2_new68.php?nRow_id=$row_id\">ยาหักภาษี ณ ที่จ่าย (V.2568)</a></td>\n".  //ยาหักภาษี ณ ที่จ่าย
 
- "  <td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'><a target=_BLANK  href=\"poprn1.1_new62.php?nRow_id=$row_id\">เวชภัณฑ์ราคารวม VAT (แบบเดิม)</a> <br> <a target=_BLANK  href=\"poprn1.1_new67.php?nRow_id=$row_id\">เวชภัณฑ์ราคารวม VAT (แบบใหม่)</a></td>\n".  //เวชภัณฑ์ ราคารวม vat
+"<td BGCOLOR=66CDAA align='center' width='13%'><font face='Angsana New'>
+<a target=_BLANK  href=\"poprn1.1_new62.php?nRow_id=$row_id\">เวชภัณฑ์ราคารวม VAT (แบบเดิม)</a><br>
+<a target=_BLANK  href=\"poprn1.1_new68.php?nRow_id=$row_id\">เวชภัณฑ์ราคารวม VAT (V.2568)</a></td>\n".  //เวชภัณฑ์ ราคารวม vat
  
- "  <td BGCOLOR=66CDAA align='center' width='15%'><font face='Angsana New'><a target=_BLANK  href=\"poprn1.2_new62.php?nRow_id=$row_id\">เวชภัณฑ์หักภาษี ณ ที่จ่าย (แบบเดิม)</a> <br> <a target=_BLANK  href=\"poprn1.2_new67.php?nRow_id=$row_id\">เวชภัณฑ์หักภาษี ณ ที่จ่าย (แบบใหม่)</a></td>\n".  //เวชภัณฑ์ หักภาษี ณ ที่จ่าย
+"<td BGCOLOR=66CDAA align='center' width='15%'><font face='Angsana New'>
+<a target=_BLANK  href=\"poprn1.2_new62.php?nRow_id=$row_id\">เวชภัณฑ์หักภาษี ณ ที่จ่าย (แบบเดิม)</a><br>
+<a target=_BLANK  href=\"poprn1.2_new68.php?nRow_id=$row_id\">เวชภัณฑ์หักภาษี ณ ที่จ่าย (V.2568)</a></td>\n".  //เวชภัณฑ์ หักภาษี ณ ที่จ่าย
          
-           "  <td BGCOLOR=66CDAA><font face='Angsana New'>$bounddate</td>\n".
+"<td BGCOLOR=66CDAA><font face='Angsana New'>$bounddate</td>\n".
            " </tr>\n");
 	}		
           }

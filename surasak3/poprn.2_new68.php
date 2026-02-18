@@ -1,11 +1,8 @@
 <?php
-//ขออนุมัติจัดซื้อยา  2.รวมVATก่อน
+//ขออนุมัติจัดซื้อยา  3.ไม่มีภาษี
 //function baht///
-
-include("connect.inc");
-
 function baht($nArabic){
-	include("connect.inc");
+	
     $nArabic = number_format($nArabic, 2, '.', ''); 
     $cTarget = Ltrim($nArabic);
     $cLtnum="";
@@ -18,6 +15,8 @@ function baht($nArabic){
    $nUnit=$x;
    $nNum=$nUnit;
    $cRead  = "(";
+
+include("connect.inc");
  
  IF ($cLtnum <> "0"){
   $count=0;
@@ -135,6 +134,7 @@ $cRead = $cRead."บาท";
     else{
            $cRead = $cRead."ถ้วน)" ;
            }  
+    include("connect.inc");
 
    return $cRead;
 }
@@ -159,6 +159,7 @@ return $vat;
 	}
 ///end of function convert to float number ทศนิยม 2ตำแหน่ง
 
+    include("connect.inc");
 
 	///Load offisers
     $aMancode=array("aMancode"); 
@@ -178,7 +179,7 @@ return $vat;
 	$aMancode[14]='headtor';
 	$aMancode[15]='bordtor1';
 	$aMancode[16]='bordtor2';
-	$aMancode[17]='bordtor3';
+	$aMancode[17]='bordtor3';		
 	$aMancode[18]='pharmacy1';
 	$aMancode[19]='headpharmacy';		
 
@@ -204,8 +205,8 @@ return $vat;
 						}
 ///////End Load offisers
 
-    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,podate,bounddate,row_id ,ponoyear,chkindate,senddate,borrowdate,pobillno,pobilldate,fixdate,reportdate FROM pocompany WHERE row_id = '$nRow_id' ";
-	//echo $query;
+
+    $query = "SELECT date,prepono,prepodate,comcode,comname,items,netprice,pono,ponoyear,podate,bounddate,row_id,chkindate,senddate,borrowdate,pobillno,pobilldate,fixdate,reportdate  FROM pocompany WHERE row_id = '$nRow_id' ";
     $result = mysql_query($query) or die("Query pocompany fail");
 
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
@@ -225,15 +226,15 @@ return $vat;
 	$nItems=$row->items;
 	$nNetprice=$row->netprice;
 	$cPono=$row->pono;
-	$chkpono=substr($cPono,0,2);  //ถ้าเป็น อ. จะใช้งบอุดหนุน	
+	$chkpono=substr($cPono,0,2);  //ถ้าเป็น อ. จะใช้งบอุดหนุน		
 	$cPodate=$row->podate;
 	$cBounddate=$row->bounddate;
 	$cChkindate=$row->chkindate;  //วันที่รับมอบ
-	$cSenddate=$row->senddate;  //วันที่ใหม่
-	$cBorrowdate=$row->borrowdate;  //วันที่เบิกเงิน
+	$cSenddate=$row->senddate;  //ลงวันที่
+	$cBorrowdate=$row->borrowdate;  //วันที่เบิกเงิน	
 	$cPonoyear=$row->ponoyear;
 	$cBillno=$row->pobillno;  //ใบเสนอราคาเลขที่
-	$cBilldate=$row->pobilldate;	//ใบเสนอราคาลงวันที่
+	$cBilldate=$row->pobilldate;	//ใบเสนอราคาลงวันที่	
 	$cFixdate=$row->fixdate;	//วันที่กำหนดส่งมอบ
 	$cReportdate=$row->reportdate;	//วันที่รายงานผลการจัดหา
 	//echo "-->".$cFixdate;
@@ -244,7 +245,7 @@ return $vat;
 	if(empty($cReportdate)){ 
 		$cReportdate=$cBounddate;
 	}
-	//echo "==>".$cBounddate;
+		
 	
 	if(empty($cBillno) || empty($cBilldate)){
 		$chksqlcom="select pobillno, pobilldate, pobillno2, pobilldate2, pobillno3, pobilldate3 from company where comcode='$cComcode'";
@@ -253,13 +254,13 @@ return $vat;
 	}
 	
 	
-	//echo $cComcode;
+	
 	if($cComcode=='GPO/S' || $cComcode=='GPO_NAP' || $cComcode=='G003.1' || $cComcode=='G003.2' || $cComcode=='M001' || $cComcode=='F007' || $cComcode=='A040'){
 		$vitee="วิธีกรณีพิเศษ";
 	}else{
 		$vitee="วิธีการตกลงราคา";
 	}
-	
+
 //คำนวนค่าต่างๆ
   $nVat=$nNetprice - ($nNetprice /1.07);
  /// $nVat=number_format($nVat,2,'.',''); //convert to string ทศนิยม 2 ตำแหน่ง ปัดเศษ
@@ -271,12 +272,8 @@ $nNetprice=$nNetprice-$nVat;
   $chkprice= $nPriadvat;
   $cPriadvat=baht($nPriadvat);//ตัวอักษร
 
-  $nTaxs=.01*$nNetprice;
-  //echo "==>".$nTaxs;
-  $nTax=number_format($nTaxs,2);
-  //echo "==>".$nTax;
-  $nNetpaid=$nPriadvat-$nTaxs;
-  //echo "$nNetpaid=$nPriadvat-$nTaxs";
+
+  $nNetpaid=$nPriadvat-$nTax;
 
   $cNetpaid=baht($nNetpaid);//ตัวอักษร
   
@@ -301,32 +298,25 @@ if ($nPriadvat < 100000){
 //ทำเป็นสองจุดทศนิยม 
 	$nNetprice=number_format($nNetprice,2,'.',',');
 	//$nVat=number_format($nVat,2);
-     $nVat=number_format($nVat,2,'.',',');
+               $nVat=number_format($nVat,2,'.',',');
 	$nPriadvat=number_format($nPriadvat,2,'.',',');
-	//echo "==>".$nTax;
-	//$nTax=number_format($nTax,2,'.',',');
-	//echo "==>".$nTax;
+	$nTax=number_format($nTax,2,'.',',');
 	$nNetpaid=number_format($nNetpaid,2,'.',',');
-	//echo "==>".$nNetpaid;
-/////List รายการ
-$x=0;
-$aX   = array("x");
-$aDrugcode=array("drugcode");
-$aTradname  = array("tradname ");
-$aPacking  = array(" packing");
-$aPack  = array("pack");
-$aAmount  = array(" amount");
-$aPrice   = array(" price");
-$aPackpri  = array(" packpri");
-$aFree = array("free");
-$aSpecno   = array(" specno");
-$aSnspec   = array(" snspec");
-$aUnitpri  = array(" unitpri");
-$aPart  = array(" part");	
-//$x  $drugcode $tradname $packing  $pack  $amount  $price  $packpri  $specno 
 
+/////List รายการ
+   $x=0;
+    $aX   = array("x");
+  $aDrugcode=array("drugcode");
+    $aTradname  = array("tradname ");
+  $aPacking  = array(" packing");
+  $aPack  = array("pack");
+  $aAmount  = array(" amount");
+    $aPrice   = array(" price");
+    $aPackpri  = array(" packpri");
+  $aFree = array("free");
+    $aSpecno   = array(" specno");
+//$x  $drugcode $tradname $packing  $pack  $amount  $price  $packpri  $specno 
 	$query = "SELECT drugcode FROM poitems WHERE idno = '$nRow_id' ";
-	//echo $query;
 	$result = Mysql_Query($query);
 	$i=0;
 	while(list($drugcode) = Mysql_fetch_row($result)){
@@ -335,7 +325,6 @@ $aPart  = array(" part");
 		
 		$i++;
 	}
-	
 	$query="CREATE TEMPORARY TABLE druglst01 SELECT drugcode ,snspec,part,unitpri,product_drugtype FROM druglst WHERE drugcode in (".implode(",",$listdrugcode).")  ";
 	$result = Mysql_Query($query);
 
@@ -344,6 +333,22 @@ $aPart  = array(" part");
 	INNER JOIN druglst01 as b ON b.drugcode = a.drugcode
 	WHERE idno = '$nRow_id' ";
 
+    $result = mysql_query($query) or die("Query poitems failed");
+    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+        if (!mysql_data_seek($result, $i)) {
+            echo "Cannot seek to row $i\n";
+            continue;
+        }
+        if(!($row = mysql_fetch_object($result)))
+            continue;      
+     $xx++;
+    array_push($dX,"$xx");
+	$prodrugtype=$row->product_drugtype;  //พัสดุส่งเสริมสุขภาพและสาธารณสุข
+    }
+	//print "==>$prodrugtype";
+
+
+    $query = "SELECT drugcode,tradname,packing,pack,minimum,totalstk,packpri,amount,price,free,specno FROM poitems WHERE idno = '$nRow_id' ";
     $result = mysql_query($query) or die("Query poitems failed");
     for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         if (!mysql_data_seek($result, $i)) {
@@ -367,10 +372,6 @@ $aPart  = array(" part");
     array_push($aPackpri,$packpri);
     array_push($aFree,$row->free);
     array_push($aSpecno,$row->specno);
-	array_push($aPart,$row->part);
-	array_push($aUnitpri,$row->unitpri);		
-	$prodrugtype=$row->product_drugtype;  //พัสดุส่งเสริมสุขภาพและสาธารณสุข
-
        }
 	$x++;
     array_push($aX,"");
@@ -383,8 +384,6 @@ $aPart  = array(" part");
     array_push($aPackpri,"");
     array_push($aFree,"");
     array_push($aSpecno,"");
-	array_push($aPart,$row->part);
-	array_push($aUnitpri,$row->unitpri);			
 //มีได้ 12 รายการ+หมดรายการ(13แถว) ใส่ NULL ให้array ที่เหลือดังนี้
 for ($n=$x+1; $n<=13; $n++){
     array_push($aX,"");
@@ -397,8 +396,6 @@ for ($n=$x+1; $n<=13; $n++){
     array_push($aPackpri,"");
     array_push($aFree,"");
     array_push($aSpecno,"");
-	array_push($aPart,$row->part);
-	array_push($aUnitpri,$row->unitpri);			
 }
 
 
@@ -427,7 +424,7 @@ print "<STYLE>";
 //print ".ad1-1 {border-color:000000;border-style:none;border-bottom-width:0PX;border-left-width:0PX;border-top-width:0PX;border-right-width:0PX;}";
 print "</STYLE>";
 
-print "<TITLE>จัดซื้อยา (รวมVATก่อน) 2568</TITLE>";
+print "<TITLE>จัดซื้อยา (รวมVATก่อน) V.2568</TITLE>";
 print "</head>";
 
 print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
@@ -529,9 +526,9 @@ print "<DIV style='left:293PX;top:690PX;width:99PX;height:30PX;TEXT-ALIGN:CENTER
 print "<DIV style='left:391PX;top:690PX;width:40PX;height:30PX;'><span class='fc1-0'>บาท</span></DIV>";
 print "<DIV style='left:430PX;top:690PX;width:400PX;height:30PX;'><span class='fc1-0'>$cPriadvat</span></DIV>";  //จำนวนเงินตัวอักษร
 if($cComcode=="G003.1" || $cComcode=="M001" || $cComcode=="F007"){
-print "<DIV style='left:61PX;top:715PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 60 วันทำการ อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
+	print "<DIV style='left:61PX;top:715PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 60 วันทำการ อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 }else{
-print "<DIV style='left:61PX;top:715PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วันทำการ อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";	
+	print "<DIV style='left:61PX;top:715PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วันทำการ อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 }	
 print "<DIV style='left:105PX;top:740PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุภายในวันที่</span></DIV>";
 print "<DIV style='left:333PX;top:740PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
@@ -623,7 +620,7 @@ print "<DIV style='left:430PX;top:715PX;width:400PX;height:30PX;'><span class='f
 if($cComcode=="G003.1" || $cComcode=="M001" || $cComcode=="F007"){
 	print "<DIV style='left:61PX;top:740PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 60 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 }else{
-	print "<DIV style='left:61PX;top:740PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";	
+	print "<DIV style='left:61PX;top:740PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วัน อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 }	
 print "<DIV style='left:105PX;top:765PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุภายในวันที่</span></DIV>";
 print "<DIV style='left:333PX;top:765PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
@@ -692,7 +689,7 @@ print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc
 print "<DIV style='left:61PX;top:965PX;width:905PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
 }
 
-}	//close if chkrows
+}	//close if chkrows=2
 
 //สิ้นสุดเนื้อหา PO ใบที่1 page1
 
@@ -703,7 +700,7 @@ print "<DIV style='left:105PX;top:4165PX;width:905PX;height:30PX;'><span class='
 
 print "<DIV style='left:138PX;top:4190PX;width:600PX;height:30PX;'><span class='fc1-0'>9.1 เห็นควรอนุมัติให้กองเภสัชกรรม รพ.ค่ายสุรศักดิ์มนตรี ดำเนินการจัดซื้อโดยวิธีการเฉพาะเจาะจง</span></DIV>";
 
-print "<DIV style='left:61PX;top:4215PX;width:905PX;height:30PX;'><span class='fc1-0'>ตามรายละเอียดในรายงานข้างต้น</span></DIV>";
+print "<DIV style='left:61PX;top:4215PX;width:705PX;height:30PX;'><span class='fc1-0'>ตามรายละเอียดในรายงานข้างต้น</span></DIV>";
 
 print "<DIV style='left:138PX;top:4240PX;width:120PX;height:30PX;'><span class='fc1-0'>9.2 เห็นควรแต่งตั้ง</span></DIV>";
 
@@ -715,7 +712,7 @@ print "<DIV style='left:453PX;top:4240PX;width:18PX;height:30PX;TEXT-ALIGN:CENTE
 
 print "<DIV style='left:470PX;top:4240PX;width:295PX;height:30PX;'><span class='fc1-0'>นาย ตามระเบียบฯ ด้วยแล้วรายงานผล</span></DIV>";
 
-print "<DIV style='left:61PX;top:4265PX;width:905PX;height:30PX;'><span class='fc1-0'> ให้ทราบภายใน 5 วันทำการ</span></DIV>";
+print "<DIV style='left:61PX;top:4265PX;width:705PX;height:30PX;'><span class='fc1-0'> ให้ทราบภายใน 5 วันทำการ</span></DIV>";
 
 print "<DIV style='left:138PX;top:4290PX;width:628PX;height:30PX;'><span class='fc1-0'>จึงเรียนมาเพื่อกรุณาทราบ และกรุณาอนุมัติตามข้อเสนอในข้อ 9.</span></DIV>";
 
@@ -742,7 +739,7 @@ print "<DIV style='left:152PX;top:4465PX;width:520PX;height:30PX;'><span class='
 print "<DIV style='left:208PX;top:4540PX;width:87PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
 print "<DIV style='left:213PX;top:4565PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
 print "<DIV style='left:213PX;top:4590PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
-print "<DIV style='left:213PX;top:4615PX;width:285PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:213PX;top:4615PX;width:280PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
 print "<DIV style='left:213PX;top:4640PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 
 print "<DIV style='left:88PX;top:4690PX;width:245PX;height:30PX;'><span class='fc1-0'>- อนุมัติตามข้อ 9.</span></DIV>";
@@ -771,11 +768,11 @@ print "<DIV style='left:480PX;top:4890PX;width:56PX;height:30PX;'><span class='f
 print "<DIV style='left:417PX;top:4915PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
 print "<DIV style='left:417PX;top:4940PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
 if(empty($aPost2[1])){
-print "<DIV style='left:417PX;top:4965PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
+print "<DIV style='left:417PX;top:4965PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";	
 }else{
 print "<DIV style='left:417PX;top:4965PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[1]</span></DIV>";
-print "<DIV style='left:417PX;top:4990PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";	
-}	
+print "<DIV style='left:417PX;top:4990PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
+}
 //สิ้นสุดเนื้อหา PO ใบที่1 page12
 print "<BR>";
 print "</BODY></HTML>";
@@ -857,7 +854,7 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 			<?php
 			$sumtotal=0;
 			for ($ii=1; $ii <= 19; $ii++) { 
-			
+				 include("connect.inc");
 				$sql1="select unitpri,part,freelimit,edpri,edpri_from,snspec from druglst where drugcode='$aDrugcode[$ii]'";
 				//print $sql1;
 				$chkquery=mysql_query($sql1);
@@ -900,8 +897,6 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 						}
 					}
 
-
-
 				$aTotalpackprice=$aAmount[$ii]*$aPackpri[$ii];
 				$aTotalprice=$aAmount[$ii]*$aPackpri_vat[$ii];
 				
@@ -910,7 +905,6 @@ print "<DIV style='left:103PX;top:1090PX;width:506PX;height:27PX;TEXT-ALIGN:CENT
 				}else{
 					$snspec="&nbsp;";
 				}	*/		
-
 				if(empty($aX[$ii])){
 					$showfrom="&nbsp;";
 				}else{
@@ -1267,7 +1261,7 @@ print "<DIV style='left:7PX;top:3324PX;width:900PX;height:26PX;'><span class='fc
 			<?php
 			$sumtotal=0;
 			for ($ii=1; $ii <= 18; $ii++) { 
-			
+				 include("connect.inc");
 				$sql1="select unitpri,part,freelimit,edpri,edpri_from from druglst where drugcode='$aDrugcode[$ii]'";
 				//print $sql;
 				$chkquery=mysql_query($sql1);
@@ -1777,6 +1771,7 @@ print "<DIV style='left:529PX;top:6649PX;width:63PX;height:22PX;TEXT-ALIGN:RIGHT
 print "<DIV style='left:410PX;top:6649PX;width:64PX;height:22PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>$aPacking[11]</span></DIV>";
 print"<DIV style='left:11PX;top:6649PX;width:30PX;height:22PX;TEXT-ALIGN:CENTER;'><span class='fc1-3'>$aX[11]</span></DIV>";
 print"<DIV style='left:120PX;top:6649PX;width:159PX;height:22PX;'><span class='fc1-3'>$aTradname[11]</span></DIV>";
+
 print"<DIV style='left:290PX;top:6649PX;width:53PX;height:22PX;TEXT-ALIGN:RIGHT;'><span class='fc1-3'>$aAmount[11]</span></DIV>";
 print"<DIV style='left:607PX;top:6649PX;width:79PX;height:22PX;TEXT-ALIGN:RIGHT;'><span class='fc1-3'>$aPrice[11]</span></DIV>";
 print "<DIV style='left:47PX;top:6649PX;width:66PX;height:22PX;'><span class='fc1-3'>$aDrugcode[11]</span></DIV>";
@@ -1963,7 +1958,7 @@ print "<DIV style='left:195PX;top:7990PX;width:618PX;height:30PX;'><span class='
 print "<DIV style='left:499PX;top:8020PX;width:87PX;height:30PX;TEXT-ALIGN:LEFT;'><span class='fc1-0'>$aYot[5]</span></DIV>";
 print "<DIV style='left:444PX;top:8045PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[5])</span></DIV>";
 print "<DIV style='left:444PX;top:8070PX;width:299PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[5]</span></DIV>";
-print "<DIV style='left:444PX;top:8095PX;width:290PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
+print "<DIV style='left:444PX;top:8095PX;width:280PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[5]</span></DIV>";
 //print "<DIV style='left:444PX;top:8120PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";
 
 
@@ -1979,7 +1974,7 @@ if(empty($aPost2[1])){
 }else{
 print "<DIV style='left:143PX;top:8145PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[1]</span></DIV>";
 //print "<DIV style='left:143PX;top:8170PX;width:269PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>........../........../..........</span></DIV>";	
-}
+}	
 print "<BR>";
 print "</BODY></HTML>";
 
@@ -2082,7 +2077,6 @@ print "<DIV style='left:433PX;top:8333PX;width:316PX;height:30PX;TEXT-ALIGN:RIGH
 print "<DIV style='left:74PX;top:8383PX;width:675PX;height:30PX;'><span class='fc1-0'>ข้าพเจ้า $aYot[19] $aFname[19] ตำแหน่ง$aPost[19] $aPost2[19] ขอเบิกเงินจาก</span></DIV>";
 print "<DIV style='left:24PX;top:8408PX;width:725PX;height:30PX;'><span class='fc1-0'>ฝกง. ร.พ.ค่ายสุรศักดิ์มนตรี เพื่อนำมาจ่าย ตามรายการต่อไปนี้</span></DIV>";
 print "<DIV style='left:24PX;top:8439PX;width:82PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>ลำดับ</span></DIV>";
-
 print "<DIV style='left:24PX;top:8671PX;width:97PX;height:30PX;'><span class='fc1-0'>(ตัวอักษร)</span></DIV>";
 
 print "<DIV style='left:493PX;top:8787PX;width:167PX;height:30PX;'><span class='fc1-0'>$cBorrowdate</span></DIV>";  //แก้ไขวันที่ 21/04/60
@@ -2125,7 +2119,7 @@ print "<DIV style='left:437PX;top:8850PX;width:284PX;height:30PX;'><span class='
 //หัวหน้าการเงิน --> headmony2
 print "<DIV style='left:355PX;top:8967PX;width:310PX;height:30PX;'><span class='fc1-0'>ผู้ตรวจ</span></DIV>";
 print "<DIV style='left:105PX;top:8967PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[13]</span></DIV>";
-print "<DIV style='left:125PX;top:8997PX;width:117PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[13])</span></DIV>";
+print "<DIV style='left:125PX;top:8997PX;width:107PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[13])</span></DIV>";
 $positionHeadmoney2 = '';
 if(!empty($aPost2[13])){
 	$positionHeadmoney2 = '<br>'.$aPost2[13];
@@ -2147,28 +2141,34 @@ print "<DIV style='left:404PX;top:8903PX;width:79PX;height:30PX;'><span class='f
 // สี่เหลี่ยมช่องขวา
 print "<DIV style='left:444PX;top:8967PX;width:310PX;height:30PX;'><span class='fc1-0'>ชื่อผู้รับเงิน...............................................</span></DIV>";
 print "<DIV style='left:501PX;top:8997PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;' ><span class='fc1-0'>(..............................................)</span></DIV>";
-print "<DIV style='left:501PX;top:9018PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;'><span class='fc1-0'>..............................................</span></DIV>";
+print "<DIV style='left:501PX;top:9020PX;width:310PX;height:30PX;'TEXT-ALIGN:CENTER;'><span class='fc1-0'>..............................................</span></DIV>";
 print "<DIV style='left:518PX;top:9058PX;width:310PX;height:30PX;'><span class='fc1-0'>............/............/............</span></DIV>";
 
-
-print "<DIV style='left:280PX;top:9091PX;width:374PX;height:30PX;'><span class='fc1-0'>ผู้มีอำนาจสั่งจ่ายเงิน</span></DIV>";
-print "<DIV style='left:105PX;top:9091PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[1]</span></DIV>";
-print "<DIV style='left:35PX;top:9127PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
-print "<DIV style='left:35PX;top:9150PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
+if(empty($aPost2[1])){
+print "<DIV style='left:280PX;top:9095PX;width:374PX;height:30PX;'><span class='fc1-0'>ผู้มีอำนาจสั่งจ่ายเงิน</span></DIV>";
+print "<DIV style='left:105PX;top:9095PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[1]</span></DIV>";
+print "<DIV style='left:35PX;top:9126PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
+print "<DIV style='left:35PX;top:9156PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
 print "<DIV style='left:34PX;top:9202PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>............/............/............</span></DIV>";
+}else{
+print "<DIV style='left:280PX;top:9100PX;width:374PX;height:30PX;'><span class='fc1-0'>ผู้มีอำนาจสั่งจ่ายเงิน</span></DIV>";
+print "<DIV style='left:105PX;top:9100PX;width:310PX;height:30PX;'><span class='fc1-0'>$aYot[1]</span></DIV>";
+print "<DIV style='left:35PX;top:9125PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[1])</span></DIV>";
+print "<DIV style='left:35PX;top:9150PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[1]</span></DIV>";
+print "<DIV style='left:35PX;top:9175PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost2[1]</span></DIV>";
+print "<DIV style='left:34PX;top:9202PX;width:274PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>............/............/............</span></DIV>";	
+}
 
 $positionHeadmoney = '';
 if(!empty($aPost2[11])){
 	$positionHeadmoney = '<br>'.$aPost2[11];
 }
-print "<DIV style='left:440PX;top:9091PX;width:310PX;height:30PX;'><span class='fc1-0'>ชื่อผู้จ่ายเงิน&nbsp;&nbsp;$aYot[11]</span></DIV>";
-print "<DIV style='left:470PX;top:9127PX;width:227PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[11])</span></DIV>";
-print "<DIV style='left:432PX;top:9150PX;width:310PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>$aPost[11]$positionHeadmoney</span></DIV>";
-
-
+// ช่องขวาล่าง
+print "<DIV style='left:440PX;top:9095PX;width:310PX;height:30PX;'><span class='fc1-0'>ชื่อผู้จ่ายเงิน&nbsp;&nbsp;$aYot[11]</span></DIV>";
+print "<DIV style='left:470PX;top:9126PX;width:227PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>($aFname[11])</span></DIV>";
+print "<DIV style='left:428PX;top:9156PX;width:310PX;TEXT-ALIGN:CENTER;line-height:20px;'><span class='fc1-0'>$aPost[11]$positionHeadmoney</span></DIV>";
 
 print "<DIV style='left:470PX;top:9202PX;width:227PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'>............/............/............</span></DIV>";
-
 print "<DIV style='left:659PX;top:8613PX;width:88PX;height:30PX;TEXT-ALIGN:RIGHT;'><span class='fc1-0'>$nTax</span></DIV>";
 print "<DIV style='left:322PX;top:8555PX;width:86PX;height:30PX;'><span class='fc1-0'>7.00 %</span></DIV>";
 print "<DIV style='left:24PX;top:8934PX;width:377PX;height:26PX;'><span class='fc1-2'>ตัวอักษร&nbsp;";
@@ -2213,7 +2213,7 @@ print "<DIV style='z-index:0'> &nbsp; </div>";
     <td height="30" colspan="4"><span class='fc1-5'>ส่วนราชการ</span><span class='fc1-0'>&nbsp;&nbsp;กองเภสัชกรรม&nbsp;&nbsp;&nbsp;&nbsp;รพ.ค่ายสุรศักดิ์มนตรี</span></td>
     </tr>
   <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>ที่ </span><span class='fc1-0'><?="<div style='width:180PX;height:30PX;'><span class='fc1-0'>กห  0483.63.4/$cPono$cPonoyear</span></div>";?></span><?="<div style='left:342PX;width:150PX;height:30PX;'><span class='fc1-0'><b>วันที่</b> $cPodate</span></div>";?></td>
+    <td height="30" colspan="4"><? print "<div style='width:280PX;height:30PX;'><span class='fc1-5'>ที่ </span><span class='fc1-0'>กห  0483.63.4/$cPono$cPonoyear</span></div>";?><? print "<div style='left:342PX;width:150PX;height:30PX;'><span class='fc1-0'><b>วันที่</b> $cPodate</span></div>";?></td>
     </tr>
   <tr>
     <td height="30" colspan="4"><span class='fc1-5'>เรื่อง&nbsp;&nbsp;</span><span class='fc1-0'>รายงานผลการดำเนินการร่างขอบเขตของงาน</span></td>
