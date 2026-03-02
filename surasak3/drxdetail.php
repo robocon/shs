@@ -713,9 +713,9 @@ echo "<table><tr>";
 	<td><FONT COLOR="#FF0000"><B>เคยตัดสต๊อกแล้ว</B></FONT>&nbsp;&nbsp;&nbsp;</td>
 	<?php }?>
     </td>
-    <td><a target="_blank" href="drxprint.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
+    <td><a target="_blank" href="drxprint.php?sRow_id=<?=urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
     <td><a target="_blank" href="slipprntest1.php"><font face='Angsana New'>พิมพ์สลากยารุ่นเก่า(2560)</a></td>
-    <td><a target="_blank" href="slipprntest1_new.php"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
+    <td><a target="_blank" href="slipprntest1_new.php?sRow_id=<?=urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
 	<td><a target="_blank" href="drxprintopd.php"><font face='Angsana New'>พิมพ์ใบรายการยากลับบ้าน</a></td>
 	<td><a target="_blank" href="drxprintopd1.php"><font face='Angsana New'>พิมพ์สติกเกอร์ติด	OPD</a></td>
     <td><a target="_blank" href="appoilst_inj.php?Thn=<?=$sHn?>"><font face='Angsana New'>ออกใบนัดฉีดยา</a></td>
