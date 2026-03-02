@@ -305,6 +305,7 @@ if ($action==='udpateTime') {
                     cancelButtonColor: "#d33",
                     cancelButtonText: "ยกเลิก",
                     focusConfirm: false,
+                    allowOutsideClick: false,
                     preConfirm: () => {
                         return { 
                             "id": id,
