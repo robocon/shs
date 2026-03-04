@@ -530,3 +530,13 @@ function sendTelgramMsg($text){
 	curl_close($curl);
     return $result;
 }
+
+function endSession(){
+	?>
+	<div>
+		<h1>SESSION หมดอายุการใช้งาน</h1>
+		<p><a href="../nindex.htm">คลิกที่นี่</a> เพื่อ Login เข้าใช้งานใหม่อีกครั้ง</p>
+	</div>
+	<?php
+	exit;
+}

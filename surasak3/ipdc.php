@@ -1,89 +1,86 @@
 <?php
 session_start();
+include_once dirname(__FILE__) . '/connect.php';
 ?>
 <style type="text/css">
-body,td,th {
-	font-family: "TH SarabunPSK";
-}
+	body,
+	td,
+	th {
+		font-family: "TH SarabunPSK";
+	}
 </style>
-
 <?
-//echo '<FONT SIZE="5" COLOR="red"> กรุณารอซักครู่ ยเจ้าหน้าที่คอมพิวเตอร์กำลังปรับปรุงโปรแกรม</FONT>';
-
-//exit();
-include("connect.inc");
- $query = "SELECT doctor FROM bed WHERE bedcode = '$cBedcode'";
- $result = mysql_query($query);
- list($doctor) = Mysql_fetch_row($result);
+$query = "SELECT doctor FROM bed WHERE bedcode = '$cBedcode'";
+$result = mysql_query($query);
+list($doctor) = Mysql_fetch_row($result);
 session_register("clastcal");
 
- $query = "SELECT * FROM bed WHERE bedcode = '$cBedcode'";
-    $result = mysql_query($query)
-        or die("Query failed");
+$query = "SELECT * FROM bed WHERE bedcode = '$cBedcode'";
+$result = mysql_query($query)
+	or die("Query failed");
 
-    for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-        if (!mysql_data_seek($result, $i)) {
-            echo "Cannot seek to row $i\n";
-            continue;
-   		                     }
+for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
+	if (!mysql_data_seek($result, $i)) {
+		echo "Cannot seek to row $i\n";
+		continue;
+	}
 
-        if(!($row = mysql_fetch_object($result)))
-            continue;
-         }
+	if (!($row = mysql_fetch_object($result)))
+		continue;
+}
 
-   If ($result){
-      $oBedcode=$row->bedcode;
-      $oAn=$row->an;
-      $oHn=$row->hn;
-      $oPtname=$row->ptname;
-      $oPtright=$row->ptright;
-      $oDoctor=$row->doctor;
-      $oAge=$row->age;
-      $oAddress=$row->address;
-      $oMuang=$row->muang;
-      $oDate=$row->date;
-      $oDiagnos=$row->diagnos;
-      
-      $idcard=$row->idcard;
-      $food=$row->food;
-      
-      $cChgdate=$row->chgdate;
-	     $cChgwdate=$row->chgwdate;
-      $cBedname=$row->bedname;
-      $cBedpri=$row->bedpri;
+if ($result) {
+	$oBedcode = $row->bedcode;
+	$oAn = $row->an;
+	$oHn = $row->hn;
+	$oPtname = $row->ptname;
+	$oPtright = $row->ptright;
+	$oDoctor = $row->doctor;
+	$oAge = $row->age;
+	$oAddress = $row->address;
+	$oMuang = $row->muang;
+	$oDate = $row->date;
+	$oDiagnos = $row->diagnos;
 
-      $price=$row->price;
-      $paid=$row->paid;
-      $debt=$row->debt;
-      $accno=$row->accno;
-	  $cbedcode=$row->bedcode;
-	  $clastcal=$row->lastcalroom;
-                     }  
-   else {
-      echo "ไม่พบ bedcode : $oBedcode";
-           }
-	
-  $chgdate=(substr($oDate,0,4)-543).substr($oDate,4); //admit date or changdate
+	$idcard = $row->idcard;
+	$food = $row->food;
 
-  echo "<font face='Angsana New' size ='5'>จำหน่ายผู้ป่วยออกจากโรงพยาบาล<BR>";
-  echo "<font face='Angsana New' size ='3'>วันนอน  $chgdate&nbsp;&nbsp;"; 
-  $date2=date("Y-m-d H:i:s");  //discharge date 
-  echo "วันจำหน่าย  $date2<br>"; 
-  //$date1=("2003-08-30 08:30:20");//admit
-  //$date2=("2003-09-10 08:30:20");//discharge
-   $s = strtotime($date2)-strtotime($chgdate);
- //  echo "จำนวนวินาที $s<br>";  //seconds
-   $d = intval($s/86400);   //day
-   $s -= $d*86400;
-   $h  = intval($s/3600);    //hour
-   echo "จำนวนวัน  $d วัน $h ชั่วโมง &nbsp;&nbsp;";
-   $days= $d;
-   
-   if ($h>6){
-         $days=$d+1;
-                        } 
+	$cChgdate = $row->chgdate;
+	$cChgwdate = $row->chgwdate;
+	$cBedname = $row->bedname;
+	$cBedpri = $row->bedpri;
 
-    echo "<B>จำนวนวันนอนทั้งสิ้น  $days วัน</B><br>";
+	$price = $row->price;
+	$paid = $row->paid;
+	$debt = $row->debt;
+	$accno = $row->accno;
+	$cbedcode = $row->bedcode;
+	$clastcal = $row->lastcalroom;
+} else {
+	echo "ไม่พบ bedcode : $oBedcode";
+}
+
+$chgdate = (substr($oDate, 0, 4) - 543) . substr($oDate, 4); //admit date or changdate
+
+echo "<font face='Angsana New' size ='5'>จำหน่ายผู้ป่วยออกจากโรงพยาบาล<BR>";
+echo "<font face='Angsana New' size ='3'>วันนอน  $chgdate&nbsp;&nbsp;";
+$date2 = date("Y-m-d H:i:s");  //discharge date 
+echo "วันจำหน่าย  $date2<br>";
+//$date1=("2003-08-30 08:30:20");//admit
+//$date2=("2003-09-10 08:30:20");//discharge
+$s = strtotime($date2) - strtotime($chgdate);
+//  echo "จำนวนวินาที $s<br>";  //seconds
+$d = intval($s / 86400);   //day
+$s -= $d * 86400;
+$h  = intval($s / 3600);    //hour
+echo "จำนวนวัน  $d วัน $h ชั่วโมง &nbsp;&nbsp;";
+$days = $d;
+
+if ($h > 6) {
+	$days = $d + 1;
+}
+
+echo "<B>จำนวนวันนอนทั้งสิ้น  $days วัน</B><br>";
 
 /* $chgdate1=(substr($cChgwdate,0,4)-543).substr($cChgwdate,4); //admit date or changdate
   $date2=date("Y-m-d H:i:s");  //discharge date 
@@ -104,40 +101,39 @@ session_register("clastcal");
          $days1=$d1+1;
                         } 
 */
-    //echo "&nbsp;<B>จำนวนวันนอนที่คอมคิดค่าบริการทางการพยาบาล  $days1 วัน</B><br>";
+//echo "&nbsp;<B>จำนวนวันนอนที่คอมคิดค่าบริการทางการพยาบาล  $days1 วัน</B><br>";
 
 
- $query = "SELECT date,depart,detail,sum(amount),sum(price),paid,part,idname,code,price FROM ipacc WHERE an = '$oAn' and detail like '%ค่าบริการพยาบาล%'  group by code  ";
- 
-  $result = mysql_query($query)
-        or die("Query failed ipacc");
-    $num=0;
-    while (list ($date,$depart,$detail,$amount,$price,$paid,$part,$idname,$code,$price1) = mysql_fetch_row ($result)) {
-	    $num++;
-		$amount1=$amount1+$amount;
-		$day=substr($date,0,10);
-		print("<tr>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n".
-             //   "<td bgcolor=F5DEB3><font face='Angsana New'>$day</td>\n".
-			
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$depart</td>\n".
-					  "<td bgcolor=F5DEB3><font face='Angsana New'>$code</td>\n".
-                "<td bgcolor=F5DEB3><font face='Angsana New'>$detail</td>\n".  
-					   "<td bgcolor=F5DEB3 align='center'><font face='Angsana New'><B>$dpycode</B></td>\n".  
-                "<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>$amount</td>\n".  
-                "<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>&nbsp;$price</td>\n".  
-             //   "<td bgcolor=F5DEB3><font face='Angsana New'>$paid</td>\n".  
-          //      "<td bgcolor=F5DEB3><font face='Angsana New'>$part</td>\n".  
-          //      "<td bgcolor=F5DEB3><font face='Angsana New'>$idname</td>\n".  
-                " </tr>\n<BR>");
-				
-		      }
+$query = "SELECT date,depart,detail,sum(amount),sum(price),paid,part,idname,code,price FROM ipacc WHERE an = '$oAn' and detail like '%ค่าบริการพยาบาล%'  group by code  ";
 
-  echo "<br><font face='Angsana New' size ='3'><B>ค่าบริการทางการพยาบาลคิดแล้วทั้งหมด &nbsp; <B>$amount1</B> วัน</B> <br>";
+$result = mysql_query($query)
+	or die("Query failed ipacc");
+$num = 0;
+while (list($date, $depart, $detail, $amount, $price, $paid, $part, $idname, $code, $price1) = mysql_fetch_row($result)) {
+	$num++;
+	$amount1 = $amount1 + $amount;
+	$day = substr($date, 0, 10);
+	print("<tr>\n" .
+		"<td bgcolor=F5DEB3><font face='Angsana New'>$num</td>\n" .
+		//   "<td bgcolor=F5DEB3><font face='Angsana New'>$day</td>\n".
+
+		"<td bgcolor=F5DEB3><font face='Angsana New'>$depart</td>\n" .
+		"<td bgcolor=F5DEB3><font face='Angsana New'>$code</td>\n" .
+		"<td bgcolor=F5DEB3><font face='Angsana New'>$detail</td>\n" .
+		"<td bgcolor=F5DEB3 align='center'><font face='Angsana New'><B>$dpycode</B></td>\n" .
+		"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>$amount</td>\n" .
+		"<td bgcolor=F5DEB3 align='right'><font face='Angsana New'>&nbsp;$price</td>\n" .
+		//   "<td bgcolor=F5DEB3><font face='Angsana New'>$paid</td>\n".  
+		//      "<td bgcolor=F5DEB3><font face='Angsana New'>$part</td>\n".  
+		//      "<td bgcolor=F5DEB3><font face='Angsana New'>$idname</td>\n".  
+		" </tr>\n<BR>");
+}
+
+echo "<br><font face='Angsana New' size ='3'><B>ค่าบริการทางการพยาบาลคิดแล้วทั้งหมด &nbsp; <B>$amount1</B> วัน</B> <br>";
 
 
-$amount2=$days-$amount1;
-$amount1 =$amount1+$days1;
+$amount2 = $days - $amount1;
+$amount1 = $amount1 + $days1;
 
 /* if($amount1!= $days){
  echo "<font face='Angsana New' size ='5'   color='#FF0066'>คำเตือน!กรุณาตรวจสอบค่าบริการทางการพยาบาลให้ตรงกับวันนอน <BR><B><U>จำนวนวันนอนทั้งสิ้น  $days วัน&nbsp;&nbsp;ค่าบริการทางการพยาบาลทั้งหมด &nbsp; $amount1 วัน</B></U> <BR>ให้หอผู้ป่วยทำการ เพิ่มหรือยกเลิกค่าบริการทางการพยาบาลที่ขาดหรือเกินก่อนการจำหน่าย<BR>มีปัญหาหรือข้อสงสัยติดต่อที่ส่วนเก็บเงินรายได้ <BR><CENTER>การจำหน่ายยังไม่สมบูรณ์</CENTER></font> <br>";
@@ -145,19 +141,19 @@ $amount1 =$amount1+$days1;
   }
   else{  */
 
-	  
-  print "<form method='POST' name='f1' action='ipdcok.php' Onsubmit=\"return checkForm();\">";
-  print "<p><b><font face='Angsana New' size ='4'   color='#FF0066'>การจำหน่ายผู้ป่วย  โปรดรอให้ทุกแผนกบันทึกรายการค่าใช้จ่ายให้เสร็จสิ้นก่อนจำหน่ายผู้ป่วยทุกครั้ง <BR>
+
+print "<form method='POST' name='f1' action='ipdcok.php' Onsubmit=\"return checkForm();\">";
+print "<p><b><font face='Angsana New' size ='4'   color='#FF0066'>การจำหน่ายผู้ป่วย  โปรดรอให้ทุกแผนกบันทึกรายการค่าใช้จ่ายให้เสร็จสิ้นก่อนจำหน่ายผู้ป่วยทุกครั้ง <BR>
             เพราะเมื่อจำหน่ายแล้วจะปิดบัญชี ไม่สามารถบันทึกรายการใดๆเพิ่มอีกได้</b></font></p>";
 
 
 
 
 
-  //print "<p><font face='Angsana New' size ='3'  >จำนวนวันที่ไม่เก็บเงินค่าห้องค่าอาหาร&nbsp;&nbsp;";
-  //print "<input type='text' name='absent' size='4' value='0'>&nbsp; &#3623;&#3633;&#3609;</p>";
+//print "<p><font face='Angsana New' size ='3'  >จำนวนวันที่ไม่เก็บเงินค่าห้องค่าอาหาร&nbsp;&nbsp;";
+//print "<input type='text' name='absent' size='4' value='0'>&nbsp; &#3623;&#3633;&#3609;</p>";
 
-  print "<p>
+print "<p>
  <TABLE>
 <TR>
 	<TD valign=\"top\" >สถานภาพเมื่อจำหน่าย</TD>
@@ -204,21 +200,19 @@ echo "
 	<TR>
 		<TD align=\"right\">เวลาที่ Refer : </TD>
 		<TD>";
-		
-		echo "<Select name=\"time_refer\">";
-		for($i=8;$i<24;$i++){
-			echo "<Option value=\"".sprintf("%02d",$i).":00:00\">".sprintf("%02d",$i).":00</Option>";
-			echo "<Option value=\"".sprintf("%02d",$i).":30:00\">".sprintf("%02d",$i).":30</Option>";
 
-		}
-		for($i=0;$i<8;$i++){
-			echo "<Option value=\"".sprintf("%02d",$i).":00:00\">".sprintf("%02d",$i).":00</Option>";
-			echo "<Option value=\"".sprintf("%02d",$i).":30:00\">".sprintf("%02d",$i).":30</Option>";
+echo "<Select name=\"time_refer\">";
+for ($i = 8; $i < 24; $i++) {
+	echo "<Option value=\"" . sprintf("%02d", $i) . ":00:00\">" . sprintf("%02d", $i) . ":00</Option>";
+	echo "<Option value=\"" . sprintf("%02d", $i) . ":30:00\">" . sprintf("%02d", $i) . ":30</Option>";
+}
+for ($i = 0; $i < 8; $i++) {
+	echo "<Option value=\"" . sprintf("%02d", $i) . ":00:00\">" . sprintf("%02d", $i) . ":00</Option>";
+	echo "<Option value=\"" . sprintf("%02d", $i) . ":30:00\">" . sprintf("%02d", $i) . ":30</Option>";
+}
+echo "</Select>";
 
-		}
-		echo "</Select>";
-
-		echo "</TD>
+echo "</TD>
 	</TR>
 	<TR>
 		<TD align=\"right\" valign=\"top\">อาการ : </TD>
@@ -276,7 +270,7 @@ echo "
 	</TR>
 	<TR>
 		<TD align=\"right\">แพทย์ผู้รักษา : </TD>
-		<TD><INPUT TYPE=\"text\" NAME=\"doctor\" value=\"".$doctor."\" readonly></TD>
+		<TD><INPUT TYPE=\"text\" NAME=\"doctor\" value=\"" . $doctor . "\" readonly></TD>
 	</TR>
 	<TR>
 		<TD align=\"right\">วัตุประสงค์/เพื่อ : </TD>
@@ -331,95 +325,86 @@ echo "
 </TR>
 </TABLE>";
 
-  print "<p>การวินิจฉัย&nbsp;&nbsp;&nbsp; <input type='text' name='diag' size='56' value='$cDiag'></p>";
+print "<p>การวินิจฉัย&nbsp;&nbsp;&nbsp; <input type='text' name='diag' size='56' value='$cDiag'></p>";
 
-  print "  <div align='left'>";
-  print "    <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
-  print "      <tr>";
+print "  <div align='left'>";
+print "    <table border='0' cellpadding='0' cellspacing='0' width='100%'>";
+print "      <tr>";
 //  print "        <td width='6%'></td>";
-  print "        <td width='31%' valign='top'><b>ICD10 (diagnosis)&nbsp;</b><br>";
-  print "          <br>";
-  print "          principle&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='icd10' size='15'><br>";
- // print "          <br>";
-  print "          comorbidity&nbsp;&nbsp;&nbsp;<input type='text' name='comorbid' size='15'><br>";
-  print "          complication&nbsp; <input type='text' name='complica' size='15'><br>";
- 
-  print "          other&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='other' size='15'><br>";
-  print "          external cause&nbsp; <input type='text' name='extcause' size='15'></td>";
+print "        <td width='31%' valign='top'><b>ICD10 (diagnosis)&nbsp;</b><br>";
+print "          <br>";
+print "          principle&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='icd10' size='15'><br>";
+// print "          <br>";
+print "          comorbidity&nbsp;&nbsp;&nbsp;<input type='text' name='comorbid' size='15'><br>";
+print "          complication&nbsp; <input type='text' name='complica' size='15'><br>";
+
+print "          other&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='other' size='15'><br>";
+print "          external cause&nbsp; <input type='text' name='extcause' size='15'></td>";
 
 
- print "        <td width='33%' valign='top'><a target=_BLANK href='ipicd9cm.php'><b>ICD9CM (procedure)</b></a><br>";
-  print "          <br>";
-  print "          principle&nbsp;:&nbsp; <input type='text' name='icd9cm' size='15'><br>";
-  print "          <br>";
-  print "          secondary&nbsp; <input type='text' name='second' size='15'><br>";
-  print "          <br>";
-  print "        </td>";
-  print "      </tr>";
-  print "    </table>";
-  print "  </div>";
+print "        <td width='33%' valign='top'><a target=_BLANK href='ipicd9cm.php'><b>ICD9CM (procedure)</b></a><br>";
+print "          <br>";
+print "          principle&nbsp;:&nbsp; <input type='text' name='icd9cm' size='15'><br>";
+print "          <br>";
+print "          secondary&nbsp; <input type='text' name='second' size='15'><br>";
+print "          <br>";
+print "        </td>";
+print "      </tr>";
+print "    </table>";
+print "  </div>";
 
-  print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
-  ?>
-  <input type="hidden" name="cAn" value="<?=$oAn;?>">
-  <input type="hidden" name="cHn" value="<?=$oHn;?>">
-  <?php
-  print "<input type='submit' value='    ตกลง    ' name='B1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-  print "<input type='reset' value='  ลบทิ้ง  ' name='B2'></p>";
-  print "</form>";
+print "<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ";
+?>
+<input type="hidden" name="cAn" value="<?= $oAn; ?>">
+<input type="hidden" name="cHn" value="<?= $oHn; ?>">
+<?php
+print "<input type='submit' value='    ตกลง    ' name='B1'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+print "<input type='reset' value='  ลบทิ้ง  ' name='B2'></p>";
+print "</form>";
 
-  //};
-  include("unconnect.inc");
+//};
 ?>
 <SCRIPT LANGUAGE="JavaScript">
-	
-	function checkForm(){
-		
-		if(document.f1.txresult[0].checked == false && document.f1.txresult[1].checked == false && document.f1.txresult[2].checked == false && document.f1.txresult[3].checked == false && document.f1.txresult[4].checked == false && document.f1.txresult[5].checked == false && document.f1.txresult[6].checked == false && document.f1.txresult[7].checked == false && document.f1.txresult[8].checked == false){
+	function checkForm() {
+
+		if (document.f1.txresult[0].checked == false && document.f1.txresult[1].checked == false && document.f1.txresult[2].checked == false && document.f1.txresult[3].checked == false && document.f1.txresult[4].checked == false && document.f1.txresult[5].checked == false && document.f1.txresult[6].checked == false && document.f1.txresult[7].checked == false && document.f1.txresult[8].checked == false) {
 			alert('กรุณาเลือก สถานภาพเมื่อจำหน่าย');
 			return false;
-		}else if(document.f1.dctype[0].checked == false && document.f1.dctype[1].checked == false && document.f1.dctype[2].checked == false && document.f1.dctype[3].checked == false && document.f1.dctype[4].checked == false && document.f1.dctype[5].checked == false && document.f1.dctype[6].checked == false){
+		} else if (document.f1.dctype[0].checked == false && document.f1.dctype[1].checked == false && document.f1.dctype[2].checked == false && document.f1.dctype[3].checked == false && document.f1.dctype[4].checked == false && document.f1.dctype[5].checked == false && document.f1.dctype[6].checked == false) {
 			alert('กรุณาเลือกประเภทการจำหน่าย');
 			return false;
-		}else	if(document.f1.dctype[3].checked == true){
-			if(document.f1.list_ptright.value=='P01'){
+		} else if (document.f1.dctype[3].checked == true) {
+			if (document.f1.list_ptright.value == 'P01') {
 				alert('กรุณาเลือกสิทธิ์ผู้ป่วย');
 				return false;
-			}else if(document.f1.list_type_patient.value == ''){
+			} else if (document.f1.list_type_patient.value == '') {
 				alert('กรุณาเลือก ประเภทคนไข้');
 				return false;
-				
-			}else	if(document.f1.exrefer.value==''){
+
+			} else if (document.f1.exrefer.value == '') {
 				alert('กรุณาเลือกสาเหตุการ refer');
 				return false;
-			}else if(document.f1.exrefer.value=='อื่นๆ' && document.f1.exrefer2.value == ''){
+			} else if (document.f1.exrefer.value == 'อื่นๆ' && document.f1.exrefer2.value == '') {
 				alert('กรุณากรอก สาเหตุอื่นๆ ของการ refer');
 				return false;
-			}else if(document.f1.pttype[0].checked==false && document.f1.pttype[1].checked==false && document.f1.pttype[2].checked==false ){
+			} else if (document.f1.pttype[0].checked == false && document.f1.pttype[1].checked == false && document.f1.pttype[2].checked == false) {
 				alert('กรุณาเลือก ประเภทผู้ป่วย');
 				return false;
-			}else if(document.f1.refercar[0].checked==false && document.f1.refercar[1].checked==false){
+			} else if (document.f1.refercar[0].checked == false && document.f1.refercar[1].checked == false) {
 				alert('กรุณาเลือก การเดินทาง');
 				return false;
-			}else if(document.f1.hospital.value=="00" ){
+			} else if (document.f1.hospital.value == "00") {
 				alert('กรุณาเลือก Refer ไปที่โรงพยาบาล');
 				return false;
-			}else if(document.f1.hospital.value=="อื่นๆ" && document.f1.hospital1.value == ''){
+			} else if (document.f1.hospital.value == "อื่นๆ" && document.f1.hospital1.value == '') {
 				alert('กรุณากรอก โรงพยาบาลอื่นๆที่ Refer');
 				return false;
-			}else if(document.f1.doc_refer.checked == false && document.f1.nurse.checked == false && document.f1.assistant_nurse.checked == false && document.f1.estimate.checked == false && document.f1.cradle.checked == false && document.f1.doc_txt.checked == false && document.f1.suggestion.checked == false){
+			} else if (document.f1.doc_refer.checked == false && document.f1.nurse.checked == false && document.f1.assistant_nurse.checked == false && document.f1.estimate.checked == false && document.f1.cradle.checked == false && document.f1.doc_txt.checked == false && document.f1.suggestion.checked == false) {
 				alert('สิ่งที่ส่งไปด้วยในการ Refer ควรมีอย่างน้อย 1 อย่าง กรุณาเช็คเครื่องหมายถูกด้วยครับ');
 				return false;
 			}
-
-		}else{
-			
+		} else {
 			return true;
-
 		}
-
-
 	}
-
 </SCRIPT>
-
