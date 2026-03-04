@@ -209,6 +209,24 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 	$stat_ldl = $_POST['stat_ldl'];
 	$reason_ldl = $_POST['reason_ldl'];
 	
+	$tb = $dxdr_ofyear['TB'];
+	$tbrange = $dxdr_ofyear['TBPrange'];
+	$stat_tb = $_POST['stat_tb'];	
+	
+	$db = $dxdr_ofyear['DB'];
+	$dbrange = $dxdr_ofyear['DBrange'];
+	$stat_db = $_POST['stat_db'];	
+	
+	$alb = $dxdr_ofyear['ALB'];
+	$albrange = $dxdr_ofyear['ALBrange'];
+	$stat_alb = $_POST['stat_alb'];
+
+	$tp = $dxdr_ofyear['TP'];
+	$tprange = $dxdr_ofyear['TPrange'];
+	$stat_tp = $_POST['stat_tp'];		
+	
+	
+	
 	$sql ="INSERT INTO  `condxofyear_out` ( 
 		`thidate` ,  `thdatehn` ,  `thdatevn` ,  `hn` ,  `vn` , `ptname`  , 
 		`age` ,  `camp` ,  `camp_until` ,  `height` ,  `weight` ,  `round_` , 
@@ -255,7 +273,8 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		`vdrl_range`,`stat_vdrl`,`parasi`,`parasi_range`,`stat_parasi`,`groupt`,
 		`groupt_range`,`stat_groupt`,`rh`,`rh_range`,`stat_rh`,`upt`,
 		`upt_range`,`stat_upt`, `antihb`, `antihb_range`, `stat_antihb`, 
-		`ldl`,`ldl_range`,`stat_ldl`,`reason_ldl`,`doctor_ans`) 
+		`ldl`,`ldl_range`,`stat_ldl`,`reason_ldl`,`doctor_ans`,
+		`TB`,`TBPrange`,`stat_tb`,`DB`,`DBrange`,`stat_db`,`ALB`,`ALBrange`,`stat_alb`,`TP`,`TPrange`,`stat_tp`) 
 	
 	VALUES ( 
 
@@ -306,7 +325,8 @@ if(isset($_POST["row_id"]) && $_POST["row_id"] != ""){
 		'$vdrl_range','$stat_vdrl','$parasi','$parasi_range','$stat_parasi','$groupt', 
 		'$groupt_range','$stat_groupt','$rh','$rh_range','$stat_rh','$upt', 
 		'$upt_range','$stat_upt', '$antihb', '$antihb_range', '$stat_antihb', 
-		'$ldl','$ldl_range','$stat_ldl','$reason_ldl','".$_POST['doctor_ans']."') ";
+		'$ldl','$ldl_range','$stat_ldl','$reason_ldl','".$_POST['doctor_ans']."',
+		'$tb','$tbrange','$stat_tb','$db','$dbrange','$stat_db','$alb','$albrange','$stat_alb','$tp','$tprange','$stat_tp') ";
 
 	/*$sql = "Update `condxofyear_out` set `thidate` = '".$date_now."' ,`thdatehn` = '".$date_hn."' ,`thdatevn` = '".$date_vn."' ,`dx` = '".$_POST["dx"]."' ,`bmi` = '".$_POST["bmi"]."' , `doctor` ='".$_POST["doctorn"]."', `stat_ua` ='".$_POST["normal"]."' , `stat_hct` ='".$_POST["normal31"]."' , `stat_wbc` ='".$_POST["normal32"]."' , `stat_pltc` ='".$_POST["normal33"]."' , `stat_alk` ='".$_POST["normal1"]."' , `stat_sgpt` ='".$_POST["normal2"]."' , `stat_sgot` ='".$_POST["normal3"]."' , `stat_bun` ='".$_POST["normal4"]."' , `stat_chol` ='".$_POST["normal5"]."' , `stat_cr` ='".$_POST["normal6"]."' , `stat_bs` ='".$_POST["normal7"]."' , `stat_tg` ='".$_POST["normal8"]."' , `stat_uric` ='".$_POST["normal9"]."' , `reason_ua` ='".$_POST["ch"]."' , `reason_hct` ='".$_POST["ch31"]."' , `reason_wbc` ='".$_POST["ch32"]."' , `reason_pltc` ='".$_POST["ch33"]."' , `reason_bs` ='".$_POST["ch7"]."' , `reason_bun` ='".$_POST["ch4"]."' , `reason_cr` ='".$_POST["ch6"]."' , `reason_uric` ='".$_POST["ch9"]."' , `reason_chol` ='".$_POST["ch5"]."' , `reason_tg` ='".$_POST["ch8"]."' , `reason_sgot` ='".$_POST["ch3"]."' , `reason_sgpt` ='".$_POST["ch2"]."' , `reason_alk` ='".$_POST["ch1"]."' , `general` ='".$_POST["normal21"]."' , `cxr` ='".$_POST["normal22"]."' , `pap` ='".$_POST["normal23"]."' , `stat_other1` ='".$_POST["normal24"]."' , `stat_other2` ='".$_POST["normal25"]."' , `reason_general` ='".$_POST["ch21"]."' , `reason_cxr` ='".$_POST["ch22"]."' , `reason_pap` ='".$_POST["ch23"]."' , `reason_other1` ='".$_POST["ch24"]."' , `reason_other2` ='".$_POST["ch25"]."' , `other1` ='".$_POST["other1"]."' , `other2` ='".$_POST["other2"]."' , `summary` ='".$_POST["normal26"]."'  where `row_id` = '".$_POST["row_id"]."' limit 1";
 	//echo $sql;
@@ -429,12 +449,12 @@ $tmp_vn = "149";
 $tmp_certtype = "ใบรับรองแพทย์ 5 โรค (E_CERT-001)";
 */
 
-$select = "select * from condxofyear_out where hn = '".$tmp_hn."' AND (camp like '%E_CERT%') order by thidate desc";
+		$select = "select * from condxofyear_out where hn = '".$tmp_hn."' AND (camp like '%E_CERT%') ORDER BY row_id DESC LIMIT 1";
 		$row = mysql_query($select);
 		$num = mysql_num_rows($row);
-		while($result = mysql_fetch_array($row)){
+		while($resultdx = mysql_fetch_array($row)){
 		
-			$tmp_row_id = $result["row_id"];
+			$tmp_row_id = $resultdx["row_id"];
 
 		}//end while
 
@@ -444,7 +464,7 @@ $select = "select * from condxofyear_out where hn = '".$tmp_hn."' AND (camp like
 //////////////////////////////// เงื่อนไขแสดงรายงาน + lab ////////////////////////////////////////////////////////
 
 //-----> ข้อมูล LAB เอามาเช็คเงื่อนไขการแสดงผล
-$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '".$tmp_hn."' AND row_id = '".$tmp_row_id."'  "; 
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '".$tmp_hn."' AND row_id = '".$tmp_row_id."' ORDER BY row_id DESC LIMIT 1"; 
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query); 

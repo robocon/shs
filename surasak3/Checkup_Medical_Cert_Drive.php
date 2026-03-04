@@ -99,9 +99,10 @@ $query = mysql_query($sql);
 $num = mysql_num_rows($query);
 
 if(empty($num)){
-    echo "<h1 align='center'>äÁè¾º¢éÍÁÙÅ«Ñ¡»ÃÐÇÑµÔ</h1>";echo "<br>".exit();
+    echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติคนไข้</h1>";echo "<br>".exit();
 }//end if
 
+$doctorCodeDxofyearOut = 'MD041 วรวิทย์ วงษ์มณี'; // ตั้ง Default ให้เป็นหมอวรวิทย์
 while($rows = mysql_fetch_array($query)){
 
     $Txt_Temp = $rows["temperature"];
@@ -118,7 +119,7 @@ while($rows = mysql_fetch_array($query)){
     $Txt_Treat_other = $rows["treat_other"]; // Í×è¹æ·ÕèÊÓ¤Ñ­
     //$Txt_Doctor_Ans= $rows["doctor_ans"]; // ÊÃØ»¤ÇÒÁ¤Ô´àËç¹áÅÐ¢éÍá¹Ð¹Ó¢Í§á¾·Âì
     $Txt_Flag_Address_Use = $rows["address_use"];
-
+    $doctorCodeDxofyearOut = substr($rows["doctor"],0,5);
 
 }//end while
 
@@ -133,7 +134,7 @@ $query = mysql_query($sql);
 $num = mysql_num_rows($query);
 
 if(empty($num)){
-	echo "<h1 align='center'>äÁè¾º¢éÍÁÙÅ¤¹ä¢é</h1>";echo "<br>".exit();
+	echo "<h1 align='center'>ไม่พบข้อมูลคนไข้</h1>";echo "<br>".exit();
 }//end if
 
 while($rows = mysql_fetch_array($query)){
@@ -176,13 +177,14 @@ while($rows = mysql_fetch_array($query)){
 
 //-----> sql ¢éÍÁÙÅá¾·Âì
 
-$sql = "SELECT * FROM `doctor` WHERE row_id = '20' AND status = 'y' ";
+// $sql = "SELECT * FROM `doctor` WHERE row_id = '20' AND status = 'y' ";
+$sql = "SELECT * FROM `doctor` WHERE `name` LIKE '$doctorCodeDxofyearOut%' AND status = 'y' ";
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
 
 if(empty($num)){
-	echo "<h1 align='center'>äÁè¾º¢éÍÁÙÅá¾·Âì</h1>";echo "<br>".exit();
+	echo "<h1 align='center'>ไม่พบข้อมูล แพทย์</h1>";echo "<br>".exit();
 }//end if
 
 while($rows = mysql_fetch_array($query)){
@@ -204,7 +206,7 @@ $query = mysql_query($sql);
 $num = mysql_num_rows($query);
 
 if(empty($num)){
-	echo "<h1 align='center'>äÁè¾º¢éÍÁÙÅ dx , doctor_ans </h1>";echo "<br>".exit();
+	echo "<h1 align='center'>ไม่สามารถดึง dx , doctor_ans </h1>";echo "<br>".exit();
 }//end if
 
 while($rows = mysql_fetch_array($query)){
@@ -218,7 +220,6 @@ while($rows = mysql_fetch_array($query)){
 
 ?>
 <style type="text/css">
-<!--
 body,td,th {
 	font-family: TH SarabunPSK;
 	font-size: 15pt;
@@ -274,8 +275,6 @@ font.txt_dotted {
   box-shadow: 2px 5px #888888;
   width: 230px;
 }
--->
-
 
 </style>
 <title>ใบรับรองแพทย์ (สำหรับใบอนุญาตขับรถ)</title>
