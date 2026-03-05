@@ -110,17 +110,19 @@ list($hi_type) = Mysql_fetch_row($rows);
 
 	$bloodItems = array();
 	if(!empty($hn)){
-		$sqlTrnBlood = "SELECT a.*,b.* FROM (
-			SELECT `Unit_number`,`Pt_HN`,`Pt_Name` FROM `trn_blood` WHERE `Pt_HN` = '$hn' 
-		) AS a LEFT JOIN `mst_stock` AS b ON a.`Unit_number` = b.`Unit_number` 
-		WHERE b.`Exp_Date` >= CURDATE()";
+		$sqlTrnBlood = "SELECT * 
+		FROM `mst_stock` 
+		WHERE `Hn_Reserved` = '$hn' 
+		AND `Exp_Date` >= CURDATE() 
+		AND `Flag_Reserved`='Y' 
+		AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` WHERE `Pt_HN` = '$hn'  )";
 		$qTrn = $bsConn->query($sqlTrnBlood);
 		if($qTrn->num_rows>0){
 			while ($a = $qTrn->fetch_assoc()) {
 				$bloodItems[] = array(
 					'bloodGroup'=>$a['Blood_Group'], 
 					'expireDate'=>$a['Exp_Date'],
-					'unitNumber'=>$a['Unit_number']
+					'unitNumber'=>$a['Unit_Number']
 				);
 			}
 		}
