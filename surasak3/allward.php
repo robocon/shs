@@ -111,9 +111,9 @@ list($hi_type) = Mysql_fetch_row($rows);
 	$bloodItems = array();
 	if(!empty($hn)){
 		$sqlTrnBlood = "SELECT a.*,b.* FROM (
-			SELECT `Unit_number`,`Pt_HN`,`Pt_Name` FROM `trn_blood` WHERE `Pt_HN` = '$hn'
-		) AS a LEFT JOIN `mst_stock` AS b ON a.`Unit_number` = b.`Unit_number`
-		";
+			SELECT `Unit_number`,`Pt_HN`,`Pt_Name` FROM `trn_blood` WHERE `Pt_HN` = '$hn' 
+		) AS a LEFT JOIN `mst_stock` AS b ON a.`Unit_number` = b.`Unit_number` 
+		WHERE b.`Exp_Date` >= CURDATE()";
 		$qTrn = $bsConn->query($sqlTrnBlood);
 		if($qTrn->num_rows>0){
 			while ($a = $qTrn->fetch_assoc()) {
@@ -265,16 +265,16 @@ $(document).ready(function(){
 		  </tr>
 		  <tr>
 			<td colspan="10">
-				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a>
+				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a><br>
 				<style>
 					.bloodContainer{
 						display: inline-block;
-						margin-left: 0.7em;
+						margin-right: 0.5em;
 						font-family: "TH SarabunPSK";
 						font-size: 20px;
 						border: 2px solid red;
 						border-radius: 6px;
-						padding: 6px 8px;
+						padding: 4px 6px;
 						background-color: pink;
 					}
 				</style>
