@@ -185,7 +185,6 @@ body{
     margin-right: 0.5em;
     margin-bottom: 0.5em;
     font-family: "TH SarabunPSK";
-    /* font-size: 20px; */
     border: 2px solid red;
     border-radius: 6px;
     padding: 4px 6px;
@@ -200,7 +199,6 @@ body{
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  /* font-size: 16px; */
   cursor: pointer;
   border-radius: 4px;
 }
@@ -354,7 +352,6 @@ if (($dcdate == '' || $dcdate == '0000-00-00 00:00:00') && $lockdc != "") {
     <p><a href="<?= $hrefUri; ?>" <?= $clickdc; ?> class="button button2"><?= $status; ?> จำหน่าย ( discharge ) / ยกเลิก Admit</a></p>
     <?php
 } else if ($lockdc == "") {
-    // 
     ?>
     <p><a href="javascript:void(0);" onclick="swalAlert('ไม่สามารถจำหน่ายได้ เนื่องจากห้องยาไม่ได้การปลดล็อค หรือจ่ายยายังไม่สำเร็จกรุณาติดต่อห้องจ่ายยา โทร.1160');" class="button button2"><span title="สถานะ Lock">🔒</span> จำหน่าย ( discharge ) / ยกเลิก Admit</a></p>
     <?php
