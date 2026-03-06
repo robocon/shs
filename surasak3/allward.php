@@ -115,7 +115,7 @@ list($hi_type) = Mysql_fetch_row($rows);
 		WHERE `Hn_Reserved` = '$hn' 
 		AND `Exp_Date` >= CURDATE() 
 		AND `Flag_Reserved`='Y' 
-		AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` WHERE `Pt_HN` = '$hn'  )";
+		AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` WHERE `Pt_HN` = '$hn' )";
 		$qTrn = $bsConn->query($sqlTrnBlood);
 		if($qTrn->num_rows>0){
 			while ($a = $qTrn->fetch_assoc()) {
@@ -238,7 +238,7 @@ $(document).ready(function(){
           </tr>
           <tr style="line-height:25PX;">
             <td colspan="10" valign="top" ><font class='tablefontt1'>หัตถการ  :</font>
-			<? echo "<a target=_blank  href=\"ipdata.php?cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย/ คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
+			<? echo "<a target=_blank  href=\"ipdata.php?cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย / คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
             
             <? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
             <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";
