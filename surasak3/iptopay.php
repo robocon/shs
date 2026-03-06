@@ -1,5 +1,26 @@
 <?php
 session_start();
+include_once dirname(__FILE__).'/connect.php';
+
+// global $cBed,$cPtname,$cHn,$cPtright,$cDiag,$cDoctor;
+$cBedcode = $_GET['Bed'];
+$query = "SELECT * FROM bed WHERE bedcode = '$cBedcode'";
+$result = mysql_query($query) or die("Query failed bed");
+$row = mysql_fetch_object($result);
+$cDate = $row->date;
+$cBedcode = $row->bedcode;
+$cBed = $row->bed;
+$cPtname = $row->ptname;
+$cAge = $row->age;
+$cPtright = $row->ptright;
+$cDoctor = $row->doctor;
+$cHn = $row->hn;
+$cAn = $row->an;
+$cDiag = $row->diagnos;
+$cBedpri = $row->bedpri;
+$cChgdate = $row->chgdate;
+$cBedname = $row->bedname;
+$cAccno = $row->accno;
 ?>
 <div>
     <a href="javascript:void(0);" onclick="window.history.back();">&lt;&lt;&nbsp;กลับไปเมนู</a><br><br>

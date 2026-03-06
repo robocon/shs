@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("connect.php");
+include_once dirname(__FILE__).'/connect.php';
 
 $cAn = $_POST['cAn'];
 if(empty($cAn)){
@@ -60,15 +60,15 @@ $ip = mysql_fetch_assoc($qIpcard);
             $bgColor = '#ff9292';
         }
         print(" <tr style='background-color:$bgColor;'>\n" .
-            "  <td><font face='Angsana New'>$date</td>\n" .
-            "  <td><font face='Angsana New'>$depart</td>\n" .
-            "  <td><font face='Angsana New'>$detail</td>\n" .
-            "  <td><font face='Angsana New'>$amount</td>\n" .
-            "  <td><font face='Angsana New'>$price</td>\n" .
-            "  <td><font face='Angsana New'>$paid</td>\n" .
-            "  <td><font face='Angsana New'>$part</td>\n" .
-            "  <td><font face='Angsana New'>$idname</td>\n" .
-            " </tr>\n");
+        "  <td><font face='Angsana New'>$date</td>\n" .
+        "  <td><font face='Angsana New'>$depart</td>\n" .
+        "  <td><font face='Angsana New'>$detail</td>\n" .
+        "  <td><font face='Angsana New'>$amount</td>\n" .
+        "  <td><font face='Angsana New'>$price</td>\n" .
+        "  <td><font face='Angsana New'>$paid</td>\n" .
+        "  <td><font face='Angsana New'>$part</td>\n" .
+        "  <td><font face='Angsana New'>$idname</td>\n" .
+        " </tr>\n");
     }
     ?>
 </table>
