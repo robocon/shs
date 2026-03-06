@@ -111,17 +111,13 @@ global $idcard, $camp, $gang, $dbirth, $address, $tambol, $ampur, $changwat;
 
 $query = "SELECT * FROM bed WHERE bedcode = '$cBedcode'";
 $result = mysql_query($query) or die("Query failed bed");
-
-for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-    if (!mysql_data_seek($result, $i)) {
-        echo "Cannot seek to row $i\n";
-        continue;
-    }
-
-    if (!($row = mysql_fetch_object($result)))
-        continue;
+if(mysql_num_rows($result)==0){
+    ?>
+    <p>ไม่พบข้อมูล Bed: <u><?= $cBedcode ?></u> กรุณาตรวจสอบข้อมูลอีกครั้ง</p>
+    <?php
+    exit;
 }
-
+$row = mysql_fetch_object($result);
 if ($result) {
     $cDate = $row->date;
     $cBedcode = $row->bedcode;
@@ -232,7 +228,7 @@ if(file_exists("../image_patient/$idcard.jpg")){
 ?>
 <table>
     <tr>
-        <td>
+        <td style="padding-right: 1em; padding-left: 1em;">
             <img src="<?= $img; ?>" style="width:120px;">
         </td>
         <td>
@@ -266,7 +262,7 @@ if(file_exists("../image_patient/$idcard.jpg")){
                 <tr>
                     <td align="right"><strong>วันที่ Admit:</strong></td>
                     <td><?= $cDate; ?></td>
-                    <td align="right"><strong>จำนวนวันนอน:</strong></td>
+                    <td align="right" style="padding-left: 1em;"><strong>จำนวนวันนอน:</strong></td>
                     <td><?= $d; ?> วัน <?= $h; ?> ชั่วโมง</td>
                 </tr>
             </table>
@@ -328,7 +324,7 @@ if ($qTrn->num_rows > 0) {
 }
 if(count($bloodItems)>0){
     ?>
-    <fieldset style="margin:6px 0;" class="mt-2 mb-2">
+    <fieldset style="margin:6px 0; border-left: 5px solid red; padding-left: 10px;" class="mt-2 mb-2">
         <legend>⚠️<strong>แจ้งเตือน</strong> มีถุงเลือดที่ยังไม่ได้คืน กรุณาคืนถุงเลือดก่อนจำหน่ายผู้ป่วย</legend>
         <div>
         <?php
