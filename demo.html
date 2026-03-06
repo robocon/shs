@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ใบขอเลือดและส่วนประกอบของเลือด</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ตั้งค่าฟอนต์ TH SarabunPSK (ใช้ Sarabun สำรอง) */
+        body {
+            font-family: "TH SarabunPSK", "Sarabun", sans-serif;
+            font-size: 16pt;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        .theme-color { color: #006666; }
+        .bg-theme { background-color: #006666; color: white; }
+        
+        .main-title { font-size: 24pt; font-weight: bold; color: #006666; }
+        .sub-title { font-size: 16pt; font-weight: bold; color: #006666; }
+
+        label:hover { cursor: pointer; color: #006666; }
+
+        .card {
+            border-top: 5px solid #006666;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        hr {
+            height: 4px !important;
+            background-color: #006666;
+            opacity: 1;
+            border: none;
+        }
+
+        .form-section-title {
+            border-left: 5px solid #006666;
+            padding-left: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #006666;
+        }
+
+        .btn-theme {
+            background-color: #006666;
+            color: white;
+            border: none;
+        }
+        .btn-theme:hover {
+            background-color: #004d4d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container my-5">
+    <div class="card p-4">
+        <div class="text-center mb-4">
+            <div class="main-title">ใบขอเลือดและส่วนประกอบของเลือด</div>
+            <div class="sub-title">Blood and Blood Components Request Form</div>
+        </div>
+
+        <form id="bloodRequestForm">
+            <div class="form-section-title">1. ข้อมูลผู้ป่วย</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">ชื่อนามสกุลผู้ป่วย</label>
+                    <input type="text" class="form-control" name="patient_name" placeholder="ระบุชื่อผู้ป่วย" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">การวินิจฉัยโรค (Diagnosis)</label>
+                    <input type="text" class="form-control" name="diag" placeholder="ระบุโรค" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">ชื่อแพทย์เจ้าของไข้</label>
+                    <input type="text" class="form-control" name="doctor" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">สิทธิการรักษา</label>
+                    <select class="form-select" name="ptright" required>
+                        <option value="">เลือกสิทธิ</option>
+                        <option value="เงินสด">เงินสด</option>
+                        <option value="ประกันสังคม">ประกันสังคม</option>
+                        <option value="เบิกจ่ายตรง">เบิกจ่ายตรง</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section-title">2. ประวัติการได้รับเลือด</div>
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="got_blood" id="not_ever" value="0" checked>
+                        <label class="form-check-label" for="not_ever">ไม่เคยได้รับเลือด</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="got_blood" id="ever" value="1">
+                        <label class="form-check-label" for="ever">เคยได้รับเลือด</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">รับครั้งสุดท้ายเมื่อวันที่</label>
+                    <input type="date" class="form-control" name="get_blood_date">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">ที่โรงพยาบาล/สถานที่</label>
+                    <input type="text" class="form-control" name="hospital">
+                </div>
+            </div>
+
+            <div class="form-section-title">3. Group เลือดของคนไข้</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <select class="form-select" name="blood_group">
+                        <option value="ไม่ทราบกรุ๊ปเลือด">ไม่ทราบกรุ๊ปเลือด</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="AB">AB</option>
+                        <option value="O">O</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select" name="blood_group_rh">
+                        <option value="Rh Positive">Rh Positive</option>
+                        <option value="Rh Negative">Rh Negative</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section-title">4. ชนิดเลือดที่ต้องการขอ</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0 blood_type" type="checkbox" name="prc" value="prc" id="prc_check">
+                            <label class="ms-2 mb-0" for="prc_check">PRC</label>
+                        </div>
+                        <input type="text" class="form-control" name="prc_unit">
+                        <span class="input-group-text">unit</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0 blood_type" type="checkbox" name="lrpc" value="lrpc" id="lrpc_check">
+                            <label class="ms-2 mb-0" for="lrpc_check">LRPC</label>
+                        </div>
+                        <input type="text" class="form-control" name="lrpc_unit">
+                        <span class="input-group-text">unit</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0 blood_type" type="checkbox" name="ffp" value="ffp" id="ffp_check">
+                            <label class="ms-2 mb-0" for="ffp_check">FFP</label>
+                        </div>
+                        <input type="text" class="form-control" name="ffp_unit">
+                        <span class="input-group-text">unit</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0 blood_type" type="checkbox" name="plt_conc" value="plt_conc" id="plt_check">
+                            <label class="ms-2 mb-0" for="plt_check">Plt.Conc</label>
+                        </div>
+                        <input type="text" class="form-control" name="plt_conc_unit">
+                        <span class="input-group-text">unit</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0 blood_type" type="checkbox" name="sdp" value="sdp" id="sdp_check">
+                            <label class="ms-2 mb-0" for="sdp_check">SDP</label>
+                        </div>
+                        <input type="text" class="form-control" name="sdp_unit">
+                        <span class="input-group-text">unit</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0 blood_type" type="checkbox" name="other" value="other" id="other_blood_check">
+                            <label class="ms-2 mb-0" for="other_blood_check">Other</label>
+                        </div>
+                        <input type="text" class="form-control" name="other_other" placeholder="ระบุชนิด">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section-title">5. ความต้องการ / เหตุผลการใช้เลือด</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-12">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input blood_reason" type="radio" name="reason" value="Chronic Blood loss" id="r1">
+                        <label class="form-check-label" for="r1">5.1 Chronic Blood loss</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input blood_reason" type="radio" name="reason" value="Chronic Blood Anemia" id="r2">
+                        <label class="form-check-label" for="r2">5.2 Chronic Blood Anemia</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input blood_reason" type="radio" name="reason" value="Acute Blood loss" id="r3">
+                        <label class="form-check-label" for="r3">5.3 Acute Blood loss</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input blood_reason" type="radio" name="reason" value="Set OR" id="r4">
+                        <label class="form-check-label" for="r4">5.4 Set OR</label>
+                    </div>
+                    <div class="form-check mb-2 d-flex align-items-center">
+                        <input class="form-check-input blood_reason me-2" type="radio" name="reason" value="Other" id="r5">
+                        <label class="form-check-label me-2" for="r5">5.5 Other</label>
+                        <input type="text" class="form-control form-control-sm" name="other_reason" style="width: 200px;">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">วันที่ขอเลือด</label>
+                    <input type="date" class="form-control" name="blood_order_date">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">วันที่ต้องการใช้เลือด</label>
+                    <input type="date" class="form-control" name="blood_used_date">
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">แพทย์ผู้ขอ</label>
+                    <input type="text" class="form-control" name="doctor_order" placeholder="ชื่อ-สกุล แพทย์">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">พยาบาลผู้เจาะเลือด</label>
+                    <input type="text" class="form-control" name="nurse" placeholder="ชื่อ-สกุล พยาบาล">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">วันเวลาที่เจาะ</label>
+                    <input type="datetime-local" class="form-control" name="date_drawn">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <button type="reset" class="btn btn-secondary px-5">ยกเลิก</button>
+                <button type="submit" class="btn btn-theme px-5">ส่งใบขอเลือด</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // 1. ระบบ Auto-focus เมื่อเลือกชนิดเลือด
+    document.querySelectorAll('.blood_type').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                const targetInput = this.closest('.input-group').querySelector('input[type="text"]');
+                if (targetInput) targetInput.focus();
+            }
+        });
+    });
+    
+    document.getElementById('bloodRequestForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // ตรวจสอบ checkbox class=blood_type
+        const bloodTypes = document.querySelectorAll('.blood_type:checked');
+        if (bloodTypes.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณาเลือก ชนิดของเลือดที่ต้องการขอ',
+                confirmButtonColor: '#006666'
+            });
+            return;
+        }
+
+        // ตรวจสอบ radio class=blood_reason
+        const bloodReasons = document.querySelectorAll('.blood_reason:checked');
+        if (bloodReasons.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณาระบุ เหตุผลการใช้เลือด',
+                confirmButtonColor: '#006666'
+            });
+            return;
+        }
+
+        // หากผ่านการตรวจสอบ
+        Swal.fire({
+            icon: 'success',
+            title: 'บันทึกข้อมูลสำเร็จ',
+            text: 'ระบบได้ส่งใบขอเลือดเรียบร้อยแล้ว',
+            confirmButtonColor: '#006666'
+        });
+    });
+</script>
+
+</body>
+</html>
