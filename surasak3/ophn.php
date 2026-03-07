@@ -176,7 +176,6 @@ body {
 			"<td bgcolor=\"$color\" align=\"center\">
             <button type=\"button\" class=\"txtsarabun\" id=\"checkPt\" onclick=\"window.open('https://eservices.nhso.go.th/eServices/mobile/login.xhtml')\">ตรวจสอบสิทธิ</button><br>
             <a target='_blank' class='fButton' href=\"register_print_qrcode.php?hn=$hn\">พิมพ์ QR Code</a><br>
-            <a href=\"javascript:void(0);\" class='fButton' onclick=\"testCheckSit('$idcard')\">WebService สปสช</a>
             <a href=\"javascript:void(0);\" class='fButton' onclick=\"SRMCheckSit('$idcard')\">SRM สปสช</a>
             </td>".
 			/*"<td bgcolor=\"$color\" align=\"center\">
@@ -328,6 +327,9 @@ $smctoken = $t['token'];
 
 <script type="text/javascript" src="js/nhso.js"></script>
 <script type="text/javascript">
+    /**
+     * !! ยกเลิก !! เปลี่ยนไปใช้งาน SRM
+     */
     function testCheckSit(idcard){
         document.getElementById('ptnotifyContent').innerHTML = 'กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่';
         registerChecksit('ptnotifyContent',idcard,'<?=$person_id;?>','<?=$smctoken;?>');

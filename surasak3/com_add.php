@@ -45,6 +45,9 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 		margin: 0 0.5em;
 		padding: 0.5em 1em;
 	}
+	#notiContent > ol > li{
+		margin: 0 ;
+	}
 	#notiBackground{
 		position: fixed;
 		top: 0;
@@ -84,6 +87,9 @@ $sOfficer = sprintf("%s", $_SESSION['sOfficer']);
 			<span style="float:right;" onclick="closeBtn()" id="closeBtn">[ กดปิด/Esc เพื่อปิด ]</span>
 		</div>
 		<div class="forntsarabun" id="notiContent">
+			<div>
+				<h3 style="text-align: center;">ไม่รับ<u>แก้ไขยา<b>ห้องไตเทียม</b></u>ทุกกรณี<br>หากต้องการแก้ไข<u>ให้เขียนบันทึกข้อความ</u>มาครับ ขอบคุณครับ</h3>
+			</div>
 			<ol>
 				<li>
 					<div><strong><u style="color:red;">การแจ้งลบ</u> ใบตรวจโรคอิเล็กทรอนิกส์</strong> กรุณาให้เหตุผลในการลบข้อมูลด้วยทุกครั้ง</div>

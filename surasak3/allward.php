@@ -1,44 +1,53 @@
 <?php
 session_start();
-require_once 'includes/config.php';
-include("connect.inc");
+require_once dirname(__FILE__).'/includes/config.php';
+include_once dirname(__FILE__).'/connect.php';
 
-if (isset($_SESSION['sIdname'])){} else {die;}
+$bsConn = mysqli_connect(BLOOD_SERVER,BLOOD_USER,BLOOD_PASS,BLOOD_DB);
+$bsConn->query("SET NAMES UTF8");
+
+$def_month_th = array('01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค', '04' => 'เม.ษ.', '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.', '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.');
+
+$sIdname = $_SESSION['sIdname'];
+if (!isset($sIdname)){
+	?>
+	<p>SESSION การเข้าใช้งานหมดอายุ <a href="../nindex.htm">คลิกที่นี่</a> เพื่อ Login ใหม่อีกครั้ง</p>
+	<?php
+	exit;
+}
 
 $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
-//header("content-type: application/x-javascript; charset=UTF-8");
+
 ?>
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
-  
 <a name="top" id="top"></a>
 <br />
 <?php
-$lbedcode=substr($_GET['code'],0,2);
-if($lbedcode=='42'){
-$wardname="หอผู้ป่วยรวม";	
-$sortname="รวม";
-	}elseif($lbedcode=='43'){
-$wardname="หอผู้ป่วยสูติ";	
-$sortname="สูติ";
-	}elseif($lbedcode=='44'){
-$wardname="หอผู้ป่วยICU";	
-$sortname="ICU";
-	}elseif($lbedcode=='45'){
-$wardname="หอผู้ป่วยพิเศษ";	
-$sortname="พิเศษ";
-	}elseif($lbedcode=='46'){
-$wardname="หอผู้ป่วย Cohort Ward";	
-$sortname="cohortward";
-	}elseif($lbedcode=='47'){
-$wardname="ผู้ป่วย Home Isolation";	
-$sortname="Home Isolation";
-	}elseif($lbedcode=='48'){
-$wardname="ผู้ป่วย รพ.สนาม";	
-$sortname="รพ.สนาม";
+	$lbedcode = substr($_GET['code'], 0, 2);
+	if ($lbedcode == '42') {
+		$wardname = "หอผู้ป่วยรวม";
+		$sortname = "รวม";
+	} elseif ($lbedcode == '43') {
+		$wardname = "หอผู้ป่วยสูติ";
+		$sortname = "สูติ";
+	} elseif ($lbedcode == '44') {
+		$wardname = "หอผู้ป่วยICU";
+		$sortname = "ICU";
+	} elseif ($lbedcode == '45') {
+		$wardname = "หอผู้ป่วยพิเศษ";
+		$sortname = "พิเศษ";
+	} elseif ($lbedcode == '46') {
+		$wardname = "หอผู้ป่วย Cohort Ward";
+		$sortname = "cohortward";
+	} elseif ($lbedcode == '47') {
+		$wardname = "ผู้ป่วย Home Isolation";
+		$sortname = "Home Isolation";
+	} elseif ($lbedcode == '48') {
+		$wardname = "ผู้ป่วย รพ.สนาม";
+		$sortname = "รพ.สนาม";
 	}
 	
-	//echo "==>$lbedcode";
 	$bbbbcode=$lbedcode;
 	include("calroom.php");
 	include("alert_booking.php");
@@ -52,84 +61,40 @@ $sortname="รพ.สนาม";
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=NOTIFY_HOST_CAMERA;?>/testqrcode/show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
 <br />
-
-
-    
-    <?
-	/*$sql="SELECT * FROM bed WHERE bedcode LIKE '$lbedcode%'";
-	$resultsql = mysql_query($sql)or die(mysql_error());*/
-	//$n=mysql_num_rows($resultsql);
-	
-	
-/*echo"<br><table border=\"0\"  cellspacing=\"1\" cellpadding=\"1\"><tr>";
-		$intRows = 0;
-		while($arr=mysql_fetch_array($resultsql)){
-			
-			$status2 = substr($arr['status'],0,3);
-			
-			if($arr['an']=='' and $status2=="B01"){
-			$ff="<font class='tablefont3'>ว่าง</font>";
-			}else{
-			$ff="<font color='#990000' style='font-size:12PX;'>ไม่ว่าง</font>";
-			}
-			
-			echo "<td>"; 
-			$intRows++;*/
-	?>
-			<!--<center>-->
-				<? //echo "<a href='#$arr[bed]'>".$arr['bed'].'('.$ff.')'."$i</a>&nbsp;&nbsp;";?>
-		<!--		<br>-->
-			<!--</center>-->
-	<?
-	/*		echo"</td>";
-			if(($intRows)%9==0)
-			{
-				echo"</tr>";
-			}
-		}
-		echo"</tr></table>";*/
-	
-	if($lbedcode=='47'){
-    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY row_id ASC ";
-	}else{
-    $query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bedcode ASC ";
-	}
-  //echo "==>".$query;
-    $result = mysql_query($query)or die("Query failed");
+<?
+if($lbedcode=='47'){
+	$query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY row_id ASC ";
+}else{
+	$query = "SELECT idcard,bed,date,date_format(date,'%d- %m- %Y'),ptname,an,hn,diagnos,food,doctor,ptright,price,paid,debt,caldate,bedname,bedcode,hn,chgdate,status,age,diag1,days FROM bed WHERE bedcode LIKE '$lbedcode%' ORDER BY bedcode ASC ";
+}
+$result = mysql_query($query)or die("Query failed");
 
 $i=1;
 
-    while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall) = mysql_fetch_row ($result)) {
+while (list ($idcard,$bed,$date1,$date,$ptname,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$chgdate,$status,$age,$diag1,$daysall) = mysql_fetch_row ($result)) {
 
-if($diag1=='' and $an!=''){ $diag1='ไม่มี'; }			
+if($diag1=='' and $an!=''){ $diag1='ไม่มี'; }
 $status2 = substr($status,0,3);
 
 $time=explode(" ",$date1);
 
-		switch($status2){
-			case "B01" : $color="#66FFCC"; break;
-			case "B02" : $color="#FF9999"; break;
-			case "B03" : $color="#FFFF99"; break;
+switch($status2){
+	case "B01" : $color="#66FFCC"; break;
+	case "B02" : $color="#FF9999"; break;
+	case "B03" : $color="#FFFF99"; break;
+}
 
-		}
-		
-		if($an=='' and $status2=="B01"){
-			
-			$color="#FFFFFF";
-			//$ff="ว่าง";
-		}else{
-			//$ff="ไม่ว่าง";
-		}
-		
-		$idcard=$idcard.'.jpg';
-		
-		if(file_exists("../image_patient/$idcard")){
-			$img=$idcard;
-		}else{
-			$img='../image_patient/NoPicture.jpg';
-		}
+if($an=='' and $status2=="B01"){
+	$color="#FFFFFF";
+}
 
+$idcard=$idcard.'.jpg';
 
+if(file_exists("../image_patient/$idcard")){
+	$img="../image_patient/$idcard";
+}else{
+	$img='../image_patient/NoPicture.jpg';
+}
 
 $sql = "SELECT hi_type FROM ipcard  WHERE `an` = '".$an."' limit 1 ";
 $rows = mysql_query($sql);
@@ -143,6 +108,26 @@ list($hi_type) = Mysql_fetch_row($rows);
 		$location="";
 	}
 
+	$bloodItems = array();
+	if(!empty($hn)){
+		$sqlTrnBlood = "SELECT * 
+		FROM `mst_stock` 
+		WHERE `Hn_Reserved` = '$hn' 
+		AND `Exp_Date` >= CURDATE() 
+		AND `Flag_Reserved`='Y' 
+		AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` WHERE `Pt_HN` = '$hn' )";
+		$qTrn = $bsConn->query($sqlTrnBlood);
+		if($qTrn->num_rows>0){
+			while ($a = $qTrn->fetch_assoc()) {
+				$bloodItems[] = array(
+					'bloodGroup'=>$a['Blood_Group'], 
+					'expireDate'=>$a['Exp_Date'],
+					'unitNumber'=>$a['Unit_Number']
+				);
+			}
+		}
+	}
+	
 
 $sql1 = "SELECT idguard FROM opcard  WHERE `hn` = '".$hn."' limit 1 ";
 $rows1 = mysql_query($sql1);
@@ -178,34 +163,33 @@ $(document).ready(function(){
     <td>
     <div id="div<?=$i;?>">
     <table width="100%" border="0">
-	<?php
-	if($sumnprice > 0){
-	?>	
-      <tr>
-		<td width="90%" align='right' colspan="2">
-			<table width="100%" border="0">
-			<tr>
-				<td width="95%" align="right"><div style='background-color: #EC7063;  width: 380px; height: 25px; border: 1px solid black;'><span>ค่าหัตถการ/ตรวจวินิจฉัย &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เบิกไม่ได้ : <?=$sumnprice;?> บาท</span>&nbsp;&nbsp;</div></td>
-				<td width="5%" align="left"><div style="margin-bottom:10px;"><img src="images/profile.png" width="32" height="32"></div></td>
-			</tr>
-			</table>
-		</td>
-	  </tr>
-	<?php } ?>  
 	  <tr>
         <td width="25%">
-				<a name="<?=$bed;?>" id="<?=$bed;?>"></a>
-				<font class="bed">
-					<?php
-					$food = htmlspecialchars($food, ENT_QUOTES);
-					$href = "ipbed.php?cBed=$bed&cDate=$date&cPtname=$ptname&cAn=$an&cDiagnos=$diagnos&cFood=$food&cDoctor=$doctor&cPtright=$ptright&cBedcode=$bedcode&cHn=$hn&cChgdate=$chgdate&cbedname=$wardname";
-					echo"<a href=\"$href\" class=\"bed\">$bed</a>";
-					?>
-				</font>&nbsp;&nbsp;&nbsp;
-		<? echo "<a target=_blank  href=\"bedstatus.php? cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cstatus=$status\" class='tablefont'>$status</a>"; ?></td>
-        <td > <font class="tablefontt1">AN : </font><font class="tablefont"><a href="show_wardlog.php?sAn=<?=$an;?>" target="_blank"><?=$an;?></a></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1"> HN : </font><font class='tablefont'><?=$hn; ?></font> &nbsp;&nbsp;&nbsp;<font class="tablefontt1">วันที่รับป่วย : </font>
-         <font class="tablefont"> <?=$date.' '.$time[1];?></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1">วันนอนรวม </font>
-         <font class="tablefont"> <?=$daysall;?> วัน</font>		 
+		<a name="<?=$bed;?>" id="<?=$bed;?>"></a>
+		<font class="bed">
+			<?php
+			$food = htmlspecialchars($food, ENT_QUOTES);
+			$href = "ipbed.php?cBed=$bed&cDate=$date&cPtname=$ptname&cAn=$an&cDiagnos=$diagnos&cFood=$food&cDoctor=$doctor&cPtright=$ptright&cBedcode=$bedcode&cHn=$hn&cChgdate=$chgdate&cbedname=$wardname";
+			echo"<a href=\"$href\" class=\"bed\">$bed</a>";
+			?>
+		</font>&nbsp;&nbsp;&nbsp;
+		<? echo "<a target=_blank  href=\"bedstatus.php?cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cstatus=$status\" class='tablefont'>$status</a>"; ?></td>
+        <td > 
+			<font class="tablefontt1">AN : </font><font class="tablefont"><a href="show_wardlog.php?sAn=<?=$an;?>" target="_blank"><?=$an;?></a></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1"> HN : </font><font class='tablefont'><?=$hn; ?></font> &nbsp;&nbsp;&nbsp;<font class="tablefontt1">วันที่รับป่วย : </font>
+			<font class="tablefont"> <?=$date.' '.$time[1];?></font>&nbsp;&nbsp;&nbsp;<font class="tablefontt1">วันนอนรวม </font>
+			<font class="tablefont"> <?=$daysall;?> วัน</font>
+			<?php
+			if($sumnprice > 0){
+			?>	
+			<div style="position:relative; float: right; width:380px;">
+			<div style="position:absolute; top:0; right:0;">
+				<div>
+					<span style="background-color: #EC7063; border: 1px solid black; place-items: center; padding:8px;"><a href="ipacc.php?cAn=<?= $an ?>&cAccno=1" target="_blank">ค่าหัตถการ/ตรวจวินิจฉัย</a> เบิกไม่ได้ : <?=$sumnprice;?> บาท</span>
+					<img src="images/profile.png" width="32" height="32">
+				</div>
+			</div>
+			<?php } ?>
+		</div>
         </td>
         </tr>
       <tr>
@@ -215,7 +199,7 @@ $(document).ready(function(){
             <td  rowspan="5"><img src="<?=$img;?>" width="81" height="101" /></td>
             <td class="tablefontt1">ชื่อ-สกุล</td>
             
-            <td class="tablefontt2"> <? echo "<a target=_blank  href=\"ipdata1.php? cBedcode=$bedcode\">$ptname</a>"; ?>&nbsp;&nbsp;&nbsp;</td>
+            <td class="tablefontt2"> <? echo "<a target=_blank  href=\"ipdata1.php?cBedcode=$bedcode\">$ptname</a>"; ?>&nbsp;&nbsp;&nbsp;</td>
             <td class="tablefontt1">อายุ :</td>
             <td class="tablefont"><?=$age;?>&nbsp;&nbsp;&nbsp;</td>
           
@@ -241,7 +225,7 @@ $(document).ready(function(){
           </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top" >
-            <font class='tablefontt1'>โรค : </font><? echo "<a target=_blank  href=\"ipdiag.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDiag=$diagnos&cbedname=$wardname\" class='tablefont3'>$diagnos</a>";?>&nbsp;&nbsp;&nbsp;
+            <font class='tablefontt1'>โรค : </font><? echo "<a target=_blank  href=\"ipdiag.php?cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDiag=$diagnos&cbedname=$wardname\" class='tablefont3'>$diagnos</a>";?>&nbsp;&nbsp;&nbsp;
             <font class='tablefontt1'>แพทย์  : </font> <? echo "<a target=_blank  href=\"ipdr.php?cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cDoctor=$doctor&cbedname=$wardname\" class='tablefont3' >$doctor</a>"; ?>&nbsp;&nbsp;&nbsp;
             
             <font class='tablefontt1'>โรคประจำตัว  : </font>
@@ -250,11 +234,11 @@ $(document).ready(function(){
             </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top">
-            <font class='tablefontt1'>อาหาร : </font><? echo "<a target=_blank  href=\"ipfood.php? cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cFood=$food&cbedname=$wardname\" class='tablefont3'>$food</a>"; ?><strong style="margin-left:20px; color:#FC0944;"><?php echo $location;?></strong></td>
+            <font class='tablefontt1'>อาหาร : </font><? echo "<a target=_blank  href=\"ipfood.php?cAn=$an&cBedcode=$bedcode&cBed=$bed&cFulname=$ptname&cFood=$food&cbedname=$wardname\" class='tablefont3'>$food</a>"; ?><strong style="margin-left:20px; color:#FC0944;"><?php echo $location;?></strong></td>
           </tr>
           <tr style="line-height:25PX;">
             <td colspan="10" valign="top" ><font class='tablefontt1'>หัตถการ  :</font>
-			<? echo "<a target=_blank  href=\"ipdata.php? cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย/ คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
+			<? echo "<a target=_blank  href=\"ipdata.php?cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย / คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
             
             <? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
             <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";
@@ -277,24 +261,49 @@ $(document).ready(function(){
 			$ptname_encode = rawurlencode($ptname);
 			$sortname_encode = rawurlencode($sortname);
 			?>
-            <td colspan="10" valign="top" ><font class='tablefontt1'>ฉลาก : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname_encode&cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>ยา(1 ดวง)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>ยา(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>เอกสาร(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>เอกสาร(1 ดวง)</a>";?>
+            <td colspan="10" valign="top" ><font class='tablefontt1'>ฉลาก : </font><? echo "<a target=_blank  href=\"drug1a.php?Ptname=$ptname_encode&cAn=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>ยา(1 ดวง)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbeddrug.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cPtname=$ptname & cbedname=$wardname\" class='tablefont3'>ยา(A4)</a>"; ?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"ipbed1.php? cAn=$an &cBed=$bed & cBedcode=$bedcode & cHn=$hn & cbedname=$wardname\"  class='tablefont3'>เอกสาร(A4)</a>";?>&nbsp;&nbsp; <? echo "<a target=_blank  href=\"liststk.php?cAn=$an&cBed=$bed& cBedcode=$bedcode&cHn=$hn&cbedname=$sortname_encode\" class='tablefont3'>เอกสาร(1 ดวง)</a>";?>
 			&nbsp;&nbsp; <? echo "<a target=_blank  href=\"anchkstkeye.php?action=print&an=$an&hn=$hn\" class='tablefont3'>สติ๊กเกอร์ผู้ป่วยใน</a>";?>
 			&nbsp;&nbsp; <? echo "<a target=_blank  href=\"anchkstkeye_wristband.php?action=print&an=$an&hn=$hn\" class='tablefont3'>ริชแบนด์ผู้ป่วยใน</a>";?></td>
 		  </tr>
 		  <tr>
-			<td colspan="10"><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a></td>
+			<td colspan="10">
+				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a><br>
+				<style>
+					.bloodContainer{
+						display: inline-block;
+						margin-right: 0.5em;
+						font-family: "TH SarabunPSK";
+						font-size: 20px;
+						border: 2px solid red;
+						border-radius: 6px;
+						padding: 4px 6px;
+						background-color: pink;
+					}
+				</style>
+				<?php
+				if(!empty($bloodItems)){
+					foreach ($bloodItems as $blood) {
+						list($expY, $expM, $expD) = explode('-', $blood['expireDate']);
+						$expDateTh = $expD.' '.$def_month_th[$expM].' '.($expY + 543);
+						?>
+						<span class="bloodContainer">🩸 ถุงเลือด ( <?= $blood['bloodGroup'] ?> ) <strong>Unit Number</strong>: <?= $blood['unitNumber'] ?> <strong>วันหมดอายุ</strong>: <?= $expDateTh ?></span>
+						<?php
+					}
+				}
+				?>
+			</td>
 		  </tr>
         </table></td>
       </tr>
     </table>
     
 
-    <? 
-        	$sql_bacteria = "SELECT * FROM bacteria_resistant  WHERE `hn` = '".$hn."' AND Alert_Flag = 'Y' ORDER BY Id DESC ";
-					$rows_bacteria = mysql_query($sql_bacteria);
-					$num_bacteria = mysql_num_rows($rows_bacteria);
-					if(!empty($num_bacteria)){
-        	?>
+		<? 
+		$sql_bacteria = "SELECT * FROM bacteria_resistant  WHERE `hn` = '".$hn."' AND Alert_Flag = 'Y' ORDER BY Id DESC ";
+		$rows_bacteria = mysql_query($sql_bacteria);
+		$num_bacteria = mysql_num_rows($rows_bacteria);
+		if(!empty($num_bacteria)){
+		?>
         	<table border="0" >
         	<?  
         		while($rows = mysql_fetch_array($rows_bacteria)){
@@ -320,7 +329,7 @@ $(document).ready(function(){
         				echo "<td'> </td>";
         		}//end while
         			echo "</tr></table>";
-        	}//!empty($num_bacteria)
+        	} // !empty($num_bacteria)
         	?>
 
     </div>
@@ -331,13 +340,7 @@ $(document).ready(function(){
 
 <a  href="#top" class="tablefont3">^ Back to Top</a>
 <? 
-        
-		$i++;
-		}
-		
-	
-    include("unconnect.inc");
+
+$i++;
+}
 ?>
-
-
-

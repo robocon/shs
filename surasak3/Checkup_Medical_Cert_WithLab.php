@@ -291,7 +291,7 @@ $Txt_DocCode = $rows["doctorcode"];
 
 //-----> ข้อมูล dx และ doctor_ans จากหมอ
  
-$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' AND vn = '$vn' ";
+$sql = "SELECT * FROM `condxofyear_out` WHERE hn = '$hn' AND vn = '$vn' order by row_id DESC";
 //echo $sql;exit();
 $query = mysql_query($sql); 
 $num = mysql_num_rows($query);
@@ -1205,8 +1205,83 @@ while($rows = mysql_fetch_array($query)){
                 </td>
             </tr>";
         }//end if
+//เพิ่มใหม่ 02/07/2568 By Tewin Srikaew
+        $stat_tb = $rows["stat_tb"]; // ผลสรุป tb
+        if($stat_tb == "ปกติ"){$nomal_tb = "/";$abnomal_tb = "";}else if($stat_tb == "ผิดปกติ"){$nomal_tb = "";$abnomal_tb = "/";}else{$nomal_tb = "No Result";$abnomal_tb = "No Result";}
+        
+        if($stat_tb){
+            $txt_tb = $count++.".การทำงานของตับ  (TB)";  //รอแก้ไข
+            echo "
+            <tr>
+                <td width='400px' align='left' style='font-size:17px'>
+                ".$txt_tb."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$nomal_tb."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$abnomal_tb."
+                </td>
+            </tr>";
+        }//end if
 
+        $stat_db = $rows["stat_db"]; // ผลสรุป db
+        if($stat_db == "ปกติ"){$nomal_db = "/";$abnomal_db = "";}else if($stat_db == "ผิดปกติ"){$nomal_db = "";$abnomal_db = "/";}else{$nomal_db = "No Result";$abnomal_db = "No Result";}
+        
+        if($stat_db){
+            $txt_db = $count++.".การทำงานของตับ  (DB)";  //รอแก้ไข
+            echo "
+            <tr>
+                <td width='400px' align='left' style='font-size:17px'>
+                ".$txt_db."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$nomal_db."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$abnomal_db."
+                </td>
+            </tr>";
+        }//end if
+		
+        $stat_alb = $rows["stat_alb"]; // ผลสรุป alb
+        if($stat_alb == "ปกติ"){$nomal_alb = "/";$abnomal_alb = "";}else if($stat_alb == "ผิดปกติ"){$nomal_alb = "";$abnomal_alb = "/";}else{$nomal_alb = "No Result";$abnomal_alb = "No Result";}
+        
+        if($stat_alb){
+            $txt_alb = $count++.".การทำงานของตับ  (ALB)";  //รอแก้ไข
+            echo "
+            <tr>
+                <td width='400px' align='left' style='font-size:17px'>
+                ".$txt_alb."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$nomal_alb."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$abnomal_alb."
+                </td>
+            </tr>";
+        }//end if	
 
+        $stat_tp = $rows["stat_tp"]; // ผลสรุป tp
+        if($stat_tp == "ปกติ"){$nomal_tp = "/";$abnomal_tp = "";}else if($stat_tp == "ผิดปกติ"){$nomal_tp = "";$abnomal_tp = "/";}else{$nomal_tp = "No Result";$abnomal_tp = "No Result";}
+        
+        if($stat_tp){
+            $txt_tp = $count++.".การทำงานของตับ  (TP)";  //รอแก้ไข
+            echo "
+            <tr>
+                <td width='400px' align='left' style='font-size:17px'>
+                ".$txt_tp."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$nomal_tp."
+                </td>
+                <td width='100px' align='center' style='font-size:17px'>
+                ".$abnomal_tp."
+                </td>
+            </tr>";
+        }//end if		
+		
     //-----> ตรวจอื่นๆ
     $stat_ekg = $rows["ekg"]; // ผลสรุป ekg
     $stat_color_blind = $rows["color_blind"]; // ผลสรุป ตา color_blind (va)

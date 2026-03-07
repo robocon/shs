@@ -1338,8 +1338,7 @@ $bsult = mysql_fetch_array($brow);
 </tr>
 
 <?php 
-if(!empty($result_dx['ldl']))
-{
+if(!empty($result_dx['ldl'])){
 ?>
 <tr>
 	<td align="right" class="profilelab">LDL :</td>
@@ -1626,7 +1625,98 @@ if(!empty($result_dx["antihb"]))
 }
 ?>
 
-
+<?php 
+if(!empty($result_dx['TB'])){
+?>
+<tr>
+	<td align="right" class="profilelab">TB :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['TB']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['TB']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['TB'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <?php if($result_dx['TBflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['TBflag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_tb' type='radio' value='ปกติ' /> ปกติ
+		<input name='stat_tb' type='radio' value='ผิดปกติ' /> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php
+}
+?>
+<?php 
+if(!empty($result_dx['DB'])){
+?>
+<tr>
+	<td align="right" class="profilelab">DB :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['DB']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['DB']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['DB'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <?php if($result_dx['DBflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['DBflag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_db' type='radio' value='ปกติ' /> ปกติ
+		<input name='stat_db' type='radio' value='ผิดปกติ' /> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php
+}
+?>
+<?php 
+if(!empty($result_dx['ALB'])){
+?>
+<tr>
+	<td align="right" class="profilelab">ALB :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['ALB']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['ALB']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['ALB'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <?php if($result_dx['ALBflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['ALBflag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_alb' type='radio' value='ปกติ' /> ปกติ
+		<input name='stat_alb' type='radio' value='ผิดปกติ' /> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php
+}
+?>
+<?php 
+if(!empty($result_dx['TP'])){
+?>
+<tr>
+	<td align="right" class="profilelab">TP :</td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bssult['TP']?></span></td>
+	<td align="center" bgcolor="#0099CC" class="labfontlab"><span class="style1"><?=$bsult['TP']?></span></td>
+	<td align="center" bgcolor="#FFFFFF" class="profilehead">
+		<span><?=$result_dx['TP'];?></span>
+	</td>
+	<td class="labfont">-</td>
+	<td align="center" class="labfont">
+		<span <?php if($result_dx['TPflag']!="N"){ echo " style='color:#F00;font-weight:bold;'";}?>><?=$result_dx['TPflag']?></span>
+	</td>
+	<td class="labfont">
+		<input name='stat_tp' type='radio' value='ปกติ' /> ปกติ
+		<input name='stat_tp' type='radio' value='ผิดปกติ' /> ผิดปกติ
+	</td>
+	<td colspan="4"></td>
+</tr>
+<?php
+}
+?>
             </table>
         <hr />   
 </TD>

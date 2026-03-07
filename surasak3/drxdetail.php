@@ -600,12 +600,15 @@ $currDate = (date('Y')+543).date('-m-d 00:00:00');
 $dateNow = (date('Y')+543).date('-m-d');
 
 $tmp_ddrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
-SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
-FROM `ddrugrx`
-WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
-AND `hn` = '$sHn' 
-AND `drugcode` IN ($drugSQL) 
-AND ( `an` IS NULL AND `slcode` != 'b' ) ";
+SELECT a.* FROM (
+	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
+	FROM `ddrugrx`
+	WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
+	AND `hn` = '$sHn' 
+	AND `drugcode` IN ($drugSQL) 
+	AND ( `an` IS NULL AND `slcode` != 'b' ) 
+) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
+WHERE b.`dr_cancle` IS NULL";
 $dbi->query($tmp_ddrugrx);
 
 $sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
@@ -641,7 +644,7 @@ if(count($drugOverItem)>0){
 					<th>จำนวนที่จ่าย</th>
 					<th>วิธีใช้</th>
 					<th>ยาที่เหลือ<br>(โดยประมาณ)</th>
-					<th>วันที่คาดว่ายาจะหมด</th>
+					<th>ใช้ได้(วัน)</th>
 					<th>แพทย์ที่สั่งจ่าย</th>
 				</tr>
 			<?php
@@ -657,7 +660,7 @@ if(count($drugOverItem)>0){
 					<td align="center"><?= $item['amount']; ?></td>
 					<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
 					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
-					<th><?= substr($dateFutureToThai,0,10); ?></th>
+					<th><?= ($item['day_averrage']-$item['day_diff']); ?></th>
 					<td><?= $item['doctor']; ?></td>
 				</tr>
 				<?php
@@ -710,9 +713,9 @@ echo "<table><tr>";
 	<td><FONT COLOR="#FF0000"><B>เคยตัดสต๊อกแล้ว</B></FONT>&nbsp;&nbsp;&nbsp;</td>
 	<?php }?>
     </td>
-    <td><a target="_blank" href="drxprint.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
+    <td><a target="_blank" href="drxprint.php?sRow_id=<?=urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา</a></td>
     <td><a target="_blank" href="slipprntest1.php"><font face='Angsana New'>พิมพ์สลากยารุ่นเก่า(2560)</a></td>
-    <td><a target="_blank" href="slipprntest1_new.php"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
+    <td><a target="_blank" href="slipprntest1_new.php?sRow_id=<?=urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์สลากยารุ่นใหม่(2561)</a></td>
 	<td><a target="_blank" href="drxprintopd.php"><font face='Angsana New'>พิมพ์ใบรายการยากลับบ้าน</a></td>
 	<td><a target="_blank" href="drxprintopd1.php"><font face='Angsana New'>พิมพ์สติกเกอร์ติด	OPD</a></td>
     <td><a target="_blank" href="appoilst_inj.php?Thn=<?=$sHn?>"><font face='Angsana New'>ออกใบนัดฉีดยา</a></td>

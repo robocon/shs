@@ -791,7 +791,7 @@ for($i=0;$i<$count;$i++){
 		if(in_array($current_right, $check_rights) && $chkprice > $remaining && $exopd != "EX02") {
 			// กรณีที่ 2: วงเงินเกิน แต่ให้ทางเลือกถ้าเป็นผู้ป่วยนัด
 		// 2. เพิ่มการ Query เช็คสถานะในตาราง opday ของ VN นี้โดยเฉพาะ
-			$sql_check_status = "SELECT type_sso_nhso FROM opday WHERE thidate LIKE '$check_date%' AND vn = '$vn_to_check' LIMIT 1";
+			$sql_check_status = "SELECT type_sso_nhso FROM opday WHERE thidate LIKE '$check_date%' AND vn = '$vn_to_check' ORDER BY row_id DESC LIMIT 1";
 			//echo $sql_check_status;
 			$res_check = mysql_query($sql_check_status);
 			$row_check = mysql_fetch_array($res_check);

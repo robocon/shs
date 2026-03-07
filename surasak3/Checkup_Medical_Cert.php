@@ -100,7 +100,8 @@ if(empty($num)){
     echo "<h1 align='center'>ไม่พบข้อมูลซักประวัติคนไข้</h1>";echo "<br>".exit();
 }
 //end if
-$doctorDxofyearOut = '';
+
+$doctorCodeDxofyearOut = 'MD041 วรวิทย์ วงษ์มณี'; // ตั้ง Default ให้เป็นหมอวรวิทย์
 while($rows = mysql_fetch_array($query)){
     $Txt_Temp = $rows["temperature"];
     $Txt_Pause = $rows["pause"];

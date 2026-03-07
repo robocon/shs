@@ -1,24 +1,18 @@
 <?php 
-
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
+include_once dirname(__FILE__).'/bootstrap.php';
+include_once dirname(__FILE__).'/class_file/class_opcard.php';
+include_once dirname(__FILE__).'/class_file/class_orderhead.php';
 
-require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/class_file/class_opcard.php';
-require_once dirname(__FILE__).'/class_file/class_orderhead.php';
-
-
-require_once dirname(__FILE__).'/includes/JSON.php';
+include_once dirname(__FILE__).'/includes/JSON.php';
 
 // require_once dirname(__FILE__).'/class_file/class_orderdetail.php';
 // phpinfo();
 $page = input('page');
 
 $db = Mysql::load();
-
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
 
 $action = sprintf("%s", $_REQUEST['action']);
 if( $action == 'saveCinicalinfo' ){
@@ -164,10 +158,8 @@ if ( $page === 'form' ) {
     WHERE `hn` = '$user_hn' 
     $whereDateResultHead 
     GROUP BY `labnumber`,`clinicalinfo`";
-    $db->select($sql);
-    $lab_rows = $db->get_rows();
-    $items = $db->get_items();
-
+    $qResulthead = $dbi->query($sql);
+    $lab_rows = $qResulthead->num_rows;
     include 'chk_menu.php';
 
     ?>
@@ -443,7 +435,7 @@ if ( $page === 'form' ) {
         <p>ไม่พบข้อมูล</p>
         <?php
     }else {
-        $items = $db->get_items();
+        // $items = $db->get_items();
         ?>
         <table class="chk_table" width="100%">
             <tr>
@@ -454,7 +446,10 @@ if ( $page === 'form' ) {
                 <th>สถานะแลป</th>
             </tr>
             <?php
-            foreach ($items as $key => $item) {
+            // foreach ($items as $key => $item) {
+            while ($item = $qResulthead->fetch_assoc()) {
+                # code...
+            
                 $autonumber = $item['autonumber'];
             ?>
             <tr>

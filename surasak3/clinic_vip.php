@@ -8,15 +8,50 @@ include("connect.inc");
 	<title>คลินิกพิเศษนอกเวลาราชการ</title>
 </head>
 <body>
-	<h1 align="center">คลินิกพิเศษนอกเวลาราชการ  </h1>
-	<div><a target=_self  href='../nindex.htm'><<ไปเมนู </a><br>
-		<a  href="clinic_report.php">รายงานคลินิกพิเศษ(ทั่วไป)</a>&nbsp;<a  href="clinic_report1.php"><br>
-			รายงานคลินิกพิเศษ(กระดูกและข้อ)</a>&nbsp;<br>
-			<a  href="clinic_report2.php">รายงานคลินิกพิเศษ(เวชศาสตร์ฟื้นฟู)</a><br>
-			<a  href="clinic_report3.php">รายงานคลินิกพิเศษ(ศัลยกรรมทางเดินปัสสาวะ)</a><br>
-			<a  href="clinic_report4.php">รายงานคลินิกพิเศษ(ศัลยกรรม)</a><br>
-			<a  href="clinic_report5.php">รายงานคลินิกพิเศษ(อายุรกรรม)</a><br>
-			</div>
+	<style>
+		*{
+			font-family: "TH SarabunPSK";
+			font-size: 20px;
+		}
+		h1{
+			font-size: 42px;
+			font-weight: bold;
+		}
+		p{
+			padding: 0;
+			margin:0;
+		}
+		.button1 {
+			background-color: #04AA6D;
+			border: none;
+			color: #FFFFFF;
+			padding: 15px 32px;
+			text-align: center;
+			transition-duration: 0.4s;
+			margin: 8px 0;
+			text-decoration: none;
+			cursor: pointer;
+			display: inline-block;
+		}
+		.button1 {padding: 6px 12px;}
+		.button1:hover {box-shadow:0 3px 6px 0 rgba(0,0,0,0.6)}
+		.button1 {border-radius: 4px;}
+	</style>
+	<div>
+		<a class="button1" target="_self"  href="../nindex.htm" style="float:left;">&lt;&lt;ไปเมนู </a>
+		<h1 align="center">คลินิกพิเศษนอกเวลาราชการ</h1>
+	</div>
+	<div>
+		<p><strong>รายงานคลินิกพิเศษ</strong></p>
+		<a class="button1" target="_blank" href="clinic_report.php">ทั่วไป</a>
+		<a class="button1" target="_blank" href="clinic_report1.php">กระดูกและข้อ</a>
+		<a class="button1" target="_blank" href="clinic_report2.php">เวชศาสตร์ฟื้นฟู</a>
+		<a class="button1" target="_blank" href="clinic_report3.php">ศัลยกรรมทางเดินปัสสาวะ</a>
+		<a class="button1" target="_blank" href="clinic_report4.php">ศัลยกรรม</a>
+		<a class="button1" target="_blank" href="clinic_report5.php">อายุรกรรม</a>
+		<a class="button1" target="_blank" href="clinic_report6.php">หู คอ จมูก</a>
+		<a class="button1" target="_blank" href="clinic_report7.php">กุมารเวช</a>
+	</div>
 			<script language="JavaScript">
 			var HttPRequest = false;
 
@@ -229,7 +264,7 @@ include("connect.inc");
 							</th>
 							<th><input type="text" name="tptname<?=$i?>" id="tptname<?=$i?>" size="30"></th>
 							<th><input type="text" name="ttan<?=$i?>" id="ttan<?=$i?>" size="10"></th>
-							<th><span id="ptright<?=$i;?>" style="font-size: 10px; font-weight: normal;"></span>
+							<th><span id="ptright<?=$i;?>"></span>
 							</tr>
 							<?php } ?>
 							<tr>
