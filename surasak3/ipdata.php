@@ -340,16 +340,16 @@ if(count($bloodItems)>0){
 }
 
 if (($dcdate == '' || $dcdate == '0000-00-00 00:00:00') && $lockdc != "") {
-    $hrefUri='javascript:void(0);';
+    $hrefUri='ipdc_confirm.php?cAn='.$cAn;
     $clickdc = '';
-    $status = '<span title="ติดสถานะล็อค">🔒</span>';
+    $status = '';
     if(count($bloodItems)>0){
-        $hrefUri='ipdc_confirm.php?cAn='.$cAn;
+        $hrefUri='javascript:void(0);';
         $clickdc = 'onclick="swalAlert(\'ประสานห้องแลปเพื่อคืนถุงเลือด ก่อนจำหน่ายผู้ป่วย\')"';
-        $status = '<span title="ปลดล็อค">🔓</span>';
+        $status = '<span title="ปลดล็อค">🔒</span>';
     }
     ?>
-    <p><a href="<?= $hrefUri; ?>" <?= $clickdc; ?> class="button button2"><?= $status; ?> จำหน่าย ( discharge ) / ยกเลิก Admit</a></p>
+    <p><a href="<?= $hrefUri; ?>" <?= $clickdc; ?> class="button button2"> <?= $status; ?> จำหน่าย ( discharge ) / ยกเลิก Admit</a></p>
     <?php
 } else if ($lockdc == "") {
     ?>
