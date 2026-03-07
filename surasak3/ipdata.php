@@ -346,7 +346,7 @@ if (($dcdate == '' || $dcdate == '0000-00-00 00:00:00') && $lockdc != "") {
     if(count($bloodItems)>0){
         $hrefUri='javascript:void(0);';
         $clickdc = 'onclick="swalAlert(\'ประสานห้องแลปเพื่อคืนถุงเลือด ก่อนจำหน่ายผู้ป่วย\')"';
-        $status = '<span title="ปลดล็อค">🔒</span>';
+        $status = '<span title="คืนถุงเลือดก่อนจำหน่าย">🔒</span>';
     }
     ?>
     <p><a href="<?= $hrefUri; ?>" <?= $clickdc; ?> class="button button2"> <?= $status; ?> จำหน่าย ( discharge ) / ยกเลิก Admit</a></p>
