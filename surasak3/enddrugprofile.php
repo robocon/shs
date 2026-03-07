@@ -411,15 +411,11 @@ while($arr = Mysql_fetch_assoc($result)){
 		$arr["date3"]=substr($chkdate,0,4);
 	}
 
-	/**
-	 * @todo
-	 * Rewrite เงื่อนไขใหม่ เพราะใจความสำคัญคือดูว่าใน med_scan เป็นผู้ป่วยใหม่รึป่าวแค่นั้นเองไม่น่าที่จะ query 2รอบ
-	 */
+	// @readme ไฟล์ doctor order แสกนเข้ามาแล้วห้องยายังไม่ได้ confirm ให้แสดงในหน้าจ่ายยาผู้ป่วยใน
 	$sql = "SELECT * FROM `med_scan` WHERE `an` = '$an' AND `confirm` IS NULL AND `status` = 'y' ";
 	$medScanQuery = mysql_query($sql);
-	$link_scan = "";
+	$link_scan = '';
 	if ( mysql_num_rows($medScanQuery) > 0 ) { 
-
 		$qNum = mysql_query("SELECT * FROM `med_scan` WHERE `an` = '$an'");
 		$scanRow = mysql_num_rows($qNum);
 		$exText = '';
@@ -444,29 +440,35 @@ while($arr = Mysql_fetch_assoc($result)){
 		$bgcolor = "#66FFFF";
 	}
 	
-	$str1="select lock_dc from ipcard WHERE an = '".$arr["an"]."' ";
-	$strresult1=mysql_query($str1);
-	$arr1=mysql_fetch_array($strresult1);
+$str1="select status_log,lock_dc from ipcard WHERE an = '".$arr["an"]."' ";
+$strresult1=mysql_query($str1);
+$arr1=mysql_fetch_array($strresult1);
 	
- if($arr1['status_log']=='' || $arr1['status_log']==NULL){
-
-	$message="ยืนยันการปลดล็อคเพื่อจำหน่าย";
-	
+// status_log มันจะแสดงเป็น "จำหน่าย" เมื่อตอนที่ ward กด d/c
+if($arr1['status_log']=='' || $arr1['$message="ยกเลิกการปลดล็อค เพื่อจำหน่าย";	']==NULL){
 	$L1="<A HREF=\"add_medical_supplies.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".$arr["date3"]."-".$arr["date2"]."-".$arr["date1"]."\"  target=\"_blank\">คืนยา</A>";
-	
 	$L2="<A HREF=\"add_drug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">เพิ่ม/แก้ไข/OFF ยา</A>";
 	$L3="<A HREF=\"phardividedrug.php?an=".$arr["an"]."&bed=".$arr["bed"]."&bedcode=".$arr["bedcode"]."&date=".date("dmy")."\">จ่ายยา</A>";
-	}else{
-	$message="ยืนยันการยกเลิกการปลดล็อคเพื่อจำหน่าย";	
+}else{
+	// ถ้าหอผู้ป่วยดึงขึ้นเตียงอีกครั้ง ห้องยาจะไม่สามารถคีย์ได้
 	$L1="คืนยา";
 	$L2="เพิ่ม/แก้ไข/OFF ยา";
 	$L3="จ่ายยา";
-	}
+}
 
+
+// var_dump($arr1['lock_dc']);
+$unlock = '';
+if(empty($arr1['lock_dc'])){
+	$message="ยืนยันการปลดล็อคเพื่อจำหน่าย";
+}else{
+	$message="ยืนยันการล็อค";
+	$unlock = '<img src="images/icons/unlock.png" title="ปลดล็อค เพื่อให้หอผู้ป่วยจำหน่ายผู้ป่วย เรียบร้อย">';
+}
 
 
 echo "<TR  id='",$arr["an"],"rows' bgcolor=\"$bgcolor\">
-	<TD></TD>
+	<TD>$unlock</TD>
 	<TD>",$arr["bed"],"</TD>
 	<TD align=\"center\">",$arr["date1"]," ",$month_[$arr["date2"]]," ",substr($arr["date3"],2),"</TD>
 	<TD align=\"center\">",$arr["hn"],"</TD>

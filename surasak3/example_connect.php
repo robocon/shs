@@ -28,4 +28,5 @@ mysql_query("collation_database = utf8_unicode_ci");
 mysql_query("collation_server = utf8_unicode_ci");
 
 $dbi = new mysqli($ServerName,$User,$Password,$DatabaseName,$Port);
+$dbi->query("SET NAMES UTF8");
 ?>
