@@ -26,6 +26,10 @@ $cAccno = $row->accno;
     <a href="javascript:void(0);" onclick="window.history.back();">&lt;&lt;&nbsp;กลับไปเมนู</a><br><br>
 </div>
 <style>
+    *{
+        font-family: "TH SarabunPSK";
+        font-size: 16pt;
+    }
     #ipaccContainer{
         position: absolute;
         background: #ffffff;
@@ -84,7 +88,7 @@ $cAccno = $row->accno;
         document.getElementById('ipaccContainer').style.display = 'none';
     }
     async function loadIpacc(){
-        let data = await fetch('ipacc.php');
+        let data = await fetch('ipacc.php?cAn=<?= $cAn; ?>&cAccno=1');
         const body = await data.text();
         document.getElementById('ipaccContainer').style.display = '';
         document.getElementById('ipaccContent').innerHTML = body;

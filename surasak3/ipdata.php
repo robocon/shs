@@ -283,7 +283,7 @@ list($dcdate, $lockdc) = mysql_fetch_row($result2);
 </div>
 <div>
     <a href="ipacc.php?cAn=<?=$cAn;?>&Bed=<?= $cBedcode; ?>&cAccno=<?=$cAccno;?>" target="_blank" class="button button4">ดูบัญชีค่ารักษา</a>
-    <a href="ipaccrep.php?cAn=<?=$cAn;?>" target="_blank" class="button button4">รวมเงินค่ารักษาพยาบาล</a>
+    <a href="ipaccrep.php?cAn=<?=$cAn;?>&cBedcode=<?= $cBedcode; ?>" target="_blank" class="button button4">รวมเงินค่ารักษาพยาบาล</a>
     <a href="returndrug.php?cAn=<?= $cAn; ?>&Bed=<?= $cBedcode; ?>" target="_blank" class="button button4">ใบคืนยา</a>
     <a href="rx_index.php?cAn=<?= $cAn; ?>&Bed=<?= $cBedcode; ?>" target="_blank" class="button button4">เบิกเวชภัณฑ์</a>
 </div>
