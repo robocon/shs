@@ -22,34 +22,37 @@ if(empty($cAn) && empty($cAccno)){
 $sqlIpcard = "SELECT `an`,`hn`,`ptname` FROM `ipcard` WHERE `an` = '$cAn'";
 $qIpcard = mysql_query($sqlIpcard);
 $ip = mysql_fetch_assoc($qIpcard);
+
 ?>
-<h3>รายการค่ารักษาพยาบาล ของ <?= $ip['ptname']; ?> AN: <?= $ip['an']; ?></h3>
-<table>
-    <tr>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>วันที่
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>แผนก
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>รายการ
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>จำนวน
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>ราคา
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>จ่าย
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>ประเภท
-        </th>
-        <th bgcolor=#669999>
-            <font face='Angsana New'>จนท.
-        </th>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>รายการค่ารักษาพยาบาล HN: <?= $ip['hn']; ?></title>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<style>
+*{
+    font-family: "TH SarabunPSK";
+    font-size: 16pt;
+}
+</style>
+<div class="p-2">
+
+<h3 class="">รายการค่ารักษาพยาบาล ของ <?= $ip['ptname']; ?> AN: <?= $ip['an']; ?> HN: <?= $ip['hn']; ?></h3>
+<table class="mt-2">
+    <tr style="background-color:#006666; color:#ffffff;">
+        <th>วันที่</th>
+        <th>แผนก</th>
+        <th>รายการ</th>
+        <th>จำนวน</th>
+        <th>ราคา</th>
+        <th>จ่าย</th>
+        <th>ประเภท</th>
+        <th>จนท.</th>
     </tr>
     <?php
     $query = "SELECT `date`,`depart`,`detail`,`amount`,`price`,`paid`,`part`,`idname`,`nprice` FROM `ipacc` WHERE `an` = '$cAn' AND `accno`='$cAccno' ORDER BY `date` DESC";
@@ -60,15 +63,18 @@ $ip = mysql_fetch_assoc($qIpcard);
             $bgColor = '#ff9292';
         }
         print(" <tr style='background-color:$bgColor;'>\n" .
-        "  <td><font face='Angsana New'>$date</td>\n" .
-        "  <td><font face='Angsana New'>$depart</td>\n" .
-        "  <td><font face='Angsana New'>$detail</td>\n" .
-        "  <td><font face='Angsana New'>$amount</td>\n" .
-        "  <td><font face='Angsana New'>$price</td>\n" .
-        "  <td><font face='Angsana New'>$paid</td>\n" .
-        "  <td><font face='Angsana New'>$part</td>\n" .
-        "  <td><font face='Angsana New'>$idname</td>\n" .
+        "<td>$date</td>\n" .
+        "<td>$depart</td>\n" .
+        "<td>$detail</td>\n" .
+        "<td>$amount</td>\n" .
+        "<td>$price</td>\n" .
+        "<td>$paid</td>\n" .
+        "<td>$part</td>\n" .
+        "<td>$idname</td>\n" .
         " </tr>\n");
     }
     ?>
 </table>
+</div>
+</body>
+</html>
