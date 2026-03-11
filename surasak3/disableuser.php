@@ -43,7 +43,7 @@ if($action=='enable'){
         $sMessage = "$sOfficer($smenucode) ได้ขอลบผู้ใช้งาน ".$user['name'].'('.$user['menucode'].') เหตุผล: '.$detail;
 
         $curl = curl_init();
-        curl_setopt( $curl, CURLOPT_URL, SURASAK_DOCKER."/telegram/index.php");
+        curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php");
         curl_setopt( $curl, CURLOPT_POST, 1);
         curl_setopt( $curl, CURLOPT_POSTFIELDS, "sMessage=".$sMessage."&type=user_register_request");
         curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
@@ -83,7 +83,7 @@ if($action=='enable'){
         if($qDelete===true){
 
             $curl = curl_init();
-            curl_setopt( $curl, CURLOPT_URL, SURASAK_DOCKER."/telegram/index.php");
+            curl_setopt( $curl, CURLOPT_URL, NOTIFY_HOST."/telegram/index.php");
             curl_setopt( $curl, CURLOPT_POST, 1);
             curl_setopt( $curl, CURLOPT_POSTFIELDS, "sMessage=".urlencode($nameTxt)."&type=user_register_request");
             curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
