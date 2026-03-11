@@ -136,8 +136,10 @@ function dateform($date){
     $sDiag=$row->diag;
     $cPaid=$sNetprice;
 	$_SESSION["session_Date"] = $row->date;
-	  $sPtright=$row->ptright;
-	  $stkcutdate_now = $row->stkcutdate;
+	$sPtright=$row->ptright;
+	$stkcutdate_now = $row->stkcutdate;
+	$cDr_cancle=$row->dr_cancle;    
+	
 
 //เช็คการได้รับยา Balm ฟรี 1 หลอด/เดือน 
 $chkDate=(date("Y")+543)."-".date("m");  //ปี-เดือน ปัจจุบัน
@@ -258,6 +260,7 @@ $birthday="$dd/$mm/$yy";
 $d=substr($dDate,8,2);
 $m=substr($dDate,5,2);
 $y=substr($dDate,0,4);
+
 
 print "<font face='Angsana New'>วันที่ $d/$m/$y&nbsp;&nbsp;";
 print $_SESSION["cPtname"].", <font face='Angsana New'>HN: $sHn, <b>VN:</b> $opdayVn, <B>สิทธิ: $sPtright</B><br> ";
@@ -701,6 +704,98 @@ if($inject){
 <?php 
 }
 echo "<table><tr>";
+?>
+<?php if ($cDr_cancle=="1"){?>
+
+<style>
+    .banner-canceled {
+        background: linear-gradient(135deg, #ff4b2b 0%, #ff416c 100%);
+        color: #fff;
+        padding: 25px;
+        border-radius: 0; /* เต็มหน้าจอไม่ต้องมีมุมโค้ง */
+        border-left: 10px solid #8e0000;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+        animation: slideInDown 0.5s ease-out;
+    }
+
+    /* เพิ่มลายน้ำ Icon ด้านหลังเพื่อความสวยงาม */
+    .banner-canceled::after {
+        content: '\f05e'; /* fa-ban */
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        right: -20px;
+        top: -10px;
+        font-size: 150px;
+        opacity: 0.15;
+        transform: rotate(-15deg);
+    }
+
+    .banner-content {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .banner-icon-main {
+        font-size: 3.5rem;
+        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        animation: pulse-danger 2s infinite;
+    }
+
+    .banner-text h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.8rem;
+        letter-spacing: 1px;
+    }
+
+    .banner-text p {
+        margin: 5px 0 0;
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+
+    @keyframes pulse-danger {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes slideInDown {
+        from { transform: translateY(-100%); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+<div class="banner-canceled w-100">
+        <div class="container-fluid">
+            <div class="banner-content">
+                <div class="banner-icon-main">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </div>
+                <div class="banner-text">
+                    <h2>
+                        <i class="fa-solid fa-ban me-2"></i> 
+                        PRESCRIPTION CANCELED BY DOCTOR
+                    </h2>
+                    <p>
+                        <strong>ใบสั่งยานี้ถูกยกเลิกแล้ว:</strong> 
+                        อยู่ในโหมด "อ่านอย่างเดียว" เท่านั้น ห้ามแก้ไข บันทึก หรือทำรายการตัดสต็อกซ้ำซ้อน
+                    </p>
+                </div>
+                <div class="ms-auto d-none d-md-block" style="font-size: 2.5rem; opacity: 0.5;">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+<? }else{ ?>	
+<?php
 	if($stkcutdate_now ==""){
 	?>
     <a target="_blank" href="drxadddrug.php?sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>เพิ่มยา</font></a>&nbsp;&nbsp;
@@ -728,6 +823,8 @@ echo "<table><tr>";
 		<a target="_blank" href="drxprint3.php?sRow_id=<?php echo urlencode($_GET["nRow_id"]);?>"><font face='Angsana New'>พิมพ์ใบสั่งยา (แจ้งเตือนยาเหลือ)</a>
 	</p>
  </div>
+<?php } ?> 
+ 
 <?php
 $strsql="select * from accrued where hn = '$sHn' and status_pay='n' ";
 $strresult = mysql_query($strsql);
