@@ -4306,15 +4306,56 @@ function checkForm1(){
 
 }
 
-function listdrugprov(){
+/*function listdrugprov(){
 
-	if(confirm('ท่านต้องการแก้ไขข้อมูลการจ่ายยาใช่หรือไม่')){
+	if(confirm('ท่านต้องการยกเลิกใบสั่งยา และแก้ไขข้อมูลการจ่ายยาใช่หรือไม่')){
 		xmlhttp = newXmlHttp();
 		url = 'dt_drug.php?action=listdrugprov';
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
 		viewlist();
 	}
+}*/
+
+function listdrugprov() {
+    Swal.fire({
+        title: '⚠️ ยืนยันยกเลิกใบสั่งยา เพื่อแก้ไขใบสั่งยาใหม่?',
+        html: `<div style="text-align: left; background: #fff5f5; padding: 15px; border-left: 5px solid #ff4b2b;">
+                <p style="color: #d33; font-weight: bold; font-size: 1.1rem; margin-bottom: 10px;">
+                    สำคัญมาก: หากท่านกดยกเลิกเพื่อแก้ไขแล้ว...
+                </p>
+                <ul style="color: #333;">
+                    <li>ระบบจะลบใบสั่งยาเดิมออกจากหน้าจอห้องยาชั่วคราว</li>
+                    <li>แพทย์ <b>"ต้อง"</b> กดปุ่ม <b>[ยืนยันการสั่งจ่ายยา]</b> ใหม่อีกครั้ง หลังจากยกเลิกใบสั่งยาล่าสุดไปแล้ว</li>
+                    <li style="color: #d33; font-weight: bold;">หากไม่กดส่งใหม่ ห้องยาจะไม่เห็นรายการยาและคนไข้จะไม่ได้รับยา</li>
+					<li style="color: #d33; font-weight: bold;">สติ๊กเกอร์ยาที่สั่งพิมพ์ก่อนหน้า จะถูกยกเลิกจากระบบอัตโนมัติ</li>
+                </ul>
+               </div>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6e7881',
+        confirmButtonText: 'ยืนยันการยกเลิกเพื่อแก้ไข',
+        cancelButtonText: 'ยกเลิก (กลับไปหน้าเดิม)',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // ดำเนินการเดิมที่ Logic ของคุณ
+            xmlhttp = newXmlHttp();
+            url = 'dt_drug.php?action=listdrugprov';
+            xmlhttp.open("GET", url, false);
+            xmlhttp.send(null);
+            viewlist();
+            
+            // แจ้งเตือนย้ำอีกรอบหลังจากกดยกเลิกสำเร็จ
+            Swal.fire({
+                title: 'เข้าสู่โหมดแก้ไข',
+                text: 'แก้ไขเสร็จแล้ว อย่าลืมกดปุ่ม "ยืนยันสั่งยา" ทุกครั้ง!',
+                icon: 'info',
+                timer: 4000
+            });
+        }
+    });
 }
 
 /**************************************************************************************************/
@@ -5019,7 +5060,7 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 			$onclick = "alert('รายการยาได้ถูกตัดสต๊อกแล้ว ให้ผู้ป่วยยกเลิกรายการยาที่ห้องยาก่อน จึงจะสามารถปรับปรุงรายการยาได้');";
 		}
 
-		echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">ยกเลิก/แก้ไขรายการครั้งล่าสุด</A></CENTER><BR>";
+		echo "<CENTER><A HREF=\"#\" onclick=\"".$onclick."\">ยกเลิกใบสั่งยาล่าสุด เพื่อแก้ไขรายการยา</A></CENTER><BR>";
 	}
 ?>
 
