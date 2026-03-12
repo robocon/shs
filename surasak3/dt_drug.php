@@ -2765,242 +2765,96 @@ function searchSuggest(action,str,len) {
 }
 
 var count=0;
-function check_drug(drug_cc){
-	//1 มียาตัวอื่น
-	//2 มียา 5VIAT
-	//0 ไม่มียา
-	if(drug_cc=='1APRO'|drug_cc=='1BLOP16*'|drug_cc=='1OLME40'|drug_cc=='1MICA40'|drug_cc=='1LIPI*??'|drug_cc=='1CRES20'|drug_cc=='1MEVA40*?'|drug_cc=='1LIVA'|drug_cc=='1LESC80*??'|drug_cc=='1PARI'|drug_cc=='1NEX40'|drug_cc=='1PREV'|drug_cc=='1ARCO'|drug_cc=='1CELE200*'|drug_cc=='2DYNA'|drug_cc=='1CODI160'){
-		if(count==2){
-			alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-			return false;
-		}
-		else{
-		count=1;
-window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-		return true;
-		}
-	}else if(drug_cc=='5VIAT' || drug_cc=='5VIAT    ' || drug_cc=='1VIAT500' || drug_cc=='1VIAT500  '){  //ยาไวอาทิล
-		var sit = '<?=$_SESSION["ptright_now"]?>';
-		sit = sit.substring(0,3);
-		if(sit=="R02" || sit=="R03"){
-				var agep = '<?=$_SESSION["age_now"]?>';
-				agep = agep.substring(0,2);
-				if(agep>="56"){
-					if(count==1|count==2){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}
-					else{
-						count=2;
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-						return true;
-						}
-					}
-				}//อายุ
-				else{
-					if(count==1){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}else{
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-							//alert(agep);
-							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
-							return false;
-/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
-								count=2;
-								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
-								return true;
-							}else{
-								return false;
-							}*/
-						}
-					}
-				}//อายุ
-		}//สิทธิ์
-		else{
-			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-				return true;
-			}else{
-				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-				return true;
-			}
-		}//สิทธิ์
-	}else if(drug_cc=='5ARTR'){ //ยาไวอาทิล
-		var sit = '<?=$_SESSION["ptright_now"]?>';
-		sit = sit.substring(0,3);
-		if(sit=="R02" || sit=="R03"){
-				var agep = '<?=$_SESSION["age_now"]?>';
-				agep = agep.substring(0,2);
-				if(agep>="56"){
-					if(count==1|count==2){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}
-					else{
-						count=2;
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-						return true;
-						}
-					}
-				}//อายุ
-				else{
-					if(count==1){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}else{
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
-							return false;
-/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
-								count=2;
-								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
-								return true;
-							}else{
-								return false;
-							}*/
-						}
-					}
-				}//อายุ
-		}//สิทธิ์
-		else{
-			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-				return true;
-			}else{
-				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-				return true;
-			}
-		}//สิทธิ์
-	}else if(drug_cc=='5Artr'){ //ยาไวอาทิล ปรับปรุง 15-09-59
-		var sit = '<?=$_SESSION["ptright_now"]?>';
-		sit = sit.substring(0,3);
-		if(sit=="R02" || sit=="R03"){
-				var agep = '<?=$_SESSION["age_now"]?>';
-				agep = agep.substring(0,2);
-				if(agep>="56"){
-					if(count==1|count==2){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}
-					else{
-						count=2;
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-						return true;
-						}
-					}
-				}//อายุ
-				else{
-					if(count==1){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}else{
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-							alert("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
-							return false;
-/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
-								count=2;
-								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
-								return true;
-							}else{
-								return false;
-							}*/
-						}
-					}
-				}//อายุ
-		}//สิทธิ์
-		else{
-			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-				return true;
-			}else{
-				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-				return true;
-			}
-		}//สิทธิ์		
-	}else if(drug_cc=='5VIAT-N' || drug_cc=='1VIAT500' || drug_cc=='1VIAT500  '){ //ยาไวอาทิล
-		var sit = '<?=$_SESSION["ptright_now"]?>';
-		
-		sit = sit.substring(0,3);
-		if(sit=="R02" || sit=="R03"){
-				var agep = '<?=$_SESSION["age_now"]?>';
-				agep = agep.substring(0,2);
-				
-				if(agep>="56"){
-					if(count==1|count==2){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}
-					else{
-						count=2;
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-	window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-						return true;
-						}
-					}
-				}//อายุ
-				else{
-					if(count==1){
-						alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-						return false;
-					}else{
-						if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-							return true;
-						}else{
-							//alert('อายุ');
-							alert("ผู้ป่วยอายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้?");
-							return false;
-/*							if(confirm("อายุต่ำกว่า 56 ปี ไม่สามารถใช้ยาตัวนี้ในระบบจ่ายตรงได้ ท่านต้องการจ่ายยาใช่หรือไม่ ?")==true){
-								count=2;
-								window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');						
-								return true;
-							}else{
-								return false;
-							}*/
-						}
-					}
-				}//อายุ
-		}//สิทธิ์
-		else{
-			if(document.form1.reason.value=="F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)"){
-				return true;
-			}else{
-				window.open('arbs.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-				return true;
-			}
-		}//สิทธิ์				
-	}else if(drug_cc=='2ESPO'|drug_cc=='2RECO'){
-		window.open('eryth.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-		return true;
-	}
-	else if(drug_cc=='2CLE0.4*$'|drug_cc=='2CLE0.6*$'|drug_cc=='2INNO*'){
-		window.open('drug_g.php?name='+drug_cc,null,'height=550,width=600,scrollbars=1');
-		return true;
-	}
-	else{
-		if(count==2){
-			alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
-			return false;
-		}
-		else{
-			count=1;
-			return true;	
-		}
-	}
+function check_drug(drug_cc) {
+    // 1 มียาตัวอื่น (กลุ่ม ARBs / Statins)
+    // 2 มียาพิเศษ (กลุ่ม Viartril / Artr)
+    // 0 ไม่มียา
+    
+    // ---------------------------------------------------------
+    // 1. กลุ่มยา ARBs / Statins / NSAIDs (เปิด arbs.php และตั้งค่า count=1)
+    // ---------------------------------------------------------
+    if (drug_cc == '1APRO' || drug_cc == '1BLOP16*' || drug_cc == '1OLME40' || 
+        drug_cc == '1MICA40' || drug_cc == '1LIPI*??' || drug_cc == '1CRES20' || 
+        drug_cc == '1MEVA40*?' || drug_cc == '1LIVA' || drug_cc == '1LESC80*??' || 
+        drug_cc == '1PARI' || drug_cc == '1NEX40' || drug_cc == '1PREV' || 
+        drug_cc == '1ARCO' || drug_cc == '1CELE200*' || drug_cc == '2DYNA' || 
+        drug_cc == '1CODI160') {
+        
+        if (count == 2) {
+            alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+            return false;
+        } else {
+            count = 1;
+            window.open('arbs.php?name=' + drug_cc, null, 'height=550,width=600,scrollbars=1');
+            return true;
+        }
+    } 
+
+    // ---------------------------------------------------------
+    // 2. กลุ่มยา Viartril / Artr (ยกเลิกการเช็คอายุแล้ว)
+    // ---------------------------------------------------------
+    else if (drug_cc == '5VIAT' || drug_cc == '5VIAT    ' || drug_cc == '1VIAT500' || 
+             drug_cc == '1VIAT500  ' || drug_cc == '5VIAT-N' || drug_cc == '5ARTR' || 
+             drug_cc == '5Artr') {
+        
+        // ดึงสิทธิ์จาก PHP Session
+        var sit = '<?php echo $_SESSION["ptright_now"]; ?>'; 
+        sit = sit.substring(0, 3);
+
+        if (sit == "R02" || sit == "R03") {
+            // เช็คว่ามีการสั่งยาตัวอื่นไปแล้วหรือไม่
+            if (count == 1 || count == 2) {
+                alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+                return false;
+            } else {
+                count = 2;
+                // ถ้าเป็นเหตุผล "เบิกไม่ได้" ไม่ต้องเปิดประเมินสิทธิ์
+                if (document.form1.reason.value == "F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)") {
+                    return true;
+                } else {
+                    window.open('arbs.php?name=' + drug_cc, null, 'height=550,width=600,scrollbars=1');
+                    return true;
+                }
+            }
+        } else {
+            // กรณีสิทธิ์อื่นๆ ที่ไม่ใช่จ่ายตรง
+            if (document.form1.reason.value == "F ผู้ป่วยแสดงความจำนงต้องการ (เบิกไม่ได้)") {
+                return true;
+            } else {
+                window.open('arbs.php?name=' + drug_cc, null, 'height=550,width=600,scrollbars=1');
+                return true;
+            }
+        }
+    }
+
+    // ---------------------------------------------------------
+    // 3. กลุ่มยาฉีด Erythropoietin (เปิด eryth.php)
+    // ---------------------------------------------------------
+    else if (drug_cc == '2ESPO' || drug_cc == '2RECO') {
+        window.open('eryth.php?name=' + drug_cc, null, 'height=550,width=600,scrollbars=1');
+        return true;
+    }
+
+    // ---------------------------------------------------------
+    // 4. กลุ่มยา Enoxaparin / Innohep (เปิด drug_g.php)
+    // ---------------------------------------------------------
+    else if (drug_cc == '2CLE0.4*$' || drug_cc == '2CLE0.6*$' || drug_cc == '2INNO*') {
+        window.open('drug_g.php?name=' + drug_cc, null, 'height=550,width=600,scrollbars=1');
+        return true;
+    }
+
+    // ---------------------------------------------------------
+    // 5. ยาทั่วไปอื่นๆ
+    // ---------------------------------------------------------
+    else {
+        if (count == 2) {
+            alert("ไม่สามารถสั่งร่วมกับยาตัวอื่นได้");
+            return false;
+        } else {
+            count = 1;
+            return true;
+        }
+    }
 }
 
 function check_inject(str){
