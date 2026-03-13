@@ -309,7 +309,7 @@ FROM `mst_stock`
 WHERE `Hn_Reserved` = '$cHn' 
 AND `Exp_Date` >= CURDATE() 
 AND `Flag_Reserved`='Y' 
-AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` WHERE `Pt_HN` = '$cHn' )";
+AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` )";
 $qTrn = $bsConn->query($sqlTrnBlood);
 if ($qTrn->num_rows > 0) {
     while ($a = $qTrn->fetch_assoc()) {
