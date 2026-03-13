@@ -1,7 +1,23 @@
 <?php
 session_start();
-if (!isset($sIdname)){ exit(); } //for security
 
+if (isset($_SESSION['sIdname'])){} else {die;} //for security
+include_once dirname(__FILE__).'/connect.php';
+
+global $cPtname, $cHn, $cDoctor, $cDepart;
+// var_dump($_SESSION);
+echo "<hr>";
+var_dump($_SESSION['cPtname']);
+var_dump($_SESSION['cHn']);
+var_dump($_SESSION['cDoctor']);
+var_dump($_SESSION['cDepart']);
+echo "<hr>";
+var_dump($cPtname);
+var_dump($cHn);
+var_dump($cDoctor);
+var_dump($cDepart);
+
+// exit;
 if($cPtname == "" || $cHn == "" || $cDoctor == "" || $cDepart==""){
     echo "ขออภัยครับระบบมีความผิดพลาดเล็กน้อย กรุณาปิดโปรแกรมโรงพยาบาลและทำการเข้าระบบใหม่ครับ";
     exit();
@@ -26,8 +42,6 @@ for ($n=1; $n<=$x; $n++){
     }
 }
 
-include("connect.php");
-
 //เลข LAB
 $query = "SELECT * FROM runno WHERE title = 'nid_c'";
 $result = mysql_query($query) or die("Query failed");
@@ -42,7 +56,6 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
         continue;
 }
 
-//  	    $cTitle=$row->title;  //=VN
 $nNid=$row->runno;
 $fNid=$row->prefix;
 $today = date("Y-m-d"); 
@@ -52,7 +65,7 @@ $cPart='nid';
 
 //insert data into depart
 $thidate5 = (date("Y")+543).date("-m-d H:i:s"); 
-$query = "INSERT INTO medicalcertificate (thidate,number,hn,part,doctor)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
+$query = "INSERT INTO `medicalcertificate` (`thidate`,`number`,`hn`,`part`,`doctor`)VALUES(' $thidate5','$nRunno','$cHn','$cPart','$cDoctor');";
 $result = mysql_query($query) or die("**เตือน ! เมื่อพบหน้าต่างนี้แสดงว่าได้บันทึกข้อมูลไปก่อนแล้ว หรือการบันทึกล้มเหลว<br>");
 
 $dateNow = date('Y-m-d');
@@ -96,13 +109,6 @@ if( preg_match('/NID\s/',$cDoctor, $matchs) > 0 ){
 }
 
 $cDoctor2 = substr($cDoctor,0,5);
-
-/*if($cDoctor2=='MD054'){$doctorcode='ว.13553';}else
-if($cDoctor2=='MD052'){$doctorcode='ว.14286';}else
-if($cDoctor2=='MD037'){$doctorcode='ว.10212';}else
-if($cDoctor2=='MD089'){$doctorcode='ว.32166';}else{$doctorcode='';};*/
-
-
 $Thaidate1=substr($Thaidate,0,10);
 $licen = '';
 
@@ -156,22 +162,6 @@ if( $cDoctor2 === 'MD115' ){
 	}
 
 }
-
-
-
-$date_log = date('Y-m-d H:i:s');
-$dt_log = "{\"yot\":\"$yot\",\"name\":\"$cDoctor1\",\"code\":\"$doctorcode\"}";
-$log = "INSERT INTO `medicalcertificate`
-(`thidate`,
-`hn`,
-`part`,
-`doctor`)
-VALUES
-('$date_log',
-'$cHn',
-'$cPart',
-'$dt_log');\n\n";
-file_put_contents('logs/doctor-cert.log', $log, FILE_APPEND);
 
 list($d, $m, $y) = explode('-', $Thaidate1);
 $thaiTxt = $d.' '.$thaimonthFull[$m].' '.$y;

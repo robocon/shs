@@ -1,6 +1,6 @@
 <?php
-	session_start();
-
+session_start();
+include_once dirname(__FILE__) . '/connect.php';
     // เก็บสถิติแพทย์แผนจีน
 	$_SESSION['dr_nid'] = ( isset($_POST['dr_nid']) ) ? $_POST['dr_nid'] : null ;
 
@@ -106,7 +106,7 @@
 	//print "โรค :$cDiag<br>";
 	//print "แพทย์ :$cDoctor<br>";
 	
-	include("connect.inc");
+	// include("connect.inc");
 	
 	$sql = "Select  menucode From inputm  where idname = '".$_SESSION["sIdname"]."' limit 1";
 	
@@ -415,7 +415,7 @@ $test_checkup = false;
 	}
 // }
 */
-include("unconnect.inc");
+// include("unconnect.inc");
 
 
 // ถ้าเป็น จนท.คอมฯ + แลป และ เป็นการตรวจลูกจ้าง ปกส.

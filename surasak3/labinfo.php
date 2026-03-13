@@ -1,6 +1,9 @@
 <?php
 session_start();
-if (isset($sIdname)){} else {die;} //for security
+if (isset($_SESSION['sIdname'])){} else {die;} //for security
+include_once dirname(__FILE__).'/connect.php';
+
+$Dgcode = $_GET['Dgcode'];
 ?>
 <table>
  <tr>
@@ -14,7 +17,7 @@ if (isset($sIdname)){} else {die;} //for security
   <th bgcolor=CD853F><font face='Angsana New' size='2'>ขนาดฟิล์ม</th>
  </tr>
 <?php
-    include("connect.inc");
+
 	if (substr($Dgcode, 0, 1) == '@' || substr($Dgcode, 0, 1) == '#' || substr($Dgcode1, 0, 2) == 'AN' || substr($Dgcode, 0, 2) == 'HN') {
 		$aCode = array("code");
 		$aAmt = array("amount");
@@ -71,7 +74,6 @@ if (isset($sIdname)){} else {die;} //for security
 			$query = "SELECT `code`,`amount` FROM `labpatdata` WHERE `idno` = '$labdepart_rowId'; ";
 			
 		}
-		// echo $query;
 		$result = mysql_query($query) or die("Query failed111");
 
 		while (list($code, $amount) = mysql_fetch_row($result)) {
@@ -132,7 +134,7 @@ if (isset($sIdname)){} else {die;} //for security
 	} else {
 
 		$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
-		if($log_smenucode == 'ADMPT'){
+		if($log_smenucode == 'ADMPT'){ // เก็บ log เพราะมีปัญหาหน้างานบอกว่าคีย์แล้วๆ แต่พอมาเช็กปรากฎว่าไม่ได้คีย์มาจริง
 			$log_officer = sprintf("%s", $_SESSION['sOfficer']);
 			$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'เลือกรายการ', '$Dgcode');";
 			mysql_query($logSql);
@@ -247,35 +249,29 @@ $nLab2=$row->runno;
 if($lipid==4){
 	echo "<div align='center'><img src='images/warning-1.png' width='64px;' height='64px;'></div>";
 	echo "<div align='center' style='color:red;font-weigth:bold;font-size:16px;'>ไม่สามารถสั่งรายการ  CHOL,TRI,HDL,LDL พร้อมกัน 4 รายการได้ สามารถสั่งได้มากสุด 3 ตัว<br>ถ้าจะสั่งทั้ง 4 รายการ ต้องสั่งรายการ LIPID</div>";
-}		
+}
 
 echo " <font face='Angsana New' size='4'><b>ราคารวม  $Netprice บาท </b> ";
 echo " (ราคาเบิกได้ $aSumYprice บาท ";
-echo "  <font color =FF0000><b><u>เบิกไม่ได้   $aSumNprice บาท</u></b>)<br>
-	 หมายเลข$nLab2";
-
+echo "  <font color =FF0000><b><u>เบิกไม่ได้   $aSumNprice บาท</u></b>)<br> หมายเลข$nLab2";
 
 ?>
-<?php 
-//echo "==>$cDiag---->$aDetail";?>
+
 <br>
 <a target="_blank" href="labtranx.php" id="labtranx" <?php if($aSumNprice > 0){echo "Onclick=\"alert('ค่า หัตถการ มีส่วนเกินที่ไม่สามารถเบิกได้ ให้ผู้ป่วยชำระเงินส่วนเกินที่ส่วนเก็บเงิน');\""; }?>>
 	<font face='Angsana New' size='3'>หมดรายการ/ใบแจ้งหนี้
 </a>
-<? 
+<?php
 
 if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMDEN"){
-//print_r($_SESSION);	
-$thidate=(date("Y") + 543) . "-" . date("m") . "-" . date("d");
-$vn=$_SESSION["tvn"];
-$hn=$_SESSION["cHn"];
-$query1 = "SELECT thdatehn,ptname,goup,dxgroup FROM opday WHERE thidate LIKE '$thidate%' AND hn ='$hn' and vn ='$vn'";
-//echo $query1;
-$result1 = mysql_query($query1);
-list ($thdatehn,$ptname, $goup,$dxgroup) = mysql_fetch_row($result1);
-echo "&nbsp;&nbsp;&nbsp;&nbsp;";	
-echo "<a  href=\"dxopedit.php? cTdatehn=".urlencode($thdatehn)."&cPtname=".urlencode($ptname)."&cHn=".urlencode($hn)."&cGoup=".urlencode($goup)."&cDxg=".urlencode($dxgroup)."&cIcd10=".urlencode($icd10)."&cVn=".urlencode($vn)."\" target=\"_BLANK\" >บันทึกรหัสโรค</a>";
-
+    $thidate=(date("Y") + 543) . "-" . date("m") . "-" . date("d");
+    $vn=$_SESSION["tvn"];
+    $hn=$_SESSION["cHn"];
+    $query1 = "SELECT thdatehn,ptname,goup,dxgroup FROM opday WHERE thidate LIKE '$thidate%' AND hn ='$hn' and vn ='$vn'";
+    $result1 = mysql_query($query1);
+    list ($thdatehn,$ptname, $goup,$dxgroup) = mysql_fetch_row($result1);
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;";	
+    echo "<a  href=\"dxopedit.php?cTdatehn=".urlencode($thdatehn)."&cPtname=".urlencode($ptname)."&cHn=".urlencode($hn)."&cGoup=".urlencode($goup)."&cDxg=".urlencode($dxgroup)."&cIcd10=".urlencode($icd10)."&cVn=".urlencode($vn)."\" target=\"_BLANK\" >บันทึกรหัสโรค</a>";
 	echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 	echo "บันทึกรายการเพิ่มเติม";		
 }
@@ -307,8 +303,11 @@ $cDoctor2 = substr($cDoctor,0,5);
 // MD115 คือแพทย์แผนจีน
 // MD163 ศุภกิตติ มงคล พจ.1254
 // MD203 พรชนก มั่งมูล
-
-if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD116','NID ว','MD151','MD163','MD203'))===true)
+var_dump($_SESSION['cPtname']);
+var_dump($_SESSION['cHn']);
+var_dump($_SESSION['cDoctor']);
+var_dump($_SESSION['cDepart']);
+if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD116','NID ว','MD151','MD163','MD203'))===true OR $_SESSION["smenucode"]=="ADM")
 {
     ?>
     <br><br>
@@ -336,12 +335,11 @@ if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD
 // MD212 พิมพ์ทอง สุระเรืองชัย
 // MD184 สัมมา เลิศธีรกุล
 // เฉพาะแพทย์แผนไทย
-if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216','MD184','MD227'))===true)
+if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD216','MD184','MD227'))===true OR $_SESSION["smenucode"]=="ADM")
 {
     ?>
 	<br><br>
 	<p><strong>ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์</strong></p>
-    <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=1&code=<?=$Dgcode;?>">อัจฉรา อวดห้าว</a>
     <br><br>
     <a target="_blank" href="labtranxnidpt.php?subDoctor=2&code=<?=$Dgcode;?>">ธัญญาวดี มูลรัตน์</a>
@@ -361,6 +359,5 @@ if(in_array($cDoctor2, array('MD058','MD155','MD156','MD157','MD202','MD212','MD
     <a target="_blank" href="labtranxnidpt.php">ใบรับรองการตรวจร่างกายแพทย์แผนไทยประยุกต์ </a>-->
 
 <?php
-   include("unconnect.inc");
 }
 ?>

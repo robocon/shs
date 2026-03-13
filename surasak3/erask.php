@@ -1,8 +1,8 @@
 <?php
 session_start();
 // include_once 'connect.php';
-include_once 'connect.inc';
-include_once 'includes/config.php';
+include_once dirname(__FILE__) . '/connect.php';
+// include_once 'includes/config.php';
 
 $cHn = $_GET['cHn'];
 $tvn = $_GET['tvn'];
