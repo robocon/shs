@@ -4,24 +4,15 @@ session_start();
 if (isset($_SESSION['sIdname'])){} else {die;} //for security
 include_once dirname(__FILE__).'/connect.php';
 
-global $cPtname, $cHn, $cDoctor, $cDepart;
-// var_dump($_SESSION);
-echo "<hr>";
-var_dump($_SESSION['cPtname']);
-var_dump($_SESSION['cHn']);
-var_dump($_SESSION['cDoctor']);
-var_dump($_SESSION['cDepart']);
-echo "<hr>";
-var_dump($cPtname);
-var_dump($cHn);
-var_dump($cDoctor);
-var_dump($cDepart);
-
-// exit;
-if($cPtname == "" || $cHn == "" || $cDoctor == "" || $cDepart==""){
+if($_SESSION['cPtname'] == "" || $_SESSION['cHn'] == "" || $_SESSION['cDoctor'] == "" || $_SESSION['cDepart'] == ""){
     echo "ขออภัยครับระบบมีความผิดพลาดเล็กน้อย กรุณาปิดโปรแกรมโรงพยาบาลและทำการเข้าระบบใหม่ครับ";
     exit();
 }
+
+$cPtname = $_SESSION['cPtname'];
+$cHn = $_SESSION['cHn'];
+$cDoctor = $_SESSION['cDoctor'];
+$cDepart = $_SESSION['cDepart'];
 
 // เลือกวันที่เริ่มตรวจ และสิ้นสุด
 $date_start_th = ( isset($_SESSION['date_start']) && !empty($_SESSION['date_start']) ) ? $_SESSION['date_start'] : false ;
@@ -224,17 +215,8 @@ $inList = test_diag($cDiag, $diag_list);
 
 print "<font face='Angsana New' size ='3'>เห็นสมควรให้การรักษาด้วยการฝังเข็ม&nbsp;&nbsp;&nbsp;";
 
-if( $cDoctor2 == 'MD037' 
-OR $cDoctor2 == 'MD054' 
-OR $cDoctor2 == 'MD089' 
-OR $cDoctor2 == 'MD115' 
-OR $cDoctor2 == 'MD128' 
-OR $cDoctor2 == 'MD129' 
-OR $cDoctor2 == 'MD116' 
-OR $cDoctor2 == 'MD130' 
-OR $cDoctor2 == 'MD151' 
-OR $cDoctor2 == 'MD163'
-OR $cDoctor2 == 'MD203'){
+$doctor2List = array('MD037','MD054','MD089','MD115','MD128','MD129','MD116','MD130','MD151','MD163','MD203');
+if(in_array( $cDoctor2, $doctor2List )===true){
 
     if( $inList === true ){
         print 'เพื่อ ฟื้นฟูสมรรถภาพร่างกาย';
