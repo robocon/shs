@@ -135,9 +135,9 @@ $Dgcode = $_GET['Dgcode'];
 
 		$log_smenucode = sprintf("%s", $_SESSION['smenucode']);
 		if($log_smenucode == 'ADMPT'){ // เก็บ log เพราะมีปัญหาหน้างานบอกว่าคีย์แล้วๆ แต่พอมาเช็กปรากฎว่าไม่ได้คีย์มาจริง
-			$log_officer = sprintf("%s", $_SESSION['sOfficer']);
-			$logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'เลือกรายการ', '$Dgcode');";
-			mysql_query($logSql);
+			// $log_officer = sprintf("%s", $_SESSION['sOfficer']);
+			// $logSql = "INSERT INTO `log_patdata` (`id`, `date`, `hn`, `an`, `officer`, `action`, `value`) VALUES (NULL, NOW(), '$cHn', '$cAn', '$log_officer', 'เลือกรายการ', '$Dgcode');";
+			// mysql_query($logSql);
 		}
 
 		if(!empty($Dgcode)){
@@ -303,10 +303,6 @@ $cDoctor2 = substr($cDoctor,0,5);
 // MD115 คือแพทย์แผนจีน
 // MD163 ศุภกิตติ มงคล พจ.1254
 // MD203 พรชนก มั่งมูล
-var_dump($_SESSION['cPtname']);
-var_dump($_SESSION['cHn']);
-var_dump($_SESSION['cDoctor']);
-var_dump($_SESSION['cDepart']);
 if(in_array($cDoctor2, array('MD037','MD054','MD115','MD128','MD129','MD130','MD116','NID ว','MD151','MD163','MD203'))===true OR $_SESSION["smenucode"]=="ADM")
 {
     ?>
