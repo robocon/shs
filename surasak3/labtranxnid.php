@@ -1,29 +1,28 @@
-<body Onload="window.print();">
-
 <?php
-    session_start();
-    if (isset($sIdname)){} else {die;} //for security
-    $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
-    $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
-	
-	if($cPtname == "" || $cHn == "" || $cDoctor == "" || $cDepart==""){
+session_start();
+if (isset($_SESSION['sIdname'])){} else {die;} //for security
+include_once dirname(__FILE__).'/connect.php';
+?>
+<body Onload="window.print();">
+<?php
+$Thidate = (date("Y")+543).date("-m-d H:i:s"); 
+$Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
 
-		echo "ขออภัยครับระบบมีความผิดพลาดเล็กน้อย กรุณาปิดโปรแกรมโรงพยาบาลและทำการเข้าระบบใหม่ครับ";
-		exit();
-	}
+if($cPtname == "" || $cHn == "" || $cDoctor == "" || $cDepart==""){
 
-   //item count
-   $item=0;
-   for ($n=1; $n<=$x; $n++){
-        If (!empty($aDgcode[$n])){
-             $item++;
-	}
-            };
+    echo "ขออภัยครับระบบมีความผิดพลาดเล็กน้อย กรุณาปิดโปรแกรมโรงพยาบาลและทำการเข้าระบบใหม่ครับ";
+    exit();
+}
 
-    include("connect.inc");
+//item count
+$item=0;
+for ($n=1; $n<=$x; $n++){
+    If (!empty($aDgcode[$n])){
+        $item++;
+    }
+}
 
 //เลข LAB
-
 if ($cDepart == 'PATHO'){
 
 $query = "SELECT * FROM runno WHERE title = 'lab'";
@@ -155,7 +154,7 @@ if ($cDepart == 'PATHO'){
 		$result = mysql_query($query) or die("Query failed");
 }
     
-   include("unconnect.inc");
+
 //ใบแจ้งหนี้
   print "ใบแจ้งหนี้<br>";
      print "<font face='Angsana New'>$cPtname HN:$cHn VN:$tvn  สิทธิ: $cPtright&nbsp;";
@@ -194,10 +193,6 @@ if ($cDepart == 'PATHO'){
       print "*************นำใบแจ้งหนี้ไปที่ห้องเก็บเงิน***************";  
 $cDoctor1=substr($cDoctor,5,50);
 $cDoctor2=substr($cDoctor,0,5);
-/*if($cDoctor2=='MD054'){$doctorcode='ว.13553';}else
-if($cDoctor2=='MD052'){$doctorcode='ว.14286';}else
-if($cDoctor2=='MD037'){$doctorcode='ว.10212';}else{$doctorcode='';};*/
-include("connect.inc");
 
 // แพทย์แผนจีน
 if( $cDoctor2 === 'MD115' ){
