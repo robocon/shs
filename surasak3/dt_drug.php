@@ -4989,9 +4989,16 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 	<h1>Drug Left</h1>
 	<?php
 	$classDrug = new Drug();
-
 	$d = $classDrug->drugLeft('47-2804',array('1CAVI','1TEBO','1ALG'));
 	dump($d);
+
+	SELECT MAX(date) AS latest_date,COUNT(drugcode) AS rows,hn,drugcode 
+	FROM `ddrugrx` 
+	WHERE hn = '47-11' 
+	GROUP BY drugcode 
+	HAVING COUNT(drugcode) > 1 
+	ORDER BY latest_date
+
 	?>
 </div>
 <style>
@@ -5048,23 +5055,14 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 </div>
 
 <SCRIPT LANGUAGE="JavaScript">
-
 window.onload = function(){
-	
 	document.getElementById("drug_code").focus();
 	viewlist();
 	<?php echo $list_onload;?>
 	
 }
-
 </SCRIPT>
-
-<script type="text/javascript">
-	// alert(">>> ผู้ป่วยมีรายการแพ้ยาดังนี้ <<< \n<?=$txtdrugreact?>");
-</script>
-
 <?
-
 ///*********************เตือน *****************///
 
 /* แจ้งเตือน Warfarin */
