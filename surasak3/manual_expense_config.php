@@ -8,10 +8,12 @@ $action = sprintf("%s", $_POST['action']);
 if($action == 'save'){
 
     $part = sprintf("%s", $_POST['part']);
+    $userRegis = sprintf("%s", $_POST['user']['regis']);
     $userLab = sprintf("%s", $_POST['user']['lab']);
     $userMoney = sprintf("%s", $_POST['user']['money']);
     $userXray = sprintf("%s", $_POST['user']['xray']);
 
+    $dbi->query("UPDATE `expense_config` SET `name`='$userRegis' WHERE (`type`='regis');");
     $dbi->query("UPDATE `expense_config` SET `name`='$userLab' WHERE (`type`='lab');");
     $dbi->query("UPDATE `expense_config` SET `name`='$userMoney' WHERE (`type`='money');");
     $dbi->query("UPDATE `expense_config` SET `name`='$userXray' WHERE (`type`='xray');");
