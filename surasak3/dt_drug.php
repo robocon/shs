@@ -4992,12 +4992,23 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 	$d = $classDrug->drugLeft('47-2804',array('1CAVI','1TEBO','1ALG'));
 	dump($d);
 
-	SELECT MAX(date) AS latest_date,COUNT(drugcode) AS rows,hn,drugcode 
-	FROM `ddrugrx` 
-	WHERE hn = '47-11' 
-	GROUP BY drugcode 
-	HAVING COUNT(drugcode) > 1 
-	ORDER BY latest_date
+	SELECT a.*,c.amount AS sl_amount,
+	(a.`amount`/c.`amount`) AS `day_averrage`,
+	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`latest_date`,1,4)-543),SUBSTRING(a.`latest_date`,5,6)),NOW()) AS `day_diff`
+	FROM (
+		SELECT MAX(date) AS latest_date,COUNT(drugcode) AS rows,tradname,amount,slcode,hn,drugcode,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,idno
+		FROM `ddrugrx` 
+		WHERE date >= '2568-10-01' AND date <= '2569-03-16'
+		AND hn = '47-11' 
+		AND ( `an` IS NULL AND `slcode` != 'b' ) 
+		GROUP BY drugcode 
+		HAVING COUNT(drugcode) > 1 
+		ORDER BY latest_date
+	) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
+	LEFT JOIN drugslip AS c ON c.slcode = a.slcode
+	WHERE b.`dr_cancle` IS NULL
+	AND c.amount > 0 
+	HAVING day_averrage > day_diff
 
 	?>
 </div>
