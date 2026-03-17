@@ -361,18 +361,10 @@ class Drug extends Database
     }
 
     public function drugLeft($hn='', $drugItems=array()){
-        // dump($hn);
-        // dump($drugItems);
         $drugSQL = "'".implode("','", $drugItems)."'";
         $currDate = (date('Y')+543).date('-m-d 00:00:00');
-
         $sixMonth = strtotime('-6 month');
         $dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
-
-        // dump($drugSQL);
-        // dump($currDate);
-        // dump($sixMonth);
-        // dump($dateSixMonth);
         $tmp_ddrugrx = sprintf("CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
         SELECT a.* FROM (
             SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
@@ -385,7 +377,6 @@ class Drug extends Database
         WHERE b.`dr_cancle` IS NULL",
             $this->dbi->real_escape_string($hn)
         );
-        // dump($tmp_ddrugrx);
         $this->dbi->query($tmp_ddrugrx);
 
         $sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
@@ -412,5 +403,65 @@ class Drug extends Database
             }
         }
         return $drugOverItem;
+    }
+
+    /**
+     * แสดงรายการยาที่เหลือย้อนหลัง 6เดือนในหน้าจ่ายยาของแพทย์
+     * 
+     * @param string $hn HN ของผู้มารับบริการ
+     * @return array 
+     * - 'latest_date' (string): วันที่ล่าสุดที่จ่ายยา
+     * - 'rows' (string): จำนวนที่ได้จากการ GROUP
+     * - 'tradname' (string): ชื่อทางการค้า
+     * - 'amount' (string): จำนวนที่จ่าย ณ วันที่รับบริการ
+     * - 'slcode' (string): รหัสวิธีใช้ยา
+     * - 'hn' (string): HN ผู้มารับบริการ
+     * - 'drugcode' (string): รหัสยา
+     * - 'idno' (string): idno จาก ddrugrx
+     * - 'genname' (string): ชื่อสามัญ
+     * - 'doctor' (string): doctor
+     * - 'sl_amount' (string): ค่าสัมประสิทธิ์ ที่ใช้ยาต่อวัน
+     * - 'day_averrage' (string): จำนวนวันที่ใช้ยาต่อครั้งในการจ่าย (จำนวนที่แพทย์สั่ง หารด้วย จำนวนที่ใช้ต่อวัน)
+     * - 'day_diff' (string): ผ่านมาแล้วกี่วัน
+     * - 'detail' (string): รายละเอียดวิธีใช้
+     */
+    public function showDrDrugLeft($hn){
+
+        $currDate = (date('Y')+543).date('-m-d 00:00:00');
+        $sixMonth = strtotime('-6 month');
+        $dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
+        $res = false;
+        $sql = sprintf("SELECT a.*,d.`genname`,b.`doctor`,c.`amount` AS `sl_amount`,
+        (a.`amount`/c.`amount`) AS `day_averrage`,
+        TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`latest_date`,1,4)-543),SUBSTRING(a.`latest_date`,5,6)),NOW()) AS `day_diff`,
+        CONCAT(c.`detail1`,' ',c.`detail2`,'',c.`detail3`) AS `detail`
+        FROM (
+            SELECT MAX(`date`) AS `latest_date`,COUNT(`drugcode`) AS `rows`,`tradname`,`amount`,`slcode`,`hn`,`drugcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno`
+            FROM `ddrugrx` 
+            WHERE `date` >= '$dateSixMonth' AND date <= '$currDate'
+            AND `hn` = '%s' 
+            AND ( `an` IS NULL AND `slcode` != 'b' ) 
+            GROUP BY `drugcode` 
+            HAVING COUNT(`drugcode`) > 1 
+            ORDER BY `latest_date`
+        ) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
+        LEFT JOIN `druglst` AS d ON a.`drugcode` = d.`drugcode`
+        LEFT JOIN `drugslip` AS c ON c.`slcode` = a.`slcode`
+        WHERE b.`dr_cancle` IS NULL
+        AND c.`amount` > 0 
+        HAVING `day_averrage` > `day_diff`",
+            $this->dbi->real_escape_string($hn)
+        );
+        $q = $this->dbi->query($sql);
+        if(!$this->dbi->error){
+            $res = array();
+            $rows = $q->num_rows;
+            if($rows>0){
+                while ($a = $q->fetch_assoc()) {
+                    $res[] = $a;
+                }
+            }
+        }
+        return $res;
     }
 }

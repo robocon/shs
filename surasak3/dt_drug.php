@@ -2,7 +2,7 @@
 session_start();
 date_default_timezone_set("Asia/Bangkok");
 
-include_once dirname(__FILE__).'/connect.php';
+include_once dirname(__FILE__).'/connect.inc';
 include_once dirname(__FILE__).'/newBootstrap.php';
 include_once dirname(__FILE__).'/includes/JSON.php';
 
@@ -4927,11 +4927,12 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 </FORM>
 
 </TD>
-	<TD   width="30"  valign="top">
+<TD width="30" valign="top">
 	<Div id="list" style="left:200PX;top:220PX;position:absolute;"></Div>
 		&nbsp;
-	</TD>
-	<TD valign="top"><Div id="druglist" ></Div>
+</TD>
+<TD valign="top">
+	<div id="druglist"></div>
 	<?php 
 		$listinteraction =array();
 		$sql = " Select row_id, doctor From dphardep where hn = '".$_SESSION["hn_now"]."' AND (whokey = 'DR' OR whokey LIKE '%HD%') AND idname <> '".$_SESSION["dt_doctor"]."' AND date like '".((date("Y")+543).date("-m-d"))."%' AND dr_cancle is null Order by row_id DESC ";
@@ -4982,36 +4983,57 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 		}
 	
 	?>
-	&nbsp;</TD>
+	<div>
+		<?php
+		$patient_hn = trim($_SESSION["hn_now"]);
+		$classDrug = new Drug();
+		$items = $classDrug->showDrDrugLeft($patient_hn);
+		if($items!==false){
+			if(count($items)>0){
+			?>
+			<div style="margin-top:1em;">
+				<table width="100%">
+					<tr>
+						<th colspan="7"><strong>ยาที่เหลือในช่วง 6เดือนย้อนหลัง</strong></th>
+					</tr>
+					<tr valign="top" style="background-color:#f8d7da;">
+						<th>วันที่จ่ายยา</th>
+						<th>รหัส</th>
+						<th>ยา</th>
+						<th>วิธีใช้</th>
+						<th>จำนวน ณ วันจ่าย</th>
+						<th>จำนวนยาเหลือ<br>โดยประมาณ</th>
+						<th>แพทย์ที่สั่งจ่าย</th>
+					</tr>
+					<?php
+					foreach ($items as $item) {
+						list($y, $m, $d) = explode('-', substr($item['latest_date'],0,10));
+						?>
+						<tr style="background-color:#fff3cd;">
+							<td align="center"><?= $d.' '.$def_month_th[$m].' '.$y; ?></td>
+							<td><?= $item['drugcode'] ?></td>
+							<td><?= $item['tradname'].' ['.$item['genname'].']'; ?></td>
+							<td><span title="<?= $item['detail'] ?>"><?= $item['slcode']; ?></span></td>
+							<td align="center"><?= $item['amount']; ?></td>
+							<td align="center"><?= $item['day_averrage']-$item['day_diff']; ?></td>
+							<td><?= $item['doctor']; ?></td>
+						</tr>
+						<?php
+					}
+					?>
+				</table>
+			</div>
+			<?php
+			} // rows > 0
+		}else{
+			$err = $classDrug->getError();
+			echo $err->errorMessage;
+		}
+		?>
+	</div>
+</TD>
 </TR>
 </TABLE>
-<div>
-	<h1>Drug Left</h1>
-	<?php
-	$classDrug = new Drug();
-	$d = $classDrug->drugLeft('47-2804',array('1CAVI','1TEBO','1ALG'));
-	dump($d);
-
-	SELECT a.*,c.amount AS sl_amount,
-	(a.`amount`/c.`amount`) AS `day_averrage`,
-	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`latest_date`,1,4)-543),SUBSTRING(a.`latest_date`,5,6)),NOW()) AS `day_diff`
-	FROM (
-		SELECT MAX(date) AS latest_date,COUNT(drugcode) AS rows,tradname,amount,slcode,hn,drugcode,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,idno
-		FROM `ddrugrx` 
-		WHERE date >= '2568-10-01' AND date <= '2569-03-16'
-		AND hn = '47-11' 
-		AND ( `an` IS NULL AND `slcode` != 'b' ) 
-		GROUP BY drugcode 
-		HAVING COUNT(drugcode) > 1 
-		ORDER BY latest_date
-	) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
-	LEFT JOIN drugslip AS c ON c.slcode = a.slcode
-	WHERE b.`dr_cancle` IS NULL
-	AND c.amount > 0 
-	HAVING day_averrage > day_diff
-
-	?>
-</div>
 <style>
 	#pregBackground{
 		display: grid;
@@ -5096,7 +5118,7 @@ $date_start = date('Y-m-d', strtotime(date('Y-m-d')."-6 months"));
 $date_end = ad_to_bc($date_end);
 $date_start = ad_to_bc($date_start);
 
-$patient_hn = trim($_SESSION["hn_now"]);
+
 
 $sqlTemp = "CREATE TEMPORARY TABLE IF NOT EXISTS `temp_drugrx`
 SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,IF(`drugcode` IN('1COUM-C3','1COUM-C5','1COUM-C1','1COUM-C2'), 'warfarin', 'noacs') AS type
