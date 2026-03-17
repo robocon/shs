@@ -461,15 +461,15 @@ $dbi->query("SET NAMES UTF8");
 				<td align="center" width="40%">&nbsp;</td>
 			</tr>
 			<tr>
-				<td align="center">ส.อ. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td align="center">จ.ส.ต. &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td align="center"><?= $yot; ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 			</tr>
 			<tr>
-				<td align="center">( มงคล  กันธิยะ )</td>
+				<td align="center">( ไตรรัตน์  แม่นรัตน์ )</td>
 				<td align="center">(<?= $doctor; ?>)</td>
 			</tr>
 			<tr>
-				<td align="center">นายสิบประจำงานแพทย์ทางเลือก</td>
+				<td align="center">นายสิบประจำงานกายภาพบำบัด</td>
 				<td align="center">แพทย์ผู้รักษา</td>
 			</tr>
 			<tr>

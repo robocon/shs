@@ -1,57 +1,38 @@
 <?php
 session_start();
-// include_once 'connect.php';
-include_once 'connect.inc';
-include_once 'includes/config.php';
+include("connect.inc");
+require_once 'includes/config.php';
+/*  print "ผู้ป่วยนอก<br>";
+print "HN :$cHn<br>";
+print "VN:$tvn<br>";
 
-$cHn = $_GET['cHn'];
-$tvn = $_GET['tvn'];
-?>
-<style>
-	*{
-		font-family: "TH SarabunPSK";
-		font-size: 14pt;
-	}
-	.myButton{
-		display: inline-block;
-		border-radius: 4px;
-		padding: 4px 10px;
-		background-color: #4CAF50;
-		color: #ffffff;
-		font-size: 18px;
-		font-family: TH SarabunPSK;
-		font-weight: bold;
-		text-decoration: none;
-		margin-right: 4px;
-		margin-bottom: 4px;;
-	}
-	.myButton:hover{
-		box-shadow: 2px 3px 3px #3e3e3e;
-	}
-</style>
+print "$cPtname<br>";*/
 
-<?php
 ////////// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
+
 $strsql="select * from accrued where hn = '$cHn' and status_pay='n' ";
 $strresult = mysql_query($strsql);
-$strrow = mysql_num_rows($strresult);
+$strrow=mysql_num_rows($strresult);
+
 $accruedTxt = "";
 if($strrow>0){
+
 	$accruedTxt = "ผู้ป่วยมียอดค้างชำระ  กรุณาติดต่อส่วนเก็บเงินรายได้";
 	echo "<script>alert('$accruedTxt') </script>";
+
+	//echo "&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
+
 }
 
-$sqlage = "select idcard,dbirth,ptright,idguard,CONCAT(`yot`,`name`,' ',`surname`) AS `cPtname` from opcard where hn ='$cHn'";
+$sqlage = "select idcard,dbirth,ptright,idguard from opcard where hn ='".$cHn."'";
 $arr_age = mysql_fetch_array(mysql_query($sqlage));
-$idcard = $arr_age['idcard'];
-$cPtname = $arr_age['cPtname'];
-$cPtright = $arr_age['ptright'];
-$idguardCode = substr($arr_age['idguard'],0,4);
-if($idguardCode == 'MX07'){
+
+$idcard=$arr_age['idcard'];
+$idguardCode=substr($arr_age['idguard'],0,4);
+if($idguardCode=='MX07'){
 	?>
 	<h3 style="color:red;"><u>ผู้ป่วยมีสถานะทำลายประวัติ กรุณาประสานแผนกทะเบียนเพื่อตรวจสอบข้อมูล ก่อนดำเนินการต่อไป ขอบคุณครับ</u></h3>
 	<?php
-	exit();
 }
 
 if($idcard=="" || $idcard=="-"){
@@ -61,60 +42,65 @@ if($idcard=="" || $idcard=="-"){
 }
 
 if(file_exists("../image_patient/$img")){
-	$image = "<IMG SRC='../image_patient/$img' WIDTH='100' HEIGHT='150' BORDER='1' ALT=''>";
+	$image="<IMG SRC='../image_patient/$img' WIDTH='100' HEIGHT='150' BORDER='1' ALT=''>";
 }else{
-	$image = "";
+	$image="";
 }
 
 if(!empty($accruedTxt)){
-	?>
-	<style>
-	.blink_me {
-		animation: blinker 1s linear infinite;
-	}
-	@keyframes blinker {
-		50% {
-			opacity: 0;
-		}
-	}
-	</style>
-	<div style="color:red;" class="blink_me">
-		<p><b>&gt;&gt;&nbsp;<u><?=$accruedTxt;?></u>&nbsp;&lt;&lt;</b></p>
-	</div>
-	<?php
-} // end !empty($accruedTxt)
+?>
+<style>
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
 
-// ตรวจสอบ VN ซ้ำซ้อน**************************************************
-$chkdate = (date("Y")+543).date("-m-d");
-$sqlvn = "Select count(vn) From opday where thidate LIKE '".$chkdate."%' AND vn = '$tvn'";
-list($vn_row) = mysql_fetch_row(mysql_query($sqlvn));
-if($vn_row > 1){
-	echo "<div align='center' style='font-size:24px;color:red;font-weight:bold;margin-top:20px;margin-bottom:20px;'>
-	<div><img src='images/warning-1.png' width='96px;' height='96px;'></div>
-	<div>แจ้งเตือนข้อมูลการลงทะเบียน VN $tvn ซ้ำซ้อน<br>
-	<span style='font-size:16px;'>กรุณาตรวจสอบข้อมูลและทบทวน VN ของผู้ป่วยกับห้องทะเบียนก่อนครับ</span>
-	</div>
-	</div>";
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+</style>
+<div style="color:red;" class="blink_me">
+	<p><b>&gt;&gt;&nbsp;<u><?=$accruedTxt;?></u>&nbsp;&lt;&lt;</b></p>
+</div>
+<?php
 }
 ?>
-<table border="0">
+<?php
+	// ตรวจสอบ VN ซ้ำซ้อน**************************************************
+	$chkdate = (date("Y")+543).date("-m-d");
+	$sqlvn = "Select count(vn) From opday where thidate LIKE '".$chkdate."%' AND vn = '$tvn'";
+	//echo $sqlvn;
+	list($vn_row) = mysql_fetch_row(mysql_query($sqlvn));
+	if($vn_row > 1){
+		echo "<div align='center' style='font-size:24px;color:red;font-weight:bold;margin-top:20px;margin-bottom:20px;'>
+		<div><img src='images/warning-1.png' width='96px;' height='96px;'></div>
+		<div>แจ้งเตือนข้อมูลการลงทะเบียน VN $tvn ซ้ำซ้อน<br>
+		<span style='font-size:16px;'>กรุณาตรวจสอบข้อมูลและทบทวน VN ของผู้ป่วยกับห้องทะเบียนก่อนครับ</span>
+		</div>
+		</div>";
+	}
+?>
+<table  border="0">
 	<tr>
-		<td><strong>ผู้ป่วยนอก</strong></td>
-		<td valign="top"><?=$image;?></td>
+		<td>ผู้ป่วยนอก</td>
+		<td rowspan="5" valign="top">
+			<?=$image;?>
+		</td>
 	</tr>
 	<tr>
-		<td><strong>HN</strong>: <?=$cHn;?></td>
-		<td><strong>VN</strong>: <?=$tvn;?></td>
+		<td>HN :<?=$cHn;?></td>
 	</tr>
 	<tr>
-		<td colspan="2"><strong>ชื่อ-สกุล</strong>: <?=$cPtname;?></td>
+		<td>VN :<?=$tvn;?></td>
+	</tr>
+	<tr>
+		<td><?=$cPtname;?></td>
 	</tr>
 </table>
 <?php
 if(substr($cPtright,0,3)=='R12' || substr($cPtright,0,3)=='R13' || substr($cPtright,0,3)=='R14' || substr($cPtright,0,3)=='R35' || substr($cPtright,0,3)=='R36'){
-	?>
-	<div style="background-color:#dc3545; font-size:24pt; font-weight:bold; color:#ffffff; padding:4px; margin:8px;">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>รพ.เบิกเงินจากต้นสังกัดได้ไม่เกิน 700 บาท</div>
-	<?php
+	echo "<div style=\"background-color: #FF0000;font-size:28px;\">กรุณาทบทวนสิทธิการรักษาและค่ารักษาพยาบาล<br>รพ.เบิกเงินจากต้นสังกัดได้ไม่เกิน 700 บาท</div>";
 }
 ?>
 <script type="text/javascript">
@@ -128,74 +114,87 @@ function check(){
 }
 </script>
 <?php
+//print "สิทธิการรักษา :$cPtright<br>";
 if( $_SESSION['smenucode'] === 'ADMPT'){
-	$sqlpt = "select * from ptright where (status = 'a' || status = 'c') order by code asc";
+$sqlpt = "select * from ptright where (status = 'a' || status = 'c') order by code asc";
 }else{
-	$sqlpt = "select * from ptright where status = 'a' order by code asc";
+$sqlpt = "select * from ptright where status = 'a' order by code asc";
 }
 $rowpt = mysql_query($sqlpt);
+
+$qToken = mysql_query("SELECT `cid`,`token` FROM `runno_token` WHERE `id` = '1'") or die(mysql_error());;
+$t = mysql_fetch_array($qToken);
+$person_id = preg_replace('/\D/','', $t['cid']);
+$smctoken = $t['token'];
+
 ?>
 <form method="POST" action="prelab.php" onsubmit="return check();">
-	<div style="margin-bottom:4px;">
-		<strong>สิทธิการรักษา</strong>: <select name="pt">
-		<?php
-		while($resultpt = mysql_fetch_array($rowpt)){
-			$re = $resultpt[0]."".$resultpt[1];
-			if($cPtright==$re){
-				$c=0;
-				?><option value="<?=$cPtright?>" selected="selected"><?=$cPtright?></option><?php
-			}else{
-				$b=0;
-				?><option value="<?=$re?>"><?=$re?></option>   <?php
-			}
-		}
-		
-		if(!isset($c)){
+	สิทธิการรักษา :<select name="pt">
+	<?php
+	while($resultpt = mysql_fetch_array($rowpt)){
+		$re = $resultpt[0]."".$resultpt[1];
+		//R01เงินสด
+		if($cPtright==$re){
+			$c=0;
 			?><option value="<?=$cPtright?>" selected="selected"><?=$cPtright?></option><?php
+		}else{
+			$b=0;
+			?><option value="<?=$re?>"><?=$re?></option>   <?php
 		}
-		?>
-		</select>
+	}
+	
+	if(!isset($c)){
+		?><option value="<?=$cPtright?>" selected="selected"><?=$cPtright?></option><?php
+	}
+	?>
+	</select>
+
+	<div id="nhso">
+		<br><span style="color: blue;"><img src="images/Spinner-1s-28px.gif" alt="">กำลังตรวจสอบสิทธิจาก WebService สปสช กรุณารอสักครู่</span><br><br>
 	</div>
-	<div>
-		<a target="_blank" href='diaghlp.htm'>โรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<input type="text" name="diag" id="diag" size="28">
-		<?php 
-		// เฉพาะ นวด, ฝังเข็ม
-		if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' OR $_SESSION['smenucode'] === 'ADM' ){
-			?>
-			<style type="text/css">
-			.nid_diag{text-decoration: none;}
-			.nid_diag:hover{text-decoration: underline; cursor: pointer;}
-			</style>
-			<div style="margin:4px;">
-				<span>ตัวช่วย Diag</span>
-				<span class="nid_diag myButton" onclick="add_diag('CVA')" data-val="CVA">CVA</span>
-				<span class="nid_diag myButton" onclick="add_diag('อัมพฤกษ์')">อัมพฤกษ์</span>
-				<span class="nid_diag myButton" onclick="add_diag('อัมพาต')" data-val="อัมพาต">อัมพาต</span>
-				<span class="nid_diag myButton" onclick="add_diag('พากินสันต์')" data-val="พากินสันต์">พากินสันต์</span>
-				<span class="nid_diag myButton" onclick="add_diag('หวัด')" data-val="CVA">หวัด</span>
-				<span class="nid_diag myButton" onclick="add_diag('ภูมิแพ้')" data-val="CVA">ภูมิแพ้</span>
-				<span class="nid_diag myButton" onclick="add_diag('โรคหอบหืด')" data-val="โรคหอบหืด">โรคหอบหืด</span>
-				<span class="nid_diag myButton" onclick="add_diag('ตรวจสุขภาพ')" data-val="ตรวจสุขภาพ">ตรวจสุขภาพ</span>
-			</div>
-			<script type="text/javascript">
-				// เพิ่ม diag ลงในช่องว่าง
-				function add_diag(txt){
-					var diag = document.getElementById('diag');
-					if(diag.value.length==0){
-						diag.value = txt;
-					}else{
-						diag.value = diag.value+','+txt;
-					}
-				}
-			</script>
-			<?php
+	
+	<style type="text/css">
+	.nid_diag{
+		text-decoration: underline;
+		cursor: pointer;
+	}
+	</style>
+	
+	<p>
+	<font face="Angsana New">&nbsp;&nbsp;
+	<a target=_BLANK href='diaghlp.htm'>โรค</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="text" name="diag" id="diag" size="20">
+	<?php 
+	// เฉพาะ นวด, ฝังเข็ม
+	if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' ){
+		?>
+		<br>
+		<span>คลิกเพื่อเพิ่ม Diag</span><br />
+		<span class="nid_diag" onclick="add_diag('CVA')" data-val="CVA">CVA</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('อัมพฤกษ์')">อัมพฤกษ์</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('อัมพาต')" data-val="อัมพาต">อัมพาต</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('พากินสันต์')" data-val="พากินสันต์">พากินสันต์</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('หวัด')" data-val="CVA">หวัด</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('ภูมิแพ้')" data-val="CVA">ภูมิแพ้</span>,&nbsp;
+		<span class="nid_diag" onclick="add_diag('โรคหอบหืด')" data-val="โรคหอบหืด">โรคหอบหืด</span>,&nbsp;
+        <span class="nid_diag" onclick="add_diag('ตรวจสุขภาพ')" data-val="ตรวจสุขภาพ">ตรวจสุขภาพ</span>
+		
+		<script type="text/javascript">
+		// เพิ่ม diag ลงในช่องว่าง
+		var diag_txt = '';
+		function add_diag(txt){
+			var diag = document.getElementById('diag');
+			diag.value = diag.value+' '+txt;
 		}
-		?>
-	</div>
+		</script>
+		<?php
+	}
+	?>
+	</font>
+	</p>
 	<?php
 	// เฉพาะ นวด, ฝังเข็ม
-	if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' OR $_SESSION['smenucode'] === 'ADM' ){
+	if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADMNID' ){
 		
 		// เคลียร์ค่าที่เก็บวันที่
 		$_SESSION['date_start'] = null;
@@ -206,21 +205,23 @@ $rowpt = mysql_query($sqlpt);
 		$date_end = ( date('Y', $next_time) + 543 ).date('-m-d', $next_time);
 		
 		?>
-		<div style="margin-bottom:4px;">
-			<strong>รักษาตั้งแต่วันที่</strong>: <input type="text" name="date_start" value="<?=$date_start;?>">
-		</div>
-		<div style="margin-bottom:4px;">
-			<strong>ถึงวันที่</strong>: <input type="text" name="date_end" value="<?=$date_end;?>">
-		</div>
+		<p style="font-family: 'Angsana New';">
+			รักษาตั้งแต่วันที่: <input type="text" name="date_start" value="<?=$date_start;?>"> <br>
+			ถึงวันที่: <input type="text" name="date_end" value="<?=$date_end;?>">
+		</p>
 	
 	<?php
 	}
 	?>
-	<span><strong>แพทย์</strong>: </span>
-	<?php
-	if($_SESSION['smenucode'] == "ADMMAINOPD"){
+	<p>
+	<font face="Angsana New">&nbsp;&nbsp;</font><font face="Angsana New">&#3649;&#3614;&#3607;&#3618;&#3660;&nbsp;&nbsp;
+	</font><font face="Angsana New">
 	
-		
+	<?php
+	$sql = "Select menucode From inputm where idname = '".$_SESSION["sIdname"]."' ";
+	list($menucode) = Mysql_fetch_row(Mysql_Query($sql));
+	
+	if($menucode == "ADMMAINOPD"){
 		$strSQL = "SELECT name FROM doctor  where status='y'  and menucode !='ADMPT'   order by name"; 
 		$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
 		?>
@@ -233,7 +234,7 @@ $rowpt = mysql_query($sqlpt);
 			?> 
 		</select>
 		<?php 
-	}else  if($_SESSION['smenucode'] == "ADMDEN"){
+	}else  if($menucode == "ADMDEN"){
 	
 		$strSQL = "SELECT name FROM doctor  where status='y'  and menucode ='ADMDEN'  order by name "; 
 		$objQuery = mysql_query($strSQL) or die ("Error Query [".$strSQL."]"); 
@@ -263,27 +264,27 @@ $rowpt = mysql_query($sqlpt);
 	<?php 
 	}
 	
-	if( $_SESSION['smenucode'] == "ADMPT" OR $_SESSION['smenucode'] == "ADM"){
+	if( $menucode == "ADMPT" ){	   
 		?>
-		<fieldset>
-			<legend>เฉพาะนวดแผนไทย</legend>
-			ผู้นวด <select name="staf_massage" id="staf_massage"> 
-				<option value="">--เลือก--</option> 
-				<?php 
-				$strstaf = "SELECT name FROM staf_massage WHERE `status` = 'y' order by row_id asc "; 
-				$objstaf = mysql_query($strstaf) or die ("Error Query [".$strstaf."]");  
-				while($objarr = mysql_fetch_array($objstaf)) { 
-					?>
-					<option value="<?=$objarr['name']?>"><?=$objarr['name']?></option> 
-					<?php
-				}
+		<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;เฉพาะนวดแผนไทย <br />
+		ผู้นวด 
+		<select name="staf_massage" id="staf_massage"> 
+			<option value="">--เลือก--</option> 
+			<?php 
+			$strstaf = "SELECT name FROM staf_massage WHERE `status` = 'y' order by row_id asc "; 
+			$objstaf = mysql_query($strstaf) or die ("Error Query [".$strstaf."]");  
+			while($objarr = mysql_fetch_array($objstaf)) { 
 				?>
-			</select>
-		</fieldset>
+				<option value="<?=$objarr['name']?>"><?=$objarr['name']?></option> 
+				<?php
+			}
+			?>
+		</select>	
 		<?php
 	}  //close if ADMPT
 	
-	if( $_SESSION['smenucode'] == "ADMNID" OR $_SESSION['smenucode'] == "ADM"){
+	if( $menucode == "ADMNID" ){	   
 		$today = date("Y-m-d");
 		$submonth=substr($today,0,7);
 		?>
@@ -409,12 +410,37 @@ $rowpt = mysql_query($sqlpt);
 		</table>	
 		<?php
 	}  //close if ADMNID
-	?>
-	<div>
-		<input type="submit" value="   ตกลง   " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="reset" value=" ยกเลิก " name="B2">
-	</div>
+	?>	  
+	</font> </p>
+	
+	<p><font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+	<input type="submit" value="   ตกลง   " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp; <input type="reset" value=" ยกเลิก " name="B2"></font></p>
 </form>
-
+<script type="text/javascript" src="js/nhso.js"></script>
+<script>
+	window.onload = function(){
+		checksit('nhso','<?=$idcard;?>','<?=$person_id;?>','<?=$smctoken;?>');
+	}
+</script>
+<style>
+	.myButton{
+		display: inline-block;
+		border-radius: 4px;
+		padding: 4px 10px;
+		background-color: #4CAF50;
+		color: #ffffff;
+		font-size: 18px;
+		font-family: TH SarabunPSK;
+		font-weight: bold;
+		text-decoration: none;
+		margin-right: 4px;
+		margin-bottom: 4px;;
+	}
+	.myButton:hover{
+		box-shadow: 2px 6px 6px #000000a6;
+	}
+</style>
 <div style="margin-bottom: 16px;">
 	<?php $dateHn = date('d-m-') . (date('Y') + 543) . $cHn;?>
 	<a href="digital_opd.php?dthn=<?=$dateHn;?>" class="myButton" target="_blank">พิมพ์ใบต่อ &#x1F5B6;</a>
@@ -426,6 +452,7 @@ $rowpt = mysql_query($sqlpt);
 if( $_SESSION['smenucode'] === 'ADMPT' OR $_SESSION['smenucode'] === 'ADM'){
 	$sOfficerReh = $_SESSION['sOfficer'];
 	?>
+	<div>&nbsp;</div>
 	<div>
 		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_firstregis.php?hn=<?=$cHn;?>&sOfficerReh=<?=$sOfficerReh;?>');">ทะเบียนแรกรับ &#x1F5B6;</a>
 		<a href="javascript:void(0);" class="myButton" onclick="openPage('pt_summary.php?hn=<?=$cHn;?>');">สรุปผลการรักษา &#x1F5B6;</a>

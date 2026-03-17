@@ -596,7 +596,9 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf1(){
 		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false){
+		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false 
+		&& document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false 
+		&& document.f1.credit[6].checked == false && document.f1.credit[7].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
@@ -613,7 +615,18 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false && document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false && document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false && document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false && document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false && document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false && document.f2.credit[30].checked == false && document.f2.credit[31].checked == false && document.f2.credit[32].checked == false && document.f2.credit[33].checked == false && document.f2.credit[34].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false 
+		&& document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false 
+		&& document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false 
+		&& document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false 
+		&& document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f2.credit[14].checked == false 
+		&& document.f2.credit[15].checked == false && document.f2.credit[16].checked == false && document.f2.credit[17].checked == false 
+		&& document.f2.credit[18].checked == false && document.f2.credit[19].checked == false && document.f2.credit[20].checked == false 
+		&& document.f2.credit[21].checked == false && document.f2.credit[22].checked == false && document.f2.credit[23].checked == false 
+		&& document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false 
+		&& document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false 
+		&& document.f2.credit[30].checked == false && document.f2.credit[31].checked == false && document.f2.credit[32].checked == false 
+		&& document.f2.credit[33].checked == false && document.f2.credit[34].checked == false && document.f2.credit[35].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[2].checked == true || document.f2.credit[4].checked == true) && document.f2.detail_1.value == ''){
@@ -762,7 +775,7 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 	<TD>HD</TD>
 		 </TR>
 		<TR>
-		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='สวัสดิการทันตกรรม' onclick=\"document.getElementById('detail3').innerHTML='ประเภทการตรวจ'; detailhead3.style.display='';detailhead4.style.display='none';\"></TD>
+		 	<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='สวัสดิการทันตกรรม' onclick=\"document.getElementById('detail3').innerHTML='ประเภทการตรวจ'; detailhead3.style.display='';detailhead4.style.display='none';\" disabled></TD>
 		 	<TD>สวัสดิการทันตกรรม</TD>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กท44' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);detailhead4.style.display='none';\"></TD>
 		 	<TD>กท.44</TD>
@@ -786,7 +799,7 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 <TR>
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ทันตสาธารณสุข' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ทันตสาธารณสุข</TD>		
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการนภา' onclick=\"detailhead4.style.display='none';\"></TD>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการนภา' onclick=\"detailhead4.style.display='none';\" disabled></TD>
 		 	<TD>โครงการนภา</TD>		
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='นอนโรงพยาบาล' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>นอนโรงพยาบาล</TD>			
@@ -797,7 +810,7 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 </TR>
 		 
 		 <TR>
-			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ฮักกันยามเฒ่า$yPrefix' onclick=\"detailhead4.style.display='none';\"></TD>
+			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ฮักกันยามเฒ่า$yPrefix' onclick=\"detailhead4.style.display='none';\" disabled></TD>
 		 	<TD>ฮักกันยามเฒ่า$yPrefix</TD>			
 			<TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ประกันสังคมทุพพลภาพ' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>ประกันสังคมทุพพลภาพ</TD>			
@@ -849,10 +862,11 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 			<TD align='right'>
 				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กฟผ' onclick=\"detailhead4.style.display='none';\"></TD>
 		 	<TD>กฟผ.</TD>			
-			<TD>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการตา 72 พรรษา' onclick=\"detailhead4.style.display='none';\"></TD>
+			<TD>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='โครงการตา 72 พรรษา' onclick=\"detailhead4.style.display='none';\" disabled></TD>
 			<TD>โครงการตา 72 พรรษา</TD>					
-			<TD>&nbsp;</TD>
-			<TD>&nbsp;</TD>		
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='รฟท' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>การรถไฟแห่งประเทศไทย</TD>		
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>																 
 		 </TR>			 

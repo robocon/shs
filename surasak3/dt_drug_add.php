@@ -55,13 +55,13 @@ function jschars($str)
 	$Thidate2 = date("d-m-").(date("Y")+543).date(" H:i:s");
 	
 		
-	if(isset($_SESSION["cancle_row_id"]) && $_SESSION["cancle_row_id"] != ""){
+	/*if(isset($_SESSION["cancle_row_id"]) && $_SESSION["cancle_row_id"] != ""){
 
 		$sql = "Update dphardep set dr_cancle='1' where hn='".$_SESSION["hn_now"]."' AND row_id = '".$_SESSION["cancle_row_id"]."' ";
 		$result = Mysql_Query($sql);
 		$_SESSION["cancle_row_id"] = "";
 		session_unregister("cancle_row_id");
-	}
+	}*/
 	
 	$count = count($_SESSION["list_drugcode"]);
 

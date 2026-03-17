@@ -55,7 +55,11 @@ function checkptring(opt){
 		return false;
 	}else{
 		
-		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false && document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false && document.f1.credit[11].checked == false && document.f1.credit[12].checked == false && document.f1.credit[13].checked == false && document.f1.credit[14].checked == false && document.f1.credit[15].checked == false){
+		if(document.f1.credit[0].checked == false && document.f1.credit[1].checked == false && document.f1.credit[2].checked == false && document.f1.credit[3].checked == false 
+		&& document.f1.credit[4].checked == false && document.f1.credit[5].checked == false && document.f1.credit[6].checked == false && document.f1.credit[7].checked == false 
+		&& document.f1.credit[8].checked == false&& document.f1.credit[9].checked == false&& document.f1.credit[10].checked == false && document.f1.credit[11].checked == false 
+		&& document.f1.credit[12].checked == false && document.f1.credit[13].checked == false && document.f1.credit[14].checked == false && document.f1.credit[15].checked == false 
+		&& document.f1.credit[16].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f1.credit[1].checked == true || document.f1.credit[2].checked == true) && document.f1.detail_1.value == ''){
@@ -72,7 +76,11 @@ function checkptring(opt){
 	}
 	function checkformf2(){
 		
-		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false && document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false && document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false && document.f2.credit[12].checked == false && document.f2.credit[13].checked == false){
+		if(document.f2.credit[0].checked == false && document.f2.credit[1].checked == false && document.f2.credit[2].checked == false && document.f2.credit[3].checked == false 
+		&& document.f2.credit[4].checked == false && document.f2.credit[5].checked == false && document.f2.credit[6].checked == false && document.f2.credit[7].checked == false 
+		&& document.f2.credit[8].checked == false && document.f2.credit[9].checked == false && document.f2.credit[10].checked == false && document.f2.credit[11].checked == false 
+		&& document.f2.credit[12].checked == false && document.f2.credit[13].checked == false && document.f1.credit[14].checked == false && document.f1.credit[15].checked == false 
+		&& document.f1.credit[16].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[1].checked == true || document.f2.credit[2].checked == true) && document.f2.detail_1.value == ''){
@@ -867,6 +875,22 @@ $item++;
 //$cPtname = iconv("tis-620", "utf-8",$cPtname);
 //$cPtright = iconv("tis-620", "utf-8",$cPtright);	
 //
+
+
+/// ตรวจสอบว่า ผป.มียอดค้างชำระหรือไม่
+  
+  	$strsql="select * from accrued where hn='".$cHn."' and status_pay='n' ";
+	$strresult = mysql_query($strsql);
+	$strrow=mysql_num_rows($strresult);
+
+
+	if($strrow>0){
+		echo "<script>alert('ผู้ป่วยมียอดค้างชำระ กรุณาตรวจสอบ') </script>";
+		echo "<br><br>&nbsp;&nbsp;&nbsp<b><font style='font-weight:bold'><a target=BLANK  href='accrued_list.php?hn=$hnid'>ดูยอดค้างชำระ</a></b></font>";
+
+	}
+	
+	
    print "<table border='0'>
 				<tr valign='top'><td><font face='Angsana New'>ผู้ป่วย $cPtname<br>";
    print "HN: $cHn  AN: $cAn $DDLDDY1<br>";
@@ -1332,8 +1356,8 @@ print "<b>ค้างจ่ายทั้งหมด $debt บาท</b><br>"
          <tr>
             <TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='กสทช' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
             <td>กสทช</td>
-		 	<TD align='right'></TD>
-		 	<TD></TD>	
+            <TD align='right'>&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='รฟท' onclick=\"document.getElementById('detail2').innerHTML=''; detailhead2.style.display='none';document.f2.detail_1.value='';checkptring(this.value);\"></TD>
+            <td>การรถไฟแห่งประเทศไทย</td>	
 		 	<TD align='right'></TD>
 		 	<TD></TD>	
 		 	<TD align='right'></TD>

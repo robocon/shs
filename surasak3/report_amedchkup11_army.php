@@ -21,7 +21,7 @@ include("connect.inc");
 			continue;
 	}
 	
-	$nPrefix="66";
+	$nPrefix="69";
 	$nPrefix2="25".$nPrefix;
 ////*runno ตรวจสุขภาพ*/////////
 ?>
@@ -83,15 +83,11 @@ FROM `condxofyear_so`
 WHERE `yearcheck` = '$nPrefix' group by hn ORDER BY row_id desc, substring(age,1,2) DESC";
 
 }else{
-/*$sql1="SELECT *
-FROM `condxofyear_so`
-WHERE `camp`='$_POST[camp]' AND `yearcheck` = '$nPrefix' and hn NOT IN ('47-14187','63-1834','59-8301') and camp NOT IN ('M10 กรม ทพ.33') group by hn ORDER BY row_id desc";*/
-
 $sql1="SELECT *
 FROM `condxofyear_so`
 WHERE `camp`='$_POST[camp]' AND `yearcheck` = '$nPrefix' group by hn ORDER BY row_id desc";
 }
-//var_dump($sql1);
+echo $sql1;
 $query1=mysql_query($sql1)or die ("Query condxofyear_so Error");
 
 $msql=mysql_query("select pcucode, pcuname, pcupart from mainhospital where pcuid='1'");		
@@ -245,14 +241,17 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
   </tr>
   <?
   $i=0;
+  $n=0;
   while($arr1=mysql_fetch_array($query1)){
-	  
-	$sqlchk="select * from register_chkup_soldier where idcard='".$arr1['idcard']."' and active='y'";
-	//echo $sqlchk;
+	//echo $i."<br>";
+	$n++;
+	$sqlchk="select * from register_chkup_soldier where hn='".$arr1['hn']."' and yearcheck='$nPrefix' and active='y'";
+	//echo "$n-->".$sqlchk."<br>";
 	$querychk=mysql_query($sqlchk);
 	$numchk=mysql_num_rows($querychk);	  
 	if($numchk > 0){  //ถ้ามีข้อมูลในการลงทะเบียน
   	$i++;
+	//echo "$i==>".$sqlchk."<br>";
 	$hn=$arr1["hn"];
 	if(!empty($arr1["height"])){	
 	$ht = $arr1['height']/100;
@@ -476,7 +475,8 @@ list($pcucode,$pcuname,$pcupart)=mysql_fetch_row($msql);
     <td align="center"><? echo $arr1['exercise'];?></td>
 	<td align="center"><? echo $den_health;?></td>
   </tr>
-	<? }} ?>
+	<? }
+	} ?>
 </table>
 </div>
 <?
