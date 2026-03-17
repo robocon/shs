@@ -409,7 +409,7 @@ class Drug extends Database
      * แสดงรายการยาที่เหลือย้อนหลัง 6เดือนในหน้าจ่ายยาของแพทย์
      * 
      * @param string $hn HN ของผู้มารับบริการ
-     * @return array 
+     * @return array|false 
      * - 'latest_date' (string): วันที่ล่าสุดที่จ่ายยา
      * - 'rows' (string): จำนวนที่ได้จากการ GROUP
      * - 'tradname' (string): ชื่อทางการค้า
