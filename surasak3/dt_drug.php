@@ -4,7 +4,6 @@ date_default_timezone_set("Asia/Bangkok");
 
 include_once dirname(__FILE__).'/connect.inc';
 include_once dirname(__FILE__).'/newBootstrap.php';
-include_once dirname(__FILE__).'/includes/JSON.php';
 
 //print_r($_SESSION);
 $check_date = (date("Y")+543).date("-m-d");
