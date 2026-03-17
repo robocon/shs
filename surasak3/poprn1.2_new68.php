@@ -2227,12 +2227,12 @@ print "<DIV style='z-index:0'> &nbsp; </div>";
     </tr>
 <? if($chkprice < 100000){ ?>    
   <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 230/68 ลง 7 ต.ค. 2568</span></td>
+    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 40/69 ลง 17 ก.พ. 2569</span></td>
 
     </tr>
 <? }else{ ?>
   <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 229/68 ลง 7 ต.ค. 2568</span></td>
+    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 40/69 ลง 17 ก.พ. 2569</span></td>
     </tr>
 <? } ?>
   <tr>
@@ -2245,10 +2245,22 @@ $query=mysql_query($sql);
 $rows=mysql_fetch_array($query);
 $ptname=$rows["yot"]." ".$rows["fullname"];
 //$chkprice=(int)$nPriadvat;
+
+$firstname=$rows["yot"];
+
+// ตรวจสอบว่ามีคำว่า "หญิง" อยู่ในตัวแปรหรือไม่
+if (strpos($firstname, 'หญิง') !== false) {
+    // ถ้าเจอคำว่า หญิง (ไม่ว่าจะอยู่ตำแหน่งไหน)
+    $new_title = "ดิฉัน";
+} else {
+    // ถ้าไม่เจอ
+    $new_title = "กระผม";
+}
+
 if($chkprice < 100000){
 ?>    
   <tr>
-    <td height="30" colspan="4"><div style="left:100px;"><span class='fc1-0'>ตามอ้างถึง ให้ ดิฉัน <?=$ptname;?> เป็นผู้รับผิดชอบในการดำเนินการร่างขอบเขตของงาน</span></div></td>
+    <td height="30" colspan="4"><div style="left:100px;"><span class='fc1-0'>ตามอ้างถึง ให้ <?php echo $new_title;?> <?=$ptname;?> เป็นผู้รับผิดชอบในการดำเนินการร่างขอบเขตของงาน</span></div></td>
     </tr>
 <? }else{ ?>
   <tr>
