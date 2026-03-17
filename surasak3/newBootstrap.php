@@ -30,6 +30,7 @@ if(empty($dbi)){
 		dump('MySQLi Error Connection: '. $dbi->error);
 		exit;
 	}
+	$dbi->query("SET NAMES UTF8");
 	$dbi->set_charset('utf8');
 }
 

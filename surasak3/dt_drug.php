@@ -55,12 +55,7 @@ if(isset($_GET["action"])){
 //include("checklogin.php");
 
 $def_fullm_th = array('01' => 'มกราคม', '02' => 'กุมภาพันธ์', '03' => 'มีนาคม', '04' => 'เมษายน', '05' => 'พฤษภาคม', '06' => 'มิถุนายน', '07' => 'กรกฎาคม', '08' => 'สิงหาคม', '09' => 'กันยายน', '10' => 'ตุลาคม', '11' => 'พฤศจิกายน', '12' => 'ธันวาคม');
-
-
 $json = new Services_JSON();
-
-// $dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-// $dbi->query("SET NAMES UTF8");
 
 // แจ้งเตือนแพ้ยา
 $sqldrugreact="SELECT * 
