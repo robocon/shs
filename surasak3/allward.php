@@ -113,7 +113,7 @@ list($hi_type) = Mysql_fetch_row($rows);
 		$sqlTrnBlood = "SELECT * 
 		FROM `mst_stock` 
 		WHERE `Hn_Reserved` = '$hn' 
-		AND `Exp_Date` >= CURDATE() 
+		AND `Exp_Date` > CURDATE() 
 		AND `Flag_Reserved`='Y' 
 		AND `Unit_Number` NOT IN ( SELECT `Unit_Number` FROM `trn_blood` )";
 		$qTrn = $bsConn->query($sqlTrnBlood);
