@@ -360,6 +360,9 @@ class Drug extends Database
         return $res;
     }
 
+    /**
+     * กำลังจะยกเลิก
+     */
     public function drugLeft($hn='', $drugItems=array()){
         $drugSQL = "'".implode("','", $drugItems)."'";
         $currDate = (date('Y')+543).date('-m-d 00:00:00');

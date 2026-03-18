@@ -5,14 +5,14 @@ date_default_timezone_set("Asia/Bangkok");
 include_once dirname(__FILE__).'/connect.inc';
 include_once dirname(__FILE__).'/newBootstrap.php';
 
-//print_r($_SESSION);
+$classDrug = new Drug();
+
 $check_date = (date("Y")+543).date("-m-d");
 // 1. ดึงข้อมูลจาก API (สมมติว่าดึงผ่าน URL เรียบร้อยแล้ว)
 $vn_to_check = $_SESSION["vn_now"]; 
 
-//echo "-->".$vn_to_check;
 $api_url = "http://192.168.131.191/JSON/get_summary_payment_api.php?vn=".$vn_to_check;
-//echo "-->".$api_url;
+
 // 1. เริ่มต้นดึงข้อมูล
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
@@ -32,7 +32,6 @@ if (is_array($data)) {
     $spent     = $data['billing']['spent_total'];
     $is_over   = $data['flags']['is_over_limit'];
 
-    //echo "==>" . $remaining;
 } else {
     echo "==> ดึงข้อมูลไม่ได้หรือข้อมูลไม่ใช่ Serialize Format";
 }
@@ -2546,49 +2545,17 @@ if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ // คำนว
 	$res = array('status'=>200);
 	$drugcode = sprintf("%s", trim($_GET['drugcode']));
 	$hn = sprintf("%s", $_GET['hn']);
-
 	$date = (date('Y')+543).date('-m-d');
-
-	$sql = sprintf("SELECT a.*,b.`amount` AS `amount_per_day`,
-	(a.`amount`/b.`amount`) AS `day_averrage`,
-	TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
-	CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail` 
-	FROM (
-		SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode` 
-		FROM `drugrx` 
-		WHERE `date` < '$date' AND `hn` = '%s' AND `drugcode` = '%s' 
-		ORDER BY `row_id` DESC LIMIT 1 
-	) AS a LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` ",
-	$dbi->real_escape_string($hn),
-	$dbi->real_escape_string($drugcode)
-	);
-	$q = $dbi->query($sql);
-	$drugrxRows = $q->num_rows;
-	$drugLeft = array();
-	if($drugrxRows>0){
-		$drugLeft = $q->fetch_assoc();
-		
-	}
-
-	$sqlDruglst = sprintf("SELECT `genname`,`unit` FROM `druglst` WHERE `drugcode` = '%s' ", $drugcode);
-	$qDruglst = $dbi->query($sqlDruglst);
-	$genname = '';
-	$unit = '';
-	if($qDruglst->num_rows > 0){
-		$b = $qDruglst->fetch_assoc();
-		$genname = '('.$b['genname'].')';
-		$unit = strtolower(trim($b['unit']));
-	}
-	
-	$match = preg_match('/(tablet|capsule)+/', $unit, $matchs);
-	if($drugrxRows>0 && $match!==false){
+	$items = $classDrug->showDrDrugLeft($hn, $drugcode);
+	if($items!==false){
+		$drugLeft = $items['0'];
 		if($drugLeft['day_diff'] < $drugLeft['day_averrage']){ 
 
 			$tradname = $drugLeft['tradname'];
 			$detail = $drugLeft['detail'];
 			$amount = $drugLeft['amount'];
 			
-			list($dateDrugrx, $timeDrugrx) = explode(' ', $drugLeft['date']);
+			list($dateDrugrx, $timeDrugrx) = explode(' ', $drugLeft['latest_date']);
 			list($year, $month, $day) = explode('-', $dateDrugrx);
 			
 			$fullDateTh = "$day ".$def_fullm_th[$month]." ".($year);
@@ -4980,7 +4947,6 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 	<div>
 		<?php
 		$patient_hn = trim($_SESSION["hn_now"]);
-		$classDrug = new Drug();
 		$items = $classDrug->showDrDrugLeft($patient_hn);
 		if($items!==false){
 			if(count($items)>0){
