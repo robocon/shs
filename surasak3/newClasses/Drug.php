@@ -360,9 +360,6 @@ class Drug extends Database
         return $res;
     }
 
-    /**
-     * กำลังจะยกเลิก
-     */
     public function drugLeft($hn='', $drugItems=array()){
         $drugSQL = "'".implode("','", $drugItems)."'";
         $currDate = (date('Y')+543).date('-m-d 00:00:00');
@@ -428,7 +425,16 @@ class Drug extends Database
      * - 'day_diff' (string): ผ่านมาแล้วกี่วัน
      * - 'detail' (string): รายละเอียดวิธีใช้
      */
-    public function showDrDrugLeft($hn){
+    public function showDrDrugLeft($hn, $drugCode=null){
+
+        $type = gettype($drugCode);
+        if($type==='array'){
+            $whereDrug = "AND `drugcode` IN ('".implode("','", $drugCode)."')";
+        }elseif ($type==='string') {
+            $whereDrug = "AND `drugcode` = '$drugCode'";
+        }else{
+            $whereDrug = '';
+        }
 
         $currDate = (date('Y')+543).date('-m-d 00:00:00');
         $sixMonth = strtotime('-6 month');
@@ -439,10 +445,11 @@ class Drug extends Database
         TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`latest_date`,1,4)-543),SUBSTRING(a.`latest_date`,5,6)),NOW()) AS `day_diff`,
         CONCAT(c.`detail1`,' ',c.`detail2`,'',c.`detail3`) AS `detail`
         FROM (
-            SELECT MAX(`date`) AS `latest_date`,COUNT(`drugcode`) AS `rows`,`tradname`,`amount`,`slcode`,`hn`,`drugcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno`
+            SELECT `row_id`,MAX(`date`) AS `latest_date`,COUNT(`drugcode`) AS `rows`,`tradname`,`amount`,`slcode`,`hn`,`drugcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno`
             FROM `ddrugrx` 
-            WHERE `date` >= '$dateSixMonth' AND date <= '$currDate'
+            WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate'
             AND `hn` = '%s' 
+            $whereDrug
             AND ( `an` IS NULL AND `slcode` != 'b' ) 
             GROUP BY `drugcode` 
             HAVING COUNT(`drugcode`) > 1 
@@ -452,7 +459,8 @@ class Drug extends Database
         LEFT JOIN `drugslip` AS c ON c.`slcode` = a.`slcode`
         WHERE b.`dr_cancle` IS NULL
         AND c.`amount` > 0 
-        HAVING `day_averrage` > `day_diff`",
+        HAVING `day_averrage` > `day_diff`
+        ORDER BY a.`row_id` ASC",
             $this->dbi->real_escape_string($hn)
         );
         $q = $this->dbi->query($sql);

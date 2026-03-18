@@ -1,9 +1,8 @@
 <?php
 session_start();
-include("connect.php");
-
-$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-$dbi->query("SET NAMES UTF8");
+include_once dirname(__FILE__).'/connect.php';
+include_once dirname(__FILE__).'/newBootstrap.php';
+$classDrug = new Drug();
 
 function calcage($birth){
 
@@ -28,13 +27,6 @@ function calcage($birth){
 
 	return $pAge;
 }
-
-function dump($t){
-	echo "<pre>";
-	var_dump($t);
-	echo "</pre>";
-}
-
 /**
  * พ.ศ. เป็น ค.ศ.
  */
@@ -375,7 +367,7 @@ $result = mysql_query($query) or die("Query failed");
 while( list($tradname,$drugcode,$amount,$price,$slcode,$drugcode,$part, $detail1, $detail2, $detail3, $detail4,$dia,$diu,$dia2,$diu2,$dtime,$dis,$dit,$die,$office,$unit,$reason) = mysql_fetch_row($result) ){
 	$num++;
 
-	$drugViewerItems[] = "'".$drugcode."'";
+	$drugViewerItems[] = $drugcode;
 	
 	if($amount!=0){
 		$year=date("Y")+543;
@@ -546,53 +538,8 @@ $num=Mysql_num_rows($result);
 	print "ยังไม่ได้ทำการคิดราคาหรือตัดสต๊อก";
 }
 
-$drugSQL = implode(',', $drugViewerItems);
-
-/**
- * ☠️ ปรับวันที่ให้เป็นตาม dphardep 
- */
-$dphardepDate = bc_to_ad($sdate);
-$sixMonth = strtotime('-6 months', strtotime($dphardepDate));
-$dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
-$currDate = (date('Y', strtotime($dphardepDate))+543).date('-m-d 00:00:00', strtotime($dphardepDate));
-$dateNow = (date('Y', strtotime($dphardepDate))+543).date('-m-d', strtotime($dphardepDate));
-
-// สร้าง temp drugrx ของวันนี้
-$tmp_ddrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
-SELECT a.* FROM (
-	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
-	FROM `ddrugrx`
-	WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
-	AND `hn` = '$sHn' 
-	AND `drugcode` IN ($drugSQL) 
-	AND ( `an` IS NULL AND `slcode` != 'b' ) 
-) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
-WHERE b.`dr_cancle` IS NULL";
-$dbi->query($tmp_ddrugrx);
-
-$sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
-(a.`amount`/b.`amount`) AS `day_averrage`,
-TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
-CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
-c.`doctor`,d.`unit`,b.`amount` AS `amount_per_day`
-FROM `tmp_ddrugrx` AS a 
-LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
-LEFT JOIN `dphardep` AS c ON a.`idno` = c.`row_id` 
-LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
-ORDER BY a.`hn`,a.`date` DESC";
-$qLeftOver = $dbi->query($sqlTemp);
-
-$drugOverItem = array();
-if($qLeftOver->num_rows>0){
-	while ($a = $qLeftOver->fetch_assoc()) {
-		if($a['day_diff'] < $a['day_averrage']){
-			$drugOverItem[] = $a;
-		}
-	}
-}
-
-if(count($drugOverItem)>0){
-	// echo "<div style='page-break-before: always;'></div>";
+$drugOverItem = $classDrug->showDrDrugLeft($sHn, $drugViewerItems);
+if($drugOverItem !== false && count($drugOverItem)>0){
 	?>
 	<style>
 		table.drugOver, .drugOver th, .drugOver td{

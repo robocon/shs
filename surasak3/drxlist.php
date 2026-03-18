@@ -39,7 +39,7 @@ setTimeout("searchSuggest();",tt);
 if(isset($_GET["action"]) && $_GET["action"] =="refresh"){
 header("content-type: application/x-javascript; charset=UTF-8");
 }
-	include("connect.inc");
+	include("connect.php");
 
 $today=date("d-m-").(date("Y")+543);
 	

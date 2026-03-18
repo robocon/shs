@@ -1,11 +1,10 @@
 <?php
 session_start();
 
-require_once dirname(__FILE__).'/connect.php';
-require_once dirname(__FILE__).'/bootstrap.php';
-	
-$dbi = new mysqli($ServerName, $User, $Password, $DatabaseName);
-$dbi->query("SET NAMES UTF8");
+include_once dirname(__FILE__).'/connect.php';
+include_once dirname(__FILE__).'/newBootstrap.php';
+
+$classDrug = new Drug();
 
 function datediff($start, $end) {
    $datediff = strtotime(dateform($end)) - strtotime(dateform($start));
@@ -503,7 +502,7 @@ $dphardepId = $_GET["nRow_id"];
         $x++;
 		$n++;
 
-		$drugViewerItems[] = "'".$drugcode."'";
+		$drugViewerItems[] = $drugcode;
 
         $_SESSION["aDgcode"][$x]=$drugcode;
         $_SESSION["aTrade"][$x]=$tradname;
@@ -594,47 +593,8 @@ $ptright=substr($sPtright,0,3);
 	}
 </script>
 <?php
-$drugSQL = implode(',', $drugViewerItems);
-
-$sixMonth = strtotime('-6 month');
-$dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
-
-$currDate = (date('Y')+543).date('-m-d 00:00:00');
-$dateNow = (date('Y')+543).date('-m-d');
-
-$tmp_ddrugrx = "CREATE TEMPORARY TABLE IF NOT EXISTS `tmp_ddrugrx`
-SELECT a.* FROM (
-	SELECT `row_id`,`date`,`hn`,`drugcode`,`tradname`,`amount`,`slcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno` 
-	FROM `ddrugrx`
-	WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate' 
-	AND `hn` = '$sHn' 
-	AND `drugcode` IN ($drugSQL) 
-	AND ( `an` IS NULL AND `slcode` != 'b' ) 
-) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
-WHERE b.`dr_cancle` IS NULL";
-$dbi->query($tmp_ddrugrx);
-
-$sqlTemp = "SELECT a.*,CONCAT(a.`hn`,a.`drugcode`) AS `hn_drugcode`,
-(a.`amount`/b.`amount`) AS `day_averrage`,
-TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
-CONCAT(b.`detail1`,' ',b.`detail2`,' ',b.`detail3`) AS `detail`,
-c.`doctor`,d.`unit`,b.`amount` AS `amount_per_day`
-FROM `tmp_ddrugrx` AS a 
-LEFT JOIN `drugslip` AS b ON a.`slcode` = b.`slcode` 
-LEFT JOIN `dphardep` AS c ON a.`idno` = c.`row_id` 
-LEFT JOIN `druglst` AS d ON d.`drugcode` = a.`drugcode`
-ORDER BY a.`hn`,a.`date` DESC";
-$qLeftOver = $dbi->query($sqlTemp);
-
-$drugOverItem = array();
-if($qLeftOver->num_rows>0){
-	while ($a = $qLeftOver->fetch_assoc()) {
-		if($a['day_diff'] < $a['day_averrage']){
-			$drugOverItem[] = $a;
-		}
-	}
-}
-if(count($drugOverItem)>0){
+$drugOverItem = $classDrug->showDrDrugLeft($sHn, $drugViewerItems);
+if($drugOverItem !== false && count($drugOverItem)>0){
 	?>
 	<div style="display: block; margin-bottom:12px;">
 		<fieldset style="display: inline;">
@@ -652,17 +612,17 @@ if(count($drugOverItem)>0){
 				</tr>
 			<?php
 			foreach ($drugOverItem as $key => $item) {
-				$dateOrder = (substr($item['date'],0,4)-543).substr($item['date'],4,15);
+				$dateOrder = (substr($item['latest_date'],0,4)-543).substr($item['latest_date'],4,15);
 				$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".round($item['day_averrage'])."day"));
 				$dateFutureToThai = (substr($dateFuture,0,4)+543).substr($dateFuture,4,15);
 				?>
 				<tr style="background-color:#d9d9d9;">
-					<td><?= substr($item['date'],0,10); ?></td>
+					<td><?= substr($item['latest_date'],0,10); ?></td>
 					<td><?= $item['drugcode']; ?></td>
-					<td><?= $item['tradname']; ?></td>
+					<td><?= $item['tradname']; ?> [<?= $item['genname'] ?>]</td>
 					<td align="center"><?= $item['amount']; ?></td>
 					<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
-					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['amount_per_day']; ?></td>
+					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['sl_amount']; ?></td>
 					<th><?= ($item['day_averrage']-$item['day_diff']); ?></th>
 					<td><?= $item['doctor']; ?></td>
 				</tr>
