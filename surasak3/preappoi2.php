@@ -1,7 +1,10 @@
 <?php
 session_start();
+
+include_once dirname(__FILE__).'/connect.php';
+include_once dirname(__FILE__).'/newBootstrap.php';
+
 if($_SESSION["sOfficer"] == ""){
-	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 	exit();
@@ -18,7 +21,6 @@ $doctor = $_POST['doctor'];
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
-include("connect.inc");   
 Function calcage($birth){
       $today = getdate();   
       $nY  = $today['year']; 
@@ -42,7 +44,6 @@ Function calcage($birth){
 $action = sprintf("%s", $_GET['action']);
 if(isset($action)  && $action == "viewlist"){
 
-	// var_dump($_SESSION);
 	$count = count($_SESSION["list_code"]);
 	//"<A HREF=\"javascript:show_bock();\">เจาะเลือด</A>
 	echo "<TABLE bgcolor='#FFFFD2'>
@@ -308,11 +309,6 @@ if(isset($_POST['B1'])){
 
 	list($thD, $thM, $thY) = explode(' ',$cdate_appoint);
 	$date_en = ($thY-543).'-'.$months[$thM].'-'.$thD;
-
-
-	  // session_register("cappdate");
-	 // session_register("cappmo");
-	 // session_register("cthiyr");
 	 
 	//กรณีเลือกวันที่ย้อนหลัง
 	$yearnow = date("Y")+543;
@@ -330,73 +326,8 @@ if(isset($_POST['B1'])){
 	$year = $arr[2];
 	$datenut = $day.$month.$year;
 	$datenut1 = $day."-".$month."-".$year;
-	$year -=543; 
-/*	if($datenut<$datenow){
-		?>
-		<script>
-		//alert("เลือกวันที่ไม่ถูกต้อง กรุณาเลือกวันใหม่");
-        //window.history.back();
-        </script>
-		<?
-	}
-	else{*/
-	
-		$dd = getdate ( mktime ( 0, 0, 0, $month, $day, $year ));
-
-		/*
-		if($dd['weekday']=="Saturday" || $dd['weekday']=="Sunday"){
-			$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
-				$rowdr1 = mysql_query($droffline);
-				$showdr1 = mysql_fetch_array($rowdr1);
-				if($showdr1[0]=="1"){
-					?>
-						<script>
-							if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-								
-							}  
-							else{
-								window.history.back();
-							}
-						</script>
-					<?
-				}
-		}else{
-			include("connect.inc");   
-			$droff = "select count(*) from doctor where name = '$cdoctor' and ".$dd['weekday']." = '1' ";
-			//echo $droff;
-			$rowdr = mysql_query($droff);
-			$showdr = mysql_fetch_array($rowdr);
-			//echo $showdr[0];
-			if($showdr[0]!='1'){
-				?>
-				<script>
-					if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-						
-					}  
-					else{
-						window.history.back();
-					}
-				</script>
-				<?
-			}else{
-				$droffline = "select count(*) from dr_offline where name = '$cdoctor' and dateoffline = '".$datenut1."' ";
-				$rowdr1 = mysql_query($droffline);
-				$showdr1 = mysql_fetch_array($rowdr1);
-				if($showdr1[0]=="1"){
-					?>
-						<script>
-							if(confirm("แพทย์ไม่ได้ทำการออกตรวจ ต้องการที่จะเลือกอยู่หรือไม่?")==true){
-								
-							}  
-							else{
-								window.history.back();
-							}
-						</script>
-					<?
-				}
-			}
-		}
-		*/
+	$year -=543;
+	$dd = getdate ( mktime ( 0, 0, 0, $month, $day, $year ));
 }
 
 $cappdate=$appdate;
@@ -494,31 +425,35 @@ if($OjbRow>0){
 	echo "<div style='background-color:#F99;  font-family:TH SarabunPSK; color:#000; font-size:20pt;'>ผู้ป่วยมีการนัดใน วันที่ $Array[appdate] เวลา  $Array[apptime]  ซ้ำ แพทย์ :  $Array[doctor]  <br>  LAB : $Array[patho] <br>  Xray : $Array[xray] <BR>อื่นๆ : $Array[other]</div>";
 }
 
- 
-
-  
 $query="CREATE TEMPORARY TABLE appoint1 SELECT * FROM appoint WHERE appdate = '$appd' and doctor = '$cdoctor' ";
 $result = mysql_query($query) or die("Query failed,app");
+
 $query="SELECT  apptime,COUNT(*) AS duplicate FROM appoint1 GROUP BY apptime HAVING duplicate > 0 ORDER BY apptime";
 $result = mysql_query($query);
 $n=0;
 $num = 0;
+
+$afternoonUser = $morningUser = 0;
+
 while (list ($apptime,$duplicate) = mysql_fetch_row ($result)) {
 	$n++;
 	$num = $duplicate+$num;
-	print (" <tr>\n".
-	//  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$n&nbsp;&nbsp;</td>\n".
-	"  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'><b>$apptime</b>&nbsp;&nbsp;</a></td>\n".
 
-	//    "  <td BGCOLOR=66CDAA><font face='Angsana New' size = '4'><a target=_BLANK href=\"checkidchk.php? idcard=$idcard\">$idcard&nbsp;&nbsp;</a></td>\n".
-	//  "  <td BGCOLOR=66CDAA><font face='Angsana New'>$detail&nbsp;&nbsp;</td>\n".
-	"  <td BGCOLOR=66CDAA><font face='Angsana New' size = '3'>นัดจำนวน&nbsp; = &nbsp;$duplicate &nbsp;&nbsp;คน</td>\n".
-	" </tr>\n&nbsp;");
+	$onlyTime = preg_replace('/[^0-9:.-]/u', '', $apptime);
+	
+	if($onlyTime>="08:00" && $onlyTime<"13:00"){
+		$morningUser += $duplicate;
+	}else{
+		$afternoonUser += $duplicate;
+	}
+
+	print (" <span style='background-color: #66CDAA; margin-right:8px; padding:2px;'>".
+	"  <span><font face='Angsana New' size='3'><b>$apptime</b></font></span>".
+	"  <span><font face='Angsana New' size='3'>นัดจำนวน = $duplicate คน</font></span>".
+	" </span>");
 }
-print "<br><font face='Angsana New' size = '5'><b>จำนวนผู้ป่วยทั้งหมด&nbsp;&nbsp; $num&nbsp;&nbsp;คน</b></a> ";
-
 ?>
-
+<br><font face='Angsana New' size='5'><b>ยอดรวมวันที่ <u><?= $appd; ?></u>: <?= $num ?> คน</b>&nbsp;&nbsp;( เช้า:<?= $morningUser; ?>&nbsp;&nbsp;บ่าย:<?= $afternoonUser; ?> )</font>
 <script type="text/javascript">
 
 function newXmlHttp(){
@@ -894,39 +829,6 @@ if($date_en < date('Y-m-d')){
       </select>
 	  
     </font>
-
-	<script>
-		/*
-		2566-03-24 พยาบาลหน้าห้องขอยกเลิก
-		document.getElementById("detail").onchange = function(){
-			var dt = this.value.split(" ");
-			var doctorName = '<?=$codedr;?>';
-			var date = encodeURIComponent('<?=$date_en;?>');
-			var dateCheck = '<?=date('l',strtotime($date_en));?>';
-			
-			if(dt[0]==="FU08" && dateCheck=='Friday'){
-				var req = newXmlHttp();
-				req.open('GET', 'preappoi2.php?action=viewecho&date='+date+'&doctor='+doctorName, true);
-				req.onreadystatechange = function () {
-				if (req.readyState === 4) {
-					if (req.status >= 200 && req.status < 400) { 
-						var response = req.responseText.trim();
-						
-						if(parseInt(response)>=5){
-							document.getElementById("echoResponse").innerHTML = "<b>แจ้งเตือน!!!</b> ยอดนัดหมอวิรดาที่จะทำ Echo ถึงจำนวนที่กำหนดแล้ว กรุณาติดต่อพยาบาลหน้าห้องเพื่อทำการนัด";
-							document.getElementById("echoResponse").style.display = '';
-						}
-					}
-				}}
-				req.send();
-			}else{
-				document.getElementById("echoResponse").innerHTML = "";
-				document.getElementById("echoResponse").style.display = 'none';
-			}
-		}
-		*/
-	</script>
-
 </td>
     <td width="280">
 		<font face="Angsana New">
@@ -1307,7 +1209,13 @@ if($date_en < date('Y-m-d')){
 <input type="hidden" name="cAge" value="<?= $cAge ?>">
 <input type="hidden" name="chkidcard" id="chkidcard" value="<?=$_POST["chkidcard"];?>">  
   </form>
-&nbsp&nbsp;<<&nbsp<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a>
+&nbsp;&nbsp;&lt;&lt;&nbsp;<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a>
+
+<script>
+
+</script>
+
+
 </TD>
 	<TD>
 	
@@ -1376,4 +1284,3 @@ while($result2=mysql_fetch_array($rows2)){
 </TABLE>
 </body>
 </html>
-<?php  include("unconnect.inc");?>
