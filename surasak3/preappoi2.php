@@ -201,9 +201,7 @@ if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทร
 	$query = mysql_query($sql);
 	$appoint_rows = (int) mysql_num_rows($query);
 	
-	$th_day = array(
-		0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์',
-	);
+	$th_day = array(0 => 'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์',);
 	
 	list($day, $th_month, $th_year) = explode(' ', $_POST['date_appoint']);
 	$new_date = ($th_year-543).'-'.$months[$th_month].'-'.$day;
@@ -294,6 +292,7 @@ if( empty($_GET['action']) && ( $doctor_name != 'MD101 ขชล รวมทร
 		});
 	});
 	</script>
+	<script src="js/sweetalert2.all.min.js"></script>
 </head>
 <body>
 <?php
@@ -999,7 +998,7 @@ if($date_en < date('Y-m-d')){
 	   }
 
 	   ?>
-        <select size="1" name="capptime">
+        <select size="1" name="capptime" onchange="apptimeSelect(this.value)">
           <option value="07:30 น. - 08:00 น.">07:30 น. - 08:00 น.</option>
           <option value="08:30 น. - 09:00 น.">08:30 น. - 09:00 น.</option>
           <option value="09:30 น. - 10:00 น.">09:30 น. - 10:00 น.</option>
@@ -1012,12 +1011,12 @@ if($date_en < date('Y-m-d')){
           <option value="18:30 น. - 19:00 น.">18:30 น. - 19:00 น.</option>
           </select>
          <? }else if($_SESSION["sOfficer"]=="ศุภรัตน์ มิ่งเชื้อ"){ ?>
-        <select size="1" name="capptime">
+        <select size="1" name="capptime" onchange="apptimeSelect(this.value)">
           <option value="09:30 น.">09:30 น.</option>
           <option value="13:30 น.">13:30 น.</option>
           </select>         
         <?php }else{ ?>
-        <select size="1" name="capptime">
+        <select size="1" name="capptime" onchange="apptimeSelect(this.value)">
           <option selected>&lt;&#3648;&#3621;&#3639;&#3629;&#3585;&#3648;&#3623;&#3621;&#3634;&#3609;&#3633;&#3604;&gt;</option>
           <option selected>08:00 &#3609;. - 10.00 &#3609;.</option>
           <option>08:00 &#3609;. - 11.00 &#3609;.</option>
@@ -1212,7 +1211,33 @@ if($date_en < date('Y-m-d')){
 &nbsp;&nbsp;&lt;&lt;&nbsp;<a target=_self  href='hnappoi1.php'>ออกใบนัดใหม่</a>
 
 <script>
+	function timeToMinutes(timeStr) {
+		const [hours, minutes] = timeStr.split(/[:.]/).map(Number);
+		return (hours * 60) + minutes;
+	}
+	function isTimeBetween(target, start, end) {
+		const targetMin = timeToMinutes(target);
+		const startMin = timeToMinutes(start);
+		const endMin = timeToMinutes(end);
 
+		return targetMin >= startMin && targetMin <= endMin;
+	}
+
+	function apptimeSelect(v){
+		const drCode = '<?= $codedr ?>';
+		let newTime = v.replace(/[^0-9:.-]/g, '');
+		let checkTime = isTimeBetween(newTime,'13:00','24:00');
+		let dayInt = parseInt(<?= $check_date ?>); // 0 is Sun --> 6 is Sat
+		let afternoonUser = parseInt(<?= $afternoonUser ?>);
+		if(drCode==='MD224' && checkTime===true && dayInt===4 && afternoonUser>25){
+			Swal.fire({
+				title: '⚠️ แจ้งเตือน ⚠️', 
+				html: 'หมอสรายุทธจำกัดนัดบ่ายวันพฤหัส ไม่เกิน 25คน กรุณาติดต่อแพทย์โดยตรงถ้าต้องการนัดเพิ่ม',
+				allowOutsideClick: false
+			});
+			return false;
+		}
+	}
 </script>
 
 
