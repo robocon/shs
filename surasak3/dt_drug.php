@@ -1132,15 +1132,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "date_remed"){
 		$_GET["date_remed"] = (date('Y')+543).date('-m-d');
 	}
 
-	$sql = "
-	SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
+	$sql = "SELECT a.date, a.drugcode, b.genname,a.tradname, a.slcode, a.amount, a.reason, a.part, a.drug_inject_amount,a.drug_inject_unit,a.drug_inject_amount2,a.drug_inject_unit2 ,a.drug_inject_time, a.drug_inject_slip , a.drug_inject_type,  a.drug_inject_etc, a.part,b.lock,b.lock_dr, b.drug_lockintern,b.drug_active,b.drug_lockucsso     
 	FROM ddrugrx as a 
 	INNER JOIN (Select `drugcode`,genname,`lock`,`lock_dr`,`drug_lockintern`,`drug_active`,`drug_lockucsso`,`quantity_box` From druglst ".$where1.") as b ON a.drugcode = b.drugcode 
 	INNER JOIN dphardep as c ON a.date=c.date
-	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
+	WHERE a.hn = '".$_SESSION["hn_now"]."' AND a.date like '".$_GET["date_remed"]."%' AND a.amount > 0 AND c.dr_cancle is null AND a.drugcode <> 'INJ' AND a.row_id not in (Select row_id From drugrx_notinj)
 	GROUP BY a.drugcode, a.slcode, a.part
-	HAVING sum( a.amount ) >0
-	";
+	HAVING sum( a.amount ) >0";
 	//echo $sql;
 	$result = Mysql_Query($sql) or die(Mysql_Error());
 	$numitem=mysql_num_rows($result);
@@ -4957,13 +4955,13 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 						<th colspan="7"><strong>ยาที่เหลือในช่วง 6เดือนย้อนหลัง</strong></th>
 					</tr>
 					<tr valign="top" style="background-color:#f8d7da;">
-						<th>วันที่จ่ายยา</th>
-						<th>รหัส</th>
+						<th width="7%">วันที่จ่ายยา</th>
+						<th width="7%">รหัส</th>
 						<th>ยา</th>
 						<th>วิธีใช้</th>
 						<th>จำนวน ณ วันจ่าย</th>
-						<th>จำนวนยาเหลือ<br>โดยประมาณ</th>
-						<th>แพทย์ที่สั่งจ่าย</th>
+						<th>ยาที่เหลือ</th>
+						<th width="21%">แพทย์ที่สั่งจ่าย</th>
 					</tr>
 					<?php
 					foreach ($items as $item) {
@@ -4975,7 +4973,7 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 							<td><?= $item['tradname'].' ['.$item['genname'].']'; ?></td>
 							<td><span title="<?= $item['detail'] ?>"><?= $item['slcode']; ?></span></td>
 							<td align="center"><?= $item['amount']; ?></td>
-							<td align="center"><?= $item['day_averrage']-$item['day_diff']; ?></td>
+							<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['drugslip_amount']; ?></td>
 							<td><?= $item['doctor']; ?></td>
 						</tr>
 						<?php

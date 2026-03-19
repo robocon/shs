@@ -612,17 +612,15 @@ if($drugOverItem !== false && count($drugOverItem)>0){
 				</tr>
 			<?php
 			foreach ($drugOverItem as $key => $item) {
-				$dateOrder = (substr($item['latest_date'],0,4)-543).substr($item['latest_date'],4,15);
-				$dateFuture = date('Y-m-d H:i:s', strtotime($dateOrder." +".round($item['day_averrage'])."day"));
-				$dateFutureToThai = (substr($dateFuture,0,4)+543).substr($dateFuture,4,15);
+				list($y, $m, $d) = explode('-', substr($item['latest_date'],0,10));
 				?>
 				<tr style="background-color:#d9d9d9;">
-					<td><?= substr($item['latest_date'],0,10); ?></td>
+					<td align="center"><?= $d.' '.$def_month_th[$m].' '.$y; ?></td>
 					<td><?= $item['drugcode']; ?></td>
 					<td><?= $item['tradname']; ?> [<?= $item['genname'] ?>]</td>
 					<td align="center"><?= $item['amount']; ?></td>
 					<td><strong><?= $item['slcode']; ?></strong> [<?= $item['detail']; ?>]</td>
-					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['sl_amount']; ?></td>
+					<td align="center"><?= ($item['day_averrage']-$item['day_diff'])*$item['drugslip_amount']; ?></td>
 					<th><?= ($item['day_averrage']-$item['day_diff']); ?></th>
 					<td><?= $item['doctor']; ?></td>
 				</tr>

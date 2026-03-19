@@ -411,7 +411,6 @@ class Drug extends Database
      * @param string $hn HN ของผู้มารับบริการ
      * @return array|false 
      * - 'latest_date' (string): วันที่ล่าสุดที่จ่ายยา
-     * - 'rows' (string): จำนวนที่ได้จากการ GROUP
      * - 'tradname' (string): ชื่อทางการค้า
      * - 'amount' (string): จำนวนที่จ่าย ณ วันที่รับบริการ
      * - 'slcode' (string): รหัสวิธีใช้ยา
@@ -420,7 +419,7 @@ class Drug extends Database
      * - 'idno' (string): idno จาก ddrugrx
      * - 'genname' (string): ชื่อสามัญ
      * - 'doctor' (string): doctor
-     * - 'sl_amount' (string): ค่าสัมประสิทธิ์ ที่ใช้ยาต่อวัน
+     * - 'drugslip_amount' (string): ค่าสัมประสิทธิ์ ที่ใช้ยาต่อวัน
      * - 'day_averrage' (string): จำนวนวันที่ใช้ยาต่อครั้งในการจ่าย (จำนวนที่แพทย์สั่ง หารด้วย จำนวนที่ใช้ต่อวัน)
      * - 'day_diff' (string): ผ่านมาแล้วกี่วัน
      * - 'detail' (string): รายละเอียดวิธีใช้
@@ -440,27 +439,25 @@ class Drug extends Database
         $sixMonth = strtotime('-6 month');
         $dateSixMonth = (date('Y', $sixMonth)+543).date('-m-d 00:00:00', $sixMonth);
         $res = false;
-        $sql = sprintf("SELECT a.*,d.`genname`,b.`doctor`,c.`amount` AS `sl_amount`,
-        (a.`amount`/c.`amount`) AS `day_averrage`,
-        TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`latest_date`,1,4)-543),SUBSTRING(a.`latest_date`,5,6)),NOW()) AS `day_diff`,
-        CONCAT(c.`detail1`,' ',c.`detail2`,'',c.`detail3`) AS `detail`
+        $sql = sprintf("SELECT x.*,d.`genname`,b.`doctor`
         FROM (
-            SELECT `row_id`,MAX(`date`) AS `latest_date`,COUNT(`drugcode`) AS `rows`,`tradname`,`amount`,`slcode`,`hn`,`drugcode`,CONCAT(`hn`,`drugcode`) AS `hn_drugcode`,`idno`
-            FROM `ddrugrx` 
-            WHERE `date` >= '$dateSixMonth' AND `date` <= '$currDate'
-            AND `hn` = '%s' 
+            SELECT a.`row_id`,a.`date` AS `latest_date`,
+            a.`tradname`,a.`amount`,a.`slcode`,a.`hn`,a.`drugcode`,a.`idno`,c.`amount` AS `drugslip_amount`,
+            (a.`amount`/c.`amount`) AS `day_averrage`,
+            TIMESTAMPDIFF(DAY,CONCAT((SUBSTRING(a.`date`,1,4)-543),SUBSTRING(a.`date`,5,6)),NOW()) AS `day_diff`,
+            CONCAT(c.`detail1`,' ',c.`detail2`,'',c.`detail3`) AS `detail`
+            FROM `ddrugrx` AS a 
+            LEFT JOIN `drugslip` AS c ON c.`slcode` = a.`slcode`
+            WHERE a.`date` >= '$dateSixMonth' AND a.`date` <= '$currDate'
+            AND a.`hn` = '%s' 
             $whereDrug
-            AND ( `an` IS NULL AND `slcode` != 'b' ) 
-            GROUP BY `drugcode` 
-            HAVING COUNT(`drugcode`) > 1 
-            ORDER BY `latest_date`
-        ) AS a LEFT JOIN `dphardep` AS b ON a.`idno` = b.`row_id`
-        LEFT JOIN `druglst` AS d ON a.`drugcode` = d.`drugcode`
-        LEFT JOIN `drugslip` AS c ON c.`slcode` = a.`slcode`
-        WHERE b.`dr_cancle` IS NULL
-        AND c.`amount` > 0 
-        HAVING `day_averrage` > `day_diff`
-        ORDER BY a.`row_id` ASC",
+            AND ( a.`an` IS NULL AND a.`slcode` != 'b' ) 
+            AND ( a.`amount` > 0 AND c.`amount` != '' )
+            HAVING `day_averrage` > `day_diff`
+            ORDER BY a.`row_id` ASC
+        ) AS x LEFT JOIN `dphardep` AS b ON x.`idno` = b.`row_id`
+        LEFT JOIN `druglst` AS d ON x.`drugcode` = d.`drugcode`
+        WHERE b.`dr_cancle` IS NULL",
             $this->dbi->real_escape_string($hn)
         );
         $q = $this->dbi->query($sql);
