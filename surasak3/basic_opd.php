@@ -1,8 +1,9 @@
 <?php 
-// session_start();
-require_once dirname(__FILE__).'/bootstrap.php';
-require_once dirname(__FILE__).'/class_file/class_drugreact.php';
-require_once dirname(__FILE__).'/class_file/class_hypertension.php';
+session_start();
+require_once dirname(__FILE__).'/connect.php';
+require_once dirname(__FILE__).'/newBootstrap.php';
+// require_once dirname(__FILE__).'/class_file/class_drugreact.php';
+// require_once dirname(__FILE__).'/class_file/class_hypertension.php';
 
 /*
 // เอาไว้หาว่าในวันนี้ คนไข้คนไหนที่เข้าเคสเคยมีประวัติ ht บ้าง
@@ -11,10 +12,10 @@ select row_id,hn from opd where thidate like '2567-11-08%'
 ) as a left join hypertension_clinic as b on b.hn = a.hn
 where b.row_id is not null
 */
-include("connect.php");
-mysql_query("SET NAMES UTF-8");
+// include("connect.php");
+// mysql_query("SET NAMES UTF-8");
 
-$drugreact = new Drugreact();
+$drug = new Drug();
 $hypertension = new Hypertension();
 
 /**
@@ -25,7 +26,6 @@ function getBotoxFromThdatehn($thdatehn=''){
 	global $dbi;
 
 	$sql = sprintf("SELECT * FROM `opd_botox` WHERE `thdatehn` = '%s'", $dbi->real_escape_string($thdatehn));
-	dump($sql);
 	$q = $dbi->query($sql);
 	$item = false;
 	if($q->num_rows > 0){
@@ -1524,7 +1524,7 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
 			</script>
 			<br>
 			<?php 
-			$userGroup = $drugreact->getDrugreactGroupByHn($hn);
+			$userGroup = $drug->getDrugreactGroupByHn($hn);
 			if (count($userGroup)>0 && !$userGroup['error']) {
 				?>
 					<span class="txtsarabun"><b style="color: #000000; background-color: yellow; padding: 0 8px;">มีโอกาสแพ้ยาในกลุ่ม</b></span>
@@ -2574,7 +2574,7 @@ mmHg </td>
 			</td>
 		</tr>
 		<tr>
-			<td align="right" >จำนวนปีที่เป็น DM : </td>
+			<td align="right" valign="top">จำนวนปีที่เป็น DM : </td>
 			<td align="left" colspan="5">
 				<?php 
 				$sql = "SELECT TIMESTAMPDIFF(YEAR,CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear') AS `year_diff`
@@ -2609,7 +2609,7 @@ mmHg </td>
 					?>
 					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong>
 					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" onclick="showFormDm()" type="radio" value="y"/> ต้องการ</label></span>
-					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" onclick="hideFormDm()"type="radio" value="n"/> ไม่ต้องการ</label></span>
 					<?
 					}
 				}
@@ -2622,8 +2622,155 @@ mmHg </td>
 						document.getElementById('formDm').style.display = 'none';
 					}
 				</script>
+				<style>
+					#formDm{font-size:14pt;}
+					.mb-3{margin-bottom:8px;}
+					.title{font-size: 18pt;border-left: 5px solid #006666;padding-left: 10px;font-weight: bold;color: #006666;}
+					.sub-title{font-weight: bold;color: #006666;}
+					.indent-left{margin-left: 8px;}
+					.dm-button {
+						border: 1px solid black;;
+						color: #000000;
+						padding: 2px 6px;
+						text-align: center;
+						text-decoration: none;
+						display: inline-block;
+						cursor: pointer;
+						border-radius: 4px;
+					}
+					.dm-button:hover{
+						box-shadow: 3px 3px 3px #3e3e3e;
+					}
+				</style>
 				<div id="formDm" style="display:none;">
-					<h1>FORM DM</h1>
+					<fieldset>
+						<legend class=""><strong>ฟอร์ม DM</strong></legend>
+						<div>
+							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>
+						</div>
+						<div>
+							<p class="title">การวินิจฉัย</p>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">DM type:</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="dia1" id="dm_type1" value="DM type1">
+									<label class="form-check-label" for="dm_type1">DM type1</label>
+									<input class="form-check-input" type="radio" name="dia1" id="dm_type2" value="DM type2">
+									<label class="form-check-label" for="dm_type2">DM type2</label>
+									<input class="form-check-input" type="radio" name="dia1" id="dm_type3" value="Uncertain type">
+									<label class="form-check-label" for="dm_type3">Uncertain type</label>
+									<label class="form-label" for="nosis_d">วันที่วินิจฉัยครั้งแรก</label>
+									<input type="text" class="form-control" name="dm_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM">
+								</div>
+							</div>
+							
+							<div class="mb-3 indent-left">
+								<div class="sub-title">โรคร่วม HT:</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="ht" id="dm_ht1" value="No">
+									<label class="form-check-label" for="dm_ht1">No</label>
+									<input class="form-check-input" type="radio" name="ht" id="dm_ht2" value="Essential HT">
+									<label class="form-check-label" for="dm_ht2">Essential HT</label>
+									<input class="form-check-input" type="radio" name="ht" id="dm_ht3" value="Secondary HT">
+									<label class="form-check-label" for="dm_ht3">Secondary HT</label>
+									<input class="form-check-input" type="radio" name="ht" id="dm_ht4" value="Uncertain type">
+									<label class="form-check-label" for="dm_ht4">Uncertain type</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+								</div>
+							</div>
+
+							<div class="mb-3 indent-left">
+								<div class="sub-title">โรคร่วมอื่นๆ:</div>
+								<div class="row">
+									<table>
+										<tr>
+											<td><input type="checkbox" class="form-check-input" id="como1" name="ht_etc[]" value="Neuropathy"> <label for="como1">Neuropathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como2" name="ht_etc[]" value="Heart Failure"> <label for="como2">Heart Failure</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como3" name="ht_etc[]" value="Nephropathy"> <label for="como3">Nephropathy</label></td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" class="form-check-input" id="como4" name="ht_etc[]" value="CVD"> <label for="como4">CVD</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como5" name="ht_etc[]" value="IHD"> <label for="como5">IHD</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como6" name="ht_etc[]" value="Foot ulcer"> <label for="como6">Foot ulcer</label></td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" class="form-check-input" id="como7" name="ht_etc[]" value="Retinopathy"> <label for="como7">Retinopathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como8" name="ht_etc[]" value="Dyslipidemia"> <label for="como8">Dyslipidemia</label></td>
+											<td>
+												<label class="form-label" for="other_ht_date">วันที่วินิจฉัยครั้งแรก</label>
+												<input type="text" class="form-control" name="como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม">
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+
+							<div class="mb-3 indent-left">
+								<div class="sub-title">ประวัติสูบบุหรี่:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig1" value="ไม่สูบบุหรี่"><label for="dm_cig1">ไม่สูบบุหรี่</label>
+									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig2" value="สูบบุหรี่"><label for="dm_cig2">สูบบุหรี่</label>
+									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig3" value="NA"><label for="dm_cig3">NA</label>
+								</div>
+							</div>
+						</div>
+						<div>
+							<p class="title">การตรวจร่างกาย</p>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">Retinal Exam:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input type="text" name="retinal_date" id="retinal_date" placeholder="วันที่ตรวจ Retinal Exam">
+									<input class="form-check-input" type="radio" name="retinal" id="retinal1" value="No DR"><label for="retinal1">No DR</label>
+									<input class="form-check-input" type="radio" name="retinal" id="retinal2" value="Mind DR"><label for="retinal2">Mind DR</label>
+									<input class="form-check-input" type="radio" name="retinal" id="retinal3" value="Moderate DR"><label for="retinal3">Moderate DR</label>
+									<input class="form-check-input" type="radio" name="retinal" id="retinal4" value="Severe DR"><label for="retinal4">Severe DR</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+								</div>
+							</div>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">Foot Exam:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input type="text" name="foot_exam_date" id="foot_exam_date" placeholder="วันที่ตรวจ Foot Exam">
+									<input class="form-check-input" type="radio" name="dm_foot" id="dm_foot1" value="Low Risk"><label for="dm_foot1">Low Risk</label>
+									<input class="form-check-input" type="radio" name="dm_foot" id="dm_foot2" value="Moderate Risk"><label for="dm_foot2">Moderate Risk</label>
+									<input class="form-check-input" type="radio" name="dm_foot" id="dm_foot3" value="Hight Risk"><label for="dm_foot3">Hight Risk</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+								</div>
+							</div>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">ตรวจสุขภาพฟัน:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input type="text" name="teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน">
+									<input class="form-check-input" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
+									<input class="form-check-input" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+								</div>
+							</div>
+						</div>
+						<div>
+							<p class="title">การให้ความรู้ / คำแนะนำ</p>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">Foot care:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input class="form-check-input" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
+									<input class="form-check-input" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam">
+								</div>
+							</div>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">Nutrition:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input class="form-check-input" type="radio" name="dm_nutrition" id="nutrition1" value="1"><label for="nutrition1">ให้ความรู้</label>
+									<input class="form-check-input" type="radio" name="dm_nutrition" id="nutrition2" value="0"><label for="nutrition2">ไม่ได้ให้ความรู้</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition">
+								</div>
+							</div>
+							<div class="mb-3 indent-left">
+								<div class="sub-title">Exercise:</div>
+								<div class="form-check form-check-inline ms-2">
+									<input class="form-check-input" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
+									<input class="form-check-input" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>ล้างค่า</a>
+									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise">
+								</div>
+							</div>
+						</div>
+					</fieldset>
 				</div>
 			</td>
 		</tr>
@@ -2690,76 +2837,6 @@ mmHg </td>
 					<input type="radio" name="covid19_vaccine" class="da_vaccinecovid" id="covid19_vaccine2" value="0" <? if($covid19_vaccine=="0"){ echo "checked='checked'";}?>> <label for="covid19_vaccine2">ยังไม่ได้รับการฉีด</label>
 				</span>
 				<strong style="margin-left:20px; color: <?=$vaccinecolor;?>;"><?=$txtvaccine;?></strong>
-				<!-- <div>
-					<button type="button" onclick="moph_check_vaccine('<?=$cIdcard;?>')">ตรวจสอบการได้รับวัคซีนจาก MOPH IC</button>
-					<div id="resVacc"></div>
-				</div> -->
-				<script type="text/javascript">
-
-					function newXmlHttp(){
-						var xmlhttp = false;
-						try{
-							xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-						}catch(e){
-							try{
-								xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-							}catch(e){
-								xmlhttp = false;
-							}
-						}
-						if(!xmlhttp && document.createElement){
-							xmlhttp = new XMLHttpRequest();
-						}
-						return xmlhttp;
-					}
-
-					function moph_check_vaccine(idcard){ 
-						// document.getElementById("resVacc").innerHTML = 'กำลังตรวจสอบข้อมูล...';
-						// setTimeout(function(){
-						// 	callRequestMoph(idcard);
-						// }, 1500);
-						var html = '<p>MOPH-IC มีการปรับปรุงการเข้าใช้งานใหม่ด้วยระบบ 2FA ทำให้ไม่สามารถตรวจสอบวัคซีนได้ชั่วคราว ขออภัยในความไม่สะดวก</p>';
-						html += '<p><a href="https://docs.google.com/document/d/1-u5GeKBzzAbRHLBwomXt-ObOwrmqyav2OPOk813-kbc/edit" target="_blank">อ่านคู่มือการใช้งาน MOPH-IC ด้วย 2FA</a></p>';
-						document.getElementById("resVacc").innerHTML = html;
-					}
-
-					function callRequestMoph(idcard){
-						callRequest(idcard);
-					}
-
-					function callRequest(idcard) {
-						var request = new newXmlHttp();
-						request.open('GET', '<?=NOTIFY_HOST;?>/moph/?page=ImmunizationHistory&cid='+idcard, true);
-
-						request.onreadystatechange = function () {
-							if (request.readyState === 4) {
-								if (request.status >= 200 && request.status < 400) { 
-									try {
-										var d = JSON.parse(request.responseText);
-										if(d.MessageCode===200){
-											var vacc = d.result.vaccine_certificate[0].vaccination_list;
-											var vaccTxt = '';
-											for (var index = 0; index < vacc.length; index++) {
-												var el = vacc[index];
-												vaccTxt += '<b>เข็มที่</b>:'+el.vaccine_dose_no+' <b>วันที่</b>:'+el.vaccine_date+' <b>ที่</b>:'+el.vaccine_place+' <b>วัคซีน</b>:'+el.vaccine_manufacturer_name+"<br>";
-											}
-											document.getElementById("resVacc").innerHTML = vaccTxt;
-										}else{
-											document.getElementById("resVacc").innerHTML = d.Message+' (กดตรวจสอบข้อมูลอีกครั้ง)';
-										}
-									} catch (error) {
-										alert("เบราเซอร์เก่าเกินไป กรุณาอัพเกรดเป็นเบราเซอร์เวอร์ชั่นใหม่");
-									}
-								} else {
-									// Error :(
-									document.getElementById("resVacc").innerHTML = 'สัญญาณอินทราเน็ตมีปัญหา กรุณาลองใหม่อีกครั้ง';
-								}
-							} 
-						};
-
-						request.send();
-					}
-				</script>
 			<div style="display:none; margin-bottom: 8px;" class="vaccine_amount">
 				<table id="member" class="fontthai">
 					<tr>
@@ -2978,21 +3055,21 @@ mmHg </td>
 								</div>	
 
 								<div id="showform_j" style="display: none; margin-bottom: 8px;"> 
-<?
-		$my_date_hn = date('Y-m-d').$hn;
-		$q_advice1 = $dbi->query("SELECT * FROM `opd_advice_form_j` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
-		if($q_advice1->num_rows > 0){
-			$opd_advice1 = $q_advice1->fetch_assoc();
-			$advice_inject1 = $opd_advice1['advice_inject1'];
-			$advice_inject1_name = $opd_advice1['advice_inject1_name'];
-			$advice_inject1_unit = $opd_advice1['advice_inject1_unit'];
-			$advice_inject2 = $opd_advice1['advice_inject2'];
-			$advice_inject2_name = $opd_advice1['advice_inject2_name'];
-			$advice_inject2_unit = $opd_advice1['advice_inject2_unit'];
-			$advice_inject3 = $opd_advice1['advice_inject3'];
-			$advice_inject3_name = $opd_advice1['advice_inject3_name'];
-		}	
-?>					
+									<?php
+									$my_date_hn = date('Y-m-d').$hn;
+									$q_advice1 = $dbi->query("SELECT * FROM `opd_advice_form_j` WHERE `thdatehn` = '$my_date_hn' order by id DESC limit 1");
+									if($q_advice1->num_rows > 0){
+										$opd_advice1 = $q_advice1->fetch_assoc();
+										$advice_inject1 = $opd_advice1['advice_inject1'];
+										$advice_inject1_name = $opd_advice1['advice_inject1_name'];
+										$advice_inject1_unit = $opd_advice1['advice_inject1_unit'];
+										$advice_inject2 = $opd_advice1['advice_inject2'];
+										$advice_inject2_name = $opd_advice1['advice_inject2_name'];
+										$advice_inject2_unit = $opd_advice1['advice_inject2_unit'];
+										$advice_inject3 = $opd_advice1['advice_inject3'];
+										$advice_inject3_name = $opd_advice1['advice_inject3_name'];
+									}
+									?>
 									<table id="member" class="fontthai">
 									<tr>
 										<td align="left">NI :</td>
@@ -3015,7 +3092,7 @@ mmHg </td>
 										</td>
 									</tr>	
 									</table>
-								</div>													
+								</div>
 							</td>
 						</tr>	
 					</table>
@@ -3490,9 +3567,19 @@ window.onload = function(){
 }
 </script>
 <script type="text/javascript">
-	var popup1;
+	var popup1, dm1, dm2, dm3, dm4,dm5,dm6,dm7,dm8;
 	window.onload = function() {
 		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
+
+		dm1 = new Epoch('dm1','popup',document.getElementById('nosis_d'),false);
+		dm2 = new Epoch('dm2','popup',document.getElementById('other_ht_date'),false);
+		dm3 = new Epoch('dm3','popup',document.getElementById('retinal_date'),false);
+		dm4 = new Epoch('dm4','popup',document.getElementById('foot_exam_date'),false);
+		dm5 = new Epoch('dm5','popup',document.getElementById('teeth_date'),false);
+		dm6 = new Epoch('dm6','popup',document.getElementById('date_footcare'),false);
+		dm7 = new Epoch('dm7','popup',document.getElementById('date_nutrition'),false);
+		dm8 = new Epoch('dm8','popup',document.getElementById('date_exercise'),false);
+		
 	};
 </script>
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
