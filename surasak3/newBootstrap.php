@@ -10,7 +10,7 @@ include_once dirname(__FILE__).'/includes/functions.php';
 // Define the __autoload function
 function __autoload($className) {
     // Construct the file path based on the class name
-    $file = 'newClasses/' . $className . '.php';
+    $file =  dirname(__FILE__).'/newClasses/' . $className . '.php';
 
     // Check if the file exists and include it
     if (file_exists($file)) {

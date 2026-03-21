@@ -15,24 +15,10 @@ where b.row_id is not null
 // include("connect.php");
 // mysql_query("SET NAMES UTF-8");
 
-$drug = new Drug();
-$hypertension = new Hypertension();
+$class_drug = new Drug();
+$class_hypertension = new Hypertension();
+$class_opd = new Opd();
 
-/**
- * @param string $thdatehn รูปแบบ dd-mm-YYYYHN
- * @return array
- */
-function getBotoxFromThdatehn($thdatehn=''){
-	global $dbi;
-
-	$sql = sprintf("SELECT * FROM `opd_botox` WHERE `thdatehn` = '%s'", $dbi->real_escape_string($thdatehn));
-	$q = $dbi->query($sql);
-	$item = false;
-	if($q->num_rows > 0){
-		$item = $q->fetch_assoc();
-	}
-	return $item;
-}
 
 $month["01"] ="มกราคม";
 $month["02"] ="กุมภาพันธ์";
@@ -510,7 +496,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		if(!empty($_POST['ht_no'])){
 			$postData['ht_no'] = $_POST['ht_no'];
 		}else{
-			$htNumber = $hypertension->newHtNumber();
+			$htNumber = $class_hypertension->newHtNumber();
 			$postData['ht_no'] = $htNumber['ht_no'];
 		}
 		
@@ -558,26 +544,26 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$postData['joint_disease'] = 1;
 		}
 		
-		$hypertension->setHypertension_clinic($postData);
+		$class_hypertension->setHypertension_clinic($postData);
 
 		if(empty($_POST['hypertension_id'])){
-			$hypertension->insert();
+			$class_hypertension->insert();
 		}else{
-			$hypertension->setRowId($_POST['hypertension_id']);
-			$hypertension->update();
+			$class_hypertension->setRowId($_POST['hypertension_id']);
+			$class_hypertension->update();
 		}
 
-		$res = $hypertension->getHtHistoryThisDay($_POST["hn"]);
+		$res = $class_hypertension->getHtHistoryThisDay($_POST["hn"]);
 		if($res['error_code']==400){
 
 			/**
 			 * @readme มันยังขาด DateN ถ้าไป insert ใน hypertension_history เลย มันจะได้วันที่เป็นปัจจุบัน แต่จริงๆ ต้องเป็นวันที่ผู้ป่วยลงทะเบียน HT เป็นครั้งแรก(อาจจะดึงจาก hypertension_clinic ปกติ)
 			 */
-			// $hypertension->setDateN()
-			$hypertension->insert_history();
+			// $class_hypertension->setDateN()
+			$class_hypertension->insert_history();
 		}else{
-			$hypertension->setHistoryId($res['id']);
-			$hypertension->update_history();
+			$class_hypertension->setHistoryId($res['id']);
+			$class_hypertension->update_history();
 		}
 	}
 	
@@ -820,21 +806,18 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 	}
 
 	$botox = $_POST['clinicBotox'];
-	$item = getBotoxFromThdatehn($thidatehn);
-	if(!empty($botox)){
-		if($item===false){
-			$sql = sprintf("INSERT INTO `opd_botox` (`id`, `thdatehn`, `hn`, `opd_id`, `date_add`) VALUES (NULL, '%s', '%s', '%s', NOW());",
-				$dbi->real_escape_string($thidatehn),
-				$dbi->real_escape_string($_REQUEST['hn']),
-				$dbi->real_escape_string($opd_id)
-			);
-			$opdBotox = $dbi->query($sql);
-		}
-	}else{
-		if($item!==false){
-			$sql = sprintf("DELETE FROM `opd_botox` WHERE `thdatehn` = '%s';", $dbi->real_escape_string($thidatehn));
-			$opdBotox = $dbi->query($sql);
-		}
+	$item = $class_opd->getBotoxFromThdatehn($thidatehn);
+	$data = array(
+		'thdatehn'=>$thidatehn,
+		'hn'=>$hn,
+		'opd_id'=>$opd_id
+	);
+	if(!empty($botox) && $item===false){
+		$class_opd->insertBotox($data);
+
+	}elseif (!empty($botox) && $item!==false) {
+		$class_opd->updateBotox($data, $opd_id);
+		
 	}
 
 	$field="";
@@ -1524,7 +1507,7 @@ list($thidateopd,$bp1,$bp2,$bp3,$bp4,$pause,$opdweight,$opdheight,$temperature,$
 			</script>
 			<br>
 			<?php 
-			$userGroup = $drug->getDrugreactGroupByHn($hn);
+			$userGroup = $class_drug->getDrugreactGroupByHn($hn);
 			if (count($userGroup)>0 && !$userGroup['error']) {
 				?>
 					<span class="txtsarabun"><b style="color: #000000; background-color: yellow; padding: 0 8px;">มีโอกาสแพ้ยาในกลุ่ม</b></span>
@@ -2351,7 +2334,7 @@ mmHg </td>
 				</script>
 				<?php 
 				// 
-				$htData = $hypertension->getOneFromHn($_POST['hn']);
+				$htData = $class_hypertension->getOneFromHn($_POST['hn']);
 				?>
 				<div id="formHt" style="<?=($htData['error_code']==400 ? 'display:none;' : '' );?>">
 					<style>

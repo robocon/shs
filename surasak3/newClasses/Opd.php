@@ -29,4 +29,61 @@ class Opd extends Database
             return '';
         }
     }
+
+    /**
+     * @param string Thai Date + HN รูปแบบ dd-mm-YYYYHN
+     * @return array All item from opd_botox
+     */
+    public function getBotoxFromThdatehn($thdatehn){
+        $sql = sprintf("SELECT * FROM `opd_botox` WHERE `thdatehn` = '%s'", $this->dbi->real_escape_string($thdatehn));
+        $q = $this->dbi->query($sql);
+        $item = false;
+        if($q->num_rows > 0){
+            $item = $q->fetch_assoc();
+        }
+        return $item;
+    }
+
+    /**
+     * เพิ่มข้อมูล Box ในหน้าซักประวัติ
+     * @param array $data ข้อมูลนำเข้า
+     * - string thdatehn วันที่ พ.ศ.+hn รูปแบบ dd-mm-yyyyHN,
+     * - string hn
+     * - string opd_id
+     * @return bool|string $res คืนค่า
+     * - bool false ถ้าบันทึกข้อมูลไม่ได้
+     * - string last_insert_id
+     */
+    public function insertBotox($data){
+        $sql = sprintf("INSERT INTO `opd_botox` (`id`, `thdatehn`, `hn`, `opd_id`, `date_add`) VALUES (NULL, '%s', '%s', '%s', NOW());",
+            $this->dbi->real_escape_string($data['thdatehn']),
+            $this->dbi->real_escape_string($data['hn']),
+            $this->dbi->real_escape_string($data['opd_id'])
+        );
+        $q = $this->dbi->query($sql);
+        $res = false;
+        if($q!==false){
+            $res = $this->dbi->insert_id;
+        }
+        return $res;
+    }
+
+    /**
+     * อัพเดทข้อมูล Botox
+     * @param array $data มีรายละเอียด
+     * - string thdatehn วันที่ พ.ศ.+hn รูปแบบ dd-mm-yyyyHN
+     * - string hn
+     * - string opd_id
+     * @return bool
+     */
+    public function updateBotox($data, $opd_id){
+        $sql = sprintf("UPDATE`opd_botox` SET `thdatehn`='%s', `hn`='%s' 
+        WHERE (`opd_id`='%s');",
+            $this->dbi->real_escape_string($data['thdatehn']),
+            $this->dbi->real_escape_string($data['hn']),
+            $this->dbi->real_escape_string($opd_id)
+        );
+        $q = $this->dbi->query($sql);
+        return $q;
+    }
 }
