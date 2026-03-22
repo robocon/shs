@@ -18,6 +18,7 @@ where b.row_id is not null
 $class_drug = new Drug();
 $class_hypertension = new Hypertension();
 $class_opd = new Opd();
+$class_diabetes = new Diabetes();
 
 
 $month["01"] ="มกราคม";
@@ -2373,12 +2374,6 @@ mmHg </td>
 									</td>
 								</tr>
 								<tr>
-									<td></td>
-									<td>
-										<?php //dump($htData); ?>
-									</td>
-								</tr>
-								<tr>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
 									<td>
 										<?php 
@@ -2591,27 +2586,33 @@ mmHg </td>
 					if($age >=35){
 					?>
 					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong>
-					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" onclick="showFormDm()" type="radio" value="y"/> ต้องการ</label></span>
-					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" onclick="hideFormDm()"type="radio" value="n"/> ไม่ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" type="radio" value="y"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n"/> ไม่ต้องการ</label></span>
 					<?
 					}
 				}
 				?>
+
+				<div>
+					<a href="javascript:void(0);" onclick="showFormDm();">ฟอร์มบันทึก Diabetes clinic</a>
+				</div>
 				<script>
 					function showFormDm(){
-						document.getElementById('formDm').style.display = '';
-					}
-					function hideFormDm(){
-						document.getElementById('formDm').style.display = 'none';
+						var el = document.getElementById('formDm');
+						if (el.style.display == 'none') {
+							el.style.display = '';
+						} else {
+							el.style.display = 'none';
+						}
 					}
 				</script>
 				<style>
-					#formDm{font-size:14pt;}
+					#formDm{font-size:14pt; display: inline-block;}
 					.mb-3{margin-bottom:8px;}
 					.title{font-size: 18pt;border-left: 5px solid #006666;padding-left: 10px;font-weight: bold;color: #006666;}
 					.sub-title{font-weight: bold;color: #006666;}
 					.indent-left{margin-left: 8px;}
-					.dm-button {
+					button.dm-button, .dm-button {
 						border: 1px solid black;;
 						color: #000000;
 						padding: 2px 6px;
@@ -2621,7 +2622,7 @@ mmHg </td>
 						cursor: pointer;
 						border-radius: 4px;
 					}
-					.dm-button:hover{
+					button.dm-button:hover, .dm-button:hover{
 						box-shadow: 3px 3px 3px #3e3e3e;
 					}
 				</style>
@@ -2629,19 +2630,29 @@ mmHg </td>
 					<fieldset>
 						<legend class=""><strong>ฟอร์ม DM</strong></legend>
 						<div>
-							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>
+							<?php
+							$dmNumber = 'ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ';
+							$dm = $class_diabetes->getDiabetesFromHn($hn);
+							if(!empty($dm['dm_no'])){
+								$dmNumber = $dm['dm_no'].' <a href="diabetes_edit.php?hn='.$hn.'" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a>';
+							}
+							?>
+							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;"><strong><?= $dmNumber; ?></strong></span>
 						</div>
 						<div>
 							<p class="title">การวินิจฉัย</p>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">DM type:</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="dia1" id="dm_type1" value="DM type1">
+									<input class="input-dm-type" type="radio" name="dia1" id="dm_type1" value="DM type1">
 									<label class="form-check-label" for="dm_type1">DM type1</label>
-									<input class="form-check-input" type="radio" name="dia1" id="dm_type2" value="DM type2">
+									<input class="input-dm-type" type="radio" name="dia1" id="dm_type2" value="DM type2">
 									<label class="form-check-label" for="dm_type2">DM type2</label>
-									<input class="form-check-input" type="radio" name="dia1" id="dm_type3" value="Uncertain type">
+									<input class="input-dm-type" type="radio" name="dia1" id="dm_type3" value="Uncertain type">
 									<label class="form-check-label" for="dm_type3">Uncertain type</label>
+
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-type')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+
 									<label class="form-label" for="nosis_d">วันที่วินิจฉัยครั้งแรก</label>
 									<input type="text" class="form-control" name="dm_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM">
 								</div>
@@ -2650,14 +2661,15 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">โรคร่วม HT:</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="ht" id="dm_ht1" value="No">
+									<input class="input-como-ht" type="radio" name="ht" id="dm_ht1" value="No">
 									<label class="form-check-label" for="dm_ht1">No</label>
-									<input class="form-check-input" type="radio" name="ht" id="dm_ht2" value="Essential HT">
+									<input class="input-como-ht" type="radio" name="ht" id="dm_ht2" value="Essential HT">
 									<label class="form-check-label" for="dm_ht2">Essential HT</label>
-									<input class="form-check-input" type="radio" name="ht" id="dm_ht3" value="Secondary HT">
+									<input class="input-como-ht" type="radio" name="ht" id="dm_ht3" value="Secondary HT">
 									<label class="form-check-label" for="dm_ht3">Secondary HT</label>
-									<input class="form-check-input" type="radio" name="ht" id="dm_ht4" value="Uncertain type">
-									<label class="form-check-label" for="dm_ht4">Uncertain type</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-como-ht" type="radio" name="ht" id="dm_ht4" value="Uncertain type">
+									<label class="form-check-label" for="dm_ht4">Uncertain type</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-como-ht')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
 
@@ -2702,27 +2714,30 @@ mmHg </td>
 								<div class="sub-title">Retinal Exam:</div>
 								<div class="form-check form-check-inline ms-2">
 									<input type="text" name="retinal_date" id="retinal_date" placeholder="วันที่ตรวจ Retinal Exam">
-									<input class="form-check-input" type="radio" name="retinal" id="retinal1" value="No DR"><label for="retinal1">No DR</label>
-									<input class="form-check-input" type="radio" name="retinal" id="retinal2" value="Mind DR"><label for="retinal2">Mind DR</label>
-									<input class="form-check-input" type="radio" name="retinal" id="retinal3" value="Moderate DR"><label for="retinal3">Moderate DR</label>
-									<input class="form-check-input" type="radio" name="retinal" id="retinal4" value="Severe DR"><label for="retinal4">Severe DR</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-retinal" type="radio" name="retinal" id="retinal1" value="No DR"><label for="retinal1">No DR</label>
+									<input class="input-retinal" type="radio" name="retinal" id="retinal2" value="Mind DR"><label for="retinal2">Mind DR</label>
+									<input class="input-retinal" type="radio" name="retinal" id="retinal3" value="Moderate DR"><label for="retinal3">Moderate DR</label>
+									<input class="input-retinal" type="radio" name="retinal" id="retinal4" value="Severe DR"><label for="retinal4">Severe DR</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-retinal')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Foot Exam:</div>
 								<div class="form-check form-check-inline ms-2">
 									<input type="text" name="foot_exam_date" id="foot_exam_date" placeholder="วันที่ตรวจ Foot Exam">
-									<input class="form-check-input" type="radio" name="dm_foot" id="dm_foot1" value="Low Risk"><label for="dm_foot1">Low Risk</label>
-									<input class="form-check-input" type="radio" name="dm_foot" id="dm_foot2" value="Moderate Risk"><label for="dm_foot2">Moderate Risk</label>
-									<input class="form-check-input" type="radio" name="dm_foot" id="dm_foot3" value="Hight Risk"><label for="dm_foot3">Hight Risk</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot1" value="Low Risk"><label for="dm_foot1">Low Risk</label>
+									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot2" value="Moderate Risk"><label for="dm_foot2">Moderate Risk</label>
+									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot3" value="Hight Risk"><label for="dm_foot3">Hight Risk</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-foot')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">ตรวจสุขภาพฟัน:</div>
 								<div class="form-check form-check-inline ms-2">
 									<input type="text" name="teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน">
-									<input class="form-check-input" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
-									<input class="form-check-input" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
+									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-teeth')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
 						</div>
@@ -2731,28 +2746,43 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Foot care:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="form-check-input" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
-									<input class="form-check-input" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
+									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-footcare')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam">
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Nutrition:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="form-check-input" type="radio" name="dm_nutrition" id="nutrition1" value="1"><label for="nutrition1">ให้ความรู้</label>
-									<input class="form-check-input" type="radio" name="dm_nutrition" id="nutrition2" value="0"><label for="nutrition2">ไม่ได้ให้ความรู้</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition1" value="1"><label for="nutrition1">ให้ความรู้</label>
+									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition2" value="0"><label for="nutrition2">ไม่ได้ให้ความรู้</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-nutrition')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition">
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Exercise:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="form-check-input" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
-									<input class="form-check-input" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> <a href="javascript:void(0);" class="dm-button"><span style="font-size:8pt;">❌</span>ล้างค่า</a>
+									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
+									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> 
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-exercise')"><span style="font-size:8pt;">❌</span>ล้างค่า</a>
 									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise">
 								</div>
 							</div>
 						</div>
+						<div>
+							<button type="button" class="dm-button">💾 บันทึกข้อมูล</button>
+						</div>
+						<script>
+							function clearRadioButton(className){
+								const comoHtItems = document.getElementsByClassName(className);
+								for (let index = 0; index < comoHtItems.length; index++) {
+									const element = comoHtItems[index];
+									element.checked = false;
+								}
+							}
+						</script>
 					</fieldset>
 				</div>
 			</td>

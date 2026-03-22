@@ -317,7 +317,7 @@ $thaidate = (date("Y")+543).date("-m-d");
 ?>
 
 <h1 class="forntsarabun1">แก้ไขข้อมูลผู้ป่วยเบาหวาน และเพิ่มข้อมูลประวัติผู้ป่วย</h1>
-<?php $hn = input('p_hn'); ?>
+<?php $hn = $_REQUEST['hn']; ?>
 <form action="diabetes_edit.php" method="post">
 	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
 		<TR>
@@ -327,7 +327,7 @@ $thaidate = (date("Y")+543).date("-m-d");
 						<TD align="center" bgcolor="#33CC66" class="forntsarabun">กรอกหมายเลข HN</TD>
 					</TR>
 					<TR>
-						<TD class="tb_font"><input name="p_hn" type="text" class="forntsarabun1"  value="<?php echo $hn;?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
+						<TD class="tb_font"><input name="hn" type="text" class="forntsarabun1"  value="<?php echo $hn;?>"/>&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
 					</TR>
 					<TR>
 						<TD>
@@ -363,7 +363,7 @@ if(!empty($hn) != ""){
 		$result = mysql_query($sql) or die( mysql_error() );
 		$arr_view = mysql_fetch_assoc($result);
 	
-		$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["p_hn"]."' LIMIT 1";
+		$sql = "Select vn From opday where thidate like '".$thaidate."%' and hn = '".$_POST["hn"]."' LIMIT 1";
 		$res = mysql_query($sql) or die( mysql_error() );
 		list($arr_view["vn"]) = mysql_fetch_row($res);
 		
