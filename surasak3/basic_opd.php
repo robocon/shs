@@ -2634,7 +2634,7 @@ mmHg </td>
 							$dmNumber = 'ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ';
 							$dm = $class_diabetes->getDiabetesFromHn($hn);
 							if(!empty($dm['dm_no'])){
-								$dmNumber = $dm['dm_no'].' <a href="diabetes_edit.php?hn='.$hn.'" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a>';
+								$dmNumber = $dm['dm_no'].' <a href="diabetes_clinic/diabetes_edit.php?hn='.$hn.'" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a>';
 							}
 							?>
 							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;"><strong><?= $dmNumber; ?></strong></span>
