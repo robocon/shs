@@ -3074,7 +3074,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	const drugTrim = drugcode.trim();
 
 	// คำนวณยาผู้ป่วย ถ้ายังเหลือจะทำการแจ้งเตือน
-	drugLeftOver(drugTrim).then((res)=>{
+	/*drugLeftOver(drugTrim).then((res)=>{
 		if(res.status==400){
 			Swal.fire({
 				title: '⚠️ แจ้งเตือน ⚠️', 
@@ -3082,7 +3082,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 				allowOutsideClick: false
 			});
 		}
-	});
+	});*/
 
 	checkAlphaBlocker(drugTrim).then((res)=>{
 		if(res.status==400){
@@ -4944,6 +4944,7 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 	?>
 	<div>
 		<?php
+		/*
 		$patient_hn = trim($_SESSION["hn_now"]);
 		$items = $classDrug->showDrDrugLeft($patient_hn);
 		if($items!==false){
@@ -4987,6 +4988,7 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 			$err = $classDrug->getError();
 			echo $err->errorMessage;
 		}
+		*/
 		?>
 	</div>
 </TD>
