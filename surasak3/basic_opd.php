@@ -2637,30 +2637,30 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">DM type:</div>
 								<div class="form-check form-check-inline">
-									<input class="input-dm-type" type="radio" name="dia1" id="dm_type1" value="DM type1">
+									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type1" value="DM type1">
 									<label class="form-check-label" for="dm_type1">DM type1</label>
-									<input class="input-dm-type" type="radio" name="dia1" id="dm_type2" value="DM type2">
+									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type2" value="DM type2">
 									<label class="form-check-label" for="dm_type2">DM type2</label>
-									<input class="input-dm-type" type="radio" name="dia1" id="dm_type3" value="Uncertain type">
+									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type3" value="Uncertain type">
 									<label class="form-check-label" for="dm_type3">Uncertain type</label>
 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-type')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 
 									<label class="form-label" for="nosis_d">วันที่วินิจฉัยครั้งแรก</label>
-									<input type="text" class="form-control" name="dm_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM">
+									<input type="text" class="form-control" name="dm_type_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM">
 								</div>
 							</div>
 							
 							<div class="mb-3 indent-left">
 								<div class="sub-title">โรคร่วม HT:</div>
 								<div class="form-check form-check-inline">
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht1" value="No">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht1" value="No">
 									<label class="form-check-label" for="dm_ht1">No</label>
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht2" value="Essential HT">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht2" value="Essential HT">
 									<label class="form-check-label" for="dm_ht2">Essential HT</label>
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht3" value="Secondary HT">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht3" value="Secondary HT">
 									<label class="form-check-label" for="dm_ht3">Secondary HT</label>
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht4" value="Uncertain type">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht4" value="Uncertain type">
 									<label class="form-check-label" for="dm_ht4">Uncertain type</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-como-ht')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
@@ -2671,21 +2671,21 @@ mmHg </td>
 								<div class="row">
 									<table>
 										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como1" name="como_etc[]" value="Neuropathy"> <label for="como1">Neuropathy</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como2" name="como_etc[]" value="Heart Failure"> <label for="como2">Heart Failure</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como3" name="como_etc[]" value="Nephropathy"> <label for="como3">Nephropathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como1" name="other_como[]" value="Neuropathy"> <label for="como1">Neuropathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como2" name="other_como[]" value="Heart Failure"> <label for="como2">Heart Failure</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como3" name="other_como[]" value="Nephropathy"> <label for="como3">Nephropathy</label></td>
 										</tr>
 										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como4" name="como_etc[]" value="CVD"> <label for="como4">CVD</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como5" name="como_etc[]" value="IHD"> <label for="como5">IHD</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como6" name="como_etc[]" value="Foot ulcer"> <label for="como6">Foot ulcer</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como4" name="other_como[]" value="CVD"> <label for="como4">CVD</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como5" name="other_como[]" value="IHD"> <label for="como5">IHD</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como6" name="other_como[]" value="Foot ulcer"> <label for="como6">Foot ulcer</label></td>
 										</tr>
 										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como7" name="como_etc[]" value="Retinopathy"> <label for="como7">Retinopathy</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como8" name="como_etc[]" value="Dyslipidemia"> <label for="como8">Dyslipidemia</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como7" name="other_como[]" value="Retinopathy"> <label for="como7">Retinopathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como8" name="other_como[]" value="Dyslipidemia"> <label for="como8">Dyslipidemia</label></td>
 											<td>
 												<label class="form-label" for="other_ht_date">วันที่วินิจฉัยครั้งแรก</label>
-												<input type="text" class="form-control" name="como_etc_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม">
+												<input type="text" class="form-control" name="other_como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม">
 											</td>
 										</tr>
 									</table>
@@ -2695,9 +2695,9 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">ประวัติสูบบุหรี่:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig1" value="ไม่สูบบุหรี่"><label for="dm_cig1">ไม่สูบบุหรี่</label>
-									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig2" value="สูบบุหรี่"><label for="dm_cig2">สูบบุหรี่</label>
-									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig3" value="NA"><label for="dm_cig3">NA</label>
+									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok1" value="ไม่สูบบุหรี่"><label for="dm_smok1">ไม่สูบบุหรี่</label>
+									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok2" value="สูบบุหรี่"><label for="dm_smok2">สูบบุหรี่</label>
+									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok3" value="NA"><label for="dm_smok3">NA</label>
 								</div>
 							</div>
 						</div>
@@ -2727,7 +2727,7 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">ตรวจสุขภาพฟัน:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน">
+									<input type="text" name="dm_teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน">
 									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
 									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-teeth')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
