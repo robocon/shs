@@ -45,4 +45,28 @@ class Database{
         return $this->msgError;
     }
 
+    /**
+     * เพิ่มข้อมูลเข้าไปในตาราง X ตาม Array ที่ส่งเข้ามา
+     * @param string $table
+     * @param array $data
+     * - key string แทนชื่อฟิลด์
+     * - value string แทนค่าของฟิลด์
+     */
+    public function insertData($table, $data){
+        $fields = array_keys($data);
+        $values = array();
+        foreach (array_values($data) as $val) {
+            $values[] = sprintf("'%s'", $val);
+        }
+        $sql = "INSERT INTO `$table` (`" . implode("`,`", $fields) . "`) VALUES (" . implode(",", $values) . ")";
+        $insert = $this->dbi->query($sql);
+        $res = false;
+        if($insert!==false){
+            $res = $this->dbi->insert_id;
+        }else{
+            $this->setMsgError($this->dbi->error);
+        }
+        return $res;
+    }
+
 }

@@ -40,6 +40,32 @@ class Diabetes extends Database
         return $item;
     }
 
+    public function insertdiabetes($data){
+        $strSQL = "INSERT INTO `diabetes_clinic` 
+		( `dm_no`,`thidate`,`dateN`,`hn`,`doctor`,
+		`ptname`,`ptright`,`dbbirt`,`sex`,`diagnosis`,
+		`diagdetail`,`ht`,`htdetail`,`smork`,`bw`,
+		`bmi`,`retinal`,`foot`,`l_bs`,`l_hbalc`,
+		`l_ldl`,`l_creatinine`,`l_urine`,`l_microal`,`foot_care`,
+		`nutrition`,`exercise`,`smoking`,`admit_dia`,`dt_heart`,
+		`dt_brain`,`height`,`weight`,`round`,`temperature`,
+		`pause`,`rate`,`bp1`,`bp2`,`officer`,
+		`register_date`,`ht_etc`,`retinal_date`,`foot_date`,`tooth_date`,
+		`tooth`,`l_ua`,`date_footcare`,`date_nutrition`,`date_exercise` ) 
+		VALUES 
+		('{$data['dm_no']}','{$data['thaidate']}','$dateN','$hn','{$data['doctor']}',
+		'{$data['ptname']}','{$data['ptright']}','{$data['dbirth']}','{$data['sex']}','$dia1',
+		'{$data['nosis_d']}','$ht','{$data['ht_d']}','{$data['cigarette']}','{$data['bw']}',
+		'{$data['bmi']}','$retinal','$foot','$bs','$hba',
+		'$ldl','$cr','$ur','$micro','$foot_care',
+		'$Nutrition','$Exercise','{$data['Smoking']}','$admit_dia','$dt_heart',
+		'$dt_brain','{$data['height']}','{$data['weight']}','{$data['round']}','{$data['temperature']}',
+		'{$data['pause']}','{$data['rate']}','{$data['bp1']}','{$data['bp2']}','$sOfficer',
+		'$register','$ht_etc','$retinal_date','$foot_date','$tooth_date',
+		'$tooth','{$data['l_ua']}','$date_footcare','$date_nutrition','$date_exercise')";
+    }
+
+
     /**
      * เพิ่มข้อมูลใน diabetes_clinic โดยเน้นที่การเพิ่ม retinal exam
      * @param string $dmNumber 
