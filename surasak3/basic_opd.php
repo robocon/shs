@@ -2,18 +2,10 @@
 session_start();
 require_once dirname(__FILE__).'/connect.php';
 require_once dirname(__FILE__).'/newBootstrap.php';
-// require_once dirname(__FILE__).'/class_file/class_drugreact.php';
-// require_once dirname(__FILE__).'/class_file/class_hypertension.php';
 
-/*
-// เอาไว้หาว่าในวันนี้ คนไข้คนไหนที่เข้าเคสเคยมีประวัติ ht บ้าง
-select a.*,b.* from (
-select row_id,hn from opd where thidate like '2567-11-08%'
-) as a left join hypertension_clinic as b on b.hn = a.hn
-where b.row_id is not null
-*/
-// include("connect.php");
-// mysql_query("SET NAMES UTF-8");
+$parts = parse_url(DOMAIN_PATH);
+$path_parts = explode('/', trim($parts['path'], '/')); // แยก path เป็น array
+$first_sub = DOMAIN.$path_parts[0]; // จะได้ 'sm3dev'
 
 $class_drug = new Drug();
 $class_hypertension = new Hypertension();
@@ -2627,6 +2619,7 @@ mmHg </td>
 					}
 				</style>
 				<div id="formDm" style="display:none;">
+				<form action="javascript:void(0);" method="post" id="dmForm">
 					<fieldset>
 						<legend class=""><strong>ฟอร์ม DM</strong></legend>
 						<div>
@@ -2678,21 +2671,21 @@ mmHg </td>
 								<div class="row">
 									<table>
 										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como1" name="ht_etc[]" value="Neuropathy"> <label for="como1">Neuropathy</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como2" name="ht_etc[]" value="Heart Failure"> <label for="como2">Heart Failure</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como3" name="ht_etc[]" value="Nephropathy"> <label for="como3">Nephropathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como1" name="como_etc[]" value="Neuropathy"> <label for="como1">Neuropathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como2" name="como_etc[]" value="Heart Failure"> <label for="como2">Heart Failure</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como3" name="como_etc[]" value="Nephropathy"> <label for="como3">Nephropathy</label></td>
 										</tr>
 										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como4" name="ht_etc[]" value="CVD"> <label for="como4">CVD</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como5" name="ht_etc[]" value="IHD"> <label for="como5">IHD</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como6" name="ht_etc[]" value="Foot ulcer"> <label for="como6">Foot ulcer</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como4" name="como_etc[]" value="CVD"> <label for="como4">CVD</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como5" name="como_etc[]" value="IHD"> <label for="como5">IHD</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como6" name="como_etc[]" value="Foot ulcer"> <label for="como6">Foot ulcer</label></td>
 										</tr>
 										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como7" name="ht_etc[]" value="Retinopathy"> <label for="como7">Retinopathy</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como8" name="ht_etc[]" value="Dyslipidemia"> <label for="como8">Dyslipidemia</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como7" name="como_etc[]" value="Retinopathy"> <label for="como7">Retinopathy</label></td>
+											<td><input type="checkbox" class="form-check-input" id="como8" name="como_etc[]" value="Dyslipidemia"> <label for="como8">Dyslipidemia</label></td>
 											<td>
 												<label class="form-label" for="other_ht_date">วันที่วินิจฉัยครั้งแรก</label>
-												<input type="text" class="form-control" name="como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม">
+												<input type="text" class="form-control" name="como_etc_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม">
 											</td>
 										</tr>
 									</table>
@@ -2772,7 +2765,10 @@ mmHg </td>
 							</div>
 						</div>
 						<div>
-							<button type="button" class="dm-button">💾 บันทึกข้อมูล</button>
+							<button type="button" class="dm-button" onclick="saveDmForm()">💾 บันทึกข้อมูล</button>
+							<input type="hidden" name="dmHn" value="<?= $hn; ?>">
+							<input type="hidden" name="typeDepart" value="opd">
+							<input type="hidden" name="action" value="save">
 						</div>
 						<script>
 							function clearRadioButton(className){
@@ -2782,8 +2778,33 @@ mmHg </td>
 									element.checked = false;
 								}
 							}
+
+							function saveDmForm(){
+								const dmForm = document.getElementById('dmForm');
+								let formData = {};
+								for (let index = 0; index < dmForm.elements.length; index++) {
+									const element = dmForm.elements[index];
+									if(element.type!=="submit" && element.value !== ''){
+										formData[element.name] = element.value;
+									}
+								}
+								onSaveDmForm(formData).then((res)=>{
+									console.log(res);
+								});
+							}
+
+							async function onSaveDmForm(data){
+								await fetch('<?= $first_sub ?>/api/index.php', {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/json'
+									},
+									body: JSON.stringify(data)
+								});
+							}
 						</script>
 					</fieldset>
+				</form>
 				</div>
 			</td>
 		</tr>
