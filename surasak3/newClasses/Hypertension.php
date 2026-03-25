@@ -109,6 +109,7 @@ class Hypertension extends Database
     public function newHtNumber(){
         $sql = "SELECT  MAX(`ht_no`) AS `ht_no` FROM `hypertension_clinic` LIMIT 1";
         $res = $this->__singleQuery($sql);
+        $res['ht_no'] = $res['ht_no'] + 1; 
         return $res;
     }
 
