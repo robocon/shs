@@ -489,6 +489,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		if(!empty($_POST['ht_no'])){
 			$postData['ht_no'] = $_POST['ht_no'];
 		}else{
+			// สร้างเลข ht_no ใหม่
 			$htNumber = $class_hypertension->newHtNumber();
 			$postData['ht_no'] = $htNumber['ht_no'];
 		}
@@ -537,6 +538,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$postData['joint_disease'] = 1;
 		}
 		
+		// เซ็ตค่าจาก $_POST ก่อนบันทึกหรืออัพเดท
 		$class_hypertension->setHypertension_clinic($postData);
 
 		if(empty($_POST['hypertension_id'])){
@@ -547,12 +549,9 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		}
 
 		$res = $class_hypertension->getHtHistoryThisDay($_POST["hn"]);
+		$hyperData = $class_hypertension->getOneFromHn($_POST["hn"]);
 		if($res['error_code']==400){
-
-			/**
-			 * @readme มันยังขาด DateN ถ้าไป insert ใน hypertension_history เลย มันจะได้วันที่เป็นปัจจุบัน แต่จริงๆ ต้องเป็นวันที่ผู้ป่วยลงทะเบียน HT เป็นครั้งแรก(อาจจะดึงจาก hypertension_clinic ปกติ)
-			 */
-			// $class_hypertension->setDateN()
+			$class_hypertension->setDateN($hyperData['dateN']); // OVERRIDE dateN ตอนเซ็ตค่า setHypertension_clinic ก่อนที่จะบันทึก setHypertension_clinic
 			$class_hypertension->insert_history();
 		}else{
 			$class_hypertension->setHistoryId($res['id']);
@@ -854,14 +853,12 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$query=mysql_query($sql);
 			$arr = mysql_fetch_array($query);
 			
-			
-			
 			$add="insert into screen_ht set date_active='$registerdate',
-											hn='".$_REQUEST["hn"]."',
-											ptname='".$_POST["ptname"]."',
-											age='".$cAge."',
-											officer = '".$_SESSION["sOfficer"]."',
-											datetime='$officer_date'";
+			hn='".$_REQUEST["hn"]."',
+			ptname='".$_POST["ptname"]."',
+			age='".$cAge."',
+			officer = '".$_SESSION["sOfficer"]."',
+			datetime='$officer_date'";
 			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
 		}
 	}
@@ -887,7 +884,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 											datetime='$officer_date',
 											cvrisk_score='".$_POST["cvriskscore"]."',
 											cvrisk_area='".$_POST["cvrisk_area"]."'";
-			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
+			$result = Mysql_Query($add) or die('insert screen_cvdrisk'.Mysql_Error());
 		}
 	}	
 
@@ -2351,7 +2348,6 @@ mmHg </td>
 									<td align="right"><strong>HT number : </strong></td>
 									<td>
 										<?php 
-										
 										if($htData['error_code']==400){
 											$htData = array();
 										}
@@ -2359,6 +2355,10 @@ mmHg </td>
 										$htYearNotion = '';
 										if(empty($htData['ht_no'])){
 											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
+										}else{
+											list($yHt, $mHt, $dHt) = explode('-', $htData['thidate']);
+											$thaiSemiDate = $dHt.' '.$def_month_th[$mHt].' '.($yHt+543);
+											$htYearNotion = ' [วันที่อัพเดท]: '.$thaiSemiDate;
 										}
 										?>
 										<?=$htData['ht_no'];?><?=$htYearNotion;?>
@@ -2369,7 +2369,6 @@ mmHg </td>
 									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
 									<td>
 										<?php 
-										
 										$htDiagItems = array(0=>'No',1=>'Essential HT',3=>'Secondary HT',2=>'Uncertain type');
 										foreach ($htDiagItems as $k => $v) {
 											$checked = (!is_null($htData['ht']) && $k==$htData['ht']) ? 'checked="checked"' : '' ;
