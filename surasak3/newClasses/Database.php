@@ -69,4 +69,17 @@ class Database{
         return $res;
     }
 
+    /**
+     * 
+     */
+    public function updateData($table, $data, $where){
+        $items = array();
+        foreach ($data as $field => $v) {
+            $items[] = "`$field` = '$v' ";
+        }
+        $sql = "UPDATE `$table` SET ".implode(',', $items).$where;
+        $update = $this->dbi->query($sql);
+        return $update;
+    }
+
 }

@@ -17,7 +17,6 @@ if (!in_array($dept, $allowed_depts)) {
     echo $json->encode(array('status' => 'error', 'message' => 'Invalid Department'));
     exit;
 }
-
 if($dept==='opd'){
 	include_once dirname(__FILE__).'/opd.php';
 }
