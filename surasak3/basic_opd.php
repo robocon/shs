@@ -2294,7 +2294,7 @@ mmHg </td>
 					$yy = $yy+543;
 					$mm = substr($date_active,5,2);
 					$dd = substr($date_active,8,2);
-					$date_active="$dd/$mm/$yy";				
+					$date_active="$dd/$mm/$yy";
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
 				?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
@@ -2324,7 +2324,7 @@ mmHg </td>
 				</script>
 				<?php 
 				// 
-				$htData = $class_hypertension->getOneFromHn($_POST['hn']);
+				$htData = $class_hypertension->getOneFromHn($cHn);
 				?>
 				<div id="formHt" style="<?=($htData['error_code']==400 ? 'display:none;' : '' );?>">
 					<style>
@@ -2358,7 +2358,7 @@ mmHg </td>
 										}else{
 											list($yHt, $mHt, $dHt) = explode('-', $htData['thidate']);
 											$thaiSemiDate = $dHt.' '.$def_month_th[$mHt].' '.($yHt+543);
-											$htYearNotion = ' [วันที่อัพเดท]: '.$thaiSemiDate;
+											$htYearNotion = ' [วันที่อัพเดท]: '.$thaiSemiDate.' <a href="diabetes_clinic/hypertension_edit.php?hn='.$cHn.'" title="ไปหน้าฟอร์ม Hypertension" target="_blank">➦</a>';
 										}
 										?>
 										<?=$htData['ht_no'];?><?=$htYearNotion;?>
@@ -2626,7 +2626,7 @@ mmHg </td>
 							$dmNumber = 'ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ';
 							$dm = $class_diabetes->getDiabetesFromHn($hn);
 							if(!empty($dm['dm_no'])){
-								$dmNumber = $dm['dm_no'].' <a href="diabetes_clinic/diabetes_edit.php?hn='.$hn.'" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a>';
+								$dmNumber = $dm['dm_no'].' <a href="diabetes_clinic/diabetes_edit.php?hn='.$hn.'" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a><input type="hidden" name="dm_no" value="'.$dm['dm_no'].'">';
 							}
 							?>
 							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;"><strong><?= $dmNumber; ?></strong></span>
@@ -2783,10 +2783,36 @@ mmHg </td>
 								let formData = {};
 								for (let index = 0; index < dmForm.elements.length; index++) {
 									const element = dmForm.elements[index];
-									if(element.type!=="submit" && element.value !== ''){
+									if (!element.name || !element.type) continue;
+
+									if( (element.type==="text" || element.type==="hidden")  && element.value !== ''){ 
+										formData[element.name] = element.value;
+									}else if( element.type==="checkbox" && element.checked===true){
+
+										if (element.name.includes('[]')) {
+											if (!Array.isArray(formData[element.name])) {
+												formData[element.name] = [];
+											}
+											formData[element.name].push(element.value);
+										}else{
+											formData[element.name] = element.value;
+										}
+										
+									}else if( element.type==="radio" && element.checked===true){
+										formData[element.name] = element.value;
+									}else if( element.type==="select-one"){
 										formData[element.name] = element.value;
 									}
 								}
+
+								// formData.thidate = '';
+								// formData.dateN = '';
+								formData.doctor = document.getElementById('doctorSelected').value;
+								formData.ptname = document.getElementById('ptname').value;
+								formData.ptright = '<?= $cPtright; ?>';
+								formData.dbbirt = '<?= $dbirth; ?>';
+								formData.sex = '<?= $cSex==='ช' ? '0' : '1' ; ?>';
+
 								onSaveDmForm(formData).then((res)=>{
 									console.log(res);
 								});
@@ -3576,7 +3602,7 @@ $room = $_POST['room'];
      </tr>
    </table>
 <input name="hn" type="hidden" value="<?php echo $_REQUEST["hn"];?>" />
-    <input name="ptname" type="hidden" value="<?php echo $fullname;?>" />
+    <input name="ptname" id="ptname" type="hidden" value="<?php echo $fullname;?>" />
 	<input name="vn" type="hidden" value="<?php echo $vn;?>" />
 	<input name="toborow" type="hidden" value="<?php echo $toborow;?>" />
 	<input name="appoint" type="hidden" value="<?php echo $app_row;?>" />

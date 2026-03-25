@@ -67,7 +67,9 @@ if ($_POST['do'] === 'save') {
 
 	$hypertention_edit_id = sprintf("%s", $_POST['hypertention_edit_it']);
 	$test = $hypertension->getHtHistoryThisDay($hn);
+	$hyperData = $hypertension->getOneFromHn($hn);
 	if($test['error'] == true){
+		$class_hypertension->setDateN($hyperData['dateN']);
 		$resHistory = $hypertension->insert_history();
 	}else{
 		$hypertension->setHistoryId($_POST['hypertention_edit_id']);
@@ -177,7 +179,7 @@ function calcage($birth)
 					</TR>
 					<TR>
 						<TD class="tb_font">
-							<input name="p_hn" type="text" class="forntsarabun1" id="p_hn" value="<?php echo $_REQUEST["p_hn"]; ?>" />&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
+							<input name="hn" type="text" class="forntsarabun1" id="hn" value="<?php echo $_REQUEST["hn"]; ?>" />&nbsp;<input name="Submit" type="submit" class="forntsarabun1" value="ตกลง" /></TD>
 					</TR>
 					<TR>
 						<TD></TD>
@@ -196,8 +198,8 @@ if($_SESSION['x_message']){
     unset($_SESSION['x_message']);
 }
 
-$hn = trim($_POST["p_hn"]);
-if (!empty($_POST["p_hn"]) != "") {
+$hn = trim($_REQUEST["hn"]);
+if (!empty($_REQUEST["hn"]) != "") {
 
 	$csql = sprintf("SELECT * FROM `hypertension_clinic` WHERE hn='%s' ",mysql_real_escape_string($hn));
 	$cquery = mysql_query($csql);
@@ -237,7 +239,7 @@ if (!empty($_POST["p_hn"]) != "") {
 		$urlCallBack = 'hypertension_edit.php';
 		require_once 'hypertension_form.php';
 	}
-} //ปิด ค้นหา hn ใน opcard	$_REQUEST["p_hn"]
+} //ปิด ค้นหา hn ใน opcard	$_REQUEST["hn"]
 // include("../unconnect.inc");
 
 include 'footer.php';
