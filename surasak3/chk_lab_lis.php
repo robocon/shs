@@ -152,13 +152,13 @@ if ($action == 'insert') {
     exit;
 }elseif ($action == 'showlab') {
     
-    $code = input_get('part');
-
-    $sql = "SELECT `name` FROM `chk_company_list` WHERE `code` = '$part' ";
+    $part = $_GET['part'];
+    
+    $sql = sprintf("SELECT `name` FROM `chk_company_list` WHERE `code` = '%s' ", $part);
     $db->select($sql);
     $company = $db->get_item();
 
-    $sql = "SELECT * FROM `chk_lab_items` WHERE `part` = '$part' ORDER BY `id` ASC ";
+    $sql = sprintf("SELECT * FROM `chk_lab_items` WHERE `part` = '%s' ORDER BY `id` ASC ", $part);
     $db->select($sql);
     $items = $db->get_items();
     ?>

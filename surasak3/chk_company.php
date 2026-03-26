@@ -388,7 +388,7 @@ if ( $views == 'search' ) {
         // เปิดให้ใช้งานในเมนู manual_expense เพื่อเพิ่มค่าใช้จ่าย
         // เทศบาลเมืองพิชัย 67
         // $expense_list = array('องค์การบริหารส่วนจังหวัดลำปาง 68');
-        $expense_list = array('แขวงทางหลวงลำปางที่ 2 มี.ค. 69');
+        $expense_list = array('บริษัท เบสท์ เอาท์ซอสซิ่ง โซลูชั่น จำกัด 69');
         foreach ($items as $key => $item) {
 
             $companyCode = $item['code']; 

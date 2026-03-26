@@ -46,9 +46,11 @@ $result = new ClassResulthead();
 $opacc = new ClassOpacc();
 
 $dateSelect = sprintf("%s", $_POST['dateSelect']);
-$date = (date('Y')+543).date('-m-d');
+$dateEn = date('Y-m-d');
+$date = ad_to_bc($dateEn);
 if(!empty($dateSelect)){
-    $date = $dateSelect;
+    $date = ad_to_bc($dateSelect);
+    $dateEn = $dateSelect;
 }
 
 ?>
@@ -112,7 +114,7 @@ if(!empty($dateSelect)){
                 </div>
                 <div class="col-auto">
                     <label for="dateSelect" class="visually-hidden"></label>
-                    <input type="date" class="form-control" id="dateSelect" name="dateSelect" value="<?=$date;?>">
+                    <input type="date" class="form-control" id="dateSelect" name="dateSelect" value="<?=$dateEn;?>">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary mb-3">แสดง</button>
@@ -270,17 +272,10 @@ if(!empty($dateSelect)){
                                 $departKey[] = $v['row_id'];
                             }
                             $depart_id = http_build_query($departKey);
-
-                            $hn = $value['hn'];
-                            $vn = $value['vn'];
-                            $date = substr($value['date'],0,10);
                             ?>
-                            <div class="btn-group">
-                                <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-warning btn-sm" target="_blank">
-                                    <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
-                                </a>
-                                <a href="reportcash1.php?hn=<?=$hn;?>&vn=<?=$vn;?>&date=<?=$date;?>" class="btn btn-secondary btn-sm">🕵</a>
-                            </div>
+                            <a href="manual_expense_lab_remove.php?opacc_id=<?= $opacc_id; ?>&depart_id=<?= $depart_id; ?>" class="btn btn-warning btn-sm" target="_blank">
+                                <?= $value['depart'] ?> <?= $value['price'] ?> <?= $value['credit'] ?> 🗑️
+                            </a>
                             <?php
                             }
                         ?></div><?php
