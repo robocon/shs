@@ -13,7 +13,6 @@ if($action==='save'){
     }
     
     $currentDate = date('Y-m-d');
-    $data['dmHn'] = '99999999';
     $dmData = array(
         'dm_no' => $data['dm_no'],
         'thidate' => $currentDate, // วันที่เริ่มบันทึก
@@ -24,6 +23,15 @@ if($action==='save'){
         'ptright' => $data['ptright'],
         'dbbirt' => $data['dbbirt'],
         'sex' => $data['sex'],
+        'weight' => $data['weight'],
+        'height' => $data['height'],
+        'temperature' => $data['temperature'],
+        'round' => $data['round'],
+        'pause' => $data['pause'],
+        'rate' => $data['rate'],
+        'bp1' => $data['bp1'],
+        'bp2' => $data['bp2'],
+        'bmi' => $data['bmi'],
 
         'diagnosis' => $data['dm_type'],
         'diagdetail' => $data['dm_type_date'],
@@ -48,38 +56,80 @@ if($action==='save'){
         'officer' => $_SESSION['sOfficer']
     );
 
+    $screenDmData = array(
+        'hn' => $data['dmHn'],
+        'ptname' => $data['ptname'],
+        'age' => urldecode($data['age']),
+        'date_active' => date('Y-m-d'),
+        'officer' => $_SESSION['sOfficer'],
+        'datetime' => date('Y-m-d H:i:s')
+    );
+
     $classDiabetes = new Diabetes();
+
+    ####### เพิ่มข้อมูลเข้า screen_dm อัตโนมัตถ้ายังไม่มีข้อมูล #######
+    $screen = $classDiabetes->getScreenDm($data['dmHn']);
+    if($screen===false){
+        $classDiabetes->insertData('screen_dm',$screenDmData);
+    }
+    ####### เพิ่มข้อมูลเข้า screen_dm อัตโนมัตถ้ายังไม่มีข้อมูล #######
+
+    $validate = false;
+
     $dm = $classDiabetes->getDiabetesFromHn($data['dmHn'],array('row_id','dm_no','dateN'));
     if($dm===false){
-        $dmClinicId = $classDiabetes->insertData('diabetes_clinic',$dmData);
-        dump($res);
 
+        $no = new Runno();
+        $runno = $no->getRunno('diabetes');
+        $dmData['dm_no'] = $runno;
+
+        $no->nextRunno = $runno;
+        $no->setNextRunno();
+        
+        $dmData['register_date'] = date('Y-m-d H:i:s');
+        $dmClinicId = $classDiabetes->insertData('diabetes_clinic',$dmData);
+        if($dmClinicId!==false){
+            $validate = true;
+        }
 
     }else{
+        
+
         // update
         $dmUpdate = $dmData;
         unset($dmUpdate['dm_no']);
         unset($dmUpdate['thidate']);
         unset($dmUpdate['ptname']);
 
+        $dmUpdate['officer_edit'] = $_SESSION['sOfficer'];
         $dmClinicId = $dm['row_id'];
         $res = $classDiabetes->updateData('diabetes_clinic',$dmUpdate," WHERE `row_id` = '$dmClinicId' ");
-        dump($res);
-        
+        if($res!==false){
+            $validate = true;
+        }
     }
 
+    $historyId = $classDiabetes->findDiabetesHistoryToday($data['dmHn']);
+    if($historyId===false){
+        
+        $history_insert = $classDiabetes->insertData('diabetes_clinic_history',$dmData);
+        if($history_insert!==false){
+            $validate = true;
+        }
 
-    $classDiabetes->findDiabetesHistoryToday();
+    }else{
+        $res = $classDiabetes->updateData('diabetes_clinic_history',$dmUpdate," WHERE `row_id` = '$historyId' ");
+        if($res!==false){
+            $validate = true;
+        }
+    }
 
-
-    /**
-     * @todo
-     * [] เพิ่มไปใน history
-     * [] เพิ่มไปใน screen_dm
-     */
-    // $mainDm = $classDiabetes->getDiabetesFromId($dmClinicId);
-    // dump($mainDm);
-    // $res = $classDiabetes->insertData('diabetes_clinic_history',$mainDm);
-    // dump($res);
+    if($validate===false){
+        $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ','dm_clinic_id'=>$dmClinicId);
+    }else{
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย');
+    }
+    header('Content-Type: application/json');
+    echo $json->encode($res);
     exit;
 }

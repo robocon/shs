@@ -252,4 +252,17 @@ class Diabetes extends Database
         }
         return $res;
     }
+
+    /**
+     * 
+     */
+    public function getScreenDm($hn = ''){
+        $sql = sprintf("SELECT `row_id` FROM `screen_dm` WHERE `hn` = '%s' LIMIT 1;", $this->dbi->real_escape_string($hn));
+        $q = $this->dbi->query($sql);
+        $res = false;
+        if($q->num_rows>0){
+            $res = $q->fetch_assoc();
+        }
+        return $res;
+    }
 }

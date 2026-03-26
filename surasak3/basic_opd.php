@@ -1858,7 +1858,7 @@ mmHg </td>
              </tr>
              <tr>
                <td align="right" class="data_show">BMI :</td>
-               <td align="left"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>" class="forntsarabun1" /></td>
+               <td align="left"><input name="bmi" id="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>" class="forntsarabun1" /></td>
                <td align="right"><?
 
 //if(substr($toborow,5) == "ตรวจสุขภาพประจำปี"){	
@@ -2636,11 +2636,11 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">DM type:</div>
 								<div class="form-check form-check-inline">
-									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type1" value="DM type1">
+									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type1" value="0">
 									<label class="form-check-label" for="dm_type1">DM type1</label>
-									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type2" value="DM type2">
+									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type2" value="1">
 									<label class="form-check-label" for="dm_type2">DM type2</label>
-									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type3" value="Uncertain type">
+									<input class="input-dm-type" type="radio" name="dm_type" id="dm_type3" value="2">
 									<label class="form-check-label" for="dm_type3">Uncertain type</label>
 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-type')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
@@ -2653,14 +2653,14 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">โรคร่วม HT:</div>
 								<div class="form-check form-check-inline">
-									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht1" value="No">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht1" value="0">
 									<label class="form-check-label" for="dm_ht1">No</label>
-									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht2" value="Essential HT">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht2" value="1">
 									<label class="form-check-label" for="dm_ht2">Essential HT</label>
-									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht3" value="Secondary HT">
-									<label class="form-check-label" for="dm_ht3">Secondary HT</label>
-									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht4" value="Uncertain type">
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht4" value="2">
 									<label class="form-check-label" for="dm_ht4">Uncertain type</label> 
+									<input class="input-como-ht" type="radio" name="dm_como_ht" id="dm_ht3" value="3">
+									<label class="form-check-label" for="dm_ht3">Secondary HT</label>
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-como-ht')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
@@ -2694,9 +2694,9 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">ประวัติสูบบุหรี่:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok1" value="ไม่สูบบุหรี่"><label for="dm_smok1">ไม่สูบบุหรี่</label>
-									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok2" value="สูบบุหรี่"><label for="dm_smok2">สูบบุหรี่</label>
-									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok3" value="NA"><label for="dm_smok3">NA</label>
+									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok1" value="0"><label for="dm_smok1">ไม่สูบบุหรี่</label>
+									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok2" value="1"><label for="dm_smok2">สูบบุหรี่</label>
+									<input class="form-check-input" type="radio" name="dm_smoked" id="dm_smok3" value="2"><label for="dm_smok3">NA</label>
 								</div>
 							</div>
 						</div>
@@ -2764,7 +2764,7 @@ mmHg </td>
 							</div>
 						</div>
 						<div>
-							<button type="button" class="dm-button" onclick="saveDmForm()">💾 บันทึกข้อมูล</button>
+							<button type="button" class="dm-button" onclick="saveDmForm()" style="padding:8px;">💾 บันทึกข้อมูล</button>
 							<input type="hidden" name="dmHn" value="<?= $hn; ?>">
 							<input type="hidden" name="typeDepart" value="opd">
 							<input type="hidden" name="action" value="save">
@@ -2778,8 +2778,61 @@ mmHg </td>
 								}
 							}
 
+							let Toast = Swal.mixin({
+								toast: true,
+								position: "top-end",
+								showConfirmButton: false,
+								timer: 3000,
+								timerProgressBar: true,
+								didOpen: (toast) => {
+									toast.onmouseenter = Swal.stopTimer;
+									toast.onmouseleave = Swal.resumeTimer;
+								}
+							});
+
 							function saveDmForm(){
 								const dmForm = document.getElementById('dmForm');
+								const doctorId = document.getElementById('doctorSelected').value;
+								const weight = document.getElementById('weight').value;
+								const height = document.getElementById('height').value;
+								const temperature = document.getElementById('temperature').value;
+								const round = document.getElementById('waist').value; // ใน db เป็น round
+								const pause = document.getElementById('pause').value;
+								const rate = document.getElementById('rate').value;
+								const bp1 = document.getElementById('bp1').value;
+								const bp2 = document.getElementById('bp2').value;
+								const bmi = document.getElementById('bmi').value;
+
+								let validate = true;
+								let validateTxt = '';
+								//  Pulse (ชีพจร) หรือ Rate (อัตราการเต้น)
+								if(pause==''){
+									validate = false;
+									validateTxt = 'กรุณากรอกชีพจร (Pulse)';
+								}else if(rate==''){
+									validate = false;
+									validateTxt = 'กรุณากรอกอัตราการเต้น (Rate)';
+								}else if(bp1=='' || bp2==''){
+									validate = false;
+									validateTxt = 'กรุณากรอกค่าความดัน';
+								}else if(round==''){
+									validate = false;
+									validateTxt = 'กรุณากรอกรอบเอว';
+								}else if(doctorId==0){
+									validate = false;
+									validateTxt = 'กรุณาเลือกแพทย์';
+								}
+								
+								if(validate===false){
+									Swal.fire({
+										icon: 'warning',
+										title: validateTxt,
+										allowOutsideClick: false
+									});
+									return false;
+								}
+
+
 								let formData = {};
 								for (let index = 0; index < dmForm.elements.length; index++) {
 									const element = dmForm.elements[index];
@@ -2805,27 +2858,47 @@ mmHg </td>
 									}
 								}
 
-								// formData.thidate = '';
-								// formData.dateN = '';
 								formData.doctor = document.getElementById('doctorSelected').value;
 								formData.ptname = document.getElementById('ptname').value;
 								formData.ptright = '<?= $cPtright; ?>';
 								formData.dbbirt = '<?= $dbirth; ?>';
 								formData.sex = '<?= $cSex==='ช' ? '0' : '1' ; ?>';
+								formData.weight = weight;
+								formData.height = height;
+								formData.temperature = temperature;
+								formData.round = round;
+								formData.pause = pause;
+								formData.rate = rate;
+								formData.bp1 = bp1;
+								formData.bp2 = bp2;
+								formData.bmi = bmi;
+								formData.age = encodeURIComponent('<?= $age; ?>');
 
 								onSaveDmForm(formData).then((res)=>{
-									console.log(res);
+									if(res.status===200){
+										Toast.fire({
+											icon: "success",
+											title: res.message
+										});
+									}else{
+										Toast.fire({
+											icon: "error",
+											title: res.message
+										});
+									}
 								});
 							}
 
 							async function onSaveDmForm(data){
-								await fetch('<?= $first_sub ?>/api/index.php', {
+								const response = await fetch('<?= $first_sub ?>/api/index.php', {
 									method: 'POST',
 									headers: {
 										'Content-Type': 'application/json'
 									},
 									body: JSON.stringify(data)
 								});
+								const dataResponse = await response.json();
+								return dataResponse ;
 							}
 						</script>
 					</fieldset>
