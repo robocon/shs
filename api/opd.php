@@ -16,8 +16,8 @@ if($action==='save'){
     $data['dmHn'] = '99999999';
     $dmData = array(
         'dm_no' => $data['dm_no'],
-        'thidate' => $currentDate,
-        'dateN' => $currentDate,
+        'thidate' => $currentDate, // วันที่เริ่มบันทึก
+        'dateN' => $currentDate, // วันที่อัพเดท
         'hn' => $data['dmHn'],
         'doctor' => $doctorName,
 		'ptname' => $data['ptname'],
@@ -59,14 +59,18 @@ if($action==='save'){
         // update
         $dmUpdate = $dmData;
         unset($dmUpdate['dm_no']);
-        unset($dmUpdate['dateN']);
+        unset($dmUpdate['thidate']);
         unset($dmUpdate['ptname']);
 
         $dmClinicId = $dm['row_id'];
         $res = $classDiabetes->updateData('diabetes_clinic',$dmUpdate," WHERE `row_id` = '$dmClinicId' ");
-        
+        dump($res);
         
     }
+
+
+    $classDiabetes->findDiabetesHistoryToday();
+
 
     /**
      * @todo
