@@ -270,13 +270,15 @@ if ($action==='udpateTime') {
                         <td valign="top" class="font1"><?= $result['p_edit'] ?> </td>
                         <td valign="top" class="font1"><?= $result['programmer'] ?> </td>
                         <td valign="top" class="font1"><!-- วันที่ดำเนินการ -->
+                            <div id="item-<?=$id;?>">
                             <?php
                             if($_SESSION['sIdname']==='dan' || $_SESSION['smenucode']==='ADM'){
-                                ?><a href="#<?=$id;?>" onclick="editDateTime('<?=$id;?>','<?=$dateEnd;?>','<?=$timeEnd;?>','<?=$dateStart;?>','<?=$timeStart;?>')"><?= $result['dateend'] ?></a><?
+                                ?><a href="#item-<?=$id;?>" onclick="editDateTime('<?=$id;?>','<?=$dateEnd;?>','<?=$timeEnd;?>','<?=$dateStart;?>','<?=$timeStart;?>')"><?= $result['dateend'] ?></a><?
                             }else{
                                 echo $result['dateend'];
                             }
                             ?>
+                            </div>
                         </td>
                         <td align="center" valign="top" class="font1"><?= $result['hold'] ?></td>
                     </tr>
@@ -323,6 +325,7 @@ if ($action==='udpateTime') {
                                 icon: 'success',
                                 title: 'บันทึกข้อมูลเรียบร้อย'
                             }).then((res)=>{
+                                window.location.hash = `#item-${id}`;
                                 location.reload();
                             });
                         }else{
