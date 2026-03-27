@@ -27,7 +27,7 @@ class Diabetes extends Database
      * @return array $item
      */
     public function getDiabetesFromHn($hn=null, $field=array()){
-        $fieldSelect = '`dm_no`';
+        $fieldSelect = '*';
         if(!empty($field)){
             $fieldSelect = '`'.implode('`,`',$field).'`';
         }
@@ -265,4 +265,15 @@ class Diabetes extends Database
         }
         return $res;
     }
+
+    public function delDiabetes($id){
+        $sql = sprintf("DELETE FROM diabetes_clinic WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
+        $this->dbi->query($sql);
+    }
+
+    public function delDiabetesHistory($id){
+        $sql = sprintf("DELETE FROM diabetes_clinic_history WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
+        $this->dbi->query($sql);
+    }
+
 }

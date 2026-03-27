@@ -34,25 +34,25 @@ if($action==='save'){
         'bmi' => $data['bmi'],
 
         'diagnosis' => $data['dm_type'],
-        'diagdetail' => $data['dm_type_date'],
+        'diagdetail' => ad_to_bc($data['dm_type_date']),
         'ht' => $data['dm_como_ht'],
         'ht_etc' => implode(',', $data['other_como[]']),
-        'htdetail' => $data['other_como_date'],
+        'htdetail' => ad_to_bc($data['other_como_date']),
         'smork' => $data['dm_smoked'],
 
         'retinal' => $data['retinal'],
-        'retinal_date' => $data['retinal_date'],
-        'foot_date' => $data['foot_exam_date'],
+        'retinal_date' => ad_to_bc($data['retinal_date']),
+        'foot_date' => ad_to_bc($data['foot_exam_date']),
         'foot' => $data['dm_foot'],
-        'tooth_date' => $data['dm_teeth_date'],
+        'tooth_date' => ad_to_bc($data['dm_teeth_date']),
         'tooth' => $data['dm_teeth'],
 
         'foot_care' => $data['dm_footcare'],
-        'date_footcare' => $data['date_footcare'],
+        'date_footcare' => ad_to_bc($data['date_footcare']),
         'nutrition' => $data['dm_nutrition'],
-        'date_nutrition' => $data['date_nutrition'],
+        'date_nutrition' => ad_to_bc($data['date_nutrition']),
         'exercise' => $data['dm_exercise'],
-        'date_exercise' => $data['date_exercise'],
+        'date_exercise' => ad_to_bc($data['date_exercise']),
         'officer' => $_SESSION['sOfficer']
     );
 
@@ -76,7 +76,7 @@ if($action==='save'){
 
     $validate = false;
 
-    $dm = $classDiabetes->getDiabetesFromHn($data['dmHn'],array('row_id','dm_no','dateN'));
+    $dm = $classDiabetes->getDiabetesFromHn($data['dmHn'],array('row_id','hn'));
     if($dm===false){
 
         $no = new Runno();
@@ -125,10 +125,14 @@ if($action==='save'){
     }
 
     if($validate===false){
-        $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ','dm_clinic_id'=>$dmClinicId);
+        $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ');
     }else{
-        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย');
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','dm_clinic_id'=>$dmClinicId,'hn'=>$dmData['hn']);
     }
+
+    // $classDiabetes->delDiabetes($dmClinicId);
+    // $classDiabetes->delDiabetesHistory($historyId);
+
     header('Content-Type: application/json');
     echo $json->encode($res);
     exit;
