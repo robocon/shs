@@ -1,7 +1,9 @@
 <?php
-include_once dirname(__FILE__).'/bootstrap.php';
-include_once dirname(__FILE__).'/class_file/class_opcard.php';
-include_once dirname(__FILE__).'/class_file/class_opd.php';
+include_once dirname(__FILE__).'/newBootstrap.php';
+
+$parts = parse_url(DOMAIN_PATH);
+$path_parts = explode('/', trim($parts['path'], '/')); // แยก path เป็น array
+$first_sub = DOMAIN.$path_parts[0]; // จะได้ 'sm3dev'
 
 /**
  * api/Opd.php?action=saveRetinal
@@ -70,6 +72,8 @@ if($action == 'getOpd'){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retinal Exam</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
+    <script type="text/javascript" src="epoch_classes.js"></script>
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
 </head>
@@ -79,6 +83,12 @@ if($action == 'getOpd'){
         font-family: "TH SarabunPSK";
         font-size: 16pt;
     }
+    table.calendar td,
+    table.calendar th,
+    table.calendar input,
+    table.calendar select{
+        font-size: 14pt;
+    }
     #navMenu, #opdTb tr th, .swal2-html-container table tr th{
         background-color: #13795b;
         color:#ffffff;
@@ -86,7 +96,18 @@ if($action == 'getOpd'){
     label:hover{
         cursor: pointer;
     }
+    .subHeading{
+        padding-left: 8px;
+        border-left: 4px solid #13795b;
+    }
 </style>
+<script type="text/javascript">
+	var date;
+	window.onload = function() {
+		popup1 = new Epoch('date','popup',document.getElementById('retinal_date'),false);
+	};
+</script>
+
 <nav class="navbar navbar-expand-lg" id="navMenu" data-bs-theme="dark">
     <div class="container-fluid">
     <a class="navbar-brand" href="../nindex.htm">🏠</a>
@@ -105,7 +126,7 @@ if($action == 'getOpd'){
     </div>
     </div>
 </nav>
-<div class="container">
+<div class="container-md">
     <h3 class="mt-3">ฟอร์มกรอกข้อมูล Retinal Exam</h3>
     <form class="row mt-3 mb-3" action="retinalExam.php" method="POST">
         <div class="col-sm-8 col-md-6 col-lg-4">
@@ -121,15 +142,22 @@ if($action == 'getOpd'){
     <?php
     $page = sprintf("%s", $_POST['page']);
     if(!empty($page) && $page==="search"){
-        $opc = $opcard->getByHn($_POST['hnSearch'],array('`hn`','`ptright`'));
+        $opc = $opcard->getByHn($_POST['hnSearch'],array('`hn`','`ptright`','`idguard`'));
         if($opc!==false){
+
+        $idguardCode = substr($opc['idguard'],0,4);
+        if($idguardCode=='MX07'){
+            ?>
+            <div class="alert alert-danger" role="alert">⚠️ ผู้ป่วยมีถานะทำลายประวัติ กรุณาติดต่อแผนกทะเบียนเพื่อทำการปรับปรุงข้อมูล</div>
+            <?php
+        }
         ?>
         <hr>
         <div class="row mb-3 mt-3">
         <form class="" id="userForm" action="retinalExam.php" method="post">
             <div class="row">
                 <div class="col-12">
-                    <label class="form-label fw-bold">ข้อมูลเบื้องต้น</label>
+                    <label class="form-label fw-bold subHeading">ข้อมูลเบื้องต้น</label>
                 </div>
             </div>
             <div class="row mb-3">
@@ -153,7 +181,7 @@ if($action == 'getOpd'){
             </div>
             <div class="row mb-3">
                 <div class="col-sm-8 col-md-6 col-lg-4">
-                    <label for="date" class="form-label fw-bold">วันที่มารับบริการ</label>
+                    <label for="date" class="form-label fw-bold subHeading">วันที่มารับบริการ</label>
                     <div class="input-group">
                         <input type="text" class="form-control" id="date" name="date">
                         <button class="btn btn-secondary" type="button" onclick="selectDate()">เลือกวันที่</button>
@@ -163,7 +191,9 @@ if($action == 'getOpd'){
             </div>
             
             <div class="row mb-3">
-                <div class="col-12 fw-bold">ข้อมูลซักประวัติ <span id="afterSelectOpd" style="color: red;"></span></div>
+                <div class="col-12">
+                    <label for="date" class="form-label fw-bold subHeading">ข้อมูลซักประวัติ <span id="afterSelectOpd" style="color: red;"></span></label>
+                </div>
                 <div class="col-auto mb-2">
                     <label for="height" class="form-label fw-bold">ส่วนสูง</label>
                     <div class="form-text" id="showHeight">-</div>
@@ -213,13 +243,15 @@ if($action == 'getOpd'){
 
             <div class="row mb-3">
                 <div class="col-sm-8 col-md-6 col-lg-4">
-                    <label for="retinal_date" class="form-label fw-bold">วันที่ได้รับการตรวจตา</label>
-                    <input type="date" class="form-control" id="retinal_date" name="retinal_date" placeholder="เซนติเมตร">
+                    <label for="retinal_date" class="form-label fw-bold subHeading">วันที่ได้รับการตรวจตา</label>
+                    <input type="text" class="form-control" id="retinal_date" name="retinal_date" placeholder="เลือกวันที่">
                 </div>
             </div>
             
             <div class="row mb-3">
-                <label class="form-label fw-bold">Retina Exam</label>
+                <div class="col-12">
+                    <label class="form-label fw-bold subHeading">Retina Exam</label>
+                </div>
                 <div class="col-auto">
                     <div class="form-check form-check-inline">
                         <input type="radio" class="form-check-input retina-exam" name="retinal" id="retinal1" value="No DR">
@@ -241,7 +273,9 @@ if($action == 'getOpd'){
             </div>
 
             <div class="mb-3 row">
-                <label class="form-label fw-bold">การรักษา</label>
+                <div class="col-12">
+                    <label class="form-label fw-bold subHeading">การรักษา</label>
+                </div>
                 <div class="col-auto">
                     <div class="form-check form-check-inline">
                         <input type="radio" class="form-check-input treatment" name="follow" id="follow1" value="ติดตามอาการ">
@@ -372,8 +406,15 @@ if($action == 'getOpd'){
                 let dateValue = document.getElementById('date').value;
                 let retinalDateValue = document.getElementById('retinal_date').value;
 
-                if(retinalDateValue==''){
+                if(dateValue==''){
                     Swal.fire({
+                        icon: "warning",
+                        title: `เพื่อความสมบูรณ์ของข้อมูล<br>กรุณาเลือก วันที่มารับบริการ`
+                    });
+                    return false;
+                }else if(retinalDateValue==''){
+                    Swal.fire({
+                        icon: "warning",
                         title: "กรุณาเลือก วันที่ได้รับการตรวจตา",
                         didClose: ()=>{
                             document.getElementById('retinal_date').focus();
@@ -399,6 +440,7 @@ if($action == 'getOpd'){
                 }
                 if(examTest===false){
                     Swal.fire({
+                        icon: "warning",
                         title: "กรุณาเลือกตัวเลือก Retinal Exam"
                     });
                     return false;
@@ -416,6 +458,7 @@ if($action == 'getOpd'){
                 }
                 if(treatmentTest===false){
                     Swal.fire({
+                        icon: "warning",
                         title: "กรุณาเลือกตัวเลือก การรักษา"
                     });
                     return false;
@@ -437,7 +480,11 @@ if($action == 'getOpd'){
                 
                 onSave(formData).then((res)=>{
                     if(res.status===200){
-                        Swal.fire("บันทึกข้อมูลเรียบร้อย").then(()=>{
+                        Swal.fire({
+                            icon: "success",
+                            title: "บันทึกข้อมูลเรียบร้อย",
+                            allowOutsideClick: false
+                        }).then(()=>{
                             window.location='retinalExam.php';
                         });
                     }else{
@@ -449,7 +496,9 @@ if($action == 'getOpd'){
             });
 
             async function onSave(formData){
-                const response = await fetch('api/Opd.php?action=saveRetinal', {
+                formData.typeDepart = 'opd';
+                formData.action = 'saveRetinal';
+                const response = await fetch('<?= $first_sub ?>/api/index.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

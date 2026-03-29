@@ -8,6 +8,23 @@ $data = $json->decode($json_input);
 // 1. กำหนด Whitelist ของตารางที่อนุญาต (เพื่อความปลอดภัย)
 $allowed_depts = array('opd', 'dental', 'doctor');
 
+/**
+ * @readme ตัวอย่างการส่งข้อมูล
+ * 
+ * Header ส่งมาเป็น 'Content-Type': 'application/json'
+ * Method เป็น POST
+ * ดูตัวอย่างได้จาก https://youmightnotneedjquery.com/#post
+ * 
+ * Parameter ที่จำเป็น
+ * @param string typeDepart เป็นตัวบอกว่าจะใช้แผนกไหน
+ * @param string action     เป็นตัวบอกว่าจะให้ทำอะไรใน typeDepart นั้นอีกที
+ * 
+ * การตัด URL ของ PHP ใน surasak38
+ * 
+ * $parts = parse_url(DOMAIN_PATH);
+ * $path_parts = explode('/', trim($parts['path'], '/')); // แยก path เป็น array
+ * $first_sub = DOMAIN.$path_parts[0]; // จะได้pathเต็มเป็น 'http://xxxxx/sm3'
+ */
 $action = !empty($data['action']) ? $data['action'] : '';
 $dept = !empty($data['typeDepart']) ? $data['typeDepart'] : '';
 // $id_field = !empty($data['id_field']) ? $data['id_field'] : ''; // ชื่อ Primary Key

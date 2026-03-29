@@ -136,4 +136,91 @@ if($action==='save'){
     header('Content-Type: application/json');
     echo $json->encode($res);
     exit;
+
+}else if($action==='saveRetinal'){
+
+    // $opcard = new Opcard();
+    $dm = new Diabetes();
+    $no = new Runno();
+
+    // $post = $json->decode($jsonData);
+
+    // ดูว่าใน diabetes_clinic เคยมีข้อมูลแล้วรึยัง
+    $item = $dm->getDiabetesFromHn($data['hn']);
+
+    /**
+     * @todo ขาดข้อมูล
+     * - ptright
+     * - dbirth
+     * - sex
+     * 
+     * ! ต้องปรับโครงสร้างกลุ่ม type date 
+     * ! 1. ให้ค่า default เป็น NULL
+     * ! 2. ติ๊ก Not null ออกไป
+     * !!! ขั้นกว่า คือ ไปตรวจสอบก่อนว่าการเก็บค่าระหว่า NULL กับ empty string แบบไหนดีกว่ากัน
+     * !!! เพราะบางที่บอกว่า แบบNULL จะไม่ถูกเก็บในหน่วยความจำ ส่วน empty string จะถูกเก็บทำให้เปลืองหน่วยความจำกว่า
+     */
+
+
+    $res = array('status'=>200, 'msg'=>'บันทึกข้อมูลเรียบร้อย');
+    $error_list = array();
+    // ถ้ายังไม่มี dmNumber ให้เพิ่มเข้าไปใน diabetic_clinic ก่อน 
+    if($item===false){
+        $runno = $no->getRunno('diabetes');
+
+        $data['date'] = dateChristToThai($data['date']);
+        $data['retinal_date'] = dateChristToThai($data['date']);
+
+        $resInsertDiabetes = $dm->insertRetinalDiabetes($runno, $data);
+        if($resInsertDiabetes!==false){
+            $no->nextRunno = $runno;
+            $no->setNextRunno();
+            $dmNumber = $res['dm_no'] = $resInsertDiabetes;
+        }else{
+            $error_list['insert_retinal_diabetes'] = $resInsertDiabetes;
+            $error_list['message'] = $dm->getError();
+            $res['status']=400;
+        }
+    }else{
+        $dmNumber = $item['dm_no'];
+        $updateDm = $dm->updateRetinalDiabetes($dmNumber,$item['dateN'], $data);
+        $res['update_dm_no'] = $updateDm;
+
+    }
+
+    // เช็กดูว่าวันนี้มี history แล้วรึยัง ถ้ายังไม่มีค่อยเพิ่ม
+    $his = $dm->findDiabetesHistoryToday($data['hn']);
+    if($his===false){
+        $insertHistoryId = $dm->insertRetinalDiabetesHistory($dmNumber, $data);
+        if($insertHistoryId!==false){
+            $res['dm_history_id'] = $insertHistoryId;
+        }else{
+            $error_list['insert_diabetes_history'] = $insertHistoryId;
+            $error_list['message'] = $dm->getError();
+            $res['status']=400;
+        }
+    }else{
+        $res['dm_history_id'] = $his;
+    }
+    
+
+    $retinalId = $dm->findRetinalExamFromDateAndHn($data['hn']);
+    if($retinalId===false){
+        $insertRetinal = $dm->insertRetinalExam($dmNumber, $data);
+        if($insertRetinal!==false){
+            $res['retinal_id'] = $insertRetinal;
+        }else{
+            $error_list['insert_retinal'] = $insertRetinal;
+            $error_list['message'] = $dm->getError();
+            $res['status']=400;
+        }
+    }else{
+        $dm->updateRetinalExam($retinalId, $data);
+    }
+    
+    if(count($error_list)>0){
+        $res['error']=$error_list;
+    }
+    echo $json->encode($res);
+    exit;
 }
