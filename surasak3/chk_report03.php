@@ -742,14 +742,14 @@ if (mysql_num_rows($q) > 0) {
 		$labItemList[] = " `labnumber` = '$testLabnumber' ";
 	}
 
-	if($showpart == 'มหาวิทยาลัยสวนดุสิต 66'){ 
-		$sql_qdc = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = 'มหาวิทยาลัยสวนดุสิต ศูนย์การศึกษา ลำปาง 64 (เฉพาะ HAV IgM)' AND `hn` = '$hn' ";
-		$db->select($sql_qdc);
-		$qdc_items = $db->get_items();
-		foreach ($qdc_items as $aqdc) {
-			$labItemList[] = " `labnumber` = '".$aqdc['labnumber']."' ";
-		}
-	}
+	// if($showpart == 'มหาวิทยาลัยสวนดุสิต 66'){ 
+	// 	$sql_qdc = "SELECT `labnumber` FROM `chk_lab_items` WHERE `part` = 'มหาวิทยาลัยสวนดุสิต ศูนย์การศึกษา ลำปาง 64 (เฉพาะ HAV IgM)' AND `hn` = '$hn' ";
+	// 	$db->select($sql_qdc);
+	// 	$qdc_items = $db->get_items();
+	// 	foreach ($qdc_items as $aqdc) {
+	// 		$labItemList[] = " `labnumber` = '".$aqdc['labnumber']."' ";
+	// 	}
+	// }
 
 	$defLabNumber = implode(' OR ', $labItemList);
 	$defLabNumber = " AND ( $defLabNumber )";
@@ -881,13 +881,13 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}else if( $objResult["labname"]=="Cholesterol" ){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="HDL"){
-										$labmean="ไขมันความหนาแน่นสูง";			
+										$labmean="ไขมันความหนาแน่นสูง";
 									}else if($objResult["labname"]=="Triglyceride"){
 										$labmean="ไขมันในเลือด";
 									}else if($objResult["labname"]=="LDL"){
 										$labmean="ไขมันความหนาแน่นต่ำ";	
 									}else if($objResult["labname"]=="LDLC"){
-										$labmean="ไขมันความหนาแน่นต่ำ";												
+										$labmean="ไขมันความหนาแน่นต่ำ";
 									}else if($objResult["labname"]=="SGOT(AST)" OR $objResult["labname"]=="SGOT(AST)*"){
 										$labmean="การทำงานของตับ";
 									}else if($objResult["labname"]=="SGPT(ALT)"){
@@ -1000,6 +1000,9 @@ $outlab_row = mysql_num_rows($outlab_query);
 									}
 
 									if($objResult["labcode"]=='HDL'){
+
+										$labmean = "ไขมันความหนาแน่นสูง";
+
 										// if($objResult["result"]>=40 && $objResult["result"]<=60){
 										if($objResult["result"]<=60){
 											$app="ระดับไขมันในเลือดมีค่าอยู่ในเกณฑ์ปกติ";	
