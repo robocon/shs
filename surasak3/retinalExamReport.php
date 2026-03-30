@@ -104,6 +104,10 @@ if(empty($_SESSION['sOfficer'])){
             ?>
             </table>
             <?php
+        }else{
+            ?>
+            <p class="alert alert-warning">ไม่พบข้อมูล</p>
+            <?php
         }
     }
     ?>

@@ -130,9 +130,6 @@ if($action==='save'){
         $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','dm_clinic_id'=>$dmClinicId,'hn'=>$dmData['hn']);
     }
 
-    // $classDiabetes->delDiabetes($dmClinicId);
-    // $classDiabetes->delDiabetesHistory($historyId);
-
     header('Content-Type: application/json');
     echo $json->encode($res);
     exit;
@@ -148,30 +145,18 @@ if($action==='save'){
     // ดูว่าใน diabetes_clinic เคยมีข้อมูลแล้วรึยัง
     $item = $dm->getDiabetesFromHn($data['hn']);
 
-    /**
-     * @todo ขาดข้อมูล
-     * - ptright
-     * - dbirth
-     * - sex
-     * 
-     * ! ต้องปรับโครงสร้างกลุ่ม type date 
-     * ! 1. ให้ค่า default เป็น NULL
-     * ! 2. ติ๊ก Not null ออกไป
-     * !!! ขั้นกว่า คือ ไปตรวจสอบก่อนว่าการเก็บค่าระหว่า NULL กับ empty string แบบไหนดีกว่ากัน
-     * !!! เพราะบางที่บอกว่า แบบNULL จะไม่ถูกเก็บในหน่วยความจำ ส่วน empty string จะถูกเก็บทำให้เปลืองหน่วยความจำกว่า
-     */
-
-
     $res = array('status'=>200, 'msg'=>'บันทึกข้อมูลเรียบร้อย');
     $error_list = array();
+    
+    $dmData = $data;
+    $dmData['thidate'] = $dmData['date'] = dateChristToThai($dmData['date']);
+    $dmData['retinal_date'] = dateChristToThai($dmData['date']);
+
     // ถ้ายังไม่มี dmNumber ให้เพิ่มเข้าไปใน diabetic_clinic ก่อน 
     if($item===false){
         $runno = $no->getRunno('diabetes');
-
-        $data['date'] = dateChristToThai($data['date']);
-        $data['retinal_date'] = dateChristToThai($data['date']);
-
-        $resInsertDiabetes = $dm->insertRetinalDiabetes($runno, $data);
+        
+        $resInsertDiabetes = $dm->insertRetinalDiabetes($runno, $dmData);
         if($resInsertDiabetes!==false){
             $no->nextRunno = $runno;
             $no->setNextRunno();
@@ -183,15 +168,15 @@ if($action==='save'){
         }
     }else{
         $dmNumber = $item['dm_no'];
-        $updateDm = $dm->updateRetinalDiabetes($dmNumber,$item['dateN'], $data);
+        $updateDm = $dm->updateRetinalDiabetes($dmNumber,$item['dateN'], $dmData);
         $res['update_dm_no'] = $updateDm;
 
     }
 
     // เช็กดูว่าวันนี้มี history แล้วรึยัง ถ้ายังไม่มีค่อยเพิ่ม
-    $his = $dm->findDiabetesHistoryToday($data['hn']);
+    $his = $dm->findDiabetesHistoryToday($dmData['hn']);
     if($his===false){
-        $insertHistoryId = $dm->insertRetinalDiabetesHistory($dmNumber, $data);
+        $insertHistoryId = $dm->insertRetinalDiabetesHistory($dmNumber, $dmData);
         if($insertHistoryId!==false){
             $res['dm_history_id'] = $insertHistoryId;
         }else{
@@ -203,7 +188,7 @@ if($action==='save'){
         $res['dm_history_id'] = $his;
     }
     
-
+    // หลังจากบันทึกข้อมูลเข้า diabetes_clinic เรียบร้อยค่อยมาบันทึก retinal_exam
     $retinalId = $dm->findRetinalExamFromDateAndHn($data['hn']);
     if($retinalId===false){
         $insertRetinal = $dm->insertRetinalExam($dmNumber, $data);
