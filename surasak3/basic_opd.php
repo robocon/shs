@@ -2659,7 +2659,7 @@ mmHg </td>
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-type')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 
 									<label class="form-label" for="nosis_d">วันที่วินิจฉัยครั้งแรก</label>
-									<input type="text" class="form-control" name="dm_type_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM" value="<?= $dm['diagdetail'] ?>">
+									<input type="text" class="form-control" name="dm_type_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM" value="<?= dateThaiToChrist($dm['diagdetail']) ?>">
 									<!-- เพิ่มตัวเลือก -->
 									<?php
 									/**
@@ -2717,7 +2717,7 @@ mmHg </td>
 										?>
 										<div>
 											<label class="form-label" for="other_ht_date">วันที่วินิจฉัยครั้งแรก</label>
-											<input type="text" class="form-control" name="other_como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม" value="<?= $dm['htdetail'] ?>">
+											<input type="text" class="form-control" name="other_como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม" value="<?= dateThaiToChrist($dm['htdetail']) ?>">
 										</div>
 										<?php
 										/**
@@ -2756,7 +2756,7 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Retinal Exam:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="retinal_date" id="retinal_date" placeholder="วันที่ตรวจ Retinal Exam" value="<?= $dm['retinal_date'] ?>">
+									<input type="text" name="retinal_date" id="retinal_date" placeholder="วันที่ตรวจ Retinal Exam" value="<?= dateThaiToChrist($dm['retinal_date']) ?>">
 									
 									<input class="input-retinal" type="radio" name="retinal" id="retinal1" value="No DR"><label for="retinal1">No DR</label>
 									<input class="input-retinal" type="radio" name="retinal" id="retinal2" value="Mind DR"><label for="retinal2">Mind DR</label>
@@ -2768,7 +2768,7 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Foot Exam:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="foot_exam_date" id="foot_exam_date" placeholder="วันที่ตรวจ Foot Exam" value="<?= $dm['foot_date'] ?>">
+									<input type="text" name="foot_exam_date" id="foot_exam_date" placeholder="วันที่ตรวจ Foot Exam" value="<?= dateThaiToChrist($dm['foot_date']) ?>">
 									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot1" value="Low Risk"><label for="dm_foot1">Low Risk</label>
 									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot2" value="Moderate Risk"><label for="dm_foot2">Moderate Risk</label>
 									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot3" value="Hight Risk"><label for="dm_foot3">Hight Risk</label> 
@@ -2778,7 +2778,7 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">ตรวจสุขภาพฟัน:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="dm_teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน" value="<?= $dm['tooth_date'] ?>">
+									<input type="text" name="dm_teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน" value="<?= dateThaiToChrist($dm['tooth_date']) ?>">
 									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
 									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-teeth')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
@@ -2795,10 +2795,11 @@ mmHg </td>
 									dump($dm['nutrition']);
 									dump($dm['exercise']);
 									?>
+									<p style="color: red;"></p>
 									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
 									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-footcare')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam" value="<?= $dm['date_footcare'] ?>">
+									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam" value="<?= dateThaiToChrist($dm['date_footcare']) ?>">
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
@@ -2807,7 +2808,7 @@ mmHg </td>
 									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition1" value="1"><label for="nutrition1">ให้ความรู้</label>
 									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition2" value="0"><label for="nutrition2">ไม่ได้ให้ความรู้</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-nutrition')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition" value="<?= $dm['date_nutrition'] ?>">
+									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition" value="<?= dateThaiToChrist($dm['date_nutrition']) ?>">
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
@@ -2816,7 +2817,7 @@ mmHg </td>
 									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
 									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-exercise')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise" value="<?= $dm['date_exercise'] ?>">
+									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise" value="<?= dateThaiToChrist($dm['date_exercise']) ?>">
 								</div>
 							</div>
 						</div>
