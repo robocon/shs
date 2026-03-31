@@ -75,7 +75,7 @@ class Diabetes extends Database
         '%s', '%s', '%s', '%s', '%s', '%s',
         '%s', '%s', '%s'
         );",
-        $dmNumber, $post['thidate'], $post['date'], $post['hn'], $post['doctor'], $post['ptname'],
+        $dmNumber, $post['date'], $post['hn'], $post['doctor'], $post['ptname'],
         $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['temp'],
         $post['pulse'],$post['rate'],$post['bp1'],$post['bp2'],$_SESSION['sOfficer'],$registerDate,
         $post['retinal_date'],$post['follow'],$post['followText']

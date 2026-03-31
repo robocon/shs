@@ -144,12 +144,11 @@ if($action==='save'){
 
     // ดูว่าใน diabetes_clinic เคยมีข้อมูลแล้วรึยัง
     $item = $dm->getDiabetesFromHn($data['hn']);
-
     $res = array('status'=>200, 'msg'=>'บันทึกข้อมูลเรียบร้อย');
     $error_list = array();
     
     $dmData = $data;
-    $dmData['thidate'] = $dmData['date'] = dateChristToThai($dmData['date']);
+    $dmData['date'] = dateChristToThai($dmData['date']);
     $dmData['retinal_date'] = dateChristToThai($dmData['date']);
 
     // ถ้ายังไม่มี dmNumber ให้เพิ่มเข้าไปใน diabetic_clinic ก่อน 
