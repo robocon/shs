@@ -225,7 +225,7 @@ if (mysql_num_rows($result) > 0) {
 	if ($mcheckdx == "Y") {
 		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=dxdr_ofyear1_dr.php\">";
 	} else if ($mcheckdx == "P") {
-		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=Edxdr_ofyearout_dr.php\">";
+		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=Edxdr_ofyearout_dr.php\">"; // บันทึกผลการตรวจสุขภาพ สำหรับขอใบรับรองแพทย์อิเล็กทรอนิกส์
 	} else if ($mcheckdx == "sso") {
 		echo "<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL=chk_doctor.php\">";
 	} else {

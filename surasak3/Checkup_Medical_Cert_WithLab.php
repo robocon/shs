@@ -1290,14 +1290,13 @@ while($rows = mysql_fetch_array($query)){
 
     $stat_rh = $rows["rh"]; // Rh blood group(ตรวจหมู่เลือดอาร์เอช)
     $stat_groupt = $rows["groupt"]; //   GROUPT  - ABO blood group(ตรวจหาหมู่เลือดเอ บี โอ)
-    $stat_antihb = $rows["antihb"]; //   ภูมิคุ้มกัน HB
-    if($stat_antihb == "Positive"){
-        $stat_antihb = "มีภูมิคุ้มกัน";
-    }else if($stat_antihb == "Negative"){
-        $stat_antihb = "ยังไม่มีภูมิคุ้มกัน";
-    }else{
-        $stat_antihb = "";
-    } //end if
+    $stat_antihb = !empty($rows["antihb"]) ? strtolower($rows["antihb"]) : '' ; //   ภูมิคุ้มกัน HB
+    $stat_antihb_txt = "";
+    if($stat_antihb == "positive"){
+        $stat_antihb_txt = "มีภูมิคุ้มกัน";
+    }else if($stat_antihb == "negative"){
+        $stat_antihb_txt = "ยังไม่มีภูมิคุ้มกัน";
+    }//end if
 
     
     //----> ตรวจพิเศษแบบพิมพ์เองจากหน้าหมอ 2 ช่อง
@@ -1405,8 +1404,8 @@ while($rows = mysql_fetch_array($query)){
         echo "- ".$stat_other5." <b>".$stat_stat_other5." ".$reason_other5."</b><br>"; //ตรวจพิเศษอื่นๆ 5
     }//end if
 
-    if($stat_antihb != "" OR $stat_antihb != null){
-        echo "- ตรวจภูมิคุ้มกันไวรัสตับอักเสบบี (Anti HB) : <b>".$stat_antihb."</b><br>"; //ตรวจ ภูมิคุ้มกัน HB
+    if(!empty($stat_antihb)){
+        echo "- ตรวจภูมิคุ้มกันไวรัสตับอักเสบบี (Anti HB) : <b>".$stat_antihb_txt."</b><br>"; //ตรวจ ภูมิคุ้มกัน HB
     }//end if
 ?>
 
