@@ -34,25 +34,25 @@ if($action==='save'){
         'bmi' => $data['bmi'],
 
         'diagnosis' => $data['dm_type'],
-        'diagdetail' => ad_to_bc($data['dm_type_date']),
+        'diagdetail' => !empty($data['dm_type_date']) ? dateChristToThai($data['dm_type_date']) : '' ,
         'ht' => $data['dm_como_ht'],
         'ht_etc' => implode(',', $data['other_como[]']),
-        'htdetail' => ad_to_bc($data['other_como_date']),
+        'htdetail' => !empty($data['other_como_date']) ? dateChristToThai($data['other_como_date']) : '' ,
         'smork' => $data['dm_smoked'],
 
         'retinal' => $data['retinal'],
-        'retinal_date' => ad_to_bc($data['retinal_date']),
-        'foot_date' => ad_to_bc($data['foot_exam_date']),
+        'retinal_date' => !empty($data['retinal_date']) ? dateChristToThai($data['retinal_date']) : '' ,
+        'foot_date' => !empty($data['foot_exam_date']) ? dateChristToThai($data['foot_exam_date']) : '' ,
         'foot' => $data['dm_foot'],
-        'tooth_date' => ad_to_bc($data['dm_teeth_date']),
+        'tooth_date' => !empty($data['dm_teeth_date']) ? dateChristToThai($data['dm_teeth_date']) : '' ,
         'tooth' => $data['dm_teeth'],
 
         'foot_care' => $data['dm_footcare'],
-        'date_footcare' => ad_to_bc($data['date_footcare']),
+        'date_footcare' => !empty($data['date_footcare']) ? dateChristToThai($data['date_footcare']) : '' ,
         'nutrition' => $data['dm_nutrition'],
-        'date_nutrition' => ad_to_bc($data['date_nutrition']),
+        'date_nutrition' => !empty($data['date_nutrition']) ? dateChristToThai($data['date_nutrition']) : '' ,
         'exercise' => $data['dm_exercise'],
-        'date_exercise' => ad_to_bc($data['date_exercise']),
+        'date_exercise' => !empty($data['date_exercise']) ? dateChristToThai($data['date_exercise']) : '' ,
         'officer' => $_SESSION['sOfficer']
     );
 
@@ -102,6 +102,9 @@ if($action==='save'){
         unset($dmUpdate['ptname']);
 
         $dmUpdate['officer_edit'] = $_SESSION['sOfficer'];
+
+        dump($dmUpdate);
+
         $dmClinicId = $dm['row_id'];
         $res = $classDiabetes->updateData('diabetes_clinic',$dmUpdate," WHERE `row_id` = '$dmClinicId' ");
         if($res!==false){

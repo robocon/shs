@@ -2660,6 +2660,14 @@ mmHg </td>
 
 									<label class="form-label" for="nosis_d">วันที่วินิจฉัยครั้งแรก</label>
 									<input type="text" class="form-control" name="dm_type_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM" value="<?= $dm['diagdetail'] ?>">
+									<!-- เพิ่มตัวเลือก -->
+									<?php
+									/**
+									 * ! เพิ่มตัวเลือก
+									 * ให้ดึงข้อมูลจาก diag =>> hn + icd10 like e1%
+									 * e10, e11, e12, e13, e14
+									 */
+									?>
 								</div>
 							</div>
 							
@@ -2711,11 +2719,25 @@ mmHg </td>
 											<label class="form-label" for="other_ht_date">วันที่วินิจฉัยครั้งแรก</label>
 											<input type="text" class="form-control" name="other_como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม" value="<?= $dm['htdetail'] ?>">
 										</div>
+										<?php
+										/**
+										 * ! เพิ่มตัวเลือก
+										 * ให้ดึงข้อมูลจาก diag =>> hn + icd10 like e1%
+										 * Neuropathy		G63
+										 * Heart Failure	I50
+										 * Nephropathy		N08
+										 * CVD				I67
+										 * IHD				I25
+										 * Foot Ulcer		L97
+										 * Retinopathy		H36
+										 * Dyslipidemia		E78
+										 */
+										?>
 									</div>
 								</div>
 							</div>
 
-							<div class="mb-3 indent-left">
+							<div class="mb-3 indent-left" style="padding-top:8px;">
 								<div class="sub-title">ประวัติสูบบุหรี่:</div>
 								<div class="form-check form-check-inline ms-2">
 									<?php
@@ -2768,6 +2790,11 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Foot care:</div>
 								<div class="form-check form-check-inline ms-2">
+									<?php
+									dump($dm['foot_care']);
+									dump($dm['nutrition']);
+									dump($dm['exercise']);
+									?>
 									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
 									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> 
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-footcare')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
@@ -2788,7 +2815,7 @@ mmHg </td>
 								<div class="form-check form-check-inline ms-2">
 									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
 									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-exercise')"><span style="font-size:8pt;">❌</span>ล้างค่า</a>
+									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-exercise')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise" value="<?= $dm['date_exercise'] ?>">
 								</div>
 							</div>
