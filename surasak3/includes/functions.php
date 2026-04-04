@@ -378,11 +378,13 @@ function get_date_bc($format = false){
 }
 
 function dateThaiToChrist($date){
+	if(strlen($date)!==10){ return $date; }
 	list($y,$m,$d) = explode('-',$date);
 	return ($y-543).'-'.$m.'-'.$d;
 }
 
 function dateChristToThai($date){
+	if(strlen($date)!==10){ return $date; }
 	list($y,$m,$d) = explode('-',$date);
 	return ($y+543).'-'.$m.'-'.$d;
 }

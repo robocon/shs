@@ -1170,7 +1170,7 @@ if(!empty($hn) != ""){
 	</tr>
 	<tr>
 		<td>
-			<table border="0" class="forntsarabun1">
+			<table border="0" class="forntsarabun1" width="100%">
 				<tr>
 					<td class="tb_font_2" valign="top">Foot care</td>
 					<td>
@@ -1185,7 +1185,7 @@ if(!empty($hn) != ""){
 								&nbsp;เลือกวันที่ <input type="text" id="date_footcare" name="date_footcare" size="10">
 							</label>
 						</div>
-						<div>
+						<div style="float:right;">
 							ตรวจครั้งล่าสุด
 							<?php
 							if( $arrdm['foot_care'] == '1' ){
@@ -1220,7 +1220,7 @@ if(!empty($hn) != ""){
 								&nbsp;เลือกวันที่ <input type="text" id="date_nutrition" name="date_nutrition" size="10" >
 							</label>
 						</div>
-						<div>
+						<div style="float:right;">
 							ตรวจครั้งล่าสุด
 							<?php
 							if( $arrdm['nutrition'] == '1' ){
@@ -1255,7 +1255,7 @@ if(!empty($hn) != ""){
 								&nbsp;เลือกวันที่ <input type="text" id="date_exercise" name="date_exercise" size="10" >
 							</label>
 						</div>
-						<div>
+						<div style="float:right;">
 							ตรวจครั้งล่าสุด
 							<?php
 							if( $arrdm['exercise'] == '1' ){

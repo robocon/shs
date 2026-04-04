@@ -1849,8 +1849,7 @@ C&deg; </td>
              </tr>
              <tr>
                <td align="right" class="data_show"> P : </td>
-               <td align="left"><input name="pause" type="text" id="pause" size="3" value="<?php echo $pause; ?>" />
-                 ครั้ง/นาที</td>
+               <td align="left"><input name="pause" type="number" step="1" id="pause" inputmode="numeric" size="3" value="<?= $pause; ?>" style="width:58px;"> ครั้ง/นาที</td>
                <td align="right">R :</td>
                <td align="left"><input name="rate" type="text" id="rate" value="20" size="3" />
 ครั้ง/นาที</td>
@@ -2314,7 +2313,7 @@ mmHg </td>
 				}
 				?>
 				<div>
-					<a href="javascript:void(0);" onclick="showFormHt();">ฟอร์มบันทึก Hypertension</a>
+					<a href="javascript:void(0);" onclick="showFormHt();" class="dm-button dm-gray">ฟอร์มบันทึก Hypertension</a>
 				</div>
 				<script>
 					function showFormHt(){
@@ -2362,7 +2361,7 @@ mmHg </td>
 										}else{
 											list($yHt, $mHt, $dHt) = explode('-', $htData['thidate']);
 											$thaiSemiDate = $dHt.' '.$def_month_th[$mHt].' '.($yHt+543);
-											$htYearNotion = ' [วันที่อัพเดท]: '.$thaiSemiDate.' <a href="diabetes_clinic/hypertension_edit.php?hn='.$cHn.'" title="ไปหน้าฟอร์ม Hypertension" target="_blank">➦</a>';
+											$htYearNotion = ' ( อัพเดท ณ วันที่: '.$thaiSemiDate.' <a href="diabetes_clinic/hypertension_edit.php?hn='.$cHn.'" title="ไปหน้าฟอร์ม Hypertension" target="_blank">➦</a> )';
 										}
 										?>
 										<?=$htData['ht_no'];?><?=$htYearNotion;?>
@@ -2589,7 +2588,7 @@ mmHg </td>
 				?>
 
 				<div>
-					<a href="javascript:void(0);" onclick="showFormDm();" class="button-green">ฟอร์มบันทึก Diabetes clinic</a>
+					<a href="javascript:void(0);" onclick="showFormDm();" class="dm-button dm-gray">ฟอร์มบันทึก Diabetes clinic</a>
 				</div>
 				<script>
 					function showFormDm(){
@@ -2620,6 +2619,14 @@ mmHg </td>
 					button.dm-button:hover, .dm-button:hover{
 						box-shadow: 3px 3px 3px #3e3e3e;
 					}
+					.dm-green{
+						background-color: #198754;
+						color: #ffffff!important;
+					}
+					.dm-gray{
+						background-color: #6c757d;
+						color: #ffffff;
+					}
 				</style>
 				<?php
 				$formDmDisplay = 'display:none;';
@@ -2631,12 +2638,17 @@ mmHg </td>
 				<div id="formDm" style="<?= $formDmDisplay; ?>">
 				<form action="javascript:void(0);" method="post" id="dmForm">
 					<fieldset>
-						<legend class=""><strong>ฟอร์ม DM</strong></legend>
-						<div>
+						<legend><strong>ฟอร์ม DM Clinic</strong></legend>
+						<div class="mb-3">
 							<?php
 							$dmNumber = 'ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ';
 							if(!empty($dm['dm_no'])){
-								$dmNumber = $dm['dm_no'].' <a href="diabetes_clinic/diabetes_edit.php?hn='.$hn.'" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a><input type="hidden" name="dm_no" value="'.$dm['dm_no'].'">';
+
+								list($yDm, $mDm, $dDm) = explode('-', $dm['dateN']);
+								$thaiDateN = $dDm.' '.$def_month_th[$mDm].' '.($yDm+543);
+
+
+								$dmNumber = $dm['dm_no'].' ( อัพเดท ณ วันที่ '.$thaiDateN.' <a href="diabetes_clinic/diabetes_edit.php?hn='.$hn.'" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a><input type="hidden" name="dm_no" value="'.$dm['dm_no'].'"> )';
 							}
 							?>
 							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;" id="updatedDmNumber"><strong><?= $dmNumber; ?></strong></span>
@@ -2701,6 +2713,9 @@ mmHg </td>
 										.flex-container > div {
 											flex: 0 0 calc(33.33% - 7px);
 										}
+										.flex-container > div:last-child {
+											flex-basis: 100%;
+										}
 									</style>
 									<?php
 									$dmOtherComoItems = array('1' => 'Neuropathy', '2' => 'Heart Failure', '3' => 'Nephropathy', '4' => 'CVD', '5' => 'IHD', '6' => 'Foot ulcer', '7' => 'Retinopathy', '8' => 'Dyslipidemia');
@@ -2756,12 +2771,18 @@ mmHg </td>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Retinal Exam:</div>
 								<div class="form-check form-check-inline ms-2">
+									<?php 
+									$retinalList = array('1'=>'No DR', '2'=>'Mind DR', '3'=>'Moderate DR', '4'=>'Severe DR');
+									?>
 									<input type="text" name="retinal_date" id="retinal_date" placeholder="วันที่ตรวจ Retinal Exam" value="<?= dateThaiToChrist($dm['retinal_date']) ?>">
-									
-									<input class="input-retinal" type="radio" name="retinal" id="retinal1" value="No DR"><label for="retinal1">No DR</label>
-									<input class="input-retinal" type="radio" name="retinal" id="retinal2" value="Mind DR"><label for="retinal2">Mind DR</label>
-									<input class="input-retinal" type="radio" name="retinal" id="retinal3" value="Moderate DR"><label for="retinal3">Moderate DR</label>
-									<input class="input-retinal" type="radio" name="retinal" id="retinal4" value="Severe DR"><label for="retinal4">Severe DR</label> 
+									<?php
+									foreach ($retinalList as $retinalKey => $retinalValue) {
+										$retinalChecked = ($dm['retinal']==$retinalValue) ? 'checked="checked"' : '' ;
+										?>
+										<input class="input-retinal" type="radio" name="retinal" id="retinal<?=$retinalKey;?>" value="<?=$retinalValue;?>" <?= $retinalChecked; ?> ><label for="retinal<?=$retinalKey;?>"><?=$retinalValue;?></label>
+										<?php
+									}
+									?>
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-retinal')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
@@ -2769,19 +2790,24 @@ mmHg </td>
 								<div class="sub-title">Foot Exam:</div>
 								<div class="form-check form-check-inline ms-2">
 									<input type="text" name="foot_exam_date" id="foot_exam_date" placeholder="วันที่ตรวจ Foot Exam" value="<?= dateThaiToChrist($dm['foot_date']) ?>">
-									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot1" value="Low Risk"><label for="dm_foot1">Low Risk</label>
-									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot2" value="Moderate Risk"><label for="dm_foot2">Moderate Risk</label>
-									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot3" value="Hight Risk"><label for="dm_foot3">Hight Risk</label> 
+									<?php
+									$dmFootList = array('1'=>'Low Risk', '2'=>'Moderate Risk', '3'=>'Hight Risk');
+									foreach ($dmFootList as $footKey => $footValue) {
+										$footChecked = ($dm['foot']==$footValue) ? 'checked="checked"' : '' ;
+										?>
+										<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot<?=$footKey;?>" value="<?=$footValue;?>" <?= $retinfootCheckedalChecked; ?> ><label for="dm_foot<?=$footKey;?>"><?=$footValue;?></label>
+										<?php
+									}
+									?>
 									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-foot')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">ตรวจสุขภาพฟัน:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="dm_teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน" value="<?= dateThaiToChrist($dm['tooth_date']) ?>">
+									<input type="text" name="dm_teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน">
 									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
-									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-teeth')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
+									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth2" value="0" checked="checked"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> 
 								</div>
 							</div>
 						</div>
@@ -2791,38 +2817,59 @@ mmHg </td>
 								<div class="sub-title">Foot care:</div>
 								<div class="form-check form-check-inline ms-2">
 									<?php
-									dump($dm['foot_care']);
-									dump($dm['nutrition']);
-									dump($dm['exercise']);
+									/**
+									 * ทั้ง Foot care Nutrition Exercise ให้ Default เป็น ไม่ได้ให้ความรู้ เพื่อที่พยาบาลจะบันทึกเองว่าครั้งนี้ได้ให้ความรู้รึป่าว
+									 */
+									$f1 = $dm['foot_care'];
+									$list = array('1'=>'ให้ความรู้', '0'=>'ไม่ได้ให้ความรู้');
 									?>
-									<p style="color: red;"></p>
-									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
-									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-footcare')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam" value="<?= dateThaiToChrist($dm['date_footcare']) ?>">
+									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare1" value="1" ><label for="footcare1">ให้ความรู้</label>
+									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare2" value="0" checked="checked"><label for="footcare2">ไม่ได้ให้ความรู้</label> 
+									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam">
+									<?php
+									if(!empty($dm['date_footcare'])){
+									?><span style="padding-left:12px;">ข้อมูลล่าสุด: <?= $list[$f1]; ?> วันที่ <?= $dm['date_footcare'] ?></span><?php
+									}
+									?>
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Nutrition:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition1" value="1"><label for="nutrition1">ให้ความรู้</label>
-									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition2" value="0"><label for="nutrition2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-nutrition')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition" value="<?= dateThaiToChrist($dm['date_nutrition']) ?>">
+									<?php
+									$n1 = $dm['nutrition'];
+									?>
+									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition1" value="1" ><label for="nutrition1">ให้ความรู้</label>
+									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition2" value="0" checked="checked"><label for="nutrition2">ไม่ได้ให้ความรู้</label> 
+									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition">
+
+									<?php
+									if(!empty($dm['date_nutrition'])){
+									?><span style="padding-left:12px;">ข้อมูลล่าสุด: <?= $list[$n1]; ?> วันที่ <?= $dm['date_nutrition'] ?></span><?php
+									}
+									?>
 								</div>
 							</div>
 							<div class="mb-3 indent-left">
 								<div class="sub-title">Exercise:</div>
 								<div class="form-check form-check-inline ms-2">
-									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
-									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-exercise')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise" value="<?= dateThaiToChrist($dm['date_exercise']) ?>">
+									<?php
+									$e1 = $dm['exercise'];
+									?>
+									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise1" value="1" ><label for="exercise1">ให้ความรู้</label>
+									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise2" value="0" checked="checked"><label for="exercise2">ไม่ได้ให้ความรู้</label> 
+									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise">
+
+									<?php
+									if(!empty($dm['date_exercise'])){
+									?><span style="padding-left:12px;">ข้อมูลล่าสุด: <?= $list[$e1]; ?> วันที่ <?= $dm['date_exercise'] ?></span><?php
+									}
+									?>
 								</div>
 							</div>
 						</div>
 						<div>
-							<button type="button" class="dm-button" onclick="saveDmForm()" style="padding:8px;">💾 บันทึกข้อมูล</button>
+							<button type="button" class="dm-button dm-green" onclick="saveDmForm()" style="padding:8px;">💾 บันทึกข้อมูล DM Clinic</button>
 							<input type="hidden" name="dmHn" value="<?= $hn; ?>">
 							<input type="hidden" name="typeDepart" value="opd">
 							<input type="hidden" name="action" value="save">
@@ -2848,6 +2895,19 @@ mmHg </td>
 								}
 							});
 
+							async function doAlert(validateTxt, textFocus){
+								await Swal.fire({
+									icon: 'warning',
+									title: validateTxt,
+									allowOutsideClick: false,
+									didClose: () =>{
+										if(textFocus!==''){
+											document.getElementById(textFocus).focus();
+										}
+									}
+								});
+							}
+
 							function saveDmForm(){
 								const dmForm = document.getElementById('dmForm');
 								const doctorId = document.getElementById('doctorSelected').value;
@@ -2863,30 +2923,34 @@ mmHg </td>
 
 								let validate = true;
 								let validateTxt = '';
+								let textFocus = '';
 								//  Pulse (ชีพจร) หรือ Rate (อัตราการเต้น)
 								if(pause==''){
 									validate = false;
 									validateTxt = 'กรุณากรอกชีพจร (Pulse)';
+									textFocus = 'pause';
+
 								}else if(rate==''){
 									validate = false;
 									validateTxt = 'กรุณากรอกอัตราการเต้น (Rate)';
+									textFocus = 'rate';
+
 								}else if(bp1=='' || bp2==''){
 									validate = false;
 									validateTxt = 'กรุณากรอกค่าความดัน';
 								}else if(round==''){
 									validate = false;
 									validateTxt = 'กรุณากรอกรอบเอว';
+									textFocus = 'waist';
+
 								}else if(doctorId==0){
 									validate = false;
 									validateTxt = 'กรุณาเลือกแพทย์';
+									textFocus = 'doctorSelected';
 								}
 								
 								if(validate===false){
-									Swal.fire({
-										icon: 'warning',
-										title: validateTxt,
-										allowOutsideClick: false
-									});
+									doAlert(validateTxt, textFocus);
 									return false;
 								}
 
@@ -3648,16 +3712,23 @@ mmHg </td>
                  req.send(null); //ส่งค่า
             }
             
-            window.onLoad=dochange('doctor', -1);     
+            // window.onLoad=dochange('doctor', -1);     
 		</script>            
 		 <tr>
 		   <td align="right" class="data_show">แพทย์ : </td>
 		   <td colspan="2" align="left">
            <font id="doctor">
-             <select class="txtsarabun">
-               <option value="0">--------------------------</option>
-             </select>
-           </font> </td>
+			<?php
+			echo "<select name='doctor' id='doctorSelected' onChange=\"dochange('clinic', this.value)\" class='txtsarabun'>\n";
+			echo "<option value='0'>--------------- เลือกแพทย์ ---------------</option>\n";
+			$result=mysql_query("select * from doctor where status='y' and opdstatus='y' ORDER BY opdstatus DESC , row_id ASC");
+			while($row = mysql_fetch_array($result)){
+				echo "<option value=\"$row[row_id]\" >$row[name]</option> \n" ;
+			}
+			echo "</select>\n";
+			?>
+           </font>
+			</td>
 		   <td colspan="3" align="left"><table width="100%" border="0">
              <tr>
                <td width="18%" align="right"><span class="data_show">คลินิก/ห้อง :</span></td>

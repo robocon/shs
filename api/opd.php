@@ -103,8 +103,6 @@ if($action==='save'){
 
         $dmUpdate['officer_edit'] = $_SESSION['sOfficer'];
 
-        dump($dmUpdate);
-
         $dmClinicId = $dm['row_id'];
         $res = $classDiabetes->updateData('diabetes_clinic',$dmUpdate," WHERE `row_id` = '$dmClinicId' ");
         if($res!==false){
