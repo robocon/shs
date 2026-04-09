@@ -8,6 +8,22 @@ class Opd extends Database
         parent::__construct();
     }
 
+    /**
+     * ดึงข้อมูลล่าสุดจาก HN
+     * @param string $hn HN ของผู้ป่วย
+     * @return array|false คืนค่า array ถ้ามีข้อมูล, false ถ้าไม่มีข้อมูล
+     */
+    public function lastDataFromHn($hn = false){
+        $sql = sprintf("SELECT * FROM `opd` WHERE `hn` = '%s' ORDER BY `row_id` DESC LIMIT 1", 
+        $this->dbi->real_escape_string($hn));
+        $q = $this->dbi->query($sql);
+        if($q->num_rows>0){
+            return $q->fetch_assoc();
+        }else{
+            return false;
+        }
+    }
+
     public function last3MonthsFromHn($hn = false){
         $last3Months = strtotime("-6 months");
         $lastThidate = (date('Y', $last3Months)+543).date('-m-d 00:00:00', $last3Months);
