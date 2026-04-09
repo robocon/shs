@@ -1,14 +1,13 @@
 <?php
 require_once dirname(__FILE__) . '/newBootstrap.php';
 $class_diabetes = new Diabetes();
-$class_opd = new Opd();
 $class_doctor = new Doctor();
-
 $class_hypertension = new Hypertension();
 
 $cHn = $_GET['hn'];
 
 $htData = $class_hypertension->getOneFromHn($cHn);
+$doctors = $class_doctor->getAllDoctor();
 ?>
 <style>
 .htDateSelectContainer{
@@ -53,30 +52,34 @@ button.dm-button:hover, .dm-button:hover{
     flex: 20%;
     padding-bottom: 4px;
 }
-
+#htFormAdmin tr td{
+    padding-bottom: 8px;
+    vertical-align: top;
+}
 </style>
 <form action="javascript:void(0)" method="post">
     <h1>ฟอร์มบันทึก Hypertension</h1>
-    <!-- <p>เพศ เช็กจากคำนำหน้าชื่อ</p>
-    <p>ชื่อสกุล</p>
-    <p>hn</p>
-    <p>อายุ</p>
-    <p>สิทธิ</p>
+    <!-- [] เพศ เช็กจากคำนำหน้าชื่อ
+    [] input:hidden ชื่อสกุล
+    [] input:hidden hn
+    [] input:hidden อายุ
+    [] input:hidden สิทธิ
+    [] input:hidden diag
     <hr>
-    <p><b>ให้เลือกเอง</b></p>
-    <p>แพทย์</p>
-    <p>ส่วนสูง</p>
-    <p>น้ำหนัก</p>
-    <p>BMI</p>
-    <p>รอบเอว</p>
-    <p>Temp</p>
-    <p>Pause</p>
-    <p>Rate</p>
-    <p>BP</p>
-    <p>repeat bp</p> -->
-    <table>
+    <b>ให้เลือกเอง</b>
+    [x] แพทย์
+    [x] ส่วนสูง
+    [x] น้ำหนัก
+    [x] BMI
+    [x] รอบเอว
+    [x] Temp
+    [x] Pause
+    [x] Rate
+    [x] BP
+    [x] repeat bp -->
+    <table id="htFormAdmin">
         <tr>
-            <td align="right"><strong>HT number : </strong></td>
+            <td align="right" width="180px"><strong>HT number : </strong></td>
             <td>
                 <?php 
                 if($htData['error_code']==400){
@@ -97,7 +100,23 @@ button.dm-button:hover, .dm-button:hover{
             </td>
         </tr>
         <tr>
-            <td align="right" valign="top"><strong>ข้อมูลผู้เข้ารับบริการ</strong></td>
+            <td align="right" valign="top"><strong>เลือกแพทย์ : </strong></td>
+            <td>
+                <select name="ht_doctor" id="ht_doctor">
+                <option value="">===&gt; เลือกแพทย์ &lt;===</option>
+                <?php
+                foreach ($doctors as $key => $doctor) {
+                    $selected = ($doctor['name']==$dm['doctor']) ? 'selected="selected"' : '' ;
+                    ?>
+                    <option value="<?= $doctor['row_id']; ?>" <?= $selected; ?>><?= $doctor['name']; ?></option>
+                    <?php
+                }
+                ?>
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td align="right" valign="top"><strong>ข้อมูลผู้เข้ารับบริการ : </strong></td>
             <td>
                 <div class="flex-container" style="width:100%;">
                     <div>ส่วนสูง: <input type="text" size="5" name="ht_height" id="ht_height" value="<?= $htData['height']; ?>"> ซม.</div>

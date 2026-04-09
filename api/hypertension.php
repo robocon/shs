@@ -16,7 +16,7 @@ if($action==='saveHypertension'){
     
     $postData['thidate'] = date('Y-m-d');
     $postData['hn'] = $data["hn"];
-    $postData['doctor'] = $doctorname;
+    $postData['doctor'] = $data["ht_doctor"];
     $postData['ptname'] = $data["ptname"];
     $postData['ptright'] = $rows3["ptright"];
     $postData['sex'] = $sex;
@@ -39,7 +39,7 @@ if($action==='saveHypertension'){
     $postData['officer'] = $_SESSION['sOfficer'];
     $postData['officer_edit'] = $_SESSION['sOfficer'];
     $postData['register_date'] = $data['register_date'];
-    $postData['pension'] = $rows['pension_status'];
+    // $postData['pension'] = $rows['pension_status'];
     $postData['age_str'] = $rows3["age"];
     $postData['diag_date'] = $data['diag_date'];
     $postData['bp3'] = $data['bp3'];
