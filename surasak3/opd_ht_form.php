@@ -59,24 +59,6 @@ button.dm-button:hover, .dm-button:hover{
 </style>
 <form action="javascript:void(0)" method="post">
     <h1>ฟอร์มบันทึก Hypertension</h1>
-    <!-- [] เพศ เช็กจากคำนำหน้าชื่อ
-    [] input:hidden ชื่อสกุล
-    [] input:hidden hn
-    [] input:hidden อายุ
-    [] input:hidden สิทธิ
-    [] input:hidden diag
-    <hr>
-    <b>ให้เลือกเอง</b>
-    [x] แพทย์
-    [x] ส่วนสูง
-    [x] น้ำหนัก
-    [x] BMI
-    [x] รอบเอว
-    [x] Temp
-    [x] Pause
-    [x] Rate
-    [x] BP
-    [x] repeat bp -->
     <table id="htFormAdmin">
         <tr>
             <td align="right" width="180px"><strong>HT number : </strong></td>
@@ -263,8 +245,12 @@ button.dm-button:hover, .dm-button:hover{
             <td>
                 <button type="button" class="dm-button dm-green" style="padding:8px;" onclick="saveHtForm()">💾 บันทึกข้อมูล Hypertension</button>
 
-                <!-- <label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">ยืนยันการบันทึกข้อมูล Hypertension</strong></label> -->
-                <input type="hidden" name="hypertension_id" value="<?=$htData['row_id'];?>">
+                <input type="hidden" name="hypertension_id" id="hypertension_id" value="<?=$htData['row_id'];?>">
+                <input type="hidden" name="ht_ptname" id="ht_ptname" value="<?= $htData['ptname'] ?>">
+                <input type="hidden" name="ht_hn" id="ht_hn" value="<?= $htData['hn'] ?>">
+                <input type="hidden" name="ht_age" id="ht_age" value="<?= $htData['age_str'] ?>">
+                <input type="hidden" name="ht_ptright" id="ht_ptright" value="<?= $htData['ptright'] ?>">
+                <input type="hidden" name="ht_diag" id="ht_diag" value="<?= $htData['diagnosis'] ?>">
             </td>
         </tr>
     </table>

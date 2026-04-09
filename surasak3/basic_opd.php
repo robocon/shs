@@ -3292,7 +3292,6 @@ $room = $_POST['room'];
 		const body = await response.text();
 		return body;
 	}
-	////// OPD_HT_FORM.php //////
 	
 	async function onLoadHtPage(){
 		const response = await fetch('opd_ht_form.php?hn=<?=$hn;?>');
@@ -3303,6 +3302,7 @@ $room = $_POST['room'];
 	function saveHtForm(){
 		Swal.fire("กำลังปรับ Hypertension");
 	}
+	////// OPD_HT_FORM.php //////
 
 	/**
 	 * ตอนโหลดข้อมูลเข้าไปใน Modal
