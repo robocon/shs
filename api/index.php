@@ -12,7 +12,7 @@ $allowed_depts = array('opd', 'dental', 'doctor');
  * @readme ตัวอย่างการส่งข้อมูล
  * 
  * Header ส่งมาเป็น 'Content-Type': 'application/json'
- * Method เป็น POST
+ * Method เป็น POST อย่างเดียว
  * ดูตัวอย่างได้จาก https://youmightnotneedjquery.com/#post
  * 
  * Parameter ที่จำเป็น
@@ -34,6 +34,12 @@ if (!in_array($dept, $allowed_depts)) {
     echo $json->encode(array('status' => 'error', 'message' => 'Invalid Department'));
     exit;
 }
+
+/**
+ * เวลาเอาไปใช้งานไม่ต้อง $_POST ให้ใช้ $data['xxx'] แบบนี้ได้เลย
+ */
 if($dept==='opd'){
 	include_once dirname(__FILE__).'/opd.php';
+}elseif($dept==='hypertension'){
+	include_once dirname(__FILE__).'/hypertension.php';
 }
