@@ -6,7 +6,7 @@ $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $data = $json->decode($json_input);
 
 // 1. กำหนด Whitelist ของตารางที่อนุญาต (เพื่อความปลอดภัย)
-$allowed_depts = array('opd', 'dental', 'doctor');
+$allowed_depts = array('opd', 'hypertension', 'dental', 'doctor');
 
 /**
  * @readme ตัวอย่างการส่งข้อมูล

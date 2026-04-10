@@ -1155,7 +1155,7 @@ $showyear="25".$nPrefix;
  <?php
  $onfocus = "hn";
 
- 	if(isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""){
+if(isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""){
 
 // แจ้งเตือนตัดรอบบ่าย **************************************************
 if($_REQUEST["hn"]=="62-6400"){ //จันทร์เพ็ญ  วงค์เวียน
@@ -2312,9 +2312,21 @@ mmHg </td>
 					}
 				}
 				?>
-
+				<style>
+					.extra_btn{
+						border-radius: 4px;
+						padding: 6px;
+						margin: 4px;
+						background-color: #ffffff;
+						border: 1px solid #014d0a;
+					}
+					.extra_btn:hover{
+						box-shadow: 3px 3px 3px #3e3e3e;
+						cursor: pointer;
+					}
+				</style>
 				<div>
-					<button id="hyperBtn" type="button">ฟอร์มบันทึก Hypertension</button>
+					<button id="hyperBtn" type="button" class="extra_btn">ฟอร์มบันทึก Hypertension</button>
 				</div>
 				
 			</td>
@@ -2362,7 +2374,7 @@ mmHg </td>
 				?>
 
 				<div>
-					<button id="myBtn" type="button">ฟอร์มบันทึก Diabetes คลินิก</button>
+					<button id="myBtn" type="button" class="extra_btn">ฟอร์มบันทึก Diabetes คลินิก</button>
 				</div>
 				
 			</td>
@@ -3211,6 +3223,21 @@ $room = $_POST['room'];
 		}
 	});
 
+	/**
+	 * Toast ตอนบันทึกข้อมูล DM Clinic สำเร็จ
+	 */
+	let Toast = Swal.mixin({
+		toast: true,
+		position: "top-end",
+		showConfirmButton: false,
+		timer: 1000,
+		timerProgressBar: true,
+		didOpen: (toast) => {
+			toast.onmouseenter = Swal.stopTimer;
+			toast.onmouseleave = Swal.resumeTimer;
+		}
+	});
+
 	////// MODAL //////
 	// Get the modal
 	var modal = document.getElementById("myModal");
@@ -3302,6 +3329,56 @@ $room = $_POST['room'];
 	function saveHtForm(){
 		Swal.fire("กำลังปรับ Hypertension");
 	}
+
+	async function saveHtForm() {
+		const form = document.querySelector('#opd_ht_form');
+		const formData = new FormData(form);
+		const data = {};
+		
+		// Convert FormData to JSON object, handling potential duplicate names or checkboxes
+		formData.forEach((value, key) => {
+			if (data[key]) {
+				if (!Array.isArray(data[key])) {
+					data[key] = [data[key]];
+				}
+				data[key].push(value);
+			} else {
+				data[key] = value;
+			}
+		});
+
+		data.action = 'saveHypertension';
+		data.typeDepart = 'hypertension';
+		
+		try {
+			const response = await fetch('<?= $first_sub ?>/api/index.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const result = await response.json();
+			if(result.hypertension.status===200){
+				Toast.fire({
+					icon: "success",
+					title: "บันทึกข้อมูลเรียบร้อยแล้ว"
+				}).then(()=>{
+					span.click();
+				});
+				
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message);
+		}
+	}
+
 	////// OPD_HT_FORM.php //////
 
 	/**
@@ -3323,21 +3400,6 @@ $room = $_POST['room'];
 			element.checked = false;
 		}
 	}
-
-	/**
-	 * Toast ตอนบันทึกข้อมูล DM Clinic สำเร็จ
-	 */
-	let Toast = Swal.mixin({
-		toast: true,
-		position: "top-end",
-		showConfirmButton: false,
-		timer: 3000,
-		timerProgressBar: true,
-		didOpen: (toast) => {
-			toast.onmouseenter = Swal.stopTimer;
-			toast.onmouseleave = Swal.resumeTimer;
-		}
-	});
 
 	/**
 	 * รวม Alert
@@ -3454,15 +3516,15 @@ $room = $_POST['room'];
 				Toast.fire({
 					icon: "success",
 					title: res.message
+				}).then(()=>{
+					span.click();
 				});
-
 			}else{
 				Toast.fire({
 					icon: "error",
 					title: res.message
 				});
 			}
-
 		});
 	}
 
@@ -3478,7 +3540,7 @@ $room = $_POST['room'];
 		return dataResponse ;
 	}
 
-	<?php } 
+<?php
 if ($hn==='55-8821') {
 	?>
 	Swal.fire({
@@ -3492,7 +3554,6 @@ if ($hn==='55-8821') {
 	var popup1, dm1, dm2, dm3, dm4,dm5,dm6,dm7,dm8;
 	window.onload = function() {
 		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
-
 		dm1 = new Epoch('dm1','popup',document.getElementById('nosis_d'),false);
 		dm2 = new Epoch('dm2','popup',document.getElementById('other_ht_date'),false);
 		dm3 = new Epoch('dm3','popup',document.getElementById('retinal_date'),false);
@@ -3504,6 +3565,11 @@ if ($hn==='55-8821') {
 		
 	};
 </script>
+
+<?php 
+} // END isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""
+?>
+
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
 jQuery.noConflict();

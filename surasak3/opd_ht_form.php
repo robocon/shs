@@ -1,10 +1,12 @@
 <?php
 require_once dirname(__FILE__) . '/newBootstrap.php';
-$class_diabetes = new Diabetes();
+$class_opcard = new Opcard();
 $class_doctor = new Doctor();
 $class_hypertension = new Hypertension();
 
 $cHn = $_GET['hn'];
+$opcard = $class_opcard->getByHn($cHn,array('sex'));
+$sex = ($opcard['sex']==='ช')?'0':'1';
 
 $htData = $class_hypertension->getOneFromHn($cHn);
 $doctors = $class_doctor->getAllDoctor();
@@ -57,7 +59,7 @@ button.dm-button:hover, .dm-button:hover{
     vertical-align: top;
 }
 </style>
-<form action="javascript:void(0)" method="post">
+<form action="javascript:void(0)" method="post" id="opd_ht_form">
     <h1>ฟอร์มบันทึก Hypertension</h1>
     <table id="htFormAdmin">
         <tr>
@@ -88,9 +90,9 @@ button.dm-button:hover, .dm-button:hover{
                 <option value="">===&gt; เลือกแพทย์ &lt;===</option>
                 <?php
                 foreach ($doctors as $key => $doctor) {
-                    $selected = ($doctor['name']==$dm['doctor']) ? 'selected="selected"' : '' ;
+                    $selected = ($doctor['name']==$htData['doctor']) ? 'selected="selected"' : '' ;
                     ?>
-                    <option value="<?= $doctor['row_id']; ?>" <?= $selected; ?>><?= $doctor['name']; ?></option>
+                    <option value="<?= $doctor['name']; ?>" <?= $selected; ?>><?= $doctor['name']; ?></option>
                     <?php
                 }
                 ?>
@@ -251,6 +253,8 @@ button.dm-button:hover, .dm-button:hover{
                 <input type="hidden" name="ht_age" id="ht_age" value="<?= $htData['age_str'] ?>">
                 <input type="hidden" name="ht_ptright" id="ht_ptright" value="<?= $htData['ptright'] ?>">
                 <input type="hidden" name="ht_diag" id="ht_diag" value="<?= $htData['diagnosis'] ?>">
+                <input type="hidden" name="ht_sex" id="ht_sex" value="<?= $sex ?>">
+                
             </td>
         </tr>
     </table>

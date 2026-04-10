@@ -102,6 +102,10 @@ class Hypertension extends Database
         $this->dateN = sprintf("%s", $this->dbi->real_escape_string($d));
     }
 
+    public function setHn($hn){
+        $this->hn = sprintf("%s", $this->dbi->real_escape_string($hn));
+    }
+
     /**
      * Summary of newHtNumber select เอา ht_no มา +1 เป็น id ตัวใหม่
      * @return mixed
@@ -241,7 +245,7 @@ class Hypertension extends Database
             $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
             $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
         }else{
-            $res = array('hypertension_id' => $this->dbi->insert_id);
+            $res = array('status' => 200,'hypertension_id' => $this->dbi->insert_id);
         }
 
         return $res;
@@ -476,6 +480,58 @@ class Hypertension extends Database
             $res = array('status' => 200);
         }
         return $res;
+    }
+
+    public function get_screen_ht(){
+        $sql = sprintf("SELECT * FROM `screen_ht` WHERE `hn`='%s';",
+            $this->dbi->real_escape_string($this->hn)
+        );
+        $q = $this->dbi->query($sql);
+        if($q->num_rows>0){
+            $res = $q->fetch_assoc();
+        }else{
+            $res = array('error_code'=>400, 'msg'=>'ไม่พบข้อมูล');
+        }
+        return $res;
+    }
+
+    public function insert_screen_ht(){
+        $sql = sprintf("INSERT INTO `screen_ht`
+            (`row_id`, `hn`, `ptname`, `age`, `date_active`, `officer`, `datetime`)
+            VALUES(NULL, '%s', '%s', '%s', '%s', '%s', '%s');",
+            $this->dbi->real_escape_string($this->hn),
+            $this->dbi->real_escape_string($this->ptname),
+            $this->dbi->real_escape_string($this->age_str),
+            $this->dbi->real_escape_string($this->thidate),
+            $this->dbi->real_escape_string($this->officer),
+            $this->dbi->real_escape_string($this->register_date)
+        );
+        $q = $this->dbi->query($sql);
+        if($q===false){
+            return array('status' => 400, 'msg' => $this->dbi->error);
+        }else{
+            return array('status' => 200, 'row_id' => $this->dbi->insert_id);
+        }
+    }
+
+    public function update_screen_ht(){
+        $sql = sprintf("UPDATE `screen_ht`
+            SET `hn`='%s', `ptname`='%s', `age`='%s', `date_active`='%s', `officer`='%s', `datetime`='%s'
+            WHERE `row_id`='%s';",
+            $this->dbi->real_escape_string($this->hn),
+            $this->dbi->real_escape_string($this->ptname),
+            $this->dbi->real_escape_string($this->age_str),
+            $this->dbi->real_escape_string($this->thidate),
+            $this->dbi->real_escape_string($this->officer),
+            $this->dbi->real_escape_string($this->register_date),
+            $this->dbi->real_escape_string($this->row_id)
+        );
+        $q = $this->dbi->query($sql);
+        if($q===false){
+            return array('status' => 400, 'msg' => $this->dbi->error);
+        }else{
+            return array('status' => 200);
+        }
     }
 
 }
