@@ -2,18 +2,10 @@
 session_start();
 require_once dirname(__FILE__).'/connect.php';
 require_once dirname(__FILE__).'/newBootstrap.php';
-// require_once dirname(__FILE__).'/class_file/class_drugreact.php';
-// require_once dirname(__FILE__).'/class_file/class_hypertension.php';
 
-/*
-// เอาไว้หาว่าในวันนี้ คนไข้คนไหนที่เข้าเคสเคยมีประวัติ ht บ้าง
-select a.*,b.* from (
-select row_id,hn from opd where thidate like '2567-11-08%'
-) as a left join hypertension_clinic as b on b.hn = a.hn
-where b.row_id is not null
-*/
-// include("connect.php");
-// mysql_query("SET NAMES UTF-8");
+$parts = parse_url(DOMAIN_PATH);
+$path_parts = explode('/', trim($parts['path'], '/')); // แยก path เป็น array
+$first_sub = DOMAIN.$path_parts[0]; // จะได้ 'sm3dev'
 
 $class_drug = new Drug();
 $class_hypertension = new Hypertension();
@@ -172,6 +164,10 @@ font-size:18px;
   display: inline-block;
   font-size: 22px;
   font-weight:bold;
+}
+.button-green:hover, .button-red:hover, .button-blue:hover, .button-gray:hover{
+	cursor: pointer;
+	box-shadow: 2px 2px 6px 0 rgb(0 0 0);
 }
 
 .button-gray {
@@ -497,6 +493,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		if(!empty($_POST['ht_no'])){
 			$postData['ht_no'] = $_POST['ht_no'];
 		}else{
+			// สร้างเลข ht_no ใหม่
 			$htNumber = $class_hypertension->newHtNumber();
 			$postData['ht_no'] = $htNumber['ht_no'];
 		}
@@ -545,6 +542,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$postData['joint_disease'] = 1;
 		}
 		
+		// เซ็ตค่าจาก $_POST ก่อนบันทึกหรืออัพเดท
 		$class_hypertension->setHypertension_clinic($postData);
 
 		if(empty($_POST['hypertension_id'])){
@@ -555,12 +553,9 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 		}
 
 		$res = $class_hypertension->getHtHistoryThisDay($_POST["hn"]);
+		$hyperData = $class_hypertension->getOneFromHn($_POST["hn"]);
 		if($res['error_code']==400){
-
-			/**
-			 * @readme มันยังขาด DateN ถ้าไป insert ใน hypertension_history เลย มันจะได้วันที่เป็นปัจจุบัน แต่จริงๆ ต้องเป็นวันที่ผู้ป่วยลงทะเบียน HT เป็นครั้งแรก(อาจจะดึงจาก hypertension_clinic ปกติ)
-			 */
-			// $class_hypertension->setDateN()
+			$class_hypertension->setDateN($hyperData['dateN']); // OVERRIDE dateN ตอนเซ็ตค่า setHypertension_clinic ก่อนที่จะบันทึก setHypertension_clinic
 			$class_hypertension->insert_history();
 		}else{
 			$class_hypertension->setHistoryId($res['id']);
@@ -862,14 +857,12 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 			$query=mysql_query($sql);
 			$arr = mysql_fetch_array($query);
 			
-			
-			
 			$add="insert into screen_ht set date_active='$registerdate',
-											hn='".$_REQUEST["hn"]."',
-											ptname='".$_POST["ptname"]."',
-											age='".$cAge."',
-											officer = '".$_SESSION["sOfficer"]."',
-											datetime='$officer_date'";
+			hn='".$_REQUEST["hn"]."',
+			ptname='".$_POST["ptname"]."',
+			age='".$cAge."',
+			officer = '".$_SESSION["sOfficer"]."',
+			datetime='$officer_date'";
 			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
 		}
 	}
@@ -895,7 +888,7 @@ if((isset($_POST["basic_opd"]) && $_POST["basic_opd"] != "") || (isset($_POST["p
 											datetime='$officer_date',
 											cvrisk_score='".$_POST["cvriskscore"]."',
 											cvrisk_area='".$_POST["cvrisk_area"]."'";
-			$result = Mysql_Query($add) or die('insert screen_ht'.Mysql_Error());
+			$result = Mysql_Query($add) or die('insert screen_cvdrisk'.Mysql_Error());
 		}
 	}	
 
@@ -1162,7 +1155,7 @@ $showyear="25".$nPrefix;
  <?php
  $onfocus = "hn";
 
- 	if(isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""){
+if(isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""){
 
 // แจ้งเตือนตัดรอบบ่าย **************************************************
 if($_REQUEST["hn"]=="62-6400"){ //จันทร์เพ็ญ  วงค์เวียน
@@ -1856,8 +1849,7 @@ C&deg; </td>
              </tr>
              <tr>
                <td align="right" class="data_show"> P : </td>
-               <td align="left"><input name="pause" type="text" id="pause" size="3" value="<?php echo $pause; ?>" />
-                 ครั้ง/นาที</td>
+               <td align="left"><input name="pause" type="number" step="1" id="pause" inputmode="numeric" size="3" value="<?= $pause; ?>" style="width:58px;"> ครั้ง/นาที</td>
                <td align="right">R :</td>
                <td align="left"><input name="rate" type="text" id="rate" value="20" size="3" />
 ครั้ง/นาที</td>
@@ -1869,7 +1861,7 @@ mmHg </td>
              </tr>
              <tr>
                <td align="right" class="data_show">BMI :</td>
-               <td align="left"><input name="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>" class="forntsarabun1" /></td>
+               <td align="left"><input name="bmi" id="bmi" type="text" size="3" maxlength="5" value="<?php echo $bmi; ?>" class="forntsarabun1" /></td>
                <td align="right"><?
 
 //if(substr($toborow,5) == "ตรวจสุขภาพประจำปี"){	
@@ -2305,7 +2297,7 @@ mmHg </td>
 					$yy = $yy+543;
 					$mm = substr($date_active,5,2);
 					$dd = substr($date_active,8,2);
-					$date_active="$dd/$mm/$yy";				
+					$date_active="$dd/$mm/$yy";
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
 				?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
@@ -2320,235 +2312,23 @@ mmHg </td>
 					}
 				}
 				?>
-				<div>
-					<a href="javascript:void(0);" onclick="showFormHt();">ฟอร์มบันทึก Hypertension</a>
-				</div>
-				<script>
-					function showFormHt(){
-						var el = document.getElementById('formHt');
-						if (el.style.display == 'none') {
-							el.style.display = '';
-						} else {
-							el.style.display = 'none';
-						}
+				<style>
+					.extra_btn{
+						border-radius: 4px;
+						padding: 6px;
+						margin: 4px;
+						background-color: #ffffff;
+						border: 1px solid #014d0a;
 					}
-				</script>
-				<?php 
-				// 
-				$htData = $class_hypertension->getOneFromHn($_POST['hn']);
-				?>
-				<div id="formHt" style="<?=($htData['error_code']==400 ? 'display:none;' : '' );?>">
-					<style>
-						.htDateSelectContainer{
-							position: absolute;
-							top: 28px;
-							right: 0;
-							background-color: #ffffff;
-							border: 2px solid #000000;
-							box-shadow: 5px 10px #888888;
-						}
-						input[readonly]{
-							background-color: #b8b8b8;
-						}
-					</style>
-					<fieldset>
-						<legend><strong>ฟอร์มบันทึก Hypertension (เพิ่มเติม)</strong></legend>
-						<form action="javascript:void(0)" method="post">
-							<table>
-								<tr>
-									<td align="right"><strong>HT number : </strong></td>
-									<td>
-										<?php 
-										
-										if($htData['error_code']==400){
-											$htData = array();
-										}
-										
-										$htYearNotion = '';
-										if(empty($htData['ht_no'])){
-											$htYearNotion = '<span style="background-color: #ffff9b; padding:2px;"><strong>ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ</strong></span>';
-										}
-										?>
-										<?=$htData['ht_no'];?><?=$htYearNotion;?>
-										<input type="hidden" name="ht_no" value="<?=$htData['ht_no'];?>">
-									</td>
-								</tr>
-								<tr>
-									<td align="right" valign="top"><strong>การวินิจฉัย : </strong></td>
-									<td>
-										<?php 
-										
-										$htDiagItems = array(0=>'No',1=>'Essential HT',3=>'Secondary HT',2=>'Uncertain type');
-										foreach ($htDiagItems as $k => $v) {
-											$checked = (!is_null($htData['ht']) && $k==$htData['ht']) ? 'checked="checked"' : '' ;
-											?>
-											<label for="ht<?=$k;?>"><input name="ht" id="ht<?=$k;?>" class="htDiag" type="radio" value="<?=$k;?>" <?=$checked;?> > <?=$v;?></label>
-											<?php
-										}
-										?>
-										<label for="diag_date">ปี <input type="text" name="diag_date" id="diag_date" value="<?=$htData['diag_date'];?>"></label> <span><a href="javascript:void(0);" onclick="getYearDiag()">เลือกปี</a></span>
-										<div id="getYearDiagContainer" class="" style="position:relative; display:none;">
-											<div id="getYearDiag" class="htDateSelectContainer" style="z-index:1;"></div>
-										<div>
-									</td>
-								</tr>
-								<tr>
-									<td align="right"><strong>โรคร่วม HT : </strong></td>
-									<td>
-										<?php 
-										$jdd = $htData['joint_disease_dm']=='Y' ? 'checked="checked"' : '' ;
-										$jdn = $htData['joint_disease_nephritic']=='Y' ? 'checked="checked"' : '' ;
-										$jdm = $htData['joint_disease_myocardial']=='Y' ? 'checked="checked"' : '' ;
-										$jdp = $htData['joint_disease_paralysis']=='Y' ? 'checked="checked"' : '' ;
-										?>
-										<label for="joint_disease_dm"><input name="joint_disease_dm" id="joint_disease_dm" type="checkbox" value="Y" <?=$jdd;?> > เบาหวาน</label>
-										<label for="joint_disease_nephritic"><input name="joint_disease_nephritic" id="joint_disease_nephritic" type="checkbox" value="Y" <?=$jdn;?> > ไตเรื้อรัง</label>
-										<label for="joint_disease_myocardial"><input name="joint_disease_myocardial" id="joint_disease_myocardial" type="checkbox" value="Y" <?=$jdm;?> > กล้ามเนื้อหัวใจตาย</label>
-										<label for="joint_disease_paralysis"><input name="joint_disease_paralysis" id="joint_disease_paralysis" type="checkbox" value="Y" <?=$jdp;?> > อัมพฤกษ์อัมพาต</label>
-									</td>
-								</tr>
-								<tr>
-									<td align="right"><strong>ประวัติบุหรี่ : </strong></td>
-									<td>
-										<?php 
-										$smokeItems = array(0=>'ไม่สูบบุหรี่','สูบบุหรี่','ไม่มีข้อมูล');
-										foreach ($smokeItems as $k => $v) { 
-											$checked = (!is_null($htData['smork']) && $k==$htData['smork']) ? 'checked="checked"' : '' ;
-											?>
-											<label for="cigarette<?=$k;?>">
-												<input type="radio" name="cigarette" id="cigarette<?=$k;?>" value="<?=$k;?>" <?=$checked;?> > <?=$v;?>
-											</label>
-											<?php
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td align="right" valign="top"><strong>ได้รับการตรวจ ECG หรือ CXR : </strong></td>
-									<td>
-										<?php
-										$ecg1 = $htData['ecgCxr'] == '1' ? 'checked="checked"' : '' ;
-										$ecg2 = $htData['ecgCxr'] == '0' ? 'checked="checked"' : '' ;
-										?>
-										<label for="ecgCxr1">
-											<input type="radio" name="ecgCxr" id="ecgCxr1" value="1" onclick="document.getElementById('ecgCxrContain').style.display='';" <?=$ecg1;?> > ได้รับการตรวจ
-										</label>
-										<label for="ecgCxr2">
-											<input type="radio" name="ecgCxr" id="ecgCxr2" value="0" onclick="document.getElementById('ecgCxrContain').style.display='none'; document.getElementById('dateEcgCxr').value='';" <?=$ecg2;?> > ไม่ได้ตรวจ
-										</label>
-										<?php 
-										$ecgCxrDisplay = 'display:none;';
-										if($htData['ecgCxr'] == '1'){
-											$ecgCxrDisplay = '';
-										}
-										?>
-										<div style="<?=$ecgCxrDisplay;?> position:relative;" id="ecgCxrContain">
-											<input type="text" name="dateEcgCxr" id="dateEcgCxr" value="<?=$htData['dateEcgCxr'];?>"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateSelected','diabetes_clinic/hypertension.php?action=loadDate&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<div id="landingDateSelected" class="htDateSelectContainer" style="display:none; z-index:2;"></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td align="right" valign="top"><strong>ได้รับการตรวจ Urine albumin : </strong></td>
-									<td>
-										<?php
-										$alb1 = $htData['albumin'] == '1' ? 'checked="checked"' : '' ;
-										$alb2 = $htData['albumin'] == '0' ? 'checked="checked"' : '' ;
-										?>
-										<label for="albumin1">
-											<input type="radio" name="albumin" id="albumin1" value="1" onclick="document.getElementById('albuminContain').style.display='';" <?=$alb1;?> > ได้รับการตรวจ
-										</label>
-										<label for="albumin2">
-											<input type="radio" name="albumin" id="albumin2" value="0" onclick="document.getElementById('albuminContain').style.display='none'; document.getElementById('dateAlbumin').value=''; document.getElementById('albuminLabnumber').value='';" <?=$alb2;?> > ไม่ได้ตรวจ
-										</label>
-										<?php 
-										$albDisplay = 'display:none;';
-										if($htData['albumin'] == '1'){
-											$albDisplay = '';
-										}
-										?>
-										<div style="<?=$albDisplay;?> position:relative;" id="albuminContain">
-											<input type="text" name="dateAlbumin" id="dateAlbumin" value="<?=$htData['dateAlbumin'];?>" > <a href="javascript:void(0);" onclick="htDateSelect('landingDateAlbumin','diabetes_clinic/hypertension.php?action=loadDateAlbumin&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<input type="hidden" name="albuminLabnumber" id="albuminLabnumber" value="<?=$htData['albuminLabnumber'];?>">
-											<div id="landingDateAlbumin" class="htDateSelectContainer" style="display:none; z-index:3;"></div>
-										</div>
-									</td>
-								</tr>
-								
-								<tr>
-									<td align="right" valign="top"><strong>ได้รับการตรวจ Serum Cr. : </strong></td>
-									<td>
-										<?php
-										$cre1 = $htData['creatinine'] == '1' ? 'checked="checked"' : '' ;
-										$cre2 = $htData['creatinine'] == '0' ? 'checked="checked"' : '' ;
-										?>
-										<label for="creatinine1">
-											<input type="radio" name="creatinine" id="creatinine1" value="1" onclick="document.getElementById('creatinineContain').style.display='';" <?=$cre1;?> > ได้รับการตรวจ
-										</label>
-										<label for="creatinine2">
-											<input type="radio" name="creatinine" id="creatinine2" value="0" onclick="document.getElementById('creatinineContain').style.display='none'; document.getElementById('dateCreatinine').value=''; document.getElementById('creatinineLabnumber').value='';" <?=$cre2;?> > ไม่ได้ตรวจ
-										</label>
-										<?php 
-										$creDisplay = 'display:none;';
-										if($htData['creatinine'] == '1'){
-											$creDisplay = '';
-										}
-										?>
-										<div style="<?=$creDisplay;?> position:relative;" id="creatinineContain">
-											<input type="text" name="dateCreatinine" id="dateCreatinine" value="<?=$htData['dateCreatinine'];?>"> <a href="javascript:void(0);" onclick="htDateSelect('landingDateCreatinine','diabetes_clinic/hypertension.php?action=loadDateCreatinine&hn=<?=$hn;?>')">เลือกวันที่รับบริการ</a>
-											<input type="hidden" name="creatinineLabnumber" id="creatinineLabnumber" value="<?=$htData['creatinineLabnumber'];?>">
-											<div id="landingDateCreatinine" class="htDateSelectContainer" style="display:none; z-index:4;"></div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td align="right"></td>
-									<td>
-										<label for="confirmHt"><input type="checkbox" name="confirmHt" id="confirmHt" value="1"> <strong style="color:red;">ยืนยันการบันทึกข้อมูล Hypertension</strong></label>
-										<input type="hidden" name="hypertension_id" value="<?=$htData['row_id'];?>">
-									</td>
-								</tr>
-							</table>
-						</form>
-						<script>
-							function getYearDiag(){
-								callYearDiag().then((res)=>{
-									document.getElementById('getYearDiag').innerHTML = res;
-									document.getElementById('getYearDiagContainer').style.display = '';
-								});
-							}
-							async function callYearDiag(){
-								const response = await fetch('call/diag.php?action=getFirstI10FromHn&hn=<?=$hn;?>');
-								const data = await response.text();
-								return data;
-							}
-
-							// ถ้ารายการใน การวินิจฉัย ถูกคลิกให้ทำการเลือกวันที่อัตโนมัติ
-							var htDiagItems = document.getElementsByClassName('htDiag');
-							for (let htDi = 0; htDi < htDiagItems.length; htDi++) {
-								const el = htDiagItems[htDi];
-								el.onclick = function(){
-									document.getElementById('diag_date').focus();
-								}
-							}
-
-							function htDateSelect(divId,url){
-								loadContent(url).then((res)=>{ 
-									document.getElementById(divId).innerHTML = res;
-									document.getElementById(divId).style.display = '';
-								});
-							}
-							function closeContainer(idName){
-								document.getElementById(idName).style.display = 'none';
-							}
-							async function loadContent(url){
-								const response = await fetch(url);
-								const body = await response.text();
-								return body;
-							}
-						</script>
-					</fieldset>
+					.extra_btn:hover{
+						box-shadow: 3px 3px 3px #3e3e3e;
+						cursor: pointer;
+					}
+				</style>
+				<div>
+					<button id="hyperBtn" type="button" class="extra_btn">ฟอร์มบันทึก Hypertension</button>
 				</div>
+				
 			</td>
 		</tr>
 		<tr>
@@ -2577,7 +2357,7 @@ mmHg </td>
 					$yy=$yy+543;
 					$mm = substr($date_active,5,2);
 					$dd = substr($date_active,8,2);
-					$date_active="$dd/$mm/$yy";					
+					$date_active="$dd/$mm/$yy";
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
 					?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
@@ -2594,197 +2374,9 @@ mmHg </td>
 				?>
 
 				<div>
-					<a href="javascript:void(0);" onclick="showFormDm();">ฟอร์มบันทึก Diabetes clinic</a>
+					<button id="myBtn" type="button" class="extra_btn">ฟอร์มบันทึก Diabetes คลินิก</button>
 				</div>
-				<script>
-					function showFormDm(){
-						var el = document.getElementById('formDm');
-						if (el.style.display == 'none') {
-							el.style.display = '';
-						} else {
-							el.style.display = 'none';
-						}
-					}
-				</script>
-				<style>
-					#formDm{font-size:14pt; display: inline-block;}
-					.mb-3{margin-bottom:8px;}
-					.title{font-size: 18pt;border-left: 5px solid #006666;padding-left: 10px;font-weight: bold;color: #006666;}
-					.sub-title{font-weight: bold;color: #006666;}
-					.indent-left{margin-left: 8px;}
-					button.dm-button, .dm-button {
-						border: 1px solid black;;
-						color: #000000;
-						padding: 2px 6px;
-						text-align: center;
-						text-decoration: none;
-						display: inline-block;
-						cursor: pointer;
-						border-radius: 4px;
-					}
-					button.dm-button:hover, .dm-button:hover{
-						box-shadow: 3px 3px 3px #3e3e3e;
-					}
-				</style>
-				<div id="formDm" style="display:none;">
-					<fieldset>
-						<legend class=""><strong>ฟอร์ม DM</strong></legend>
-						<div>
-							<?php
-							$dmNumber = 'ผู้ป่วยใหม่ระบบจะสร้าง HT Number ให้อัตโนมัติ';
-							$dm = $class_diabetes->getDiabetesFromHn($hn);
-							if(!empty($dm['dm_no'])){
-								$dmNumber = $dm['dm_no'].' <a href="diabetes_clinic/diabetes_edit.php?hn='.$hn.'" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a>';
-							}
-							?>
-							<span class="sub-title">DM Number</span>: <span style="background-color: #ffff9b; padding:2px;"><strong><?= $dmNumber; ?></strong></span>
-						</div>
-						<div>
-							<p class="title">การวินิจฉัย</p>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">DM type:</div>
-								<div class="form-check form-check-inline">
-									<input class="input-dm-type" type="radio" name="dia1" id="dm_type1" value="DM type1">
-									<label class="form-check-label" for="dm_type1">DM type1</label>
-									<input class="input-dm-type" type="radio" name="dia1" id="dm_type2" value="DM type2">
-									<label class="form-check-label" for="dm_type2">DM type2</label>
-									<input class="input-dm-type" type="radio" name="dia1" id="dm_type3" value="Uncertain type">
-									<label class="form-check-label" for="dm_type3">Uncertain type</label>
-
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-type')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-
-									<label class="form-label" for="nosis_d">วันที่วินิจฉัยครั้งแรก</label>
-									<input type="text" class="form-control" name="dm_date" id="nosis_d" placeholder="วันที่วินิจฉัย DM">
-								</div>
-							</div>
-							
-							<div class="mb-3 indent-left">
-								<div class="sub-title">โรคร่วม HT:</div>
-								<div class="form-check form-check-inline">
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht1" value="No">
-									<label class="form-check-label" for="dm_ht1">No</label>
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht2" value="Essential HT">
-									<label class="form-check-label" for="dm_ht2">Essential HT</label>
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht3" value="Secondary HT">
-									<label class="form-check-label" for="dm_ht3">Secondary HT</label>
-									<input class="input-como-ht" type="radio" name="ht" id="dm_ht4" value="Uncertain type">
-									<label class="form-check-label" for="dm_ht4">Uncertain type</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-como-ht')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-								</div>
-							</div>
-
-							<div class="mb-3 indent-left">
-								<div class="sub-title">โรคร่วมอื่นๆ:</div>
-								<div class="row">
-									<table>
-										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como1" name="ht_etc[]" value="Neuropathy"> <label for="como1">Neuropathy</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como2" name="ht_etc[]" value="Heart Failure"> <label for="como2">Heart Failure</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como3" name="ht_etc[]" value="Nephropathy"> <label for="como3">Nephropathy</label></td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como4" name="ht_etc[]" value="CVD"> <label for="como4">CVD</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como5" name="ht_etc[]" value="IHD"> <label for="como5">IHD</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como6" name="ht_etc[]" value="Foot ulcer"> <label for="como6">Foot ulcer</label></td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" class="form-check-input" id="como7" name="ht_etc[]" value="Retinopathy"> <label for="como7">Retinopathy</label></td>
-											<td><input type="checkbox" class="form-check-input" id="como8" name="ht_etc[]" value="Dyslipidemia"> <label for="como8">Dyslipidemia</label></td>
-											<td>
-												<label class="form-label" for="other_ht_date">วันที่วินิจฉัยครั้งแรก</label>
-												<input type="text" class="form-control" name="como_date" id="other_ht_date" placeholder="วันที่วินิจฉัยโรคร่วม">
-											</td>
-										</tr>
-									</table>
-								</div>
-							</div>
-
-							<div class="mb-3 indent-left">
-								<div class="sub-title">ประวัติสูบบุหรี่:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig1" value="ไม่สูบบุหรี่"><label for="dm_cig1">ไม่สูบบุหรี่</label>
-									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig2" value="สูบบุหรี่"><label for="dm_cig2">สูบบุหรี่</label>
-									<input class="form-check-input" type="radio" name="dm_cigarette" id="dm_cig3" value="NA"><label for="dm_cig3">NA</label>
-								</div>
-							</div>
-						</div>
-						<div>
-							<p class="title">การตรวจร่างกาย</p>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">Retinal Exam:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="retinal_date" id="retinal_date" placeholder="วันที่ตรวจ Retinal Exam">
-									<input class="input-retinal" type="radio" name="retinal" id="retinal1" value="No DR"><label for="retinal1">No DR</label>
-									<input class="input-retinal" type="radio" name="retinal" id="retinal2" value="Mind DR"><label for="retinal2">Mind DR</label>
-									<input class="input-retinal" type="radio" name="retinal" id="retinal3" value="Moderate DR"><label for="retinal3">Moderate DR</label>
-									<input class="input-retinal" type="radio" name="retinal" id="retinal4" value="Severe DR"><label for="retinal4">Severe DR</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-retinal')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-								</div>
-							</div>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">Foot Exam:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="foot_exam_date" id="foot_exam_date" placeholder="วันที่ตรวจ Foot Exam">
-									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot1" value="Low Risk"><label for="dm_foot1">Low Risk</label>
-									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot2" value="Moderate Risk"><label for="dm_foot2">Moderate Risk</label>
-									<input class="input-dm-foot" type="radio" name="dm_foot" id="dm_foot3" value="Hight Risk"><label for="dm_foot3">Hight Risk</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-foot')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-								</div>
-							</div>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">ตรวจสุขภาพฟัน:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input type="text" name="teeth_date" id="teeth_date" placeholder="วันที่ตรวจตรวจสุขภาพฟัน">
-									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth1" value="1"><label for="dm_teeth1">ได้รับการตรวจ</label>
-									<input class="input-dm-teeth" type="radio" name="dm_teeth" id="dm_teeth2" value="0"><label for="dm_teeth2">ไม่ได้รับการตรวจ</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-teeth')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-								</div>
-							</div>
-						</div>
-						<div>
-							<p class="title">การให้ความรู้ / คำแนะนำ</p>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">Foot care:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare1" value="1"><label for="footcare1">ให้ความรู้</label>
-									<input class="input-dm-footcare" type="radio" name="dm_footcare" id="footcare2" value="0"><label for="footcare2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-footcare')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_footcare" id="date_footcare" placeholder="วันที่ตรวจ Foot Exam">
-								</div>
-							</div>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">Nutrition:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition1" value="1"><label for="nutrition1">ให้ความรู้</label>
-									<input class="input-dm-nutrition" type="radio" name="dm_nutrition" id="nutrition2" value="0"><label for="nutrition2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-nutrition')"><span style="font-size:8pt;">❌</span>รีเซ็ต</a>
-									<input type="text" name="date_nutrition" id="date_nutrition" placeholder="วันที่ตรวจ Nutrition">
-								</div>
-							</div>
-							<div class="mb-3 indent-left">
-								<div class="sub-title">Exercise:</div>
-								<div class="form-check form-check-inline ms-2">
-									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise1" value="1"><label for="exercise1">ให้ความรู้</label>
-									<input class="input-dm-exercise" type="radio" name="dm_exercise" id="exercise2" value="0"><label for="exercise2">ไม่ได้ให้ความรู้</label> 
-									<a href="javascript:void(0);" class="dm-button" onclick="clearRadioButton('input-dm-exercise')"><span style="font-size:8pt;">❌</span>ล้างค่า</a>
-									<input type="text" name="date_exercise" id="date_exercise" placeholder="วันที่ตรวจ Exercise">
-								</div>
-							</div>
-						</div>
-						<div>
-							<button type="button" class="dm-button">💾 บันทึกข้อมูล</button>
-						</div>
-						<script>
-							function clearRadioButton(className){
-								const comoHtItems = document.getElementsByClassName(className);
-								for (let index = 0; index < comoHtItems.length; index++) {
-									const element = comoHtItems[index];
-									element.checked = false;
-								}
-							}
-						</script>
-					</fieldset>
-				</div>
+				
 			</td>
 		</tr>
 
@@ -3467,16 +3059,23 @@ mmHg </td>
                  req.send(null); //ส่งค่า
             }
             
-            window.onLoad=dochange('doctor', -1);     
+            // window.onLoad=dochange('doctor', -1);     
 		</script>            
 		 <tr>
 		   <td align="right" class="data_show">แพทย์ : </td>
 		   <td colspan="2" align="left">
            <font id="doctor">
-             <select class="txtsarabun">
-               <option value="0">--------------------------</option>
-             </select>
-           </font> </td>
+			<?php
+			echo "<select name='doctor' id='doctorSelected' onChange=\"dochange('clinic', this.value)\" class='txtsarabun'>\n";
+			echo "<option value='0'>--------------- เลือกแพทย์ ---------------</option>\n";
+			$result=mysql_query("select * from doctor where status='y' and opdstatus='y' ORDER BY opdstatus DESC , row_id ASC");
+			while($row = mysql_fetch_array($result)){
+				echo "<option value=\"$row[row_id]\" >$row[name]</option> \n" ;
+			}
+			echo "</select>\n";
+			?>
+           </font>
+			</td>
 		   <td colspan="3" align="left"><table width="100%" border="0">
              <tr>
                <td width="18%" align="right"><span class="data_show">คลินิก/ห้อง :</span></td>
@@ -3556,34 +3155,405 @@ $room = $_POST['room'];
      </tr>
    </table>
 <input name="hn" type="hidden" value="<?php echo $_REQUEST["hn"];?>" />
-    <input name="ptname" type="hidden" value="<?php echo $fullname;?>" />
+    <input name="ptname" id="ptname" type="hidden" value="<?php echo $fullname;?>" />
 	<input name="vn" type="hidden" value="<?php echo $vn;?>" />
 	<input name="toborow" type="hidden" value="<?php echo $toborow;?>" />
 	<input name="appoint" type="hidden" value="<?php echo $app_row;?>" />
 </form>
-<br />
-<?php } 
-include("unconnect.inc");
 
+<style>
+	/* The Modal (background) */
+	.modal {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 1; /* Sit on top */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+
+	/* Modal Content/Box */
+	.modal-content {
+		background-color: #fefefe;
+		margin: 15% auto; /* 15% from the top and centered */
+		padding: 20px;
+		border: 1px solid #888;
+		width: 80%; /* Could be more or less, depending on screen size */
+	}
+
+	/* The Close Button */
+	.close {
+		color: #aaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+		color: black;
+		text-decoration: none;
+		cursor: pointer;
+	}
+</style>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+	<!-- Modal content -->
+	<div class="modal-content">
+		<span class="close">[ปิด] &times;</span>
+		<div id="formDmContent" style="display:none;">
+			<!-- opd_dm_form.php -->
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function(ev) {
+	});
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
+			// Your code to run when Esc is pressed
+			span.click();
+		}
+	});
+
+	/**
+	 * Toast ตอนบันทึกข้อมูล DM Clinic สำเร็จ
+	 */
+	let Toast = Swal.mixin({
+		toast: true,
+		position: "top-end",
+		showConfirmButton: false,
+		timer: 1000,
+		timerProgressBar: true,
+		didOpen: (toast) => {
+			toast.onmouseenter = Swal.stopTimer;
+			toast.onmouseleave = Swal.resumeTimer;
+		}
+	});
+
+	////// MODAL //////
+	// Get the modal
+	var modal = document.getElementById("myModal");
+
+	// Get the button that opens the modal
+	var btn = document.getElementById("myBtn");
+	
+	// Get the <span> element that closes the modal
+	var span = document.getElementsByClassName("close")[0];
+
+	// When the user clicks on the button, open the modal
+	btn.onclick = function() {
+		onLoadDmPage().then((html)=>{
+			document.getElementById('formDmContent').innerHTML = html;
+		});
+		document.getElementById('formDmContent').style.display = "block";
+		modal.style.display = "block";
+	}
+
+	var hyperBtn = document.getElementById("hyperBtn");
+
+	// When the user clicks on the button, open the modal
+	hyperBtn.onclick = function() {
+		onLoadHtPage().then((html)=>{
+			document.getElementById('formDmContent').innerHTML = html;
+		});
+		document.getElementById('formDmContent').style.display = "block";
+		modal.style.display = "block";
+	}
+
+	// When the user clicks on <span> (x), close the modal
+	span.onclick = function() {
+		modal.style.display = "none";
+		document.getElementById('formDmContent').style.display = "none";
+		document.getElementById('formDmContent').innerHTML = '';
+	}
+
+	// When the user clicks anywhere outside of the modal, close it
+	window.onclick = function(event) {
+		if (event.target == modal) {
+			// modal.style.display = "none";
+		}
+	}
+	////// MODAL //////
+
+	////// OPD_HT_FORM.php //////
+	function getYearDiag(){
+		callYearDiag().then((res)=>{
+			document.getElementById('getYearDiag').innerHTML = res;
+			document.getElementById('getYearDiagContainer').style.display = '';
+		});
+	}
+	async function callYearDiag(){
+		const response = await fetch('call/diag.php?action=getFirstI10FromHn&hn=<?=$hn;?>');
+		const data = await response.text();
+		return data;
+	}
+
+	// ถ้ารายการใน การวินิจฉัย ถูกคลิกให้ทำการเลือกวันที่อัตโนมัติ
+	var htDiagItems = document.getElementsByClassName('htDiag');
+	for (let htDi = 0; htDi < htDiagItems.length; htDi++) {
+		const el = htDiagItems[htDi];
+		el.onclick = function(){
+			document.getElementById('diag_date').focus();
+		}
+	}
+
+	function htDateSelect(divId,url){
+		loadContent(url).then((res)=>{ 
+			document.getElementById(divId).innerHTML = res;
+			document.getElementById(divId).style.display = '';
+		});
+	}
+	function closeContainer(idName){
+		document.getElementById(idName).style.display = 'none';
+	}
+	async function loadContent(url){
+		const response = await fetch(url);
+		const body = await response.text();
+		return body;
+	}
+	
+	async function onLoadHtPage(){
+		const response = await fetch('opd_ht_form.php?hn=<?=$hn;?>');
+		const body = await response.text();
+		return body;
+	}
+
+	function saveHtForm(){
+		Swal.fire("กำลังปรับ Hypertension");
+	}
+
+	async function saveHtForm() {
+		const form = document.querySelector('#opd_ht_form');
+		const formData = new FormData(form);
+		const data = {};
+		
+		// Convert FormData to JSON object, handling potential duplicate names or checkboxes
+		formData.forEach((value, key) => {
+			if (data[key]) {
+				if (!Array.isArray(data[key])) {
+					data[key] = [data[key]];
+				}
+				data[key].push(value);
+			} else {
+				data[key] = value;
+			}
+		});
+
+		data.action = 'saveHypertension';
+		data.typeDepart = 'hypertension';
+		
+		try {
+			const response = await fetch('<?= $first_sub ?>/api/index.php', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const result = await response.json();
+			if(result.hypertension.status===200){
+				Toast.fire({
+					icon: "success",
+					title: "บันทึกข้อมูลเรียบร้อยแล้ว"
+				}).then(()=>{
+					span.click();
+				});
+				
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + error.message);
+		}
+	}
+
+	////// OPD_HT_FORM.php //////
+
+	/**
+	 * ตอนโหลดข้อมูลเข้าไปใน Modal
+	 */
+	async function onLoadDmPage(){
+		const response = await fetch('opd_dm_form.php?hn=<?=$hn;?>');
+		const body = await response.text();
+		return body;
+	}
+
+	/**
+	 * ตอนกด "รีเซ็ต" ในฟอร์ม DM Clinic
+	 */
+	function clearRadioButton(className){
+		const comoHtItems = document.getElementsByClassName(className);
+		for (let index = 0; index < comoHtItems.length; index++) {
+			const element = comoHtItems[index];
+			element.checked = false;
+		}
+	}
+
+	/**
+	 * รวม Alert
+	 */
+	async function doAlert(validateTxt, textFocus){
+		await Swal.fire({
+			icon: 'warning',
+			title: validateTxt,
+			allowOutsideClick: false,
+			didClose: () =>{
+				if(textFocus!==''){
+					document.getElementById(textFocus).focus();
+				}
+			}
+		});
+	}
+
+	function saveDmForm(){
+		event.preventDefault();
+
+		const dmForm = document.getElementById('dmFormAdmin');
+		const doctorId = document.getElementById('dm_doctor').value;
+		const weight = document.getElementById('dm_weight').value;
+		const height = document.getElementById('dm_height').value;
+		const temperature = document.getElementById('dm_temp').value;
+		const round = document.getElementById('dm_round').value; // ใน db เป็น round
+		const pause = document.getElementById('dm_pulse').value;
+		const rate = document.getElementById('dm_rate').value;
+		const bp1 = document.getElementById('dm_bp1').value;
+		const bp2 = document.getElementById('dm_bp2').value;
+		const bmi = document.getElementById('dm_bmi').value;
+
+		let validate = true;
+		let validateTxt = '';
+		let textFocus = '';
+		//  Pulse (ชีพจร) หรือ Rate (อัตราการเต้น)
+		if(pause==''){
+			validate = false;
+			validateTxt = 'กรุณากรอกชีพจร (Pulse)';
+			textFocus = 'dm_pulse';
+
+		}else if(rate==''){
+			validate = false;
+			validateTxt = 'กรุณากรอกอัตราการเต้น (Rate)';
+			textFocus = 'dm_rate';
+
+		}else if(bp1=='' || bp2==''){
+			validate = false;
+			validateTxt = 'กรุณากรอกค่าความดัน';
+			textFocus = 'dm_bp1';
+
+		}else if(round==''){
+			validate = false;
+			validateTxt = 'กรุณากรอกรอบเอว';
+			textFocus = 'dm_round';
+
+		}else if(doctorId==0){
+			validate = false;
+			validateTxt = 'กรุณาเลือกแพทย์';
+			textFocus = 'dm_doctor';
+		}
+		
+		if(validate===false){
+			doAlert(validateTxt, textFocus);
+			return false;
+		}
+
+		let formData = {};
+		for (let index = 0; index < dmForm.elements.length; index++) {
+			const element = dmForm.elements[index];
+			if (!element.name || !element.type) continue;
+
+			if( (element.type==="text" || element.type==="hidden")  && element.value !== ''){ 
+				formData[element.name] = element.value;
+			}else if( element.type==="checkbox" && element.checked===true){
+
+				if (element.name.includes('[]')) {
+					if (!Array.isArray(formData[element.name])) {
+						formData[element.name] = [];
+					}
+					formData[element.name].push(element.value);
+				}else{
+					formData[element.name] = element.value;
+				}
+				
+			}else if( element.type==="radio" && element.checked===true){
+				formData[element.name] = element.value;
+			}else if( element.type==="select-one"){
+				formData[element.name] = element.value;
+			}
+		}
+
+		formData.doctor = document.getElementById('dm_doctor').value;
+		formData.ptname = document.getElementById('dm_ptname').value;
+		formData.ptright = '<?= $cPtright; ?>';
+		formData.dbbirt = '<?= $dbirth; ?>';
+		formData.sex = '<?= $cSex==='ช' ? '0' : '1' ; ?>';
+		formData.weight = weight;
+		formData.height = height;
+		formData.temperature = temperature;
+		formData.round = round;
+		formData.pause = pause;
+		formData.rate = rate;
+		formData.bp1 = bp1;
+		formData.bp2 = bp2;
+		formData.bmi = bmi;
+		formData.age = encodeURIComponent('<?= $age; ?>');
+
+		onSaveDmForm(formData).then((res)=>{
+			if(res.status===200){
+				let dmNumber = res.dm_clinic_id;
+				let hn = res.hn;
+				document.getElementById('updatedDmNumber').innerHTML = `${dmNumber} <a href="diabetes_clinic/diabetes_edit.php?hn=${hn}" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a><input type="hidden" name="dm_no" value="${dmNumber}">`;
+				Toast.fire({
+					icon: "success",
+					title: res.message
+				}).then(()=>{
+					span.click();
+				});
+			}else{
+				Toast.fire({
+					icon: "error",
+					title: res.message
+				});
+			}
+		});
+	}
+
+	async function onSaveDmForm(data){
+		const response = await fetch('<?= $first_sub ?>/api/index.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(data)
+		});
+		const dataResponse = await response.json();
+		return dataResponse ;
+	}
+
+<?php
 if ($hn==='55-8821') {
 	?>
-	<script>
-	alert('กรุณาตรวจสอบ การจ่ายยา และปริมาณยา ในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ');
-	</script>
+	Swal.fire({
+		title: 'กรุณาตรวจสอบ การจ่ายยา และปริมาณยา ในผู้ป่วยรายนี้ หากต้องรับยา โรคประจำตัว กรุณาให้มาติดต่อในเวลาราชการ',
+		allowOutsideClick: false
+	})
 	<?php
 }
-
 ?>
-<script language="JavaScript" type="text/javascript">
-window.onload = function(){
-	document.getElementById("<?php echo $onfocus;?>").focus();
-}
-</script>
-<script type="text/javascript">
+
 	var popup1, dm1, dm2, dm3, dm4,dm5,dm6,dm7,dm8;
 	window.onload = function() {
 		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
-
 		dm1 = new Epoch('dm1','popup',document.getElementById('nosis_d'),false);
 		dm2 = new Epoch('dm2','popup',document.getElementById('other_ht_date'),false);
 		dm3 = new Epoch('dm3','popup',document.getElementById('retinal_date'),false);
@@ -3595,6 +3565,11 @@ window.onload = function(){
 		
 	};
 </script>
+
+<?php 
+} // END isset($_REQUEST["hn"]) && $_REQUEST["hn"] !=""
+?>
+
 <script type="text/javascript" src="js/vendor/jquery-1.11.2.min.js"></script>
 <script type="text/javascript">
 jQuery.noConflict();

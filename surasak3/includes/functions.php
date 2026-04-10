@@ -377,6 +377,18 @@ function get_date_bc($format = false){
 	return $date_bc;
 }
 
+function dateThaiToChrist($date){
+	if(strlen($date)!==10){ return $date; }
+	list($y,$m,$d) = explode('-',$date);
+	return ($y-543).'-'.$m.'-'.$d;
+}
+
+function dateChristToThai($date){
+	if(strlen($date)!==10){ return $date; }
+	list($y,$m,$d) = explode('-',$date);
+	return ($y+543).'-'.$m.'-'.$d;
+}
+
 /**
  * เรียกดูปีงบประมาณ(ปกติจะอยู่ระหว่าง 1ตค ถึง 30กย)
  *

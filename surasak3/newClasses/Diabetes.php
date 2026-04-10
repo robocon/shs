@@ -27,11 +27,25 @@ class Diabetes extends Database
      * @return array $item
      */
     public function getDiabetesFromHn($hn=null, $field=array()){
+        $fieldSelect = '*';
+        if(!empty($field)){
+            $fieldSelect = '`'.implode('`,`',$field).'`';
+        }
+        $sql = sprintf("SELECT $fieldSelect FROM `diabetes_clinic` WHERE `hn` = '%s' LIMIT 1", $this->dbi->real_escape_string($hn));
+        $q = $this->dbi->query($sql);
+        $item = false;
+        if($q->num_rows > 0){
+            $item = $q->fetch_assoc();
+        }
+        return $item;
+    }
+
+    public function getDiabetesFromId($id=null, $field=array()){
         $fieldSelect = '`dm_no`';
         if(!empty($field)){
             $fieldSelect = '`'.implode('`,`',$field).'`';
         }
-        $sql = sprintf("SELECT $fieldSelect FROM `diabetes_clinic` WHERE `hn` = '%s' ", $this->dbi->real_escape_string($hn));
+        $sql = sprintf("SELECT $fieldSelect FROM `diabetes_clinic` WHERE `row_id` = '%s' LIMIT 1", $this->dbi->real_escape_string($id));
         $q = $this->dbi->query($sql);
         $item = false;
         if($q->num_rows > 0){
@@ -238,4 +252,28 @@ class Diabetes extends Database
         }
         return $res;
     }
+
+    /**
+     * 
+     */
+    public function getScreenDm($hn = ''){
+        $sql = sprintf("SELECT `row_id` FROM `screen_dm` WHERE `hn` = '%s' LIMIT 1;", $this->dbi->real_escape_string($hn));
+        $q = $this->dbi->query($sql);
+        $res = false;
+        if($q->num_rows>0){
+            $res = $q->fetch_assoc();
+        }
+        return $res;
+    }
+
+    public function delDiabetes($id){
+        $sql = sprintf("DELETE FROM diabetes_clinic WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
+        $this->dbi->query($sql);
+    }
+
+    public function delDiabetesHistory($id){
+        $sql = sprintf("DELETE FROM diabetes_clinic_history WHERE `row_id` = '%s' ", $this->dbi->real_escape_string($id));
+        $this->dbi->query($sql);
+    }
+
 }
