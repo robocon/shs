@@ -20,6 +20,22 @@ let Toast = Swal.mixin({
     }
 });
 
+/**
+ * รวม Alert
+ */
+async function doAlert(validateTxt, textFocus){
+    await Swal.fire({
+        icon: 'warning',
+        title: validateTxt,
+        allowOutsideClick: false,
+        didClose: () =>{
+            if(textFocus!==''){
+                document.getElementById(textFocus).focus();
+            }
+        }
+    });
+}
+
 ////// MODAL //////
 // Get the modal
 var modal = document.getElementById("myModal");
@@ -109,6 +125,43 @@ async function onLoadHtPage(){
 }
 
 async function saveHtForm() {
+
+    const ht_doctor = document.getElementById('ht_doctor').value;
+    const ht_weight = document.getElementById('ht_weight').value;
+    const ht_height = document.getElementById('ht_height').value;
+    const ht_temp = document.getElementById('ht_temp').value;
+    const ht_round = document.getElementById('ht_round').value;
+    const ht_pulse = document.getElementById('ht_pulse').value;
+    const ht_rate = document.getElementById('ht_rate').value;
+    const ht_bp1 = document.getElementById('ht_bp1').value;
+    const ht_bp2 = document.getElementById('ht_bp2').value;
+    const ht_bmi = document.getElementById('ht_bmi').value;
+    if(ht_doctor == ''){
+        doAlert("กรุณาเลือแพทย์", ht_doctor);
+        return false;
+    }else if(ht_height == ''){
+        doAlert("กรุณาใส่ส่วนสูง", ht_height);
+        return false;
+    }else if(ht_weight == ''){
+        doAlert("กรุณาใส่น้ำหนัก", ht_weight);
+        return false;
+    }else  if(ht_round == ''){
+        doAlert("กรุณาใส่รอบเอว", ht_round);
+        return false;
+    }else if(ht_temp == ''){
+        doAlert("กรุณาใส่อุณหภูมิ", ht_temp);
+        return false;
+    }else if(ht_pulse == ''){
+        doAlert("กรุณากรอกชีพจร (Pulse)", ht_pulse);
+        return false;
+    }else if(ht_rate == ''){
+        doAlert("กรุณากรอกอัตราการเต้น (Rate)", ht_rate);
+        return false;
+    }else if(ht_bp1 == '' || ht_bp2 == ''){
+        doAlert("กรุณาใส่ความดันโลหิต", ht_bp1);
+        return false;
+    }
+
     const form = document.querySelector('#opd_ht_form');
     const formData = new FormData(form);
     const data = {};
@@ -179,22 +232,6 @@ function clearRadioButton(className){
     }
 }
 
-/**
- * รวม Alert
- */
-async function doAlert(validateTxt, textFocus){
-    await Swal.fire({
-        icon: 'warning',
-        title: validateTxt,
-        allowOutsideClick: false,
-        didClose: () =>{
-            if(textFocus!==''){
-                document.getElementById(textFocus).focus();
-            }
-        }
-    });
-}
-
 function saveDmForm(){
     event.preventDefault();
 
@@ -226,7 +263,7 @@ function saveDmForm(){
 
     }else if(bp1=='' || bp2==''){
         validate = false;
-        validateTxt = 'กรุณากรอกค่าความดัน';
+        validateTxt = 'กรุณากรอกค่าความดันโลหิต';
         textFocus = 'dm_bp1';
 
     }else if(round==''){
