@@ -106,7 +106,7 @@ button.dm-button:hover, .dm-button:hover{
             <td align="right" valign="top"><strong>ข้อมูลผู้เข้ารับบริการ : </strong></td>
             <td>
                 <div style="margin-bottom:8px;">
-                    <input type="checkbox" name="test" id="test"> <label for="test">ดึงข้อมูลซักประวัติวันนี้</label>
+                    <input type="checkbox" name="ht_import" id="ht_import" onclick="ht_import_opd(this.checked)"> <label for="ht_import">ดึงข้อมูลซักประวัติวันนี้</label>
                 </div>
                 <div class="flex-container" style="width:100%;">
                     <div>ส่วนสูง: <input type="text" size="5" name="ht_height" id="ht_height" value="<?= $htData['height']; ?>"> ซม.</div>

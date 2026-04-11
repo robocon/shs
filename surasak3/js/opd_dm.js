@@ -1,3 +1,6 @@
+/**
+ * ESC เพื่อยกเลิก Modal
+ */
 document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
         // Your code to run when Esc is pressed
@@ -23,13 +26,13 @@ let Toast = Swal.mixin({
 /**
  * รวม Alert
  */
-async function doAlert(validateTxt, textFocus){
+async function doAlert(validateTxt, textFocus) {
     await Swal.fire({
         icon: 'warning',
         title: validateTxt,
         allowOutsideClick: false,
-        didClose: () =>{
-            if(textFocus!==''){
+        didClose: () => {
+            if (textFocus !== '') {
                 document.getElementById(textFocus).focus();
             }
         }
@@ -47,8 +50,8 @@ var btn = document.getElementById("myBtn");
 var span = document.getElementsByClassName("close")[0];
 
 // When the user clicks on the button, open the modal
-btn.onclick = function() {
-    onLoadDmPage().then((html)=>{
+btn.onclick = function () {
+    onLoadDmPage().then((html) => {
         document.getElementById('formDmContent').innerHTML = html;
     });
     document.getElementById('formDmContent').style.display = "block";
@@ -58,8 +61,8 @@ btn.onclick = function() {
 var hyperBtn = document.getElementById("hyperBtn");
 
 // When the user clicks on the button, open the modal
-hyperBtn.onclick = function() {
-    onLoadHtPage().then((html)=>{
+hyperBtn.onclick = function () {
+    onLoadHtPage().then((html) => {
         document.getElementById('formDmContent').innerHTML = html;
     });
     document.getElementById('formDmContent').style.display = "block";
@@ -67,29 +70,60 @@ hyperBtn.onclick = function() {
 }
 
 // When the user clicks on <span> (x), close the modal
-span.onclick = function() {
+span.onclick = function () {
     modal.style.display = "none";
     document.getElementById('formDmContent').style.display = "none";
     document.getElementById('formDmContent').innerHTML = '';
 }
 
 // When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
+window.onclick = function (event) {
     if (event.target == modal) {
         // modal.style.display = "none";
     }
 }
 ////// MODAL //////
 
+/**
+ * ดึงข้อมูลซักประวัติที่ได้กรอกไปเข้ามาใช้งานทันที
+ */
+function ht_import_opd(htChecked) {
+    if (htChecked) {
+        document.getElementById('ht_height').value = document.getElementById('height').value;
+        document.getElementById('ht_weight').value = document.getElementById('weight').value;
+        document.getElementById('ht_round').value = document.getElementById('waist').value;
+        document.getElementById('ht_temp').value = document.getElementById('temperature').value;
+        document.getElementById('ht_pulse').value = document.getElementById('pause').value;
+        document.getElementById('ht_rate').value = document.getElementById('rate').value;
+        document.getElementById('ht_bmi').value = document.getElementById('bmi').value;
+        document.getElementById('ht_bp1').value = document.getElementById('bp1').value;
+        document.getElementById('ht_bp2').value = document.getElementById('bp2').value;
+        document.getElementById('ht_bp3').value = document.getElementById('bp3').value;
+        document.getElementById('ht_bp4').value = document.getElementById('bp4').value;
+    } else {
+        document.getElementById('ht_height').value = ht_height;
+        document.getElementById('ht_weight').value = ht_weight;
+        document.getElementById('ht_round').value = ht_round;
+        document.getElementById('ht_temp').value = ht_temperature;
+        document.getElementById('ht_pulse').value = ht_pause;
+        document.getElementById('ht_rate').value = ht_rate;
+        document.getElementById('ht_bmi').value = ht_bmi;
+        document.getElementById('ht_bp1').value = ht_bp1;
+        document.getElementById('ht_bp2').value = ht_bp2;
+        document.getElementById('ht_bp3').value = ht_bp3;
+        document.getElementById('ht_bp4').value = ht_bp4;
+    }
+}
+
 ////// OPD_HT_FORM.php //////
-function getYearDiag(){
-    callYearDiag().then((res)=>{
+function getYearDiag() {
+    callYearDiag().then((res) => {
         document.getElementById('getYearDiag').innerHTML = res;
         document.getElementById('getYearDiagContainer').style.display = '';
     });
 }
-async function callYearDiag(){
-    const response = await fetch('call/diag.php?action=getFirstI10FromHn&hn=<?=$hn;?>');
+async function callYearDiag() {
+    const response = await fetch('call/diag.php?action=getFirstI10FromHn&hn='+var_hn);
     const data = await response.text();
     return data;
 }
@@ -98,28 +132,28 @@ async function callYearDiag(){
 var htDiagItems = document.getElementsByClassName('htDiag');
 for (let htDi = 0; htDi < htDiagItems.length; htDi++) {
     const el = htDiagItems[htDi];
-    el.onclick = function(){
+    el.onclick = function () {
         document.getElementById('diag_date').focus();
     }
 }
 
-function htDateSelect(divId,url){
-    loadContent(url).then((res)=>{ 
+function htDateSelect(divId, url) {
+    loadContent(url).then((res) => {
         document.getElementById(divId).innerHTML = res;
         document.getElementById(divId).style.display = '';
     });
 }
-function closeContainer(idName){
+function closeContainer(idName) {
     document.getElementById(idName).style.display = 'none';
 }
-async function loadContent(url){
+async function loadContent(url) {
     const response = await fetch(url);
     const body = await response.text();
     return body;
 }
 
-async function onLoadHtPage(){
-    const response = await fetch('opd_ht_form.php?hn=<?=$hn;?>');
+async function onLoadHtPage() {
+    const response = await fetch('opd_ht_form.php?hn='+var_hn);
     const body = await response.text();
     return body;
 }
@@ -136,28 +170,28 @@ async function saveHtForm() {
     const ht_bp1 = document.getElementById('ht_bp1').value;
     const ht_bp2 = document.getElementById('ht_bp2').value;
     const ht_bmi = document.getElementById('ht_bmi').value;
-    if(ht_doctor == ''){
+    if (ht_doctor == '') {
         doAlert("กรุณาเลือแพทย์", ht_doctor);
         return false;
-    }else if(ht_height == ''){
+    } else if (ht_height == '') {
         doAlert("กรุณาใส่ส่วนสูง", ht_height);
         return false;
-    }else if(ht_weight == ''){
+    } else if (ht_weight == '') {
         doAlert("กรุณาใส่น้ำหนัก", ht_weight);
         return false;
-    }else  if(ht_round == ''){
+    } else if (ht_round == '') {
         doAlert("กรุณาใส่รอบเอว", ht_round);
         return false;
-    }else if(ht_temp == ''){
+    } else if (ht_temp == '') {
         doAlert("กรุณาใส่อุณหภูมิ", ht_temp);
         return false;
-    }else if(ht_pulse == ''){
+    } else if (ht_pulse == '') {
         doAlert("กรุณากรอกชีพจร (Pulse)", ht_pulse);
         return false;
-    }else if(ht_rate == ''){
+    } else if (ht_rate == '') {
         doAlert("กรุณากรอกอัตราการเต้น (Rate)", ht_rate);
         return false;
-    }else if(ht_bp1 == '' || ht_bp2 == ''){
+    } else if (ht_bp1 == '' || ht_bp2 == '') {
         doAlert("กรุณาใส่ความดันโลหิต", ht_bp1);
         return false;
     }
@@ -165,7 +199,7 @@ async function saveHtForm() {
     const form = document.querySelector('#opd_ht_form');
     const formData = new FormData(form);
     const data = {};
-    
+
     // Convert FormData to JSON object, handling potential duplicate names or checkboxes
     formData.forEach((value, key) => {
         if (data[key]) {
@@ -180,9 +214,9 @@ async function saveHtForm() {
 
     data.action = 'saveHypertension';
     data.typeDepart = 'hypertension';
-    
+
     try {
-        const response = await fetch(var_url+'/api/index.php', {
+        const response = await fetch(var_url + '/api/index.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -195,14 +229,14 @@ async function saveHtForm() {
         }
 
         const result = await response.json();
-        if(result.hypertension.status===200){
+        if (result.hypertension.status === 200) {
             Toast.fire({
                 icon: "success",
                 title: "บันทึกข้อมูลเรียบร้อยแล้ว"
-            }).then(()=>{
+            }).then(() => {
                 span.click();
             });
-            
+
         }
     } catch (error) {
         console.error('Error:', error);
@@ -212,11 +246,37 @@ async function saveHtForm() {
 
 ////// OPD_HT_FORM.php //////
 
+
+function dm_import_opd(dmChecked) {
+    if(dmChecked){
+        document.getElementById('dm_height').value = document.getElementById('height').value;
+        document.getElementById('dm_weight').value = document.getElementById('weight').value;
+        document.getElementById('dm_round').value = document.getElementById('waist').value;
+        document.getElementById('dm_temp').value = document.getElementById('temperature').value;
+        document.getElementById('dm_pulse').value = document.getElementById('pause').value;
+        document.getElementById('dm_rate').value = document.getElementById('rate').value;
+        document.getElementById('dm_bmi').value = document.getElementById('bmi').value;
+        document.getElementById('dm_bp1').value = document.getElementById('bp1').value;
+        document.getElementById('dm_bp2').value = document.getElementById('bp2').value;
+    }else{
+        document.getElementById('dm_height').value = dm_height;
+        document.getElementById('dm_weight').value = dm_weight;
+        document.getElementById('dm_round').value = dm_round;
+        document.getElementById('dm_temp').value = dm_temperature;
+        document.getElementById('dm_pulse').value = dm_pause;
+        document.getElementById('dm_rate').value = dm_rate;
+        document.getElementById('dm_bmi').value = dm_bmi;
+        document.getElementById('dm_bp1').value = dm_bp1;
+        document.getElementById('dm_bp2').value = dm_bp2;
+    }
+    
+}
+
 /**
  * ตอนโหลดข้อมูลเข้าไปใน Modal
  */
-async function onLoadDmPage(){
-    const response = await fetch('opd_dm_form.php?hn='+var_hn);
+async function onLoadDmPage() {
+    const response = await fetch('opd_dm_form.php?hn=' + var_hn);
     const body = await response.text();
     return body;
 }
@@ -224,7 +284,7 @@ async function onLoadDmPage(){
 /**
  * ตอนกด "รีเซ็ต" ในฟอร์ม DM Clinic
  */
-function clearRadioButton(className){
+function clearRadioButton(className) {
     const comoHtItems = document.getElementsByClassName(className);
     for (let index = 0; index < comoHtItems.length; index++) {
         const element = comoHtItems[index];
@@ -232,7 +292,7 @@ function clearRadioButton(className){
     }
 }
 
-function saveDmForm(){
+function saveDmForm() {
     event.preventDefault();
 
     const dmForm = document.getElementById('dmFormAdmin');
@@ -246,38 +306,38 @@ function saveDmForm(){
     const bp1 = document.getElementById('dm_bp1').value;
     const bp2 = document.getElementById('dm_bp2').value;
     const bmi = document.getElementById('dm_bmi').value;
-    
+
     let validate = true;
     let validateTxt = '';
     let textFocus = '';
     //  Pulse (ชีพจร) หรือ Rate (อัตราการเต้น)
-    if(pause==''){
+    if (pause == '') {
         validate = false;
         validateTxt = 'กรุณากรอกชีพจร (Pulse)';
         textFocus = 'dm_pulse';
 
-    }else if(rate==''){
+    } else if (rate == '') {
         validate = false;
         validateTxt = 'กรุณากรอกอัตราการเต้น (Rate)';
         textFocus = 'dm_rate';
 
-    }else if(bp1=='' || bp2==''){
+    } else if (bp1 == '' || bp2 == '') {
         validate = false;
         validateTxt = 'กรุณากรอกค่าความดันโลหิต';
         textFocus = 'dm_bp1';
 
-    }else if(round==''){
+    } else if (round == '') {
         validate = false;
         validateTxt = 'กรุณากรอกรอบเอว';
         textFocus = 'dm_round';
 
-    }else if(doctorId==0){
+    } else if (doctorId == 0) {
         validate = false;
         validateTxt = 'กรุณาเลือกแพทย์';
         textFocus = 'dm_doctor';
     }
-    
-    if(validate===false){
+
+    if (validate === false) {
         doAlert(validateTxt, textFocus);
         return false;
     }
@@ -287,22 +347,22 @@ function saveDmForm(){
         const element = dmForm.elements[index];
         if (!element.name || !element.type) continue;
 
-        if( (element.type==="text" || element.type==="hidden")  && element.value !== ''){ 
+        if ((element.type === "text" || element.type === "hidden") && element.value !== '') {
             formData[element.name] = element.value;
-        }else if( element.type==="checkbox" && element.checked===true){
+        } else if (element.type === "checkbox" && element.checked === true) {
 
             if (element.name.includes('[]')) {
                 if (!Array.isArray(formData[element.name])) {
                     formData[element.name] = [];
                 }
                 formData[element.name].push(element.value);
-            }else{
+            } else {
                 formData[element.name] = element.value;
             }
-            
-        }else if( element.type==="radio" && element.checked===true){
+
+        } else if (element.type === "radio" && element.checked === true) {
             formData[element.name] = element.value;
-        }else if( element.type==="select-one"){
+        } else if (element.type === "select-one") {
             formData[element.name] = element.value;
         }
     }
@@ -323,18 +383,18 @@ function saveDmForm(){
     formData.bmi = bmi;
     formData.age = encodeURIComponent(var_age);
 
-    onSaveDmForm(formData).then((res)=>{
-        if(res.status===200){
+    onSaveDmForm(formData).then((res) => {
+        if (res.status === 200) {
             let dmNumber = res.dm_clinic_id;
             let hn = res.hn;
             document.getElementById('updatedDmNumber').innerHTML = `${dmNumber} <a href="diabetes_clinic/diabetes_edit.php?hn=${hn}" target="_blank" title="ไปหน้าฟอร์ม Diabetes Clinic">➦</a><input type="hidden" name="dm_no" value="${dmNumber}">`;
             Toast.fire({
                 icon: "success",
                 title: res.message
-            }).then(()=>{
+            }).then(() => {
                 span.click();
             });
-        }else{
+        } else {
             Toast.fire({
                 icon: "error",
                 title: res.message
@@ -343,8 +403,8 @@ function saveDmForm(){
     });
 }
 
-async function onSaveDmForm(data){
-    const response = await fetch(var_url+'/api/index.php', {
+async function onSaveDmForm(data) {
+    const response = await fetch(var_url + '/api/index.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -352,5 +412,5 @@ async function onSaveDmForm(data){
         body: JSON.stringify(data)
     });
     const dataResponse = await response.json();
-    return dataResponse ;
+    return dataResponse;
 }
