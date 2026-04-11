@@ -1,4 +1,7 @@
 <?php
+/**
+ * เป็นฟอร์มที่ถูกใช้ในหน้าซักประวัติ (basic_opd.php)
+ */
 require_once dirname(__FILE__) . '/newBootstrap.php';
 $class_opcard = new Opcard();
 $class_doctor = new Doctor();
@@ -102,6 +105,9 @@ button.dm-button:hover, .dm-button:hover{
         <tr>
             <td align="right" valign="top"><strong>ข้อมูลผู้เข้ารับบริการ : </strong></td>
             <td>
+                <div style="margin-bottom:8px;">
+                    <input type="checkbox" name="ht_import" id="ht_import" onclick="ht_import_opd(this.checked)"> <label for="ht_import">ดึงข้อมูลซักประวัติวันนี้</label>
+                </div>
                 <div class="flex-container" style="width:100%;">
                     <div>ส่วนสูง: <input type="text" size="5" name="ht_height" id="ht_height" value="<?= $htData['height']; ?>"> ซม.</div>
                     <div>น้ำหนัก: <input type="text" size="5" name="ht_weight" id="ht_weight" value="<?= $htData['weight']; ?>"> กก.</div>

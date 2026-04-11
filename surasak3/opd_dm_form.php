@@ -83,6 +83,9 @@ button.dm-button:hover, .dm-button:hover{
 	</div>
 	<div>
 		<p class="title">การตรวจร่างกาย</p>
+		<div style="margin-bottom:8px;">
+			<input type="checkbox" name="dm_import" id="dm_import" onclick="dm_import_opd(this.checked)"> <label for="dm_import">ดึงข้อมูลซักประวัติวันนี้</label>
+		</div>
 		<div class="row">
 			<div class="flex-container" style="width:100%;">
 				<div>ส่วนสูง: <input type="text" size="5" name="dm_height" id="dm_height" value="<?= $dm['height']; ?>"> ซม.</div>
