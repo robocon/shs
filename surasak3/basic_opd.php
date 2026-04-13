@@ -2194,7 +2194,9 @@ mmHg </td>
 			<td align="left" colspan="5">
 				<?php 
 				$curYear = date('Y-m-d');
-				$sql = "SELECT `ht_no`,TIMESTAMPDIFF(YEAR,`dateN`,'$curYear') AS `year_diff`, TIMESTAMPDIFF(YEAR,CONCAT( (SUBSTRING(`diag_date`,1,4)-543 ), SUBSTRING(`diag_date`,5,7)),'$curYear') AS `diag_date_year` 
+				$sql = "SELECT `diag_date`,`dateN`,`ht_no`,
+				TIMESTAMPDIFF(YEAR,`dateN`,CURDATE()) AS `year_diff`,
+				TIMESTAMPDIFF(YEAR,DATE_SUB(`diag_date`, INTERVAL 543 YEAR) ,CURDATE()) AS `diag_date_year`
 				FROM `hypertension_clinic` 
 				WHERE `hn` = '$cHn' LIMIT 1";
 				$q = mysql_query($sql) or die( mysql_error() );
@@ -2213,15 +2215,10 @@ mmHg </td>
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
 				<?php
-				$sql1 = "Select date_active,officer,datetime From screen_ht where hn = '".$cHn."'";
+				$sql1 = "SELECT DATE_FORMAT(DATE_ADD(`date_active`, INTERVAL 543 YEAR), '%d/%m/%Y'),`officer`,`datetime` FROM `screen_ht` WHERE `hn` = '$cHn'";
 				$query1=mysql_query($sql1);
 				$num1=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
-					$yy = substr($date_active,0,4);
-					$yy = $yy+543;
-					$mm = substr($date_active,5,2);
-					$dd = substr($date_active,8,2);
-					$date_active="$dd/$mm/$yy";
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
 				?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
@@ -2262,7 +2259,7 @@ mmHg </td>
 			<td align="right" valign="top">จำนวนปีที่เป็น DM : </td>
 			<td align="left" colspan="5">
 				<?php 
-				$sql = "SELECT TIMESTAMPDIFF(YEAR,CONCAT( ( SUBSTRING(`diagdetail`,1,4)-543 ) ,SUBSTRING(`diagdetail`,5,7) ),'$curYear') AS `year_diff`
+				$sql = "SELECT TIMESTAMPDIFF(YEAR,DATE_SUB(`diagdetail`, INTERVAL 543 YEAR), CURDATE() ) AS `year_diff`
 				FROM `diabetes_clinic` 
 				WHERE `hn` = '$cHn'";
 				$q = mysql_query($sql) or die( mysql_error() );
@@ -2276,15 +2273,12 @@ mmHg </td>
 				?>
 				<input type="text" name="dm_amount" id="" size="3" value="<?=$dm_year;?>"> ปี
 				<?
-				$sql1 = "Select date_active,officer,datetime From screen_dm where hn = '".$cHn."'";
+				$sql1 = "SELECT DATE_FORMAT(DATE_ADD(`date_active`, INTERVAL 543 YEAR), '%d/%m/%Y'),
+				`officer`,`datetime` 
+				FROM `screen_dm` WHERE `hn` = '$cHn'";
 				$query1=mysql_query($sql1);
 				$num1=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
-					$yy = substr($date_active,0,4);
-					$yy=$yy+543;
-					$mm = substr($date_active,5,2);
-					$dd = substr($date_active,8,2);
-					$date_active="$dd/$mm/$yy";
 				if($num1 > 0){  //ถ้าคัดกรองแล้ว
 					?>
 					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
@@ -2816,7 +2810,7 @@ $room = $_POST['room'];
 	<div class="modal-content">
 		<span class="close">[ ปิด &times; ][ ESC ]</span>
 		<div id="formDmContent" style="display:none;">
-			<!-- opd_dm_form.php -->
+			 <div id="loader">Loading...</div>
 		</div>
 	</div>
 </div>

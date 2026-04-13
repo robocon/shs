@@ -17,8 +17,10 @@ $doctors = $class_doctor->getAllDoctor();
 <style>
 .htDateSelectContainer{
     position: absolute;
-    top: 28px;
-    right: 0;
+    width:350px;
+    top:0vh;
+    left:50%;
+    transform: translate(-50%, -50%);
     background-color: #ffffff;
     border: 2px solid #000000;
     box-shadow: 5px 10px #888888;
@@ -36,6 +38,7 @@ button.dm-button, .dm-button {
 	cursor: pointer;
 	border-radius: 4px;
 }
+
 button.dm-button:hover, .dm-button:hover{
 	box-shadow: 3px 3px 3px #3e3e3e;
 }
@@ -47,6 +50,7 @@ button.dm-button:hover, .dm-button:hover{
 	background-color: #6c757d;
 	color: #ffffff;
 }
+
 .flex-container{
     display:flex;
     justify-content: flex-start;

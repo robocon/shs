@@ -69,6 +69,25 @@ hyperBtn.onclick = function () {
     modal.style.display = "block";
 }
 
+/**
+ * ปรับให้รอ 1วินาทีแสดง Loading ก่อนที่จะแสดงตัวเนื้อหา
+ */
+async function onLoadHtPage() {
+
+    const timerPromise = new Promise(resolve => setTimeout(resolve, 1000));
+    document.getElementById('formDmContent').innerHTML = '<div id="loader"><h1>Loading...</h1></div>';
+
+    const [response] = await Promise.all([
+        await fetch('opd_ht_form.php?hn='+var_hn),
+        timerPromise
+    ]);
+
+    const body = await response.text();
+    return body;
+}
+
+
+
 // When the user clicks on <span> (x), close the modal
 span.onclick = function () {
     modal.style.display = "none";
@@ -148,12 +167,6 @@ function closeContainer(idName) {
 }
 async function loadContent(url) {
     const response = await fetch(url);
-    const body = await response.text();
-    return body;
-}
-
-async function onLoadHtPage() {
-    const response = await fetch('opd_ht_form.php?hn='+var_hn);
     const body = await response.text();
     return body;
 }
