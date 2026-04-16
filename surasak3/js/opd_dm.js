@@ -74,7 +74,7 @@ hyperBtn.onclick = function () {
  */
 async function onLoadHtPage() {
 
-    const timerPromise = new Promise(resolve => setTimeout(resolve, 1000));
+    const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
     document.getElementById('formDmContent').innerHTML = '<div id="loader"><h1>Loading...</h1></div>';
 
     const [response] = await Promise.all([
@@ -289,7 +289,15 @@ function dm_import_opd(dmChecked) {
  * ตอนโหลดข้อมูลเข้าไปใน Modal
  */
 async function onLoadDmPage() {
-    const response = await fetch('opd_dm_form.php?hn=' + var_hn);
+
+    const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
+    document.getElementById('formDmContent').innerHTML = '<div id="loader"><h1>Loading...</h1></div>';
+
+    const [response] = await Promise.all([
+        await fetch('opd_dm_form.php?hn='+var_hn),
+        timerPromise
+    ]);
+
     const body = await response.text();
     return body;
 }

@@ -2251,6 +2251,7 @@ mmHg </td>
 					$htData = $class_ht->getOneFromHn($_REQUEST["hn"]);
 					?>
 					<button id="hyperBtn" type="button" class="extra_btn">ฟอร์มบันทึก Hypertension</button>
+					<p style="color:red;">เพิ่มการ return status เข้ามาบรรทัดนี้</p>
 				</div>
 				
 			</td>
@@ -2299,6 +2300,7 @@ mmHg </td>
 					$dmData = $class_diabetes->getDiabetesFromHn($_REQUEST["hn"]);
 					?>
 					<button id="myBtn" type="button" class="extra_btn">ฟอร์มบันทึก Diabetes คลินิก</button>
+					<p style="color:red;">เพิ่มการ return status เข้ามาบรรทัดนี้</p>
 				</div>
 				
 			</td>
