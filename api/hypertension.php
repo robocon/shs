@@ -63,10 +63,10 @@ if($action==='saveHypertension'){
     $class_ht->setHypertension_clinic($postData);
 
     $htResponse = array();
-    if(empty($data['hypertension_id'])){
+    if(empty($data['hypertension_id'])){ // เพิ่มข้อมูล hypertension_clinic
         $res = $class_ht->insert();
 
-    }else{
+    }else{ // อัพเดทข้อมูล hypertension_clinic
         $class_ht->setRowId($data['hypertension_id']);
         $res = $class_ht->update();
         
@@ -76,16 +76,17 @@ if($action==='saveHypertension'){
     
     $class_ht->setHn($data['ht_hn']);
     $screenHt = $class_ht->get_screen_ht();
-    if($screenHt['error_code']==400){
-        $class_ht->insert_screen_ht();
-    }else{
+    if($screenHt['status']==400){ // เพิ่มข้อมูล screen_ht
+        $resHt = $class_ht->insert_screen_ht();
+    }else{ // อัพเดทข้อมูล screen_ht
         $class_ht->setRowId($screenHt['row_id']);
-        $class_ht->update_screen_ht();
+        $resHt = $class_ht->update_screen_ht();
     }
+    $htResponse['screen_ht'] = $resHt;
 
     $res = $class_ht->getHtHistoryThisDay($data["hn"]);
     $hyperData = $class_ht->getOneFromHn($data["hn"]);
-    if($res['error_code']==400){
+    if($res['status']==400){
         $class_ht->setDateN($hyperData['dateN']); // OVERRIDE dateN ตอนเซ็ตค่า setHypertension_clinic ก่อนที่จะบันทึก setHypertension_clinic
         $hisRes = $class_ht->insert_history();
     }else{

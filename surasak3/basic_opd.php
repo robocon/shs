@@ -187,6 +187,29 @@ td p,ol,li{
 	margin: 0;
 	/* padding:0; */
 }
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 6px solid #3498db;
+  width: 20px;
+  height: 20px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  display: inline-block;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 </style>
 <link type="text/css" href="epoch_styles.css" rel="stylesheet" />
 <script type="text/javascript" src="epoch_classes.js"></script>
@@ -1839,7 +1862,7 @@ mmHg </td>
 							$mm = substr($date_active,5,2);
 							$dd = substr($date_active,8,2);
 							$date_active="$dd/$mm/$yy";
-							echo "<strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ $date_active โดย $user</strong>";
+							echo "<br><strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ $date_active โดย $user</strong>";
 						}
 					}
 					?>
@@ -2245,13 +2268,30 @@ mmHg </td>
 						box-shadow: 3px 3px 3px #3e3e3e;
 						cursor: pointer;
 					}
+					.basic_badge{
+						font-weight: bold;
+						color: #ffffff;
+						display: inline-block;
+						background-color: #3e3eff;
+						padding: 3px 8px;
+						border-radius: 4px;
+						line-height: 1;
+					}
 				</style>
 				<div>
 					<?php
 					$htData = $class_ht->getOneFromHn($_REQUEST["hn"]);
 					?>
 					<button id="hyperBtn" type="button" class="extra_btn">ฟอร์มบันทึก Hypertension</button>
-					<p style="color:red;">เพิ่มการ return status เข้ามาบรรทัดนี้</p>
+					<?php
+					$ht_date_display = 'display:none;';
+					$ht_date = '';
+					if($htData['thidate']){
+						$ht_date = 'วันที่บันทึก Hypertension : '.$htData['thidate'];
+						$ht_date_display = '';
+					}
+					?>
+					<p class="basic_badge" id="hypertension_date" style="<?=$ht_date_display;?>"><?=$ht_date;?></p>
 				</div>
 				
 			</td>
@@ -2298,9 +2338,17 @@ mmHg </td>
 				<div>
 					<?php
 					$dmData = $class_diabetes->getDiabetesFromHn($_REQUEST["hn"]);
+
+					$dm_date_display = 'display:none;';
+					$dm_date = '';
+					if($dmData['dateN']){
+						$dm_date = 'วันที่บันทึก คลินิกเบาหวาน : '.$dmData['dateN'];
+						$dm_date_display = '';
+					}
+
 					?>
 					<button id="myBtn" type="button" class="extra_btn">ฟอร์มบันทึก Diabetes คลินิก</button>
-					<p style="color:red;">เพิ่มการ return status เข้ามาบรรทัดนี้</p>
+					<p class="basic_badge" id="diabetes_date" style="<?=$dm_date_display;?>"><?=$dm_date;?></p>
 				</div>
 				
 			</td>

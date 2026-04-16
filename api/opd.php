@@ -128,7 +128,7 @@ if($action==='save'){
     if($validate===false){
         $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ');
     }else{
-        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','dm_clinic_id'=>$dmClinicId,'hn'=>$dmData['hn']);
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','dm_clinic_id'=>$dmClinicId,'hn'=>$dmData['hn'],'date'=>$dmData['dateN']);
     }
 
     header('Content-Type: application/json');

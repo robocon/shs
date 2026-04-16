@@ -75,13 +75,13 @@ hyperBtn.onclick = function () {
 async function onLoadHtPage() {
 
     const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
-    document.getElementById('formDmContent').innerHTML = '<div id="loader"><h1>Loading...</h1></div>';
+    document.getElementById('formDmContent').innerHTML = '<div class="loader"></div> <h1 style="display:inline-block;">Loading...</h1>';
 
     const [response] = await Promise.all([
         await fetch('opd_ht_form.php?hn='+var_hn),
         timerPromise
     ]);
-
+    
     const body = await response.text();
     return body;
 }
@@ -249,7 +249,8 @@ async function saveHtForm() {
             }).then(() => {
                 span.click();
             });
-
+            document.getElementById('hypertension_date').innerHTML = 'วันที่บันทึก Hypertension : '+result.hypertension.date;
+            document.getElementById('hypertension_date').style.display = '';
         }
     } catch (error) {
         console.error('Error:', error);
@@ -291,7 +292,7 @@ function dm_import_opd(dmChecked) {
 async function onLoadDmPage() {
 
     const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
-    document.getElementById('formDmContent').innerHTML = '<div id="loader"><h1>Loading...</h1></div>';
+    document.getElementById('formDmContent').innerHTML = '<div class="loader"></div> <h1 style="display:inline-block;">Loading...</h1>';
 
     const [response] = await Promise.all([
         await fetch('opd_dm_form.php?hn='+var_hn),
@@ -415,6 +416,10 @@ function saveDmForm() {
             }).then(() => {
                 span.click();
             });
+
+            document.getElementById('diabetes_date').innerHTML = 'วันที่บันทึก คลินิกเบาหวาน : '+res.date;
+            document.getElementById('diabetes_date').style.display = '';
+
         } else {
             Toast.fire({
                 icon: "error",
