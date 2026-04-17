@@ -12,7 +12,7 @@ class Hypertension extends Database
      * @param string $sql
      * @return mixed
      */
-    public function __singleQuery($sql){
+    private function __singleQuery($sql){
         $q = $this->dbi->query($sql);
         if($q->num_rows>0){
             $res = $q->fetch_assoc();
@@ -30,8 +30,8 @@ class Hypertension extends Database
      * @return mixed 
      */
     public function getOneFromHn($hn){
-        $hn = sprintf("%s", $hn);
-        $sql = sprintf("SELECT * FROM `hypertension_clinic` WHERE `hn` = '$hn' LIMIT 1",$this->dbi->real_escape_string($hn));
+        $hn = sprintf("%s", $this->dbi->real_escape_string($hn));
+        $sql = "SELECT * FROM `hypertension_clinic` WHERE `hn` = '{$hn}' LIMIT 1";
         $res = $this->__singleQuery($sql);
         return $res;
     }

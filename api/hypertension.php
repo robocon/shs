@@ -63,8 +63,10 @@ if($action==='saveHypertension'){
     $class_ht->setHypertension_clinic($postData);
 
     $htResponse = array();
-    if(empty($data['hypertension_id'])){ // เพิ่มข้อมูล hypertension_clinic
-        $res = $class_ht->insert();
+
+    $htData = $class_ht->getOneFromHn($data["ht_hn"]);
+    if(empty($data['hypertension_id']) && $htData['status']===400){ // ถ้ายังไม่มี hypertension_id และ ใน hypertension_clinic ยังไม่มีข้อมูล
+        $res = $class_ht->insert(); // เพิ่มข้อมูล hypertension_clinic
 
     }else{ // อัพเดทข้อมูล hypertension_clinic
         $class_ht->setRowId($data['hypertension_id']);

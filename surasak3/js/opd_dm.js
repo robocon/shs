@@ -192,10 +192,10 @@ async function saveHtForm() {
     } else if (ht_weight == '') {
         doAlert("กรุณาใส่น้ำหนัก", ht_weight);
         return false;
-    } else if (ht_round == '') {
+    } /*else if (ht_round == '') {
         doAlert("กรุณาใส่รอบเอว", ht_round);
         return false;
-    } else if (ht_temp == '') {
+    }*/ else if (ht_temp == '') {
         doAlert("กรุณาใส่อุณหภูมิ", ht_temp);
         return false;
     } else if (ht_pulse == '') {
