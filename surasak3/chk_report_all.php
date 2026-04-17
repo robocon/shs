@@ -676,26 +676,24 @@ if($flag=="N"){
 <?php
 $sql12="SELECT b.result, b.flag 
 FROM ( 
-
-SELECT *, MAX(`autonumber`) AS `latest_number`
-FROM `resulthead` 
-WHERE `hn` = '$pt_hn' 
-AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
-AND `profilecode` = 'HBSAG' 
-GROUP BY `profilecode` 
-
+    SELECT *, MAX(`autonumber`) AS `latest_number`
+    FROM `resulthead` 
+    WHERE `hn` = '$pt_hn' 
+    AND `clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk' 
+    AND `profilecode` = 'HBSAG' 
+    GROUP BY `profilecode` 
 ) AS a
 INNER JOIN resultdetail AS b ON a.latest_number = b.autonumber
 WHERE b.labcode = 'HBSAG' AND (b.result !='DELETE' OR b.result !='*') AND a.hn = '$pt_hn' 
 AND a.`clinicalinfo` ='ตรวจสุขภาพประจำปี$yaer_chk'
 GROUP BY a.`profilecode` ";
-//echo $sql12;
+
 $query12=mysql_query($sql12);
 list($hbsag,$flag)=mysql_fetch_array($query12);
-
-if($hbsag=="Negative"){
+$hbsag = strtolower($hbsag);
+if($hbsag=="negative"){
 	echo '<span title="HBSAG">ไม่พบเชื้อ</span>';
-}else if($hbsag=="Positive"){
+}else if($hbsag=="positive"){
 	echo '<strong style="color:#FF0000;" title="HBSAG">พบเชื้อ</strong>';
 }else{
 	echo "&nbsp;";
