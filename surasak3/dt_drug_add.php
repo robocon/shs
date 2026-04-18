@@ -558,7 +558,7 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 							
 							$ddlpart="DDL";
 							$ddlamount=1;  //จำนวนที่เบิกได้
-							$ddlprice=59.00;  //ราคาที่เบิกได้		
+							$ddlprice=50.00;  //ราคาที่เบิกได้		
 										
 							$query .= "$commar ('".$Thidate."','".$_SESSION["hn_now"]."','".$_SESSION["list_drugcode"][$i]."','".$tradname."', '".$ddlamount."','".$ddlprice."','".$_POST["totalitem"]."','".$_SESSION["list_drugslip"][$i]."','".$ddlpart."','".$idno."','".$salepri."','".$freepri."','".$_SESSION["list_drug_inject_amount"][$i]."','".$_SESSION["list_drug_inject_unit"][$i]."','".$_SESSION["list_drug_inject_amount2"][$i]."','".$_SESSION["list_drug_inject_unit2"][$i]."','".$_SESSION["list_drug_inject_time"][$i]."','".$_SESSION["list_drug_inject_slip"][$i]."','".$_SESSION["list_drug_inject_type"][$i]."','".$_SESSION["list_drug_inject_etc"][$i]."','".$_SESSION["list_drug_reason"][$i]."','".($dg_dsy*$_SESSION["list_drugamount"][$i])."','".($dg_dsn*$_SESSION["list_drugamount"][$i])."' ,'".$_SESSION["list_drug_reason2"][$i]."')";
 							
@@ -566,8 +566,8 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 								//echo $str;
 								$strquery=mysql_query($str);
 								list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
-								$newessd=$chkessd+59.00;
-								$newnessdn=$chknessdn-59.00;
+								$newessd=$chkessd+50.00;
+								$newnessdn=$chknessdn-50.00;
 								
 								$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
 								//echo "<br>".$update."<br>";
@@ -586,7 +586,7 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 							$ddlpart="DDL";
 							$ddnpart="DDN";
 							$ddlamount=1;  //จำนวนที่เบิกได้
-							$ddlprice=59.00;  //ราคาที่เบิกได้
+							$ddlprice=50.00;  //ราคาที่เบิกได้
 							$ddnamount=$_SESSION["list_drugamount"][$i] - 1;  //จำนวนที่เบิกไม่ได้
 							$ddnprice=$ddnamount * $salepri;  //ราคาที่เบิกไม่ได้	
 										
@@ -596,8 +596,8 @@ if($_SESSION["list_drugcode"][$i]=="4MET25"){
 								//echo $str;
 								$strquery=mysql_query($str);
 								list($rowid,$chkessd,$chknessdn)=mysql_fetch_array($strquery);
-								$newessd=$chkessd+59.00;
-								$newnessdn=$chknessdn-59.00;
+								$newessd=$chkessd+50.00;
+								$newnessdn=$chknessdn-50.00;
 								
 								$update="update dphardep set essd='$newessd', nessdn='$newnessdn' where row_id='".$rowid."'";
 								//echo "<br>".$update."<br>";
