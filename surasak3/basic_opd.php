@@ -2287,7 +2287,9 @@ mmHg </td>
 					$ht_date_display = 'display:none;';
 					$ht_date = '';
 					if($htData['thidate']){
-						$ht_date = 'วันที่บันทึก Hypertension : '.$htData['thidate'];
+
+						list($yearThai, $monthNumber, $dateForht) = explode('-', dateChristToThai($htData['thidate']));
+						$ht_date = 'วันที่บันทึก Hypertension : '.$dateForht.' '.$def_month_th[$monthNumber].' '.$yearThai;
 						$ht_date_display = '';
 					}
 					?>
@@ -2342,7 +2344,8 @@ mmHg </td>
 					$dm_date_display = 'display:none;';
 					$dm_date = '';
 					if($dmData['dateN']){
-						$dm_date = 'วันที่บันทึก คลินิกเบาหวาน : '.$dmData['dateN'];
+						list($yearThai, $monthNumber, $dateFordm) = explode('-', dateChristToThai($dmData['dateN']));
+						$dm_date = 'วันที่บันทึก คลินิกเบาหวาน : '.$dateFordm.' '.$def_month_th[$monthNumber].' '.$yearThai;
 						$dm_date_display = '';
 					}
 
@@ -2814,6 +2817,9 @@ $room = $_POST['room'];
 	<input name="appoint" type="hidden" value="<?php echo $app_row;?>" />
 </form>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
 <style>
 	/* The Modal (background) */
 	.modal {
@@ -2898,10 +2904,8 @@ $room = $_POST['room'];
 
 </script>
 <script src="js/opd_dm.js"></script>
-
 <script>
 <?php
-
 if ($hn==='55-8821') {
 	?>
 	Swal.fire({
@@ -2911,18 +2915,9 @@ if ($hn==='55-8821') {
 	<?php
 }
 ?>
-	var popup1, dm1, dm2, dm3, dm4,dm5,dm6,dm7,dm8;
+	var popup1;
 	window.onload = function() {
 		popup1 = new Epoch('popup1','popup',document.getElementById('mens_date'),false);
-		dm1 = new Epoch('dm1','popup',document.getElementById('nosis_d'),false);
-		dm2 = new Epoch('dm2','popup',document.getElementById('other_ht_date'),false);
-		dm3 = new Epoch('dm3','popup',document.getElementById('retinal_date'),false);
-		dm4 = new Epoch('dm4','popup',document.getElementById('foot_exam_date'),false);
-		dm5 = new Epoch('dm5','popup',document.getElementById('teeth_date'),false);
-		dm6 = new Epoch('dm6','popup',document.getElementById('date_footcare'),false);
-		dm7 = new Epoch('dm7','popup',document.getElementById('date_nutrition'),false);
-		dm8 = new Epoch('dm8','popup',document.getElementById('date_exercise'),false);
-		
 	};
 </script>
 

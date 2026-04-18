@@ -49,10 +49,29 @@ var btn = document.getElementById("myBtn");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
+
+function initThaiDatePicker(divId) {
+    flatpickr("#"+divId, {
+        locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+        dateFormat: "Y-m-d", // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+        defaultDate: document.getElementById(divId).value
+    });
+}
+
 // When the user clicks on the button, open the modal
 btn.onclick = function () {
     onLoadDmPage().then((html) => {
         document.getElementById('formDmContent').innerHTML = html;
+
+        // โหลด ปฏิทิน
+        initThaiDatePicker('retinal_date');
+        initThaiDatePicker('foot_exam_date');
+        initThaiDatePicker('teeth_date');
+        initThaiDatePicker('nosis_d');
+        initThaiDatePicker('other_ht_date');
+        initThaiDatePicker('date_footcare');
+        initThaiDatePicker('date_nutrition');
+        initThaiDatePicker('date_exercise');
     });
     document.getElementById('formDmContent').style.display = "block";
     modal.style.display = "block";
