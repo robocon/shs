@@ -49,10 +49,29 @@ var btn = document.getElementById("myBtn");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
+
+function initThaiDatePicker(divId) {
+    flatpickr("#"+divId, {
+        locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+        dateFormat: "Y-m-d", // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+        defaultDate: document.getElementById(divId).value
+    });
+}
+
 // When the user clicks on the button, open the modal
 btn.onclick = function () {
     onLoadDmPage().then((html) => {
         document.getElementById('formDmContent').innerHTML = html;
+
+        // โหลด ปฏิทิน
+        initThaiDatePicker('retinal_date');
+        initThaiDatePicker('foot_exam_date');
+        initThaiDatePicker('teeth_date');
+        initThaiDatePicker('nosis_d');
+        initThaiDatePicker('other_ht_date');
+        initThaiDatePicker('date_footcare');
+        initThaiDatePicker('date_nutrition');
+        initThaiDatePicker('date_exercise');
     });
     document.getElementById('formDmContent').style.display = "block";
     modal.style.display = "block";
@@ -68,6 +87,25 @@ hyperBtn.onclick = function () {
     document.getElementById('formDmContent').style.display = "block";
     modal.style.display = "block";
 }
+
+/**
+ * ปรับให้รอ 1วินาทีแสดง Loading ก่อนที่จะแสดงตัวเนื้อหา
+ */
+async function onLoadHtPage() {
+
+    const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
+    document.getElementById('formDmContent').innerHTML = '<div class="loader"></div> <h1 style="display:inline-block;">Loading...</h1>';
+
+    const [response] = await Promise.all([
+        await fetch('opd_ht_form.php?hn='+var_hn),
+        timerPromise
+    ]);
+    
+    const body = await response.text();
+    return body;
+}
+
+
 
 // When the user clicks on <span> (x), close the modal
 span.onclick = function () {
@@ -152,12 +190,6 @@ async function loadContent(url) {
     return body;
 }
 
-async function onLoadHtPage() {
-    const response = await fetch('opd_ht_form.php?hn='+var_hn);
-    const body = await response.text();
-    return body;
-}
-
 async function saveHtForm() {
 
     const ht_doctor = document.getElementById('ht_doctor').value;
@@ -179,10 +211,10 @@ async function saveHtForm() {
     } else if (ht_weight == '') {
         doAlert("กรุณาใส่น้ำหนัก", ht_weight);
         return false;
-    } else if (ht_round == '') {
+    } /*else if (ht_round == '') {
         doAlert("กรุณาใส่รอบเอว", ht_round);
         return false;
-    } else if (ht_temp == '') {
+    }*/ else if (ht_temp == '') {
         doAlert("กรุณาใส่อุณหภูมิ", ht_temp);
         return false;
     } else if (ht_pulse == '') {
@@ -236,7 +268,8 @@ async function saveHtForm() {
             }).then(() => {
                 span.click();
             });
-
+            document.getElementById('hypertension_date').innerHTML = 'วันที่บันทึก Hypertension : '+result.hypertension.date;
+            document.getElementById('hypertension_date').style.display = '';
         }
     } catch (error) {
         console.error('Error:', error);
@@ -276,7 +309,15 @@ function dm_import_opd(dmChecked) {
  * ตอนโหลดข้อมูลเข้าไปใน Modal
  */
 async function onLoadDmPage() {
-    const response = await fetch('opd_dm_form.php?hn=' + var_hn);
+
+    const timerPromise = new Promise(resolve => setTimeout(resolve, 800));
+    document.getElementById('formDmContent').innerHTML = '<div class="loader"></div> <h1 style="display:inline-block;">Loading...</h1>';
+
+    const [response] = await Promise.all([
+        await fetch('opd_dm_form.php?hn='+var_hn),
+        timerPromise
+    ]);
+
     const body = await response.text();
     return body;
 }
@@ -394,6 +435,10 @@ function saveDmForm() {
             }).then(() => {
                 span.click();
             });
+
+            document.getElementById('diabetes_date').innerHTML = 'วันที่บันทึก คลินิกเบาหวาน : '+res.date;
+            document.getElementById('diabetes_date').style.display = '';
+
         } else {
             Toast.fire({
                 icon: "error",

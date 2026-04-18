@@ -8,6 +8,8 @@ class Opcard extends Database
     }
 
     /**
+     * ดึงข้อมูลผู้ป่วยจาก HN
+     * ถ้ากำหนด field เข้ามา ไม่ต้องกำหนด ptname, age, yot, name, surname, ptright เข้ามา ระบบจะดึงให้เป็นข้อมูลพื้นฐานอยู่แล้ว
      * @param string $hn HN ผู้มารับบริการ
      * @param array $fields ชื่อฟิลด์ที่ต้องการ select
      * 
@@ -19,7 +21,8 @@ class Opcard extends Database
         $field = '*';
         if(!empty($fields)){
             $field = implode(',', $fields);
-            $field .= ",`yot`,`name`,`surname`,`dbirth`,TIMESTAMPDIFF(YEAR,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)),NOW()) AS `age`,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)) AS `dbirth_en`";
+            $field .= ",`yot`,`name`,`surname`,CONCAT(`yot`,`name`,'  ',`surname`) AS `ptname`,`ptright`,`dbirth`,TIMESTAMPDIFF(YEAR,DATE_SUB(`dbirth`, INTERVAL 543 YEAR),CURDATE()) AS `age`,
+            DATE_SUB(`dbirth`, INTERVAL 543 YEAR) AS `dbirth_en`";
         }
         $sql = sprintf("SELECT $field FROM `opcard` WHERE `hn`='%s'", $this->dbi->real_escape_string($hn));
         $result = $this->dbi->query($sql);
@@ -53,7 +56,7 @@ class Opcard extends Database
         $field = '*';
         if(!empty($fields)){
             $field = implode(',', $fields);
-            $field .= ",`yot`,`name`,`surname`,`dbirth`,TIMESTAMPDIFF(YEAR,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)),NOW()) AS `age`,CONCAT((SUBSTRING(`dbirth`,1,4)-543),SUBSTRING(`dbirth`,5,6)) AS `dbirth_en`";
+            $field .= ",`yot`,`name`,`surname`,`dbirth`,TIMESTAMPDIFF(YEAR,DATE_SUB(`dbirth`, INTERVAL 543 YEAR),CURDATE()) AS `age`,DATE_SUB(`dbirth`, INTERVAL 543 YEAR) AS `dbirth_en`";
         }
         $sql = sprintf("SELECT $field FROM `opcard` WHERE `name`='%s' and `surname`='%s'", $this->dbi->real_escape_string($name),$this->dbi->real_escape_string($surname));
         $result = $this->dbi->query($sql);

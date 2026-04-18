@@ -2,8 +2,12 @@
 require_once dirname(__FILE__) . '/newBootstrap.php';
 $class_diabetes = new Diabetes();
 $class_doctor = new Doctor();
+$class_opcard = new Opcard();
+
 $hn = $_GET['hn'];
-$dm = $class_diabetes->getDiabetesFromHn($_GET['hn']);
+
+$dm = $class_diabetes->getDiabetesFromHn($hn);
+$opcard = $class_opcard->getByHn($hn);
 ?>
 <style>
 #formDm{font-size:14pt; display: inline-block;}
@@ -299,7 +303,7 @@ button.dm-button:hover, .dm-button:hover{
 	</div>
 	<div>
 		<button type="button" class="dm-button dm-green" style="padding:8px;" onclick="saveDmForm()">💾 บันทึกข้อมูล DM Clinic</button>
-		<input type="hidden" name="dm_ptname" id="dm_ptname" value="<?= $dm['ptname']; ?>">
+		<input type="hidden" name="dm_ptname" id="dm_ptname" value="<?= $opcard['ptname']; ?>">
 		<input type="hidden" name="dmHn" id="dmHn" value="<?= $hn; ?>">
 		<input type="hidden" name="typeDepart" id="typeDepart" value="opd">
 		<input type="hidden" name="action" id="action" value="save">

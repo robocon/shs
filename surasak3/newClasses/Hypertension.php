@@ -12,13 +12,13 @@ class Hypertension extends Database
      * @param string $sql
      * @return mixed
      */
-    public function __singleQuery($sql){
+    private function __singleQuery($sql){
         $q = $this->dbi->query($sql);
         if($q->num_rows>0){
             $res = $q->fetch_assoc();
         }else{
             $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
-            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+            $res = array('status'=>400, 'error'=>true, 'msg'=>$msg);
         }
         return $res;
     }
@@ -30,8 +30,8 @@ class Hypertension extends Database
      * @return mixed 
      */
     public function getOneFromHn($hn){
-        $hn = sprintf("%s", $hn);
-        $sql = sprintf("SELECT * FROM `hypertension_clinic` WHERE `hn` = '$hn' LIMIT 1",$this->dbi->real_escape_string($hn));
+        $hn = sprintf("%s", $this->dbi->real_escape_string($hn));
+        $sql = "SELECT * FROM `hypertension_clinic` WHERE `hn` = '{$hn}' LIMIT 1";
         $res = $this->__singleQuery($sql);
         return $res;
     }
@@ -178,6 +178,20 @@ class Hypertension extends Database
         $this->creatinineLabnumber = $a['creatinineLabnumber'];
     }
 
+    /**
+     * เพิ่มข้อมูล hypertension_clinic
+     * @return array{'status'=>400, 'error'=>true, 'msg'=>$msg, 'status' => 200,'hypertension_id' => insert_id}
+     * 
+     * ถ้า Error จะคืนค่ามา 3 ตัว
+     * - status: 400
+     * - error: false
+     * - msg: ไม่พบข้อมูล/Database Error
+     * 
+     * ถ้าบันทึกข้อมูลเสร็จสมบูรณ์
+     * - status: 200
+     * - msg: บันทึกข้อมูลเสร็จสมบูรณ์
+     * - hypertension_id: รหัสข้อมูลที่เพิ่ม
+     */
     public function insert(){
 
         $sql = sprintf("INSERT INTO `hypertension_clinic` (
@@ -243,9 +257,9 @@ class Hypertension extends Database
         $q = $this->dbi->query($sql);
         if($this->dbi->error){
             $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
-            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+            $res = array('status'=>400, 'error'=>true, 'msg'=>$msg);
         }else{
-            $res = array('status' => 200,'hypertension_id' => $this->dbi->insert_id);
+            $res = array('status' => 200,'hypertension_id' => $this->dbi->insert_id, 'msg'=>'บันทึกข้อมูลเสร็จสมบูรณ์','date'=>$this->thidate);
         }
 
         return $res;
@@ -323,9 +337,9 @@ class Hypertension extends Database
         $q = $this->dbi->query($sql);
         if($this->dbi->error){
             $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
-            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+            $res = array('status'=>400, 'error'=>true, 'msg'=>$msg);
         }else{
-            $res = array('status' => 200);
+            $res = array('status' => 200, 'hypertension_id'=>$this->row_id, 'msg'=>'บันทึกข้อมูลเสร็จสมบูรณ์','date'=>$this->thidate);
         }
         return $res;
     }
@@ -396,9 +410,9 @@ class Hypertension extends Database
         $q = $this->dbi->query($sql);
         if($this->dbi->error){
             $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
-            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+            $res = array('status'=>400, 'error'=>true, 'msg'=>$msg);
         }else{
-            $res = array('hypertension_history_id' => $this->dbi->insert_id);
+            $res = array('status'=>200, 'hypertension_history_id' => $this->dbi->insert_id, 'msg'=>'บันทึกข้อมูลเสร็จสมบูรณ์');
         }
         return $res;
 
@@ -475,9 +489,9 @@ class Hypertension extends Database
         $q = $this->dbi->query($sql);
         if($this->dbi->error){
             $msg = $this->dbi->error ? $this->dbi->error : 'ไม่พบข้อมูล' ;
-            $res = array('error_code'=>400, 'error'=>true, 'msg'=>$msg);
+            $res = array('status' => 400, 'error'=>true, 'msg'=>$msg);
         }else{
-            $res = array('status' => 200);
+            $res = array('status' => 200, 'msg'=>'บันทึกข้อมูลเสร็จสมบูรณ์');
         }
         return $res;
     }
@@ -490,7 +504,7 @@ class Hypertension extends Database
         if($q->num_rows>0){
             $res = $q->fetch_assoc();
         }else{
-            $res = array('error_code'=>400, 'msg'=>'ไม่พบข้อมูล');
+            $res = array('status'=>400, 'msg'=>'ไม่พบข้อมูล');
         }
         return $res;
     }
@@ -510,7 +524,7 @@ class Hypertension extends Database
         if($q===false){
             return array('status' => 400, 'msg' => $this->dbi->error);
         }else{
-            return array('status' => 200, 'row_id' => $this->dbi->insert_id);
+            return array('status' => 200, 'row_id' => $this->dbi->insert_id, 'msg'=>'บันทึกข้อมูลเสร็จสมบูรณ์');
         }
     }
 
@@ -530,7 +544,7 @@ class Hypertension extends Database
         if($q===false){
             return array('status' => 400, 'msg' => $this->dbi->error);
         }else{
-            return array('status' => 200);
+            return array('status' => 200, 'msg'=>'บันทึกข้อมูลเสร็จสมบูรณ์');
         }
     }
 
