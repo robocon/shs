@@ -121,11 +121,11 @@ body,td,th {
   <option value="ททท">การท่องเที่ยวแห่งประเทศไทย</option>
   <option value="ตรวจสุขภาพ">ตรวจสุขภาพ</option>
   <option value="ตรวจสุขภาพตำรวจ">ตรวจสุขภาพตำรวจ</option>
-  <option value="CHKUP66">ตรวจสุขภาพทหารประจำปี</option>
-  <option value="SSOCHECKUP66">ตรวจสุขภาพประกันสังคม</option>
-  <option value="DENTALSSO66">ทันตกรรมประกันสังคม</option>
+  <option value="CHKUP69">ตรวจสุขภาพทหารประจำปี</option>
+  <option value="SSOCHECKUP69">ตรวจสุขภาพประกันสังคม</option>
+  <option value="DENTALSSO69">ทันตกรรมประกันสังคม</option>
   <option value="ทันตสาธารณสุข">ทันตสาธารณสุข</option> <!-- น่าจะฟรี-->
-  <option value="PAYCHKUP66">เรียกเก็บตรวจสุขภาพ</option>
+  <option value="PAYCHKUP69">เรียกเก็บตรวจสุขภาพ</option>
   <option value="อื่นๆ">อื่นๆ</option>
 </select>&nbsp;&nbsp;
     <input type="submit" value="ดูข้อมูล" name="B1"  class="txt" />
