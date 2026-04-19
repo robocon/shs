@@ -1,6 +1,7 @@
 <?php
 session_start();
-if (isset($sIdname)){} else {die;} //for security
+include_once dirname(__FILE__) . '/connect.php';
+if (isset($_SESSION['sIdname'])){} else {die;} //for security
 ?>
 <table>
  <tr>
@@ -14,7 +15,11 @@ if (isset($sIdname)){} else {die;} //for security
   <th bgcolor=CD853F><font face='Angsana New' size='2'>ขนาดฟิล์ม</th>
  </tr>
 <?php
-    include("connect.inc");
+	// ผป.ใน เข้าเงื่อนไขนี้
+	if(!empty($_GET['Dgcode1'])){
+		$Dgcode1 = $_GET['Dgcode1'];
+	}
+
 	if (substr($Dgcode, 0, 1) == '@' || substr($Dgcode, 0, 1) == '#' || substr($Dgcode1, 0, 2) == 'AN' || substr($Dgcode, 0, 2) == 'HN') {
 		$aCode = array("code");
 		$aAmt = array("amount");
@@ -60,7 +65,7 @@ if (isset($sIdname)){} else {die;} //for security
 			$code_app = substr($Dgcode1, 2);
 			$date_n1 = (date("Y") + 543) . "-" . date("m") . "-" . date("d");
 
-			$query = "SELECT code,1 as amount FROM lab_ward WHERE an = '$code_app'  and date like '" . $date_n1 . "%' and `no` = '$no' ";
+			$query = "SELECT code,1 as amount FROM lab_ward WHERE an = '$code_app' and `date` like '$date_n1%' and `no` = '$no' ";
 
 		} else if (substr($Dgcode, 0, 2) == 'HN') {
 			$code_app = substr($Dgcode, 2);

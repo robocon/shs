@@ -39,6 +39,7 @@
  $cDepart = 'PATHO';
  $aDetail='ค่าตรวจวิเคราะห์โรค';
  $cTitle="รหัสรายการตรวจห้องพยาธิ";
+ $_SESSION['cDepart'] = $cDepart;
  session_register("cDepart");
  session_register("aDetail");
  session_register("cTitle");

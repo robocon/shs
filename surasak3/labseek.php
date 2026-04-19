@@ -8,6 +8,10 @@ if($_POST['bcode']!=""){
 	$_SESSION['sourcecode']=$_POST['bcode'];
 }
 
+if(!empty($_SESSION['cDepart'])){
+	$cDepart = $_SESSION['cDepart'];
+}
+
 function jschars($str){
 	$str = str_replace('"', '\\"', $str);
 	return $str;
@@ -274,7 +278,7 @@ If (!empty($_POST["code"])){
 		}
 
         print (" <tr>\n".
-		"  <td BGCOLOR='$color'><a target='right'  href=\"labinfo.php? Dgcode=$code & Depart=$depart & Amount=$amount &Trade=".urlencode($detail)." & nPrice=$price&tvn=$tvn&films=".urlencode($film_size)."\">$code</a></td>\n".
+		"  <td BGCOLOR='$color'><a target='right'  href=\"labinfo.php?Dgcode=$code&Depart=$depart&Amount=$amount&Trade=".urlencode($detail)."&nPrice=$price&tvn=$tvn&films=".urlencode($film_size)."\">$code</a></td>\n".
 		"  <td BGCOLOR='$color'>");
 		if($_SESSION["smenucode"]=="ADM" || $_SESSION["smenucode"]=="ADMSUR"){
 			print $detail."[".$icd9cm."]";
@@ -346,32 +350,36 @@ if($cDepart  == "PATHO"){
 
 if($cDepart  == "PATHO" ){
 
+	$an = $_GET['an'];
 	$date_n1=$_SESSION['appyr']."-".$_SESSION['appmon']."-".$_SESSION['appday'];
 	if(empty($_SESSION['appyr']) OR empty($_SESSION['appmon']) OR empty($_SESSION['appday']))
 	{
 		$date_n1 = (date("Y")+543)."-".date("m")."-".date("d");
 	}
 	
-	$sql_for_num = "Select code,an,no From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' GROUP BY `no` ORDER BY `no` DESC";
+	$sql_for_num = "Select code,an,no From lab_ward where date like '$date_n1%' AND an = '$an' GROUP BY `no` ORDER BY `no` DESC";
 	$res_num = mysql_query($sql_for_num) or die(mysql_error());
 	$row_num = mysql_num_rows($res_num);
 	if($row_num > 0){
 		while($num = mysql_fetch_assoc($res_num)){
 			$no = $num['no'];
 
-			$sql1 = "Select code,an From lab_ward where date like '".$date_n1."%' AND  an = '".$tvn."' and `no`='$no' ";
+			$sql1 = "Select code,an From lab_ward where date like '$date_n1%' AND  an = '$an' and `no`='$no' ";
 			$result1 = mysql_query($sql1) or die(mysql_error());
 			$row_app1 = mysql_num_rows($result1);
 			
-			
 			if($row_app1 > 0){
 				$list_app = array();
-				$code_app = "";
 				while($arr = mysql_fetch_assoc($result1)){
+
+					$sqlLabcare = "SELECT `depart` FROM `labcare` WHERE `code` = '".$arr["code"]."' LIMIT 1 ";
+					$resLabcare = mysql_query($sqlLabcare) or die(mysql_error());
+					$rowLabcare = mysql_fetch_assoc($resLabcare);
+					$depart = $rowLabcare["depart"];
+
 					array_push($list_app, $arr["code"]);
-					$code_app = $arr["an"];
 				}
-				$code_app = "AN".$code_app;
+				$code_app = "AN".$an;
 
 				echo "<BR><TABLE border='1' bordercolor=\"#330099\">
 				<TR>
@@ -380,7 +388,7 @@ if($cDepart  == "PATHO" ){
 						echo "<td colspan='2' align='center'><FONT COLOR=\"#FFFFFF\">รายการจากหอผู้ป่วย (".$no.")</FONT></td>";
 					echo "</tr>";
 					echo "<tr>";
-						echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode1=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$tvn&no=$no\">คิดเงิน</A></td>";
+						echo "<td  align='center' ><A target='right'  HREF=\"labinfo.php?Dgcode1=".urlencode($code_app)."&Depart=$depart&Amount=1&tvn=$an&no=$no\">คิดเงิน</A></td>";
 						echo "<td>",implode("<BR> ",$list_app),"</td>";
 					echo "</tr>";
 				echo "</table></TD>
