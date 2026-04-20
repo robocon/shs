@@ -56,6 +56,26 @@ if($action==='save'){
         'officer' => $_SESSION['sOfficer']
     );
 
+
+    if(!empty($data['l_bs'])){
+        $dmData['l_bs'] = $data['l_bs'];
+    }
+    if(!empty($data['l_hbalc'])){
+        $dmData['l_hbalc'] = $data['l_hbalc'];
+    }
+    if(!empty($data['l_ldl'])){
+        $dmData['l_ldl'] = $data['l_ldl'];
+    }
+    if(!empty($data['l_creatinine'])){
+        $dmData['l_creatinine'] = $data['l_creatinine'];
+    }
+    if(!empty($data['l_urine'])){
+        $dmData['l_urine'] = $data['l_urine'];
+    }
+    if(!empty($data['l_microal'])){
+        $dmData['l_microal'] = $data['l_microal'];
+    }
+
     $screenDmData = array(
         'hn' => $data['dmHn'],
         'ptname' => $data['ptname'],

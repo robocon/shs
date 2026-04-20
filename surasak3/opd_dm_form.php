@@ -146,6 +146,73 @@ button.dm-button:hover, .dm-button:hover{
 			</div>
 		</div>
 	</div>
+	<?php
+	$sql = "SELECT `autonumber`,`hn`,`profilecode`,`orderdate` 
+	FROM `resulthead` 
+	WHERE `hn` = '$hn' 
+	AND `orderdate` LIKE CONCAT(CURDATE(),'%') 
+	AND `profilecode` IN ('GLU','LDL','UA','CREAG','HBA1C','UPRO','UMALB')";
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
+	?>
+	<div class="mb-3">
+		<p class="title">ผลการตรวจทางพยาธิ</p>
+		<div class="mb-3 indent-left" style="display:flex; justify-content: flex-start; flex-wrap: wrap; gap: 24px;">
+			<?php
+			$itemLists = array(
+				'GLU'=>'BS',
+				'LDL'=>'LDL',
+				'UA'=>'UA',
+				'CREAG'=>'Creatinine',
+				'HBA1C'=>'HbA1c',
+				'UPRO'=>'Urine protein',
+				'UMALB'=>'Microalbuminuria',
+			);
+			$itemDetails = array(
+				'GLU'=>'GLU',
+				'LDL'=>'LDL',
+				'UA'=>'PROU',
+				'CREAG'=>'CREA',
+				'HBA1C'=>'HBA1CC',
+				'UPRO'=>'UPRO',
+				'UMALB'=>'MAU',
+			);
+			$itemInputs = array(
+				'GLU' => 'l_bs',
+				'HBA1C' => 'l_hbalc',
+				'LDL' => 'l_ldl',
+				'CREAG' => 'l_creatinine',
+				'UPRO' => 'l_urine',
+				'UMALB' => 'l_microal',
+			);
+			while ($a = $q->fetch_assoc()) {
+				$profilecode = $a['profilecode'];
+				$autonumber = $a['autonumber'];
+				?>
+				<div>
+					<?php
+					if($itemLists[$profilecode]){
+						?>
+						<div class="sub-title"><?= $profilecode; ?>:</div>
+						<?php
+						$labcode = $itemDetails[$profilecode];
+						$inputName = $itemInputs[$profilecode];
+						$sqlResult = "SELECT `result`,`unit` FROM `resultdetail` WHERE `autonumber` = '$autonumber' AND `labcode` = '$labcode'";
+						$qResult = $dbi->query($sqlResult);
+						$aResult = $qResult->fetch_assoc();
+					}
+					?>
+					<div><?= $aResult['result'].' '.$aResult['unit']; ?></div>
+					<input type="hidden" name="<?= $inputName; ?>" value="<?= $aResult['result']; ?>">
+				</div>
+				<?php
+			}
+			?>
+		</div>
+	</div>
+	<?php
+	}
+	?>
 	<div class="mb-3">
 		<p class="title">การวินิจฉัย</p>
 		<div class="mb-3 indent-left">
