@@ -1862,7 +1862,13 @@ mmHg </td>
 							$mm = substr($date_active,5,2);
 							$dd = substr($date_active,8,2);
 							$date_active="$dd/$mm/$yy";
-							echo "<br><strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ $date_active โดย $user</strong>";
+							?>
+							<div style="position:relative;">
+								<div style="position: absolute; bottom: -25px; left: -150px; width: 400px;">
+									<strong style='margin-left:10px;color:green;'>ได้รับคำแนะนำแล้ว เมื่อ <?=$date_active;?> โดย <?=$user;?></strong>
+								</div>
+							</div>
+							<?php
 						}
 					}
 					?>
@@ -1871,7 +1877,7 @@ mmHg </td>
 				<td align="left" ><input type="text" name="spo2" id="spo2" size="3">%</td>
 			 </tr>
 			 <tr>
-				<td align="right" class="data_show">CV risk score (ใช้ผลเลือด) : </td>
+				<td align="right" class="data_show">CV risk score<br>(ใช้ผลเลือด) : </td>
 				<td align="left" colspan="5">
 					<input name="cvriskscore_lab" type="text" id="cvriskscore_lab" size="3" value="<?php echo $cvriskscore_lab;?>" /> %
 				</td>
@@ -1897,7 +1903,7 @@ mmHg </td>
 
 			?>
 			<tr valign="top">
-				<td align="right"  class="data_show">ประจำเดือน : </td>
+				<td align="right" width="10%" class="data_show">ประจำเดือน : </td>
 				<td colspan="5">
 					<div>
 						<label for="mens1"><input type="radio" name="mens" id="mens1" value="1" class="lmp" <?=$mens1;?> > ยังไม่มีประจำเดือน</label>&nbsp;&nbsp;
@@ -2238,24 +2244,102 @@ mmHg </td>
 				?>
 				<input type="text" name="ht_amount" id="" size="3" value="<?=$ht_year;?>"> ปี
 				<?php
+				
 				$sql1 = "SELECT DATE_FORMAT(DATE_ADD(`date_active`, INTERVAL 543 YEAR), '%d/%m/%Y'),`officer`,`datetime` FROM `screen_ht` WHERE `hn` = '$cHn'";
 				$query1=mysql_query($sql1);
-				$num1=mysql_num_rows($query1);
+				$num1HtScreen=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
-				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-				?>
-					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-				<?
+				if($num1HtScreen > 0){  //ถ้าคัดกรองแล้ว
+					$ht_color = 'color: blue;';
+					$ht_text = 'คัดกรองเมื่อวันที่ : '.$date_active.'<span style="margin-left:10px;">ผู้คัดกรอง : '.$user;
 				}else{
-					if($age >=35){
-					?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ </strong>
-					<span style="margin-left:10px;"><label for="screen_ht1"><input name="screen_ht" id="screen_ht1" type="radio" value="y"/> ต้องการ</label></span>
-					<span style="margin-left:10px;"><label for="screen_ht2"><input name="screen_ht" id="screen_ht2" type="radio" value="n"/> ไม่ต้องการ</label></span>
-					<?
+					// $age แสดงค่าเป็น 77 ปี 4 เดือน ต้องแปลงเป็น ตัวเลขเท่านั้นก่อน
+					if($age_matchs['1'] >=35){
+						$ht_color = 'color: red;';
+						$ht_text = 'บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ';
 					}
 				}
+				
 				?>
+				<span id="resHtScreen">
+					<span style="margin-left: 50px; <?= $ht_color; ?>"><strong><?= $ht_text ?></strong></span>
+				</span>
+				<?php
+				// อายุมากกว่าหรือเท่ากับ 35 ปี และยังไม่เคยคัดกรองความดันโลหิตสูง
+				if($num1HtScreen==0 && $age_matchs['1'] >=35){
+				?>
+				<span>
+					<span style="margin-left:10px;"><label for="screen_ht1"><input name="screen_ht" id="screen_ht1" type="radio" value="y" onclick="saveHtScreen()"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_ht2"><input name="screen_ht" id="screen_ht2" type="radio" value="n" onclick="cancelHtScreen()"/> ไม่ต้องการ</label></span>
+				</span>
+				<?php
+				}
+				?>
+				<script>
+					var screen_ht_id = '';
+					function saveHtScreen(){
+						Swal.fire({
+							title: "ยืนยันการบันทึกประวัติคัดกรองความดันโลหิตสูง?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "บันทึก",
+							denyButtonText: `ยกเลิก`
+						}).then((result) => {
+							if(result.isConfirmed){
+								onSaveHtScreen().then((dataResponse)=>{
+									if(dataResponse.status == 200){
+										Swal.fire("บันทึกสำเร็จ!", "", "success");
+										document.getElementById('resHtScreen').innerHTML = '<span style="margin-left: 50px; color: blue;"><strong>คัดกรองเมื่อวันที่ : <?= date('d/m/Y'); ?> ผู้คัดกรอง : <?= $_SESSION['sOfficer']; ?></strong></span>';
+										screen_ht_id = dataResponse.id;
+									}else{
+										Swal.fire("บันทึกไม่สำเร็จ!", dataResponse.message, "error");
+									}
+								});
+							}
+						});
+					}
+					async function onSaveHtScreen(){
+						
+						const dataPost = {
+							'hn':'<?= $hn; ?>',
+							'ptname':'<?= $fullname; ?>',
+							'age':'<?= urlencode($age); ?>',
+							'typeDepart':'opd',
+							'action':'saveHtScreen'
+						}
+
+						const response = await fetch(var_url + '/api/index.php', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(dataPost)
+						});
+						const dataResponse = await response.json();
+						return dataResponse;
+					}
+
+					async function cancelHtScreen(){
+						const dataPost = {
+							'id':screen_ht_id,
+							'typeDepart':'opd',
+							'action':'cancelHtScreen'
+						}
+						const response = await fetch(var_url + '/api/index.php', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(dataPost)
+						});
+						const dataResponse = await response.json();
+						if(dataResponse.status == 200){
+							Swal.fire("ยกเลิกสำเร็จ!", "", "success");
+							document.getElementById('resHtScreen').innerHTML = '<span style="margin-left: 50px; color: red;"><strong>บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองความดันโลหิตสูง หากต้องการคัดกรองให้ระบุ</strong></span>';
+						}
+					}
+				</script>
+				
 				<style>
 					.extra_btn{
 						border-radius: 4px;
@@ -2320,20 +2404,93 @@ mmHg </td>
 				`officer`,`datetime` 
 				FROM `screen_dm` WHERE `hn` = '$cHn'";
 				$query1=mysql_query($sql1);
-				$num1=mysql_num_rows($query1);
+				$num1ScreenDm=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
-				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-					?>
-					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-					<?
+				if($num1ScreenDm > 0){  //ถ้าคัดกรองแล้ว
+					$dm_color = 'color: blue;';
+					$dm_text = 'คัดกรองเมื่อวันที่ : '.$date_active.'<span style="margin-left:10px;">ผู้คัดกรอง : '.$user;
+					
 				}else{
-					if($age >=35){
-					?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong>
-					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" type="radio" value="y"/> ต้องการ</label></span>
-					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n"/> ไม่ต้องการ</label></span>
-					<?
+					if($age_matchs['1'] >=35){
+						$dm_color = 'color: red;';
+						$dm_text = 'บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ';
 					}
+				}
+				?>
+				<span id="resDmScreen">
+					<span style="margin-left: 50px; <?= $dm_color; ?>"><strong><?= $dm_text ?></strong></span>
+				</span>
+				<?php
+				// อายุมากกว่าหรือเท่ากับ 35 ปี และยังไม่เคยคัดกรองความดันโลหิตสูง
+				if($num1ScreenDm==0 && $age_matchs['1'] >=35){
+				?>
+				<span>
+					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" type="radio" value="y" onclick="saveDmScreen()"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n" onclick="cancelDmScreen()"/> ไม่ต้องการ</label></span>
+				</span>
+				<script>
+					var screen_dm_id = '';
+					async function saveDmScreen(){
+
+						let result = await Swal.fire({
+							title: "ยืนยันการบันทึกประวัติคัดกรองเบาหวาน?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "บันทึก",
+							denyButtonText: `ยกเลิก`
+						});
+
+						if(result.isConfirmed){
+
+							const dataPost = {
+								'hn':'<?= $hn; ?>',
+								'ptname':'<?= $fullname; ?>',
+								'age':'<?= urlencode($age); ?>',
+								'typeDepart':'opd',
+								'action':'saveDmScreen'
+							}
+
+							const response = await fetch(var_url + '/api/index.php', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(dataPost)
+							});
+							const dataResponse = await response.json();	
+
+							if(dataResponse.status == 200){
+								Swal.fire("บันทึกสำเร็จ!", "", "success");
+								document.getElementById('resDmScreen').innerHTML = '<span style="margin-left: 50px; color: blue;"><strong>คัดกรองเมื่อวันที่ : <?= date('d/m/Y'); ?> ผู้คัดกรอง : <?= $_SESSION['sOfficer']; ?></strong></span>';
+								screen_dm_id = dataResponse.id;
+							}else{
+								Swal.fire("บันทึกไม่สำเร็จ!", dataResponse.message, "error");
+							}
+						}
+
+					}
+
+					async function cancelDmScreen(){
+						const dataPost = {
+							'id':screen_dm_id,
+							'typeDepart':'opd',
+							'action':'cancelDmScreen'
+						}
+						const response = await fetch(var_url + '/api/index.php', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(dataPost)
+						});
+						const dataResponse = await response.json();
+						if(dataResponse.status == 200){
+							Swal.fire("ยกเลิกสำเร็จ!", "", "success");
+							document.getElementById('resDmScreen').innerHTML = '<span style="margin-left: 50px; color: red;"><strong>บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ</strong></span>';
+						}
+					}
+				</script>
+				<?php
 				}
 				?>
 
@@ -2838,7 +2995,7 @@ $room = $_POST['room'];
 	/* Modal Content/Box */
 	.modal-content {
 		background-color: #fefefe;
-		margin: 15% auto; /* 15% from the top and centered */
+		margin: 5% auto; /* 15% from the top and centered */
 		padding: 20px;
 		border: 1px solid #888;
 		width: 80%; /* Could be more or less, depending on screen size */
