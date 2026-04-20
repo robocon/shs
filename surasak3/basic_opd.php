@@ -2404,20 +2404,93 @@ mmHg </td>
 				`officer`,`datetime` 
 				FROM `screen_dm` WHERE `hn` = '$cHn'";
 				$query1=mysql_query($sql1);
-				$num1=mysql_num_rows($query1);
+				$num1ScreenDm=mysql_num_rows($query1);
 				list($date_active,$user,$datetime) = mysql_fetch_array($query1);
-				if($num1 > 0){  //ถ้าคัดกรองแล้ว
-					?>
-					<strong style="margin-left: 50px; color:blue;">คัดกรองเมื่อวันที่ : <?=$date_active;?><span style="margin-left:10px;">ผู้คัดกรอง : <?=$user;?></span></strong>
-					<?
+				if($num1ScreenDm > 0){  //ถ้าคัดกรองแล้ว
+					$dm_color = 'color: blue;';
+					$dm_text = 'คัดกรองเมื่อวันที่ : '.$date_active.'<span style="margin-left:10px;">ผู้คัดกรอง : '.$user;
+					
 				}else{
-					if($age >=35){
-					?>
-					<strong style="margin-left: 50px; color:red;">บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ </strong>
-					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" type="radio" value="y"/> ต้องการ</label></span>
-					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n"/> ไม่ต้องการ</label></span>
-					<?
+					if($age_matchs['1'] >=35){
+						$dm_color = 'color: red;';
+						$dm_text = 'บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ';
 					}
+				}
+				?>
+				<span id="resDmScreen">
+					<span style="margin-left: 50px; <?= $dm_color; ?>"><strong><?= $dm_text ?></strong></span>
+				</span>
+				<?php
+				// อายุมากกว่าหรือเท่ากับ 35 ปี และยังไม่เคยคัดกรองความดันโลหิตสูง
+				if($num1ScreenDm==0 && $age_matchs['1'] >=35){
+				?>
+				<span>
+					<span style="margin-left:10px;"><label for="screen_dm1"><input name="screen_dm" id="screen_dm1" type="radio" value="y" onclick="saveDmScreen()"/> ต้องการ</label></span>
+					<span style="margin-left:10px;"><label for="screen_dm2"><input name="screen_dm" id="screen_dm2" type="radio" value="n" onclick="cancelDmScreen()"/> ไม่ต้องการ</label></span>
+				</span>
+				<script>
+					var screen_dm_id = '';
+					async function saveDmScreen(){
+
+						let result = await Swal.fire({
+							title: "ยืนยันการบันทึกประวัติคัดกรองเบาหวาน?",
+							showDenyButton: true,
+							showCancelButton: false,
+							confirmButtonText: "บันทึก",
+							denyButtonText: `ยกเลิก`
+						});
+
+						if(result.isConfirmed){
+
+							const dataPost = {
+								'hn':'<?= $hn; ?>',
+								'ptname':'<?= $fullname; ?>',
+								'age':'<?= urlencode($age); ?>',
+								'typeDepart':'opd',
+								'action':'saveDmScreen'
+							}
+
+							const response = await fetch(var_url + '/api/index.php', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(dataPost)
+							});
+							const dataResponse = await response.json();	
+
+							if(dataResponse.status == 200){
+								Swal.fire("บันทึกสำเร็จ!", "", "success");
+								document.getElementById('resDmScreen').innerHTML = '<span style="margin-left: 50px; color: blue;"><strong>คัดกรองเมื่อวันที่ : <?= date('d/m/Y'); ?> ผู้คัดกรอง : <?= $_SESSION['sOfficer']; ?></strong></span>';
+								screen_dm_id = dataResponse.id;
+							}else{
+								Swal.fire("บันทึกไม่สำเร็จ!", dataResponse.message, "error");
+							}
+						}
+
+					}
+
+					async function cancelDmScreen(){
+						const dataPost = {
+							'id':screen_dm_id,
+							'typeDepart':'opd',
+							'action':'cancelDmScreen'
+						}
+						const response = await fetch(var_url + '/api/index.php', {
+							method: 'POST',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(dataPost)
+						});
+						const dataResponse = await response.json();
+						if(dataResponse.status == 200){
+							Swal.fire("ยกเลิกสำเร็จ!", "", "success");
+							document.getElementById('resDmScreen').innerHTML = '<span style="margin-left: 50px; color: red;"><strong>บุคคลอายุ 35 ปีขึ้นไป ยังไม่มีประวัติคัดกรองเบาหวาน หากต้องการคัดกรองให้ระบุ</strong></span>';
+						}
+					}
+				</script>
+				<?php
 				}
 				?>
 
