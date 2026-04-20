@@ -228,4 +228,35 @@ if($action==='save'){
     }
     echo $json->encode($res);
     exit;
+}else if($action==='saveHtScreen'){
+    
+    $classDiabetes = new Diabetes();
+    $screenDmData = array(
+        'hn' => $data['hn'],
+        'ptname' => $data['ptname'],
+        'age' => urldecode($data['age']),
+        'date_active' => date('Y-m-d'),
+        'officer' => $_SESSION['sOfficer'],
+        'datetime' => date('Y-m-d H:i:s')
+    );
+    $screenDmRes = $classDiabetes->insertData('screen_ht',$screenDmData);
+    if($screenDmRes!==false){
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','id'=>$screenDmRes);
+    }else{
+        $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ '.$classDiabetes->getMsgError());
+    }
+    echo $json->encode($res);
+    exit;
+
+}else if($action==='cancelHtScreen'){
+    $id = sprintf("%s", $dbi->real_escape_string($data['id']));
+    $sql = "DELETE FROM screen_ht WHERE row_id='{$id}';";
+    $q = $dbi->query($sql);
+    if($q!==false){
+        $res = array('status'=>200,'message'=>'ลบข้อมูลเรียบร้อย');
+    }else{
+        $res = array('status'=>400,'message'=>'ลบข้อมูลไม่สำเร็จ '.$dbi->error);
+    }
+    echo $json->encode($res);
+    exit;
 }
