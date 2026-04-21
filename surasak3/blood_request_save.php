@@ -26,6 +26,8 @@ function clean($conn, $val) {
 }
 
 // ========== รับค่า POST ==========
+$hn              = clean($conn, isset($_POST['hn'])              ? $_POST['hn']              : '');
+$an              = clean($conn, isset($_POST['an'])              ? $_POST['an']              : '');
 $patient_name    = clean($conn, isset($_POST['patient_name'])    ? $_POST['patient_name']    : '');
 $diag            = clean($conn, isset($_POST['diag'])            ? $_POST['diag']            : '');
 $doctor          = clean($conn, isset($_POST['doctor'])          ? $_POST['doctor']          : '');
@@ -77,7 +79,7 @@ $date_drawn_sql   = ($date_drawn       != '') ? "'{$date_drawn}'"       : 'NULL'
 
 // ========== INSERT ==========
 $sql = "INSERT INTO blood_requests (
-    patient_name, diag, doctor, ptright,
+    hn, an, patient_name, diag, doctor, ptright,
     got_blood, get_blood_date, hospital,
     blood_group, blood_group_rh,
     prc, prc_unit, lrpc, lrpc_unit,
@@ -88,7 +90,7 @@ $sql = "INSERT INTO blood_requests (
     doctor_order, nurse, date_drawn,
     created_at
 ) VALUES (
-    '{$patient_name}', '{$diag}', '{$doctor}', '{$ptright}',
+    '{$hn}', '{$an}', '{$patient_name}', '{$diag}', '{$doctor}', '{$ptright}',
     {$got_blood}, {$get_blood_date}, '{$hospital}',
     '{$blood_group}', '{$blood_group_rh}',
     {$prc}, '{$prc_unit}', {$lrpc}, '{$lrpc_unit}',

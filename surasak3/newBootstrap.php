@@ -8,7 +8,7 @@ include_once dirname(__FILE__).'/includes/config.php';
 include_once dirname(__FILE__).'/includes/functions.php';
 
 // Define the __autoload function
-function __autoload($className) {
+spl_autoload_register(function ($className) {
     // Construct the file path based on the class name
     $file =  dirname(__FILE__).'/newClasses/' . $className . '.php';
 
@@ -16,7 +16,7 @@ function __autoload($className) {
     if (file_exists($file)) {
         require_once $file;
     }
-}
+});
 
 if(PHP_VERSION_ID<50329 && empty($Conn)){
 	$Conn = mysql_connect(HOST, USER, PASS) or die( 'Error Connection: '.mysql_error().' HOST:'.HOST );

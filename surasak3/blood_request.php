@@ -11,10 +11,7 @@ $classOpcard = new Opcard();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ใบขอเลือดและส่วนประกอบของเลือด</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* ตั้งค่าฟอนต์ TH SarabunPSK (ใช้ Sarabun สำรอง) */
         body {
@@ -65,6 +62,9 @@ $classOpcard = new Opcard();
         .form-check-input:hover{
             cursor: pointer;
         }
+        input[readonly]{
+            background-color: #e9ecef;
+        }
     </style>
 </head>
 <body>
@@ -75,12 +75,12 @@ $classOpcard = new Opcard();
             <div class="main-title">ค้นหาจาก AN</div>
         </div>
         <form action="blood_request.php" method="post">
-            <div class="col-md-4 text-center">
-                <div class="input-group">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
                     <input type="text" class="form-control" id="an" name="an" placeholder="กรอก AN ที่ต้องการค้นหา">
-                    <button class="btn btn-primary" type="submit">ค้นหา</button>
-                    <input type="hidden" name="do" value="search">
+                    <button class="btn btn-outline-primary" type="submit" id="button-addon2">ค้นหา</button>
                 </div>
+                <input type="hidden" name="do" value="search">
             </div>
         </form>
     </div>
@@ -171,11 +171,11 @@ if(!empty($an) && $_POST['do']==='search'){
                         <label class="form-check-label" for="ever">เคยได้รับเลือด</label>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label class="form-label">รับครั้งสุดท้ายเมื่อวันที่</label>
                     <input type="date" class="form-control" name="get_blood_date">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label class="form-label">ที่โรงพยาบาล/สถานที่</label>
                     <input type="text" class="form-control" name="hospital">
                 </div>
@@ -183,8 +183,7 @@ if(!empty($an) && $_POST['do']==='search'){
 
             <div class="form-section-title">3. Group เลือดของคนไข้</div>
             <div class="row g-3 mb-4">
-                <div class="col-md-6">
-
+                <div class="col-md-3">
                     <?php
                     $bloodGroupItems = array('ไม่ทราบกรุ๊ปเลือด','A','B','AB','O');
                     ?>
@@ -197,7 +196,7 @@ if(!empty($an) && $_POST['do']==='search'){
                         ?>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <select class="form-select" name="blood_group_rh">
                         <option value="">เลือกรายการ</option>
                         <option value="Rh Positive">Rh Positive</option>
@@ -294,11 +293,11 @@ if(!empty($an) && $_POST['do']==='search'){
                         <input type="text" class="form-control form-control-sm" name="other_reason" style="width: 200px;">
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3 col-sm-4">
                     <label class="form-label">วันที่ขอเลือด</label>
                     <input type="date" class="form-control" name="blood_order_date" value="<?= date('Y-m-d'); ?>">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3 col-sm-4">
                     <label class="form-label">วันที่ต้องการใช้เลือด</label>
                     <input type="date" class="form-control" name="blood_used_date" value="<?= date('Y-m-d'); ?>">
                 </div>
@@ -307,7 +306,7 @@ if(!empty($an) && $_POST['do']==='search'){
             <hr>
 
             <div class="row g-3 mb-4">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">แพทย์ผู้ขอ</label>
                     <?php
                     $dtItems = $classDoctor->getAllDoctor();
@@ -323,18 +322,18 @@ if(!empty($an) && $_POST['do']==='search'){
                     </select>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">พยาบาลผู้เจาะเลือด</label>
                     <input type="text" class="form-control" name="nurse" placeholder="ชื่อ-สกุล พยาบาล" value="<?= $_SESSION['sOfficer']; ?>" readonly>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">วันเวลาที่เจาะ</label>
                     <input type="datetime-local" class="form-control" name="date_drawn" value="<?= date('Y-m-d H:i:s') ?>">
                 </div>
             </div>
 
             <div class="d-flex justify-content-center gap-3">
-                <button type="reset" class="btn btn-secondary px-5">ยกเลิก</button>
+                <button type="reset" class="btn btn-secondary px-5" onclick="cancelBtn()">ยกเลิก</button>
                 <button type="submit" class="btn btn-theme px-5">ส่งใบขอเลือด</button>
             </div>
         </form>
@@ -344,10 +343,14 @@ if(!empty($an) && $_POST['do']==='search'){
 ?>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/sweetalert2.all.min.js"></script>
 
 <script>
+
+    function cancelBtn(){
+        document.getElementById('bloodRequestForm').reset();
+    }
     // 1. ระบบ Auto-focus เมื่อเลือกชนิดเลือด
     document.querySelectorAll('.blood_type').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
