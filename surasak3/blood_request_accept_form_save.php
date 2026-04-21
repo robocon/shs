@@ -4,6 +4,12 @@ if(empty($_SESSION['sOfficer'])){
     include 'pageNotFound.php';
     exit;
 }
+
 $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
-echo $json->encode(array('success' => 200,'id'=>9999,'message'=>'บันทึกข้อมูลเสร็จสมบูรณ์'));
+$id = sprintf("%s", $dbi->real_escape_string($_POST['id']));
+$replacement_units = sprintf("%s", $dbi->real_escape_string($_POST['replacement_units']));
+
+$sql = "UPDATE `blood_requests` SET `active` = 'y', `replacement_units` = '$replacement_units', `date_active` = CURDATE() WHERE `id` = '$id'";
+$q = $dbi->query($sql);
+echo $json->encode(array('success' => 200,'id'=>$id,'message'=>'บันทึกข้อมูลเสร็จสมบูรณ์'));

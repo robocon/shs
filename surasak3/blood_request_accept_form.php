@@ -31,10 +31,11 @@ $row = $result->fetch_assoc();
             --accent-blue: #2471a3;
             --gray-soft: #f5f6fa;
             --border-color: #dee2e6;
+            --sarabun-font: "TH SarabunPSK";
         }
 
         body {
-            font-family: 'Sarabun', sans-serif;
+            font-family: var(--sarabun-font), sans-serif;
             background: var(--gray-soft);
             min-height: 100vh;
             padding-bottom: 60px;
@@ -51,21 +52,23 @@ $row = $result->fetch_assoc();
         }
 
         .page-header .title-th {
-            font-size: 1.45rem;
+            font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: .5px;
+            font-family: var(--sarabun-font);
         }
 
         .page-header .title-en {
-            font-size: .85rem;
+            font-size: 1rem;
             font-weight: 300;
             opacity: .85;
+            font-family: var(--sarabun-font);
         }
 
         .page-header .badge-dept {
             background: rgba(255, 255, 255, .2);
             border: 1px solid rgba(255, 255, 255, .4);
-            font-size: .75rem;
+            font-size: 1rem;
             padding: 3px 10px;
             border-radius: 20px;
         }
@@ -103,14 +106,16 @@ $row = $result->fetch_assoc();
         }
 
         .section-title-th {
-            font-size: 1rem;
+            font-size: 1.5rem;
             font-weight: 600;
             color: #2c3e50;
+            font-family: var(--sarabun-font);
         }
 
         .section-title-en {
-            font-size: .78rem;
+            font-size: 1rem;
             color: #7f8c8d;
+            font-family: var(--sarabun-font);
         }
 
         .section-body {
@@ -125,7 +130,7 @@ $row = $result->fetch_assoc();
         }
 
         .blood-select-label {
-            font-size: .75rem;
+            font-size: 1rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: .5px;
@@ -137,7 +142,7 @@ $row = $result->fetch_assoc();
             border: 2px solid var(--border-color);
             border-radius: 8px;
             padding: 9px 12px;
-            font-family: 'Sarabun', sans-serif;
+            font-family: var(--sarabun-font), sans-serif;
             font-size: .95rem;
             transition: border-color .2s, box-shadow .2s;
             width: 100%;
@@ -158,7 +163,7 @@ $row = $result->fetch_assoc();
         .component-table th {
             background: #fdf0ee;
             color: var(--brand-dark);
-            font-size: .78rem;
+            font-size: 1rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: .4px;
@@ -173,7 +178,7 @@ $row = $result->fetch_assoc();
         .component-table td {
             padding: 11px 14px;
             border-bottom: 1px solid #f0f0f0;
-            font-size: .9rem;
+            font-size: 1.1rem;
             vertical-align: middle;
         }
 
@@ -188,7 +193,7 @@ $row = $result->fetch_assoc();
         .code-badge {
             background: var(--brand-primary);
             color: #fff;
-            font-size: .7rem;
+            font-size: 1.2rem;
             font-weight: 600;
             padding: 2px 7px;
             border-radius: 4px;
@@ -198,7 +203,7 @@ $row = $result->fetch_assoc();
 
         .component-name-en {
             color: #7f8c8d;
-            font-size: .82rem;
+            font-size: 1.1rem;
         }
 
         /* qty input */
@@ -208,8 +213,8 @@ $row = $result->fetch_assoc();
             border: 2px solid var(--border-color);
             border-radius: 7px;
             padding: 6px 4px;
-            font-family: 'Sarabun', sans-serif;
-            font-size: .95rem;
+            font-family: var(--sarabun-font), sans-serif;
+            font-size: 1rem;
             font-weight: 600;
             transition: border-color .2s, box-shadow .2s;
         }
@@ -230,8 +235,8 @@ $row = $result->fetch_assoc();
             border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 5px 10px;
-            font-family: 'Sarabun', sans-serif;
-            font-size: .88rem;
+            font-family: var(--sarabun-font), sans-serif;
+            font-size: 1.1rem;
             width: 100%;
             transition: border-color .2s;
         }
@@ -247,7 +252,7 @@ $row = $result->fetch_assoc();
 
         /* ── Replacement Donation ────────────────────────────── */
         .replace-check-label {
-            font-size: .92rem;
+            font-size: 1.1rem;
             cursor: pointer;
             user-select: none;
         }
@@ -266,7 +271,7 @@ $row = $result->fetch_assoc();
         }
 
         .footer-label {
-            font-size: .75rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #555;
             margin-bottom: 5px;
@@ -276,7 +281,7 @@ $row = $result->fetch_assoc();
             border: 2px solid var(--border-color);
             border-radius: 8px;
             padding: 8px 12px;
-            font-family: 'Sarabun', sans-serif;
+            font-family: var(--sarabun-font), sans-serif;
             font-size: .9rem;
             transition: border-color .2s, box-shadow .2s;
             width: 100%;
@@ -293,7 +298,7 @@ $row = $result->fetch_assoc();
             background: #ecf0f1;
             border: 2px solid #bdc3c7;
             color: #555;
-            font-family: 'Sarabun', sans-serif;
+            font-family: var(--sarabun-font), sans-serif;
             font-weight: 600;
             padding: 10px 28px;
             border-radius: 8px;
@@ -309,7 +314,7 @@ $row = $result->fetch_assoc();
             background: var(--brand-primary);
             border: 2px solid var(--brand-primary);
             color: #fff;
-            font-family: 'Sarabun', sans-serif;
+            font-family: var(--sarabun-font), sans-serif;
             font-weight: 600;
             padding: 10px 28px;
             border-radius: 8px;
@@ -393,8 +398,8 @@ $row = $result->fetch_assoc();
                 <div class="section-header">
                     <div class="section-number">1</div>
                     <div>
-                        <div class="section-title-th">ถุงเลือด</div>
-                        <div class="section-title-en">Blood Bag</div>
+                        <div class="section-title-th">ข้อมูลทั่วไป และ ถุงเลือด</div>
+                        <div class="section-title-en">Information & Blood Bag</div>
                     </div>
                 </div>
                 <div class="section-body">
@@ -443,9 +448,9 @@ $row = $result->fetch_assoc();
                                 <?php
                                 foreach ($rhItems as $key => $value) {
                                     $selected = $value == $rh ? 'selected' : '';
-                                ?><option value="<?= $value; ?>" <?= $selected; ?>><?= $value; ?></option><?php
-                                                                                    }
-                                                                                        ?>
+                                    ?><option value="<?= $value; ?>" <?= $selected; ?>><?= $value; ?></option><?php
+                                }
+                                ?>
                             </select>
                             <div class="invalid-feedback">กรุณาเลือก Rh Group</div>
                         </div>
@@ -499,7 +504,7 @@ $row = $result->fetch_assoc();
                             <!-- Other -->
                             <tr>
                                 <td>
-                                    <span class="me-1" style="color:#7f8c8d;font-size:.88rem;">2.6 Other:</span>
+                                    <span class="me-1" style="color:#7f8c8d;font-size:1.1rem;">2.6 Other:</span>
                                     <input type="text" class="other-desc-input" name="other_other" id="other_other" placeholder="ระบุชนิดเลือด..." value="<?= $row['other_other'] ?>">
                                 </td>
                                 <td style="text-align:center;"></td>
@@ -525,9 +530,9 @@ $row = $result->fetch_assoc();
                         <input class="form-check-input" type="checkbox"
                             name="inform_relatives" id="inform_relatives" value="1">
                         <label class="form-check-label replace-check-label" for="inform_relatives">
-                            <span style="font-size:.83rem; color:#555;"></span>
+                            <span style="font-size: 1.1rem; color:#555;"></span>
                             กรุณาแจ้งญาติผู้บริจาคทดแทน
-                            <span class="text-muted" style="font-size:.82rem;">
+                            <span class="text-muted" style="font-size:1.1rem;">
                                 (Please inform relatives for replacement)
                             </span>
                         </label>
@@ -535,14 +540,14 @@ $row = $result->fetch_assoc();
 
                     <!-- 3.2 Units -->
                     <div class="d-flex align-items-center gap-3">
-                        <span style="font-size:.9rem; color:#555;">
-                            <span style="font-size:.83rem;">3.1</span>
+                        <span style="font-size:1.1rem; color:#555;">
+                            <span style="font-size: 1.1rem;">3.1</span>
                             ญาติบริจาคทดแทนแล้ว จำนวน:
                         </span>
                         <input type="number" class="qty-input" style="width:80px;"
                             name="replacement_units" id="replacement_units"
                             value="0" min="0" max="99">
-                        <span style="font-size:.9rem; color:#555;">Unit</span>
+                        <span style="font-size:1.1rem; color:#555;">Unit</span>
                     </div>
 
                 </div>
@@ -594,6 +599,7 @@ $row = $result->fetch_assoc();
                     <i class="bi bi-check-circle-fill"></i>
                     ยืนยันการตอบรับ
                 </button>
+                <input type="hidden" name="id" value="<?= $row['id'] ?>">
             </div>
 
         </form>
@@ -615,7 +621,7 @@ $row = $result->fetch_assoc();
                     </div>
                 </div>
                 <div class="modal-body py-3">
-                    <p class="mb-1" style="font-size:.9rem;">หมายเลขอ้างอิง</p>
+                    <p class="mb-1" style="font-size:1.1rem;">หมายเลขอ้างอิง</p>
                     <p class="fw-bold fs-5" id="recordId" style="color:var(--brand-primary);">—</p>
                     <button type="button"
                         class="btn btn-sm mt-2 px-4"
@@ -693,6 +699,7 @@ $row = $result->fetch_assoc();
 
         /* ── Reset Form ──────────────────────────────── */
         function resetForm() {
+            /*
             var modal = bootstrap.Modal.getInstance(document.getElementById('successModal'));
             if (modal) modal.hide();
             document.getElementById('bloodBankForm').reset();
@@ -701,6 +708,8 @@ $row = $result->fetch_assoc();
             for (var i = 0; i < qtyInputs.length; i++) {
                 qtyInputs[i].value = 0;
             }
+            */
+            window.location.href = 'blood_request_list.php';
         }
 
         /* ── Back Button ─────────────────────────────── */

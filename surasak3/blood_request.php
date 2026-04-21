@@ -15,7 +15,7 @@ $classOpcard = new Opcard();
     <style>
         /* ตั้งค่าฟอนต์ TH SarabunPSK (ใช้ Sarabun สำรอง) */
         body {
-            font-family: "TH SarabunPSK", "Sarabun", sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-size: 16pt;
             background-color: #f4f7f6;
             color: #333;

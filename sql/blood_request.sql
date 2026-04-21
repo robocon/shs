@@ -34,7 +34,8 @@ CREATE TABLE `blood_requests` (
   `date_drawn` datetime DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `active` varchar(5) NOT NULL DEFAULT '',
-  `replacement_units` varchar(20) DEFAULT '',
+  `date_active` varchar(10) NOT NULL DEFAULT '',
+  `replacement_units` varchar(20) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `blood_requests_hn_IDX` (`hn`) USING BTREE,
   KEY `blood_requests_an_IDX` (`an`) USING BTREE

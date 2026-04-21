@@ -35,7 +35,7 @@ $pageTitle = "รายการใบขอเลือด";
         }
 
         body {
-            font-family: 'TH SaurabunPSK', sans-serif;
+            font-family: 'TH SarabunPSK', sans-serif;
             background-color: var(--bg-light);
             color: #333;
             min-height: 100vh;
@@ -62,6 +62,10 @@ $pageTitle = "รายการใบขอเลือด";
             margin-bottom: 5px;
         }
 
+        .text-muted{
+            font-size: 16pt;
+        }
+
         .card-custom {
             border: none;
             border-radius: 15px;
@@ -81,6 +85,10 @@ $pageTitle = "รายการใบขอเลือด";
             background-color: white;
         }
 
+        .table td, .table th {
+            font-size: 16pt;
+        }
+
         .table-custom thead {
             background-color: var(--primary-color);
             color: white;
@@ -98,7 +106,7 @@ $pageTitle = "รายการใบขอเลือด";
         }
 
         .table-custom tbody tr:hover {
-            background-color: rgba(0, 102, 102, 0.05);
+            background-color: rgba(75, 97, 97, 0.05);
         }
 
         .table-custom td {
@@ -111,8 +119,8 @@ $pageTitle = "รายการใบขอเลือด";
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 4px;
             font-weight: 500;
             transition: all 0.3s ease;
             text-decoration: none;
@@ -127,8 +135,8 @@ $pageTitle = "รายการใบขอเลือด";
         }
 
         .badge-hn {
-            background-color: #e9ecef;
-            color: #495057;
+            background-color: #009999;
+            color: #80ffffff;
             font-weight: 600;
             padding: 5px 10px;
             border-radius: 5px;
@@ -216,10 +224,17 @@ $pageTitle = "รายการใบขอเลือด";
                                 ?>
                             </td>
                             <td class="text-center">
-                                <?= !empty($row['status']) ? '✅' : '⏰' ?>
+                                <?= !empty($row['active']) ? '✅' : '⏰' ?>
                             </td>
                             <td class="text-end">
-                                <a href="blood_request_accept_form.php?id=<?= $row['id']; ?>" class="btn-action">📃 ใบตอบรับ</a>
+                                <?php
+                                if(!empty($row['active'])){
+                                    ?><a href="javascript:void(0);" class="btn-action" onclick="onEdit()">📃 แก้ดีรึป่าว</a><?php
+                                }else{
+                                    ?><a href="blood_request_accept_form.php?id=<?= $row['id']; ?>" class="btn-action">📃 ใบตอบรับ</a><?php
+                                }
+                                ?>
+                                
                             </td>
                         </tr>
                         <?php
@@ -240,11 +255,17 @@ $pageTitle = "รายการใบขอเลือด";
                 ?>
             </tbody>
         </table>
+        
     </div>
 </div>
 
 <!-- Bootstrap 5.3 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+<script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="js/sweetalert2.all.min.js"></script>
+<script>
+    function onEdit(){
+        Swal.fire("จายเยนๆ");
+    }
+</script>
 </body>
 </html>
