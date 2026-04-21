@@ -6,8 +6,6 @@ require_once dirname(__FILE__).'/newBootstrap.php';
  * PHP 5.3+ compatible (ใช้ mysqli_* functions)
  */
 
-// header('Content-Type: application/json; charset=utf-8');
-
 // ========== Connect ==========
 $conn = mysqli_connect(HOST, USER, PASS, DB, PORT);
 if (!$conn) {

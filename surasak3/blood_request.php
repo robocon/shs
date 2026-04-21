@@ -2,6 +2,8 @@
 require_once dirname(__FILE__).'/newBootstrap.php';
 $classIpcard = new Ipcard();
 $classDoctor = new Doctor();
+$classOpcard = new Opcard();
+
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -60,6 +62,9 @@ $classDoctor = new Doctor();
             background-color: #004d4d;
             color: white;
         }
+        .form-check-input:hover{
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -80,13 +85,26 @@ $classDoctor = new Doctor();
         </form>
     </div>
 <?php
-$ip = false;
-if($_POST['an']){
-    $ip = $classIpcard->getIpNotDc($_POST['an']);
-}
+$an = sprintf("%s", $dbi->real_escape_string($_POST['an']));
+if(!empty($an) && $_POST['do']==='search'){
+    
+    $ip = $classIpcard->getIpNotDc($an);
+    if($ip===false){
+        ?>
+        <div class="alert alert-warning" role="alert">ไม่พบข้อมูล <?= $an; ?></div>
+        <?php
+        exit;
+    }
 
-if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
-    dump($ip);
+    $groupConvert = array(
+        'โอ' => 'O',
+        'บี' => 'B',
+        'เอ' => 'A',
+        'เอบี' => 'AB'
+    );
+    
+    $opc = $classOpcard->getByHn($ip['hn']);
+    $bloodGroup = $groupConvert[$opc['blood']];
 ?>
     <div class="card p-4">
         <div class="text-center mb-4">
@@ -96,16 +114,30 @@ if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
         <form id="bloodRequestForm">
             <div class="form-section-title">1. ข้อมูลผู้ป่วย</div>
             <div class="row g-3 mb-4">
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label class="form-label">ชื่อ-นามสกุล</label>
                     <p><?= $ip['ptname']; ?></p>
                     <input type="hidden" class="form-control" name="patient_name" id="patient_name" value="<?= $ip['ptname']; ?>">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
+                    <label class="form-label">HN</label>
+                    <p><?= $ip['hn']; ?></p>
+                    <input type="hidden" class="form-control" name="hn" id="hn" value="<?= $ip['hn']; ?>">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">AN</label>
+                    <p><?= $ip['an']; ?></p>
+                    <input type="hidden" class="form-control" name="an" id="an" value="<?= $ip['an']; ?>">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Bed</label>
+                    <p><?= $ip['bedcode']; ?></p>
+                </div>
+                <div class="col-md-4">
                     <label class="form-label">การวินิจฉัยโรค (Diagnosis)</label>
                     <input type="text" class="form-control" name="diag" placeholder="ระบุโรค" value="<?= $ip['diag']; ?>" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">ชื่อแพทย์เจ้าของไข้</label>
                     <?php
                     $dtItems = $classDoctor->getAllDoctor();
@@ -120,7 +152,7 @@ if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
                         ?>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">สิทธิการรักษา</label>
                     <p><?= $ip['ptright']; ?></p>
                     <input type="hidden" name="ptright" id="ptright" value="<?= $ip['ptright']; ?>">
@@ -152,16 +184,22 @@ if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
             <div class="form-section-title">3. Group เลือดของคนไข้</div>
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
+
+                    <?php
+                    $bloodGroupItems = array('ไม่ทราบกรุ๊ปเลือด','A','B','AB','O');
+                    ?>
                     <select class="form-select" name="blood_group">
-                        <option value="ไม่ทราบกรุ๊ปเลือด">ไม่ทราบกรุ๊ปเลือด</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="AB">AB</option>
-                        <option value="O">O</option>
+                        <?php
+                        foreach ($bloodGroupItems as $key => $value) {
+                            $selected = $value==$bloodGroup ? 'selected' : '';
+                            ?><option value="<?=$value;?>" <?=$selected;?> ><?=$value;?></option><?php
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <select class="form-select" name="blood_group_rh">
+                        <option value="">เลือกรายการ</option>
                         <option value="Rh Positive">Rh Positive</option>
                         <option value="Rh Negative">Rh Negative</option>
                     </select>
@@ -258,11 +296,11 @@ if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">วันที่ขอเลือด</label>
-                    <input type="date" class="form-control" name="blood_order_date">
+                    <input type="date" class="form-control" name="blood_order_date" value="<?= date('Y-m-d'); ?>">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">วันที่ต้องการใช้เลือด</label>
-                    <input type="date" class="form-control" name="blood_used_date">
+                    <input type="date" class="form-control" name="blood_used_date" value="<?= date('Y-m-d'); ?>">
                 </div>
             </div>
 
@@ -271,15 +309,27 @@ if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
             <div class="row g-3 mb-4">
                 <div class="col-md-4">
                     <label class="form-label">แพทย์ผู้ขอ</label>
-                    <input type="text" class="form-control" name="doctor_order" placeholder="ชื่อ-สกุล แพทย์">
+                    <?php
+                    $dtItems = $classDoctor->getAllDoctor();
+                    ?>
+                    <select class="form-select" name="doctor_order" id="doctor_order">
+                        <option value="">เลือกแพทย์</option>
+                        <?php
+                        foreach ($dtItems as $key => $value) {
+                            $selected = $value['name']==$ip['doctor'] ? 'selected' : '';
+                            ?><option value="<?=$value['name'];?>" <?=$selected;?> ><?=$value['name'];?></option><?php
+                        }
+                        ?>
+                    </select>
+
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">พยาบาลผู้เจาะเลือด</label>
-                    <input type="text" class="form-control" name="nurse" placeholder="ชื่อ-สกุล พยาบาล">
+                    <input type="text" class="form-control" name="nurse" placeholder="ชื่อ-สกุล พยาบาล" value="<?= $_SESSION['sOfficer']; ?>" readonly>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">วันเวลาที่เจาะ</label>
-                    <input type="datetime-local" class="form-control" name="date_drawn">
+                    <input type="datetime-local" class="form-control" name="date_drawn" value="<?= date('Y-m-d H:i:s') ?>">
                 </div>
             </div>
 
@@ -290,10 +340,6 @@ if(!empty($_POST['an']) && $_POST['do']==='search' && $ip!==false){
         </form>
     </div>
 <?php
-}else{
-    ?>
-    <div class="alert alert-warning" role="alert">ไม่พบข้อมูล</div>
-    <?php
 }
 ?>
 </div>
