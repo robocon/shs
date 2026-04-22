@@ -22,6 +22,25 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
 <a name="top" id="top"></a>
+<style>
+.a-button {
+	border: 1px solid black;;
+	color: #000000;
+	padding: 2px 6px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 4px;
+}
+.a-button:hover{
+	box-shadow: 3px 3px 3px #3e3e3e;
+}
+.a-green{
+	background-color: #198754;
+	color: #ffffff!important;
+}
+</style>
 <br />
 <?php
 	$lbedcode = substr($_GET['code'], 0, 2);
@@ -240,7 +259,7 @@ $(document).ready(function(){
             <td colspan="10" valign="top" ><font class='tablefontt1'>หัตถการ  :</font>
 			<? echo "<a target=_blank  href=\"ipdata.php?cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย / คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
             
-            <? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
+		<? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
             <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";
 			?>&nbsp;&nbsp; 
             <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>ดูฟิลม์ xray</a>";
@@ -254,6 +273,9 @@ $(document).ready(function(){
 			echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";
 			?>&nbsp;&nbsp;  
             <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>ใบSETผ่าตัด</a>"; ?>
+
+			<a href="blood_request.php?an=<?=$an?>&bedcode=<?=$bedcode?>" target="_blank" class="a-button a-green tablefont">ใบขอเลือด</a>
+
             </td>
           </tr>
           <tr style="line-height:25PX;">
