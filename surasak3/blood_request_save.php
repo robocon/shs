@@ -32,7 +32,7 @@ $patient_name    = clean($conn, isset($_POST['patient_name'])    ? $_POST['patie
 $diag            = clean($conn, isset($_POST['diag'])            ? $_POST['diag']            : '');
 $doctor          = clean($conn, isset($_POST['doctor'])          ? $_POST['doctor']          : '');
 $ptright         = clean($conn, isset($_POST['ptright'])         ? $_POST['ptright']         : '');
-
+$hct             = clean($conn, isset($_POST['hct'])             ? $_POST['hct']             : '');
 $got_blood       = clean($conn, isset($_POST['got_blood'])       ? $_POST['got_blood']       : '0');
 $get_blood_date  = clean($conn, isset($_POST['get_blood_date'])  ? $_POST['get_blood_date']  : '');
 $hospital        = clean($conn, isset($_POST['hospital'])        ? $_POST['hospital']        : '');
@@ -65,7 +65,7 @@ $blood_used_date  = clean($conn, isset($_POST['blood_used_date'])  ? $_POST['blo
 $doctor_order    = clean($conn, isset($_POST['doctor_order'])    ? $_POST['doctor_order']    : '');
 $nurse           = clean($conn, isset($_POST['nurse'])           ? $_POST['nurse']           : '');
 $date_drawn      = clean($conn, isset($_POST['date_drawn'])      ? $_POST['date_drawn']      : '');
-
+$ward      = clean($conn, isset($_POST['ward_code'])      ? $_POST['ward_code']      : '');
 // แปลง date_drawn จาก datetime-local (YYYY-MM-DDTHH:MM) → MySQL DATETIME
 if ($date_drawn != '') {
     $date_drawn = str_replace('T', ' ', $date_drawn);
@@ -80,7 +80,7 @@ $date_drawn_sql   = ($date_drawn       != '') ? "'{$date_drawn}'"       : 'NULL'
 // ========== INSERT ==========
 $sql = "INSERT INTO blood_requests (
     hn, an, patient_name, diag, doctor, ptright,
-    got_blood, get_blood_date, hospital,
+    hct, got_blood, get_blood_date, hospital,
     blood_group, blood_group_rh,
     prc, prc_unit, lrpc, lrpc_unit,
     ffp, ffp_unit, plt_conc, plt_conc_unit,
@@ -88,10 +88,10 @@ $sql = "INSERT INTO blood_requests (
     reason, other_reason,
     blood_order_date, blood_used_date,
     doctor_order, nurse, date_drawn,
-    created_at
+    created_at, ward
 ) VALUES (
     '{$hn}', '{$an}', '{$patient_name}', '{$diag}', '{$doctor}', '{$ptright}',
-    {$got_blood}, {$get_blood_date}, '{$hospital}',
+    '{$hct}', {$got_blood}, {$get_blood_date}, '{$hospital}',
     '{$blood_group}', '{$blood_group_rh}',
     {$prc}, '{$prc_unit}', {$lrpc}, '{$lrpc_unit}',
     {$ffp}, '{$ffp_unit}', {$plt_conc}, '{$plt_conc_unit}',
@@ -99,7 +99,7 @@ $sql = "INSERT INTO blood_requests (
     '{$reason}', '{$other_reason}',
     {$blood_order_date}, {$blood_used_date},
     '{$doctor_order}', '{$nurse}', {$date_drawn_sql},
-    NOW()
+    NOW(), {$ward}
 )";
 
 $result = mysqli_query($conn, $sql);

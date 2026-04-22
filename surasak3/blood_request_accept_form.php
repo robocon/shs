@@ -10,6 +10,9 @@ $id = sprintf("%s", $dbi->real_escape_string($_GET['id']));
 $sql = "SELECT * FROM blood_requests WHERE id = '$id'";
 $result = $dbi->query($sql);
 $row = $result->fetch_assoc();
+
+$bloodDbi = new mysqli(BLOOD_SERVER, BLOOD_USER, BLOOD_PASS, BLOOD_DB);
+$bloodDbi->set_charset("utf8");
 ?>
 <!DOCTYPE html>
 <html lang="th">

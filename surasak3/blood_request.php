@@ -3,14 +3,17 @@ require_once dirname(__FILE__).'/newBootstrap.php';
 $classIpcard = new Ipcard();
 $classDoctor = new Doctor();
 $classOpcard = new Opcard();
+$classBed = new Bed();
 
+$an = sprintf("%s", $dbi->real_escape_string($_REQUEST['an']));
+$bedcode = sprintf("%s", $dbi->real_escape_string($_REQUEST['bedcode']));
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ใบขอเลือดและส่วนประกอบของเลือด</title>
+    <title><?= $an; ?> - ใบขอเลือดและส่วนประกอบของเลือด</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* ตั้งค่าฟอนต์ TH SarabunPSK (ใช้ Sarabun สำรอง) */
@@ -70,24 +73,19 @@ $classOpcard = new Opcard();
 <body>
 
 <div class="container my-5">
-    <div class="card p-4 mb-4">
-        <div class="text-center mb-4">
-            <div class="main-title">ค้นหาจาก AN</div>
-        </div>
-        <form action="blood_request.php" method="post">
-            <div class="col-md-4">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" id="an" name="an" placeholder="กรอก AN ที่ต้องการค้นหา">
-                    <button class="btn btn-outline-primary" type="submit" id="button-addon2">ค้นหา</button>
-                </div>
-                <input type="hidden" name="do" value="search">
-            </div>
-        </form>
-    </div>
 <?php
-$an = sprintf("%s", $dbi->real_escape_string($_POST['an']));
-if(!empty($an) && $_POST['do']==='search'){
+if(!empty($an) && !empty($bedcode)){
     
+    $wardArray = array(
+        '42' => 'หอผู้ป่วยรวม',
+        '43' => 'หอผู้ป่วยสูติ',
+        '44' => 'หอผู้ป่วยICU',
+        '45' => 'หอผู้ป่วยพิเศษ',
+        '46' => 'หอผู้ป่วย Cohort Ward',
+        '47' => 'ผู้ป่วย Home Isolation',
+        '48' => 'ผู้ป่วย รพ.สนาม',
+    );
+
     $ip = $classIpcard->getIpNotDc($an);
     if($ip===false){
         ?>
@@ -95,6 +93,11 @@ if(!empty($an) && $_POST['do']==='search'){
         <?php
         exit;
     }
+
+    $bed = $classBed->getBed($ip['an']);
+    
+    $wardCode = substr($ip['bedcode'], 0, 2);
+    $wardName = $wardArray[$wardCode];
 
     $groupConvert = array(
         'โอ' => 'O',
@@ -131,7 +134,7 @@ if(!empty($an) && $_POST['do']==='search'){
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Bed</label>
-                    <p><?= $ip['bedcode']; ?></p>
+                    <p><?= $wardName.' เตียง:'.$bed['bed']; ?></p>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">การวินิจฉัยโรค (Diagnosis)</label>
@@ -161,6 +164,52 @@ if(!empty($an) && $_POST['do']==='search'){
 
             <div class="form-section-title">2. ประวัติการได้รับเลือด</div>
             <div class="row g-3 mb-4">
+                <?php
+/**
+ * แยก Query เพราะมีปัญหาเรื่อง charset
+ */
+$sql = "CREATE TEMPORARY TABLE `tmp_orderhead`(
+    `labnumber` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci,
+    KEY `labnumber` (`labnumber`)
+)
+SELECT `labnumber`
+FROM `orderhead` WHERE hn = '".$ip['hn']."' and room = '".$ip['bedcode']."';";
+$dbi->query($sql);
+
+$sql = "SELECT a.*, b.* 
+FROM ( 
+	SELECT `autonumber`,`orderdate` 
+	FROM `resulthead` 
+	WHERE `labnumber` IN (SELECT `labnumber` FROM `tmp_orderhead` )
+	AND `profilecode` IN ('HCT')
+) AS a 
+LEFT JOIN `resultdetail` AS b ON b.autonumber = a.autonumber 
+ORDER BY b.autonumber DESC";
+$q = $dbi->query($sql);
+$hctRows = $q->num_rows;
+if($hctRows>0){
+    $resultHead = $q->fetch_assoc();
+    $hct = $resultHead['result'];
+}else{
+    $hct = '';
+}
+                ?>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <div class="input-group-text">
+                            <label class="ms-2 mb-0" for="ffp_check">Hct</label>
+                        </div>
+                        <input type="text" class="form-control type-4" focus-on="ffp_check" name="ffp_unit" value="<?=$hct?>">
+                        <span class="input-group-text">%</span>
+                    </div>
+                    <?php
+                    if($hctRows>0){
+                        ?><span class="badge text-bg-secondary">ข้อมูลเมื่อ <?= $resultHead['orderdate']; ?></span><?php
+                    }
+                    ?>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
                 <div class="col-12">
                     <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="got_blood" id="not_ever" value="0" checked>
@@ -187,7 +236,7 @@ if(!empty($an) && $_POST['do']==='search'){
                     <?php
                     $bloodGroupItems = array('ไม่ทราบกรุ๊ปเลือด','A','B','AB','O');
                     ?>
-                    <select class="form-select" name="blood_group">
+                    <select class="form-select" name="blood_group" id="blood_group">
                         <?php
                         foreach ($bloodGroupItems as $key => $value) {
                             $selected = $value==$bloodGroup ? 'selected' : '';
@@ -335,6 +384,7 @@ if(!empty($an) && $_POST['do']==='search'){
             <div class="d-flex justify-content-center gap-3">
                 <button type="reset" class="btn btn-secondary px-5" onclick="cancelBtn()">ยกเลิก</button>
                 <button type="submit" class="btn btn-theme px-5">ส่งใบขอเลือด</button>
+                <input type="hidden" name="ward_code" value="<?= $wardCode; ?>">
             </div>
         </form>
     </div>
@@ -351,6 +401,7 @@ if(!empty($an) && $_POST['do']==='search'){
     function cancelBtn(){
         document.getElementById('bloodRequestForm').reset();
     }
+
     // 1. ระบบ Auto-focus เมื่อเลือกชนิดเลือด
     document.querySelectorAll('.blood_type').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
@@ -369,36 +420,59 @@ if(!empty($an) && $_POST['do']==='search'){
     });
 
     function mainSwal(msg_icon, msg_title, msg_text){
-         Swal.fire({
+        let swalResponse = Swal.fire({
             icon: msg_icon,
             title: msg_title,
             text: msg_text,
             confirmButtonColor: '#006666'
         });
+        return swalResponse;
     }
 
-    function warning(msg_text){
-        mainSwal('warning', 'ข้อมูลไม่ครบถ้วน', msg_text);
+    function swalWarning(msg_text){
+        return mainSwal('warning', 'ข้อมูลไม่ครบถ้วน', msg_text);
     }
 
-    function success(){
+    function swalSuccess(msg_text){
+        return mainSwal('success', 'บันทึกข้อมูลสำเร็จ', msg_text);
+    }
 
+    function swalError(msg_text){
+        return mainSwal('error', 'บันทึกข้อมูลสำเร็จ', msg_text);
     }
     
     document.getElementById('bloodRequestForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
+        const bloodGroup = document.getElementById('blood_group').value;
+        if (bloodGroup === '') {
+            swalWarning('กรุณาเลือก กรุ๊ปเลือดของคนไข้');
+            return;
+        }
+
+        let checkType = false;
+        document.querySelectorAll('.type-4').forEach(inputSelect => {
+            if(!inputSelect.value){
+                checkType = true;
+            }
+        });
+
+        if(checkType===false){
+            swalWarning('กรุณาระบุชนิดเลือดที่ต้องการขอ');
+            return;
+        }
+
         // ตรวจสอบ checkbox class=blood_type
         const bloodTypes = document.querySelectorAll('.blood_type:checked');
         if (bloodTypes.length === 0) {
-            warning('กรุณาเลือก ชนิดของเลือดที่ต้องการขอ');
+            swalWarning('กรุณาเลือก ชนิดของเลือดที่ต้องการขอ');
             return;
         }
 
         // ตรวจสอบ radio class=blood_reason
         const bloodReasons = document.querySelectorAll('.blood_reason:checked');
         if (bloodReasons.length === 0) {
-            warning('กรุณาระบุ เหตุผลการใช้เลือด');
+            swalWarning('กรุณาระบุ เหตุผลการใช้เลือด');
             return;
         }
 
@@ -419,16 +493,14 @@ if(!empty($an) && $_POST['do']==='search'){
                     title: 'บันทึกข้อมูลสำเร็จ',
                     text: 'ระบบได้ส่งใบขอเลือดเรียบร้อยแล้ว (ID: ' + data.insert_id + ')',
                     confirmButtonColor: '#006666'
-                }).then(function() {
-                    document.getElementById('bloodRequestForm').reset();
+                }).then((result)=>{
+                    if (result.isConfirmed) {
+                        window.location.href = 'blood_request_list.php';
+                    }
                 });
+                
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'เกิดข้อผิดพลาด',
-                    text: data.message || 'ไม่สามารถบันทึกข้อมูลได้',
-                    confirmButtonColor: '#006666'
-                });
+                swalError('ไม่สามารถบันทึกข้อมูลได้');
             }
         })
         .catch(function(err) {
