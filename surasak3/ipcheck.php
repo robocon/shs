@@ -1,12 +1,11 @@
 <?php
 session_start();
 if($_SESSION["sOfficer"] == ""){
-	
 	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
 	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
 	exit();
 }
-include("connect.inc"); 
+include("connect.php"); 
 
 $an = sprintf("%s", $_POST['an']);
 
@@ -155,8 +154,7 @@ if ($result) {
     $cAdmitd = $row->date;
     $cDcmitd = $row->dcdate;
     $status_log = $row->status_log;
-    if ($cDcmitd == '0000-00-00 00:00:00') {
-    } else {
+    if ($cDcmitd != '0000-00-00 00:00:00') {
         echo "<FONT SIZE='3' COLOR='#FF0000'>คำเตือน ผู้ป่วยได้ทำการจำหน่ายเรียบร้อยแล้ว<BR> กรุณาตรวจสอบ AN ก่อนการ ADMIT </FONT><br>";
     }
     ;
@@ -303,9 +301,9 @@ if ($status_log == "จำหน่าย") {
     }
 
     if ($cDcmitd == '0000-00-00 00:00:00') {
-        $action = "ipregis.php?do=first";
+        $action = "ipregis.php?do=first&an=".$arr['an']."&hn=".$arr['hn'].'&Bcode='.$arr['bedcode'];
     } else {
-        $action = "ipregis.php?do=second";
+        $action = "ipregis.php?do=second&an=".$arr['an']."&hn=".$arr['hn'].'&Bcode='.$arr['bedcode'];
     }
 
     ?>
@@ -460,6 +458,16 @@ if ($status_log == "จำหน่าย") {
                 <td>
                     <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="reset" value="  &#3649;&#3585;&#3657;&#3652;&#3586;  " name="B2">
+
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
                 </td>
             </tr>
         </table>
