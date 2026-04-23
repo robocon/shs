@@ -96,7 +96,7 @@ if(!empty($an) && !empty($bedcode)){
 
     $bed = $classBed->getBed($ip['an']);
     
-    $wardCode = substr($ip['bedcode'], 0, 2);
+    $wardCode = substr($bed['bedcode'], 0, 2);
     $wardName = $wardArray[$wardCode];
 
     $groupConvert = array(
@@ -445,7 +445,7 @@ if($hctRows>0){
         e.preventDefault();
 
         const bloodGroup = document.getElementById('blood_group').value;
-        if (bloodGroup === '') {
+        if (bloodGroup === 'ไม่ทราบกรุ๊ปเลือด') {
             swalWarning('กรุณาเลือก กรุ๊ปเลือดของคนไข้');
             return;
         }
@@ -495,7 +495,8 @@ if($hctRows>0){
                     confirmButtonColor: '#006666'
                 }).then((result)=>{
                     if (result.isConfirmed) {
-                        window.location.href = 'blood_request_list.php';
+                        // window.location.href = 'blood_request_list.php';
+                        window.close();
                     }
                 });
                 

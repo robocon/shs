@@ -199,7 +199,7 @@ $pageTitle = "รายการใบขอเลือด";
             <tbody>
                 <?php
                 // Query ข้อมูลโดยใช้ MySQLi OOP
-                $sql = "SELECT * FROM blood_requests ORDER BY id DESC";
+                $sql = "SELECT * FROM `blood_requests` WHERE `active`='' ORDER BY id DESC";
                 $result = $dbi->query($sql);
                 if ($result && $result->num_rows > 0):
                     $idx = 1;
@@ -256,6 +256,73 @@ $pageTitle = "รายการใบขอเลือด";
             </tbody>
         </table>
         
+    </div>
+    <div class="page-header">
+        <h1>ใบคำขอตอบรับแล้ว</h1>
+    </div>
+    <div>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>ชื่อ-นามสกุล</th>
+                    <th>HN</th>
+                    <th>AN</th>
+                    <th>แพทย์ผู้ขอ</th>
+                    <th class="text-center">วันที่ขอเลือด</th>
+                    <th class="text-center">สถานะ</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Query ข้อมูลโดยใช้ MySQLi OOP
+                $sql = "SELECT * FROM `blood_requests` WHERE `active`='y' ORDER BY id DESC";
+                $result = $dbi->query($sql);
+                if ($result && $result->num_rows > 0):
+                    $idx = 1;
+                    while ($row = $result->fetch_assoc()):
+                        ?>
+                        <tr>
+                            <td><?php echo $idx++; ?></td>
+                            <td>
+                                <div class="fw-bold"><?php echo htmlspecialchars($row['patient_name']); ?></div>
+                            </td>
+                            <td><span class="badge-hn"><?php echo htmlspecialchars($row['hn']); ?></span></td>
+                            <td><span class="badge-an"><?php echo htmlspecialchars($row['an']); ?></span></td>
+                            <td><?php echo htmlspecialchars($row['doctor_order']); ?></td>
+                            <td class="text-center">
+                                <?php 
+                                if ($row['blood_order_date']) {
+                                    $date = new DateTime($row['blood_order_date']);
+                                    echo $date->format('d/m/Y');
+                                } else {
+                                    echo '-';
+                                }
+                                ?>
+                            </td>
+                            <td class="text-center">
+                                <?= !empty($row['active']) ? '✅' : '⏰' ?>
+                            </td>
+                            
+                        </tr>
+                        <?php
+                    endwhile;
+                    $result->free();
+                else:
+                    ?>
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="fa-solid fa-inbox fa-3x mb-3"></i>
+                                <p>ยังไม่มีข้อมูลรายการขอเลือด</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php
+                endif;
+                ?>
+            </tbody>
+        </table>
     </div>
 </div>
 

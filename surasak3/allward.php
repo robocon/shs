@@ -32,6 +32,8 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 	display: inline-block;
 	cursor: pointer;
 	border-radius: 4px;
+	font-size: 18px;
+	font-family: "TH SarabunPSK";
 }
 .a-button:hover{
 	box-shadow: 3px 3px 3px #3e3e3e;
@@ -257,25 +259,21 @@ $(document).ready(function(){
           </tr>
           <tr style="line-height:25PX;">
             <td colspan="10" valign="top" ><font class='tablefontt1'>หัตถการ  :</font>
+			<?php
+			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
+			?>
 			<? echo "<a target=_blank  href=\"ipdata.php?cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย / คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
-            
-		<? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
-            <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";
-			?>&nbsp;&nbsp; 
-            <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>ดูฟิลม์ xray</a>";
-			?>&nbsp;&nbsp; 
-            <? 
-			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
-			echo "<a target=_blank  href=\"rp_profile.php?an=$an&$str\" class='tablefont'>Drugprofile</a>";
-			?>&nbsp;&nbsp; 
-            <? 
-			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
-			echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";
-			?>&nbsp;&nbsp;  
+			<? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";?>&nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>ดูฟิลม์ xray</a>";?>&nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"rp_profile.php?an=$an&$str\" class='tablefont'>Drugprofile</a>";?>&nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";?>&nbsp;&nbsp;  
             <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>ใบSETผ่าตัด</a>"; ?>
-
-			<a href="blood_request.php?an=<?=$an?>&bedcode=<?=$bedcode?>" target="_blank" class="a-button a-green tablefont">ใบขอเลือด</a>
-
+			<?php
+			$bReqText = 'ใบขอเลือด';
+			$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
+			?>
+			<a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button a-green tablefont"><?= $bReqText; ?></a>
             </td>
           </tr>
           <tr style="line-height:25PX;">
@@ -289,13 +287,14 @@ $(document).ready(function(){
 		  </tr>
 		  <tr>
 			<td colspan="10">
-				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a><br>
+				<div>
+					<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank" class="a-button a-green tablefont">📤 อัพโหลดไฟล์ Doctor Order</a> 
 				<style>
 					.bloodContainer{
 						display: inline-block;
 						margin-right: 0.5em;
 						font-family: "TH SarabunPSK";
-						font-size: 20px;
+						font-size: 18px;
 						border: 2px solid red;
 						border-radius: 6px;
 						padding: 4px 6px;
@@ -313,6 +312,7 @@ $(document).ready(function(){
 					}
 				}
 				?>
+				</div>
 			</td>
 		  </tr>
         </table></td>

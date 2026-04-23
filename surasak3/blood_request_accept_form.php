@@ -7,12 +7,23 @@
 require_once dirname(__FILE__) . '/newBootstrap.php';
 $id = sprintf("%s", $dbi->real_escape_string($_GET['id']));
 
-$sql = "SELECT * FROM blood_requests WHERE id = '$id'";
+$sql = "SELECT * FROM `blood_requests` WHERE `id` = '$id'";
 $result = $dbi->query($sql);
 $row = $result->fetch_assoc();
 
 $bloodDbi = new mysqli(BLOOD_SERVER, BLOOD_USER, BLOOD_PASS, BLOOD_DB);
 $bloodDbi->set_charset("utf8");
+
+$wardArray = array(
+    '42' => 'หอผู้ป่วยรวม',
+    '43' => 'หอผู้ป่วยสูติ',
+    '44' => 'หอผู้ป่วยICU',
+    '45' => 'หอผู้ป่วยพิเศษ',
+    '46' => 'หอผู้ป่วย Cohort Ward',
+    '47' => 'ผู้ป่วย Home Isolation',
+    '48' => 'ผู้ป่วย รพ.สนาม',
+);
+
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -405,9 +416,41 @@ $bloodDbi->set_charset("utf8");
                         <div class="section-title-en">Information & Blood Bag</div>
                     </div>
                 </div>
+                <?php
+                $classIpcard = new Ipcard();
+                $ipcard = $classIpcard->getIpcard($row['an']);
+
+                $classBed = new Bed();
+                $bed = $classBed->getBed($row['an']);
+
+                $wardCode = substr($bed['bedcode'], 0, 2);
+                $wardName = $wardArray[$wardCode];
+                ?>
                 <div class="section-body">
                     <div class="blood-group-wrapper">
+                        <div>ชื่อ-นามสกุล: <?= $ipcard['ptname']; ?></div>
+                        <div>HN: <?= $ipcard['hn']; ?></div>
+                        <div>AN: <?= $ipcard['an']; ?></div>
+                        <div>Bed: <?= $wardName.' เตียง:'.$bed['bed']; ?></div>
                         
+                    </div>
+                    <div>
+                        <div class="blood-select-label">เลือกถุงเลือด</div>
+                        <?php
+                        $blood_group = $row['blood_group'];
+                        $qBlood = $bloodDbi->query("SELECT * FROM `mst_stock` WHERE `Blood_Group` = '$blood_group' AND ( `Flag_Exp` = '' AND `Flag_pay` = '' ) ");
+                        if($qBlood->num_rows>0){
+                            ?>
+                            <select name="blood" id="blood" class="blood-select">
+                            <?php
+                            while ($r = $qBlood->fetch_assoc()) {
+                                ?><option value="<?= $r['id']; ?>">Unit_Number: <?= $r['Unit_Number'].' Component:'.$r['Component'].' Source:'.$r['Source']; ?></option><?php
+                            }
+                            ?>
+                            </select>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
