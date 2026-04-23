@@ -64,16 +64,21 @@ class Diabetes extends Database
         
         $registerDate = date('Y-m-d H:i:s');
         $res = false;
+        $dbirth = sprintf("%s", $this->dbi->real_escape_string($post['dbirth']));
+        $sex = sprintf("%s", $this->dbi->real_escape_string($post['sex']));
+        $ptright = sprintf("%s", $this->dbi->real_escape_string($post['ptright']));
+
+
         $sql = sprintf("INSERT INTO `diabetes_clinic`(
         `dm_no`, `thidate`, `dateN`, `hn`, `doctor`, `ptname`,
         `bmi`, `retinal`, `height`, `weight`, `round`, `temperature`, 
         `pause`, `rate`, `bp1`, `bp2`, `officer`, `register_date`, 
-        `retinal_date`, `follow`, `followText`
+        `retinal_date`, `follow`, `followText`,dbirth, sex,ptright
         ) VALUES(
-        '%s', CURDATE(), '%s', '%s', '%s', '%s',
+        '%s', '%s', CURDATE(), '%s', '%s', '%s',
         '%s', '%s', '%s', '%s', '%s', '%s',
         '%s', '%s', '%s', '%s', '%s', '%s',
-        '%s', '%s', '%s'
+        '%s', '%s', '%s', '{$dbirth}', '{$sex}', '{$ptright}'
         );",
         $dmNumber, $post['date'], $post['hn'], $post['doctor'], $post['ptname'],
         $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['temp'],
@@ -154,13 +159,13 @@ class Diabetes extends Database
         `added_date`,`edited_date`,`dummy_no`,
         `retinal_date`, `follow`, `followText`,`opd_id`
         ) VALUES(
-        '%s', '%s', '%s', '%s', '%s',
+        '%s', CURDATE(), '%s', '%s', '%s',
         '%s', '%s', '%s', '%s', '%s', '%s',
         '%s', '%s', '%s', '%s', '%s', '%s',
         NOW(), NOW(), '%s',
         '%s', '%s', '%s', '%s'
         );",
-        $dmNumber, $dateN, $post['hn'], $post['doctor'], $post['ptname'],
+        $dmNumber, $post['hn'], $post['doctor'], $post['ptname'],
         $post['bmi'], $post['retinal'], $post['height'], $post['weight'], $post['waist'], $post['temp'],
         $post['pulse'],$post['rate'],$post['bp1'],$post['bp2'],$_SESSION['sOfficer'],$_SESSION['sIdname'],
         $dummy_no,

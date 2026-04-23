@@ -8,6 +8,7 @@ $hn = $_GET['hn'];
 
 $dm = $class_diabetes->getDiabetesFromHn($hn);
 $opcard = $class_opcard->getByHn($hn);
+$sex = ($opcard['sex']==='ช')?'0':'1';
 ?>
 <style>
 #formDm{font-size:14pt; display: inline-block;}
@@ -200,10 +201,13 @@ button.dm-button:hover, .dm-button:hover{
 						$sqlResult = "SELECT `result`,`unit` FROM `resultdetail` WHERE `autonumber` = '$autonumber' AND `labcode` = '$labcode'";
 						$qResult = $dbi->query($sqlResult);
 						$aResult = $qResult->fetch_assoc();
-					}
+					
 					?>
 					<div><?= $aResult['result'].' '.$aResult['unit']; ?></div>
 					<input type="hidden" name="<?= $inputName; ?>" value="<?= $aResult['result']; ?>">
+					<?php
+					}
+					?>
 				</div>
 				<?php
 			}
@@ -374,5 +378,8 @@ button.dm-button:hover, .dm-button:hover{
 		<input type="hidden" name="dmHn" id="dmHn" value="<?= $hn; ?>">
 		<input type="hidden" name="typeDepart" id="typeDepart" value="opd">
 		<input type="hidden" name="action" id="action" value="save">
+		<input type="hidden" name="ptright" id="ptright" value="<?= $opcard['ptright']; ?>">
+		<input type="hidden" name="sex" id="sex" value="<?= $sex; ?>">
+		<input type="hidden" name="dbirth" id="dbirth" value="<?= $opcard['dbirth']; ?>">
 	</div>
 </form>
