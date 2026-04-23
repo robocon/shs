@@ -299,7 +299,6 @@ if ($status_log == "จำหน่าย") {
     } else {
         $diag = $arr['diag'];
     }
-    var_dump($arr);
 
     if ($cDcmitd == '0000-00-00 00:00:00') {
         $action = "ipregis.php?do=first&an=".$arr['an']."&hn=".$arr['hn'].'&Bcode='.$arr['bedcode'];
