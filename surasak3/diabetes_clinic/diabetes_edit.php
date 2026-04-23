@@ -47,7 +47,7 @@ if($do === 'save'){
 	// อัพเดทข้อมูลในตาราง
 	$strSQL = "UPDATE diabetes_clinic SET dm_no = '".$_POST["dm_no"]."'
 	,thidate = '".$_POST["thaidate"]."'
-	,dateN = '".$dateN."'
+	,dateN = CURDATE()
 	,hn = '".$_POST["hn"]."'
 	,doctor = '".$_POST["doctor"]."'
 	,ptright = '".$_POST["ptright"]."'
@@ -117,7 +117,7 @@ if($do === 'save'){
 	$sql = "SELECT `row_id`,`hn` 
 	FROM `diabetes_clinic_history` 
 	WHERE `hn` = '$hn' 
-	AND `dateN` = '$dateN'";
+	AND `dateN` = CURDATE()";
 	$query = mysql_query($sql);
 	$num_hn = mysql_num_rows($query);
 	if( $num_hn > 0 ){
@@ -129,7 +129,7 @@ if($do === 'save'){
 		$update_sql = "UPDATE diabetes_clinic_history 
 		SET dm_no = '".$_POST["dm_no"]."',
 		thidate = '".$_POST["thaidate"]."',
-		dateN = '".$dateN."',
+		dateN = CURDATE(),
 		hn = '".$_POST["hn"]."',
 		doctor = '".$_POST["doctor"]."',
 		ptname = '".$_POST["ptname"]."',
@@ -195,7 +195,7 @@ if($do === 'save'){
 			l_ua,date_footcare,date_nutrition
 		) 
 		VALUES 
-		('$dm_no','".$_POST["thaidate"]."','".$dateN."','".$_POST["hn"]."','".$_POST["doctor"]."',
+		('$dm_no','".$_POST["thaidate"]."',CURDATE(),'".$_POST["hn"]."','".$_POST["doctor"]."',
 		'".$_POST["ptname"]."','".$_POST["ptright"]."','".$_POST["dbirth"]."','".$_POST["sex"]."','".$_POST["dia1"]."',
 		'".$_POST["nosis_d"]."','".$_POST["ht"]."','".$_POST["ht_d"]."','".$_POST["cigarette"]."','".$_POST["bw"]."',
 		'".$_POST["bmi"]."','$retinal','$foot','".$_POST["bs"]."','".$_POST["hba"]."',
@@ -943,7 +943,7 @@ if(!empty($hn) != ""){
 									</td>
 								</tr>
 								<?php
-								$laball3 = "SELECT a.autonumber,a.result,a.unit,b.orderdate 
+								$laball3 = "SELECT a.result,a.unit,b.orderdate 
 								FROM resultdetail AS a, 
 								resulthead AS b 
 								WHERE a.autonumber = b.autonumber 

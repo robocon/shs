@@ -1,5 +1,6 @@
 <?php 
-include '../bootstrap.php';
+require_once dirname(__FILE__).'/../newBootstrap.php';
+require_once dirname(__FILE__).'/../connect.php';
 
 // Verify user before load content
 if(authen() === false ){ die('Session หมดอายุ <a href="../login_page.php">คลิกที่นี่</a> เพื่อทำการเข้าสู่ระบบอีกครั้ง'); }
@@ -83,7 +84,7 @@ if($do === 'save'){
 		register_date,ht_etc,retinal_date,foot_date,tooth_date,
 		tooth,l_ua,date_footcare,date_nutrition,date_exercise ) 
 		VALUES 
-		('{$post['dm_no']}','{$post['thaidate']}','$dateN','$hn','{$post['doctor']}',
+		('{$post['dm_no']}','{$post['thaidate']}',CURDATE(),'$hn','{$post['doctor']}',
 		'{$post['ptname']}','{$post['ptright']}','{$post['dbirth']}','{$post['sex']}','$dia1',
 		'{$post['nosis_d']}','$ht','{$post['ht_d']}','{$post['cigarette']}','{$post['bw']}',
 		'{$post['bmi']}','$retinal','$foot','$bs','$hba',
@@ -406,6 +407,13 @@ color: #FFF;
 font-family: "TH SarabunPSK";
 font-size: 22px;
 }
+a{
+	text-decoration: none;
+}
+a:hover{
+	text-decoration: underline;
+	cursor: pointer;
+}
 </style>
 <script type="text/javascript">
 	var popup1, popup2, popup3;
@@ -450,7 +458,7 @@ $hn = input('p_hn', NULL);
 ?>
 <h1 class="forntsarabun1">เพิ่มข้อมูลผู้ป่วยเบาหวาน</h1>
 <form action="diabetes.php" method="post">
-	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" >
+	<TABLE border="1" cellpadding="2" cellspacing="0" bordercolor="#393939" bgcolor="#FFFFCE" style="display:inline-block;">
 		<TR>
 			<TD>
 				<TABLE border="0" cellpadding="0" cellspacing="0">
@@ -471,7 +479,34 @@ $hn = input('p_hn', NULL);
 			</TD>
 		</TR>
 	</TABLE>
+	<div style="display:inline-block; margin-left: 20px;">
+		<?php
+		$sql = "SELECT * FROM `screen_dm` WHERE `date_active` = CURDATE();";
+		$q = $dbi->query($sql);
+		if($q->num_rows>0){
+			?>
+			<table>
+			<?php
+			while($r = $q->fetch_assoc()){
+				?>
+				<tr>
+					<td>👈<a href="javascript:void(0)" onclick="setHN('<?= $r['hn'];?>')"><?= $r['hn'];?></a></td>
+					<td><?= $r['ptname'];?></td>
+				</tr>
+				<?php
+			}
+			?>
+			</table>
+			<?php
+		}
+		?>
+	</div>
 </form>
+<script>
+	function setHN(hn){
+		document.getElementById('p_hn').value = hn;
+	}
+</script>
 <?php
 // Alert Message
 if(isset($_SESSION['msg'])){

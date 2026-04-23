@@ -32,7 +32,7 @@ if( isset($_GET['do']) && $_GET['do'] == 'save'){
 	$strSQL = "UPDATE diabetes_clinic_history  SET ";
 	$strSQL .="dm_no = '".$_POST["dm_no"]."' ";
 	$strSQL .=",thidate = '".$_POST["thaidate"]."' ";
-	$strSQL .=",dateN = '".$dateN."' ";
+	$strSQL .=",dateN = CURDATE() ";
 	$strSQL .=",hn = '".$_POST["hn"]."' ";
 	$strSQL .=",doctor = '".$_POST["doctor"]."' ";
 	$strSQL .=",ptright = '".$_POST["ptright"]."' ";

@@ -100,6 +100,9 @@ if($action == 'getOpd'){
         padding-left: 8px;
         border-left: 4px solid #13795b;
     }
+    input[readonly]{
+        background-color: #e2e2e2ff;
+    }
 </style>
 <script type="text/javascript">
 	var date;
@@ -142,9 +145,10 @@ if($action == 'getOpd'){
     <?php
     $page = sprintf("%s", $_POST['page']);
     if(!empty($page) && $page==="search"){
-        $opc = $opcard->getByHn($_POST['hnSearch'],array('`hn`','`ptright`','`idguard`'));
+        $opc = $opcard->getByHn($_POST['hnSearch'],array('hn','idguard','sex'));
         if($opc!==false){
 
+        $sex = ($opc['sex']==='ช')?'0':'1';
         $idguardCode = substr($opc['idguard'],0,4);
         if($idguardCode=='MX07'){
             ?>
@@ -168,7 +172,6 @@ if($action == 'getOpd'){
                 <div class="col-auto">
                     <label class="form-label fw-bold">ชื่อ-สกุล: </label>
                     <?=$opc['ptname'];?>
-                    <input type="hidden" name="ptname" value="<?=$opc['ptname'];?>">
                 </div>
                 <div class="col-auto">
                     <label class="form-label fw-bold">สิทธิ: </label>
@@ -187,6 +190,7 @@ if($action == 'getOpd'){
                         <button class="btn btn-secondary" type="button" onclick="selectDate()">เลือกวันที่</button>
                     </div>
                     <input type="hidden" name="page" value="search">
+                    <span class="badge text-bg-warning">เลือกตามที่ให้เลือกครับ ระบบจะแปลงจาก ค.ศ. ให้เป็น พ.ศ. เอง</span>
                 </div>
             </div>
             
@@ -244,7 +248,8 @@ if($action == 'getOpd'){
             <div class="row mb-3">
                 <div class="col-sm-8 col-md-6 col-lg-4">
                     <label for="retinal_date" class="form-label fw-bold subHeading">วันที่ได้รับการตรวจตา</label>
-                    <input type="text" class="form-control" id="retinal_date" name="retinal_date" placeholder="เลือกวันที่">
+                    <input type="text" class="form-control" id="retinal_date" name="retinal_date" placeholder="เลือกวันที่" readonly value="<?= date('Y-m-d') ?>">
+                    <span class="badge text-bg-warning">เลือกตามที่ให้เลือกครับ ระบบจะแปลงจาก ค.ศ. ให้เป็น พ.ศ. เอง</span>
                 </div>
             </div>
             
@@ -302,6 +307,10 @@ if($action == 'getOpd'){
                 <input type="hidden" name="doctor" id="doctor" value="">
                 <input type="hidden" name="hn" id="hn" value="<?=$opc['hn'];?>">
                 <input type="hidden" class="form-control" id="vn" name="vn">
+                <input type="hidden" name="dbirth" value="<?=$opc['dbirth'];?>">
+                <input type="hidden" name="sex" value="<?=$sex;?>">
+                <input type="hidden" name="ptname" value="<?=$opc['ptname'];?>">
+                <input type="hidden" name="ptright" value="<?=$opc['ptright'];?>">
             </div>
         </form>
         </div>

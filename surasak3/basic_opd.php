@@ -1796,7 +1796,7 @@ C&deg; </td>
              </tr>
              <tr>
                <td align="right" class="data_show"> P : </td>
-               <td align="left"><input name="pause" type="number" step="1" id="pause" inputmode="numeric" size="3" value="<?= $pause; ?>" style="width:58px;"> ครั้ง/นาที</td>
+               <td align="left"><input name="pause" type="text" step="1" id="pause" inputmode="numeric" size="3" value="<?= $pause; ?>" style="width:58px;"> ครั้ง/นาที</td>
                <td align="right">R :</td>
                <td align="left"><input name="rate" type="text" id="rate" value="20" size="3" />
 ครั้ง/นาที</td>
