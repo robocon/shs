@@ -94,6 +94,11 @@ $doctor = $_POST['doctor'];
 $typeadmit = $_POST['typeadmit'];
 $weight = $_POST['weight'];
 $cAn = $_GET['an'];
+$cAdmitd = $_POST['cAdmitd'];
+if(empty($cAdmitd)){
+	$cAdmitd = $_SESSION['cAdmitd'];
+}
+
 if ($_REQUEST['do'] == 'first') {
 
 	$sql = "UPDATE ipcard SET date= DATE_ADD(NOW(), INTERVAL 543 YEAR), 

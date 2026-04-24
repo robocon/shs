@@ -161,7 +161,7 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 }
 if ($result) {
     $cHn = $row->hn;
-    $cAdmitd = $row->date;
+    $_SESSION['cAdmitd'] = $cAdmitd = $row->date;
     $cDcmitd = $row->dcdate;
     $status_log = $row->status_log;
     if ($cDcmitd != '0000-00-00 00:00:00') {
@@ -473,6 +473,7 @@ if ($status_log == "จำหน่าย") {
                 <td>
                     <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="reset" value="  &#3649;&#3585;&#3657;&#3652;&#3586;  " name="B2">
+                    <input type="hidden" name="cAdmitd" value="<?= $cAdmitd; ?>">
                 </td>
             </tr>
         </table>
