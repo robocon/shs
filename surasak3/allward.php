@@ -273,9 +273,11 @@ $(document).ready(function(){
 			echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";
 			?>&nbsp;&nbsp;  
             <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>ใบSETผ่าตัด</a>"; ?>
-
-			<a href="blood_request.php?an=<?=$an?>&bedcode=<?=$bedcode?>" target="_blank" class="a-button a-green tablefont">ใบขอเลือด</a>
-
+			<?php
+			if($an){
+				?><a href="blood_request.php?an=<?=$an?>&bedcode=<?=$bedcode?>" target="_blank" class="a-button a-green tablefont">ใบขอเลือด</a><?php
+			}
+			?>
             </td>
           </tr>
           <tr style="line-height:25PX;">
