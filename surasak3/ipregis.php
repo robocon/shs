@@ -1,34 +1,36 @@
 <?php
 session_start();
+if($_SESSION["sOfficer"] == ""){
+	echo "<center><font color='#000000' >ขออภัยครับ การ Login ของท่านหมดอายุ </font><br />";
+	echo "<a href=\"../sm3.php\" target=\"_top\">กลับหน้าแรก</a></center>";
+	exit();
+}
+
 include("connect.php");
 
 $sOfficer = $_SESSION["sOfficer"];
 $thidate = (date("Y") + 543) . date("-m-d H:i:s");
 
 $Bcode = $_GET['Bcode'];
+if(empty($_GET['Bcode'])){
+	$Bcode = $_SESSION['cBedcode'];
+}
 
 $rward = substr($Bcode, 0, 2);
 if ($rward == '42') {
 	$wname = 'หอผู้ป่วยรวม';
-	$linkward = "fward.php";
 } elseif ($rward == '43') {
 	$wname = 'หอผู้ป่วยสูติ';
-	$linkward = "gward.php";
 } elseif ($rward == '44') {
 	$wname = 'หอผู้ป่วยICU';
-	$linkward = "icuward.php";
 } elseif ($rward == '45') {
 	$wname = 'หอผู้ป่วยพิเศษ';
-	$linkward = "vipward.php";
 } elseif ($rward == '46') {
 	$wname = 'หอผู้ป่วย Cohort Ward';
-	$linkward = "cward.php";
 } elseif ($rward == '47') {
 	$wname = 'หอผู้ป่วย Home Isolation';
-	$linkward = "hward.php";
 } elseif ($rward == '48') {
 	$wname = 'หอผู้ป่วย รพ.สนาม';
-	$linkward = "hward.php";
 }
 
 function calcage($birth)
@@ -53,23 +55,9 @@ function calcage($birth)
     return $pAge;
 }
 
-function jschars($str)
-{
-	$str = str_replace("\\\\", "\\\\", $str);
-	$str = str_replace("\"", "\\\"", $str);
-	$str = str_replace("'", "\'", $str);
-	$str = str_replace("\r\n", "\\n", $str);
-	$str = str_replace("\r", "\\n", $str);
-	$str = str_replace("\n", "\\n", $str);
-	$str = str_replace("\t", "\\t", $str);
-	$str = str_replace("<", "\\x3C", $str); // for inclusion in HTML
-	$str = str_replace(">", "\\x3E", $str);
-	return $str;
-}
-
-$diag = jschars($_POST['diag']);
-$diag1 = jschars($_POST['diag1']);
-$addfood = jschars($_POST['addfood']);
+$diag = $_POST['diag'];
+$diag1 = $_POST['diag1'];
+$addfood = $_POST['addfood'];
 $repadmit = $_POST['rep'];
 if ($repadmit == "other") {
 	$hospital = $_POST['hosother'];
@@ -108,7 +96,7 @@ $weight = $_POST['weight'];
 $cAn = $_GET['an'];
 if ($_REQUEST['do'] == 'first') {
 
-	$sql = "UPDATE ipcard SET date='$cAdmitd', 
+	$sql = "UPDATE ipcard SET date= DATE_ADD(NOW(), INTERVAL 543 YEAR), 
 	ptname='$cPtname',
 	age='$cAge',
 	ptright='$cPtright',
@@ -126,7 +114,7 @@ if ($_REQUEST['do'] == 'first') {
 
 	$sql = "UPDATE opday SET ptright='$cPtright',
 	goup='$cGoup',
-	camp='$cCamp',	
+	camp='$cCamp',
 	diag='$diag',
 	doctor='$doctor' 
 	WHERE an='$cAn';";
@@ -215,7 +203,18 @@ if ($_REQUEST['do'] == 'first') {
 	$result = mysql_query($sql) or die(mysql_error() . " Query failed ipcard");
 }
 
-
+?>
+<style>
+	:root{
+		font-family: "TH SarabunPSK";
+		font-size: 18px;
+	}
+	p,h3{
+		margin:0;
+		padding:0;
+	}
+</style>
+<?php
 
 if ($Bcode == "42R5") $room_name = "ค่าห้องพิเศษ ($price บาท)";
 if ($Bcode == "42R8") $room_name = "ค่าห้องแยกโรค ($price บาท)";
@@ -228,29 +227,15 @@ if (!$result) {
 	echo mysql_errno() . ": " . mysql_error() . "\n";
 	echo "<br>";
 } else {
-	print "ลงทะเบียนรับป่วยเรียบร้อย: <br>";
-	print "<strong>HN</strong>: $cHn <strong>AN</strong>: $cAn <br>";
-	print "$cYot $cName $cSurname <br>";
-	print "<strong>สิทธิการรักษา</strong>: $cPtright <br> ";
-	//print "  ปิดหน้าต่างนี้   แล้ว Refresh หน้าต่างหอผู้ป่วยเพื่อทำข้อมูลให้เป็นปัจจุบัน";
+	?>
+	<h3><center>ลงทะเบียนรับป่วยเรียบร้อย</center></h3>
+	<p><strong>HN</strong>: <?= $cHn; ?></p>
+	<p><strong>AN</strong>: <?= $cAn; ?></p>
+	<p><strong>ชื่อ-สกุล</strong>: <?= $cYot.$cName.' '.$cSurname; ?></p>
+	<p><strong>สิทธิการรักษา</strong>: <?= $cPtright; ?></p>
+	<?php
 	$rward = substr($Bcode, 0, 2);
-	if ($rward == '41') {
-		echo "<a href='allward.php?code=41'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '42') {
-		echo "<a href='allward.php?code=42'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '43') {
-		echo "<a href='allward.php?code=43'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '44') {
-		echo "<a href='allward.php?code=44'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '45') {
-		echo "<a href='allward.php?code=45'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '46') {
-		echo "<a href='allward.php?code=46'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '47') {
-		echo "<a href='allward.php?code=47'>กลับหน้า หอผู้ป่วย</a>";
-	} elseif ($rward == '48') {
-		echo "<a href='allward.php?code=48'>กลับหน้า หอผู้ป่วย</a>";
-	}
+	
 }
 //session_destroy();
 session_unregister("cAdmitd");
@@ -267,7 +252,4 @@ session_unregister("cMuang");
 session_unregister("cGoup");
 session_unregister("cCamp");
 ?>
-<script>
-	setTimeout("window.opener.location.href='allward.php?code=<?= $rward; ?>';window.close()", 5000);
-	
-</script>
+<p><a href="allward.php?code=<?= $rward ?>">🏠 กลับหน้า หอผู้ป่วย</a></p>
