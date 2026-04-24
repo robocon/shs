@@ -56,6 +56,26 @@ if($action==='save'){
         'officer' => $_SESSION['sOfficer']
     );
 
+
+    if(!empty($data['l_bs'])){
+        $dmData['l_bs'] = $data['l_bs'];
+    }
+    if(!empty($data['l_hbalc'])){
+        $dmData['l_hbalc'] = $data['l_hbalc'];
+    }
+    if(!empty($data['l_ldl'])){
+        $dmData['l_ldl'] = $data['l_ldl'];
+    }
+    if(!empty($data['l_creatinine'])){
+        $dmData['l_creatinine'] = $data['l_creatinine'];
+    }
+    if(!empty($data['l_urine'])){
+        $dmData['l_urine'] = $data['l_urine'];
+    }
+    if(!empty($data['l_microal'])){
+        $dmData['l_microal'] = $data['l_microal'];
+    }
+
     $screenDmData = array(
         'hn' => $data['dmHn'],
         'ptname' => $data['ptname'],
@@ -206,6 +226,74 @@ if($action==='save'){
     if(count($error_list)>0){
         $res['error']=$error_list;
     }
+    echo $json->encode($res);
+    exit;
+}else if($action==='saveHtScreen'){
+    
+    $classDiabetes = new Diabetes();
+    $screenDmData = array(
+        'hn' => $data['hn'],
+        'ptname' => $data['ptname'],
+        'age' => urldecode($data['age']),
+        'date_active' => date('Y-m-d'),
+        'officer' => $_SESSION['sOfficer'],
+        'datetime' => date('Y-m-d H:i:s')
+    );
+    $screenDmRes = $classDiabetes->insertData('screen_ht',$screenDmData);
+    if($screenDmRes!==false){
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','id'=>$screenDmRes);
+    }else{
+        $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ '.$classDiabetes->getMsgError());
+    }
+    echo $json->encode($res);
+    exit;
+
+}else if($action==='cancelHtScreen'){
+    if(!empty($data['id'])){
+        $id = sprintf("%s", $dbi->real_escape_string($data['id']));
+        $sql = "DELETE FROM screen_ht WHERE row_id='{$id}';";
+        $q = $dbi->query($sql);
+        if($q!==false){
+            $res = array('status'=>200,'message'=>'ลบข้อมูลเรียบร้อย');
+        }
+    }else{
+        $res = array('status'=>400,'message'=>'ลบข้อมูลไม่สำเร็จ '.$dbi->error);
+    }
+    
+    echo $json->encode($res);
+    exit;
+}else if($action==='saveDmScreen'){
+    
+    $classDiabetes = new Diabetes();
+    $screenDmData = array(
+        'hn' => $data['hn'],
+        'ptname' => $data['ptname'],
+        'age' => urldecode($data['age']),
+        'date_active' => date('Y-m-d'),
+        'officer' => $_SESSION['sOfficer'],
+        'datetime' => date('Y-m-d H:i:s')
+    );
+    $screenDmRes = $classDiabetes->insertData('screen_dm',$screenDmData);
+    if($screenDmRes!==false){
+        $res = array('status'=>200,'message'=>'บันทึกข้อมูลเรียบร้อย','id'=>$screenDmRes);
+    }else{
+        $res = array('status'=>400,'message'=>'บันทึกข้อมูลไม่สำเร็จ '.$classDiabetes->getMsgError());
+    }
+    echo $json->encode($res);
+    exit;
+
+}else if($action==='cancelDmScreen'){
+    if(!empty($data['id'])){
+        $id = sprintf("%s", $dbi->real_escape_string($data['id']));
+        $sql = "DELETE FROM screen_dm WHERE row_id='{$id}';";
+        $q = $dbi->query($sql);
+        if($q!==false){
+            $res = array('status'=>200,'message'=>'ลบข้อมูลเรียบร้อย');
+        }
+    }else{
+        $res = array('status'=>400,'message'=>'ลบข้อมูลไม่สำเร็จ '.$dbi->error);
+    }
+    
     echo $json->encode($res);
     exit;
 }
