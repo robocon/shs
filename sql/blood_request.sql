@@ -8,6 +8,7 @@ CREATE TABLE `blood_requests` (
   `diag` varchar(255) NOT NULL DEFAULT '',
   `doctor` varchar(200) NOT NULL DEFAULT '',
   `ptright` varchar(100) NOT NULL DEFAULT '',
+  `hct` varchar(20) NOT NULL DEFAULT '',
   `got_blood` tinyint(1) NOT NULL DEFAULT '0',
   `get_blood_date` date DEFAULT NULL,
   `hospital` varchar(200) NOT NULL DEFAULT '',
@@ -36,7 +37,8 @@ CREATE TABLE `blood_requests` (
   `active` varchar(5) NOT NULL DEFAULT '',
   `date_active` varchar(10) NOT NULL DEFAULT '',
   `replacement_units` varchar(20) NOT NULL DEFAULT '',
+  `ward` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `blood_requests_hn_IDX` (`hn`) USING BTREE,
   KEY `blood_requests_an_IDX` (`an`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
