@@ -106,11 +106,12 @@ if($alcohol==0){
 }
 	
 	//////// แพ้ยา ////////
-	$list1 = array();
+	$drugreact_disease ="ปฎิเสธการแพ้ยา";
 	$sql = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and advreact !=''";
 	$result = Mysql_Query($sql);
 	$drugreact_rows = mysql_num_rows($result);
 	if($drugreact_rows>0){
+		$list1 = array();
 		while($arr = Mysql_fetch_assoc($result)){
 			$effect = '';
 			if(!empty($arr["sideeffects"])){
@@ -118,25 +119,20 @@ if($alcohol==0){
 			}
 			array_push($list1 , $arr["tradname"].$effect);
 		}
-		$list_drug1 = implode(", ",$list1);
-		$drugreact_disease .= $list_drug1;
-	}else{
-		$drugreact_disease ="ปฎิเสธการแพ้ยา";
+		$drugreact_disease = implode(", ",$list1);
 	}
 
 	//////// อาการข้างเคียง ////////
-	$list2 = array();
+	$sideeffects_disease ="ไม่มีประวัติ";
 	$sql2 = "SELECT `tradname`,`advreact`,`sideeffects` FROM `drugreact` WHERE `hn` = '$hn' AND (`advreact`='' AND `sideeffects` !='') ";
 	$result2 = Mysql_Query($sql2);
 	$drugreact_rows2 = mysql_num_rows($result2);
 	if($drugreact_rows2>0){
+		$list2 = array();
 		while($arr2 = Mysql_fetch_assoc($result2)){
 			array_push($list2 ,$arr2['tradname'].'('.$arr2["sideeffects"].')');
 		}
-		$list_drug2 = implode(", ",$list2);
-		$sideeffects_disease .= $list_drug2;
-	}else{
-		$sideeffects_disease ="ไม่มีประวัติ";
+		$sideeffects_disease = implode(", ",$list2);
 	}
 
 
