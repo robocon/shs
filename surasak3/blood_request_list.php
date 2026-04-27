@@ -315,7 +315,7 @@ $pageTitle = "รายการใบขอเลือด";
                 else:
                     ?>
                     <tr>
-                        <td colspan="7" class="text-center py-5">
+                        <td colspan="8" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fa-solid fa-inbox fa-3x mb-3"></i>
                                 <p>ยังไม่มีข้อมูลรายการขอเลือด</p>

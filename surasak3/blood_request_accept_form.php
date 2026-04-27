@@ -37,68 +37,68 @@ $wardArray = array(
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        /* ── Base ────────────────────────────────────────────── */
-        :root {
-            --brand-primary: #c0392b;
-            --brand-dark: #922b21;
-            --brand-light: #fadbd8;
-            --accent-blue: #2471a3;
-            --gray-soft: #f5f6fa;
-            --border-color: #dee2e6;
-            --sarabun-font: "TH SarabunPSK";
-        }
-
         body {
-            font-family: var(--sarabun-font), sans-serif;
-            background: var(--gray-soft);
-            min-height: 100vh;
-            padding-bottom: 60px;
+            font-family: "TH SarabunPSK", sans-serif;
+            font-size: 16pt;
+            background-color: #f4f7f6;
+            color: #333;
         }
 
-        /* ── Page Header ─────────────────────────────────────── */
-        .page-header {
-            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-dark) 100%);
-            color: #fff;
-            padding: 18px 28px 16px;
-            border-radius: 0 0 12px 12px;
-            margin-bottom: 28px;
-            box-shadow: 0 4px 16px rgba(192, 57, 43, .25);
+        .theme-color { color: #006666; }
+        .bg-theme { background-color: #006666; color: white; }
+
+        .main-title { font-size: 24pt; font-weight: bold; color: #006666; }
+        .sub-title { font-size: 16pt; font-weight: bold; color: #006666; }
+
+        label:hover { cursor: pointer; color: #006666; }
+
+        .card {
+            border-top: 5px solid #006666;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .page-header .title-th {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: .5px;
-            font-family: var(--sarabun-font);
+        hr {
+            height: 4px !important;
+            background-color: #006666;
+            opacity: 1;
+            border: none;
         }
 
-        .page-header .title-en {
-            font-size: 1rem;
-            font-weight: 300;
-            opacity: .85;
-            font-family: var(--sarabun-font);
+        .form-section-title {
+            border-left: 5px solid #006666;
+            padding-left: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #006666;
         }
 
-        .page-header .badge-dept {
-            background: rgba(255, 255, 255, .2);
-            border: 1px solid rgba(255, 255, 255, .4);
-            font-size: 1rem;
-            padding: 3px 10px;
-            border-radius: 20px;
+        .btn-theme {
+            background-color: #006666;
+            color: white;
+            border: none;
+        }
+        .btn-theme:hover {
+            background-color: #004d4d;
+            color: white;
         }
 
-        /* ── Card Sections ───────────────────────────────────── */
+        .form-check-input:hover { cursor: pointer; }
+
+        /* ── Keep functional helpers ─────────────────────────── */
+        /* section-card / section-body used by existing HTML structure */
         .section-card {
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-top: 5px solid #006666;
             margin-bottom: 20px;
             overflow: hidden;
         }
 
         .section-header {
             background: #f8f9fa;
-            border-bottom: 2px solid var(--brand-primary);
+            border-bottom: 2px solid #006666;
             padding: 12px 20px;
             display: flex;
             align-items: center;
@@ -109,7 +109,7 @@ $wardArray = array(
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            background: var(--brand-primary);
+            background: #006666;
             color: #fff;
             font-size: .8rem;
             font-weight: 700;
@@ -122,14 +122,12 @@ $wardArray = array(
         .section-title-th {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #2c3e50;
-            font-family: var(--sarabun-font);
+            color: #006666;
         }
 
         .section-title-en {
             font-size: 1rem;
             color: #7f8c8d;
-            font-family: var(--sarabun-font);
         }
 
         .section-body {
@@ -146,17 +144,15 @@ $wardArray = array(
         .blood-select-label {
             font-size: 1rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .5px;
             color: #555;
             margin-bottom: 6px;
         }
 
         .blood-select {
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             padding: 9px 12px;
-            font-family: var(--sarabun-font), sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-size: .95rem;
             transition: border-color .2s, box-shadow .2s;
             width: 100%;
@@ -164,8 +160,8 @@ $wardArray = array(
 
         .blood-select:focus {
             outline: none;
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px rgba(192, 57, 43, .12);
+            border-color: #006666;
+            box-shadow: 0 0 0 3px rgba(0, 102, 102, .15);
         }
 
         /* ── Blood Component Table ───────────────────────────── */
@@ -175,14 +171,12 @@ $wardArray = array(
         }
 
         .component-table th {
-            background: #fdf0ee;
-            color: var(--brand-dark);
+            background: #e8f5f5;
+            color: #004d4d;
             font-size: 1rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .4px;
             padding: 10px 14px;
-            border-bottom: 2px solid var(--brand-light);
+            border-bottom: 2px solid #b2dfdb;
         }
 
         .component-table th:last-child {
@@ -201,11 +195,11 @@ $wardArray = array(
         }
 
         .component-table tr:hover td {
-            background: #fef9f9;
+            background: #f0fafa;
         }
 
         .code-badge {
-            background: var(--brand-primary);
+            background: #006666;
             color: #fff;
             font-size: 1.2rem;
             font-weight: 600;
@@ -224,10 +218,10 @@ $wardArray = array(
         .qty-input {
             width: 70px;
             text-align: center;
-            border: 2px solid var(--border-color);
-            border-radius: 7px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             padding: 6px 4px;
-            font-family: var(--sarabun-font), sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-size: 1rem;
             font-weight: 600;
             transition: border-color .2s, box-shadow .2s;
@@ -235,8 +229,8 @@ $wardArray = array(
 
         .qty-input:focus {
             outline: none;
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px rgba(192, 57, 43, .12);
+            border-color: #006666;
+            box-shadow: 0 0 0 3px rgba(0, 102, 102, .15);
         }
 
         .qty-input::-webkit-inner-spin-button,
@@ -246,10 +240,10 @@ $wardArray = array(
 
         /* Other blood row */
         .other-desc-input {
-            border: 1px solid var(--border-color);
+            border: 1px solid #dee2e6;
             border-radius: 6px;
             padding: 5px 10px;
-            font-family: var(--sarabun-font), sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-size: 1.1rem;
             width: 100%;
             transition: border-color .2s;
@@ -257,14 +251,14 @@ $wardArray = array(
 
         .other-desc-input:focus {
             outline: none;
-            border-color: var(--brand-primary);
+            border-color: #006666;
         }
 
         .other-desc-input::placeholder {
             color: #bbb;
         }
 
-        /* ── Replacement Donation ────────────────────────────── */
+        /* Replacement Donation */
         .replace-check-label {
             font-size: 1.1rem;
             cursor: pointer;
@@ -272,11 +266,11 @@ $wardArray = array(
         }
 
         .form-check-input:checked {
-            background-color: var(--brand-primary);
-            border-color: var(--brand-primary);
+            background-color: #006666;
+            border-color: #006666;
         }
 
-        /* ── Footer / Responder ──────────────────────────────── */
+        /* Footer / Responder */
         .footer-grid {
             display: grid;
             grid-template-columns: 1fr auto auto;
@@ -292,10 +286,10 @@ $wardArray = array(
         }
 
         .footer-input {
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
             padding: 8px 12px;
-            font-family: var(--sarabun-font), sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-size: .9rem;
             transition: border-color .2s, box-shadow .2s;
             width: 100%;
@@ -303,35 +297,34 @@ $wardArray = array(
 
         .footer-input:focus {
             outline: none;
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 3px rgba(192, 57, 43, .12);
+            border-color: #006666;
+            box-shadow: 0 0 0 3px rgba(0, 102, 102, .15);
         }
 
-        /* ── Action Buttons ──────────────────────────────────── */
+        /* Action Buttons */
         .btn-back {
             background: #ecf0f1;
-            border: 2px solid #bdc3c7;
+            border: 1px solid #bdc3c7;
             color: #555;
-            font-family: var(--sarabun-font), sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-weight: 600;
             padding: 10px 28px;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: all .2s;
         }
 
         .btn-back:hover {
             background: #d5dbdb;
-            border-color: #95a5a6;
         }
 
         .btn-confirm {
-            background: var(--brand-primary);
-            border: 2px solid var(--brand-primary);
+            background-color: #006666;
+            border: none;
             color: #fff;
-            font-family: var(--sarabun-font), sans-serif;
+            font-family: "TH SarabunPSK", sans-serif;
             font-weight: 600;
             padding: 10px 28px;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: all .2s;
             display: inline-flex;
             align-items: center;
@@ -339,8 +332,7 @@ $wardArray = array(
         }
 
         .btn-confirm:hover {
-            background: var(--brand-dark);
-            border-color: var(--brand-dark);
+            background-color: #004d4d;
         }
 
         .btn-confirm:disabled {
@@ -348,12 +340,12 @@ $wardArray = array(
             cursor: not-allowed;
         }
 
-        /* ── Toast ───────────────────────────────────────────── */
+        /* Toast */
         .toast-container {
             z-index: 9999;
         }
 
-        /* ── Responsive ──────────────────────────────────────── */
+        /* Responsive */
         @media (max-width: 600px) {
             .blood-group-wrapper {
                 grid-template-columns: 1fr;
@@ -385,26 +377,13 @@ $wardArray = array(
     </div>
 
     <!-- ═══════════════════════════════════════════════════════════
-     PAGE HEADER
-════════════════════════════════════════════════════════════ -->
-    <!--<div class="page-header">
-  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
-    <div>
-      <div class="title-th">
-        <i class="bi bi-droplet-half me-2"></i>ใบตอบรับใบขอเลือด
-      </div>
-      <div class="title-en mt-1">BLOOD BANK RESPONSE FORM</div>
-    </div>
-    <span class="badge-dept align-self-start">
-      <i class="bi bi-hospital me-1"></i>เจ้าหน้าที่ธนาคารเลือด
-    </span>
-  </div>
-</div>-->
-
-    <!-- ═══════════════════════════════════════════════════════════
      FORM
 ════════════════════════════════════════════════════════════ -->
-    <div class="container mt-4" style="max-width:680px;">
+    <div class="container my-5" style="max-width:680px;">
+        <div class="text-center mb-4">
+            <div class="main-title">ใบตอบรับใบขอเลือด</div>
+            <div class="sub-title">Blood Bank Response Form</div>
+        </div>
 
         <form id="bloodBankForm" novalidate autocomplete="off">
 
@@ -668,7 +647,7 @@ $wardArray = array(
     <div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content border-0 rounded-4 text-center" style="overflow:hidden;">
-                <div style="background:var(--brand-primary);padding:24px;">
+                <div style="background:#006666;padding:24px;">
                     <div style="font-size:2.8rem;">✅</div>
                     <div style="color:#fff;font-size:1.1rem;font-weight:700;margin-top:8px;">
                         บันทึกสำเร็จ
@@ -679,10 +658,10 @@ $wardArray = array(
                 </div>
                 <div class="modal-body py-3">
                     <p class="mb-1" style="font-size:1.1rem;">หมายเลขอ้างอิง</p>
-                    <p class="fw-bold fs-5" id="recordId" style="color:var(--brand-primary);">—</p>
+                    <p class="fw-bold fs-5" id="recordId" style="color:#006666;">—</p>
                     <button type="button"
                         class="btn btn-sm mt-2 px-4"
-                        style="background:var(--brand-primary);color:#fff;border-radius:6px;"
+                        style="background:#006666;color:#fff;border-radius:6px;"
                         onclick="resetForm()">
                         <i class="bi bi-plus-circle me-1"></i>บันทึกรายการใหม่
                     </button>
