@@ -90,7 +90,7 @@ if ($action === 'search_user') {
     exit;
 }
 
-$start = $end = date('Y-m-d H:i:s');
+$start = $end = date('Y-m-d H:i');
 
 ?>
 <!DOCTYPE html>
@@ -102,6 +102,10 @@ $start = $end = date('Y-m-d H:i:s');
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
 </head>
 <body>
 <div class="container">
@@ -214,13 +218,13 @@ $start = $end = date('Y-m-d H:i:s');
                     $start = $s['date'];
                 }
                 ?>
-                <input type="datetime-local" name="date" id="date" class="form-control w-auto mb-2" value="<?=$start;?>">
+                <input type="text" name="date" id="date" class="form-control w-auto mb-2" value="<?=$start;?>">
             </td>
         </tr>
         <tr>
             <td class="title">สิ้นสุด: </td>
             <td>
-                <input type="datetime-local" name="dateend" id="dateend" class="form-control w-auto mb-2" value="<?=$end;?>">
+                <input type="text" name="dateend" id="dateend" class="form-control w-auto mb-2" value="<?=$end;?>">
             </td>
         </tr>
         <tr>
@@ -240,6 +244,23 @@ $start = $end = date('Y-m-d H:i:s');
     </table>
 </form>
 <script>
+
+    window.addEventListener('load', (event) => {
+        flatpickr("#date", {
+            locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+            dateFormat: "Y-m-d H:i", // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+            enableTime: true,
+            time_24hr: true,
+            defaultDate: "<?= date('Y-m-d H:i') ?>"
+        });
+        flatpickr("#dateend", {
+            locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+            dateFormat: "Y-m-d H:i", // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+            enableTime: true,
+            time_24hr: true,
+            defaultDate: "<?= date('Y-m-d H:i') ?>"
+        });
+    });
 
     /**
      * บันทึกข้อมูล
