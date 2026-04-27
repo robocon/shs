@@ -270,10 +270,13 @@ $(document).ready(function(){
             <? echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";?>&nbsp;&nbsp;  
             <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>ใบSETผ่าตัด</a>"; ?>
 			<?php
-			$bReqText = 'ใบขอเลือด';
-			$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
+			$test_enable = false;
+			if($test_enable && $an){
+				$bReqText = 'ใบขอเลือด';
+				$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
+				?><a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button a-green tablefont"><?= $bReqText; ?></a><?php
+			}
 			?>
-			<a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button a-green tablefont"><?= $bReqText; ?></a>
             </td>
           </tr>
           <tr style="line-height:25PX;">
@@ -288,7 +291,11 @@ $(document).ready(function(){
 		  <tr>
 			<td colspan="10">
 				<div>
-					<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank" class="a-button a-green tablefont">📤 อัพโหลดไฟล์ Doctor Order</a> 
+					<?php
+					if($an){
+					?><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank" class="a-button a-green tablefont">📤 อัพโหลดไฟล์ Doctor Order</a><?php
+					}
+					?>
 				<style>
 					.bloodContainer{
 						display: inline-block;
