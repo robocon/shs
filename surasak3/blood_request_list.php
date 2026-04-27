@@ -270,6 +270,7 @@ $pageTitle = "รายการใบขอเลือด";
                     <th>AN</th>
                     <th>แพทย์ผู้ขอ</th>
                     <th class="text-center">วันที่ขอเลือด</th>
+                    <th class="text-center">วันที่ตอบรับ</th>
                     <th class="text-center">สถานะ</th>
                 </tr>
             </thead>
@@ -299,6 +300,9 @@ $pageTitle = "รายการใบขอเลือด";
                                     echo '-';
                                 }
                                 ?>
+                            </td>
+                            <td class="text-center">
+                                <?= $row['date_active']; ?>
                             </td>
                             <td class="text-center">
                                 <?= !empty($row['active']) ? '✅' : '⏰' ?>

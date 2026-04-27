@@ -225,8 +225,8 @@ if($hctRows>0){
                     <input type="date" class="form-control" name="get_blood_date">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">ที่โรงพยาบาล/สถานที่</label>
-                    <input type="text" class="form-control" name="hospital">
+                    <label class="form-label" for="hospital">ที่โรงพยาบาล/สถานที่</label>
+                    <input type="text" class="form-control" name="hospital" id="hospital">
                 </div>
             </div>
 

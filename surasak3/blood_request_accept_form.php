@@ -140,7 +140,7 @@ $wardArray = array(
         .blood-group-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 8px;
         }
 
         .blood-select-label {
@@ -428,29 +428,40 @@ $wardArray = array(
                 ?>
                 <div class="section-body">
                     <div class="blood-group-wrapper">
-                        <div>ชื่อ-นามสกุล: <?= $ipcard['ptname']; ?></div>
-                        <div>HN: <?= $ipcard['hn']; ?></div>
-                        <div>AN: <?= $ipcard['an']; ?></div>
-                        <div>Bed: <?= $wardName.' เตียง:'.$bed['bed']; ?></div>
-                        
-                    </div>
-                    <div>
-                        <div class="blood-select-label">เลือกถุงเลือด</div>
-                        <?php
-                        $blood_group = $row['blood_group'];
-                        $qBlood = $bloodDbi->query("SELECT * FROM `mst_stock` WHERE `Blood_Group` = '$blood_group' AND ( `Flag_Exp` = '' AND `Flag_pay` = '' ) ");
-                        if($qBlood->num_rows>0){
-                            ?>
-                            <select name="blood" id="blood" class="blood-select">
+                        <div>
+                            <div class="blood-select-label">ชื่อ-นามสกุล:</div>
+                            <div><?= $ipcard['ptname']; ?></div>
+                        </div>
+                        <div>
+                            <div class="blood-select-label">HN:</div>
+                            <div><?= $ipcard['hn']; ?></div>
+                        </div>
+                        <div>
+                            <div class="blood-select-label">AN:</div>
+                            <div><?= $ipcard['an']; ?></div>
+                        </div>
+                        <div>
+                            <div class="blood-select-label">Bed:</div>
+                            <div><?= $wardName.' เตียง:'.$bed['bed']; ?></div>
+                        </div>
+                        <div>
+                            <div class="blood-select-label">เลือกถุงเลือด</div>
                             <?php
-                            while ($r = $qBlood->fetch_assoc()) {
-                                ?><option value="<?= $r['id']; ?>">Unit_Number: <?= $r['Unit_Number'].' Component:'.$r['Component'].' Source:'.$r['Source']; ?></option><?php
+                            $blood_group = $row['blood_group'];
+                            $qBlood = $bloodDbi->query("SELECT * FROM `mst_stock` WHERE `Exp_Date` >= CURDATE() AND `Blood_Group` = '$blood_group' AND ( `Flag_Exp` = '' AND `Flag_pay` = '' ) ORDER BY `Exp_Date` ASC");
+                            if($qBlood->num_rows>0){
+                                ?>
+                                <select name="unit_number" id="unit_number" class="blood-select">
+                                <?php
+                                while ($r = $qBlood->fetch_assoc()) {
+                                    ?><option value="<?= $r['Unit_Number']; ?>">Unit_Number: <?= $r['Unit_Number'].' Component:'.$r['Component'].' Source:'.$r['Source'].' Exp: '.$r['Exp_Date']; ?></option><?php
+                                }
+                                ?>
+                                </select>
+                                <?php
                             }
                             ?>
-                            </select>
-                            <?php
-                        }
-                        ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -477,9 +488,9 @@ $wardArray = array(
                                 <?php
                                 foreach ($bloodGroupItems as $key => $value) {
                                     $selected = $value == $bloodGroup ? 'selected' : '';
-                                ?><option value="<?= $value; ?>" <?= $selected; ?>><?= $value; ?></option><?php
-                                                                                    }
-                                                                                        ?>
+                                    ?><option value="<?= $value; ?>" <?= $selected; ?>><?= $value; ?></option><?php
+                                }
+                                ?>
                             </select>
                             <div class="invalid-feedback">กรุณาเลือก ABO Group</div>
                         </div>
