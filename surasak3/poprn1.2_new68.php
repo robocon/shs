@@ -525,71 +525,62 @@ if($cComcode=="G003.1" || $cComcode=="M001" || $cComcode=="F007"){
 }else{
 	print "<DIV style='left:61PX;top:715PX;width:905PX;height:30PX;'><span class='fc1-0'>ต้องการให้งานนั้นเสร็จภายใน 30 วันทำการ อยู่ในอำนาจการสั่งซื้อสั่งจ้างของ ผอ.รพ.ค่ายฯ ตามอ้างถึง 5.</span></DIV>";
 }	
-print "<DIV style='left:105PX;top:740PX;width:239PX;height:30PX;'><span class='fc1-0'>6. กำหนดเวลาที่ต้องการใช้วัสดุภายในวันที่</span></DIV>";
-print "<DIV style='left:333PX;top:740PX;width:167PX;height:30PX;TEXT-ALIGN:CENTER;'><span class='fc1-0'><B>$cFixdate</B></span></DIV>";  //วันที่ ข้อ 4
-print "<DIV style='left:509PX;top:740PX;width:257PX;height:30PX;'><span class='fc1-0'>ส่งที่หน่วย รพ.ค่ายสุรศักดิ์มนตรี</span></DIV>";
-print "<DIV style='left:105PX;top:765PX;width:905PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เป็นการจัดซื้อโดยวิธีเฉพาะเจาะจง เนื่องจากเป็นการจัดซื้อจัดจ้างพัสดุที่มีการผลิต จำหน่าย ก่อสร้าง หรือ</span></DIV>";
-print "<DIV style='left:61PX;top:790PX;width:905PX;height:30PX;'><span class='fc1-0'>ให้บริการทั่วไป และมีวงเงินในการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกินวงเงินตามที่กำหนดในกฎกระทรวง ตามอ้างถึง1 มาตรา56 (2)</span></DIV>";
-print "<DIV style='left:61PX;top:815PX;width:905PX;height:30PX;'><span class='fc1-0'>(ข) และตามอ้างถึง2 ข้อ1</span></DIV>";
 
-//print "===>$prodrugtype";
+// --- ข้อ 6 (เดิมคือข้อ 7): วิธีเฉพาะเจาะจง ---
+print "<DIV style='left:105PX;top:740PX;width:905PX;height:30PX;'><span class='fc1-0'>6. การซื้อครั้งนี้เป็นการจัดซื้อโดยวิธีเฉพาะเจาะจง เนื่องจากเป็นการจัดซื้อจัดจ้างพัสดุที่มีการผลิต จำหน่าย ก่อสร้าง หรือ</span></DIV>";
+print "<DIV style='left:61PX;top:765PX;width:905PX;height:30PX;'><span class='fc1-0'>ให้บริการทั่วไป และมีวงเงินในการจัดซื้อจัดจ้างครั้งหนึ่งไม่เกินวงเงินตามที่กำหนดในกฎกระทรวง ตามอ้างถึง1 มาตรา56 (2)</span></DIV>";
+print "<DIV style='left:61PX;top:790PX;width:905PX;height:30PX;'><span class='fc1-0'>(ข) และตามอ้างถึง2 ข้อ1</span></DIV>";
+
+// --- ข้อ 7 (เดิมคือข้อ 8): การพิจารณาคัดเลือกผู้ขาย ---
 if($prodrugtype=="" || $prodrugtype=="1"){
-//print "===>".strlen($cComname);
-	if(strlen($cComname) <= 37){
-		print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
-		print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";	
-		print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
-		print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
-		print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
+    if(strlen($cComname) <= 37){
+        print "<DIV style='left:105PX;top:815PX;width:690PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+        print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพขายยา</span></DIV>";
+        print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>และเวชภัณฑ์ ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";	
+        print "<DIV style='left:61PX;top:865PX;width:905PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
+        print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
+        print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
+    } else if(strlen($cComname) > 37 && strlen($cComname) <= 43){  
+        print "<DIV style='left:105PX;top:815PX;width:690PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+        print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพ</span></DIV>";
+        print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
+        print "<DIV style='left:61PX;top:865PX;width:905PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
+        print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
+        print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
+    } else {
+        print "<DIV style='left:105PX;top:815PX;width:690PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+        print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการ</span></DIV>";
+        print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่มีอาชีพขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
+        print "<DIV style='left:61PX;top:865PX;width:905PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
+        print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย</span></DIV>";	
+        print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
+    }
+} else if($prodrugtype=="2" || $prodrugtype=="3"){
+    print "<DIV style='left:105PX;top:815PX;width:690PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+    print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
+    print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
+    print "<DIV style='left:61PX;top:865PX;width:905PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
+    print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของ</span></DIV>";	
+    print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
+} else if($prodrugtype=="4"){
+    print "<DIV style='left:105PX;top:815PX;width:690PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+    print " <B>$cComname</B> ซึ่งเป็นยาและเวชภัณฑ์</span></DIV>";
+    print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่ได้ขึ้นบัญชีนวัตกรรมไทย ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
+    print "<DIV style='left:61PX;top:865PX;width:905PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";
+    print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้</span></DIV>";	
+    print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
+} else if($prodrugtype=="5"){
+    print "<DIV style='left:105PX;top:815PX;width:690PX;height:30PX;'><span class='fc1-0'>7. การซื้อครั้งนี้เห็นควรซื้อ จาก";
+    print " <B>$cComname</B> ซึ่งเป็นวัคซีนโรคตับอักเสบบี</span></DIV>";
+    print "<DIV style='left:61PX;top:840PX;width:710PX;height:30PX;'><span class='fc1-0'>และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่อยู่ในบัญชี ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
+    print "<DIV style='left:61PX;top:865PX;width:905PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
+    print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย</span></DIV>";	
+    print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
+}
 
-	}else if(strlen($cComname) > 37 && strlen($cComname) <= 43){ 
-		print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการที่มีอาชีพ</span></DIV>";
-		print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>ขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
-		print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";	
-		print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์</span></DIV>";	
-		print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
-	}else{
-		print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-		print " <B>$cComname</B> ซึ่งเป็นผู้ประกอบการ</span></DIV>";
-		print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่มีอาชีพขายยาและเวชภัณฑ์ที่เสนอความต้องการจัดซื้อในครั้งนี้โดยตรง โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
-		print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
-		print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย</span></DIV>";	
-		print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
-	}
-}else if($prodrugtype=="2"){
-print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา</span></DIV>";
-print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
-print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของ</span></DIV>";	
-print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
-
-}else if($prodrugtype=="3"){
-print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นการสั่งซื้อระหว่างหน่วยงานราชการกับหน่วยงานราชการ</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา </span></DIV>";
-print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้</span></DIV>";
-print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของ</span></DIV>";	
-print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>ที่ทางราชการต้องการจ้างได้</span></DIV>";	
-}else if($prodrugtype=="4"){
-print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นยาและเวชภัณฑ์</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>ที่ได้ขึ้นบัญชีนวัตกรรมไทย ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือกและขออนุมัติใช้ใบสั่งซื้อ</span></DIV>";
-print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>เป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำ</span></DIV>";
-print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>พฤติการณ์เป็นที่เชื่อถือไว้ใจได้และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้</span></DIV>";	
-print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
-
-
-}else if($prodrugtype=="5"){
-print "<DIV style='left:105PX;top:840PX;width:690PX;height:30PX;'><span class='fc1-0'>8. การซื้อครั้งนี้เห็นควรซื้อ จาก";
-print " <B>$cComname</B> ซึ่งเป็นวัคซีนโรคตับอักเสบบี</span></DIV>";
-print "<DIV style='left:61PX;top:865PX;width:710PX;height:30PX;'><span class='fc1-0'>และผลิตภัณฑ์อื่นๆ ที่สภากาชาดไทยผลิตเอง และไม่อยู่ในบัญชี ตามอ้างถึง 3. โดยใช้เกณฑ์ราคาต่ำสุดในการพิจารณาคัดเลือก</span></DIV>";
-print "<DIV style='left:61PX;top:890PX;width:905PX;height:30PX;'><span class='fc1-0'>และขออนุมัติใช้ใบสั่งซื้อเป็นข้อตกลงแทนการทำสัญญา และไม่ควรเรียกหลักประกันสัญญา เนื่องจากผู้รับจ้างรายนี้</span></DIV>";
-print "<DIV style='left:61PX;top:915PX;width:905PX;height:30PX;'><span class='fc1-0'>เคยติดต่อค้าขายกับทางราชการอยู่เป็นประจำพฤติการณ์เป็นที่เชื่อถือไว้ใจได้ และได้จดทะเบียนการค้าอย่างถูกต้องตามกฎหมาย</span></DIV>";	
-print "<DIV style='left:61PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>มีวัตถุประสงค์ หรือชนิดแห่งพาณิชย์ที่จดทะเบียนไว้สามารถจำหน่ายสิ่งของที่ทางราชการต้องการจ้างได้</span></DIV>";	
-}		
+// --- ข้อ 8 (ใหม่): กำหนดค่าปรับ ---
+print "<DIV style='left:105PX;top:940PX;width:905PX;height:30PX;'><span class='fc1-0'>8. กำหนดค่าปรับเป็นรายวันในอัตราร้อยละ 0.2 ของราคาพัสดุที่ยังไม่ได้รับมอบนับถัดจากวันครบกำหนด</span></DIV>";
+	
 }  //close while	
 	
 }else{  //มี 2 แหล่งที่มา
@@ -2210,129 +2201,131 @@ print "<DIV style='z-index:0'> &nbsp; </div>";
 <div style="position: absolute; font-family:'TH SarabunPSK'; font-size: 20px; left:54px; top:9280px;">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
-    <td width="41%"><img  WIDTH=73 HEIGHT=80 SRC='bird.jpg'></td>
+    <td width="41%"><img WIDTH=73 HEIGHT=80 SRC='bird.jpg'></td>
     <td colspan="3" align="left"><strong><span class='fc1-1'>บันทึกข้อความ</span></strong></td>
-    </tr>
+  </tr>
   <tr>
     <td height="30" colspan="4"><span class='fc1-5'>ส่วนราชการ</span><span class='fc1-0'>&nbsp;&nbsp;กองเภสัชกรรม&nbsp;&nbsp;&nbsp;&nbsp;รพ.ค่ายสุรศักดิ์มนตรี</span></td>
-    </tr>
+  </tr>
   <tr>
-    <td height="30" colspan="4"><? print "<div style='width:280PX;height:30PX;'><span class='fc1-5'>ที่ </span><span class='fc1-0'>กห  0483.63.4/$cPono$cPonoyear</span></div>";?><? print "<div style='left:342PX;width:150PX;height:30PX;'><span class='fc1-0'><b>วันที่</b> $cPodate</span></div>";?></td>
-    </tr>
+    <td height="30" colspan="4"><span class='fc1-5'>ที่ </span><span class='fc1-0'><?="<div style='width:180PX;height:30PX;'><span class='fc1-0'>กห  0483.63.4/$cPono$cPonoyear</span></div>";?></span><?="<div style='left:342PX;width:150PX;height:30PX;'><span class='fc1-0'><b>วันที่</b> $cPodate</span></div>";?></td>
+  </tr>
   <tr>
     <td height="30" colspan="4"><span class='fc1-5'>เรื่อง&nbsp;&nbsp;</span><span class='fc1-0'>รายงานผลการดำเนินการร่างขอบเขตของงาน</span></td>
-    </tr>
+  </tr>
   <tr>
     <td height="30" colspan="4"><span class='fc1-5'>เรียน&nbsp;&nbsp;</span><span class='fc1-0'>ผอ.รพ.ค่ายสุรศักดิ์มนตรี</span></td>
-    </tr>
-<? if($chkprice < 100000){ ?>    
+  </tr>
   <tr>
     <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 40/69 ลง 17 ก.พ. 2569</span></td>
-
-    </tr>
-<? }else{ ?>
-  <tr>
-    <td height="30" colspan="4"><span class='fc1-5'>อ้างถึง&nbsp;&nbsp;</span><span class='fc1-0'>1. คำสั่ง รพ.ค่ายสุรศักดิ์มนตรี ที่ 40/69 ลง 17 ก.พ. 2569</span></td>
-    </tr>
-<? } ?>
+  </tr>
   <tr>
     <td height="30" colspan="2"><span class='fc1-5'>สิ่งที่ส่งมาด้วย&nbsp;&nbsp;</span><span class='fc1-0'>ร่างขอบเขตของงาน</span></td>
     <td height="30" colspan="2" align="center"><span class='fc1-0'>จำนวน&nbsp;  1&nbsp;ชุด</span></td>
-    </tr>
+  </tr>
+
 <? 
 $sql="select * from officers where mancode = 'headtor'";
 $query=mysql_query($sql);
 $rows=mysql_fetch_array($query);
 $ptname=$rows["yot"]." ".$rows["fullname"];
-//$chkprice=(int)$nPriadvat;
-
 $firstname=$rows["yot"];
 
-// ตรวจสอบว่ามีคำว่า "หญิง" อยู่ในตัวแปรหรือไม่
 if (strpos($firstname, 'หญิง') !== false) {
-    // ถ้าเจอคำว่า หญิง (ไม่ว่าจะอยู่ตำแหน่งไหน)
     $new_title = "ดิฉัน";
 } else {
-    // ถ้าไม่เจอ
     $new_title = "กระผม";
 }
 
-if($chkprice < 100000){
-?>    
+if($chkprice < 100000){ ?>    
   <tr>
     <td height="30" colspan="4"><div style="left:100px;"><span class='fc1-0'>ตามอ้างถึง ให้ <?php echo $new_title;?> <?=$ptname;?> เป็นผู้รับผิดชอบในการดำเนินการร่างขอบเขตของงาน</span></div></td>
-    </tr>
-<? }else{ ?>
+  </tr>
+<? } else { ?>
   <tr>
     <td height="30" colspan="4"><div style="left:100px;"><span class='fc1-0'>ตามอ้างถึง ให้ คณะกรรมการ เป็นผู้รับผิดชอบในดำเนินการการจัดทำร่างขอบเขตของงาน </span></div></td>
-    </tr>
+  </tr>
 <? } ?>    
+
   <tr>
     <td height="40" colspan="4"><span class='fc1-0'>และรายละเอียดคุณลักษณะเฉพาะของพัสดุที่จะจัดซื้อหรือจ้างและพิจารณาราคากลาง รายละเอียดตามส่งที่ส่งมาด้วย</span></td>
-    </tr>
+  </tr>
   <tr>
     <td height="30" colspan="4" valign="top"><div style="left:100px;"><span class='fc1-0'>จึงเรียนมาเพื่อกรุณาพิจารณา</span></div></td>
-    </tr>
+  </tr>
+
   <tr>
     <td height="30">&nbsp;</td>
-    <td width="14%" height="30">&nbsp;</td>
-    <td width="31%" height="30">&nbsp;</td>
-    <td width="14%" height="30">&nbsp;</td>
+    <td width="14%">&nbsp;</td>
+    <td width="31%">&nbsp;</td>
+    <td width="14%">&nbsp;</td>
   </tr>
-<? 
-//$chkprice=(int)$nPriadvat;
-if($chkprice < 100000){
-?>
+
+<? if($chkprice < 100000){ ?>
   <tr>
-    <td height="30" align="center">&nbsp;</td>
+    <td rowspan="3" valign="top" class="fc1-0">
+        <div style="margin-top:30px; margin-left:50px;">
+    <span style="font-family:'TH SarabunPSK'; font-size: 20px;">
+        - อนุมัติตามเสนอ<br>
+        พ.อ.<br>
+        <div style="margin-top:5px; white-space: nowrap;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(จรัญวิชญ์&nbsp;&nbsp;สุขชัย)</div>
+        
+        <div style="margin-top:30px; margin-left:10px;white-space: nowrap;">ผอ.รพ.ค่ายสุรศักดิ์มนตรี</div>
+    </span>
+</div>
+    </td>
     <td height="30" align="right"><span class="fc1-0"><?=$rows["yot"];?></span></td>
     <td height="30" align="center">&nbsp;</td>
     <td height="30" align="center">&nbsp;</td>
   </tr>
   <tr align="center">
-    <td height="30">&nbsp;</td>
     <td height="30" colspan="2"><span class="fc1-0">( <?=$rows["fullname"];?> )</span></td>
     <td height="30">&nbsp;</td>
   </tr>
   <tr>
-    <td height="30">&nbsp;</td>
     <td height="30" colspan="2" align="center"><span class="fc1-0"><?=$rows["position"];?></span></td>
     <td height="30">&nbsp;</td>
   </tr>
 
-  <? }else if($chkprice >= 100000){ 
-$sql1="select * from officers where mancode like 'bordtor%'";
-$query1=mysql_query($sql1);
-while($rows1=mysql_fetch_array($query1)){
-$ptname1=$rows1["yot"]." ".$rows1["fullname"];
-  ?>
+<? } else if($chkprice >= 100000){  
+    $sql1="select * from officers where mancode like 'bordtor%'";
+    $query1=mysql_query($sql1);
+    $count = 0;
+    while($rows1=mysql_fetch_array($query1)){
+        $ptname1=$rows1["yot"]." ".$rows1["fullname"];
+        $count++;
+?>
   <tr>
-    <td height="30" align="center">&nbsp;</td>
+    <td valign="top" class="fc1-0">
+        <? if($count == 1){ // แสดงข้อความอนุมัติเฉพาะบรรทัดแรกของคณะกรรมการ ?>
+        <div style="margin-top:30px; margin-left:50px;">
+    <span style="font-family:'TH SarabunPSK'; font-size: 20px;">
+        - อนุมัติตามเสนอ<br>
+        พ.อ.<br>
+        <div style="margin-top:5px; white-space: nowrap;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(จรัญวิชญ์&nbsp;&nbsp;สุขชัย)</div>
+        
+        <div style="margin-top:30px; margin-left:10px;white-space: nowrap;">ผอ.รพ.ค่ายสุรศักดิ์มนตรี</div>
+    </span>
+</div>
+        <? } ?>
+    </td>
     <td height="30" align="right"><span class="fc1-0"><?=$rows1["yot"];?></span></td>
-    <td height="30"><span style="margin-left:140px; font-family:'TH SarabunPSK'; font-size: 20px;"><?=$rows1["position"];?></span></td>
-    <td height="30" align="center">&nbsp;</td>
+    <td colspan="2" height="30"><span style="margin-left:140px; font-family:'TH SarabunPSK'; font-size: 20px;"><?=$rows1["position"];?></span></td>
   </tr>
   <tr align="left">
-    <td height="30">&nbsp;</td>
+    <td>&nbsp;</td>
     <td height="30" colspan="2">
-    <?
-	if($rows1["yot"]=="ร.ต.หญิง" || $rows1["yot"]=="ร.ท.หญิง" || $rows1["yot"]=="ร.อ.หญิง" || $rows1["yot"]=="พ.ต.หญิง" || $rows1["yot"]=="พ.ท.หญิง" || $rows1["yot"]=="พ.อ.หญิง"){ ?>
-    <span style="margin-left:120px;" class="fc1-0">( <?=$rows1["fullname"];?> )</span>
-    <? }else{ ?>
-    <span style="margin-left:120px;" class="fc1-0">( <?=$rows1["fullname"];?> )</span>
-    <? } ?>
+        <span style="margin-left:120px;" class="fc1-0">( <?=$rows1["fullname"];?> )</span>
     </td>
     <td height="30">&nbsp;</td>
   </tr>
   <tr>
-    <td height="30">&nbsp;</td>
-    <td height="30" colspan="2" align="center">&nbsp;</td>
-    <td height="30">&nbsp;</td>
+    <td height="15">&nbsp;</td> <td colspan="2" align="center">&nbsp;</td>
+    <td>&nbsp;</td>
   </tr>   
-	<?
-   		}  //CLOSE WHILE
-   }
-	?>  
+<? 
+    } // CLOSE WHILE
+} ?>  
 </table>
 
 </div>
@@ -2662,8 +2655,7 @@ $ptname1=$rows1["yot"]." ".$rows1["fullname"];
   <tr>
     <td height="30" align="center">&nbsp;</td>
     <td height="30" align="right"><span class="fc1-0"><?=$rows1["yot"];?></span></td>
-    <td height="30"><span style="margin-left:140px; font-family:'TH SarabunPSK'; font-size: 20px;"><?=$rows1["position"];?></span></td>
-    <td height="30" align="center">&nbsp;</td>
+    <td height="30" colspan="2"><span style="margin-left:140px; font-family:'TH SarabunPSK'; font-size: 20px;"><?=$rows1["position"];?></span></td>
   </tr>
   <tr align="left">
     <td height="30">&nbsp;</td>
