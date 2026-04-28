@@ -14,8 +14,15 @@ $unit_number = sprintf("%s", $dbi->real_escape_string($_POST['unit_number']));
 $sql = "UPDATE `blood_requests` 
 SET `active` = 'y', 
 `replacement_units` = '$replacement_units', 
-`date_active` = CURDATE() 
+`date_active` = CURDATE(), 
+`time_active` = DATE_FORMAT(NOW(), '%H:%i:%s'), 
+`active_by` = '{$_SESSION['sOfficer']}', 
 `unit_number` = '$unit_number' 
 WHERE `id` = '$id'";
 $q = $dbi->query($sql);
-echo $json->encode(array('success' => 200,'id'=>$id,'message'=>'บันทึกข้อมูลเสร็จสมบูรณ์'));
+if($q!==false){
+    $res = array('success' => 200,'id'=>$id,'message'=>'บันทึกข้อมูลเสร็จสมบูรณ์');
+}else{
+    $res = array('success' => 400,'message'=>'Error: '.$dbi->error);
+}
+echo $json->encode($res);

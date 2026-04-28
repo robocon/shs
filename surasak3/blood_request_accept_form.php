@@ -7,6 +7,10 @@
 require_once dirname(__FILE__) . '/newBootstrap.php';
 $id = sprintf("%s", $dbi->real_escape_string($_GET['id']));
 
+$parts = parse_url(DOMAIN_PATH);
+$path_parts = explode('/', trim($parts['path'], '/')); // แยก path เป็น array
+$first_sub = DOMAIN.$path_parts[0]; // จะได้ 'sm3dev'
+
 $sql = "SELECT * FROM `blood_requests` WHERE `id` = '$id'";
 $result = $dbi->query($sql);
 $row = $result->fetch_assoc();
@@ -35,7 +39,9 @@ $wardArray = array(
 
     <!-- Bootstrap 5.3 -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="css/flatpickr.min.css">
+    <script src="js/flatpickr.js"></script>
+    <script src="js/flatpickr-th.js"></script>
     <style>
         body {
             font-family: "TH SarabunPSK", sans-serif;
@@ -424,24 +430,11 @@ $wardArray = array(
                             <div><?= $wardName.' เตียง:'.$bed['bed']; ?></div>
                         </div>
                         <div>
-                            <div class="blood-select-label">เลือกถุงเลือด</div>
-                            <?php
-                            $blood_group = $row['blood_group'];
-                            $qBlood = $bloodDbi->query("SELECT * FROM `mst_stock` WHERE `Exp_Date` >= CURDATE() AND `Blood_Group` = '$blood_group' AND ( `Flag_Exp` = '' AND `Flag_pay` = '' ) ORDER BY `Exp_Date` ASC");
-                            if($qBlood->num_rows>0){
-                                ?>
-                                <select name="unit_number" id="unit_number" class="blood-select">
-                                <?php
-                                while ($r = $qBlood->fetch_assoc()) {
-                                    ?><option value="<?= $r['Unit_Number']; ?>">Unit_Number: <?= $r['Unit_Number'].' Component:'.$r['Component'].' Source:'.$r['Source'].' Exp: '.$r['Exp_Date']; ?></option><?php
-                                }
-                                ?>
-                                </select>
-                                <?php
-                            }
-                            ?>
+                            <button class="btn btn-primary" type="button" onclick="selectUnitNumber('<?= $row['blood_group'] ?>')">🩸 เลือกถุงเลือด</button>
                         </div>
                     </div>
+                    <div id="response_unitnumber" class="p-2 mt-3" style="display:none;"></div>
+                    <input type="hidden" name="unit_number" id="unit_number" value="">
                 </div>
             </div>
 
@@ -675,6 +668,61 @@ $wardArray = array(
     <script src="js/sweetalert2.all.min.js"></script>
 
     <script>
+        var var_url = '<?= $first_sub ?>';
+        async function selectUnitNumber(blood_group) {
+
+            const content = await fetch(var_url+'/api/index.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    typeDepart: 'lab',
+                    action: 'bloodstock',
+                    blood_group: blood_group
+                })
+            });
+            const resHTML = await content.text();
+            
+            const { value: formValues } = await Swal.fire({
+                title: "เลือกข้อมูล",
+                width: "800px",
+                html: resHTML,
+                showCancelButton: true,
+                cancelButtonText: "ยกเลิก",
+                showConfirmButton: false,
+            });
+            // if (formValues) Swal.fire(JSON.stringify(formValues));
+            
+        }
+
+        function doSelectUnit(unitnumber){
+            Swal.close();
+            
+            document.getElementById('response_unitnumber').innerHTML = `<strong>Unit Number</strong>: ${unitnumber}`;
+            document.getElementById('response_unitnumber').style.display = "";
+            document.getElementById('unit_number').value = unitnumber;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            flatpickr("#response_date", {
+                locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+                dateFormat: "Y-m-d", // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+                defaultDate: document.getElementById("response_date").value
+            });
+
+            flatpickr("#response_time", {
+                noCalendar: true,
+                enableTime: true,
+                time_24hr: true,
+                locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+                dateFormat: "H:i", // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+                defaultDate: document.getElementById("response_time").value
+            });
+        });
+
+        
         /* ── Helpers ─────────────────────────────────── */
         function showToast(msg, type) {
             var t = document.getElementById('toastMsg');
@@ -692,6 +740,11 @@ $wardArray = array(
             e.preventDefault();
 
             var form = this;
+            if (!form.unit_number.value) {
+                showToast('กรุณาเลือกถุงเลือด', 'danger');
+                form.unit_number.focus();
+                return;
+            }
 
             // Basic HTML5 validation
             if (!form.abo_group.value) {

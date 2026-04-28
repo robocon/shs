@@ -15,6 +15,9 @@ $bedcode = sprintf("%s", $dbi->real_escape_string($_REQUEST['bedcode']));
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $an; ?> - ใบขอเลือดและส่วนประกอบของเลือด</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/flatpickr.min.css">
+    <script src="js/flatpickr.js"></script>
+    <script src="js/flatpickr-th.js"></script>
     <style>
         /* ตั้งค่าฟอนต์ TH SarabunPSK (ใช้ Sarabun สำรอง) */
         body {
@@ -222,7 +225,7 @@ if($hctRows>0){
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">รับครั้งสุดท้ายเมื่อวันที่</label>
-                    <input type="date" class="form-control" name="get_blood_date">
+                    <input type="text" class="form-control" name="get_blood_date" id="get_blood_date">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="hospital">ที่โรงพยาบาล/สถานที่</label>
@@ -344,11 +347,11 @@ if($hctRows>0){
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <label class="form-label">วันที่ขอเลือด</label>
-                    <input type="date" class="form-control" name="blood_order_date" value="<?= date('Y-m-d'); ?>">
+                    <input type="date" class="form-control" name="blood_order_date" id="blood_order_date" value="<?= date('Y-m-d'); ?>">
                 </div>
                 <div class="col-md-3 col-sm-4">
                     <label class="form-label">วันที่ต้องการใช้เลือด</label>
-                    <input type="date" class="form-control" name="blood_used_date" value="<?= date('Y-m-d'); ?>">
+                    <input type="date" class="form-control" name="blood_used_date" id="blood_used_date" value="<?= date('Y-m-d'); ?>">
                 </div>
             </div>
 
@@ -377,7 +380,7 @@ if($hctRows>0){
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">วันเวลาที่เจาะ</label>
-                    <input type="datetime-local" class="form-control" name="date_drawn" value="<?= date('Y-m-d H:i:s') ?>">
+                    <input type="text" class="form-control" name="date_drawn" id="date_drawn" value="<?= date('Y-m-d H:i:s') ?>" readonly>
                 </div>
             </div>
 
@@ -397,6 +400,23 @@ if($hctRows>0){
 <script src="js/sweetalert2.all.min.js"></script>
 
 <script>
+
+    function initThaiDatePicker(divId,setFormat="Y-m-d") {
+        flatpickr("#"+divId, {
+            enableTime: true,
+            time_24hr: true,
+            locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
+            dateFormat: setFormat, // รูปแบบวันที่เก็บใน Database (ค.ศ.)
+            defaultDate: document.getElementById(divId).value
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initThaiDatePicker("get_blood_date");
+        initThaiDatePicker("blood_order_date");
+        initThaiDatePicker("blood_used_date");
+        // initThaiDatePicker("date_drawn","Y-m-d H:i");
+    });
 
     function cancelBtn(){
         document.getElementById('bloodRequestForm').reset();

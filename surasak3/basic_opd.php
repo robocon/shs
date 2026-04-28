@@ -2974,9 +2974,9 @@ $room = $_POST['room'];
 	<input name="appoint" type="hidden" value="<?php echo $app_row;?>" />
 </form>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://npmcdn.com/flatpickr/dist/flatpickr.min.js"></script>
-<script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
+<link rel="stylesheet" href="css/flatpickr.min.css">
+<script src="js/flatpickr.js"></script>
+<script src="js/flatpickr-th.js"></script>
 <style>
 	/* The Modal (background) */
 	.modal {

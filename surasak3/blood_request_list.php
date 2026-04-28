@@ -12,6 +12,17 @@ if ($dbi->connect_error) {
     die("Connection failed: " . $dbi->connect_error);
 }
 
+$classBed = new Bed();
+$wardArray = array(
+'42' => 'หอผู้ป่วยรวม',
+'43' => 'หอผู้ป่วยสูติ',
+'44' => 'หอผู้ป่วยICU',
+'45' => 'หอผู้ป่วยพิเศษ',
+'46' => 'หอผู้ป่วย Cohort Ward',
+'47' => 'ผู้ป่วย Home Isolation',
+'48' => 'ผู้ป่วย รพ.สนาม',
+);
+
 // ตั้งค่าหัวข้อหน้าเว็บ
 $pageTitle = "รายการใบขอเลือด";
 ?>
@@ -149,6 +160,13 @@ $pageTitle = "รายการใบขอเลือด";
             padding: 5px 10px;
             border-radius: 5px;
         }
+        .badge-unit {
+            background-color: #ffc107;
+            color: #212529;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
 
         /* Micro-animations */
         @keyframes fadeIn {
@@ -190,7 +208,7 @@ $pageTitle = "รายการใบขอเลือด";
                     <th>ชื่อ-นามสกุล</th>
                     <th>HN</th>
                     <th>AN</th>
-                    <th>แพทย์ผู้ขอ</th>
+                    <th>หอผู้ป่วย/เตียง</th>
                     <th class="text-center">วันที่ขอเลือด</th>
                     <th class="text-center">สถานะ</th>
                     <th class="text-end">การจัดการ</th>
@@ -204,28 +222,20 @@ $pageTitle = "รายการใบขอเลือด";
                 if ($result && $result->num_rows > 0):
                     $idx = 1;
                     while ($row = $result->fetch_assoc()):
+                        $bed = $classBed->getBed($row['an']);
+                        $wardCode = substr($bed['bedcode'], 0, 2);
+                        $bedNumber = substr($bed['bedcode'], 2);
                         ?>
                         <tr>
-                            <td><?php echo $idx++; ?></td>
+                            <td><?=$idx++; ?></td>
                             <td>
-                                <div class="fw-bold"><?php echo htmlspecialchars($row['patient_name']); ?></div>
+                                <div class="fw-bold"><?=$row['patient_name']; ?></div>
                             </td>
-                            <td><span class="badge-hn"><?php echo htmlspecialchars($row['hn']); ?></span></td>
-                            <td><span class="badge-an"><?php echo htmlspecialchars($row['an']); ?></span></td>
-                            <td><?php echo htmlspecialchars($row['doctor_order']); ?></td>
-                            <td class="text-center">
-                                <?php 
-                                if ($row['blood_order_date']) {
-                                    $date = new DateTime($row['blood_order_date']);
-                                    echo $date->format('d/m/Y');
-                                } else {
-                                    echo '-';
-                                }
-                                ?>
-                            </td>
-                            <td class="text-center">
-                                <?= !empty($row['active']) ? '✅' : '⏰' ?>
-                            </td>
+                            <td><span class="badge-hn"><?=$row['hn']; ?></span></td>
+                            <td><span class="badge-an"><?=$row['an']; ?></span></td>
+                            <td><?=$wardArray[$wardCode].' เตียง: '.$bedNumber; ?></td>
+                            <td class="text-center"><?=$row['blood_order_date'];?></td>
+                            <td class="text-center"><?= !empty($row['active']) ? '✅' : '⏰' ?></td>
                             <td class="text-end">
                                 <?php
                                 if(!empty($row['active'])){
@@ -234,7 +244,6 @@ $pageTitle = "รายการใบขอเลือด";
                                     ?><a href="blood_request_accept_form.php?id=<?= $row['id']; ?>" class="btn-action">📃 ใบตอบรับ</a><?php
                                 }
                                 ?>
-                                
                             </td>
                         </tr>
                         <?php
@@ -243,7 +252,7 @@ $pageTitle = "รายการใบขอเลือด";
                 else:
                     ?>
                     <tr>
-                        <td colspan="7" class="text-center py-5">
+                        <td colspan="8" class="text-center py-5">
                             <div class="text-muted">
                                 <i class="fa-solid fa-inbox fa-3x mb-3"></i>
                                 <p>ยังไม่มีข้อมูลรายการขอเลือด</p>
@@ -268,10 +277,10 @@ $pageTitle = "รายการใบขอเลือด";
                     <th>ชื่อ-นามสกุล</th>
                     <th>HN</th>
                     <th>AN</th>
-                    <th>แพทย์ผู้ขอ</th>
+                    <th>หอผู้ป่วย/เตียง</th>
                     <th class="text-center">วันที่ขอเลือด</th>
                     <th class="text-center">วันที่ตอบรับ</th>
-                    <th class="text-center">สถานะ</th>
+                    <th class="text-center">Unit Number</th>
                 </tr>
             </thead>
             <tbody>
@@ -282,30 +291,22 @@ $pageTitle = "รายการใบขอเลือด";
                 if ($result && $result->num_rows > 0):
                     $idx = 1;
                     while ($row = $result->fetch_assoc()):
+                        $bed = $classBed->getBed($row['an']);
+                        $wardCode = substr($bed['bedcode'], 0, 2);
+                        $bedNumber = substr($bed['bedcode'], 2);
                         ?>
                         <tr>
                             <td><?php echo $idx++; ?></td>
                             <td>
-                                <div class="fw-bold"><?php echo htmlspecialchars($row['patient_name']); ?></div>
+                                <div class="fw-bold"><?php echo $row['patient_name']; ?></div>
                             </td>
-                            <td><span class="badge-hn"><?php echo htmlspecialchars($row['hn']); ?></span></td>
-                            <td><span class="badge-an"><?php echo htmlspecialchars($row['an']); ?></span></td>
-                            <td><?php echo htmlspecialchars($row['doctor_order']); ?></td>
+                            <td><span class="badge-hn"><?php echo $row['hn']; ?></span></td>
+                            <td><span class="badge-an"><?php echo $row['an']; ?></span></td>
+                            <td><?php echo $wardArray[$wardCode].' เตียง: '.$bedNumber; ?></td>
+                            <td class="text-center"><?php echo $row['blood_order_date'];?></td>
+                            <td class="text-center"><?= $row['date_active']; ?></td>
                             <td class="text-center">
-                                <?php 
-                                if ($row['blood_order_date']) {
-                                    $date = new DateTime($row['blood_order_date']);
-                                    echo $date->format('d/m/Y');
-                                } else {
-                                    echo '-';
-                                }
-                                ?>
-                            </td>
-                            <td class="text-center">
-                                <?= $row['date_active']; ?>
-                            </td>
-                            <td class="text-center">
-                                <?= !empty($row['active']) ? '✅' : '⏰' ?>
+                                <span class="badge-unit"><?php echo $row['unit_number']; ?></span>
                             </td>
                             
                         </tr>
