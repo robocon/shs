@@ -36,9 +36,12 @@ CREATE TABLE `blood_requests` (
   `created_at` datetime NOT NULL,
   `active` varchar(5) NOT NULL DEFAULT '',
   `date_active` varchar(10) NOT NULL DEFAULT '',
+  `time_active` varchar(8) DEFAULT NULL,
+  `active_by` varchar(255) DEFAULT '',
   `replacement_units` varchar(20) NOT NULL DEFAULT '',
   `ward` varchar(100) NOT NULL DEFAULT '',
+  `unit_number` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `blood_requests_hn_IDX` (`hn`) USING BTREE,
   KEY `blood_requests_an_IDX` (`an`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
