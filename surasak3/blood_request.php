@@ -227,7 +227,7 @@ if($hctRows>0){
                     <label class="form-label">รับครั้งสุดท้ายเมื่อวันที่</label>
                     <input type="text" class="form-control" name="get_blood_date" id="get_blood_date">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label class="form-label" for="hospital">ที่โรงพยาบาล/สถานที่</label>
                     <input type="text" class="form-control" name="hospital" id="hospital">
                 </div>
@@ -358,7 +358,7 @@ if($hctRows>0){
             <hr>
 
             <div class="row g-3 mb-4">
-                <div class="col-md-3">
+                <div class="col-md-5">
                     <label class="form-label">แพทย์ผู้ขอ</label>
                     <?php
                     $dtItems = $classDoctor->getAllDoctor();
@@ -374,13 +374,15 @@ if($hctRows>0){
                     </select>
 
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label class="form-label">พยาบาลผู้เจาะเลือด</label>
-                    <input type="text" class="form-control" name="nurse" placeholder="ชื่อ-สกุล พยาบาล" value="<?= $_SESSION['sOfficer']; ?>" readonly>
+                    <p><?= $_SESSION['sOfficer']; ?></p>
+                    <input type="hidden" name="nurse" id="nurse" value="<?= $_SESSION['sOfficer']; ?>">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">วันเวลาที่เจาะ</label>
-                    <input type="text" class="form-control" name="date_drawn" id="date_drawn" value="<?= date('Y-m-d H:i:s') ?>" readonly>
+                    <p><?= date('Y-m-d H:i:s') ?></p>
+                    <input type="hidden" name="date_drawn" id="date_drawn" value="<?= date('Y-m-d H:i:s') ?>">
                 </div>
             </div>
 

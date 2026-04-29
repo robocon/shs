@@ -534,7 +534,7 @@ $wardArray = array(
                             <tr>
                                 <td>
                                     <span class="me-1" style="color:#7f8c8d;font-size:1.1rem;">2.6 Other:</span>
-                                    <input type="text" class="other-desc-input" name="other_other" id="other_other" placeholder="ระบุชนิดเลือด..." value="<?= $row['other_other'] ?>">
+                                    <input type="text" class="other-desc-input" name="other_other" id="other_other" placeholder="ระบุชนิดเลือด..." value="<?= $row['other_reason'] ?>">
                                 </td>
                                 <td style="text-align:center;"></td>
                             </tr>
