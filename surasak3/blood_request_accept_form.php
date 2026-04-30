@@ -429,12 +429,12 @@ $wardArray = array(
                             <div class="blood-select-label">Bed:</div>
                             <div><?= $wardName.' เตียง:'.$bed['bed']; ?></div>
                         </div>
-                        <div>
+                        <!-- <div>
                             <button class="btn btn-primary" type="button" onclick="selectUnitNumber('<?= $row['blood_group'] ?>')">🩸 เลือกถุงเลือด</button>
-                        </div>
+                        </div> -->
                     </div>
                     <div id="response_unitnumber" class="p-2 mt-3" style="display:none;"></div>
-                    <input type="hidden" name="unit_number" id="unit_number" value="">
+                    <!-- <input type="hidden" name="unit_number" id="unit_number" value=""> -->
                 </div>
             </div>
 
@@ -701,7 +701,7 @@ $wardArray = array(
             
             document.getElementById('response_unitnumber').innerHTML = `<strong>Unit Number</strong>: ${unitnumber}`;
             document.getElementById('response_unitnumber').style.display = "";
-            document.getElementById('unit_number').value = unitnumber;
+            // document.getElementById('unit_number').value = unitnumber;
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -740,11 +740,11 @@ $wardArray = array(
             e.preventDefault();
 
             var form = this;
-            if (!form.unit_number.value) {
-                showToast('กรุณาเลือกถุงเลือด', 'danger');
-                form.unit_number.focus();
-                return;
-            }
+            // if (!form.unit_number.value) {
+            //     showToast('กรุณาเลือกถุงเลือด', 'danger');
+            //     form.unit_number.focus();
+            //     return;
+            // }
 
             // Basic HTML5 validation
             if (!form.abo_group.value) {
