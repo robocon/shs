@@ -286,6 +286,7 @@ input[readonly]{
 	background-color: #d8d8d8;
 }
 </style>
+<script src="js/sweetalert2.all.min.js"></script>
 <script>
 function newXmlHttp(){
 	var xmlhttp = false;
@@ -323,24 +324,63 @@ function checkList(){
 	var check_g6pd = document.getElementById("G6PD");
 	var set_return = true;
 	
+	let sideeffects = document.getElementById("sideeffects").value;
+	const allergy_items = document.getElementsByClassName('react_allergy');
+	let check_allergy_items = false;
+	for (let index = 0; index < allergy_items.length; index++) {
+		const element = allergy_items[index];
+		if(element.checked===true){
+			check_allergy_items = true;
+		}
+	}
+
 	// ถ้าไม่มีการติ๊ก g6pd จะตรวจสอบตามเงื่อนไขปกติ
 	if (check_g6pd.checked===false) {
+		
 		if(document.getElementById("drugcode").value==""){
-			alert("กรุณาระบุรหัสยา");
-			document.getElementById("drugcode").focus()
+			Swal.fire({
+				title: 'ข้อมูลไม่สมบูรณ์',
+				text: 'กรุณาระบุรหัสยา',
+				icon: 'warning',
+				didClose: function(){
+					document.getElementById("drugcode").focus();
+				}
+			});
 			set_return = false;
 
 		}else if(document.getElementById("tradname").value==""){
-			alert("กรุณาระบุชื่อการค้า");
-			document.getElementById("tradname").focus()
+			
+			Swal.fire({
+				title: 'ข้อมูลไม่สมบูรณ์',
+				text: 'กรุณาระบุชื่อการค้า',
+				icon: 'warning',
+				didClose: function(){
+					document.getElementById("tradname").focus();
+				}
+			});
+
 			set_return = false;
 
 		}else if(document.getElementById("genname").value==""){
-			alert("กรุณาระบุชื่อสามัญ");
-			document.getElementById("genname").focus()
+			
+			Swal.fire({
+				title: 'ข้อมูลไม่สมบูรณ์',
+				text: 'กรุณาระบุชื่อสามัญ',
+				icon: 'warning',
+				didClose: function(){
+					document.getElementById("genname").focus();
+				}
+			});
 			set_return = false;
 
+		}else if(check_allergy_items===false && sideeffects==''){
+			Swal.fire({
+				title: 'ข้อมูลไม่สมบูรณ์',
+				text: 'กรุณาเลือก อาการแพ้ หรือ ผลข้างเคียง อย่างใดอย่างหนึ่ง',
+				icon: 'warning',
+			});
 		}
+
 		/*else if(document.f1.asses1.checked == false && document.f1.asses2.checked == false && document.f1.asses3.checked == false && document.f1.asses4.checked == false && document.f1.asses5.checked == false && document.f1.asses6.checked == false){
 			alert("กรุณาเลือกการประเมิน");
 			set_return = false;
@@ -414,7 +454,7 @@ if ( $page == 'search' ) {
                     <td><?=$ptname;?></td>
                     <td><?=$item['idcard'];?></td>
                     <td><?=$item['congenital_disease'];?></td>
-					<td align="center"><a href="drugreact_new_add.php?page=show&hn=<?=$item['hn'];?>">บันทึกแพ้ยา</a></td>
+					<td align="center"><a href="drugreact_new_add.php?page=show&hn=<?=$item['hn'];?>">บันทึกแพ้ยา / แก้ไข</a></td>
 					<td align="center"><a href="drugreactgroup_new_add.php?page=first&hn=<?=$item['hn'];?>" target="_blank">แพ้ยาตามกลุ่ม</a></td>
                 </tr>
                 <?php
@@ -574,6 +614,7 @@ if ( $page == 'search' ) {
     <?php
     }
 	?>
+<!-- drugreact_new_add.php?page=show&hn=xx-xxxxx -->
 <h3 align="center">ระบบบันทึกการแพ้ยา</h3>
 <Div id="list" style="left:200PX;top:30PX;position:absolute;" class="fontsarabun"></Div>
 <FORM name="f1" METHOD=POST ACTION="drugreact_new_add.php" onsubmit="return checkList()">
@@ -600,28 +641,28 @@ if ( $page == 'search' ) {
 					</TR>
 					<TR>
 						<TD valign="top">
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="MP rash (maculopapular rash)" class="fontsarabun"> MP rash (maculopapular rash)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="Urticaria" class="fontsarabun"> Urticaria</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="Fixed drug reaction" class="fontsarabun"> Fixed drug reaction</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="SJS (Stevens Johnson Syndrome)" class="fontsarabun"> SJS (Stevens Johnson Syndrome)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="TEN (Toxic epidermal necrolysis)" class="fontsarabun"> TEN (Toxic epidermal necrolysis)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="DRESS (Drug rash with eosinophilia and systemic symptoms)" class="fontsarabun"> DRESS (Drug rash with eosinophilia and systemic symptoms)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="AGEP (Acute generalized exanthematous pustulosis)" class="fontsarabun"> AGEP (Acute generalized exanthematous pustulosis)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ผื่นแดงราบ" class="fontsarabun"> ผื่นแดงราบ</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ผื่นแดงนูน" class="fontsarabun"> ผื่นแดงนูน</div>	
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ผื่นมีหัวหนองคล้ายสิว" class="fontsarabun"> ผื่นมีหัวหนองคล้ายสิว</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="จุดแดงเลือดออกใต้ผิวหนัง" class="fontsarabun"> จุดแดงเลือดออกใต้ผิวหนัง</div>	
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ผื่นลมพิษ" class="fontsarabun"> ผื่นลมพิษ</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ผิวหนังและ/หรือเยื่อบุลอก" class="fontsarabun"> ผิวหนังและ/หรือเยื่อบุลอก</div>	
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="คัน" class="fontsarabun"> คัน</div>						
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="MP rash (maculopapular rash)" class="fontsarabun"> MP rash (maculopapular rash)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="Urticaria" class="fontsarabun"> Urticaria</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="Fixed drug reaction" class="fontsarabun"> Fixed drug reaction</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="SJS (Stevens Johnson Syndrome)" class="fontsarabun"> SJS (Stevens Johnson Syndrome)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="TEN (Toxic epidermal necrolysis)" class="fontsarabun"> TEN (Toxic epidermal necrolysis)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="DRESS (Drug rash with eosinophilia and systemic symptoms)" class="fontsarabun"> DRESS (Drug rash with eosinophilia and systemic symptoms)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="AGEP (Acute generalized exanthematous pustulosis)" class="fontsarabun"> AGEP (Acute generalized exanthematous pustulosis)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ผื่นแดงราบ" class="fontsarabun"> ผื่นแดงราบ</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ผื่นแดงนูน" class="fontsarabun"> ผื่นแดงนูน</div>	
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ผื่นมีหัวหนองคล้ายสิว" class="fontsarabun"> ผื่นมีหัวหนองคล้ายสิว</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="จุดแดงเลือดออกใต้ผิวหนัง" class="fontsarabun"> จุดแดงเลือดออกใต้ผิวหนัง</div>	
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ผื่นลมพิษ" class="fontsarabun"> ผื่นลมพิษ</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ผิวหนังและ/หรือเยื่อบุลอก" class="fontsarabun"> ผิวหนังและ/หรือเยื่อบุลอก</div>	
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="คัน" class="fontsarabun"> คัน</div>						
 						</TD>
 						<TD valign="top">
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="หายใจลำบาก" class="fontsarabun"> หายใจลำบาก</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="หายใจไม่ออก" class="fontsarabun"> หายใจไม่ออก</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="หอบเหนื่อย" class="fontsarabun"> หอบเหนื่อย</div>	
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="หายใจมีเสียงหวีด" class="fontsarabun"> หายใจมีเสียงหวีด</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ทางเดินหายใจส่วนบนมีการบวม" class="fontsarabun"> ทางเดินหายใจส่วนบนมีการบวม</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="เยื่อบุจมูกอักเสบ" class="fontsarabun"> เยื่อบุจมูกอักเสบ</div>							
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="หายใจลำบาก" class="fontsarabun"> หายใจลำบาก</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="หายใจไม่ออก" class="fontsarabun"> หายใจไม่ออก</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="หอบเหนื่อย" class="fontsarabun"> หอบเหนื่อย</div>	
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="หายใจมีเสียงหวีด" class="fontsarabun"> หายใจมีเสียงหวีด</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ทางเดินหายใจส่วนบนมีการบวม" class="fontsarabun"> ทางเดินหายใจส่วนบนมีการบวม</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="เยื่อบุจมูกอักเสบ" class="fontsarabun"> เยื่อบุจมูกอักเสบ</div>							
 						</TD>	
 					</TR>
 					<TR>
@@ -630,15 +671,15 @@ if ( $page == 'search' ) {
 					</TR>
 					<TR>
 						<TD valign="top">
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="Hypotension(ความดันต่ำ)" class="fontsarabun"> Hypotension(ความดันต่ำ)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="Angioedema(หน้าบวม ปาก ลิ้นและเพดานอ่อนบวม)" class="fontsarabun"> Angioedema(หน้าบวม ปาก ลิ้นและเพดานอ่อนบวม)</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="เวียนศีรษะและ/หรือเป็นลม" class="fontsarabun"> เวียนศีรษะและ/หรือเป็นลม</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="Hypotension(ความดันต่ำ)" class="fontsarabun"> Hypotension(ความดันต่ำ)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="Angioedema(หน้าบวม ปาก ลิ้นและเพดานอ่อนบวม)" class="fontsarabun"> Angioedema(หน้าบวม ปาก ลิ้นและเพดานอ่อนบวม)</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="เวียนศีรษะและ/หรือเป็นลม" class="fontsarabun"> เวียนศีรษะและ/หรือเป็นลม</div>
 						</TD>
 						<TD valign="top">
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="คลื่นไส้" class="fontsarabun"> คลื่นไส้</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="อาเจียน" class="fontsarabun"> อาเจียน</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="อุจจาระร่วง" class="fontsarabun"> อุจจาระร่วง</div>	
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ปวดท้อง" class="fontsarabun"> ปวดท้อง</div>	
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="คลื่นไส้" class="fontsarabun"> คลื่นไส้</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="อาเจียน" class="fontsarabun"> อาเจียน</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="อุจจาระร่วง" class="fontsarabun"> อุจจาระร่วง</div>	
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ปวดท้อง" class="fontsarabun"> ปวดท้อง</div>	
 						</TD>	
 					</TR>
 					<TR>
@@ -647,9 +688,9 @@ if ( $page == 'search' ) {
 					</TR>
 					<TR>
 						<TD valign="top">
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ปวดศีรษะ" class="fontsarabun"> ปวดศีรษะ</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="แน่นหน้าอก" class="fontsarabun"> แน่นหน้าอก</div>
-						<div><input type="checkbox" id="advreact" name="advreact[]" value="ชัก" class="fontsarabun"> ชัก</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ปวดศีรษะ" class="fontsarabun"> ปวดศีรษะ</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="แน่นหน้าอก" class="fontsarabun"> แน่นหน้าอก</div>
+						<div><input type="checkbox" id="advreact" class="react_allergy" name="advreact[]" value="ชัก" class="fontsarabun"> ชัก</div>
 						</TD valign="top">
 						<TD><textarea id="advreact_other" name="advreact_other" rows="4" cols="30" class="fontsarabun"></textarea></TD>	
 					</TR>
@@ -688,7 +729,7 @@ if ( $page == 'search' ) {
 			</tr>
 			<tr>
 				<td align="right"><div style="margin-left:10px;"><strong>ผลข้างเคียง : </strong></div></td>
-				<td colspan="4" align="left"><div style="margin-left:10px;"><input name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
+				<td colspan="4" align="left"><div style="margin-left:10px;"><input id="sideeffects" name="sideeffects" type="text" class="fontsarabun" size="150" value="" /></div></td>
 			</tr>
 			<tr valign="top">
 				<td align="right"><div style="margin-left:10px;"><strong>กลุ่มยาที่มีโอกาสแพ้ : </strong></div></td>
@@ -717,7 +758,7 @@ if ( $page == 'search' ) {
 				<td colspan="5" align="center"><div style="margin-top:10px;"><INPUT TYPE="submit" name="submit"  value="   บันทึกข้อมูล   " class="fontsarabun"><span style="margin-left:40px;"><INPUT TYPE="reset" name="reset"  value="   เคลียร์ข้อมูล   " class="fontsarabun"></span></div></td>
 			</tr>
         </table>
-</form>		
+</form>
 <br>
 <br>
 <?

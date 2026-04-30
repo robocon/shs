@@ -107,7 +107,7 @@ if($alcohol==0){
 	
 	//////// แพ้ยา ////////
 	$list1 = array();
-	$sql = "Select  tradname,advreact,sideeffects From drugreact  where hn = '".$hn."' and advreact !=''";
+	$sql = "Select  tradname,advreact,sideeffects From drugreact  where hn = '$hn' and advreact !=''";
 	$result = Mysql_Query($sql);
 	$drugreact_rows = mysql_num_rows($result);
 	if($drugreact_rows>0){
