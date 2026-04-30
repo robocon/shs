@@ -643,6 +643,30 @@ if(count($days_exam)>0){
 		?>
 	</table>
 	<?php
+	$sql = "SELECT `date`,`user_row` FROM `dr_limit_appoint` WHERE `dr_name` = '$dt_doctor' AND `type` = 'lock'";
+	$q = $dbi->query($sql);
+	if($q->num_rows>0){
+		?>
+		<p style="margin:0;padding:0;"><b>จำกัดนัด</b></p>
+		<table class="chk_table">
+		<tr style="background-color: #13795b; color: #ffffff; line-height: 12px;">
+				<td>วัน</td>
+				<td>จำนวนที่ให้นัด</td>
+			</tr>
+		<?php
+		while ($a = $q->fetch_assoc()) {
+			$lock_date = $a['date'];
+			?>
+			<tr valign="top">
+				<td><?=$th_days[$lock_date];?></td>
+				<td><?=$a['user_row'];?> ราย</td>
+			</tr>
+			<?php
+		}
+		?>
+		</table>
+		<?php
+	}
 }
 ?>
 </div>
@@ -738,11 +762,9 @@ function handlerMMY(e){
 }
 </SCRIPT>
 <style type="text/css">
-<!--
 .t {
 	color: #C69;
 }
--->
 </style>
 
 
@@ -824,7 +846,6 @@ while($objResult = mysql_fetch_array($objQuery))
 
   <div id="div_right_list" ></div>
   <style type="text/css">
-<!--
 body,td,th {
 	font-family: Angsana New;
 	font-size: 24px;
@@ -847,8 +868,6 @@ body,td,th {
 	line-height:20px;
 
 }
-
--->
 .examday{ position: absolute; left: 0; top: 0; width:10px; height:4px; background-color: green;}
     .chk_table{
         border-collapse: collapse;

@@ -1227,12 +1227,22 @@ if($date_en < date('Y-m-d')){
 		const drCode = '<?= $codedr ?>';
 		let newTime = v.replace(/[^0-9:.-]/g, '');
 		let checkTime = isTimeBetween(newTime,'13:00','24:00');
-		let dayInt = parseInt(<?= $check_date ?>); // 0 is Sun --> 6 is Sat
+		/**
+		 * 0 is Sunday
+		 * 1 is Monday
+		 * 2 is Tuesday
+		 * 3 is Wednesday
+		 * 4 is Thursday
+		 * 5 is Friday
+		 * 6 is Saturday
+		 */
+		let dayInt = parseInt(<?= $check_date ?>);
 		let afternoonUser = parseInt(<?= $afternoonUser ?>);
-		if(drCode==='MD224' && checkTime===true && dayInt===4 && afternoonUser>25){
+		//
+		if(drCode==='MD224' && checkTime===true && (dayInt==4 || dayInt==2) && afternoonUser>25){
 			Swal.fire({
 				title: '⚠️ แจ้งเตือน ⚠️', 
-				html: 'หมอสรายุทธจำกัดนัดบ่ายวันพฤหัส ไม่เกิน 25คน กรุณาติดต่อแพทย์โดยตรงถ้าต้องการนัดเพิ่ม',
+				html: 'หมอสรายุทธจำกัดนัดบ่าย วันอังคารและวันพฤหัส ไม่เกิน 25คน กรุณาติดต่อแพทย์โดยตรงถ้าต้องการนัดเพิ่ม',
 				allowOutsideClick: false
 			});
 			return false;
