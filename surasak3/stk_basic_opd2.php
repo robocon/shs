@@ -52,7 +52,7 @@ $thidate = substr($thidate,8,2)."-".substr($thidate,5,2)."-".substr($thidate,0,4
 if($cigarette==0){
 	$cigarette='ไม่สูบ';
 }else if($cigarette==1){
-	$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';
+	$cigarette='สูบ '.$smoke_amount.' มวน/วัน';
 }else{
 	$cigarette='เคยสูบ';
 }

@@ -236,7 +236,7 @@ if($_POST["cigarette"]==0){
 }else if($_POST["cigarette"]==2){
 	$cigarette='สูบครั้งคราว';
 }else if($_POST["cigarette"]==3){
-	$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';
+	$cigarette='สูบ '.$smoke_amount.' มวน/วัน';
 }
 
 if($_POST["alcohol"]==0){

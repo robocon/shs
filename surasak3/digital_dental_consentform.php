@@ -67,7 +67,7 @@ if($num==0){
 }
 
 if($cigarette==0){$cigarette='ไม่สูบ';}
-else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/สัปดาห์';}
+else if($cigarette==1){$cigarette='สูบ '.$smoke_amount.' มวน/วัน';}
 else {$cigarette='เคยสูบ';};
 
 if($alcohol==0){

@@ -311,7 +311,7 @@ window.print();
 <div>
 <span>การสูบบุหรี่</span>
 <span style="margin-left:70px;"><img src="images/unchecked.png" width="20px" height="20px"> ไม่สูบ</span>
-<span style="margin-left:30px;"><img src="images/unchecked.png" width="20px" height="20px"> สูบ..............มวน/สัปดาห์</span>
+<span style="margin-left:30px;"><img src="images/unchecked.png" width="20px" height="20px"> สูบ..............มวน/วัน</span>
 <span style="margin-left:30px;">นอนหลับพักผ่อน..............ชั่วโมง</span>
 </div>
 <div>
