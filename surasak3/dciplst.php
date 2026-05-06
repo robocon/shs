@@ -60,12 +60,15 @@ CREATE TABLE ipcard (
     $num=0;
     include("connect.inc");
   
-    $query = "SELECT date,dcdate,days,hn,an,icd10,goup,camp,ptname,diag,bedcode,price,ajrw,priceajrw,ptright FROM ipcard WHERE dcdate LIKE '$yrmo%'  and  ptright LIKE 'R03%' ";
+    $query = "SELECT date,dcdate,days,hn,an,icd10,goup,camp,ptname,diag,bedcode,price,ajrw,priceajrw,ptright,adjrw_manual FROM ipcard WHERE dcdate LIKE '$yrmo%'  and  ptright LIKE 'R03%' ";
     $result = mysql_query($query)
         or die("Query failed");
 
-    while (list ($date,$dcdate,$days,$hn,$an,$icd10,$goup,$camp,$ptname,$diag,$bedcode,$price,$ajrw,$priceajrw,$ptright) = mysql_fetch_row ($result)) {
+    while (list ($date,$dcdate,$days,$hn,$an,$icd10,$goup,$camp,$ptname,$diag,$bedcode,$price,$ajrw,$priceajrw,$ptright,$adjrw_manual) = mysql_fetch_row ($result)) {
     $num++;
+	if($ajrw==""){
+		$ajrw=$adjrw_manual;	
+	}	
    $ajrw1 =  $ajrw1 + $ajrw ;
 //    $adm=substr($date,8,8);
 //    $dc=substr($dcdate,8,8);
