@@ -98,6 +98,8 @@ $hours = floor(($diffInSeconds % (60 * 60 * 24)) / (60 * 60));
 
 echo "จำนวนวัน $days วัน $hours ชั่วโมง &nbsp;&nbsp;";
 echo "<br>";
+
+// $days เป็นวันที่คำนวณจาก bed.lastcalroom เอามา datediff กับ วันที่ปัจจุบัน  ถ้าเวลาเกิน 12.00 ให้เพิ่มอีก 1 วัน
 $dayslast = $days;
 if ($hours >= 12) {
     $dayslast = $days + 1;
@@ -124,8 +126,7 @@ if ($oBedcode1 != '44') {
     $cNBedpri = 0;
     $cYBedpri = $cBedpri;
 }
-//echo "เบิกได้ $cYBedpri1<br>";
-//echo "เบิกไม่ได้ $cNBedpri1<br>";
+
 $cBedfood  = $dayslast * $cBedpri;    //รวมราคาห้องและอาหารทั้งสิ้น
 $cYBedfood = $dayslast * $cYBedpri; //รวมราคาห้องและอาหารที่เบิกได้
 $cNBedfood = $dayslast * $cNBedpri; //รวมราคาห้องและอาหารที่เบิกไม่ได้
@@ -171,10 +172,6 @@ $result = mysql_query($query) or die("Query failed,cannot insert into patdata");
 $query = "INSERT INTO ipacc(date,an,code,depart,detail,amount,price,idname,part,accno,idno)VALUES('$Thidate','$oAn','BFN','WARD','ค่าห้องส่วนเกิน $cNBedpri บาท(ย้ายเตียง) $stays','$dayslast','$cNBedfood','คอมพิวเตอร์','BFN','$accno','$idno');";
 $result = mysql_query($query) or die("Query failed,cannot insert into ipacc1");
 
-//	}
-
-
-
 //ย้ายออกจากเตียงเก่า(ลบข้อมูล)
 $sql = "UPDATE bed SET 
 `ptname`='',
@@ -199,8 +196,7 @@ $sql = "UPDATE bed SET
 `days`=0,
 `c19status`='' 
 WHERE bedcode='$oBedcode';";
-$result = mysql_query($sql) or die("erase bed fail");
-//echo $sql;
+$result = mysql_query($sql) or die("erase bed fail: ".mysql_error());
 
 //ย้ายเข้าเตียงใหม่  
 if ($dayslast > 0) {
@@ -237,7 +233,7 @@ $sql = "UPDATE bed SET
 `lastcalroom`='$calroom4',
 `c19status`='$c19status'
 WHERE bedcode='$inbcode';";
-$result = mysql_query($sql) or die("insert data to bed fail");
+$result = mysql_query($sql) or die("insert data to bed fail: ".mysql_error());
 
 
 ///////  ward_log /////////
@@ -266,7 +262,7 @@ if ($cbedcode1 == $bedcode1) {
 $sql_ward = "INSERT INTO `ward_log` ( `regisdate` , `an` , `hn` , `ward` , `bedcode` , `chgcode` , `old` , `new` , day ,  `lastcall` , `office` ) 
  VALUES 
  ( '$Thidate', '$oAn', '$oHn', '$wname', '$oBedcode','$chgcode', '$cbedcode', '$inbcode', '$dayslast', '$Thidate', '$sOfficer')";
-$result_ward = mysql_query($sql_ward) or die(mysql_error());
+$result_ward = mysql_query($sql_ward) or die("insert data to ward_log fail: ".mysql_error());
 ////////////////////////////
 
 if (!$result) {
