@@ -16,21 +16,20 @@ $_SESSION['Bcode'] = $_GET['cBedcode'];
 $_SESSION['cBed'] = $_GET['cBed'];
 $cBedcode = $_GET['cBedcode'];
 $_SESSION['cBedcode'] = $_GET['cBedcode'];
+if (empty($cBedcode)) {
+    echo "รหัสเตียงไม่ถูกต้อง กรุณาตรวจสอบข้อมูลให้ถูกต้องอีกครั้ง";
+    exit();
+}
 
 $query = "SELECT * FROM bed WHERE bedcode = '$cBedcode'";
 $result = mysql_query($query) or die("Query failed");
-
-for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
-    if (!mysql_data_seek($result, $i)) {
-        echo "Cannot seek to row $i\n";
-        continue;
-    }
-
-    if (!($row = mysql_fetch_object($result)))
-        continue;
+$bedRow = mysql_num_rows($result);
+if($bedRow <= 0){
+    echo "ไม่พบ bedcode : $cBedcode ในฐานข้อมูล";
+    exit();
 }
-
-if ($result) {
+$row = mysql_fetch_object($result);
+if (!empty($row->hn)) {
     $cBed = $row->bed;  //add  2/5/04
     $cBedcode = $row->bedcode;
     $cAn = $row->an;
@@ -44,8 +43,6 @@ if ($result) {
     $cDate = $row->date;
     $cDiagnos = $row->diagnos;
     $cChgdate = $row->chgdate;
-} else {
-    echo "ไม่พบ bedcode : $cBedcode";
 }
 
 $_SESSION["cAn"] = $_GET["cAn"];
@@ -102,12 +99,13 @@ if ($arr["an"] != "") {
     print "</head>";
     print "<BODY BGCOLOR='FFFFFF' TOPMARGIN=0 BOTTOMMARGIN=0 RIGHTMARGIN=0 LEFTMARGIN='0'>";
     print "<DIV style='z-index:0'> &nbsp; </div>";
-    print "<DIV style='left:0PX;top:0PX;width:306PX;height:30PX;'><span class='fc1-0'>$cbedname&nbsp;&nbsp;$cBed</span></DIV>";
+    print "<DIV style='left:0PX;top:0PX;width:306PX;height:30PX;'><span class='fc1-0'>$cBed</span></DIV>";
     print "<DIV style='left:0PX;top:20PX;width:306PX;height:30PX;'><span class='fc1-0'>AN:$can&nbsp;&nbsp;HN:$chn&nbsp;&nbsp;</span></DIV>";
     print "<DIV style='left:0PX;top:40PX;width:306PX;height:30PX;'><span class='fc1-2'>$cptname&nbsp;&nbsp;อายุ&nbsp;$cage</span></DIV>";
     print "<DIV style='left:0PX;top:60PX;width:500PX;height:30PX;'><span class='fc1-1'>โรค&nbsp;$cdiagnos &nbsp;สิทธิ&nbsp;$cptright &nbsp;&nbsp; </span></DIV>";
     print "<DIV style='left:0PX;top:80PX;width:306PX;height:30PX;'><span class='fc1-1'>แพทย์&nbsp;$cdoctor</span></DIV>";
     print "<br /><br /><br /><br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp  <input type='button' onclick='history.back();' value='       กลับหน้า ward       ' /></BODY></HTML>";
+    exit();
 } else {
     $codeward = substr($_GET['cBedcode'], 0, 2);
     echo "เตียง $cBed ว่าง   รหัสward: $codeward";
@@ -170,6 +168,7 @@ if ($arr["an"] != "") {
                                             </select></p>
                                         <p>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;<input type="reset" value="  ลบทิ้ง  " name="B2">
+                                            <input type="hidden" name="cBedcode" value="<?= $cBedcode; ?>">
                                         </p>
                                     </form>
                                 </td>
