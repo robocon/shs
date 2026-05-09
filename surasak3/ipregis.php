@@ -55,10 +55,17 @@ function calcage($birth)
     return $pAge;
 }
 
+$cAdmitd = sprintf("%s", $_POST['cAdmitd']);
+$weight = sprintf("%s", $_POST['weight']);
+$typeadmit = sprintf("%s", $_POST['typeadmit']);
+$food = sprintf("%s", $_POST['food']);
+$repadmit= sprintf("%s", $_POST['rep']);
+$doctor= sprintf("%s", $_POST['doctor']);
+$price= sprintf("%s", $_POST['price']);
+
 $diag = $_POST['diag'];
 $diag1 = $_POST['diag1'];
 $addfood = $_POST['addfood'];
-$repadmit = $_POST['rep'];
 if ($repadmit == "other") {
 	$hospital = $_POST['hosother'];
 } else {
@@ -86,43 +93,42 @@ if ($result) {
 	$cCamp = $row->camp;
 	$cIdcard = $row->idcard;
 	$cAddress = $row->address;
-	$cMuang = "ต. $row->tambol  อ. $row->ampur  จ. $row->changwat";
+	$cMuang = "ต. $row->tambol อ. $row->ampur จ. $row->changwat";
 	$cAge = calcage($row->dbirth);
 }
 
-$doctor = $_POST['doctor'];
-$typeadmit = $_POST['typeadmit'];
-$weight = $_POST['weight'];
 $cAn = $_GET['an'];
-$cAdmitd = $_POST['cAdmitd'];
+
 if(empty($cAdmitd)){
 	$cAdmitd = $_SESSION['cAdmitd'];
 }
 
 if ($_REQUEST['do'] == 'first') {
 
-	$sql = "UPDATE ipcard SET date= DATE_ADD(NOW(), INTERVAL 543 YEAR), 
-	ptname='$cPtname',
-	age='$cAge',
-	ptright='$cPtright',
-	goup='$cGoup',
-	camp='$cCamp',	
-	bedcode='$Bcode',
-	diag='$diag',
-	doctor='$doctor',
-	repadmit='$repadmit',
-	hospital='$hospital',
-	typeadmit='$typeadmit',
-	weight='$weight' 
-	WHERE an='$cAn';";
+	$sql = "UPDATE `ipcard` SET 
+	`date`='$thidate', 
+	`ptname`='$cPtname',
+	`age`='$cAge',
+	`ptright`='$cPtright',
+	`goup`='$cGoup',
+	`camp`='$cCamp',	
+	`bedcode`='$Bcode',
+	`diag`='$diag',
+	`doctor`='$doctor',
+	`repadmit`='$repadmit',
+	`hospital`='$hospital',
+	`typeadmit`='$typeadmit',
+	`weight`='$weight' 
+	WHERE `an`='$cAn';";
 	$result = mysql_query($sql) or die(mysql_error() . " Query failed ipcard");
 
-	$sql = "UPDATE opday SET ptright='$cPtright',
-	goup='$cGoup',
-	camp='$cCamp',
-	diag='$diag',
-	doctor='$doctor' 
-	WHERE an='$cAn';";
+	$sql = "UPDATE `opday` SET 
+	`ptright`='$cPtright',
+	`goup`='$cGoup',
+	`camp`='$cCamp',
+	`diag`='$diag',
+	`doctor`='$doctor' 
+	WHERE `an`='$cAn';";
 	$result = mysql_query($sql) or die(mysql_error() . " Query failed ipcard");
 
 	$query11 = "SELECT hi_type FROM ipcard WHERE an = '$cAn'";
@@ -153,9 +159,27 @@ if ($_REQUEST['do'] == 'first') {
 			//// ward_log  admit ครั้งแรก  ////
 		}
 
-		$query = "UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
-		muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
-		an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood $foodContainerText',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='$bedpri'  WHERE bedcode='$Bcode' ";
+		$query = "UPDATE `bed` SET 
+		`ptname`='$cPtname',
+		`age`='$cAge',
+		`idcard`='$cIdcard',
+		`address`='$cAddress',
+		`muang`='$cMuang',
+		`ptright`='$cPtright',
+		`doctor`='$doctor',
+		`date`='$cAdmitd',
+		`hn`='$cHn',
+		`an`='$cAn',
+		`diagnos`='$diag',
+		`diag1`='$diag1',
+		`food`='$food $addfood $foodContainerText',
+		`officer`='',
+		`lastcalroom`='$cAdmitd',
+		`chgdate`='$cAdmitd',
+		`chgwdate`='$cAdmitd',
+		`accno`=1,
+		`bedpri`='$bedpri'
+		WHERE `bedcode`='$Bcode' ";
 		$result = mysql_query($query) or die("Query failed bed");
 
 	} else if ($subbedcode == "48") { //Ward รพ.สนาม
@@ -169,16 +193,51 @@ if ($_REQUEST['do'] == 'first') {
 			//// ward_log  admit ครั้งแรก  ////
 		}
 
-		$query = "UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
-		muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
-		an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood $foodContainerText',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1,bedpri='$bedpri'  WHERE bedcode='$Bcode' ";
+		$query = "UPDATE `bed` SET 
+		`ptname`='$cPtname',
+		`age`='$cAge',
+		`idcard`='$cIdcard',
+		`address`='$cAddress',
+		`muang`='$cMuang',
+		`ptright`='$cPtright',
+		`doctor`='$doctor',
+		`date`='$cAdmitd',
+		`hn`='$cHn',
+		`an`='$cAn',
+		`diagnos`='$diag',
+		`diag1`='$diag1',
+		`food`='$food $addfood $foodContainerText',
+		`officer`='',
+		`lastcalroom`='$cAdmitd',
+		`chgdate`='$cAdmitd',
+		`chgwdate`='$cAdmitd',
+		`accno`=1,
+		`bedpri`='$bedpri'
+		WHERE `bedcode`='$Bcode' ";
 		$result = mysql_query($query) or die("Query failed bed");
 
 	} else { //Ward อื่นๆ
 		
-		$query = "UPDATE bed SET ptname='$cPtname',age='$cAge',idcard='$cIdcard',address='$cAddress',
-                muang='$cMuang',ptright='$cPtright',doctor='$doctor',date='$cAdmitd',hn='$cHn',
-                an='$cAn',diagnos='$diag',diag1='$diag1',food='$food $addfood $foodContainerText',officer='',lastcalroom='$cAdmitd',chgdate='$cAdmitd',chgwdate='$cAdmitd',accno=1  WHERE bedcode='$Bcode' ";
+		$query = "UPDATE `bed` SET 
+		`ptname`='$cPtname',
+		`age`='$cAge',
+		`idcard`='$cIdcard',
+		`address`='$cAddress',
+        `muang`='$cMuang',
+		`ptright`='$cPtright',
+		`doctor`='$doctor',
+		`date`='$cAdmitd',
+		`hn`='$cHn',
+        `an`='$cAn',
+		`diagnos`='$diag',
+		`diag1`='$diag1',
+		`food`='$food $addfood $foodContainerText',
+		`officer`='',
+		`lastcalroom`='$cAdmitd',
+		`chgdate`='$cAdmitd',
+		`chgwdate`='$cAdmitd',
+		`accno`=1 
+		WHERE `bedcode`='$Bcode' ";
 		$result = mysql_query($query) or die("Query failed bed");
 		//// ward_log  admit ครั้งแรก  ////
 	}
@@ -198,7 +257,9 @@ if ($_REQUEST['do'] == 'first') {
 	//// ward_log  admit ครั้งแรก ////
 	$chgcode = "Admit/2";
 
-	$sql_ward = "INSERT INTO `ward_log` ( `regisdate` , `an` , `hn` , `ward` , `bedcode` , `chgcode` , `old` , `new` , day ,  `lastcall` , `office` ) VALUES ( '" . $thidate . "', '" . $cAn . "', '" . $cHn . "', '" . $wname . "', '" . $Bcode . "','" . $chgcode . "', '', '', '', '" . $cAdmitd . "',  '" . $sOfficer . "')";
+	$sql_ward = "INSERT INTO `ward_log` ( `regisdate` , `an` , `hn` , `ward` , `bedcode` , `chgcode` , `old` , `new` , day ,  `lastcall` , `office` ) 
+	VALUES 
+	( '$thidate', '$cAn', '$cHn', '$wname', '$Bcode','$chgcode', '', '', '', '$cAdmitd',  '$sOfficer')";
 	$result_ward = mysql_query($sql_ward) or die(mysql_error());
 
 	$sql = "UPDATE ipcard SET 

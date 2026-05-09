@@ -238,7 +238,7 @@ if ($result) {
         <?php 
         // echo "<FONT SIZE='4' COLOR='#FF0000'>HN : $cHn, <B>AN:$an</B></FONT> <BR><FONT SIZE='4' COLOR=''> ชื่อ: $cYot   $cName  $cSurname,  สิทธิการรักษา : $cPtright </FONT><br>";
     } else {
-        echo "ไม่พบ HN : $hn ";
+        echo "ไม่พบ HN : $cHn ";
     }
 } else {
     echo "ไม่พบ AN  in ipcard table : $an ";
@@ -473,7 +473,7 @@ if ($status_log == "จำหน่าย") {
                 <td>
                     <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="reset" value="  &#3649;&#3585;&#3657;&#3652;&#3586;  " name="B2">
-                    <input type="hidden" name="cAdmitd" value="<?= $cAdmitd; ?>">
+                    <input type="hidden" name="cAdmitd" value="<?=$cAdmitd;?>">
                 </td>
             </tr>
         </table>
