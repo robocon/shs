@@ -69,6 +69,8 @@ if ($result) {
     $calroom = $row->lastcalroom;
     $c19status = $row->c19status;
     $diag1 = $row->diag1;
+    $last_drug = $row->last_drug;
+    $bedCaldate = $row->caldate;
 } else {
     echo "ไม่พบ bedcode : $outbcode";
     exit();
@@ -91,21 +93,14 @@ echo "หอเดิม ".$ward_lists[$cbedcode1]."<br>";
 echo "หอใหม่ ".$ward_lists[$bedcode1]."<br>";
 echo "<br>";
 
-dump($oDate);
-
-$chgdate = (substr($oDate, 0, 4) - 543) . substr($oDate, 4); //วันนอน
-dump($chgdate);
-
+$chgdate = (substr($calroom, 0, 4) - 543) . substr($calroom, 4); //วันนอน
 $diffInSeconds = abs(strtotime(date("Y-m-d H:i:s")) - strtotime($chgdate));
-dump($diffInSeconds);
 
 $days = floor($diffInSeconds / (60 * 60 * 24)); // 60 * 60 * 24 = 86400 คือจำนวนวินาทีใน 1 วัน
 $hours = floor(($diffInSeconds % (60 * 60 * 24)) / (60 * 60)); // 60 * 60 = 3600 คือจำนวนวินาทีใน 1 ชั่วโมง
 
 echo "จำนวนวัน $days วัน $hours ชั่วโมง &nbsp;&nbsp;";
 echo "<br>";
-
-exit;
 
 // $days เป็นวันที่คำนวณจาก bed.lastcalroom เอามา datediff กับ วันที่ปัจจุบัน  ถ้าเวลาเกิน 12Hrs ให้ตีเป็น 1 วัน
 $dayslast = $days;
@@ -200,6 +195,9 @@ $sql = "UPDATE bed SET
 `officer`='',
 `chgdate`=now(),
 `diag1`='',
+`caldate`='',
+`last_drug`='',
+`chgwdate`='',
 `accno`=1,
 `lastcalroom`='0000-00-00 00:00:00',
 `days`=0,
@@ -239,6 +237,9 @@ $sql = "UPDATE bed SET
 `officer`='$sOfficer',
 `chgdate`='$Thidate',
 `diag1`='$diag1',
+`caldate`='$bedCaldate',
+`last_drug`='$last_drug',
+`chgwdate`='$cChgwdate',
 `accno`='$accno',
 `lastcalroom`='$calroom4',
 `c19status`='$c19status'
@@ -284,7 +285,7 @@ if (!$result) {
     print "กรุณารอสักครู่ .............ระบบจะปิดหน้าต่างอัตโนมัติ <br>";
 }
 
-$rward = substr($oBedcode, 0, 2);
+$rward = substr($inbcode, 0, 2);
 if ($rward == '41') {
     $linkward = "allward.php?code=41";
 } elseif ($rward == '42') {
@@ -305,5 +306,5 @@ if ($rward == '41') {
 session_unregister("Bcode");
 ?>
 <script>
-    setTimeout("window.opener.location.href='<?= $linkward; ?>';window.close()", 5000);
+    setTimeout("window.opener.location.href='<?= $linkward; ?>';window.close()", 3000);
 </script>

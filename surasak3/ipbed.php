@@ -128,13 +128,13 @@ if ($arr["an"] != "") {
                                     <form method="POST" action="ipcheck.php">
                                         <p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;รับผู้ป่วยใหม่</b></p>
                                         <p>
-                                            <font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;พิมพ์  ANผู้ป่วยที่ต้องการรับไว้นอนเตียงนี้</font>
+                                            <font face="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;พิมพ์  ANผู้ป่วยที่ต้องการรับไว้นอนเตียงนี้</font>
                                         </p>
                                         <p>
-                                            <font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AN&nbsp; <input type="text" name="an" size="10"></font>
+                                            <font face="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AN&nbsp; <input type="text" name="an" size="10"></font>
                                         </p>
                                         <p>
-                                            <font face="Angsana New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;
+                                            <font face="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;&nbsp;
                                                 <input type="reset" value="  ยกเลิก  " name="B2">
                                             </font>
                                         </p>
@@ -152,12 +152,12 @@ if ($arr["an"] != "") {
                         <table border="2" cellpadding="0" cellspacing="0" width="100%">
                             <tr>
                                 <td width="100%">
-                                    <form method="POST" action="chgwa.php" target="_blank">
+                                    <form method="POST" action="chgwa.php">
                                         <input type="hidden" name="codeward" value="<?= $codeward; ?>" />
                                         <p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;รับย้ายผู้ป่วยจากหออื่น</b></p>
                                         <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                            รับย้ายจากหอ <select size="1" name="ward">
-                                                <option selected>-เลือกหอผู้ป่วย-</option>
+                                            รับย้ายจากหอ <select size="1" name="ward" required>
+                                                <option value="">-เลือกหอผู้ป่วย-</option>
                                                 <option value="42">หอผู้ป่วยรวม</option>
                                                 <option value="43">หอผู้ป่วยสูตินรี</option>
                                                 <option value="44">หอผู้ป่วย ICU</option>
@@ -165,7 +165,8 @@ if ($arr["an"] != "") {
                                                 <option value="46">หอผู้ป่วย Cohort Ward</option>
                                                 <option value="47">หอผู้ป่วย Home Isolation</option>
                                                 <option value="48">หอผู้ป่วย รพ.สนาม</option>
-                                            </select></p>
+                                            </select>
+                                        </p>
                                         <p>
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="  ตกลง  " name="B1">&nbsp;&nbsp;<input type="reset" value="  ลบทิ้ง  " name="B2">
                                             <input type="hidden" name="cBedcode" value="<?= $cBedcode; ?>">
