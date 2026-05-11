@@ -68,6 +68,7 @@ if ($result) {
     $cbedcode = $row->bedcode;
     $calroom = $row->lastcalroom;
     $c19status = $row->c19status;
+    $diag1 = $row->diag1;
 } else {
     echo "ไม่พบ bedcode : $outbcode";
     exit();
@@ -90,16 +91,23 @@ echo "หอเดิม ".$ward_lists[$cbedcode1]."<br>";
 echo "หอใหม่ ".$ward_lists[$bedcode1]."<br>";
 echo "<br>";
 
-$chgdate = (substr($calroom, 0, 4) - 543) . substr($calroom, 4); //วันนอน
-$datenow = date("Y-m-d H:i:s"); //วันนี้
-$diffInSeconds = abs(strtotime($datenow) - strtotime($chgdate));
-$days = floor($diffInSeconds / (60 * 60 * 24));
-$hours = floor(($diffInSeconds % (60 * 60 * 24)) / (60 * 60));
+dump($oDate);
+
+$chgdate = (substr($oDate, 0, 4) - 543) . substr($oDate, 4); //วันนอน
+dump($chgdate);
+
+$diffInSeconds = abs(strtotime(date("Y-m-d H:i:s")) - strtotime($chgdate));
+dump($diffInSeconds);
+
+$days = floor($diffInSeconds / (60 * 60 * 24)); // 60 * 60 * 24 = 86400 คือจำนวนวินาทีใน 1 วัน
+$hours = floor(($diffInSeconds % (60 * 60 * 24)) / (60 * 60)); // 60 * 60 = 3600 คือจำนวนวินาทีใน 1 ชั่วโมง
 
 echo "จำนวนวัน $days วัน $hours ชั่วโมง &nbsp;&nbsp;";
 echo "<br>";
 
-// $days เป็นวันที่คำนวณจาก bed.lastcalroom เอามา datediff กับ วันที่ปัจจุบัน  ถ้าเวลาเกิน 12.00 ให้เพิ่มอีก 1 วัน
+exit;
+
+// $days เป็นวันที่คำนวณจาก bed.lastcalroom เอามา datediff กับ วันที่ปัจจุบัน  ถ้าเวลาเกิน 12Hrs ให้ตีเป็น 1 วัน
 $dayslast = $days;
 if ($hours >= 12) {
     $dayslast = $days + 1;
@@ -191,6 +199,7 @@ $sql = "UPDATE bed SET
 `food`='',
 `officer`='',
 `chgdate`=now(),
+`diag1`='',
 `accno`=1,
 `lastcalroom`='0000-00-00 00:00:00',
 `days`=0,
@@ -229,6 +238,7 @@ $sql = "UPDATE bed SET
 `food`='$food',
 `officer`='$sOfficer',
 `chgdate`='$Thidate',
+`diag1`='$diag1',
 `accno`='$accno',
 `lastcalroom`='$calroom4',
 `c19status`='$c19status'
