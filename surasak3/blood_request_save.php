@@ -18,6 +18,16 @@ if (!$conn) {
 
 mysqli_set_charset($conn, 'utf8');
 
+$wardArray = array(
+    '42' => 'หอผู้ป่วยรวม',
+    '43' => 'หอผู้ป่วยสูติ',
+    '44' => 'หอผู้ป่วยICU',
+    '45' => 'หอผู้ป่วยพิเศษ',
+    '46' => 'หอผู้ป่วย Cohort Ward',
+    '47' => 'ผู้ป่วย Home Isolation',
+    '48' => 'ผู้ป่วย รพ.สนาม',
+);
+
 $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 
 // ========== Helper: sanitize ==========
@@ -66,6 +76,7 @@ $doctor_order    = clean($conn, isset($_POST['doctor_order'])    ? $_POST['docto
 $nurse           = clean($conn, isset($_POST['nurse'])           ? $_POST['nurse']           : '');
 $date_drawn      = clean($conn, isset($_POST['date_drawn'])      ? $_POST['date_drawn']      : '');
 $ward      = clean($conn, isset($_POST['ward_code'])      ? $_POST['ward_code']      : '');
+$unit_request      = clean($conn, isset($_POST['unit_request'])      ? $_POST['unit_request']      : '');
 // แปลง date_drawn จาก datetime-local (YYYY-MM-DDTHH:MM) → MySQL DATETIME
 if ($date_drawn != '') {
     $date_drawn = str_replace('T', ' ', $date_drawn);
@@ -88,7 +99,7 @@ $sql = "INSERT INTO blood_requests (
     reason, other_reason,
     blood_order_date, blood_used_date,
     doctor_order, nurse, date_drawn,
-    created_at, ward
+    created_at, ward, step, unit_request
 ) VALUES (
     '{$hn}', '{$an}', '{$patient_name}', '{$diag}', '{$doctor}', '{$ptright}',
     '{$hct}', {$got_blood}, {$get_blood_date}, '{$hospital}',
@@ -99,13 +110,72 @@ $sql = "INSERT INTO blood_requests (
     '{$reason}', '{$other_reason}',
     {$blood_order_date}, {$blood_used_date},
     '{$doctor_order}', '{$nurse}', {$date_drawn_sql},
-    NOW(), {$ward}
+    NOW(), {$ward}, '1', {$unit_request}
 )";
-
 $result = mysqli_query($conn, $sql);
 
 if ($result) {
     $insert_id = mysqli_insert_id($conn);
+
+    // http://192.168.131.220/bloodstock/notify.php
+    $ward_name = $wardArray[$ward];
+    $msg = "📌 มีใบขอเลือดจาก <b>$ward_name</b> 📌\n";
+    $msg .= "<b>AN</b>: $an\n";
+    $msg .= "<b>ชื่อ-สกุล</b>: $patient_name\n";
+    if(!empty($hct)){
+        $msg .= "<b>HCT</b> : $hct%\n";
+    }
+
+    if($got_blood==0){
+        $msg .= "ไม่เคยได้รับเลือด\n";
+    }else{
+        $msg .= "เคยได้รับเลือด\n";
+        $msg .= "ครั้งสุดท้ายเมื่อวันที่ $get_blood_date ที่ $hospital\n";
+    }
+    $msg .= "<b>Groupเลือด</b>: $blood_group $blood_group_rh\n";
+
+    $msg .= "<b>จำนวนถุงเลือดที่ต้องการ</b>: $unit_request\n";
+
+    $unit = '';
+    if(!empty($prc)){
+        $unit = "<b>PRC</b>: $prc_unit Unit";
+    }
+    if(!empty($lrpc)){
+        $unit = "<b>LRPC</b>: $lrpc_unit Unit";
+    }
+    if(!empty($ffp)){
+        $unit = "<b>FFP</b>: $ffp_unit Unit";
+    }
+    if(!empty($plt_conc)){
+        $unit = "<b>Plt.Conc</b>: $plt_conc_unit Unit";
+    }
+    if(!empty($sdp)){
+        $unit = "<b>SDP</b>: $sdp_unit Unit";
+    }
+    if(!empty($other)){
+        $unit = "<b>Other</b>: $other_other";
+    }
+    $msg .= "ชนิดเลือดที่ต้องการขอ $unit\n";
+
+    if (!empty($other_reason)) {
+        $reason = $other_reason;
+    }
+    $msg .= "<b>ความต้องการ / เหตุผลการใช้เลือด</b>: $reason\n";
+    $msg .= "<b>ผู้ร้องขอ</b>: $nurse\n\n";
+    
+
+    $msg = '<a href="['.DOMAIN_PATH.'/blood_request_list.php](รายละเอียด)">';
+
+    $curl = curl_init();
+    curl_setopt( $curl, CURLOPT_URL, "http://192.168.131.220/bloodstock/notify.php");
+    curl_setopt( $curl, CURLOPT_POST, 1);
+    curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".urlencode($msg)."&token=7a0aedcbd1941f4df7b3350a8e59bc7e36f94a3e");
+    curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
+    curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
+    $result = curl_exec( $curl );
+    curl_close($curl);
+    
     header('Content-Type: application/json; charset=utf-8');
     echo $json->encode(array(
         'status'    => 'success',

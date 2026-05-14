@@ -200,9 +200,9 @@ if($hctRows>0){
                 <div class="col-md-3">
                     <div class="input-group">
                         <div class="input-group-text">
-                            <label class="ms-2 mb-0" for="ffp_check">Hct</label>
+                            <label class="ms-2 mb-0" for="hct">Hct</label>
                         </div>
-                        <input type="text" class="form-control type-4" focus-on="ffp_check" name="ffp_unit" value="<?=$hct?>">
+                        <input type="text" class="form-control type-4" focus-on="hct" name="hct" value="<?=$hct?>">
                         <span class="input-group-text">%</span>
                     </div>
                     <?php
@@ -215,7 +215,7 @@ if($hctRows>0){
             <div class="row g-3 mb-4">
                 <div class="col-12">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="radio" name="got_blood" id="not_ever" value="0" checked>
+                        <input class="form-check-input" type="radio" name="got_blood" id="not_ever" value="0">
                         <label class="form-check-label" for="not_ever">ไม่เคยได้รับเลือด</label>
                     </div>
                     <div class="form-check form-check-inline">
@@ -254,6 +254,12 @@ if($hctRows>0){
                         <option value="Rh Positive">Rh Positive</option>
                         <option value="Rh Negative">Rh Negative</option>
                     </select>
+                </div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label" for="unit_request">จำนวนถุงเลือดที่ต้องการ</label>
+                    <input type="number" class="form-control" name="unit_request" id="unit_request">
                 </div>
             </div>
 
@@ -394,6 +400,12 @@ if($hctRows>0){
         </form>
     </div>
 <?php
+}else{
+    ?>
+    <div class="alert alert-warning" role="alert">
+        กรุณาระบุ AN และเตียงผู้ป่วย
+    </div>
+    <?php
 }
 ?>
 </div>
@@ -405,7 +417,7 @@ if($hctRows>0){
 
     function initThaiDatePicker(divId,setFormat="Y-m-d") {
         flatpickr("#"+divId, {
-            enableTime: true,
+            enableTime: false,
             time_24hr: true,
             locale: "th", // ใช้ภาษาไทย (จ. อ. พ. ...)
             dateFormat: setFormat, // รูปแบบวันที่เก็บใน Database (ค.ศ.)
@@ -481,6 +493,12 @@ if($hctRows>0){
 
         if(checkType===false){
             swalWarning('กรุณาระบุชนิดเลือดที่ต้องการขอ');
+            return;
+        }
+
+        const unit_request = document.getElementById('unit_request').value;
+        if (unit_request === '') {
+            swalWarning('กรุณาระบุ จำนวนถุงเลือดที่ต้องการ');
             return;
         }
 
