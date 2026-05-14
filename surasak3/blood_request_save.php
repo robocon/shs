@@ -113,11 +113,9 @@ $sql = "INSERT INTO blood_requests (
     NOW(), {$ward}, '1', {$unit_request}
 )";
 $result = mysqli_query($conn, $sql);
-
 if ($result) {
     $insert_id = mysqli_insert_id($conn);
 
-    // http://192.168.131.220/bloodstock/notify.php
     $ward_name = $wardArray[$ward];
     $msg = "📌 มีใบขอเลือดจาก <b>$ward_name</b> 📌\n";
     $msg .= "<b>AN</b>: $an\n";
@@ -132,9 +130,9 @@ if ($result) {
         $msg .= "เคยได้รับเลือด\n";
         $msg .= "ครั้งสุดท้ายเมื่อวันที่ $get_blood_date ที่ $hospital\n";
     }
-    $msg .= "<b>Groupเลือด</b>: $blood_group $blood_group_rh\n";
+    $msg .= "👉 <b>Groupเลือด</b>: $blood_group $blood_group_rh\n";
 
-    $msg .= "<b>จำนวนถุงเลือดที่ต้องการ</b>: $unit_request\n";
+    $msg .= "👉 <b>จำนวนถุงเลือดที่ต้องการ</b>: $unit_request\n";
 
     $unit = '';
     if(!empty($prc)){
@@ -155,21 +153,25 @@ if ($result) {
     if(!empty($other)){
         $unit = "<b>Other</b>: $other_other";
     }
-    $msg .= "ชนิดเลือดที่ต้องการขอ $unit\n";
+    $msg .= "👉 ชนิดเลือดที่ต้องการขอ $unit\n";
 
     if (!empty($other_reason)) {
         $reason = $other_reason;
     }
-    $msg .= "<b>ความต้องการ / เหตุผลการใช้เลือด</b>: $reason\n";
-    $msg .= "<b>ผู้ร้องขอ</b>: $nurse\n\n";
+    $msg .= "👉 <b>ความต้องการ / เหตุผลการใช้เลือด</b>: $reason\n";
+    $msg .= "🙋‍♀️<b>ผู้ร้องขอ</b>: $nurse\n\n";
     
 
-    $msg = '<a href="['.DOMAIN_PATH.'/blood_request_list.php](รายละเอียด)">';
+    $msg .= '🚀 <a href="https://surasakhospital.ngrok.io/bloodstock/blood_request_list.php">รายละเอียด</a>';
+    $params = array(
+        'message' => $msg,
+        'token' => '7a0aedcbd1941f4df7b3350a8e59bc7e36f94a3e'
+    );
 
     $curl = curl_init();
     curl_setopt( $curl, CURLOPT_URL, "http://192.168.131.220/bloodstock/notify.php");
     curl_setopt( $curl, CURLOPT_POST, 1);
-    curl_setopt( $curl, CURLOPT_POSTFIELDS, "message=".urlencode($msg)."&token=7a0aedcbd1941f4df7b3350a8e59bc7e36f94a3e");
+    curl_setopt( $curl, CURLOPT_POSTFIELDS, http_build_query($params));
     curl_setopt( $curl, CURLOPT_HTTPHEADER, array( 'Content-type: application/x-www-form-urlencoded' ));
     curl_setopt( $curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt( $curl, CURLOPT_TIMEOUT, 10);
