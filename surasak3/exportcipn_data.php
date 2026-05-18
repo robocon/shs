@@ -84,6 +84,7 @@ $thimonth=$_POST["thiyr"]."-".$_POST["rptmo"];
     <td width="21%" align="center" bgcolor="#20B2AA"><strong>ชื่อ - นามสกุล</strong></td>
     <td width="11%" align="center" bgcolor="#20B2AA"><strong>หมายเลขอนุมัติ</strong></td>
     <td width="10%" align="center" bgcolor="#20B2AA"><strong>จำนวนเงิน</strong></td>
+	<td width="10%" align="center" bgcolor="#20B2AA"><strong>ค่า Adjrw</strong></td>
     <td width="10%" align="center" bgcolor="#20B2AA"><strong>ส่งออกข้อมูล</strong></td>
 	<td width="10%" align="center" bgcolor="#F4D03F"><strong>ส่งออกข้อมูล</strong></td>
 	<td width="10%" align="center" bgcolor="#F1948A"><strong>ส่งออกข้อมูล</strong></td>
@@ -116,12 +117,14 @@ if($rows["claimcipn"]=="s"){  //กำลังส่งข้อมูล
     <td><?=$rows["ptname"];?></td>   
     <td align="center"><?=$rows["opreg"];?></td>
     <td align="center"><?=number_format($rows["price"],2);?></td>
+	<td align="center"><?=$rows["adjrw"];?></td>
 	<?php
 	if($rows["an"]=="63/2594" || $rows["an"]=="63/2726" || $rows["an"]=="64/58" || $rows["an"]=="64/854" || $rows["an"]=="64/751"
 	|| $rows["an"]=="64/526" || $rows["an"]=="64/1620" || $rows["an"]=="64/1809" || $rows["an"]=="65/112" || $rows["an"]=="65/296"
 	|| $rows["an"]=="65/204" || $rows["an"]=="65/1173" || $rows["an"]=="66/302" || $rows["an"]=="66/473" || $rows["an"]=="66/625"
 	|| $rows["an"]=="68/549" || $rows["an"]=="68/1079" || $rows["an"]=="68/1126" || $rows["an"]=="68/1286" || $rows["an"]=="68/1382"
-	|| $rows["an"]=="68/1498" || $rows["an"]=="68/1471" || $rows["an"]=="69/150" || $rows["an"]=="69/172" || $rows["an"]=="69/289"){
+	|| $rows["an"]=="68/1498" || $rows["an"]=="68/1471" || $rows["an"]=="69/150" || $rows["an"]=="69/172" || $rows["an"]=="69/289"
+	|| $rows["an"]=="69/540"){
 	?>
     <td align="center"><? if($rows["claimcipn"]!="y"){ ?><a href="datacipn/exportdatacipn_other.php?an=<?=$rows["an"];?>">ดาวน์โหลดไฟล์ร่วมจ่าย</a><? } ?></td>
 	<?php

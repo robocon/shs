@@ -5,7 +5,7 @@ $json = new Services_JSON();
 
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
 if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
-    echo "Permission Deny";
+    header('Location: login_page.php');
     exit;
 }
 
@@ -66,6 +66,10 @@ if($action==='delete'){
 </head>
 <body>
     <style>
+        body{
+            font-family: "TH SarabunPSK";
+            font-size:16pt;
+        }
         label:hover, input[type="checkbox"]:hover{
             cursor: pointer;
         }
@@ -98,10 +102,10 @@ if($action==='delete'){
                 <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
                     <div class="col-auto">
                         <label for="hn" class="visually-hidden">HN</label>
-                        <input type="input" class="form-control" name="hn" id="hn" placeholder="ค้นหาจาก HN" value="<?=$hn;?>">
+                        <input type="input" class="form-control form-control-sm" name="hn" id="hn" placeholder="ค้นหาจาก HN" value="<?=$hn;?>">
                     </div>
                         <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                        <button type="submit" class="btn btn-primary mb-3 btn-sm">ค้นหา</button>
                         <input type="hidden" name="page" value="search">
                     </div>
                 </form>
@@ -109,17 +113,17 @@ if($action==='delete'){
             <div class="col">
                 <form action="digital_opd_manage.php" method="post" id="submitForm" class="row g-3">
                     <div class="col-auto">
-                        <label for="date" class="col-form-label">วันที่อัพโหลด</label>
+                        <label for="date" class="col-form-label col-form-label-sm">วันที่อัพโหลด</label>
                     </div>
                     <div class="col-auto">
-                        <input type="date" class="form-control" name="date" id="date" placeholder="เช่น 2024-11-31" value="<?=$date;?>">
+                        <input type="date" class="form-control form-control-sm" name="date" id="date" placeholder="เช่น 2024-11-31" value="<?=$date;?>">
                     </div>
                     <div class="col-md-2">
                         <?php 
                         $sql = "SELECT `row_id`,`name` FROM `doctor` WHERE `status` = 'y' AND `doctorcode` <> '' ORDER BY `row_id` ";
                         $q = $dbi->query($sql);
                         ?>
-                        <select name="doctor" id="doctor" class="form-select">
+                        <select name="doctor" id="doctor" class="form-select form-select-sm">
                             <option value="">แสดงทุกแพทย์</option>
                             <?php 
                             while ($a = $q->fetch_assoc()) { 
@@ -136,7 +140,7 @@ if($action==='delete'){
                         $sql = "SELECT * FROM `clinic`";
                         $q = $dbi->query($sql);
                         ?>
-                        <select name="clinic" id="clinic" class="form-select">
+                        <select name="clinic" id="clinic" class="form-select form-select-sm">
                             <option value="">แสดงทุกคลินิก</option>
                             <?php 
                             while ($a = $q->fetch_assoc()) { 
@@ -153,7 +157,7 @@ if($action==='delete'){
                         $sql = "SELECT * FROM `sub_clinic` WHERE `status` = 'y' ";
                         $q = $dbi->query($sql);
                         ?>
-                        <select name="sub_clinic" id="sub_clinic" class="form-select">
+                        <select name="sub_clinic" id="sub_clinic" class="form-select form-select-sm">
                             <option value="">แสดงทุกคลินิกย่อย</option>
                             <?php 
                             $subClinic = array();
@@ -171,7 +175,21 @@ if($action==='delete'){
                         </select>
                     </div>
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-3">ค้นหา</button>
+                    <?php
+                    $sql = "SELECT `name` FROM `inputm` WHERE `status` = 'y' AND `menucode` IN ('ADMOPD','ADMER') ";
+                    $q = $dbi->query($sql);
+                    ?>
+                        <select name="officer" id="officer" class="form-select form-select-sm">
+                            <option value="">เลือกตามชื่อเจ้าหน้าที่</option>
+                        <?php
+                        while ($a = $q->fetch_assoc()) {
+                            ?><option value="<?=$a['name'];?>" ><?=$a['name'];?></option><?php
+                        }
+                        ?>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary mb-3 btn-sm">ค้นหา</button>
                         <input type="hidden" name="page" value="search">
                     </div>
                 </form>
@@ -193,6 +211,7 @@ if($action==='delete'){
                 $doctor = sprintf("%s", $_POST['doctor']);
                 $clinic = sprintf("%s", $_POST['clinic']);
                 $sub_clinic = sprintf("%s", $_POST['sub_clinic']);
+                $officer = sprintf("%s", $_POST['officer']);
                 $sqlDt = '';
                 if(!empty($doctor)){
                     $sqlDt .= " AND `doctor` = '$doctor'";
@@ -202,6 +221,9 @@ if($action==='delete'){
                 }
                 if(!empty($sub_clinic)){
                     $sqlDt .= " AND `sub_clinic` = '$sub_clinic'";
+                }
+                if(!empty($officer)){
+                    $sqlDt .= " AND `officer` = '$officer'";
                 }
                 $items = new stdClass;
                 $sql = "SELECT a.*,b.`hn`,CONCAT(b.`yot`,b.`name`,' ',b.`surname`) AS `ptname` FROM ( 

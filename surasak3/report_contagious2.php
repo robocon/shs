@@ -555,7 +555,61 @@ $numg418=mysql_num_rows($queryg418);
 $sumg18=$numg118+$numg218+$numg318+$numg418;
 //-------------- end สครับไทฟัส -------------------------------------//
 
-$total=$sumg1+$sumg2+$sumg3+$sumg4+$sumg5+$sumg6+$sumg7+$sumg8+$sumg9+$sumg10+$sumg11+$sumg12+$sumg13+$sumg14+$sumg15+$sumg16+$sumg17+$sumg18;
+//-------------- start โรคไข้ฝีดาษวานร -------------------------------------//
+
+$sqlg119="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G1%' and (icd10 = 'B04' ) ";
+//echo $sqlg119;
+$queryg119=mysql_query($sqlg119);
+$numg119=mysql_num_rows($queryg119);
+
+//echo "--->".$numg11;
+
+$sqlg219="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G2%' and (icd10 = 'B04' ) ";
+//echo $sqlg219;
+$queryg219=mysql_query($sqlg219);
+$numg219=mysql_num_rows($queryg219);
+
+$sqlg319="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G3%' and (icd10 = 'B04' ) ";
+//echo $sqlg319;
+$queryg319=mysql_query($sqlg319);
+$numg319=mysql_num_rows($queryg319);
+
+$sqlg419="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G4%' and (icd10 = 'B04' ) ";
+//echo $sqlg419;
+$queryg419=mysql_query($sqlg419);
+$numg419=mysql_num_rows($queryg419);
+
+$sumg19=$numg119+$numg219+$numg319+$numg419;
+//-------------- end โรคไข้ฝีดาษวานร -------------------------------------//
+
+//-------------- start สครับไทฟัส -------------------------------------//
+
+$sqlg120="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G1%' and (icd10 LIKE 'R50.8%' OR icd10 LIKE 'R50.9%') ";
+//echo $sqlg120;
+$queryg120=mysql_query($sqlg120);
+$numg120=mysql_num_rows($queryg120);
+
+//echo "--->".$numg11;
+
+$sqlg220="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G2%' and (icd10 LIKE 'R50.8%' OR icd10 LIKE 'R50.9%')";
+//echo $sqlg220;
+$queryg220=mysql_query($sqlg220);
+$numg220=mysql_num_rows($queryg220);
+
+$sqlg320="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G3%' and (icd10 LIKE 'R50.8%' OR icd10 LIKE 'R50.9%')";
+//echo $sqlg320;
+$queryg320=mysql_query($sqlg320);
+$numg320=mysql_num_rows($queryg320);
+
+$sqlg420="SELECT * FROM reportopday WHERE thidate like '$chkdate%' AND  goup like 'G4%' and (icd10 LIKE 'R50.8%' OR icd10 LIKE 'R50.9%')";
+//echo $sqlg420;
+$queryg420=mysql_query($sqlg420);
+$numg420=mysql_num_rows($queryg420);
+
+$sumg20=$numg120+$numg220+$numg320+$numg420;
+//-------------- end สครับไทฟัส -------------------------------------//
+
+$total=$sumg1+$sumg2+$sumg3+$sumg4+$sumg5+$sumg6+$sumg7+$sumg8+$sumg9+$sumg10+$sumg11+$sumg12+$sumg13+$sumg14+$sumg15+$sumg16+$sumg17+$sumg18+$sumg19+$sumg20;
 ?>
 <hr />
 <div align="center" style="margin-top: 20px;"><strong>รายงานการเฝ้าระวังโรคติดต่อสำคัญในกำลังพลและครอบครัว ทบ.</strong></div>
@@ -796,6 +850,30 @@ $total=$sumg1+$sumg2+$sumg3+$sumg4+$sumg5+$sumg6+$sumg7+$sumg8+$sumg9+$sumg10+$s
     <td align="center">0</td>
     <td align="center" ><?=$sumg18;?></td>
   </tr>
+  <tr>
+    <td align="center">19</td>
+    <td align="left" >โรคไข้ฝีดาษวานร</td>
+    <td align="left" >B04</td>
+    <td align="center" ><?=$numg119;?></td>
+    <td align="center" ><?=$numg219;?></td>
+    <td align="center" ><?=$numg319;?></td>
+    <td align="center" ><?=$numg419;?></td>
+    <td align="center" ><?=$sumg19;?></td>
+    <td align="center">0</td>
+    <td align="center" ><?=$sumg19;?></td>
+  </tr>
+  <tr>
+    <td align="center">20</td>
+    <td align="left" >โรคไข้ไม่ทราบสาเหตุ</td>
+    <td align="left" >(R50.8, R50.9)</td>
+    <td align="center" ><?=$numg120;?></td>
+    <td align="center" ><?=$numg220;?></td>
+    <td align="center" ><?=$numg320;?></td>
+    <td align="center" ><?=$numg420;?></td>
+    <td align="center" ><?=$sumg20;?></td>
+    <td align="center">0</td>
+    <td align="center" ><?=$sumg20;?></td>
+  </tr>  
   <tr>
     <td colspan="3" align="right"><strong>รวมทั้งสิ้น</strong></td>
     <td colspan="4" align="center" bgcolor="#999999">&nbsp;</td>

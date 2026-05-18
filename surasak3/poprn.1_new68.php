@@ -2260,7 +2260,7 @@ if($chkprice < 100000){ ?>
 <? if($chkprice < 100000){ ?>
   <tr>
     <td rowspan="3" valign="top" class="fc1-0">
-        <div style="margin-top:30px; margin-left:50px;">
+        <!--div style="margin-top:30px; margin-left:50px;">
     <span style="font-family:'TH SarabunPSK'; font-size: 20px;">
         - อนุมัติตามเสนอ<br>
         พ.อ.<br>
@@ -2268,7 +2268,7 @@ if($chkprice < 100000){ ?>
         
         <div style="margin-top:30px; margin-left:10px;white-space: nowrap;">ผอ.รพ.ค่ายสุรศักดิ์มนตรี</div>
     </span>
-</div>
+</div-->
     </td>
     <td height="30" align="right"><span class="fc1-0"><?=$rows["yot"];?></span></td>
     <td height="30" align="center">&nbsp;</td>
@@ -2294,7 +2294,7 @@ if($chkprice < 100000){ ?>
   <tr>
     <td valign="top" class="fc1-0">
         <? if($count == 1){ // แสดงข้อความอนุมัติเฉพาะบรรทัดแรกของคณะกรรมการ ?>
-        <div style="margin-top:30px; margin-left:50px;">
+        <!--div style="margin-top:30px; margin-left:50px;">
     <span style="font-family:'TH SarabunPSK'; font-size: 20px;">
         - อนุมัติตามเสนอ<br>
         พ.อ.<br>
@@ -2302,7 +2302,7 @@ if($chkprice < 100000){ ?>
         
         <div style="margin-top:30px; margin-left:10px;white-space: nowrap;">ผอ.รพ.ค่ายสุรศักดิ์มนตรี</div>
     </span>
-</div>
+</div-->
         <? } ?>
     </td>
     <td height="30" align="right"><span class="fc1-0"><?=$rows1["yot"];?></span></td>
