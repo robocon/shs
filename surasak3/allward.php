@@ -3,6 +3,9 @@ session_start();
 require_once dirname(__FILE__).'/includes/config.php';
 include_once dirname(__FILE__).'/connect.php';
 
+$dbi = mysqli_connect(HOST,USER,PASS,DB,PORT);
+$dbi->query("SET NAMES UTF8");
+
 $bsConn = mysqli_connect(BLOOD_SERVER,BLOOD_USER,BLOOD_PASS,BLOOD_DB);
 $bsConn->query("SET NAMES UTF8");
 
@@ -41,6 +44,10 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 .a-green{
 	background-color: #198754;
 	color: #ffffff!important;
+}
+.a-warning{
+	background-color: #ffc107;
+	color: #000000!important;
 }
 </style>
 <br />
@@ -242,7 +249,7 @@ $(document).ready(function(){
 			</td>
 			
             <td class="tablefontt1">ประเภท  :</td>
-            <td class="tablefont"><u><i><?=$idguard;?></i></u></td>			
+            <td class="tablefont"><u><i><?=$idguard;?></i></u></td>
           </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top" >
@@ -272,9 +279,25 @@ $(document).ready(function(){
 			<?php
 			$test_enable = true;
 			if($test_enable && $an){
+
+				// $sql = "SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1";
+				$resb = $dbi->query("SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1");
+				$breq = $resb->fetch_assoc();
 				$bReqText = 'ใบขอเลือด';
 				$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
-				?><a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button a-green tablefont"><?= $bReqText; ?></a><?php
+				$btnColor = 'a-green';
+				if($breq['step']=='1' OR $breq['step']=='2'){
+					if($breq['step']=='1'){
+						$bReqText = 'รอใบตอบรับ';
+					}else{
+						$bReqText = 'รอยืนยันถุงเลือด';
+					}
+					
+					$bReqOnClick = '';
+					$btnColor = 'a-warning';
+				}
+				
+				?><a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button <?= $btnColor; ?> tablefont"><?= $bReqText; ?></a><?php
 			}
 			?>
             </td>
