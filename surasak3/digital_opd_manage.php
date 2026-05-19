@@ -1,6 +1,5 @@
 <?php 
-require_once 'bootstrap.php';
-include_once 'includes/JSON.php';
+require dirname(__FILE__).'/newBootstrap.php';
 $json = new Services_JSON();
 
 $smenucode = sprintf("%s", $_SESSION['smenucode']);
@@ -8,9 +7,6 @@ if($smenucode!=='ADM' AND $smenucode!=='ADMCOM'){
     header('Location: login_page.php');
     exit;
 }
-
-$dbi = new mysqli(HOST,USER,PASS,DB);
-$dbi->query("SET NAMES UTF8");
 
 $q = $dbi->query("SELECT `row_id`,`name` FROM `doctor` ORDER BY `row_id` ASC ");
 $doctorList = array();
@@ -202,7 +198,7 @@ if($action==='delete'){
             $hn = sprintf("%s", $_POST['hn']);
             if(!empty($hn)){
                 $content = file_get_contents(LARAVEL_API_HOST.'getopcard?opcard_id='.$hn);
-                $items = json_decode($content);
+                $items = $json->decode($content);
             }
 
             $date = sprintf("%s", $_POST['date']);
