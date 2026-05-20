@@ -2541,28 +2541,29 @@ if(isset($_GET["action"]) && $_GET["action"] == "getTestAlphaBlocker"){
 if(isset($_GET["action"]) && $_GET["action"] == "drugLeftOver"){ // คำนวณยาผู้ป่วย
 	
 	$res = array('status'=>200);
-	$drugcode = sprintf("%s", trim($_GET['drugcode']));
-	$hn = sprintf("%s", $_GET['hn']);
-	$date = (date('Y')+543).date('-m-d');
-	$items = $classDrug->showDrDrugLeft($hn, $drugcode);
-	if($items!==false){
-		$drugLeft = $items['0'];
-		if($drugLeft['day_diff'] < $drugLeft['day_averrage']){ 
+	if($_SESSION['sOfficer']!='ณัชญ์ระวี บุรีคำ (ว.29760)'){
+		$drugcode = sprintf("%s", trim($_GET['drugcode']));
+		$hn = sprintf("%s", $_GET['hn']);
+		$date = (date('Y')+543).date('-m-d');
+		$items = $classDrug->showDrDrugLeft($hn, $drugcode);
+		if($items!==false){
+			$drugLeft = $items['0'];
+			if($drugLeft['day_diff'] < $drugLeft['day_averrage']){ 
 
-			$tradname = $drugLeft['tradname'];
-			$detail = $drugLeft['detail'];
-			$amount = $drugLeft['amount'];
-			
-			list($dateDrugrx, $timeDrugrx) = explode(' ', $drugLeft['latest_date']);
-			list($year, $month, $day) = explode('-', $dateDrugrx);
-			
-			$fullDateTh = "$day ".$def_fullm_th[$month]." ".($year);
+				$tradname = $drugLeft['tradname'];
+				$detail = $drugLeft['detail'];
+				$amount = $drugLeft['amount'];
+				
+				list($dateDrugrx, $timeDrugrx) = explode(' ', $drugLeft['latest_date']);
+				list($year, $month, $day) = explode('-', $dateDrugrx);
+				
+				$fullDateTh = "$day ".$def_fullm_th[$month]." ".($year);
 
-			$res['status'] = 400;
-			$res['msg'] = "<div style=\"font-size:20px;\">เมื่อวันที่ $fullDateTh<br>มีการจ่ายยา $tradname $genname<br>วิธีใช้: $detail<br>จำนวน $amount<br><strong>ระบบคำนวณแล้วว่ายาของผู้ป่วยน่าจะเหลืออยู่</strong><br><strong>เพื่อความมั่นใจ กรุณาสอบถามถึงยาที่เหลือของผู้ป่วยด้วยครับ</strong></div>";
+				$res['status'] = 400;
+				$res['msg'] = "<div style=\"font-size:20px;\">เมื่อวันที่ $fullDateTh<br>มีการจ่ายยา $tradname $genname<br>วิธีใช้: $detail<br>จำนวน $amount<br><strong>ระบบคำนวณแล้วว่ายาของผู้ป่วยน่าจะเหลืออยู่</strong><br><strong>เพื่อความมั่นใจ กรุณาสอบถามถึงยาที่เหลือของผู้ป่วยด้วยครับ</strong></div>";
+			}
 		}
 	}
-	
 	echo $json->encode($res);
 	exit;
 }
@@ -3074,7 +3075,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 	const drugTrim = drugcode.trim();
 
 	// คำนวณยาผู้ป่วย ถ้ายังเหลือจะทำการแจ้งเตือน
-	/*drugLeftOver(drugTrim).then((res)=>{
+	drugLeftOver(drugTrim).then((res)=>{
 		if(res.status==400){
 			Swal.fire({
 				title: '⚠️ แจ้งเตือน ⚠️', 
@@ -3082,7 +3083,7 @@ async function add_drug(drugcode,ptrightCode,drugLock,tradname,genname){
 				allowOutsideClick: false
 			});
 		}
-	});*/
+	});
 
 	checkAlphaBlocker(drugTrim).then((res)=>{
 		if(res.status==400){
@@ -4944,16 +4945,18 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 	?>
 	<div>
 		<?php
-		/*
 		$patient_hn = trim($_SESSION["hn_now"]);
 		$items = $classDrug->showDrDrugLeft($patient_hn);
+		
 		if($items!==false){
 			if(count($items)>0){
 			?>
 			<div style="margin-top:1em;">
 				<table width="100%">
 					<tr>
-						<th colspan="7"><strong>ยาที่เหลือในช่วง 6เดือนย้อนหลัง</strong></th>
+						<th colspan="7">
+							<div><strong>ยาที่เหลือในช่วง 6เดือนย้อนหลัง</strong></div>
+						</th>
 					</tr>
 					<tr valign="top" style="background-color:#f8d7da;">
 						<th width="7%">วันที่จ่ายยา</th>
@@ -4980,6 +4983,13 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 						<?php
 					}
 					?>
+					<th colspan="7">
+						<div style="font-size: 16px; font-family: TH SarabunPSK; background: #fbfd7c; border: 1px solid black; display: inline-block; padding: 2px 6px;">
+							<p style="margin:0;">ข้อมูลนี้เป็นการ<u>ประมาณจำนวนยาที่เหลือจากวิธีใช้ยา</u> โดยการคำนวณจากจำนวนวันที่ผู้ป่วยได้รับยาในช่วง 6 เดือนย้อนหลัง</p>
+							<p style="margin:0;">หากไม่มั่นใจ กรุณาประสานห้องจ่ายยาเพื่อตรวจสอบอีกครั้ง</p>
+							<p style="margin:0;">หากข้อมูลคำนวณและแสดงผลผิดพลาด กรุณา"จับภาพหน้าจอ" และส่งให้ศูนย์คอมฯเพื่อดำเนินการแก้ไขต่อไป ขอบคุณครับ</p>
+						</div>
+					</th>
 				</table>
 			</div>
 			<?php
@@ -4988,7 +4998,6 @@ $sql = " Select row_id, item, stkcutdate, dr_cancle From dphardep where hn = '".
 			$err = $classDrug->getError();
 			echo $err->errorMessage;
 		}
-		*/
 		?>
 	</div>
 </TD>
