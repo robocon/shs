@@ -83,33 +83,39 @@ if(isset($_GET["p2"])){
 $pdf->AddPage();
 $pdf->SetFont('AngsanaNew', '', 18);
 
-$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
+$pdf->Cell(0,5,"วันที่ ".$d."-".$m."-".$y."",0);
 $pdf->Ln();
-$pdf->Cell(20,5,"HN: ".$hn,0); $pdf->Cell(100,5,"VN: ".$vn,0);
+$pdf->Cell(0,5,"HN: ".$hn,0);
 $pdf->Ln();
-$pdf->Cell(20,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Cell(0,5,"VN: ".$vn,0);
 $pdf->Ln();
-$pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
-$pdf->Ln();
-
-$pdf->AddPage();
-$pdf->SetFont('AngsanaNew', '', 18);
-$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
-$pdf->Ln();
-$pdf->Cell(20,5,"HN: ".$hn,0); $pdf->Cell(100,5,"VN: ".$vn,0);
-$pdf->Ln();
-$pdf->Cell(20,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Cell(0,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
 $pdf->Ln();
 $pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
 $pdf->Ln();
 
 $pdf->AddPage();
 $pdf->SetFont('AngsanaNew', '', 18);
-$pdf->Cell(25,5,"วันที่ ".$d."-".$m."-".$y."",0);
+$pdf->Cell(0,5,"วันที่ ".$d."-".$m."-".$y."",0);
 $pdf->Ln();
-$pdf->Cell(20,5,"HN: ".$hn,0); $pdf->Cell(100,5,"VN: ".$vn,0);
+$pdf->Cell(0,5,"HN: ".$hn,0);
 $pdf->Ln();
-$pdf->Cell(20,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Cell(0,5,"VN: ".$vn,0);
+$pdf->Ln();
+$pdf->Cell(0,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
+$pdf->Ln();
+$pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
+$pdf->Ln();
+
+$pdf->AddPage();
+$pdf->SetFont('AngsanaNew', '', 18);
+$pdf->Cell(0,5,"วันที่ ".$d."-".$m."-".$y."",0);
+$pdf->Ln();
+$pdf->Cell(0,5,"HN: ".$hn,0);
+$pdf->Ln();
+$pdf->Cell(0,5,"VN: ".$vn,0);
+$pdf->Ln();
+$pdf->Cell(0,5,"ชื่อ - สกุล: ".iconv("UTF-8","WINDOWS-874",$ptname),0);
 $pdf->Ln();
 $pdf->MultiCell(0,5,"Lab: ".$txt_list_lab,0);
 $pdf->Ln();

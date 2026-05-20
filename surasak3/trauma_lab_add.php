@@ -1,7 +1,7 @@
 <?php
 session_start();
 
- include("connect.inc");
+ include("connect.php");
  
 $Thidate = (date("Y")+543).date("-m-d H:i:s"); 
 $Thaidate=date("d-m-").(date("Y")+543)."  ".date("H:i:s");
@@ -11,11 +11,8 @@ $item=0;
 	
 $item  = count($_SESSION["list_code"]);
 
-if($item == 0){
-				
-	echo "
-		
-		<BR><BR><CENTER>กรุณาเลือกรายการตรวจ LAB อย่างน้อย 1 รายการ</CENTER>";
+if($item == 0){			
+	echo "<BR><BR><CENTER>กรุณาเลือกรายการตรวจ LAB อย่างน้อย 1 รายการ</CENTER>";
 	exit();
 
 }

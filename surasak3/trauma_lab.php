@@ -3,9 +3,7 @@ session_start();
 if(isset($_GET["action"])){
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
-include("connect.inc");
-
-
+include("connect.php");
 
 function jschars($str)
 {
@@ -89,7 +87,10 @@ $count = count($_SESSION["list_code"]);
 	echo "<B>รายการ Lab : </B>
 	<TABLE align=\"center\" ID=\"main_tb\" width=\"98%\" border=\"1\" bordercolor=\"#000000\" cellpadding=\"3\" cellspacing=\"0\" style='BORDER-COLLAPSE: collapse'>
 		<TR class=\"tb_head\" >
-			<TD rowspan=\"2\" width=\"20\"><INPUT TYPE=\"checkbox\" NAME=\"\"></TD>
+			<TD rowspan=\"2\" width=\"20\" align=\"center\">
+			<div>เลือกทั้งหมด<div>
+			<INPUT TYPE=\"checkbox\" NAME=\"\" onclick=\"checkAllItems(this)\">
+			</TD>
 			<TD rowspan=\"2\" align=\"center\">รายการ</TD>
 			<TD colspan=\"2\" width=\"120\" align=\"center\">ราคา</TD>
 		</TR>
@@ -107,7 +108,7 @@ for($i=0;$i<$count;$i++){
 
 		echo "<TR bgcolor=\"".$color."\">
 			<TD width=\"20\" align=\"center\">
-				<INPUT TYPE=\"checkbox\" NAME=\"code[]\" value=\"".$_SESSION["list_code"][$i]."\">
+				<INPUT TYPE=\"checkbox\" class=\"lab_item\" NAME=\"code[]\" value=\"".$_SESSION["list_code"][$i]."\">
 			</TD>
 			<TD>".$_SESSION["list_detail"][$i]."</TD>
 			<TD align=\"right\">".$_SESSION["list_yprice"][$i]."</TD>
@@ -203,13 +204,13 @@ if(isset($_GET["action"]) && $_GET["action"] == "delete"){
 }
 
 $_SESSION["list_code"] = array() ;
-		$_SESSION["list_detail"] = array() ;
+$_SESSION["list_detail"] = array() ;
 
-		session_register("list_nprice");
-		session_register("list_yprice");
+session_register("list_nprice");
+session_register("list_yprice");
 
-		$_SESSION["list_nprice"] = array() ;
-		$_SESSION["list_yprice"] = array() ;
+$_SESSION["list_nprice"] = array() ;
+$_SESSION["list_yprice"] = array() ;
 		
 //runno  for chktranx
 session_unregister("nRunno");
@@ -260,6 +261,12 @@ body,td,th {
 
 label:hover{
 	cursor: pointer;
+}
+#lab-suit-items{
+	margin-top: 6px;
+}
+#lab-suit-items li{
+	padding-bottom: 4px;
 }
 </style>
 <SCRIPT LANGUAGE="JavaScript">
@@ -322,7 +329,7 @@ function addbycheck(statuscheck, code){
 
 function addsuittolist(suil){
 	
-	var code = suil.split('][');
+	var code = suil.split('|');
 	if(code.length > 0){
 		for(i=0;i<code.length;i++)
 			addtolist(code[i]);
@@ -575,35 +582,38 @@ $i++;
 		echo "<TD align='right' >";
 			echo "<INPUT TYPE=\"checkbox\" NAME=\"\" id=\"".jschars($list_lab_check[$i-1]["code"])."\" onclick=\"addbycheck(this.checked, '".jschars($list_lab_check[$i-1]["code"])."');\">";
 		echo "</TD>";
-		echo "<TD>".jschars($list_lab_check[$i-1]["detail"])."</TD>";
+		echo "<TD><label for=\"".jschars($list_lab_check[$i-1]["code"])."\">".jschars($list_lab_check[$i-1]["detail"])."</label></TD>";
 		if($i%$r==0)
 			echo "</TR><TR>";
 	}
 ?>
 </TR>
 <TR>
-	<TD colspan="2">
-	
-		<?php
-			$sql = "Select code, detail From labcare where left(code,3) ='@er' ";
-			$result = Mysql_Query($sql);
-			if(Mysql_num_rows($result) > 0){
-				echo "สูตร LAB<BR>";
+	<TD colspan="8">
+	<?php
+	$sql = "Select code, detail From labcare where left(code,3) = '@er' OR code = '@heat-injury' ";
+	$result = Mysql_Query($sql);
+	if(Mysql_num_rows($result) > 0){
+		?>
+		<div style="margin-top:8px; font-weight:bold">สูตร LAB</div>
+		<div>
+			<ol id="lab-suit-items">
+			<?php
 			while($arr = Mysql_fetch_assoc($result)){
-				$i=0;
 				$list = array();
 				$sql2 = "Select code From labsuit where suitcode = '".$arr["code"]."' ";
-				//echo $sql2;
 				$result2 = Mysql_Query($sql2);
 				while($arr2 = Mysql_fetch_assoc($result2)){
-					$list[$i] = $arr2["code"];
-					$i++;
+					$list[] = $arr2["code"];
 				}
-
-				echo "<A HREF=\"#\" Onclick=\"addsuittolist('".implode("][",$list)."');\">".$arr["detail"]."</A><BR>";
-			}		
+				echo "<li><A HREF=\"#\" Onclick=\"addsuittolist('".implode("|",$list)."');\">".$arr["detail"]."</A></li>";
 			}
-		?>
+			?>
+			</ol>
+		</div>
+		<?php
+	}
+	?>
 	</TD>
 </TR>
 <?php
@@ -652,20 +662,23 @@ if($_SESSION['smenucode']=='ADMNEWCHKUP'){
 <TR>
 	<TD>
 
-<SCRIPT LANGUAGE="JavaScript">
-
+<script>
 	function checkFrom(){
-		
 		if(document.form_list.doctor.value== ""){
 			alert("กรุณาเลือกชื่อ แพทย์ ด้วยครับ");
 			return false;
 		}else{
-			return truel
+			return true;
 		}
-
 	}
-
-</SCRIPT>
+	function checkAllItems(d){
+		let items = document.getElementsByClassName('lab_item');
+		for (let index = 0; index < items.length; index++) {
+			const element = items[index];
+			element.checked = d.checked;
+		}
+	}
+</script>
 
 
 <FORM  NAME="form_list" METHOD=POST ACTION="trauma_lab_add.php" Onsubmit="return checkFrom();">
@@ -674,49 +687,61 @@ if($_SESSION['smenucode']=='ADMNEWCHKUP'){
 	$sql = "Select ptname, ptright, vn, hn, an From opday where vn='".$_GET["vn"]."' Order by row_id DESC limit 1 ";
 	$result = Mysql_Query($sql) or die(Mysql_error());
 	$arr = Mysql_fetch_assoc($result);
-	echo "<B>ชื่อผู้ป่วย : </B>",$arr["ptname"]," <BR><B>สิทธิ์การรักษา : </B>",$arr["ptright"];
-	echo "<br><b>VN : </b>".$vn;
-
 	$dt_chkup = '';
 	$chk_select = '';
 	if($_SESSION['smenucode']=='ADMNEWCHKUP'){
 		$dt_chkup = 'MD041 วรวิทย์ วงษ์มณี';
 		$chk_select = 'selected="selected"';
 	}
-?><BR>
-<B>แพทย์ : </B>
-<SELECT NAME="doctor">
-	<option value="" selected>-- เลือกแพทย์ --</option>
-<?php
-
-	$sql = "Select name From doctor where status = 'y' AND row_id != '0' Order by name ASC ";
-	$result = Mysql_Query($sql);
-	
-	while(list($name) = Mysql_fetch_row($result)){ 
-
-		$selected = ($name===$dt_chkup) ? 'selected="selected"' : '' ;
-
-		echo "<option value=\"".$name."\" ".$selected.">".$name."</option>";
-	}
 ?>
-</SELECT>
+
+<table>
+	<tr>
+		<td align="right"><B>ชื่อผู้ป่วย : </B></td>
+		<td><?= $arr["ptname"]; ?></td>
+	</tr>
+	<tr>
+		<td align="right"><B>สิทธิ์การรักษา : </B></td>
+		<td><?= $arr["ptright"]; ?></td>
+	</tr>
+	<tr>
+		<td align="right"><B>VN : </B></td>
+		<td><?= $vn; ?></td>
+	</tr>
+	<tr>
+		<td align="right"><B>แพทย์ : </B></td>
+		<td>
+			<SELECT NAME="doctor">
+				<option value="" selected>-- เลือกแพทย์ --</option>
+				<?php
+				$sql = "Select name From doctor where status = 'y' AND row_id != '0' Order by name ASC ";
+				$result = Mysql_Query($sql);
+				while(list($name) = Mysql_fetch_row($result)){ 
+					$selected = ($name===$dt_chkup) ? 'selected="selected"' : '' ;
+					echo "<option value=\"".$name."\" ".$selected.">".$name."</option>";
+				}
+				?>
+			</SELECT>
+		</td>
+	</tr>
+	<tr>
+		<td align="right"><B>ประเภทการตรวจ :</B></td>
+		<td>
+			<SELECT NAME="type_diag">
+				<Option value="ตรวจวิเคราะห์เพื่อการรักษา">ตรวจวิเคราะห์เพื่อการรักษา</Option>
+				<Option value="ตรวจสุขภาพ" <?=$chk_select;?>>ตรวจสุขภาพ</Option>
+				<Option value="ประกันสังคมกรณีคลอดบุตร">ประกันสังคมกรณีคลอดบุตร</Option>
+			</SELECT>
+		</td>
+	</tr>
+</table>
 <BR>
-<B>ประเภทการตรวจ :</B>
-
-<SELECT NAME="type_diag">
-	<Option value="ตรวจวิเคราะห์เพื่อการรักษา">ตรวจวิเคราะห์เพื่อการรักษา</Option>
-	<Option value="ตรวจสุขภาพ" <?=$chk_select;?>>ตรวจสุขภาพ</Option>
-	<Option value="ประกันสังคมกรณีคลอดบุตร">ประกันสังคมกรณีคลอดบุตร</Option>
-</SELECT>
-
-
 <INPUT TYPE="hidden" name="ptname" value="<?php echo $arr["ptname"];?>">
 <INPUT TYPE="hidden" name="hn" value="<?php echo $arr["hn"];?>">
 <INPUT TYPE="hidden" name="an" value="<?php echo $arr["an"];?>">
 <INPUT TYPE="hidden" name="vn" value="<?php echo $_GET["vn"];?>">
 <INPUT TYPE="hidden" name="ptright" value="<?php echo $arr["ptright"];?>">
-<div id="viewlist">
-</div>
+<div id="viewlist"></div>
 </FORM>
 </TD>
 </TR>
