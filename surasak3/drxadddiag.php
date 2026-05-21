@@ -1,27 +1,26 @@
 <?php
 session_start();
-include("connect.php");
-
+include("connect.inc");
 
 if($_GET["action"] == "add"){
-	
+	$post_diag = $_POST["diag"];
 	if($_POST["chkdepart"]=="p"){	  //สั่งจ่ายยา
 	
 		$sdate=substr($_GET["sDate"],0,10);
 		list($y1,$m1,$d1)=explode("-",$sdate);
 		$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
 
-		$sql = "Update opday set  diag='".$_POST["diag"]."' where thdatevn = '".$chkdatevn."' limit 1";
+		$sql = "Update opday set  diag='$post_diag', diag_thai='$post_diag' where thdatevn = '".$chkdatevn."' limit 1";
 		$result = Mysql_Query($sql);
 
-		$sql = "Update phardep set diag = '".$_POST["diag"]."' WHERE row_id = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' limit 1"; 
+		$sql = "Update phardep set diag = '$post_diag' WHERE row_id = '".$_GET["nRow_id"]."'  AND date = '".$_GET["sDate"]."' limit 1"; 
 		$result = Mysql_Query($sql);
 	}
 	
 	if($_POST["chkdepart"]=="y"){  //หัตถการ/การรักษา
 		
 		if (empty($_POST["diag"]) || empty($_POST["hn"]) || empty($_SESSION["sVn"]) || empty($_POST["chkdate"])) {
-			echo "ข้อมูลไม่ครบ กรุณาตรวจสอบข้อมูลอีกครั้ง";
+				echo "ข้อมูลไม่ครบ กรุณาตรวจสอบข้อมูลอีกครั้ง";
 			exit;
 		}
 
@@ -29,10 +28,10 @@ if($_GET["action"] == "add"){
 		list($y1,$m1,$d1)=explode("-",$sdate);
 		$chkdatevn="$d1-$m1-$y1".$_SESSION["sVn"];
 
-		$sql = "Update opday set  diag='".$_POST["diag"]."' where thdatevn = '".$chkdatevn."' limit 1";
+		$sql = "Update opday set  diag='$post_diag', diag_thai='$post_diag' where thdatevn = '".$chkdatevn."' limit 1";
 		$result = Mysql_Query($sql);
 
-		$sql = "Update depart set diag = '".$_POST["diag"]."' WHERE hn = '".$_POST["hn"]."' AND tvn='".$_SESSION["sVn"]."'  AND date like '".$sdate."%'"; 
+		$sql = "Update depart set diag = '$post_diag' WHERE hn = '".$_POST["hn"]."' AND tvn='".$_SESSION["sVn"]."'  AND date like '".$sdate."%'"; 
 		$result = Mysql_Query($sql);
 
 	}
@@ -54,7 +53,7 @@ if($_GET["action"] == "add"){
 		echo "
 			<SCRIPT LANGUAGE=\"JavaScript\">
 				opener.location.reload();
-				window.close();		
+				window.close();
 			</SCRIPT>
 		";
 	}else{
@@ -83,17 +82,16 @@ $result = Mysql_Query($sql);
 list($date,$hn,$ptname,$ptright,$diag,$doctor) = Mysql_fetch_row($result);
 $chkdepart="y";  //ทำเฉพาะหัตถการ/การรักษา
 }
-?><style type="text/css">
-<!--
+?>
+<style type="text/css">
 body,td,th {
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
 .txtform {
-	font-family: TH SarabunPSK;
+	font-family: "TH SarabunPSK";
 	font-size: 18px;
 }
--->
 </style>
 
 <FORM METHOD=POST ACTION="drxadddiag.php?action=add&sDate=<?php echo urlencode($_GET["sDate"]);?>&nRow_id=<?php echo urlencode($_GET["nRow_id"]);?>">
@@ -104,25 +102,24 @@ body,td,th {
 <INPUT TYPE="hidden" NAME="doctor" value="<?php echo $doctor;?>">
 <INPUT TYPE="hidden" NAME="chkdepart" value="<?php echo $chkdepart;?>">
 <INPUT TYPE="hidden" NAME="chkdate" value="<?php echo $date;?>">
-<TABLE width="863">
+<TABLE width="">
 <TR>
-  <TD>&nbsp;</TD>
-  <TD><strong>แก้ไขชื่อโรค</strong></TD>
+  <TD colspan="2" style="text-align:center;"><strong>แก้ไขชื่อโรค</strong></TD>
 </TR>
 <TR>
-  <TD>&nbsp;</TD>
-  <TD><strong>HN : </strong><?php echo $hn;?></TD>
+  <TD align="right"><strong>HN : </strong></TD>
+  <TD><?php echo $hn;?></TD>
 </TR>
 <TR>
-  <TD>&nbsp;</TD>
-  <TD><strong>ชื่อ-สกุล : </strong><?php echo $ptname;?></TD>
+  <TD align="right"><strong>ชื่อ-สกุล : </strong></TD>
+  <TD><?php echo $ptname;?></TD>
 </TR>
 <TR>
-  <TD>&nbsp;</TD>
-  <TD><strong>สิทธิ : </strong><?php echo $ptright;?></TD>
+  <TD align="right"><strong>สิทธิ : </strong></TD>
+  <TD><?php echo $ptright;?></TD>
 </TR>
 <TR>
-	<TD>ชื่อโรค</TD>
+	<TD align="right"><strong>ชื่อโรค : </strong></TD>
 	<TD><INPUT NAME="diag" TYPE="text" class="txtform" value="<?php echo $diag;?>" size="50"></TD>
 </TR>
 <TR>
