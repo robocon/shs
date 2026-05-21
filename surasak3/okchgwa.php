@@ -264,15 +264,20 @@ if ($bedcode1 == '42') {
     $wname = 'หอผู้ป่วย รพ.สนาม';
 }
 
+
+$sql_ipcard = "UPDATE `ipcard` SET `bedcode` = '$inbcode', `my_ward` = '$wname' WHERE `an` = '$oAn' ";
+$result_ipcard = mysql_query($sql_ipcard);
+
+
 if ($cbedcode1 == $bedcode1) {
     $chgcode = "Bed";
 } else {
     $chgcode = "Ward";
 }
 
-$sql_ward = "INSERT INTO `ward_log` ( `regisdate` , `an` , `hn` , `ward` , `bedcode` , `chgcode` , `old` , `new` , day ,  `lastcall` , `office` ) 
- VALUES 
- ( '$Thidate', '$oAn', '$oHn', '$wname', '$oBedcode','$chgcode', '$cbedcode', '$inbcode', '$dayslast', '$Thidate', '$sOfficer')";
+$sql_ward = "INSERT INTO `ward_log` ( `regisdate` , `an` , `hn` , `ward` , `bedcode` , `chgcode` , `old` , `new` , `day` ,  `lastcall` , `office` ) 
+VALUES 
+( '$Thidate', '$oAn', '$oHn', '$wname', '$oBedcode','$chgcode', '$cbedcode', '$inbcode', '$dayslast', '$Thidate', '$sOfficer')";
 $result_ward = mysql_query($sql_ward) or die("insert data to ward_log fail: ".mysql_error());
 ////////////////////////////
 
