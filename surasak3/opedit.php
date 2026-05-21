@@ -1086,7 +1086,7 @@ return $pAge;
 		$ptCode = 'R07';
 	}
 
-	$sql = "Select * From ptright Order by code ASC ";
+	$sql = "Select * From ptright WHERE status !='n' Order by code ASC ";
 	$result = mysql_query($sql) or die(mysql_error());
 	while(list($ptright_code, $ptright_name) = mysql_fetch_row($result)){
 
