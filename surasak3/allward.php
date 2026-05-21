@@ -278,28 +278,24 @@ $(document).ready(function(){
             <? echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";?>&nbsp;&nbsp;  
             <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>ใบSETผ่าตัด</a>"; ?>
 			<?php
-			$test_enable = true;
-			if($test_enable && $an){
-
-				// $sql = "SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1";
-				$resb = $dbi->query("SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1");
-				$breq = $resb->fetch_assoc();
-				$bReqText = 'ใบขอเลือด';
-				$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
-				$btnColor = 'a-green';
-				if($breq['step']=='1' OR $breq['step']=='2'){
-					if($breq['step']=='1'){
-						$bReqText = 'รอใบตอบรับ';
-					}else{
-						$bReqText = 'รอยืนยันถุงเลือด';
-					}
-					
-					$bReqOnClick = '';
-					$btnColor = 'a-warning';
+			// $sql = "SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1";
+			$resb = $dbi->query("SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1");
+			$breq = $resb->fetch_assoc();
+			$bReqText = 'ใบขอเลือด';
+			$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
+			$btnColor = 'a-green';
+			if($breq['step']=='1' OR $breq['step']=='2'){
+				if($breq['step']=='1'){
+					$bReqText = 'รอใบตอบรับ';
+				}else{
+					$bReqText = 'รอยืนยันถุงเลือด';
 				}
 				
-				?><a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button <?= $btnColor; ?> tablefont"><?= $bReqText; ?></a><?php
+				$bReqOnClick = '';
+				$btnColor = 'a-warning';
 			}
+			?>
+			<a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button <?= $btnColor; ?> tablefont"><?= $bReqText; ?></a><?php
 			?>
             </td>
           </tr>
