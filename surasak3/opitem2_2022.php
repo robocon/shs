@@ -626,7 +626,8 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 		&& document.f2.credit[24].checked == false && document.f2.credit[25].checked == false && document.f2.credit[26].checked == false 
 		&& document.f2.credit[27].checked == false && document.f2.credit[28].checked == false && document.f2.credit[29].checked == false 
 		&& document.f2.credit[30].checked == false && document.f2.credit[31].checked == false && document.f2.credit[32].checked == false 
-		&& document.f2.credit[33].checked == false && document.f2.credit[34].checked == false && document.f2.credit[35].checked == false){
+		&& document.f2.credit[33].checked == false && document.f2.credit[34].checked == false && document.f2.credit[35].checked == false
+		&& document.f2.credit[36].checked == false){
 			alert("กรุณาเลือกวิธี ชำระเงินด้วยครับ");
 			return false;
 		}else if((document.f2.credit[2].checked == true || document.f2.credit[4].checked == true) && document.f2.detail_1.value == ''){
@@ -677,7 +678,7 @@ $sSumYprice=$sumyprice+$DsDPY+$DsDSY+$DsNessdy+$DsEssd;
 
     print "<font face='Angsana New' size='5'><b>(เบิกไม่ได้ $sSumNprice บาท</b></font>, <font face='Angsana New' size='5'><b>เบิกได้ $sSumYprice บาท)</b></font><br>";
 
-    if (substr($sPtright,0,3)=='R03 ' OR 'R09' OR 'R07' OR 'R10' OR 'R11' OR 'R13' OR 'R33'){/********************************************************R03*/
+    if (substr($sPtright,0,3)=='R03 ' OR 'R09' OR 'R07' OR 'R10' OR 'R11' OR 'R13' OR 'R33' OR 'R16'){/********************************************************R03*/
           //$cPaid=$sSumNprice;
           //$cPaid=number_format($cPaid,2,'.','');
           print "<font face='Angsana New' size='5'><b>ผู้ป่วยสิทธิ: $sPtright</b></font><br />";
@@ -869,7 +870,19 @@ print "<form name='f2' method='POST' action='opbill3_2022.php' Onsubmit='return 
 		 	<TD>การรถไฟแห่งประเทศไทย</TD>		
 			<TD>&nbsp;</TD>
 			<TD>&nbsp;</TD>																 
-		 </TR>			 
+		 </TR>
+
+		 <TR>
+			<TD align='right'>
+				&nbsp;&nbsp;<INPUT TYPE='radio' NAME='credit' VALUE='ครูเอกชน' onclick=\"detailhead4.style.display='none';\"></TD>
+		 	<TD>ครูเอกชน</TD>			
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>	
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>			
+			<TD>&nbsp;</TD>
+			<TD>&nbsp;</TD>																 
+		 </TR>		 
 		 		 
 		 </TABLE>";
 		 print "<span id='detailhead2' style='display:none'><span id='detail2'></span><INPUT TYPE='text' NAME='detail_1'><BR></span>";
