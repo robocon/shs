@@ -10,16 +10,6 @@ if ($dbi->connect_error) {
 }
 
 $wardCode = sprintf("%s", $dbi->real_escape_string($_GET['ward_code']));
-if(empty($wardCode)){
-    ?>
-    <div class="alert alert-danger" role="alert">
-        <h4 class="alert-heading">ไม่พบหอผู้ป่วย</h4>
-        <p>กรุณาระบุหอผู้ป่วย</p>
-    </div>
-    <?php
-    exit();
-}
-
 $classBed = new Bed();
 $wardArray = array(
 '42' => 'หอผู้ป่วยรวม',
@@ -30,12 +20,25 @@ $wardArray = array(
 '47' => 'ผู้ป่วย Home Isolation',
 '48' => 'ผู้ป่วย รพ.สนาม',
 );
+
+if(empty($wardCode) OR empty($wardArray[$wardCode])){
+    ?>
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">ไม่พบหอผู้ป่วย</h4>
+        <p>กรุณาระบุหอผู้ป่วย</p>
+    </div>
+    <?php
+    exit();
+}
+
 $groupConvertToText = array(
     'O'=>'โอ',
     'B'=>'บี',
     'A'=>'เอ',
     'AB'=>'เอบี'
 );
+
+$json = new Services_JSON();
 
 // ตั้งค่าหัวข้อหน้าเว็บ
 $pageTitle = "รายการใบขอเลือด";
@@ -45,7 +48,7 @@ $pageTitle = "รายการใบขอเลือด";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $pageTitle; ?></title>
+    <title><?php echo $pageTitle.'-'.$wardArray[$wardCode]; ?></title>
     
     <!-- Bootstrap 5.3 CSS -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -196,7 +199,7 @@ $pageTitle = "รายการใบขอเลือด";
 <body>
 <div class="container container-sm main-container fade-in">
     <div class="page-header">
-        <h1><?php echo $pageTitle; ?></h1>
+        <h1><?php echo $pageTitle.' '.$wardArray[$wardCode]; ?></h1>
     </div>
     <div>
         <table class="table table-striped table-hover">
@@ -247,11 +250,11 @@ $pageTitle = "รายการใบขอเลือด";
                             </td>
                             <td class="text-center"><?=$row['blood_order_date'];?></td>
                             <td class="text-center"><?=$blood_group.' ('.$groupConvertToText[$blood_group].')';?></td>
-                            <td class="text-end">
+                            <td class="text-center">
                                 <?php
                                 if($bed!==false){
                                     ?>
-                                    <a href="javascript:void(0);" class="btn-action" onclick="cancelRequest(<?= $row['id']; ?>)">🗑️ ทิ้ง</a>
+                                    <a href="javascript:void(0);" class="btn-action" onclick="cancelRequest(<?= $row['id']; ?>)">ยกเลิก</a>
                                     <?php
                                 }
                                 ?>
@@ -278,7 +281,7 @@ $pageTitle = "รายการใบขอเลือด";
         
     </div>
     <div class="page-header" style="margin-top: 4rem;">
-        <h1>ใบคำขอตอบรับแล้ว/ยืนยัน Unit Number</h1>
+        <h1>ใบคำขอตอบรับแล้ว</h1>
     </div>
     <div>
         <table class="table table-striped table-hover">
@@ -299,7 +302,7 @@ $pageTitle = "รายการใบขอเลือด";
             <tbody>
                 <?php
                 // Query ข้อมูลโดยใช้ MySQLi OOP
-                $sql = "SELECT * FROM `blood_requests` WHERE `active`='y' AND `step`='2' ORDER BY id DESC";
+                $sql = "SELECT * FROM `blood_requests` WHERE `active`='y' AND (`step`='2' OR `step`='3') ORDER BY id DESC";
                 $result = $dbi->query($sql);
                 if ($result && $result->num_rows > 0):
                     $idx = 1;
@@ -329,7 +332,10 @@ $pageTitle = "รายการใบขอเลือด";
                                 if(empty($row['unit_number'])){
                                     echo 'รอยืนยันถุงเลือด';
                                 }else{
-                                    
+                                    $unit_items = $json->decode($row['unit_number']);
+                                    foreach ($unit_items as $key => $unit) {
+                                        ?><span class='badge text-bg-warning me-2'><?= $unit;?></span><?php
+                                    }
                                 }
                                 ?>
                             </td>

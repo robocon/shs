@@ -87,7 +87,7 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=NOTIFY_HOST_CAMERA;?>/testqrcode/show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="blood_request_ward.php?ward_code=<?=$sRowid;?>">🩸ใบขอเลือด</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="blood_request_ward.php?ward_code=<?=$lbedcode;?>">🩸ใบขอเลือด</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">🏡 ไปเมนู</a>
 <br />
 <?
