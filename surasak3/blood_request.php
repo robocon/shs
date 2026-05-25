@@ -112,6 +112,8 @@ if(!empty($an) && !empty($bedcode)){
     $opc = $classOpcard->getByHn($ip['hn']);
     $bloodGroup = $groupConvert[$opc['blood']];
 ?>
+<div class="alert alert-warning" role="alert">⚠️⚠️⚠️ ตัว DEMO เท่านั้น ⚠️⚠️⚠️</div>
+<div class="alert alert-warning" role="alert">ยังไม่เปิดใช้อย่างเป็นทางการ</div>
     <div class="card p-4">
         <div class="text-center mb-4">
             <div class="main-title">ใบขอเลือดและส่วนประกอบของเลือด</div>

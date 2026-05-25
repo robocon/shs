@@ -24,6 +24,7 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 ?>
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <a name="top" id="top"></a>
 <style>
 .a-button {
@@ -138,7 +139,7 @@ list($hi_type) = Mysql_fetch_row($rows);
 	}
 
 	$bloodItems = array();
-	if(!empty($hn)){
+	if(!empty($hn)){ // ถ้ามี HN แสดงว่ารับผู้ป่วยขึ้นเตียงแล้ว
 		$sqlTrnBlood = "SELECT * 
 		FROM `mst_stock` 
 		WHERE `Hn_Reserved` = '$hn' 
@@ -316,6 +317,8 @@ $(document).ready(function(){
 					?><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank" class="a-button a-green tablefont">📤 อัพโหลดไฟล์ Doctor Order</a><?php
 					}
 					?>
+				</div>
+				<div style="margin-top: 1em;">
 				<style>
 					.bloodContainer{
 						display: inline-block;
@@ -334,7 +337,7 @@ $(document).ready(function(){
 						list($expY, $expM, $expD) = explode('-', $blood['expireDate']);
 						$expDateTh = $expD.' '.$def_month_th[$expM].' '.($expY + 543);
 						?>
-						<span class="bloodContainer">🩸 ถุงเลือด ( <?= $blood['bloodGroup'] ?> ) <strong>Unit Number</strong>: <?= $blood['unitNumber'] ?> <strong>วันหมดอายุ</strong>: <?= $expDateTh ?></span>
+						<span class="bloodContainer">🩸 ถุงเลือดที่จอง <strong>Unit Number</strong>: <?= $blood['unitNumber'] ?><br><strong>วันหมดอายุ</strong>: <?= $expDateTh ?> <button onclick="returnBlood('<?= $blood['unitNumber'] ?>')">คืนถุงเลือด</button></span> 
 						<?php
 					}
 				}
@@ -342,11 +345,86 @@ $(document).ready(function(){
 				</div>
 			</td>
 		  </tr>
-        </table></td>
+        </table>
+		<script>
+			async function returnBlood(unitNumber){
+				const result = await Swal.fire({
+					title: "ยืนยันการคืนถุงเลือด",
+					html: `ตอนนี้ถุงเลือดอยู่ในสถานะ "การจอง" หากต้องการคืนถุงเลือดกรุณายืนยัน`,
+					icon: "warning", // error, question, info, success
+					allowOutsideClick: false,
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					confirmButtonText: "ยืนยันการคืน",
+					cancelButtonColor: "#d33",
+					cancelButtonText: "ยกเลิก"
+				});
+				var passwordConfirm = {};
+				if (result.isConfirmed) {
+					var {value: passwordConfirm } = await Swal.fire({
+						title: "ใส่รหัสผ่านเพื่อยืนยันการยกเลิก",
+						input: "password",
+						allowOutsideClick: false,
+						showCancelButton: true,
+						inputValidator: (value) => {
+							if (!value) return "กรุณาใส่รหัสผ่านของตัวเอง";
+						},
+						preConfirm: async (value) => {
+							let checkpass = await checkPassword(value);
+							
+							if(checkpass.status==200){
+								let mst_stock = await updateMstStock(unitNumber);
+								if(mst_stock.status==200){
+									Swal.fire({
+										"title":"บันทึกข้อมูลเรียบร้อย",
+										didClose: function(){
+											window.location.reload();
+										}
+									});
+								}else{
+									Swal.showValidationMessage("Error");
+    								return false;
+								}
+							}else{
+								Swal.showValidationMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่");
+    							return false;
+							}
+						}
+					});
+				} // result.isConfirmed
+			}
+
+			async function checkPassword(password){
+				const resData = await fetch('ward_pass.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({pass: password})
+				});
+				const body = await resData.json();
+				return {
+					status: body.status
+				};
+			}
+
+			async function updateMstStock(unitNumber){
+				const resData = await fetch('ward_cancel_mststock.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({"unit_number": unitNumber})
+				});
+				const body = await resData.json();
+				return {
+					status: body.status
+				};
+			}
+		</script>
+		</td>
       </tr>
     </table>
-    
-
 		<? 
 		$sql_bacteria = "SELECT * FROM bacteria_resistant  WHERE `hn` = '".$hn."' AND Alert_Flag = 'Y' ORDER BY Id DESC ";
 		$rows_bacteria = mysql_query($sql_bacteria);

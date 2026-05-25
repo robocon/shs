@@ -1,6 +1,4 @@
 <?php
-require_once dirname(__FILE__).'/database.php';
-
 class Ipcard extends Database{
     public $dbi = null;
     function __construct()
