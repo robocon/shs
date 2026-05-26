@@ -1,6 +1,6 @@
 <?php
-include_once dirname(__FILE__) . '/bootstrap.php';
-include_once dirname(__FILE__) . '/includes/JSON.php';
+include_once dirname(__FILE__) . '/newBootstrap.php';
+// include_once dirname(__FILE__) . '/includes/JSON.php';
 $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $input = file_get_contents('php://input');
 // $json = json_decode($input, true);
@@ -11,19 +11,20 @@ $action = $data['action'];
 if ($action==='udpateTime') {
     
     $id = $data['id'];
-    $date = $data['date'];
-    $time = $data['time'];
 
-    $dateStart = $data['dateStart'];
-    $timeStart = $data['timeStart'];
+    // dateend
+    $dateend = $data['date'].' '.$data['time'];
 
-    $sql = sprintf("UPDATE `com_support` SET `dateend` = '%s %s', `date` = '%s %s' WHERE `row` = '%s'", 
-        $dbi->real_escape_string($date),
-        $dbi->real_escape_string($time),
-        $dbi->real_escape_string($dateStart),
-        $dbi->real_escape_string($timeStart),
-        $dbi->real_escape_string($id)
-    );
+    // date
+    $date = $data['dateStart'].' '.$data['timeStart'];
+
+    $diff_seconds = abs(strtotime($dateend) - strtotime($date));
+    $diff_days = round($diff_seconds / (24 * 60 * 60));
+
+    $dateend = sprintf("%s", $dbi->real_escape_string($dateend));
+    $date = sprintf("%s", $dbi->real_escape_string($date));
+
+    $sql = "UPDATE `com_support` SET `dateend` = '{$dateend}', `date` = '{$date}', `hold` = '{$diff_days}' WHERE `row` = {$id}";
     $q = $dbi->query($sql);
     if($q===true){
         $res = array('status'=>200, 'message'=>'บันทึกข้อมูลเรียบร้อย');
@@ -261,7 +262,7 @@ if ($action==='udpateTime') {
                         </td>
                         <td valign="top" class="font1"><?= $result['date'] ?> </td>
                         <td align="center" valign="top" class="font1">
-                            <a href="comdetail.php?row=<?= $result['row']; ?>" target="_blank" title="คลิกเพื่อดูรายละเอียดงาน"><?= $result['row'] ?></a>
+                            <a href="javascript:void(0);" onclick="openDetail('<?= $result['row']; ?>')" title="คลิกเพื่อดูรายละเอียดงาน"><?= $result['row'] ?></a>
                         </td>
                         <td valign="top" class="font1"><?= $result['depart'] ?> </td>
                         <td valign="top" class="font1"><?= $result['user1'] ?> </td>
@@ -288,6 +289,10 @@ if ($action==='udpateTime') {
             ?>
         </table>
         <script>
+            function openDetail(id){
+                window.open('comdetail.php?row='+id, '_blank','width=1024,height=400,toolbar=no,scrollbars=no');
+            }
+
             async function editDateTime(id, d, t, dStart, tStart){
                 event.preventDefault();
                 let { value: formValues } = await Swal.fire({
