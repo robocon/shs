@@ -23,6 +23,14 @@ if ($action==='udpateTime') {
 
     $dateend = sprintf("%s", $dbi->real_escape_string($dateend));
     $date = sprintf("%s", $dbi->real_escape_string($date));
+    
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $dateend)) {
+        $dateend = $dateend . ":00"; // เติมวินาทีให้สมบูรณ์
+    }
+
+    if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $date)) {
+        $date = $date . ":00"; // เติมวินาทีให้สมบูรณ์
+    }
 
     $sql = "UPDATE `com_support` SET `dateend` = '{$dateend}', `date` = '{$date}', `hold` = '{$diff_days}' WHERE `row` = {$id}";
     $q = $dbi->query($sql);
