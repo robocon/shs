@@ -262,6 +262,188 @@ legend{
 		</TD>
 	</TR>
 </TABLE>
+<style>
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  /* font-size: 15px; */
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+.accordion:after {
+  content: '\002B';
+  color: #777;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+.lab-code-items td{
+	padding: 4px;
+}
+.lab-code-items tr.content:hover{
+	background-color: #e5e5e5;
+}
+.lab-code-items tr:nth-child(odd){
+	background-color: #d1d1d1ff;
+}
+.lab-code-items p,
+.panel h3{
+	margin:0;
+	padding:0;
+}
+.panel h3{
+	font-size: 18pt;
+	margin-top: 1em;
+}
+</style>
+<div style="float:left; width:50%;">
+	<div style="text-align:center;">
+		<h3>รายการตรวจทางพยาธิ</h3>
+	</div>
+	<div>
+		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
+		<div id="list"></div>
+	</div>
+	<div>
+		**หมายเหตุ** OUT-LAB เจาะเลือดเพิ่มอย่างน้อย 1 tube
+	</div>
+	<button class="accordion" style="background-color:#b2a1c7; font-weight:bold;">EDTA Blood (หลอดเลือดสีม่วง)</button>
+	<?php
+	$note_code_items = array(
+		'*1' => 'รอผลการตรวจวิเคราะห์ 7 วัน (ไม่รวมวันหยุดราชการ)',
+		'*2' => 'เจาะเลือดเพิ่ม 3 tube',
+		'*3' => 'รอผลการตรวจวิเคราะห์ 14 วัน (ไม่รวมวันหยุดราชการ)',
+		'*4' => 'งดน้ำและอาหารก่อนเจาะเลือด 8 ชม.',
+		'*5' => 'งดน้ำและอาหารก่อนเจาะเลือด 12 ชม.',
+		'*6' => 'กระป๋องปัสสาวะ',
+		'*7' => 'กระป๋องอุจจาระ',
+		'*8' => 'กระป๋อง sterile',
+		'*9' => 'กระป๋องเก็บเสมหะ',
+		'*10' => 'ตรวจวิเคราะห์ในวัน-เวลาราชการเท่านั้น',
+		'*11' => 'เจาะเลือดใน tube แก้ว',
+		'*12' => 'เจาะเลือดใน tube แก้วยาวพันรอบด้วยฟอร์ยห่ออาหาร',
+		'*13' => 'เจาะเลือดใน tube พันรอบด้วยฟอร์ยห่ออาหาร',
+		'*14' => 'เอกสารแนบพร้อมส่งคู่กับสิ่งส่งตรวจ',
+		'*15' => 'รอผลการตรวจวิเคราะห์ 20 วัน (ไม่รวมวันหยุดราชการ)',
+		'*16' => 'รอผลการตรวจวิเคราะห์ 60 วัน (ไม่รวมวันหยุดราชการ)',
+		'*17' => 'รอผลการตรวจวิเคราะห์ 3 วัน (ไม่รวมวันหยุดราชการ)',
+		'*18' => 'กระป๋อง Urine 24 hr.'
+	);
+	$q = $dbi->query("SELECT `code`,`labtype`,`note_code`,`tat` FROM `labcare` WHERE `tube`='EDTA' ");
+	$edtaInLab = $edtaOutLab = array();
+	while ($a = $q->fetch_assoc()) {
+		if($a['labtype']=='IN'){
+			$edtaInLab[] = $a;
+		}
+		if($a['labtype']=='OUT'){
+			$edtaOutLab[] = $a;
+		}
+	}
+	?>
+	<div class="panel">
+		<div style="text-align:center; background-color:#b2a1c7;">
+			<h3>แลปใน</h3>
+		</div>
+		<table class="lab-code-items" width="100%">
+			<tr>
+				<th width="15%">Code</th>
+				<th>หมายเหตุ</th>
+				<th>TAT</th>
+			</tr>
+			<?php
+			foreach ($edtaInLab as $key => $l) {
+				?>
+				<tr class="content">
+					<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
+					<td><?=$l['note_code'];?> <?=$note_code_items[$l['note_code']];?> <?=$l['tat'];?></td>
+					<td></td>
+				</tr>
+				<?php
+			}
+			?>
+		</table>
+		<div style="text-align:center; background-color:#b2a1c7;">
+			<h3>แลปนอก</h3>
+		</div>
+		<table class="lab-code-items" width="100%">
+			<tr>
+				<th width="15%">Code</th>
+				<th>หมายเหตุ</th>
+				<th>TAT</th>
+			</tr>
+			<?php
+			foreach ($edtaOutLab as $l) {
+				?>
+				<tr class="content">
+					<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
+					<td>
+						<?php
+						if(!empty($l['note_code'])){
+							$ncList = explode(',', $l['note_code']);
+							foreach ($ncList as $nc) {
+								?>
+								<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+								<?php
+							}
+						}
+						?>
+					</td>
+					<td><?=$l['tat'];?></td>
+				</tr>
+				<?php
+			}
+			?>
+		</table>
+	</div>
+
+	<button class="accordion" style="background-color:#c2d69b; font-weight:bold;">Heparin Blood (หลอดเลือดสีเขียว)</button>
+	<div class="panel">
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+	</div>
+
+	<button class="accordion" style="background-color:#b6dde8; font-weight:bold;">Sodium citrate Blood (หลอดเลือดสีฟ้า)</button>
+	<div class="panel">
+	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+	</div>
+</div>
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    } 
+  });
+}
+</script>
 <TABLE id="" width="50%" border="1" bordercolor='#000000' cellpadding="3" cellspacing="0" style="float:left;">
 	<tr valign="top">
 		<td width="500">
@@ -270,7 +452,7 @@ legend{
 	</tr>
 	<TR valign="top">
 		<TD colspan="<?php echo $r * 2; ?>" align='left'>ตรวจLAB อื่นๆ ระบุ : <INPUT TYPE="text" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
-			<Div id="list"></Div>
+			<Div ></Div>
 		</TD>
 	</TR>
 	<TR>
