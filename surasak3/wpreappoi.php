@@ -14,16 +14,10 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 
 	$count = count($_SESSION["list_code"]);
 
-	// echo "<A HREF=\"javascript:show_bock();\">เจาะเลือด</A>
-	echo "<TABLE bgcolor='#FFFFD2' style='font-size: 24px;'>
-	<TR>
-		<TD>";
 	for ($i = 0; $i < $count; $i++) {
-		echo "<div><A class='lab-item-selected' HREF=\"javascript:del_list(", $i, ");\" >❌ ", $_SESSION["list_detail"][$i], "</A></div>";
+		echo "<div><A class='lab-item-selected' title='คลิกเพื่อยกเลิกรายการ' HREF=\"javascript:del_list(", $i, ");\" >🗑️ [".$_SESSION["list_code"][$i]."] ".$_SESSION["list_detail"][$i]."</A></div>";
 	}
-	echo "</TD>
-	</TR>
-	</TABLE>";
+
 	exit();
 } else if (isset($_GET["action"]) && $_GET["action"] == "addtolist") {
 
@@ -63,7 +57,19 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 	exit();
 } else if (isset($_GET["action"]) && $_GET["action"] == "lab") {
 
-	$sql = "Select code, detail From labcare where  (code = '" . $_GET["search"] . "' || codex = '" . $_GET["search"] . "' || detail like '%" . $_GET["search"] . "%')  AND `labstatus` = 'Y' AND `version` != 'OLD' Order by numbered ASC";
+	$search = sprintf("%s", $dbi->real_escape_string($_GET["search"]));
+
+	$whereSearch = "(code = '$search' || codex = '$search' || detail like '%$search%')";
+	if($_SESSION['smenucode']==='ADMICU'){
+		$whereSearch = "`code` = '$search'";
+	}
+
+	$sql = "SELECT `code`, `detail` 
+	FROM `labcare` 
+	WHERE $whereSearch
+	AND `labstatus` = 'Y' 
+	AND `version` != 'OLD' 
+	ORDER BY `numbered` ASC";
 
 	$result = Mysql_Query($sql) or die(Mysql_error());
 
@@ -204,8 +210,14 @@ legend{
 	font-weight:bold;
 	font-size:24px;
 }
+.lab-item-selected{
+	text-decoration:none;
+}
+.lab-item-selected:hover{
+	text-decoration:underline;
+}
 </style>
-<TABLE border="0" class="forntsarabun" width="50%" style="float:left;" >
+<TABLE border="0" class="forntsarabun" width="30%" style="float:left;" >
 	<TR valign="top">
 		<TD>
 			<form method="POST" id="ward_send_lab" action="wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>">
@@ -275,11 +287,9 @@ legend{
   /* font-size: 15px; */
   transition: 0.4s;
 }
-
 .active, .accordion:hover {
   background-color: #ccc;
 }
-
 .accordion:after {
   content: '\002B';
   color: #777;
@@ -287,26 +297,36 @@ legend{
   float: right;
   margin-left: 5px;
 }
-
 .active:after {
   content: "\2212";
 }
-
 .panel {
-  padding: 0 18px;
+  padding: 0 0 18px 0;
   background-color: white;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-out;
 }
+.panel::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.lab-code-items{
+	border-collapse: collapse;
+}
+.lab-code-items th,
 .lab-code-items td{
 	padding: 4px;
 }
 .lab-code-items tr.content:hover{
-	background-color: #e5e5e5;
+	background-color: #fffbc3ff;
 }
 .lab-code-items tr:nth-child(odd){
 	background-color: #d1d1d1ff;
+}
+.lab-code-items tr th{
+	background-color: #b3b3b3ff;
 }
 .lab-code-items p,
 .panel h3{
@@ -315,10 +335,9 @@ legend{
 }
 .panel h3{
 	font-size: 18pt;
-	margin-top: 1em;
 }
 </style>
-<div style="float:left; width:50%;">
+<div style="float:left; width:60%; margin-bottom:4em; margin-left:5%; margin-right:5%;">
 	<div style="text-align:center;">
 		<h3>รายการตรวจทางพยาธิ</h3>
 	</div>
@@ -329,7 +348,7 @@ legend{
 	<div>
 		**หมายเหตุ** OUT-LAB เจาะเลือดเพิ่มอย่างน้อย 1 tube
 	</div>
-	<button class="accordion" style="background-color:#b2a1c7; font-weight:bold;">EDTA Blood (หลอดเลือดสีม่วง)</button>
+	
 	<?php
 	$note_code_items = array(
 		'*1' => 'รอผลการตรวจวิเคราะห์ 7 วัน (ไม่รวมวันหยุดราชการ)',
@@ -351,291 +370,131 @@ legend{
 		'*17' => 'รอผลการตรวจวิเคราะห์ 3 วัน (ไม่รวมวันหยุดราชการ)',
 		'*18' => 'กระป๋อง Urine 24 hr.'
 	);
-	$q = $dbi->query("SELECT `code`,`labtype`,`note_code`,`tat` FROM `labcare` WHERE `tube`='EDTA' ");
-	$edtaInLab = $edtaOutLab = array();
+	$tubeSort = array(
+		'EDTA'=>'EDTA Blood (หลอดเลือดสีม่วง)',
+		'Heparin'=>'Heparin Blood (หลอดเลือดสีเขียว)',
+		// 'sodium_citrate'=>'Sodium citrate Blood (หลอดเลือดสีฟ้า)',
+		// 'NaF'=>'Sodium Fluoride Blood (หลอดเลือดสีเทา)',
+		// 'Colt_blood'=>'Clot Blood (หลอดเลือดสีแดง)',
+		// 'CAN'=>'กระป๋องต่างๆ',
+		// 'Culture'=>'Culture',
+		// 'special'=>'Special Lab'
+	);
+	$tubeColor = array(
+		'EDTA'=>'#b2a1c7',
+		'Heparin'=>'#c2d69b',
+		'sodium_citrate'=>'#b6dde8',
+		'NaF'=>'',
+		'Colt_blood'=>'#f79f9f',
+		'CAN'=>'#ddd9c3',
+		'Culture'=>'#fde9d9',
+		'special'=>'#aab4ff'
+	);
+
+	$q = $dbi->query("SELECT `code`,`labpart`,`labtype`,`tube`,`note_code`,`tat` FROM `labcare` WHERE `tube`!='' ORDER BY `tube`,`labpart`");
+
+	$allTubeItems = array();
 	while ($a = $q->fetch_assoc()) {
-		if($a['labtype']=='IN'){
-			$edtaInLab[] = $a;
-		}
-		if($a['labtype']=='OUT'){
-			$edtaOutLab[] = $a;
-		}
+		$key = $a['tube'];
+		$sub_key = $a['labtype'];
+		$allTubeItems[$key][$sub_key][] = $a;
+	}
+
+	foreach ($tubeSort as $tubeKey => $tubeName) {
+		$bgColor = $tubeColor[$tubeKey];
+		?>
+		<button class="accordion" style="background-color:<?=$bgColor;?>; font-weight:bold;"><?=$tubeName;?></button>
+		<div class="panel">
+			<div style="width:49%; float:left; margin-right: 1%;">
+			<div style="text-align:center; background-color:<?=$bgColor;?>; margin-top:1em;">
+				<h3>แลปใน</h3>
+			</div>
+			<table class="lab-code-items" width="100%">
+				<tr>
+					<th width="15%">Code</th>
+					<th>หมายเหตุ</th>
+					<th>TAT</th>
+				</tr>
+				<?php
+				foreach ($allTubeItems[$tubeKey]['IN'] as $key => $l) {
+					?>
+					<tr class="content">
+						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
+						<td>
+							<?php
+							if(!empty($l['note_code'])){
+								$ncList = explode(',', $l['note_code']);
+								foreach ($ncList as $nc) {
+									?>
+									<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+									<?php
+								}
+							}
+							?>
+						</td>
+						<td><?=$l['tat'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+			</div>
+
+			<div style="width:49%; float:left; margin-left:1%;">
+			<div style="text-align:center; background-color:<?=$bgColor;?>; margin-top:1em;">
+				<h3>แลปนอก</h3>
+			</div>
+			<table class="lab-code-items" width="100%">
+				<tr>
+					<th width="15%">Code</th>
+					<th>หมายเหตุ</th>
+					<th>TAT</th>
+				</tr>
+				<?php
+				foreach ($allTubeItems[$tubeKey]['OUT'] as $l) {
+					?>
+					<tr class="content">
+						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
+						<td>
+							<?php
+							if(!empty($l['note_code'])){
+								$ncList = explode(',', $l['note_code']);
+								foreach ($ncList as $nc) {
+									?>
+									<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+									<?php
+								}
+							}
+							?>
+						</td>
+						<td><?=$l['tat'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+			</div>
+		</div>
+		<?php
 	}
 	?>
-	<div class="panel">
-		<div style="text-align:center; background-color:#b2a1c7;">
-			<h3>แลปใน</h3>
-		</div>
-		<table class="lab-code-items" width="100%">
-			<tr>
-				<th width="15%">Code</th>
-				<th>หมายเหตุ</th>
-				<th>TAT</th>
-			</tr>
-			<?php
-			foreach ($edtaInLab as $key => $l) {
-				?>
-				<tr class="content">
-					<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
-					<td><?=$l['note_code'];?> <?=$note_code_items[$l['note_code']];?> <?=$l['tat'];?></td>
-					<td></td>
-				</tr>
-				<?php
-			}
-			?>
-		</table>
-		<div style="text-align:center; background-color:#b2a1c7;">
-			<h3>แลปนอก</h3>
-		</div>
-		<table class="lab-code-items" width="100%">
-			<tr>
-				<th width="15%">Code</th>
-				<th>หมายเหตุ</th>
-				<th>TAT</th>
-			</tr>
-			<?php
-			foreach ($edtaOutLab as $l) {
-				?>
-				<tr class="content">
-					<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
-					<td>
-						<?php
-						if(!empty($l['note_code'])){
-							$ncList = explode(',', $l['note_code']);
-							foreach ($ncList as $nc) {
-								?>
-								<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
-								<?php
-							}
-						}
-						?>
-					</td>
-					<td><?=$l['tat'];?></td>
-				</tr>
-				<?php
-			}
-			?>
-		</table>
-	</div>
-
-	<button class="accordion" style="background-color:#c2d69b; font-weight:bold;">Heparin Blood (หลอดเลือดสีเขียว)</button>
-	<div class="panel">
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-	</div>
-
-	<button class="accordion" style="background-color:#b6dde8; font-weight:bold;">Sodium citrate Blood (หลอดเลือดสีฟ้า)</button>
-	<div class="panel">
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-	</div>
 </div>
 <script>
-var acc = document.getElementsByClassName("accordion");
-var i;
+	var acc = document.getElementsByClassName("accordion");
+	var i;
 
-for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var panel = this.nextElementSibling;
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + "px";
-    } 
-  });
-}
-</script>
-<TABLE id="" width="50%" border="1" bordercolor='#000000' cellpadding="3" cellspacing="0" style="float:left;">
-	<tr valign="top">
-		<td width="500">
-			<div align="center"><B>รายการตรวจทางพยาธิ</B></div>
-		</td>
-	</tr>
-	<TR valign="top">
-		<TD colspan="<?php echo $r * 2; ?>" align='left'>ตรวจLAB อื่นๆ ระบุ : <INPUT TYPE="text" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
-			<Div ></Div>
-		</TD>
-	</TR>
-	<TR>
-		<TD align="center"><strong>รายการที่ใช้บ่อย</strong></TD>
-	</TR>
-	<tr>
-		<td>
-		<div style="display: grid; column-gap: 50px; grid-template-columns: auto auto auto;">
-	<?php
-	// display: grid; column-gap: 50px;
-	// display: flex;flex-wrap: wrap; gap: 20px; flex-direction: row;
-	$i = 0;
-	$list_lab_check[$i]["code"] = "CBC";
-	$list_lab_check[$i]["detail"] = "CBC";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TRI";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "ELYTE";
-	$list_lab_check[$i]["detail"] = "ELyte";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBSAG";
-	$list_lab_check[$i]["detail"] = "HBsAg";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBSAB";
-	$list_lab_check[$i]["detail"] = "HBsAb";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBCAB";
-	$list_lab_check[$i]["detail"] = "HBcAb";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HCV";
-	$list_lab_check[$i]["detail"] = "HCV";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "BGT";
-	$list_lab_check[$i]["detail"] = "BG";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "Phos";
-	$list_lab_check[$i]["detail"] = "PHOS";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "VDRL";
-	$list_lab_check[$i]["detail"] = "VDRL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "SGOT";
-	$list_lab_check[$i]["detail"] = "AST";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "SGPT";
-	$list_lab_check[$i]["detail"] = "ALT";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "CA";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HCT";
-	$list_lab_check[$i]["detail"] = "HCT";
-	$i++;
-	$list_lab_check[$i]["code"] = "ALB";
-	$list_lab_check[$i]["detail"] = "Albumin";
-	//************
-
-	$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-	$i++;
-	$list_lab_check[$i]["code"] = "k";
-	$list_lab_check[$i]["detail"] = "K";
-
-	$i++;
-	$list_lab_check[$i]["code"] = "Cl";
-	$list_lab_check[$i]["detail"] = "Cl";
-
-	$i++;
-	$list_lab_check[$i]["code"] = "co2";
-	$list_lab_check[$i]["detail"] = "CO2";
-
-	$r = 5;
-	$count = count($list_lab_check);
-	
-	// padding-bottom:8px; padding-left:12px;
-	for ($i = 1; $i <= $count; $i++) {
-		echo "<A HREF=\"javascript:void(0);\" class='a-item' onclick=\"addtolist('" . jschars($list_lab_check[$i - 1]["code"]) . "');\" >" . jschars($list_lab_check[$i - 1]["detail"]) . "</A>";
-		// if ($i % $r == 0)
-			// echo "</TR><TR>";
+	for (i = 0; i < acc.length; i++) {
+	acc[i].addEventListener("click", function() {
+		this.classList.toggle("active");
+		var panel = this.nextElementSibling;
+		if (panel.style.maxHeight) {
+		panel.style.maxHeight = null;
+		} else {
+		panel.style.maxHeight = panel.scrollHeight + "px";
+		} 
+	});
 	}
-	?>
-		</div>
-		</td>
-	</tr>
-</TABLE>
 
-<script>
 	document.getElementById("ward_send_lab").addEventListener("submit", function(e) {
 		e.preventDefault();
 		const lab_rows = document.getElementsByClassName('lab-item-selected').length;
