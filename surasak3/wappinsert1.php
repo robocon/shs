@@ -1,13 +1,19 @@
 <?php
 include_once dirname(__FILE__).'/newBootstrap.php';
 include_once dirname(__FILE__).'/connect.php';
-$Thidate = (date("Y") + 543) . date("-m-d H:i:s");
+
 $count = count($_SESSION["list_code"]);
 if ($count > 0) {
+
+	$Thidate = (date("Y") + 543) . date("-m-d H:i:s");
 	$an = $_GET['an'];
 	$bed = $_GET['cBed'];
 	$bedcode = $_GET['cBedcode'];
 	$cbedname = $_GET['cbedname'];
+
+	if($_POST['date_sent']){
+		$Thidate = dateChristToThai($_POST['date_sent']);
+	}
 
 	$sql1 = "select max(no)as tno from lab_ward where an='$an' ";
 	$q1 = mysql_query($sql1);

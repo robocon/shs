@@ -388,7 +388,11 @@ $bed_item = mysql_fetch_assoc($q);
 $bed_id = $bed_item['row_id'];
 
 // ข้อมูลใน bed_copy จะเหมือนกับ bed ทุกอย่าง ยกเว้น ไม่มี pk และ auto increment
-$sql = "INSERT INTO bed_copy SELECT * FROM bed WHERE row_id = '$bed_id'";
+// $sql = "INSERT INTO bed_copy SELECT * FROM bed WHERE row_id = '$bed_id'";
+$sql = "INSERT INTO bed_copy (`row_id`, `bed`, `ptname`, `age`, `idcard`, `address`, `muang`, `ptright`, `doctor`, `date`, `hn`, `an`, `diagnos`, `bedcode`, `price`, `paid`, `debt`, `caldate`, `food`, `officer`, `chgdate`, `bedname`, `bedpri`, `accno`, `status`, `ajrw`, `diag1`, `last_drug`, `chgwdate`, `status_detail`, `lastcalroom`, `days`, `c19status`, `edit_at`)
+SELECT `row_id`, `bed`, `ptname`, `age`, `idcard`, `address`, `muang`, `ptright`, `doctor`, `date`, `hn`, `an`, `diagnos`, `bedcode`, `price`, `paid`, `debt`, `caldate`, `food`, `officer`, `chgdate`, `bedname`, `bedpri`, `accno`, `status`, `ajrw`, `diag1`, `last_drug`, `chgwdate`, `status_detail`, `lastcalroom`, `days`, `c19status` , NOW()
+FROM bed 
+WHERE `row_id` = '$bed_id';";
 mysql_query($sql);
 
 

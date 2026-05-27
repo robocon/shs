@@ -3,6 +3,9 @@ session_start();
 require_once dirname(__FILE__).'/includes/config.php';
 include_once dirname(__FILE__).'/connect.php';
 
+$dbi = mysqli_connect(HOST,USER,PASS,DB,PORT);
+$dbi->query("SET NAMES UTF8");
+
 $bsConn = mysqli_connect(BLOOD_SERVER,BLOOD_USER,BLOOD_PASS,BLOOD_DB);
 $bsConn->query("SET NAMES UTF8");
 
@@ -21,6 +24,7 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 ?>
 <link href="css/style_table.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="js/sweetalert2.all.min.js"></script>
 <a name="top" id="top"></a>
 <style>
 .a-button {
@@ -32,6 +36,8 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 	display: inline-block;
 	cursor: pointer;
 	border-radius: 4px;
+	font-size: 18px;
+	font-family: "TH SarabunPSK";
 }
 .a-button:hover{
 	box-shadow: 3px 3px 3px #3e3e3e;
@@ -39,6 +45,10 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 .a-green{
 	background-color: #198754;
 	color: #ffffff!important;
+}
+.a-warning{
+	background-color: #ffc107;
+	color: #000000!important;
 }
 </style>
 <br />
@@ -78,7 +88,8 @@ $sRowid = urlencode(sprintf("%s", $_SESSION['sRowid']));
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="ipptchk.php">รายชื่อผู้ป่วยใน</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="report_opsihitoday.php">รายงานข้อมูลสถิติผู้ป่วยโควิด</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="<?=NOTIFY_HOST_CAMERA;?>/testqrcode/show_dataipd.php?sRowid=<?=$sRowid;?>">QR ผู้ป่วยใน</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">ไปเมนู</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank"  href="blood_request_ward.php?ward_code=<?=$lbedcode;?>">🩸ใบขอเลือด</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_self"  href="../nindex.htm">🏡 ไปเมนู</a>
 <br />
 <?
 if($lbedcode=='47'){
@@ -128,7 +139,7 @@ list($hi_type) = Mysql_fetch_row($rows);
 	}
 
 	$bloodItems = array();
-	if(!empty($hn)){
+	if(!empty($hn)){ // ถ้ามี HN แสดงว่ารับผู้ป่วยขึ้นเตียงแล้ว
 		$sqlTrnBlood = "SELECT * 
 		FROM `mst_stock` 
 		WHERE `Hn_Reserved` = '$hn' 
@@ -240,7 +251,7 @@ $(document).ready(function(){
 			</td>
 			
             <td class="tablefontt1">ประเภท  :</td>
-            <td class="tablefont"><u><i><?=$idguard;?></i></u></td>			
+            <td class="tablefont"><u><i><?=$idguard;?></i></u></td>
           </tr>
           <tr style="line-height:22PX;">
             <td colspan="8"  valign="top" >
@@ -257,25 +268,36 @@ $(document).ready(function(){
           </tr>
           <tr style="line-height:25PX;">
             <td colspan="10" valign="top" ><font class='tablefontt1'>หัตถการ  :</font>
+			<?php
+			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
+			?>
 			<? echo "<a target=_blank  href=\"ipdata.php?cBedcode=$bedcode\" class='tablefont'>บันทึกค่าใช้จ่าย / คืนยา / จำหน่าย</a>"; ?> &nbsp;&nbsp; 
-            
-		<? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
-            <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";
-			?>&nbsp;&nbsp; 
-            <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>ดูฟิลม์ xray</a>";
-			?>&nbsp;&nbsp; 
-            <? 
-			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
-			echo "<a target=_blank  href=\"rp_profile.php?an=$an&$str\" class='tablefont'>Drugprofile</a>";
-			?>&nbsp;&nbsp; 
-            <? 
-			$str = "month=".date('m')."&year=".(date('Y')+543)."&date=".date('dmy');
-			echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";
-			?>&nbsp;&nbsp;  
+			<? echo "<a target=_blank href=\"wpreappoi.php?an=$an&cBed=$bed&cBedcode=$bedcode&cHn=$hn&cbedname=$wardname\" class='tablefont'>สั่ง LAB</a>"; ?> &nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"dt_lab_lst_in.php?hn_now=$hn\" class='tablefont'>ดูผล LAB</a>";?>&nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"dt_xray_film_in.php?hn_now=$hn\" class='tablefont'>ดูฟิลม์ xray</a>";?>&nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"rp_profile.php?an=$an&$str\" class='tablefont'>Drugprofile</a>";?>&nbsp;&nbsp; 
+            <? echo "<a target=_blank  href=\"warddividedrug.php?an=$an&$str\" class='tablefont'>ยาปัจจุบัน</a>";?>&nbsp;&nbsp;  
             <? echo "<a target=_blank  href=\"set_from_ward.php?an=$an&bedcode=$lbedcode\" class='tablefont'>ใบSETผ่าตัด</a>"; ?>
-
-			<a href="blood_request.php?an=<?=$an?>&bedcode=<?=$bedcode?>" target="_blank" class="a-button a-green tablefont">ใบขอเลือด</a>
-
+			<?php
+			// $sql = "SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1";
+			$resb = $dbi->query("SELECT step FROM `blood_requests` WHERE `an` = '$an' ORDER BY `id` DESC LIMIT 1");
+			$breq = $resb->fetch_assoc();
+			$bReqText = 'ใบขอเลือด';
+			$bReqOnClick = 'onclick="window.open(\'blood_request.php?an='.$an.'&bedcode='.$bedcode.'\',\'bloodRequestWindow\',\'width=800,height=600\');"';
+			$btnColor = 'a-green';
+			if($breq['step']=='1' OR $breq['step']=='2'){
+				if($breq['step']=='1'){
+					$bReqText = 'รอใบตอบรับ';
+				}else{
+					$bReqText = 'รอยืนยันถุงเลือด';
+				}
+				
+				$bReqOnClick = '';
+				$btnColor = 'a-warning';
+			}
+			?>
+			<a href="javascript:void(0);" <?= $bReqOnClick; ?> class="a-button <?= $btnColor; ?> tablefont"><?= $bReqText; ?></a><?php
+			?>
             </td>
           </tr>
           <tr style="line-height:25PX;">
@@ -289,13 +311,20 @@ $(document).ready(function(){
 		  </tr>
 		  <tr>
 			<td colspan="10">
-				<a href="med_ward.php?fill_an=<?=$an;?>" target="_blank">อัพโหลดไฟล์ Doctor Order</a><br>
+				<div>
+					<?php
+					if($an){
+					?><a href="med_ward.php?fill_an=<?=$an;?>" target="_blank" class="a-button a-green tablefont">📤 อัพโหลดไฟล์ Doctor Order</a><?php
+					}
+					?>
+				</div>
+				<div style="margin-top: 1em;">
 				<style>
 					.bloodContainer{
 						display: inline-block;
 						margin-right: 0.5em;
 						font-family: "TH SarabunPSK";
-						font-size: 20px;
+						font-size: 18px;
 						border: 2px solid red;
 						border-radius: 6px;
 						padding: 4px 6px;
@@ -308,18 +337,94 @@ $(document).ready(function(){
 						list($expY, $expM, $expD) = explode('-', $blood['expireDate']);
 						$expDateTh = $expD.' '.$def_month_th[$expM].' '.($expY + 543);
 						?>
-						<span class="bloodContainer">🩸 ถุงเลือด ( <?= $blood['bloodGroup'] ?> ) <strong>Unit Number</strong>: <?= $blood['unitNumber'] ?> <strong>วันหมดอายุ</strong>: <?= $expDateTh ?></span>
+						<span class="bloodContainer">🩸 ถุงเลือดที่จอง <strong>Unit Number</strong>: <?= $blood['unitNumber'] ?><br><strong>วันหมดอายุ</strong>: <?= $expDateTh ?> <button onclick="returnBlood('<?= $blood['unitNumber'] ?>')">คืนถุงเลือด</button></span> 
 						<?php
 					}
 				}
 				?>
+				</div>
 			</td>
 		  </tr>
-        </table></td>
+        </table>
+		<script>
+			async function returnBlood(unitNumber){
+				const result = await Swal.fire({
+					title: "ยืนยันการคืนถุงเลือด",
+					html: `ตอนนี้ถุงเลือดอยู่ในสถานะ "การจอง" หากต้องการคืนถุงเลือดกรุณายืนยัน`,
+					icon: "warning", // error, question, info, success
+					allowOutsideClick: false,
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					confirmButtonText: "ยืนยันการคืน",
+					cancelButtonColor: "#d33",
+					cancelButtonText: "ยกเลิก"
+				});
+				var passwordConfirm = {};
+				if (result.isConfirmed) {
+					var {value: passwordConfirm } = await Swal.fire({
+						title: "ใส่รหัสผ่านเพื่อยืนยันการยกเลิก",
+						input: "password",
+						allowOutsideClick: false,
+						showCancelButton: true,
+						inputValidator: (value) => {
+							if (!value) return "กรุณาใส่รหัสผ่านของตัวเอง";
+						},
+						preConfirm: async (value) => {
+							let checkpass = await checkPassword(value);
+							
+							if(checkpass.status==200){
+								let mst_stock = await updateMstStock(unitNumber);
+								if(mst_stock.status==200){
+									Swal.fire({
+										"title":"บันทึกข้อมูลเรียบร้อย",
+										didClose: function(){
+											window.location.reload();
+										}
+									});
+								}else{
+									Swal.showValidationMessage("Error");
+    								return false;
+								}
+							}else{
+								Swal.showValidationMessage("รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่");
+    							return false;
+							}
+						}
+					});
+				} // result.isConfirmed
+			}
+
+			async function checkPassword(password){
+				const resData = await fetch('ward_pass.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({pass: password})
+				});
+				const body = await resData.json();
+				return {
+					status: body.status
+				};
+			}
+
+			async function updateMstStock(unitNumber){
+				const resData = await fetch('ward_cancel_mststock.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({"unit_number": unitNumber})
+				});
+				const body = await resData.json();
+				return {
+					status: body.status
+				};
+			}
+		</script>
+		</td>
       </tr>
     </table>
-    
-
 		<? 
 		$sql_bacteria = "SELECT * FROM bacteria_resistant  WHERE `hn` = '".$hn."' AND Alert_Flag = 'Y' ORDER BY Id DESC ";
 		$rows_bacteria = mysql_query($sql_bacteria);

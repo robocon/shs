@@ -13,12 +13,6 @@ if (!isset($sIdname)) {
 $bsConn = mysqli_connect(BLOOD_SERVER,BLOOD_USER,BLOOD_PASS,BLOOD_DB);
 $bsConn->query("SET NAMES UTF8");
 
-$_SESSION["cBedcode"] = $_GET["cBedcode"];
-$cBedcode = $_GET['cBedcode'];
-$_GET['code'] = substr($_GET["cBedcode"], 0, 2);
-
-include_once dirname(__FILE__).'/alert_booking.php';
-
 session_unregister("cDepart");
 session_unregister("aDetail");
 session_unregister("cTitle");
@@ -49,6 +43,12 @@ session_unregister('cBedname');
 session_unregister('cAccno');
 session_unregister("nRunno");
 ////
+
+$_SESSION["cBedcode"] = $_GET["cBedcode"];
+$cBedcode = $_GET['cBedcode'];
+$_GET['code'] = substr($_GET["cBedcode"], 0, 2);
+
+include_once dirname(__FILE__).'/alert_booking.php';
 
 $Bedcode = $cBedcode; // ! ในหน้านี้ไม่มีใช้งาน แต่ไม่รู้ว่าหน้าอื่นๆ ได้เปิดเป็น Global ใช้ต่อรึป่าว
 session_register("Bedcode");

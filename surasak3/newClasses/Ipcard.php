@@ -1,6 +1,4 @@
 <?php
-require_once dirname(__FILE__).'/database.php';
-
 class Ipcard extends Database{
     public $dbi = null;
     function __construct()
@@ -27,7 +25,6 @@ class Ipcard extends Database{
             return "Invalid AN";
         }
         $sql = sprintf("SELECT * FROM `ipcard` WHERE `an` = '%s' AND `dcdate` = '0000-00-00 00:00:00' LIMIT 1; ", $this->dbi->real_escape_string($an));
-        dump($sql);
         $q = $this->dbi->query($sql);
         if($q->num_rows>0){
             $res = $q->fetch_assoc();

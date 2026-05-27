@@ -33,7 +33,6 @@ $cSurname = "";
 $cPtright = "";
 $cGoup = "";
 $cCamp = "";
-
 $cIdcard = "";
 $cAge = "";
 $cAddress = "";
@@ -76,7 +75,7 @@ session_register("cMuang");
         color: black;
         font-size: 100%;
         text-align: right;
-        font-family: Th Niramit AS;
+        font-family: "TH SarabunPSK";
         font-size: 18px;
     }
     input[type=radio],label{
@@ -119,6 +118,17 @@ function calcage($birth)
 }
 //
 
+$ward_lists = array(
+'42' => 'หอผู้ป่วยรวม',
+'43' => 'หอผู้ป่วยสูติ',
+'44' => 'หอผู้ป่วยICU',
+'45' => 'หอผู้ป่วยพิเศษ',
+'46' => 'หอผู้ป่วย Cohort Ward',
+'47' => 'หอผู้ป่วย Home Isolation',
+'48' => 'หอผู้ป่วย รพ.สนาม',
+);
+$ward_code = substr($_SESSION['cBedcode'],0,2);
+$ward_bed = substr($_SESSION['cBedcode'],2);
 
 ///////
 $query = "SELECT ptname,an FROM bed WHERE an = '$an'";
@@ -151,13 +161,16 @@ for ($i = mysql_num_rows($result) - 1; $i >= 0; $i--) {
 }
 if ($result) {
     $cHn = $row->hn;
-    $cAdmitd = $row->date;
+    $_SESSION['cAdmitd'] = $cAdmitd = $row->date;
     $cDcmitd = $row->dcdate;
     $status_log = $row->status_log;
     if ($cDcmitd != '0000-00-00 00:00:00') {
-        echo "<FONT SIZE='3' COLOR='#FF0000'>คำเตือน ผู้ป่วยได้ทำการจำหน่ายเรียบร้อยแล้ว<BR> กรุณาตรวจสอบ AN ก่อนการ ADMIT </FONT><br>";
+        ?>
+        <div>
+            <p style="color:red;"><?= "ผู้ป่วย <u>an: $an</u> ได้จำหน่ายออกจากโรงพยาบาลแล้ว <u>เมื่อวันที่ $cDcmitd</u> <br>หากต้องการเปลี่ยนแปลงค่าใช้จ่ายกรุณาติดต่อส่วนเก็บเงินรายได้"; ?></p>
+        </div>
+        <?php
     }
-    ;
     //
     $query = "SELECT * FROM opcard WHERE hn = '$cHn'";
     $result = mysql_query($query) or die("Query failed".mysql_error());
@@ -185,14 +198,14 @@ if ($result) {
         $cAddress = $row->address;
         $cMuang = "ต. $row->tambol  อ. $row->ampur  จ. $row->changwat";
         $cAge = calcage($cAge);
-        echo "<h3></h3>";
+        
         ?>
         <style>
             .title-size{
                 font-size:22px;
             }
         </style>
-        <fieldset style="display:inline-table; width: 50%; border:1px solid #000000;">
+        <fieldset style="display:inline-block; border:1px solid #000000;">
             <legend style="text-align:left; border: 1px solid #000000;">
                 <h3>ตรวจสอบชื่อและANผู้ป่วย<br>เพื่อความถูกต้องก่อนรับป่วยทุกครั้ง</h3>
             </legend>
@@ -200,22 +213,24 @@ if ($result) {
                 <tr>
                     <td align="right"><b class="title-size">HN: </b></td>
                     <td class="title-size"><?=$cHn;?></td>
-                    <td rowspan="2">&nbsp;&nbsp;</td>
+                    <td><div style="padding-left:12px;">&nbsp;</div></td>
                     <td align="right" class="title-size"><b>AN: </b></td>
                     <td style="color:red;"><b class="title-size"><?=$an;?></b></td>
                 </tr>
                 <tr>
                     <td align="right"><b class="title-size">ชื่อ-สกุล: </b></td>
                     <td style="color:red;"><b class="title-size"><?="$cYot   $cName  $cSurname";?></b></td>
+                    <td><div style="padding-left:12px;">&nbsp;</div></td>
                     <td align="right"><b class="title-size">สิทธิการรักษา: </b></td>
                     <td style="color:red;"><b class="title-size"><?=$cPtright;?></b></td>
                 </tr>
                 <tr>
                     <td align="right"><b class="title-size">อายุ</b></td>
                     <td style="color:red;"><b class="title-size"><?=$cAge;?></b></td>
-                    <td align="right"></td>
-                    <td class="title-size"></td>
-                </tr>				
+                    <td><div style="padding-left:12px;">&nbsp;</div></td>
+                    <td align="right"><b class="title-size"></b></td>
+                    <td style="color:red;"><b class="title-size"><?=$ward_lists[$ward_code].' เตียง:'.$ward_bed;?></b></td>
+                </tr>
             </table>
             
         </fieldset>
@@ -223,7 +238,7 @@ if ($result) {
         <?php 
         // echo "<FONT SIZE='4' COLOR='#FF0000'>HN : $cHn, <B>AN:$an</B></FONT> <BR><FONT SIZE='4' COLOR=''> ชื่อ: $cYot   $cName  $cSurname,  สิทธิการรักษา : $cPtright </FONT><br>";
     } else {
-        echo "ไม่พบ HN : $hn ";
+        echo "ไม่พบ HN : $cHn ";
     }
 } else {
     echo "ไม่พบ AN  in ipcard table : $an ";
@@ -235,7 +250,7 @@ if ($result) {
 
 if ($status_log == "จำหน่าย") {
     print "<script>alert('ผู้ป่วย an: $an ได้จำหน่ายออกจากโรงพยาบาลแล้ว เมื่อวันที่ $cDcmitd    หากต้องการเปลี่ยนแปลงค่าใช้จ่ายกรุณาติดต่อส่วนเก็บเงินรายได้')</script>";
-    print "<a target=_self  href='../nindex.htm'><-----ไปเมนู</a>";
+    print "<div><a target=_self  href='allward.php?code=$ward_code'>&lt;&lt;&nbsp;กลับไปหน้าหอผู้ป่วย</a></div>";
 
 } else {
 
@@ -421,9 +436,9 @@ if ($status_log == "จำหน่าย") {
                         </select>
                         <?php
 
-                        if ($cDcmitd == '0000-00-00 00:00:00') {
-                        } else {
+                        if ($cDcmitd != '0000-00-00 00:00:00') {
                             echo "&nbsp;<BR><BR><FONT SIZE='3' COLOR='#FF0000'>คำเตือน ผู้ป่วยได้ทำการจำหน่ายเรียบร้อยแล้ว<BR> กรุณาตรวจสอบ AN ก่อนการ ADMIT  <B>AN:$an</B> </FONT><br>";
+                            
                         }
                     } ?>
                 </td>
@@ -458,16 +473,7 @@ if ($status_log == "จำหน่าย") {
                 <td>
                     <input type="submit" value="  &#3605;&#3585;&#3621;&#3591;  " name="B1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="reset" value="  &#3649;&#3585;&#3657;&#3652;&#3586;  " name="B2">
-
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
-                    <input type="hidden" name="hn" value="<?=$xxxx;?>">
+                    <input type="hidden" name="cAdmitd" value="<?=$cAdmitd;?>">
                 </td>
             </tr>
         </table>

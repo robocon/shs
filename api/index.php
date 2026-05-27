@@ -6,7 +6,7 @@ $json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $data = $json->decode($json_input);
 
 // 1. กำหนด Whitelist ของตารางที่อนุญาต (เพื่อความปลอดภัย)
-$allowed_depts = array('opd', 'hypertension', 'dental', 'doctor');
+$allowed_depts = array('opd', 'hypertension', 'lab', 'doctor');
 
 /**
  * @readme ตัวอย่างการส่งข้อมูล
@@ -42,4 +42,6 @@ if($dept==='opd'){
 	include_once dirname(__FILE__).'/opd.php';
 }elseif($dept==='hypertension'){
 	include_once dirname(__FILE__).'/hypertension.php';
+}elseif($dept==='lab'){
+	include_once dirname(__FILE__).'/lab.php';
 }
