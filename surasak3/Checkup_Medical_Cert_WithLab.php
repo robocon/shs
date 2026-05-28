@@ -1280,7 +1280,66 @@ while($rows = mysql_fetch_array($query)){
                 ".$abnomal_tp."
                 </td>
             </tr>";
-        }//end if		
+        }//end if
+
+$condxofyear_date = substr($rows['thidate'],0,10);
+$sql = "SELECT a.*, b.* 
+FROM ( 
+
+    SELECT *, MAX(`autonumber`) AS `latest_id` 
+	FROM `resulthead` 
+    WHERE `hn` = '$hn' 
+    AND `orderdate` = '$condxofyear_date' 
+    AND ( 
+        `profilecode`='HAVIGG' 
+        OR `profilecode`='HAVIGM' 
+    ) 
+	GROUP BY `profilecode` 
+    ORDER BY `autonumber` ASC  
+
+) AS a 
+LEFT JOIN `resultdetail` AS b ON b.`autonumber` = a.`latest_id` 
+WHERE b.`result` != 'DELETE' 
+GROUP BY a.`profilecode` 
+ORDER BY b.`autonumber` ASC";
+
+$qResult = mysql_query($sql);
+$stat_tp = mysql_num_rows($qResult);
+if($stat_tp){
+
+    $type2 = array(
+        'HAVIGG' => 'ตรวจไวรัสตับอักเสบ A (Anti-HAV IgG)',
+        'HAVIGM' => 'ตรวจไวรัสตับอักเสบ A (Anti HAV IgM)'
+    );
+
+    while($result = mysql_fetch_assoc($qResult)){
+
+        $profilecode = $result['profilecode'];
+
+        $nomal_tp = "/";
+        $abnomal_tp = "";
+        if( $result['flag'] != 'N' ){
+            $nomal_tp = "";
+            $abnomal_tp = "/";
+        }
+
+        $txt_tp = $count++.".".$type2[$profilecode];  //รอแก้ไข
+        echo "<tr>
+            <td width='400px' align='left' style='font-size:17px'>
+            ".$txt_tp."
+            </td>
+            <td width='100px' align='center' style='font-size:17px'>
+            ".$nomal_tp."
+            </td>
+            <td width='100px' align='center' style='font-size:17px'>
+            ".$abnomal_tp."
+            </td>
+        </tr>";
+
+    }
+
+    
+}//end if
 		
     //-----> ตรวจอื่นๆ
     $stat_ekg = $rows["ekg"]; // ผลสรุป ekg
