@@ -10,20 +10,55 @@ if (isset($_GET["action"])) {
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
+$note_code_items = array(
+	'*1' => 'รอผลการตรวจวิเคราะห์ 7 วัน (ไม่รวมวันหยุดราชการ)',
+	'*2' => 'เจาะเลือดเพิ่ม 3 tube',
+	'*3' => 'รอผลการตรวจวิเคราะห์ 14 วัน (ไม่รวมวันหยุดราชการ)',
+	'*4' => 'งดน้ำและอาหารก่อนเจาะเลือด 8 ชม.',
+	'*5' => 'งดน้ำและอาหารก่อนเจาะเลือด 12 ชม.',
+	'*6' => 'กระป๋องปัสสาวะ',
+	'*7' => 'กระป๋องอุจจาระ',
+	'*8' => 'กระป๋อง sterile',
+	'*9' => 'กระป๋องเก็บเสมหะ',
+	'*10' => 'ตรวจวิเคราะห์ในวัน-เวลาราชการเท่านั้น',
+	'*11' => 'เจาะเลือดใน tube แก้ว',
+	'*12' => 'เจาะเลือดใน tube แก้วยาวพันรอบด้วยฟอร์ยห่ออาหาร',
+	'*13' => 'เจาะเลือดใน tube พันรอบด้วยฟอร์ยห่ออาหาร',
+	'*14' => 'เอกสารแนบพร้อมส่งคู่กับสิ่งส่งตรวจ',
+	'*15' => 'รอผลการตรวจวิเคราะห์ 20 วัน (ไม่รวมวันหยุดราชการ)',
+	'*16' => 'รอผลการตรวจวิเคราะห์ 60 วัน (ไม่รวมวันหยุดราชการ)',
+	'*17' => 'รอผลการตรวจวิเคราะห์ 3 วัน (ไม่รวมวันหยุดราชการ)',
+	'*18' => 'กระป๋อง Urine 24 hr.'
+);
+$tubeSort = array(
+	'EDTA'=>'EDTA Blood (หลอดเลือดสีม่วง)',
+	'Heparin'=>'Heparin Blood (หลอดเลือดสีเขียว)',
+	'sodium_citrate'=>'Sodium citrate Blood (หลอดเลือดสีฟ้า)',
+	'NaF'=>'Sodium Fluoride Blood (หลอดเลือดสีเทา)',
+	'Colt_blood'=>'Clot Blood (หลอดเลือดสีแดง)',
+	'CAN'=>'กระป๋องต่างๆ',
+	'Culture'=>'Culture',
+	'special'=>'Special Lab'
+);
+$tubeColor = array(
+	'EDTA'=>'#b2a1c7',
+	'Heparin'=>'#c2d69b',
+	'sodium_citrate'=>'#b6dde8',
+	'NaF'=>'#b3b3b3',
+	'Colt_blood'=>'#f79f9f',
+	'CAN'=>'#ddd9c3',
+	'Culture'=>'#fde9d9',
+	'special'=>'#aab4ff'
+);
+
 if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 
 	$count = count($_SESSION["list_code"]);
 
-	// echo "<A HREF=\"javascript:show_bock();\">เจาะเลือด</A>
-	echo "<TABLE bgcolor='#FFFFD2' style='font-size: 24px;'>
-	<TR>
-		<TD>";
 	for ($i = 0; $i < $count; $i++) {
-		echo "<div><A class='lab-item-selected' HREF=\"javascript:del_list(", $i, ");\" >❌ ", $_SESSION["list_detail"][$i], "</A></div>";
+		echo "<div><A class='lab-item-selected' title='คลิกเพื่อยกเลิกรายการ' HREF=\"javascript:del_list(", $i, ");\" >🗑️ [".$_SESSION["list_code"][$i]."] ".$_SESSION["list_detail"][$i]."</A></div>";
 	}
-	echo "</TD>
-	</TR>
-	</TABLE>";
+
 	exit();
 } else if (isset($_GET["action"]) && $_GET["action"] == "addtolist") {
 
@@ -63,43 +98,58 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 	exit();
 } else if (isset($_GET["action"]) && $_GET["action"] == "lab") {
 
-	$sql = "Select code, detail From labcare where  (code = '" . $_GET["search"] . "' || codex = '" . $_GET["search"] . "' || detail like '%" . $_GET["search"] . "%')  AND `labstatus` = 'Y' AND `version` != 'OLD' Order by numbered ASC";
+	$search = sprintf("%s", $dbi->real_escape_string($_GET["search"]));
 
-	$result = Mysql_Query($sql) or die(Mysql_error());
+	$whereSearch = "(code = '$search' || codex = '$search' || detail like '%$search%')";
+	if($_SESSION['smenucode']==='ADMICU'){
+		$whereSearch = "`code` = '$search'";
+	}
 
-	if (Mysql_num_rows($result) > 0) {
-		echo "<Div style=\"position: absolute;text-align: left; width:520px; height:400px; overflow:auto; border: 1px solid #000000; box-shadow: 4px 4px 4px #747474;background-color:#F2F3F4;\">";
-
-		echo "<table bgcolor=\"#FFFFCC\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id='custom-select'>
-		<tr align=\"center\" bgcolor=\"#3333CC\">
-			<td><font style=\"color: #FFFFFF; font-size: 20px;\"><strong>รายละเอียด</strong></font></td>
-			<td width=\"24\"><font><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\" style='color: #ffffff; font-size: 18px;'>ปิด</A></strong></font></td>
-		</tr>";
-
-		$i = 1;
-		while ($arr = Mysql_fetch_assoc($result)) {
-
-			if ($i % 2 == 0)
-				$bgcolor = "#FFFFFF";
-			else
-				$bgcolor = "#FFFFCC";
-
-
-			$arr["detail"] = ereg_replace(strtoupper($_GET["search"]), "<span style=\"background:#FFC1C1;font-size: 24px;\">" . strtoupper($_GET["search"]) . "</span>", $arr["detail"]);
-
-			echo "<tr bgcolor=\"$bgcolor\">
-					<td bgcolor=\"$bgcolor\"><A HREF=\"javascript:void(0);\" style='padding-left:8px;' onclick=\"addtolist('" . $arr["code"] . "'); \">", $arr["detail"], "</A></td>
-					<td colspan=\"2\"  bgcolor=\"$bgcolor\">", $arr["salepri"], "</td>
+	$sql = "SELECT `code`,`olddetail`,`tat`,`note_code`,`price`
+	FROM `labcare` 
+	WHERE $whereSearch
+	AND `labstatus` = 'Y' 
+	AND `version` != 'OLD' 
+	ORDER BY `numbered` ASC";
+	$result = $dbi->query($sql);
+	if($result->num_rows>0){
+		?>
+		<div style="position: absolute; text-align: left; width:800px; height:400px; overflow:auto; border: 1px solid #000000; box-shadow: 4px 4px 4px #747474;background-color:#F2F3F4;">
+			<table bgcolor="#FFFFCC" width="100%" border="0" cellpadding="0" cellspacing="0" id="custom-select">
+				<tr align="center" bgcolor="#3333CC">
+					<td colspan="4"><A HREF="#" onclick="document.getElementById('list').innerHTML='';" style='color: #ffffff; font-size: 18px;'>[ ปิด ]</A></td>
 				</tr>
-					<tr bgcolor=\"#A45200\">
-					<td height=\"5\"></td>
-					<td height=\"5\"></td>
-					<td height=\"5\"></td>
-				</tr>";
-
-			$i++;
+				<tr>
+					<th>รายละเอียด</th>
+					<th>หมายเหตุ</th>
+					<th>TAT</th>
+					<th>ราคา</th>
+				</tr>
+		<?php
+		while($arr = $result->fetch_assoc()){
+			$detail = ereg_replace(strtoupper($_GET["search"]), "<span style=\"background:#FFC1C1;font-size: 24px;\">" . strtoupper($_GET["search"]) . "</span>", $arr["olddetail"]);
+			?>
+			<tr class="custom-select-child">
+				<td><a HREF="javascript:void(0);" style="padding-left:8px;" onclick="addtolist('<?=$arr['code'];?>');">[<?=$arr['code'];?>] <?=$detail;?></a></td>
+				<td align="right">
+					<?php
+					$ncList = explode(',', $arr['note_code']);
+					foreach ($ncList as $nc) {
+						?>
+						<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+						<?php
+					}
+					?>
+				</td>
+				<td align="right"><?=$arr["tat"];?></td>
+				<td align="right"><?=$arr["price"];?></td>
+			</tr>
+			<?php
 		}
-		echo "</TABLE></Div>";
+		?>
+			</table>
+		</div>
+		<?php
 	}
 	exit();
 }
@@ -204,8 +254,18 @@ legend{
 	font-weight:bold;
 	font-size:24px;
 }
+.lab-item-selected{
+	text-decoration:none;
+}
+.lab-item-selected:hover{
+	text-decoration:underline;
+}
+.custom-select-child:nth-child(odd),
+#list_patho div:nth-child(odd){
+	background-color: #d1d1d1ff;
+}
 </style>
-<TABLE border="0" class="forntsarabun" width="50%" style="float:left;" >
+<TABLE border="0" class="forntsarabun" width="30%" style="float:left;" >
 	<TR valign="top">
 		<TD>
 			<form method="POST" id="ward_send_lab" action="wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>">
@@ -262,198 +322,198 @@ legend{
 		</TD>
 	</TR>
 </TABLE>
-<TABLE id="" width="50%" border="1" bordercolor='#000000' cellpadding="3" cellspacing="0" style="float:left;">
-	<tr valign="top">
-		<td width="500">
-			<div align="center"><B>รายการตรวจทางพยาธิ</B></div>
-		</td>
-	</tr>
-	<TR valign="top">
-		<TD colspan="<?php echo $r * 2; ?>" align='left'>ตรวจLAB อื่นๆ ระบุ : <INPUT TYPE="text" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
-			<Div id="list"></Div>
-		</TD>
-	</TR>
-	<TR>
-		<TD align="center"><strong>รายการที่ใช้บ่อย</strong></TD>
-	</TR>
-	<tr>
-		<td>
-		<div style="display: grid; column-gap: 50px; grid-template-columns: auto auto auto;">
-	<?php
-	// display: grid; column-gap: 50px;
-	// display: flex;flex-wrap: wrap; gap: 20px; flex-direction: row;
-	$i = 0;
-	$list_lab_check[$i]["code"] = "CBC";
-	$list_lab_check[$i]["detail"] = "CBC";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "UA";
-	$list_lab_check[$i]["detail"] = "UA";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "UPT";
-	$list_lab_check[$i]["detail"] = "UPT";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "BS";
-	$list_lab_check[$i]["detail"] = "BS";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBA1C";
-	$list_lab_check[$i]["detail"] = "HbA1C";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CHOL";
-	$list_lab_check[$i]["detail"] = "CHOL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "TRI";
-	$list_lab_check[$i]["detail"] = "TRI";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HDL";
-	$list_lab_check[$i]["detail"] = "HDL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "LDL";
-	$list_lab_check[$i]["detail"] = "LDL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "URIC";
-	$list_lab_check[$i]["detail"] = "URIC";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "BUN";
-	$list_lab_check[$i]["detail"] = "BUN";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CR";
-	$list_lab_check[$i]["detail"] = "CR";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "ELYTE";
-	$list_lab_check[$i]["detail"] = "ELyte";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "LFT";
-	$list_lab_check[$i]["detail"] = "LFT";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBSAG";
-	$list_lab_check[$i]["detail"] = "HBsAg";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBSAB";
-	$list_lab_check[$i]["detail"] = "HBsAb";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HBCAB";
-	$list_lab_check[$i]["detail"] = "HBcAb";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HCV";
-	$list_lab_check[$i]["detail"] = "HCV";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HIV";
-	$list_lab_check[$i]["detail"] = "AntiHIV";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "FT3";
-	$list_lab_check[$i]["detail"] = "FT3";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "FT4";
-	$list_lab_check[$i]["detail"] = "FT4";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "TSH";
-	$list_lab_check[$i]["detail"] = "TSH";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "BGT";
-	$list_lab_check[$i]["detail"] = "BG";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "Phos";
-	$list_lab_check[$i]["detail"] = "PHOS";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CD4";
-	$list_lab_check[$i]["detail"] = "CD4";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "TROP-T";
-	$list_lab_check[$i]["detail"] = "TROP-T";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "VDRL";
-	$list_lab_check[$i]["detail"] = "VDRL";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "DCIP";
-	$list_lab_check[$i]["detail"] = "DCIP";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "PAP";
-	$list_lab_check[$i]["detail"] = "PAP";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "SGOT";
-	$list_lab_check[$i]["detail"] = "AST";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "SGPT";
-	$list_lab_check[$i]["detail"] = "ALT";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "ALK";
-	$list_lab_check[$i]["detail"] = "AP";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "CAL";
-	$list_lab_check[$i]["detail"] = "CA";
-	$i++;
-
-	$list_lab_check[$i]["code"] = "HCT";
-	$list_lab_check[$i]["detail"] = "HCT";
-	$i++;
-	$list_lab_check[$i]["code"] = "ALB";
-	$list_lab_check[$i]["detail"] = "Albumin";
-	//************
-
-	$i++;
-	$list_lab_check[$i]["code"] = "Na";
-	$list_lab_check[$i]["detail"] = "Na";
-
-	$i++;
-	$list_lab_check[$i]["code"] = "k";
-	$list_lab_check[$i]["detail"] = "K";
-
-	$i++;
-	$list_lab_check[$i]["code"] = "Cl";
-	$list_lab_check[$i]["detail"] = "Cl";
-
-	$i++;
-	$list_lab_check[$i]["code"] = "co2";
-	$list_lab_check[$i]["detail"] = "CO2";
-
-	$r = 5;
-	$count = count($list_lab_check);
+<style>
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 18pt;
+  transition: 0.4s;
+}
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+.accordion:after {
+  content: '\002B';
+  color: #777;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+.active:after {
+  content: "\2212";
+}
+.panel {
+  padding: 0 0 18px 0;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+.panel::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.lab-code-items{
+	border-collapse: collapse;
+}
+.lab-code-items th,
+.lab-code-items td{
+	padding: 4px;
+}
+.lab-code-items tr.content:hover{
+	background-color: #fffbc3ff;
+}
+.lab-code-items tr:nth-child(odd){
+	background-color: #d1d1d1ff;
+}
+.lab-code-items tr th{
+	background-color: #b3b3b3ff;
+}
+.lab-code-items p,
+.panel h3{
+	margin:0;
+	padding:0;
+}
+.panel h3{
+	font-size: 18pt;
+}
+</style>
+<div style="float:left; width:60%; margin-bottom:4em; margin-left:5%; margin-right:5%;">
+	<div style="text-align:center;">
+		<h3>รายการตรวจทางพยาธิ</h3>
+	</div>
+	<div>
+		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" id="labSearch" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
+		<div id="list"></div>
+	</div>
+	<div style="display: block; margin: 0.5em 0; padding: 4px 0;">
+		<span style="background-color:red; color:white; padding:4px;">** หมายเหตุ **</span>
+		<span style="background-color:yellow; color:#000; padding:4px;">OUT LAB และตรวจการเข้ากันของเลือด ให้แยกหลอดทดสอบ อย่างน้อย 1 tube</span>
+	</div>
 	
-	// padding-bottom:8px; padding-left:12px;
-	for ($i = 1; $i <= $count; $i++) {
-		echo "<A HREF=\"javascript:void(0);\" class='a-item' onclick=\"addtolist('" . jschars($list_lab_check[$i - 1]["code"]) . "');\" >" . jschars($list_lab_check[$i - 1]["detail"]) . "</A>";
-		// if ($i % $r == 0)
-			// echo "</TR><TR>";
+	<?php
+	$q = $dbi->query("SELECT `code`,`labpart`,`labtype`,`tube`,`note_code`,`tat`,`olddetail` FROM `labcare` WHERE `tube`!='' ORDER BY `tube`,`labpart`");
+
+	$allTubeItems = array();
+	while ($a = $q->fetch_assoc()) {
+		$key = $a['tube'];
+		$sub_key = $a['labtype'];
+		$allTubeItems[$key][$sub_key][] = $a;
+	}
+
+	foreach ($tubeSort as $tubeKey => $tubeName) {
+		$bgColor = $tubeColor[$tubeKey];
+		?>
+		<button class="accordion" style="background-color:<?=$bgColor;?>; font-weight:bold;"><?=$tubeName;?></button>
+		<div class="panel">
+			<div style="width:49%; float:left; margin-right: 1%;">
+			<div style="text-align:center; background-color:<?=$bgColor;?>; margin-top:1em;">
+				<h3>แลปใน</h3>
+			</div>
+			<table class="lab-code-items" width="100%">
+				<tr>
+					<th width="15%">Code</th>
+					<th>หมายเหตุ</th>
+					<th>TAT</th>
+				</tr>
+				<?php
+				foreach ($allTubeItems[$tubeKey]['IN'] as $key => $l) {
+
+					$olddetail = '';
+					if($tubeKey=='special'){
+						$olddetail = '<br>'.$l['olddetail'];
+					}
+
+					?>
+					<tr class="content">
+						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'].$olddetail;?></a></td>
+						<td>
+							<?php
+							if(!empty($l['note_code'])){
+								$ncList = explode(',', $l['note_code']);
+								foreach ($ncList as $nc) {
+									?>
+									<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+									<?php
+								}
+							}
+							?>
+						</td>
+						<td><?=$l['tat'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+			</div>
+
+			<div style="width:49%; float:left; margin-left:1%;">
+			<div style="text-align:center; background-color:<?=$bgColor;?>; margin-top:1em;">
+				<h3>แลปนอก</h3>
+			</div>
+			<table class="lab-code-items" width="100%">
+				<tr>
+					<th width="15%">Code</th>
+					<th>หมายเหตุ</th>
+					<th>TAT</th>
+				</tr>
+				<?php
+				foreach ($allTubeItems[$tubeKey]['OUT'] as $l) {
+
+					$olddetail = '';
+					if($tubeKey=='special'){
+						$olddetail = '<br>'.$l['olddetail'];
+					}
+					?>
+					<tr class="content">
+						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'].$olddetail;?></a></td>
+						<td>
+							<?php
+							if(!empty($l['note_code'])){
+								$ncList = explode(',', $l['note_code']);
+								foreach ($ncList as $nc) {
+									?>
+									<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+									<?php
+								}
+							}
+							?>
+						</td>
+						<td><?=$l['tat'];?></td>
+					</tr>
+					<?php
+				}
+				?>
+			</table>
+			</div>
+		</div>
+		<?php
 	}
 	?>
-		</div>
-		</td>
-	</tr>
-</TABLE>
-
+</div>
 <script>
+	var acc = document.getElementsByClassName("accordion");
+	var i;
+
+	for (i = 0; i < acc.length; i++) {
+	acc[i].addEventListener("click", function() {
+		this.classList.toggle("active");
+		var panel = this.nextElementSibling;
+		if (panel.style.maxHeight) {
+		panel.style.maxHeight = null;
+		} else {
+		panel.style.maxHeight = panel.scrollHeight + "px";
+		} 
+	});
+	}
+
 	document.getElementById("ward_send_lab").addEventListener("submit", function(e) {
 		e.preventDefault();
 		const lab_rows = document.getElementsByClassName('lab-item-selected').length;
@@ -488,10 +548,10 @@ legend{
 		url = 'wpreappoi.php?action=addtolist&code=' + code;
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
+
+		document.getElementById('labSearch').value='';
 		viewlist();
-		//if(checkELyte() == "4"){
-		//	alert("ท่านได้สั่งรายการ Na, K, Cl, Co2 แยกทั้ง 4 รายการ \n กรุณาสั่งเป็น E'Lyte ");
-		//}
+
 	}
 
 	function viewlist() {
@@ -501,6 +561,8 @@ legend{
 		xmlhttp.send(null);
 		document.getElementById("list_patho").innerHTML = xmlhttp.responseText;
 		document.getElementById("list").innerHTML = "";
+
+
 	}
 
 	function del_list(code) {
