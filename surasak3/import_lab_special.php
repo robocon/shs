@@ -1,6 +1,5 @@
 <?php
 //นำเข้าอัพเดท tat Special lab
-exit;
 include dirname(__FILE__).'/newBootstrap.php';
 
 if($_POST['action'] == "update"){
@@ -25,7 +24,7 @@ if($_POST['action'] == "update"){
             if($q->num_rows>0){
                 
                 if(!empty($codex) && $codex!='-'){
-                    $sql = "UPDATE `labcare` SET `tat` = '$tat' WHERE `codex` = '$codex'";
+                    $sql = "UPDATE `labcare` SET `tube`='special', `tat`='$tat' WHERE `codex` = '$codex'";
                     dump($sql);
                     $q = $dbi->query($sql);
                     dump($q);
