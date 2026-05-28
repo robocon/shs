@@ -10,6 +10,47 @@ if (isset($_GET["action"])) {
 	header("content-type: application/x-javascript; charset=UTF-8");
 }
 
+$note_code_items = array(
+	'*1' => 'รอผลการตรวจวิเคราะห์ 7 วัน (ไม่รวมวันหยุดราชการ)',
+	'*2' => 'เจาะเลือดเพิ่ม 3 tube',
+	'*3' => 'รอผลการตรวจวิเคราะห์ 14 วัน (ไม่รวมวันหยุดราชการ)',
+	'*4' => 'งดน้ำและอาหารก่อนเจาะเลือด 8 ชม.',
+	'*5' => 'งดน้ำและอาหารก่อนเจาะเลือด 12 ชม.',
+	'*6' => 'กระป๋องปัสสาวะ',
+	'*7' => 'กระป๋องอุจจาระ',
+	'*8' => 'กระป๋อง sterile',
+	'*9' => 'กระป๋องเก็บเสมหะ',
+	'*10' => 'ตรวจวิเคราะห์ในวัน-เวลาราชการเท่านั้น',
+	'*11' => 'เจาะเลือดใน tube แก้ว',
+	'*12' => 'เจาะเลือดใน tube แก้วยาวพันรอบด้วยฟอร์ยห่ออาหาร',
+	'*13' => 'เจาะเลือดใน tube พันรอบด้วยฟอร์ยห่ออาหาร',
+	'*14' => 'เอกสารแนบพร้อมส่งคู่กับสิ่งส่งตรวจ',
+	'*15' => 'รอผลการตรวจวิเคราะห์ 20 วัน (ไม่รวมวันหยุดราชการ)',
+	'*16' => 'รอผลการตรวจวิเคราะห์ 60 วัน (ไม่รวมวันหยุดราชการ)',
+	'*17' => 'รอผลการตรวจวิเคราะห์ 3 วัน (ไม่รวมวันหยุดราชการ)',
+	'*18' => 'กระป๋อง Urine 24 hr.'
+);
+$tubeSort = array(
+	'EDTA'=>'EDTA Blood (หลอดเลือดสีม่วง)',
+	'Heparin'=>'Heparin Blood (หลอดเลือดสีเขียว)',
+	'sodium_citrate'=>'Sodium citrate Blood (หลอดเลือดสีฟ้า)',
+	'NaF'=>'Sodium Fluoride Blood (หลอดเลือดสีเทา)',
+	'Colt_blood'=>'Clot Blood (หลอดเลือดสีแดง)',
+	'CAN'=>'กระป๋องต่างๆ',
+	'Culture'=>'Culture',
+	'special'=>'Special Lab'
+);
+$tubeColor = array(
+	'EDTA'=>'#b2a1c7',
+	'Heparin'=>'#c2d69b',
+	'sodium_citrate'=>'#b6dde8',
+	'NaF'=>'#b3b3b3',
+	'Colt_blood'=>'#f79f9f',
+	'CAN'=>'#ddd9c3',
+	'Culture'=>'#fde9d9',
+	'special'=>'#aab4ff'
+);
+
 if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 
 	$count = count($_SESSION["list_code"]);
@@ -64,48 +105,51 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 		$whereSearch = "`code` = '$search'";
 	}
 
-	$sql = "SELECT `code`, `detail` 
+	$sql = "SELECT `code`,`olddetail`,`tat`,`note_code`,`price`
 	FROM `labcare` 
 	WHERE $whereSearch
 	AND `labstatus` = 'Y' 
 	AND `version` != 'OLD' 
 	ORDER BY `numbered` ASC";
-
-	$result = Mysql_Query($sql) or die(Mysql_error());
-
-	if (Mysql_num_rows($result) > 0) {
-		echo "<Div style=\"position: absolute;text-align: left; width:520px; height:400px; overflow:auto; border: 1px solid #000000; box-shadow: 4px 4px 4px #747474;background-color:#F2F3F4;\">";
-
-		echo "<table bgcolor=\"#FFFFCC\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id='custom-select'>
-		<tr align=\"center\" bgcolor=\"#3333CC\">
-			<td><font style=\"color: #FFFFFF; font-size: 20px;\"><strong>รายละเอียด</strong></font></td>
-			<td width=\"24\"><font><strong><A HREF=\"#\" onclick=\"document.getElementById('list').innerHTML='';\" style='color: #ffffff; font-size: 18px;'>ปิด</A></strong></font></td>
-		</tr>";
-
-		$i = 1;
-		while ($arr = Mysql_fetch_assoc($result)) {
-
-			if ($i % 2 == 0)
-				$bgcolor = "#FFFFFF";
-			else
-				$bgcolor = "#FFFFCC";
-
-
-			$arr["detail"] = ereg_replace(strtoupper($_GET["search"]), "<span style=\"background:#FFC1C1;font-size: 24px;\">" . strtoupper($_GET["search"]) . "</span>", $arr["detail"]);
-
-			echo "<tr bgcolor=\"$bgcolor\">
-					<td bgcolor=\"$bgcolor\"><A HREF=\"javascript:void(0);\" style='padding-left:8px;' onclick=\"addtolist('" . $arr["code"] . "'); \">", $arr["detail"], "</A></td>
-					<td colspan=\"2\"  bgcolor=\"$bgcolor\">", $arr["salepri"], "</td>
+	$result = $dbi->query($sql);
+	if($result->num_rows>0){
+		?>
+		<div style="position: absolute; text-align: left; width:800px; height:400px; overflow:auto; border: 1px solid #000000; box-shadow: 4px 4px 4px #747474;background-color:#F2F3F4;">
+			<table bgcolor="#FFFFCC" width="100%" border="0" cellpadding="0" cellspacing="0" id="custom-select">
+				<tr align="center" bgcolor="#3333CC">
+					<td colspan="4"><A HREF="#" onclick="document.getElementById('list').innerHTML='';" style='color: #ffffff; font-size: 18px;'>[ ปิด ]</A></td>
 				</tr>
-					<tr bgcolor=\"#A45200\">
-					<td height=\"5\"></td>
-					<td height=\"5\"></td>
-					<td height=\"5\"></td>
-				</tr>";
-
-			$i++;
+				<tr>
+					<th>รายละเอียด</th>
+					<th>หมายเหตุ</th>
+					<th>TAT</th>
+					<th>ราคา</th>
+				</tr>
+		<?php
+		while($arr = $result->fetch_assoc()){
+			$detail = ereg_replace(strtoupper($_GET["search"]), "<span style=\"background:#FFC1C1;font-size: 24px;\">" . strtoupper($_GET["search"]) . "</span>", $arr["olddetail"]);
+			?>
+			<tr class="custom-select-child">
+				<td><a HREF="javascript:void(0);" style="padding-left:8px;" onclick="addtolist('<?=$arr['code'];?>');">[<?=$arr['code'];?>] <?=$detail;?></a></td>
+				<td align="right">
+					<?php
+					$ncList = explode(',', $arr['note_code']);
+					foreach ($ncList as $nc) {
+						?>
+						<p><?=$nc;?> <?=$note_code_items[$nc];?></p>
+						<?php
+					}
+					?>
+				</td>
+				<td align="right"><?=$arr["tat"];?></td>
+				<td align="right"><?=$arr["price"];?></td>
+			</tr>
+			<?php
 		}
-		echo "</TABLE></Div>";
+		?>
+			</table>
+		</div>
+		<?php
 	}
 	exit();
 }
@@ -216,6 +260,10 @@ legend{
 .lab-item-selected:hover{
 	text-decoration:underline;
 }
+.custom-select-child:nth-child(odd),
+#list_patho div:nth-child(odd){
+	background-color: #d1d1d1ff;
+}
 </style>
 <TABLE border="0" class="forntsarabun" width="30%" style="float:left;" >
 	<TR valign="top">
@@ -284,7 +332,7 @@ legend{
   border: none;
   text-align: left;
   outline: none;
-  /* font-size: 15px; */
+  font-size: 18pt;
   transition: 0.4s;
 }
 .active, .accordion:hover {
@@ -342,56 +390,16 @@ legend{
 		<h3>รายการตรวจทางพยาธิ</h3>
 	</div>
 	<div>
-		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
+		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" id="labSearch" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
 		<div id="list"></div>
 	</div>
-	<div>
-		**หมายเหตุ** OUT-LAB เจาะเลือดเพิ่มอย่างน้อย 1 tube
+	<div style="display: block; margin: 0.5em 0; padding: 4px 0;">
+		<span style="background-color:red; color:white; padding:4px;">** หมายเหตุ **</span>
+		<span style="background-color:yellow; color:#000; padding:4px;">OUT LAB และตรวจการเข้ากันของเลือด ให้แยกหลอดทดสอบ อย่างน้อย 1 tube</span>
 	</div>
 	
 	<?php
-	$note_code_items = array(
-		'*1' => 'รอผลการตรวจวิเคราะห์ 7 วัน (ไม่รวมวันหยุดราชการ)',
-		'*2' => 'เจาะเลือดเพิ่ม 3 tube',
-		'*3' => 'รอผลการตรวจวิเคราะห์ 14 วัน (ไม่รวมวันหยุดราชการ)',
-		'*4' => 'งดน้ำและอาหารก่อนเจาะเลือด 8 ชม.',
-		'*5' => 'งดน้ำและอาหารก่อนเจาะเลือด 12 ชม.',
-		'*6' => 'กระป๋องปัสสาวะ',
-		'*7' => 'กระป๋องอุจจาระ',
-		'*8' => 'กระป๋อง sterile',
-		'*9' => 'กระป๋องเก็บเสมหะ',
-		'*10' => 'ตรวจวิเคราะห์ในวัน-เวลาราชการเท่านั้น',
-		'*11' => 'เจาะเลือดใน tube แก้ว',
-		'*12' => 'เจาะเลือดใน tube แก้วยาวพันรอบด้วยฟอร์ยห่ออาหาร',
-		'*13' => 'เจาะเลือดใน tube พันรอบด้วยฟอร์ยห่ออาหาร',
-		'*14' => 'เอกสารแนบพร้อมส่งคู่กับสิ่งส่งตรวจ',
-		'*15' => 'รอผลการตรวจวิเคราะห์ 20 วัน (ไม่รวมวันหยุดราชการ)',
-		'*16' => 'รอผลการตรวจวิเคราะห์ 60 วัน (ไม่รวมวันหยุดราชการ)',
-		'*17' => 'รอผลการตรวจวิเคราะห์ 3 วัน (ไม่รวมวันหยุดราชการ)',
-		'*18' => 'กระป๋อง Urine 24 hr.'
-	);
-	$tubeSort = array(
-		'EDTA'=>'EDTA Blood (หลอดเลือดสีม่วง)',
-		'Heparin'=>'Heparin Blood (หลอดเลือดสีเขียว)',
-		// 'sodium_citrate'=>'Sodium citrate Blood (หลอดเลือดสีฟ้า)',
-		// 'NaF'=>'Sodium Fluoride Blood (หลอดเลือดสีเทา)',
-		// 'Colt_blood'=>'Clot Blood (หลอดเลือดสีแดง)',
-		// 'CAN'=>'กระป๋องต่างๆ',
-		// 'Culture'=>'Culture',
-		// 'special'=>'Special Lab'
-	);
-	$tubeColor = array(
-		'EDTA'=>'#b2a1c7',
-		'Heparin'=>'#c2d69b',
-		'sodium_citrate'=>'#b6dde8',
-		'NaF'=>'',
-		'Colt_blood'=>'#f79f9f',
-		'CAN'=>'#ddd9c3',
-		'Culture'=>'#fde9d9',
-		'special'=>'#aab4ff'
-	);
-
-	$q = $dbi->query("SELECT `code`,`labpart`,`labtype`,`tube`,`note_code`,`tat` FROM `labcare` WHERE `tube`!='' ORDER BY `tube`,`labpart`");
+	$q = $dbi->query("SELECT `code`,`labpart`,`labtype`,`tube`,`note_code`,`tat`,`olddetail` FROM `labcare` WHERE `tube`!='' ORDER BY `tube`,`labpart`");
 
 	$allTubeItems = array();
 	while ($a = $q->fetch_assoc()) {
@@ -417,9 +425,15 @@ legend{
 				</tr>
 				<?php
 				foreach ($allTubeItems[$tubeKey]['IN'] as $key => $l) {
+
+					$olddetail = '';
+					if($tubeKey=='special'){
+						$olddetail = '<br>'.$l['olddetail'];
+					}
+
 					?>
 					<tr class="content">
-						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
+						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'].$olddetail;?></a></td>
 						<td>
 							<?php
 							if(!empty($l['note_code'])){
@@ -452,9 +466,14 @@ legend{
 				</tr>
 				<?php
 				foreach ($allTubeItems[$tubeKey]['OUT'] as $l) {
+
+					$olddetail = '';
+					if($tubeKey=='special'){
+						$olddetail = '<br>'.$l['olddetail'];
+					}
 					?>
 					<tr class="content">
-						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'];?></a></td>
+						<td><a href="javascript:void(0);" onclick="addtolist('<?=$l['code'];?>')"><?=$l['code'].$olddetail;?></a></td>
 						<td>
 							<?php
 							if(!empty($l['note_code'])){
@@ -529,10 +548,10 @@ legend{
 		url = 'wpreappoi.php?action=addtolist&code=' + code;
 		xmlhttp.open("GET", url, false);
 		xmlhttp.send(null);
+
+		document.getElementById('labSearch').value='';
 		viewlist();
-		//if(checkELyte() == "4"){
-		//	alert("ท่านได้สั่งรายการ Na, K, Cl, Co2 แยกทั้ง 4 รายการ \n กรุณาสั่งเป็น E'Lyte ");
-		//}
+
 	}
 
 	function viewlist() {
@@ -542,6 +561,8 @@ legend{
 		xmlhttp.send(null);
 		document.getElementById("list_patho").innerHTML = xmlhttp.responseText;
 		document.getElementById("list").innerHTML = "";
+
+
 	}
 
 	function del_list(code) {

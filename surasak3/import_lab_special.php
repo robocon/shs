@@ -1,5 +1,6 @@
 <?php
 //นำเข้าอัพเดท tat Special lab
+exit;
 include dirname(__FILE__).'/newBootstrap.php';
 
 if($_POST['action'] == "update"){
