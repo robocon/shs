@@ -100,9 +100,9 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 
 	$search = sprintf("%s", $dbi->real_escape_string($_GET["search"]));
 
-	$whereSearch = "(code = '$search' || codex = '$search' || detail like '%$search%')";
+	$whereSearch = "(code LIKE '%$search%' || codex LIKE '%$search%' || detail LIKE '%$search%')";
 	if($_SESSION['smenucode']==='ADMICU'){
-		$whereSearch = "`code` = '$search'";
+		$whereSearch = "`code` LIKE '%$search%'";
 	}
 
 	$sql = "SELECT `code`,`olddetail`,`tat`,`note_code`,`price`
@@ -141,7 +141,7 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 					}
 					?>
 				</td>
-				<td align="right"><?=$arr["tat"];?></td>
+				<td align="right"><?=!empty($arr["tat"]) ? $arr["tat"].'วัน' : '' ;?> </td>
 				<td align="right"><?=$arr["price"];?></td>
 			</tr>
 			<?php
@@ -423,7 +423,7 @@ legend{
 		<h3 style="font-size: 24pt; margin: 0;">เลือกรายการตรวจทางพยาธิ</h3>
 	</div>
 	<div>
-		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" id="labSearch" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
+		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" id="labSearch" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,2);" class="forntsarabun">
 		<div id="list"></div>
 	</div>
 	<div style="display: block; margin: 0.5em 0; padding: 4px 0;">
