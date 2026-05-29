@@ -1,7 +1,7 @@
 <?php
 include_once dirname(__FILE__).'/newBootstrap.php';
 include_once dirname(__FILE__).'/connect.php';
-
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $count = count($_SESSION["list_code"]);
 if ($count > 0) {
 
@@ -16,7 +16,10 @@ if ($count > 0) {
 		$Thidate = dateChristToThai($_POST['date_sent']);
 	}
 
-	$sql1 = "select max(no)as tno from lab_ward where an='$an' ";
+	// max(no)as tno 
+	// ถูกเก็บเป็น Varchar ทำให้ไม่สามารถใช้ MAX() ได้
+	// ต้องเปลี่ยนให้เป็นตัวเลขด้วย UNSIGNED ก่อน
+	$sql1 = "select MAX(CAST(no AS UNSIGNED)) AS tno from lab_ward where an='$an' ";
 	$q1 = mysql_query($sql1);
 	$ar = mysql_fetch_array($q1);
 	$num = $ar['tno'] + 1;
@@ -32,36 +35,9 @@ if ($count > 0) {
 
 	$sql .= implode(", ", $list);
 	$result = mysql_query($sql);
+	$res = array('status'=>200,'id'=>$num);
+}else{
+	$res = array('status'=>400,'msg'=>mysql_error());
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
-</head>
-<body>
-<?php
-if ($result) {
-	?>
-	<p>สั่ง LAB เรียบร้อยแล้ว</p>
-	<script>
-		window.addEventListener('load', (event) => {
-			window.open("ipbed1aa.php?an=<?=$an;?>&bad=<?=$bed;?>&bedcode=<?=$bedcode;?>&cbedname=<?=$cbedname;?>&no=<?=$num;?>", "WinRechallenge","width=600,height=300,left=100,top=100");
-		});
-		setInterval(function(){
-			location.replace("wpreappoi.php?an=<?=$an;?>&cBed=<?=$bed;?>&cBedcode=<?=$bedcode;?>&cHn=<?=$hn;?>&cbedname=<?=$cbedname;?>");
-		}, 2000);
-	</script>
-	<?php
-} else {
-	?>
-	<p>เกิดข้อผิดพลาด</p>
-	<p><?=mysql_error();?></p>
-	<?php
-}
-?>
-	<p><a href="wpreappoi.php?an=<?=$an;?>&cBed=<?=$bed;?>&cBedcode=<?=$bedcode;?>&cHn=<?=$hn;?>&cbedname=<?=$cbedname;?>">กลับไปหน้าสั่งLAB</a></p>
-</body>
-</html>
+echo $json->encode($res);
+exit;
