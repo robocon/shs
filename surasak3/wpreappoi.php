@@ -6,10 +6,6 @@ if(empty($_SESSION['sOfficer'])){
 	exit;
 }
 
-if (isset($_GET["action"])) {
-	header("content-type: application/x-javascript; charset=UTF-8");
-}
-
 $note_code_items = array(
 	'*1' => 'รอผลการตรวจวิเคราะห์ 7 วัน (ไม่รวมวันหยุดราชการ)',
 	'*2' => 'เจาะเลือดเพิ่ม 3 tube',
@@ -181,32 +177,25 @@ WHERE `an`='$getAn'";
 $result = mysql_query($query) or die("Query failed : ".mysql_error());
 list($bed,$date,$ptname,$age,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$paid,$debt,$caldate,$bedname,$bedcode,$hn,$status,$diag1) = mysql_fetch_row($result);
 ?>
-<fieldset style="margin-bottom:1em;">
-	<legend>ข้อมูลเบื้องต้น</legend>
-	<table>
-		<tr>
-			<td align="right"><strong>ชื่อ</strong>: </td>
-			<td><?=$ptname;?></td>
-			<td align="right"><strong>สิทธิ</strong>: </td>
-			<td><?=$ptright;?></td>
-			<td align="right"><strong>AN</strong>: </td>
-			<td><?=$an;?></td>
-		</tr>
-		<tr>
-			<td align="right"><strong>HN</strong>: </td>
-			<td><?=$hn;?></td>
-			<td align="right"><strong>อายุ</strong>: </td>
-			<td><?=$age;?></td>
-			<td align="right"><strong>แพทย์</strong>: </td>
-			<td><?= $doctor;?></td>
-		</tr>
-	</table>
-</fieldset>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>🧪 สั่งแลปผู้ป่วยใน</title>
+</head>
+<body>
 <style>
 *{
 	font-family: "TH SarabunPSK";
 	font-size: 20px;
 }
+
+.btn-old-cancel:hover,
+.btn-old-reprint:hover{
+	background-color: #c7c7c7;
+}
+
 /* ตาราง */
 .chk_table {
 	border-collapse: collapse;
@@ -235,118 +224,23 @@ list($bed,$date,$ptname,$age,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$pai
 	background-color: #198754;
 	color: #ffffff!important;
 }
-.a-gray{
-	background-color: #6e6e6e;
-	color: #ffffff!important;
-}
-.a-item{
-	padding-bottom:8px;
-	padding-left:12px;
-}
-.a-item, #custom-select a{
-	text-decoration: none;
-}
-.a-item:hover, #custom-select a:hover{
-	text-decoration: underline;
-	background-color: #e5e5e5;
-}
 legend{
 	font-weight:bold;
 	font-size:24px;
 }
+/* รายการแลปที่กดเลือกเรียบร้อยแล้ว */
 .lab-item-selected{
 	text-decoration:none;
 }
 .lab-item-selected:hover{
 	text-decoration:underline;
 }
+/* รายการแลปตอนที่เลือกเอง */
 .custom-select-child:nth-child(odd),
 #list_patho div:nth-child(odd){
 	background-color: #d1d1d1ff;
 }
-</style>
-<TABLE border="0" class="forntsarabun" width="30%" style="float:left;" >
-	<TR valign="top">
-		<TD>
-			<form method="POST" id="ward_send_lab" action="wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>&hn=<?=$hn;?>">
-				<fieldset>
-					<legend>รายการที่สั่ง</legend>
-					<div id="list_patho"></div>
-				</fieldset>
-				<div style="margin-top:1em;">
-					<div style="font-weight:bold;">เลือกวันที่ส่งล่วงหน้า</div>
-					<div><input type="date" name="date_sent" id="date_sent" class="forntsarabun"> <a href="javascript:void(0);" onclick="document.getElementById('date_sent').value=''">[ล้างค่า]</a></div>
-				</div>
-				<div style='color:red;'>*** หากต้องการลบรายการออกให้คลิกที่รายการนั้นๆ ***</div>
-				<div style="margin-top:10px;"><input type="submit" value="     ยืนยันการสั่ง LAB     " name="B1" class="forntsarabun"></div>
-			</form>
-			<div>
-				<?php
-				$sql = "SELECT * FROM `lab_ward` WHERE `an` = '$an' GROUP BY `an`,`no` ORDER BY `no` DESC";
-				$q = mysql_query($sql);
-				if (mysql_num_rows($q) > 0) {
-				?>
-				<hr>
-				<div class="forntsarabun">
-					<div><b style="font-size:24px;">รายการแลปที่เคยสั่ง</b></div>
-					<table class="chk_table forntsarabun">
-						<?php
-						while ($lw = mysql_fetch_assoc($q)) {
-							$no = $lw['no'];
-							$date = $lw['date'];
-							?>
-							<tr>
-								<td>
-									<strong>ครั้งที่ <?= $no; ?></strong> (<?= $date; ?>) <a href="javascript: void(0);" onclick="cancelOrder('<?=$no;?>')" title="ยกเลิก" style="display:none;">🗑️</a>
-								</td>
-							</tr>
-							<?php
-							$sql_lab_ward = "SELECT * FROM `lab_ward` WHERE `an` = '$an' AND `no` = '$no' ORDER BY `row_id` ASC";
-							$q_lw = mysql_query($sql_lab_ward);
-							$item_lw_list = array();
-							while ($item_lw = mysql_fetch_assoc($q_lw)) {
-								$item_lw_list[] = $item_lw['code'];
-							}
-							$lw_item_merge = implode(', ', $item_lw_list);
-							?>
-							<tr>
-								<td><?= $lw_item_merge; ?></td>
-							</tr>
-							<?php
-						}
-						?>
-					</table>
-				</div>
-				<script>
-					async function cancelOrder(number){
-						const response = await fetch('wpreappoi_cancel.php?no='+number);
-						const data = await response.json();
-						console.log(data);
-						if(data.status===200){
-							Swal.fire({
-								title: "ยืนยันการคืนถุงเลือด",
-								html: `ตอนนี้ถุงเลือดอยู่ในสถานะ "การจอง" หากต้องการคืนถุงเลือดกรุณายืนยัน`,
-								icon: "success", // error, question, info, success
-								allowOutsideClick: false,
-								confirmButtonColor: "#3085d6",
-								confirmButtonText: "ยืนยันการคืน",
-								cancelButtonColor: "#d33",
-								cancelButtonText: "ยกเลิก"
-								didClose: function(){
-
-								}
-							})
-						}
-					}
-				</script>
-				<?php
-				}
-				?>
-			</div>
-		</TD>
-	</TR>
-</TABLE>
-<style>
+/* เปรียบเสมือน Container ของรายการแลปที่แบ่งตาม accordion */
 #orderLabLists{
 	float:left;
 	width:60%;
@@ -381,7 +275,7 @@ legend{
   content: "\2212";
 }
 .panel {
-  padding: 0 0 18px 0;
+  padding: 0 0 8px 0;
   background-color: white;
   max-height: 0;
   overflow: hidden;
@@ -392,6 +286,7 @@ legend{
   clear: both;
   display: table;
 }
+/* รายการ IN-OUT LAB */
 .lab-code-items{
 	border-collapse: collapse;
 }
@@ -416,8 +311,127 @@ legend{
 .panel h3{
 	font-size: 18pt;
 }
+
 </style>
-<div style="" id="orderLabLists">
+<script src="js/sweetalert2.all.min.js"></script>
+<fieldset style="margin-bottom:1em;">
+	<legend>ข้อมูลเบื้องต้น</legend>
+	<table>
+		<tr>
+			<td align="right"><strong>ชื่อ</strong>: </td>
+			<td><?=$ptname;?></td>
+			<td align="right"><strong>สิทธิ</strong>: </td>
+			<td><?=$ptright;?></td>
+			<td align="right"><strong>AN</strong>: </td>
+			<td><?=$an;?></td>
+		</tr>
+		<tr>
+			<td align="right"><strong>HN</strong>: </td>
+			<td><?=$hn;?></td>
+			<td align="right"><strong>อายุ</strong>: </td>
+			<td><?=$age;?></td>
+			<td align="right"><strong>แพทย์</strong>: </td>
+			<td><?= $doctor;?></td>
+		</tr>
+	</table>
+</fieldset>
+
+<TABLE border="0" class="forntsarabun" width="30%" style="float:left;" >
+	<TR valign="top">
+		<TD>
+			<form method="POST" id="ward_send_lab" action="wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>&hn=<?=$hn;?>">
+				<fieldset>
+					<legend>รายการที่สั่ง</legend>
+					<div id="list_patho"></div>
+				</fieldset>
+                <div style='color:red;'>*** หากต้องการลบรายการออกให้คลิกที่รายการนั้นๆ ***</div>
+				<div style="margin-top:1em;">
+					<div style="font-weight:bold;">เลือกวันที่ส่งล่วงหน้า</div>
+					<div><input type="date" name="date_sent" id="date_sent" class="forntsarabun"> <a href="javascript:void(0);" onclick="document.getElementById('date_sent').value=''">[ล้างค่า]</a></div>
+				</div>
+				<div style="margin-top:10px;"><input type="submit" value="     ยืนยันการสั่ง LAB     " name="B1" class="forntsarabun a-button a-green"></div>
+			</form>
+			<div>
+				<?php
+				$sql = "SELECT *, GROUP_CONCAT(`code`) AS `group_codes` FROM `lab_ward` WHERE `an` = '$an' GROUP BY `no` ORDER BY `row_id` DESC";
+				$q = mysql_query($sql);
+				if (mysql_num_rows($q) > 0) {
+				?>
+				<hr>
+				<div class="forntsarabun">
+					<div><b style="font-size:24px;">รายการแลปที่เคยสั่ง</b></div>
+					<table class="chk_table forntsarabun">
+					<?php
+					while ($lw = mysql_fetch_assoc($q)) {
+						$no = $lw['no'];
+						$date = $lw['date'];
+						$group_codes = $lw['group_codes'];
+						?>
+						<tr id="row-<?=$no;?>">
+							<td>
+								<strong>ครั้งที่ <?= $no; ?></strong> (<?= $date; ?>)
+								<div style="float:right;">
+									<a href="javascript: void(0);" class="btn-old-cancel" onclick="cancelOrder('<?=$no;?>')" title="ยกเลิก">🗑️</a>
+									<a href="javascript: void(0);" class="btn-old-reprint" onclick="rePrint('<?=$no;?>')" title="ปริ้น">🖨️</a>
+								</div>
+								<div style="padding:4px;"><?= $lw['group_codes']; ?></div>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+					</table>
+				</div>
+				<script>
+					async function cancelOrder(number){
+                        Swal.fire({
+                            title: "ยืนยันการยกเลิก?",
+                            showCancelButton: true,
+                            cancelButtonText: "ยกเลิก",
+                            confirmButtonText: "ยืนยัน"
+                        }).then( async (result) => {
+                            /* Read more about isConfirmed, isDenied below */
+                            if (result.isConfirmed){
+                               Swal.fire({
+                                    title: 'กำลังดำเนินการ...',
+                                    allowOutsideClick: false,
+                                    didOpen:()=>{
+                                        Swal.showLoading();
+                                    }
+                                });
+                                const [response] = await Promise.all([
+                                    fetch('wpreappoi_cancel.php?no=' + number),
+                                    new Promise(resolve => setTimeout(resolve, 800)) // บังคับรอ 800ms
+                                ]);
+                                
+                                const data = await response.json();
+                                if(data.status===200){
+                                    Swal.fire({
+                                        title: "ยกเลิกเรียบร้อย",
+                                        icon: "success", // error, question, info, success
+                                        allowOutsideClick: false,
+                                        didClose: function(){
+                                            document.getElementById('row-'+data.id).remove();
+                                        }
+                                    })
+                                }
+                            }
+                        });
+					}
+
+					async function rePrint(no){
+						window.open("ipbed1aa.php?an=<?=$an;?>&bad=<?=$bed;?>&bedcode=<?=$bedcode;?>&cbedname=<?=$_GET['cbedname'];?>&no="+no, "WinRechallenge","width=600,height=300,left=100,top=100");
+					}
+				</script>
+				<?php
+				}
+				?>
+			</div>
+		</TD>
+	</TR>
+</TABLE>
+
+<div id="orderLabLists">
 	<button style="position:absolute; top:0; left:0; display:none;">&gt;&gt;&gt;</button>
 	<div style="text-align:center;">
 		<h3 style="font-size: 24pt; margin: 0;">เลือกรายการตรวจทางพยาธิ</h3>
@@ -554,8 +568,30 @@ legend{
 			alert('กรุณาเลือกรายการแลปก่อนบันทึก');
 			return false;
 		}
-		this.submit();
+		onSave();
 	});
+
+	async function onSave(){
+		const form = document.getElementById("ward_send_lab");
+		const formData = new FormData(form);
+		const searchParams = new URLSearchParams(formData).toString();
+		const response = await fetch('wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>&hn=<?=$hn;?>', {
+			method: 'POST',
+			body: formData
+		});
+		const data = await response.json();
+		if(data.status===200){
+			window.open("ipbed1aa.php?an=<?=$an;?>&bad=<?=$bed;?>&bedcode=<?=$bedcode;?>&cbedname=<?=$_GET['cbedname'];?>&no="+data.id, "WinRechallenge","width=600,height=300,left=100,top=100");
+			Swal.fire({
+				title: "บันทึกเรียร้อย",
+				icon: "success", // error, question, info, success
+				allowOutsideClick: false,
+				didClose: function(){
+					location.reload();
+				}
+			})
+		}
+	}
 
 	function newXmlHttp() {
 		var xmlhttp = false;
@@ -629,3 +665,5 @@ legend{
 		}
 	}
 </script>
+</body>
+</html>
