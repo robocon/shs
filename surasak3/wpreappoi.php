@@ -353,7 +353,7 @@ legend{
 			</form>
 			<div>
 				<?php
-				$sql = "SELECT *, GROUP_CONCAT(`code`) AS `group_codes` FROM `lab_ward` WHERE `an` = '$an' GROUP BY `no` ORDER BY `row_id` DESC";
+				$sql = "SELECT *, GROUP_CONCAT(`code`) AS `group_codes`, SUBSTRING(DATE_SUB(`date`, INTERVAL 543 YEAR),1,10) AS `date_en` FROM `lab_ward` WHERE `an` = '$an' GROUP BY `no` ORDER BY `row_id` DESC";
 				$q = mysql_query($sql);
 				if (mysql_num_rows($q) > 0) {
 				?>
@@ -366,12 +366,39 @@ legend{
 						$no = $lw['no'];
 						$date = $lw['date'];
 						$group_codes = $lw['group_codes'];
+
+                        /**
+                         * !!! ที่ยังไม่ได้เทสก็คือในกรณีที่วันนั้นมีสั่งหลายรอบมันจะเป็นยังไง
+                         */
+                        $sqlOrder = "SELECT `autonumber`,`clinicalinfo` FROM `orderhead` WHERE `hn` = '$hn' AND `orderdate` LIKE '{$lw['date_en']}%' ";
+                        $qOrder = mysql_query($sqlOrder);
+                        $aOrder = mysql_fetch_assoc($qOrder);
+
+                        $newOrderItems = array();
+                        $orderItems = explode(',',$aOrder['clinicalinfo']);
+                        foreach($orderItems AS $ori){
+                            $ori = trim($ori);
+                            if(!empty($ori)){
+                                $newOrderItems[] = $ori;
+                            }
+                        }
+
+                        $labWardItems = explode(',',$lw['group_codes']);
+                        // เอารายการใน orderhead มาเทียบกับที่สั่งใน lab_ward สมมุติว่าให้ถูกไว้ก่อน แล้วถ้าหาไม่เจอค่อยให้เป็นผิด
+                        $checkLab = true;
+                        foreach($labWardItems AS $lwi){
+                            if(!in_array($lwi, $newOrderItems)){
+                                $checkLab = false;
+                            }
+                        }
 						?>
 						<tr id="row-<?=$no;?>">
 							<td>
 								<strong>ครั้งที่ <?= $no; ?></strong> (<?= $date; ?>)
 								<div style="float:right;">
+                                    <?php if($checkLab===false): ?>
 									<a href="javascript: void(0);" class="btn-old-cancel" onclick="cancelOrder('<?=$no;?>')" title="ยกเลิก">🗑️</a>
+                                    <?php endif; ?>
 									<a href="javascript: void(0);" class="btn-old-reprint" onclick="rePrint('<?=$no;?>')" title="ปริ้น">🖨️</a>
 								</div>
 								<div style="padding:4px;"><?= $lw['group_codes']; ?></div>
