@@ -38,7 +38,7 @@ $tubeSort = array(
 	'Colt_blood'=>'Clot Blood (หลอดเลือดสีแดง)',
 	'CAN'=>'กระป๋องต่างๆ',
 	'Culture'=>'Culture',
-	'special'=>'Special Lab'
+	// 'special'=>'Special Lab'
 );
 $tubeColor = array(
 	'EDTA'=>'#b2a1c7',
@@ -187,16 +187,16 @@ list($bed,$date,$ptname,$age,$an,$hn,$diagnos,$food,$doctor,$ptright,$price,$pai
 		<tr>
 			<td align="right"><strong>ชื่อ</strong>: </td>
 			<td><?=$ptname;?></td>
+			<td align="right"><strong>สิทธิ</strong>: </td>
+			<td><?=$ptright;?></td>
+			<td align="right"><strong>AN</strong>: </td>
+			<td><?=$an;?></td>
 		</tr>
 		<tr>
 			<td align="right"><strong>HN</strong>: </td>
-			<td><?=$hn;?> <strong>AN</strong>: <?=$an;?> <strong>อายุ</strong>: <?=$age;?></td>
-		</tr>
-		<tr>
-			<td align="right"><strong>สิทธิ</strong>: </td>
-			<td><?=$ptright;?></td>
-		</tr>
-		<tr>
+			<td><?=$hn;?></td>
+			<td align="right"><strong>อายุ</strong>: </td>
+			<td><?=$age;?></td>
 			<td align="right"><strong>แพทย์</strong>: </td>
 			<td><?= $doctor;?></td>
 		</tr>
@@ -296,7 +296,9 @@ legend{
 							$date = $lw['date'];
 							?>
 							<tr>
-								<td><strong>ครั้งที่ <?= $no; ?></strong> (<?= $date; ?>)</td>
+								<td>
+									<strong>ครั้งที่ <?= $no; ?></strong> (<?= $date; ?>) <a href="javascript: void(0);" onclick="cancelOrder('<?=$no;?>')" title="ยกเลิก" style="display:none;">🗑️</a>
+								</td>
 							</tr>
 							<?php
 							$sql_lab_ward = "SELECT * FROM `lab_ward` WHERE `an` = '$an' AND `no` = '$no' ORDER BY `row_id` ASC";
@@ -315,6 +317,28 @@ legend{
 						?>
 					</table>
 				</div>
+				<script>
+					async function cancelOrder(number){
+						const response = await fetch('wpreappoi_cancel.php?no='+number);
+						const data = await response.json();
+						console.log(data);
+						if(data.status===200){
+							Swal.fire({
+								title: "ยืนยันการคืนถุงเลือด",
+								html: `ตอนนี้ถุงเลือดอยู่ในสถานะ "การจอง" หากต้องการคืนถุงเลือดกรุณายืนยัน`,
+								icon: "success", // error, question, info, success
+								allowOutsideClick: false,
+								confirmButtonColor: "#3085d6",
+								confirmButtonText: "ยืนยันการคืน",
+								cancelButtonColor: "#d33",
+								cancelButtonText: "ยกเลิก"
+								didClose: function(){
+
+								}
+							})
+						}
+					}
+				</script>
 				<?php
 				}
 				?>
@@ -323,11 +347,19 @@ legend{
 	</TR>
 </TABLE>
 <style>
+#orderLabLists{
+	float:left;
+	width:60%;
+	margin-bottom:4em;
+	margin-left:5%;
+	margin-right:5%;
+	position: relative;
+}
 .accordion {
   background-color: #eee;
   color: #444;
   cursor: pointer;
-  padding: 18px;
+  padding: 10px;
   width: 100%;
   border: none;
   text-align: left;
@@ -385,9 +417,10 @@ legend{
 	font-size: 18pt;
 }
 </style>
-<div style="float:left; width:60%; margin-bottom:4em; margin-left:5%; margin-right:5%;">
+<div style="" id="orderLabLists">
+	<button style="position:absolute; top:0; left:0; display:none;">&gt;&gt;&gt;</button>
 	<div style="text-align:center;">
-		<h3>รายการตรวจทางพยาธิ</h3>
+		<h3 style="font-size: 24pt; margin: 0;">เลือกรายการตรวจทางพยาธิ</h3>
 	</div>
 	<div>
 		ค้นหารายการแลปอื่นๆ: <INPUT TYPE="text" id="labSearch" NAME="" size="20" onkeypress="searchSuggest('lab',this.value,3);" class="forntsarabun">
@@ -399,7 +432,7 @@ legend{
 	</div>
 	
 	<?php
-	$q = $dbi->query("SELECT `code`,`labpart`,`labtype`,`tube`,`note_code`,`tat`,`olddetail` FROM `labcare` WHERE `tube`!='' ORDER BY `tube`,`labpart`");
+	$q = $dbi->query("SELECT `code`,`labpart`,`labtype`,`tube`,`note_code`,`tat`,`olddetail` FROM `labcare` WHERE `tube`!='' AND `labstatus`='Y' ORDER BY `tube`,`labpart`");
 
 	$allTubeItems = array();
 	while ($a = $q->fetch_assoc()) {
