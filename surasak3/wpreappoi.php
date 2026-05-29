@@ -268,7 +268,7 @@ legend{
 <TABLE border="0" class="forntsarabun" width="30%" style="float:left;" >
 	<TR valign="top">
 		<TD>
-			<form method="POST" id="ward_send_lab" action="wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>">
+			<form method="POST" id="ward_send_lab" action="wappinsert1.php?an=<?= $an; ?>&cBed=<?= $bed; ?>&cBedcode=<?= $bedcode; ?>&cbedname=<?= $_GET['cbedname'] ?>&hn=<?=$hn;?>">
 				<fieldset>
 					<legend>รายการที่สั่ง</legend>
 					<div id="list_patho"></div>

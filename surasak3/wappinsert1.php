@@ -10,6 +10,7 @@ if ($count > 0) {
 	$bed = $_GET['cBed'];
 	$bedcode = $_GET['cBedcode'];
 	$cbedname = $_GET['cbedname'];
+	$hn = $_GET['hn'];
 
 	if($_POST['date_sent']){
 		$Thidate = dateChristToThai($_POST['date_sent']);
@@ -30,14 +31,37 @@ if ($count > 0) {
 	}
 
 	$sql .= implode(", ", $list);
-	$result = mysql_query($sql) or die("Error appoint_lab " . mysql_error());
+	$result = mysql_query($sql);
 }
-
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+<?php
 if ($result) {
-	echo "สั่ง LAB เรียบร้อยแล้ว";
-	echo "<META HTTP-EQUIV='Refresh' CONTENT='0;URL=ipbed1aa.php?an=$an&bad=$bed&bedcode=$bedcode&cbedname=$cbedname&no=$num'>";
-
+	?>
+	<p>สั่ง LAB เรียบร้อยแล้ว</p>
+	<script>
+		window.addEventListener('load', (event) => {
+			window.open("ipbed1aa.php?an=<?=$an;?>&bad=<?=$bed;?>&bedcode=<?=$bedcode;?>&cbedname=<?=$cbedname;?>&no=<?=$num;?>", "WinRechallenge","width=600,height=300,left=100,top=100");
+		});
+		setInterval(function(){
+			location.replace("wpreappoi.php?an=<?=$an;?>&cBed=<?=$bed;?>&cBedcode=<?=$bedcode;?>&cHn=<?=$hn;?>&cbedname=<?=$cbedname;?>");
+		}, 2000);
+	</script>
+	<?php
 } else {
-	echo "เกิดข้อผิดพลาด";
-	echo "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=wpreappoi.php?an=$an'>";
+	?>
+	<p>เกิดข้อผิดพลาด</p>
+	<p><?=mysql_error();?></p>
+	<?php
 }
+?>
+	<p><a href="wpreappoi.php?an=<?=$an;?>&cBed=<?=$bed;?>&cBedcode=<?=$bedcode;?>&cHn=<?=$hn;?>&cbedname=<?=$cbedname;?>">กลับไปหน้าสั่งLAB</a></p>
+</body>
+</html>
