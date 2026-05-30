@@ -1,6 +1,5 @@
 <?php
 //นำเข้าอัพเดท tat Special lab
-exit;
 include dirname(__FILE__).'/newBootstrap.php';
 
 if($_POST['action'] == "update"){
@@ -21,7 +20,7 @@ if($_POST['action'] == "update"){
             $codex = sprintf("%s", $dbi->real_escape_string($codex));
             $tat = sprintf("%s", $dbi->real_escape_string($tat));
 
-            $q = $dbi->query("SELECT * FROM `labcare` WHERE `codex` = '$codex' ");
+            $q = $dbi->query("SELECT * FROM `labcare` WHERE `codex` = '$codex' AND `tube`!='' ");
             if($q->num_rows>0){
                 
                 if(!empty($codex) && $codex!='-'){
@@ -29,6 +28,8 @@ if($_POST['action'] == "update"){
                     dump($sql);
                     $q = $dbi->query($sql);
                     dump($q);
+                }else{
+                    echo "$codex IS '-'";
                 }
 
             }else{

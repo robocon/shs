@@ -1,7 +1,7 @@
 <?php
 include_once dirname(__FILE__).'/newBootstrap.php';
 include_once dirname(__FILE__).'/connect.php';
-
+$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 $count = count($_SESSION["list_code"]);
 if ($count > 0) {
 
@@ -10,12 +10,16 @@ if ($count > 0) {
 	$bed = $_GET['cBed'];
 	$bedcode = $_GET['cBedcode'];
 	$cbedname = $_GET['cbedname'];
+	$hn = $_GET['hn'];
 
 	if($_POST['date_sent']){
 		$Thidate = dateChristToThai($_POST['date_sent']);
 	}
 
-	$sql1 = "select max(no)as tno from lab_ward where an='$an' ";
+	// max(no)as tno 
+	// ถูกเก็บเป็น Varchar ทำให้ไม่สามารถใช้ MAX() ได้
+	// ต้องเปลี่ยนให้เป็นตัวเลขด้วย UNSIGNED ก่อน
+	$sql1 = "select MAX(CAST(no AS UNSIGNED)) AS tno from lab_ward where an='$an' ";
 	$q1 = mysql_query($sql1);
 	$ar = mysql_fetch_array($q1);
 	$num = $ar['tno'] + 1;
@@ -30,14 +34,10 @@ if ($count > 0) {
 	}
 
 	$sql .= implode(", ", $list);
-	$result = mysql_query($sql) or die("Error appoint_lab " . mysql_error());
+	$result = mysql_query($sql);
+	$res = array('status'=>200,'id'=>$num);
+}else{
+	$res = array('status'=>400,'msg'=>mysql_error());
 }
-
-if ($result) {
-	echo "สั่ง LAB เรียบร้อยแล้ว";
-	echo "<META HTTP-EQUIV='Refresh' CONTENT='0;URL=ipbed1aa.php?an=$an&bad=$bed&bedcode=$bedcode&cbedname=$cbedname&no=$num'>";
-
-} else {
-	echo "เกิดข้อผิดพลาด";
-	echo "<META HTTP-EQUIV='Refresh' CONTENT='2;URL=wpreappoi.php?an=$an'>";
-}
+echo $json->encode($res);
+exit;

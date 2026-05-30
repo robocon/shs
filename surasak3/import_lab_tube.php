@@ -1,6 +1,5 @@
 <?php
 //นำเข้าอัพเดท tubelab IN-OUT
-exit;
 include dirname(__FILE__).'/newBootstrap.php';
 
 if($_POST['action'] == "update"){
