@@ -104,6 +104,7 @@ if (isset($_GET["action"])  && $_GET["action"] == "viewlist") {
 	$sql = "SELECT `code`,`olddetail`,`tat`,`note_code`,`price`
 	FROM `labcare` 
 	WHERE $whereSearch
+	AND `code` NOT LIKE '@%'
 	AND `labstatus` = 'Y' 
 	AND `version` != 'OLD' 
 	ORDER BY `numbered` ASC";
