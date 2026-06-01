@@ -14,6 +14,9 @@ if(empty($sIdname)){
     exit;
 }
 
+// เป็นตัวบอกว่าเข้ามาจากเมนูปกติ
+$from = sprintf("%s", $_GET['from']);
+
 // ข้อมูลจาก 43แฟ้ม รหัสแผนกที่รับบริการ 26Sep16.xls
 $section = array(
     '01' => 'อายุรกรรม',
@@ -136,8 +139,7 @@ if($action==='testDoctorId'){
 
         // send line notify
         $sToken = "LdH3u9gnaKiyCBSTq1EkctYtMbErKG7gjJ1DErd2sfL";
-        $message = "$sOfficer ได้ทำการขอเพิ่มชื่อแพทย์เข้าสู่ระบบ มีรายละเอียดดังนี้\n";
-        $message .= "บัตรประชาชน : $idcard\n";
+        $message = "👩‍⚕️ $sOfficer 👨‍⚕️ ได้ทำการขอเพิ่มชื่อแพทย์เข้าสู่ระบบ มีรายละเอียดดังนี้\n";
         $message .= "ชื่อ-สกุล : $prefix $firstname $lastname\n";
         $message .= "เลขที่เวชกรรม : $prefixDoctorNumber $doctorNum\n";
         $message .= "คลินิก : $depart\n";
@@ -151,6 +153,29 @@ if($action==='testDoctorId'){
         if($request_login=='1'){ 
             $message .= "* ขอเพิ่ม username และ password เพื่อเข้าสู่ระบบโรงพยาบาล *\n";
         }
+
+        $ch = curl_init();
+        curl_setopt( $ch, CURLOPT_URL, NOTIFY_HOST."/telegram/register.php");
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt( $ch, CURLOPT_SSLVERSION, 6);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt( $ch, CURLOPT_POST, 1);
+
+        curl_setopt( $ch, CURLOPT_TIMEOUT, 1);
+        curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, 2); // 2 seconds
+
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, "sMessage=".$message); 
+        $headers = array( 'Content-type: application/x-www-form-urlencoded' );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+        
+        $result = curl_exec( $ch );
+        if($result===false){
+            $error = curl_error($ch);
+        }
+        curl_close($ch);
+
+        
         // $message .= "ขอเพิ่มชื่อแพทย์เข้าสู่ระบบ";
         // sendLineNotify($message, $sToken);
 
@@ -198,7 +223,24 @@ if($action==='testDoctorId'){
 </head>
 <body>
     <?php 
-    require_once 'com_user_menu.php';
+    if($from==='main'){
+        require_once 'com_user_menu.php';
+    }else{
+        ?>
+        <style type="text/css">
+            * {
+                font-family: "TH SarabunPSK";
+                font-size: 20px;
+            }
+
+            table.table th,
+            #comNav {
+                background-color: #13795b;
+                color: #ffffff;
+            }
+        </style>
+        <?php
+    }
     ?>
     <style>
         label{
@@ -211,12 +253,12 @@ if($action==='testDoctorId'){
     <div class="container mt-4">
         <h3>แบบฟอร์มขอเพิ่มชื่อแพทย์ในระบบ 👨🏽‍⚕️</h3>
         <form action="doctor_register.php" method="post" class="col-lg-8" id="formRegister">
-            <div class="row mb-2">
+            <!-- <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">เลขบัตรประชาชน</label>
                 <div class="col-sm-4">
                     <input class="form-control" type="text" name="idcard" id="idcard"> 
                 </div>
-            </div>
+            </div> -->
 
             <div class="row mb-2">
                 <label for="prefix" class="col-sm-3 col-form-label">ยศ/คำนำหน้าชื่อ</label>
@@ -246,10 +288,10 @@ if($action==='testDoctorId'){
             <div class="row mb-2">
                 <label for="user" class="col-sm-3 col-form-label">ชื่อ - นามสกุล</label>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ">
+                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="ชื่อ" value="ขวัญทิพย์">
                 </div>
                 <div class="col-sm">
-                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล">
+                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="นามสกุล" value="ประเสริฐโสม">
                 </div>
             </div>
             <div class="row mb-2">
@@ -263,19 +305,23 @@ if($action==='testDoctorId'){
                             <option value="พท.ว.">พท.ว.</option>
                             <option value="พจ.">พจ.</option>
                         </select>
-                        <input type="number" class="form-control" id="doctorNum" name="doctorNum">
+                        <input type="number" class="form-control" id="doctorNum" name="doctorNum" value="99999">
                         <button class="btn btn-primary" type="button" id="checkDoctorNumber">ตรวจสอบ</button>
                         <button class="btn btn-secondary" id="responseCheck">😑</button>
                     </div>
                     <input type="hidden" name="testDoctorNumber" id="testDoctorNumber" value="0">
                 </div>
-                <div class="alert alert-secondary mt-2" role="alert">หากไม่มีข้อมูลในตัวเลือก กรุณาประสานศูนย์คอมฯ เพื่อทำการปรับปรุงข้อมูล ขอบคุณครับ</div>
+
+                <div class="mt-1 mb-1">
+                    <span class="badge text-bg-secondary">⚠️ หากไม่มีข้อมูลในตัวเลือก กรุณาประสานศูนย์คอมฯ เพื่อทำการปรับปรุงข้อมูล ขอบคุณครับ</span>
+                </div>
+                
                 <div class="callout" style="border-left: 4px solid #ffe69c; background-color: #fff3cd;">
                     ทันตกรรม (ท.)<br>
                     แพทย์แผนไทยประยุกต์ (พท.ป)<br>
                     แพทย์แผนไทย (พท.ว.)<br>
                     แพทย์แผนจีน (พจ.)<br>
-                    ค่าปริยาย (ว.)
+                    เลขที่ใบอนุญาตประกอบวิชาชีพเวชกรรม (ว.)
                 </div>
             </div>
 
@@ -289,7 +335,7 @@ if($action==='testDoctorId'){
                     <select name="depart" id="depart" class="form-select">
                         <?php 
                         while ($a = $qF43Clinic->fetch_assoc()) {
-                            $checked = ($a['detail']=='อายุรกรรม') ? 'checked="checked"' : '' ;
+                            $checked = ($a['detail']=='อายุรกรรม') ? 'selected="selected"' : '' ;
                             ?><option value="<?=$a['detail'];?>" <?=$checked;?> ><?=$a['detail'];?></option><?php
                         }
                         ?>
@@ -338,6 +384,9 @@ if($action==='testDoctorId'){
                 <label for="user" class="col-sm-3 col-form-label text-end">💡</label>
                 <div class="col-sm-5">
                     <input class="form-check-input" type="checkbox" name="intern" id="intern"> <label for="intern" class="form-check-label">เป็นแพทย์อินเทิร์น</label>
+                    <div>
+                        <span class="badge text-bg-warning">ถ้าเป็นแพทย์อินเทิร์น กรุณาเลือกตัวเลือกนี้ด้วยครับ</span>
+                    </div>
                 </div>
             </div>
 
@@ -396,7 +445,7 @@ if($action==='testDoctorId'){
             document.getElementById('formRegister').onsubmit = function(event){
                 event.preventDefault();
 
-                let idcard = document.getElementById('idcard').value.trim();
+                // let idcard = document.getElementById('idcard').value.trim();
                 let prefix = document.getElementById('prefix').value.trim();
                 let firstname = document.getElementById('firstname').value.trim();
                 let lastname = document.getElementById('lastname').value.trim();
@@ -404,10 +453,12 @@ if($action==='testDoctorId'){
                 let testDoctorNumber = document.getElementById('testDoctorNumber').value;
                 
 
-                if(idcard==='' || idcard.length != 13){
+                /* if(idcard==='' || idcard.length != 13){
                     Swal.fire({title: "กรุณาใส่เลขบัตรประชาชนให้ถูกต้อง", showConfirmButton: false, timer: 1000, didClose: handleOnFocus('idcard')});
                     return false;
-                }else if(prefix===''){
+                }else*/
+                
+                if(prefix===''){
                     Swal.fire({title: "กรุณาใส่ยศ/คำนำหน้าชื่อ", showConfirmButton: false, timer: 1000, didClose: handleOnFocus('prefix')});
                     return false;
                 }else if(firstname==='' || lastname===''){
@@ -417,7 +468,7 @@ if($action==='testDoctorId'){
                     Swal.fire({title: 'กรุณาใส่เลข ว. แล้วกดตรวจสอบให้เรียบร้อย', showConfirmButton: false, timer: 1000, didClose: handleOnFocus('doctorNum')});
                     return false;
                 }else if(testDoctorNumber==0){
-                    Swal.fire('กรุณากด ตรวจสอบ เพื่อตรวจสอบข้อมูลก่อนดำเนินการต่อไป');
+                    Swal.fire({icon:`warning`, title:'อย่าลืมตรวจสอบเลข ว.', html:`กรุณากด "ตรวจสอบ" เพื่อตรวจสอบเลข ว.ก่อนดำเนินการต่อไป`});
                     return false;
                 }
 
@@ -428,7 +479,8 @@ if($action==='testDoctorId'){
                     if(res.status==200){
                         
                         let txtMessage = `แจ้งผู้ดูแลระบบเรียบร้อย<br>
-                        ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง `
+                        ศูนย์คอมฯ จะทำการตรวจสอบและดำเนินการเพิ่มผู้ใช้งานภายใน 24ชั่วโมง<br>
+                        ขอบคุณครับ`
 
                         const reqLogin = document.getElementById('request_login').value;
                         if(reqLogin==1){
@@ -442,9 +494,20 @@ if($action==='testDoctorId'){
                             title: "SUCCESS",
                             icon: "success",
                             html: txtMessage,
-                            confirmButtonText: "OK"
+                            confirmButtonText: "OK",
+                            allowOutsideClick: false
                         }).then((result)=>{
+                        <?php
+                        if($from==='main'){
+                        ?>
                             window.location = 'doctor_register_list.php';
+                        <?php
+                        }else{
+                        ?>
+                            location.reload();
+                        <?php
+                        }
+                        ?>
                         });
                     }
                 })

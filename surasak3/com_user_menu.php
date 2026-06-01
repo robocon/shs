@@ -55,7 +55,7 @@ $menuCode = sprintf("%s", $_GET["menucode"]);
 							<a class="dropdown-item" href="doctor_register_list.php">👩‍⚕️ รายชื่อเพิ่มแพทย์</a>
 						</li>
 						<li >
-							<a class="dropdown-item" href="doctor_register.php">👨🏽‍⚕️ ฟอร์มขอเพิ่มชื่อแพทย์</a>
+							<a class="dropdown-item" href="doctor_register.php?from=main">👨🏽‍⚕️ ฟอร์มขอเพิ่มชื่อแพทย์</a>
 						</li>
 					</ul>
 				</li>

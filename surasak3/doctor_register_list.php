@@ -71,6 +71,14 @@ if($j->action==='addDoctor'){
         }
         
         $res = array('status'=>200, 'message'=>'เพิ่มข้อมูลเรียบร้อย');
+
+        $erstatus = 'n';
+        $opdstatus = 'n';
+        if($a['intern']=='1'){
+            $erstatus = 'y';
+            $opdstatus = 'y';
+        }
+
         // เพิ่ม doctor
         $sql = "INSERT INTO `doctor` 
         (
@@ -81,8 +89,8 @@ if($j->action==='addDoctor'){
         ) VALUES (
             NULL, '$prefix', '', '$fullnameMd', '$doctor_number', '$depart', 
             'y', '$menucode', '$depart', '1', '1', '1', 
-            '1', '1', '$room', '99', '', 'y', 
-            'y', '', '$depart', '', ''
+            '1', '1', '$room', '99', '', '$erstatus', 
+            '$opdstatus', '', '$depart', '16', 'y'
         );";
         $qInsertDr = $dbi->query($sql);
         if($qInsertDr!==false){
@@ -96,7 +104,6 @@ if($j->action==='addDoctor'){
 
             $nameForInputm = $a['firstname'].' '.$a['lastname'].' ('.$a['prefix_doctor_number'].$doctor_number.')';
             $idname = 'md'.$doctor_number;
-            $idcard = $a['idcard'];
 
             $level = 'dr';
             if($a['intern']=='1'){
@@ -110,7 +117,7 @@ if($j->action==='addDoctor'){
             ) VALUES (
                 NULL, '$nameForInputm', '$idname', '$idname', 'ADMDR1', 'Y', 
                 '$doctor_number', '$mdNumber', '', '', NOW(), '$level', 
-                '', 'y', '$idcard', '$sOfficer'
+                '', 'y', '', '$sOfficer'
             );";
             $inputmInsert = $dbi->query($sql);
             if($inputmInsert!==false){
@@ -225,7 +232,7 @@ if($getAction == 'info'){
     <?php 
     require_once 'com_user_menu.php';
     ?>
-    <div class="container mt-4">
+    <div class="container container-sm mt-4">
         <h3>รายชื่อแพทย์ขอใช้งานระบบ</h3>
         <?php 
         $sql = "SELECT * FROM `doctor_register` ORDER BY `id` DESC";
@@ -238,7 +245,6 @@ if($getAction == 'info'){
                     <th>ยศชื่อ-สกุล</th>
                     <th>เลขที่ ว.</th>
                     <th>เป็นแพทย์</th>
-                    <th>สถานะ</th>
                     <?php
                     if($smenucode=='ADM' && $sLevel==='admin'){
                         ?><th>จัดการ</th><?php
@@ -250,7 +256,16 @@ if($getAction == 'info'){
                     ?>
                     <tr>
                         <td><?=$a['date'];?></td>
-                        <td><?=$a['prefix'].$a['firstname'].' '.$a['lastname'];?></td>
+                        <td>
+                            <?=$a['prefix'].$a['firstname'].' '.$a['lastname'];?>
+                            <?php 
+                            if($a['status']==='H'){
+                                ?><span class="badge text-bg-secondary">รอตรวจสอบ</span><?php
+                            }elseif ($a['status']==='A') {
+                                ?><span class="badge text-bg-success">ดำเนินการเรียบร้อย</span><?php
+                            }
+                            ?>
+                        </td>
                         <td>
                             <?php 
                             if($a['request_login']=='1'){
@@ -262,15 +277,6 @@ if($getAction == 'info'){
                             
                         </td>
                         <td><?=$a['depart'];?></td>
-                        <td>
-                            <?php 
-                            if($a['status']==='H'){
-                                ?><strong>รอตรวจสอบ</strong><?php
-                            }elseif ($a['status']==='A') {
-                                ?><strong>ดำเนินการเรียบร้อย</strong><?php
-                            }
-                            ?>
-                        </td>
                         <?php
                         if($smenucode=='ADM' && $sLevel==='admin'){
                             ?>
