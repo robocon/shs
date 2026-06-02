@@ -4,15 +4,7 @@ require_once dirname(__FILE__).'/bootstrap.php';
 $dbi = new mysqli(HOST,USER,PASS,DB);
 $dbi->query("SET NAMES UTF8");
 
-$hn = sprintf("%s", $_GET['hn']);
-$drugcode = sprintf("%s", $_GET['drugcode']);
-$returnstr = sprintf("%s", $_GET['returnstr']);
-$doctor = sprintf("%s", $_GET['doctor']);
-
 $action = sprintf("%s",$_POST['action']);
-
-$datehn = date('Y-m-d').$hn;
-
 if($action==='save'){ 
 
     $id = sprintf("%s", $dbi->real_escape_string($_POST['id']));
@@ -22,7 +14,6 @@ if($action==='save'){
     $reason = sprintf("%s", $dbi->real_escape_string($_POST['reason']));
     $dt_code = sprintf("%s", $dbi->real_escape_string($_POST['dt_code']));
     $doctor = sprintf("%s", $dbi->real_escape_string($_POST['doctor']));
-
 
     // $sql = "INSERT INTO `dt_rechallenge` 
     // (`id`, `date`, `hn`, `datehn`, `drugcode`, `doctor`, `dt_code`, `reason`, `returnstr`) 
@@ -60,6 +51,23 @@ if($action==='save'){
             window.close();
         }
     </script>
+    <?php
+    exit;
+}
+
+
+$hn = sprintf("%s", $_GET['hn']);
+$drugcode = sprintf("%s", $_GET['drugcode']);
+$returnstr = sprintf("%s", $_GET['returnstr']);
+$doctor = sprintf("%s", $_GET['doctor']);
+$datehn = date('Y-m-d').$hn;
+
+if(empty($hn) || empty($drugcode) || empty($doctor)){
+    ?>
+    <div>
+        <p>ข้อมูลไม่ครบถ้วน</p>
+        <p>กรุณาตรวจสอบข้อมูลอีกครั้ง</p>
+    </div>
     <?php
     exit;
 }
@@ -141,7 +149,9 @@ $op = $q_opday->fetch_assoc();
                     </tr>
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>เหตุผลการใช้ยา:</b> </td>
-                        <td><input type="text" name="reason" id="reason"></td>
+                        <td>
+                            <textarea name="reason" id="reason" style="width:250px; height:45px;"></textarea>
+                        </td>
                     </tr>
                     <tr>
                         <td align="right" style="background-color:#D4EFDF;"><b>กรุณากรอกเลข ว. ของท่าน</b> </td>
